@@ -1,0 +1,65 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.cu-text-left {
+  text-align: left;
+}
+
+.cu-text-center {
+  text-align: center;
+}
+
+.cu-text-right {
+  text-align: right;
+}
+
+.cu-text-normal {
+  font-style: normal;
+}
+
+.cu-text-italic {
+  font-style: italic;
+}
+
+.cu-text-oblique {
+  font-style: oblique;
+}
+
+.cu-text-uppercase {
+  text-transform: uppercase;
+}
+
+.cu-text-lowercase {
+  text-transform: lowercase;
+}
+
+.cu-text-capitalize {
+  text-transform: capitalize;
+}
+
+.cu-text-smallcaps {
+  font-variant: small-caps;
+}
+
+.cu-text-shadow {
+  @include cu-text-shadow(0, 0, 1px, #010101);
+}
+
+.cu-text-underline {
+  text-decoration: underline;
+}
+
+.cu-text-overline {
+  text-decoration: overline;
+}
+
+.cu-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.cu-text-bold {
+  font-weight: bold;
+}

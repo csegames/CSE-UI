@@ -1,0 +1,59 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+$cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
+@import "../../node_modules/camelot-unchained/lib/index.scss";
+
+body {
+  overflow: hidden;
+  cursor: default;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+#respawn {
+  &.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    .frame {
+      position: relative;
+      margin-left: 720px;
+      margin-top: 450px;
+      width: 200px;
+      height: 200px;
+      top: -100px;
+      left: -100px;
+
+      .cu-window-header {
+        .title {
+          text-align: center;
+          width: 100%;
+        }
+      }
+
+      .button {
+        cursor: pointer;
+        height: 3em;
+        line-height: 3em;
+        font-size: 1.2em;
+        padding: 0 1em;
+        border-bottom: 1px solid rgba(0,0,0,0.4);
+        &:hover {
+          background-color: rgba(0,0,0,0.5);
+        }
+        .distance {
+          float: right;
+        }
+      }
+    }
+  }
+}

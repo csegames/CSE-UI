@@ -1,0 +1,36 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@mixin selectable() {
+  cursor: auto;
+  @include user-select(text !important);
+  > * {
+    cursor: auto;
+    @include user-select(text !important);
+  }
+}
+
+@mixin not-selectable() {
+  cursor: default;
+  @include user-select(none);
+  > * {
+    cursor: default;
+    @include user-select(none);
+  }
+}
+
+@mixin before-after-defaults() {
+  &:before, &:after {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+}

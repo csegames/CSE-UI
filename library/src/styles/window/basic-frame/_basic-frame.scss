@@ -1,0 +1,52 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.cu-window-basic-frame {
+
+  @include cu-window();
+  @include before-after-defaults();
+  @include not-selectable();
+  position: relative;
+
+  &:before {
+    background: linear-gradient($color-dark 50%, $color-dark 50%) no-repeat center center / 100% calc(100% - 4px);
+  }
+
+  &:after {
+    background: url('#{$cu-styles-root}window/basic-frame/images/bottom-left.png') no-repeat left bottom,
+    url('#{$cu-styles-root}window/basic-frame/images/bottom-right.png') no-repeat right bottom,
+    url('#{$cu-styles-root}window/basic-frame/images/top-left.png') no-repeat left top,
+    url('#{$cu-styles-root}window/basic-frame/images/top-right.png') no-repeat right top,
+    url('#{$cu-styles-root}window/basic-frame/images/bottom.png') no-repeat center calc(100% - 1px) / 100% 3px,
+    url('#{$cu-styles-root}window/basic-frame/images/top.png') no-repeat center 1px / 100% 3px,
+    url('#{$cu-styles-root}window/basic-frame/images/left.png') no-repeat left center / 3px 100%,
+    url('#{$cu-styles-root}window/basic-frame/images/right.png') no-repeat right center / 3px 100%;
+  }
+
+  &.cu-window-transparent {
+    &:before {
+      opacity: 0.5;
+    }
+    &:after {
+      opacity: 0.8;
+    }
+  }
+
+  .cu-window-content, .cu-window-header {
+    padding: 1px 3px;
+    color: white;
+  }
+
+  .cu-window-title {
+    @include cu-font-cinzel();
+    @include cu-text-shadow($hShadow: 0, $vShadow: 0, $blurRadius: 10px, $color: #000000);
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    padding-top: 3px;
+  }
+
+}

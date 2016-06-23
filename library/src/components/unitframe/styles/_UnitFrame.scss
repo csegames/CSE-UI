@@ -1,0 +1,112 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+ /* this gets merged into cu-components/main.css so all paths are relative to that */
+
+#unitframe:after {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  content: url('unitframe/images/frame.png');
+  z-index: -1;
+}
+
+#unitframe {
+
+  /* These styles apply only to sub-components of #unitframe */
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 158px;
+  height: 125px;
+  background: transparent url('unitframe/images/bg.png') no-repeat 0 12px;
+
+  #name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 154px;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 4px;
+    font-family: 'Merriweather Sans', sans-serif;
+    font-size: 11px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000,
+    0 0 3px #000, 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
+  }
+
+  #health-bar {
+    position: absolute;
+    top: 22px;
+    left: 3px;
+    width: 154px;
+    height: 17px;
+    background: transparent url('unitframe/images/health-bar.png') no-repeat top left;
+  }
+
+  #health-text {
+    position: absolute;
+    top: 22px;
+    left: 3px;
+    width: 154px;
+    height: 17px;
+    line-height: 17px;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    text-align: center;
+    text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000,
+    0 0 3px #000, 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
+  }
+
+  #stamina-bar {
+    position: absolute;
+    top: 41px;
+    left: 3px;
+    width: 154px;
+    height: 11px;
+    background: transparent url('unitframe/images/stamina-bar.png') no-repeat top left;
+  }
+
+  #stamina-text {
+    position: absolute;
+    top: 41px;
+    left: 3px;
+    width: 154px;
+    height: 11px;
+    line-height: 11px;
+    color: #a3eef9;
+    font-family: Arial, sans-serif;
+    font-size: 8px;
+    text-align: center;
+    text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000,
+    0 0 3px #000, 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
+  }
+
+  #effects {
+    position: absolute;
+    top: 60px;
+    left: 3px;
+    width: 168px;
+  }
+
+  .effect-icon {
+    float: left;
+    width: 25px;
+    height: 25px;
+    margin: 0 3px 3px 0;
+  }
+
+  .cse-injuries {
+    top: 60px;
+  }
+
+}

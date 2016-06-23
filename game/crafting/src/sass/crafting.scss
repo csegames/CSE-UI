@@ -1,0 +1,133 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+$cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
+@import "../../node_modules/camelot-unchained/lib/index.scss";
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 10px #000;
+  background-color:#777;
+}
+
+.cu-window-header {
+  .title {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.cu-window-content::before {
+  opacity: 0.6;
+}
+
+/* TODO: move button styles to interface-lib */
+.cu-window-btn-small {
+  background: url(../../../interface/images/login/btn-complete.png) no-repeat -2px -156px;
+  background-size: cover;
+  font-size: 10px;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.3), 2px -2px 3px rgba(0,0,0,0.3), -2px 2px 3px rgba(0,0,0,0.3), -2px -2px 3px rgba(0,0,0,0.3);
+  line-height: 30px;
+  cursor: pointer !important;
+  display: inline-block;
+  overflow: hidden;
+  width: 93px;
+  height: 30px;
+  border: 0;
+  outline: 0;
+  font-family: 'Cinzel', serif;
+  color: #eee;
+  text-align: center;
+}
+  .cu-window-btn-small:hover {
+    color: #fff;
+    background-position: -2px -125px;
+  }
+
+  .cu-window-btn-small:active {
+    color: #eee;
+    background-position: -2px -156px;
+  }
+
+#cse-ui-crafting {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#crafting-button {
+  position: absolute;
+  left:67px;
+  top:833px;
+  width: 67px;
+  height: 67px;
+  background: url('http://camelot-unchained.s3.amazonaws.com/icons/general-ui/crafting-btn.jpg') no-repeat bottom left;
+}
+
+#crafting-window{
+  position:absolute;
+  top:20px;
+  left:0px;
+  width:650px;
+  height:450px;
+  z-index:1000;
+  overflow: hidden;
+}
+
+.crafting-active{
+  display:block;
+}
+
+.crafting-inactive{
+  display:none;
+}
+
+.cmdList{
+  height: 350px;
+  max-height: 350px;
+  overflow: auto;
+  padding-bottom:50px;
+}
+.cmdItem{
+  margin:10px 5px;
+}
+.cmdItem-cmd{
+
+}
+.cmdItem-info{
+  padding-left:10px;
+}
+.cmdItem-params{
+  color:#00A2E8;
+}
+.cmdItem-ex{
+  color:#777;
+}
+
+#input-crCmd{
+  position: absolute;
+  bottom: 12px;
+  left: 25px;
+  width: 500px;
+  height:26px;
+  line-height: 26px;
+  padding: 2px;
+  background: transparent;
+  border: 1px solid #555;
+}
+
+#btn-crSubmit{
+  position: absolute;
+  bottom: 10px;
+  right: 18px;
+}

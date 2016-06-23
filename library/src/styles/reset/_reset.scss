@@ -1,0 +1,124 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@import "../includes";
+@import "normalize";
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+@at-root {
+  @-moz-viewport {
+    width: device-width;
+  }
+  @-ms-viewport {
+    width: device-width;
+  }
+  @-o-viewport {
+    width: device-width;
+  }
+  @-webkit-viewport {
+    width: device-width;
+  }
+  @viewport {
+    width: device-width;
+  }
+}
+
+html {
+  font-size: $font-size-root;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height;
+  color: $color-dark;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: .5rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ol, ul, dl {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: .5rem;
+  margin-left: 0;
+}
+
+blockquote {
+  margin: 0 0 1rem;
+}
+
+a {
+  text-decoration: none;
+  &:hover, &:focus, &:active {
+    text-decoration: none;
+  }
+}
+
+pre {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+img {
+  vertical-align: middle;
+}
+
+th {
+  text-align: left;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: .5rem;
+}
+
+input, button, select, textarea {
+  margin: 0;
+  line-height: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: .5rem;
+  font-size: 1.5rem;
+  line-height: inherit;
+}

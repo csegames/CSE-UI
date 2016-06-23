@@ -1,0 +1,84 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@mixin cu-window-header-bg($default: false) {
+  $selector: if($default, '.cu-window-header', '&.cu-window-header');
+
+  #{$selector} {
+    &:before {
+      @content;
+    }
+  }
+}
+
+@mixin cu-window-footer-bg($default: false) {
+
+  $selector: if($default, '.cu-window-footer', '&.cu-window-footer');
+
+  #{$selector} {
+    &:before {
+      @content;
+    }
+  }
+}
+
+@mixin cu-window-content-bg($class: false, $background: none) {
+  .cu-window-content {
+    @if ($class) {
+      &.#{$class} {
+        &:before {
+          background: $background no-repeat center center / calc(100% - 18px) 100%;
+        }
+      }
+    } @else {
+      &:before {
+        background: $background no-repeat center center / calc(100% - 18px) 100%;
+      }
+    }
+  }
+
+  @include cu-window-content--header--no-footer {
+    @if ($class) {
+      &.#{$class} {
+        &:before {
+          background: $background no-repeat center top / calc(100% - 18px) calc(100% - 5px);
+        }
+      }
+    } @else {
+      &:before {
+        background: $background no-repeat center top / calc(100% - 18px) calc(100% - 5px);
+      }
+    }
+  }
+
+  @include cu-window-content--no-header--footer {
+    @if ($class) {
+      &.#{$class} {
+        &:before {
+          background: $background no-repeat center bottom / calc(100% - 18px) calc(100% - 5px);
+        }
+      }
+    } @else {
+      &:before {
+        background: $background no-repeat center bottom / calc(100% - 18px) calc(100% - 5px);
+      }
+    }
+  }
+
+  @include cu-window-content--no-header--no-footer {
+    @if ($class) {
+      &.#{$class} {
+        &:before {
+          background: $background no-repeat center center / calc(100% - 18px) calc(100% - 10px);
+        }
+      }
+    } @else {
+      &:before {
+        background: $background no-repeat center center / calc(100% - 18px) calc(100% - 10px);
+      }
+    }
+  }
+}

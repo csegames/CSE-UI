@@ -1,0 +1,21 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@import "../../node_modules/camelot-unchained/lib/styles/window/woundsframe/woundsframe";
+
+body {
+  @include wounds-body(90%);
+}
+
+#cse-ui-wounds {
+  @include wounds-base(rgba(80, 0, 0, 0.7));
+  position: relative;
+  width: 150px;
+  background: linear-gradient(to bottom right, rgb(78, 0, 0), rgba(44, 0, 0, 0.51));
+  padding: 10px;
+  border-radius: 5px 5px 0px 0px;
+  padding-bottom: 5px;
+}

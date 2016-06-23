@@ -1,0 +1,62 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+// the root directory for cu-styles (include trailing slash if needed)
+$cu-styles-root: 'styles/' !default;
+
+// colors
+$color-dark: #111111 !default;
+$color-gray-dark: #333333 !default;
+$color-gray: #777777 !default;
+$color-light: #efefef !default;
+$color-gray-light: #818a91 !default;
+$color-gray-lightest: #dddddd !default;
+$color-yellow: #AA9739 !default;
+$color-yellow-dark: darken($color-yellow, 5%) !default;
+$color-yellow-light: lighten($color-yellow, 5%) !default;
+$color-red: #6c0c00 !default;
+$color-red-dark: darken($color-red, 10%) !default;
+$color-red-light: lighten($color-red, 5%) !default;
+$color-blue: #002d4c !default;
+$color-blue-dark: darken($color-blue, 5%) !default;
+$color-blue-light: lighten($color-blue, 5%) !default;
+$color-green: #1a4c00 !default;
+$color-green-dark: darken($color-green, 5%) !default;
+$color-green-light: lighten($color-green, 10%) !default;
+$color-brown: #35200b !default;
+$color-brown-dark: darken($color-brown, 5%) !default;
+$color-brown-light: lighten($color-brown, 10%) !default;
+
+// font
+$font-family-base: 'Merriweather Sans', sans-serif !default;
+$font-size-root: 12px !default;
+$font-size-base: 1rem !default;
+$font-size-xl: 1.5rem !default;
+$font-size-lg: 1.25rem !default;
+$font-size-sm: .85rem !default;
+$font-size-xs: .75rem !default;
+$font-size-h1: 2.5rem !default;
+$font-size-h2: 2rem !default;
+$font-size-h3: 1.75rem !default;
+$font-size-h4: 1.5rem !default;
+$font-size-h5: 1.25rem !default;
+$font-size-h6: 1rem !default;
+$line-height: 1.5 !default;
+
+// tooltips
+$tooltip-font-size-base: 12px;
+$tooltip-line-height-base: 1.5;
+$tooltip-border-radius-base: 3px;
+$tooltip-overlay-shadow: 0 0 4px rgba(0, 0, 0, 0.17);
+$tooltip-color: #ffffff;
+$tooltip-bg: #111111;
+$tooltip-opacity: 0.95;
+$tooltip-border-width: 1px;
+$tooltip-border-color: #222222;
+$tooltip-shadow-width: 1px;
+$tooltip-arrow-width: 6px;
+$tooltip-arrow-color: $tooltip-border-color;
+$tooltip-arrow-inner-color: $tooltip-bg;

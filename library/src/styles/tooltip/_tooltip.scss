@@ -1,0 +1,183 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.cu-tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  visibility: visible;
+  line-height: $tooltip-line-height-base;
+  font-size: $tooltip-font-size-base;
+  background-color:rgba(0, 0, 0, 0.05);
+  padding: $tooltip-shadow-width;
+  opacity: $tooltip-opacity;
+
+  &.cu-tooltip-hidden {
+    display: none;
+  }
+
+  .cu-tooltip-inner {
+    padding: 8px 10px;
+    color: $tooltip-color;
+    text-align: left;
+    text-decoration: none;
+    background-color: $tooltip-bg;
+    border-radius: $tooltip-border-radius-base;
+    min-height: 34px;
+    border:$tooltip-border-width solid $tooltip-border-color;
+  }
+
+  .cu-tooltip-arrow,
+  .cu-tooltip-arrow-inner{
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  &.cu-tooltip-placement-top,
+  &.cu-tooltip-placement-topLeft,
+  &.cu-tooltip-placement-topRight {
+    .cu-tooltip-arrow {
+      bottom: -$tooltip-arrow-width + $tooltip-shadow-width;
+      margin-left: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width $tooltip-arrow-width 0;
+      border-top-color: $tooltip-arrow-color;
+    }
+    .cu-tooltip-arrow-inner {
+      bottom: $tooltip-border-width;
+      margin-left: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width $tooltip-arrow-width 0;
+      border-top-color: $tooltip-arrow-inner-color;
+    }
+  }
+
+  &.cu-tooltip-placement-top {
+    .cu-tooltip-arrow {
+      left: 50%;
+    }
+  }
+
+  &.cu-tooltip-placement-topLeft {
+    .cu-tooltip-arrow {
+      left: 15%;
+    }
+  }
+
+  &.cu-tooltip-placement-topRight {
+    .cu-tooltip-arrow {
+      right: 15%;
+    }
+  }
+
+  &.cu-tooltip-placement-right,
+  &.cu-tooltip-placement-rightTop,
+  &.cu-tooltip-placement-rightBottom {
+    .cu-tooltip-arrow {
+      left: -$tooltip-arrow-width + $tooltip-shadow-width;
+      margin-top: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width $tooltip-arrow-width $tooltip-arrow-width 0;
+      border-right-color: $tooltip-arrow-color;
+    }
+    .cu-tooltip-arrow-inner {
+      left: $tooltip-border-width;
+      margin-top: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width $tooltip-arrow-width $tooltip-arrow-width 0;
+      border-right-color: $tooltip-arrow-inner-color;
+    }
+  }
+
+  &.cu-tooltip-placement-right {
+    .cu-tooltip-arrow {
+      top: 50%;
+    }
+  }
+
+  &.cu-tooltip-placement-rightTop {
+    .cu-tooltip-arrow {
+      top: 15%;
+      margin-top: 0;
+    }
+  }
+
+  &.cu-tooltip-placement-rightBottom {
+    .cu-tooltip-arrow {
+      bottom: 15%;
+    }
+  }
+
+  &.cu-tooltip-placement-left,
+  &.cu-tooltip-placement-leftTop,
+  &.cu-tooltip-placement-leftBottom {
+    .cu-tooltip-arrow {
+      right: -$tooltip-arrow-width + $tooltip-shadow-width;
+      margin-top: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width 0 $tooltip-arrow-width $tooltip-arrow-width;
+      border-left-color: $tooltip-arrow-color;
+    }
+    .cu-tooltip-arrow-inner {
+      right: $tooltip-border-width;
+      margin-top: -$tooltip-arrow-width;
+      border-width: $tooltip-arrow-width 0 $tooltip-arrow-width $tooltip-arrow-width;
+      border-left-color: $tooltip-arrow-inner-color;
+    }
+  }
+
+  &.cu-tooltip-placement-left {
+    .cu-tooltip-arrow {
+      top: 50%;
+    }
+  }
+
+  &.cu-tooltip-placement-leftTop {
+    .cu-tooltip-arrow {
+      top: 15%;
+      margin-top: 0;
+    }
+  }
+
+  &.cu-tooltip-placement-leftBottom {
+    .cu-tooltip-arrow {
+      bottom: 15%;
+    }
+  }
+
+  &.cu-tooltip-placement-bottom,
+  &.cu-tooltip-placement-bottomLeft,
+  &.cu-tooltip-placement-bottomRight {
+    .cu-tooltip-arrow {
+      top: -$tooltip-arrow-width + $tooltip-shadow-width;;
+      margin-left: -$tooltip-arrow-width;
+      border-width: 0 $tooltip-arrow-width $tooltip-arrow-width;
+      border-bottom-color: $tooltip-arrow-color;
+    }
+    .cu-tooltip-arrow-inner {
+      top: $tooltip-border-width;
+      margin-left: -$tooltip-arrow-width;
+      border-width: 0 $tooltip-arrow-width $tooltip-arrow-width;
+      border-bottom-color: $tooltip-arrow-inner-color;
+    }
+  }
+
+  &.cu-tooltip-placement-bottom {
+    .cu-tooltip-arrow {
+      left: 50%;
+    }
+  }
+
+  &.cu-tooltip-placement-bottomLeft {
+    .cu-tooltip-arrow {
+      left: 15%;
+    }
+  }
+
+  &.cu-tooltip-placement-bottomRight {
+    .cu-tooltip-arrow {
+      right: 15%;
+    }
+  }
+}

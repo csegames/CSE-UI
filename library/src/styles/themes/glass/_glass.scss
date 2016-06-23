@@ -1,0 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+ 
+ /**
+  * Theme: Glass
+  * Colorable glass css style with blurring and border
+  */
+@mixin theme-glass($red: 255, $green: 255, $blue: 255) {
+  border: 1px solid rgba($red, $green, $blue, 0.25);
+  background: rgba($red * 0.01, $green * 0.01, $blue * 0.01, 0.6);
+  backdrop-filter: brightness(1.5) blur(5px);
+  box-shadow: inset 0 0.5px 0 rgba($red, $green, $blue,0.7);
+}

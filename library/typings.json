@@ -1,0 +1,20 @@
+{
+  "name": "camelot-unchained",
+  "main": "definitions/index.d.ts",
+  "ambientDependencies": {
+    "eventemitter3": "github:DefinitelyTyped/DefinitelyTyped/eventemitter3/eventemitter3.d.ts#acf0d0f007bcfe03b62fcf14a68e6d275228640d",
+    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
+    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#138ad74b9e8e6c08af7633964962835add4c91e2",
+    "react-addons-css-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-css-transition-group.d.ts#138ad74b9e8e6c08af7633964962835add4c91e2",
+    "react-addons-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-transition-group.d.ts#138ad74b9e8e6c08af7633964962835add4c91e2",
+    "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#78d36dd49b6b55b9fdfe61776a12bf05c8b07777",
+    "reflux": "github:CUModSquad/Typings/reflux/reflux.d.ts",
+    "reflux-core": "github:CUModSquad/Typings/reflux/reflux-core.d.ts"
+  },
+  "dependencies": {
+    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7",
+    "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",
+    "redux": "github:andrew-w-ross/typings-redux#2e0b57e18c6240d17fde045573d74e649762437b",
+    "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
+  }
+}

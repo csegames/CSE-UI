@@ -1,0 +1,12 @@
+.idea
+.suo
+npm-debug.log
+.sublime-gulp.cache
+/node_modules
+/bin
+/obj
+/tmp
+/dist
+/publish
+/.vs
+/src/tsd

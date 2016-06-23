@@ -1,0 +1,105 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@mixin cu-window(
+  $header-opacity-before: 0.9,
+  $header-opacity-after: 0.9,
+  $content-opacity-before: 0.5,
+  $content-opacity-after: 0.9,
+  $footer-opacity-before: 0.9,
+  $footer-opacity-after: 0.9,
+  $header-width: 100%,
+  $header-height: auto,
+  $content-width: 100%,
+  $content-height: 100%,
+  $footer-width: 100%,
+  $footer-height: auto
+) {
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &.cu-window-auto-size {
+    height: auto;
+    display: block;
+  }
+
+  .cu-window-header {
+    position: relative;
+    width: $header-width;
+    min-height: $header-height;
+    @include before-after-defaults();
+  }
+
+  .cu-window-content {
+    position: relative;
+    width: $content-width;
+    height: $content-height;
+    @include before-after-defaults();
+  }
+
+  .cu-window-footer {
+    position: relative;
+    width: $footer-width;
+    min-height: $footer-height;
+    @include before-after-defaults();
+  }
+
+  &.cu-window-transparent {
+
+    .cu-window-header:before {
+      opacity: $header-opacity-before;
+    }
+
+    .cu-window-header:after {
+      opacity: $header-opacity-after;
+    }
+
+    .cu-window-content:before {
+      opacity: $content-opacity-before;
+    }
+
+    .cu-window-content:after {
+      opacity: $content-opacity-after;
+    }
+
+    .cu-window-footer:before {
+      opacity: $footer-opacity-before;
+    }
+
+    .cu-window-footer:after {
+      opacity: $footer-opacity-after;
+    }
+
+  }
+
+}
+
+@mixin cu-window-content--header--footer() {
+  & :first-child:nth-last-child(3) ~ .cu-window-content {
+    @content;
+  }
+}
+
+@mixin cu-window-content--header--no-footer() {
+  & :first-child:nth-last-child(2) ~ .cu-window-content {
+    @content;
+  }
+}
+
+@mixin cu-window-content--no-header--footer() {
+  & :first-child:nth-last-child(2).cu-window-content {
+    @content;
+  }
+}
+
+@mixin cu-window-content--no-header--no-footer() {
+  & :first-child:nth-last-child(1).cu-window-content {
+    @content;
+  }
+}

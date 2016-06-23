@@ -1,0 +1,81 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.server-select.quickselect-active {
+  cursor: pointer !important;
+  padding: 2px 7px;
+  &:hover {
+    background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+  h5 {
+    margin: 0.41rem 0 0.328rem 0;
+    -webkit-user-select: none !important;
+  }
+  h5.server {
+    color: $color1;
+  }
+  h5.label {
+    color: lighten($color4, 20%);
+    padding: 2.5px;
+    font-size: 18px;
+  }
+}
+
+.server-select.quickselect-list {
+  padding: 2.5px;
+  background-color: $color4;
+  color: $color1;
+  cursor: pointer !important;
+  &:hover {
+    background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+  h5 {
+    font-size: 16px;
+    margin: 2px 0px;
+    -webkit-user-select: none !important;
+  }
+  h6 {
+    font-size: 14px;
+    margin: 2px 0px;
+    -webkit-user-select: none !important;
+  }
+  .server-status {
+    .indicator {
+      top: -10px !important;
+    }
+  }
+}
+
+.server-status {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  .indicator {
+    @include circle(10px);
+    position: absolute;
+    top: -25px;
+  }
+  display: inline-block;
+  margin: 5px;
+}
+
+.server-details {
+  display: inline-block;
+  color: $color1;
+  max-width: calc(100% - 20px);
+}
+
+.online {
+  background-color: mediumspringgreen;
+}
+
+.offline {
+  background-color: red;
+}

@@ -1,0 +1,340 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CU - Styles</title>
+  <link rel="stylesheet" href="../dist/camelot-unchained.css">
+  <style>
+    .demo-body {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .demo-window-container {
+      min-width: 300px;
+      width: 300px;
+      height: 600px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body class="demo-body">
+
+<!-- forms dark -->
+<div class="demo-window-container">
+  <div class="cu-window">
+    <div class="cu-window-content">
+      <div class="cu-window-title">Forms - Dark</div>
+      <div class="cu-window-actions">
+        <a class="cu-window-close"></a>
+      </div>
+
+      <div class="cu-form-dark cu-form-padding cu-form-sm">
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-1-1" class="cu-form-label">cu-form-text text</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-1-1" type="text" placeholder="cu-form-text text">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-1-2" class="cu-form-label">cu-form-text email</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-1-2" type="email" placeholder="cu-form-text email">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-1-3" class="cu-form-label">cu-form-text password</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-1-3" type="password" placeholder="cu-form-text password">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-1-4" class="cu-form-label">cu-form-text number</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-1-4" type="number" min="0" placeholder="cu-form-text number">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-range-1-1" class="cu-form-label">cu-form-range</label>
+          <div class="cu-form-range">
+            <input id="cu-form-range-1-1" value="50" oninput="this.setAttribute('value', this.value)" type="range" min="0" max="100" step="1" />
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-select-1-1" class="cu-form-label">cu-form-select</label>
+          <div class="cu-form-select">
+            <select id="cu-form-select-1-1">
+              <option>option 1</option>
+              <option>option 2</option>
+              <option>option 3</option>
+              <option>option 4</option>
+              <option>option 5</option>
+              <option>option 6</option>
+              <option>option 7</option>
+              <option>option 8</option>
+              <optgroup label="Option Group">
+                <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
+                <option>option 4</option>
+                <option>option 5</option>
+                <option>option 6</option>
+                <option>option 7</option>
+                <option>option 8</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- forms dark - transparent -->
+<div class="demo-window-container">
+  <div class="cu-window cu-window-transparent">
+    <div class="cu-window-content">
+      <div class="cu-window-title">Forms - Dark</div>
+      <div class="cu-window-actions">
+        <a class="cu-window-close"></a>
+      </div>
+
+      <div class="cu-form-dark cu-form-transparent cu-form-padding cu-form-sm">
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-2-1" class="cu-form-label">cu-form-text text</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-2-1" type="text" placeholder="cu-form-text text">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-2-2" class="cu-form-label">cu-form-text email</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-2-2" type="email" placeholder="cu-form-text email">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-2-3" class="cu-form-label">cu-form-text password</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-2-3" type="password" placeholder="cu-form-text password">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-2-4" class="cu-form-label">cu-form-text number</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-2-4" type="number" min="0" placeholder="cu-form-text number">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-range-2-1" class="cu-form-label">cu-form-range</label>
+          <div class="cu-form-range">
+            <input id="cu-form-range-2-1" value="50" oninput="this.setAttribute('value', this.value)" type="range" min="0" max="100" step="1" />
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-select-2-1" class="cu-form-label">cu-form-select</label>
+          <div class="cu-form-select">
+            <select id="cu-form-select-2-1">
+              <option>option 1</option>
+              <option>option 2</option>
+              <option>option 3</option>
+              <option>option 4</option>
+              <option>option 5</option>
+              <option>option 6</option>
+              <option>option 7</option>
+              <option>option 8</option>
+              <optgroup label="Option Group">
+                <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
+                <option>option 4</option>
+                <option>option 5</option>
+                <option>option 6</option>
+                <option>option 7</option>
+                <option>option 8</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- forms light -->
+<div class="demo-window-container">
+  <div class="cu-window">
+    <div class="cu-window-content cu-window-bg-canvas">
+      <div class="cu-window-title">Forms - Light</div>
+      <div class="cu-window-actions">
+        <a class="cu-window-close"></a>
+      </div>
+
+      <div class="cu-form-light cu-form-padding cu-form-sm">
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-3-1" class="cu-form-label">cu-form-text text</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-3-1" type="text" placeholder="cu-form-text text">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-3-2" class="cu-form-label">cu-form-text email</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-3-2" type="email" placeholder="cu-form-text email">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-3-3" class="cu-form-label">cu-form-text password</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-3-3" type="password" placeholder="cu-form-text password">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-3-4" class="cu-form-label">cu-form-text number</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-3-4" type="number" min="0" placeholder="cu-form-text number">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-range-3-1" class="cu-form-label">cu-form-range</label>
+          <div class="cu-form-range">
+            <input id="cu-form-range-3-1" value="50" oninput="this.setAttribute('value', this.value)" type="range" min="0" max="100" step="1" />
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-select-3-1" class="cu-form-label">cu-form-select</label>
+          <div class="cu-form-select">
+            <select id="cu-form-select-3-1">
+              <option>option 1</option>
+              <option>option 2</option>
+              <option>option 3</option>
+              <option>option 4</option>
+              <option>option 5</option>
+              <option>option 6</option>
+              <option>option 7</option>
+              <option>option 8</option>
+              <optgroup label="Option Group">
+                <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
+                <option>option 4</option>
+                <option>option 5</option>
+                <option>option 6</option>
+                <option>option 7</option>
+                <option>option 8</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- forms white - transparent -->
+<div class="demo-window-container">
+  <div class="cu-window cu-window-transparent">
+    <div class="cu-window-content cu-window-bg-canvas">
+      <div class="cu-window-title">Forms - Light</div>
+      <div class="cu-window-actions">
+        <a class="cu-window-close"></a>
+      </div>
+
+      <div class="cu-form-light cu-form-transparent cu-form-padding cu-form-sm">
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-4-1" class="cu-form-label">cu-form-text text</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-4-1" type="text" placeholder="cu-form-text text">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-4-2" class="cu-form-label">cu-form-text email</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-4-2" type="email" placeholder="cu-form-text email">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-4-3" class="cu-form-label">cu-form-text password</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-4-3" type="password" placeholder="cu-form-text password">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-text-4-4" class="cu-form-label">cu-form-text number</label>
+          <div class="cu-form-text">
+            <input id="cu-form-text-4-4" type="number" min="0" placeholder="cu-form-text number">
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-range-4-1" class="cu-form-label">cu-form-range</label>
+          <div class="cu-form-range">
+            <input id="cu-form-range-4-1" value="50" oninput="this.setAttribute('value', this.value)" type="range" min="0" max="100" step="1" />
+          </div>
+        </div>
+
+        <div class="cu-form-row">
+          <label for="cu-form-select-4-1" class="cu-form-label">cu-form-select</label>
+          <div class="cu-form-select">
+            <select id="cu-form-select-4-1">
+              <option>option 1</option>
+              <option>option 2</option>
+              <option>option 3</option>
+              <option>option 4</option>
+              <option>option 5</option>
+              <option>option 6</option>
+              <option>option 7</option>
+              <option>option 8</option>
+              <optgroup label="Option Group">
+                <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
+                <option>option 4</option>
+                <option>option 5</option>
+                <option>option 6</option>
+                <option>option 7</option>
+                <option>option 8</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

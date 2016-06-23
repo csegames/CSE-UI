@@ -1,0 +1,8 @@
+{
+    "name": "respawn",
+    "mainFile": "index.html",
+    "handlesConfig": true,
+    "handlesCharacter": true,
+    "handlesInput": true,
+    "layer": 5
+}

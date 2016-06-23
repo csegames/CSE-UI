@@ -1,0 +1,25 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@mixin cu-font-cinzel() {
+  font-family: 'Cinzel', serif;
+}
+
+@mixin cu-font-merriweather-sans() {
+  font-family: 'Merriweather Sans', sans-serif;
+}
+
+@mixin cu-font-trade-winds() {
+  font-family: 'Trade Winds', cursive;
+}
+
+@mixin cu-font-roboto-mono() {
+  font-family: 'Roboto Mono', monospace;
+}
+
+@mixin cu-text-shadow($hShadow: 0, $vShadow: 0, $blurRadius: 1px, $color: #000000) {
+  text-shadow: $hShadow $vShadow $blurRadius $color;
+}

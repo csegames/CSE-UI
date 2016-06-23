@@ -1,0 +1,28 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+
+@import "../../themes/_themes";
+
+@import "quickselect/_quickselect";
+
+ /**
+  * Button: Glass
+  * Colorable glass css style with blurring and border
+  */
+@mixin button-glass($red: 255, $green: 255, $blue: 255) {
+  @include theme-glass($red, $green, $blue);
+
+  &:hover {
+    border: 2px solid rgba($red,$green,$blue,0.30);
+    background: rgba($red * 0.02,$green * 0.02,$blue * 0.02, 0.6);
+  }
+  
+  &:active {
+    border: 3px solid rgba($red,$green,$blue,0.35);
+    background: rgba($red * 0.035,$green * 0.035,$blue * 0.035, 0.6);
+  }
+}

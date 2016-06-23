@@ -1,0 +1,4 @@
+REVIEWBOARD_URL = 'http://cse-server/reviewboard/'
+REPOSITORY = 'Camelot-Unchained'
+OPEN_BROWSER = True
+EXCLUDE_PATTERNS = [ r'**\*.js.map' ]

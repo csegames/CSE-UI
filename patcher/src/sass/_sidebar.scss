@@ -1,0 +1,170 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#cse-patcher-sidebar {
+  position: fixed;
+  top: $header-height + $margin-size;
+  left: $margin-size * 2;
+  width: 300px;
+  z-index: 10;
+  -webkit-user-select: none !important;
+  .card-panel {
+    background: $sidebar-bg;
+    border-width: 1px;
+    border-image: $gradient-border;
+    border-image-slice: 1;
+  }
+}
+
+.sign-in {
+    background: $gradient4;
+    border: solid $colorg4 1px;
+    color: $color1;
+    position: relative;
+    right: -22px;
+    top: 9px;
+    width: 270px;
+    margin: 5px;
+    height: 60px;
+    line-height: 60px;
+    font-weight: 700;
+    text-align: center;
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+  }
+}
+
+#cse-patcher-sidebar .content {
+  width: $sidebar-content-width;
+  margin: $margin-size;
+}
+
+.btn-flat {
+  color: $colorg4;
+}
+
+.btn {
+  background-color: $color1;
+  &:hover {
+    background-color: lighten($color1, 5%);
+  }
+}
+
+.forgot-password {
+  position: relative;
+  top: -7px;
+  font-size: 14px;
+  .btn-flat {
+    color: #9B9B9B;
+  }
+}
+
+#cse-patcher-login {
+  .input-field {
+    padding: 0;
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+#cse-patcher-server-counts {
+  position: relative;
+  left: 5px;
+  margin-top: 10px;
+  h5.label {
+    color: lighten($color4, 20%);
+    padding: 2.5px;
+    font-size: 18px;
+  }
+}
+
+@mixin server-count($url) {
+  position: relative;
+  display: inline-block;
+  background-image: url($url);
+  background-size: contain;
+  width: 91px;
+  height: 91px;
+  margin: 3px;
+  -webkit-user-select: none !important;
+  cursor: default !important;
+  span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+  }
+}
+
+.art-counts {
+  @include server-count('../images/art-counts.png');
+}
+
+.tdd-counts {
+  @include server-count('../images/tdd-counts.png');
+}
+
+.vik-counts {
+  @include server-count('../images/vik-counts.png');
+}
+
+.fullscreen-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-modal {
+  width: 400px;
+  height: 165px;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -200px;
+  margin-top: -100px;
+  z-index: 999;
+  background: $gradient-modal;
+  padding: 1em;
+
+  .confirm-message {
+    height: 3.5em;
+    font-size: 1.5em;
+    color: white;
+  }
+
+  button {
+    background: $gradient2;
+    border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    top: 9px;
+    margin: 5px;
+    line-height: 30px;
+    font-weight: 700;
+    text-align: center;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+}
+
+.modal-dialog.character-delete {
+  height: 165px;  /* overrides modal-dialog in modaldialog.scss */
+}

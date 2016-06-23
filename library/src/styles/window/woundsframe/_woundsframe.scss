@@ -1,0 +1,164 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@mixin wounds-body($zoom: 100%) {
+  overflow: hidden;
+  cursor: default;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: sans-serif;
+  color: white;
+  zoom: $zoom;
+}
+
+@mixin wounds-base($rgba: rgba(0, 0, 0, 0.7)) {
+  position: relative;
+  width: 150px;
+  background-color: $rgba;
+  border: 1px solid rgba(255,255,255,0.6);
+  padding: 5px 10px 5px 10px;
+  
+  /* Name Label Style */
+  .name {
+    display: block;
+    opacity: 0.85;
+    .label {
+      text-align: center;
+      display: block;
+      width: 100%;
+      font-size: 10px;
+      height: 10px;
+      font-weight: bold;
+    }
+  }
+
+  /* Paper Doll Styles */
+  .doll {
+    width: 100%;
+    height: 115px;
+    position: relative;
+    .part {
+      border: 0;
+      position: absolute;
+      top: 0;
+      margin-left: 50%;
+      left: -41px;
+      width: 82px;
+      height: 98px;
+      background: transparent;
+      opacity: 0.85;
+    }
+    .label {
+      position: absolute;
+      z-index: 1;
+      height: 12px;
+      width: 48px;
+      font-size: 10px;
+      text-align: center;
+    }
+    .label.part-0 {
+      top: -7px;
+      margin-left: 50%;
+      left: -24px;
+    }
+    .label.part-1 {
+      top: 10px;
+      margin-left: 50%;
+      left: -60px;
+    }
+    .label.part-2 {
+      top: 10px;
+      margin-left: 50%;
+      left: 12px;
+    }
+    .label.part-3 {
+      top: 35px;
+      margin-left: 50%;
+      left: -55px;
+    }
+    .label.part-4 {
+      top: 90px;
+      margin-left: 50%;
+      left: -50px;
+    }
+    .label.part-5 {
+      top: 90px;
+      margin-left: 50%;
+      left: 2px;
+    }
+  }
+
+  /* Buff/Debuff styles */
+  .buffs {
+    position: absolute;
+    height: percentage(85px / 115px);
+    top: 40px;
+  }
+
+  .buffs .icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .buffs.boon {
+    left: 10px;
+  }
+  .buffs.bane {
+    right: 10px;
+  }
+
+  /* Statistics Styles */
+  .stats {
+    width: 100%;
+    opacity: 0.85;
+
+    .stat {
+      position: relative;
+      height: 16px;
+
+      label {
+        position: absolute;
+        display: block;
+        width: 30%;
+        font-size: percentage(12px / 16px);
+        height: 10px;
+        margin-top: 2px;
+        font-weight: bold;
+      }
+      .bar, .fill {
+        position: absolute;
+        height: 6px;
+      }
+      .bar {
+        left: 30%;
+        width: 70%;
+        margin-top: 5px;
+      }
+    }
+
+    .blood {
+      @include wounds-bar(#fe1f16, #400000, #fe1f16);
+    }
+    .stamina {
+      @include wounds-bar(#f6ca06, #3d2b00, #f6ca06);
+    }
+    .panic {
+      @include wounds-bar(#fd6000, #411900, #fd6000);
+    }
+    .temp {
+      @include wounds-bar(white, #fe1f16, #12a2ff);
+    }
+  }
+}
+
+@mixin wounds-bar($labelcolor, $barcolor, $fillcolor) {
+  label { color: $labelcolor; }
+  .bar { background-color: $barcolor; }
+  .fill { background-color: $fillcolor; }
+}

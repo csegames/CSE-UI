@@ -1,0 +1,14 @@
+{
+  "name": "crafting",
+  "mainFile": "index.html",
+  "rect": {
+    "left": 0,
+    "top": 0,
+    "right": 650,
+    "bottom": 900
+  },
+  "handlesChat": true,
+  "handlesConsole": true,
+  "handlesInput": true,
+  "layer": 5
+}

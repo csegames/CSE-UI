@@ -1,0 +1,127 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+// Cinzel
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  src: url('#{$cu-styles-root}typography/fonts/Cinzel-normal-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 700;
+  src: url('#{$cu-styles-root}typography/fonts/Cinzel-normal-700.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 900;
+  src: url('#{$cu-styles-root}typography/fonts/Cinzel-normal-900.woff') format('woff');
+}
+
+.cu-font-cinzel {
+  @include cu-font-cinzel();
+}
+
+// Merriweather Sans
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-normal-300.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-normal-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-normal-700.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-normal-800.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: italic;
+  font-weight: 300;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-italic-300.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-italic-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: italic;
+  font-weight: 700;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-italic-700.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather Sans';
+  font-style: italic;
+  font-weight: 800;
+  src: url('#{$cu-styles-root}typography/fonts/Merriweather_Sans-italic-800.woff') format('woff');
+}
+
+.cu-font-merriweather-sans {
+  @include cu-font-merriweather-sans();
+}
+
+// Trade Winds
+
+@font-face {
+  font-family: 'Trade Winds';
+  font-style: normal;
+  font-weight: 400;
+  src: url('#{$cu-styles-root}typography/fonts/Trade_Winds-normal-400.woff') format('woff');
+}
+
+.cu-font-trade-winds {
+  @include cu-font-trade-winds();
+}
+
+// Roboto Mono
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('#{$cu-styles-root}typography/fonts/Roboto_Mono-normal-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url('#{$cu-styles-root}typography/fonts/Roboto_Mono-normal-500.woff') format('woff');
+}
+
+.cu-font-roboto-mono {
+  @include cu-font-roboto-mono();
+}

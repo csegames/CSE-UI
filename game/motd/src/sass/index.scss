@@ -1,0 +1,93 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../../../interface-lib/camelot-unchained/styles/typography/fonts/merriweather_sans-normal-300.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../../../interface-lib/camelot-unchained/styles/typography/fonts/merriweather_sans-normal-800.woff') format('woff');
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Merriweather';
+  font-weight: 300;
+  color: #bdb5af;
+}
+
+.close {
+  display: block;
+  text-shadow: 0 0 5px #000000;
+  width: 18px;
+  height: 18px;
+  opacity: .5;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  position: absolute;
+  font-size: 1.5em;
+  top: 0px;
+  right: 3%;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+.close:before, {
+  content: "\00D7";
+  position: absolute;
+  left: 0;
+}
+
+.alert {
+  width: 100%;
+
+  box-sizing: border-box;
+  position: relative;
+  background: linear-gradient(to left, transparent,
+          rgba(0, 0, 0, 0.7) 3%,
+          rgba(56, 47, 35, 1),
+          rgba(0, 0, 0, 0.7) 97%,
+          transparent);
+  border: 1px rgba(255, 255, 255, 0.9) solid;
+  border-width: 1px 0px;
+  border-image: linear-gradient(to left, transparent, #6d6250, transparent);
+  border-image-slice: 1;
+  padding: 10px 30px;
+  font-size: 14px;
+}
+
+.body.subhead2 {
+  font-weight: 800;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.message-enter {
+  opacity: 0.01;
+}
+
+.message-enter.message-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.message-leave {
+  opacity: 1;
+}
+
+.message-leave.message-leave-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
+}

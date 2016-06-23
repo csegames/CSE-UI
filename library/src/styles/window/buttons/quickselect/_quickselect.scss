@@ -1,0 +1,25 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.quickselect-default {
+  @extend .downdrop-content !optional;
+  @extend .z-depth-1 !optional;
+  background-color: transparent;
+  margin: 0;
+  display: none;
+  min-width: 100%;
+  max-height: 650px;
+  overflow-y: auto;
+  opacity: 1;
+  position: absolute;
+  z-index: 999;
+  //will-change: width, height;
+  width: 100%;
+}
+
+.quickselect-auto-width {
+  width: 100%;
+}

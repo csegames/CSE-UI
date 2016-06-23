@@ -1,0 +1,179 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.character-select.quickselect-active {
+  -webkit-user-select: none !important;
+  cursor: pointer !important;
+  padding: 2px 7px;
+  &:hover {
+    background-color: $color4;
+  }
+  h5 {
+    margin: 0.41rem 0 0.328rem 0;
+    -webkit-user-select: none !important;
+  }
+  h5.character {
+    color: $color1;
+  }
+  h5.label {
+    color: lighten($color4, 20%);
+    padding: 2.5px;
+    font-size: 18px;
+  }
+}
+
+.character-select.quickselect-list {
+  padding: 2.5px;
+  background-color: $color4;
+  color: $color1;
+  cursor: pointer !important;
+  &:hover {
+    background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+  h5 {
+    font-size: 16px;
+    margin: 2px 0px;
+    -webkit-user-select: none !important;
+  }
+  h6 {
+    font-size: 14px;
+    margin: 2px 0px;
+    -webkit-user-select: none !important;
+  }
+  .character-status {
+    .indicator {
+      top: -10px !important;
+    }
+  }
+}
+
+.character-status {
+  position: relative;
+  width: 30px;
+  height: 10px;
+  .indicator {
+    @include circle(10px);
+    position: absolute;
+    top: -25px;
+  }
+  display: inline-block;
+  margin: 5px;
+}
+
+.character-details {
+  display: inline-block;
+  color: $color1;
+  min-width: 110px;
+}
+
+.character-lastlogin {
+  display: inline-block;
+  padding-left: 5px;
+  color: $color5;
+}
+
+.character:before {
+    background: no-repeat;
+    background-size: contain;
+    content: '';
+    position: absolute;
+    left: 7px;
+    margin-top: -7px;
+    width: 30px;
+    height: 26px;
+    z-index: 1;
+}
+.char-STRM:before {
+    background-image: url("../images/character/a-strm.jpg");
+    border: 1px $colorA solid;
+}
+.char-HAMADRYAD:before {
+    background-image: url("../images/character/t-hamadryads.jpg");
+    border: 1px $colorT solid;
+}
+.char-LUCHORPAN:before {
+    background-image: url("../images/character/t-luchorpan.jpg");
+    border: 1px $colorT solid;
+}
+.char-FIRBOG:before {
+    background-image: url("../images/character/t-bog.jpg");
+    border: 1px $colorT solid;
+}
+.char-VALKYRIE:before {
+    background-image: url("../images/character/v-valkyrie.jpg");
+    border: 1px $colorV solid;
+}
+.char-HELBOUND:before {
+    background-image: url("../images/character/v-helbound.jpg");
+    border: 1px $colorV solid;
+}
+.char-FROSTGIANT:before {
+    background-image: url("../images/character/v-jotnar.jpg");
+    border: 1px $colorV solid;
+}
+.char-CAITSITH:before {
+    background-image: url("../images/character/a-cait.jpg");
+    border: 1px $colorA solid;
+}
+.char-GOLEM:before {
+    background-image: url("../images/character/a-golem.jpg");
+    border: 1px $colorA solid;
+}
+.char-STORMRIDERT:before {
+    background-image: url("../images/character/a-stormrider.jpg");
+    border: 1px $colorT solid;
+}
+.char-STORMRIDERA:before {
+    background-image: url("../images/character/a-stormrider.jpg");
+    border: 1px $colorA solid;
+}
+.char-STORMRIDERV:before {
+    background-image: url("../images/character/a-stormrider.jpg");
+    border: 1px $colorV solid;
+}
+.char-HUMANMALEV:before {
+    background-image: url("../images/character/v-humans.jpg");
+    border: 1px $colorV solid;
+}
+.char-HUMANMALEA:before {
+    background-image: url("../images/character/a-humans.jpg");
+    border: 1px $colorA solid;
+}
+.char-HUMANMALET:before {
+    background-image: url("../images/character/t-humans.jpg");
+    border: 1px $colorT solid;
+}
+
+.character-buttons {
+  button {
+    background: $gradient2;
+    border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    text-align: center;
+    height: 30px;
+    width: 135px;
+    margin: 5px 7px 10px 7px;
+    font-weight: 700;
+    font-size: 16px;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+}
+
+.character-select-none {
+  color: #464646;
+  padding: 2.5px;
+  font-size: 18px;
+  padding-left: 7.5px;
+}
