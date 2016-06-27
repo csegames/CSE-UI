@@ -94,7 +94,7 @@ export function getJSON(endpoint: string, requireAuth: boolean = false, query: a
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
     method: 'get',
     headers: headers
-  })
+  } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);
 }
@@ -106,7 +106,7 @@ export function deleteJSON(endpoint: string, requireAuth: boolean = false, query
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
     method: 'delete',
     headers: headers
-  })
+  } as any)
     .then(RestUtil.checkStatus);    // no response body for a DELETE
 }
 
@@ -120,7 +120,7 @@ export function postJSON(endpoint: string, requireAuth: boolean = false, data: a
     method: 'post',
     headers: headers,
     body: JSON.stringify(data)
-  })
+  } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);
 }

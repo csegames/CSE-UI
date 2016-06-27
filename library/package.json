@@ -1,9 +1,10 @@
 {
   "name": "camelot-unchained",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
   "contributors": [
     "JB (codecorsair) <jb@codecorsair.com>",
@@ -33,17 +34,16 @@
   },
   "scripts": {
     "typings": "typings install",
-    "clean:definitions": "(rmdir /s /q definitions) ^& exit 0",
     "clean:tmp": "(rmdir /s /q tmp) ^& exit 0",
     "clean:lib": "(rmdir /s /q lib) ^& exit 0",
-    "clean": "npm run clean:lib && npm run clean:tmp && npm run clean:definitions",
+    "clean": "npm run clean:lib && npm run clean:tmp",
     "babel": "babel tmp -d lib",
     "browserify": "browserify lib/index.js -o lib/camelot-unchained.js",
     "sass": "node-sass src/ -o lib/ --importer src/third-party/sass-importer/sass-npm-importer.js",
     "copy:third-party": "(robocopy src\\third-party lib\\third-party /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:misc": "(robocopy src\\ lib\\ /s /xf *.js /xf *.ts /xf *.tsx) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:tmp": "(robocopy tmp\\ lib\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
-    "copy:definitions": "(robocopy tmp\\ definitions\\ *.d.ts /s /mov) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "copy:definitions": "(robocopy tmp\\ lib\\ *.d.ts /s /mov) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copies": "npm run copy:definitions && npm run copy:third-party && npm run copy:misc",
     "prebuild": "npm run clean -s && npm run typings",
     "build": "tsc && npm run sass && npm run copies && npm run babel && npm run browserify && npm run clean:tmp -s"
