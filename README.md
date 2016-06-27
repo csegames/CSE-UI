@@ -8,6 +8,7 @@ game\       -- In-game UI modules
 library\    -- NPM published client library package `camelot-unchained` on npm
 patcher\    -- Client patcher UI
 web\        -- Website projects
+tools\      -- Tools to assist with development
 shared\     -- Contains shared items that are used within multiple categories (ie. web & patcher & in-game)
   | components\     -- React components that have no session state / do not use redux, can contain sub-components
   | widgets\        -- React components that have session state, use redux, can contain child widgets and child components
