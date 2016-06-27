@@ -68,7 +68,7 @@ export function requestServers() {
   };
 }
 
-export function fetchServersSuccess(servers: Array<Server>) {
+export function fetchServersSuccess(servers: Array<Server>, selectedServer?: Server) {
   let hatchery = servers.find(s => s.name === 'Hatchery');
   let wyrmling = servers.find(s => s.name === 'Wyrmling');
   if (!hatchery) servers.unshift(OfflineServer('Hatchery', 4, 1))
@@ -78,6 +78,7 @@ export function fetchServersSuccess(servers: Array<Server>) {
     servers: servers.sort(function(a,b) {
       return +(a.accessLevel > b.accessLevel) || +(a.accessLevel === b.accessLevel) -1;
     }),
+    selectedServer: selectedServer,
     receivedAt: Date.now()
   };
 }
@@ -104,7 +105,7 @@ export function updateServer(server: Server) {
 }
 
 // async actions
-export function fetchServers() {
+export function fetchServers(selectedServerName?: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestServers());
     return fetchJSON(serversUrl)
@@ -119,7 +120,16 @@ export function fetchServers() {
             })
             .catch((error: ResponseError) => {/*ignore error*/});
         })
-        dispatch(fetchServersSuccess(servers))
+        let selectedServer: Server = null;
+        if (selectedServerName) {
+          for (let i = 0; i < servers.length; i++) {
+            if (servers[i].name === selectedServerName) {
+              selectedServer = servers[i];
+              break;
+            }
+          }
+        }
+        dispatch(fetchServersSuccess(servers, selectedServer))
       })
       .catch((error: ResponseError) => dispatch(fetchServersFailed(error)));
   }
@@ -151,7 +161,8 @@ export default function reducer(state: ServersState = initialState, action: any 
       return Object.assign({}, state, {
         isFetching: false,
         lastUpdated: action.receivedAt,
-        servers: action.servers
+        servers: action.servers,
+        currentServer: action.selectedServer || state.currentServer || action.servers[0]
       });
     case FETCH_SERVERS_FAILED:
       return Object.assign({}, state, {

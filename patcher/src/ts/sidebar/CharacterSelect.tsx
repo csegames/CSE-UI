@@ -16,6 +16,7 @@ export interface ActiveCharacterViewProps {
 export interface ActiveCharacterViewState {};
 class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, ActiveCharacterViewState> {
   render() {
+    const lastLogin: string = this.props.item.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(this.props.item.lastLogin).fromNow();
     return (
       <div className='character-select quickselect-active'>
         <h5 className='label'>SELECT CHARACTER</h5>
@@ -23,7 +24,10 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
           <div className='character-status'><div className={'indicator tooltipped ' + status} data-position='right'
             data-delay='150' data-tooltip={status} /></div>
           <div className='character-details'>
-            <h6 className={`character char-${race[this.props.item.race]}`}>{this.props.item.name}</h6>
+            <h6 className={`character char-${race[this.props.item.race]}`}>
+              <div>{this.props.item.name}</div>
+              <div className='character-lastlogin'>Last Login: {lastLogin}</div>
+            </h6>
           </div>
         </div>
       </div>
@@ -37,17 +41,16 @@ export interface CharacterListViewProps {
 export interface CharacterListViewState {};
 class CharacterListView extends React.Component<CharacterListViewProps, CharacterListViewState> {
   render() {
-    const lastLogin: string = this.props.item.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(this.props.item.lastLogin).fromNow(true);
+    const lastLogin: string = this.props.item.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(this.props.item.lastLogin).fromNow();
     return (
       <div className='character-select quickselect-list'>
         <div>
           <div className='character-status'><div className={'indicator tooltipped ' + status} data-position='right'
             data-delay='150' data-tooltip={status} /></div>
           <div className='character-details'>
-            <h6 className={`character char-${race[this.props.item.race]}`}>{this.props.item.name}</h6>
-          </div>
-          <div className='character-details'>
-            <h6 className='character-lastlogin'>Last: {lastLogin}</h6>
+            <h6 className={`character char-${race[this.props.item.race]}`}>{this.props.item.name}<br />
+              <div className='character-lastlogin'>Last Login: {lastLogin}</div>
+            </h6>
           </div>
         </div>
       </div>

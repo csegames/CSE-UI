@@ -34,7 +34,8 @@
 .attribute-row{
     width: 100%;
     display: block;
-    margin-bottom: 15px;
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), transparent);
+    padding-bottom: 10px;
     &:hover{
       filter: brightness(150%);
       -webkit-filter: brightness(150%);
@@ -75,12 +76,29 @@ span.points {
     width: 100%;
     bottom: 195px;
   }
+  .attribute-row{
+    max-width: calc(50% - 10px);
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    min-height: 50px;
+    vertical-align: top;
+    .attributename{
+      float:left;
+      color:#e2e2e2;
+    }
+  }
   .attribute-points{
-    padding: 10px 0px;
-    box-shadow: inset 0px 6px 30px rgb(14, 7, 3);
+    padding: 10px 10px;
     border-width: 1px;
-    border-image: linear-gradient(to bottom, rgba(132, 132, 132, 0.32), transparent);
+    margin-bottom: 5px;
+    border-image: linear-gradient(to bottom right, rgba(132, 132, 132, 0.32), transparent);
     border-image-slice: 1;
+    min-width: 100%;
+    text-align: right;
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), transparent);
+    color: #C7AC8F;
   }
   h4{
     font-size:1.2em;
@@ -93,3 +111,23 @@ span.points {
 .attribute-description {
   color: rgba(255, 255, 255, 0.6);
 }
+
+@media screen and (max-width: 900px) {
+   .attributes-view .attribute-row{
+    max-width: 100%;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+   .attributes-view .attribute-row{
+    max-width: calc(33.33% - 10px);
+  }
+}
+
+
+@media screen and (min-width: 1600px) {
+   .attributes-view .attribute-row{
+    max-width: calc(25% - 10px);
+  }
+}
+

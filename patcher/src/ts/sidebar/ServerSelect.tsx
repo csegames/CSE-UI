@@ -34,7 +34,7 @@ class ActiveServerView extends React.Component<ActiveServerViewProps, ActiveServ
             data-delay='150' data-tooltip={status} /></div>
           <div className='server-details'>
             <h5 className='server'>{this.props.item.name} ({accessLevel})</h5>
-            <h6>{totalPlayers}/{this.props.item.playerMaximum}</h6>
+            <h6 className='server-players'>Players Online: {totalPlayers}/{this.props.item.playerMaximum}</h6>
           </div>
         </div>
       );
@@ -65,7 +65,7 @@ class ServerListView extends React.Component<ServerListViewProps, ServerListView
             data-delay='150' data-tooltip={status} /></div>
           <div className='server-details'>
             <h5 className='server'>{this.props.item.name} ({accessLevel})</h5>
-            <h6>{totalPlayers}/{this.props.item.playerMaximum}</h6>
+            <h6 className='server-players'>Players Online: {totalPlayers}/{this.props.item.playerMaximum}</h6>
           </div>
         </div>
       </div>

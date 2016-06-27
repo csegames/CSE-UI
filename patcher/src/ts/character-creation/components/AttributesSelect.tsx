@@ -114,7 +114,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
           {this.props.attributes.map((a: AttributeInfo) => this.generateAttributeContent(a, offset))}
         </div>
         <div className='view-content row attributes-view'>
-          <div className='col s6'>
+          <div className='col s12'>
             <h4>Primary</h4>
             {primaries.map((a: AttributeInfo) => {
               let offsetValue = offset == null ? 0 : typeof offset.attributeOffsets[a.name] === 'undefined' ? 0 : offset.attributeOffsets[a.name];
@@ -127,12 +127,12 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
                 return this.generateAttributeView(a, a.baseValue + offsetValue);
               })}
             </div>
-          </div>
-          <div className='col s6'>
+            <div className='row'>
             <h4>Derived</h4>
             {derived.map((a: AttributeInfo) => {
               return this.generateAttributeView(a, this.calculateDerivedValue(a, offset));
             })}
+          </div>
           </div>
         </div>
       </div>

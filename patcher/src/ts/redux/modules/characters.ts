@@ -17,7 +17,6 @@ import * as moment from 'moment';
 
 const charactersUrl = 'https://api.camelotunchained.com/characters';
 
-
 // action types
 const FETCH_CHARACTERS = 'cse-patcher/characters/FETCH_CHARACTERS';
 const FETCH_CHARACTERS_SUCCESS = 'cse-patcher/characters/FETCH_CHARACTERS_SUCCESS';
@@ -32,11 +31,11 @@ export function requestCharacters() {
   };
 }
 
-export function fetchCharactersSuccess(characters: Array<restAPI.SimpleCharacter>) {
-
+export function fetchCharactersSuccess(characters: Array<restAPI.SimpleCharacter>, selectedCharacter?: restAPI.SimpleCharacter) {
   return {
     type: FETCH_CHARACTERS_SUCCESS,
     characters: characters,
+    selectedCharacter: selectedCharacter,
     receivedAt: Date.now()
   };
 }
@@ -63,13 +62,24 @@ export function characterCreated(character: restAPI.SimpleCharacter) {
 }
 
 // async actions
-export function fetchCharacters() {
+export function fetchCharacters(selectedCharacterID?: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestCharacters());
     // not using the restAPI getcharacters because the internal loginToken
     // stuff does not work with the patcher
     return fetchJSON(`${charactersUrl}?loginToken=${patcher.getLoginToken()}`)
-      .then((characters: Array<restAPI.SimpleCharacter>) => dispatch(fetchCharactersSuccess(characters)))
+      .then((characters: Array<restAPI.SimpleCharacter>) => {
+        let selectedCharacter: restAPI.SimpleCharacter = null;
+        if (selectedCharacterID) {
+          for (let i = 0; i < characters.length; i++) {
+            if (characters[i].id === selectedCharacterID) {
+              selectedCharacter = characters[i];
+              break;
+            }
+          }
+        }
+        dispatch(fetchCharactersSuccess(characters, selectedCharacter))
+      })
       .catch((error: ResponseError) => dispatch(fetchCharactersFailed(error)));
   };
 }
@@ -112,11 +122,12 @@ export default function reducer(state: CharactersState = initialState, action: a
     case FETCH_CHARACTERS_SUCCESS:
       let characters: Array<restAPI.SimpleCharacter> = action.characters.slice();
       characters.sort(compareCharacterLogin);
-      let selected: restAPI.SimpleCharacter = null;
+      let selected: restAPI.SimpleCharacter = action.selectedCharacter;
       if (state.newCharacterName) {
         const charIndex: number = characters.findIndex((char: restAPI.SimpleCharacter) => char.name == state.newCharacterName);
         if (charIndex && charIndex > -1) selected = characters[charIndex];
       }
+      if (!selected) selected = state.selectedCharacter == null ? characters[0] : state.selectedCharacter;
       return Object.assign({}, state, {
         isFetching: false,
         lastUpdated: action.receivedAt,

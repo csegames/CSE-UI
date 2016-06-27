@@ -50,9 +50,9 @@
     "prebuild": "npm run clean -s && npm run typings",
     "publish": "npm run build",
     "serve": "http-server -p 9000 dist/",
-    "debug": "npm run build && npm run copy:patcher && npm run launch:patcher",
+    "debug": "npm run build && npm run copy:patcher && npm run patcher",
     "copy:patcher": "(robocopy dist\\ PatchClient\\cpui\\UI /s ) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
-    "launch:patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
+    "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
   },
   "dependencies": {
     "camelot-unchained": "^0.2.25",

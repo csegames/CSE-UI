@@ -88,7 +88,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 
   onLogIn = () => {
-    this.fetchCharacters();
+    const lastCharacterID = lastPlay && lastPlay.characterID ? lastPlay.characterID : null;
+    this.fetchCharacters(lastCharacterID);
     this.props.onLogIn();
     this.props.dispatch(requestChannels());
   }
@@ -101,25 +102,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     //$('.tooltipped').tooltip();
   }
 
-  getChannels = () => {
-    return [{name: 'Hatchery'}, {name: 'Wyrmling'}];
-  }
-
-  fetchCharacters = () => {
-    this.props.dispatch(fetchCharacters());
-  }
-
-  getCharacters = () => {
-    return [{
-      name: 'Create new character',
-      race: race.NONE
-    },{
-      name: 'Test Strm',
-      race: race.STRM
-    },{
-      name: 'Test Dryad',
-      race: race.HAMADRYAD
-    }];
+  fetchCharacters = (selectedCharacterID?: string) => {
+    this.props.dispatch(fetchCharacters(selectedCharacterID));
   }
 
   onSelectedServerChanged = (server: Server) => {
@@ -226,24 +210,26 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 
   componentDidMount() {
-    // fetch initial alerts and then every minute validate & fetch alerts.
-    if (!this.props.patcherAlertsState.isFetching) this.props.dispatch(fetchAlerts());
+    // fetch initial alerts and then every minute validate & fetch alerts again.
+    this.props.dispatch(fetchAlerts());
     this.alertsInterval = setInterval(() => {
       this.props.dispatch(validateAlerts());
       if (!this.props.patcherAlertsState.isFetching) this.props.dispatch(fetchAlerts());
     }, 60000);
 
-    // fetch initial servers and then every 30 seconds fetch servers.
-    if (!this.props.serversState.isFetching) this.props.dispatch(fetchServers());
+    // fetch initial channels and then every minute fetch channels again
+    const lastChannel = lastPlay && lastPlay.channelID ? lastPlay.channelID : null;
+    this.props.dispatch(requestChannels(lastChannel));
+    this.channelInterval = setInterval(() => {
+      this.props.dispatch(requestChannels());
+    }, 60000);
+
+    // fetch initial servers and then every 30 seconds fetch servers again.
+    const lastServer = lastPlay && lastPlay.serverName ? lastPlay.serverName : null;
+    this.props.dispatch(fetchServers(lastServer));
     this.serversInterval = setInterval(() => {
       if (!this.props.serversState.isFetching) this.props.dispatch(fetchServers());
     }, 30000);
-
-    // update channel info every 1 minute.
-    this.props.dispatch(requestChannels());
-    this.channelInterval = setInterval(() => {
-      this.props.dispatch(requestChannels());
-    }, 1000 * 60);
   }
 
   componentDidUnMount() {
@@ -260,37 +246,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
           <Login onLogIn={this.onLogIn} />
         </div>
       );
-    }
-
-    // Load last selected channel, server, and character
-    if (lastPlay && lastPlay.channelID) {
-      for (let i = 0; i < this.props.channelsState.channels.length; i++) {
-        if (this.props.channelsState.channels[i].channelID === lastPlay.channelID) {
-          this.props.dispatch(changeChannel(this.props.channelsState.channels[i]));
-          lastPlay.channelID = null;
-          break;
-        }
-      }
-    }
-
-    if (lastPlay && lastPlay.serverName) {
-      for (let i = 0; i < this.props.serversState.servers.length; i++) {
-        if (this.props.serversState.servers[i].name === lastPlay.serverName) {
-          this.props.dispatch(changeServer(this.props.serversState.servers[i]));
-          lastPlay.serverName = null;
-          break;
-        }
-      }
-    }
-
-    if (lastPlay && lastPlay.characterID && !this.props.charactersState.isFetching) {
-      for (let i = 0; i < this.props.charactersState.characters.length; i++) {
-        if (this.props.charactersState.characters[i].id === lastPlay.characterID) {
-          this.props.dispatch(selectCharacter(this.props.charactersState.characters[i]));
-          lastPlay.characterID = null;
-          break;
-        }
-      }
     }
 
     setTimeout(this.initjQueryObjects, 100);

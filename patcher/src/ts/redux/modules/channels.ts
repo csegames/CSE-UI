@@ -18,12 +18,22 @@ export function changeChannel(channel: Channel): any {
   };
 }
 
-export function requestChannels(): any {
+export function requestChannels(selectedChannelID?: number): any {
+  let selectedChannel: Channel = null;
   let channels = patcher.getAllChannels();
   if (channels == null || typeof(channels) == 'undefined') channels = <Array<Channel>>[];
+  if (selectedChannelID || selectedChannelID === 0) {
+    for (let i = 0; i < channels.length; i++) {
+      if (channels[i].channelID === selectedChannelID) {
+        selectedChannel = channels[i];
+        break;
+      }
+    }
+  }
   return {
     type: REQUEST_CHANNELS,
-    channels: channels
+    channels: channels,
+    selectedChannel: selectedChannel
   };
 }
 
@@ -47,8 +57,8 @@ export default function reducer(state: ChannelState = initialState, action: any 
     case REQUEST_CHANNELS:
       return Object.assign({}, state, {
         channels: action.channels,
-        selectedChannel: state.selectedChannel == null ? action.channels[0] : state.selectedChannel
-      });  
+        selectedChannel: action.selectedChannel || state.selectedChannel || action.channels[0]
+      });
     default: return state;
   }
 }

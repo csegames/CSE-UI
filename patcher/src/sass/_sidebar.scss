@@ -17,6 +17,17 @@
     border-image: $gradient-border;
     border-image-slice: 1;
   }
+
+  .quickselect-default {
+    overflow-x: hidden;
+    overflow-y: auto;
+    &::-webkit-scrollbar-track {
+      background-color: $color4;
+    }
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+  }
 }
 
 .sign-in {

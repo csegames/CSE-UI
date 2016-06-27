@@ -13,7 +13,7 @@
     filter: brightness(1.2);
   }
   h5 {
-    margin: 0.41rem 0 0.328rem 0;
+    margin: 0 0 0 0;
     -webkit-user-select: none !important;
   }
   h5.server {
@@ -23,6 +23,11 @@
     color: lighten($color4, 20%);
     padding: 2.5px;
     font-size: 18px;
+  }
+  .server-players {
+    display: inline-block;
+    color: #b7b7b7;
+    font-size: .9em;
   }
 }
 
@@ -50,6 +55,11 @@
     .indicator {
       top: -10px !important;
     }
+  }
+  .server-players {
+    display: inline-block;
+    color: #b7b7b7;
+    font-size: .75em;
   }
 }
 
