@@ -1,0 +1,34 @@
+{
+  "name": "camelot-unchained",
+  "version": "0.2.0",
+  "description": "Camelot Unchained is a Tri-Realm RvR MMORPG",
+  "main": "index.js",
+  "scripts": {
+    "definitions": "node definitions -r "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csegames/Camelot-Unchained.git"
+  },
+  "keywords": [
+    "Camelot",
+    "Unchained",
+    "CamelotUnchained",
+    "MMO",
+    "Game",
+    "OnlineGames",
+    "MMORPG"
+  ],
+  "author": "City State Entertainment (support@citystateentertainment.com)",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/csegames/Camelot-Unchained/issues"
+  },
+  "homepage": "https://github.com/csegames/Camelot-Unchained#readme",
+  "devDependencies": {
+    "chalk": "^1.1.3",
+    "rimraf": "^2.5.2",
+    "shelljs": "^0.7.0",
+    "yargs": "^4.7.1"
+  }
+}
