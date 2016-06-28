@@ -36,3 +36,4 @@ npm-debug.log
 **/tmpp
 **/definitions
 patcher/PatchClient
+!/shared/lib/
