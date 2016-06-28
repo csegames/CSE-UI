@@ -4,6 +4,4 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export default class HandlesBeginChat {
-  topic: string = 'beginchat';
-}
+export * from './WarbandMember';

@@ -3,9 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import EventEmitter from '../classes/EventEmitter';
+import EventEmitter from '../EventEmitter';
 import {getControlGame} from '../../restapi/RestAPI';
-import HandlesControlGame from '../classes/HandlesControlGame';
+import {clientEventTopics} from '../defaultTopics';
 import ControlGame from '../../core/classes/ControlGame';
 
 const POLL_INTERVAL = 5000;
@@ -30,10 +30,7 @@ function run(emitter: EventEmitter, topic: string) {
 
 export default class ControlGameListener {
   listening: boolean = false;
-  topic: string;
-  constructor(handles: HandlesControlGame) {
-    this.topic = handles.topic;
-  }
+  topic: string = clientEventTopics.handlesControlGame;
   start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

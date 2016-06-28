@@ -11,6 +11,8 @@ class Listener {
   topic: string;
   once: boolean;
   callback: (data: any) => void;
+  fired: number = 0;
+  last: number = 0;
   constructor(topic: string, once: boolean, callback: (data: any) => void) {
     this.topic = topic;
     this.once = once;
@@ -19,7 +21,7 @@ class Listener {
   }
 }
 
-export default class EventEmitter {
+class EventEmitter {
   events: any;
   constructor() {
     this.events = {};
@@ -89,7 +91,7 @@ export default class EventEmitter {
    * @param topic {string}         Topic name
    * @param data {any}  The data being passed (depends on topic)
    */
-  emit(topic: string, data: any): void {
+  emit(topic: string, data?: any): void {
     const listeners: Listener[] = this.events[topic];
     if (listeners && listeners.length) {
       for (let i = 0; i < listeners.length; i++) {
@@ -98,9 +100,40 @@ export default class EventEmitter {
           if (listener.once) {
             listeners[i] = null;
           }
+          listener.last = Date.now();
+          listener.fired ++;
           listener.callback(data);
         }
       }
     }
   }
+
+  /**
+   * diagnostics() - dump data to console.log
+   */  
+  diagnostics = () : void => {
+    for (let key in this.events) {
+      if (this.events.hasOwnProperty(key)) {
+        const listeners : Listener[] = this.events[key];
+        listeners.forEach((listener: Listener, index: number) : void => {
+          if (listener) {
+            console.log(
+              'Event:'
+              + ' topic ' + listener.topic
+              + ' index ' + index
+              + ' ID ' + listener.id
+              + ' once ' + listener.once
+              + ' callback ' + typeof(listener.callback)
+              + ' fired ' + listener.fired
+              + ' last ' + (new Date(listener.last)).toISOString()
+            );
+          } else {
+            console.log('Event: Index ' + index + ' is free (null)');
+          }
+        });
+      }
+    } 
+  }
 }
+
+export default EventEmitter;

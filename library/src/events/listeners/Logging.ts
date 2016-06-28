@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../classes/EventEmitter';
-import HandlesLogging from '../classes/HandlesLogging';
+import EventEmitter from '../EventEmitter';
+import {clientEventTopics} from '../defaultTopics';
 import LogMessage from '../../core/classes/LogMessage';
 import client from '../../core/client';
 
@@ -25,14 +25,11 @@ function run(emitter: EventEmitter, topic: string) {
 export default class LoggingListener {
   listening: boolean = false;
   type: string;
-  handles: HandlesLogging;
-  constructor(handles: HandlesLogging) {
-    this.handles = handles;
-  }
+  topic: string = clientEventTopics.handlesLogging;
   start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.handles.topic);
+      run(emitter, this.topic);
     }
   }
 }

@@ -5,10 +5,10 @@
  */
 
 import UnitFrameListener from './_UnitFrame';
-import HandlesFriendlyTarget from '../classes/HandlesFriendlyTarget';
+import {clientEventTopics} from '../defaultTopics';
 
 export default class FriendlyTargetListener extends UnitFrameListener {
-  constructor(handles: HandlesFriendlyTarget) {
-    super(handles);
+  constructor() {
+    super(clientEventTopics.handlesFriendlyTarget);
   }
 }

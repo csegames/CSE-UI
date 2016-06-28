@@ -286,6 +286,14 @@ interface clientInterface {
 
   /* Logging */
   OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void): void;
+
+
+  /* New -- NOT FILLED OUT BY THE CLIENT YET! -- DEV ONLY */
+  apiVersion?: number;
+  characterID?: string;
+  debug?: boolean;
+  signalRHost?: string;
+  shardID?: number;
 }
 
 export default clientInterface;

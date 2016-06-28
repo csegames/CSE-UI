@@ -4,6 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export default class HandlesChat {
-  topic: string = 'chat';
-}
+export * from './groupType';
+export * from './groupInvite';
+export * from './warbands';

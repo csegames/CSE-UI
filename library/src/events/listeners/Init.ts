@@ -23,7 +23,7 @@
 //  	});
 //
 
-import EventEmitter from '../classes/EventEmitter';
+import EventEmitter from '../EventEmitter';
 import client from '../../core/client';
 
 const EVENT_NAME = 'init';

@@ -41,14 +41,73 @@ import ConsoleMessage from './core/classes/ConsoleMessage';
 
 // libraries
 import * as core from './core/core';
-import events from './events/events';
 import stores from './stores/stores';
 import components from './components/components';
 
-// RestAPI
+
 import * as restAPI from './restapi/RestAPI';
 
+import api from './api';
+
+import * as groups from './groups';
+export * from './groups';
+
+import events from './events';
+import * as eventExports from './events'
+
+export * from './signalr';
+import * as signalrExports from './signalr';
+import signalr from './signalr';
+
+let cu = Object.assign({
+
+  // api
+  api,
+
+  // core
+  CoreSettings : CoreSettings,
+  client : client,
+
+  // core constants
+  abilityTags : abilityTags,
+  archetype : archetype,
+  buildUIMode : buildUIMode,
+  channelId : channelId,
+  emotes : emotes,
+  race : race,
+  soundEvents : soundEvents,
+  tagConstraintType : tagConstraintType,
+  gearSlot : gearSlot,
+  plotPermissions : plotPermissions,
+  attributeType : attributeType,
+  faction : faction,
+  gender : gender,
+
+  // core classes
+  Ability : Ability,
+  Combatant : Combatant,
+  Player : Player,
+  Character : Character,
+  ControlGame : ControlGame,
+  Injury : Injury,
+  Population : Population,
+  Inventory : Inventory,
+  Item : Item,
+  EquippedGear : EquippedGear,
+  LogMessage : LogMessage,
+  ChatMessage : ChatMessage,
+  ConsoleMessage : ConsoleMessage,
+
+  // RestAPI
+  restAPI : restAPI
+}, groups, eventExports, signalrExports);
+
+export default cu;
+
 export {
+
+  // cu
+  cu,
 
   // core
   CoreSettings,
@@ -93,4 +152,6 @@ export {
 
   // RestAPI
   restAPI,
+
+  signalr,
 }

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../classes/EventEmitter';
-import HandlesPlot from '../classes/HandlesPlot';
+import EventEmitter from '../EventEmitter';
+import {clientEventTopics} from '../defaultTopics';
 
 declare const cuAPI: any;
 
@@ -23,14 +23,11 @@ function run(emitter: EventEmitter, topic: string) {
 export default class PlotListener {
   listening: boolean = false;
   type: string;
-  handles: HandlesPlot;
-  constructor(handles: HandlesPlot) {
-    this.handles = handles;
-  }
+  topic: string = clientEventTopics.handlesPlot;
   start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.handles.topic);
+      run(emitter, this.topic);
     }
   }
 }

@@ -5,13 +5,13 @@
  */
 
 import * as Reflux from 'reflux';
-import events from '../../events/events';
+import events from '../../events';
 
 const ControlGameStore = {
   create() {
     const actions = Reflux.createActions(['start', 'stop']);
     const store = Reflux.createStore({
-      handles: events.handlesControlGame,
+      topic: events.clientEventTopics.handlesControlGame,
       listenables: actions,
       init() {
         // Initialise the store is basic info.  This is so that React components
@@ -30,7 +30,7 @@ const ControlGameStore = {
 
 
         // Listen to the event group for this unit frame
-        events.on(this.handles.topic, (controlGame: any) => {
+        events.on(this.topic, (controlGame: any) => {
 
           // Update store info
           store.info = controlGame;

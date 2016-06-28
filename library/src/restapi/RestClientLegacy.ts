@@ -10,7 +10,7 @@ import {Promise} from 'es6-promise';
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
 import client, {hasClientAPI} from '../core/client';
-import events from '../events/events';
+import events from '../events';
 import * as RestUtil from './RestUtil';
 
 // TODO remove this when the API's are updated

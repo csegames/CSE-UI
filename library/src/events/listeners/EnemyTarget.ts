@@ -5,10 +5,10 @@
  */
 
 import UnitFrameListener from './_UnitFrame';
-import HandlesEnemyTarget from '../classes/HandlesEnemyTarget';
+import {clientEventTopics} from '../defaultTopics';
 
 export default class EmenyTargetListener extends UnitFrameListener {
-  constructor(handles: HandlesEnemyTarget) {
-    super(handles);
+  constructor() {
+    super(clientEventTopics.handlesEnemyTarget);
   }
 }

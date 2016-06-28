@@ -5,10 +5,10 @@
  */
 
 import UnitFrameListener from './_UnitFrame';
-import HandlesCharacter from '../classes/HandlesCharacter';
+import {clientEventTopics} from '../defaultTopics';
 
 export default class CharacterListener extends UnitFrameListener {
-  constructor(handles: HandlesCharacter) {
-    super(handles);
+  constructor() {
+    super(clientEventTopics.handlesCharacter);
   }
 }

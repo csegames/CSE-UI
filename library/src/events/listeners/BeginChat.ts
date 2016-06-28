@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../classes/EventEmitter';
-import HandlesBeginChat from '../classes/HandlesBeginChat';
+import EventEmitter from '../EventEmitter';
+import {clientEventTopics} from '../defaultTopics';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
@@ -17,14 +17,11 @@ function run(emitter: EventEmitter, topic: string) {
 export default class BeginChatListener {
   listening: boolean = false;
   type: string;
-  handles: HandlesBeginChat;
-  constructor(handles: HandlesBeginChat) {
-    this.handles = handles;
-  }
+  topic: string = clientEventTopics.handlesChat;
   start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.handles.topic);
+      run(emitter, this.topic);
     }
   }
 }

@@ -8,6 +8,7 @@
     "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
   },
   "globalDependencies": {
+    "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
     "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
     "react": "registry:dt/react#0.14.0+20160621225615",

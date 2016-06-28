@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import events from '../../events/events';
+import events from '../../events';
 import Combatant from '../../core/classes/Combatant';
 
 const _UnitFrame = {
@@ -23,7 +23,7 @@ const _UnitFrame = {
     this.started = true;
 
     // Listen to the event group for this unit frame
-    events.on(this.handles.topic, (instance: Combatant) => {
+    events.on(this.topic, (instance: Combatant) => {
 
       // Update store info
       store.info = instance;

@@ -4,6 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export default class HandlesCharacter {
-  topic: string = 'character';
+import {groupType} from './groupType';
+
+export interface GroupInvite {
+  created: string;
+  groupType: groupType;
+  inviteCode: string;
+  invitedByID: string;
+  invitedByName: string;
 }

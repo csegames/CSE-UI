@@ -27,6 +27,26 @@ if (window.opener && window.opener.cuAPI) {
   client = window.cuAPI; // not a popout, so use existing cuAPI
 } else {
   // create a mock cuAPI to return
+  client = {
+    loginToken: 'developer',
+    apiVersion: 1,
+    webAPIHost: 'http://localhost:1337',
+    characterID: 'KCt3dNCC6dKPyNzD0SR200',
+    shardID: 1,
+    debug: true
+  } as any;
+
+  client.signalRHost = `${client.webAPIHost}/signalr`;
 }
+
+// REMOVE -- for testing only!!!
+Object.assign(client, {
+    loginToken: 'developer',
+    apiVersion: 1,
+    webAPIHost: 'http://localhost:1337',
+    characterID: 'KCt3dNCC6dKPyNzD0SR200',
+    shardID: 1,
+    debug: true
+  });
 
 export default client;

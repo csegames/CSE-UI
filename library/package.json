@@ -32,26 +32,35 @@
     "type": "git",
     "url": "https://github.com/csegames/camelot-unchained-client-library.git"
   },
+  "watch": {
+    "build": {
+      "patterns": "src",
+      "extensions": "ts,tsx,scss,html,jpg,png,webm,ogg,css,ico,js"
+    }
+  },
   "scripts": {
-    "typings": "typings install",
-    "clean:tmp": "(rmdir /s /q tmp) ^& exit 0",
-    "clean:lib": "(rmdir /s /q lib) ^& exit 0",
-    "clean": "npm run clean:lib && npm run clean:tmp",
+    "postinstall": "rimraf typings && typings install",
+    "dev": "start npm-watch",
+    "clean": "rimraf tmp && rimraf lib",
     "babel": "babel tmp -d lib",
-    "browserify": "browserify lib/index.js -o lib/camelot-unchained.js",
+    "browserify": "browserify lib/index.js > lib/camelot-unchained.js",
     "sass": "node-sass src/ -o lib/ --importer src/third-party/sass-importer/sass-npm-importer.js",
     "copy:third-party": "(robocopy src\\third-party lib\\third-party /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:misc": "(robocopy src\\ lib\\ /s /xf *.js /xf *.ts /xf *.tsx) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:tmp": "(robocopy tmp\\ lib\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:definitions": "(robocopy tmp\\ lib\\ *.d.ts /s /mov) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copies": "npm run copy:definitions && npm run copy:third-party && npm run copy:misc",
-    "prebuild": "npm run clean -s && npm run typings",
-    "build": "tsc && npm run sass && npm run copies && npm run babel && npm run browserify && npm run clean:tmp -s"
+    "prebuild": "npm run clean -s",
+    "build": "tsc && npm run sass && npm run copies && npm run babel && npm run browserify",
+    "postbuild": "rimraf tmp"
   },
   "dependencies": {
+    "apisauce": "github:codecorsair/apisauce",
     "bourbon": "^4.2.6",
     "es6-promise": "^3.0.2",
     "isomorphic-fetch": "^2.2.1",
+    "jquery": "^3.0.0",
+    "object-assign-shim": "^1.0.0",
     "react": "^0.14.6",
     "react-addons-css-transition-group": "^0.14.6",
     "react-dom": "^0.14.6",
@@ -63,6 +72,7 @@
     "babel-preset-es2015": "^6.5.0",
     "browserify": "^13.0.0",
     "node-sass": "^3.4.2",
+    "npm-watch": "^0.1.4",
     "typescript": "^1.8.0",
     "typings": "^0.6.8"
   }

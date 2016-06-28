@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../classes/EventEmitter';
-import HandlesInventory from '../classes/HandlesInventory';
+import EventEmitter from '../EventEmitter';
+import {clientEventTopics} from '../defaultTopics';
 import client from '../../core/client';
 import Inventory from '../../core/classes/Inventory';
 import Item from '../../core/classes/Item';
@@ -25,14 +25,11 @@ function run(emitter: EventEmitter, topic: string) {
 export default class InventoryListener {
   listening: boolean = false;
   type: string;
-  handles: HandlesInventory;
-  constructor(handles: HandlesInventory) {
-    this.handles = handles;
-  }
+  topic: string = clientEventTopics.handlesInventory;
   start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.handles.topic);
+      run(emitter, this.topic);
     }
   }
 }

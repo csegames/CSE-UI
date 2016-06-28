@@ -4,6 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export default class HandlesFriendlyTarget {
-  topic: string = 'friendlytarget';
-}
+import client from '../core/client';
+
+export default {
+  baseURL: client.webAPIHost,
+  headers: {
+    'api-version': client.apiVersion,
+    'loginToken': client.loginToken,
+  }
+};

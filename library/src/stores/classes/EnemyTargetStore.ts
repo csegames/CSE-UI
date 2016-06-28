@@ -5,7 +5,7 @@
  */
 
 import * as Reflux from 'reflux';
-import events from '../../events/events';
+import events from '../../events';
 import _UnitFrame from './_UnitFrame';
 
 const EnemyTargetStore = {
@@ -13,7 +13,7 @@ const EnemyTargetStore = {
     const actions = Reflux.createActions(['start', 'stop']);
     const store = Reflux.createStore({
       mixins: [_UnitFrame],
-      handles: events.handlesEnemyTarget,
+      topic: events.clientEventTopics.handlesEnemyTarget,
       listenables: actions
     });
     return {

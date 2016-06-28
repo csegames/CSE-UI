@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../classes/EventEmitter';
+import EventEmitter from '../EventEmitter';
 import Combatant from '../../core/classes/Combatant';
 import Player from '../../core/classes/Player';
 import race from '../../core/constants/race';
@@ -75,8 +75,8 @@ function run(emitter: EventEmitter, topic: string) {
 export default class UnitFrameListener {
   listening: boolean = false;
   topic: string;
-  constructor(handles: any) {
-    this.topic = handles.topic;
+  constructor(handlesTopic: string) {
+    this.topic = handlesTopic;
   }
   start(emitter: EventEmitter): void {
     if (!this.listening) {
