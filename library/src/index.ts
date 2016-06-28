@@ -41,6 +41,7 @@ import ConsoleMessage from './core/classes/ConsoleMessage';
 
 // libraries
 import * as core from './core/core';
+export * from './core/core';
 import stores from './stores/stores';
 import components from './components/components';
 
@@ -55,8 +56,6 @@ export * from './groups';
 import events from './events';
 import * as eventExports from './events'
 
-export * from './signalr';
-import * as signalrExports from './signalr';
 import signalr from './signalr';
 
 export * from './slashCommands';
@@ -102,8 +101,9 @@ let cu = Object.assign({
   ConsoleMessage : ConsoleMessage,
 
   // RestAPI
-  restAPI : restAPI
-}, groups, eventExports, signalrExports, slashCommandsExports);
+  restAPI : restAPI,
+
+}, groups, eventExports, slashCommandsExports);
 
 export default cu;
 

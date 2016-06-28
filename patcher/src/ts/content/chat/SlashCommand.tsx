@@ -4,7 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as events from '../../../../../shared/lib/events';
+import {events} from 'camelot-unchained';
+
 import ChatSession from './ChatSession';
 import RoomId from './RoomId';
 import { ChatMessage, chatType } from './ChatMessage';

@@ -6,7 +6,12 @@
 
 import events from '../events';
 
-const registry: string[] = [];
+export interface SlashCommand {
+  command: string;
+  helpText: string;
+}
+
+const registry: SlashCommand[] = [];
 
 function prefix(command: string) : string { return `slash_${command}`}
 
@@ -14,8 +19,15 @@ function prefix(command: string) : string { return `slash_${command}`}
  * Registers a method to be executed when a slash command is entered in the chat
  * window.
  */
-export function registerSlashCommand(command: string, callback: (args: string) => void) {
-  if (registry.indexOf(command) == -1) registry.push(command);
+export function registerSlashCommand(command: string, helpText: string, callback: (args: string) => void) {
+  let found = false;
+  for (var i = 0; i < registry.length; ++i) {
+    if (registry[i].command == command) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) registry.push({command: command, helpText: helpText});  
   events.on(prefix(command), callback);
 }
 
@@ -25,10 +37,15 @@ export function registerSlashCommand(command: string, callback: (args: string) =
  * listening for this command will stop working.
  */
 export function unregisterSlashCommand(command: string) {
-  var index = registry.indexOf(command);
-  if (index == -1) return;
-  registry.slice(index, 1);
-  events.off(command);
+  let index = -1;
+  for (var i = 0; i < registry.length; ++i) {
+    if (registry[i].command == command) {
+      events.off(command);
+      index = i;
+      break;
+    }
+  }
+  if (index >= 0) registry.slice(index, 1);
 }
 
 
@@ -39,10 +56,19 @@ export function unregisterSlashCommand(command: string) {
  * If no slash command is found, the function returns false and the chat system
  * should handle it however it would normally.
  */
-export function parseMessageForSlashCommand(message: string): boolean {
-  if (!message.startsWith('/')) return false;
-  const split = message.slice(1).split(/ (.+)/);
-  if (registry.indexOf(split[0]) == -1) return false;
-  events.fire(prefix(split[0]), split[1]);
-  return false;
+export function parseMessageForSlashCommand(command: string): boolean {
+  const split = command.split(/ (.+)/);
+  let found = false;
+  for (var i = 0; i < registry.length; ++i) {
+    if (registry[i].command == split[0]) {
+      events.fire(prefix(split[0]), split[1]);
+      found = true;
+      break;
+    }
+  }
+  return found;
+}
+
+export function getSlashCommands(): SlashCommand[] {
+  return registry.slice(0);
 }

@@ -9,7 +9,7 @@ import * as ReactDom from 'react-dom';
 import {connect, Provider} from 'react-redux';
 import {muteSounds, unMuteSounds} from './redux/modules/sounds';
 import {muteMusic, unMuteMusic} from './redux/modules/music';
-import * as events from '../../../shared/lib/events';
+import {events} from 'camelot-unchained';
 
 
 function select(state: any): any {

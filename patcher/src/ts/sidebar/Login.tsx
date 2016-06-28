@@ -8,7 +8,7 @@ import * as React from 'react';
 import {patcher, User} from '../api/PatcherAPI';
 import Animate from '../../../../shared/components/Animate';
 import LoginStatusModal from './LoginStatusModal';
-import * as events from '../../../../shared/lib/events';
+import {events} from 'camelot-unchained';
 
 export interface LoginProps {
   onLogIn: () => void;

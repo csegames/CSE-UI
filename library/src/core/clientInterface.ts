@@ -162,6 +162,9 @@ interface clientInterface {
   ChangeBlockType(newType: number): void;
   OpenScreenshotShare(): void;
   TakeScreenshot(): void;
+  CountBlocks(): void;
+  placedBlockCount: number;
+
   
   SelectBlueprint(index: number): void;
   RequestBlueprints(): void;
@@ -281,7 +284,8 @@ interface clientInterface {
 
   OnConsoleText(c: (text: string) => void): void;
   ConsoleCommand(body: string): void;
-
+  SendSlashCommand(command: string): void;
+  
   /* Login */
 
   Connect(host: string, port: string, character: string, webAPIHost: string): void;

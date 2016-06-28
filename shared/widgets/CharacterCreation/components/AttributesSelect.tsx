@@ -8,7 +8,7 @@ import * as React from 'react';
 import {race, gender} from 'camelot-unchained';
 import {AttributeInfo, attributeType} from '../services/session/attributes';
 import {AttributeOffsetInfo} from '../services/session/attributeOffsets';
-import * as events from '../../../lib/events';
+import {events} from 'camelot-unchained';
 
 
 export interface AttributesSelectProps {

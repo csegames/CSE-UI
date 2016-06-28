@@ -1,0 +1,62 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@font-face {
+  font-family: 'TitilliumWeb';
+  src: url(../font/TitilliumWeb/TitilliumWeb-Regular.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TitilliumWebItalic';
+  src: url(../font/TitilliumWeb/TitilliumWeb-Italic.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TitilliumWebBold';
+  src: url(../font/TitilliumWeb/TitilliumWeb-Bold.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TitilliumWebBoldItalic';
+  src: url(../font/TitilliumWeb/TitilliumWeb-BoldItalic.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html {
+  font-family: 'TitilliumWeb', sans-serif;
+}
+
+body {
+  font-family: 'TitilliumWeb', sans-serif;
+}
+
+h1 {
+  font-family: 'TitilliumWebBold';
+  font-weight: normal;
+}
+
+em {
+  font-family: 'TitilliumWebItalic';
+  font-weight: normal;
+  font-style: normal;
+}
+
+strong em {
+  font-family: 'TitilliumWebBoldItalic';
+  font-weight: normal;
+  font-style: normal;
+}
+
+strong, b {
+  font-family: 'TitilliumWebBold'; 
+}

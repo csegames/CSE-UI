@@ -1,0 +1,23 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.PartyMemberHealth__bar {
+  width: 276px;
+  height: 248.3px;
+}
+
+.PartyMemberHealth__bar.mini {
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 8px;
+  width: 125px;
+  height: 60px;
+}
+
+.PartyMember.mini {
+  width: 150px;
+  height: 150px;
+  float: right;
+}

@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import {components, race, restAPI} from 'camelot-unchained';
-import * as events from '../../../../shared/lib/events'
+import {events} from 'camelot-unchained';
+
 
 export interface CharacterButtonsProps {
   creating: boolean;

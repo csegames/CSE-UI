@@ -10,7 +10,7 @@ import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {connect, Provider} from 'react-redux';
 import * as thunkMiddleware from 'redux-thunk';
-import * as events from '../../lib/events';
+import {events} from 'camelot-unchained';
 
 import {gender} from 'camelot-unchained';
 

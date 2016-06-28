@@ -36,17 +36,12 @@ if (window.opener && window.opener.cuAPI) {
     debug: true
   } as any;
 
-  client.signalRHost = `${client.webAPIHost}/signalr`;
 }
 
-// REMOVE -- for testing only!!!
-Object.assign(client, {
-    loginToken: 'developer',
-    apiVersion: 1,
-    webAPIHost: 'http://localhost:1337',
-    characterID: 'KCt3dNCC6dKPyNzD0SR200',
-    shardID: 1,
-    debug: true
-  });
+if (!client.webAPIHost) client.webAPIHost = 'http://localhost:1337';
+if (!client.apiVersion) client.apiVersion = 1;
+if (!client.shardID) client.shardID = 1;
+if (!client.characterID) client.characterID = 'KCt3dNCC6dKPyNzD0SR200';
+client.signalRHost = `${client.webAPIHost}/signalr`;
 
 export default client;

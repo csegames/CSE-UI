@@ -21,7 +21,7 @@ import CharacterDeleteModal from './CharacterDeleteModal';
 import Alerts from './Alerts';
 import CharacterCreation, {CharacterCreationModel} from '../../../../shared/widgets/CharacterCreation';
 import Animate from '../../../../shared/components/Animate';
-import * as events from '../../../../shared/lib/events';
+import {events} from 'camelot-unchained';
 
 import {PatcherAlert} from '../redux/modules/patcherAlerts';
 import {patcher, Channel} from '../api/PatcherAPI';

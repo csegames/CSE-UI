@@ -9,7 +9,7 @@ import {Server} from '../redux/modules/servers';
 import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
 import {restAPI} from 'camelot-unchained';
-import * as events from '../../../../shared/lib/events';
+import {events} from 'camelot-unchained';
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';

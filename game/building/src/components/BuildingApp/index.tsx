@@ -46,7 +46,7 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
   constructor(props: BuildingAppProps) {
     super(props);
     this.state = {
-      buildingMode: 1,
+      buildingMode: 0,
       selectedItem: null
     }
   }

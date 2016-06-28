@@ -1,0 +1,79 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+import {client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands} from 'camelot-unchained';
+import {parseArgs, systemMessage} from './utils';
+
+export default () => {
+  if (!hasClientAPI()) return;
+
+  /**
+   * Set field of view
+   */
+  registerSlashCommand('fov', 'set your field of view, client accepts values from 20 -> 179.9', (params: string) => {
+    const argv = parseArgs(params);
+    const degrees = argv._.length > 0 ? argv._[0] : 120;
+    client.FOV(degrees);
+  });
+
+  /**
+   * Drop a temporary light at the characters feet
+   */
+  registerSlashCommand('droplight',
+   'drop a light at your location, options: (colors are 0-255) droplight <intensity> <radius> <red> <green> <blue>',
+   (params: string) => {
+    if (params.length == 0) return;
+
+    const argv = parseArgs(params);
+    if (argv._.length > 0) {
+      const intensity = argv._.length >= 0 ? argv._[0] : 1;
+      const radius = argv._.length > 1 ? argv._[1] : 20;
+      const red = argv._.length > 2 ? argv._[2] : 100;
+      const green = argv._.length > 3 ? argv._[3] : 100;
+      const blue = argv._.length > 4 ? argv._[4] : 100;
+      client.DropLight(intensity, radius, red, green, blue);
+      return;
+    }
+
+    const intensity = argv.intensity ? argv.intensity : 1;
+    const radius = argv.radius > 1 ? argv.radius : 20;
+    const red = argv.red > 2 ? argv.red : 100;
+    const green = argv.green > 3 ? argv.green : 100;
+    const blue = argv.blue > 4 ? argv.blue : 100;
+    client.DropLight(intensity, radius, red, green, blue);
+  });
+
+  /**
+   * Remove all lights placed with the drop light command
+   */
+  registerSlashCommand('resetlights', 'removes all dropped lights from the world', (params: string) => {
+    client.ResetLights();
+  });
+
+  /**
+   * Count all the placed blocks in the world
+   */
+  registerSlashCommand('countblocks', 'count all placed blocks in the world.', () => {
+    client.CountBlocks();
+    setTimeout(() => systemMessage(`There are ${client.placedBlockCount} blocks in this world.`), 1000);
+  });
+
+  /**
+   * Quit the game
+   */
+  registerSlashCommand('quit', 'quit the game', () => client.Quit());
+
+  /**
+   * Build Var handling -- generally for dev use things only
+   */
+  registerSlashCommand('var', 'Buildvar control: No params = help, var name only = get value, var name and value = set value', (params: string) => {
+    if (params.length == 0) {
+      client.SendSlashCommand('help');
+    } else {
+      client.SendSlashCommand(params);
+    }
+  })
+  
+};

@@ -1,0 +1,78 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+ 
+#cse-patcher-header {
+  z-index: 15;
+  margin-top: 15px;
+}
+
+.cu-logo {
+  position: relative;
+  top: 2px;
+  cursor: pointer !important;
+  margin-left: 10px;
+}
+
+nav {
+  background-color: $card-bg;
+  ul {
+    li {
+      a {
+        color: darken($color1,20%);
+        transition: 0.3s linear;  
+        &:hover {
+            color: lighten($color1,20%); 
+            background: $gradient-nav;
+        }
+        .tiny {
+            font-size: 1rem!important;
+            float:right;
+            display: block;
+            width: 12px;
+            margin-left: 5px;
+            overflow: hidden;
+            background: url("../images/linkout.jpg") no-repeat center center;
+            background-size: contain;
+            color: transparent;
+        }
+      }
+      .active {
+        color: lighten($color1,20%); 
+        background: $gradient-nav;
+      }
+      
+    }
+  }
+}
+
+
+#cse-patcher-windowheader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: $color2;
+  z-index: 17;
+  
+  ul {
+    list-style: none;
+    margin: 2.5px 2.5px;
+    
+    li {
+      float: right;
+      margin: 0px 4px;
+    }
+  }
+}
+
+@media only screen and (max-width: 992px){
+    nav .brand-logo {
+        left: auto;
+        -webkit-transform: none;
+        transform: none;
+    }
+}

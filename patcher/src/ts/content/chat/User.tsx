@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events from '../../../../../shared/lib/events';
+import {events} from 'camelot-unchained';
 
 export class UserInfo {
   roomName: string;

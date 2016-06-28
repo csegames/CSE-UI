@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {race, faction, gender} from 'camelot-unchained';
-import * as events from '../../../lib/events';
+import {events} from 'camelot-unchained';
 
 import {RaceInfo} from '../services/session/races';
 import {FactionInfo} from '../services/session/factions';

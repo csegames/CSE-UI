@@ -7,6 +7,7 @@
 import CoreSettings from './CoreSettings';
 import clientInterface from './clientInterface';
 import client from './client';
+export * from './client';
 
 // constants
 import abilityTags from './constants/abilityConstants/abilityTags';
