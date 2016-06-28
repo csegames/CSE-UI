@@ -1,0 +1,85 @@
+{
+  "private": true,
+  "name": "cu-ui-compass",
+  "version": "0.1.0",
+  "description": "Camelot Unchained UI - compass",
+  "license": "MPL-2.0",
+  "main": "src/ts/main.tsx",
+  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
+  "contributors": [
+    "JB (codecorsair) <jb@codecorsair.com>",
+    "Fidaman <totsuma@gmail.com>"
+  ],
+  "keywords": [
+    "Camelot",
+    "Unchained",
+    "cu",
+    "cu-ui"
+  ],
+  "files": [
+    "dist/",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csegames/cu-ui.git"
+  },
+  "config": {
+    "name": "compass"
+  },
+  "scripts": {
+    "postinstall": "npm run typings",
+    "typings": "npm run clean:typings && typings install",
+    "clean:typings": "rimraf typings",
+    "clean:tmp": "rimraf tmp",
+    "clean:tmpp": "rimraf tmpp",
+    "clean:dist": "find dist/ -type d -empty -print0 | xargs -0 rmdir",
+    "clean:publish": "rimraf dist",
+    "clean": "npm run clean:tmp && npm run clean:tmpp && npm run clean:publish",
+    "copy:misc": "(robocopy src\\ dist\\ /s /xf *.js /xf *.ts /xf *.tsx /xf *.scss) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "copy:misc:nix": "cd src && tar cf - --exclude=*.js --exclude=*.ts --exclude=*.tsx --exclude=*.scss . | ( cd ../dist && tar xvf - )",
+    "copy:third-party": "(robocopy src\\third-party dist\\third-party /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "copy:third-party:nix": "if [ -d src/third-party ]; then mkdir dist/third-party && cp -r src/third-party dist/third-party; fi",
+    "copy": "npm run copy:third-party && npm run copy:misc",
+    "copy:nix": "npm run copy:third-party:nix && npm run copy:misc:nix",
+    "babel": "babel tmp -d tmpp",
+    "browserify": "browserify tmpp/main.js -o dist/js/%npm_package_config_name%.js",
+    "browserify:nix": "browserify tmpp/main.js -o dist/js/${npm_package_config_name}.js",
+    "prebrowserify": "mkdirp dist/js",
+    "prebrowserify:nix": "mkdirp dist/js",
+    "build:sass": "node-sass src/sass -o dist/css --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
+    "build": "tsc && npm run build:sass && npm run copy -s && npm run babel && npm run browserify && npm run clean:tmp -s && npm run clean:tmpp -s",
+    "prebuild": "npm run clean -s",
+    "build:nix": "tsc && npm run build:sass && npm run copy:nix -s && npm run babel && npm run browserify:nix && npm run clean:dist && npm run clean:tmp -s && npm run clean:tmpp -s",
+    "prebuild:nix": "npm run clean -s",
+    "serve": "http-server -p 9000 dist/",
+    "clean:hatchery": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/4/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:hatchery": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/4/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "build:hatchery": "npm run build && npm run clean:hatchery && npm run copy:hatchery",
+    "clean:wyrmling": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/10/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:wyrmling": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/10/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "build:wyrmling": "npm run build && npm run clean:wyrmling && npm run copy:wyrmling",
+    "clean:cube": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/27/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:cube": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/27/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
+  },
+  "dependencies": {
+    "camelot-unchained": "latest",
+    "es6-promise": "^3.0.2",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-core": "^6.5.2",
+    "babel-preset-es2015": "^6.5.0",
+    "browserify": "^13.0.0",
+    "http-server": "^0.9.0",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^3.4.2",
+    "typescript": "^1.8.0",
+    "typings": "^0.6.8"
+  }
+}
