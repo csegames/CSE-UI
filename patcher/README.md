@@ -16,6 +16,7 @@ git clone https://github.com/CUModSquad/cu-patcher-ui.git
 ### 2. Install
 ```sh
 npm install
+typings install
 ```
 
 ### 3. Build
