@@ -26,12 +26,10 @@
     "name": "cu-patcher-ui"
   },
   "scripts": {
-    "typings": "typings install",
-    "clean:typings": "rimraf typings",
     "clean:tmp": "rimraf tmp",
     "clean:tmpp": "rimraf tmpp",
     "clean:publish": "rimraf dist",
-    "clean": "npm run clean:typings && npm run clean:tmp && npm run clean:tmpp && npm run clean:publish",
+    "clean": "npm run clean:tmp && npm run clean:tmpp && npm run clean:publish",
     "copy:misc": "(robocopy src\\ dist\\ /s /xf *.js /xf *.ts /xf *.tsx /xf *.scss) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "copy:misc:nix": "find src -type f ! -name '*.js' -a ! -name '*.ts' -a ! -name '*.tsx' -a ! -name '*.scss' ! -path 'src/third-party/*' -print | pax -rwv -s/src// dist",
     "copy:third-party": "(robocopy src\\third-party dist\\third-party /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
@@ -46,8 +44,8 @@
     "build:sass": "node-sass src/sass -o dist/css --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
     "build": "npm run build:sass && npm run copy -s && tsc && npm run babel && npm run browserify && npm run clean:tmp -s && npm run clean:tmpp -s",
     "build:nix": "npm run build:sass && npm run copy:nix -s && tsc && npm run babel && npm run browserify:nix && npm run clean:tmp -s && npm run clean:tmpp -s",
-    "prebuild:nix": "npm run clean -s && npm run typings",
-    "prebuild": "npm run clean -s && npm run typings",
+    "prebuild:nix": "npm run clean -s",
+    "prebuild": "npm run clean -s",
     "publish": "npm run build",
     "serve": "http-server -p 9000 dist/",
     "debug": "npm run build && npm run copy:patcher && npm run patcher",
@@ -55,7 +53,7 @@
     "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
   },
   "dependencies": {
-    "camelot-unchained": "^0.2.25",
+    "camelot-unchained": "^0.2.26",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
     "isomorphic-fetch": "^2.2.1",
@@ -80,7 +78,7 @@
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
     "rimraf": "^2.5.2",
-    "typescript": "^1.8.0",
+    "typescript": "^1.8.10",
     "typings": "^0.6.8"
   }
 }
