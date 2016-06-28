@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { chatType, ChatMessage } from './ChatMessage';
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 import ChatLineParser from './ChatLineParser';
 import { chatConfig } from './ChatConfig';
 import ChatSession from './ChatSession';

@@ -8,8 +8,8 @@ import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 import {race, gender} from 'camelot-unchained';
 
-import {fetchJSON} from '../../utils/fetchHelpers';
-import ResponseError from '../../utils/ResponseError';
+import {fetchJSON} from '../../../../lib/fetchHelpers';
+import ResponseError from '../../../../lib/ResponseError';
 
 export interface AttributeOffsetInfo {
   race: race;

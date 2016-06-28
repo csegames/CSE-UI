@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 import ChatSession from './ChatSession';
 import ChatRoomInfo from './ChatRoomInfo';
 import { ChatMessage, chatType } from './ChatMessage';

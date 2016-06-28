@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {patcher} from './api/PatcherAPI';
-import Animate from './Animate';
+import Animate from '../../../shared/components/Animate';
 
 export interface WindowHeaderProps {
   soundMuted: boolean;

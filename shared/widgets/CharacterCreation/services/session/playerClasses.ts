@@ -7,8 +7,8 @@
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 
-import {fetchJSON} from '../../utils/fetchHelpers';
-import ResponseError from '../../utils/ResponseError';
+import {fetchJSON} from '../../../../lib/fetchHelpers';
+import ResponseError from '../../../../lib/ResponseError';
 
 import {archetype, faction} from 'camelot-unchained';
 

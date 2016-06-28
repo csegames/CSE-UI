@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 import { Room } from '../../chat/CSEChat';
 import ChatSession from './ChatSession';
 import JoinRoomList from './JoinRoomList';

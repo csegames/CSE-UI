@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import {prefixes, display} from './settings/chat-defaults';
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 
 export class ChatConfig {
   SCROLLBACK_BUFFER_SIZE: number = 1024;

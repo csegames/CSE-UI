@@ -6,7 +6,7 @@
 import { CSEChat, Room } from './CSEChat';
 import Config from './Config';
 import messageType from './messageType';
-import EventEmitter from '../core/EventEmitter';
+import EventEmitter from '../../../../shared/lib/EventEmitter';
 import {patcher} from '../api/PatcherAPI';
 
 const DEFAULT_ROOM_LIST : string[] = ['_global', '_cube'];

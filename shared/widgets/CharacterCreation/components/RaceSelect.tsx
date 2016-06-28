@@ -6,12 +6,12 @@
 
 import * as React from 'react';
 import {race, faction, gender} from 'camelot-unchained';
-import * as events from '../../core/events';
+import * as events from '../../../lib/events';
 
-import {RaceInfo} from '../redux/modules/races';
-import {FactionInfo} from '../redux/modules/factions';
+import {RaceInfo} from '../services/session/races';
+import {FactionInfo} from '../services/session/factions';
 
-import Animate from '../utils/Animate';
+import Animate from '../../../components/Animate';
 
 const raceText: any = {
   'HUMANMALEA': 'Through luck, or perhaps something more, a few Humans managed to escape Veilstorm influence entirely. They did not change into something else, and were untouched by the Veil’s wrath, as though chosen for a special purpose. They may lack the strange powers that some other races possess, but they are also spared the curses that sometimes accompany these powers. Through sheer determination, Humans survive. They refuse to disappear, and prosper even in the most difficult of times, following the noble path of righteous strength that King Arthur lays before them.',

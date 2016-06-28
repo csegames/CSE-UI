@@ -9,11 +9,11 @@ import {Server} from '../redux/modules/servers';
 import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
 import {restAPI} from 'camelot-unchained';
-import * as events from '../core/events';
+import * as events from '../../../../shared/lib/events';
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
-import Animate from '../Animate';
+import Animate from '../../../../shared/components/Animate';
 import UninstallButton from './UninstallButton';
 
 export class Progress {

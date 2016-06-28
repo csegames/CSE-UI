@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 
 function fromText(text: string, keygen: () => number) : JSX.Element[] {
   //events.fire('chat-play-sound-highlight');

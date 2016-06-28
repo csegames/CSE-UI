@@ -5,7 +5,7 @@
 
 import {Client, Element} from 'node-xmpp-client';
 import Config from './Config';
-import EventEmitter from '../core/EventEmitter';
+import EventEmitter from '../../../../shared/lib/EventEmitter';
 import Message from './Message'
 import Sender from './Sender'
 import messageType from './messageType';

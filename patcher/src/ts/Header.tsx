@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import {Routes} from './redux/modules/locations';
 import {patcher} from './api/PatcherAPI';
-import * as events from './core/events';
+import * as events from '../../../shared/lib/events';
 
 export interface HeaderProps {
   changeRoute: (route: Routes) => void;

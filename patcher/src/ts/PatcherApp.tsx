@@ -30,10 +30,10 @@ import Hero from './content/Hero';
 import News from './content/News';
 import PatchNotes from './content/PatchNotes';
 import Support from './content/Support';
-import Animate from './Animate';
+import Animate from '../../../shared/components/Animate';
 import Sound from './Sound';
 
-import * as events from './core/events';
+import * as events from '../../../shared/lib/events';
 import {patcher, Channel} from './api/PatcherAPI';
 import {CSENormalizeString} from './api/CSENormalizeString';
 

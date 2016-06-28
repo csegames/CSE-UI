@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import HeroItem from './HeroItem';
 import {HeroContentItem} from '../redux/modules/heroContent';
-import Animate from '../Animate';
+import Animate from '../../../../shared/components/Animate';
 
 export interface HeroProps {
   isFetching: boolean;

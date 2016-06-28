@@ -1,19 +1,19 @@
 {
   "name": "character-creation",
-  "ambientDependencies": {
-    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#263705d313346e093d95cb62cef6fed848e46978",
-    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#984a41af67d76b5134e0d4991a30f813dfb8561f",
-    "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
-    "react-addons-css-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-css-transition-group.d.ts#984a41af67d76b5134e0d4991a30f813dfb8561f",
-    "react-addons-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-transition-group.d.ts#984a41af67d76b5134e0d4991a30f813dfb8561f",
-    "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#ca5bfe76d2d9bf6852cbc712d9f3e0047c93486e"
-  },
   "dependencies": {
     "camelot-unchained": "github:cumodsquad/camelot-unchained-client-library",
     "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7",
     "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",
     "redux": "github:andrew-w-ross/typings-redux#2e0b57e18c6240d17fde045573d74e649762437b",
     "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
+  },
+  "globalDependencies": {
+    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
+    "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "react": "registry:dt/react#0.14.0+20160621225615",
+    "react-addons-css-transition-group": "registry:dt/react-addons-css-transition-group#0.14.0+20160316155526",
+    "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
   }
 }

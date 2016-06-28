@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-
 import {faction} from 'camelot-unchained';
-import {FactionInfo} from '../redux/modules/factions';
+
+import {FactionInfo} from '../services/session/factions';
 
 export interface FactionSelectProps {
   factions: Array<FactionInfo>;

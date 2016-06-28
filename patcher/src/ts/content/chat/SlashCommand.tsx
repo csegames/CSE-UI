@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as events from '../../core/events';
+import * as events from '../../../../../shared/lib/events';
 import ChatSession from './ChatSession';
 import RoomId from './RoomId';
 import { ChatMessage, chatType } from './ChatMessage';

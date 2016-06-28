@@ -6,9 +6,9 @@
 
 import * as React from 'react';
 import {patcher, User} from '../api/PatcherAPI';
-import Animate from '../Animate';
+import Animate from '../../../../shared/components/Animate';
 import LoginStatusModal from './LoginStatusModal';
-import * as events from '../core/events';
+import * as events from '../../../../shared/lib/events';
 
 export interface LoginProps {
   onLogIn: () => void;

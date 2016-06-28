@@ -10,7 +10,7 @@ import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {connect, Provider} from 'react-redux';
 import * as thunkMiddleware from 'redux-thunk';
-import * as events from '../core/events';
+import * as events from '../../lib/events';
 
 import {gender} from 'camelot-unchained';
 
@@ -18,18 +18,18 @@ import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
-import Animate from './utils/Animate';
+import Animate from '../../components/Animate';
 
-import reducer from './redux/modules/reducer';
-import {RacesState, fetchRaces, selectRace, RaceInfo} from './redux/modules/races';
-import {FactionsState, fetchFactions, selectFaction, FactionInfo} from './redux/modules/factions';
-import {PlayerClassesState, fetchPlayerClasses, selectPlayerClass, PlayerClassInfo} from './redux/modules/playerClasses';
-import {AttributesState, fetchAttributes, allocateAttributePoint, AttributeInfo, attributeType, resetAttributes} from './redux/modules/attributes';
-import {AttributeOffsetsState, fetchAttributeOffsets, AttributeOffsetInfo} from './redux/modules/attributeOffsets';
-import {CharacterState, createCharacter, CharacterCreationModel, resetCharacter} from './redux/modules/character';
-import {selectGender} from './redux/modules/genders';
+import reducer from './services/session/reducer';
+import {RacesState, fetchRaces, selectRace, RaceInfo} from './services/session/races';
+import {FactionsState, fetchFactions, selectFaction, FactionInfo} from './services/session/factions';
+import {PlayerClassesState, fetchPlayerClasses, selectPlayerClass, PlayerClassInfo} from './services/session/playerClasses';
+import {AttributesState, fetchAttributes, allocateAttributePoint, AttributeInfo, attributeType, resetAttributes} from './services/session/attributes';
+import {AttributeOffsetsState, fetchAttributeOffsets, AttributeOffsetInfo} from './services/session/attributeOffsets';
+import {CharacterState, createCharacter, CharacterCreationModel, resetCharacter} from './services/session/character';
+import {selectGender} from './services/session/genders';
 
-export {CharacterCreationModel} from './redux/modules/character';
+export {CharacterCreationModel} from './services/session/character';
 
 declare var Materialize: any;
 

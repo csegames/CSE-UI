@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export default class ResponseError extends Error {
-  public response: string;
-  constructor(response?: any, message?: string) {
-    super(message);
-    this.response = response;
-  }
+@import 'sass/character-creation';
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
 }

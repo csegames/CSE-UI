@@ -7,8 +7,8 @@
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 
-import ResponseError from '../../core/ResponseError';
-import {fetchJSON} from '../../core/fetchHelpers';
+import ResponseError from '../../../../../shared/lib/ResponseError';
+import {fetchJSON} from '../../../../../shared/lib/fetchHelpers';
 
 export interface RenderedObject {
   rendered: string

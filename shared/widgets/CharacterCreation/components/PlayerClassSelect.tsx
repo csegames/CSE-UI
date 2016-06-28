@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-
 import {archetype, faction} from 'camelot-unchained';
-import {PlayerClassInfo} from '../redux/modules/playerClasses';
-import {FactionInfo} from '../redux/modules/factions';
-import Animate from '../utils/Animate';
+
+import {PlayerClassInfo} from '../services/session/playerClasses';
+import {FactionInfo} from '../services/session/factions';
+import Animate from '../../../components/Animate';
 
 const classText: any = {
   'BLACKKNIGHT': 'Legend has it that the first Black Knight was the son of Arthur, sired before he became King of his Realm. The Black Knight had a falling-out with his father, and left the Realm to wander the world. After braving The Depths, he returned to Arthur’s court a changed man. On that day, he swore to forever fight by Arthur’s side. Those who join the Black Knights swear an oath to follow Arthur into battle, no matter where it takes them. They prefer to wear black clothing, a signal to the enemy that death is coming.',
