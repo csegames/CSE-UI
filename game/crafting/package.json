@@ -7,7 +7,7 @@
   "main": "dist/crafting.js",
   "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
   "contributors": [
-		"Ortu"
+    "Ortu"
   ],
   "keywords": [
     "Camelot",
@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "camelot-unchained": "latest",
+    "es6-promise": "^3.2.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   },

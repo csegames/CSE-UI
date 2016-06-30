@@ -6,7 +6,8 @@
         "outDir": "./tmp",
         "sourceMap": false,
         "jsx": "react",
-        "module": "commonjs"
+        "module": "commonjs",
+        "newLine": "LF"
     },
     "formatCodeOptions": {
         "indentSize": 2,
@@ -24,14 +25,15 @@
     },
     "compileOnSave": false,
     "buildOnSave": false,
-    "filesGlob": [
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
-    ],
+    "resolution": "typings",
+    "moduleResolution": "node",
     "exclude": [
       "typings/browser.d.ts",
       "typings/browser",
+      "typings/main.d.ts",
+      "typings/main",
       "tmp",
+      "tmpp",
       "dist",
       "publish",
       "node_modules"
