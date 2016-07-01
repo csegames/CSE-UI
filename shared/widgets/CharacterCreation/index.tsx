@@ -85,36 +85,48 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   }
 
   create = () => {
-    // try to create...
-    let model: CharacterCreationModel = {
-      name: (this.refs['name-input'] as any).value,
-      race: this.props.racesState.selected.id,
-      gender: this.props.gender,
-      faction: this.props.factionsState.selected.id,
-      archetype: this.props.playerClassesState.selected.id,
-      shardID: this.props.shard,
-      attributes: this.props.attributesState.attributes.reduce((acc: any, cur: AttributeInfo) => {
-        if (cur.type !== attributeType.PRIMARY) return acc;
-        if (typeof acc.name !== 'undefined') {
-          let name = acc.name;
-          let val = acc.allocatedPoints;
-          acc = {};
-          acc[name] = val;
-        }
-        if (typeof acc[cur.name] === 'undefined' || isNaN(acc[cur.name])) {
-          acc[cur.name] = cur.allocatedPoints;
-        } else {
-          acc[cur.name] += cur.allocatedPoints;
-        }
-        return acc;
-      }),
+    // validate name
+    const modelName = (this.refs['name-input'] as any).value.trim();
+    const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    let errors: any = [];
+    if (normalName.length < 2 || modelName.length > 20) errors.push('A character name must be between 2 and 20 characters in length.');
+    if (modelName.search(/^[a-zA-Z]/) === -1) errors.push('A character name must begin with a letter.');
+    if (modelName.search(/[\-'][\-']/) > -1) errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
+    if (modelName.search(/^[a-zA-Z\-']+$/) === -1) errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
+    if (errors.length > 0) {
+      errors.forEach((e: string) => Materialize.toast(e, 5000));
+    } else {
+      // try to create...
+      let model: CharacterCreationModel = {
+        name: modelName,
+        race: this.props.racesState.selected.id,
+        gender: this.props.gender,
+        faction: this.props.factionsState.selected.id,
+        archetype: this.props.playerClassesState.selected.id,
+        shardID: this.props.shard,
+        attributes: this.props.attributesState.attributes.reduce((acc: any, cur: AttributeInfo) => {
+          if (cur.type !== attributeType.PRIMARY) return acc;
+          if (typeof acc.name !== 'undefined') {
+            let name = acc.name;
+            let val = acc.allocatedPoints;
+            acc = {};
+            acc[name] = val;
+          }
+          if (typeof acc[cur.name] === 'undefined' || isNaN(acc[cur.name])) {
+            acc[cur.name] = cur.allocatedPoints;
+          } else {
+            acc[cur.name] += cur.allocatedPoints;
+          }
+          return acc;
+        }),
+      }
+      this.props.dispatch(createCharacter(model,
+        this.props.apiKey,
+        this.props.apiHost,
+        this.props.shard,
+        this.props.apiVersion));
+      events.fire('play-sound', 'select');
     }
-    this.props.dispatch(createCharacter(model,
-      this.props.apiKey,
-      this.props.apiHost,
-      this.props.shard,
-      this.props.apiVersion));
-    events.fire('play-sound', 'select');
   }
 
   factionSelect = (selected: FactionInfo) => {
