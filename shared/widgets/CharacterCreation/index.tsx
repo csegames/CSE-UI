@@ -89,9 +89,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     const modelName = (this.refs['name-input'] as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
     let errors: any = [];
-    if (normalName.length < 2 || normalName.length > 20) errors.push('A character name must be between 2 and 20 characters in length (not including hyphens or apostrophes).');
+    if (normalName.length < 2 || modelName.length > 20) errors.push('A character name must be between 2 and 20 characters in length.');
     if (modelName.search(/^[a-zA-Z]/) === -1) errors.push('A character name must begin with a letter.');
-    if (modelName.search(/[\-']{2,}/) > -1) errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
+    if (modelName.search(/[\-'][\-']/) > -1) errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
     if (modelName.search(/^[a-zA-Z\-']+$/) === -1) errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
     if (errors.length > 0) {
       errors.forEach((e: string) => Materialize.toast(e, 5000));
