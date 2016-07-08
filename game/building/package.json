@@ -4,27 +4,27 @@
   "version": "0.1.0",
   "description": "Camelot Unchained UI - building",
   "license": "MPL-2.0",
-  "main": "src/ts/main.tsx",
+  "main": "dist/building.js",
   "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
   "contributors": [
-    "mehuge <mehuge@sorcerer.co.uk>",
-    "JB (codecorsair) <jb@codecorsair.com>"
+    "Ortu"
   ],
   "keywords": [
     "Camelot",
     "Unchained",
     "cu",
-    "cu-ui"
+    "cu-ui",
+    "crafting"
   ],
   "files": [
-    "lib/",
+    "dist/",
     "package.json",
     "README.md",
     "LICENSE"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/csegames/cu-ui.git"
+    "url": "https://github.com/csegames/Camelot-Unchained.git"
   },
   "config": {
     "name": "building"
@@ -45,34 +45,33 @@
     "copy": "npm run copy:third-party && npm run copy:misc",
     "copy:nix": "npm run copy:third-party:nix && npm run copy:misc:nix",
     "babel": "babel tmp -d tmpp",
-    "browserify": "browserify tmpp/main.js -o dist/js/%npm_package_config_name%.js",
-    "browserify:nix": "browserify tmpp/main.js -o dist/js/${npm_package_config_name}.js",
+    "browserify": "browserify tmpp/index.js -o dist/js/%npm_package_config_name%.js",
     "prebrowserify": "mkdirp dist/js",
-    "prebrowserify:nix": "mkdirp dist/js",
-    "build:sass": "node-sass src/sass -o dist/css --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
+    "build:sass": "node-sass src/index.scss -o dist/css --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
     "build": "tsc && npm run build:sass && npm run copy -s && npm run babel && npm run browserify && npm run clean:tmp -s && npm run clean:tmpp -s",
     "prebuild": "npm run clean -s",
-    "build:nix": "tsc && npm run build:sass && npm run copy:nix -s && npm run babel && npm run browserify:nix && npm run clean:dist && npm run clean:tmp -s && npm run clean:tmpp -s",
+    "build:nix": "tsc && npm run build:sass && npm run copy:nix -s && npm run babel && npm run browserify && npm run clean:dist && npm run clean:tmp -s && npm run clean:tmpp -s",
     "prebuild:nix": "npm run clean -s",
-    "serve": "http-server -p 9000 dist/",
-    "clean:hatchery": "(rmdir /s /q %localappdata%\\CSE\\CamelotUnchained\\4\\INTERFACE\\%npm_package_config_name%) ^& exit 0",
-    "copy:hatchery": "(robocopy dist\\ %localappdata%\\CSE\\CamelotUnchained\\4\\INTERFACE\\%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "serve": "http-server -p 9001 dist/",
+    "clean:hatchery": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/4/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:hatchery": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/4/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "build:hatchery": "npm run build && npm run clean:hatchery && npm run copy:hatchery",
-    "clean:wyrmling": "(rmdir /s /q %localappdata%\\CSE\\CamelotUnchained\\10\\INTERFACE\\%npm_package_config_name%) ^& exit 0",
-    "copy:wyrmling": "(robocopy dist\\ %localappdata%\\CSE\\CamelotUnchained\\10\\INTERFACE\\%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "clean:wyrmling": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/10/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:wyrmling": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/10/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "build:wyrmling": "npm run build && npm run clean:wyrmling && npm run copy:wyrmling",
-    "clean:cube": "(rmdir /s /q %localappdata%\\CSE\\CamelotUnchained\\27\\INTERFACE\\%npm_package_config_name%) ^& exit 0",
-    "copy:cube": "(robocopy dist\\ %localappdata%\\CSE\\CamelotUnchained\\27\\INTERFACE\\%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "clean:cube": "(rmdir /s /q %localappdata%/CSE/CamelotUnchained/27/INTERFACE/%npm_package_config_name%) ^& exit 0",
+    "copy:cube": "(robocopy dist\\ %localappdata%/CSE/CamelotUnchained/27/INTERFACE/%npm_package_config_name%\\ /s) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
   },
   "dependencies": {
     "camelot-unchained": "latest",
-    "es6-promise": "^3.1.2",
-    "object-assign": "^4.0.1",
+    "es6-promise": "^3.2.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-redux": "^4.4.2",
-    "redux": "^3.4.0"
+    "react-redux": "^4.4.5",
+    "react-select": "^1.0.0-beta13",
+    "redux": "^3.5.2",
+    "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
@@ -81,8 +80,6 @@
     "browserify": "^13.0.0",
     "http-server": "^0.9.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "^3.4.2",
-    "typescript": "^1.8.0",
-    "typings": "^0.6.8"
+    "node-sass": "^3.4.2"
   }
 }

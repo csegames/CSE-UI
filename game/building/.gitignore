@@ -7,7 +7,9 @@ npm-debug.log
 /bin
 /obj
 /tmp
+/tmpp
 /dist
 /publish
 /.vs
 /typings
+!src/**/lib

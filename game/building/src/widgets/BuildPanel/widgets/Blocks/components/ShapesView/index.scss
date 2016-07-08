@@ -1,0 +1,30 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.shapes-view.minimized {
+  width: 100%;
+}
+
+.shapes-view {
+  vertical-align: top;
+  line-height: 1px;
+  img {
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    background: #131313;
+    transition: all .1s ease-in-out;
+    &:hover {
+      filter: brightness(120%);
+      -webkit-filter: brightness(120%);
+    }
+    &.active {
+      background-color: rgba(100,100,255,0.3);
+      border-radius: 4px;
+    }
+  }
+}

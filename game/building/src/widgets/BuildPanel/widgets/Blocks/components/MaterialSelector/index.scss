@@ -1,0 +1,35 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.material-and-shape__material-selector {
+  background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));
+  border: 1px solid #393634;
+  width: 200px;
+  min-height: 100px;
+  position: absolute;
+  left: -217px;
+  top: 20px;
+  padding: 10px;
+  img {
+    margin: 2.5px;
+    width: 2em;
+    height: 2em;
+    &:hover {
+      -webkit-filter: brightness(130%);
+      filter: brightness(130%);
+    }
+    &.active {
+      filter: brightness(130%);
+      box-shadow: 0 0 10px 0px rgba(100, 100, 255, 0.8);
+      border-color: rgba(100,100,255,0.8);
+      border-radius: 4px;
+      border-width: 2px;
+      margin: 0px;
+      border-style: solid;    
+    }
+  }
+}
+

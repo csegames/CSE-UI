@@ -1,0 +1,175 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+header {
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.Input-control {
+  background: none;
+  background-color: #1D1D1D;
+  color: #bdb5af;
+  box-shadow: 0px 10px 14px rgba(0, 0, 0, 0.5);  background-color: none;
+  border: 1px solid #4b4642;
+  border-radius: 0px;
+  border-image: linear-gradient(to bottom left, rgba(75, 70, 66, 0.5), #4b4642, rgba(75, 70, 66, 0.5));
+  border-image-slice: 1;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 10px 5px 5px;  margin: 3px 0px;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    -webkit-filter: brightness(1.5);
+    background: none;
+    background-color: #1D1D1D;
+    color: #bdb5af;
+  }
+  &:focus {
+    outline: none;
+    -webkit-filter: brightness(1.2);
+  }
+}
+
+.Select.is-disabled > .Select-control {
+  background-color: #1D1D1D; 
+  }
+    
+.Select-control {
+  background: linear-gradient(#131313, rgba(0, 0, 0, 0.9));
+  background-color: none;
+  border: 0px;
+  border-radius: 0px;
+  border-width: 1px;
+  border-image: linear-gradient(to bottom left, rgba(75, 70, 66, 0.5), #4b4642, rgba(75, 70, 66, 0.5));
+  border-image-slice: 1;
+  width: 100%;
+  padding: 0px 10px 0px 0px;
+  margin: 3px 0px;
+  color: #635F5C;
+  transition: all 0.2s ease-in-out;
+  .Select-arrow-zone{
+    padding: 0px;
+  }
+  .Select-arrow {
+    display: block;
+    content: "";
+    width: 25px;
+    height: 15px;
+    position: relative;
+    float: right;
+    background: url(https://s3.amazonaws.com/camelot-unchained/UI/dropdown-arrow.png) no-repeat;
+    background-size: contain;
+    opacity: .5;
+    border-width: 0px;
+  }
+}
+
+.is-open > .Select-control{
+  background: none;
+  &:focus {
+    outline: none;
+  }
+}
+
+.Select-menu-outer {
+  background-color: #1D1D1D;
+  box-shadow: 0px 10px 14px rgba(0, 0, 0, 0.5);
+  border: 1px solid #393634;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.Select-option {
+  background-color: #1D1D1D;
+  padding: 5px 10px;
+  &:hover{
+    background-color: #1D1D1D;
+    color: #bdb5af; 
+    -webkit-filter: brightness(1.5);
+  }
+  &:last-child {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    }
+}
+.Select-option.is-selected {
+  -webkit-filter: brightness(1.5);
+  background-color: #1D1D1D;
+  color: #bdb5af;
+  }
+.Select-option.is-focused {
+  -webkit-filter: brightness(1.2);
+  background-color: #1D1D1D;
+  color: #bdb5af;
+  }
+
+.Select--multi .Select-value {
+  background-color: #393634;
+  border-radius: 0px;
+  border: none;
+  color: #9f9893;
+  display: inline-block;
+  padding: 0px 4px 0px 2px;
+  font-size: 0.9em;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.Select--multi .Select-value-label {
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.Select--multi.is-disabled .Select-value {
+  background-color: #1D1D1D;
+  border: none;
+  color: #bdb5af; 
+}
+
+.Select--multi .Select-value-icon {
+  padding: 0px 2px;
+  border: none;
+  border-radius: 0px;
+}
+
+.Select--multi .Select-value-label{
+  padding: 2px 0px;
+}
+
+.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus {
+    background-color: #1D1D1D;
+    color: #C4BCB6;
+}
+
+div::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+}
+
+div::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, transparent, rgba(255, 221, 188, 0.33), transparent);
+    border: none;
+    box-shadow: inset 0px 0px 20px rgba(84, 73, 58, 0.68);
+}
+
+div::-webkit-scrollbar-track {
+    background: rgb(29, 28, 27);
+}
+@import './components/BuildPanel/index';
+@import './widgets/Blocks/index';
+@import './widgets/RecentSelections/index';
+@import './widgets/DropLight/index';
+@import './widgets/Blueprints/index';
+ 

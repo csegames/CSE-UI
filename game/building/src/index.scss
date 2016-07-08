@@ -1,0 +1,56 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+@import './widgets/_font.scss';
+
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  /* background-image: url('../images/cube-bg.jpg');
+  background-size: cover;
+   */
+  font-family: "TitilliumWeb";
+}
+
+#building-button {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 67px;
+  height: 61px;
+  background: url('http://camelot-unchained.s3.amazonaws.com/icons/general-ui/building-btn.jpg') no-repeat bottom left;
+}
+
+.button-inactive {
+  display: none;
+}
+
+.button-active {
+  width: 100%;
+  height: 100%;
+}
+
+.building {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+#cse-ui-building {
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+
+
+// third party
+@import '../node_modules/react-select/scss/default';
+
+@import './widgets/SelectionView/index';
+@import './widgets/Actionbar/index';
+@import './widgets/BuildPanel/index';
+
+
