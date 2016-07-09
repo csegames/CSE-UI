@@ -1,0 +1,54 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.drop-light {
+  position:relative;
+  padding: 5px;
+  font-size: 14px;
+
+  input {
+    color: #eaeaea;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid  #514A44;
+    width: 40px;
+    text-align: center;
+    transition: all .1s ease-in-out;
+    &:hover {
+      border: 0;
+      border-bottom: 1px solid #A99C90;
+    }
+    &:focus {
+      outline: none;
+      border: 0;
+      border-bottom: 1px solid #7C7269 ;
+    }
+  }
+  
+  .drop-buttons {
+    margin-top: 5px;
+  }
+
+  .drop-light__preview {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border: 1px solid #464646;
+  }
+
+  .drop-light__controls {
+    display: inline-block;
+    width: calc(100% - 60px);
+    padding: 0px 0px 0px 7px;
+    font-size: 14px;
+    vertical-align: top;
+    .label{
+      display: inline-block;
+      width: 60px;
+    }
+  }
+}

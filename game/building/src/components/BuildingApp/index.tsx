@@ -27,11 +27,11 @@ function select(state: any): any {
 
 export interface BuildingAppProps {
   dispatch?: (action: any) => void;
-  selectedItem?: BuildingItem;
 }
 
 export interface BuildingAppState {
   buildingMode: number;
+  selectedItem: BuildingItem;
 }
 
 class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
@@ -39,14 +39,15 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
   public name = 'building-app';
 
   private modeListener = (buildingMode: number) => {
-    this.setState({ buildingMode: buildingMode });
+    this.setState({ buildingMode: buildingMode } as BuildingAppState);
   };
 
 
   constructor(props: BuildingAppProps) {
     super(props);
     this.state = {
-      buildingMode: 1
+      buildingMode: 1,
+      selectedItem: null
     }
   }
 
@@ -65,16 +66,20 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     return null;
   }
 
+  selectedItem = (item: BuildingItem) => {
+    this.setState({ selectedItem: item } as BuildingAppState);
+  }
+
   createBuildingPanel(active: boolean): JSX.Element {
     if (active) {
-      return (<BuildingPanel onItemSelect={(item: BuildingItem) => this.props.dispatch(selectItem(item)) }/>);
+      return (<BuildingPanel onItemSelect={this.selectedItem}/>);
     }
     return null;
   }
 
   createSelectionView(active: boolean): JSX.Element {
     if (active) {
-      return (<SelectionView item={this.props.selectedItem} />);
+      return (<SelectionView item={this.state.selectedItem} />);
     }
     return null;
   }

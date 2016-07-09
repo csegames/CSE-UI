@@ -64,12 +64,12 @@ function generatePanes() : BuildPane[][] {
   const panes: BuildPane[][] = [];
   panes.push([]);
   panes[0].push(generateBuildPane(BuildPaneType.Blocks))
-  //panes.push([]);
-  //panes[1].push(generateBuildPane(BuildPaneType.Recent));
   panes.push([]);
-  panes[1].push(generateBuildPane(BuildPaneType.Blueprints));
-  //panes.push([]);
-  //panes[3].push(generateBuildPane(BuildPaneType.DropLight));
+  panes[1].push(generateBuildPane(BuildPaneType.Recent));
+  panes.push([]);
+  panes[2].push(generateBuildPane(BuildPaneType.Blueprints));
+  panes.push([]);
+  panes[3].push(generateBuildPane(BuildPaneType.DropLight));
   return panes;
 }
 

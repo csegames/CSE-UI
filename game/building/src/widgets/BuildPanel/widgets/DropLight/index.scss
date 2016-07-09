@@ -10,36 +10,7 @@
   }
 }
 
-.drop-light {
-  padding: 5px;
-  .drop-light__controls {
-    display: inline-block;
-    width: calc(100% - 60px);
-    padding: 0px 0px 0px 7px;
-    font-size: 14px;
-    vertical-align: top;
-    input {
-      color: #eaeaea;
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid  #514A44;
-      width: 40px;
-      text-align: center;
-      transition: all .1s ease-in-out;
-      &:hover {
-        border: 0;
-        border-bottom: 1px solid #A99C90;
-      }
-      &:focus {
-        outline: none;
-        border: 0;
-        border-bottom: 1px solid #7C7269 ;
-      }
-    }
-  }
-}
 
-
-
-@import './components/LightPreview/index';
+@import './components/DropLightPane/index';
 @import './components/ColorSelect/index';
+@import './components/LightSelector/index';

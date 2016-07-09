@@ -5,7 +5,6 @@ class BlockActions {
 
   public listenForModeChange(callback: { (mode: number): void }) {
     this.modeCallbacks.push(callback);
-    console.log("added listener: "+this.modeCallbacks.length);
   }
 
   public changeMode(mode: number) {
@@ -22,7 +21,6 @@ class BlockActions {
     if (index > -1) {
       this.modeCallbacks.splice(index, 1);
     }
-    console.log("removed listener: "+this.modeCallbacks.length);
   }
 
   public commit() {
@@ -38,7 +36,7 @@ class BlockActions {
   }
 
   public rotX() {
-    console.log("comrotXmit");
+    console.log("rotX");
   }
 
   public rotY() {

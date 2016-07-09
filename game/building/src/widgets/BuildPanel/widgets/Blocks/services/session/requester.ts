@@ -1,7 +1,7 @@
 import { client } from 'camelot-unchained';
 import {Promise} from 'es6-promise';
 
-import {Material} from '../../lib/Material';
+import {Material, MaterialType, getTypeFromTags} from '../../lib/Material';
 import {Block} from '../../lib/Block';
 import faker from './requester_fake';
 
@@ -68,6 +68,7 @@ class BuildingLoader {
         icon: subsRecieved[i],
         name: '',
         tags: '',
+        type: MaterialType.OTHER,
         blocks: []
       } as Material;
 
@@ -116,6 +117,7 @@ class BuildingLoader {
       material.name = tags.Types.join(' ');
       material.tags = tags.Types.join('-');
       material.blocks.push(block);
+      material.type = getTypeFromTags(tags.Types);
     }
 
     if (--this.numBlocksToLoad === 0) {

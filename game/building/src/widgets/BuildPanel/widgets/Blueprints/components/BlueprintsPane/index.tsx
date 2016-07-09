@@ -48,8 +48,11 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
     const item = {
       name: "Blueprint",
       description: blueprint.name,
-      icon: 'data:image/png;base64,' + blueprint.icon,
-      type: BuildingItemType.Blueprint
+      element: (<img src={'data:image/png;base64,' + blueprint.icon}/>),
+      id: blueprint.index + '-' + BuildingItemType.Blueprint,
+      type: BuildingItemType.Blueprint,
+      select: () => { this.selectBlueprint(blueprint) }
+
     } as BuildingItem;
 
     this.props.onItemSelect(item);
@@ -160,6 +163,24 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
     );
   }
 
+  createSaveAndDeleteButtons(bpState: BlueprintsState) {
+    return (
+      <div>
+        <button onClick={this.toggleSaveBlueprint} disabled={!bpState.copyable}>Save</button>
+        <button onClick={this.triggerDeleteBlueprint} disabled={bpState.selected == null}>Delete</button>
+      </div>
+    );
+  }
+
+  createCopyPasteButtons(bpState: BlueprintsState) {
+    return (
+      <div>
+        <button onClick={this.triggerCopyBlueprint} disabled={!bpState.copyable}>Copy</button>
+        <button onClick={this.triggerPasteBlueprint} disabled={!bpState.pastable}>Paste</button>
+      </div>
+    );
+  }
+
   render() {
     const bpState: BlueprintsState = this.props.blueprintsState;
 
@@ -171,13 +192,11 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
           hoverBlueprint={this.hoverBlueprint}
           />
 
-        <button onClick={this.toggleSaveBlueprint} disabled={!bpState.copyable}>Save</button>
-        <button onClick={this.triggerDeleteBlueprint} disabled={bpState.selected == null}>Delete</button>
+        {this.createSaveAndDeleteButtons(bpState) }
+        {this.createCopyPasteButtons(bpState) }
 
-        <button onClick={this.triggerCopyBlueprint} disabled={!bpState.copyable}>Copy</button>
-        <button onClick={this.triggerPasteBlueprint} disabled={!bpState.pastable}>Paste</button>
         {this.createSaveView(bpState) }
-        { this.createHoverView(this.state.hoverItem) }
+        {this.createHoverView(this.state.hoverItem) }
       </div>
     )
   }

@@ -167,6 +167,39 @@ div::-webkit-scrollbar-thumb {
 div::-webkit-scrollbar-track {
     background: rgb(29, 28, 27);
 }
+
+button {
+  display: inline-block;
+  margin: 5px 5px 0px 0px;
+  min-width: 70px;
+  border: 1px solid #4b4642;
+  color: #756c67;
+  background: linear-gradient(to top, black, #2C2C2C);
+  box-shadow: inset black 0px 0px 20px;
+  font-size: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+  -webkit-filter: brightness(0.8);
+  transition: all 0.2s ease-in-out;
+  &[disabled] {
+    color: #4b4642;
+    background: #2C2C2C;
+    box-shadow: none;
+  }  
+  &:hover {
+    &:not([disabled]) {
+      -webkit-filter: brightness(1.2);
+    }
+  }
+  &:focus {
+    outline: none;
+  }
+  &:active {
+    -webkit-filter: brightness(.8)
+  }
+}
+
 @import './components/BuildPanel/index';
 @import './widgets/Blocks/index';
 @import './widgets/RecentSelections/index';

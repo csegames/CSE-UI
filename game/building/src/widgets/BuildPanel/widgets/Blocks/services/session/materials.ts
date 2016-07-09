@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Material} from '../../lib/Material';
+import {Material, MaterialType} from '../../lib/Material';
 import {Block} from '../../lib/Block';
 import requester from './requester';
 
@@ -21,6 +21,7 @@ const DEFAULT_MATERIAL: Material = {
   icon: '',
   name: 'default',
   tags: 'default',
+  type: MaterialType.OTHER,
   blocks: []
 } as Material;
 

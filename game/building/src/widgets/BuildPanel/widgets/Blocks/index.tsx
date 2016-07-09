@@ -15,30 +15,31 @@ import {Material} from './lib/Material';
 import {loadMaterials, findBlock} from './services/session/materials';
 import {Block} from './lib/Block'
 import {BuildingItem} from '../../../../lib/BuildingItem'
+import {BuildPaneProps} from '../../lib/BuildPane';
+import TabbedPane from '../../components/TabbedPane';
 
 import MaterialAndShapePane from './components/MaterialAndShapePane';
+import MaterialReplace from './components/MaterialReplace';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
 loadMaterials(store.dispatch);
 
-export interface ContainerProps {
-  onItemSelect?: (item: BuildingItem)=>void;
+interface ContainerState {
 }
 
-export interface ContainerState {
-}
-
-class Container extends React.Component<ContainerProps, ContainerState> {
-  constructor(props: ContainerProps)
-  {
+class Container extends React.Component<BuildPaneProps, ContainerState> {
+  constructor(props: BuildPaneProps) {
     super(props);
   }
-  
+
   render() {
     return (
       <Provider store={store}>
-        <MaterialAndShapePane onItemSelect={this.props.onItemSelect} />
+        <TabbedPane tabs={['Blocks', 'Replace']}>
+          <MaterialAndShapePane onItemSelect={this.props.onItemSelect} minimized={this.props.minimized}/>
+          <MaterialReplace minimized={this.props.minimized}/>
+        </TabbedPane>
       </Provider>
     )
   }

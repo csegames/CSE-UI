@@ -1,4 +1,4 @@
-import {Material} from '../../lib/Material';
+import {Material, MaterialType} from '../../lib/Material';
 import {Block} from '../../lib/Block';
 
 class MaterialRequests {
@@ -118,48 +118,43 @@ class MaterialRequests {
     return blocks;
   }
 
+  createMaterial(matId: number, blockCount: number, type: MaterialType) {
+    return {
+      id: matId,
+      icon: matId%2==0 ? this.materialIcon1 : this.materialIcon2,
+      name: 'mat ' + matId,
+      tags: 'some, tags, to, test, with',
+      type: type,
+      blocks: this.getBlocks(matId, blockCount)
+    };
+  }
+
   getMaterials(): Material[] {
     const blocksPerMat = 10;
     let blockCount = 0;
-    return [
-      {
-        id: 1,
-        icon: this.materialIcon1,
-        name: 'mat one',
-        tags: '',
-        blocks: this.getBlocks(1, blockCount)
-      }, {
-        id: 2,
-        icon: this.materialIcon1,
-        name: 'mat two',
-        tags: '',
-        blocks: this.getBlocks(2, blockCount += blocksPerMat)
-      }, {
-        id: 3,
-        icon: this.materialIcon1,
-        name: 'mat three',
-        tags: '',
-        blocks: this.getBlocks(3, blockCount += blocksPerMat)
-      }, {
-        id: 4,
-        icon: this.materialIcon1,
-        name: 'mat four',
-        tags: '',
-        blocks: this.getBlocks(4, blockCount += blocksPerMat)
-      }, {
-        id: 5,
-        icon: this.materialIcon1,
-        name: 'mat five',
-        tags: '',
-        blocks: this.getBlocks(5, blockCount += blocksPerMat)
-      }, {
-        id: 6,
-        icon: this.materialIcon2,
-        name: 'mat size',
-        tags: '',
-        blocks: this.getBlocks(6, blockCount += blocksPerMat)
-      },
-    ];
+    let mats: Material[] = [];
+    let i = 0
+    for (; i < 20; i++) {
+      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_BLOCK));
+      blockCount += blocksPerMat;
+    }
+    for (; i < 40; i++) {
+      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_TILE));
+      blockCount += blocksPerMat;
+    }
+    for (; i < 60; i++) {
+      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_SHEET));
+      blockCount += blocksPerMat;
+    }
+    for (; i < 80; i++) {
+      mats.push(this.createMaterial(i, blockCount, MaterialType.WOOD));
+      blockCount += blocksPerMat;
+    }
+    for (; i < 90; i++) {
+      mats.push(this.createMaterial(i, blockCount, MaterialType.OTHER));
+      blockCount += blocksPerMat;
+    }
+    return mats;
   }
 
 
@@ -174,4 +169,5 @@ class MaterialRequests {
 }
 
 export default new MaterialRequests();
+
 
