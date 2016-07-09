@@ -21,11 +21,6 @@ export function selectTab(row: number, index: number) {
   }
 }
 
-
-
-
-
-
 function generateBuildPane(type: BuildPaneType) : BuildPane {
   // we generate each pane by type. This allows us to
   // save sorting information between sessions.
@@ -65,21 +60,21 @@ function generateBuildPane(type: BuildPaneType) : BuildPane {
   }
 }
 
-function generatePanes() : Array<Array<BuildPane>>{
-  var panes = new Array<Array<BuildPane>>();
-  panes.push(new Array<BuildPane>());
+function generatePanes() : BuildPane[][] {
+  const panes: BuildPane[][] = [];
+  panes.push([]);
   panes[0].push(generateBuildPane(BuildPaneType.Blocks))
-  //panes.push(new Array<BuildPane>());
+  //panes.push([]);
   //panes[1].push(generateBuildPane(BuildPaneType.Recent));
-  panes.push(new Array<BuildPane>());
+  panes.push([]);
   panes[1].push(generateBuildPane(BuildPaneType.Blueprints));
-  //panes.push(new Array<BuildPane>());
+  //panes.push([]);
   //panes[3].push(generateBuildPane(BuildPaneType.DropLight));
   return panes;
 }
 
-function generateActiveIndices() : Array<number> {
-  var activeIndices = new Array<number>();
+function generateActiveIndices() : number[] {
+  const activeIndices: number[] = [];
   activeIndices.push(0);
   activeIndices.push(0);
   activeIndices.push(0);
@@ -90,10 +85,10 @@ function generateActiveIndices() : Array<number> {
 export interface PanesState {
   
   // 2d grid of panes, sorted [rows][index]
-  panes?: Array<Array<BuildPane>>;
+  panes?: BuildPane[][];
   
   // within each row which index is active? default 0
-  activeIndices?: Array<number>;
+  activeIndices?: number[];
 }
 
 const initialState : PanesState = {
@@ -104,7 +99,7 @@ const initialState : PanesState = {
 export default function reducer(state: PanesState = initialState, action: any = {}) {
   switch(action.type) {
     case SELECT_TAB:
-      let activeIndices = state.activeIndices.slice();
+      const activeIndices = state.activeIndices.slice();
       activeIndices[action.row] = action.index;
       return assign({}, state, {
         activeIndices: activeIndices,

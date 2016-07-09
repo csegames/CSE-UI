@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-var ReactSelect = require('react-select');
+const ReactSelect = require('react-select');
 
 import {GlobalState} from '../../services/session/reducer';
 import * as blueprintService from '../../services/session/blueprints';
@@ -28,7 +28,7 @@ export interface BlueprintsPaneProps {
   dispatch?: (action: any) => void;
   blueprintsState?: BlueprintsState;
   minimized?: boolean;
-  onItemSelect?: (item: BuildingItem)=>void;
+  onItemSelect?: (item: BuildingItem) => void;
 }
 
 export interface BlueprintsPaneState {
@@ -71,10 +71,10 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   getBlueprintCategories(blueprints: Blueprint[]): string[] {
-    let categoryMap: { [key: string]: boolean } = {};
-    let categories: string[] = [];
+    const categoryMap: { [key: string]: boolean } = {};
+    const categories: string[] = [];
     blueprints.forEach((bp: Blueprint) => {
-      let exists: boolean = categoryMap[bp.category];
+      const exists: boolean = categoryMap[bp.category];
       if (!exists) {
         categoryMap[bp.category] = true;
         categories.push(bp.category);
@@ -107,7 +107,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   triggerPasteBlueprint = () => {
     blueprintService.pasteBlueprint();
   }
-  
+
   selectBlueprint = (blueprint: Blueprint) => {
     blueprintService.selectBlueprint(blueprint);
     this.onBlueprintSelect(blueprint);
@@ -119,45 +119,52 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
     this.setState({ hoverItem: blueprint } as BlueprintsPaneState);
   }
-  
-  render() {
-    let bpState: BlueprintsState = this.props.blueprintsState;
-    /*
-      let categories = this.getBlueprintCategories(bpState.blueprints);
-      let options = categories.map((cat: string) => {
-        return { value: cat, label: cat }
-      });
-        <div className='BlueprintsPane__filter'>
-          <div className='BlueprintsPane__filter__select'>
-            <ReactSelect name='form-field-name'
-              placeholder='filter...'
-              value={this.state.filter}
-              options={options}
-              onChange={this.onFilterChanged}
-              multi
-              simpleValue
-              />
-          </div>
-        </div>
-    */
 
-    let saveView: JSX.Element = null;
+  createSaveView(bpState: BlueprintsState) {
     if (this.state.saveMode) {
-      let blueprintNames: string[] = bpState.blueprints.map((bp: Blueprint) => { return bp.id })
-      saveView = (<BlueprintSaveView
+      const blueprintNames: string[] = bpState.blueprints.map((bp: Blueprint) => { return bp.id })
+      return (<BlueprintSaveView
         onSave={(name: string) => this.triggerSaveBlueprint(name) }
         onCancel={() => this.triggerCancelSave() }
         reservedNames={blueprintNames}/>)
     }
+    return null;
+  }
 
-    let hoverView: JSX.Element = null;
-    if (this.state.hoverItem != null && this.state.hoverItem.icon != null) {
-      hoverView = <div className="blueprint-preview-panel"><img src={`data:image/png;base64, ${this.state.hoverItem.icon}`} /></div>
-    }    
+  createHoverView(hoverItem: Blueprint) {
+    if (hoverItem != null && hoverItem.icon != null) {
+      return <div className="blueprint-preview-panel"><img src={`data:image/png;base64, ${hoverItem.icon}`} /></div>
+    }
+    return null;
+  }
+
+  createFilterPane(bpState: BlueprintsState) {
+    const categories = this.getBlueprintCategories(bpState.blueprints);
+    const options = categories.map((cat: string) => {
+      return { value: cat, label: cat }
+    });
 
     return (
-      <div className='BlueprintsPane'>
+      <div className='BlueprintsPane__filter'>
+        <div className='BlueprintsPane__filter__select'>
+          <ReactSelect name='form-field-name'
+            placeholder='filter...'
+            value={this.state.filter}
+            options={options}
+            onChange={this.onFilterChanged}
+            multi
+            simpleValue
+            />
+        </div>
+      </div>
+    );
+  }
 
+  render() {
+    const bpState: BlueprintsState = this.props.blueprintsState;
+
+    return (
+      <div className= 'BlueprintsPane' >
         <BlueprintList blueprints={this.filterBlueprints(bpState.blueprints) }
           selected={bpState.selected}
           selectBlueprint={this.selectBlueprint}
@@ -169,9 +176,9 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
         <button onClick={this.triggerCopyBlueprint} disabled={!bpState.copyable}>Copy</button>
         <button onClick={this.triggerPasteBlueprint} disabled={!bpState.pastable}>Paste</button>
-        {saveView}
-        {hoverView}
-      </div >
+        {this.createSaveView(bpState) }
+        { this.createHoverView(this.state.hoverItem) }
+      </div>
     )
   }
 }

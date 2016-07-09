@@ -11,12 +11,12 @@
 .shapes-view {
   vertical-align: top;
   line-height: 1px;
+  background: #131313;
   img {
     cursor: pointer;
     display: inline-block;
     height: 30px;
     width: 30px;
-    background: #131313;
     transition: all .1s ease-in-out;
     &:hover {
       filter: brightness(120%);

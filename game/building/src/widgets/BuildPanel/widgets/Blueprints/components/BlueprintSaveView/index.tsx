@@ -61,7 +61,6 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
   }
 
   render() {
-    console.log('BlueprintSaveView: state=' + this.state)
     return (
       <div className='blueprint-save-panel'>
         <NameInput ref="name" placeholder="Save Blueprint As..."

@@ -47,14 +47,15 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
   }
 
   generateCategories(categorizedBlueprints: { [key: string]: Blueprint[] }): JSX.Element[] {
-    let elements: JSX.Element[] = [];
-    for (let category in categorizedBlueprints)
+    const elements: JSX.Element[] = [];
+    for (let category in categorizedBlueprints) {
       elements.push(this.generateBlueprintList(category, categorizedBlueprints[category]));
+    }
     return elements;
   }
 
   categorizeBlueprints(blueprints: Blueprint[]): { [key: string]: Blueprint[] } {
-    let categorized: { [key: string]: Blueprint[] } = {};
+    const categorized: { [key: string]: Blueprint[] } = {};
     this.props.blueprints.forEach((bp: Blueprint) => {
       let categoryBps = categorized[bp.category];
       if (categoryBps == null) {
@@ -67,7 +68,7 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
   }
 
   render() {
-    //let categorizedBlueprints: { [key: string]: Blueprint[] } = this.categorizeBlueprints(this.props.blueprints);
+    //const categorizedBlueprints: { [key: string]: Blueprint[] } = this.categorizeBlueprints(this.props.blueprints);
 
     return (
       <div className='blueprints__list'>

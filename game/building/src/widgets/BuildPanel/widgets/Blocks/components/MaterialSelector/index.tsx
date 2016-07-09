@@ -34,9 +34,7 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
   }
 
   render() {
-    let selectedId: number = null;
-    if (this.props.selected)
-      selectedId = this.props.selected.id;
+    const selectedId: number = this.props.selected ? this.props.selected.id : null;
 
     return (
       <div className='material-and-shape__material-selector'>

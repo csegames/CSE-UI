@@ -8,13 +8,13 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-var thunk = require('redux-thunk').default;
+const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
 import App from './components/BuildingApp';
 
-let store = createStore(reducer, applyMiddleware(thunk));
-let root = document.getElementById('cse-ui-building');
+const store = createStore(reducer, applyMiddleware(thunk));
+const root = document.getElementById('cse-ui-building');
 
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib
@@ -26,7 +26,7 @@ interface WindowInterface extends Window {
 }
 
 // declare window implements WindowInterface
-declare var window: WindowInterface;
+declare const window: WindowInterface;
 
 if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   events.on('init', () => ReactDom.render(
@@ -35,6 +35,9 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
     </Provider>,
     root));  
 } else {
+
+  document.body.style.backgroundImage = "url('./images/cube-bg.jpg')";
+
   ReactDom.render(
     <Provider store={store}>
       <App />

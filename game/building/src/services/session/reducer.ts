@@ -7,7 +7,7 @@
 import {combineReducers} from 'redux';
 
 import selectionReducer, {SelectionState} from './selection';
-let selection = selectionReducer;
+const selection = selectionReducer;
 
 export default combineReducers({
   selection,

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-var thunk = require('redux-thunk').default;
+const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
 import requester from './services/session/requester';
@@ -18,7 +18,7 @@ import {BuildingItem} from '../../../../lib/BuildingItem'
 
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 
-let store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(thunk));
 
 loadMaterials(store.dispatch);
 

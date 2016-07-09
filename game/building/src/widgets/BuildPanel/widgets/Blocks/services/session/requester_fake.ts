@@ -28,98 +28,99 @@ class MaterialRequests {
         id: ++blockIdSeed,
         icon: this.blockIcon1,
         name: 'block one',
-        tags: '',
-        shape: '',
+        tags: 'block, one',
+        shape: 'cube',
         materialId: material,
         shapeId: 1
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block two',
-        tags: '',
-        shape: '',
+        tags: 'block, two',
+        shape: 'cube, half-height',
         materialId: material,
         shapeId: 2
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon1,
         name: 'block three',
-        tags: '',
-        shape: '',
+        tags: 'block, three',
+        shape: 'ramp',
         materialId: material,
         shapeId: 3
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block four',
-        tags: '',
-        shape: '',
+        tags: 'block, four',
+        shape: 'ramp, upper',
         materialId: material,
         shapeId: 4
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon1,
         name: 'block five',
-        tags: '',
-        shape: '',
+        tags: 'block, five',
+        shape: 'half, ramp',
         materialId: material,
         shapeId: 5
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block six',
-        tags: '',
-        shape: '',
+        tags: 'block, six',
+        shape: 'cube","cutcorner',
         materialId: material,
         shapeId: 6
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block seven',
-        tags: '',
-        shape: '',
+        tags: 'block, seven',
+        shape: 'angled","pyramid',
         materialId: material,
         shapeId: 7
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block eight',
-        tags: '',
-        shape: '',
+        tags: 'block, eight',
+        shape: 'corner","pyramid',
         materialId: material,
         shapeId: 8
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block nine',
-        tags: '',
-        shape: '',
+        tags: 'block, nine',
+        shape: 'mitered","ramp',
         materialId: material,
         shapeId: 9
       }, {
         id: ++blockIdSeed,
         icon: this.blockIcon2,
         name: 'block ten',
-        tags: '',
-        shape: '',
+        tags: 'block, ten',
+        shape: 'circle',
         materialId: material,
         shapeId: 10
       },
     ];
   }
+
   getAllBlocks(): Block[] {
-    let mats: Material[] = this.getMaterials();
-    let blocks: Block[] = [];
+    const mats: Material[] = this.getMaterials();
+    const blocks: Block[] = [];
     for (let m in mats) {
-      let matBlocks = mats[m].blocks;
+      const matBlocks = mats[m].blocks;
       blocks.push(...matBlocks);
     }
     return blocks;
   }
- 
+
   getMaterials(): Material[] {
     const blocksPerMat = 10;
-    let blockCount=0;    
+    let blockCount = 0;
     return [
       {
         id: 1,
@@ -132,31 +133,31 @@ class MaterialRequests {
         icon: this.materialIcon1,
         name: 'mat two',
         tags: '',
-        blocks: this.getBlocks(2, blockCount+=blocksPerMat)
+        blocks: this.getBlocks(2, blockCount += blocksPerMat)
       }, {
         id: 3,
         icon: this.materialIcon1,
         name: 'mat three',
         tags: '',
-        blocks: this.getBlocks(3, blockCount+=blocksPerMat)
+        blocks: this.getBlocks(3, blockCount += blocksPerMat)
       }, {
         id: 4,
         icon: this.materialIcon1,
         name: 'mat four',
         tags: '',
-        blocks: this.getBlocks(4, blockCount+=blocksPerMat)
+        blocks: this.getBlocks(4, blockCount += blocksPerMat)
       }, {
         id: 5,
         icon: this.materialIcon1,
         name: 'mat five',
         tags: '',
-        blocks: this.getBlocks(5, blockCount+=blocksPerMat)
+        blocks: this.getBlocks(5, blockCount += blocksPerMat)
       }, {
         id: 6,
         icon: this.materialIcon2,
         name: 'mat size',
         tags: '',
-        blocks: this.getBlocks(6, blockCount+=blocksPerMat)
+        blocks: this.getBlocks(6, blockCount += blocksPerMat)
       },
     ];
   }

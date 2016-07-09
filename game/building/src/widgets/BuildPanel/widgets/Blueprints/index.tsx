@@ -8,14 +8,14 @@ import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import {loadBlueprints} from './services/session/blueprints';
-var thunk = require('redux-thunk').default;
+const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
 import BlueprintsPane from './components/BlueprintsPane';
 import {BuildingItem} from '../../../../lib/BuildingItem'
 
 
-let store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(thunk));
 
 loadBlueprints(store.dispatch);
 

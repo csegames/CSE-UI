@@ -7,13 +7,13 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-var thunk = require('redux-thunk').default;
+const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
 import Panel from './components/BuildPanel';
 import {BuildingItem} from '../../lib/BuildingItem';
 
-let store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(thunk));
 
 export interface ContainerProps {
   onItemSelect: (item: BuildingItem)=>void;

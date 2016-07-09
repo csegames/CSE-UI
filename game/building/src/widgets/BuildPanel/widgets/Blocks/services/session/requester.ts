@@ -1,8 +1,9 @@
 import { client } from 'camelot-unchained';
-import {Promise} from 'es6-promise'
+import {Promise} from 'es6-promise';
 
 import {Material} from '../../lib/Material';
 import {Block} from '../../lib/Block';
+import faker from './requester_fake';
 
 class BuildingLoader {
   private materials: { [key: number]: Material } = {};
@@ -11,11 +12,22 @@ class BuildingLoader {
 
   private numBlocksToLoad: number = 0;
 
+  private win: any = window;
+  private fake: boolean = (this.win.cuAPI == null);
+
   public changeBlockSelection(block: Block) {
+    if (this.fake) {
+      return faker.changeBlockSelection(block);
+    }
+
     client.ChangeBlockType(block.id);
   }
 
   public listenForBlockSelectionChange(callback: { (matId: number, shapeId: number): void }) {
+    if (this.fake) {
+      return faker.listenForBlockSelectionChange(callback);
+    }
+
     const listener = (blockId: number) => {
       callback(
         this.getMaterialIdFromBlockId(blockId),
@@ -26,6 +38,10 @@ class BuildingLoader {
   }
 
   public loadMaterials(callback: (mats: Material[]) => void) {
+    if (this.fake) {
+      return faker.loadMaterials(callback);
+    }
+
     client.OnReceiveBlocks(this.recieveBlocks);
     client.OnReceiveBlockTags((id: number, tags: any) => this.recieveBlockTags(id, tags, callback));
     //client.OnReceiveBlockIDs(this.recieveBlockIdsForSubstance)
@@ -33,11 +49,11 @@ class BuildingLoader {
     client.RequestSubstances();
   }
 
-  public getShapeIdFromBlockId(id: number) {
+  getShapeIdFromBlockId(id: number) {
     return (id >> 21) & 31;
   }
 
-  public getMaterialIdFromBlockId(id: number) {
+  getMaterialIdFromBlockId(id: number) {
     return (id >> 2) & 4095;
   }
 
@@ -45,9 +61,9 @@ class BuildingLoader {
     let count = 0;
     for (let i in subsRecieved) {
       count++;
-      let id = parseInt(i);
+      const id = parseInt(i);
 
-      let material: Material = {
+      const material: Material = {
         id: id,
         icon: subsRecieved[i],
         name: '',
@@ -69,7 +85,7 @@ class BuildingLoader {
 
     for (let i in blocksRecieved) {
       this.numBlocksToLoad++;
-      let id = parseInt(i);
+      const id = parseInt(i);
       this.blocks[id] = {
         id: id,
         icon: blocksRecieved[i],
@@ -80,16 +96,12 @@ class BuildingLoader {
     }
 
     for (let i in blocksRecieved) {
-      let id = parseInt(i);
+      const id = parseInt(i);
       client.RequestBlockTags(id);
     }
-
-    console.log('recieved ' + this.numBlocksToLoad + ' blocks')
-
   }
 
   recieveBlockTags = (id: number, tags: any, callback: { (mats: Material[]): void }) => {
-    let i: number;
     const block: Block = this.blocks[id];
     block.name = tags.Types.join(', ');
     block.shapeId = this.getShapeIdFromBlockId(id);
@@ -97,11 +109,10 @@ class BuildingLoader {
     block.materialId = this.getMaterialIdFromBlockId(id);
     block.tags = tags.Types.join(', ');
 
-    let material = this.materials[block.materialId];
+    const material = this.materials[block.materialId];
     if (material == null) {
       console.log("unknown substance " + block.materialId + " for block " + block.id + "-" + block.name);
-    }
-    else {
+    } else {
       material.name = tags.Types.join(' ');
       material.tags = tags.Types.join('-');
       material.blocks.push(block);

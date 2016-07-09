@@ -7,7 +7,7 @@
 import {combineReducers} from 'redux';
 
 import bpReducer, {BlueprintsState} from './blueprints';
-let blueprints = bpReducer;
+const blueprints = bpReducer;
 
 export default combineReducers({
   blueprints,

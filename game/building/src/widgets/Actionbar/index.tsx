@@ -8,6 +8,7 @@ import * as React from 'react';
 import {client, channelId, events} from 'camelot-unchained';
 
 import ActionButton from './components/ActionButton';
+import requester from '../../services/session/requester';
 
 export interface ActionBarProps {
 }
@@ -18,20 +19,25 @@ export interface ActionBarState {
 }
 
 class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
+  private modeListener: { (buildingMode: number):void } = (buildingMode: number) => {
+    this.setState({buildingMode: buildingMode} as any);
+  };
 
   constructor(props: ActionBarProps) {
     super(props);
     this.state = {
       minimized: false,
       buildingMode: 1
-    }
+    }    
   }
 
-  componentDidMount() {
-    client.OnBuildingModeChanged((buildingMode: number) => {
-      this.setState({buildingMode: buildingMode} as any);
-    });
-  }
+ componentDidMount() {
+    requester.listenForModeChange(this.modeListener);
+ }
+
+ componentWillUnmount() {
+    requester.unlistenForModeChange(this.modeListener);
+ }
 
   onMinMax() {
     this.setState({
@@ -42,54 +48,51 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 
   onSelect() {
     if (this.state.buildingMode < 4) {
-      client.SetBuildingMode(4);
+      requester.changeMode(4);
       this.setState({buildingMode: 4} as any);
     } else {
-      client.SetBuildingMode(1);
+      requester.changeMode(1);
       this.setState({buildingMode: 1} as any);
     }
   }
 
   onComit() {
-    client.CommitBlock();
+    requester.commit();
   }
 
   onUndo() {
-    client.UndoCube();
+    requester.undo();
   }
 
   onRedo() {
-    client.RedoCube();
+    requester.redo();
   }
 
   onRotX() {
-    client.BlockRotateX();
+    requester.rotX();
   }
 
   onRotY() {
-    client.BlockRotateY();
+    requester.rotY();
   }
 
   onRotZ() {
-    client.BlockRotateZ();
+    requester.rotZ();
   }
 
   onFlipX() {
-    client.BlockFlipX();
+    requester.flipX();
   }
 
   onFlipY() {
-    client.BlockFlipY();
+    requester.flipY();
   }
 
   onFlipZ() {
-    client.BlockFlipZ();
+    requester.flipZ();
   }
 
   render() {
-    const CUBE_CHANNEL:any = 27;
-    const cube = channelId == CUBE_CHANNEL;
-    const hideIfCube = { display: cube ? 'none' : '' };
 
     return (
       <div className='action-bar'>
@@ -112,13 +115,13 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
             {this.state.minimized ? null : <em>1</em>}
           </li>
 
-          <li onClick={() => this.onUndo() } style={hideIfCube}>
+          <li onClick={() => this.onUndo() } >
             <ActionButton isActive={false}
               icon={'images/action-bar-undo.png'} />
             {this.state.minimized ? null : <em>2</em>}
           </li>
 
-          <li onClick={() => this.onRedo() } style={hideIfCube}>
+          <li onClick={() => this.onRedo() } >
             <ActionButton isActive={false}
               icon={'images/action-bar-redo.png'} />
             {this.state.minimized ? null : <em>3</em>}

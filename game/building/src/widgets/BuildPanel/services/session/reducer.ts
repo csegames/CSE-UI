@@ -7,7 +7,7 @@
 import {combineReducers} from 'redux';
 
 import panesReducer, {PanesState} from './panes';
-let panes = panesReducer;
+const panes = panesReducer;
 
 export default combineReducers({
   panes,

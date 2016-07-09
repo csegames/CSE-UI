@@ -23,8 +23,8 @@ export function loadBlueprints(dispatch: (action: any) => void) {
   requester.loadBlueprints((blueprint: Blueprint) => {
     dispatch(addBlueprint(blueprint))
   });
-  requester.listenForModeChange((mode: boolean) => {
-    dispatch(copyModeChanged(mode));
+  requester.listenForSelectionModeChange((selected: boolean) => {
+    dispatch(copyModeChanged(selected));
   });
   requester.listenForCopy(() => {
     dispatch(pasteModeChanged(true));

@@ -7,7 +7,7 @@
 import {combineReducers} from 'redux';
 
 import materialsReducer, {MaterialsState} from './materials';
-let materials = materialsReducer;
+const materials = materialsReducer;
 
 export default combineReducers({
   materials,

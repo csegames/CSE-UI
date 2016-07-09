@@ -32,7 +32,7 @@ function getMaterialAsString(mat: Material) {
 function getBlocksAsString(blocks: Block[]) {
   let blockString = "[";
   for (let i in blocks) {
-    let b = blocks[i];
+    const b = blocks[i];
     blockString +=
       "{ id: " + b.id +
       ", name: '" + b.name +
@@ -64,7 +64,7 @@ export function requestBlockChange(block: Block) {
 }
 
 export function requestMaterialChange(material: Material, shape: Block) {
-  let block: Block = getBlockForShapeId(material.blocks, shape.shapeId);
+  const block: Block = getBlockForShapeId(material.blocks, shape.shapeId);
   requester.changeBlockSelection(block);
 }
 
@@ -111,26 +111,27 @@ const initialState: MaterialsState = {
 
 export function findBlock(mat: number, shape: number, materials: Material[])
 {
-   let material: Material = getMaterialById(materials, mat);
+   const material: Material = getMaterialById(materials, mat);
    return getBlockForShapeId(material.blocks, shape);
 }
 
 function getMaterialById(materials: Material[], id: number) {
-  for (var m in materials) {
-    if (materials[m].id == id)
+  for (let m in materials) {
+    if (materials[m].id === id) {
       return materials[m];
+    }
   }
   return materials[0] || DEFAULT_MATERIAL;
 }
 
 function getBlockForShapeId(blocks: Block[], shapeId: number) {
   for (let i in blocks) {
-    let block = blocks[i];
-    if (block.shapeId == shapeId) {
+    const block = blocks[i];
+    if (block.shapeId === shapeId) {
       return block;
     }
   }
-  return blocks[0] || {} as Block;
+  return blocks[0];
 }
 
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {

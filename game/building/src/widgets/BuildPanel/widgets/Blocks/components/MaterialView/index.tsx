@@ -23,14 +23,15 @@ class MaterialView extends React.Component<MaterialViewProps, MaterialViewState>
   }
 
   render() {
-    if (this.props.selectedMaterial == null || this.props.selectedMaterial.icon==null)
+    if (this.props.selectedMaterial == null || this.props.selectedMaterial.icon==null) {
       return ( <div className='material-view' onClick={() => this.props.onClick() }></div> );
-    else
-      return (
-        <div className='material-view' onClick={() => this.props.onClick() }>
-          <img src={`data:image/png;base64, ${this.props.selectedMaterial.icon}`} />
-        </div>
-      );
+    }
+
+    return (
+      <div className='material-view' onClick={() => this.props.onClick() }>
+        <img src={`data:image/png;base64, ${this.props.selectedMaterial.icon}`} />
+      </div>
+    );
   }
 }
 

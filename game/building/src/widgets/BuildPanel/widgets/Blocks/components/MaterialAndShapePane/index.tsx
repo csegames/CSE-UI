@@ -45,15 +45,15 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     this.state = { showMatSelect: false };
 
     requester.listenForBlockSelectionChange((mat: number, shape: number) => {
-      let block: Block = materialService.findBlock(mat, shape, this.props.materialsState.materials);
+      const block: Block = materialService.findBlock(mat, shape, this.props.materialsState.materials);
       this.onBlockSelect(block);
     });
   }
 
   onBlockSelect = (block: Block) => {
     const item = {
-      name: block.shape,
-      description: block.tags,
+      name: block.shapeId+". "+block.shape,
+      description: block.materialId+". "+block.tags,
       icon: 'data:image/png;base64,' + block.icon,
       type: BuildingItemType.Block
     } as BuildingItem;
@@ -87,8 +87,8 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
       )
     }
 
-    let selectedMaterial: Material = this.props.materialsState.selectedMaterial;
-    let selectedShape: Block = this.props.materialsState.selectedBlock;
+    const selectedMaterial: Material = this.props.materialsState.selectedMaterial;
+    const selectedShape: Block = this.props.materialsState.selectedBlock;
 
     return (
       <div className='build-panel__material-and-shape'>

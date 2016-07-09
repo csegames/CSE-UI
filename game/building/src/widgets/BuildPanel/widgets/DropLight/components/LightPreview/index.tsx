@@ -11,7 +11,7 @@ export interface LightPreviewProps {
   intensity: number;
   red: number;
   green: number;
-  blue: number;  
+  blue: number;
 }
 
 export interface LightPreviewState {
@@ -24,10 +24,10 @@ class LightPreview extends React.Component<LightPreviewProps, LightPreviewState>
   }
 
   render() {
-    var rgb = `rgb(${this.props.red}, ${this.props.green}, ${this.props.blue})`;
-    var rgbIntensity = `rgba(${this.props.red}, ${this.props.green}, ${this.props.blue}, ${this.props.intensity/200})`
+    const rgb = `rgb(${this.props.red}, ${this.props.green}, ${this.props.blue})`;
+    const rgbIntensity = `rgba(${this.props.red}, ${this.props.green}, ${this.props.blue}, ${this.props.intensity / 200})`
     return (
-      <div className='drop-light__preview' style={{backgroundImage: `radial-gradient(50% 50%, ${rgb}, ${rgb} ${(this.props.radius/100)*70}%, ${rgbIntensity} ${(this.props.radius/100)*70 + 30}%, rgb(0,0,0) 200%)`}} />
+      <div className='drop-light__preview' style={{ backgroundImage: `radial-gradient(50% 50%, ${rgb}, ${rgb} ${(this.props.radius / 100) * 70}%, ${rgbIntensity} ${(this.props.radius / 100) * 70 + 30}%, rgb(0,0,0) 200%)` }} />
     )
   }
 }
