@@ -33,10 +33,10 @@ function emojiNameFromText(text:string): string {
       return 'neutral';
     case ':sad:': case ':(': case ':-(':
       return 'sad';
-    case ':shocked:': case '8o': case '8-o': case '8-O':
-    case ':O': case ':o':
+    case ':shocked:': case '8o':
+    case '8-o': case ':o':
       return 'shocked';
-    case ':sleepy:': case '-_-zzZ': case '(-_-)zzZ': case ':zzz:':
+    case ':sleepy:': case ':zzz:':
       return 'sleepy';
     case ':smile:': case ':>':
       return 'smile';
@@ -106,7 +106,7 @@ function emojiNameFromText(text:string): string {
       return 'vikinglove';
     case ':plusten:': case ':plus10:':
       return 'plusten';
-    case ':pvp:' :
+    case ':pvp:':
       return 'pvp';
     case ':rage:':
       return 'rage';
@@ -127,6 +127,8 @@ function emojiNameFromText(text:string): string {
   switch(text) {
     case ':D': case ':-D':
       return 'grin';
+    case '-_-zzZ': case '(-_-)zzZ':
+      return 'sleepy';
   }
   return null;
 }
