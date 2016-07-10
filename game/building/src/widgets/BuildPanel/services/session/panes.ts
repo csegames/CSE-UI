@@ -74,12 +74,7 @@ function generatePanes() : BuildPane[][] {
 }
 
 function generateActiveIndices() : number[] {
-  const activeIndices: number[] = [];
-  activeIndices.push(0);
-  activeIndices.push(0);
-  activeIndices.push(0);
-  activeIndices.push(0);
-  return activeIndices;
+  return [0,0,0,0];
 }
 
 export interface PanesState {
