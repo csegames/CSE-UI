@@ -1,0 +1,20 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.recent-selections {
+  img {
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    margin: 5px;
+    transition: all .1s ease-in-out;
+    &:hover {
+      filter: brightness(120%);
+      -webkit-filter: brightness(120%);
+    }
+  }
+}

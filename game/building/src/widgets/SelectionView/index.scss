@@ -1,0 +1,60 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+.building__selection-view {
+  width: 200px;
+  position: fixed;
+  bottom: 100px;
+  left: calc(50% - 100px);  
+  background: linear-gradient(to left, rgba(33, 28, 21, 0), rgba(0, 0, 0, 0.8) 10%, #211C15, rgba(0, 0, 0, 0.8) 90%, rgba(33, 28, 21, 0));
+  border: 1px rgba(255, 255, 255, 0.19) solid;
+  border-width: 1px 0px;
+  border-image: linear-gradient( to left, transparent, #6d6250, transparent);
+  border-image-slice: 1;
+    
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    margin: auto;
+  }
+  
+  p {
+    padding: 2px 0 2px 0;
+    margin: 0;
+    color: #9f9893;
+    text-align: center;
+    font-size: 11px;
+  }
+  
+  hr {
+    width: 80%;
+    margin: 1px auto;
+    border-width: 1px 0px 0px 0px;
+    border-image: linear-gradient(to left, rgba(75, 70, 66, 0.0), rgba(143, 133, 127, 0.76),rgba(75, 70, 66, 0.0));
+    border-image-slice: 1;
+  }
+  
+  .preview {
+    position: absolute;
+    left: calc(50% - 35px);
+    top: -39px;
+    background: linear-gradient(#131313, rgba(0, 0, 0, 0.9));
+    padding: 4px;
+    width: 60px;
+    height: 30px;
+    -webkit-clip-path: polygon(0 100%, 20% 75%, 20% 35%, 50% 0, 80% 35%, 80% 75%, 100% 100%);
+    clip-path: polygon(0 100%, 20% 75%, 20% 35%, 50% 0, 80% 35%, 80% 75%, 100% 100%);
+  }
+  
+  .icon {
+    margin: auto;
+    width: 40px;
+    height: 40px;
+    top: 2px;
+    position: absolute;
+    left: calc(50% - 20px);  }
+}

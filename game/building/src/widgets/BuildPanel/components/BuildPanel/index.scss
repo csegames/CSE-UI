@@ -1,0 +1,82 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+ .build-panel {
+   width: 200px;
+ }
+ 
+ .build-panel.minimized {
+   width: 100px;
+ }
+ 
+.build-panel {
+  -webkit-user-select: none;
+  cursor: default;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+
+  .row {
+    margin-bottom: 5px;
+    background: linear-gradient(#131313, rgba(0, 0, 0, 0.9));
+    border-width: 1px;
+    border-image: linear-gradient(to top left, rgba(75, 70, 66, 0.2), #4b4642);
+    border-image-slice: 1;width: 100%;
+    
+  }
+   
+  header {
+    font-size: 9px;
+    text-align: left;
+    color: #9f9893;
+    padding: 0px 4px;
+    border-width:  1px 1px 0px 1px;
+    border-image: linear-gradient(to right, rgba(75, 70, 66, 0.20), rgba(75, 70, 66, 1), rgba(75, 70, 66, 0.20));
+    border-image-slice: 1;
+    background: linear-gradient( to right, rgb(19,19,19) 0%, rgba(0, 0, 0, 0.85) 100%);
+  }
+  
+  .min-max {
+    cursor: pointer;
+    width: 25px;
+    display: inline-block;
+  }
+  
+  .info {
+    float: right;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: all .1s ease-in-out;
+    &:hover {
+      color: white;
+    }
+  }    
+  
+  .tab-content {
+    height: 100%;
+    color: #9f9893;
+    padding: 5px;
+  }
+ 
+  .tabs {
+    background-color:rgba(75,70,66,0.20);
+    div {
+      display: inline-block;
+      font-size: 11px;
+      color: #706B67;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .active {
+      background-color: rgb(16, 16, 16);
+      cursor: default;
+    }
+  }
+}
+ 

@@ -1,0 +1,27 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.build-panel__material-and-shape {
+  position: relative;
+  header {
+    color: #B0AAA6;
+    text-transform: uppercase;
+    font-size: 11px;
+    border: 0;
+  }
+}
+
+.build-panel__material-and-shape__menu {
+  float: right;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 10px;
+  height: 10px;
+}
+
+@import './components/MaterialView/index';
+@import './components/ShapesView/index';
+@import './components/MaterialSelector/index';
