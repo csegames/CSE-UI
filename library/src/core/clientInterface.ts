@@ -115,7 +115,7 @@ interface clientInterface {
   GetConfigVar(variable: string): void;
 
   /* Building | CUBE */
-  OnBuildingModeChanged(c: (buildingMode: boolean) => void): void;
+  OnBuildingModeChanged(c: (buildingMode: number) => void): void;
   
   // responds with all blocks -- triggered by a call to 'RequestBlocks'
   OnReceiveBlocks(c: (buildingDict: any) => void): void;
@@ -138,6 +138,8 @@ interface clientInterface {
   
   ToggleBuildingMode(): void;
   SetBuildingMode(newMode: number): void;
+  UndoCube(): void;
+  RedoCube(): void;
   CommitBlock(): void;
   CancelBlockPlacement(): void;
   BlockRotateX(): void;
