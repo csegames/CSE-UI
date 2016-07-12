@@ -59,6 +59,9 @@ export * from './signalr';
 import * as signalrExports from './signalr';
 import signalr from './signalr';
 
+export * from './slashCommands';
+import * as slashCommandsExports from './slashCommands';
+
 let cu = Object.assign({
 
   // api
@@ -100,7 +103,7 @@ let cu = Object.assign({
 
   // RestAPI
   restAPI : restAPI
-}, groups, eventExports, signalrExports);
+}, groups, eventExports, signalrExports, slashCommandsExports);
 
 export default cu;
 
