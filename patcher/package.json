@@ -26,6 +26,18 @@
     "name": "cu-patcher-ui"
   },
   "scripts": {
+    "setup": "npm run setup:global && npm run setup:char-typings && npm run setup:char-npm && npm run setup:typings && npm run setup:npm",
+    "setup:global": "cmd /c npm install typings@latest typescript@latest -g",
+    "setup:char-npm": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c npm install && cd %OLDDIR%",
+    "setup:char-typings": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c typings install && cd %OLDDIR%",
+    "setup:npm": "cmd /c npm install",
+    "setup:typings": "cmd /c typings install",
+    "setup:nix": "npm run setup:nix:global && npm run setup:nix:char-typings && npm run setup:nix:char-npm && npm run setup:nix:typings && npm run setup:nix:npm",
+    "setup:nix:global": "echo 'Type your password for global npm installation of typescript and typings...' && sudo npm install typings@latest typescript@latest -g",
+    "setup:nix:char-npm": "cd ../shared/widgets/CharacterCreation/ && npm install && cd -",
+    "setup:nix:char-typings": "cd ../shared/widgets/CharacterCreation/ && typings install && cd -",
+    "setup:nix:npm": "npm install",
+    "setup:nix:typings": "typings install",
     "clean:tmp": "rimraf tmp",
     "clean:tmpp": "rimraf tmpp",
     "clean:publish": "rimraf dist",
