@@ -8,15 +8,21 @@ cu-patcher-ui
 
 Installation
 ------------
-### 1. clone this repository
+### 1. Clone the Camelot Unchained repository
 ```
-git clone https://github.com/CUModSquad/cu-patcher-ui.git
+git clone https://github.com/CUModSquad/Camelot-Unchained.git
 ```
 
 ### 2. Install
+Windows:
 ```sh
-npm install
-typings install
+cd Camelot-Unchained\patcher\
+npm run setup
+```
+OSX/Linux:
+```sh
+cd Camelot-Unchained/patcher/
+npm run setup:nix
 ```
 
 ### 3. Build
