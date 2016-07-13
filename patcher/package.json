@@ -28,8 +28,8 @@
   "scripts": {
     "setup": "npm run setup:global && npm run setup:char-typings && npm run setup:char-npm && npm run setup:typings && npm run setup:npm",
     "setup:global": "cmd /c npm install typings@latest typescript@latest -g",
-    "setup:char-npm": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c npm install && cd %OLDDIR%",
-    "setup:char-typings": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c typings install && cd %OLDDIR%",
+    "setup:char-npm": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c npm install && cmd /v:on /c cd !OLDDIR!",
+    "setup:char-typings": "@set OLDDIR=%CD% && cd ..\\shared\\widgets\\CharacterCreation\\ && cmd /c typings install && cmd /v:on /c cd !OLDDIR!",
     "setup:npm": "cmd /c npm install",
     "setup:typings": "cmd /c typings install",
     "setup:nix": "npm run setup:nix:global && npm run setup:nix:char-typings && npm run setup:nix:char-npm && npm run setup:nix:typings && npm run setup:nix:npm",
