@@ -13,24 +13,24 @@ const thunk = require('redux-thunk').default;
 import reducer from './services/session/reducer';
 import BlueprintsPane from './components/BlueprintsPane';
 import {BuildingItem} from '../../../../lib/BuildingItem'
+import {BuildPaneProps} from '../../lib/BuildPane';
+import TabbedPane from '../../components/TabbedPane';
 
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
 loadBlueprints(store.dispatch);
 
-export interface ContainerProps {
-  onItemSelect?: (item: BuildingItem)=>void;
+interface ContainerState {
 }
 
-export interface ContainerState {
-}
-
-class Container extends React.Component<ContainerProps, ContainerState> { 
+class Container extends React.Component<BuildPaneProps, ContainerState> {
   render() {
     return (
       <Provider store={store}>
-        <BlueprintsPane onItemSelect={this.props.onItemSelect} />
+        <TabbedPane tabs={['Blueprints']}>
+          <BlueprintsPane onItemSelect={this.props.onItemSelect} minimized={this.props.minimized}/>
+        </TabbedPane>
       </Provider>
     )
   }

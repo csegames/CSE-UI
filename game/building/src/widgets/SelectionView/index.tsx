@@ -26,7 +26,7 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
     return (
       <div className='building__selection-view'>
         <div className='preview'>
-          <img className='icon' src={this.props.item.icon} />
+          <span className='icon'>{this.props.item.element}</span>
         </div>
         <p>{this.props.item.name}</p>
         <hr />

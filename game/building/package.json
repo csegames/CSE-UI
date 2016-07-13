@@ -73,7 +73,8 @@
     "react-redux": "^4.4.5",
     "react-select": "^1.0.0-beta13",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "color-ops": "^2.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",

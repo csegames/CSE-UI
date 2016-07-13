@@ -7,25 +7,24 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {BuildPane} from '../../lib/BuildPane';
-import {GlobalState} from '../../services/session/reducer';
-import {selectTab, PanesState} from '../../services/session/panes';
+import TabbedPane from '../TabbedPane';
+
+import Blocks from '../../widgets/Blocks';
+import RecentSelections from '../../widgets/RecentSelections';
+import DropLight from '../../widgets/DropLight';
+import Blueprints from '../../widgets/Blueprints';
+
 import {BuildingItem} from '../../../../lib/BuildingItem'
 
-function select(state: GlobalState): BuildPanelProps {
-  return {
-    panesState: state.panes,
-  }
-}
 
 export interface BuildPanelProps {
-  dispatch?: (action: any) => void;
-  panesState?: PanesState;
-  onItemSelect?: (item: BuildingItem)=>void;
+  onItemSelect?: (item: BuildingItem) => void;
 }
 
 export interface BuildPanelState {
   minimized: boolean;
+  item: BuildingItem;
+  recentitems: BuildingItem[];
 }
 
 class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
@@ -34,50 +33,60 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
     super(props);
     this.state = {
       minimized: false,
+      recentitems: this.buildRecentItemList(null, []),
+      item: null
     }
   }
-  
+
   onMinMax() {
     this.setState({
       minimized: !this.state.minimized,
-    });
+    } as BuildPanelState);
+  }
+
+  selectItem = (item: BuildingItem) => {
+    this.props.onItemSelect(item);
+
+    const newItems: BuildingItem[] = this.buildRecentItemList(item, this.state.recentitems);
+
+    this.setState({
+      item: item,
+      recentitems: newItems,
+    } as BuildPanelState);
+  }
+
+  buildRecentItemList(item: BuildingItem, items: BuildingItem[]) {
+    const newItems: BuildingItem[] = [];
+    newItems.push(item);
+    for (let i = 0; i < 11; i++) {
+      let current: BuildingItem = items[i];
+      let add: boolean = current == null || !(current.id == item.id && current.type == item.type);
+      if (add) {
+        newItems.push(current);
+      }
+    }
+    return newItems;
   }
 
   render() {
     return (
       <div className={`build-panel ${this.state.minimized ? 'minimized' : ''}`}>
         <header>
-          <span className='min-max' onClick={() => this.onMinMax()}>
-          {this.state.minimized ? '<<' : '>>'}
+          <span className='min-max' onClick={() => this.onMinMax() }>
+            {this.state.minimized ? '<<' : '>>'}
           </span>
           <span className='info'>?</span>
         </header>
-        {this.props.panesState.panes.map((rowPanes: BuildPane[], row: number) => {
-          return (<div className='row' key={row}>
-            <div className='tabs'>
-              {rowPanes.map((pane: BuildPane, index: number) => {
-                return (<div className={this.props.panesState.activeIndices[row] == index ? 'active': ''}
-                             onClick={() => this.props.dispatch(selectTab(row, index))}
-                             key={`${row}:${index}`}>
-                  {this.state.minimized ? pane.minTitle : pane.title}
-                </div>)
-              })}
-            </div>
-            <div className='tab-content'>
-            {
-              React.createElement(rowPanes[this.props.panesState.activeIndices[row]].component,
-               {
-                 data: rowPanes[this.props.panesState.activeIndices[row]].data, 
-                 minimized: this.state.minimized,
-                 onItemSelect: this.props.onItemSelect
-               })
-            }          
-            </div>
-          </div>
-          )})}
+
+        <Blocks minimized={this.state.minimized} onItemSelect={this.selectItem}/>
+        <RecentSelections minimized={this.state.minimized} onItemSelect={this.props.onItemSelect}
+          item={this.state.item}
+          items={this.state.recentitems} />
+        <Blueprints minimized={this.state.minimized} onItemSelect={this.selectItem}/>
+        <DropLight minimized={this.state.minimized} onItemSelect={this.selectItem}/>
       </div>
     )
   }
 }
 
-export default connect(select)(BuildPanel);
+export default BuildPanel;

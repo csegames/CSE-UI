@@ -6,26 +6,48 @@
 
 import * as React from 'react';
 import {BuildPaneProps} from '../../lib/BuildPane';
+import {BuildingItem} from '../../../../lib/BuildingItem';
+import TabbedPane from '../../components/TabbedPane';
 
-export interface RecentSelectionsState {
+interface RecentSelectionsProps extends BuildPaneProps {
+  item: BuildingItem
+  items: BuildingItem[],
 }
 
-class RecentSelections extends React.Component<BuildPaneProps, RecentSelectionsState> {
+interface RecentSelectionsState {
+}
 
-  constructor(props: BuildPaneProps) {
+class RecentSelections extends React.Component<RecentSelectionsProps, RecentSelectionsState> {
+
+  constructor(props: RecentSelectionsProps) {
     super(props);
   }
 
+  selectItem(item: BuildingItem) {
+    item.select();
+  }
+
+  isSelectedItem(item: BuildingItem, selection: BuildingItem) {
+    if (selection == null) return false;
+
+    return item.id == selection.id;
+  }
+
   render() {
+    const selection = this.props.item;
+
     return (
-      <div className={`recent-selections ${this.props.minimized ? 'minimied' : ''}`}>
-        <img src='./images/cube.png' />
-        <img src='./images/cube.png' />
-        <img src='./images/cube.png' />
-        <img src='./images/cube.png' />
-        <img src='./images/cube.png' />
-        <img src='./images/cube.png' />
-      </div>
+      <TabbedPane tabs={[this.props.minimized ? 'Recent' : 'Recently Used']}>
+        <div className={`recent-selections ${this.props.minimized ? 'minimied' : ''}`}>
+          { this.props.items.map((item: BuildingItem, index: number) => {
+            if (item == null)
+              return (<span key={'empty' + index}  className='icon'></span>)
+            return (<span key={item.id}  className={this.isSelectedItem(item, selection) ? 'active icon' : 'icon'}
+              onClick={() => this.selectItem(item) } >{item.element}</span>)
+          })
+          }
+        </div>
+      </TabbedPane>
     )
   }
 }

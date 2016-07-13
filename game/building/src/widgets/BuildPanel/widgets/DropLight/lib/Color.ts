@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.drop-light__preview {
-  width: 50px;
-  height: 50px;
-  border: 1px solid #464646;
-  display: inline-block;
-  cursor: pointer;
+export interface Color
+{
+  red: number,
+  green: number,
+  blue: number
 }

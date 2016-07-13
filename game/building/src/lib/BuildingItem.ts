@@ -12,8 +12,10 @@ export enum BuildingItemType
 }
 
 export interface BuildingItem {
+  id: string
   type: BuildingItemType,
-  icon: string,
+  element: JSX.Element,
   name: string,
   description: string
+  select: () => void;
 }

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {Material} from '../../lib/Material';
+import {Material, MaterialType} from '../../lib/Material';
 
 export interface MaterialSelectorProps {
   materials: Material[];
@@ -35,10 +35,29 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
 
   render() {
     const selectedId: number = this.props.selected ? this.props.selected.id : null;
+    const stoneBlocks: Material[] = [];
+    const stoneTilesAndSheets: Material[] = [];
+    const woodAndOrganic: Material[] = [];
+    this.props.materials.forEach((material: Material)=>{
+      if(material.type==MaterialType.STONE_BLOCK)
+        stoneBlocks.push(material);
+      else if(material.type==MaterialType.STONE_TILE ||
+              material.type==MaterialType.STONE_SHEET)
+        stoneTilesAndSheets.push(material);
+      else
+        woodAndOrganic.push(material);
+    })
 
     return (
       <div className='material-and-shape__material-selector'>
-        {this.props.materials.map((mat: Material) => this.generateMaterialIcon(mat, selectedId)) }
+        <header>Stone Blocks</header>
+        {stoneBlocks.map((mat: Material) => this.generateMaterialIcon(mat, selectedId)) }
+
+        <header>Stone Tiles & Sheets</header>
+        {stoneTilesAndSheets.map((mat: Material) => this.generateMaterialIcon(mat, selectedId)) }
+
+        <header>Wood & Organic</header>
+        {woodAndOrganic.map((mat: Material) => this.generateMaterialIcon(mat, selectedId)) }
       </div>
     )
   }

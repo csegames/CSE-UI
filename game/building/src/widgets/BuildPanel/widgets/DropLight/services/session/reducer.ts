@@ -6,13 +6,14 @@
 
 import {combineReducers} from 'redux';
 
-import panesReducer, {PanesState} from './panes';
-const panes = panesReducer;
+import lightsReducer, {LightsState} from './lights';
+
+const lights = lightsReducer;
 
 export default combineReducers({
-  panes,
+  lights
 });
 
 export interface GlobalState {
-  panes: PanesState,
+  lights: LightsState,
 }

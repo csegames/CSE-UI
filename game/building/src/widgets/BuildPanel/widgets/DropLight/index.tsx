@@ -5,65 +5,39 @@
  */
 
 import * as React from 'react';
+import {createStore, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
+const thunk = require('redux-thunk').default;
 
+import reducer from './services/session/reducer';
+import {loadLights} from './services/session/lights';
+import {BuildingItem} from '../../../../lib/BuildingItem'
 import {BuildPaneProps} from '../../lib/BuildPane';
-import LightPreview from './components/LightPreview';
-import ColorSelect from './components/ColorSelect';
-const assign = require('object-assign');
+import TabbedPane from '../../components/TabbedPane';
 
-export interface DropLightState {
-  radius: number;
-  intensity: number;
-  red: number;
-  green: number;
-  blue: number;
+import DroplightPane from './components/DroplightPane';
+
+const store = createStore(reducer, applyMiddleware(thunk));
+
+loadLights(store.dispatch);
+
+export interface ContainerState {
 }
 
-class DropLight extends React.Component<BuildPaneProps, DropLightState> {
-
+class Container extends React.Component<BuildPaneProps, ContainerState> {
   constructor(props: BuildPaneProps) {
     super(props);
-    this.state = {
-      radius: 10,
-      intensity: 20,
-      red: 255,
-      green: 0,
-      blue: 0,
-    };
-  }
-  
-  radiusChanged = (event: any) => {
-    this.setState(assign({}, this.state, {
-      radius: parseInt(event.target.value, 10)
-    }));
-  }
-  
-  intensityChanged = (event: any) => {
-    this.setState(assign({}, this.state, {
-      intensity: parseInt(event.target.value, 10)
-    }));
   }
 
   render() {
     return (
-      <div className={`drop-light ${this.props.minimized ? 'minimized' : ''}`}>
-        <LightPreview radius={this.state.radius} 
-                      intensity={this.state.intensity}
-                      red={this.state.red}
-                      green={this.state.green}
-                      blue={this.state.blue} />
-        <div className='drop-light__controls'>
-          radius
-          <input type='number' name='radius' min='1' max='1000'
-                 value={`${this.state.radius}`} onChange={this.radiusChanged}/>
-          intensity
-          <input type='number' name='radius' min='1' max='1000'
-                 value={`${this.state.intensity}`} onChange={this.intensityChanged}/>           
-        </div>
-        <ColorSelect />
-      </div>
+      <Provider store={store}>
+        <TabbedPane tabs={['Drop Light']}>
+          <DroplightPane onItemSelect={this.props.onItemSelect} minimized={this.props.minimized} />
+        </TabbedPane>
+      </Provider>
     )
   }
 }
 
-export default DropLight;
+export default Container;
