@@ -66,17 +66,47 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
   }
 
   generateAttributeView = (info: AttributeInfo, value: number) => {
-    let stringValue = info.units == 'units' ?  value : value.toFixed(4);
+    let stringValue: string = value.toFixed(4);
+    switch(info.units.toLowerCase()) {
+      case 'units':
+        stringValue = value.toString();
+        break;
+      case 'units/second':
+        stringValue = value.toFixed(4) + '/s';
+        break;
+      case 'years':
+        stringValue = Math.floor(value) + ' years';
+        break;
+      case 'percent':
+        stringValue = value.toFixed(1) + '%';
+        break;
+      case 'degrees celsius':
+        stringValue = value.toFixed(1) + ' °C';
+        break;
+      case 'kilograms':
+        stringValue = value.toFixed(1) + ' kg';
+        break;
+      case 'meters':
+        stringValue = value.toFixed(1) + ' m';
+        break;
+      case 'meters/second':
+        stringValue = value.toFixed(1) + ' m/s';
+        break;
+      default:
+        stringValue = value.toFixed(4);
+    }
     return (
       <div key={info.name} className='attribute-row row'>
-        <div className='col s2 attribute-points'>
-          {stringValue}
+        <div className='col s2 attribute-header'>
+          <div className='col s8 attribute-header-name'>
+            {info.name}
+          </div>
+          <div className='col s4 attribute-header-value'>
+            {stringValue}
+          </div>
         </div>
-        <div className='col s10'>
-        {info.name} <i>({info.units})</i>
-        <div className='attribute-description'>
-        {info.description}
-        </div>
+        <div className='col s10 attribute-description'>
+          {info.description}
         </div>
       </div>
     )
