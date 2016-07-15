@@ -66,7 +66,7 @@
     "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
   },
   "dependencies": {
-    "camelot-unchained": "^0.4.1",
+    "camelot-unchained": "^0.4.8",
     "color-ops": "^2.0.0",
     "es6-promise": "^3.2.1",
     "react": "^0.14.3",

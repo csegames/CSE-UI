@@ -103,7 +103,13 @@ export function loadLights(dispatch: (action: any) => void) {
   const lightString: string = localStorage.getItem(LIGHT_STORAGE_KEY);
   let lights: Light[] = [];
   if (lightString) {
-    lights = JSON.parse(lightString);
+    try {
+      lights = JSON.parse(lightString);
+    } catch(e) {
+      localStorage.setItem(LIGHT_STORAGE_KEY, null);
+      loadLights(dispatch);
+      return;
+    }
   }
   else {
     for (let i = 0; i < 10; i++) {
