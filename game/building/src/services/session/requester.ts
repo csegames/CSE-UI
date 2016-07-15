@@ -1,39 +1,27 @@
 import {client, channelId, events} from 'camelot-unchained';
 import faker from './requester_fake';
+import SingleListener from '../../lib/SingleListener'
 
 class ActionLoader {
   private win: any = window;
   private fake: boolean = (this.win.cuAPI == null);
 
+  private singleListener: SingleListener = new SingleListener((listener: any)=>{
+      if (this.fake) {
+        return faker.listenForModeChange(listener);
+      }
+      client.OnBuildingModeChanged(listener);
+  });
+
   private modeCallbacks: { (mode: number): void }[] = [];
   private singleModeCallback: { (mode: number): void } = null;
 
   public listenForModeChange(callback: { (mode: number): void }) {
-    if (this.fake) {
-      return faker.listenForModeChange(callback);
-    }
-
-    this.modeCallbacks.push(callback);
-
-    if (this.singleModeCallback == null) {
-      this.singleModeCallback = (mode: number) => {
-        this.modeCallbacks.forEach((callback: (mode: number) => void) => {
-          callback(mode);
-        });
-      }
-      client.OnBuildingModeChanged(this.singleModeCallback);
-    }
+    this.singleListener.listen(callback);
   }
 
   public unlistenForModeChange(callback: { (mode: number): void }) {
-    if (this.fake) {
-      return faker.unlistenForModeChange(callback);
-    }
-
-    const index: number = this.modeCallbacks.indexOf(callback);
-    if (index > -1) {
-      this.modeCallbacks.slice(index, 1);
-    }
+    this.singleListener.unlisten(callback);
   }
 
   public changeMode(mode: number) {

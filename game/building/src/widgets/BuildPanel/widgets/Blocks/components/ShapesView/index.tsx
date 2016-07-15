@@ -35,11 +35,6 @@ class ShapesView extends React.Component<ShapesViewProps, ShapesViewState> {
     )
   }
 
-  componentDidMount() {
-    this.props.selectShape(this.props.selected);
-  }
-
-
   render() {
     return (
       <div className={`shapes-view ${this.props.minimized ? 'minimized' : ''}`}>

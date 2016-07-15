@@ -8,19 +8,12 @@ class BlockActions {
   }
 
   public changeMode(mode: number) {
-    console.log("changeMode to "+mode);
     setTimeout(() => {
       this.modeCallbacks.forEach((callback: (mode: number) => void) => {
+        console.log("changeMode to "+mode)
         callback(mode);
       })
     }, 500);
-  }
-
- public unlistenForModeChange(callback: { (mode: number): void }) {
-    const index: number = this.modeCallbacks.indexOf(callback);
-    if (index > -1) {
-      this.modeCallbacks.splice(index, 1);
-    }
   }
 
   public commit() {

@@ -10,14 +10,10 @@ import {Provider} from 'react-redux';
 const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
-import requester from './services/session/requester';
-import {Material} from './lib/Material';
-import {loadMaterials, findBlock} from './services/session/materials';
-import {Block} from './lib/Block'
-import {BuildingItem} from '../../../../lib/BuildingItem'
+import {loadMaterials} from './services/session/materials';
 import {BuildPaneProps} from '../../lib/BuildPane';
-import TabbedPane from '../../components/TabbedPane';
 
+import TabbedPane from '../../components/TabbedPane';
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 import MaterialReplace from './components/MaterialReplace';
 

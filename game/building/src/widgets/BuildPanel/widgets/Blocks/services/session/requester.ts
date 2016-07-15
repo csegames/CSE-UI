@@ -1,6 +1,7 @@
 import { client } from 'camelot-unchained';
 import {Promise} from 'es6-promise';
 
+import SingleListener from '../../../../../../lib/SingleListener'
 import {Material, MaterialType, getTypeFromTags} from '../../lib/Material';
 import {Block} from '../../lib/Block';
 import faker from './requester_fake';
@@ -9,6 +10,29 @@ class BuildingLoader {
   private materials: { [key: number]: Material } = {};
   private materialsList: Material[] = [];
   private blocks: { [key: number]: Block; } = {};
+
+  private singleListener: SingleListener = new SingleListener((listener: any) => {
+    const blockIdListener = (blockId: number) => {
+      const matId: number = this.getMaterialIdFromBlockId(blockId);
+      const shapeId: number = this.getShapeIdFromBlockId(blockId);
+
+      const mat: Material = this.materials[matId];
+      //select by shape instead of by block id, it is more reliable, the block id sent back 
+      //can have extra information stored in it
+      const block: Block = this.getBlockForShapeId(shapeId, mat.blocks);
+
+      listener( mat, block);
+    }
+    /*
+      Calling the faker here instead of at the top of the listen/unlisten methods because 
+      I don't want to bypass this single listener concept when testing.
+    */
+    if (this.fake) {
+      return faker.listenForBlockSelectionChange(blockIdListener);
+    }
+    client.OnBlockSelected(blockIdListener);
+  });
+
 
   private numBlocksToLoad: number = 0;
 
@@ -23,23 +47,27 @@ class BuildingLoader {
     client.ChangeBlockType(block.id);
   }
 
-  public listenForBlockSelectionChange(callback: { (matId: number, shapeId: number): void }) {
-    if (this.fake) {
-      return faker.listenForBlockSelectionChange(callback);
-    }
+  public listenForBlockSelectionChange(callback: { (mat: Material, block: Block): void }) {
+    this.singleListener.listen(callback);
+  }
 
-    const listener = (blockId: number) => {
-      callback(
-        this.getMaterialIdFromBlockId(blockId),
-        this.getShapeIdFromBlockId(blockId)
-      );
-    }
-    client.OnBlockSelected(listener);
+  public unlistenForBlockSelectionChange(callback: { (mat: Material, block: Block): void }) {
+    this.singleListener.unlisten(callback);
   }
 
   public loadMaterials(callback: (mats: Material[]) => void) {
     if (this.fake) {
-      return faker.loadMaterials(callback);
+      const loadIntercept = (mats: Material[])=>{
+        this.materialsList = mats;
+        this.materialsList.forEach((mat: Material)=>{
+          this.materials[mat.id]=mat;
+          mat.blocks.forEach((block: Block) => {
+            this.blocks[block.id]
+          });
+        })
+        callback(mats);
+      }
+      return faker.loadMaterials(loadIntercept);
     }
 
     client.OnReceiveBlocks(this.recieveBlocks);
@@ -47,6 +75,16 @@ class BuildingLoader {
     //client.OnReceiveBlockIDs(this.recieveBlockIdsForSubstance)
     client.OnReceiveSubstances(this.recieveSubstances);
     client.RequestSubstances();
+  }
+
+  getBlockForShapeId(shapeId: number, blocks: Block[]) {
+    for (let i in blocks) {
+      const block = blocks[i];
+      if (block.shapeId === shapeId) {
+        return block;
+      }
+    }
+    return blocks[0];
   }
 
   getShapeIdFromBlockId(id: number) {

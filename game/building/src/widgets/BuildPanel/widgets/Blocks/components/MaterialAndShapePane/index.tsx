@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 
 import {GlobalState} from '../../services/session/reducer';
 import * as materialService from '../../services/session/materials';
+import * as replaceService from '../../services/session/materials-replace';
 import {MaterialsState} from '../../services/session/materials';
 import requester from '../../services/session/requester';
 
@@ -40,14 +41,14 @@ export interface MaterialAndShapePaneState {
 
 class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, MaterialAndShapePaneState> {
 
+  private blockSelectionListener = (mat: Material, block: Block) => {
+    this.onBlockSelect(block);
+  }
+
+
   constructor(props: MaterialAndShapePaneProps) {
     super(props);
     this.state = { showMatSelect: false };
-
-    requester.listenForBlockSelectionChange((mat: number, shape: number) => {
-      const block: Block = materialService.findBlock(mat, shape, this.props.materialsState.materials);
-      this.onBlockSelect(block);
-    });
   }
 
   onBlockSelect = (block: Block) => {
@@ -77,8 +78,16 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   }
 
   selectMaterial = (mat: Material) => {
-    materialService.requestMaterialChange(mat, this.props.materialsState.selectedBlock);
-    this.setState({ showMatSelect: false } as any);    
+    materialService.requestMaterialChange(mat, this.props.materialsState.selectedBlock.id);
+    this.setState({ showMatSelect: false } as any);
+  }
+
+  componentDidMount() {
+    requester.listenForBlockSelectionChange(this.blockSelectionListener);
+  }
+
+  componentWillUnmount() {
+    requester.unlistenForBlockSelectionChange(this.blockSelectionListener);
   }
 
   render() {

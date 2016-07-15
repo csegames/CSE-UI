@@ -7,12 +7,16 @@
 import {combineReducers} from 'redux';
 
 import materialsReducer, {MaterialsState} from './materials';
+import materialsReplaceReducer, {MaterialsReplaceState} from './materials-replace';
 const materials = materialsReducer;
+const replace = materialsReplaceReducer;
 
 export default combineReducers({
   materials,
+  replace
 });
 
 export interface GlobalState {
   materials: MaterialsState,
+  replace: MaterialsReplaceState
 }
