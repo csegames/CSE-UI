@@ -6,13 +6,13 @@
 
 import {Material, MaterialType} from '../../lib/Material';
 import {Block} from '../../lib/Block';
+import {selectFromMaterial, selectToMaterial} from './materials-replace';
 import requester from './requester';
 
 const assign = require('object-assign');
 
 const SELECT_MATERIAL = 'buildpanel/panes/SELECT_MATERIAL';
-const SELECT_MATERIAL_BY_ID = 'buildpanel/panes/SELECT_MATERIAL_BY_ID';
-const SELECT_BLOCK_BY_SHAPE = 'buildpanel/panes/SELECT_BLOCK_BY_SHAPE';
+const SELECT_BLOCK = 'buildpanel/panes/SELECT_BLOCK';
 
 const SET_MATERIALS = 'buildpanel/panes/SET_MATERIALS';
 
@@ -51,11 +51,13 @@ function getBlocksAsString(blocks: Block[]) {
 export function loadMaterials(dispatch: (action: any) => void) {
   requester.loadMaterials((mats: Material[]) => {
     dispatch(setMaterials(mats))
+    dispatch(selectFromMaterial(mats[0]))
+    dispatch(selectToMaterial(mats[0]))
   });
 
-  requester.listenForBlockSelectionChange((mat: number, shape: number) => {
-    dispatch(selectMaterialById(mat));
-    dispatch(selectBlockByShape(shape));
+  requester.listenForBlockSelectionChange((mat: Material, block: Block) => {
+    dispatch(selectBlock(block));
+    dispatch(selectFromMaterial(mat));
   });
 }
 
@@ -64,11 +66,18 @@ export function requestBlockChange(block: Block) {
   requester.changeBlockSelection(block);
 }
 
-export function requestMaterialChange(material: Material, shape: Block) {
-  const block: Block = getBlockForShapeId(material.blocks, shape.shapeId);
+export function requestMaterialChange(material: Material, shapeId: number) {
+  const block: Block = getBlockForShapeId(shapeId, material.blocks);
   requester.changeBlockSelection(block);
 }
 
+
+function selectBlock(block: Block) {
+  return {
+    type: SELECT_BLOCK,
+    selectedBlock: block
+  }
+}
 
 function selectMaterial(material: Material) {
   return {
@@ -77,24 +86,10 @@ function selectMaterial(material: Material) {
   }
 }
 
-function selectMaterialById(materialId: number) {
-  return {
-    type: SELECT_MATERIAL_BY_ID,
-    selectedMaterialId: materialId
-  }
-}
-
 function setMaterials(materials: Material[]) {
   return {
     type: SET_MATERIALS,
     materials: materials
-  }
-}
-
-function selectBlockByShape(shapeId: number) {
-  return {
-    type: SELECT_BLOCK_BY_SHAPE,
-    shapeId: shapeId
   }
 }
 
@@ -110,13 +105,8 @@ const initialState: MaterialsState = {
   selectedBlock: {} as Block
 }
 
-export function findBlock(mat: number, shape: number, materials: Material[])
-{
-   const material: Material = getMaterialById(materials, mat);
-   return getBlockForShapeId(material.blocks, shape);
-}
 
-function getMaterialById(materials: Material[], id: number) {
+function getMaterialById(id: number, materials: Material[]) {
   for (let m in materials) {
     if (materials[m].id === id) {
       return materials[m];
@@ -125,7 +115,7 @@ function getMaterialById(materials: Material[], id: number) {
   return materials[0] || DEFAULT_MATERIAL;
 }
 
-function getBlockForShapeId(blocks: Block[], shapeId: number) {
+function getBlockForShapeId(shapeId: number, blocks: Block[]) {
   for (let i in blocks) {
     const block = blocks[i];
     if (block.shapeId === shapeId) {
@@ -137,24 +127,22 @@ function getBlockForShapeId(blocks: Block[], shapeId: number) {
 
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {
   switch (action.type) {
-    case SELECT_MATERIAL:
-      return assign({}, state, {
-        selectedMaterial: action.selectedMaterial,
-      });
     case SET_MATERIALS:
       return assign({}, state, {
         materials: action.materials,
         selectedMaterial: action.materials[0],
         selectedBlock: action.materials[0].blocks[0]
       });
-    case SELECT_MATERIAL_BY_ID:
+    case SELECT_MATERIAL:
       return assign({}, state, {
-        selectedMaterial: getMaterialById(state.materials, action.selectedMaterialId),
+        selectedMaterial: action.selectedMaterial,
       });
-    case SELECT_BLOCK_BY_SHAPE:
-      return assign({}, state, {
-        selectedBlock: getBlockForShapeId(state.selectedMaterial.blocks, action.shapeId),
-      });
+    case SELECT_BLOCK:
+      const block: Block = action.selectedBlock;
+      const newState: MaterialsState = { selectedBlock: block }
+      if (state.selectedMaterial.id != block.materialId)
+        newState.selectedMaterial = getMaterialById(block.materialId, state.materials);
+      return assign({}, state, newState);
     default: return state;
   }
 }

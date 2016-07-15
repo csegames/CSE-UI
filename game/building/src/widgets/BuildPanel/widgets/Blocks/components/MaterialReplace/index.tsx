@@ -8,6 +8,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import {GlobalState} from '../../services/session/reducer';
+import {selectFromMaterial, selectToMaterial} from '../../services/session/materials-replace'
 import {Material} from '../../lib/Material';
 import MaterialView from '../..//components/MaterialView';
 import MaterialSelector from '../..//components/MaterialSelector';
@@ -15,19 +16,22 @@ import MaterialSelector from '../..//components/MaterialSelector';
 function select(state: GlobalState): MaterialReplacePaneProps {
   return {
     materials: state.materials.materials,
+    from: state.replace.from,
+    to: state.replace.to,
   }
 }
 
 export interface MaterialReplacePaneProps {
+  dispatch?: (action: any) => void;
   minimized?: boolean;
   materials: Material[];
+  from: Material;
+  to: Material;
 }
 
 export interface MaterialReplacePaneState {
   showFrom: boolean;
   showTo: boolean;
-  from: Material;
-  to: Material;
 }
 
 class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, MaterialReplacePaneState> {
@@ -37,11 +41,9 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
     this.state = {
       showFrom: false,
       showTo: false,
-      from: props.materials[0],
-      to: props.materials[0],
     };
   }
-
+  
   showMaterialsFrom = (show: boolean) => {
     this.setState({ showFrom: show, showTo: false } as MaterialReplacePaneState);
   }
@@ -51,17 +53,19 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
   }
 
   selectFrom = (mat: Material) => {
-    this.setState({ from: mat, showFrom: false } as MaterialReplacePaneState);
+    this.props.dispatch(selectFromMaterial(mat));
+    this.setState({ showFrom: false, showTo: false } as MaterialReplacePaneState);
   }
 
   selectTo = (mat: Material) => {
-    this.setState({ to: mat, showTo: false } as MaterialReplacePaneState);
+    this.props.dispatch(selectToMaterial(mat));
+    this.setState({ showFrom: false, showTo: false } as MaterialReplacePaneState);
   }
 
   materialReplace = () => {
     var w: any = window;
     if (w.cuAPI != null) {
-      w.cuAPI.ReplaceSelectedSubstance(this.state.from.id, this.state.to.id);
+      w.cuAPI.ReplaceSelectedSubstance(this.props.from.id, this.props.to.id);
     }
   }
 
@@ -72,7 +76,7 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
         <MaterialSelector
           materials={this.props.materials}
           selectMaterial={this.selectFrom}
-          selected={this.state.from} />
+          selected={this.props.from} />
       )
     }
     else if (this.state.showTo) {
@@ -80,9 +84,11 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
         <MaterialSelector
           materials={this.props.materials}
           selectMaterial={this.selectTo}
-          selected={this.state.to} />
+          selected={this.props.to} />
       )
     }
+
+    const sameMat: boolean = this.props.from == this.props.to;
 
     return (
       <div className='build-panel__material-replace'>
@@ -96,23 +102,23 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
         <div className='content'>
           <div className={'material-selections' + (this.props.minimized ? ' minimized' : '') }>
             <MaterialView
-              selectedMaterial={this.state.from}
+              selectedMaterial={this.props.from}
               onClick={() => this.showMaterialsFrom(!this.state.showFrom) }
               />
 
             <div className="divider">
-              <div className="arrow"/>
+              <div className="arrow" onClick={sameMat? null : this.materialReplace} />
             </div>
 
             <MaterialView
-              selectedMaterial={this.state.to}
+              selectedMaterial={this.props.to}
               onClick={() => this.showMaterialsTo(!this.state.showTo) }
               />
           </div>
 
-          {this.props.minimized ? '' : '( ' + this.state.from.id + ' )'}
-          <button onClick={this.materialReplace} disabled={this.state.from == this.state.to}>Replace</button>
-          {this.props.minimized ? '' : '( ' + this.state.to.id + ' )'}
+          {this.props.minimized ? '' : '( ' + this.props.from.id + ' ) '}
+          <button onClick={this.materialReplace} disabled={sameMat}>Replace</button>
+          {this.props.minimized ? '' : ' ( ' + this.props.to.id + ' )'}
 
           {matSelector}
         </div>

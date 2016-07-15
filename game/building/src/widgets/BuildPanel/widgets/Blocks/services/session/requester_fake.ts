@@ -2,7 +2,7 @@ import {Material, MaterialType} from '../../lib/Material';
 import {Block} from '../../lib/Block';
 
 class MaterialRequests {
-  private selectionCallbacks: { (matId: number, shapeId: number): void }[] = [];
+  private selectionCallbacks: { (blockId: number): void }[] = [];
 
   public loadMaterials(callback: (mats: Material[]) => void) {
     setTimeout(() => callback(this.getMaterials()), 1000);
@@ -12,20 +12,26 @@ class MaterialRequests {
     setTimeout(() => this.invokeSelectionCallbacks(block));
   }
 
-  public listenForBlockSelectionChange(callback: { (matId: number, shapeId: number): void }) {
+  public listenForBlockSelectionChange(callback: { (blockId: number): void }) {
     this.selectionCallbacks.push(callback);
   }
 
+
   invokeSelectionCallbacks(block: Block) {
-    this.selectionCallbacks.forEach((callback: { (matId: number, shapeId: number): void }) => {
-      callback(block.materialId, block.shapeId);
+    this.selectionCallbacks.forEach((callback: { (blockId: number): void }) => {
+      callback(block.id);
     });
   }
 
-  getBlocks(material: number, blockIdSeed: number): Block[] {
+  getBlockId(matId: number, shapeId:number) {
+    return (matId << 2) | (shapeId << 21);
+  }
+
+  getBlocks(material: number): Block[] {
+    
     return [
       {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 1),
         icon: this.blockIcon1,
         name: 'block one',
         tags: 'block, one',
@@ -33,7 +39,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 1
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 2),
         icon: this.blockIcon2,
         name: 'block two',
         tags: 'block, two',
@@ -41,7 +47,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 2
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 3),
         icon: this.blockIcon1,
         name: 'block three',
         tags: 'block, three',
@@ -49,7 +55,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 3
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 4),
         icon: this.blockIcon2,
         name: 'block four',
         tags: 'block, four',
@@ -57,7 +63,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 4
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 5),
         icon: this.blockIcon1,
         name: 'block five',
         tags: 'block, five',
@@ -65,7 +71,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 5
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 6),
         icon: this.blockIcon2,
         name: 'block six',
         tags: 'block, six',
@@ -73,7 +79,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 6
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 7),
         icon: this.blockIcon2,
         name: 'block seven',
         tags: 'block, seven',
@@ -81,7 +87,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 7
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 8),
         icon: this.blockIcon2,
         name: 'block eight',
         tags: 'block, eight',
@@ -89,7 +95,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 8
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 9),
         icon: this.blockIcon2,
         name: 'block nine',
         tags: 'block, nine',
@@ -97,7 +103,7 @@ class MaterialRequests {
         materialId: material,
         shapeId: 9
       }, {
-        id: ++blockIdSeed,
+        id: this.getBlockId(material, 10),
         icon: this.blockIcon2,
         name: 'block ten',
         tags: 'block, ten',
@@ -118,41 +124,34 @@ class MaterialRequests {
     return blocks;
   }
 
-  createMaterial(matId: number, blockCount: number, type: MaterialType) {
+  createMaterial(matId: number, type: MaterialType) {
     return {
       id: matId,
       icon: matId%2==0 ? this.materialIcon1 : this.materialIcon2,
       name: 'mat ' + matId,
       tags: 'some, tags, to, test, with',
       type: type,
-      blocks: this.getBlocks(matId, blockCount)
+      blocks: this.getBlocks(matId)
     };
   }
 
   getMaterials(): Material[] {
-    const blocksPerMat = 10;
-    let blockCount = 0;
     let mats: Material[] = [];
     let i = 0
     for (; i < 20; i++) {
-      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_BLOCK));
-      blockCount += blocksPerMat;
+      mats.push(this.createMaterial(i, MaterialType.STONE_BLOCK));
     }
     for (; i < 40; i++) {
-      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_TILE));
-      blockCount += blocksPerMat;
+      mats.push(this.createMaterial(i, MaterialType.STONE_TILE));
     }
     for (; i < 60; i++) {
-      mats.push(this.createMaterial(i, blockCount, MaterialType.STONE_SHEET));
-      blockCount += blocksPerMat;
+      mats.push(this.createMaterial(i, MaterialType.STONE_SHEET));
     }
     for (; i < 80; i++) {
-      mats.push(this.createMaterial(i, blockCount, MaterialType.WOOD));
-      blockCount += blocksPerMat;
+      mats.push(this.createMaterial(i, MaterialType.WOOD));
     }
     for (; i < 90; i++) {
-      mats.push(this.createMaterial(i, blockCount, MaterialType.OTHER));
-      blockCount += blocksPerMat;
+      mats.push(this.createMaterial(i, MaterialType.OTHER));
     }
     return mats;
   }
