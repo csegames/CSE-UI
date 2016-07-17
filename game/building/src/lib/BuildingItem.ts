@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export enum BuildingItemType
-{
-  Block = 0, 
+export enum BuildingItemType {
+  Block = 0,
   Blueprint = 1,
   Droplight = 2
 }

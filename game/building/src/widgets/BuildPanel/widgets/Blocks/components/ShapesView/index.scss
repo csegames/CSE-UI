@@ -18,10 +18,12 @@
     height: 30px;
     width: 30px;
     transition: all .1s ease-in-out;
+
     &:hover {
       filter: brightness(120%);
       -webkit-filter: brightness(120%);
     }
+
     &.active {
       background-color: rgba(100,100,255,0.3);
       border-radius: 4px;

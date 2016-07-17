@@ -9,17 +9,19 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 const thunk = require('redux-thunk').default;
 
+import {events} from 'camelot-unchained';
 import reducer from './services/session/reducer';
-import {loadMaterials} from './services/session/materials';
+import {initialize} from './services/session/materials';
 import {BuildPaneProps} from '../../lib/BuildPane';
 
 import TabbedPane from '../../components/TabbedPane';
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 import MaterialReplace from './components/MaterialReplace';
+import {DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
-loadMaterials(store.dispatch);
+initialize(store.dispatch);
 
 interface ContainerState {
 }
@@ -29,13 +31,22 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     super(props);
   }
 
+  onTabChange = () => {
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+  }
+
+
   render() {
     return (
       <Provider store={store}>
-        <TabbedPane tabs={['Blocks', 'Replace']}>
-          <MaterialAndShapePane onItemSelect={this.props.onItemSelect} minimized={this.props.minimized}/>
+        <TabbedPane name="blocks" tabs={['Blocks', 'Replace']} onTabChange={ (index: number, name: string) => this.onTabChange }
+          defaultPositionInPercentages={{x:85, y:0 }} 
+          defaultSizeInPercentages={{width: 15, height: 20, scale: 1}} 
+        >
+          <MaterialAndShapePane minimized={this.props.minimized}/>
           <MaterialReplace minimized={this.props.minimized}/>
         </TabbedPane>
+
       </Provider>
     )
   }

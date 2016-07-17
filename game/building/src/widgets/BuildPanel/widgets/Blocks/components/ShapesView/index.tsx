@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import {Block} from '../../lib/Block';
+import {BuildingBlock} from 'camelot-unchained';
 
 export interface ShapesViewProps {
   minimized: boolean;
-  selectShape?: (shape: Block) => void;
-  shapes: Block[];
-  selected: Block;
+  selectShape?: (shape: BuildingBlock) => void;
+  shapes: BuildingBlock[];
+  selected: BuildingBlock;
 }
 
 export interface ShapesViewState {
@@ -23,7 +23,7 @@ class ShapesView extends React.Component<ShapesViewProps, ShapesViewState> {
     super(props);
   }
 
-  generateShapeIcon = (block: Block) => {
+  generateShapeIcon = (block: BuildingBlock) => {
     const selectedId = this.props.selected ? this.props.selected.id : -1;
     const selected: boolean = selectedId == block.id;
     return (

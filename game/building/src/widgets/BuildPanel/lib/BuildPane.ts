@@ -5,7 +5,9 @@
  */
 import {BuildingItem} from '../../../lib/BuildingItem'
 
+export const ACTIVATE_MATERIAL_SELECTOR = 'ACTIVATE_MATERIAL_SELECTOR';
+export const DEACTIVATE_MATERIAL_SELECTOR = 'DEACTIVATE_MATERIAL_SELECTOR';
+
 export interface BuildPaneProps {
   minimized: boolean,
-  onItemSelect?: (item: BuildingItem) => void
 }

@@ -11,6 +11,7 @@ const assign = require('object-assign');
 
 const LIGHT_STORAGE_KEY = 'cu/game/building/droplights';
 
+const SHOW_SELECTOR = 'buildpanel/droplight/SHOW_SELECTOR';
 const SELECT_LIGHT = 'buildpanel/droplight/SELECT_LIGHT';
 const SET_LIGHTS = 'buildpanel/droplight/SET_LIGHTS';
 
@@ -113,7 +114,7 @@ export function loadLights(dispatch: (action: any) => void) {
   }
   else {
     for (let i = 0; i < 10; i++) {
-      let newLight = {
+      const newLight = {
         color: { red: 255, green: 147, blue: 14 } as Color,
         radius: 5,
         intensity: 10
@@ -126,6 +127,13 @@ export function loadLights(dispatch: (action: any) => void) {
 
   lights.forEach((l: Light, index: number) => { l.index = index })
   dispatch(setLights(lights));
+}
+
+export function showSelector(show: boolean) {
+  return {
+    type: SHOW_SELECTOR,
+    show: show
+  }
 }
 
 export function selectLight(light: Light) {
@@ -165,11 +173,13 @@ function setLights(lights: Light[]) {
 export interface LightsState {
   lights?: Light[];
   selectedIndex?: number;
+  showLightSelector: boolean;
 }
 
 const initialState: LightsState = {
   lights: [],
   selectedIndex: 0,
+  showLightSelector: false
 }
 
 function getSelectedLight(state: LightsState): Light {
@@ -181,9 +191,10 @@ function setSelectedLight(state: LightsState, light: Light) {
   state.lights[state.selectedIndex] = light;
 }
 
-export default function reducer(state: LightsState = initialState, action: any = {}) {
-  let newLights: Light[] = [];
+export default function reducer(state: LightsState = initialState, action: any = {}) {  
   switch (action.type) {
+    case SHOW_SELECTOR:
+      return assign({}, state, { showLightSelector: action.show });
     case SELECT_LIGHT:
       return assign({}, state, { selectedIndex: action.selectedLight.index });
     case SET_LIGHTS:

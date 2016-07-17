@@ -4,62 +4,34 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Blueprint} from '../../lib/Blueprint';
+import {events, buildUIMode, BuildingBlueprint} from 'camelot-unchained';
 import requester from './requester';
 
 const assign = require('object-assign');
 
+const UPDATE_BLUEPRINTS = 'buildpanel/panes/UPDATE_BLUEPRINTS';
 const SELECT_BLUEPRINT = 'buildpanel/panes/SELECT_BLUEPRINT';
-const ADD_BLUEPRINT = 'buildpanel/panes/ADD_BLUEPRINT';
-const ADD_BLUEPRINT_ICON = 'buildpanel/panes/ADD_BLUEPRINT_ICON';
-const REMOVE_BLUEPRINT = 'buildpanel/panes/REMOVE_BLUEPRINT';
-const DELETE_BLUEPRINT = 'buildpanel/panes/DELETE_BLUEPRINT';
 const MODE_CHANGED = 'buildpanel/panes/MODE_CHANGED';
 
-let myDispatch: (action: any) => void;
-
 export function loadBlueprints(dispatch: (action: any) => void) {
-  myDispatch = dispatch;
-  requester.loadBlueprints((blueprint: Blueprint) => {
-    dispatch(addBlueprint(blueprint))
+
+  events.addListener(events.buildingEventTopics.handlesBlueprints, (info: { blueprints: BuildingBlueprint[] }) => {
+    dispatch(updateBlueprints(info.blueprints));
   });
-  requester.listenForSelectionModeChange((selected: boolean) => {
-    dispatch(copyModeChanged(selected));
+
+  events.addListener(events.buildingEventTopics.handlesBlueprintSelect, (info: { blueprint: BuildingBlueprint }) => {
+    dispatch(selectBlueprint(info.blueprint));
   });
-  requester.listenForCopy(() => {
+
+  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
+    dispatch(copyModeChanged(info.mode == buildUIMode.BLOCKSELECTED));
+  });
+
+  events.addListener(events.buildingEventTopics.handlesBlueprintCopy, () => {
     dispatch(pasteModeChanged(true));
   });
-}
 
-export function selectBlueprint(blueprint: Blueprint) {
-  requester.select(blueprint);
-  myDispatch({
-    type: SELECT_BLUEPRINT,
-    blueprint: blueprint
-  });
-}
-
-export function loadBlueprintIcon(blueprint: Blueprint) {
-  requester.loadBlueprintIcon(blueprint, (blueprint: Blueprint, icon: string ) => {
-    myDispatch(addBlueprintIcon(blueprint, icon))
-  });
-}
-
-export function saveBlueprint(name: string) {
-  requester.save(name);
-}
-
-export function deleteBlueprint(blueprint: Blueprint) {
-  requester.remove(blueprint);
-  myDispatch({ type: REMOVE_BLUEPRINT, blueprint: blueprint })
-}
-
-export function copyBlueprint() {
-  requester.copy();
-}
-
-export function pasteBlueprint() {
-  requester.paste();
+  requester.requestBlueprints();
 }
 
 function copyModeChanged(copy: boolean) {
@@ -76,24 +48,23 @@ function pasteModeChanged(paste: boolean) {
   }
 }
 
-function addBlueprint(blueprint: Blueprint) {
+function updateBlueprints(blueprints: BuildingBlueprint[]) {
   return {
-    type: ADD_BLUEPRINT,
+    type: UPDATE_BLUEPRINTS,
+    blueprints: blueprints
+  }
+}
+
+function selectBlueprint(blueprint: BuildingBlueprint) {
+  return {
+    type: SELECT_BLUEPRINT,
     blueprint: blueprint
   }
 }
 
-function addBlueprintIcon(blueprint: Blueprint, icon: string) {
-  return {
-    type: ADD_BLUEPRINT_ICON,
-    blueprint: blueprint,
-    icon: icon
-  }
-}
-
 export interface BlueprintsState {
-  blueprints?: Blueprint[];
-  selected?: Blueprint;
+  blueprints?: BuildingBlueprint[];
+  selected?: BuildingBlueprint;
   copyable: boolean;
   pastable: boolean;
 }
@@ -105,28 +76,19 @@ const initialState: BlueprintsState = {
   pastable: false,
 }
 
-function remove(blueprints: Blueprint[], blueprint: Blueprint) {
-  return blueprints.filter((bp: Blueprint) => { return bp.id != blueprint.id });
+function remove(blueprints: BuildingBlueprint[], blueprint: BuildingBlueprint) {
+  return blueprints.filter((bp: BuildingBlueprint) => { return bp.name != blueprint.name });
 }
 
 export default function reducer(state: BlueprintsState = initialState, action: any = {}) {
   switch (action.type) {
+    case UPDATE_BLUEPRINTS:
+      return assign({}, state, {
+        blueprints: [...action.blueprints]
+      });
     case SELECT_BLUEPRINT:
       return assign({}, state, {
         selected: action.blueprint
-      });
-    case ADD_BLUEPRINT:
-      return assign({}, state, {
-        blueprints: [...state.blueprints, action.blueprint]
-      });
-    case ADD_BLUEPRINT_ICON:
-      action.blueprint.icon = action.icon;
-      return assign({}, state, {
-        blueprints: [...state.blueprints]
-      });
-    case REMOVE_BLUEPRINT:
-      return assign({}, state, {
-        blueprints: remove(state.blueprints, action.blueprint)
       });
     case MODE_CHANGED:
       return assign({}, state, {

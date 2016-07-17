@@ -6,6 +6,7 @@
 
 import EventEmitter from './EventEmitter';
 import {clientEventTopics} from './defaultTopics';
+import BuildingEventTopics from '../building/events/BuildingEventTopics';
 
 import InitListener from './listeners/Init';
 import AnnouncementsListener from './listeners/Announcements';
@@ -21,7 +22,12 @@ import EquippedGearListener from './listeners/EquippedGear';
 import ConsoleListener from './listeners/Console';
 import LoggingListener from './listeners/Logging';
 import PlotListener from './listeners/Plot';
+import BlockSelectListener from '../building/events/BlockSelect';
+import BuildingModeListener from '../building/events/BuildingMode';
+import BlueprintSelectListener from '../building/events/BlueprintSelect'
+import BlueprintCopyListener from '../building/events/BlueprintCopy'
 
+const buildingEventTopics = BuildingEventTopics;
 // Listeners
 const listeners: any = {
   [clientEventTopics.initialize]: new InitListener(),
@@ -37,7 +43,11 @@ const listeners: any = {
   [clientEventTopics.handlesEquippedGear]: new EquippedGearListener(),
   [clientEventTopics.handlesConsole]: new ConsoleListener(),
   [clientEventTopics.handlesLogging]: new LoggingListener(),
-  [clientEventTopics.handlesPlot]: new PlotListener()
+  [clientEventTopics.handlesPlot]: new PlotListener(),
+  [buildingEventTopics.handlesBlockSelect]: new BlockSelectListener(),
+  [buildingEventTopics.handlesBuildingMode]: new BuildingModeListener(),
+  [buildingEventTopics.handlesBlueprintSelect]: new BlueprintSelectListener(),
+  [buildingEventTopics.handlesBlueprintCopy]: new BlueprintCopyListener()
 };
 
 // Event Emitter.  A single instance of event emitter handles all cu-events events
@@ -123,6 +133,7 @@ export function removeListener(listener: any): void {
 
 export default {
   clientEventTopics,
+  buildingEventTopics,
   on,
   once,
   off,

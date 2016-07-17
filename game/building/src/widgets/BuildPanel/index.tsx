@@ -13,7 +13,6 @@ import Panel from './components/BuildPanel';
 import {BuildingItem} from '../../lib/BuildingItem';
 
 export interface ContainerProps {
-  onItemSelect: (item: BuildingItem)=>void;
 }
 
 export interface ContainerState {
@@ -22,7 +21,7 @@ export interface ContainerState {
 class Container extends React.Component<ContainerProps, ContainerState> {
   render() {
     return (
-      <Panel onItemSelect={this.props.onItemSelect} />
+      <Panel  />
     )
   }
 }

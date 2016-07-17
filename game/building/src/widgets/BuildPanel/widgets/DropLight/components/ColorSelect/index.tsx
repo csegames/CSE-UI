@@ -47,8 +47,8 @@ class ColorSelect extends React.Component<ColorSelectProps, ColorSelectState> {
   }
 
   updateHue(hue: number, color: Color): Color {
-    let opsColor = this.getOpsColor(color);
-    let hslColor = colorOps.toHSL(opsColor);
+    const opsColor = this.getOpsColor(color);
+    const hslColor = colorOps.toHSL(opsColor);
     const newColor = colorOps.hsl(hue, hslColor.s, hslColor.l);
 
     return {
@@ -63,20 +63,21 @@ class ColorSelect extends React.Component<ColorSelectProps, ColorSelectState> {
   }
 
   render() {
-    let opsColor = this.getOpsColor(this.props.color);
+    const opsColor = this.getOpsColor(this.props.color);
     const hue = colorOps.hue(opsColor);
 
     return (
       <div className="color-picker">
         <input className="hue" type="range" min="0" max="359" step="1"
           value={`${hue}`} onChange={this.hueChanged}/>
-
-        R: <input className="red" type='number' min='0' max='255' step='1'
-          value={`${this.props.color.red}`} onChange={this.redChanged}/>
-        G: <input className="green" type='number' min='0' max='255' step='1'
-          value={`${this.props.color.green}`} onChange={this.greenChanged}/>
-        B: <input className="blue" type='number' min='0' max='255' step='1'
-          value={`${this.props.color.blue}`} onChange={this.blueChanged}/>
+        <div>
+          <div className="control">R: <input className="red" type='number' min='0' max='255' step='1'
+            value={`${this.props.color.red}`} onChange={this.redChanged}/></div>
+          <div className="control">G: <input className="green" type='number' min='0' max='255' step='1'
+            value={`${this.props.color.green}`} onChange={this.greenChanged}/></div>
+          <div className="control">B: <input className="blue" type='number' min='0' max='255' step='1'
+            value={`${this.props.color.blue}`} onChange={this.blueChanged}/></div>
+        </div>
       </div>
     )
   }

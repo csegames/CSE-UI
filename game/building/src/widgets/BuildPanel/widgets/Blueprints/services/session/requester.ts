@@ -3,128 +3,84 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { client, restAPI, buildUIMode } from 'camelot-unchained';
-import {Blueprint, UNCLASSIFIED} from '../../lib/Blueprint';
+import {Promise} from 'es6-promise';
+import { client, restAPI, building, BuildingBlueprint, buildUIMode } from 'camelot-unchained';
 import faker from './requester_fake';
 
-class BlueprintLoader {
+class BlueprintRequests {
   private win: any = window;
   private fake: boolean = (this.win.cuAPI == null);
 
-  public loadBlueprints(callback: (print: Blueprint) => void) {
+  public requestBlueprints() {
     if (this.fake) {
-      return faker.loadBlueprints(callback);
+      return faker.requestBlueprints();
     }
 
-    client.OnNewBlueprint((index: number, fullName: string) => {
-      //special case, this is not a real blueprint
-      if (fullName == "Small Control Island")
-        return;
-
-      const catAndName = this.splitCategoryAndName(fullName);
-      const blueprint = {
-        index: index,
-        id: fullName,
-        name: fullName,
-        category: catAndName.cat,
-      } as Blueprint;
-      callback(blueprint);
-    });
-    client.RequestBlueprints();
+    //delaying loading blueprints to give the materials a little time to load
+    setTimeout(()=> building.requestBlueprints(), 1000);
   }
 
-  public loadBlueprintIcon(blueprint: Blueprint, callback: (blueprint: Blueprint, icon: string) => void) {
+  public loadIcon(blueprint: BuildingBlueprint) {
     if (this.fake) {
-      return faker.loadBlueprintIcon(blueprint, callback);
+      return faker.requestBlueprintIcon(blueprint);
     }
 
-    restAPI.getBlueprintIcon(blueprint.index).then((icon: string): void => {
-      callback(blueprint, icon);
-    }, (): void => {
-      callback(blueprint, undefined);
-    })
+    building.requestBlueprintIcon(blueprint);
   }
 
-  public listenForSelectionModeChange(callback: (selected: boolean) => void) {
+  public select(blueprint: BuildingBlueprint) {
     if (this.fake) {
-      return faker.listenForSelectionModeChange(callback);
+      return faker.requestBlueprintSelect(blueprint);
     }
 
-    client.OnBuildingModeChanged((mode: number) => {
-      callback(mode==buildUIMode.BLOCKSELECTED);
-    });    
-  }
-
-  public listenForCopy(callback: () => void) {
-    if (this.fake) {
-      return faker.listenForCopy(callback);
-    }
-
-    client.OnCopyBlueprint(() => {
-      callback();
-    });
-  }
-
-  public changeBlueprintSelection(blueprint: Blueprint) {
-    if (this.fake) {
-      return faker.changeBlueprintSelection(blueprint);
-    }
-
-    client.SelectBlueprint(blueprint.index);
-  }
-
-  public select(blueprint: Blueprint) {
-    if (this.fake) {
-      return faker.select(blueprint);
-    }
-
-    client.SelectBlueprint(blueprint.index);
+    building.requestBlueprintSelect(blueprint);
   }
 
   public save(name: string) {
     if (this.fake) {
-      return faker.save(name);
+      return faker.requestBlueprintSave(name);
     }
 
-    client.SaveBlueprint(name);
+    building.requestBlueprintSave(name);
   }
 
-  public remove(blueprint: Blueprint) {
+  public remove(blueprint: BuildingBlueprint) {
     if (this.fake) {
-      return faker.remove(blueprint);
+      return faker.requestBlueprintDelete(blueprint);
     }
-
-    //no feedback on this delete, we just call it and cross our fingers
-    client.DeleteLocalBlueprint(blueprint.id);
+    
+    building.requestBlueprintDelete(blueprint);
   }
 
   public copy() {
     if (this.fake) {
-      return faker.copy();
+      return faker.requestBlueprintCopy();
     }
 
-    client.CopyBlueprint();
+    building.requestBlueprintCopy();
   }
 
   public paste() {
     if (this.fake) {
-      return faker.paste();
+      return faker.requestBlueprintPaste();
     }
-    
-    client.PasteBlueprint();
-  }
 
-  private splitCategoryAndName(fullName: string) {
-    let category = UNCLASSIFIED;
-    let name = fullName;
-    const index = fullName.indexOf('-');
-    if (index > 0) {
-      category = fullName.substring(0, index);
-      name = fullName.substring(index + 1);
-    }
-    return { cat: category, name: name, fullName: fullName };
+    building.requestBlueprintPaste();
   }
+  /*
+    const UNCLASSIFIED: string = 'Unclassified';
+    private splitCategoryAndName(fullName: string) {
+      let category = UNCLASSIFIED;
+      let name = fullName;
+      const index = fullName.indexOf('-');
+      if (index > 0) {
+        category = fullName.substring(0, index);
+        name = fullName.substring(index + 1);
+      }
+      return { cat: category, name: name, fullName: fullName };
+    }
+  */
 }
 
 
-export default new BlueprintLoader();
+export default new BlueprintRequests();

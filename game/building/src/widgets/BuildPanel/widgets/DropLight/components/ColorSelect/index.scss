@@ -10,7 +10,8 @@
 
   input[type=range] {
     -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-    width: 180px; /* Specific width is required for Firefox. */
+    width: 100%; /* Specific width is required for Firefox. */
+    max-width: 200px;
     height: 10px;
     border: none;
   }

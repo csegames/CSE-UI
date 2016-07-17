@@ -4,32 +4,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
- .build-panel {
-   width: 200px;
- }
- 
- .build-panel.minimized {
-   width: 100px;
- }
- 
 .build-panel {
   -webkit-user-select: none;
   cursor: default;
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  &.minimized {
+    width: 100px;
+  }
 
   .row {
     margin-bottom: 5px;
     background: linear-gradient(#131313, rgba(0, 0, 0, 0.9));
     border-width: 1px;
     border-image: linear-gradient(to top left, rgba(75, 70, 66, 0.2), #4b4642);
-    border-image-slice: 1;width: 100%;
-    
+    border-image-slice: 1;
+    width: 100%;
+    height: 100%;
   }
-   
+
   header {
     font-size: 11px;
     text-align: left;
@@ -52,20 +47,23 @@
     cursor: pointer;
     margin-right: 5px;
     transition: all .1s ease-in-out;
+
     &:hover {
       color: white;
     }
-  }    
+  }
   
   .tab-content {
-    height: 100%;
+    height: calc(100% - 40px);
     color: #9f9893;
     padding: 5px;
+    overflow: hidden;
   }
- 
+
   .tabs {
     background-color:rgba(75,70,66,0.20);
-    div {
+
+    .tab {
       display: inline-block;
       font-size: 11px;
       color: #706B67;
@@ -73,10 +71,10 @@
       padding: 5px 10px;
       cursor: pointer;
     }
+
     .active {
       background-color: rgb(16, 16, 16);
       cursor: default;
     }
   }
 }
- 

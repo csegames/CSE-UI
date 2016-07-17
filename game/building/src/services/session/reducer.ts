@@ -7,12 +7,17 @@
 import {combineReducers} from 'redux';
 
 import selectionReducer, {SelectionState} from './selection';
+import buildingReducer, {BuildingState} from './building';
+
 const selection = selectionReducer;
+const building = buildingReducer;
 
 export default combineReducers({
   selection,
+  building
 });
 
 export interface GlobalState {
   selection: SelectionState,
+  building: BuildingState
 }

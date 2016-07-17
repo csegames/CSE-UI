@@ -48,13 +48,10 @@ html, body {
   cursor: default;
 }
 
-
-
 // third party
 @import '../node_modules/react-select/scss/default';
 
 @import './widgets/SelectionView/index';
 @import './widgets/Actionbar/index';
 @import './widgets/BuildPanel/index';
-
-
+@import './widgets/SavedDraggable/index';

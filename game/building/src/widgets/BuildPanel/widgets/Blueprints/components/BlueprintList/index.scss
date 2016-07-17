@@ -6,7 +6,7 @@
 
 .blueprints__list {
   
-  height: 100px;
+  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   font-size: .8em;
@@ -22,9 +22,11 @@
     padding: 0px 10px;
     background: #131313;
     transition: all 0.1s ease-in-out;
+
     &:hover {
       -webkit-filter: brightness(1.5);
     }
+    
     &.active {
       background-color: rgba(100,100,255,0.3);
     }
@@ -46,24 +48,4 @@
     font-size: .8em;
   }
 
-}
-
-.BlueprintsPane {
-  position: relative;
-  padding: 5px;
-}
-
-.blueprint-preview-panel {
-  background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));
-  border: 1px solid #393634;
-  width: 100px;
-  min-height: 100px;
-  position: absolute;
-  left: -117px;
-  top: 20px;
-  padding: 10px;
-  img {
-    width: 100%;
-    height: 100%;
-  }
 }

@@ -5,14 +5,30 @@
  */
 
 import * as React from 'react';
+import {connect} from 'react-redux';
 
-import LightPreview from '../LightPreview';
+import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem'
+import {fireBuildingItemSelected} from '../../../../../../services/events';
+
+import {GlobalState} from '../../services/session/reducer';
+import * as lightService from '../../services/session/lights';
+import {LightsState} from '../../services/session/lights';
 import {Light} from '../../lib/Light';
+import LightPreview from '../LightPreview';
+
+function select(state: GlobalState): LightSelectorProps {
+  return {
+    lights: state.lights.lights,
+    selected: state.lights.lights[state.lights.selectedIndex],
+    show: state.lights.showLightSelector
+  }
+}
 
 export interface LightSelectorProps {
-  lights: Light[];
-  selectLight: (light: Light) => void;
-  selected: Light;
+  dispatch?: any;
+  lights?: Light[];
+  selected?: Light;
+  show?: boolean;
 }
 
 export interface LightSelectorState {
@@ -24,9 +40,31 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
     super(props);
   }
 
+  selectLightAsBuildingItem(light: Light) {
+    let item: BuildingItem = null;
+    if (light != null) {
+      const descr = "RGB: (" + light.color.red + ", " + light.color.green + ", " + light.color.blue + ") Intensity:" +
+        light.intensity + " Radius:" + light.radius;
+
+      item = {
+        name: 'DropLight',
+        description: descr,
+        element: (<LightPreview light={light} />),
+        id: light.index + '-' + BuildingItemType.Droplight,
+        type: BuildingItemType.Droplight,
+        select: () => { this.props.dispatch(lightService.selectLight(light)) }
+      } as BuildingItem;
+    }
+    fireBuildingItemSelected(item);
+  }
+
   selectLight = (light: Light) => {
-    if (this.props.selectLight != undefined)
-      this.props.selectLight(light);
+    this.props.dispatch(lightService.selectLight(light));
+  }
+
+  selectLightAndNotify = (light: Light) => {
+    this.selectLight(light);
+    this.selectLightAsBuildingItem(light);
   }
 
   generateLightPreview = (light: Light, selected: boolean) => {
@@ -43,7 +81,7 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
       <div key={'preset' + light.index} className="preset-light">
         <LightPreview
           className={selected ? 'active' : ''}
-          selectLight={this.selectLight}
+          selectLight={this.selectLightAndNotify}
           light={light} />
         <div>{light.presetName}</div>
       </div>
@@ -51,6 +89,9 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
   }
 
   render() {
+    if(!this.props.show)
+      return null;
+      
     const customLights: Light[] = this.props.lights.filter((light: Light) => !light.preset);
     const presetLights: Light[] = this.props.lights.filter((light: Light) => light.preset);
 
@@ -66,4 +107,4 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
   }
 }
 
-export default LightSelector;
+export default connect(select)(LightSelector);

@@ -6,62 +6,42 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {client} from 'camelot-unchained';
+import {events, buildUIMode} from 'camelot-unchained';
 
 import ActionBar from '../../widgets/ActionBar';
 import BuildingPanel from '../../widgets/BuildPanel';
 import SelectionView from '../../widgets/SelectionView';
 
-import {selectItem} from '../../services/session/selection';
 import requester from '../../services/session/requester';
-
-// test building item for selection
-
 import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
 
 function select(state: any): any {
   return {
     selectedItem: state.selection.selectedItem,
+    buildingMode: state.building.mode
   }
 }
 
 export interface BuildingAppProps {
   dispatch?: (action: any) => void;
+  buildingMode?: buildUIMode;
+  selectedItem?: BuildingItem;
 }
 
 export interface BuildingAppState {
-  buildingMode: number;
-  selectedItem: BuildingItem;
 }
 
 class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
 
   public name = 'building-app';
 
-  private modeListener = (buildingMode: number) => {
-    this.setState({ buildingMode: buildingMode } as BuildingAppState);
-  };
-
-
   constructor(props: BuildingAppProps) {
     super(props);
-    this.state = {
-      buildingMode: 0,
-      selectedItem: null
-    }
-  }
-
-  componentDidMount() {
-    requester.listenForModeChange(this.modeListener);
-  }
-
-  componentWillUnmount() {
-    requester.unlistenForModeChange(this.modeListener);
   }
 
   createActionButton(active: boolean): JSX.Element {
     if (active) {
-      return (<ActionBar />);
+      return (<ActionBar buildingMode={this.props.buildingMode}/>);
     }
     return null;
   }
@@ -72,22 +52,21 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
 
   createBuildingPanel(active: boolean): JSX.Element {
     if (active) {
-      return (<BuildingPanel onItemSelect={this.selectedItem}/>);
+      return (<BuildingPanel />);
     }
     return null;
   }
 
   createSelectionView(active: boolean): JSX.Element {
     if (active) {
-      return (<SelectionView item={this.state.selectedItem} />);
+      return (<SelectionView item={this.props.selectedItem} />);
     }
     return null;
   }
 
   render() {
-    const active: boolean = this.state.buildingMode > 0;
-    const triggerMode: number = active ? 0 : 1;
-
+    const active: boolean = this.props.buildingMode > 0;
+    const triggerMode: buildUIMode = active ? buildUIMode.NOTBUILDING : buildUIMode.PLACINGPHANTOM;
     return (
       <div className='building'>
         <div id="building-button" className={active ? 'active' : ''}
