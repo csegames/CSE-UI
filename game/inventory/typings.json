@@ -1,14 +1,11 @@
 {
   "name": "inventory",
-  "ambientDependencies": {
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#263705d313346e093d95cb62cef6fed848e46978",
-    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#984a41af67d76b5134e0d4991a30f813dfb8561f",
-    "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#ca5bfe76d2d9bf6852cbc712d9f3e0047c93486e",
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "react": "registry:dt/react#0.14.0+20160621225615",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "classnames": "github:CUModSquad/Typings/classnames/classnames.d.ts",
     "rc-tooltip": "github:CUModSquad/Typings/rc-tooltip/rc-tooltip.d.ts",
     "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts"
-  },
-  "dependencies": {
-    "camelot-unchained": "github:csegames/camelot-unchained-client-library"
   }
 }

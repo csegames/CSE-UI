@@ -11,6 +11,7 @@ import {ItemGroup} from './item-group';
 
 export class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWindowState> {
   private listener: any;
+  private lastClicked:number;
 
   constructor(props: any) {
     super(props);
@@ -21,7 +22,7 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
   }
 
   componentWillMount() {
-    this.listener = events.on(events.handlesInventory.topic, (inventory: Inventory) => {
+    this.listener = events.on(events.clientEventTopics.handlesInventory, (inventory: Inventory) => {
       this.setState({
         inventory: inventory,
         itemGroups: ItemGroup.buildItemGroups(inventory)
@@ -45,6 +46,16 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
       client.EquipItem(group.getFirstItemID());
     }
   }
+  
+  simDblClick(onDblClick: any, ...args : any[]) {
+    let now:number = Date.now();
+    if (now - this.lastClicked < 500) {
+      onDblClick(...args);
+      this.lastClicked = 0;
+    } else {
+      this.lastClicked = now;
+    }
+  }
 
   dropItem(group: ItemGroup): void {
     client.DropItem(group.getFirstItemID());
@@ -54,7 +65,7 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
     const itemGroups: JSX.Element[] = [];
     this.state.itemGroups.forEach((group: ItemGroup, index: number) => {
       itemGroups.push((
-          <li className="inventory-item" key={'item-group' + index} onDoubleClick={this.useItem.bind(this, group) } onContextMenu={this.dropItem.bind(this, group )}>
+          <li className="inventory-item" key={'item-group' + index} onClick={() => this.simDblClick(this.useItem, group)} onContextMenu={this.dropItem.bind(this, group )}>
             <div className="quantity">{group.quantity}</div>
             <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
             <div className="name">{group.item.name}</div>
