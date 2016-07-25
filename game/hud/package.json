@@ -84,7 +84,7 @@
   },
   "dependencies": {
     "apisauce": "^0.1.5",
-    "camelot-unchained": "^0.4.12",
+    "camelot-unchained": "^0.4.13",
     "es6-promise": "^3.2.1",
     "jquery": "^3.0.0",
     "node-xmpp-client": "^2.1.0",
