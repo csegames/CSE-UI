@@ -124,11 +124,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
                     this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, scale: w.scale}));
                   }}>
         <div>
-          <div className={containerClass} style={{
-            transform:`scale(${w.scale})`,
-            height: `${w.height}px`,
-            width: `${w.width}px`
-          }}
+          <div className={containerClass}
+                style={{
+                 transform:`scale(${w.scale})`,
+                 height: `${w.height}px`,
+                 width: `${w.width}px`
+               }}
                onWheel={(e: any) => this.onWheel(name, e)}>
             <Widget {...props} />
             <div className={`drag-handle ${this.props.layout.locked ? 'hidden':''}`}></div>
