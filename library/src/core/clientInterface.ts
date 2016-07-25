@@ -44,7 +44,8 @@ interface clientInterface {
   CancelOnServerConnected(c: number): void;
   PlaySoundEvent(id: number): void;
   ToggleCamera(): void;
-  ReloadUI(name?: string): void;
+  ReloadUI(name: string): void;
+  ReloadAllUI(): void;
   OpenUI(name: string): void;
   CloseUI(name: string): void;
   HideUI(name: string): void;
