@@ -221,8 +221,8 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
 
           <SlideIndicatorBar containerClass='player-status-bar__temp-bar'
                              indicatorClass='player-status-bar__indicator'
-                             currentValue={50}
-                             maxValue={100} />
+                             currentValue={this.props.playerStatus.temperature.current}
+                             maxValue={this.props.playerStatus.temperature.maximum} />
         </div>
       </div>
     );
@@ -232,17 +232,17 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     return (
       <div className={`player-status-bar__blood-and-stam ${style}`}>
         <div className='player-status-bar__column'>
-          <Pills currentValue={525}
+          <Pills currentValue={this.props.playerStatus.blood.current}
                  valuePerPill={100}
-                 maxValue={1550}
+                 maxValue={this.props.playerStatus.blood.maximum}
                  valueColor={'red'}
                  depletedColor={'grey'}
                  containerClass={'player-status-bar__blood'}
                  size={10} />
 
-          <Pills currentValue={925}
+          <Pills currentValue={this.props.playerStatus.stamina.current}
                  valuePerPill={100}
-                 maxValue={1000}
+                 maxValue={this.props.playerStatus.stamina.maximum}
                  valueColor={'yellow'}
                  depletedColor={'grey'}
                  containerClass={'player-status-bar__stamina'}
@@ -250,13 +250,13 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           
           <SlideIndicatorBar containerClass='player-status-bar__panic-bar'
                              indicatorClass='player-status-bar__indicator'
-                             currentValue={5}
-                             maxValue={100} />
+                             currentValue={this.props.playerStatus.panic.current}
+                             maxValue={this.props.playerStatus.panic.maximum} />
 
           <SlideIndicatorBar containerClass='player-status-bar__temp-bar'
                              indicatorClass='player-status-bar__indicator'
-                             currentValue={50}
-                             maxValue={100} />
+                             currentValue={this.props.playerStatus.temperature.current}
+                             maxValue={this.props.playerStatus.temperature.maximum} />
         </div>
       </div>
     );

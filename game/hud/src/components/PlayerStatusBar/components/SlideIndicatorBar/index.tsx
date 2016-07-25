@@ -9,6 +9,7 @@ import * as React from 'react';
 export interface SlideIndicatorBarProps {
   currentValue: number;
   maxValue: number;
+  minValue?: number;
   containerClass?: string;
   indicatorClass?: string;
 }
@@ -23,10 +24,15 @@ class SlideIndicatorBar extends React.Component<SlideIndicatorBarProps, SlideInd
   }
 
   render() {
+
+    const min = this.props.minValue ? this.props.minValue : 0;
+    const current = this.props.currentValue - min;
+    const max = this.props.maxValue - min;
+
     return (
       <div className={`player-status-bar__slide-indicator-bar ${this.props.containerClass || ''}`}>
         <div className={`player-status-bar__slide-indicator-bar--indicator ${this.props.indicatorClass || ''}`}
-             style={{left:`${(this.props.currentValue / this.props.maxValue)*100}%`}} />
+             style={{left:`${(current / max)*100}%`}} />
       </div>
     )
   }

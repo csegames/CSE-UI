@@ -100,8 +100,8 @@ const registerEvents = () => {
    * Called when a member is removed from your warband.
    * -- could be your own character
    */
-  register(WARBAND_HUB_MEMBERREMOVED, (member: WarbandMember = mandatory()) => {
-    events.fire(WARBAND_EVENTS_MEMBERREMOVED, member);
+  register(WARBAND_HUB_MEMBERREMOVED, (characterID: string = mandatory()) => {
+    events.fire(WARBAND_EVENTS_MEMBERREMOVED, characterID);
   });
 
   /**
