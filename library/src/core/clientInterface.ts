@@ -44,6 +44,7 @@ interface clientInterface {
   CancelOnServerConnected(c: number): void;
   PlaySoundEvent(id: number): void;
   ToggleCamera(): void;
+  ReloadUI(name?: string): void;
   OpenUI(name: string): void;
   CloseUI(name: string): void;
   HideUI(name: string): void;
@@ -294,7 +295,6 @@ interface clientInterface {
   OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void): void;
 
 
-  /* New -- NOT FILLED OUT BY THE CLIENT YET! -- DEV ONLY */
   apiVersion?: number;
   characterID?: string;
   debug?: boolean;

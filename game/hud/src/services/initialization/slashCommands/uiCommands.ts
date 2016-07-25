@@ -8,6 +8,17 @@ import {parseArgs, systemMessage} from './utils';
 
 export default () => {
   /**
+   * Reload the UI or a single UI Module
+   */
+  registerSlashCommand('reloadui', 'reload the ui, or a single module if a name is provided', (params: string) => {
+    if (params.length > 0) {
+      client.ReloadUI(params);
+    } else {
+      client.ReloadUI();
+    }
+  });
+
+  /**
    * Open a UI Module
    */
   registerSlashCommand('openui', 'open a ui module', (params: string) => {

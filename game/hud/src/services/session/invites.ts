@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cu, {client, WARBANDS_HUB, GroupInvite, groupType} from 'camelot-unchained';
+import cu, {client, GroupInvite, groupType} from 'camelot-unchained';
 
 const localStorageKey = 'cse_hud_invites-state';
 

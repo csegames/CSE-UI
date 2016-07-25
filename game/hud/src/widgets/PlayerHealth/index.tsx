@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {Player, archetype} from 'camelot-unchained';
+import {WarbandMember, archetype} from 'camelot-unchained';
 
 import PlayerStatusBar, {PlayerStatusStyle} from '../../components/PlayerStatusBar';
 
@@ -25,20 +25,17 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
 
   render() {
 
-    var player = new Player();
-    player.archetype = archetype.BLACKKNIGHT;
-
     const mini = this.props.isMini || false;
 
     let bar:any = null;
     if (mini) {
       bar = <PlayerStatusBar containerClass='PlayerHealth__bar--mini'
                          style={PlayerStatusStyle.MiniSelf}
-                         player={player}/>;
+                         playerStatus={null}/>;
     } else {
       bar = <PlayerStatusBar containerClass='PlayerHealth__bar'
                          style={PlayerStatusStyle.FullSelf}
-                         player={player}/>;
+                         playerStatus={null}/>;
     } 
 
     return (

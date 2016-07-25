@@ -25,20 +25,17 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   render() {
     
-    var player = new Player();
-    player.archetype = archetype.BLACKGUARD;
-
     const mini = this.props.isMini || false;
 
     let bar:any = null;
     if (mini) {
       bar = <PlayerStatusBar containerClass='TargetHealth__bar mini'
                          style={PlayerStatusStyle.MiniTarget}
-                         player={player}/>;
+                         playerStatus={null}/>;
     } else {
       bar = <PlayerStatusBar containerClass='TargetHealth__bar'
                          style={PlayerStatusStyle.FullTarget}
-                         player={player}/>;
+                         playerStatus={null}/>;
     } 
 
     return (
