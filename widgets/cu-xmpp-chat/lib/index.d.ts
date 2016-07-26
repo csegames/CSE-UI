@@ -18,7 +18,6 @@ export interface ChatProps {
     hideChat: () => void;
 }
 declare class Chat extends React.Component<ChatProps, ChatState> {
-    name: string;
     _eventHandlers: any[];
     constructor(props: ChatProps);
     initialState(): ChatState;

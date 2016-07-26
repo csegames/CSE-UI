@@ -4,14 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-/* Coolors Exported Palette - coolors.co/505a70-64758e-cc4949-3c3b3d-9cd8ce */
-
-// $color1: #505a70; //rgba(80, 90, 112, 100)
-// $color2: #64758e; //rgba(100, 117, 142, 100)
-// $color3: #cc4949; //rgba(204, 73, 73, 100)
-// $color4: #3c3b3d; //rgba(60, 59, 61, 100)
-// $color5: #9cd8ce; //rgba(156, 216, 206, 100)
-
 // https://coolors.co/app/000000-191919-ffbf1e-eaeaea-dd4b4b
 $color2: #000000; //rgba(0, 0, 0, 100)
 $color4: #131313; //rgba(25, 25, 25, 100)
@@ -70,8 +62,6 @@ $chat-line-timestamp-color: #ccc;
 $chat-line-emoji-color: #ffcc00;
 $chat-line-action-color: #00ff00;
 
-//$sidebar-bg: rgba(30, 28, 30.5, 1);
 $sidebar-bg: $gradient;
-//$card-bg: rgba(30, 28, 30.5, 1);
 $card-bg: $color2;
 $sidebar-bg-solid: $gradient;

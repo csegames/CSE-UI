@@ -4,62 +4,115 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.login-status-modal {
-  position: absolute;
-  background-color: transparent;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 20;
+@import 'constants';
+
+@mixin circle($size) {
+  border-radius: 50%;
+  width: $size;
+  height: $size;
 }
 
-.login-modal {
-  width: 290px;
-  height: 270px;
-  margin: 0 auto;
-  position: absolute;
-  background: $gradient;
-  left: 50%;
-  top: 50%;
-  margin-left: -145px;
-  margin-top: -135px;
-  z-index: 21;
-  line-height: 20px;
+::-webkit-scrollbar {
+  width: 15px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: darken($color1, 70%);
+  border: 1px solid #4E4E4E;
+}
+
+h4 {
+  margin: 0;
+}
+
+.flex-right {
+  margin-left: auto;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-vcenter {
+  justify-content: center;
+}
+
+.flex-stretch {
+  flex: 1 0 auto;
+}
+
+.flex-fill {
+  flex: 1 1 auto;
+}
+
+#PatcherApp {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+input {
   color: $color1;
-  text-align: center;
-  .progress {
-    margin-top: 60px;
-    width: 100px;
+}
+
+.no-select {
+  -webkit-user-select: none;
+}
+.allow-select {
+  -webkit-user-select: all;
+}
+.allow-select-text {
+  -webkit-user-select: text;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0px;
+}
+
+.no-padding {
+  padding: 0px;
+}
+
+.no-margin {
+  margin: 0px;
+}
+
+.no-select {
+  -webkit-user-select: none;
+}
+
+::selection {
+    background:  rgb(181, 181, 181);
+}
+
+.hidden {
+  display: none;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.btn-flat {
+  color: $colorg4;
+}
+
+.btn {
+  background-color: $color1;
+  &:hover {
+    background-color: lighten($color1, 5%);
   }
-  
-  .authenticating {
-    margin-top: 60px;
-    color: $color1;
-    animation: pulse 3s linear infinite;
-  }
-  
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  
-  .failed {
-    color: $color3;
-    margin-top: 60px;
-  }
-  
-  .success {
-    margin-top: 60px;
-    color: $colorg4;
-  }
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
 }
 
 [type="checkbox"].filled-in:checked+label:after {
@@ -84,3 +137,9 @@ input:not([type]):focus:not([readonly]), input[type=text]:focus:not([readonly]),
 input:not([type]):focus:not([readonly])+label, input[type=text]:focus:not([readonly])+label, input[type=password]:focus:not([readonly])+label, input[type=email]:focus:not([readonly])+label, input[type=url]:focus:not([readonly])+label, input[type=time]:focus:not([readonly])+label, input[type=date]:focus:not([readonly])+label, input[type=datetime-local]:focus:not([readonly])+label, input[type=tel]:focus:not([readonly])+label, input[type=number]:focus:not([readonly])+label, input[type=search]:focus:not([readonly])+label, textarea.materialize-textarea:focus:not([readonly])+label {
     color: $colorg4;
 }
+
+
+@import 'modaldialog';
+@import 'chat';
+@import 'alerts';
+@import 'font';

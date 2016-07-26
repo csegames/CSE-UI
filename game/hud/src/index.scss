@@ -15,6 +15,12 @@ html, body {
   overflow: hidden;
 }
 
+.chat-window {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
 // components
 @import './components/PlayerStatusBar/index';
 @import './components/HUD/index';

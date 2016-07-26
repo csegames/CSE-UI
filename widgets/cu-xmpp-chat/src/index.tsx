@@ -31,7 +31,6 @@ export interface ChatProps {
 }
 
 class Chat extends React.Component<ChatProps, ChatState> {
-  public name = 'chat';
   _eventHandlers: any[] = [];
   constructor(props: ChatProps) {
     super(props);
@@ -138,7 +137,7 @@ class Chat extends React.Component<ChatProps, ChatState> {
     const room : ChatRoomInfo = current ? this.state.chat.getRoom(current) : undefined;
     const closeButton: any = this.props.hideChat ? <div className='chat-close' onClick={this.close}>Close</div> : null;
     return (
-      <div id={this.name} className="cse-chat chat-container no-select">
+      <div className="cse-chat no-select">
         <div className="chat-disconnect" >{this.state.chat.latency}</div>
         <div className="chat-frame">
           <Info

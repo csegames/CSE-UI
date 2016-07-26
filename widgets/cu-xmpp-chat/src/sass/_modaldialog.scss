@@ -49,3 +49,56 @@
   z-index: 998;
   background-color: rgba(0, 0, 0, 0.85);
 }
+
+.fullscreen-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-modal {
+  width: 400px;
+  height: 165px;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -200px;
+  margin-top: -100px;
+  z-index: 999;
+  background: $gradient-modal;
+  padding: 1em;
+
+  .confirm-message {
+    height: 3.5em;
+    font-size: 1.5em;
+    color: white;
+  }
+
+  button {
+    background: $gradient2;
+    border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    top: 9px;
+    margin: 5px;
+    line-height: 30px;
+    font-weight: 700;
+    text-align: center;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+}
+
+.modal-dialog.character-delete {
+  height: 165px;  /* overrides modal-dialog in modaldialog.scss */
+}

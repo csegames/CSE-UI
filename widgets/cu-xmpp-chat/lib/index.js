@@ -33,7 +33,6 @@ var Chat = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Chat).call(this, props));
 
-        _this.name = 'chat';
         _this._eventHandlers = [];
         // Get current tab
         _this.getCurrentRoom = function () {
@@ -132,7 +131,7 @@ var Chat = function (_React$Component) {
             var current = this.state.chat.currentRoom;
             var room = current ? this.state.chat.getRoom(current) : undefined;
             var closeButton = this.props.hideChat ? React.createElement("div", { className: 'chat-close', onClick: this.close }, "Close") : null;
-            return React.createElement("div", { id: this.name, className: "cse-chat chat-container no-select" }, React.createElement("div", { className: "chat-disconnect" }, this.state.chat.latency), React.createElement("div", { className: "chat-frame" }, React.createElement(Info_1.default, { chat: this.state.chat, currentRoom: this.state.chat.currentRoom, selectRoom: this.selectRoom, leaveRoom: this.leaveRoom }), React.createElement(Content_1.default, { room: room, send: this.send, slashCommand: this.slashCommand })), closeButton);
+            return React.createElement("div", { className: "cse-chat no-select" }, React.createElement("div", { className: "chat-disconnect" }, this.state.chat.latency), React.createElement("div", { className: "chat-frame" }, React.createElement(Info_1.default, { chat: this.state.chat, currentRoom: this.state.chat.currentRoom, selectRoom: this.selectRoom, leaveRoom: this.leaveRoom }), React.createElement(Content_1.default, { room: room, send: this.send, slashCommand: this.slashCommand })), closeButton);
         }
     }]);
 
