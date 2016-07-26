@@ -26,6 +26,7 @@
     "name": "cu-character-creation"
   },
   "scripts": {
+    "postinstall": "rimraf typings && typings install",
     "clean:tmp": "rimraf tmp",
     "clean:tmpp": "rimraf tmpp",
     "clean:publish": "rimraf dist",
@@ -50,7 +51,7 @@
     "serve": "http-server -p 9001 dist/"
   },
   "dependencies": {
-    "camelot-unchained": "^0.2.19",
+    "camelot-unchained": "^0.4.16",
     "es6-promise": "^3.1.2",
     "isomorphic-fetch": "^2.2.1",
     "normalizr": "^2.0.0",
@@ -70,6 +71,6 @@
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
     "typescript": "^1.8.0",
-    "typings": "^0.6.8"
+    "typings": "^0.6.10"
   }
 }
