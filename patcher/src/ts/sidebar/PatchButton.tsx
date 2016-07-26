@@ -8,13 +8,14 @@ import * as React from 'react';
 import {Server} from '../redux/modules/servers';
 import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
-import {restAPI} from 'camelot-unchained';
-import {events} from 'camelot-unchained';
+import {restAPI, events} from 'camelot-unchained';
+
+const Animate = require('react-animate.css');
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
-import Animate from '../../../../shared/components/Animate';
 import UninstallButton from './UninstallButton';
+
 
 export class Progress {
   constructor(public rate: number = 0, public dataCompleted: number = 0, public totalDataSize: number = 0) { }

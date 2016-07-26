@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {connect, Provider} from 'react-redux';
-import * as thunkMiddleware from 'redux-thunk';
+const thunk = require('redux-thunk').default;
 import {events} from 'camelot-unchained';
 
 import reducer from './redux/modules/reducer';
@@ -31,7 +31,7 @@ import Hero from './content/Hero';
 import News from './content/News';
 import PatchNotes from './content/PatchNotes';
 import Support from './content/Support';
-import Animate from '../../../shared/components/Animate';
+const Animate = require('react-animate.css');
 import Sound from './Sound';
 
 
@@ -39,10 +39,7 @@ import {patcher, Channel} from './api/PatcherAPI';
 import {CSENormalizeString} from './api/CSENormalizeString';
 
 
-const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware
-)(createStore);
-let store = createStoreWithMiddleware(reducer);
+const store = createStore(reducer, applyMiddleware(thunk));
 
 function select(state: any): any {
   return {

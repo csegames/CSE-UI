@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import {patcher, User} from '../api/PatcherAPI';
-import Animate from '../../../../shared/components/Animate';
+const Animate = require('react-animate.css');
+
 import LoginStatusModal from './LoginStatusModal';
 import {events} from 'camelot-unchained';
 

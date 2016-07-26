@@ -19,8 +19,8 @@ import CharacterSelect from './CharacterSelect';
 import CharacterButtons from './CharacterButtons';
 import CharacterDeleteModal from './CharacterDeleteModal';
 import Alerts from './Alerts';
-import CharacterCreation, {CharacterCreationModel} from '../../../../shared/widgets/CharacterCreation';
-import Animate from '../../../../shared/components/Animate';
+import CharacterCreation, {CharacterCreationModel} from 'cu-character-creation';
+const Animate = require('react-animate.css');
 import {events} from 'camelot-unchained';
 
 import {PatcherAlert} from '../redux/modules/patcherAlerts';

@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {restAPI} from 'camelot-unchained';
-import {events} from 'camelot-unchained';
+import {restAPI, events} from 'camelot-unchained';
 
 export interface CharacterDeleteModalProps {
   character: restAPI.SimpleCharacter;

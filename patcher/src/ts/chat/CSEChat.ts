@@ -5,7 +5,7 @@
 
 import {Client, Element} from 'node-xmpp-client';
 import Config from './Config';
-import EventEmitter from '../../../../shared/lib/EventEmitter';
+import EventEmitter from '../../lib/EventEmitter';
 import Message from './Message'
 import Sender from './Sender'
 import messageType from './messageType';
@@ -29,7 +29,7 @@ class CSEChat  {
   private _inFlight: number = 0;
   private _pings: any = {};
   private _pingsInFlight: number = 0;
-  private _pinger: number;
+  private _pinger: any;
 
   constructor(config = <Config>{}) {
     this.config = config;

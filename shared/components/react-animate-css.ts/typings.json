@@ -1,0 +1,9 @@
+{
+  "name": "react-animate.css.ts",
+  "main": "definitions/index.d.ts",
+  "globalDependencies": {
+    "react": "registry:dt/react#0.14.0+20160621225615",
+    "react-addons-css-transition-group": "registry:dt/react-addons-css-transition-group#0.14.0+20160316155526",
+    "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118"
+  }
+}

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 import {PatcherAlert} from '../redux/modules/patcherAlerts';
-import Animate from '../../../../shared/components/Animate';
+const Animate = require('react-animate.css');
 
 export interface AlertsState {};
 

@@ -9,8 +9,8 @@ import 'isomorphic-fetch';
 
 import {patcher} from '../../api/patcherAPI';
 
-import ResponseError from '../../../../../shared/lib/ResponseError';
-import {fetchJSON} from '../../../../../shared/lib/fetchHelpers';
+import ResponseError from '../../../lib/ResponseError';
+import {fetchJSON} from '../../../lib/fetchHelpers';
 
 const serversUrl = 'http://api.camelotunchained.com/servers';
 
