@@ -35,9 +35,9 @@ library\    -- NPM published client library package `camelot-unchained` on npm
 patcher\    -- Client Patcher UI
 web\        -- Website projects
 tools\      -- Tools to assist with development
+widgets\    -- Standalone projects that are built to be shared and used within multiple other projects or externally. These widgets are published to the CU Private Registry.
 shared\     -- Contains shared items that are used within multiple categories (ie. web & patcher & in-game)
   | components\     -- React components that have no session state / do not use redux, can contain sub-components
-  | widgets\        -- React components that have session state, use redux, can contain child widgets and child components
 
 ``` 
 
