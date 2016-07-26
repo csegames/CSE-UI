@@ -37,3 +37,4 @@ npm-debug.log
 **/definitions
 patcher/PatchClient
 !/shared/lib/
+.vscode/
