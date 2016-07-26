@@ -9,6 +9,7 @@ import EventEmitter from './EventEmitter';
 import Message from './Message'
 import Sender from './Sender'
 import messageType from './messageType';
+const randomString = require('randomstring');
 
 const NS_DISCO_ITEMS : string = 'http://jabber.org/protocol/disco#items';
 
@@ -60,7 +61,7 @@ class CSEChat  {
     this.config.init();
     this.client = new Client({
       websocket: {url: this.config.websocketUrl},
-      jid: 'none@chat.camelotunchained.com/game-client',
+      jid: `none@chat.camelotunchained.com/${randomString.generate(7)}`,
       loginToken: true,
       access_token: this.config.getPassword(),
     });

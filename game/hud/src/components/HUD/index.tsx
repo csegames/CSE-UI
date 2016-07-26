@@ -177,7 +177,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           bottom: '55px',
           left: '0'
         }}>
-        <Chat loginToken={client.loginToken} hideChat={() => {}} />
+        <Chat loginToken={client.loginToken} hideChat={null} />
         </div>
       </div>
     )

@@ -85,10 +85,12 @@ var ChatInput = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            camelot_unchained_1.client.OnBeginChat(function (cmdKind, text) {
-                _this2.getInputNode().focus();
-                _this2.getInputNode().value = text;
-            });
+            if (camelot_unchained_1.client.OnBeginChat) {
+                camelot_unchained_1.client.OnBeginChat(function (cmdKind, text) {
+                    _this2.getInputNode().focus();
+                    _this2.getInputNode().value = text;
+                });
+            }
         }
     }, {
         key: 'getInputNode',

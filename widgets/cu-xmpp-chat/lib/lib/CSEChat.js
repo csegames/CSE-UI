@@ -15,6 +15,7 @@ var EventEmitter_1 = require('./EventEmitter');
 var Message_1 = require('./Message');
 var Sender_1 = require('./Sender');
 var messageType_1 = require('./messageType');
+var randomString = require('randomstring');
 var NS_DISCO_ITEMS = 'http://jabber.org/protocol/disco#items';
 function CSELoginTokenMechanism() {}
 CSELoginTokenMechanism.prototype.name = 'CSELOGINTOKEN';
@@ -62,7 +63,7 @@ var CSEChat = function () {
             this.config.init();
             this.client = new node_xmpp_client_1.Client({
                 websocket: { url: this.config.websocketUrl },
-                jid: 'none@chat.camelotunchained.com/game-client',
+                jid: 'none@chat.camelotunchained.com/' + randomString.generate(7),
                 loginToken: true,
                 access_token: this.config.getPassword()
             });

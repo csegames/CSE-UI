@@ -56,10 +56,12 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   }
 
   componentDidMount() {
-    client.OnBeginChat((cmdKind: number, text: string) => {
-      this.getInputNode().focus();
-      this.getInputNode().value = text;
-    });
+    if (client.OnBeginChat) {
+      client.OnBeginChat((cmdKind: number, text: string) => {
+        this.getInputNode().focus();
+        this.getInputNode().value = text;
+      });
+    }
   }
 
   selectAtUser = (user: string) => {

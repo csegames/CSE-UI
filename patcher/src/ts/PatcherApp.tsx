@@ -26,7 +26,7 @@ import {fetchCharacters, selectCharacter} from './redux/modules/characters';
 import Sidebar from './sidebar/Sidebar';
 import Header from './Header';
 import WindowHeader from './WindowHeader';
-import Chat from './content/chat/Chat';
+import Chat from 'cu-xmpp-chat';
 import Hero from './content/Hero';
 import News from './content/News';
 import PatchNotes from './content/PatchNotes';
@@ -185,7 +185,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, PatcherState> {
     if (this.props.chat.visibility.showChat) {
       chat = (
         <div id="chat-window" key='0'>
-          <Chat hideChat={this.hideChat} username={CSENormalizeString(patcher.getScreenName())} userpass={patcher.getUserPass()} />
+          <Chat hideChat={this.hideChat} loginToken={patcher.getLoginToken()} />
         </div>
       );
     }
