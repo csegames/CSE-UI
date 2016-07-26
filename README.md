@@ -14,11 +14,11 @@ This project requires that you install and build npm packages from a private NPM
 npm set registry http://registry.camelotunchained.com:4873
 ```
 
-Login to the private CU registry with the command.
+*Optional:* Login to the private CU registry with the command. *anonymous read is enabled, you only need to login if you want to publish to this registry*
 ```
 npm login --registry http://registry.camelotunchained.com:4873
 ```
-*anonymous read is enabled, you only need an account to publish*
+
 
 
 ## Revert Registry setting
