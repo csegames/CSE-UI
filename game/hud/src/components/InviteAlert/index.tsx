@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import Animate from '../Animate';
+const Animate = require('react-animate.css');
 import cu, {GroupInvite, groupType} from 'camelot-unchained';
 const Slider = require('react-slick');
 

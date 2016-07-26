@@ -8,6 +8,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
+import Chat from 'cu-xmpp-chat';
 
 import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initializeHub} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
@@ -16,7 +17,6 @@ import PlayerHealth from '../../widgets/PlayerHealth';
 import TargetHealth from '../../widgets/TargetHealth';
 import Warband from '../../widgets/Warband';
 import InviteAlert from '../InviteAlert';
-import Chat from '../../widgets/Chat';
 
 function select(state: HUDSessionState): HUDProps {
   return {
