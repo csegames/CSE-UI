@@ -38,7 +38,6 @@ class Room extends React.Component<RoomProps, RoomState> {
     return (
       <div className={classes.join(' ')} onClick={this.select}>
         <div className="chat-room-close" onClick={this.leave}></div>
-        <div className="chat-room-icon"></div>
         <ul>
           <li className="chat-room-name">{this.props.roomId.name}</li>
           {players}
