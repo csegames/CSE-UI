@@ -35,3 +35,5 @@ library/lib/
 **/tmpp
 **/definitions
 patcher/PatchClient
+!/shared/lib/
+**/.vscode/
