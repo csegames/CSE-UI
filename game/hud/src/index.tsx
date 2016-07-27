@@ -17,7 +17,6 @@ import HUD from './components/HUD';
 let store = createStore(reducer, applyMiddleware(thunk));
 let root = document.getElementById('hud');
 
-
 // #TODO Reminder: export a 'has api' check from the camelot-unchained lib
 // interface for window cuAPI
 import cu, {client} from 'camelot-unchained';
@@ -37,7 +36,7 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
         <HUD />
       </Provider>,
       root);
-  });  
+  });
 } else {
   initialize();
   ReactDom.render(

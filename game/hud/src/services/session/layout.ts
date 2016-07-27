@@ -17,6 +17,10 @@ const UNLOCK_HUD = 'hud/layout/UNLOCK_HUD';
 const SET_POSITION = 'hud/layout/SET_POSITION';
 const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
 const RESET_POSITIONS = 'hud/layout/RESET_POSITIONS';
+const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
+
+const CURRENT_STATE_VERSION: number = 2;
+const MIN_STATE_VERSION_PERCENT: number = 2;
 
 export interface LayoutAction {
   type: string;
@@ -28,6 +32,8 @@ export interface LayoutAction {
 export interface Position {
   x: number;
   y: number;
+  width: number;
+  height: number;
   scale: number;
 }
 
@@ -86,20 +92,26 @@ export function saySomething(s: string) : LayoutAction {
   }
 }
 
-
-
-let defaultWidgets = () => {
+export function adjustWidgetPositions() {
   return {
-    'PlayerHealth': {x:100,y:300,scale:1,height:200,width:350},
-    'TargetHealth': {x:600,y:300,scale:1,height:200,width:350},
-    'Warband': {x:100,y:10,scale:1,height:200,width:350},
-    'Chat': {x:10,y:100,scale:1,height:300,width:600},
+    type: ADJUST_POSITIONS,
   }
+}
+
+
+const defaultWidgets = (): any => {
+  return {
+    'PlayerHealth': { x: 100, y: 300, height: 200, width: 350, scale: 1 },
+    'TargetHealth': { x: 600, y: 300, height: 200, width: 350, scale: 1 },
+    'Warband': { x: 100, y: 10, scale:1, height: 200, width: 350 },
+    'Chat': { x: 10, y: 100, scale:1, height: 300, width: 600 },
+  };
 }
 
 const minScale = 0.25;
 
 export interface LayoutState {
+  version?: number;
   locked?: boolean;
   widgets: any; // dictionary<name, position>
 }
@@ -109,8 +121,46 @@ const initialState = {
   widgets: defaultWidgets(),
 }
 
-let getInitialState = () => {
-  var storedState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState;
+interface Size {
+  width: number;
+  height: number;
+}
+
+const px2pcnt = (pos: Position, screen: Size) : Position => {
+  // converts pixel co-ordinates into % of display size
+  return {
+    x: pos.x / screen.width,
+    y: pos.y / screen.height,
+    width: pos.width,           // don't scale width/height
+    height: pos.height,
+    scale: 1
+  };
+};
+
+const pcnt2px = (pos: Position, screen: Size) : Position => {
+  // converts % co-ordinates into pixels for current display
+  return {
+    x: screen.width * pos.x,
+    y: screen.height * pos.y,
+    width: pos.width,           // don't scale width/height
+    height: pos.height,
+    scale: 1
+  }
+};
+
+const forceOnScreen = (current: Position, screen: Size) : Position => {
+  const pos: Position = Object.assign({}, current);
+  if (pos.x < 0) pos.x = 0;
+  if (pos.y < 0) pos.y = 0;
+  if (pos.x + pos.width > screen.width) pos.x = screen.width - pos.width;
+  if (pos.y + pos.height > screen.height) pos.y = screen.height - pos.height;
+  if (pos.x < 0) { pos.x = 0; pos.width = screen.width; }
+  if (pos.y < 0) { pos.y = 0; pos.height = screen.height; }
+  return pos;
+};
+
+const getInitialState = (): any => {
+  const storedState: LayoutState = loadState();
   if (storedState) {
     storedState.locked = initialState.locked;
     return storedState;
@@ -118,9 +168,34 @@ let getInitialState = () => {
   return initialState;
 }
 
+const loadState = () : LayoutState => {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+  const state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState;
+  if (state) {
+    if ((state.version|0) >= MIN_STATE_VERSION_PERCENT) {
+      for (let key in state.widgets) {
+        state.widgets[key] = forceOnScreen(pcnt2px(state.widgets[key], screen), screen);
+      }
+    }
+    return state;
+  }
+};
+
+const saveState = (state: LayoutState) => {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+  const save: LayoutState = {
+    version: CURRENT_STATE_VERSION,
+    locked: state.locked,
+    widgets: {}
+  };
+  for (let key in state.widgets) {
+    save.widgets[key] = px2pcnt(state.widgets[key], screen);
+  }
+  localStorage.setItem(localStorageKey, JSON.stringify(save));
+};
+
 export default function reducer(state: LayoutState = getInitialState(),
                                 action: LayoutAction = {type: null}): LayoutState {
-  let outState = state;
   switch(action.type) {
     case LOCK_HUD:
       return Object.assign({}, state, {
@@ -130,27 +205,43 @@ export default function reducer(state: LayoutState = getInitialState(),
       return Object.assign({}, state, {
         locked: false
       });
+  }
+
+  let widgets: any;
+  let outState: LayoutState = state;
+
+  switch(action.type) {
     case SET_POSITION:
-    {
-      const w = state.widgets;
-      w[action.widget] = action.position;
+      widgets = state.widgets;
+      widgets[action.widget] = action.position;
       outState = Object.assign({}, state, {
-        widgets: w
+        widgets: widgets
       });
-    }
+      break;
     case SAVE_POSITION:
-    {
-      const w = state.widgets;
-      Object.assign(w[action.widget], action.position);
-      if (w[action.widget].scale <= minScale) w[action.widget].scale = minScale;
+      widgets = state.widgets;
+      const position: Position = action.position;
+      Object.assign(widgets[action.widget], position);
+      if (position.scale <= minScale) widgets[action.widget].scale = minScale;
       outState = Object.assign({}, state, {
-        widgets: w
+        widgets: widgets
       });
-    }
+      break;
+    case ADJUST_POSITIONS:
+      // need to scan wiget positions, and check if they still fit in the
+      // new window size
+      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+      widgets = {};
+      for (let key in state.widgets) {
+        widgets[key] = forceOnScreen(Object.assign({}, state.widgets[key]), screen);
+      }
+      outState = Object.assign({}, state, {
+        widgets: widgets
+      })
   }
 
   // save to local storage
-  localStorage.setItem(localStorageKey, JSON.stringify(outState));
+  saveState(outState);
 
   return outState;
 }
