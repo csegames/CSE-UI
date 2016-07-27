@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {components, race, restAPI} from 'camelot-unchained';
+import {components, race, gender, restAPI} from 'camelot-unchained';
 let QuickSelect = components.QuickSelect;
 
 import * as moment from 'moment';
@@ -24,7 +24,7 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
           <div className='character-status'><div className={'indicator tooltipped ' + status} data-position='right'
             data-delay='150' data-tooltip={status} /></div>
           <div className='character-details'>
-            <h6 className={`character char-${race[this.props.item.race]}`}>
+            <h6 className={`character char-${race[this.props.item.race]}-${gender[this.props.item.gender]}`}>
               <div>{this.props.item.name}</div>
               <div className='character-lastlogin'>Last Login: {lastLogin}</div>
             </h6>
@@ -48,7 +48,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
           <div className='character-status'><div className={'indicator tooltipped ' + status} data-position='right'
             data-delay='150' data-tooltip={status} /></div>
           <div className='character-details'>
-            <h6 className={`character char-${race[this.props.item.race]}`}>{this.props.item.name}<br />
+            <h6 className={`character char-${race[this.props.item.race]}-${gender[this.props.item.gender]}`}>{this.props.item.name}<br />
               <div className='character-lastlogin'>Last Login: {lastLogin}</div>
             </h6>
           </div>
