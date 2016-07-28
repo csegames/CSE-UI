@@ -78,7 +78,7 @@ export default () => {
   registerSlashCommand('replacesubstance', 'replace blocks with type args[0] with blocks with type of args[1]', (params: string) => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
-    if(argv >= 2){
+    if(argv._.length >= 2){
       client.ReplaceSubstance(argv._[0], argv._[1]);
     }
     return;
@@ -86,7 +86,7 @@ export default () => {
   registerSlashCommand('replaceshape', 'replace blocks with shape args[0] with blocks with shape of args[1]', (params: string) => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
-    if(argv >= 2){
+    if(argv._.length >= 2){
       client.ReplaceShapes(argv._[0], argv._[1]);
     }
     return;
@@ -94,7 +94,7 @@ export default () => {
   registerSlashCommand('replaceselectedsubstance', 'replace blocks with type args[0] with blocks with type of args[1] within selected range', (params: string) => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
-    if(argv >= 2){
+    if(argv._.length >= 2){
       client.ReplaceSelectedSubstance(argv._[0], argv._[1]);
     }
     return;
@@ -102,7 +102,7 @@ export default () => {
   registerSlashCommand('replaceselectedshape', 'replace blocks with shape args[0] to blocks with shape of args[1] within selected range', (params: string) => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
-    if(argv >= 2){
+    if(argv._.length >= 2){
       client.ReplaceSelectedShapes(argv._[0], argv._[1]);
     }
     return;
@@ -126,7 +126,7 @@ export default () => {
   registerSlashCommand('loopability', 'Loops specified Ability at Interval', (params: string) => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
-    if(argv >= 2){
+    if(argv._.length >= 2){
       client.LoopAbility(argv._[0], argv._[1]);
     }
   });
