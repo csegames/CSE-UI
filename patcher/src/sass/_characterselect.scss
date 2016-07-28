@@ -94,65 +94,64 @@
     height: 26px;
     z-index: 1;
 }
-.char-STRM:before {
-    background-image: url("../images/character/a-strm.jpg");
-    border: 1px $colorA solid;
+
+.char-PICT-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png');
+  border: 1px $colorA solid;
 }
-.char-HAMADRYAD:before {
-    background-image: url("../images/character/t-hamadryads.jpg");
-    border: 1px $colorT solid;
+.char-PICT-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png');
+  border: 1px $colorA solid;
 }
-.char-LUCHORPAN:before {
-    background-image: url("../images/character/t-luchorpan.jpg");
-    border: 1px $colorT solid;
+
+.char-LUCHORPAN-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png');
+  border: 1px $colorT solid;
 }
-.char-FIRBOG:before {
-    background-image: url("../images/character/t-bog.jpg");
-    border: 1px $colorT solid;
+
+.char-LUCHORPAN-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png');
+  border: 1px $colorT solid;
 }
-.char-VALKYRIE:before {
-    background-image: url("../images/character/v-valkyrie.jpg");
-    border: 1px $colorV solid;
+
+.char-VALKYRIE-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png');
+  border: 1px $colorV solid;
 }
-.char-HELBOUND:before {
-    background-image: url("../images/character/v-helbound.jpg");
-    border: 1px $colorV solid;
+
+.char-VALKYRIE-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-f.png');
+  border: 1px $colorV solid;
 }
-.char-FROSTGIANT:before {
-    background-image: url("../images/character/v-jotnar.jpg");
-    border: 1px $colorV solid;
+
+.char-HUMANMALEV-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-vik.png');
+  border: 1px $colorV solid;
 }
-.char-CAITSITH:before {
-    background-image: url("../images/character/a-cait.jpg");
-    border: 1px $colorA solid;
+
+.char-HUMANMALEA-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png');
+  border: 1px $colorA solid;
 }
-.char-GOLEM:before {
-    background-image: url("../images/character/a-golem.jpg");
-    border: 1px $colorA solid;
+
+.char-HUMANMALET-MALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png');
+  border: 1px $colorT solid;
 }
-.char-STORMRIDERT:before {
-    background-image: url("../images/character/a-stormrider.jpg");
-    border: 1px $colorT solid;
+
+.char-HUMANMALEV-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png');
+  border: 1px $colorV solid;
 }
-.char-STORMRIDERA:before {
-    background-image: url("../images/character/a-stormrider.jpg");
-    border: 1px $colorA solid;
+
+.char-HUMANMALEA-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png');
+  border: 1px $colorA solid;
 }
-.char-STORMRIDERV:before {
-    background-image: url("../images/character/a-stormrider.jpg");
-    border: 1px $colorV solid;
-}
-.char-HUMANMALEV:before {
-    background-image: url("../images/character/v-humans.jpg");
-    border: 1px $colorV solid;
-}
-.char-HUMANMALEA:before {
-    background-image: url("../images/character/a-humans.jpg");
-    border: 1px $colorA solid;
-}
-.char-HUMANMALET:before {
-    background-image: url("../images/character/t-humans.jpg");
-    border: 1px $colorT solid;
+
+.char-HUMANMALET-FEMALE:before {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png');
+  border: 1px $colorT solid;
 }
 
 .character-buttons {

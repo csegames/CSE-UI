@@ -7,8 +7,8 @@
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 
-import ResponseError from '../../../../../shared/lib/ResponseError';
-import {fetchJSON} from '../../../../../shared/lib/fetchHelpers';
+import ResponseError from '../../../lib/ResponseError';
+import {fetchJSON} from '../../../lib/fetchHelpers';
 
 const patcherAlertsUrl = 'http://api.camelotunchained.com/patcheralerts';
 

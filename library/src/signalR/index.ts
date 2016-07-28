@@ -7,16 +7,16 @@
 import client from '../core/client';
 
 // BEING HUBS
-import warbandsHub from './hubs/warbands';
-
-export const WARBANDS_HUB = 'hubs/warbands';
+import warbandsHub from './hubs/warbandsHub';
+import * as warbandEvents from './hubs/warbandsHub';
+const WARBANDS_HUB = 'hubs/warbands';
 
 // END HUBS
 
 let didInitialize: boolean = false;
 let hubs: string[] = [];
 
-export const initializeSignalR = () => {
+const initializeSignalR = () => {
   if (didInitialize) return;
   $(() => {
     ($ as any).connection(client.signalRHost);
@@ -25,17 +25,17 @@ export const initializeSignalR = () => {
   })
 };
 
-export const reinitializeSignalR = () => {
+const reinitializeSignalR = () => {
   didInitialize = false;
   initializeSignalR();
 };
 
-export const initializeSignalRHubs = (...hubs: string[]) => {
+const initializeSignalRHubs = (...hubs: {name: string, callback: (succeeded: boolean) => any}[]) => {
   for (let i = 0; i < hubs.length; ++i) {
-    if (hubs.findIndex((hub: string) => hub == hubs[i]) == -1) {
-      switch(hubs[i]) {
+    if (hubs.findIndex((hub) => hub.name == hubs[i].name) == -1) {
+      switch(hubs[i].name) {
         case WARBANDS_HUB:
-          warbandsHub.initializeHub();
+          warbandsHub.initializeHub(hubs[i].callback);
           hubs.push(hubs[i])
           break;
       }
@@ -43,7 +43,7 @@ export const initializeSignalRHubs = (...hubs: string[]) => {
   }
 }
 
-export const unregisterSignalRHubs = (...hubs: string[]) => {
+const unregisterSignalRHubs = (...hubs: string[]) => {
   for (let i = 0; i < hubs.length; ++i) {
     var index = hubs.findIndex((hub: string) => hub == hubs[i]);
     if (index != -1) {
@@ -57,9 +57,10 @@ export const unregisterSignalRHubs = (...hubs: string[]) => {
   }
 }
 
-export default {
+export default Object.assign({}, {
   initializeSignalR,
   reinitializeSignalR,
   initializeSignalRHubs,
   unregisterSignalRHubs,
-}
+  WARBANDS_HUB,
+}, warbandEvents);

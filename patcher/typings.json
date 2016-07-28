@@ -16,6 +16,7 @@
     "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
     "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
     "reflux": "github:cumodsquad/Typings/reflux/reflux.d.ts",
-    "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts"
+    "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts",
+    "node": "registry:dt/node#6.0.0+20160621231320"
   }
 }

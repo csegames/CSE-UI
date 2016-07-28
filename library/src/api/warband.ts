@@ -31,13 +31,16 @@ let warbandAPI = {
     });
   },
 
-  inviteCharacterToWarbandByName: (shard: number, warbandID: string, characterID: string, targetName: string) => {
-    return api.call('groups/inviteCharacterToWarband', {
+  inviteCharacterToWarbandByName: (shard: number, characterID: string, targetName: string, warbandID: string = '') => {
+    let params: any = {
       shardID: shard,
-      warbandID: warbandID,
       characterID: characterID,
       targetName: targetName
-    });
+    };
+    if (warbandID.length > 0) {
+      params.warbandID = warbandID;
+    }
+    return api.call('groups/inviteCharacterToWarband', params);
   },
 
   joinWarbandByID: (shard: number, warbandID: string, characterID: string, inviteCode: string = '') => {

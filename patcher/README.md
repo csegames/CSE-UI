@@ -1,61 +1,30 @@
-cu-patcher-ui
-=============
+# Camelot Unchained Patch Client UI
 
-> Camelot Unchained Patcher UI
-
----
-*Notice: This project is currently under heavy development and is not guaranteed to be in a working state as this time.  This notice will be removed when the library is stable.*
-
-Installation
-------------
-### 1. Clone the Camelot Unchained repository
-```
-git clone https://github.com/CUModSquad/Camelot-Unchained.git
-```
-
-### 2. Install
-Windows:
-```sh
-cd Camelot-Unchained\patcher\
-npm run setup
-```
-OSX/Linux:
-```sh
-cd Camelot-Unchained/patcher/
-npm run setup:nix
-```
-
-### 3. Build
-Windows:
-```sh
-npm run build
-```
-OSX/Linux:
-```sh
-npm run build:nix
-```
-
-### 4. Serve
-```sh
-npm run serve
-```
-
-### 5. Preview
-Navigate to http://localhost:9000
-
-### 6. Testing with Live Patcher
-1. Make a link (junction) named PatchClient in the local repository folder.
-
-      ```
-      C:
-      CD \path-to\your-git-clone
-      mklink /j PatchClient C:\path-to\game-install
+## Build Instructions
+1. Navigate to the patcher directory.
+      ```sh
+      cd patcher
       ```
 
-2. Build the patcher using `````npm run debug````` to compile the UI and run it in the live patcher.
+2. Install npm packages
+      ```sh
+      npm i
+      ```
 
-Software Requirements
----------------------
-- Git
-- NodeJs 5.x.x
-- NPM 3.5.x
+3. Build
+      ```sh
+      npm run build
+      ```
+
+## Debugging & Testing within the live Patch Client (Windows Only)
+1. Make a junction / symlink named PatchClient in the root patcher directory that points to the root of the Camelot Unchained client install directory. (*The default CU install is located at %programdata%\CSE\Camelot Unchained*)
+
+      ```
+      cd patcher
+      mklink /j PatchClient "%programdata%\CSE\Camelot Unchained"
+      ```
+
+2. Run the debug npm script.  This will build, copy files through the symlink into your live Patch Client directory, then start the patcher with ui output disabled.
+      ```sh
+      npm run debug
+      ```

@@ -48,21 +48,18 @@ export interface WarbandMember {
     current: number,
     maximum: number
   };
+  blood: {
+    current: number,
+    maximum: number
+  };
+  panic: {
+    current: number,
+    maximum: number
+  };
+  temperature: {
+    current: number,
+    maximum: number,
+    minimum: number
+  };
   additionalPermissions: [WarbandMemberPermissions];
 }
-
-/**
- * {
- *   "AdditionalPermissions":[],
- *   "Role":0,
- *   "Rank":2,
- *   "IsActive":true,
- *   "Health":[],
- *   "Stamina":0,
- *   "IsPermanent":false,
- *   "CharacterID":"KCt3dNCC6dKPyNzD0SR200",
- *   "Joined":"0001-01-01T00:00:00",
- *   "Parted":"0001-01-01T00:00:00",
- *   "ID":{"ObjectID":"000000000000000000000000","ShardID":0}
- * }
- */

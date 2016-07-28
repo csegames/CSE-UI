@@ -7,6 +7,14 @@
 $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
 @import "../../node_modules/camelot-unchained/lib/index.scss";
 
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -18,6 +26,11 @@ $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
 ::-webkit-scrollbar-thumb {
   -webkit-box-shadow: inset 0 0 10px #000;
   background-color:#777;
+}
+
+#cse-ui-crafting {
+  height: 100%;
+  width: 100%;
 }
 
 .cu-window-header {
@@ -68,7 +81,7 @@ $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
 #crafting-button {
   position: absolute;
   left:134px;
-  top:833px;
+  bottom: 0px;
   width: 67px;
   height: 67px;
   background: url('http://camelot-unchained.s3.amazonaws.com/icons/general-ui/crafting-btn.jpg') no-repeat bottom left;

@@ -44,6 +44,8 @@ interface clientInterface {
   CancelOnServerConnected(c: number): void;
   PlaySoundEvent(id: number): void;
   ToggleCamera(): void;
+  ReloadUI(name: string): void;
+  ReloadAllUI(): void;
   OpenUI(name: string): void;
   CloseUI(name: string): void;
   HideUI(name: string): void;
@@ -162,6 +164,9 @@ interface clientInterface {
   ChangeBlockType(newType: number): void;
   OpenScreenshotShare(): void;
   TakeScreenshot(): void;
+  CountBlocks(): void;
+  placedBlockCount: number;
+
   
   SelectBlueprint(index: number): void;
   RequestBlueprints(): void;
@@ -281,7 +286,8 @@ interface clientInterface {
 
   OnConsoleText(c: (text: string) => void): void;
   ConsoleCommand(body: string): void;
-
+  SendSlashCommand(command: string): void;
+  
   /* Login */
 
   Connect(host: string, port: string, character: string, webAPIHost: string): void;
@@ -290,7 +296,6 @@ interface clientInterface {
   OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void): void;
 
 
-  /* New -- NOT FILLED OUT BY THE CLIENT YET! -- DEV ONLY */
   apiVersion?: number;
   characterID?: string;
   debug?: boolean;

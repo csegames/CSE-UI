@@ -12,7 +12,6 @@ npm-debug.log
 /publish
 /publish-cse
 /.vs
-/lib/
 /interface-lib/
 /cu-boilerplate-module
 /user-cu-build.config.js
@@ -25,7 +24,7 @@ npm-debug.log
 **/publish
 **/publish-cse
 **/.vs
-**/lib/
+library/lib/
 **/interface-lib/
 **/cu-boilerplate-module
 **/user-cu-build.config.js
@@ -37,3 +36,4 @@ npm-debug.log
 **/definitions
 patcher/PatchClient
 !/shared/lib/
+**/.vscode/

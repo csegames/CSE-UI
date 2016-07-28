@@ -9,16 +9,17 @@ import {connect} from 'react-redux';
 import {Server} from '../redux/modules/servers';
 import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
-import {restAPI} from 'camelot-unchained';
-import * as events from '../../../../shared/lib/events';
+import {restAPI, events} from 'camelot-unchained';
+
+const Animate = require('react-animate.css');
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
-import Animate from '../../../../shared/components/Animate';
 import UninstallButton from './UninstallButton';
 import {ServersState} from '../redux/modules/servers';
 import {ChannelState} from '../redux/modules/channels';
 import {CharactersState} from '../redux/modules/characters';
+
 
 
 export class Progress {

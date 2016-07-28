@@ -8,16 +8,12 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-import * as thunkMiddleware from 'redux-thunk';
+const thunk = require('redux-thunk').default;
 
 import reducer from './redux/modules/reducer';
 import PatcherApp from './PatcherApp';
 
-const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware
-)(createStore);
-
-let store = createStoreWithMiddleware(reducer);
+const store = createStore(reducer, applyMiddleware(thunk));
 let root = document.getElementById('cse-patcher');
 
 ReactDom.render(
