@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import {connect} from 'react-redux';
 import {Server} from '../redux/modules/servers';
 import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
@@ -15,6 +16,10 @@ import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
 import Animate from '../../../../shared/components/Animate';
 import UninstallButton from './UninstallButton';
+import {ServersState} from '../redux/modules/servers';
+import {ChannelState} from '../redux/modules/channels';
+import {CharactersState} from '../redux/modules/characters';
+
 
 export class Progress {
   constructor(public rate: number = 0, public dataCompleted: number = 0, public totalDataSize: number = 0) { }
@@ -69,14 +74,19 @@ export class Progress {
 }
 
 export interface PatchButtonProps {
-  server: Server;
-  channelIndex: number;
-  character: restAPI.SimpleCharacter
-  fetchCharacters: () => void;
+  //server: Server;
+  //channelIndex: number;
+  //character: restAPI.SimpleCharacter
+  //fetchCharacters: () => void;
+  dispatch?: (action: any) => void;
+  serversState?: ServersState;
+  channelsState?: ChannelState;
+  charactersState?: CharactersState; 
 };
 
 export interface PatchButtonState {
   showEuala: boolean;
+  
 };
 
 class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
@@ -85,6 +95,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   private startDownload: number;
   private unready: boolean;
   private commands: string = '';
+  //private selectedChannel: Channel; //todo: this is a work around, channel status isn't getting updated via redux
 
   constructor(props: PatchButtonProps) {
     super(props);
@@ -103,14 +114,14 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   }
 
   onClicked = (event: React.MouseEvent): void => {
-    switch (patcher.getAllChannels()[this.props.channelIndex].channelStatus) {
+    switch (this.props.channelsState.selectedChannel.channelStatus) {
       case ChannelStatus.NotInstalled: this.install(); break;
       case ChannelStatus.Validating: break;
       case ChannelStatus.Updating: break;
       case ChannelStatus.OutOfDate: this.install(); break;
       case ChannelStatus.Ready:
         if (event.altKey) {
-          const serverName: string = this.props.server ? this.props.server.name : 'cube';
+          const serverName: string = this.props.serversState.currentServer ? this.props.serversState.currentServer.name : 'cube';
           let channelCommand: string = localStorage.getItem('CSE_COMMANDS_' + serverName) || '';
 
           channelCommand = window.prompt('Please enter your command line parameters for ' + serverName, channelCommand);
@@ -136,12 +147,12 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   playNow = () => {
     // Save selected channel, server, and character
     const lastPlay = {
-      channelID: patcher.getAllChannels()[this.props.channelIndex].channelID as number,
+      channelID: this.props.channelsState.selectedChannel.channelID as number,
       serverName: null as string,
       characterID: null as string
     };
-    if (this.props.server) lastPlay.serverName = this.props.server.name;
-    if (this.props.character) lastPlay.characterID = this.props.character.id;
+    if (this.props.serversState.currentServer) lastPlay.serverName = this.props.serversState.currentServer.name;
+    if (this.props.charactersState.selectedCharacter) lastPlay.characterID = this.props.charactersState.selectedCharacter.id;
     localStorage.setItem('cse-patcher-lastplay', JSON.stringify(lastPlay));
 
     // Display EULA
@@ -156,20 +167,20 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   launchClient = () => {
     this.setState({ showEuala: false });
     let launchString = this.commands;
-    if (this.props.character && this.props.character.id !== '') {
-      launchString += ` server=${this.props.server.host} autoconnect=1 character=${CSENormalizeString(this.props.character.name)}`
+    if (this.props.charactersState.selectedCharacter && this.props.charactersState.selectedCharacter.id !== '' && this.props.channelsState.selectedChannel.channelID != 27) {
+      launchString += ` server=${this.props.serversState.currentServer.host} autoconnect=1 character=${CSENormalizeString(this.props.charactersState.selectedCharacter.name)}`
     }
-    patcher.launchChannelfunction(patcher.getAllChannels()[this.props.channelIndex], launchString);
+    patcher.launchChannelfunction(this.props.channelsState.selectedChannel, launchString);
     events.fire('play-sound', 'launch-game');
   }
 
   install = () => {
-    patcher.installChannel(patcher.getAllChannels()[this.props.channelIndex]);
+    patcher.installChannel(this.props.channelsState.selectedChannel);
     this.startDownload = undefined;
   }
 
   uninstall = () => {
-    patcher.uninstallChannel(patcher.getAllChannels()[this.props.channelIndex]);
+    patcher.uninstallChannel(this.props.channelsState.selectedChannel);
     events.fire('play-sound', 'select');
   }
 
@@ -189,11 +200,14 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
     let videoElements: any = document.getElementsByTagName('video');
 
-    let channels = patcher.getAllChannels();
-    if (typeof (channels) == 'undefined' || channels == null || channels.length == 0) return null;
+    //let channels = patcher.getAllChannels(); //todo: this is a work around, channel status isn't getting updated via redux 
+    //if (typeof (channels) == 'undefined' || channels == null || channels.length == 0) return null;
+    //this.selectedChannel = channels.find(c => c.channelID == this.props.channelsState.selectedChannel.channelID);
 
-    let channelIndex = this.props.channelIndex != null && this.props.channelIndex >= 0 ? this.props.channelIndex : 0;
-    switch (channels[channelIndex].channelStatus) {
+    if(!this.props.channelsState.selectedChannel) return null;
+
+    //let channelIndex = this.props.channelIndex != null && this.props.channelIndex >= 0 ? this.props.channelIndex : 0;
+    switch (this.props.channelsState.selectedChannel.channelStatus) {
       case ChannelStatus.NotInstalled:
         layer1 = <a className='waves-effect btn install-download-btn uninstalled' onClick={this.onClicked}>Install</a>;
         break;
@@ -247,13 +261,13 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           return id === 4 || id === 11;
         }
 
-        if (!this.props.character && isGameChannel(channels[channelIndex].channelID)) {
+        if (!this.props.charactersState.selectedCharacter && isGameChannel(this.props.channelsState.selectedChannel.channelID)) {
           layer1 = <div className='waves-effect btn install-download-btn not-ready'>{text}</div>;
         } else {
           layer1 = <a className='waves-effect btn install-download-btn ready' onClick={this.onClicked.bind(event) }>{text}</a>;
         }
 
-        uninstall = <UninstallButton uninstall={this.uninstall} name={channels[channelIndex].channelName}/>;
+        uninstall = <UninstallButton uninstall={this.uninstall} name={this.props.channelsState.selectedChannel.channelName}/>;
         this.startDownload = undefined;
         break;
       case ChannelStatus.Launching:
@@ -301,4 +315,13 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   }
 }
 
-export default PatchButton;
+
+function mapToProps(state: any): any {
+  return {
+    serversState: state.servers,
+    channelsState: state.channels,
+    charactersState: state.characters
+  }
+}
+
+export default connect(mapToProps)(PatchButton);

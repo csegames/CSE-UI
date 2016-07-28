@@ -30,6 +30,7 @@ export function requestChannels(selectedChannelID?: number): any {
       }
     }
   }
+
   return {
     type: REQUEST_CHANNELS,
     channels: channels,
@@ -55,9 +56,15 @@ export default function reducer(state: ChannelState = initialState, action: any 
         selectedChannel: action.channel
       });
     case REQUEST_CHANNELS:
+      let selectedChannel:Channel;
+      if(action.selectedChannel)
+        selectedChannel = action.channels.find((c:Channel) => c.channelID == action.selectedChannel.channelID);
+      else if(state.selectedChannel)
+        selectedChannel = action.channels.find((c:Channel) => c.channelID == state.selectedChannel.channelID);
+
       return Object.assign({}, state, {
         channels: action.channels,
-        selectedChannel: action.selectedChannel || state.selectedChannel || action.channels[0]
+        selectedChannel: selectedChannel
       });
     default: return state;
   }

@@ -70,7 +70,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   public name = 'cse-patcher-sidebar';
 
   private alertsInterval: any = null;
-  private channelInterval: any = null;
+  private channelsInterval: any = null;
   private serversInterval: any = null;
 
   static propTypes = {
@@ -88,10 +88,16 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 
   onLogIn = () => {
+    const {onLogIn, dispatch} = this.props;
+
     const lastCharacterID = lastPlay && lastPlay.characterID ? lastPlay.characterID : null;
+    const lastServer = lastPlay && lastPlay.serverName ? lastPlay.serverName : null;
+    const lastChannel = lastPlay && lastPlay.channelID ? lastPlay.channelID : null;
+
+    onLogIn();
+    dispatch(requestChannels(lastChannel));
+    dispatch(fetchServers(lastServer));
     this.fetchCharacters(lastCharacterID);
-    this.props.onLogIn();
-    this.props.dispatch(requestChannels());
   }
 
   onLogOut = () => {
@@ -99,22 +105,10 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   initjQueryObjects = () => {
     $('.dropdown-button').dropdown();
-    //$('.tooltipped').tooltip();
   }
 
   fetchCharacters = (selectedCharacterID?: string) => {
     this.props.dispatch(fetchCharacters(selectedCharacterID));
-  }
-
-  onSelectedServerChanged = (server: Server) => {
-    this.props.dispatch(changeServer(server));
-    events.fire('play-sound', 'select');
-  }
-
-  onSelectedChannelChanged = (channel: Channel) => {
-    this.selectCharacter(null);
-    this.props.dispatch(changeChannel(channel));
-    events.fire('play-sound', 'select');
   }
 
   selectCharacter = (character: restAPI.SimpleCharacter) => {
@@ -211,31 +205,32 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   componentDidMount() {
     // fetch initial alerts and then every minute validate & fetch alerts again.
+    const { dispatch } = this.props;
+
     this.props.dispatch(fetchAlerts());
     this.alertsInterval = setInterval(() => {
       this.props.dispatch(validateAlerts());
       if (!this.props.patcherAlertsState.isFetching) this.props.dispatch(fetchAlerts());
     }, 60000);
+    
+    dispatch(requestChannels());
+    this.channelsInterval = setInterval(() => {
+      //if (!this.props.channelsState.isFetching) todo? 
+        dispatch(requestChannels());
+    }, 30000);
 
-    // fetch initial channels and then every minute fetch channels again
-    const lastChannel = lastPlay && lastPlay.channelID ? lastPlay.channelID : null;
-    this.props.dispatch(requestChannels(lastChannel));
-    this.channelInterval = setInterval(() => {
-      this.props.dispatch(requestChannels());
-    }, 60000);
-
-    // fetch initial servers and then every 30 seconds fetch servers again.
-    const lastServer = lastPlay && lastPlay.serverName ? lastPlay.serverName : null;
-    this.props.dispatch(fetchServers(lastServer));
+    if (!this.props.serversState.isFetching)
+      dispatch(fetchServers());
     this.serversInterval = setInterval(() => {
-      if (!this.props.serversState.isFetching) this.props.dispatch(fetchServers());
+      if (!this.props.serversState.isFetching)
+        dispatch(fetchServers()); 
     }, 30000);
   }
 
   componentDidUnMount() {
     // unregister intervals
     clearInterval(this.alertsInterval);
-    clearInterval(this.channelInterval);
+    clearInterval(this.channelsInterval);
     clearInterval(this.serversInterval);
   }
 
@@ -251,69 +246,44 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     setTimeout(this.initjQueryObjects, 100);
 
     let renderServerSection: any = null;
-    let selectedServer: Server = null;
-    let selectedCharacter: restAPI.SimpleCharacter = null;
-    let selectedChannel: Channel = null;
-    let selectedChannelIndex: number = -1;
-    if (this.props.serversState.servers.length > 0 && typeof(this.props.channelsState.channels) !== 'undefined' && this.props.channelsState.channels.length > 0) {
-      selectedChannel = this.props.channelsState.selectedChannel;
-      selectedChannelIndex = this.props.channelsState.channels.findIndex(c => c.channelID == selectedChannel.channelID);
-      if (typeof(selectedChannelIndex) == 'undefined') selectedChannelIndex = 0;
 
-      let servers = this.props.serversState.servers.filter((s: Server) => s.channelID === selectedChannel.channelID);
-      if (servers.length > 0) {
-        if (this.props.serversState.currentServer) {
-          for (let i: number = 0; i < servers.length; i++) {
-            if (this.props.serversState.currentServer.name == servers[i].name) {
-              selectedServer = servers[i];
-            }
-          }
-        }
-        if (!selectedServer) selectedServer = servers[0];
+    if (this.props.serversState.currentServer) {
 
-        // Hide localhost for normal users
-        for (let i: number = 0; i < servers.length; i++) {
-          if (servers[i].name === 'localhost' && patcher.getScreenName().search(/^cse/i) === -1) {
-            servers.splice(i, 1);
-            i--;
-          }
-        }
-
-        let characters = this.props.charactersState.characters.filter((c: restAPI.SimpleCharacter) => c.shardID == selectedServer.shardID || c.shardID == 0);
-        selectedCharacter = this.props.charactersState.selectedCharacter;
-        if (!selectedCharacter) selectedCharacter = characters[0];
+        //todo: redux up ServerCounts, componentize character buttons
         renderServerSection = (
           <div>
-            <ServerSelect servers={servers}
-                          selectedServer={selectedServer}
-                          onSelectedServerChanged={this.onSelectedServerChanged} />
-            <CharacterSelect characters={characters}
-                             selectedCharacter={selectedCharacter}
-                             onCharacterSelectionChanged={this.selectCharacter} />
-            { this.generateCharacterButtons(selectedServer.shardID, selectedCharacter) }
-            <ServerCounts artCount={selectedServer.arthurians}
-                          tddCount={selectedServer.tuathaDeDanann}
-                          vikCount={selectedServer.vikings} />
+            <ServerSelect/>
+            <CharacterSelect/>
+            { this.generateCharacterButtons(this.props.serversState.currentServer.shardID, this.props.charactersState.selectedCharacter) }
+            <ServerCounts artCount={this.props.serversState.currentServer.arthurians}
+                          tddCount={this.props.serversState.currentServer.tuathaDeDanann}
+                          vikCount={this.props.serversState.currentServer.vikings} />
           </div>
         );
-      }
+    }
+    else
+    {
+      renderServerSection = (
+          <div>
+            <ServerSelect/>                
+          </div>
+        );
     }
 
     return (
       <div id={this.name} className=''>
         <Alerts alerts={this.props.patcherAlertsState.alerts} />
-        <ChannelSelect channels={this.props.channelsState.channels} selectedChannelIndex={selectedChannelIndex} onSelectedChannelChanged={this.onSelectedChannelChanged} />
+        
         <div className='card-panel no-padding'>
-          {renderServerSection}
-          <PatchButton server={selectedServer}
-                       channelIndex={selectedChannelIndex}
-                       character={selectedCharacter}
-                       fetchCharacters={() => this.props.dispatch(fetchCharacters())} />
+          <div>
+            
+            {renderServerSection}
+          </div>
+          <PatchButton/>
         </div>
       </div>
     );
   }
 };
 
-//export default Sidebar;
 export default connect(select)(Sidebar);

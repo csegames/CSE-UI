@@ -6,6 +6,10 @@
 
 import * as React from 'react';
 import {components, race, restAPI} from 'camelot-unchained';
+import {connect} from 'react-redux';
+import {fetchCharacters, selectCharacter, characterCreated, CharactersState} from '../redux/modules/characters';
+import {ServersState} from '../redux/modules/servers';
+import * as events from '../../../../shared/lib/events';
 let QuickSelect = components.QuickSelect;
 
 import * as moment from 'moment';
@@ -58,10 +62,17 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
   }
 }
 
+function mapToProps(state: any): any {
+  return {
+    charactersState: state.characters,
+    serversState: state.servers
+  }
+}
+
 export interface CharacterSelectProps {
-  characters: Array<restAPI.SimpleCharacter>;
-  selectedCharacter: restAPI.SimpleCharacter;
-  onCharacterSelectionChanged: (character: restAPI.SimpleCharacter) => void;
+  dispatch?: (action: any) => void;
+  serversState?: ServersState;
+  charactersState?: CharactersState;
 };
 
 export interface CharacterSelectState {
@@ -69,13 +80,11 @@ export interface CharacterSelectState {
 
 class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSelectState> {
   public name: string = 'cse-patcher-Character-select';
+  private characters:Array<restAPI.SimpleCharacter> = new Array<restAPI.SimpleCharacter>();
+  private selectedCharacter:restAPI.SimpleCharacter = null;
 
   constructor(props: CharacterSelectProps) {
     super(props);
-  }
-
-  onSelectedCharacterChanged = (character: restAPI.SimpleCharacter) => {
-    this.props.onCharacterSelectionChanged(character);
   }
 
   generateActiveView = (character: restAPI.SimpleCharacter) => {
@@ -87,17 +96,35 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 
   getSelectedIndex = () : number => {
-    return this.props.characters.findIndex((c: restAPI.SimpleCharacter) => c.id === this.props.selectedCharacter.id);
+    let selectedIndex = this.characters.findIndex((c: restAPI.SimpleCharacter) => c.id === this.selectedCharacter.id);
+    return selectedIndex;
+  }
+
+  onSelectedCharacterChanged = (character: restAPI.SimpleCharacter) => {
+    const {dispatch} = this.props;
+    dispatch(selectCharacter(character));
+    events.fire('play-sound', 'select');
   }
 
   render() {
-    if (this.props.characters.length == 0) {
+    const {charactersState, serversState} = this.props;
+
+    this.characters = charactersState.characters.filter((c: restAPI.SimpleCharacter) => c.shardID == serversState.currentServer.shardID || c.shardID == 0);
+    this.selectedCharacter = null;
+
+    if (!this.characters || this.characters.length == 0) {
       return (
         <div className="character-select-none">CREATE CHARACTER</div>
       );
     }
+
+    if(charactersState.selectedCharacter && charactersState.selectedCharacter.shardID == serversState.currentServer.shardID)
+      this.selectedCharacter = charactersState.selectedCharacter;
+    else
+      this.selectedCharacter = this.characters[0];
+
     return (
-        <QuickSelect items={this.props.characters}
+        <QuickSelect items={this.characters}
           selectedItemIndex={this.getSelectedIndex()}
           activeViewComponentGenerator={this.generateActiveView}
           listViewComponentGenerator={this.generateListView}
@@ -106,4 +133,4 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 }
 
-export default CharacterSelect;
+export default connect(mapToProps)(CharacterSelect);
