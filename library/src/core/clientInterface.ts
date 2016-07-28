@@ -165,8 +165,21 @@ interface clientInterface {
   OpenScreenshotShare(): void;
   TakeScreenshot(): void;
   CountBlocks(): void;
-  placedBlockCount: number;
 
+  ReplaceSubstance(block1: number, block2: number): void;
+  ReplaceSelectedSubstance(block1: number, block2: number): void;
+  ReplaceShapes(shape1: number, shape2: number): void;
+  ReplaceSelectedShapes(shape1: number, shape2: number): void;
+  RotateX(): void;
+  RotateY(): void;
+  RotateZ(): void; 
+  SnapMode(): void;
+  BlockTypes(): void;
+  LoopAbility(hotbarIndex: number, interval: number): void;
+  EndLoopAbility(): void;
+
+  placedBlockCount: number;
+  blockTypes: number;
   
   SelectBlueprint(index: number): void;
   RequestBlueprints(): void;
