@@ -74,10 +74,6 @@ export class Progress {
 }
 
 export interface PatchButtonProps {
-  //server: Server;
-  //channelIndex: number;
-  //character: restAPI.SimpleCharacter
-  //fetchCharacters: () => void;
   dispatch?: (action: any) => void;
   serversState?: ServersState;
   channelsState?: ChannelState;
@@ -95,7 +91,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   private startDownload: number;
   private unready: boolean;
   private commands: string = '';
-  //private selectedChannel: Channel; //todo: this is a work around, channel status isn't getting updated via redux
 
   constructor(props: PatchButtonProps) {
     super(props);
@@ -200,13 +195,8 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
     let videoElements: any = document.getElementsByTagName('video');
 
-    //let channels = patcher.getAllChannels(); //todo: this is a work around, channel status isn't getting updated via redux 
-    //if (typeof (channels) == 'undefined' || channels == null || channels.length == 0) return null;
-    //this.selectedChannel = channels.find(c => c.channelID == this.props.channelsState.selectedChannel.channelID);
-
     if(!this.props.channelsState.selectedChannel) return null;
 
-    //let channelIndex = this.props.channelIndex != null && this.props.channelIndex >= 0 ? this.props.channelIndex : 0;
     switch (this.props.channelsState.selectedChannel.channelStatus) {
       case ChannelStatus.NotInstalled:
         layer1 = <a className='waves-effect btn install-download-btn uninstalled' onClick={this.onClicked}>Install</a>;

@@ -276,7 +276,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
         
         <div className='card-panel no-padding'>
           <div>
-            
             {renderServerSection}
           </div>
           <PatchButton/>
