@@ -245,7 +245,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         }
 
         function isGameChannel(id: number) {
-          return id === 4 || id === 11;
+          return id === 4 || id === 10 || id === 11;
         }
 
         if (!this.props.character && isGameChannel(channels[channelIndex].channelID)) {
