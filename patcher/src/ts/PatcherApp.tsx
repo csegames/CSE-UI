@@ -31,7 +31,7 @@ import Hero from './content/Hero';
 import News from './content/News';
 import PatchNotes from './content/PatchNotes';
 import Support from './content/Support';
-const Animate = require('react-animate.css');
+import Animate from '../lib/Animate';
 import Sound from './Sound';
 
 

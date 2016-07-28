@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import ConfirmDialog from './ConfirmDialog';
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 
 export interface UninstallButtonState {
   showConfirmDialog: boolean;

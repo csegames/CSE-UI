@@ -10,7 +10,7 @@ import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
 import {restAPI, events} from 'camelot-unchained';
 
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
