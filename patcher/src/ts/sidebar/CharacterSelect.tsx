@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import {components, race, gender, restAPI} from 'camelot-unchained';
-let QuickSelect = components.QuickSelect;
+import {race, gender, restAPI} from 'camelot-unchained';
+import QuickSelect from '../../lib/QuickSelect';
 
 import * as moment from 'moment';
 

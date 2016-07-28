@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {components} from 'camelot-unchained';
-let QuickSelect = components.QuickSelect;
+import QuickSelect from '../../lib/QuickSelect';
 import {Channel} from '../api/patcherAPI';
 
 export interface ActiveChannelViewProps {

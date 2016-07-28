@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {components, race, restAPI, archetype, faction} from 'camelot-unchained';
-let QuickSelect = components.QuickSelect;
+import {race, restAPI, archetype, faction} from 'camelot-unchained';
+import QuickSelect from '../../lib/QuickSelect';
 declare let $: any;
 
 import Login from './Login';
