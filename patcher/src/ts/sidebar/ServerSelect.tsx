@@ -122,6 +122,8 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
     dispatch(changeServer(server.serverInfo));
     dispatch(fetchCharacters());
     dispatch(selectCharacter(null));
+    dispatch(fetchServers());
+    dispatch(requestChannels());
   }
 
   generateActiveView = (server: IServerOption) => {
