@@ -175,8 +175,8 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   }
 
   getSelectedIndex = () : number => {
-    const { currentServer } = this.props.serversState;
-    const { selectedChannel } = this.props.channelsState;
+    const {currentServer} = this.props.serversState;
+    const {selectedChannel} = this.props.channelsState;
     if (!currentServer && !selectedChannel) return 0;
 
     return this.listAsArray.indexOf(this.listAsArray.find(i => {
@@ -208,8 +208,8 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   }
 
   render() {
-    const { servers } = this.props.serversState;
-    const { channels } = this.props.channelsState;
+    const {servers} = this.props.serversState;
+    const {channels} = this.props.channelsState;
 
     if (!servers && !channels) return null;
 

@@ -71,7 +71,7 @@ export function fetchCharacters(selectedCharacterID?: string) {
       .then((characters: Array<restAPI.SimpleCharacter>) => {
         let selectedCharacter: restAPI.SimpleCharacter = null;
         if (selectedCharacterID) {
-          selectedCharacter = characters.find(c => c.id ===selectedCharacterID)
+          selectedCharacter = characters.find(c => c.id ===selectedCharacterID);
         }
         dispatch(fetchCharactersSuccess(characters, selectedCharacter))
       })

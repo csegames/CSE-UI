@@ -204,7 +204,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   componentDidMount() {
     // fetch initial alerts and then every minute validate & fetch alerts again.
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
 
     this.props.dispatch(fetchAlerts());
     this.alertsInterval = setInterval(() => {
@@ -214,15 +214,12 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     
     dispatch(requestChannels());
     this.channelsInterval = setInterval(() => {
-      //if (!this.props.channelsState.isFetching) todo? 
-        dispatch(requestChannels());
+      dispatch(requestChannels());
     }, 30000);
 
-    if (!this.props.serversState.isFetching)
-      dispatch(fetchServers());
+    if (!this.props.serversState.isFetching) dispatch(fetchServers());
     this.serversInterval = setInterval(() => {
-      if (!this.props.serversState.isFetching)
-        dispatch(fetchServers()); 
+      if (!this.props.serversState.isFetching) dispatch(fetchServers()); 
     }, 30000);
   }
 
@@ -243,22 +240,20 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     }
 
     setTimeout(this.initjQueryObjects, 100);
-
     let renderServerSection: any = null;
 
     if (this.props.serversState.currentServer) {
-
-        //todo: redux up ServerCounts, componentize character buttons
-        renderServerSection = (
-          <div>
-            <ServerSelect/>
-            <CharacterSelect/>
-            { this.generateCharacterButtons(this.props.serversState.currentServer.shardID, this.props.charactersState.selectedCharacter) }
-            <ServerCounts artCount={this.props.serversState.currentServer.arthurians}
-                          tddCount={this.props.serversState.currentServer.tuathaDeDanann}
-                          vikCount={this.props.serversState.currentServer.vikings} />
-          </div>
-        );
+      //todo: redux up ServerCounts, componentize character buttons
+      renderServerSection = (
+        <div>
+          <ServerSelect/>
+          <CharacterSelect/>
+          { this.generateCharacterButtons(this.props.serversState.currentServer.shardID, this.props.charactersState.selectedCharacter) }
+          <ServerCounts artCount={this.props.serversState.currentServer.arthurians}
+                        tddCount={this.props.serversState.currentServer.tuathaDeDanann}
+                        vikCount={this.props.serversState.currentServer.vikings} />
+        </div>
+      );
     } else {
       renderServerSection = (
           <div>
