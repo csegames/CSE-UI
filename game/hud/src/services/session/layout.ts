@@ -101,10 +101,10 @@ export function adjustWidgetPositions() {
 
 const defaultWidgets = (): any => {
   return {
-    'PlayerHealth': { x: 100, y: 300, height: 200, width: 350, scale: 1 },
-    'TargetHealth': { x: 600, y: 300, height: 200, width: 350, scale: 1 },
-    'Warband': { x: 100, y: 10, scale:1, height: 200, width: 350 },
-    'Chat': { x: 10, y: 100, scale:1, height: 300, width: 600 },
+    'PlayerHealth': {x: 100, y: 300, height: 200, width: 350, scale: 1},
+    'TargetHealth': {x: 600, y: 300, height: 200, width: 350, scale: 1},
+    'Warband': {x: 100, y: 10, scale:1, height: 200, width: 350},
+    'Chat': {x: 10, y: 100, scale:1, height: 300, width: 600},
   };
 }
 
