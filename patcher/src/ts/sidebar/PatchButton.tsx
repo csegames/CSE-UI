@@ -17,7 +17,7 @@ import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
 import UninstallButton from './UninstallButton';
 import {ServersState} from '../redux/modules/servers';
-import {ChannelState} from '../redux/modules/channels';
+import {ChannelState, requestChannels} from '../redux/modules/channels';
 import {CharactersState} from '../redux/modules/characters';
 
 
@@ -176,16 +176,20 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     }
     patcher.launchChannelfunction(this.props.channelsState.selectedChannel, launchString);
     events.fire('play-sound', 'launch-game');
+    setTimeout(() => this.props.dispatch(requestChannels(this.props.channelsState.selectedChannel.channelID)), 250);
   }
 
   install = () => {
     patcher.installChannel(this.props.channelsState.selectedChannel);
     this.startDownload = undefined;
+    events.fire('play-sound', 'select');
+    setTimeout(() => this.props.dispatch(requestChannels(this.props.channelsState.selectedChannel.channelID)), 250);
   }
 
   uninstall = () => {
     patcher.uninstallChannel(this.props.channelsState.selectedChannel);
     events.fire('play-sound', 'select');
+    setTimeout(() => this.props.dispatch(requestChannels(this.props.channelsState.selectedChannel.channelID)), 250);
   }
 
   generateEualaModal = () => {
@@ -244,10 +248,9 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         );
         break;
       case ChannelStatus.OutOfDate:
-        layer1 = <a className='waves-effect btn install-download-btn installing'>Validating</a>;
+        layer1 = <a className='waves-effect btn install-download-btn installing'>Awaiting Update</a>;
         break;
       case ChannelStatus.Ready:
-        let text: any = 'Play Now';
         if (this.unready) {
           events.fire('play-sound', 'patch-complete');
           this.unready = false;
@@ -260,10 +263,10 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           return id === 4 || id === 10 || id === 11;
         }
 
-        if (!this.props.charactersState.selectedCharacter && isGameChannel(this.props.channelsState.selectedChannel.channelID)) {
-          layer1 = <div className='waves-effect btn install-download-btn not-ready'>{text}</div>;
+        if (this.props.charactersState.characters.length == 0 || !this.props.charactersState.selectedCharacter && isGameChannel(this.props.channelsState.selectedChannel.channelID)) {
+          layer1 = <div className='waves-effect btn install-download-btn installing'>Select Character</div>;
         } else {
-          layer1 = <a className='waves-effect btn install-download-btn ready' onClick={this.onClicked.bind(event) }>{text}</a>;
+          layer1 = <a className='waves-effect btn install-download-btn ready' onClick={this.onClicked.bind(event) }>Play Now</a>;
         }
 
         uninstall = <UninstallButton uninstall={this.uninstall} name={this.props.channelsState.selectedChannel.channelName}/>;

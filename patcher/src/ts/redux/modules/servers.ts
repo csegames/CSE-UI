@@ -22,7 +22,7 @@ export enum AccessType {
   Beta1 = 3,
   Alpha = 4,
   IT = 5,
-  Employees = 6,
+  CSE = 6,
 }
 
 export interface Server {

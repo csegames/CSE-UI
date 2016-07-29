@@ -6,12 +6,11 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {components} from 'camelot-unchained';
 import {Channel, ChannelStatus, patcher} from '../api/patcherAPI';
 import {Server, AccessType} from '../redux/modules/servers';
 import {changeChannel, requestChannels, ChannelState} from '../redux/modules/channels';
 import {fetchServers, changeServer, ServersState} from '../redux/modules/servers';
-import * as events from '../../../../shared/lib/events';
+import * as events from '../../lib/events';
 import {fetchCharacters, selectCharacter} from '../redux/modules/characters';
 import QuickSelect from '../../lib/QuickSelect';
 
@@ -26,7 +25,9 @@ export interface ActiveServerViewProps {
   item: Server;
 };
 
-export interface ActiveServerViewState {};
+export interface ActiveServerViewState {
+};
+
 class ActiveServerView extends React.Component<ActiveServerViewProps, ActiveServerViewState> {
   render() {
     let content: JSX.Element;
@@ -48,7 +49,7 @@ class ActiveServerView extends React.Component<ActiveServerViewProps, ActiveServ
     return (
       <div className='server-select quickselect-active'>
         <h5 className='label'>SELECT SERVER</h5>
-        { content }
+        {content}
       </div>
     );
   }
@@ -58,7 +59,9 @@ export interface ServerListViewProps {
   item: IServerOption;
 };
 
-export interface ServerListViewState {};
+export interface ServerListViewState { 
+};
+
 class ServerListView extends React.Component<ServerListViewProps, ServerListViewState> {
   render() {
     const totalPlayers = (this.props.item.serverInfo.arthurians|0) + (this.props.item.serverInfo.tuathaDeDanann|0) + (this.props.item.serverInfo.vikings|0);
@@ -104,7 +107,7 @@ export interface ServerSelectState {
 
 class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState> {
   public name: string = 'cse-patcher-server-select';
-  private mergedServerList: { [key:string] : IServerOption } = {};
+  private mergedServerList: {[key:string]: IServerOption} = {};
   
   private listAsArray:Array<IServerOption> = null;
 
@@ -113,7 +116,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   }
 
   onSelectedServerChanged = (server: IServerOption) => {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
 
     events.fire('play-sound', 'select');
 
@@ -135,12 +138,11 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
       let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
 
        return (
-        <div className='server-select quickselect-list'>
+        <div className='server-select quickselect-active'>
+        <h5 className='label'>SELECT SERVER</h5>
           <div>
-            <div className='server-status'><div className={'indicator ' + status} data-position='right'
-              data-delay='150' data-tooltip='offline' /></div>
             <div className='server-details'>
-              <h5 className='server'>{server.channelInfo.channelName} ({statusDesc})</h5>
+              <h5 className='server'>{server.channelInfo.channelName}</h5>
             </div>
           </div>
         </div>
@@ -163,10 +165,8 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
        return (
         <div className='server-select quickselect-list'>
           <div>
-            <div className='server-status'><div className={'indicator ' + status} data-position='right'
-              data-delay='150' data-tooltip='offline' /></div>
             <div className='server-details'>
-              <h5 className='server'>{server.channelInfo.channelName} ({statusDesc})</h5>
+              <h5 className='server'>{server.channelInfo.channelName}</h5>
             </div>
           </div>
         </div>

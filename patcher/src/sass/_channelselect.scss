@@ -19,12 +19,6 @@
     color: $color1;
     font-size: 18px; 
   }
-  h5.label {
-    color: lighten($color4, 30%);
-    padding: 2.5px 0px;
-    font-size: 18px;
-    margin-right: 3px;
-  } 
 }
 
 .quickselect-active {
@@ -50,5 +44,50 @@
     background-color: lighten($card-bg, 5%);
     -webkit-filter: brightness(1.2);
     filter: brightness(1.2);
+  }
+}
+
+.SelectServer__ServerList {
+  position: absolute;
+  left: 300px;
+  top: 0px;
+  width: 300px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: $card-bg;
+  z-index: -1;
+}
+
+h5.label {
+  color: lighten($color4, 30%);
+  padding: 2.5px 0px;
+  font-size: 18px;
+  margin-right: 3px;
+}
+
+.SelectServer_ActiveItem {
+  padding: 2px;
+  cursor: pointer !important;
+  background-color: $card-bg;
+  color: $color1;
+  &:hover {
+    background-color: lighten($card-bg, 5%);
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+}
+
+.SelectServer__ServerList {
+  padding: 2px;
+  cursor: pointer !important;
+  div {
+    background-color: $card-bg;
+    color: $color1;
+    &:hover {
+      background-color: lighten($card-bg, 5%);
+      -webkit-filter: brightness(1.2);
+      filter: brightness(1.2);
+    }
   }
 }

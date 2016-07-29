@@ -12,6 +12,7 @@ declare let $: any;
 
 import Login from './Login';
 import ServerSelect, {ServerStatus} from './ServerSelect';
+import SelectServer from './SelectServer';
 import PatchButton from './PatchButton';
 import ServerCounts from './ServerCounts';
 import CharacterSelect from './CharacterSelect';
@@ -96,7 +97,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     onLogIn();
     dispatch(requestChannels(lastChannel));
     dispatch(fetchServers(lastServer));
-    this.fetchCharacters(lastCharacterID);
+    this.fetchCharacters();
+    this.scheduleUpdateServerStatus();
   }
 
   onLogOut = () => {
@@ -230,6 +232,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     clearInterval(this.serversInterval);
   }
 
+  scheduleUpdateServerStatus = () => {
+    const {dispatch} = this.props;
+    setTimeout(() => {
+      dispatch(requestChannels());
+      dispatch(fetchServers());
+    }, 500);
+  }
+
   render() {
     if (!patcher.hasLoginToken()) {
       return (
@@ -246,7 +256,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       //todo: redux up ServerCounts, componentize character buttons
       renderServerSection = (
         <div>
-          <ServerSelect/>
+          <SelectServer/>
           <CharacterSelect/>
           { this.generateCharacterButtons(this.props.serversState.currentServer.shardID, this.props.charactersState.selectedCharacter) }
           <ServerCounts artCount={this.props.serversState.currentServer.arthurians}
@@ -257,7 +267,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     } else {
       renderServerSection = (
           <div>
-            <ServerSelect/>                
+            <SelectServer/>                
           </div>
         );
     }
@@ -270,7 +280,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
           <div>
             {renderServerSection}
           </div>
-          <PatchButton/>
+          <PatchButton />
         </div>
       </div>
     );

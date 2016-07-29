@@ -8,7 +8,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {fetchCharacters, selectCharacter, characterCreated, CharactersState} from '../redux/modules/characters';
 import {ServersState} from '../redux/modules/servers';
-import * as events from '../../../../shared/lib/events';
+import * as events from '../../lib/events';
 import {components, race, gender, restAPI} from 'camelot-unchained';
 import QuickSelect from '../../lib/QuickSelect';
 

@@ -89,10 +89,11 @@ export interface CharactersState {
   error?: string;
 }
 
-const initialState = {
+const initialState: CharactersState = {
   isFetching: false,
-  lastUpdated: <Date>null,
-  characters: <Array<restAPI.SimpleCharacter>>[]
+  lastUpdated: null,
+  selectedCharacter: null,
+  characters: []
 }
 
 function compareCharacterLogin(a: restAPI.SimpleCharacter, b: restAPI.SimpleCharacter): number {
@@ -122,7 +123,6 @@ export default function reducer(state: CharactersState = initialState, action: a
         const charIndex: number = characters.findIndex((char: restAPI.SimpleCharacter) => char.name == state.newCharacterName);
         if (charIndex && charIndex > -1) selected = characters[charIndex];
       }
-      if (!selected) selected = state.selectedCharacter == null ? characters[0] : state.selectedCharacter;
       return Object.assign({}, state, {
         isFetching: false,
         lastUpdated: action.receivedAt,
