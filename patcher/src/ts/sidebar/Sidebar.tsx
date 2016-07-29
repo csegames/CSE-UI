@@ -260,9 +260,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                           vikCount={this.props.serversState.currentServer.vikings} />
           </div>
         );
-    }
-    else
-    {
+    } else {
       renderServerSection = (
           <div>
             <ServerSelect/>                

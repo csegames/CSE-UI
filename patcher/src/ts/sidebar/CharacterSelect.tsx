@@ -66,7 +66,7 @@ function mapToProps(state: any): any {
   return {
     charactersState: state.characters,
     serversState: state.servers
-  }
+  };
 }
 
 export interface CharacterSelectProps {

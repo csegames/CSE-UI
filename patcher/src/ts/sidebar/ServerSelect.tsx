@@ -13,6 +13,7 @@ import {changeChannel, requestChannels, ChannelState} from '../redux/modules/cha
 import {fetchServers, changeServer, ServersState} from '../redux/modules/servers';
 import * as events from '../../../../shared/lib/events';
 import {fetchCharacters, selectCharacter} from '../redux/modules/characters';
+import QuickSelect from '../../lib/QuickSelect';
 
 
 export enum ServerStatus {
@@ -60,9 +61,9 @@ export interface ServerListViewProps {
 export interface ServerListViewState {};
 class ServerListView extends React.Component<ServerListViewProps, ServerListViewState> {
   render() {
-    let totalPlayers = (this.props.item.serverInfo.arthurians|0) + (this.props.item.serverInfo.tuathaDeDanann|0) + (this.props.item.serverInfo.vikings|0);
-    let status = this.props.item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
-    let accessLevel = AccessType[this.props.item.serverInfo.accessLevel];
+    const totalPlayers = (this.props.item.serverInfo.arthurians|0) + (this.props.item.serverInfo.tuathaDeDanann|0) + (this.props.item.serverInfo.vikings|0);
+    const status = this.props.item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
+    const accessLevel = AccessType[this.props.item.serverInfo.accessLevel];
 
     return (
       <div className='server-select quickselect-list'>
@@ -126,8 +127,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   generateActiveView = (server: IServerOption) => {
     if(server.serverInfo)
       return <ActiveServerView item={server.serverInfo} />
-     else
-    {
+    else {
       //todo component
       let status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
       let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
@@ -150,8 +150,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
 
     if(server.serverInfo)
       return <ServerListView item={server} />
-    else
-    {
+    else {
       //todo component
       let status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
       let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
@@ -188,9 +187,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
 
   mergeServerChannelLists(servers:Array<Server>, channels:Array<Channel>) : Array<IServerOption> {
 
-    let filteredServers:Array<Server> = servers;
-    if(patcher.getScreenName().search(/^cse/i) === -1)
-      filteredServers = servers.filter((s) => { return s.name != 'localhost'; });
+    let filteredServers:Array<Server> = servers.filter((s) => { return s.name != 'localhost'; });
 
     filteredServers.forEach(s => {
       this.mergedServerList[s.channelID] = this.mergedServerList[s.channelID] || { displayName: s.name, serverInfo: null, channelInfo:null };
