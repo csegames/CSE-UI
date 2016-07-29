@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {components, race, restAPI, archetype, faction} from 'camelot-unchained';
-let QuickSelect = components.QuickSelect;
+import {race, restAPI, archetype, faction} from 'camelot-unchained';
+import QuickSelect from '../../lib/QuickSelect';
 declare let $: any;
 
 import Login from './Login';
@@ -20,7 +20,7 @@ import CharacterButtons from './CharacterButtons';
 import CharacterDeleteModal from './CharacterDeleteModal';
 import Alerts from './Alerts';
 import CharacterCreation, {CharacterCreationModel} from 'cu-character-creation';
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 import {events} from 'camelot-unchained';
 
 import {PatcherAlert} from '../redux/modules/patcherAlerts';

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 import {Post} from '../redux/modules/news';
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 
 export interface NewsItemProps {
   post: Post;

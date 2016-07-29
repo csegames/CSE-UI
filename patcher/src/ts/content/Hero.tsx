@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import HeroItem from './HeroItem';
 import {HeroContentItem} from '../redux/modules/heroContent';
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 
 export interface HeroProps {
   isFetching: boolean;

@@ -13,7 +13,7 @@ import {changeChannel, requestChannels, ChannelState} from '../redux/modules/cha
 import {fetchServers, changeServer, ServersState} from '../redux/modules/servers';
 import * as events from '../../../../shared/lib/events';
 import {fetchCharacters, selectCharacter} from '../redux/modules/characters';
-let QuickSelect = components.QuickSelect;
+
 
 export enum ServerStatus {
   OFFLINE,

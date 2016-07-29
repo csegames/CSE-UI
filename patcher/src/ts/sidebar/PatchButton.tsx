@@ -11,7 +11,7 @@ import {patcher, Channel, ChannelStatus} from '../api/patcherAPI';
 import {CSENormalizeString} from '../api/CSENormalizeString';
 import {restAPI, events} from 'camelot-unchained';
 
-const Animate = require('react-animate.css');
+import Animate from '../../lib/Animate';
 
 import EualaModal from './EualaModal';
 import CommandLineArgsModal from './CommandLineArgsModal';
@@ -249,7 +249,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         }
 
         function isGameChannel(id: number) {
-          return id === 4 || id === 11;
+          return id === 4 || id === 10 || id === 11;
         }
 
         if (!this.props.charactersState.selectedCharacter && isGameChannel(this.props.channelsState.selectedChannel.channelID)) {

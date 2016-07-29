@@ -5,13 +5,12 @@
  */
 
 import * as React from 'react';
-import {components, race, restAPI} from 'camelot-unchained';
 import {connect} from 'react-redux';
 import {fetchCharacters, selectCharacter, characterCreated, CharactersState} from '../redux/modules/characters';
 import {ServersState} from '../redux/modules/servers';
 import * as events from '../../../../shared/lib/events';
 import {components, race, gender, restAPI} from 'camelot-unchained';
-let QuickSelect = components.QuickSelect;
+import QuickSelect from '../../lib/QuickSelect';
 
 import * as moment from 'moment';
 
