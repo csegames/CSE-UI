@@ -96,8 +96,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 
   getSelectedIndex = () : number => {
-    let selectedIndex = this.characters.findIndex((c: restAPI.SimpleCharacter) => c.id === this.selectedCharacter.id);
-    return selectedIndex;
+    return this.characters.findIndex((c: restAPI.SimpleCharacter) => c.id === this.selectedCharacter.id);
   }
 
   onSelectedCharacterChanged = (character: restAPI.SimpleCharacter) => {
