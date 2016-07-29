@@ -127,9 +127,9 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   }
 
   generateActiveView = (server: IServerOption) => {
-    if(server.serverInfo)
+    if (server.serverInfo) {
       return <ActiveServerView item={server.serverInfo} />
-    else {
+    } else {
       //todo component
       let status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
       let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
@@ -150,12 +150,15 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
 
   generateListView = (server: IServerOption) => {
 
-    if(server.serverInfo)
-      return <ServerListView item={server} />
-    else {
-      //todo component
-      let status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
-      let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
+    if (server.serverInfo) {
+      if (this.props.serversState.currentServer && server.serverInfo.channelID == this.props.serversState.currentServer.channelID) return; //this is the selected server dont add it to list
+      return <ServerListView item={server} />;
+    } else {
+      if (this.props.channelsState.selectedChannel && server.channelInfo.channelID == this.props.channelsState.selectedChannel.channelID) return; //this is the selected channel dont add it to list
+
+      //todo componentize
+      const status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
+      const statusDesc = ChannelStatus[server.channelInfo.channelStatus];
 
        return (
         <div className='server-select quickselect-list'>
@@ -174,15 +177,11 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
   getSelectedIndex = () : number => {
     const { currentServer } = this.props.serversState;
     const { selectedChannel } = this.props.channelsState;
-    if(!currentServer && !selectedChannel)
-      return 0;
+    if (!currentServer && !selectedChannel) return 0;
 
     return this.listAsArray.indexOf(this.listAsArray.find(i => {
-      if(i.serverInfo && currentServer)
-        return i.serverInfo.channelID == currentServer.channelID
-      else if(i.channelInfo && selectedChannel)
-        return i.channelInfo.channelID == selectedChannel.channelID
-      
+      if (i.serverInfo && currentServer) return i.serverInfo.channelID == currentServer.channelID
+      else if (i.channelInfo && selectedChannel) return i.channelInfo.channelID == selectedChannel.channelID
       return false;
     }));
   }

@@ -74,6 +74,14 @@ export class Progress {
   }
 }
 
+function mapToProps(state: any): any {
+  return {
+    serversState: state.servers,
+    channelsState: state.channels,
+    charactersState: state.characters
+  }
+};
+
 export interface PatchButtonProps {
   dispatch?: (action: any) => void;
   serversState?: ServersState;
@@ -196,7 +204,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
     let videoElements: any = document.getElementsByTagName('video');
 
-    if(!this.props.channelsState.selectedChannel) return null;
+    if (!this.props.channelsState.selectedChannel) return null;
 
     switch (this.props.channelsState.selectedChannel.channelStatus) {
       case ChannelStatus.NotInstalled:
@@ -303,15 +311,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         </Animate>
       </div>
     );
-  }
-}
-
-
-function mapToProps(state: any): any {
-  return {
-    serversState: state.servers,
-    channelsState: state.channels,
-    charactersState: state.characters
   }
 }
 

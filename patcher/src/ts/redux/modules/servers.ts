@@ -159,10 +159,11 @@ export default function reducer(state: ServersState = initialState, action: any 
       });
     case FETCH_SERVERS_SUCCESS:
       let selectedServer:Server;
-      if(action.selectedServer)
+      if (action.selectedServer) {
         selectedServer = action.servers.find((s:Server) => s.channelID == action.selectedServer.channelID);
-      else if(state.currentServer)
+      } else if (state.currentServer) {
         selectedServer = action.servers.find((s:Server) => s.channelID == state.currentServer.channelID);
+      }
 
       return Object.assign({}, state, {
         isFetching: false,

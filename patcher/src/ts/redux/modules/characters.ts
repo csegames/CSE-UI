@@ -58,7 +58,7 @@ export function characterCreated(character: restAPI.SimpleCharacter) {
   return {
     type: CHARACTER_CREATED,
     character: character
-  }
+  };
 }
 
 // async actions
@@ -71,12 +71,7 @@ export function fetchCharacters(selectedCharacterID?: string) {
       .then((characters: Array<restAPI.SimpleCharacter>) => {
         let selectedCharacter: restAPI.SimpleCharacter = null;
         if (selectedCharacterID) {
-          for (let i = 0; i < characters.length; i++) {
-            if (characters[i].id === selectedCharacterID) {
-              selectedCharacter = characters[i];
-              break;
-            }
-          }
+          selectedCharacter = characters.find(c => c.id ===selectedCharacterID)
         }
         dispatch(fetchCharactersSuccess(characters, selectedCharacter))
       })

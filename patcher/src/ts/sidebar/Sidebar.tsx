@@ -11,7 +11,6 @@ import QuickSelect from '../../lib/QuickSelect';
 declare let $: any;
 
 import Login from './Login';
-import ChannelSelect from './ChannelSelect';
 import ServerSelect, {ServerStatus} from './ServerSelect';
 import PatchButton from './PatchButton';
 import ServerCounts from './ServerCounts';

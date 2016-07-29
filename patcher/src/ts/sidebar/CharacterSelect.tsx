@@ -117,10 +117,11 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
       );
     }
 
-    if(charactersState.selectedCharacter && charactersState.selectedCharacter.shardID == serversState.currentServer.shardID)
+    if (charactersState.selectedCharacter && charactersState.selectedCharacter.shardID == serversState.currentServer.shardID) {
       this.selectedCharacter = charactersState.selectedCharacter;
-    else
+    } else {
       this.selectedCharacter = this.characters[0];
+    }
 
     return (
         <QuickSelect items={this.characters}

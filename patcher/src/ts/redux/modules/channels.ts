@@ -57,10 +57,11 @@ export default function reducer(state: ChannelState = initialState, action: any 
       });
     case REQUEST_CHANNELS:
       let selectedChannel:Channel;
-      if(action.selectedChannel)
+      if (action.selectedChannel) {
         selectedChannel = action.channels.find((c:Channel) => c.channelID == action.selectedChannel.channelID);
-      else if(state.selectedChannel)
+      } else if (state.selectedChannel) {
         selectedChannel = action.channels.find((c:Channel) => c.channelID == state.selectedChannel.channelID);
+      }
 
       return Object.assign({}, state, {
         channels: action.channels,
