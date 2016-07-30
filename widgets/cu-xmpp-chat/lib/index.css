@@ -343,13 +343,16 @@
         color: #909090;
         cursor: pointer; }
     .cse-chat .chat-frame .chat-tab-content.chat-users {
+      overflow-x: hidden;
       overflow-y: auto;
       flex-grow: 1;
       margin: 0.5em 0; }
       .cse-chat .chat-frame .chat-tab-content.chat-users .chat-info-user {
         color: white;
         padding: 0.5em;
-        cursor: pointer; }
+        cursor: pointer;
+        text-overflow: ellipsis;
+        overflow-x: hidden; }
       .cse-chat .chat-frame .chat-tab-content.chat-users .chat-info-cseuser {
         color: #FF5E44;
         padding: 0.5em;
