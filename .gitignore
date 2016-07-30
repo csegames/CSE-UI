@@ -37,3 +37,4 @@ library/lib/
 patcher/PatchClient
 !/shared/lib/
 **/.vscode/
+widgets/cu-xmpp-chat/lib/
