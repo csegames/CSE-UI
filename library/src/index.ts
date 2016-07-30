@@ -57,6 +57,7 @@ import events from './events';
 import * as eventExports from './events'
 
 import signalr from './signalr';
+import {DEBUG_ASSERT} from './core/core';
 
 export * from './slashCommands';
 import * as slashCommandsExports from './slashCommands';
@@ -156,5 +157,7 @@ export {
   // RestAPI
   restAPI,
 
+  // misc
   signalr,
+  DEBUG_ASSERT
 }

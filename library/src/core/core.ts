@@ -44,6 +44,8 @@ import LogMessage from './classes/LogMessage';
 import ChatMessage from './classes/ChatMessage';
 import ConsoleMessage from './classes/ConsoleMessage';
 
+import {DEBUG_ASSERT} from './utils/assert';
+
 export {
   // core
   CoreSettings,
@@ -81,4 +83,7 @@ export {
   LogMessage,
   ChatMessage,
   ConsoleMessage,
+
+  // misc
+  DEBUG_ASSERT
 }
