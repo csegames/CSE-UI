@@ -10,7 +10,7 @@ let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initializeHub} from '../../services/session/layout';
+import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initializeHub, adjustWidgetPositions} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
 import PlayerHealth from '../../widgets/PlayerHealth';
@@ -61,12 +61,20 @@ class HUD extends React.Component<HUDProps, HUDState> {
         }]
     }
   }
-  
+
   componentWillMount() {
+    window.removeEventListener('resize', this.handleResize);
   }
 
   componentDidMount() {
     this.props.dispatch(initializeHub());
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  handleResize = (ev: UIEvent) => {
+    if (window.innerWidth >= 640 && window.innerHeight >= 480) {
+      this.props.dispatch(adjustWidgetPositions());
+    }
   }
 
   handleDrag =  (e:any, ui:any) => {
@@ -94,41 +102,47 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     console.log(e.nativeEvent.deltaY);
 
+    const pos: Position = this.props.layout.widgets[name];
+
     if (e.nativeEvent.deltaY < 0) {
       this.props.dispatch(savePosition(name, {
-        x: this.props.layout.widgets[name].x,
-        y: this.props.layout.widgets[name].y,
-        scale: this.props.layout.widgets[name].scale - factor
+        x: pos.x,
+        y: pos.y,
+        width: pos.width,
+        height: pos.height,
+        scale: pos.scale - factor
       }));
     } else {
       this.props.dispatch(savePosition(name, {
-        x: this.props.layout.widgets[name].x,
-        y: this.props.layout.widgets[name].y,
-        scale: this.props.layout.widgets[name].scale + factor
+        x: pos.x,
+        y: pos.y,
+        width: pos.width,
+        height: pos.height,
+        scale: pos.scale + factor
       }));
     }
   }
 
   draggableWidget = (name: string, widgets: any, Widget: any, containerClass: string, props?: any) => {
-    const w = widgets[name];
+    const pos: Position = widgets[name];
     return (
       <Draggable handle='.drag-handle'
-                  defaultPosition={{x: w.x, y: w.y}}
-                  position={null}
+                  defaultPosition={{x: pos.x, y: pos.y}}
+                  position={{x: pos.x, y: pos.y}}
                   grid={[1, 1]}
                   zIndex={100}
                   onStart={this.onStart}
                   onDrag={this.handleDrag}
                   onStop={(e:any, ui:any) => {
                     this.onStop();
-                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, scale: w.scale}));
+                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, width: pos.width, height: pos.height, scale: pos.scale}));
                   }}>
         <div>
           <div className={containerClass}
-                style={{
-                 transform:`scale(${w.scale})`,
-                 height: `${w.height}px`,
-                 width: `${w.width}px`
+               style={{
+                 transform:`scale(${pos.scale})`,
+                 height: `${pos.height}px`,
+                 width: `${pos.width}px`
                }}
                onWheel={(e: any) => this.onWheel(name, e)}>
             <Widget {...props} />
@@ -159,8 +173,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         // <button onClick={() => locked ? this.props.dispatch(unlockHUD()) : this.props.dispatch(lockHUD())}
         //         style={{position: 'fixed'}}>Toggle UI Lock</button>
-  
-  
+
+
   // for now just a fixed chat
   render() {
 
@@ -169,18 +183,13 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     return (
       <div className='HUD'>
-        
-        <div className='chat-window' style={{
-          height: '275px',
-          width: '600px',
-          position: 'absolute',
-          bottom: '55px',
-          left: '0'
-        }}>
-        <Chat loginToken={client.loginToken} hideChat={null} />
-        </div>
+        { this.draggableWidget('Chat', widgets, Chat, 'chat-window', {
+            loginToken:client.loginToken
+        })}
+        <button onClick={() => locked ? this.props.dispatch(unlockHUD()) : this.props.dispatch(lockHUD())}
+                style={{position: 'fixed'}}>Toggle UI Lock</button>
       </div>
-    )
+    );
   }
 }
 
