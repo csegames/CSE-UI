@@ -10,7 +10,7 @@ let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initializeHub, adjustWidgetPositions} from '../../services/session/layout';
+import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, adjustWidgetPositions} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
 import PlayerHealth from '../../widgets/PlayerHealth';
@@ -62,19 +62,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
     }
   }
 
-  componentWillMount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
   componentDidMount() {
-    this.props.dispatch(initializeHub());
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  handleResize = (ev: UIEvent) => {
-    if (window.innerWidth >= 640 && window.innerHeight >= 480) {
-      this.props.dispatch(adjustWidgetPositions());
-    }
+    this.props.dispatch(initialize());
   }
 
   handleDrag =  (e:any, ui:any) => {

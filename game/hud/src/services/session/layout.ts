@@ -8,7 +8,7 @@ import cu, {client} from 'camelot-unchained';
 
 const localStorageKey = 'cse_hud_layout-state';
 
-const INITIALIZE_HUB = 'hud/layout/INITIALIZE_HUB';
+const INITIALIZE = 'hud/layout/INITIALIZE';
 const HUB_INITIALIZED = 'hud/layout/HUB_INITIALIZED';
 const SAY_SOMETHING = 'hud/layout/SAY_SOMETHING';
 
@@ -19,6 +19,8 @@ const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
 const RESET_POSITIONS = 'hud/layout/RESET_POSITIONS';
 const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
 
+const ON_RESIZE = 'hud/layout/ON_RESIZE';
+
 const CURRENT_STATE_VERSION: number = 2;
 const MIN_STATE_VERSION_PERCENT: number = 2;
 
@@ -27,6 +29,7 @@ export interface LayoutAction {
   error?: string;
   widget?: string;
   position?: Position;
+  size?: Size;
 }
 
 export interface Position {
@@ -68,21 +71,27 @@ export function savePosition(name: string, pos: Position): LayoutAction {
   }
 }
 
-function initHub(): LayoutAction {
+function init(): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
-    type: INITIALIZE_HUB
-  }
+    type: INITIALIZE,
+    size: screen
+  };
 }
 
 // async
-export function initializeHub() {
+export function initialize() {
   return (dispatch: (action: any) => any) => {
-    dispatch(initHub());
-
-    cu.api.createWarband(1, client.characterID, 'Corsairs')
-      .then((data: any) => console.log(data))
-      .catch((data: any) => console.log(data));
+    dispatch(init());
+    window.onresize = () => dispatch(resize());
   }
+}
+
+export function resize() {
+  console.log('resized');
+  return {
+    type: ON_RESIZE,
+  };
 }
 
 export function saySomething(s: string) : LayoutAction {
@@ -104,7 +113,7 @@ const defaultWidgets = (): any => {
     'PlayerHealth': {x: 100, y: 300, height: 200, width: 350, scale: 1},
     'TargetHealth': {x: 600, y: 300, height: 200, width: 350, scale: 1},
     'Warband': {x: 100, y: 10, scale:1, height: 200, width: 350},
-    'Chat': {x: 10, y: 100, scale:1, height: 300, width: 600},
+    'Chat': {x: 10, y: 600, scale:1, height: 300, width: 600},
   };
 }
 
@@ -113,6 +122,7 @@ const minScale = 0.25;
 export interface LayoutState {
   version?: number;
   locked?: boolean;
+  lastScreenSize?: Size;
   widgets: any; // dictionary<name, position>
 }
 
@@ -211,6 +221,13 @@ export default function reducer(state: LayoutState = getInitialState(),
   let outState: LayoutState = state;
 
   switch(action.type) {
+    case INITIALIZE:
+    {
+      outState = Object.assign({}, state, {
+        lastScreenSize: action.size
+      });
+      break;
+    }
     case SET_POSITION:
       widgets = state.widgets;
       widgets[action.widget] = action.position;
@@ -238,6 +255,22 @@ export default function reducer(state: LayoutState = getInitialState(),
       outState = Object.assign({}, state, {
         widgets: widgets
       })
+      break;
+    case ON_RESIZE:
+    {
+      // need to scan wiget positions, and check if they still fit in the
+      // new window size
+      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+      widgets = {};
+      for (let key in state.widgets) {
+        var pct = px2pcnt(state.widgets[key], state.lastScreenSize);
+        widgets[key] = forceOnScreen(pcnt2px(pct, screen), screen);
+      }
+      outState = Object.assign({}, state, {
+        widgets: widgets
+      })
+      break;
+    }
   }
 
   // save to local storage
