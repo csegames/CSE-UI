@@ -81,7 +81,6 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
 
   renderItem(item: any) {
     if (item.serverInfo) {
-
       const totalPlayers = (item.serverInfo.arthurians|0) + (item.serverInfo.tuathaDeDanann|0) + (item.serverInfo.vikings|0);
       const status = item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
       const accessLevel = AccessType[item.serverInfo.accessLevel];
@@ -134,14 +133,13 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     if (!currentServer && !selectedChannel) return 0;
 
     return this.listAsArray.indexOf(this.listAsArray.find((i: any) => {
-      if (i.serverInfo && currentServer) return i.serverInfo.channelID == currentServer.channelID
-      else if (i.channelInfo && selectedChannel) return i.channelInfo.channelID == selectedChannel.channelID
+      if (i.serverInfo && currentServer) return i.serverInfo.channelID == currentServer.channelID;
+      else if (i.channelInfo && selectedChannel) return i.channelInfo.channelID == selectedChannel.channelID;
       return false;
     }));
   }
   
   render() {
-
     const {servers} = this.props.serversState;
     const {channels} = this.props.channelsState;
 
@@ -149,7 +147,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
 
     this.listAsArray = this.mergeServerChannelLists(servers, channels);
 
-    var list: any = null;
+    let list: any = null;
     if (this.state.showList) list = this.renderList();
 
     return (
