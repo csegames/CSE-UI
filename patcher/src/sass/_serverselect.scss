@@ -4,62 +4,62 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.server-select.quickselect-active {
+.ServerList_container {
+  position: absolute;
+  left: 300px;
+  top: 0px;
+  width: 300px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: -1;  
+  .server-select {
+    cursor: pointer !important;
+    padding: 2px 7px;
+    &:hover {
+      background-color: $color4;
+      -webkit-filter: brightness(1.2);
+      filter: brightness(1.2);
+    }
+  }
+}
+
+.server-selected {
   cursor: pointer !important;
   padding: 2px 7px;
+  h5 {
+    margin: 0 0 0 0;
+    -webkit-user-select: none !important;
+  }
+  h5.label {
+      color: lighten($color4, 20%);
+      padding: 2.5px 0px 2.5px 0px;
+      font-size: 18px;
+    }
   &:hover {
     background-color: $color4;
     -webkit-filter: brightness(1.2);
     filter: brightness(1.2);
   }
+}
+
+.server-select {
+  margin: 0.41rem 0 0.328rem 0;
+  
+  color: $color1;
+
   h5 {
     margin: 0 0 0 0;
     -webkit-user-select: none !important;
   }
   h5.server {
     color: $color1;
-  }
-  h5.label {
-    color: lighten($color4, 20%);
-    padding: 2.5px;
-    font-size: 18px;
+    font-size: 20px;
   }
   .server-players {
     display: inline-block;
     color: #b7b7b7;
     font-size: .9em;
-  }
-}
-
-.server-select.quickselect-list {
-  padding: 2.5px;
-  background-color: $color4;
-  color: $color1;
-  cursor: pointer !important;
-  &:hover {
-    background-color: $color4;
-    -webkit-filter: brightness(1.2);
-    filter: brightness(1.2);
-  }
-  h5 {
-    font-size: 16px;
-    margin: 2px 0px;
-    -webkit-user-select: none !important;
-  }
-  h6 {
-    font-size: 14px;
-    margin: 2px 0px;
-    -webkit-user-select: none !important;
-  }
-  .server-status {
-    .indicator {
-      top: -10px !important;
-    }
-  }
-  .server-players {
-    display: inline-block;
-    color: #b7b7b7;
-    font-size: .75em;
   }
 }
 
@@ -70,7 +70,7 @@
   .indicator {
     @include circle(10px);
     position: absolute;
-    top: -25px;
+    top: -20px;
   }
   display: inline-block;
   margin: 5px;

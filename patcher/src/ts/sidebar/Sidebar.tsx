@@ -12,7 +12,7 @@ declare let $: any;
 
 import Login from './Login';
 import ServerSelect, {ServerStatus} from './ServerSelect';
-import SelectServer from './SelectServer';
+import SelectServer from './ServerSelect';
 import PatchButton from './PatchButton';
 import ServerCounts from './ServerCounts';
 import CharacterSelect from './CharacterSelect';
@@ -256,7 +256,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       //todo: redux up ServerCounts, componentize character buttons
       renderServerSection = (
         <div>
-          <SelectServer/>
+          <ServerSelect/>
           <CharacterSelect/>
           { this.generateCharacterButtons(this.props.serversState.currentServer.shardID, this.props.charactersState.selectedCharacter) }
           <ServerCounts artCount={this.props.serversState.currentServer.arthurians}
@@ -267,7 +267,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     } else {
       renderServerSection = (
           <div>
-            <SelectServer/>                
+            <ServerSelect/>                
           </div>
         );
     }

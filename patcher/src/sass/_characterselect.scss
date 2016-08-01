@@ -10,6 +10,8 @@
   padding: 2px 7px;
   &:hover {
     background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
   }
   h5 {
     margin: 0.41rem 0 0.328rem 0;
@@ -20,7 +22,7 @@
   }
   h5.label {
     color: lighten($color4, 20%);
-    padding: 2.5px;
+    padding: 2.5px 0px 2.5px 0px;
     font-size: 18px;
   }
 }
