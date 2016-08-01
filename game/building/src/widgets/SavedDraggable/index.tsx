@@ -142,8 +142,8 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
 
 
   loadLayout(defaultPosition: Position, defaultSize: Size, screen: Size): LayoutState {
-    //const state: LayoutState = JSON.parse(localStorage.getItem(SAVE_PREFIX + this.props.saveName)) as LayoutState;
-    const state: LayoutState = null;
+    const state: LayoutState = JSON.parse(localStorage.getItem(SAVE_PREFIX + this.props.saveName)) as LayoutState;
+    //const state: LayoutState = null;
 
     if (state && ((state.version | 0) >= MIN_STATE_VERSION_PERCENT)) {
       return {
