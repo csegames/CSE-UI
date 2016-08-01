@@ -171,7 +171,7 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
     });
     return (
       <div onKeyDown={this.onKeyDown}>
-        <div id='crafting-button' onClick={this.toggleWindow}></div>
+        <div id='crafting-button' className='hint--top hint--slide' data-hint={'Crafting'} onClick={this.toggleWindow}></div>
         <div id="crafting-window" className={craftWindowClassName}>
           <div className="cu-window">
             <div className="cu-window-header">

@@ -25,6 +25,7 @@
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 999;
 }
 
 .drag-handle.hidden {
@@ -34,4 +35,20 @@
 .react-draggable {
   display: inline-block;
   position: absolute;
+}
+
+.HUD__toggle {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 67px;
+  height: 61px;
+}
+
+.HUD__toggle--locked {
+  background: url('../images/ui-locked.jpg');
+}
+
+.HUD__toggle--unlocked {
+  background: url('../images/ui-unlocked.jpg');
 }

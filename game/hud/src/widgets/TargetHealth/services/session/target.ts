@@ -18,7 +18,7 @@ const NAME_CHANGED = 'playerhealth/player/NAME_CHANGED';
 const FACTION_CHANGED = 'playerhealth/player/FACTION_CHANGED';
 const PLAYER_UPDATE = 'playerhealth/player/PLAYER_UPDATE';
 
-export interface PlayerAction {
+export interface TargetAction {
   type: string;
   error?: string;
   current?: number;
@@ -30,13 +30,13 @@ export interface PlayerAction {
   player?: Player;
 }
 
-function init(): PlayerAction {
+function init(): TargetAction {
   return {
     type: INIT,
   };
 }
 
-function staminaChanged(current: number, max: number): PlayerAction {
+function staminaChanged(current: number, max: number): TargetAction {
   return {
     type: STAMINA_UPDATED,
     current: current,
@@ -44,7 +44,7 @@ function staminaChanged(current: number, max: number): PlayerAction {
   };
 }
 
-function healthChanged(current: number, max: number, part: BodyParts): PlayerAction {
+function healthChanged(current: number, max: number, part: BodyParts): TargetAction {
   return {
     type: HEALTH_UPDATED,
     current: current,
@@ -53,7 +53,7 @@ function healthChanged(current: number, max: number, part: BodyParts): PlayerAct
   };
 }
 
-function nameChanged(name: string): PlayerAction {
+function nameChanged(name: string): TargetAction {
   return {
     type: NAME_CHANGED,
     text: name,
@@ -61,28 +61,28 @@ function nameChanged(name: string): PlayerAction {
 }
 
 
-function raceChanged(race: race): PlayerAction {
+function raceChanged(race: race): TargetAction {
   return {
     type: RACE_CHANGED,
     race: race,
   };
 }
 
-function factionChanged(faction: faction): PlayerAction {
+function factionChanged(faction: faction): TargetAction {
   return {
     type: FACTION_CHANGED,
     faction: faction,
   };
 }
 
-function characterUpdate(player: Player): PlayerAction {
+function characterUpdate(player: Player): TargetAction {
   return {
     type: PLAYER_UPDATE,
     player: player,
   }
 }
 
-export function DoThing(): PlayerAction {
+export function DoThing(): TargetAction {
   return {
     type: DO_THING
   }
@@ -95,14 +95,7 @@ export function initializePlayerSession() {
     if (!hasClientAPI()) return;
 
     // init handlers / events
-    client.OnCharacterStaminaChanged((current: number, max: number) => dispatch(staminaChanged(current, max)));
-    client.OnCharacterHealthChanged((current: number, max: number) => dispatch(healthChanged(current, max, BodyParts.Torso)));
-
-    client.OnCharacterNameChanged((name: string) => dispatch(nameChanged(name)));
-    client.OnCharacterRaceChanged((race: race) => dispatch(raceChanged(race)));
-    client.OnCharacterFactionChanged((faction: faction) => dispatch(factionChanged(faction)));
-
-    events.on(events.clientEventTopics.handlesCharacter, (player: Player) => dispatch(characterUpdate(player)));
+    events.on(events.clientEventTopics.handlesEnemyTarget, (player: Player) => dispatch(characterUpdate(player)));
 
   };
 }
@@ -199,7 +192,7 @@ function clone<T>(obj: T): T {
 
 let key = 3;
 export default function reducer(state: PlayerState = initialState,
-                                action: PlayerAction = {type: null}) : PlayerState {
+                                action: TargetAction = {type: null}) : PlayerState {
   switch(action.type) {
     case INIT:
       return Object.assign({}, state, {
@@ -246,6 +239,7 @@ export default function reducer(state: PlayerState = initialState,
 
     case PLAYER_UPDATE:
     {
+       const doEvent = state.playerStatus.name == action.player.name;
       let playerStatus = clone(state.playerStatus);
       playerStatus.name = action.player.name;
       playerStatus.archetype = action.player.archetype;
@@ -270,6 +264,8 @@ export default function reducer(state: PlayerState = initialState,
         playerStatus.health[e.part].current = e.health;
         playerStatus.health[e.part].maximum = e.maxHealth > 0 ? e.maxHealth : 10000;
 
+        if (!doEvent) return;
+        
         if (valueChange > 0) {
           // damage event!
           newEvents.push({

@@ -7,5 +7,7 @@
   "handlesBeginChat": true,
   "handlesConsole": true,
   "handlesInput": true,
-  "handlesAnnouncements": true
+  "handlesAnnouncements": true,
+  "handlesEnemyTarget": true,
+  "handlesFriendlyTarget": true
 }

@@ -13,6 +13,6 @@ export default combineReducers({
   player,
 });
 
-export interface HUDSessionState {
+export interface SessionState {
   player: PlayerState,
 }

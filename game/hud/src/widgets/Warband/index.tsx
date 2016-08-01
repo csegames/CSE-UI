@@ -14,7 +14,7 @@ import initialize from './services/initialization';
 import reducer from './services/session';
 import WarbandDisplay from './components/WarbandDisplay';
 
-const store = createStore(reducer, applyMiddleware);
+let store = createStore(reducer, applyMiddleware(thunk));
 
 // globally initialize SignalR for this module
 signalr.initializeSignalR();

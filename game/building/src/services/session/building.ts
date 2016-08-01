@@ -35,7 +35,7 @@ export interface BuildingState {
 }
 
 const initialState = {
-  mode: buildUIMode.PLACINGPHANTOM
+  mode: buildUIMode.NOTBUILDING
 }
 
 export default function reducer(state: BuildingState = initialState, action: any = {}) {

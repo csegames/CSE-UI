@@ -5,45 +5,70 @@
  */
 
 import * as React from 'react';
-import {WarbandMember, archetype} from 'camelot-unchained';
+import {createStore, applyMiddleware} from 'redux';
+import {Provider, connect} from 'react-redux';
+const thunk = require('redux-thunk').default;
+import {WarbandMember, archetype, race, gender, hasClientAPI} from 'camelot-unchained';
 
-import PlayerStatusBar, {PlayerStatusStyle} from '../../components/PlayerStatusBar';
+import PlayerStatusComponent from '../../components/PlayerStatusComponent';
+import reducer, {SessionState} from './services/session';
+import {PlayerState, DoThing, initializePlayerSession} from './services/session/player';
+import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
-export interface TargetHealthProps {
+const store = createStore(reducer, applyMiddleware(thunk));
+
+
+export interface ContainerProps {
   containerClass?: string;
   isMini?: boolean;
 }
 
-export interface TargetHealthState {
+export interface PlayerHealthProps extends ContainerProps {
+  dispatch?: (action: any) => any;
+  player?: PlayerState;
 }
 
-class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState> {
+export interface PlayerHealthState {
+}
 
-  constructor(props: TargetHealthProps) {
+function select(state: SessionState): PlayerHealthProps {
+  return {
+    player: state.player
+  }
+}
+
+class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+
+  constructor(props: PlayerHealthProps) {
     super(props);
   }
 
+  componentDidMount() {
+    this.props.dispatch(initializePlayerSession());
+  }
+
   render() {
-
-    const mini = this.props.isMini || false;
-
-    let bar:any = null;
-    if (mini) {
-      bar = <PlayerStatusBar containerClass='PlayerHealth__bar--mini'
-                         style={PlayerStatusStyle.MiniSelf}
-                         playerStatus={null}/>;
-    } else {
-      bar = <PlayerStatusBar containerClass='PlayerHealth__bar'
-                         style={PlayerStatusStyle.FullSelf}
-                         playerStatus={null}/>;
-    } 
-
+    const hide = this.props.player.playerStatus.name == '';
+    if (hide) return null;
+    const dead = this.props.player.playerStatus.blood.current <= 0 || this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
     return (
-      <div className={`player-health ${this.props.containerClass}`}>
-        {bar}
+      <div className={`player-health ${this.props.containerClass}`} onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+        <PlayerStatusComponent containerClass='PlayerHealth' playerStatus={this.props.player.playerStatus} events={this.props.player.events}/>
       </div>
+    );
+  }
+}
+
+const PlayerComp = connect(select)(PlayerHealth);
+
+class Container extends React.Component<ContainerProps,{}> {
+  render() {
+    return (
+      <Provider store={store}>
+        <PlayerComp {...this.props}/>
+      </Provider>
     )
   }
 }
 
-export default TargetHealth;
+export default Container;

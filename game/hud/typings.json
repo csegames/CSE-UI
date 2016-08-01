@@ -4,11 +4,12 @@
     "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts",
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "node": "registry:dt/node#6.0.0+20160621231320",
+    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
     "react": "registry:dt/react#0.14.0+20160621225615",
     "react-addons-css-transition-group": "registry:dt/react-addons-css-transition-group#0.14.0+20160316155526",
     "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118",
-    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
-    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-motion": "registry:dt/react-motion#0.0.0+20160705193226"
   },
   "dependencies": {
     "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",

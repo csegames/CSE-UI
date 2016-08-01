@@ -16,12 +16,16 @@ const LOCK_HUD = 'hud/layout/LOCK_HUD';
 const UNLOCK_HUD = 'hud/layout/UNLOCK_HUD';
 const SET_POSITION = 'hud/layout/SET_POSITION';
 const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
-const RESET_POSITIONS = 'hud/layout/RESET_POSITIONS';
+const RESET_HUD = 'hud/layout/RESET_HUD';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 3;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
+
+function clone<T>(obj: T): T {
+  return Object.assign({}, obj);
+}
 
 export interface LayoutAction {
   type: string;
@@ -52,6 +56,12 @@ export function unlockHUD(): LayoutAction {
   return {
     type: UNLOCK_HUD
   }
+}
+
+export function resetHUD(): LayoutAction {
+  return {
+    type: RESET_HUD
+  };
 }
 
 export function setPosition(name: string, pos: Position): LayoutAction {
@@ -103,28 +113,26 @@ export function saySomething(s: string) : LayoutAction {
   }
 }
 
-const defaultWidgets = (): any => {
-  return {
-    'Chat': {x: 10, y: 600, scale:1, height: 300, width: 600},
-    'Crafting': {x:0,y:20,scale:1,height:450,width:650},
-    'PlayerHealth': {x: 100, y: 300, height: 200, width: 350, scale: 1},
-    'TargetHealth': {x: 600, y: 300, height: 200, width: 350, scale: 1},
-    'Warband': {x: 100, y: 10, scale:1, height: 200, width: 350},
-  };
-}
-
 const minScale = 0.25;
 
 export interface LayoutState {
-  version?: number;
+  version: number;
   locked?: boolean;
   lastScreenSize?: Size;
   widgets: any; // dictionary<name, position>
 }
 
-const initialState = {
-  locked: true,
-  widgets: defaultWidgets(),
+const initialState = () => {
+  return {
+    locked: true,
+    widgets: {
+      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:330},size:{width:600,height:300},scale:0.8},
+      PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
+      EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
+      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:100},size:{width:350,height:200},scale:0.6},
+    },
+    version: MIN_STATE_VERSION_ANCHORED
+  }
 }
 
 interface Size {
@@ -205,17 +213,16 @@ function forceOnScreen(current: Position, screen: Size) : Position {
 }
 
 function getInitialState(): any {
-  const storedState: LayoutState = loadState();
+  const storedState: LayoutState = clone(loadState());
   if (storedState) {
-    storedState.locked = initialState.locked;
+    storedState.locked = initialState().locked;
     return storedState;
   }
-  return initialState;
+  return loadState(clone(initialState()));
 }
 
-function loadState() : LayoutState {
+function loadState(state: LayoutState =  JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-  const state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState;
   if (state) {
     if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
       for (let key in state.widgets) {
@@ -224,7 +231,7 @@ function loadState() : LayoutState {
         // bug that would reposition when the window was minimised.  That is now prevented but in case
         // anyone has a saved position in this state, we fix it here.
         if (state.widgets[key].width === 1 && state.widgets[key].height === 1) {
-          state.widgets[key] = forceOnScreen(defaultWidgets()[key] as Position, screen);
+          state.widgets[key] = forceOnScreen(anchored2position(clone((initialState().widgets as any)[key]), screen), screen);
         }
       }
     }
@@ -269,6 +276,11 @@ export default function reducer(state: LayoutState = getInitialState(),
       outState = Object.assign({}, state, {
         lastScreenSize: action.size
       });
+      break;
+    }
+    case RESET_HUD:
+    {
+      outState = Object.assign({}, loadState(clone(initialState())));
       break;
     }
     case SET_POSITION:

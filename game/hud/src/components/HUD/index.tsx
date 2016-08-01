@@ -10,12 +10,13 @@ let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize} from '../../services/session/layout';
+import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, resetHUD} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
 import Crafting from '../../widgets/Crafting';
 import PlayerHealth from '../../widgets/PlayerHealth';
-import TargetHealth from '../../widgets/TargetHealth';
+import EnemyTargetHealth from '../../widgets/TargetHealth';
+import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
 import Warband from '../../widgets/Warband';
 import InviteAlert from '../InviteAlert';
 
@@ -142,6 +143,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
     );
   }
 
+  onToggleClick = (e: React.MouseEvent) => {
+    if (e.altKey) {
+      this.props.dispatch(resetHUD());
+      return;
+    }
+    return this.props.dispatch(this.props.layout.locked ? unlockHUD() : lockHUD());
+  }
+
 
         // {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health')}
         // {this.draggableWidget('TargetHealth', widgets, TargetHealth, 'target-health')}
@@ -172,14 +181,17 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     return (
       <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.5)'}}>
-        { this.draggableWidget('Chat', widgets, Chat, 'chat-window', {
-            loginToken:client.loginToken
-        })}
         <div id='cse-ui-crafting'>
           <Crafting/>
         </div>
-        <button onClick={() => locked ? this.props.dispatch(unlockHUD()) : this.props.dispatch(lockHUD())}
-                style={{position: 'fixed'}}>Toggle UI Lock</button>
+        {this.draggableWidget('Chat', widgets, Chat, 'chat-window', {loginToken:client.loginToken})}
+        {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health', {})}
+        {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
+        {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
+        
+        <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
+             onClick={e => this.onToggleClick(e)}
+             data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>
       </div>
     );
   }
