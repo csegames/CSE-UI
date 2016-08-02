@@ -15,6 +15,7 @@ import {BuildPaneProps} from '../../lib/BuildPane';
 
 import TabbedPane from '../../components/TabbedPane';
 import MaterialSelector from './components/MaterialSelector';
+import MaterialPreview from './components/MaterialPreview';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -36,6 +37,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           defaultSizeInPercentages={{ width: 15, height: 90, scale: 1 }} 
         >
           <MaterialSelector />
+          <MaterialPreview />
         </TabbedPane>
       </Provider>
     )

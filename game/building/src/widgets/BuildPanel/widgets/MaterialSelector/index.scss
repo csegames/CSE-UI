@@ -39,3 +39,23 @@
     }
   }
 }
+
+
+.material-preview  {
+  color: #9f9893;
+  font-size: 11px;
+  background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));
+  border: 1px solid #393634;
+  width: 150px;
+  min-height: 150px;
+  position: absolute;
+  left: -167px;
+  top: 20px;
+  padding: 10px;
+
+  img {
+    width: 128px;
+    height: 128px;
+  }
+}
+

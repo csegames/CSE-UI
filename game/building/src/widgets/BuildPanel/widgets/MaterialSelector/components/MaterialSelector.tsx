@@ -8,7 +8,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {BuildingMaterial} from 'camelot-unchained';
 import {GlobalState} from '../services/session/reducer';
-import {setSelectedMaterial} from '../services/session/materials-by-type';
+import {setSelectedMaterial, setHoverMaterial} from '../services/session/materials-by-type';
 
 import MaterialsByType from '../lib/MaterialsByType';
 
@@ -47,8 +47,14 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
         className={mat.id == selectedId ? 'active' : ''}
         src={`data:image/png;base64, ${mat.icon}`}
         onClick={() => this.selectMaterial(mat) }
+        onMouseOver={() => this.onHover(mat) }
+        onMouseOut={() => this.onHover(null) }
         />
     )
+  }
+
+  onHover = (material: BuildingMaterial) => {
+      this.props.dispatch(setHoverMaterial(material));
   }
 
   render() {

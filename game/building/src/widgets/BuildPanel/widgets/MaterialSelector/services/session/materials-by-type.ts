@@ -14,6 +14,7 @@ const assign = require('object-assign');
 const SET_MATERIALS_BY_TYPE = 'buildpanel/panes/SET_MATERIALS_BY_TYPE';
 const UPDATE_MATERIAL_SELECTOR = 'buildpanel/panes/UPDATE_MATERIAL_SELECTOR';
 const SET_MATERIAL_SELECTION = 'buildpanel/panes/SET_MATERIAL_SELECTION';
+const SET_MATERIAL_HOVER = 'buildpanel/panes/SET_MATERIAL_HOVER';
 
 
 const DEFAULT_MATERIAL = new BuildingMaterial({} as BuildingMaterial);
@@ -48,6 +49,13 @@ export function setSelectedMaterial(selection: BuildingMaterial) {
   }
 }
 
+export function setHoverMaterial(material: BuildingMaterial) {
+  return {
+    type: SET_MATERIAL_HOVER,
+    material: material,
+  }
+}
+
 export function updateMaterialSelector(selection: BuildingMaterial, onSelect: (material: BuildingMaterial) => void) {
   return {
     type: UPDATE_MATERIAL_SELECTOR,
@@ -61,12 +69,15 @@ export interface MaterialsByTypeState {
 
   selectedMaterial: BuildingMaterial,
   onMaterialSelected: (material: BuildingMaterial) => void;
+
+  hoverMaterial: BuildingMaterial;
 }
 
 const initialState: MaterialsByTypeState = {
   materialsByType: new MaterialsByType([]),
   selectedMaterial: {} as BuildingMaterial,
-  onMaterialSelected: (material: BuildingMaterial) => { }
+  onMaterialSelected: (material: BuildingMaterial) => { },
+  hoverMaterial: null
 }
 
 export default function reducer(state: MaterialsByTypeState = initialState, action: any = {}) {
@@ -83,6 +94,10 @@ export default function reducer(state: MaterialsByTypeState = initialState, acti
     case SET_MATERIAL_SELECTION:
       return assign({}, state, {
         selectedMaterial: action.selection
+      });
+    case SET_MATERIAL_HOVER:
+      return assign({}, state, {
+        hoverMaterial: action.material
       });
     default: return state;
   }
