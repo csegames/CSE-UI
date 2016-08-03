@@ -88,7 +88,6 @@ export function initialize() {
 }
 
 export function resize() {
-  console.log('resized');
   return {
     type: ON_RESIZE,
   };
