@@ -22,7 +22,6 @@ const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 3;
-const MIN_STATE_VERSION_PERCENT: number = 2;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
 
 export interface LayoutAction {
