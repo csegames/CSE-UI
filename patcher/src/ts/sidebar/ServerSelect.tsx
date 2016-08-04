@@ -6,14 +6,16 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
+
 import {Channel, ChannelStatus, patcher} from '../api/patcherAPI';
 import {Server, AccessType} from '../redux/modules/servers';
+import * as events from '../../lib/events';
+
 import {changeChannel, requestChannels, ChannelState} from '../redux/modules/channels';
 import {fetchServers, changeServer, ServersState} from '../redux/modules/servers';
-import * as events from '../../lib/events';
 import {fetchCharacters, selectCharacter} from '../redux/modules/characters';
-import QuickSelect from '../../lib/QuickSelect';
 
+import Animate from '../../lib/Animate';
 
 export enum ServerStatus {
   OFFLINE,
@@ -21,101 +23,46 @@ export enum ServerStatus {
   STARTING
 }
 
-export interface ActiveServerViewProps {
-  item: Server;
-};
-
-export interface ActiveServerViewState {
-};
-
-class ActiveServerView extends React.Component<ActiveServerViewProps, ActiveServerViewState> {
-  render() {
-    let content: JSX.Element;
-    if (this.props.item) {
-      let totalPlayers = (this.props.item.arthurians|0) + (this.props.item.tuathaDeDanann|0) + (this.props.item.vikings|0);
-      let status = this.props.item.playerMaximum > 0 ? 'online' : 'offline';
-      let accessLevel = AccessType[this.props.item.accessLevel];
-      content = (
-        <div>
-          <div className='server-status'><div className={'indicator ' + status} data-position='right'
-            data-delay='150' data-tooltip={status} /></div>
-          <div className='server-details'>
-            <h5 className='server'>{this.props.item.name} ({accessLevel})</h5>
-            <h6 className='server-players'>Players Online: {totalPlayers}/{this.props.item.playerMaximum}</h6>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className='server-select quickselect-active'>
-        <h5 className='label'>SELECT SERVER</h5>
-        {content}
-      </div>
-    );
-  }
-}
-
-export interface ServerListViewProps {
-  item: IServerOption;
-};
-
-export interface ServerListViewState { 
-};
-
-class ServerListView extends React.Component<ServerListViewProps, ServerListViewState> {
-  render() {
-    const totalPlayers = (this.props.item.serverInfo.arthurians|0) + (this.props.item.serverInfo.tuathaDeDanann|0) + (this.props.item.serverInfo.vikings|0);
-    const status = this.props.item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
-    const accessLevel = AccessType[this.props.item.serverInfo.accessLevel];
-
-    return (
-      <div className='server-select quickselect-list'>
-        <div>
-          <div className='server-status'><div className={'indicator ' + status} data-position='right'
-            data-delay='150' data-tooltip={status} /></div>
-          <div className='server-details'>
-            <h5 className='server'>{this.props.item.displayName} ({accessLevel})</h5>
-            <h6 className='server-players'>Players Online: {totalPlayers}/{this.props.item.serverInfo.playerMaximum}</h6>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-interface IServerOption {
-  displayName: string;
-  serverInfo: Server;
-  channelInfo: Channel;
-}
-
-function mapToProps(state: any): any {
+function select(state: any): any {
   return {
     channelsState: state.channels,
     serversState: state.servers
   }
 }
 
-export interface ServerSelectProps {
+export interface SelectServerProps {
   dispatch?: (action: any) => void;
   channelsState?: ChannelState;  
   serversState?: ServersState;
-};
+}
 
-export interface ServerSelectState {
-};
+export interface SelectServerState {
+  showList: boolean;
+}
 
-class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState> {
-  public name: string = 'cse-patcher-server-select';
-  private mergedServerList: {[key:string]: IServerOption} = {};
+class SelectServer extends React.Component<SelectServerProps, SelectServerState> {
+
+  private mergedServerList: {[key:string]: any} = {};
   
-  private listAsArray:Array<IServerOption> = null;
-
-  constructor(props: ServerSelectProps) {
+  private listAsArray: any[] = null;
+  
+  constructor(props: SelectServerProps) {
     super(props);
+
+    this.state = {
+      showList: false,
+    };
   }
 
-  onSelectedServerChanged = (server: IServerOption) => {
+  renderList() {
+    return (
+      <div className='ServerList_container card-panel no-padding'>
+        {this.listAsArray.map((i: any) => this.renderItem(i))}
+      </div>
+    )
+  }
+
+  onSelectedServerChanged = (server: any) => {
     const {dispatch} = this.props;
 
     events.fire('play-sound', 'select');
@@ -127,66 +74,39 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
     dispatch(selectCharacter(null));
     dispatch(fetchServers());
     dispatch(requestChannels());
+    this.setState({
+      showList: false
+    } as any);
   }
 
-  generateActiveView = (server: IServerOption) => {
-    if (server.serverInfo) {
-      return <ActiveServerView item={server.serverInfo} />
-    } else {
-      //todo component
-      let status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
-      let statusDesc = ChannelStatus[server.channelInfo.channelStatus];
+  renderItem(item: any) {
+    if (item.serverInfo) {
+      const totalPlayers = (item.serverInfo.arthurians|0) + (item.serverInfo.tuathaDeDanann|0) + (item.serverInfo.vikings|0);
+      const status = item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
+      const accessLevel = AccessType[item.serverInfo.accessLevel];
 
-       return (
-        <div className='server-select quickselect-active'>
-        <h5 className='label'>SELECT SERVER</h5>
-          <div>
-            <div className='server-details'>
-              <h5 className='server'>{server.channelInfo.channelName}</h5>
-            </div>
+      return (
+        <div className='server-select' onClick={() => this.onSelectedServerChanged(item)}>
+          <div className='server-details'>
+            <h5 className='server'>{item.displayName} ({accessLevel})</h5>
+            <h6 className='server-players'>Players Online: {totalPlayers}/{item.serverInfo.playerMaximum}</h6>
+          </div>
+          <div className='server-status'><div className={'indicator ' + status} data-position='right'
+            data-delay='150' data-tooltip={status} /></div>
+        </div>
+      );
+    } else {
+      return (
+        <div className='server-select' onClick={() => this.onSelectedServerChanged(item)}>
+          <div className='server-details'>
+            <h5 className='server'>{item.channelInfo.channelName}</h5>
           </div>
         </div>
       );
-    }
+    }    
   }
 
-  generateListView = (server: IServerOption) => {
-
-    if (server.serverInfo) {
-      if (this.props.serversState.currentServer && server.serverInfo.channelID == this.props.serversState.currentServer.channelID) return; //this is the selected server dont add it to list
-      return <ServerListView item={server} />;
-    } else {
-      if (this.props.channelsState.selectedChannel && server.channelInfo.channelID == this.props.channelsState.selectedChannel.channelID) return; //this is the selected channel dont add it to list
-
-      //todo componentize
-      const status = server.channelInfo.channelStatus == 4 ? 'online' : 'offline'; //more than one status should show online...
-      const statusDesc = ChannelStatus[server.channelInfo.channelStatus];
-
-       return (
-        <div className='server-select quickselect-list'>
-          <div>
-            <div className='server-details'>
-              <h5 className='server'>{server.channelInfo.channelName}</h5>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
-  getSelectedIndex = () : number => {
-    const {currentServer} = this.props.serversState;
-    const {selectedChannel} = this.props.channelsState;
-    if (!currentServer && !selectedChannel) return 0;
-
-    return this.listAsArray.indexOf(this.listAsArray.find(i => {
-      if (i.serverInfo && currentServer) return i.serverInfo.channelID == currentServer.channelID
-      else if (i.channelInfo && selectedChannel) return i.channelInfo.channelID == selectedChannel.channelID
-      return false;
-    }));
-  }
-
-  mergeServerChannelLists(servers:Array<Server>, channels:Array<Channel>) : Array<IServerOption> {
+  mergeServerChannelLists(servers:Array<Server>, channels:Array<Channel>) : any {
 
     let filteredServers:Array<Server> = servers.filter((s) => { return s.name != 'localhost'; });
 
@@ -202,11 +122,23 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
       this.mergedServerList[c.channelID].displayName = c.channelName;
     });
 
-    let dictToArray:Array<IServerOption> = new Array<IServerOption>();
+    let dictToArray:any[] = [];
     Object.keys(this.mergedServerList).forEach(key => { dictToArray.push(this.mergedServerList[key]) });
     return dictToArray;
   }
 
+  getSelectedIndex = () : number => {
+    const {currentServer} = this.props.serversState;
+    const {selectedChannel} = this.props.channelsState;
+    if (!currentServer && !selectedChannel) return 0;
+
+    return this.listAsArray.indexOf(this.listAsArray.find((i: any) => {
+      if (i.serverInfo && currentServer) return i.serverInfo.channelID == currentServer.channelID;
+      else if (i.channelInfo && selectedChannel) return i.channelInfo.channelID == selectedChannel.channelID;
+      return false;
+    }));
+  }
+  
   render() {
     const {servers} = this.props.serversState;
     const {channels} = this.props.channelsState;
@@ -215,16 +147,21 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
 
     this.listAsArray = this.mergeServerChannelLists(servers, channels);
 
+    let list: any = null;
+    if (this.state.showList) list = this.renderList();
+
     return (
-        <QuickSelect items={this.listAsArray}
-          selectedItemIndex={this.getSelectedIndex()}
-          activeViewComponentGenerator={this.generateActiveView}
-          listViewComponentGenerator={this.generateListView}
-          onSelectedItemChanged={this.onSelectedServerChanged} />
-    );
+      <div className='server-selected'> 
+        <div onClick={() => this.setState({showList: !this.state.showList} as any)}>
+          <h5 className='label'>SELECT SERVER</h5>
+          {this.renderItem(this.listAsArray[this.getSelectedIndex()])}
+        </div>
+        <Animate animationEnter='fadeIn' animationLeave='fadeOut' durationEnter={500} durationLeave={500}>
+          {list}
+        </Animate>
+      </div>
+    )
   }
 }
 
-
-
-export default connect(mapToProps)(ServerSelect);
+export default connect(select)(SelectServer);
