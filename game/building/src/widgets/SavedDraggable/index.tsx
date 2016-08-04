@@ -160,13 +160,12 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
       position: this.position2anchor(position, screen),
     };
     localStorage.setItem(SAVE_PREFIX + this.props.saveName, JSON.stringify(save));
-    console.log('saving='+JSON.stringify(save))
   }
 
 
   loadLayout(defaultPosition: AbsolutePosition, screen: Size): AbsolutePosition {
-    //const state: LayoutState = JSON.parse(localStorage.getItem(SAVE_PREFIX + this.props.saveName)) as LayoutState;
-    const state: LayoutState = null;
+    const state: LayoutState = JSON.parse(localStorage.getItem(SAVE_PREFIX + this.props.saveName)) as LayoutState;
+    //const state: LayoutState = null;
 
     if (state && ((state.version | 0) >= MIN_STATE_VERSION_PERCENT)) {
       return this.anchored2position(state.position, screen);
