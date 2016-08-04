@@ -83,7 +83,11 @@ function init(): LayoutAction {
 export function initialize() {
   return (dispatch: (action: any) => any) => {
     dispatch(init());
-    window.onresize = () => dispatch(resize());
+    window.onresize = () => {
+      if (window.innerWidth >= 640 && window.innerHeight >= 480) {
+        dispatch(resize());
+      }
+    };
   }
 }
 
@@ -218,6 +222,12 @@ function loadState() : LayoutState {
     if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
       for (let key in state.widgets) {
         state.widgets[key] = forceOnScreen(anchored2position(state.widgets[key], screen), screen);
+        // (temporary) reset widget if width and height have been set to 1, which is due to a previous
+        // bug that would reposition when the window was minimised.  That is now prevented but in case
+        // anyone has a saved position in this state, we fix it here.
+        if (state.widgets[key].width === 1 && state.widgets[key].height === 1) {
+          state.widgets[key] = forceOnScreen(defaultWidgets()[key] as Position, screen);
+        }
       }
     }
     return state;
@@ -252,6 +262,8 @@ export default function reducer(state: LayoutState = getInitialState(),
 
   let widgets: any;
   let outState: LayoutState = state;
+  let screen: Size;
+  let anchored: AnchoredPosition;
 
   switch(action.type) {
     case INITIALIZE:
@@ -293,10 +305,11 @@ export default function reducer(state: LayoutState = getInitialState(),
     {
       // need to scan wiget positions, and check if they still fit in the
       // new window size
-      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+      screen = { width: window.innerWidth, height: window.innerHeight };
+      DEBUG_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
       widgets = {};
       for (let key in state.widgets) {
-        const anchored: AnchoredPosition = position2anchor(state.widgets[key], state.lastScreenSize);
+        anchored = position2anchor(state.widgets[key], state.lastScreenSize);
         widgets[key] = forceOnScreen(anchored2position(anchored, screen), screen);
       }
       outState = Object.assign({}, state, {
