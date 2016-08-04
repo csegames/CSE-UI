@@ -25,7 +25,7 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
   render() {
     if (this.props.item == null) return null;
     return (
-     <SavedDraggable saveName="building/actionbar" 
+     <SavedDraggable saveName="building/selectionview" 
         defaultX={[-100, Anchor.TO_CENTER]} 
         defaultY={[150, Anchor.TO_END]} 
  >
