@@ -44,7 +44,7 @@ import LogMessage from './classes/LogMessage';
 import ChatMessage from './classes/ChatMessage';
 import ConsoleMessage from './classes/ConsoleMessage';
 
-import {DEBUG_ASSERT} from './utils/assert';
+import {DEBUG_ASSERT,RUNTIME_ASSERT} from './utils/assert';
 
 export {
   // core
@@ -85,5 +85,6 @@ export {
   ConsoleMessage,
 
   // misc
-  DEBUG_ASSERT
+  DEBUG_ASSERT,
+  RUNTIME_ASSERT,
 }

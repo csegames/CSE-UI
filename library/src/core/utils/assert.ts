@@ -21,3 +21,9 @@ export function DEBUG_ASSERT(test: any, reason: string) {
     throw new Error('DEBUG_ASSERT: ' + reason);
   }
 }
+
+export function RUNTIME_ASSERT(test: any, reason: string) {
+  if (!test) {
+    throw new Error('RUNTIME_ASSERT: ' + reason);
+  }
+}
