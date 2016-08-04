@@ -166,7 +166,7 @@ function position2anchor(current: Position, screen: Size) : AnchoredPosition {
       width: current.width,
       height: current.height
     },
-    scale: 1
+    scale: current.scale
   };
 }
 

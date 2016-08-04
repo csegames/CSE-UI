@@ -131,6 +131,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <div className={containerClass}
                style={{
                  transform:`scale(${pos.scale})`,
+                 '-webkit-transform':`scale(${pos.scale})`,
                  height: `${pos.height}px`,
                  width: `${pos.width}px`
                }}
@@ -172,7 +173,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const locked = this.props.layout.locked;
 
     return (
-      <div className='HUD'>
+      <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.5)'}}>
         { this.draggableWidget('Chat', widgets, Chat, 'chat-window', {
             loginToken:client.loginToken
         })}
