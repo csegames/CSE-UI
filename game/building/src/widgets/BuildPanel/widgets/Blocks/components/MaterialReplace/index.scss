@@ -5,7 +5,7 @@
  */
  
 .build-panel__material-replace {
-   text-align: center;
+  text-align: center;
    
   .material-view {
     float: none;
@@ -16,13 +16,14 @@
   
   .material-selections
   {
-     height:60px;
+    height:60px;
 
     .divider {
       display: inline-block;
       height: 60px;
       margin: 5px;
       vertical-align: middle;
+      white-space: nowrap;
     }
 
     .arrow {
@@ -31,6 +32,13 @@
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;  
       border-left: 15px solid #9f9893;
+      display: inline-block;
+      margin-bottom: -5px;
+      
+      &:hover {
+        -webkit-filter: brightness(130%);
+        filter: brightness(130%);
+      }
     }
 
     &.minimized
@@ -47,8 +55,12 @@
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;  
         border-top: 15px solid #9f9893;
+
+        &:hover {
+          -webkit-filter: brightness(130%);
+          filter: brightness(130%);
+        }
       }
     }
   }
-
 }

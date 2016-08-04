@@ -4,19 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.material-and-shape__material-selector {
-  background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));
-  border: 1px solid #393634;
-  width: 200px;
-  min-height: 100px;
-  position: absolute;
-  left: -220px;
-  top: 10px;
-  padding: 10px;
-  padding-right:0px;
-  overflow-y: auto;
-  max-height: 800px;
-  line-height:0px;
+.material-selector {
+   position: absolute;
+   
+  .materials {
+    background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));    
+    line-height: 1px;
+    height: calc(100% - 5px);
+    overflow: auto;
+  }
 
   header {
     line-height: 1.5em;
@@ -26,10 +22,12 @@
     margin: 2px;
     width: 32px;
     height: 32px;
+
     &:hover {
       -webkit-filter: brightness(130%);
       filter: brightness(130%);
     }
+
     &.active {
       filter: brightness(130%);
       box-shadow: 0 0 10px 0px rgba(100, 100, 255, 0.8);
@@ -39,6 +37,25 @@
       margin: 0px;
       border-style: solid;    
     }
+  }
+}
+
+
+.material-preview  {
+  color: #9f9893;
+  font-size: 11px;
+  background: linear-gradient(#131313, rgba(0, 0, 0, 0.8));
+  border: 1px solid #393634;
+  width: 150px;
+  min-height: 150px;
+  position: absolute;
+  left: -167px;
+  top: 20px;
+  padding: 10px;
+
+  img {
+    width: 128px;
+    height: 128px;
   }
 }
 

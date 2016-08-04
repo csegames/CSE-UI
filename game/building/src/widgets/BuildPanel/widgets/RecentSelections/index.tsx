@@ -5,51 +5,42 @@
  */
 
 import * as React from 'react';
+import {createStore, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
+const thunk = require('redux-thunk').default;
+
+import reducer from './services/session/reducer';
+import {initializeRecents} from './services/session/recents'
+
 import {BuildPaneProps} from '../../lib/BuildPane';
 import {BuildingItem} from '../../../../lib/BuildingItem';
 import TabbedPane from '../../components/TabbedPane';
+import RecentSelections from './components/RecentSelections';
+import {Anchor} from '../../../SavedDraggable';
 
-interface RecentSelectionsProps extends BuildPaneProps {
-  item: BuildingItem
-  items: BuildingItem[],
+const store = createStore(reducer, applyMiddleware(thunk));
+
+initializeRecents(store.dispatch);
+
+interface ContainerState {
 }
 
-interface RecentSelectionsState {
-}
-
-class RecentSelections extends React.Component<RecentSelectionsProps, RecentSelectionsState> {
-
-  constructor(props: RecentSelectionsProps) {
-    super(props);
-  }
-
-  selectItem(item: BuildingItem) {
-    item.select();
-  }
-
-  isSelectedItem(item: BuildingItem, selection: BuildingItem) {
-    if (selection == null) return false;
-
-    return item.id == selection.id;
-  }
+class Container extends React.Component<BuildPaneProps, ContainerState> {
 
   render() {
-    const selection = this.props.item;
-
     return (
-      <TabbedPane tabs={[this.props.minimized ? 'Recent' : 'Recently Used']}>
-        <div className={`recent-selections ${this.props.minimized ? 'minimied' : ''}`}>
-          { this.props.items.map((item: BuildingItem, index: number) => {
-            if (item == null)
-              return (<span key={'empty' + index}  className='icon'></span>)
-            return (<span key={item.id}  className={this.isSelectedItem(item, selection) ? 'active icon' : 'icon'}
-              onClick={() => this.selectItem(item) } >{item.element}</span>)
-          })
-          }
-        </div>
-      </TabbedPane>
+      <Provider store={store}>
+        <TabbedPane name="recents"
+        tabs={[this.props.minimized ? 'Recent' : 'Recently Used']} 
+          defaultX={[0, Anchor.TO_END]} 
+          defaultY={[200, Anchor.TO_START]} 
+          defaultSize={[200, 100]} 
+        >
+          <RecentSelections />
+        </TabbedPane>
+      </Provider>
     )
   }
 }
 
-export default RecentSelections;
+export default Container;

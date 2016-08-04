@@ -11,6 +11,8 @@ import {Provider} from 'react-redux';
 const thunk = require('redux-thunk').default;
 
 import reducer from './services/session/reducer';
+import {initializeBuilding} from './services/session/building';
+import {initializeSelections} from './services/session/selection';
 import App from './components/BuildingApp';
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -29,14 +31,20 @@ interface WindowInterface extends Window {
 declare const window: WindowInterface;
 
 if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
-  events.on('init', () => ReactDom.render(
+  events.on('init', () => {
+    initializeBuilding(store.dispatch);
+    initializeSelections(store.dispatch);
+    ReactDom.render(
     <Provider store={store}>
       <App />
     </Provider>,
-    root));  
+    root)
+  });  
 } else {
 
   document.body.style.backgroundImage = "url('./images/cube-bg.jpg')";
+  initializeBuilding(store.dispatch);
+  initializeSelections(store.dispatch);
 
   ReactDom.render(
     <Provider store={store}>

@@ -6,7 +6,6 @@
 
 .drop-light {
   position:relative;
-  padding: 5px;
   font-size: 14px;
 
   input {
@@ -36,19 +35,24 @@
     cursor: pointer;
     width: 50px;
     height: 50px;
-    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
     border: 1px solid #464646;
+    float: left;
+
+    &:hover {
+      -webkit-filter: brightness(130%);
+      filter: brightness(130%);
+    }
   }
 
-  .drop-light__controls {
+  .control {
+    white-space: nowrap;
     display: inline-block;
-    width: calc(100% - 60px);
-    padding: 0px 0px 0px 7px;
-    font-size: 14px;
-    vertical-align: top;
     .label{
       display: inline-block;
       width: 60px;
     }
   }
+
 }

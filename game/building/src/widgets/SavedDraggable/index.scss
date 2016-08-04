@@ -1,0 +1,51 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+.floating-content {
+  position:relative;
+}
+
+.react-draggable,  .react-resizable{
+  top: 0px;
+  left: 0px;
+  position: absolute;
+
+  .dragHandle {
+    display: inline-block;
+    width: 24px;
+    height: 16px;
+    padding: 0px;
+    position: relative;
+    top: 3px;
+    left: 3px;
+    background: url("../images/drag-icon.png");
+    background-size: 16px;
+    background-repeat: no-repeat;
+    cursor: move;
+
+    &:hover {
+      background-position: 0px -18px;
+    }
+  }
+
+  
+  .resizeHandle, .react-resizable-handle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background: url("../images/resize-icon.png");
+    background-size: 16px;
+    background-repeat: no-repeat;
+    cursor: se-resize;
+
+    &:hover {
+      background-position: 0px -18px;
+    }
+  }
+}

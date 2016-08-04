@@ -7,6 +7,7 @@
 import * as React from 'react';
 
 import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
+import SavedDraggable, {Anchor} from '../SavedDraggable';
 
 export interface SelectionViewProps {
   item: BuildingItem;
@@ -24,7 +25,11 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
   render() {
     if (this.props.item == null) return null;
     return (
-      <div className='building__selection-view'>
+     <SavedDraggable saveName="building/selectionview" 
+        defaultX={[-100, Anchor.TO_CENTER]} 
+        defaultY={[150, Anchor.TO_END]} 
+ >
+      <div className='building__selection-view dragHandle'>
         <div className='preview'>
           <span className='icon'>{this.props.item.element}</span>
         </div>
@@ -32,6 +37,7 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
         <hr />
         <p>{this.props.item.description}</p>
       </div>
+      </SavedDraggable>
     )
   }
 }

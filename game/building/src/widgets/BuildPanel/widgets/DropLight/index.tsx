@@ -16,6 +16,8 @@ import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 
 import DroplightPane from './components/DroplightPane';
+import LightSelector from './components/LightSelector';
+import {Anchor} from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -32,8 +34,13 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
   render() {
     return (
       <Provider store={store}>
-        <TabbedPane tabs={['Drop Light']}>
-          <DroplightPane onItemSelect={this.props.onItemSelect} minimized={this.props.minimized} />
+        <TabbedPane name="droplights" className="drop-light" tabs={[this.props.minimized ? 'Light' : 'Drop Light']}
+          defaultX={[0, Anchor.TO_END]}
+          defaultY={[600, Anchor.TO_START]}
+          defaultSize={[200, 200]}
+          >
+          <DroplightPane minimized={this.props.minimized} />
+          <LightSelector />
         </TabbedPane>
       </Provider>
     )

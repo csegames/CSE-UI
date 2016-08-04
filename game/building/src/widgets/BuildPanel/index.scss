@@ -22,12 +22,14 @@ header {
   box-sizing: border-box;
   padding: 5px 10px 5px 5px;  margin: 3px 0px;
   transition: all 0.2s ease-in-out;
+
   &:hover {
     -webkit-filter: brightness(1.5);
     background: none;
     background-color: #1D1D1D;
     color: #bdb5af;
   }
+
   &:focus {
     outline: none;
     -webkit-filter: brightness(1.2);
@@ -36,7 +38,7 @@ header {
 
 .Select.is-disabled > .Select-control {
   background-color: #1D1D1D; 
-  }
+}
     
 .Select-control {
   background: linear-gradient(#131313, rgba(0, 0, 0, 0.9));
@@ -51,9 +53,11 @@ header {
   margin: 3px 0px;
   color: #635F5C;
   transition: all 0.2s ease-in-out;
+
   .Select-arrow-zone{
     padding: 0px;
   }
+
   .Select-arrow {
     display: block;
     content: "";
@@ -70,6 +74,7 @@ header {
 
 .is-open > .Select-control{
   background: none;
+
   &:focus {
     outline: none;
   }
@@ -94,11 +99,13 @@ header {
 .Select-option {
   background-color: #1D1D1D;
   padding: 5px 10px;
+
   &:hover{
     background-color: #1D1D1D;
     color: #bdb5af; 
     -webkit-filter: brightness(1.5);
   }
+
   &:last-child {
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -149,23 +156,23 @@ header {
 }
 
 .Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus {
-    background-color: #1D1D1D;
-    color: #C4BCB6;
+  background-color: #1D1D1D;
+  color: #C4BCB6;
 }
 
 div::-webkit-scrollbar {
-    width: 10px;
-    height: 12px;
+  width: 10px;
+  height: 12px;
 }
 
 div::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, transparent, rgba(255, 221, 188, 0.33), transparent);
-    border: none;
-    box-shadow: inset 0px 0px 20px rgba(84, 73, 58, 0.68);
+  background: linear-gradient(to bottom, transparent, rgba(255, 221, 188, 0.33), transparent);
+  border: none;
+  box-shadow: inset 0px 0px 20px rgba(84, 73, 58, 0.68);
 }
 
 div::-webkit-scrollbar-track {
-    background: rgb(29, 28, 27);
+  background: rgb(29, 28, 27);
 }
 
 button {
@@ -182,19 +189,23 @@ button {
   position: relative;
   -webkit-filter: brightness(0.8);
   transition: all 0.2s ease-in-out;
+
   &[disabled] {
     color: #4b4642;
     background: #2C2C2C;
     box-shadow: none;
   }  
+
   &:hover {
     &:not([disabled]) {
       -webkit-filter: brightness(1.2);
     }
   }
+
   &:focus {
     outline: none;
   }
+
   &:active {
     -webkit-filter: brightness(.8)
   }
@@ -205,3 +216,4 @@ button {
 @import './widgets/RecentSelections/index';
 @import './widgets/DropLight/index';
 @import './widgets/Blueprints/index';
+@import './widgets/MaterialSelector/index';

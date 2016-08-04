@@ -6,13 +6,13 @@
 
 import * as React from 'react';
 
-import {Blueprint} from '../../lib/Blueprint';
+import {BuildingBlueprint} from 'camelot-unchained';
 
 export interface BlueprintListProps {
-  blueprints: Blueprint[];
-  selected: Blueprint;
-  selectBlueprint: (blueprint: Blueprint) => void;
-  hoverBlueprint: (blueprint: Blueprint) => void;
+  blueprints: BuildingBlueprint[];
+  selected: BuildingBlueprint;
+  selectBlueprint: (blueprint: BuildingBlueprint) => void;
+  hoverBlueprint: (blueprint: BuildingBlueprint) => void;
 }
 
 export interface BlueprintListState {
@@ -25,9 +25,9 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     this.state = { hoverIcon: null };
   }
 
-  generateBlueprintItem = (bp: Blueprint) => {
+  generateBlueprintItem = (bp: BuildingBlueprint) => {
     return (
-      <li key={bp.id}
+      <li key={bp.name}
         onClick={() => this.props.selectBlueprint(bp) }
         onMouseOver={() => this.props.hoverBlueprint(bp) }
         onMouseOut={() => this.props.hoverBlueprint(null) }
@@ -35,7 +35,7 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
         >{bp.name}</li>
     )
   }
-  generateBlueprintList(category: string, blueprints: Blueprint[]) {
+  generateBlueprintList(category: string, blueprints: BuildingBlueprint[]) {
     return (
       <div>
         <div className="category">{category}</div>
@@ -45,8 +45,8 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
       </div>
     );
   }
-
-  generateCategories(categorizedBlueprints: { [key: string]: Blueprint[] }): JSX.Element[] {
+/*
+  generateCategories(categorizedBlueprints: { [key: string]: BuildingBlueprint[] }): JSX.Element[] {
     const elements: JSX.Element[] = [];
     for (let category in categorizedBlueprints) {
       elements.push(this.generateBlueprintList(category, categorizedBlueprints[category]));
@@ -54,9 +54,9 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     return elements;
   }
 
-  categorizeBlueprints(blueprints: Blueprint[]): { [key: string]: Blueprint[] } {
-    const categorized: { [key: string]: Blueprint[] } = {};
-    this.props.blueprints.forEach((bp: Blueprint) => {
+  categorizeBlueprints(blueprints: BuildingBlueprint[]): { [key: string]: BuildingBlueprint[] } {
+    const categorized: { [key: string]: BuildingBlueprint[] } = {};
+    this.props.blueprints.forEach((bp: BuildingBlueprint) => {
       let categoryBps = categorized[bp.category];
       if (categoryBps == null) {
         categoryBps = [];
@@ -66,9 +66,9 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     });
     return categorized;
   }
-
+*/
   render() {
-    //const categorizedBlueprints: { [key: string]: Blueprint[] } = this.categorizeBlueprints(this.props.blueprints);
+    //const categorizedBlueprints: { [key: string]: BuildingBlueprint[] } = this.categorizeBlueprints(this.props.blueprints);
 
     return (
       <div className='blueprints__list'>

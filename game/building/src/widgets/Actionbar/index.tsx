@@ -5,17 +5,26 @@
  */
 
 import * as React from 'react';
-import {client, channelId, events} from 'camelot-unchained';
+import {connect} from 'react-redux';
+import {buildUIMode} from 'camelot-unchained';
 
+import buildingActions from '../../services/session/requester';
+import {GlobalState} from '../../services/session/reducer';
 import ActionButton from './components/ActionButton';
-import requester from '../../services/session/requester';
+import SavedDraggable, {Anchor} from '../SavedDraggable';
+
+function select(state: GlobalState): any {
+  return {
+    buildingMode: state.building.mode
+  }
+}
 
 export interface ActionBarProps {
+  buildingMode: number;
 }
 
 export interface ActionBarState {
   minimized: boolean;
-  buildingMode: number;
 }
 
 class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
@@ -27,79 +36,70 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
     super(props);
     this.state = {
       minimized: false,
-      buildingMode: 1
     }    
   }
-
- componentDidMount() {
-    requester.listenForModeChange(this.modeListener);
- }
-
- componentWillUnmount() {
-    requester.unlistenForModeChange(this.modeListener);
- }
 
   onMinMax() {
     this.setState({
       minimized: !this.state.minimized,
-      buildingMode: 1
     });
   }
 
   onSelect() {
-    if (this.state.buildingMode < 4) {
-      requester.changeMode(4);
-      this.setState({buildingMode: 4} as any);
+    if (this.props.buildingMode != buildUIMode.SELECTINGBLOCK) {
+      buildingActions.changeMode(buildUIMode.SELECTINGBLOCK);
     } else {
-      requester.changeMode(1);
-      this.setState({buildingMode: 1} as any);
+      buildingActions.changeMode(buildUIMode.PLACINGPHANTOM);
     }
   }
 
   onComit() {
-    requester.commit();
+    buildingActions.commit();
   }
 
   onUndo() {
-    requester.undo();
+    buildingActions.undo();
   }
 
   onRedo() {
-    requester.redo();
+    buildingActions.redo();
   }
 
   onRotX() {
-    requester.rotX();
+    buildingActions.rotX();
   }
 
   onRotY() {
-    requester.rotY();
+    buildingActions.rotY();
   }
 
   onRotZ() {
-    requester.rotZ();
+    buildingActions.rotZ();
   }
 
   onFlipX() {
-    requester.flipX();
+    buildingActions.flipX();
   }
 
   onFlipY() {
-    requester.flipY();
+    buildingActions.flipY();
   }
 
   onFlipZ() {
-    requester.flipZ();
+    buildingActions.flipZ();
   }
 
   render() {
 
     return (
+     <SavedDraggable saveName="building/actionbar" 
+        defaultX={[0, Anchor.TO_START]} 
+        defaultY={[-200, Anchor.TO_CENTER]} 
+ >
+
       <div className='action-bar'>
         <header>
-          <span className='min-max' onClick={() => this.onMinMax() }>
-            {this.state.minimized ? '>>' : '<<'}
-          </span>
+            <div className="dragHandle"></div>
         </header>
         <ul>
 
@@ -111,7 +111,7 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 
           <li onClick={() => this.onComit()}>
             <ActionButton isActive={false}
-              icon={this.state.buildingMode < 4 ? 'images/action-bar-add-block.png' : 'images/action-bar-del-block.png'} />
+              icon={this.props.buildingMode < 4 ? 'images/action-bar-add-block.png' : 'images/action-bar-del-block.png'} />
             {this.state.minimized ? null : <em>1</em>}
           </li>
 
@@ -165,8 +165,10 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 
         </ul>
       </div>
+      </SavedDraggable>
     )
   }
 }
 
-export default ActionBar;
+export default connect(select)(ActionBar);
+

@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Material, MaterialType} from '../../lib/Material';
-import {Block} from '../../lib/Block';
-import {selectFromMaterial, selectToMaterial} from './materials-replace';
-import requester from './requester';
+import {events, BuildingBlock, BuildingMaterial, buildUIMode} from 'camelot-unchained';
+
+import {selectFromMaterial, selectToMaterial, setBlockMode} from './materials-replace';
+import requester from '../../../../../../services/session/requester';
 
 const assign = require('object-assign');
 
@@ -16,113 +16,73 @@ const SELECT_BLOCK = 'buildpanel/panes/SELECT_BLOCK';
 
 const SET_MATERIALS = 'buildpanel/panes/SET_MATERIALS';
 
-const DEFAULT_MATERIAL: Material = {
+const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
   id: -1,
   icon: '',
-  name: 'default',
-  tags: 'default',
-  type: MaterialType.OTHER,
+  tags: ['default'],
   blocks: []
-} as Material;
+} as BuildingMaterial);
 
-function getMaterialAsString(mat: Material) {
-  return "{ id: " + mat.id + ", name: '" + mat.name + "', tags: '" + mat.tags + "', blocks: " +
-    getBlocksAsString(mat.blocks) + ", icon:'" + mat.icon + "'},"
-}
+export function initialize(dispatch: (action: any) => void) {
 
-function getBlocksAsString(blocks: Block[]) {
-  let blockString = "[";
-  for (let i in blocks) {
-    const b = blocks[i];
-    blockString +=
-      "{ id: " + b.id +
-      ", name: '" + b.name +
-      "', tags: '" + b.tags +
-      "', materialId: " + b.materialId +
-      ", shapeId: " + b.shapeId +
-      ", shape: '" + b.shape +
-      "', icon: '" + b.icon +
-      "' },";
-  }
-  blockString += "]";
-  return blockString;
-}
-
-export function loadMaterials(dispatch: (action: any) => void) {
-  requester.loadMaterials((mats: Material[]) => {
+  events.addListener(events.buildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
+    const mats: BuildingMaterial[] = info.materials;
     dispatch(setMaterials(mats))
     dispatch(selectFromMaterial(mats[0]))
     dispatch(selectToMaterial(mats[0]))
   });
 
-  requester.listenForBlockSelectionChange((mat: Material, block: Block) => {
-    dispatch(selectBlock(block));
-    dispatch(selectFromMaterial(mat));
+  events.addListener(events.buildingEventTopics.handlesBlockSelect, (info: { material: BuildingMaterial, block: BuildingBlock }) => {
+    dispatch(selectBlock(info.block));
+    dispatch(selectFromMaterial(info.material));
   });
+
+  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
+    dispatch(setBlockMode(info.mode==buildUIMode.BLOCKSELECTED));
+  });
+
 }
 
-
-export function requestBlockChange(block: Block) {
-  requester.changeBlockSelection(block);
-}
-
-export function requestMaterialChange(material: Material, shapeId: number) {
-  const block: Block = getBlockForShapeId(shapeId, material.blocks);
-  requester.changeBlockSelection(block);
-}
-
-
-function selectBlock(block: Block) {
+function selectBlock(block: BuildingBlock) {
   return {
     type: SELECT_BLOCK,
     selectedBlock: block
   }
 }
 
-function selectMaterial(material: Material) {
+function selectMaterial(material: BuildingMaterial) {
   return {
     type: SELECT_MATERIAL,
     selectedMaterial: material
   }
 }
 
-function setMaterials(materials: Material[]) {
+function setMaterials(materials: BuildingMaterial[]) {
   return {
     type: SET_MATERIALS,
     materials: materials
   }
 }
 
-export interface MaterialsState {
-  materials?: Material[];
-  selectedMaterial?: Material;
-  selectedBlock: Block;
-}
-
-const initialState: MaterialsState = {
-  materials: [],
-  selectedMaterial: DEFAULT_MATERIAL,
-  selectedBlock: {} as Block
-}
-
-
-function getMaterialById(id: number, materials: Material[]) {
+function getMaterialById(matId: number, materials: BuildingMaterial[]) {
   for (let m in materials) {
-    if (materials[m].id === id) {
+    if (materials[m].id === matId) {
       return materials[m];
     }
   }
   return materials[0] || DEFAULT_MATERIAL;
 }
 
-function getBlockForShapeId(shapeId: number, blocks: Block[]) {
-  for (let i in blocks) {
-    const block = blocks[i];
-    if (block.shapeId === shapeId) {
-      return block;
-    }
-  }
-  return blocks[0];
+export interface MaterialsState {
+  materials?: BuildingMaterial[];
+  selectedMaterial?: BuildingMaterial;
+  selectedBlock: BuildingBlock;
+}
+
+const initialState: MaterialsState = {
+  materials: [],
+  selectedMaterial: DEFAULT_MATERIAL,
+  selectedBlock: {} as BuildingBlock,
 }
 
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {
@@ -138,8 +98,8 @@ export default function reducer(state: MaterialsState = initialState, action: an
         selectedMaterial: action.selectedMaterial,
       });
     case SELECT_BLOCK:
-      const block: Block = action.selectedBlock;
-      const newState: MaterialsState = { selectedBlock: block }
+      const block: BuildingBlock = action.selectedBlock;
+      const newState: MaterialsState = { selectedBlock: block } as MaterialsState
       if (state.selectedMaterial.id != block.materialId)
         newState.selectedMaterial = getMaterialById(block.materialId, state.materials);
       return assign({}, state, newState);

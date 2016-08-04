@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 
-import {Material} from '../../lib/Material';
+import {BuildingMaterial} from 'camelot-unchained';
 
 export interface MaterialViewProps {
   onClick: () => void;
-  selectedMaterial: Material;
+  selectedMaterial: BuildingMaterial;
 }
 
 export interface MaterialViewState {
@@ -23,8 +23,8 @@ class MaterialView extends React.Component<MaterialViewProps, MaterialViewState>
   }
 
   render() {
-    if (this.props.selectedMaterial == null || this.props.selectedMaterial.icon==null) {
-      return ( <div className='material-view' onClick={() => this.props.onClick() }></div> );
+    if (this.props.selectedMaterial == null || this.props.selectedMaterial.icon == null) {
+      return (<div className='material-view' onClick={() => this.props.onClick() }></div>);
     }
 
     return (

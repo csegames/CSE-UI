@@ -53,6 +53,8 @@ import api from './api';
 import * as groups from './groups';
 export * from './groups';
 
+export * from './building';
+
 import events from './events';
 import * as eventExports from './events'
 

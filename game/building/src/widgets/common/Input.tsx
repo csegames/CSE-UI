@@ -42,7 +42,6 @@ class Input extends React.Component<NameInputProps, NameInputState> {
 
   render() {
     // autoFocus doesn't work either
-    console.log('grabFocus is ' + this.props.grabFocus);
     return (
       <input
         className="Input-control" 
