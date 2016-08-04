@@ -13,6 +13,7 @@ import Chat from 'cu-xmpp-chat';
 import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, adjustWidgetPositions} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
+import Crafting from '../../widgets/Crafting';
 import PlayerHealth from '../../widgets/PlayerHealth';
 import TargetHealth from '../../widgets/TargetHealth';
 import Warband from '../../widgets/Warband';
@@ -175,6 +176,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
         { this.draggableWidget('Chat', widgets, Chat, 'chat-window', {
             loginToken:client.loginToken
         })}
+        <div id='cse-ui-crafting'>
+          <Crafting/>
+        </div>
         <button onClick={() => locked ? this.props.dispatch(unlockHUD()) : this.props.dispatch(lockHUD())}
                 style={{position: 'fixed'}}>Toggle UI Lock</button>
       </div>

@@ -7,16 +7,18 @@
 import * as React from 'react';
 import {client, events} from 'camelot-unchained';
 
-export interface CraftingUIProps {
-};
-export interface CraftingUIState {
+export interface CraftingProps {
+}
+
+export interface CraftingState {
   craftingIsActive: boolean;
   commandList: any[],
   activeCommand: string;
-};
+}
 
-export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState> {
-  constructor(props: CraftingUIProps) {
+class Crafting extends React.Component<CraftingProps, CraftingState> {
+
+  constructor(props: CraftingProps) {
     super(props);
     this.state = {
       craftingIsActive: false,
@@ -33,11 +35,21 @@ export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState
     });
   }
 
-  openWindow = (): void => {
-    this.setState({ craftingIsActive: true } as any);
+  componentWillUnmount() {
+    client.ReleaseInputOwnership();
+  }
+
+  toggleWindow = (): void => {
+    if (this.state.craftingIsActive) {
+      this.closeWindow();
+    }
+    else {
+      this.setState({ craftingIsActive: true } as any);
+    }
   }
 
   closeWindow = (): void => {
+    client.ReleaseInputOwnership();
     this.setState({ craftingIsActive: false } as any);
   }
 
@@ -64,7 +76,7 @@ export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState
       const cutPos: number = this.state.activeCommand.indexOf(tCmd.cmd);
       if (cutPos > -1) {
         const tCmdArgs = this.state.activeCommand.substring(4);
-        client.SendSlashCommand('cr', tCmdArgs);
+        client.SendSlashCommand('cr ' + tCmdArgs);
       }
     });
     client.ReleaseInputOwnership();
@@ -159,7 +171,7 @@ export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState
     });
     return (
       <div onKeyDown={this.onKeyDown}>
-        <div id='crafting-button' onClick={this.openWindow}></div>
+        <div id='crafting-button' onClick={this.toggleWindow}></div>
         <div id="crafting-window" className={craftWindowClassName}>
           <div className="cu-window">
             <div className="cu-window-header">
@@ -170,7 +182,7 @@ export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState
             </div>
             <div className="cu-window-content">
               <div className="cmdList">{cmdList}</div>
-              <input autoFocus={true} type="text" id="input-crCmd" value={this.state.activeCommand || '/cr '} onChange={this.onCommandChanged} onFocus={this.onCommandFocus}></input>
+              <input type="text" id="input-crCmd" value={this.state.activeCommand || '/cr '} onChange={this.onCommandChanged} onFocus={this.onCommandFocus} onBlur={this.onCommandBlur}></input>
               <div id="btn-crSubmit" className="cu-window-btn-small" onClick={this.sendCommand}>Craft!</div>
             </div>
           </div>
@@ -179,3 +191,5 @@ export class CraftingUI extends React.Component<CraftingUIProps, CraftingUIState
     );
   }
 }
+
+export default Crafting;
