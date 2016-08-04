@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cu, {client} from 'camelot-unchained';
+import cu, {client, DEBUG_ASSERT} from 'camelot-unchained';
 
 const localStorageKey = 'cse_hud_layout-state';
 
@@ -21,8 +21,8 @@ const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
-const CURRENT_STATE_VERSION: number = 2;
-const MIN_STATE_VERSION_PERCENT: number = 2;
+const CURRENT_STATE_VERSION: number = 3;
+const MIN_STATE_VERSION_ANCHORED: number = 3;
 
 export interface LayoutAction {
   type: string;
@@ -88,7 +88,6 @@ export function initialize() {
 }
 
 export function resize() {
-  console.log('resized');
   return {
     type: ON_RESIZE,
   };
@@ -137,29 +136,62 @@ interface Size {
   height: number;
 }
 
-const px2pcnt = (pos: Position, screen: Size) : Position => {
-  // converts pixel co-ordinates into % of display size
+const RELATIVE_TO_START: number = -1;
+const RELATIVE_TO_CENTER: number = 0;
+const RELATIVE_TO_END: number = 1;
+
+interface AnchoredAxis {
+  anchor: number;               // -1 (start) 0 (center) 1 (end)
+  px: number;
+}
+
+interface AnchoredPosition {
+  x: AnchoredAxis;
+  y: AnchoredAxis;
+  size: Size;
+  scale: number;
+}
+
+function axis2anchor(position: number, width: number, range: number) : AnchoredAxis {
+  if (position < (range * 0.25)) return { anchor: RELATIVE_TO_START, px: position };
+  if ((position + width) > (range * 0.75)) return { anchor: RELATIVE_TO_END, px: range - position };
+  return { anchor: RELATIVE_TO_CENTER, px: position - (range * 0.5) };
+}
+
+function position2anchor(current: Position, screen: Size) : AnchoredPosition {
   return {
-    x: pos.x / screen.width,
-    y: pos.y / screen.height,
-    width: pos.width,           // don't scale width/height
-    height: pos.height,
+    x: axis2anchor(current.x, current.width, screen.width),
+    y: axis2anchor(current.y, current.height, screen.height),
+    size: {
+      width: current.width,
+      height: current.height
+    },
     scale: 1
   };
-};
+}
 
-const pcnt2px = (pos: Position, screen: Size) : Position => {
-  // converts % co-ordinates into pixels for current display
-  return {
-    x: screen.width * pos.x,
-    y: screen.height * pos.y,
-    width: pos.width,           // don't scale width/height
-    height: pos.height,
-    scale: 1
+function anchor2axis(anchored: AnchoredAxis, range: number) : number {
+  switch(anchored.anchor) {
+    case RELATIVE_TO_CENTER: // relative to center
+      return (range * 0.5) + anchored.px;
+    case RELATIVE_TO_START: // relative to start
+      return anchored.px;
+    case RELATIVE_TO_END:
+      return range - anchored.px;
   }
-};
+}
 
-const forceOnScreen = (current: Position, screen: Size) : Position => {
+function anchored2position(anchored: AnchoredPosition, screen: Size) : Position {
+  return {
+    x: anchor2axis(anchored.x, screen.width),
+    y: anchor2axis(anchored.y, screen.height),
+    width: anchored.size.width,
+    height: anchored.size.height,
+    scale: anchored.scale
+  };
+}
+
+function forceOnScreen(current: Position, screen: Size) : Position {
   const pos: Position = Object.assign({}, current);
   if (pos.x < 0) pos.x = 0;
   if (pos.y < 0) pos.y = 0;
@@ -168,9 +200,9 @@ const forceOnScreen = (current: Position, screen: Size) : Position => {
   if (pos.x < 0) { pos.x = 0; pos.width = screen.width; }
   if (pos.y < 0) { pos.y = 0; pos.height = screen.height; }
   return pos;
-};
+}
 
-const getInitialState = (): any => {
+function getInitialState(): any {
   const storedState: LayoutState = loadState();
   if (storedState) {
     storedState.locked = initialState.locked;
@@ -179,20 +211,20 @@ const getInitialState = (): any => {
   return initialState;
 }
 
-const loadState = () : LayoutState => {
+function loadState() : LayoutState {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   const state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState;
   if (state) {
-    if ((state.version|0) >= MIN_STATE_VERSION_PERCENT) {
+    if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
       for (let key in state.widgets) {
-        state.widgets[key] = forceOnScreen(pcnt2px(state.widgets[key], screen), screen);
+        state.widgets[key] = forceOnScreen(anchored2position(state.widgets[key], screen), screen);
       }
     }
     return state;
   }
-};
+}
 
-const saveState = (state: LayoutState) => {
+function saveState(state: LayoutState) {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   const save: LayoutState = {
     version: CURRENT_STATE_VERSION,
@@ -200,10 +232,10 @@ const saveState = (state: LayoutState) => {
     widgets: {}
   };
   for (let key in state.widgets) {
-    save.widgets[key] = px2pcnt(state.widgets[key], screen);
+    save.widgets[key] = position2anchor(state.widgets[key], screen);
   }
   localStorage.setItem(localStorageKey, JSON.stringify(save));
-};
+}
 
 export default function reducer(state: LayoutState = getInitialState(),
                                 action: LayoutAction = {type: null}): LayoutState {
@@ -264,11 +296,12 @@ export default function reducer(state: LayoutState = getInitialState(),
       const screen: Size = { width: window.innerWidth, height: window.innerHeight };
       widgets = {};
       for (let key in state.widgets) {
-        var pct = px2pcnt(state.widgets[key], state.lastScreenSize);
-        widgets[key] = forceOnScreen(pcnt2px(pct, screen), screen);
+        const anchored: AnchoredPosition = position2anchor(state.widgets[key], state.lastScreenSize);
+        widgets[key] = forceOnScreen(anchored2position(anchored, screen), screen);
       }
       outState = Object.assign({}, state, {
-        widgets: widgets
+        widgets: widgets,
+        lastScreenSize: screen
       })
       break;
     }
