@@ -10,7 +10,7 @@ let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, adjustWidgetPositions} from '../../services/session/layout';
+import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
 import Crafting from '../../widgets/Crafting';

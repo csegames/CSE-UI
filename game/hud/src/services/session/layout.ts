@@ -17,7 +17,6 @@ const UNLOCK_HUD = 'hud/layout/UNLOCK_HUD';
 const SET_POSITION = 'hud/layout/SET_POSITION';
 const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
 const RESET_POSITIONS = 'hud/layout/RESET_POSITIONS';
-const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
@@ -83,7 +82,11 @@ function init(): LayoutAction {
 export function initialize() {
   return (dispatch: (action: any) => any) => {
     dispatch(init());
-    window.onresize = () => dispatch(resize());
+    window.onresize = () => {
+      if (window.innerWidth >= 640 && window.innerHeight >= 480) {
+        dispatch(resize());
+      }
+    };
   }
 }
 
@@ -99,13 +102,6 @@ export function saySomething(s: string) : LayoutAction {
     type: SAY_SOMETHING,
   }
 }
-
-export function adjustWidgetPositions() {
-  return {
-    type: ADJUST_POSITIONS,
-  }
-}
-
 
 const defaultWidgets = (): any => {
   return {
@@ -218,6 +214,12 @@ function loadState() : LayoutState {
     if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
       for (let key in state.widgets) {
         state.widgets[key] = forceOnScreen(anchored2position(state.widgets[key], screen), screen);
+        // (temporary) reset widget if width and height have been set to 1, which is due to a previous
+        // bug that would reposition when the window was minimised.  That is now prevented but in case
+        // anyone has a saved position in this state, we fix it here.
+        if (state.widgets[key].width === 1 && state.widgets[key].height === 1) {
+          state.widgets[key] = forceOnScreen(defaultWidgets()[key] as Position, screen);
+        }
       }
     }
     return state;
@@ -252,6 +254,8 @@ export default function reducer(state: LayoutState = getInitialState(),
 
   let widgets: any;
   let outState: LayoutState = state;
+  let screen: Size;
+  let anchored: AnchoredPosition;
 
   switch(action.type) {
     case INITIALIZE:
@@ -277,26 +281,15 @@ export default function reducer(state: LayoutState = getInitialState(),
         widgets: widgets
       });
       break;
-    case ADJUST_POSITIONS:
-      // need to scan wiget positions, and check if they still fit in the
-      // new window size
-      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-      widgets = {};
-      for (let key in state.widgets) {
-        widgets[key] = forceOnScreen(Object.assign({}, state.widgets[key]), screen);
-      }
-      outState = Object.assign({}, state, {
-        widgets: widgets
-      })
-      break;
     case ON_RESIZE:
     {
       // need to scan wiget positions, and check if they still fit in the
       // new window size
-      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+      screen = { width: window.innerWidth, height: window.innerHeight };
+      DEBUG_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
       widgets = {};
       for (let key in state.widgets) {
-        const anchored: AnchoredPosition = position2anchor(state.widgets[key], state.lastScreenSize);
+        anchored = position2anchor(state.widgets[key], state.lastScreenSize);
         widgets[key] = forceOnScreen(anchored2position(anchored, screen), screen);
       }
       outState = Object.assign({}, state, {
