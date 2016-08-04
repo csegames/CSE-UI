@@ -17,7 +17,6 @@ const UNLOCK_HUD = 'hud/layout/UNLOCK_HUD';
 const SET_POSITION = 'hud/layout/SET_POSITION';
 const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
 const RESET_POSITIONS = 'hud/layout/RESET_POSITIONS';
-const ADJUST_POSITIONS = 'hud/layout/ADJUST_POSITIONS';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
@@ -103,13 +102,6 @@ export function saySomething(s: string) : LayoutAction {
     type: SAY_SOMETHING,
   }
 }
-
-export function adjustWidgetPositions() {
-  return {
-    type: ADJUST_POSITIONS,
-  }
-}
-
 
 const defaultWidgets = (): any => {
   return {
@@ -288,18 +280,6 @@ export default function reducer(state: LayoutState = getInitialState(),
       outState = Object.assign({}, state, {
         widgets: widgets
       });
-      break;
-    case ADJUST_POSITIONS:
-      // need to scan wiget positions, and check if they still fit in the
-      // new window size
-      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-      widgets = {};
-      for (let key in state.widgets) {
-        widgets[key] = forceOnScreen(Object.assign({}, state.widgets[key]), screen);
-      }
-      outState = Object.assign({}, state, {
-        widgets: widgets
-      })
       break;
     case ON_RESIZE:
     {
