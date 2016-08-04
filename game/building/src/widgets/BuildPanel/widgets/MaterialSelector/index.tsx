@@ -16,6 +16,7 @@ import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 import MaterialSelector from './components/MaterialSelector';
 import MaterialPreview from './components/MaterialPreview';
+import {Anchor} from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -33,8 +34,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     return (
       <Provider store={store}>
         <TabbedPane name="materials" tabs={['Materials']} className="material-selector" 
-          defaultPositionInPercentages={{ x: 68, y: 5 }}
-          defaultSizeInPercentages={{ width: 15, height: 90, scale: 1 }} 
+          defaultX={[405, Anchor.TO_END]} 
+          defaultY={[20, Anchor.TO_START]} 
+          defaultSize={[200, 750]} 
         >
           <MaterialSelector />
           <MaterialPreview />

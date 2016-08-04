@@ -18,6 +18,7 @@ import TabbedPane from '../../components/TabbedPane';
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 import MaterialReplace from './components/MaterialReplace';
 import {DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
+import {Anchor} from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -40,8 +41,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     return (
       <Provider store={store}>
         <TabbedPane name="blocks" tabs={['Blocks', 'Replace']} onTabChange={ (index: number, name: string) => this.onTabChange }
-          defaultPositionInPercentages={{x:85, y:0 }} 
-          defaultSizeInPercentages={{width: 15, height: 20, scale: 1}} 
+          defaultX={[0, Anchor.TO_END]} 
+          defaultY={[0, Anchor.TO_START]} 
+          defaultSize={[200, 200]} 
         >
           <MaterialAndShapePane minimized={this.props.minimized}/>
           <MaterialReplace minimized={this.props.minimized}/>

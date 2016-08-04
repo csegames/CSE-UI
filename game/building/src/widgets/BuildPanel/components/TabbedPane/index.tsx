@@ -6,15 +6,16 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import SavedDraggable, {Position, Size} from '../../../SavedDraggable';
+import SavedDraggable, {Anchor} from '../../../SavedDraggable';
 
 export interface TabbedPaneProps {
   name: string;
   tabs?: string[];
   onTabChange?: (index: number, name: string) => void
 
-  defaultPositionInPercentages: Position;
-  defaultSizeInPercentages: Size;
+  defaultX: [number, Anchor];
+  defaultY: [number, Anchor];
+  defaultSize: [number, number];
 
   className?: string;
 }
@@ -48,8 +49,9 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
 
     return (
       <SavedDraggable saveName={'building/' + this.props.name}
-        defaultPositionInPercentages={this.props.defaultPositionInPercentages}
-        defaultSizeInPercentages={this.props.defaultSizeInPercentages} >
+        defaultX={this.props.defaultX}
+        defaultY={this.props.defaultY}
+        defaultSize={this.props.defaultSize} >
         <div className={'row ' + rootClass}>
           {extraContent}
           <div className='tabs'>

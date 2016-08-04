@@ -6,9 +6,6 @@
 
 .building__selection-view {
   width: 200px;
-  position: fixed;
-  bottom: 100px;
-  left: calc(50% - 100px);  
   background: linear-gradient(to left, rgba(33, 28, 21, 0), rgba(0, 0, 0, 0.8) 10%, #211C15, rgba(0, 0, 0, 0.8) 90%, rgba(33, 28, 21, 0));
   border: 1px rgba(255, 255, 255, 0.19) solid;
   border-width: 1px 0px;

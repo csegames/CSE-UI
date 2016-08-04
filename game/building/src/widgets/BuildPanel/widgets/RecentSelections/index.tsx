@@ -16,6 +16,7 @@ import {BuildPaneProps} from '../../lib/BuildPane';
 import {BuildingItem} from '../../../../lib/BuildingItem';
 import TabbedPane from '../../components/TabbedPane';
 import RecentSelections from './components/RecentSelections';
+import {Anchor} from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -31,8 +32,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
       <Provider store={store}>
         <TabbedPane name="recents"
         tabs={[this.props.minimized ? 'Recent' : 'Recently Used']} 
-        defaultPositionInPercentages={{ x: 85, y: 21 }} 
-        defaultSizeInPercentages={{ width: 15, height: 11, scale: 1 }} 
+          defaultX={[0, Anchor.TO_END]} 
+          defaultY={[200, Anchor.TO_START]} 
+          defaultSize={[200, 100]} 
         >
           <RecentSelections />
         </TabbedPane>

@@ -15,6 +15,7 @@ import BlueprintsPane from './components/BlueprintsPane';
 import {BuildingItem} from '../../../../lib/BuildingItem'
 import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
+import {Anchor} from '../../../SavedDraggable';
 
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -37,8 +38,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
       <Provider store={store}>
         <TabbedPane name="blueprints" 
           tabs={['Blueprints']}
-          defaultPositionInPercentages={{x:85, y:33 }} 
-          defaultSizeInPercentages={{ width: 15, height: 40, scale: 1 }} 
+          defaultX={[0, Anchor.TO_END]} 
+          defaultY={[300, Anchor.TO_START]} 
+          defaultSize={[200, 300]} 
         >
           <BlueprintsPane minimized={this.props.minimized} handlePreviewIcon={(icon: string) =>this.setState({ previewIcon: icon})}/>
           {preview} 

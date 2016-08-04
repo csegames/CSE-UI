@@ -11,7 +11,7 @@ import {buildUIMode} from 'camelot-unchained';
 import buildingActions from '../../services/session/requester';
 import {GlobalState} from '../../services/session/reducer';
 import ActionButton from './components/ActionButton';
-import SavedDraggable from '../SavedDraggable';
+import SavedDraggable, {Anchor} from '../SavedDraggable';
 
 function select(state: GlobalState): any {
   return {
@@ -93,7 +93,9 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
 
     return (
      <SavedDraggable saveName="building/actionbar" 
-       defaultPositionInPercentages={{ x: 0, y: 30 }} >
+        defaultX={[0, Anchor.TO_START]} 
+        defaultY={[-200, Anchor.TO_CENTER]} 
+ >
 
       <div className='action-bar'>
         <header>
