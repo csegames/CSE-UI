@@ -5,15 +5,7 @@
 */
 
 $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
-@import "../../node_modules/camelot-unchained/lib/index.scss";
-
-html, body {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-}
+@import "../../../node_modules/camelot-unchained/lib/index.scss";
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -28,9 +20,9 @@ html, body {
   background-color:#777;
 }
 
-#cse-ui-crafting {
-  height: 100%;
-  width: 100%;
+.craft-window {
+  height: 450px;
+  width: 650px;
 }
 
 .cu-window-header {
@@ -72,15 +64,9 @@ html, body {
     background-position: -2px -156px;
   }
 
-#cse-ui-crafting {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 #crafting-button {
   position: absolute;
-  left:134px;
+  left:67px;
   bottom: 0px;
   width: 67px;
   height: 67px;
@@ -137,6 +123,7 @@ html, body {
   padding: 2px;
   background: transparent;
   border: 1px solid #555;
+  margin: 0px !important;
 }
 
 #btn-crSubmit{
