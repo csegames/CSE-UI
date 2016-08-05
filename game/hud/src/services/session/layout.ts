@@ -188,13 +188,19 @@ function anchored2position(anchored: AnchoredPosition, screen: Size) : Position 
 }
 
 function forceOnScreen(current: Position, screen: Size) : Position {
+  // If the UI is scaled, it is being scaled around the center, so for example, a widget that
+  // is 200 pixels wide, scaled to 0.5 and positioned at the edge of the screen, the x position
+  // is actually -50px.  ie -((width/2)*scale), so we need to work out the margin amount based
+  // on the scale amount.
+  const xmargin: number = (current.width/2)*current.scale;
+  const ymargin: number = (current.height/2)*current.scale;
   const pos: Position = Object.assign({}, current);
-  if (pos.x < 0) pos.x = 0;
-  if (pos.y < 0) pos.y = 0;
-  if (pos.x + pos.width > screen.width) pos.x = screen.width - pos.width;
-  if (pos.y + pos.height > screen.height) pos.y = screen.height - pos.height;
-  if (pos.x < 0) { pos.x = 0; pos.width = screen.width; }
-  if (pos.y < 0) { pos.y = 0; pos.height = screen.height; }
+  if (pos.x < -xmargin) pos.x = -xmargin;
+  if (pos.y < -ymargin) pos.y = -ymargin;
+  if (pos.x + pos.width > screen.width + xmargin) pos.x = screen.width - pos.width + xmargin;
+  if (pos.y + pos.height > screen.height + ymargin) pos.y = screen.height - pos.height + ymargin;
+  if (pos.x < -xmargin) { pos.x = -xmargin; pos.width = screen.width + xmargin; }
+  if (pos.y < -ymargin) { pos.y = -ymargin; pos.height = screen.height + ymargin; }
   return pos;
 }
 
