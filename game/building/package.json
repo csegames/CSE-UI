@@ -66,15 +66,15 @@
     "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
   },
   "dependencies": {
-    "camelot-unchained": "^0.4.24",
+    "camelot-unchained": "^0.4.27",
     "color-ops": "^2.0.0",
     "es6-promise": "^3.2.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-redux": "^4.4.5",
-    "react-select": "^1.0.0-beta13",
     "react-draggable": "^2.1.2",
+    "react-redux": "^4.4.5",
     "react-resizable": "^1.4.2",
+    "react-select": "^1.0.0-beta13",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0"
   },

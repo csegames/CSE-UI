@@ -43,7 +43,7 @@
     "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
   },
   "dependencies": {
-    "camelot-unchained": "^0.4.16",
+    "camelot-unchained": "^0.4.27",
     "cu-character-creation": "^0.1.2",
     "cu-xmpp-chat": "^0.1.7",
     "es6-promise": "^3.0.2",

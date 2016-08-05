@@ -126,10 +126,10 @@ const initialState = () => {
   return {
     locked: true,
     widgets: {
-      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:330},size:{width:600,height:300},scale:0.8},
+      Chat:{x:{anchor:-1,px:-60},y:{anchor:1,px:330},size:{width:600,height:300},scale:0.8},
       PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
       EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
-      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:100},size:{width:350,height:200},scale:0.6},
+      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
@@ -213,8 +213,8 @@ function forceOnScreen(current: Position, screen: Size) : Position {
 }
 
 function getInitialState(): any {
-  const storedState: LayoutState = clone(loadState());
-  if (storedState) {
+  const storedState: LayoutState = loadState();
+  if (storedState.widgets && storedState.widgets.length > 0) {
     storedState.locked = initialState().locked;
     return storedState;
   }
