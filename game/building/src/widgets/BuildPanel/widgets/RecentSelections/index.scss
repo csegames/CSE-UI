@@ -17,6 +17,7 @@
     width: 30px;
     overflow: hidden;
     transition: all .1s ease-in-out;
+    margin: 1px;
 
     &:hover {
       filter: brightness(120%);

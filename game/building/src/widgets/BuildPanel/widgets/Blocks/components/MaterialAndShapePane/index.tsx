@@ -40,7 +40,7 @@ export interface MaterialAndShapePaneState {
 class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, MaterialAndShapePaneState> {
 
   private blockSelectionListener = (info: { material: BuildingMaterial, block: BuildingBlock }) => {
-    this.onBlockSelect(info.block);
+    this.onBlockSelect(info.material, info.block);
   }
 
 
@@ -49,15 +49,16 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     this.state = { showMatSelect: false };
   }
 
-  onBlockSelect = (block: BuildingBlock) => {
+  onBlockSelect = (material: BuildingMaterial, block: BuildingBlock) => {
     if (block != null) {
       const item = {
         name: block.shapeId + ". " + block.shapeTags.join(', '),
         description: block.materialId + ". " + block.materialTags.join(', '),
+        matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
         element: (<img src={'data:image/png;base64,' + block.icon}/>),
-        id: block.id + '-' + BuildingItemType.Block,
+        id: material.id + '-' + BuildingItemType.Block,
         type: BuildingItemType.Block,
-        select: () => { this.selectBlock(block) }
+        select: () => { this.selectMaterial(material) }
       } as BuildingItem;
       fireBuildingItemSelected(item);
     } else {

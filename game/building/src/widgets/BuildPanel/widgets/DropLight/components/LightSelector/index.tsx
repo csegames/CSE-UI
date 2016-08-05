@@ -52,7 +52,7 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
         element: (<LightPreview light={light} />),
         id: light.index + '-' + BuildingItemType.Droplight,
         type: BuildingItemType.Droplight,
-        select: () => { this.props.dispatch(lightService.selectLight(light)) }
+        select: () => { this.selectLight(light) }
       } as BuildingItem;
     }
     fireBuildingItemSelected(item);
@@ -60,10 +60,6 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
 
   selectLight = (light: Light) => {
     this.props.dispatch(lightService.selectLight(light));
-  }
-
-  selectLightAndNotify = (light: Light) => {
-    this.selectLight(light);
     this.selectLightAsBuildingItem(light);
   }
 
@@ -81,7 +77,7 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
       <div key={'preset' + light.index} className="preset-light">
         <LightPreview
           className={selected ? 'active' : ''}
-          selectLight={this.selectLightAndNotify}
+          selectLight={this.selectLight}
           light={light} />
         <div>{light.presetName}</div>
       </div>

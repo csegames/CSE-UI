@@ -87,6 +87,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
 
   selectLight = (light: Light) => {
     this.props.dispatch(lightService.selectLight(light));
+    this.selectLightAsBuildingItem(light);
   }
 
   triggerClear = () => {
