@@ -59,7 +59,7 @@ import events from './events';
 import * as eventExports from './events'
 
 import signalr from './signalr';
-import {DEBUG_ASSERT} from './core/core';
+import {DEBUG_ASSERT,RUNTIME_ASSERT} from './core/core';
 
 export * from './slashCommands';
 import * as slashCommandsExports from './slashCommands';
@@ -161,5 +161,6 @@ export {
 
   // misc
   signalr,
-  DEBUG_ASSERT
+  DEBUG_ASSERT,
+  RUNTIME_ASSERT,
 }

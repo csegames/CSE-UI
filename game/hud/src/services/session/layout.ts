@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cu, {client, DEBUG_ASSERT} from 'camelot-unchained';
+import cu, {client, DEBUG_ASSERT, RUNTIME_ASSERT} from 'camelot-unchained';
 
 const localStorageKey = 'cse_hud_layout-state';
 
@@ -286,7 +286,7 @@ export default function reducer(state: LayoutState = getInitialState(),
       // need to scan wiget positions, and check if they still fit in the
       // new window size
       screen = { width: window.innerWidth, height: window.innerHeight };
-      DEBUG_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
+      RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
       widgets = {};
       for (let key in state.widgets) {
         anchored = position2anchor(state.widgets[key], state.lastScreenSize);
