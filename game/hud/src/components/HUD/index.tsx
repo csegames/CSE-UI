@@ -90,8 +90,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     const factor = e.altKey ? 0.01 : 0.10;
 
-    console.log(e.nativeEvent.deltaY);
-
     const pos: Position = this.props.layout.widgets[name];
 
     if (e.nativeEvent.deltaY < 0) {
