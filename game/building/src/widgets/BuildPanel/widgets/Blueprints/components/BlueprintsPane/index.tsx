@@ -46,6 +46,9 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   onBlueprintSelect = (blueprint: BuildingBlueprint) => {
+    if (blueprint != null && blueprint.icon == null)
+      blueprintService.loadIcon(blueprint);
+
     const item = {
       name: "Blueprint",
       description: blueprint.name,

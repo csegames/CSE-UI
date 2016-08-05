@@ -13,6 +13,7 @@ export enum BuildingItemType {
 export interface BuildingItem {
   id: string
   type: BuildingItemType,
+  matElement: JSX.Element,
   element: JSX.Element,
   name: string,
   description: string
