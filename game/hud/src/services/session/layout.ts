@@ -271,7 +271,7 @@ function forceOnScreen(current: Position, screen: Size) : Position {
 
 function getInitialState(): any {
   const storedState: LayoutState = loadState();
-  if (storedState.widgets && storedState.widgets.length > 0) {
+  if (storedState) {
     storedState.locked = initialState().locked;
     return storedState;
   }
@@ -291,8 +291,8 @@ function loadState(state: LayoutState =  JSON.parse(localStorage.getItem(localSt
           state.widgets[key] = forceOnScreen(anchored2position(clone((initialState().widgets as any)[key]), screen), screen);
         }
       }
+      return state;
     }
-    return state;
   }
 }
 
