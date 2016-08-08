@@ -97,6 +97,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       this.props.dispatch(savePosition(name, {
         x: pos.x,
         y: pos.y,
+        anchor: pos.anchor,
         width: pos.width,
         height: pos.height,
         scale: pos.scale - factor
@@ -105,6 +106,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       this.props.dispatch(savePosition(name, {
         x: pos.x,
         y: pos.y,
+        anchor: pos.anchor,
         width: pos.width,
         height: pos.height,
         scale: pos.scale + factor
@@ -124,7 +126,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                   onDrag={this.handleDrag}
                   onStop={(e:any, ui:any) => {
                     this.onStop();
-                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, width: pos.width, height: pos.height, scale: pos.scale}));
+                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, anchor: pos.anchor, width: pos.width, height: pos.height, scale: pos.scale}));
                   }}>
         <div>
           <div className={containerClass}
@@ -188,7 +190,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health', {})}
         {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
         {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
-        
+
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>
