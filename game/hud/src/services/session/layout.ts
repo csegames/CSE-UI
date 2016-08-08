@@ -189,9 +189,6 @@ function position2anchor(current: Position, screen: Size) : AnchoredPosition {
     },
     scale: current.scale
   };
-  console.log(`position2anchor`);
-  console.log(`  current=${JSON.stringify(current)}`);
-  console.log(`  position=${JSON.stringify(position)}`);
   return position;
 }
 
@@ -207,9 +204,6 @@ function anchor2axis(anchored: AnchoredAxis, range: number) : number {
 }
 
 function anchored2position(anchored: AnchoredPosition, screen: Size) : Position {
-  console.log('anchored2position');
-  console.log('  anchored=' + JSON.stringify(anchored));
-  console.log('  screen=' + JSON.stringify(screen));
   const position = {
     x: anchor2axis(anchored.x, screen.width),
     y: anchor2axis(anchored.y, screen.height),
@@ -218,7 +212,6 @@ function anchored2position(anchored: AnchoredPosition, screen: Size) : Position 
     height: anchored.size.height,
     scale: anchored.scale
   };
-  console.log('  position=' + JSON.stringify(position));
   return position;
 }
 
@@ -253,9 +246,6 @@ function forceOnScreen(current: Position, screen: Size) : Position {
   // is 200 pixels wide, scaled to 0.5 and positioned at the edge of the screen, the x position
   // is actually -50px.  ie -((width/2)*scale), so we need to work out the margin amount based
   // on the scale amount.
-  console.log('forceOnScreen');
-  console.log('  position=' + JSON.stringify(current));
-  console.log('  screen=' + JSON.stringify(screen));
   const xmargin: number = (current.width/2)*current.scale;
   const ymargin: number = (current.height/2)*current.scale;
   const pos: Position = Object.assign({}, current);
@@ -265,7 +255,6 @@ function forceOnScreen(current: Position, screen: Size) : Position {
   if (pos.y + pos.height > screen.height + ymargin) pos.y = screen.height - pos.height + ymargin;
   if (pos.x < -xmargin) { pos.x = -xmargin; pos.width = screen.width + xmargin; }
   if (pos.y < -ymargin) { pos.y = -ymargin; pos.height = screen.height + ymargin; }
-  console.log('  position=' + JSON.stringify(pos));
   return pos;
 }
 
@@ -310,10 +299,6 @@ function saveState(state: LayoutState) : LayoutState {
   return save;
 }
 
-function DUMP_POSITION(name: string, position: Position) {
-  console.log(name + ': ' + JSON.stringify(position));
-}
-
 export default function reducer(state: LayoutState = getInitialState(),
                                 action: LayoutAction = {type: null}): LayoutState {
   switch(action.type) {
@@ -349,7 +334,6 @@ export default function reducer(state: LayoutState = getInitialState(),
     case SET_POSITION:
       widgets = state.widgets;
       widgets[action.widget] = action.position;
-      console.log(`SET_POSITION: widget ${action.widget} position ${JSON.stringify(action.position)}`);
       outState = Object.assign({}, state, {
         widgets: widgets
       });
@@ -358,7 +342,6 @@ export default function reducer(state: LayoutState = getInitialState(),
       widgets = state.widgets;
       screen = { width: window.innerWidth, height: window.innerHeight };
       position = anchorPosition(action.position, screen);
-      console.log(`SAVE_POSITION: widget ${action.widget} position ${JSON.stringify(action.position)}`);
       Object.assign(widgets[action.widget], position);
       if (position.scale <= minScale) widgets[action.widget].scale = minScale;
       outState = Object.assign({}, state, {
@@ -366,7 +349,6 @@ export default function reducer(state: LayoutState = getInitialState(),
       });
       break;
     case ON_RESIZE:
-    {
       // need to scan wiget positions, and check if they still fit in the
       // new window size
       screen = { width: window.innerWidth, height: window.innerHeight };
@@ -374,21 +356,16 @@ export default function reducer(state: LayoutState = getInitialState(),
       widgets = {};
       for (let key in state.widgets) {
         position = state.widgets[key] as Position;
-        DUMP_POSITION(key, position);
         widgets[key] = forceOnScreen(adjustPosition(position, state.lastScreenSize, screen), screen);
-        DUMP_POSITION(key, widgets[key] as Position);
       }
       outState = Object.assign({}, state, {
         widgets: widgets,
         lastScreenSize: screen
       })
-      break;
-    }
+      return outState;      // don't need to save state
   }
 
   // save to local storage
-  // TODO: This calculates the new anchors, these need to update state somehow also.  Because
-  // it is called from the reducer, it will be ok to update outstate
   saveState(outState);
 
   return outState;
