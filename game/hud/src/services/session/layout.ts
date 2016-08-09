@@ -268,19 +268,21 @@ function getInitialState(): any {
   return loadState(clone(initialState()));
 }
 
-function loadState(state: LayoutState =  JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
-  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+function loadState(state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
   if (state) {
     if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
-      for (let key in state.widgets) {
-        state.widgets[key] = forceOnScreen(anchored2position(state.widgets[key], screen), screen);
-        // (temporary) reset widget if width and height have been set to 1, which is due to a previous
-        // bug that would reposition when the window was minimised.  That is now prevented but in case
-        // anyone has a saved position in this state, we fix it here.
-        if (state.widgets[key].width === 1 && state.widgets[key].height === 1) {
-          state.widgets[key] = forceOnScreen(anchored2position(clone((initialState().widgets as any)[key]), screen), screen);
+      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+      const defaultWidgets: any = initialState().widgets;
+      const widgets: any = {};
+      for (let key in defaultWidgets) {
+        const widget: AnchoredPosition = state.widgets[key] as AnchoredPosition || defaultWidgets[key];
+        if (widget) {
+          widgets[key] = forceOnScreen(anchored2position(widget, screen), screen);
+          DEBUG_ASSERT(widgets[key].width > 1, 'Widget width should be larger than one pixel');
+          DEBUG_ASSERT(widgets[key].height > 1, 'Widget height should be larger than one pixel');
         }
       }
+      state.widgets = widgets;
       return state;
     }
   }
