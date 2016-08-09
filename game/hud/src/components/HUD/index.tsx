@@ -18,6 +18,7 @@ import PlayerHealth from '../../widgets/PlayerHealth';
 import EnemyTargetHealth from '../../widgets/TargetHealth';
 import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
 import Warband from '../../widgets/Warband';
+import Respawn from '../../widgets/Respawn';
 import InviteAlert from '../InviteAlert';
 
 function select(state: HUDSessionState): HUDProps {
@@ -116,6 +117,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   draggableWidget = (name: string, widgets: any, Widget: any, containerClass: string, props?: any) => {
     const pos: Position = widgets[name];
+
+    let dragHandle: any = null;
+    if (!this.props.layout.locked) {
+      dragHandle = <div className={`drag-handle`}><h1>{name}</h1></div>;
+    }
+
     return (
       <Draggable handle='.drag-handle'
                   defaultPosition={{x: pos.x, y: pos.y}}
@@ -138,7 +145,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                }}
                onWheel={(e: any) => this.onWheel(name, e)}>
             <Widget {...props} />
-            <div className={`drag-handle ${this.props.layout.locked ? 'hidden':''}`}></div>
+            {dragHandle}
           </div>
         </div>
       </Draggable>
@@ -154,8 +161,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
 
-        // {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health')}
-        // {this.draggableWidget('TargetHealth', widgets, TargetHealth, 'target-health')}
         // {this.draggableWidget('Warband', widgets, Warband, 'warband')}
         // {this.draggableWidget('Chat', widgets, Chat, 'chat-window', {hideChat: () => {}, loginToken:client.loginToken})}
         // <InviteAlert invites={this.state.invites}
@@ -170,10 +175,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         //                  invites: []
         //                } as any)
         //              }} />
-
-        // <button onClick={() => locked ? this.props.dispatch(unlockHUD()) : this.props.dispatch(lockHUD())}
-        //         style={{position: 'fixed'}}>Toggle UI Lock</button>
-
 
   // for now just a fixed chat
   render() {
@@ -190,7 +191,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
         {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health', {})}
         {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
         {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
-
+        {this.draggableWidget('Respawn', widgets, Respawn, 'respawn', {})}
+        
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>

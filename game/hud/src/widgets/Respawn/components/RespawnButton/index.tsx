@@ -6,7 +6,7 @@
 
 import {client, events} from 'camelot-unchained';
 import * as React from 'react';
-import RespawnLocation from './RespawnLocation';
+import RespawnLocation from '../../RespawnLocation';
 
 export interface RespawnButtonProps {
   label: string;
@@ -24,10 +24,6 @@ class RespawnButton extends React.Component<RespawnButtonProps, RespawnButtonSta
     super(props);
   }
 
-  respawn = (): void => {
-    cuAPI.Respawn(this.props.location.id);
-  }
-
   render() {
     let distance: JSX.Element;
     if (this.props.location.distance !== undefined) {
@@ -37,7 +33,7 @@ class RespawnButton extends React.Component<RespawnButtonProps, RespawnButtonSta
         </div>;
     }
     return (
-      <div className='button' onClick={this.respawn}>
+      <div className='button' onClick={() => client.Respawn(this.props.location.id + '')}>
         <div className='label'>
           {distance}
           {this.props.label}

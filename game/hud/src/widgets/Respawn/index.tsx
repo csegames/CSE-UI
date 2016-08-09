@@ -7,7 +7,7 @@
 import {client, events, faction, restAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
-import RespawnButton from './RespawnButton';
+import RespawnButton from './components/RespawnButton';
 
 export interface RespawnProps {
 };
@@ -29,8 +29,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
       visible: false,
       nearest: null
     };
-    // start hidden
-    cuAPI.HideUI('respawn');
   }
 
   componentDidMount() {
@@ -91,12 +89,10 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
   hide = (): void => {
     this.setState({ visible: false } as any);
-    cuAPI.HideUI('respawn');
   }
 
   show = (): void => {
     this.getSpawnPoints((spawns: RespawnLocation[]): void => {
-      cuAPI.ShowUI('respawn');
       this.setState({ nearest: spawns.slice(0,3), visible: true });
     });
   }
@@ -109,6 +105,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         buttons.push(<RespawnButton key={key++} label="Control Point" location={spawn}/>);
       });
     }
+    if (!this.state.visible) return null;
     return (
       <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
         <div className="cu-window-header"><div className="title">Respawn</div></div>

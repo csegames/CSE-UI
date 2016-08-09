@@ -148,6 +148,7 @@ const initialState = () => {
       PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
       EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
       FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6},
+      Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
