@@ -239,7 +239,7 @@ export default function reducer(state: PlayerState = initialState,
 
     case PLAYER_UPDATE:
     {
-       const doEvent = state.playerStatus.name == action.player.name;
+      const doEvent = state.playerStatus.name == action.player.name;
       let playerStatus = clone(state.playerStatus);
       playerStatus.name = action.player.name;
       playerStatus.archetype = action.player.archetype;

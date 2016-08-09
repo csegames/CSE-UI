@@ -246,6 +246,7 @@ export default function reducer(state: PlayerState = initialState,
 
     case PLAYER_UPDATE:
     {
+      const doEvent = state.playerStatus.name == action.player.name;
       let playerStatus = clone(state.playerStatus);
       playerStatus.name = action.player.name;
       playerStatus.archetype = action.player.archetype;
@@ -269,6 +270,8 @@ export default function reducer(state: PlayerState = initialState,
         const valueChange = playerStatus.health[e.part].current - e.health;
         playerStatus.health[e.part].current = e.health;
         playerStatus.health[e.part].maximum = e.maxHealth > 0 ? e.maxHealth : 10000;
+
+        if (!doEvent) return;
 
         if (valueChange > 0) {
           // damage event!
