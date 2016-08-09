@@ -13,11 +13,11 @@ export interface PlayerStatus {
   gender: gender;
   archetype: archetype;
   characterID: string;
-  health: [{
+  health: {
     current: number;
     maximum: number;
-    wounds: number;
-  }];
+  }[];
+  wounds: number[];
   stamina: {
     current: number;
     maximum: number;

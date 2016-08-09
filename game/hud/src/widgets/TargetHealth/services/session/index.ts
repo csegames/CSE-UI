@@ -6,7 +6,7 @@
 
 import {combineReducers} from 'redux';
 
-import playerReducer, {PlayerState} from './target';
+import playerReducer, {TargetState} from './target';
 let player = playerReducer;
 
 export default combineReducers({
@@ -14,5 +14,5 @@ export default combineReducers({
 });
 
 export interface SessionState {
-  player: PlayerState,
+  player: TargetState,
 }

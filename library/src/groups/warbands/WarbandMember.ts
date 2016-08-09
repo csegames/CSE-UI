@@ -33,17 +33,16 @@ export enum WarbandMemberPermissions {
 
 export interface WarbandMember {
   name: string,
+  avatar: string,
   race: race,
   gender: gender,
   archetype: archetype,
   characterID: string;
-  joined: string;
-  role: WarbandMemberRole;
-  rank: WarbandMemberRank;
-  health: [{
+  health: {
     current: number,
     maximum: number
-  }];
+  }[];
+  wounds: number[],
   stamina: {
     current: number,
     maximum: number
@@ -57,9 +56,13 @@ export interface WarbandMember {
     maximum: number
   };
   temperature: {
-    current: number,
-    maximum: number,
-    minimum: number
+    current: number;
+    freezingThreshold: number;
+    burningThreshold: number;
   };
-  additionalPermissions: [WarbandMemberPermissions];
+  joined: string;
+  parted: string;
+  rank: WarbandMemberRank;
+  role: WarbandMemberRole;
+  additionalPermissions: WarbandMemberPermissions[];
 }

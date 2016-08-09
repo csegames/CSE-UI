@@ -70,7 +70,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
   // animations
   shakeIt = () => {
-    if (this.componentRef.className.indexOf(this.shakeAnimationName) != -1) return;
+    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) != -1) return;
     this.componentRef.className += ` ${this.shakeAnimationName}`;
   }
 
@@ -78,7 +78,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
   private componentRef: HTMLDivElement = null;
   endShake = () => {
     if (Date.now() < this.endTime) return;
-    if (this.componentRef.className.indexOf(this.shakeAnimationName) == -1) return;
+    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) == -1) return;
     this.componentRef.className = this.componentRef.className.replace(` ${this.shakeAnimationName}`, '').trim();
   }
 
@@ -185,7 +185,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.RightArm].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.RightArm]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -199,7 +199,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.LeftArm].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.LeftArm]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -213,7 +213,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.Head].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.Head]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -227,7 +227,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.Torso].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.Torso]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -241,7 +241,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.RightLeg].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.RightLeg]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -255,7 +255,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.health[BodyParts.LeftLeg].wounds}
+                 wounds={this.props.playerStatus.wounds[BodyParts.LeftLeg]}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 

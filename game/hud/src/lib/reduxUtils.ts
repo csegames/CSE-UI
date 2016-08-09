@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 17:31:15
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-21 19:34:47
+ * @Last Modified time: 2016-09-21 18:47:36
  */
 
 export function clone<T>(obj: T): T {
@@ -81,12 +81,22 @@ export function findIndex<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean =
 
 export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): T[] {
   const copy = !arr ? [] : arr.slice();
-  let index = findIndex(copy, obj, equals);
+  let index = -1;
+  let i = copy.length;
+  
+  while(--i >= 0) {
+    if (equals(obj, copy[i])) {
+       index = i;
+       break;
+    }
+  }
+
   if (index >= 0) {
     copy[index] = obj;
   } else {
     copy.push(obj);
   }
+
   return copy;
 }
 
@@ -111,12 +121,12 @@ export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = de
   return copy;
 }
 
-
 export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result: T[], removed: T[]} {
-  let result: T[] = [];
+  const result: T[] = [];
   const removed: T[] = [];
 
   if (!(arr && arr.length)) return {result, removed};
+  
   let i = arr.length;
   while(--i > -1) {
     const o = Array.isArray(arr[i]) ? cloneArray(arr[i] as any) as any : clone(arr[i]);
@@ -126,36 +136,9 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
       result.unshift(o);
     }
   }
-
+  
   return {result, removed};
 }
-
-// works with arrays of basic types, number, string, boolean
-export function simpleMergeUnique<T>( ...arrays: T[] )
-{
-  return [ ...new Set( [].concat( ...arrays ) ) ];
-}
-
-export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
-  const map: any = [];
-  let i = arrays.length;
-  while (--i >= 0) {
-    if (!arrays[i]) continue;
-    let j = arrays[i].length;
-    while(--j >= 0) {
-      const hash = hashFn(arrays[i][j]);
-      if (!map[hash]) map[hash] = arrays[i][j];
-    }
-  }
-  const result: T[] = [];
-  for (var key in map) {
-    result.push(map[key]);
-  }
-  return result;
-}
-
-
-// REDUX MIDDLEWARE
 
 export function loggingMiddleware(store: any) {
   return (next: any) => (action:any) => {
@@ -174,6 +157,7 @@ export function crashReporterMiddleware(store: any) {
       return next(action)
     } catch (err) {
       console.error('Caught an exception!', err)
+      console.log('state', store.getState());
       throw err
     }
   }

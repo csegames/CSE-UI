@@ -7,11 +7,12 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 let Draggable = require('react-draggable');
-import {client, GroupInvite} from 'camelot-unchained';
+import {client, GroupInvite, groupType} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
 import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, resetHUD, setVisibility} from '../../services/session/layout';
-import {HUDSessionState} from '../../services/session/reducer';
+import {SessionState} from '../../services/session/reducer';
+import {InvitesState} from '../../services/session/invites';
 
 import Crafting from '../../widgets/Crafting';
 import PlayerHealth from '../../widgets/PlayerHealth';
@@ -19,24 +20,25 @@ import EnemyTargetHealth from '../../widgets/TargetHealth';
 import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
 import Warband from '../../widgets/Warband';
 import Respawn from '../../widgets/Respawn';
-import InviteAlert from '../InviteAlert';
+import InteractiveAlert, {Alert} from '../InteractiveAlert';
 
-function select(state: HUDSessionState): HUDProps {
+function select(state: SessionState): HUDProps {
   return {
-    layout: state.layout
+    layout: state.layout,
+    invitesState: state.invites,
   }
 }
 
 export interface HUDProps {
   dispatch?: (action: any) => void;
   layout?: LayoutState;
+  invitesState?: InvitesState;
 }
 
 export interface HUDState {
   activeDrags: number;
   deltaPosition: {x:number,y:number};
   controlledPosition: {x:number,y:number};
-  invites: GroupInvite[];
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
@@ -49,19 +51,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
       activeDrags: 0,
       deltaPosition: {x:0,y:0},
       controlledPosition: {x:100,y:100},
-      invites: [{
-          created: '',
-          groupType: 0,
-          inviteCode: 'abcde-fgh12-341-5103',
-          invitedByID: '',
-          invitedByName: 'CSE-JB'
-        },{
-          created: '',
-          groupType: 0,
-          inviteCode: 'abcde-fgh12-341-5103',
-          invitedByID: '',
-          invitedByName: 'BEN'
-        }]
     }
   }
 
@@ -192,22 +181,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
     return this.props.dispatch(this.props.layout.locked ? unlockHUD() : lockHUD());
   }
 
-
-        // {this.draggableWidget('Warband', widgets, Warband, 'warband')}
-        // {this.draggableWidget('Chat', widgets, Chat, 'chat-window', {hideChat: () => {}, loginToken:client.loginToken})}
-        // <InviteAlert invites={this.state.invites}
-        //              acceptInvite={(invite: GroupInvite, force?: boolean) => {
-        //                console.log('invite accepted')
-        //                this.setState({
-        //                  invites: []
-        //                } as any)
-        //              }}
-        //              declineInvite={(invite: GroupInvite) => {
-        //                this.setState({
-        //                  invites: []
-        //                } as any)
-        //              }} />
-
   render() {
 
     const widgets = this.props.layout.widgets;
@@ -224,7 +197,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
         {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
         {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
         {this.draggableWidget('Respawn', widgets, Respawn, 'respawn', {})}
+        {this.draggableWidget('Warband', widgets, Warband, 'warband', {})}
 
+        <InteractiveAlert dispatch={this.props.dispatch}
+                          invites={this.props.invitesState.invites} />
+        
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>

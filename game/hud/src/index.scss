@@ -3,37 +3,35 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-@import './_font.scss';
 
-html, body {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  font-family: "TitilliumWeb";
-  height: 100%;
+.HUD {
   width: 100%;
-  overflow: hidden;
+  height: 100%;
+
+  @import './_font.scss';
+  
+  .chat-window {
+    position: relative;
+    overflow: hidden;
+    display: block;
+  }
+  
+  // components
+  @import './components/PlayerStatusComponent/index';
+  @import './components/HUD/index';
+  @import './components/ClassIcon/index';
+  @import './components/ActiveEffectIcon/index';
+  @import './components/InteractiveAlert/index';
+  @import './components/Slider/index';
+  
+  // widgets
+  @import './widgets/Crafting/index';
+  @import './widgets/PlayerHealth/index';
+  @import './widgets/TargetHealth/index';
+  @import './widgets/Warband/index';
+  @import './widgets/Respawn/index';
+  
+  // external scss
+  @import 'cu-xmpp-chat/lib/index.scss';
+
 }
-
-.chat-window {
-  position: relative;
-  overflow: hidden;
-  display: block;
-}
-
-// components
-@import './components/PlayerStatusComponent/index';
-@import './components/HUD/index';
-@import './components/ClassIcon/index';
-@import './components/ActiveEffectIcon/index';
-@import './components/InviteAlert/index';
-
-// widgets
-@import './widgets/Crafting/index';
-@import './widgets/PlayerHealth/index';
-@import './widgets/TargetHealth/index';
-@import './widgets/Warband/index';
-@import './widgets/Respawn/index';
-
-// external scss
-@import 'cu-xmpp-chat/lib/index.scss';

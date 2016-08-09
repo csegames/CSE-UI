@@ -12,7 +12,7 @@ import {WarbandMember, archetype, race, gender, hasClientAPI} from 'camelot-unch
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';
-import {PlayerState, DoThing, initializePlayerSession} from './services/session/target';
+import {TargetState, DoThing, initializePlayerSession} from './services/session/target';
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -25,7 +25,7 @@ export interface ContainerProps {
 
 export interface TargetHealthProps extends ContainerProps {
   dispatch?: (action: any) => any;
-  player?: PlayerState;
+  player?: TargetState;
 }
 
 export interface TargetHealthState {

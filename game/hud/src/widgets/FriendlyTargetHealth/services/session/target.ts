@@ -6,6 +6,8 @@
 
 import {client, events, race, gender, archetype, faction, hasClientAPI, Player} from 'camelot-unchained';
 import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
+import {fakePlayer, fakeHealthEvents, HealthAction, staminaUpdated, healthUpdated, playerUpdate, nameChanged, raceChanged, healtEmulationTest} from '../../../../lib/reduxHealth';
+import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
 
 const DO_THING = 'testthing';
 
@@ -18,73 +20,72 @@ const NAME_CHANGED = 'playerhealth/player/NAME_CHANGED';
 const FACTION_CHANGED = 'playerhealth/player/FACTION_CHANGED';
 const PLAYER_UPDATE = 'playerhealth/player/PLAYER_UPDATE';
 
-export interface TargetAction {
-  type: string;
-  error?: string;
-  current?: number;
-  max?: number;
-  part?: BodyParts;
-  text?: string;
-  race?: race;
-  faction?: faction;
-  player?: Player;
+export interface TargetAction extends HealthAction {
 }
 
 function init(): TargetAction {
   return {
     type: INIT,
+    when: new Date(),
   };
 }
 
-function staminaChanged(current: number, max: number): TargetAction {
+function onStaminaChanged(current: number, max: number): TargetAction {
   return {
     type: STAMINA_UPDATED,
+    when: new Date(),
     current: current,
     max: max,
   };
 }
 
-function healthChanged(current: number, max: number, part: BodyParts): TargetAction {
+function onHealthChanged(current: number, max: number, part: BodyParts): TargetAction {
   return {
     type: HEALTH_UPDATED,
+    when: new Date(),
     current: current,
     max: max,
     part: part,
   };
 }
 
-function nameChanged(name: string): TargetAction {
+function onNameChanged(name: string): TargetAction {
   return {
     type: NAME_CHANGED,
+    when: new Date(),
     text: name,
   };
 }
 
 
-function raceChanged(race: race): TargetAction {
+function onRaceChanged(race: race): TargetAction {
   return {
     type: RACE_CHANGED,
+    when: new Date(),
     race: race,
   };
 }
 
-function factionChanged(faction: faction): TargetAction {
+function onFactionChanged(faction: faction): TargetAction {
   return {
     type: FACTION_CHANGED,
+    when: new Date(),
     faction: faction,
   };
 }
 
-function characterUpdate(player: Player): TargetAction {
+function onCharacterUpdate(player: Player): TargetAction {
   return {
     type: PLAYER_UPDATE,
+    when: new Date(),
     player: player,
   }
 }
 
 export function DoThing(): TargetAction {
   return {
-    type: DO_THING
+    type: DO_THING,
+    when: new Date()
   }
 }
 
@@ -95,85 +96,9 @@ export function initializePlayerSession() {
     if (!hasClientAPI()) return;
 
     // init handlers / events
-    events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(characterUpdate(player)));
+    events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
 
   };
-}
-
-
-function fakePlayer(): PlayerStatus {
-  return {
-    name: 'CSE-JB',
-    avatar: 'http://camelotunchained.com/upload/jb.png',
-    race: race.HUMANMALEV,
-    gender: gender.MALE,
-    archetype: archetype.WINTERSSHADOW,
-    characterID: '',
-    health: [{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    },{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    },{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    },{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    },{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    },{
-      current: 10000,
-      maximum: 10000,
-      wounds: 0,
-    }],
-    stamina: {
-      current: 1000,
-      maximum: 2000
-    },
-    blood: {
-      current: 15000,
-      maximum: 15000
-    },
-    panic: {
-      current: 1,
-      maximum: 3
-    },
-    temperature: {
-      current: 50,
-      freezingThreshold: 0,
-      burningThreshold: 100
-    }
-  }
-}
-
-function fakeEvents() {
-  return [{
-    key: 0,
-    value: '1000',
-    textType: 'damage',
-    iconType: 'slashing',
-    timestamp: Date.now(),
-  },{
-    key: 1,
-    value: '500',
-    textType: 'damage',
-    iconType: 'slashing',
-    timestamp: Date.now(),
-  },{
-    key: 2,
-    value: '1000',
-    textType: 'heal',
-    iconType: 'spirit',
-    timestamp: Date.now(),
-  }];
 }
 
 export interface PlayerState {
@@ -187,168 +112,45 @@ export interface PlayerState {
   }[];
 }
 
-const initialState = {
-  playerStatus: fakePlayer(),
-  events: hasClientAPI() ? [] : fakeEvents(),
+function initialState() {
+  return {
+    playerStatus: fakePlayer(),
+    events: hasClientAPI() ? [] : fakeHealthEvents(),
+  };
 }
 
-function clone<T>(obj: T): T {
-  return Object.assign({}, obj);
-}
-
-let key = 3;
-export default function reducer(state: PlayerState = initialState,
-                                action: TargetAction = {type: null}) : PlayerState {
+export default function reducer(state: PlayerState = initialState(), action: TargetAction = defaultAction) : PlayerState {
   switch(action.type) {
-    case INIT:
-      return Object.assign({}, state, {
-
-      });
+    case INIT: return merge(state, {});
 
     case STAMINA_UPDATED:
     {
-      let playerStatus = clone(state.playerStatus);
-      playerStatus.stamina.current = action.current;
-      playerStatus.stamina.maximum = action.max;
-      return Object.assign({}, state, {
-        playerStatus: playerStatus
-      });
+      return merge(state, staminaUpdated(state.playerStatus, action));
     }
 
     case HEALTH_UPDATED:
     {
-      let playerStatus = clone(state.playerStatus);
-      playerStatus.health[action.part].current = action.current;
-      playerStatus.health[action.part].maximum = action.max;
-      return Object.assign({}, state, {
-        playerStatus: playerStatus
-      });
+      return merge(state, healthUpdated(state.playerStatus, action));
     }
 
     case NAME_CHANGED:
     {
-      let playerStatus = clone(state.playerStatus);
-      playerStatus.name = action.text;
-      return Object.assign({}, state, {
-        playerStatus: playerStatus
-      });
+      return merge(state, nameChanged(state.playerStatus, action));
     }
 
     case RACE_CHANGED:
     {
-      let playerStatus = clone(state.playerStatus);
-      playerStatus.race = action.race;
-      return Object.assign({}, state, {
-        playerStatus: playerStatus
-      });
+      return merge(state, raceChanged(state.playerStatus, action));
     }
 
     case PLAYER_UPDATE:
     {
-      const doEvent = state.playerStatus.name == action.player.name;
-      let playerStatus = clone(state.playerStatus);
-      playerStatus.name = action.player.name;
-      playerStatus.archetype = action.player.archetype;
-      playerStatus.race = action.player.race;
-      playerStatus.stamina.current = action.player.stamina;
-      playerStatus.stamina.maximum = action.player.maxStamina;
-
-      playerStatus.blood.current = action.player.health; // this is blood not health!
-      playerStatus.blood.maximum = action.player.maxHealth > 0 ? action.player.maxHealth : 10000;
-
-      // make an event -- hacky for now
-      let index = 0;
-      let now = Date.now();
-      for (; index < state.events.length; ++index) {
-        if (now - state.events[index].timestamp < 1000) break;
-      }
-      var newEvents = state.events.slice(index);
-
-      action.player.injuries.forEach(e => {
-        const valueChange = playerStatus.health[e.part].current - e.health;
-        playerStatus.health[e.part].current = e.health;
-        playerStatus.health[e.part].maximum = e.maxHealth > 0 ? e.maxHealth : 10000;
-        playerStatus.health[e.part].wounds = e.wounds;
-
-        if (!doEvent) return;
-
-        if (valueChange > 0) {
-          // damage event!
-          newEvents.push({
-            key: key++,
-            value: Math.abs(valueChange).toFixed(0),
-            timestamp: now,
-            textType: 'damage',
-            iconType: 'piercing',
-          });
-        } else if (valueChange < 0) {
-          // heal event!
-          newEvents.push({
-            key: key++,
-            value: Math.abs(valueChange).toFixed(0),
-            timestamp: now,
-            textType: 'heal',
-            iconType: 'heal',
-          });
-        }
-      });
-
-      return Object.assign({}, state, {
-        playerStatus: playerStatus,
-        events: newEvents,
-      });
+      return merge(state, playerUpdate(state.playerStatus, state.events, action));
     }
 
     case DO_THING:
     {
-      // clean out any old ones
-      let index = 0;
-      let now = Date.now();
-      for (; index < state.events.length; ++index) {
-        if (now - state.events[index].timestamp < 1000) break;
-      }
-      var newEvents = state.events.slice(index);
-      let damage  = Math.random() * 2 > .5;
-      const e = {
-        key: key++,
-        value: (Math.random()*2000 + 750).toFixed(0),
-        timestamp: now,
-        textType: damage ? 'damage' : 'heal',
-        iconType: damage ? 'piercing' : 'heal',
-      };
-      newEvents.push(e);
-
-      let playerStatus = clone(state.playerStatus);
-      const part = parseInt((Math.random() * 5).toFixed(0));
-      playerStatus.health[part].current = damage
-        ? playerStatus.health[part].current - parseInt(e.value)
-        : playerStatus.health[part].current + parseInt(e.value);
-      // range check
-      if (playerStatus.health[part].current > playerStatus.health[part].maximum) playerStatus.health[part].current = playerStatus.health[part].maximum;
-      if (playerStatus.health[part].current < 0) playerStatus.health[part].current = 0;
-
-      // Rubbish wounds emulation
-      let wounds = playerStatus.health[part].wounds + (1 - ((Math.random() * 3)|0));
-      if (wounds < 0) wounds = 0;
-      if (wounds > 3) wounds = 3;
-      playerStatus.health[part].wounds = wounds;
-      if (wounds === 1 && playerStatus.health[part].current > 666) {
-        playerStatus.health[part].current = 666;
-      }
-      if (wounds === 2 && playerStatus.health[part].current > 333) {
-        playerStatus.health[part].current = 333;
-      }
-      if (wounds === 3) {
-        playerStatus.health[part].current = 0;
-      }
-
-      return Object.assign({}, state, {
-        events: newEvents,
-        playerStatus: playerStatus,
-      })
-      // return Object.assign({}, state, {
-      //   events: state.events.slice(0, state.events.length -1)
-      // });
+      return merge(state, healtEmulationTest(state.playerStatus, state.events, action));
     }
 
     default: return state;

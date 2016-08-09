@@ -23,7 +23,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = '0.1.2'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.1.3'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 function clone<T>(obj: T): T {
   return Object.assign({}, obj);
@@ -163,6 +163,7 @@ const initialState = () => {
       EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
       FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6,visibility:true},
       Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1,visibility:false},
+      Warband:{x:{anchor:-1,px:0},y:{anchor:-1,px:10},size:{width:300,height:500},scale:1,visibility:true},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }

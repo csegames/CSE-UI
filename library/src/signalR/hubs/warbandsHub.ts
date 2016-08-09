@@ -32,8 +32,8 @@ export const WARBAND_EVENTS_INVITERECEIVED = 'warbands/inviteReceived';
  * Regisers all events for this hub. RPC calls are converted into UI event calls
  * using the UI event emitter system.
  */
-const registerEvents = () => {
-  const hub = ($ as any).connection.warbandsHub;
+const registerEvents = (hub: any) => {
+  //const hub = ($ as any).connection.warbandsHub;
 
   /**
    * use as a default parameter and it will throw an error if the parameter is not provided to a method
@@ -44,8 +44,13 @@ const registerEvents = () => {
    * wrapper for hub methods which adds logging of every call if client debug mode is enabled
    */
   const register = (RPCMETHOD: string, callback: any) => {
+    if (!hub) return;
     hub.on(RPCMETHOD, (...params:any[]) => {
-      if (client.debug) console.log(`warband hub called ${RPCMETHOD} with params:\n${JSON.stringify(params)}`);
+      if (client.debug) {
+        console.group(`SIGNALR | WarbandsHub : ${RPCMETHOD}`)
+        console.log('params', params);
+        console.groupEnd();
+      }
       callback(...params);
     });
   }
@@ -54,7 +59,7 @@ const registerEvents = () => {
    * Called when you join a warband.
    * -- Name can be an empty string.
    */
-  register(WARBAND_HUB_JOINED, (warbandID: string = mandatory(), warbandName?: string) => {
+  register(WARBAND_HUB_JOINED, (warbandID: string, warbandName?: string) => {
     events.fire(WARBAND_EVENTS_JOINED, {id: warbandID, name: warbandName});
   });
 
@@ -84,32 +89,36 @@ const registerEvents = () => {
    * Called when a member joins a warband
    * -- could be your own character
    */
-  register(WARBAND_HUB_MEMBERJOINED, (member: WarbandMember = mandatory()) => {
-    events.fire(WARBAND_EVENTS_MEMBERJOINED, member);
+  register(WARBAND_HUB_MEMBERJOINED, (member: string) => {
+    try {
+      let m = JSON.parse(member);
+      events.fire(WARBAND_EVENTS_MEMBERJOINED, m);
+    } catch (e) {
+      if (client.debug) console.error(e);
+    }
   });
 
   /**
    * Called when a member is updated, like health changed for example.
    * -- could be your own character
    */
-  register(WARBAND_HUB_MEMBERUPDATE, (member: WarbandMember = mandatory()) => {
-    events.fire(WARBAND_EVENTS_MEMBERUPDATE, member);
+  register(WARBAND_HUB_MEMBERUPDATE, (member: string) => {
+    try {
+      let m = JSON.parse(member);
+      events.fire(WARBAND_EVENTS_MEMBERUPDATE, m);
+    } catch (e) {
+      if (client.debug) console.error(e);
+    }
   });
 
   /**
    * Called when a member is removed from your warband.
    * -- could be your own character
    */
-  register(WARBAND_HUB_MEMBERREMOVED, (characterID: string = mandatory()) => {
+  register(WARBAND_HUB_MEMBERREMOVED, (characterID: string) => {
     events.fire(WARBAND_EVENTS_MEMBERREMOVED, characterID);
   });
 
-  /**
-   * Called when you receive an invite to join a warband
-   */
-  register(WARBAND_HUB_INVITERECEIVED, (invite: any = mandatory()) => {
-    events.fire(WARBAND_EVENTS_INVITERECEIVED, invite);
-  });
 }
 
 /**
@@ -131,30 +140,30 @@ const unregisterEvents = () => {
 }
 
 /**
- * Used to ensure initializeHub is only called once.
- */
-let didInitialize: boolean = false;
-
-/**
  * Initialize the Warband Hub, called internally from the signalR hub registration method
  * -- handles client identification for the Warband Hub.  client information must exist
  *    on the cuAPI / client object (loginToken, shardID, characterID) before this method
  *    is called or identification will fail 
  */
 const initializeHub = (callback: (succeeded: boolean) => any) => {
-  if (didInitialize) return;
 
-  const hub = ($ as any).connection.warbandsHub;
-  registerEvents();
-  ($ as any).connection.hub.start().done(() => {
-    hub.server.identify(client.loginToken, client.shardID, client.characterID)
+  //const hub = ($ as any).connection.warbandsHub;
+  const conn = ($ as any).hubConnection();
+  conn.url = 'http://localhost:1337/signalr';
+  const hub = conn.createHubProxy('warbandsHub');
+
+  registerEvents(hub);
+  conn.start().done(() => {
+    hub.invoke('identify', client.loginToken, client.shardID, client.characterID)
+    //hub.server.identify(client.loginToken, client.shardID, client.characterID)
     .done((success: boolean) => {
       if (!success) {
         callback(false);
         return;
       }
       // invalidate to force a resend of all data to this client
-      hub.server.invalidate();
+      //hub.server.invalidate();
+      hub.invoke('invalidate');
       callback(true);
     });
   })
@@ -167,7 +176,6 @@ const initializeHub = (callback: (succeeded: boolean) => any) => {
  * @param {(succeeded: boolean) => any} callback
  */
 const reinitializeHub = (callback: (succeeded: boolean) => any) => {
-  didInitialize = false;
   unregisterEvents();
   initializeHub(callback);
 }

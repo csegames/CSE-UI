@@ -10,6 +10,7 @@ export interface GroupInvite {
   created: string;
   groupType: groupType;
   inviteCode: string;
-  invitedByID: string;
   invitedByName: string;
+  groupID: string;
+  groupName: string;
 }

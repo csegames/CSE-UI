@@ -6,20 +6,14 @@
 
 import {combineReducers} from 'redux';
 
-import layoutReducer, {LayoutState} from './layout';
-export * from './layout';
-let layout = layoutReducer;
-
 import warbandReducer, {WarbandState} from './warband';
 export * from './warband';
 let warband = warbandReducer;
 
 export default combineReducers({
-  layout,
   warband,
 });
 
 export interface WarbandSessionState {
-  layout: LayoutState,
   warband: WarbandState,
 }

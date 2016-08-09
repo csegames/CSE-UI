@@ -1,0 +1,55 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.Slider {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.Slider__items {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.Slider__item {
+  width: 100%;
+  height: 100%;
+}
+
+.Slider__counter {
+  color: white;
+  font-size: 0.8em;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.Slider__arrow {
+  position: absolute;
+  top: 50%;
+  margin-top: -7.5px;
+  height: 15px; width: 15px;
+	border: 1px solid white;
+	border-width: 2px 2px 0 0;
+}
+
+.Slider__arrow--disabled {
+	border: 1px solid darken(white, 20%);
+  cursor: default !important;
+}
+
+.Slider__arrow--right {
+  right: 10px;
+	transform: rotate(45deg);
+}
+
+.Slider__arrow--left {
+  left: 10px;
+	transform: rotate(-135deg) translateX(-2px);
+}

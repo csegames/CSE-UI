@@ -1,34 +1,29 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-08-29 15:28:15
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-09-21 19:22:52
  */
 
-import {client, GroupInvite, groupType, signalr, WarbandMember, events} from 'camelot-unchained';
+import {client, GroupInvite, groupType, signalr, WarbandMember, events, cu} from 'camelot-unchained';
+import {merge, clone, addOrUpdate, remove, BaseAction, defaultAction, AsyncAction, ActionDefinitions, Dictionary, createReducer, removeWhere} from '../../../../lib/reduxUtils';
 
+const INITIALIZE_SIGNALR = 'warband/warband/INITIALIZE_SIGNALR';
+const INITIALIZE_SIGNALR_SUCCESS = 'warband/warband/INITIALIZE_SIGNALR_SUCCESS';
+const INITIALIZE_SIGNALR_FAILED = 'warband/warband/INITIALIZE_SIGNALR_FAILED';
 
-const INITIALIZE_SIGNALR = 'hud/warband/INITIALIZE_SIGNALR';
-const INITIALIZE_SIGNALR_SUCCESS = 'hud/warband/INITIALIZE_SIGNALR_SUCCESS';
-const INITIALIZE_SIGNALR_FAILED = 'hud/warband/INITIALIZE_SIGNALR_FAILED';
+const WARBAND_JOINED = `warband/warband/WARBAND_JOINED`;
+const WARBAND_UPDATE = `warband/warband/WARBAND_UPDATE`;
+const WARBAND_QUIT = `warband/warband/WARBAND_QUIT`;
+const WARBAND_ABANDONED = `warband/warband/WARBAND_ABANDONED`;
 
-/**
- * namespace in events we'll handle here from signalr
- */
-const WARBAND_JOINED = `hud/warband/${signalr.WARBAND_EVENTS_JOINED}`;
-const WARBAND_UPDATE = `hud/warband/${signalr.WARBAND_EVENTS_UPDATE}`;
-const WARBAND_QUIT = `hud/warband/${signalr.WARBAND_EVENTS_QUIT}`;
-const WARBAND_ABANDONED = `hud/warband/${signalr.WARBAND_EVENTS_ABANDONED}`;
-const WARBAND_MEMBERJOINED = `hud/warband/${signalr.WARBAND_EVENTS_MEMBERJOINED}`;
-const WARBAND_MEMBERUPDATE = `hud/warband/${signalr.WARBAND_EVENTS_MEMBERUPDATE}`;
-const WARBAND_MEMBERREMOVED = `hud/warband/${signalr.WARBAND_EVENTS_MEMBERREMOVED}`;
-
-export interface WarbandAction {
-  type: string;
-  error?: string;
-  name?: string;
-  id?: string;
-  member?: WarbandMember;
-}
+const MEMBER_JOINED = `warband/warband/MEMBER_JOINED`;
+const MEMBER_UPDATE = `warband/warband/MEMBER_UPDATE`;
+const MEMBER_REMOVED = `warband/warband/MEMBER_REMOVED`;
 
 /**
  * Helper methods
@@ -41,46 +36,57 @@ function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
   events.on(signalr.WARBAND_EVENTS_ABANDONED, () => dispatch(warbandAbandoned()));
   events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (member: WarbandMember) => dispatch(memberJoined(member)));
   events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (member: WarbandMember) => dispatch(memberUpdate(member)));
-  events.on(signalr.WARBAND_EVENTS_MEMBERREMOVED, (member: WarbandMember) => dispatch(memberRemoved(member)));
+  events.on(signalr.WARBAND_EVENTS_MEMBERREMOVED, (characterID: string) => dispatch(memberRemoved(characterID)));
 }
 
 const systemMessage = (message: string) => events.fire('system', message);
 
+
+export interface WarbandAction extends BaseAction {
+  name?: string;
+  id?: string;
+  member?: WarbandMember;
+}
 /**
- * INTERNAL DISPATCH METHODS
+ * INTERNAL ACTIONS
  */
 
 function initSignalR(): WarbandAction {
   return {
-    type: INITIALIZE_SIGNALR
+    type: INITIALIZE_SIGNALR,
+    when: new Date(),
   }
 }
 
 function initSignalRSuccess(): WarbandAction {
   return {
-    type: INITIALIZE_SIGNALR_SUCCESS
+    type: INITIALIZE_SIGNALR_SUCCESS,
+    when: new Date(),
   }
 }
 
 function initSignalRFailed(): WarbandAction {
   return {
-    type: INITIALIZE_SIGNALR_FAILED
+    type: INITIALIZE_SIGNALR_FAILED,
+    when: new Date(),
   }
 }
 
 function warbandJoined(warbandID: string, warbandName: string = ''): WarbandAction {
-  systemMessage(`You have joined ${warbandName.length > 0 ? `the ${warbandName}` : 'a' } warband.`);
+  systemMessage(`You have joined ${warbandName && warbandName.length > 0 ? `the ${warbandName}` : 'a' } warband.`);
   return {
     type: WARBAND_JOINED,
+    when: new Date(),
     id: warbandID,
     name: warbandName
   }
 }
 
 function warbandUpdate(warbandID: string, warbandName: string = ''): WarbandAction {
-  systemMessage(`Your warband has been made ${warbandName.length > 0 ? `permanent and is now named ${warbandName}.` : 'temporary.'}`);
+  systemMessage(`Your warband has been made ${warbandName && warbandName.length > 0 ? `permanent and is now named ${warbandName}.` : 'temporary.'}`);
   return {
     type: WARBAND_UPDATE,
+    when: new Date(),
     id: warbandID,
     name: warbandName
   }
@@ -89,62 +95,70 @@ function warbandUpdate(warbandID: string, warbandName: string = ''): WarbandActi
 function warbandQuit(): WarbandAction {
   systemMessage('You have quit your warband.');
   return {
-    type: WARBAND_QUIT
+    type: WARBAND_QUIT,
+    when: new Date(),
   }
 }
 
 function warbandAbandoned(): WarbandAction {
   systemMessage('You have abandonded your warband.');
   return {
-    type: WARBAND_ABANDONED
+    type: WARBAND_ABANDONED,
+    when: new Date(),
   }
 }
 
 function memberJoined(member: WarbandMember): WarbandAction {
-  systemMessage(`${member.name} has joined your warband.`);
+  console.log(`member joined ${member}`)
+  //systemMessage(`${member.name} has joined your warband.`);
   return {
-    type: WARBAND_MEMBERJOINED,
+    type: MEMBER_JOINED,
+    when: new Date(),
     member: member
   }
 }
 
 function memberUpdate(member: WarbandMember): WarbandAction {
   return {
-    type: WARBAND_MEMBERUPDATE,
+    type: MEMBER_UPDATE,
+    when: new Date(),
     member: member
   }
 }
 
-function memberRemoved(member: WarbandMember): WarbandAction {
-  systemMessage(`${member.name} as left your warband.`);
+function memberRemoved(characterID: string): WarbandAction {
   return {
-    type: WARBAND_MEMBERREMOVED,
-    member: member
+    type: MEMBER_REMOVED,
+    when: new Date(),
+    id: characterID
   }
 }
 
 
 /**
- * EXTERNAL DISPATCH METHODS
+ * EXTERNAL ACTIONS
  */
 
-export function initializeSignalR() {
+export function initialize(): AsyncAction<WarbandAction> {
   return (dispatch: (action: WarbandAction) => any) => {
     dispatch(initSignalR());
 
-    initializeSignalR();
-
-    signalr.initializeSignalRHubs({
-      name: signalr.WARBANDS_HUB,
-      callback: (succeeded: boolean) => {
-        if (succeeded) {
-          dispatch(initSignalRSuccess());
-          registerWarbandEvents(dispatch);
-        } else {
-          dispatch(initSignalRFailed());
+    try {
+      signalr.initializeSignalRHubs({
+        name: signalr.WARBANDS_HUB,
+        callback: (succeeded: boolean) => {
+          if (succeeded) {
+            dispatch(initSignalRSuccess());
+            registerWarbandEvents(dispatch);
+          } else {
+            dispatch(initSignalRFailed());
+          }
         }
-      }
-    });
+      });
+    } catch(e) {
+      console.log(e);
+      dispatch(initSignalRFailed());
+    }
   }
 }
 
@@ -158,119 +172,61 @@ export interface WarbandState {
   warbandID?: string;
 }
 
-const initialState = {
-  isInitializing: false,
-  signalRInitialized: false,
-  locked: true,
-}
-
-/**
- * State Helpers
- */
-
-function clone<T>(obj: T): T {
-  return Object.assign({}, obj);
-}
-
-function addOrUpdateMember(state: WarbandState, member: WarbandMember): WarbandState {
-  // check if member exists
-  let index = -1;
-  for (let i = 0; i < state.activeMembers.length; ++i) {
-    const member = state.activeMembers[i];
-    if (member.characterID == member.characterID) {
-      index = i;
-    }
-  }
-  
-  if (index >= 0) {
-    // update existing
-    state.activeMembers[index] = member;
-  } else {
-    state.activeMembers.push(member);
-  }
-
-  return state;
-}
-
-function removeMember(state: WarbandState, member: WarbandMember): WarbandState {
-  // check if member exists
-  let index = -1;
-  for (let i = 0; i < state.activeMembers.length; ++i) {
-    const member = state.activeMembers[i];
-    if (member.characterID == member.characterID) {
-      index = i;
-    }
-  }
-  
-  if (index >= 0) {
-    // update existing
-    state.activeMembers.slice(index, 1);
-  }
-
-  return state;
-}
-
-export default function reducer(state: WarbandState = initialState,
-                                action: WarbandAction = {type: null}): WarbandState {
-  switch(action.type) {
-    default: return state;
-    
-    case INITIALIZE_SIGNALR:
-      return Object.assign({}, state, {
-        isInitalizing: false,
-      });
-    
-    case INITIALIZE_SIGNALR_SUCCESS:
-      return Object.assign({}, state, {
-        isInitalizing: false,
-        signalRInitialized: true,
-      });
-    
-    case INITIALIZE_SIGNALR_FAILED:
-    return Object.assign({}, state, {
-        isInitalizing: false,
-        signalRInitialized: false,
-      });
-    
-    case WARBAND_JOINED:
-    {
-      return Object.assign({}, state, {
-        name: action.name,
-        warbandID: action.id
-      });
-    }
-
-    case WARBAND_UPDATE: 
-    {
-      return Object.assign({}, state, {
-       name: action.name,
-       warbandID: action.id,
-      });
-    }
-
-    case WARBAND_QUIT:
-    {
-      return Object.assign({}, state, {
-        name: '',
-        warbandID: null
-      });
-    }
-
-    case WARBAND_ABANDONED:
-    {
-      return Object.assign({}, state, {
-        name: '',
-        warbandID: null
-      });
-    }
-
-    case WARBAND_MEMBERJOINED:
-      return Object.assign({}, state, addOrUpdateMember(clone(state), action.member));
-
-    case WARBAND_MEMBERUPDATE:
-      return Object.assign({}, state, addOrUpdateMember(clone(state), action.member));
-    
-    case WARBAND_MEMBERREMOVED:
-      return Object.assign({}, state, removeMember(clone(state), action.member));
+function initialState() {
+  return {
+    isInitializing: false,
+    signalRInitialized: false,
+    locked: true,
   }
 }
+
+function clearWarband() {
+  return {
+    name: '',
+    warbandID: <string>null,
+    activeMembers: <WarbandMember[]>[],
+    permanentMembers: <WarbandMember[]>[],
+  }
+}
+
+function memberCompare(a: WarbandMember, b: WarbandMember): boolean {
+  return a.characterID === b.characterID;
+}
+
+
+const actionDefs: ActionDefinitions<WarbandState> = {};
+
+actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, {isInitalizing: false});
+
+actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+
+actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+
+actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
+  events.fire('chat-show-room', a.id);
+  return merge(s, {name: a.name, warbandID: a.id});
+}
+
+actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => merge(s, {name: a.name, warbandID: a.id});
+
+actionDefs[WARBAND_QUIT] = (s, a) => {
+  events.fire('chat-leave-room', s.warbandID);
+  return merge(s, clearWarband());
+}
+
+actionDefs[WARBAND_ABANDONED] = (s, a) => {
+  events.fire('chat-leave-room', s.warbandID);
+  return merge(s, clearWarband());
+}
+
+actionDefs[MEMBER_JOINED] = (s: WarbandState, a: WarbandAction) => merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
+
+actionDefs[MEMBER_UPDATE] = (s: WarbandState, a: WarbandAction) => merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
+
+actionDefs[MEMBER_REMOVED] = (s: WarbandState, a: WarbandAction) => {
+  var members = removeWhere(s.activeMembers, m => m.characterID === a.id);
+  if (members.removed.length > 0) systemMessage(`${members.removed[0].name} has left your warband.`);
+  return merge(s, {activeMembers: members.result});
+}
+
+export default createReducer<WarbandState>(initialState(), actionDefs);

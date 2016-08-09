@@ -8,18 +8,19 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-var thunk = require('redux-thunk').default;
+import cu, {client} from 'camelot-unchained';
+
+import {thunkMiddleware, loggingMiddleware, crashReporterMiddleware} from './lib/reduxUtils';
 
 import initialize from './services/initialization';
 import reducer from './services/session/reducer';
 import HUD from './components/HUD';
 
-let store = createStore(reducer, applyMiddleware(thunk));
+let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
 let root = document.getElementById('hud');
 
 // #TODO Reminder: export a 'has api' check from the camelot-unchained lib
 // interface for window cuAPI
-import cu, {client} from 'camelot-unchained';
 interface WindowInterface extends Window {
   cuAPI: any;
   opener: WindowInterface;

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, faction, restAPI} from 'camelot-unchained';
+import {client, events, faction, restAPI, hasClientAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
 import RespawnButton from './components/RespawnButton';
@@ -15,8 +15,6 @@ export interface RespawnProps {
 export interface RespawnState {
   nearest: RespawnLocation[];
 };
-
-declare const cuAPI: any;
 
 class Respawn extends React.Component<RespawnProps, RespawnState> {
   public name: string = 'Respawn';
@@ -31,7 +29,10 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   }
 
   componentDidMount() {
-    cuAPI.OnCharacterFactionChanged((cf: number) => {
+
+    if (!hasClientAPI()) return;
+
+    client.OnCharacterFactionChanged((cf: number) => {
       switch(cf) {
         case faction.ARTHURIAN: this.faction = 'A'; break;
         case faction.TDD: this.faction = 'T'; break;
@@ -57,8 +58,8 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
       // data.controlPoints is an array of spawns, each member has
       // x, y, id and faction (which is a letter)
       const controlPoints: any[] = data.controlPoints;
-      const x: number = cuAPI.locationX;
-      const y: number = cuAPI.locationY;
+      const x: number = client.locationX;
+      const y: number = client.locationY;
       if (controlPoints) {
         controlPoints.forEach((cp: any) => {
           if (cp.faction === this.faction) {
@@ -79,6 +80,8 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   }
 
   render() {
+    if (!hasClientAPI()) return null;
+        
     const buttons: JSX.Element[] = [];
     let key: number = 0;
     if (this.state.nearest) {

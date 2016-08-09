@@ -17,7 +17,7 @@ export default combineReducers({
   invites,
 });
 
-export interface HUDSessionState {
+export interface SessionState {
   layout: LayoutState;
   invites: InvitesState;
 }

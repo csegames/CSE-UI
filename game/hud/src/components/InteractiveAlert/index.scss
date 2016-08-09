@@ -4,17 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.inviteAlert {
+.InteractiveAlert {
   position: fixed;
   top: 0;
   width: 500px;
+  height: 100px;
   margin-left: -250px;
   left: 50%;
-  background: aliceblue;
+  background: #646464;
 }
 
-.inviteAlert__message {
+.InteractiveAlert__message {
   text-align: center;
+  padding: 10px;
+  color: #ececec;
   div {
     margin: 5px;
   }

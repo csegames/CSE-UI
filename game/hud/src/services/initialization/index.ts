@@ -4,11 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, hasClientAPI} from 'camelot-unchained';
+import {events, client, hasClientAPI, signalr} from 'camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {
   slashCommands();
+
+  signalr.initializeSignalR();
 
   if (!hasClientAPI()) return;
   // hook up for console messages to system messages

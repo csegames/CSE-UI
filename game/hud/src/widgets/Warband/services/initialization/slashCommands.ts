@@ -24,11 +24,11 @@ export default () => {
    *    /createWarband Friendship Warriors
    */
   registerSlashCommand('createWarband', 'Create a Warband. Optionally, accepts a name if you wish to make this a permanent Warband.', (name: string = '') => {
-    cu.api.createWarband(client.shardID, client.characterID, name)
+    cu.api.createWarband(client.shardID, client.characterID, false, name)
       .then((response: any) => {
         if (!response.ok) {
           // something went wrong
-          console.log(response);
+          console.error(response);
 
           return;
         }
@@ -43,6 +43,12 @@ export default () => {
    * 
    * usage:  /invite mehuge
    */
+
+  let friendlyTargetName: string = '';
+  events.on(events.clientEventTopics.handlesFriendlyTarget, (ft: any) => {
+    if (ft) friendlyTargetName = ft.name;
+  });
+
   registerSlashCommand('invite', 'Invite a player to your warband. Will use either your current friendly target, or a character name if you provide one.',
    (name: string = '') => {
      if (name.length > 0) {
@@ -50,7 +56,7 @@ export default () => {
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
-            console.log(response);
+            console.error(response);
             
             return;
           }
@@ -58,27 +64,82 @@ export default () => {
           // success
 
         });
+     } else if (friendlyTargetName && friendlyTargetName !== '') {
+       cu.api.inviteCharacterToWarbandByName(client.shardID, client.characterID, friendlyTargetName)
+        .then((response: any) => {
+          if (!response.ok) {
+            // something went wrong
+            console.error(response);
+            return;
+          }
+          // success
+        });
+     } else {
+       systemMessage('No friendly target to invite. Provide a name or select a friendly target and try again.');
      }
   });
 
-  /**
-   * Invite a player to your warband
-   */
-  registerSlashCommand('invite', 'Invite a player to your warband. Will use either your current friendly target, or a character name if you provide one.',
-   (name: string = '') => {
-     if (name.length > 0) {
-       cu.api.inviteCharacterToWarbandByName(client.shardID, client.characterID, name)
+
+  registerSlashCommand('joinWarband', 'Join an existing Warband.', (args: string) => {
+    let argv = yargs(args);
+    if (argv._.length === 1) {
+      // name only
+
+      cu.api.joinWarbandByName(client.shardID, argv._[0], client.characterID)
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
-            console.log(response);
-            
+            console.error(response);
             return;
           }
-
           // success
-
         });
-     }
-   });
+
+    } else if (argv._.length === 2) {
+      // name and invite code
+
+      cu.api.joinWarbandByName(client.shardID, argv._[0], client.characterID, argv._[1])
+        .then((response: any) => {
+          if (!response.ok) {
+            // something went wrong
+            console.error(response);
+            return;
+          }
+          // success
+        });
+
+    } else {
+      systemMessage('Please provide a Warband name, or a Warband name and invite code in order to join a Warband.');
+    }
+  });
+
+  /**
+   * Quit your currently active Warband
+   */
+  registerSlashCommand('quitWarband', 'Quit your active Warband.', () => {
+    cu.api.quitWarband(client.shardID, client.characterID)
+     .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  });
+
+  /**
+   * Abandon a Warband
+   */
+  registerSlashCommand('abandonWarband', 'Abandon a Warband. Optionally, accepts a name if you are abandoning a Warband that is not your currently active Warband.', (name: string = '') => {
+    cu.api.abandonWarbandByName(client.shardID, client.characterID, name)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  });
+
+
 };

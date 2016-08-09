@@ -7,18 +7,15 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
-import {signalr} from 'camelot-unchained';
+import {client} from 'camelot-unchained';
 
+import {loggingMiddleware, crashReporterMiddleware, thunkMiddleware} from '../../lib/reduxUtils';
 import initialize from './services/initialization';
 import reducer from './services/session';
 import WarbandDisplay from './components/WarbandDisplay';
 
-let store = createStore(reducer, applyMiddleware(thunk));
 
-// globally initialize SignalR for this module
-signalr.initializeSignalR();
-
+let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
 
 export interface WarbandContainerProps {
   containerClass?: string;
