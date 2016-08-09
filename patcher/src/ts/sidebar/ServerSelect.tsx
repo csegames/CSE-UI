@@ -57,7 +57,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
   renderList() {
     return (
       <div className='ServerList_container card-panel no-padding'>
-        {this.listAsArray.map((i: any) => this.renderItem(i))}
+        {this.listAsArray.map((i: any) => this.renderItem(i, true))}
       </div>
     )
   }
@@ -79,8 +79,8 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     } as any);
   }
 
-  renderItem(item: any) {
-    if (item.serverInfo) {
+  renderItem(item: any, hideSelected:boolean) {
+    if (item.serverInfo && !(hideSelected && this.props.serversState.currentServer && this.props.serversState.currentServer.channelID == item.serverInfo.channelID)) {
       const totalPlayers = (item.serverInfo.arthurians|0) + (item.serverInfo.tuathaDeDanann|0) + (item.serverInfo.vikings|0);
       const status = item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
       const accessLevel = AccessType[item.serverInfo.accessLevel];
@@ -95,7 +95,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
             data-delay='150' data-tooltip={status} /></div>
         </div>
       );
-    } else {
+    } else if(!(hideSelected && this.props.channelsState.selectedChannel && this.props.channelsState.selectedChannel.channelID == item.channelInfo.channelID)) {
       return (
         <div className='server-select' onClick={() => this.onSelectedServerChanged(item)}>
           <div className='server-details'>
@@ -154,7 +154,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
       <div className='server-selected'> 
         <div onClick={() => this.setState({showList: !this.state.showList} as any)}>
           <h5 className='label'>SELECT SERVER</h5>
-          {this.renderItem(this.listAsArray[this.getSelectedIndex()])}
+          {this.renderItem(this.listAsArray[this.getSelectedIndex()], false)}
         </div>
         <Animate animationEnter='fadeIn' animationLeave='fadeOut' durationEnter={500} durationLeave={500}>
           {list}
