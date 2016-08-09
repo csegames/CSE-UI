@@ -20,7 +20,7 @@ const RESET_HUD = 'hud/layout/RESET_HUD';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
-const CURRENT_STATE_VERSION: number = 3;
+const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
 
 function clone<T>(obj: T): T {
