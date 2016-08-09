@@ -27,6 +27,12 @@ function clone<T>(obj: T): T {
   return Object.assign({}, obj);
 }
 
+enum AxisAnchorRelativeTo {
+  START = -1,
+  CENTER = 0,
+  END = 1,
+}
+
 export interface LayoutAction {
   type: string;
   error?: string;
@@ -35,9 +41,21 @@ export interface LayoutAction {
   size?: Size;
 }
 
+export interface Anchor {
+  x: AxisAnchorRelativeTo;
+  y: AxisAnchorRelativeTo;
+}
+
+const TOP_LEFT: Anchor = { x: AxisAnchorRelativeTo.START, y: AxisAnchorRelativeTo.START };
+const BOTTOM_LEFT: Anchor = { x: AxisAnchorRelativeTo.START, y: AxisAnchorRelativeTo.END };
+const TOP_RIGHT: Anchor = { x: AxisAnchorRelativeTo.END, y: AxisAnchorRelativeTo.START };
+const BOTTOM_RIGHT: Anchor = { x: AxisAnchorRelativeTo.END, y: AxisAnchorRelativeTo.END };
+const MIDDLE_OF_WINDOW: Anchor = { x: AxisAnchorRelativeTo.CENTER, y: AxisAnchorRelativeTo.CENTER };
+
 export interface Position {
   x: number;
   y: number;
+  anchor: Anchor;
   width: number;
   height: number;
   scale: number;
@@ -139,11 +157,6 @@ interface Size {
   width: number;
   height: number;
 }
-
-const RELATIVE_TO_START: number = -1;
-const RELATIVE_TO_CENTER: number = 0;
-const RELATIVE_TO_END: number = 1;
-
 interface AnchoredAxis {
   anchor: number;               // -1 (start) 0 (center) 1 (end)
   px: number;
@@ -156,43 +169,76 @@ interface AnchoredPosition {
   scale: number;
 }
 
-function axis2anchor(position: number, width: number, range: number) : AnchoredAxis {
-  if (position < (range * 0.25)) return { anchor: RELATIVE_TO_START, px: position };
-  if ((position + width) > (range * 0.75)) return { anchor: RELATIVE_TO_END, px: range - position };
-  return { anchor: RELATIVE_TO_CENTER, px: position - (range * 0.5) };
+function axis2anchor(anchor: AxisAnchorRelativeTo, position: number, range: number) : AnchoredAxis {
+  switch(anchor) {
+    case AxisAnchorRelativeTo.START:
+      return { anchor: anchor, px: position };
+    case AxisAnchorRelativeTo.END:
+      return { anchor: anchor, px: range - position };
+  }
+  return { anchor: anchor, px: position - (range * 0.5) };
 }
 
 function position2anchor(current: Position, screen: Size) : AnchoredPosition {
-  return {
-    x: axis2anchor(current.x, current.width, screen.width),
-    y: axis2anchor(current.y, current.height, screen.height),
+  const position: AnchoredPosition = {
+    x: axis2anchor(current.anchor.x, current.x, screen.width),
+    y: axis2anchor(current.anchor.y, current.y, screen.height),
     size: {
       width: current.width,
       height: current.height
     },
     scale: current.scale
   };
+  return position;
 }
 
 function anchor2axis(anchored: AnchoredAxis, range: number) : number {
   switch(anchored.anchor) {
-    case RELATIVE_TO_CENTER: // relative to center
+    case AxisAnchorRelativeTo.CENTER: // relative to center
       return (range * 0.5) + anchored.px;
-    case RELATIVE_TO_START: // relative to start
+    case AxisAnchorRelativeTo.START: // relative to start
       return anchored.px;
-    case RELATIVE_TO_END:
+    case AxisAnchorRelativeTo.END:
       return range - anchored.px;
   }
 }
 
 function anchored2position(anchored: AnchoredPosition, screen: Size) : Position {
-  return {
+  const position = {
     x: anchor2axis(anchored.x, screen.width),
     y: anchor2axis(anchored.y, screen.height),
+    anchor: { x: anchored.x.anchor, y: anchored.y.anchor },
     width: anchored.size.width,
     height: anchored.size.height,
     scale: anchored.scale
   };
+  return position;
+}
+
+function adjustAxis(anchor: number, position: number, prevRange: number, range: number) : number {
+  if (anchor === AxisAnchorRelativeTo.END) return position + (range - prevRange);
+  if (anchor === AxisAnchorRelativeTo.CENTER) return (range/2) - ((prevRange/2) - position);
+  return position;
+}
+
+function adjustPosition(current: Position, previous: Size, screen: Size) : Position {
+  const adjusted: Position = Object.assign({}, current);
+  adjusted.x = adjustAxis(current.anchor.x, current.x, previous.width, screen.width);
+  adjusted.y = adjustAxis(current.anchor.y, current.y, previous.height, screen.height);
+  return adjusted;
+}
+
+function chooseAnchorForAxis(pos: number, extent: number, range: number) : AxisAnchorRelativeTo {
+  if (pos < range * 0.25) return AxisAnchorRelativeTo.START;
+  if (pos + extent >= range * 0.75) return AxisAnchorRelativeTo.END;
+  return AxisAnchorRelativeTo.CENTER;
+}
+
+function anchorPosition(current: Position, screen: Size) : Position {
+  const anchored: Position = Object.assign({}, current);
+  anchored.anchor.x = chooseAnchorForAxis(anchored.x, anchored.width, screen.width);
+  anchored.anchor.y = chooseAnchorForAxis(anchored.y, anchored.height, screen.height);
+  return anchored;
 }
 
 function forceOnScreen(current: Position, screen: Size) : Position {
@@ -214,7 +260,7 @@ function forceOnScreen(current: Position, screen: Size) : Position {
 
 function getInitialState(): any {
   const storedState: LayoutState = loadState();
-  if (storedState.widgets && storedState.widgets.length > 0) {
+  if (storedState) {
     storedState.locked = initialState().locked;
     return storedState;
   }
@@ -234,12 +280,12 @@ function loadState(state: LayoutState =  JSON.parse(localStorage.getItem(localSt
           state.widgets[key] = forceOnScreen(anchored2position(clone((initialState().widgets as any)[key]), screen), screen);
         }
       }
+      return state;
     }
-    return state;
   }
 }
 
-function saveState(state: LayoutState) {
+function saveState(state: LayoutState) : LayoutState {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   const save: LayoutState = {
     version: CURRENT_STATE_VERSION,
@@ -250,6 +296,7 @@ function saveState(state: LayoutState) {
     save.widgets[key] = position2anchor(state.widgets[key], screen);
   }
   localStorage.setItem(localStorageKey, JSON.stringify(save));
+  return save;
 }
 
 export default function reducer(state: LayoutState = getInitialState(),
@@ -269,6 +316,7 @@ export default function reducer(state: LayoutState = getInitialState(),
   let outState: LayoutState = state;
   let screen: Size;
   let anchored: AnchoredPosition;
+  let position: Position;
 
   switch(action.type) {
     case INITIALIZE:
@@ -292,7 +340,8 @@ export default function reducer(state: LayoutState = getInitialState(),
       break;
     case SAVE_POSITION:
       widgets = state.widgets;
-      const position: Position = action.position;
+      screen = { width: window.innerWidth, height: window.innerHeight };
+      position = anchorPosition(action.position, screen);
       Object.assign(widgets[action.widget], position);
       if (position.scale <= minScale) widgets[action.widget].scale = minScale;
       outState = Object.assign({}, state, {
@@ -300,22 +349,20 @@ export default function reducer(state: LayoutState = getInitialState(),
       });
       break;
     case ON_RESIZE:
-    {
       // need to scan wiget positions, and check if they still fit in the
       // new window size
       screen = { width: window.innerWidth, height: window.innerHeight };
       RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
       widgets = {};
       for (let key in state.widgets) {
-        anchored = position2anchor(state.widgets[key], state.lastScreenSize);
-        widgets[key] = forceOnScreen(anchored2position(anchored, screen), screen);
+        position = state.widgets[key] as Position;
+        widgets[key] = forceOnScreen(adjustPosition(position, state.lastScreenSize, screen), screen);
       }
       outState = Object.assign({}, state, {
         widgets: widgets,
         lastScreenSize: screen
       })
-      break;
-    }
+      return outState;      // don't need to save state
   }
 
   // save to local storage
