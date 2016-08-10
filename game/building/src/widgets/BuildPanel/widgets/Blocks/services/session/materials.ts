@@ -88,7 +88,6 @@ const initialState: MaterialsState = {
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {
   switch (action.type) {
     case SET_MATERIALS:
-      requester.changeBlockSelection(action.materials[0].blocks[0]);
       return assign({}, state, {
         materials: action.materials,
         selectedMaterial: action.materials[0],
