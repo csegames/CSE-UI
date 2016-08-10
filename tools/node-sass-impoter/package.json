@@ -1,8 +1,0 @@
-{
-  "name": "node-sass-impoter",
-  "version": "1.0.0",
-  "description": "Sass importer which will import sass scripts from node_modules folder.",
-  "main": "node-sass-impoter.js",
-  "author": "codecorsair <jb@codecorsair.com>",
-  "license": "MIT"
-}
