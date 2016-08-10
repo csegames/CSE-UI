@@ -16,7 +16,6 @@ import {fetchCharacters, selectCharacter, CharactersState} from '../redux/module
 
 import Animate from '../../lib/Animate';
 
-
 export enum ServerStatus {
   OFFLINE,
   ONLINE,
