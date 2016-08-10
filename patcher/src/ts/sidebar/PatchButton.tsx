@@ -20,7 +20,13 @@ import {ServersState} from '../redux/modules/servers';
 import {ChannelState, requestChannels} from '../redux/modules/channels';
 import {CharactersState} from '../redux/modules/characters';
 
-
+//This should probably live elsewhere, maybe it already does?
+enum ChannelID {
+    Hatchery = 4,
+    Wyrmling = 10,
+    WyrmlingPrep = 11,
+    CUBE = 27
+}
 
 export class Progress {
   constructor(public rate: number = 0, public dataCompleted: number = 0, public totalDataSize: number = 0) { }
@@ -200,6 +206,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     );
   }
 
+  //The CC on this function is getting out of control it needs to be broken up
   render() {
     let uninstall: any = null;
     let layer1: any = null;
@@ -259,12 +266,12 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           videoElements[vid].play();
         }
 
-        function isGameChannel(id: number) {
-          return id === 4 || id === 10 || id === 11;
-        }
-
-        if (this.props.charactersState.characters.length == 0 || !this.props.charactersState.selectedCharacter && isGameChannel(this.props.channelsState.selectedChannel.channelID)) {
-          layer1 = <div className='waves-effect btn install-download-btn installing'>Select Character</div>;
+        if (this.props.channelsState.selectedChannel.channelID !== ChannelID.CUBE && !this.props.charactersState.selectedCharacter) {
+            if (this.props.charactersState.characters.length == 0 || this.props.charactersState.characters.filter( c => c.shardID == this.props.serversState.currentServer.shardID).length == 0) {
+              layer1 = <div className='waves-effect btn install-download-btn installing'>Create Character</div>;
+            } else {
+              layer1 = <div className='waves-effect btn install-download-btn installing'>Select Character</div>;
+            }
         } else {
           layer1 = <a className='waves-effect btn install-download-btn ready' onClick={this.onClicked.bind(event) }>Play Now</a>;
         }
