@@ -16,7 +16,7 @@ const SELECT_BLOCK = 'buildpanel/panes/SELECT_BLOCK';
 
 const SET_MATERIALS = 'buildpanel/panes/SET_MATERIALS';
 
-const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
+export const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
   id: -1,
   icon: '',
   tags: ['default'],
@@ -88,6 +88,7 @@ const initialState: MaterialsState = {
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {
   switch (action.type) {
     case SET_MATERIALS:
+      requester.changeBlockSelection(action.materials[0].blocks[0]);
       return assign({}, state, {
         materials: action.materials,
         selectedMaterial: action.materials[0],
