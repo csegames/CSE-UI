@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {restAPI} from 'camelot-unchained';
 import {Channel, ChannelStatus, patcher} from '../api/patcherAPI';
 import {Server, AccessType} from '../redux/modules/servers';
 import * as events from '../../lib/events';
@@ -55,8 +54,6 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     this.state = {
       showList: false,
     };
-
-    
   }
 
   renderList() {
