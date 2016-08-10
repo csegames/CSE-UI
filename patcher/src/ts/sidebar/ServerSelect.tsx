@@ -6,16 +6,17 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-
+import {restAPI} from 'camelot-unchained';
 import {Channel, ChannelStatus, patcher} from '../api/patcherAPI';
 import {Server, AccessType} from '../redux/modules/servers';
 import * as events from '../../lib/events';
 
 import {changeChannel, requestChannels, ChannelState} from '../redux/modules/channels';
 import {fetchServers, changeServer, ServersState} from '../redux/modules/servers';
-import {fetchCharacters, selectCharacter} from '../redux/modules/characters';
+import {fetchCharacters, selectCharacter, CharactersState} from '../redux/modules/characters';
 
 import Animate from '../../lib/Animate';
+
 
 export enum ServerStatus {
   OFFLINE,
@@ -26,7 +27,8 @@ export enum ServerStatus {
 function select(state: any): any {
   return {
     channelsState: state.channels,
-    serversState: state.servers
+    serversState: state.servers,
+    charactersState: state.characters
   }
 }
 
@@ -34,6 +36,7 @@ export interface SelectServerProps {
   dispatch?: (action: any) => void;
   channelsState?: ChannelState;  
   serversState?: ServersState;
+  charactersState?: CharactersState;
 }
 
 export interface SelectServerState {
@@ -52,6 +55,8 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     this.state = {
       showList: false,
     };
+
+    
   }
 
   renderList() {
@@ -62,6 +67,13 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     )
   }
 
+  trySelectCharacter = (shardID:number) => {
+    if(!this.props.charactersState || !this.props.charactersState.characters || 0 == this.props.charactersState.characters.length) return;
+
+    let filteredCharacters = this.props.charactersState.characters.filter( c => c.shardID == shardID);
+    if(filteredCharacters && filteredCharacters.length > 0) this.props.dispatch(selectCharacter(filteredCharacters[0]));
+  }
+
   onSelectedServerChanged = (server: any) => {
     const {dispatch} = this.props;
 
@@ -70,8 +82,8 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     //is there a required order here?
     dispatch(changeChannel(server.channelInfo));
     dispatch(changeServer(server.serverInfo));
-    dispatch(fetchCharacters());
-    dispatch(selectCharacter(null));
+    if(server && server.shardID) this.trySelectCharacter(server.shardID);
+    else dispatch(selectCharacter(null));
     dispatch(fetchServers());
     dispatch(requestChannels());
     this.setState({
@@ -144,6 +156,11 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
     const {channels} = this.props.channelsState;
 
     if (!servers && !channels) return null;
+
+    //hack, sort out selected characters/servers/channels here until the underlying store gets sorted out
+    if(!this.props.charactersState.selectedCharacter && this.props.serversState.currentServer) {
+      this.trySelectCharacter(this.props.serversState.currentServer.shardID);
+    }
 
     this.listAsArray = this.mergeServerChannelLists(servers, channels);
 
