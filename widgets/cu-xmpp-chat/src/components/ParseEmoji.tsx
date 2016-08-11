@@ -113,7 +113,7 @@ function emojiNameFromText(text:string): string {
       return 'WINK';
   }
 
-  var upper = text.replace(':', '').toUpperCase();
+  var upper = text.replace(/:/g, '').toUpperCase();
   return emojiNames.findIndex(n => n === upper) ? upper : null;
 }
 

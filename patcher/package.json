@@ -45,12 +45,11 @@
   "dependencies": {
     "camelot-unchained": "^0.4.27",
     "cu-character-creation": "^0.1.2",
-    "cu-xmpp-chat": "^0.1.7",
+    "cu-xmpp-chat": "^0.1.11",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.13.0",
-    "sass-importer-node": "^1.0.0",
     "node-xmpp-client": "^2.1.0",
     "normalizr": "^2.0.0",
     "react": "^0.14.7",
@@ -60,7 +59,8 @@
     "react-tap-event-plugin": "^0.2.1",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
-    "reflux": "^0.3.0"
+    "reflux": "^0.3.0",
+    "sass-importer-node": "^1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
