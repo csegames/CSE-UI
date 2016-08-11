@@ -1,6 +1,6 @@
 {
   "name": "cu-xmpp-chat",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Camelot Unchained XMPP Chat",
   "license": "MPL-2.0",
   "main": "lib/index.js",
