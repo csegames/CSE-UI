@@ -86,7 +86,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
       }
     }
 
-    const dead = this.props.playerStatus.blood.current <= 0 || this.props.playerStatus.health[BodyParts.Torso].current <= 0;
+    const dead = this.props.playerStatus.blood.current <= 0 || this.props.playerStatus.health[BodyParts.Torso].current <= 0 || this.props.playerStatus.health[BodyParts.Head].current <= 0;
 
     return (
       <div className={`${this.props.containerClass ? this.props.containerClass : ''} PlayerStatusComponent ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} 
