@@ -108,7 +108,7 @@
       overflow-y: overlay;
       overflow-x: hidden;
       .chat-room:hover .chat-room-close {
-        background-image: url("../images/chat/x.png");
+        background-image: url('../images/chat/x.png');
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
@@ -196,7 +196,7 @@
       padding: 0.5em;
       cursor: pointer;
       &:before {
-        content: "";
+        content: '';
         background: url('../images/chat/chat-icon-cse.png') ;
         background-size: contain;
         height: 20px;
@@ -266,7 +266,7 @@
           color: #FF5E44;
           padding: 2px;
           &:before {
-            content: "";
+            content: '';
             background: url('../images/chat/chat-icon-cse.png') ;
             background-size: contain;
             height: 20px;
@@ -345,180 +345,6 @@
         .chat-room-highlight {
           color: #FFE457;
         }
-        .chat-emoticon {
-          display: inline-block;
-          margin: 0 0.1em;
-          width: 1.2em;
-          height: 1.2em;
-          position: relative;
-          top: 0.2em;
-          background-repeat: no-repeat;
-          background-size: contain;
-          fill: $chat-line-emoji-color;
-          &.emote-angry {
-            background-image:url("../images/chat/emoji/angry2.png"), url("../images/chat/emoji/angry2.svg");
-          }
-          &.emote-baffled {
-            background-image:url("../images/chat/emoji/baffled2.svg"), url("../images/chat/emoji/baffled2.png");
-          }
-          &.emote-confused {
-            background-image:url("../images/chat/emoji/confused2.svg"), url("../images/chat/emoji/confused2.png");
-          }
-          &.emote-cool {
-            background-image:url("../images/chat/emoji/cool2.svg"), url("../images/chat/emoji/cool2.png");
-          }
-          &.emote-crying {
-            background-image:url("../images/chat/emoji/crying2.svg"), url("../images/chat/emoji/crying2.png");
-          }
-          &.emote-evil {
-            background-image:url("../images/chat/emoji/evil2.svg"), url("../images/chat/emoji/evil2.png");
-          }
-          &.emote-frustrated {
-            background-image:url("../images/chat/emoji/frustrated2.svg"), url("../images/chat/emoji/frustrated2.png");
-          }
-          &.emote-grin {
-            background-image:url("../images/chat/emoji/grin2.svg"), url("../images/chat/emoji/grin2.png");
-          }
-          &.emote-happy {
-            background-image:url("../images/chat/emoji/happy2.svg"), url("../images/chat/emoji/happy2.png");
-          }
-          &.emote-hipster {
-            background-image:url("../images/chat/emoji/hipster2.svg"), url("../images/chat/emoji/hipster2.png");
-          }
-          &.emote-neutral {
-            background-image:url("../images/chat/emoji/neutral2.svg"), url("../images/chat/emoji/neutral2.png");
-          }
-          &.emote-sad {
-            background-image:url("../images/chat/emoji/sad2.svg"), url("../images/chat/emoji/sad2.png");
-          }
-          &.emote-shocked {
-            background-image:url("../images/chat/emoji/shocked2.svg"), url("../images/chat/emoji/shocked2.png");
-          }
-          &.emote-sleepy {
-            background-image:url("../images/chat/emoji/sleepy2.svg"), url("../images/chat/emoji/sleepy2.png");
-          }
-          &.emote-smile {
-            background-image:url("../images/chat/emoji/smile2.svg"), url("../images/chat/emoji/smile2.png");
-          }
-          &.emote-tongue {
-            background-image:url("../images/chat/emoji/tongue2.svg"), url("../images/chat/emoji/tongue2.png");
-          }
-          &.emote-wink {
-            background-image:url("../images/chat/emoji/wink2.svg"), url("../images/chat/emoji/wink2.png");
-          }
-          &.emote-wondering {
-            background-image:url("../images/chat/emoji/wondering2.svg"), url("../images/chat/emoji/wondering2.png");
-          }
-          /* add CSE emoticons */
-          &.emote-andrewfez {
-            background-image:url("../images/chat/cse_emoticons/cse_andrewFez.png"), url("../images/chat/cse_emoticons/cse_andrewFez.png");
-          }
-          &.emote-jbhead {
-           background-image:url("../images/chat/cse_emoticons/cse_jbHead.png"), url("../images/chat/cse_emoticons/cse_jbHead.png"); 
-          }
-          &.emote-markhead {
-            background-image:url("../images/chat/cse_emoticons/cse_markHead.png"), url("../images/chat/cse_emoticons/cse_markHead.png");
-          }
-          &.emote-mjelf {
-            background-image:url("../images/chat/cse_emoticons/cse_mjElf.png"), url("../images/chat/cse_emoticons/cse_mjElf.png");
-          }
-          &.emote-sandragrin {
-            background-image:url("../images/chat/cse_emoticons/cse_sandraGrin.png"), url("../images/chat/cse_emoticons/cse_sandraGrin.png");
-          }
-          &.emote-timhead {
-            background-image:url("../images/chat/cse_emoticons/cse_timHead.png"), url("../images/chat/cse_emoticons/cse_timHead.png");
-          }
-          &.emote-tinymichelle {
-            background-image:url("../images/chat/cse_emoticons/cse_tinyMichelle.png"), url("../images/chat/cse_emoticons/cse_tinyMichelle.png");
-          }
-          &.emote-batgrin {
-            background-image:url("../images/chat/cse_emoticons/emote_batGrin.png"), url("../images/chat/cse_emoticons/emote_batGrin.png");
-          }
-          &.emote-bathappy {
-            background-image:url("../images/chat/cse_emoticons/emote_batHappy.png"), url("../images/chat/cse_emoticons/emote_batHappy.png");
-          }
-          &.emote-batmad {
-            background-image:url("../images/chat/cse_emoticons/emote_batMad.png"), url("../images/chat/cse_emoticons/emote_batMad.png");
-          }
-          &.emote-batsad {
-            background-image:url("../images/chat/cse_emoticons/emote_batSad.png"), url("../images/chat/cse_emoticons/emote_batSad.png");
-          }
-          &.emote-battongue {
-            background-image:url("../images/chat/cse_emoticons/emote_batTongue.png"), url("../images/chat/cse_emoticons/emote_batTongue.png");
-          }
-          &.emote-bob {
-            background-image:url("../images/chat/cse_emoticons/emote_bob.png"), url("../images/chat/cse_emoticons/emote_bob.png");
-          }
-          &.emote-boblove {
-            background-image:url("../images/chat/cse_emoticons/emote_bobLove.png"), url("../images/chat/cse_emoticons/emote_bobLove.png");
-          }
-          &.emote-crown {
-            background-image:url("../images/chat/cse_emoticons/emote_crown.png"), url("../images/chat/cse_emoticons/emote_crown.png");
-          }
-          &.emote-cupotears {
-            background-image:url("../images/chat/cse_emoticons/emote_cupOtears.png"), url("../images/chat/cse_emoticons/emote_cupOtears.png");
-          }
-          &.emote-dragonlick {
-            background-image:url("../images/chat/cse_emoticons/emote_dragonLick.png"), url("../images/chat/cse_emoticons/emote_dragonLick.png");
-          }
-          &.emote-dragonwhale {
-            background-image:url("../images/chat/cse_emoticons/emote_dragonwhale.png"), url("../images/chat/cse_emoticons/emote_dragonwhale.png");
-          }
-          &.emote-duck {
-            background-image:url("../images/chat/cse_emoticons/emote_duck.png"), url("../images/chat/cse_emoticons/emote_duck.png");
-          }
-          &.emote-duckmage {
-            background-image:url("../images/chat/cse_emoticons/emote_duckMage.png"), url("../images/chat/cse_emoticons/emote_duckMage.png");
-          }
-          &.emote-frownstrm {
-            background-image:url("../images/chat/cse_emoticons/emote_frownStrm.png"), url("../images/chat/cse_emoticons/emote_frownStrm.png");
-          }
-          &.emote-happystrm {
-            background-image:url("../images/chat/cse_emoticons/emote_happyStrm.png"), url("../images/chat/cse_emoticons/emote_happyStrm.png");
-          }
-          &.emote-judgingduckone {
-            background-image:url("../images/chat/cse_emoticons/emote_judgingDuck1.png"), url("../images/chat/cse_emoticons/emote_judgingDuck1.png");
-          }
-          &.emote-judgingducktwo {
-            background-image:url("../images/chat/cse_emoticons/emote_judgingDuck2.png"), url("../images/chat/cse_emoticons/emote_judgingDuck2.png");
-          }
-          &.emote-arthurianlove {
-            background-image:url("../images/chat/cse_emoticons/emote_loveArthurian_style.png"), url("../images/chat/cse_emoticons/emote_loveArthurian_style.png");
-          }
-          &.emote-tuathalove {
-            background-image:url("../images/chat/cse_emoticons/emote_loveTuatha_style.png"), url("../images/chat/cse_emoticons/emote_loveTuatha_style.png");
-          }
-          &.emote-vikinglove {
-            background-image:url("../images/chat/cse_emoticons/emote_loveViking_style.png"), url("../images/chat/cse_emoticons/emote_loveViking_style.png");
-          }
-          &.emote-plusten {
-            background-image:url("../images/chat/cse_emoticons/emote_plus10.png"), url("../images/chat/cse_emoticons/emote_plus10.png");
-          }
-          &.emote-pvp {
-            background-image:url("../images/chat/cse_emoticons/emote_PvP.png"), url("../images/chat/cse_emoticons/emote_PvP.png");
-          }
-          &.emote-rage {
-            background-image:url("../images/chat/cse_emoticons/emote_rage.png"), url("../images/chat/cse_emoticons/emote_rage.png");
-          }
-          &.emote-salt {
-            background-image:url("../images/chat/cse_emoticons/emote_salt.png"), url("../images/chat/cse_emoticons/emote_salt.png");
-          }
-          &.emote-arthurianshield {
-            background-image:url("../images/chat/cse_emoticons/emote_shieldArthurian.png"), url("../images/chat/cse_emoticons/emote_shieldArthurian.png");
-          }
-          &.emote-tuathashield {
-            background-image:url("../images/chat/cse_emoticons/emote_shieldTuatha.png"), url("../images/chat/cse_emoticons/emote_shieldTuatha.png");
-          }
-          &.emote-vikingshield {
-            background-image:url("../images/chat/cse_emoticons/emote_shieldViking.png"), url("../images/chat/cse_emoticons/emote_shieldViking.png");
-          }
-          &.emote-shotsfired {
-            background-image:url("../images/chat/cse_emoticons/emote_shotsFired.png"), url("../images/chat/cse_emoticons/emote_shotsFired.png");
-          }
-          &.emote-unicorn {
-            background-image:url("../images/chat/cse_emoticons/emote_unicorn.png"), url("../images/chat/cse_emoticons/emote_unicorn.png");
-          }
-        }
       }
     }
     .chat-input {
@@ -588,7 +414,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-image: url("../images/chat/x.png");
+  background-image: url('../images/chat/x.png');
   background-size: contain;
   height: 16px;
   background-position: left center;
