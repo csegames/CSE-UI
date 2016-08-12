@@ -55,6 +55,8 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
     // load control points
     restAPI.getControlGame(true).then((data:any) => {
+      if (!hasClientAPI()) return;
+      
       // data.controlPoints is an array of spawns, each member has
       // x, y, id and faction (which is a letter)
       const controlPoints: any[] = data.controlPoints;

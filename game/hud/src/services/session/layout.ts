@@ -5,6 +5,9 @@
  */
 
 import cu, {client, DEBUG_ASSERT, RUNTIME_ASSERT} from 'camelot-unchained';
+import {merge, clone, addOrUpdate, remove, BaseAction, defaultAction, AsyncAction, ActionDefinitions, Dictionary, createReducer, removeWhere} from '../../lib/reduxUtils';
+
+import {LayoutMode, Edge} from '../../components/HUDDrag';
 
 const localStorageKey = 'cse_hud_layout-state';
 
@@ -23,11 +26,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = '0.1.10'; // if the local storage value for the reset code doesn't match this, then force a reset
-
-function clone<T>(obj: T): T {
-  return Object.assign({}, obj);
-}
+const FORCE_RESET_CODE = '0.2.1'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 enum AxisAnchorRelativeTo {
   START = -1,
@@ -35,18 +34,37 @@ enum AxisAnchorRelativeTo {
   END = 1,
 }
 
-export interface LayoutAction {
-  type: string;
-  error?: string;
+export interface LayoutAction extends BaseAction {
   widget?: string;
   position?: Position;
   size?: Size;
   visibility?: boolean;
+  screen: Size;
 }
 
 export interface Anchor {
   x: AxisAnchorRelativeTo;
   y: AxisAnchorRelativeTo;
+}
+
+interface Size {
+  width: number;
+  height: number;
+}
+interface AnchoredAxis {
+  anchor: any;
+  offset: number;
+}
+
+interface Position {
+  x: AnchoredAxis;
+  y: AnchoredAxis;
+  size: Size;
+  scale: number;
+  visibility: boolean;
+  opacity: number;
+  zOrder: number;
+  layoutMode: LayoutMode;
 }
 
 const TOP_LEFT: Anchor = { x: AxisAnchorRelativeTo.START, y: AxisAnchorRelativeTo.START };
@@ -55,58 +73,68 @@ const TOP_RIGHT: Anchor = { x: AxisAnchorRelativeTo.END, y: AxisAnchorRelativeTo
 const BOTTOM_RIGHT: Anchor = { x: AxisAnchorRelativeTo.END, y: AxisAnchorRelativeTo.END };
 const MIDDLE_OF_WINDOW: Anchor = { x: AxisAnchorRelativeTo.CENTER, y: AxisAnchorRelativeTo.CENTER };
 
-export interface Position {
-  x: number;
-  y: number;
-  anchor: Anchor;
-  width: number;
-  height: number;
-  scale: number;
-  visibility: boolean;
-}
+export type WidgetPositions = Dictionary<Position>;
 
 let hub: any = null;
 
 // sync
 export function lockHUD(): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
-    type: LOCK_HUD
+    type: LOCK_HUD,
+    when: new Date(),
+    screen: screen,
   }
 }
 
 export function unlockHUD(): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
-    type: UNLOCK_HUD
+    type: UNLOCK_HUD,
+    when: new Date(),
+    screen: screen,
   }
 }
 
 export function resetHUD(): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
-    type: RESET_HUD
+    type: RESET_HUD,
+    when: new Date(),
+    screen: screen,
   };
 }
 
 export function setPosition(name: string, pos: Position): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
     type: SET_POSITION,
+    when: new Date(),
     widget: name,
-    position: pos
+    position: pos,
+    screen: screen,
   }
 }
 
 export function savePosition(name: string, pos: Position): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
     type: SAVE_POSITION,
+    when: new Date(),
     widget: name,
-    position: pos
+    position: pos,
+    screen: screen,
   }
 }
 
 export function setVisibility(name: string, vis: boolean): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
     type: SET_VISIBILITY,
+    when: new Date(),
     widget: name,
     visibility: vis,
+    screen: screen,
   };
 }
 
@@ -114,7 +142,8 @@ function init(): LayoutAction {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
     type: INITIALIZE,
-    size: screen
+    when: new Date(),
+    screen: screen,
   };
 }
 
@@ -130,9 +159,12 @@ export function initialize() {
   }
 }
 
-export function resize() {
+export function resize(): LayoutAction {
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   return {
     type: ON_RESIZE,
+    when: new Date(),
+    screen: screen,
   };
 }
 
@@ -143,88 +175,44 @@ export interface LayoutState {
   version: number;
   locked?: boolean;
   lastScreenSize?: Size;
-  widgets: any; // dictionary<name, position>
+  widgets: Dictionary<Position>;
 }
 
-const initialState = () => {
+function initialState(): LayoutState {
   return {
     reset: FORCE_RESET_CODE,
     locked: true,
     widgets: {
-      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:302},size:{width:480,height:240},scale:1,visibility:true},
-      PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
-      EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
-      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6,visibility:true},
-      Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1,visibility:false},
-      Warband:{x:{anchor:-1,px:-20},y:{anchor:-1,px:-120},size:{width:200,height:700},scale:0.6,visibility:true},
+      Chat:{x:{anchor:Edge.LEFT,offset:0},y:{anchor:Edge.BOTTOM,offset:50},size:{width:480,height:240},scale:1,opacity: 1,visibility:true,zOrder:0,layoutMode:LayoutMode.EDGESNAP},
+      PlayerHealth:{x:{anchor:3,offset:0},y:{anchor:7,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:1,layoutMode:LayoutMode.GRID},
+      EnemyTargetHealth:{x:{anchor:5,offset:0},y:{anchor:6,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:2,layoutMode:LayoutMode.GRID},
+      FriendlyTargetHealth:{x:{anchor:5,offset:0},y:{anchor:6,offset:150},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:3,layoutMode:LayoutMode.GRID},
+      Warband:{x:{anchor:Edge.LEFT,offset:-40},y:{anchor:Edge.TOP,offset:-130},size:{width:200,height:700},scale:0.6,opacity: 1,visibility:true,zOrder:4,layoutMode:LayoutMode.EDGESNAP},
+      Respawn:{x:{anchor:4,offset:0},y:{anchor:3,offset:0},size:{width:200,height:200},scale:1,opacity: 1,visibility:false,zOrder:5,layoutMode:LayoutMode.GRID},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
 }
 
-interface Size {
-  width: number;
-  height: number;
-}
-interface AnchoredAxis {
-  anchor: number;               // -1 (start) 0 (center) 1 (end)
-  px: number;
-}
-
-interface AnchoredPosition {
-  x: AnchoredAxis;
-  y: AnchoredAxis;
-  size: Size;
-  scale: number;
-  visibility: boolean;
-}
-
 function axis2anchor(anchor: AxisAnchorRelativeTo, position: number, range: number) : AnchoredAxis {
   switch(anchor) {
     case AxisAnchorRelativeTo.START:
-      return { anchor: anchor, px: position };
+      return { anchor: anchor, offset: position };
     case AxisAnchorRelativeTo.END:
-      return { anchor: anchor, px: range - position };
+      return { anchor: anchor, offset: range - position };
   }
-  return { anchor: anchor, px: position - (range * 0.5) };
-}
-
-function position2anchor(current: Position, screen: Size) : AnchoredPosition {
-  const position: AnchoredPosition = {
-    x: axis2anchor(current.anchor.x, current.x, screen.width),
-    y: axis2anchor(current.anchor.y, current.y, screen.height),
-    size: {
-      width: current.width,
-      height: current.height
-    },
-    scale: current.scale,
-    visibility: current.visibility,
-  };
-  return position;
+  return { anchor: anchor, offset: position - (range * 0.5) };
 }
 
 function anchor2axis(anchored: AnchoredAxis, range: number) : number {
   switch(anchored.anchor) {
     case AxisAnchorRelativeTo.CENTER: // relative to center
-      return (range * 0.5) + anchored.px;
+      return (range * 0.5) + anchored.offset;
     case AxisAnchorRelativeTo.START: // relative to start
-      return anchored.px;
+      return anchored.offset;
     case AxisAnchorRelativeTo.END:
-      return range - anchored.px;
+      return range - anchored.offset;
   }
-}
-
-function anchored2position(anchored: AnchoredPosition, screen: Size) : Position {
-  const position = {
-    x: anchor2axis(anchored.x, screen.width),
-    y: anchor2axis(anchored.y, screen.height),
-    anchor: { x: anchored.x.anchor, y: anchored.y.anchor },
-    width: anchored.size.width,
-    height: anchored.size.height,
-    scale: anchored.scale,
-    visibility: anchored.visibility,
-  };
-  return position;
 }
 
 function adjustAxis(anchor: number, position: number, prevRange: number, range: number) : number {
@@ -233,40 +221,27 @@ function adjustAxis(anchor: number, position: number, prevRange: number, range: 
   return position;
 }
 
-function adjustPosition(current: Position, previous: Size, screen: Size) : Position {
-  const adjusted: Position = Object.assign({}, current);
-  adjusted.x = adjustAxis(current.anchor.x, current.x, previous.width, screen.width);
-  adjusted.y = adjustAxis(current.anchor.y, current.y, previous.height, screen.height);
-  return adjusted;
-}
-
 function chooseAnchorForAxis(pos: number, extent: number, range: number) : AxisAnchorRelativeTo {
   if (pos < range * 0.25) return AxisAnchorRelativeTo.START;
   if (pos + extent >= range * 0.75) return AxisAnchorRelativeTo.END;
   return AxisAnchorRelativeTo.CENTER;
 }
 
-function anchorPosition(current: Position, screen: Size) : Position {
-  const anchored: Position = Object.assign({}, current);
-  anchored.anchor.x = chooseAnchorForAxis(anchored.x, anchored.width, screen.width);
-  anchored.anchor.y = chooseAnchorForAxis(anchored.y, anchored.height, screen.height);
-  return anchored;
-}
 
 function forceOnScreen(current: Position, screen: Size) : Position {
   // If the UI is scaled, it is being scaled around the center, so for example, a widget that
   // is 200 pixels wide, scaled to 0.5 and positioned at the edge of the screen, the x position
   // is actually -50px.  ie -((width/2)*scale), so we need to work out the margin amount based
   // on the scale amount.
-  const xmargin: number = (current.width/2)*current.scale;
-  const ymargin: number = (current.height/2)*current.scale;
-  const pos: Position = Object.assign({}, current);
-  if (pos.x < -xmargin) pos.x = -xmargin;
-  if (pos.y < -ymargin) pos.y = -ymargin;
-  if (pos.x + pos.width > screen.width + xmargin) pos.x = screen.width - pos.width + xmargin;
-  if (pos.y + pos.height > screen.height + ymargin) pos.y = screen.height - pos.height + ymargin;
-  if (pos.x < -xmargin) { pos.x = -xmargin; pos.width = screen.width + xmargin; }
-  if (pos.y < -ymargin) { pos.y = -ymargin; pos.height = screen.height + ymargin; }
+  const xmargin: number = (current.size.width/2)*current.scale;
+  const ymargin: number = (current.size.height/2)*current.scale;
+  const pos: Position = clone(current);
+  if (pos.x.offset < -xmargin) pos.x.offset = -xmargin;
+  if (pos.y.offset < -ymargin) pos.y.offset = -ymargin;
+  if (pos.x.offset + pos.size.width > screen.width + xmargin) pos.x.offset = screen.width - pos.size.width + xmargin;
+  if (pos.y.offset + pos.size.height > screen.height + ymargin) pos.y.offset = screen.height - pos.size.height + ymargin;
+  if (pos.x.offset < -xmargin) { pos.x.offset = -xmargin; pos.size.width = screen.width + xmargin; }
+  if (pos.y.offset < -ymargin) { pos.y.offset = -ymargin; pos.size.height = screen.height + ymargin; }
   return pos;
 }
 
@@ -301,11 +276,12 @@ function loadState(state: LayoutState = loadStateFromStorage()) : LayoutState {
         const defaultWidgets: any = initialState().widgets;
         const widgets: any = {};
         for (let key in defaultWidgets) {
-          const widget: AnchoredPosition = state.widgets[key] as AnchoredPosition || defaultWidgets[key];
+          const widget = state.widgets[key] || defaultWidgets[key];
           if (widget) {
-            widgets[key] = forceOnScreen(anchored2position(widget, screen), screen);
-            DEBUG_ASSERT(widgets[key].width > 1, 'Widget width should be larger than one pixel');
-            DEBUG_ASSERT(widgets[key].height > 1, 'Widget height should be larger than one pixel');
+            widgets[key] = forceOnScreen(widget, screen);
+
+            //DEBUG_ASSERT(widgets[key].width > 1, `Widget ${key} width (${widgets[key].width}) should be larger than one pixel`);
+            //DEBUG_ASSERT(widgets[key].height > 1, `Widget ${key} height (${widgets[key].height}) should be larger than one pixel`);
           }
         }
         state.widgets = widgets;
@@ -326,87 +302,78 @@ function saveState(state: LayoutState) : LayoutState {
     widgets: {}
   };
   for (let key in state.widgets) {
-    save.widgets[key] = position2anchor(state.widgets[key], screen);
+    save.widgets[key] = state.widgets[key];
   }
   localStorage.setItem(localStorageKey, JSON.stringify(save));
   return save;
 }
 
-export default function reducer(state: LayoutState = getInitialState(),
-                                action: LayoutAction = {type: null}): LayoutState {
-  switch(action.type) {
-    case LOCK_HUD:
-      return Object.assign({}, state, {
-        locked: true
-      });
-    case UNLOCK_HUD:
-      return Object.assign({}, state, {
-        locked: false
-      });
-  }
+const actionDefs: ActionDefinitions<LayoutState> = {};
 
-  let widgets: any;
-  let outState: LayoutState = state;
-  let anchored: AnchoredPosition;
-  let position: Position;
-  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-
-  switch(action.type) {
-    case INITIALIZE:
-    {
-      outState = Object.assign({}, state, {
-        lastScreenSize: action.size
-      });
-      break;
-    }
-    case RESET_HUD:
-    {
-      outState = Object.assign({}, loadState(clone(initialState())), {lastScreenSize: screen});
-      break;
-    }
-    case SET_POSITION:
-      widgets = state.widgets;
-      widgets[action.widget] = action.position;
-      outState = Object.assign({}, state, {
-        widgets: widgets,
-        lastScreenSize: screen
-      });
-      break;
-    case SAVE_POSITION:
-      widgets = state.widgets;
-      position = anchorPosition(action.position, screen);
-      Object.assign(widgets[action.widget], position);
-      if (position.scale <= minScale) widgets[action.widget].scale = minScale;
-      outState = Object.assign({}, state, {
-        widgets: widgets,
-        lastScreenSize: screen
-      });
-      break;
-    case SET_VISIBILITY:
-      widgets = state.widgets;
-      widgets[action.widget].visibility = action.visibility;
-      outState = Object.assign({}, state, {
-        widgets: widgets
-      });
-      break;
-    case ON_RESIZE:
-      // need to scan wiget positions, and check if they still fit in the
-      // new window size
-      RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
-      widgets = {};
-      for (let key in state.widgets) {
-        position = state.widgets[key] as Position;
-        widgets[key] = forceOnScreen(adjustPosition(position, state.lastScreenSize, screen), screen);
-      }
-      outState = Object.assign({}, state, {
-        widgets: widgets,
-        lastScreenSize: screen
-      })
-      return outState;      // don't need to save state
-  }
-
-  // save to local storage
-  saveState(outState);
-
-  return outState;
+actionDefs[LOCK_HUD] = (s, a) => {
+  return merge(s, {locked: true});
 }
+
+actionDefs[UNLOCK_HUD] = (s, a) => {
+  return merge(s, {locked: false});
+}
+
+actionDefs[INITIALIZE] = (s, a) => {
+  const newState = merge(s, {lastScreenSize: a.size});
+  return newState;
+}
+
+actionDefs[RESET_HUD] = (s, a) => {
+  return saveState(merge(s, loadState(clone(initialState())), {lastScreenSize: screen}));
+}
+
+actionDefs[SET_POSITION] = (s: LayoutState, a: LayoutAction) => {
+  let widgets = clone(s.widgets);
+  widgets[a.widget] = a.position;
+  
+  return saveState(merge(s, {
+    widgets: widgets,
+    lastScreenSize: a.screen,
+  }));
+}
+
+actionDefs[SAVE_POSITION] = (s: LayoutState, a: LayoutAction) => {
+  let widgets = clone(s.widgets);
+  let position = clone(a.position);
+  if (position.scale < minScale) position.scale = minScale;
+  widgets[a.widget] = merge(widgets[a.widget], position);
+
+
+  return saveState(merge(s, {
+    widgets: widgets,
+    lastScreenSize: a.screen,
+  }));
+}
+
+actionDefs[SET_VISIBILITY] = (s: LayoutState, a: LayoutAction) => {
+  let widgets = clone(s.widgets);
+  let position = clone(a.position);
+  if (position.scale < minScale) position.scale = minScale;
+  widgets[a.widget] = merge(widgets[a.widget], position);
+  return saveState(merge(s, {
+    widgets: widgets,
+    lastScreenSize: a.screen,
+  }));
+}
+
+actionDefs[ON_RESIZE] = (s, a) => {
+  // need to scan wiget positions, and check if they still fit in the
+  // new window size
+  RUNTIME_ASSERT(a.screen.width >= 640 && a.screen.height >= 480, 'ignoring resize event for small window');
+  let widgets: Dictionary<Position> = {};
+  for (let key in s.widgets) {
+    const position = s.widgets[key] as Position;
+    widgets[key] = forceOnScreen(position, screen);
+  }
+  return merge(s, {
+    widgets: widgets,
+    lastScreenSize: screen
+  });
+}
+
+export default createReducer<LayoutState>(getInitialState(), actionDefs);

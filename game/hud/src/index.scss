@@ -10,10 +10,15 @@ html, body {
   overflow: hidden;
 }
 
+.chat-window {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
 .HUD {
   width: 100%;
   height: 100%;
-
   @import './_font.scss';
   
   .chat-window {
@@ -29,6 +34,7 @@ html, body {
   @import './components/ActiveEffectIcon/index';
   @import './components/InteractiveAlert/index';
   @import './components/Slider/index';
+  @import './components/HUDDrag/index';
   
   // widgets
   @import './widgets/Crafting/index';

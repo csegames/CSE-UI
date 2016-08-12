@@ -1,0 +1,261 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+
+.HUDDrag__controls {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  z-index: 100;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+}
+
+.HUDDrag__controls__name {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 5px;
+}
+
+.HUDDrag__controls__dragHandle {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: move !important;
+}
+
+.HUDDrag__controls__resizeXHandle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  cursor: ew-resize !important;
+  margin: -20px 0px 0px 0px;
+  top: 20px;
+}
+
+.HUDDrag__controls__resizeXHandle--left {
+  left: -5px;
+}
+
+.HUDDrag__controls__resizeXHandle--right {
+  right: -5px;
+}
+
+.HUDDrag__controls__resizeYHandle {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  cursor: ns-resize !important;  
+  margin: -20px 0px 0px 0px;
+}
+
+.HUDDrag__controls__resizeYHandle--top {
+  top: 15px;
+}
+
+.HUDDrag__controls__resizeYHandle--bottom {
+  bottom: -5px;
+}
+
+.HUDDrag__controls__resizeXYHandle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  cursor: nwse-resize !important;  
+  margin: -20px 0px 0px 0px;
+  bottom: -5px;
+  right: -5px;
+}
+
+
+.HUDDrag__controls__scaleHandle {
+  position: absolute;
+  width: 10px;
+  height: 20px;
+  right: 20px;
+  top: 50%;
+  margin-top: -30px;
+  cursor: zoom-in !important;
+  background: blue;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: -24px;
+    left: -5px;
+    border: 10px solid transparent;
+    border-bottom: 15px solid blue;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: -24px;
+    left: -5px;
+    border: 10px solid transparent;
+    border-top: 15px solid blue;
+  }
+}
+
+.HUDDrag__controls__scaleHandle--up {
+  &:before {
+    content: '';
+    border-color:transparent;
+    border-style:solid;
+    position: absolute;
+    border: none;
+    background-color: cornflowerblue;
+    height: 50%;
+    width: 50%;
+    top: 25%;
+    left: 50%;
+    margin-left: -25%;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid cornflowerblue;
+  }
+}
+
+.HUDDrag__controls__scaleHandle--down {
+  &:before {
+    content: '';
+    border-color:transparent;
+    border-style:solid;
+    position: absolute;
+    border: none;
+    background-color: cornflowerblue;
+    height: 50%;
+    width: 50%;
+    bottom: 25%;
+    left: 50%;
+    margin-left: -25%;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid cornflowerblue;
+  }
+}
+
+.HUDDrag__controls__scaleText {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  margin-top: -25px;
+  padding: 5px;
+  text-align: right;
+  background: rgba(0, 0, 0, .75);
+  color: white;
+  font-size: .5em;
+  border-radius: 15px;
+  cursor: default !important;
+}
+
+.HUDDrag__controls__toolbar {
+  position: absolute;
+  right: 0px;
+  top: 20px;
+  width: 50px;
+  color: #236EFA;
+  a {
+    color: #236EFA;
+    text-decoration: none;
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    -webkit-animation: none;
+    animation: none;
+    &:hover {
+      color: white;
+      -webkit-animation: glow 1.5s ease-in-out infinite alternate;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+  }
+}
+
+.HUDDrag__controls__toolbar__scale {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 10px;
+  i {
+    position: relative;
+    top: -5px;
+  }
+}
+
+.HUDDrag__controls__toolbar__dragControl {
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  top: 0;
+  left: 0;
+  cursor: row-resize !important;
+}
+
+.HUDDrag__controls__toolbar__scale__controls {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  div {
+    display: inline-block;
+    text-align: center;
+    width: 50%;
+    height: 15px;
+    font-size: 1em;
+    line-height: 15px;
+    cursor: pointer !important;
+  }
+}
+
+.HUDDrag__controls__toolbar__visibility {
+  position: relative;
+  width: 50px;
+  height: 40px;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 10px;
+  i {
+    position: relative;
+    top: -5px;
+    cursor: pointer !important;
+  }
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #6798F5, 0 0 14px #6798F5, 0 0 16px #6798F5, 0 0 20px #6798F5, 0 0 30px #6798F5;
+  }
+  to {
+    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #6798F5, 0 0 7px #6798F5, 0 0 8px #6798F5, 0 0 10px #6798F5, 0 0 15px #6798F5;
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #6798F5, 0 0 14px #6798F5, 0 0 16px #6798F5, 0 0 20px #6798F5, 0 0 30px #6798F5;
+  }
+  to {
+    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #6798F5, 0 0 7px #6798F5, 0 0 8px #6798F5, 0 0 10px #6798F5, 0 0 15px #6798F5;
+  }
+}

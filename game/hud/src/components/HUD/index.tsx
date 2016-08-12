@@ -7,12 +7,13 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 let Draggable = require('react-draggable');
-import {client, GroupInvite, groupType} from 'camelot-unchained';
+import {client, GroupInvite, groupType, hasClientAPI} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, resetHUD, setVisibility} from '../../services/session/layout';
+import {LayoutState, lockHUD, unlockHUD, savePosition, initialize, resetHUD, setVisibility, WidgetPositions} from '../../services/session/layout';
 import {SessionState} from '../../services/session/reducer';
 import {InvitesState} from '../../services/session/invites';
+import HUDDrag, {HUDDragState, HUDDragOptions} from '../HUDDrag';
 
 import Crafting from '../../widgets/Crafting';
 import PlayerHealth from '../../widgets/PlayerHealth';
@@ -57,61 +58,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
   componentDidMount() {
     this.props.dispatch(initialize());
 
-    // manage visibility of respawn widget based on having health or not
-    client.OnCharacterHealthChanged((health: number) => {
-      if (health <= 0) {
-        this.props.dispatch(setVisibility('Respawn', true));
-      } else if (this.props.layout.widgets['Respawn'] && this.props.layout.widgets['Respawn'].visibility) {
-        this.props.dispatch(setVisibility('Respawn', false));
-      }
-    });
-  }
-
-  handleDrag =  (e:any, ui:any) => {
-    const {x, y} = this.state.deltaPosition;
-    this.setState({
-      deltaPosition: {
-        x: x + ui.deltaX,
-        y: y + ui.deltaY,
-      }
-    } as any);
-  }
-
-  onStart = () => {
-    this.setState({activeDrags: ++this.state.activeDrags} as any);
-  }
-
-  onStop = () => {
-    this.setState({activeDrags: --this.state.activeDrags} as any);
-  }
-
-  onWheel = (name: string, e: any) => {
-    if (this.props.layout.locked) return;
-
-    const factor = e.altKey ? 0.01 : 0.10;
-
-    const pos: Position = this.props.layout.widgets[name];
-
-    if (e.nativeEvent.deltaY < 0) {
-      this.props.dispatch(savePosition(name, {
-        x: pos.x,
-        y: pos.y,
-        anchor: pos.anchor,
-        width: pos.width,
-        height: pos.height,
-        scale: pos.scale - factor,
-        visibility: pos.visibility,
-      }));
-    } else {
-      this.props.dispatch(savePosition(name, {
-        x: pos.x,
-        y: pos.y,
-        anchor: pos.anchor,
-        width: pos.width,
-        height: pos.height,
-        scale: pos.scale + factor,
-        visibility: pos.visibility,
-      }));
+    if (hasClientAPI()) {
+      // manage visibility of respawn widget based on having health or not
+      client.OnCharacterHealthChanged((health: number) => {
+        if (health <= 0) {
+          this.props.dispatch(setVisibility('Respawn', true));
+        } else if (this.props.layout.widgets['Respawn'] && this.props.layout.widgets['Respawn'].visibility) {
+          this.props.dispatch(setVisibility('Respawn', false));
+        }
+      });
     }
   }
 
@@ -119,58 +74,38 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.props.dispatch(setVisibility(widget, vis));
   }
 
-  helpWidget = () => {
-    if (! this.props.layout.locked) {
-      let scale: number = 1.5;
-      return (
-      <div className='HUD__help'
-        style={{
-          transform:`scale(${scale})`,
-          '-webkit-transform':`scale(${scale})`,
-        }}>
-        - Drag widgets to change position.<br />&nbsp;<br />
-        - Scroll the mousewheel to resize widgets.<br />&nbsp;<br />
-        - Alt-Click the lock icon to reset all widgets to default size and location.<br />&nbsp;<br />
-      </div>
-      );
-    }
-  }
+  draggable = (name: string, widgets: WidgetPositions, Widget: any, options?: HUDDragOptions, props?: any) => {
+    const w = widgets[name];
 
-  draggableWidget = (name: string, widgets: any, Widget: any, containerClass: string, props?: any) => {
-    const pos: Position = widgets[name];
-
-    let dragHandle: any = null;
-    if (!this.props.layout.locked) {
-      dragHandle = <div className={`drag-handle`}><h1>{name}</h1></div>;
-    }
-
-    return (
-      <Draggable handle='.drag-handle'
-                  defaultPosition={{x: pos.x, y: pos.y}}
-                  position={{x: pos.x, y: pos.y}}
-                  grid={[1, 1]}
-                  zIndex={100}
-                  onStart={this.onStart}
-                  onDrag={this.handleDrag}
-                  onStop={(e:any, ui:any) => {
-                    this.onStop();
-                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, anchor: pos.anchor, width: pos.width, height: pos.height, scale: pos.scale, visibility: pos.visibility}));
-                  }}>
-        <div>
-          <div className={containerClass}
-               style={{
-                 transform:`scale(${pos.scale})`,
-                 '-webkit-transform':`scale(${pos.scale})`,
-                 height: `${pos.height}px`,
-                 width: `${pos.width}px`,
-               }}
-               onWheel={(e: any) => this.onWheel(name, e)}>
-            {pos.visibility ? <Widget setVisibility={(vis: boolean) => this.setVisibility(name, vis)} {...props} /> : null}
-            {dragHandle}
-          </div>
-        </div>
-      </Draggable>
-    );
+    return <HUDDrag name={name}
+                    defaultHeight={w.size.height}
+                    defaultWidth={w.size.width}
+                    defaultScale={w.scale}
+                    defaultX={w.x.offset}
+                    defaultY={w.y.offset}
+                    defaultXAnchor={w.x.anchor}
+                    defaultYAnchor={w.y.anchor}
+                    defaultOpacity={w.opacity}
+                    defaultMode={w.layoutMode}
+                    gridDivisions={10}
+                    locked={this.props.layout.locked}
+                    save= {(s: HUDDragState) => {
+                      this.props.dispatch(savePosition(name, {
+                          x: {anchor: s.xAnchor, offset: s.x},
+                          y: {anchor: s.yAnchor, offset: s.y},
+                          size: {width: s.width, height: s.height},
+                          scale: s.scale,
+                          opacity: s.opacity,
+                          visibility: w.visibility,
+                          zOrder: w.zOrder,
+                          layoutMode: w.layoutMode,
+                        }));
+                    }}
+                    render={() => {
+                      if (this.props.layout.locked && !w.visibility) return null;
+                      return <Widget setVisibility={(vis: boolean) => this.setVisibility(name, vis)} {...props} />;
+                    }}
+                    {...options} />;
   }
 
   onToggleClick = (e: React.MouseEvent) => {
@@ -186,18 +121,38 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const widgets = this.props.layout.widgets;
     const locked = this.props.layout.locked;
 
+    let orderedWidgets: JSX.Element[] = new Array(6);
+    for (let key in widgets) {
+      const w = widgets[key];
+      switch(key) {
+        case 'Chat':
+          orderedWidgets[w.zOrder] = this.draggable('Chat', widgets, Chat, {}, {loginToken:client.loginToken});
+          break;
+        case 'PlayerHealth':
+          orderedWidgets[w.zOrder] = this.draggable('PlayerHealth', widgets, PlayerHealth, {lockHeight: true, lockWidth: true}, {});
+          break;
+        case 'EnemyTargetHealth':
+          orderedWidgets[w.zOrder] = this.draggable('EnemyTargetHealth', widgets, EnemyTargetHealth, {lockHeight: true, lockWidth: true}, {});
+          break;
+        case 'FriendlyTargetHealth':
+          orderedWidgets[w.zOrder] = this.draggable('FriendlyTargetHealth', widgets, FriendlyTargetHealth, {lockHeight: true, lockWidth: true}, {});
+          break;
+        case 'Respawn':
+          orderedWidgets[w.zOrder] = this.draggable('Respawn', widgets, Respawn, {}, {});
+          break;
+        case 'Warband':
+          orderedWidgets[w.zOrder] = this.draggable('Warband', widgets, Warband, {lockHeight: true, lockWidth: true}, {});
+          break;
+      }
+    }
+
     return (
       <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.5)'}}>
-        {this.helpWidget()}
         <div id='cse-ui-crafting'>
           <Crafting/>
         </div>
-        {this.draggableWidget('Chat', widgets, Chat, 'chat-window', {loginToken:client.loginToken})}
-        {this.draggableWidget('PlayerHealth', widgets, PlayerHealth, 'player-health', {})}
-        {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
-        {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
-        {this.draggableWidget('Respawn', widgets, Respawn, 'respawn', {})}
-        {this.draggableWidget('Warband', widgets, Warband, 'warband', {})}
+
+        {orderedWidgets.map(c => c)}
 
         <InteractiveAlert dispatch={this.props.dispatch}
                           invites={this.props.invitesState.invites} />

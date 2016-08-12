@@ -195,18 +195,26 @@ function memberCompare(a: WarbandMember, b: WarbandMember): boolean {
 
 const actionDefs: ActionDefinitions<WarbandState> = {};
 
-actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, {isInitalizing: false});
+actionDefs[INITIALIZE_SIGNALR] = (s, a) => {
+  return merge(s, {isInitalizing: false});
+}
 
-actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => {
+  return merge(s, {isInitalizing: false, signalRInitialized: true});
+}
 
-actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => {
+  return merge(s, {isInitalizing: false, signalRInitialized: true});
+}
 
 actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
   events.fire('chat-show-room', a.id);
-  return merge(s, {name: a.name, warbandID: a.id});
+  return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
 }
 
-actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => merge(s, {name: a.name, warbandID: a.id});
+actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => {
+  return merge(s, {name: a.name, warbandID: a.id});
+}
 
 actionDefs[WARBAND_QUIT] = (s, a) => {
   events.fire('chat-leave-room', s.warbandID);
