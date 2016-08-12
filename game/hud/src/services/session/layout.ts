@@ -22,6 +22,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
+const FORCE_RESET_CODE = 'apple'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 function clone<T>(obj: T): T {
   return Object.assign({}, obj);
@@ -134,6 +135,7 @@ export function saySomething(s: string) : LayoutAction {
 const minScale = 0.25;
 
 export interface LayoutState {
+  reset: string;
   version: number;
   locked?: boolean;
   lastScreenSize?: Size;
@@ -142,9 +144,10 @@ export interface LayoutState {
 
 const initialState = () => {
   return {
+    reset: FORCE_RESET_CODE,
     locked: true,
     widgets: {
-      Chat:{x:{anchor:-1,px:-60},y:{anchor:1,px:330},size:{width:600,height:300},scale:0.8},
+      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:302},size:{width:480,height:240},scale:1},
       PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
       EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
       FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6},
@@ -262,14 +265,18 @@ function forceOnScreen(current: Position, screen: Size) : Position {
 function getInitialState(): any {
   const storedState: LayoutState = loadState();
   if (storedState) {
+    if (typeof storedState.reset === 'undefined' || storedState.reset !== FORCE_RESET_CODE) return loadState(initialState());
     storedState.locked = initialState().locked;
     return storedState;
   }
-  return loadState(clone(initialState()));
+  return loadState(initialState());
 }
 
 function loadState(state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
-  if (state) {
+
+  const reset = state.reset !== FORCE_RESET_CODE;
+
+  if (!reset && state) {
     if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
       const screen: Size = { width: window.innerWidth, height: window.innerHeight };
       const defaultWidgets: any = initialState().widgets;
@@ -286,11 +293,14 @@ function loadState(state: LayoutState = JSON.parse(localStorage.getItem(localSto
       return state;
     }
   }
+
+  return null;
 }
 
 function saveState(state: LayoutState) : LayoutState {
   const screen: Size = { width: window.innerWidth, height: window.innerHeight };
   const save: LayoutState = {
+    reset: FORCE_RESET_CODE,
     version: CURRENT_STATE_VERSION,
     locked: state.locked,
     widgets: {}
