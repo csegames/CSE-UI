@@ -115,6 +115,24 @@ class HUD extends React.Component<HUDProps, HUDState> {
     }
   }
 
+  helpWidget = () => {
+    if (! this.props.layout.locked) {
+      let scale: number = 1.5;
+      return (
+      <div className='HUD__help'
+        style={{
+          transform:`scale(${scale})`,
+          '-webkit-transform':`scale(${scale})`,
+        }}>
+        - Drag widgets to change position.<br />&nbsp;<br />
+        - Scroll the mousewheel to resize widgets.<br />&nbsp;<br />
+        - Click an anchor point to override default.<br />&nbsp;<br />
+        - Alt-Click the lock icon to reset all widgets to default size and location.<br />&nbsp;<br />
+      </div>
+      );
+    }
+  }
+
   draggableWidget = (name: string, widgets: any, Widget: any, containerClass: string, props?: any) => {
     const pos: Position = widgets[name];
 
@@ -176,7 +194,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         //                } as any)
         //              }} />
 
-  // for now just a fixed chat
   render() {
 
     const widgets = this.props.layout.widgets;
@@ -184,6 +201,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     return (
       <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.5)'}}>
+        {this.helpWidget()}
         <div id='cse-ui-crafting'>
           <Crafting/>
         </div>
@@ -192,7 +210,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         {this.draggableWidget('EnemyTargetHealth', widgets, EnemyTargetHealth, 'target-health', {})}
         {this.draggableWidget('FriendlyTargetHealth', widgets, FriendlyTargetHealth, 'target-health', {})}
         {this.draggableWidget('Respawn', widgets, Respawn, 'respawn', {})}
-        
+
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>
