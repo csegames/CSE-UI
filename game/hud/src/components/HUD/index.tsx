@@ -126,7 +126,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         }}>
         - Drag widgets to change position.<br />&nbsp;<br />
         - Scroll the mousewheel to resize widgets.<br />&nbsp;<br />
-        - Click an anchor point to override default.<br />&nbsp;<br />
         - Alt-Click the lock icon to reset all widgets to default size and location.<br />&nbsp;<br />
       </div>
       );
