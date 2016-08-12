@@ -37,6 +37,17 @@
   position: absolute;
 }
 
+.HUD__help {
+  position: fixed;
+  right: 100px;
+  bottom: 170px;
+  width: 275px;
+  height: 250px;
+  padding: 5px;
+  padding-top: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .HUD__toggle {
   position: fixed;
   right: 0;
