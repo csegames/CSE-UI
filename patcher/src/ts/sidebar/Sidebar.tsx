@@ -217,7 +217,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     dispatch(requestChannels());
     this.channelsInterval = setInterval(() => {
       dispatch(requestChannels());
-    }, 30000);
+    }, 500);
 
     if (!this.props.serversState.isFetching) dispatch(fetchServers());
     this.serversInterval = setInterval(() => {
