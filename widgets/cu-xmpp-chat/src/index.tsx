@@ -98,7 +98,7 @@ class Chat extends React.Component<ChatProps, ChatState> {
     const cmd = new SlashCommand(command);
     if (cmd.exec(this.state.chat)) return true;
     client.SendSlashCommand(command);
-    return true;  
+    return true;
   }
 
   close = () : void => {
@@ -138,7 +138,6 @@ class Chat extends React.Component<ChatProps, ChatState> {
     const closeButton: any = this.props.hideChat ? <div className='chat-close' onClick={this.close}>Close</div> : null;
     return (
       <div className="cse-chat no-select">
-        <div className="chat-disconnect" >{this.state.chat.latency}</div>
         <div className="chat-frame">
           <Info
             chat={this.state.chat}
