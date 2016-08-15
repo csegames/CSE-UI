@@ -274,23 +274,24 @@ function getInitialState(): any {
 
 function loadState(state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
 
-  const reset = state.reset !== FORCE_RESET_CODE;
-
-  if (!reset && state) {
-    if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
-      const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-      const defaultWidgets: any = initialState().widgets;
-      const widgets: any = {};
-      for (let key in defaultWidgets) {
-        const widget: AnchoredPosition = state.widgets[key] as AnchoredPosition || defaultWidgets[key];
-        if (widget) {
-          widgets[key] = forceOnScreen(anchored2position(widget, screen), screen);
-          DEBUG_ASSERT(widgets[key].width > 1, 'Widget width should be larger than one pixel');
-          DEBUG_ASSERT(widgets[key].height > 1, 'Widget height should be larger than one pixel');
+  if (state) {
+    const reset = state.reset !== FORCE_RESET_CODE;
+    if (!reset) {
+      if ((state.version|0) >= MIN_STATE_VERSION_ANCHORED) {
+        const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+        const defaultWidgets: any = initialState().widgets;
+        const widgets: any = {};
+        for (let key in defaultWidgets) {
+          const widget: AnchoredPosition = state.widgets[key] as AnchoredPosition || defaultWidgets[key];
+          if (widget) {
+            widgets[key] = forceOnScreen(anchored2position(widget, screen), screen);
+            DEBUG_ASSERT(widgets[key].width > 1, 'Widget width should be larger than one pixel');
+            DEBUG_ASSERT(widgets[key].height > 1, 'Widget height should be larger than one pixel');
+          }
         }
+        state.widgets = widgets;
+        return state;
       }
-      state.widgets = widgets;
-      return state;
     }
   }
 
