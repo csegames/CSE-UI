@@ -39,7 +39,7 @@
     "publish": "npm run build",
     "serve": "http-server -p 9000 dist/ui/",
     "debug": "npm run build && npm run copy:patcher && npm run patcher",
-    "copy:patcher": "copyup dist/ui/**/* PatchClient/cpui/UI",
+    "copy:patcher": "copyup dist/ui/**/* PatchClient/cpui",
     "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
   },
   "dependencies": {

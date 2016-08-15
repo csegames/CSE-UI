@@ -266,7 +266,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           videoElements[vid].play();
         }
 
-        if (this.props.channelsState.selectedChannel.channelID !== ChannelID.CUBE && !this.props.charactersState.selectedCharacter) {
+        if (this.props.serversState.currentServer && !this.props.charactersState.selectedCharacter) {
             if (this.props.charactersState.characters.length == 0 || this.props.charactersState.characters.filter( c => c.shardID == this.props.serversState.currentServer.shardID).length == 0) {
               layer1 = <div className='waves-effect btn install-download-btn installing'>Create Character</div>;
             } else {
