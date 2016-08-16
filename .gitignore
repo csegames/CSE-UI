@@ -38,3 +38,4 @@ patcher/PatchClient
 !/shared/lib/
 **/.vscode/
 widgets/cu-xmpp-chat/lib/
+widgets/cu-character-creation/lib/
