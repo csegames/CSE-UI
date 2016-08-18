@@ -159,7 +159,8 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   getListIndex(node: Node) {
     if (node.parentNode != null) {
         for (let i = 0; i < node.parentNode.childNodes.length; ++i) {
-            if (node.parentNode.childNodes[i] == node) return i;
+            // there are two extra items in this list that don't appear in the server-side list. Thus, they need to be culled from the index being sent.
+            if (node.parentNode.childNodes[i] == node) return i - 2;
         }
     }
     return -1;
