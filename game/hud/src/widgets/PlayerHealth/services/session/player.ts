@@ -118,22 +118,28 @@ function fakePlayer(): PlayerStatus {
     characterID: '',
     health: [{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     },{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     },{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     },{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     },{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     },{
       current: 10000,
-      maximum: 10000
+      maximum: 10000,
+      wounds: 0,
     }],
     stamina: {
       current: 1000,
@@ -256,7 +262,6 @@ export default function reducer(state: PlayerState = initialState,
 
       playerStatus.blood.current = action.player.health; // this is blood not health!
       playerStatus.blood.maximum = action.player.maxHealth > 0 ? action.player.maxHealth : 10000;
-      
 
       // make an event -- hacky for now
       let index = 0;
@@ -270,14 +275,15 @@ export default function reducer(state: PlayerState = initialState,
         const valueChange = playerStatus.health[e.part].current - e.health;
         playerStatus.health[e.part].current = e.health;
         playerStatus.health[e.part].maximum = e.maxHealth > 0 ? e.maxHealth : 10000;
+        playerStatus.health[e.part].wounds = e.wounds;
 
         if (!doEvent) return;
 
         if (valueChange > 0) {
           // damage event!
           newEvents.push({
-            key: key++, 
-            value: Math.abs(valueChange).toFixed(0), 
+            key: key++,
+            value: Math.abs(valueChange).toFixed(0),
             timestamp: now,
             textType: 'damage',
             iconType: 'piercing',
@@ -285,8 +291,8 @@ export default function reducer(state: PlayerState = initialState,
         } else if (valueChange < 0) {
           // heal event!
           newEvents.push({
-            key: key++, 
-            value: Math.abs(valueChange).toFixed(0), 
+            key: key++,
+            value: Math.abs(valueChange).toFixed(0),
             timestamp: now,
             textType: 'heal',
             iconType: 'heal',
@@ -311,8 +317,8 @@ export default function reducer(state: PlayerState = initialState,
       var newEvents = state.events.slice(index);
       let damage  = Math.random() * 2 > .5;
       const e = {
-        key: key++, 
-        value: (Math.random()*2000 + 750).toFixed(0), 
+        key: key++,
+        value: (Math.random()*2000 + 750).toFixed(0),
         timestamp: now,
         textType: damage ? 'damage' : 'heal',
         iconType: damage ? 'piercing' : 'heal',

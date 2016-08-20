@@ -89,14 +89,14 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     const dead = this.props.playerStatus.blood.current <= 0 || this.props.playerStatus.health[BodyParts.Torso].current <= 0 || this.props.playerStatus.health[BodyParts.Head].current <= 0;
 
     return (
-      <div className={`${this.props.containerClass ? this.props.containerClass : ''} PlayerStatusComponent ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} 
+      <div className={`${this.props.containerClass ? this.props.containerClass : ''} PlayerStatusComponent ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}
            ref={(r: any) => this.componentRef = r}>
 
         <div className='PlayerStatusComponent__circle'>
 
           <div className='PlayerStatusComponent__circle__bg'></div>
           <div className='PlayerStatusComponent__circle__avatar'><img src={this.props.playerStatus.avatar} style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} /></div>
-          
+
           <Pills orientation={Orientation.CircleTop}
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
@@ -106,7 +106,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valueColor={dead ? '#7f7f7f' : 'red'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
 
-        
+
           <Pills orientation={Orientation.CircleBottom}
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
@@ -115,7 +115,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  maxValue={this.props.playerStatus.stamina.maximum}
                  valueColor={dead ? '#7f7f7f' : 'yellow'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-          
+
 
           <TransitionMotion willLeave={this.eventIconWillLeave}
                             willEnter={this.eventIconWillEnter}
@@ -124,7 +124,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                               data: item,
                               style: {opacity: spring(0), r: Math.random() * 90 - 45}
                             }))}>
-            {(interpolatedStyles: any) => 
+            {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__eventIcon'>
                 {interpolatedStyles.map((config: any) => {
                   return <div className={`PlayerStatusComponent__circle__eventIcon--${config.data.iconType}`} key={config.key} style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}></div>
@@ -132,7 +132,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
               </div>
             }
           </TransitionMotion>
-          
+
           <TransitionMotion willLeave={this.flyTextWillLeave}
                             willEnter={this.flyTextWillEnter}
                             styles={this.props.events.map((item: any) => ({
@@ -140,7 +140,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                               data: item,
                               style: {opacity: spring(0), top: spring(-140)}
                             }))}>
-            {(interpolatedStyles: any) => 
+            {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__flyText'>
                 {interpolatedStyles.map((config: any) => {
                   return <div className={`PlayerStatusComponent__circle__flyText--${config.data.textType} ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} key={config.key} style={{opacity: config.style.opacity, top: config.style.top}}>{config.data.value}</div>
@@ -171,7 +171,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  maxValue={this.props.playerStatus.health[BodyParts.RightArm].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-          
+
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
                  ref='left-arm'
@@ -181,7 +181,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  maxValue={this.props.playerStatus.health[BodyParts.LeftArm].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-          
+
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
                  ref='head'
@@ -191,7 +191,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  maxValue={this.props.playerStatus.health[BodyParts.Head].maximum}
                  valueColor={dead ? '#7f7f7f' : '#0093e8'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-          
+
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
                  ref='torso'
@@ -201,7 +201,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  maxValue={this.props.playerStatus.health[BodyParts.Torso].maximum}
                  valueColor={dead ? '#7f7f7f' : '#0093e8'}
                  depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-          
+
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'

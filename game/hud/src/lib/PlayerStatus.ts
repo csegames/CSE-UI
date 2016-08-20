@@ -16,6 +16,7 @@ export interface PlayerStatus {
   health: [{
     current: number;
     maximum: number;
+    wounds: number;
   }];
   stamina: {
     current: number;

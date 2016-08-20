@@ -103,18 +103,18 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
   circlePill = (fillColor: string, depletedColor: string, fillPercent: number, deg: number, numPills: number, key: number, offsetX: number = 60) => {
     const liHeight = 150 / numPills;
-    if (fillPercent <= 0) return <li key={key} 
+    if (fillPercent <= 0) return <li key={key}
                                      style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                                      onMouseEnter={() => this.onEnter()}
                                      onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
-    if (fillPercent >= 100) return <li key={key} 
+    if (fillPercent >= 100) return <li key={key}
                                        style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                                        onMouseEnter={() => this.onEnter()}
                                        onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
 
     const remainder = 100 - fillPercent;
     const html = `<div style="background: linear-gradient(to bottom, ${fillColor} ${fillPercent.toFixed(2)}%, ${depletedColor} ${(fillPercent + 0.1).toFixed(2)}%, ${depletedColor} ${remainder.toFixed(2)}%);" />`;
-    return <li key={key} 
+    return <li key={key}
                style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                dangerouslySetInnerHTML={{__html: html}}
                onMouseEnter={() => this.onEnter()}
@@ -128,12 +128,12 @@ class Pills extends React.Component<PillsProps, PillsState> {
     const now = Date.now();
     if (this.props.currentValue < this.lastValue) {
       this.endTimeRed = now + 200;
-        setTimeout(() => this.startFlashRed(), 1);
-        setTimeout(() => this.endFlashRed(), 201);
+      setTimeout(() => this.startFlashRed(), 1);
+      setTimeout(() => this.endFlashRed(), 201);
     } else if (this.props.currentValue > this.lastValue) {
       this.endTimeGreen = now + 200;
-        setTimeout(() => this.startFlashGreen(), 1);
-        setTimeout(() => this.endFlashGreen(), 201);
+      setTimeout(() => this.startFlashGreen(), 1);
+      setTimeout(() => this.endFlashGreen(), 201);
     }
 
     this.lastValue = this.props.currentValue;
@@ -143,9 +143,9 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
       const totalDegrees = 132;
       const degPerPill = totalDegrees / numPills;
-      
+
       let currentDegrees = orientation == Orientation.CircleBottom ? 47 : 175 + degPerPill;
-      
+
       let displayedHealth = 0;
       for (let i = 0; i < numPills; ++i) {
         const remainder = this.props.currentValue - displayedHealth;
