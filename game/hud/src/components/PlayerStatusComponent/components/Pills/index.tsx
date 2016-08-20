@@ -60,26 +60,34 @@ class Pills extends React.Component<PillsProps, PillsState> {
   private componentRef: HTMLUListElement = null;
   private endTimeRed: number = 0;
   startFlashRed = () => {
-    if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashred') != -1) return;
-    this.componentRef.className += ' PlayerStatusComponent__pills--flashred';
+    if (this.componentRef) {
+      if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashred') != -1) return;
+      this.componentRef.className += ' PlayerStatusComponent__pills--flashred';
+    }
   }
 
   endFlashRed = () => {
     if (Date.now() < this.endTimeRed) return;
-    if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashred') == -1) return;
-    this.componentRef.className = this.componentRef.className.replace(' PlayerStatusComponent__pills--flashred', '').trim();
+    if (this.componentRef) {
+      if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashred') == -1) return;
+      this.componentRef.className = this.componentRef.className.replace(' PlayerStatusComponent__pills--flashred', '').trim();
+    }
   }
 
   private endTimeGreen: number = 0;
   startFlashGreen = () => {
-    if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashgreen') != -1) return;
-    this.componentRef.className += ' PlayerStatusComponent__pills--flashgreen';
+    if (this.componentRef) {
+      if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashgreen') != -1) return;
+      this.componentRef.className += ' PlayerStatusComponent__pills--flashgreen';
+    }
   }
 
   endFlashGreen = () => {
     if (Date.now() < this.endTimeGreen) return;
-    if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashgreen') == -1) return;
-    this.componentRef.className = this.componentRef.className.replace(' PlayerStatusComponent__pills--flashgreen', '').trim();
+    if (this.componentRef) {
+      if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashgreen') == -1) return;
+      this.componentRef.className = this.componentRef.className.replace(' PlayerStatusComponent__pills--flashgreen', '').trim();
+    }
   }
 
   // rendering
