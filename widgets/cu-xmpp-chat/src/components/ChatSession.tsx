@@ -131,8 +131,9 @@ class ChatSession {
 
   onchat(args: any): void {
     switch (args.type) {
-      case messageType.SYSTEM: 
+      case messageType.SYSTEM:
         this.recv(new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
+        break;
       case messageType.AVAILIBLE:
       case messageType.UNAVAILIBLE:
         this.presence(args.type, new UserInfo(args.roomName, args.sender.sender, args.sender.isCSE));
