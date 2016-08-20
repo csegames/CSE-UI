@@ -15,6 +15,12 @@ import { chatConfig, ChatConfig } from './ChatConfig';
 import { chatState } from './ChatState';
 import {events} from 'camelot-unchained';
 
+interface LoginInfo {
+  username?: string;
+  password?: string;
+  loginToken?: string;
+}
+
 class ChatSession {
 
   SCROLLBACK_THRESHOLD : number = 50;
@@ -61,7 +67,7 @@ class ChatSession {
     // });
   }
 
-  connect(username: string, password: string) {
+  private internalConnect(login: LoginInfo) {
     if (!this.client) {
       this.client = new ChatClient();
       this.client.on('connect', this.onconnect);
@@ -77,28 +83,20 @@ class ChatSession {
       //   if (username === "") username = window.prompt('username?');
       //   if (password === "###") password = window.prompt('password?');
       // }
-      this.client.connect(username, password);
+      if (login.loginToken) {
+        this.client.connectWithToken(login.loginToken);
+      } else {
+        this.client.connect(login.username, login.password);
+      }
     }
   }
 
+  connect(username: string, password: string) {
+    this.internalConnect({ username: username, password: password });
+  }
+
   connectWithToken(loginToken: string) {
-    if (!this.client) {
-      this.client = new ChatClient();
-      this.client.on('connect', this.onconnect);
-      this.client.on('connectfailed', this.onconnectfailed);
-      this.client.on('ping', this.onping);
-      this.client.on('presence', this.onchat);
-      this.client.on('message', this.onchat);
-      this.client.on('groupmessage', this.onchat);
-      this.client.on('disconnect', this.ondisconnect);
-      this.client.on('rooms', this.onrooms);
-      events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
-      // if (!patcher.hasRealApi()) {
-      //   if (username === "") username = window.prompt('username?');
-      //   if (password === "###") password = window.prompt('password?');
-      // }
-      this.client.connectWithToken(loginToken);
-    }
+    this.internalConnect({ loginToken: loginToken });
   }
 
   onping(ping: any) {
