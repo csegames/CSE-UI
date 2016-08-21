@@ -18,7 +18,7 @@ export interface PillsProps {
   containerClass?: string;
   containerStyle?: Object;
   pillClass?: string;
-  displayWounds?: boolean;
+  wounds?: number;
   woundColor?: string;
   mirror?: boolean;
   valuePerPill: number;

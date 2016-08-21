@@ -170,7 +170,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.RightArm].current}
                  maxValue={this.props.playerStatus.health[BodyParts.RightArm].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.RightArm].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
@@ -180,7 +183,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.LeftArm].current}
                  maxValue={this.props.playerStatus.health[BodyParts.LeftArm].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.LeftArm].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
@@ -190,7 +196,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.Head].current}
                  maxValue={this.props.playerStatus.health[BodyParts.Head].maximum}
                  valueColor={dead ? '#7f7f7f' : '#0093e8'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.Head].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
@@ -200,8 +209,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.Torso].current}
                  maxValue={this.props.playerStatus.health[BodyParts.Torso].maximum}
                  valueColor={dead ? '#7f7f7f' : '#0093e8'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
-
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.Torso].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
@@ -211,7 +222,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.RightLeg].current}
                  maxValue={this.props.playerStatus.health[BodyParts.RightLeg].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.RightLeg].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
           <Pills orientation={Orientation.Horizontal}
                  containerClass='PlayerStatusComponent__healthBars__bodyPart'
@@ -221,7 +235,10 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  currentValue={this.props.playerStatus.health[BodyParts.LeftLeg].current}
                  maxValue={this.props.playerStatus.health[BodyParts.LeftLeg].maximum}
                  valueColor={dead ? '#7f7f7f' : '#2868c7'}
-                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'} />
+                 depletedColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 wounds={this.props.playerStatus.health[BodyParts.LeftLeg].wounds}
+                 woundColor={dead ? '#4e4e4e' : '#3c3c3c'}
+                 />
 
         </div>
 
