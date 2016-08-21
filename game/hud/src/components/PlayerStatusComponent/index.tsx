@@ -15,7 +15,7 @@ import ActiveEffectIcon from '../../components/ActiveEffectIcon'
 
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
-const VALUE_PER_BODY_PARTY_PILL = 1000;
+const VALUE_PER_BODY_PARTY_PILL = 2500;
 const VALUE_PER_BLOOD_PILL = 1000;
 const VALUE_PER_STAMINA_PILL = 100;
 
