@@ -327,7 +327,28 @@ export default function reducer(state: PlayerState = initialState,
 
       let playerStatus = clone(state.playerStatus);
       const part = parseInt((Math.random() * 5).toFixed(0));
-      playerStatus.health[part].current = damage ? playerStatus.health[part].current - parseInt(e.value) : playerStatus.health[part].current + parseInt(e.value);
+      playerStatus.health[part].current = damage
+        ? playerStatus.health[part].current - parseInt(e.value)
+        : playerStatus.health[part].current + parseInt(e.value);
+      // range check
+      if (playerStatus.health[part].current > playerStatus.health[part].maximum) playerStatus.health[part].current = playerStatus.health[part].maximum;
+      if (playerStatus.health[part].current < 0) playerStatus.health[part].current = 0;
+
+      // Rubbish wounds emulation
+      let wounds = playerStatus.health[part].wounds + (1 - ((Math.random() * 3)|0));
+      if (wounds < 0) wounds = 0;
+      if (wounds > 3) wounds = 3;
+      playerStatus.health[part].wounds = wounds;
+      if (wounds === 1 && playerStatus.health[part].current > 666) {
+        playerStatus.health[part].current = 666;
+      }
+      if (wounds === 2 && playerStatus.health[part].current > 333) {
+        playerStatus.health[part].current = 333;
+      }
+      if (wounds === 3) {
+        playerStatus.health[part].current = 0;
+      }
+
       return Object.assign({}, state, {
         events: newEvents,
         playerStatus: playerStatus,
