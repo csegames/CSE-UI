@@ -240,13 +240,13 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
     const bgLayer = (
       <div className='PlayerStatusComponent__pills__layer'
-            style={{ background: this.props.depletedColor}}>
+            style={{background: this.props.depletedColor}}>
       </div>
     );
 
     const valueLayer = (
       <div className='PlayerStatusComponent__pills__layer'
-            style={{ background: this.props.valueColor, [dimension]: filled + '%' }}>
+           style={{background: this.props.valueColor, [dimension]: filled + '%'}}>
       </div>
     );
 
@@ -254,11 +254,11 @@ class Pills extends React.Component<PillsProps, PillsState> {
     if (wounds) {
       woundsLayer = (
         <div className='PlayerStatusComponent__pills__layer PlayerStatusComponent__pills__layer--wounds'
-            style={{
-              background: this.props.woundColor,
-              [dimension]: (100 - wmax) + '%',
-              [dimension === 'width' ? 'right' : 'bottom']: '0'
-            }}>
+             style={{
+               background: this.props.woundColor,
+               [dimension]: (100 - wmax) + '%',
+               [dimension === 'width' ? 'right' : 'bottom']: '0'
+             }}>
         </div>
       );
     }
