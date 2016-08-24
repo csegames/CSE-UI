@@ -12,7 +12,7 @@ function P2DP(v: number, m: number) {
 }
 
 const PILL_DIVIDER_WIDTH = 2;     // % width of a pill separator
-const PILL_MARGIN = 10;            // % widht of pill margin
+const PILL_MARGIN = 10;            // % width of pill margin
 
 export enum Orientation {
   Horizontal,
@@ -130,7 +130,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     // The available width for pills is 100 minus dividers total width
     // Pill size is re-calculated based on the number we need (calculated above)
     //  and the available width
-    // Finally any remaining unused width is spread accross the deviders
+    // Finally any remaining unused width is spread accross the dividers
     let divider = PILL_DIVIDER_WIDTH;                         // divider start size
     const count = (100 / pillSize)|0;                         // how many pills we need
     const sep = (count - 1) * divider;                        // total divider space
@@ -253,7 +253,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     let woundsLayer: JSX.Element = undefined;
     if (wounds) {
       woundsLayer = (
-        <div className='PlayerStatusComponent__pills__layer playerStatusComponent__pills__layer--wounds'
+        <div className='PlayerStatusComponent__pills__layer PlayerStatusComponent__pills__layer--wounds'
             style={{
               background: this.props.woundColor,
               [dimension]: (100 - wmax) + '%',
