@@ -16,6 +16,8 @@ import {fetchCharacters, selectCharacter, CharactersState} from '../redux/module
 
 import Animate from '../../lib/Animate';
 
+function clone<T>(obj: T): T { return Object.assign({}, obj); }
+
 export enum ServerStatus {
   OFFLINE,
   ONLINE,
@@ -88,7 +90,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
   }
 
   renderItem(item: any, hideSelected:boolean) {
-    if (item.serverInfo && !(hideSelected && this.props.serversState.currentServer && this.props.serversState.currentServer.channelID == item.serverInfo.channelID)) {
+    if (item.serverInfo) {
       const totalPlayers = (item.serverInfo.arthurians|0) + (item.serverInfo.tuathaDeDanann|0) + (item.serverInfo.vikings|0);
       const status = item.serverInfo.playerMaximum > 0 ? 'online' : 'offline';
       const accessLevel = AccessType[item.serverInfo.accessLevel];
@@ -103,7 +105,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
             data-delay='150' data-tooltip={status} /></div>
         </div>
       );
-    } else if(!(hideSelected && this.props.channelsState.selectedChannel && this.props.channelsState.selectedChannel.channelID == item.channelInfo.channelID)) {
+    } else if(item.channelInfo) {
       return (
         <div className='server-select' onClick={() => this.onSelectedServerChanged(item)}>
           <div className='server-details'>
@@ -117,17 +119,20 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
   mergeServerChannelLists(servers:Array<Server>, channels:Array<Channel>) : any {
 
     let filteredServers:Array<Server> = servers.filter((s) => { return s.name != 'localhost'; });
+    this.mergedServerList = [];
 
     filteredServers.forEach(s => {
-      this.mergedServerList[s.channelID] = this.mergedServerList[s.channelID] || { displayName: s.name, serverInfo: null, channelInfo:null };
-      this.mergedServerList[s.channelID].serverInfo = s;
-      this.mergedServerList[s.channelID].displayName = s.name;
+      this.mergedServerList[s.name] = Object.assign(this.mergedServerList[s.name] || {}, {displayName: s.name, serverInfo: s})
+      //this.mergedServerList[s.name] = this.mergedServerList[s.name] || { displayName: s.name, serverInfo: null, channelInfo:null };
+      //this.mergedServerList[s.name].serverInfo = s;
+      //this.mergedServerList[s.name].displayName = s.name;
     });
 
     channels.forEach(c => {
-      this.mergedServerList[c.channelID] = this.mergedServerList[c.channelID] || { displayName: c.channelName, serverInfo: null, channelInfo:null };
-      this.mergedServerList[c.channelID].channelInfo = c;
-      this.mergedServerList[c.channelID].displayName = c.channelName;
+      this.mergedServerList[c.channelName] = Object.assign(this.mergedServerList[c.channelName] || {}, {displayName: c.channelName, channelInfo: c})
+      //this.mergedServerList[c.channelName] = this.mergedServerList[c.channelName] || { displayName: c.channelName, serverInfo: null, channelInfo:null };
+      //this.mergedServerList[c.channelName].channelInfo = c;
+      //this.mergedServerList[c.channelName].displayName = c.channelName;
     });
 
     let dictToArray:any[] = [];
@@ -146,7 +151,7 @@ class SelectServer extends React.Component<SelectServerProps, SelectServerState>
       return false;
     }));
   }
-  
+
   render() {
     const {servers} = this.props.serversState;
     const {channels} = this.props.channelsState;
