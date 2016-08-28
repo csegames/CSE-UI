@@ -272,8 +272,19 @@ function getInitialState(): any {
   return loadState(initialState());
 }
 
-function loadState(state: LayoutState = JSON.parse(localStorage.getItem(localStorageKey)) as LayoutState) : LayoutState {
+function loadStateFromStorage(): LayoutState {
+  let state: string;
+  try {
+    state = localStorage.getItem(localStorageKey);
+    return JSON.parse(state);
+  } catch(e) {
+    const error: Error = e;
+    console.error('loadStateFromStorage: ' + error.message + ' state=' + state);
+    return null;
+  }
+}
 
+function loadState(state: LayoutState = loadStateFromStorage()) : LayoutState {
   if (state) {
     const reset = state.reset !== FORCE_RESET_CODE;
     if (!reset) {
