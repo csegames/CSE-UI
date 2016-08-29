@@ -5,6 +5,7 @@
  */
 
 .PlayerStatusComponent__pills {
+  position: relative;
   left: 0;
   list-style: none;
   margin: 0;
@@ -52,6 +53,20 @@
         left: 0;
         top: 0;
       }
+    }
+  }
+
+  .PlayerStatusComponent__pills__layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    &.PlayerStatusComponent__pills__layer--wounds {
+      top: auto;
+      left: auto;
+      bottom: 0;
+      right: 0;
     }
   }
 }
