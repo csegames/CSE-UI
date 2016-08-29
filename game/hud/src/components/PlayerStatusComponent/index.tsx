@@ -19,6 +19,10 @@ const VALUE_PER_BODY_PARTY_PILL = 2500;
 const VALUE_PER_BLOOD_PILL = 1000;
 const VALUE_PER_STAMINA_PILL = 100;
 
+const BLOOD_REGEN_FLASH_THRESHOLD = 1;             // 1%
+const STAMINA_REGEN_FLASH_THRESHOLD = 1;           // 1%
+const BODY_PART_REGEN_FLASH_THRESHOLD = 1;         // 1%
+
 const VALUE_COLOR = '#2868c7';
 const VALUE_COLOR_DEAD = '#7f7f7f';
 const DEPLETED_COLOR = '#3c3c3c';
@@ -110,6 +114,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BLOOD_PILL}
                  currentValue={this.props.playerStatus.blood.current}
                  maxValue={this.props.playerStatus.blood.maximum}
+                 flashThreshold={BLOOD_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'red'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
 
@@ -120,6 +125,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_STAMINA_PILL}
                  currentValue={this.props.playerStatus.stamina.current}
                  maxValue={this.props.playerStatus.stamina.maximum}
+                 flashThreshold={STAMINA_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'yellow'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
 
@@ -176,6 +182,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.RightArm].current}
                  maxValue={this.props.playerStatus.health[BodyParts.RightArm].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.RightArm].wounds}
@@ -189,6 +196,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.LeftArm].current}
                  maxValue={this.props.playerStatus.health[BodyParts.LeftArm].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.LeftArm].wounds}
@@ -202,6 +210,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.Head].current}
                  maxValue={this.props.playerStatus.health[BodyParts.Head].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.Head].wounds}
@@ -215,6 +224,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.Torso].current}
                  maxValue={this.props.playerStatus.health[BodyParts.Torso].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.Torso].wounds}
@@ -228,6 +238,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.RightLeg].current}
                  maxValue={this.props.playerStatus.health[BodyParts.RightLeg].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.RightLeg].wounds}
@@ -241,6 +252,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
                  currentValue={this.props.playerStatus.health[BodyParts.LeftLeg].current}
                  maxValue={this.props.playerStatus.health[BodyParts.LeftLeg].maximum}
+                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
                  wounds={this.props.playerStatus.health[BodyParts.LeftLeg].wounds}

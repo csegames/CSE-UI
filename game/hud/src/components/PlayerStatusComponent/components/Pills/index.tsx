@@ -34,6 +34,7 @@ export interface PillsProps {
   depletedColor: string;
   wounds?: number;
   woundColor?: string;
+  flashThreshold: number;
 }
 
 export interface PillsState {
@@ -178,11 +179,12 @@ class Pills extends React.Component<PillsProps, PillsState> {
     }
 
     const now = Date.now();
-    if (this.props.currentValue < this.lastValue) {
+    const flashThreshold = this.props.maxValue * this.props.flashThreshold / 100;
+    if (this.lastValue - this.props.currentValue > flashThreshold) {
       this.endTimeRed = now + 200;
       setTimeout(() => this.startFlashRed(), 1);
       setTimeout(() => this.endFlashRed(), 201);
-    } else if (this.props.currentValue > this.lastValue) {
+    } else if (this.props.currentValue - this.lastValue > flashThreshold) {
       this.endTimeGreen = now + 200;
       setTimeout(() => this.startFlashGreen(), 1);
       setTimeout(() => this.endFlashGreen(), 201);
