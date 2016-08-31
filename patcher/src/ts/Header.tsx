@@ -43,7 +43,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       <div id={this.name} className='navbar-fixed'>
         <nav>
         <div className='nav-wrapper'>
-          <a className='brand-logo cu-logo' onClick={this.internalLink.bind(this, Routes.HERO)}><img src='images/cu_logo.png' /></a>
+          <a className='brand-logo cu-logo' onClick={this.internalLink.bind(this, Routes.HERO)}><img src='images/cu_logo_metal.png' /></a>
           <ul id='nav-mobile' className='right'>
             <li className={this.props.activeRoute == Routes.HERO ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.HERO)}>Home</a></li>
             <li className={this.props.activeRoute == Routes.NEWS ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.NEWS)}>News</a></li>
