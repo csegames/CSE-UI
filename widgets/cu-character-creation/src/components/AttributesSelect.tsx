@@ -113,9 +113,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
   }
 
   calculateDerivedValue = (derivedInfo: AttributeInfo, offset: AttributeOffsetInfo) => {
-    console.log(derivedInfo);
     let primaryInfo = this.props.attributes.find((a: AttributeInfo) => a.name == derivedInfo.derivedFrom);
-    console.log(primaryInfo);
     let primaryOffsetValue = offset == null ? 0 : typeof offset.attributeOffsets[primaryInfo.name] === 'undefined' ? 0 : offset.attributeOffsets[primaryInfo.name];
     let primaryValue = primaryInfo.baseValue + primaryInfo.allocatedPoints + primaryOffsetValue;
 
@@ -157,12 +155,13 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
                 return this.generateAttributeView(a, a.baseValue + offsetValue);
               })}
             </div>
+            
             <div className='row'>
-            <h4>Derived</h4>
-            {derived.map((a: AttributeInfo) => {
-              return this.generateAttributeView(a, this.calculateDerivedValue(a, offset));
-            })}
-          </div>
+              <h4>Derived</h4>
+              {derived.map((a: AttributeInfo) => {
+                return this.generateAttributeView(a, this.calculateDerivedValue(a, offset));
+              })}
+            </div>
           </div>
         </div>
       </div>
