@@ -16,12 +16,12 @@ export interface NewsProps {
 
 class News extends React.Component<NewsProps, {}> {
   public name: string = 'cse-patcher-news';
-  
+
   fetchNextPage = () => {
     if (this.props.news.isFetching) return;
     this.props.fetchPage(this.props.news.nextPage);
   }
-  
+
   renderNewsItem = (post: Post) => {
     return (
       <li className='cse-patcher-news-item' key={post.id}>
@@ -29,15 +29,15 @@ class News extends React.Component<NewsProps, {}> {
       </li>
     );
   }
-  
+
   componentDidMount() {
     if (this.props.news.posts.length == 0) {
       this.fetchNextPage();
     }
   }
-  
+
   render() {
-    
+
     let spinner: any = <div />;
     if (this.props.news.isFetching) {
       spinner = (
@@ -54,7 +54,7 @@ class News extends React.Component<NewsProps, {}> {
         </div>
       );
     }
-    
+
     let newsItems = this.props.news.posts.map(this.renderNewsItem);
     return (
       <div id={this.name} className='main-content'>
