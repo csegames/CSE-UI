@@ -105,7 +105,7 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
   const removed: T[] = [];
 
   if (!(arr && arr.length)) return {result, removed};
-  
+
   let i = result.length;
   while(--i) {
     const o = Array.isArray(result[i]) ? cloneArray(result[i] as any) as any : clone(result[i]);
@@ -115,12 +115,12 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
       result.unshift(o);
     }
   }
-  
+
   return {result, removed};
 }
 
 // works with arrays of basic types, number, string, boolean
-export function simpleMergeUnique<T>( ...arrays: T[] ) 
+export function simpleMergeUnique<T>( ...arrays: T[] )
 {
   return [ ...new Set( [].concat( ...arrays ) ) ];
 }

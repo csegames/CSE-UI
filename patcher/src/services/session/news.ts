@@ -155,12 +155,18 @@ export default function reducer(state: NewsState = getInitialState(), action: Ne
         isFetching: true
       });
     case FETCH_PAGE_SUCCESS:
+      let posts = hashMerge((p: Post) => '' + p.id, state.posts, action.posts);
+      posts.sort(function(a, b) {
+        const aDate = new Date(a.date);
+        const bDate = new Date(b.date);
+        return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+      });
       return merge(state, {
         isFetching: false,
         didInvalidate: false,
         nextPage: state.nextPage + 1,
         lastUpdated: action.when,
-        posts: hashMerge((p: Post) => '' + p.id, state.posts, action.posts)
+        posts
       });
     case FETCH_PAGE_FAILED:
       return merge(state, {
