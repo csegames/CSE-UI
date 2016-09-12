@@ -27,13 +27,13 @@ export interface HeroState {
 class Hero extends React.Component<HeroProps, HeroState> {
   public name:string = 'cse-patcher-hero';
   private timeout: any = null;
-    
+
   constructor(props: HeroProps) {
     super(props);
     this.state = {currentItem: 0};
     this.timeNext(1);
   }
-  
+
   renderHeroItem = (item: HeroContentItem) => {
     return (
       <div className='cse-patcher-hero-item' key={item.id}>
@@ -41,7 +41,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
       </div>
     )
   }
-  
+
   selectIndex = (index: number) => {
     clearTimeout(this.timeout);
     this.timeout = null;
@@ -50,13 +50,13 @@ class Hero extends React.Component<HeroProps, HeroState> {
     });
     this.timeNext(index++);
   }
-  
+
   timeNext = (index: number) => {
     let next = this.state.currentItem+1;
     if (next >= this.props.items.length) next = 0;
     this.timeout = setTimeout(() => this.selectIndex(next), 30000);
   }
-  
+
   componentWillUnmount() {
     clearInterval(this.timeout);
   }
