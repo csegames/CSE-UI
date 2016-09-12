@@ -298,7 +298,7 @@ function apiServersToPatcherServers(patcherServers: PatcherServer[], servers: Se
       }
     }
 
-    if (!found) {
+    if (!found && s.name !== 'localhost') {
       result.push({
         id: ++idGen,
         type: ServerType.CUGAME,
@@ -368,7 +368,7 @@ function updateCharactersWithServers(patcherServers: PatcherServer[], characters
   let i = characters.length;
   while(--i >= 0) {
     const character = clone(characters[i]);
-    
+
     let serverIndex = result.length;
     while(--serverIndex >= 0) {
       let s = result[serverIndex];
@@ -469,7 +469,7 @@ export default function reducer(state: ServersState = getInitialState(), action:
       serversStatus.lastFetchSuccess = action.when;
 
       const servers = apiServersToPatcherServers(state.servers, action.servers);
-      
+
       let selected = state.selectedServer ? clone(state.selectedServer) : null;
       if (selected) {
         const selectedIndex = findIndexWhere(servers, s => s.name === state.selectedServer.name)
