@@ -20,51 +20,57 @@ const UNMUTE_MUSIC = 'cse-patcher/sounds/UNMUTE_MUSIC';
 
 export interface SoundsAction extends BaseAction {}
 
-export function muteSounds(): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(true));
+export interface SoundsState {
+  playMusic: boolean;
+  playSound: boolean;
+}
+
+export function muteSounds(state: SoundsState): SoundsAction {
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playSound: false})));
   return {
     type: MUTE_SOUNDS,
     when: new Date(),
   };
 }
 
-export function unMuteSounds(): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(false));
+export function unMuteSounds(state: SoundsState): SoundsAction {
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playSound: true})));
   return {
     type: UNMUTE_SOUNDS,
     when: new Date(),
   };
 }
 
-export function muteMusic(): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(true));
+export function muteMusic(state: SoundsState): SoundsAction {
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playMusic: false})));
   return {
     type: MUTE_MUSIC,
     when: new Date(),
   };
 }
 
-export function unMuteMusic(): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(false));
+export function unMuteMusic(state: SoundsState): SoundsAction {
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playMusic: true})));
   return {
     type: UNMUTE_MUSIC,
     when: new Date(),
   };
 }
 
-export interface SoundsState {
-  playMusic: boolean;
-  playSound: boolean;
-}
-
-function getInitialState() {
-  return {
+function getInitialState(): SoundsState {
+  let initialState: SoundsState = {
     playMusic: true,
-    playSound: true,
+    playSound: true
   };
-}
+  try {
+    const savedState = JSON.parse(localStorage.getItem(localStorageKey));
+    Object.assign(initialState, savedState);
+  } catch (error) {
+    // Unable to read saved sound settings. Use defaults.
+  }
 
-const initialState = JSON.parse(localStorage.getItem(localStorageKey)) || false;
+  return initialState;
+}
 
 export default function reducer(state: SoundsState = getInitialState(), action: SoundsAction = defaultAction): SoundsState {
   switch(action.type) {
