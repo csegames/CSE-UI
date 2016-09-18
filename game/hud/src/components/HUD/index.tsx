@@ -15,13 +15,15 @@ import {SessionState} from '../../services/session/reducer';
 import {InvitesState} from '../../services/session/invites';
 import HUDDrag, {HUDDragState, HUDDragOptions} from '../HUDDrag';
 
+import Compass from '../../widgets/Compass';
 import Crafting from '../../widgets/Crafting';
-import PlayerHealth from '../../widgets/PlayerHealth';
 import EnemyTargetHealth from '../../widgets/TargetHealth';
 import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
-import Warband from '../../widgets/Warband';
-import Respawn from '../../widgets/Respawn';
 import InteractiveAlert, {Alert} from '../InteractiveAlert';
+import PlayerHealth from '../../widgets/PlayerHealth';
+import Respawn from '../../widgets/Respawn';
+import Warband from '../../widgets/Warband';
+
 
 function select(state: SessionState): HUDProps {
   return {
@@ -138,6 +140,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
         case 'FriendlyTargetHealth':
           orderedWidgets[w.zOrder] = this.draggable('FriendlyTargetHealth', widgets, FriendlyTargetHealth, {lockHeight: true, lockWidth: true}, {});
           break;
+        case 'Compass':
+          orderedWidgets[w.zOrder] = this.draggable('Compass', widgets, Compass, {lockHeight: true, lockWidth: true}, {});
+          break;
         case 'Respawn':
           orderedWidgets[w.zOrder] = this.draggable('Respawn', widgets, Respawn, {}, {});
           break;
@@ -157,7 +162,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <InteractiveAlert dispatch={this.props.dispatch}
                           invites={this.props.invitesState.invites} />
-        
+
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>

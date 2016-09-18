@@ -20,13 +20,13 @@ html, body {
   width: 100%;
   height: 100%;
   @import './_font.scss';
-  
+
   .chat-window {
     position: relative;
     overflow: hidden;
     display: block;
   }
-  
+
   // components
   @import './components/PlayerStatusComponent/index';
   @import './components/HUD/index';
@@ -35,14 +35,15 @@ html, body {
   @import './components/InteractiveAlert/index';
   @import './components/Slider/index';
   @import './components/HUDDrag/index';
-  
+
   // widgets
+  @import './widgets/Compass/index';
   @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
+  @import './widgets/Respawn/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';
-  @import './widgets/Respawn/index';
-  
+
   // external scss
   @import 'cu-xmpp-chat/lib/index.scss';
 
