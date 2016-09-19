@@ -83,7 +83,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   onPatcherAPIUpdate = () => {
     this.setState({});
   }
-  
+
   onLogIn = () => {
     setTimeout(() => this.setState({}), 500);
   }
@@ -139,8 +139,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     return (
       <div id={this.name}>
         <WindowHeader soundsState={this.props.soundsState}
-          onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ? muteSounds() : unMuteSounds())}
-          onMuteMusic={() => this.props.dispatch(this.props.soundsState.playMusic ? muteMusic() : unMuteMusic())}/>
+          onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ? muteSounds(this.props.soundsState) : unMuteSounds(this.props.soundsState))}
+          onMuteMusic={() => this.props.dispatch(this.props.soundsState.playMusic ? muteMusic(this.props.soundsState) : unMuteMusic(this.props.soundsState))}/>
         <Header changeRoute={this.onRouteChanged} activeRoute={this.props.currentRoute} openChat={this.showChat} />
         <Sidebar onLogIn={this.onLogIn} />
         <div className='main-content'>
