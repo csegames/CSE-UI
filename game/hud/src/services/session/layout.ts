@@ -16,13 +16,14 @@ const LOCK_HUD = 'hud/layout/LOCK_HUD';
 const UNLOCK_HUD = 'hud/layout/UNLOCK_HUD';
 const SET_POSITION = 'hud/layout/SET_POSITION';
 const SAVE_POSITION = 'hud/layout/SAVE_POSITION';
+const SET_VISIBILITY = 'hud/layout/SET_VISIBILITY';
 const RESET_HUD = 'hud/layout/RESET_HUD';
 
 const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = 'apple'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.1.2'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 function clone<T>(obj: T): T {
   return Object.assign({}, obj);
@@ -40,6 +41,7 @@ export interface LayoutAction {
   widget?: string;
   position?: Position;
   size?: Size;
+  visibility?: boolean;
 }
 
 export interface Anchor {
@@ -60,6 +62,7 @@ export interface Position {
   width: number;
   height: number;
   scale: number;
+  visibility: boolean;
 }
 
 let hub: any = null;
@@ -97,6 +100,14 @@ export function savePosition(name: string, pos: Position): LayoutAction {
     widget: name,
     position: pos
   }
+}
+
+export function setVisibility(name: string, vis: boolean): LayoutAction {
+  return {
+    type: SET_VISIBILITY,
+    widget: name,
+    visibility: vis,
+  };
 }
 
 function init(): LayoutAction {
@@ -147,11 +158,11 @@ const initialState = () => {
     reset: FORCE_RESET_CODE,
     locked: true,
     widgets: {
-      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:302},size:{width:480,height:240},scale:1},
-      PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
-      EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6},
-      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6},
-      Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1},
+      Chat:{x:{anchor:-1,px:0},y:{anchor:1,px:302},size:{width:480,height:240},scale:1,visibility:true},
+      PlayerHealth:{x:{anchor:0,px:-294},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
+      EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
+      FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6,visibility:true},
+      Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1,visibility:false},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
@@ -171,6 +182,7 @@ interface AnchoredPosition {
   y: AnchoredAxis;
   size: Size;
   scale: number;
+  visibility: boolean;
 }
 
 function axis2anchor(anchor: AxisAnchorRelativeTo, position: number, range: number) : AnchoredAxis {
@@ -191,7 +203,8 @@ function position2anchor(current: Position, screen: Size) : AnchoredPosition {
       width: current.width,
       height: current.height
     },
-    scale: current.scale
+    scale: current.scale,
+    visibility: current.visibility,
   };
   return position;
 }
@@ -214,7 +227,8 @@ function anchored2position(anchored: AnchoredPosition, screen: Size) : Position 
     anchor: { x: anchored.x.anchor, y: anchored.y.anchor },
     width: anchored.size.width,
     height: anchored.size.height,
-    scale: anchored.scale
+    scale: anchored.scale,
+    visibility: anchored.visibility,
   };
   return position;
 }
@@ -369,6 +383,13 @@ export default function reducer(state: LayoutState = getInitialState(),
       position = anchorPosition(action.position, screen);
       Object.assign(widgets[action.widget], position);
       if (position.scale <= minScale) widgets[action.widget].scale = minScale;
+      outState = Object.assign({}, state, {
+        widgets: widgets
+      });
+      break;
+    case SET_VISIBILITY:
+      widgets = state.widgets;
+      widgets[action.widget].visibility = action.visibility;
       outState = Object.assign({}, state, {
         widgets: widgets
       });

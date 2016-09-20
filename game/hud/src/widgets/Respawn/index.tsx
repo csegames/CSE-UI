@@ -10,9 +10,9 @@ import RespawnLocation from './RespawnLocation';
 import RespawnButton from './components/RespawnButton';
 
 export interface RespawnProps {
+  setVisibility: (vis: boolean) => void;
 };
 export interface RespawnState {
-  visible: boolean;
   nearest: RespawnLocation[];
 };
 
@@ -26,30 +26,21 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   constructor(props: RespawnProps) {
     super(props);
     this.state = {
-      visible: false,
       nearest: null
     };
   }
 
   componentDidMount() {
-
-    // monitor player health, show/hide respawn ui accordingly
-    cuAPI.OnCharacterHealthChanged((health: number) => {
-      if (health) {
-        if (this.state.visible) {
-          this.hide();
-        }
-      } else {
-        this.show();
-      }
-    });
-
     cuAPI.OnCharacterFactionChanged((cf: number) => {
       switch(cf) {
         case faction.ARTHURIAN: this.faction = 'A'; break;
         case faction.TDD: this.faction = 'T'; break;
         case faction.VIKING: this.faction = 'V'; break;
       }
+    });
+
+    this.getSpawnPoints((spawns: RespawnLocation[]): void => {
+      this.setState({ nearest: spawns.slice(0,3)});
     });
   }
 
@@ -87,16 +78,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     });
   }
 
-  hide = (): void => {
-    this.setState({ visible: false } as any);
-  }
-
-  show = (): void => {
-    this.getSpawnPoints((spawns: RespawnLocation[]): void => {
-      this.setState({ nearest: spawns.slice(0,3), visible: true });
-    });
-  }
-
   render() {
     const buttons: JSX.Element[] = [];
     let key: number = 0;
@@ -105,7 +86,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         buttons.push(<RespawnButton key={key++} label="Control Point" location={spawn}/>);
       });
     }
-    if (!this.state.visible) return null;
     return (
       <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
         <div className="cu-window-header"><div className="title">Respawn</div></div>

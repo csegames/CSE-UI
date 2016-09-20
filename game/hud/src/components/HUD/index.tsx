@@ -10,7 +10,7 @@ let Draggable = require('react-draggable');
 import {client, GroupInvite} from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, resetHUD} from '../../services/session/layout';
+import {LayoutState, Position, lockHUD, unlockHUD, savePosition, initialize, resetHUD, setVisibility} from '../../services/session/layout';
 import {HUDSessionState} from '../../services/session/reducer';
 
 import Crafting from '../../widgets/Crafting';
@@ -67,6 +67,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   componentDidMount() {
     this.props.dispatch(initialize());
+
+    // manage visibility of respawn widget based on having health or not
+    client.OnCharacterHealthChanged((health: number) => {
+      if (health <= 0) {
+        this.props.dispatch(setVisibility('Respawn', true));
+      } else if (this.props.layout.widgets['Respawn'] && this.props.layout.widgets['Respawn'].visibility) {
+        this.props.dispatch(setVisibility('Respawn', false));
+      }
+    });
   }
 
   handleDrag =  (e:any, ui:any) => {
@@ -101,7 +110,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
         anchor: pos.anchor,
         width: pos.width,
         height: pos.height,
-        scale: pos.scale - factor
+        scale: pos.scale - factor,
+        visibility: pos.visibility,
       }));
     } else {
       this.props.dispatch(savePosition(name, {
@@ -110,9 +120,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
         anchor: pos.anchor,
         width: pos.width,
         height: pos.height,
-        scale: pos.scale + factor
+        scale: pos.scale + factor,
+        visibility: pos.visibility,
       }));
     }
+  }
+
+  setVisibility = (widget: string, vis: boolean) => {
+    this.props.dispatch(setVisibility(widget, vis));
   }
 
   helpWidget = () => {
@@ -150,7 +165,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                   onDrag={this.handleDrag}
                   onStop={(e:any, ui:any) => {
                     this.onStop();
-                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, anchor: pos.anchor, width: pos.width, height: pos.height, scale: pos.scale}));
+                    this.props.dispatch(savePosition(name, {x: ui.x, y: ui.y, anchor: pos.anchor, width: pos.width, height: pos.height, scale: pos.scale, visibility: pos.visibility}));
                   }}>
         <div>
           <div className={containerClass}
@@ -158,10 +173,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
                  transform:`scale(${pos.scale})`,
                  '-webkit-transform':`scale(${pos.scale})`,
                  height: `${pos.height}px`,
-                 width: `${pos.width}px`
+                 width: `${pos.width}px`,
                }}
                onWheel={(e: any) => this.onWheel(name, e)}>
-            <Widget {...props} />
+            {pos.visibility ? <Widget setVisibility={(vis: boolean) => this.setVisibility(name, vis)} {...props} /> : null}
             {dragHandle}
           </div>
         </div>
