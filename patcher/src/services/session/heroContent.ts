@@ -67,7 +67,9 @@ export function fetchHeroContent() {
   return (dispatch: (action: any) => any) => {
     dispatch(requestHeroContent());
     return fetchJSON(HeroContentUrl)
-      .then((items: HeroContentItem[]) => dispatch(fetchHeroContentSuccess(items)))
+      .then((items: HeroContentItem[]) => {
+        dispatch(fetchHeroContentSuccess(items))
+      })
       .catch((error: ResponseError) => dispatch(fetchHeroContentFailed(error)));
   }
 }
@@ -97,7 +99,11 @@ export default function reducer(state: HeroContentState = getInitialState(), act
       return merge(state, {
         isFetching: false,
         lastFetchSuccess: action.when,
-        items: hashMerge((o: HeroContentItem) => o.id, action.items, state.items),
+        items: hashMerge((o: HeroContentItem) => o.id, action.items, state.items).sort(function(a, b) {
+          const aDate = new Date(a.utcDateStart);
+          const bDate = new Date(b.utcDateStart);
+          return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+        }),
       });
     }
 
