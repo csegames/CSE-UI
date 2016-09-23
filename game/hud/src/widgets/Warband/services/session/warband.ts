@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 15:28:15
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-21 19:22:52
+ * @Last Modified time: 2016-09-23 10:28:16
  */
 
 import {client, GroupInvite, groupType, signalr, WarbandMember, events, cu} from 'camelot-unchained';
@@ -109,8 +109,7 @@ function warbandAbandoned(): WarbandAction {
 }
 
 function memberJoined(member: WarbandMember): WarbandAction {
-  console.log(`member joined ${member}`)
-  //systemMessage(`${member.name} has joined your warband.`);
+  systemMessage(`${member.name} has joined your warband.`);
   return {
     type: MEMBER_JOINED,
     when: new Date(),

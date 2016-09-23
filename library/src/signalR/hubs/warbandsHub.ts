@@ -149,7 +149,7 @@ const initializeHub = (callback: (succeeded: boolean) => any) => {
 
   //const hub = ($ as any).connection.warbandsHub;
   const conn = ($ as any).hubConnection();
-  conn.url = 'http://localhost:1337/signalr';
+  conn.url = `${client.webAPIHost}/signalr`;
   const hub = conn.createHubProxy('warbandsHub');
 
   registerEvents(hub);

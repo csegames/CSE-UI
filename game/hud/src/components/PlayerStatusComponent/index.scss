@@ -8,8 +8,11 @@
 
 .PlayerStatusComponent {
   -webkit-user-select: none !important;
+  user-select: none !important;
   -webkit-user-drag: none !important;
   cursor: default !important;
+  width: 100%;
+  height: 100%;
 }
 
 .PlayerStatusComponent--mirrored {

@@ -4,6 +4,12 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .HUD {
   width: 100%;
   height: 100%;

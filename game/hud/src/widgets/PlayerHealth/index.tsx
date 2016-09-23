@@ -52,7 +52,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     if (hide) return null;
     const dead = this.props.player.playerStatus.blood.current <= 0 || this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
     return (
-      <div className={`player-health ${this.props.containerClass}`} onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+      <div className={`Playerhealth ${this.props.containerClass}`} onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
         <PlayerStatusComponent containerClass='PlayerHealth' playerStatus={this.props.player.playerStatus} events={this.props.player.events}/>
       </div>
     );

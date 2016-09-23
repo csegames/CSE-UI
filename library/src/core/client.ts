@@ -38,7 +38,6 @@ if (window.opener && window.opener.cuAPI) {
 
 }
 
-client.webAPIHost = 'http://localhost:1337';
 if (!client.apiVersion) client.apiVersion = 1;
 if (!client.shardID) client.shardID = 1;
 if (!client.characterID) client.characterID = 'KCt3dNCC6dKPyNzD0SR200';

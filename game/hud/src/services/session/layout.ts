@@ -23,7 +23,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = '0.1.3'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.1.10'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 function clone<T>(obj: T): T {
   return Object.assign({}, obj);
@@ -163,7 +163,7 @@ const initialState = () => {
       EnemyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:315},size:{width:350,height:200},scale:0.6,visibility:true},
       FriendlyTargetHealth:{x:{anchor:0,px:-18},y:{anchor:1,px:195},size:{width:350,height:200},scale:0.6,visibility:true},
       Respawn:{x:{anchor:0,px:-100},y:{anchor:0,px:-100},size:{width:200,height:200},scale:1,visibility:false},
-      Warband:{x:{anchor:-1,px:0},y:{anchor:-1,px:10},size:{width:300,height:500},scale:1,visibility:true},
+      Warband:{x:{anchor:-1,px:-20},y:{anchor:-1,px:-120},size:{width:200,height:700},scale:0.6,visibility:true},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
@@ -354,9 +354,9 @@ export default function reducer(state: LayoutState = getInitialState(),
 
   let widgets: any;
   let outState: LayoutState = state;
-  let screen: Size;
   let anchored: AnchoredPosition;
   let position: Position;
+  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
 
   switch(action.type) {
     case INITIALIZE:
@@ -368,24 +368,25 @@ export default function reducer(state: LayoutState = getInitialState(),
     }
     case RESET_HUD:
     {
-      outState = Object.assign({}, loadState(clone(initialState())));
+      outState = Object.assign({}, loadState(clone(initialState())), {lastScreenSize: screen});
       break;
     }
     case SET_POSITION:
       widgets = state.widgets;
       widgets[action.widget] = action.position;
       outState = Object.assign({}, state, {
-        widgets: widgets
+        widgets: widgets,
+        lastScreenSize: screen
       });
       break;
     case SAVE_POSITION:
       widgets = state.widgets;
-      screen = { width: window.innerWidth, height: window.innerHeight };
       position = anchorPosition(action.position, screen);
       Object.assign(widgets[action.widget], position);
       if (position.scale <= minScale) widgets[action.widget].scale = minScale;
       outState = Object.assign({}, state, {
-        widgets: widgets
+        widgets: widgets,
+        lastScreenSize: screen
       });
       break;
     case SET_VISIBILITY:
@@ -398,7 +399,6 @@ export default function reducer(state: LayoutState = getInitialState(),
     case ON_RESIZE:
       // need to scan wiget positions, and check if they still fit in the
       // new window size
-      screen = { width: window.innerWidth, height: window.innerHeight };
       RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
       widgets = {};
       for (let key in state.widgets) {

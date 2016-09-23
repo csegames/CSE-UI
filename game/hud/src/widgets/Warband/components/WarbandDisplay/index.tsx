@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:24
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-12 14:11:49
+ * @Last Modified time: 2016-09-23 10:24:37
  */
 
 import * as React from 'react';
@@ -65,7 +65,7 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
 
   render() {
     return (
-      <div className={`Warband ${this.props.containerClass}`}>
+      <div className={`WarbandDisplay ${this.props.containerClass}`}>
         {this.props.warband.activeMembers ? this.props.warband.activeMembers.map(this.renderMember) : null}
       </div>
     )
