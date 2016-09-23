@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-16 15:29:13
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-22 18:15:19
+ * @Last Modified time: 2016-09-23 12:44:02
  */
 
 import client from '../../core/client';
@@ -70,7 +70,7 @@ const initializeHub = (callback: (succeeded: boolean) => any) => {
 
   //const hub = ($ as any).connection.warbandsHub;
   const conn = ($ as any).hubConnection();
-  conn.url = `${client.webAPIHost}/signalr`;
+  conn.url = client.signalRHost;
   const hub = conn.createHubProxy('groupsHub');
 
   registerEvents(hub);

@@ -7,7 +7,7 @@
 import client from '../core/client';
 
 export default {
-  baseURL: client.webAPIHost,
+  baseURL: client.apiHost,
   headers: {
     'api-version': client.apiVersion,
     'loginToken': client.loginToken,

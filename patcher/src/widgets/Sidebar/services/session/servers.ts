@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 18:32:30
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-07 17:52:58
+ * @Last Modified time: 2016-09-23 17:05:31
  */
 
 import {faction, archetype, gender, race} from 'camelot-unchained';
@@ -142,16 +142,20 @@ export function characterCreated(character: SimpleCharacter): ServersAction {
   };
 }
 
+function updateChannelsAndServers(dispatch: (action: ServersAction | AsyncAction<ServersAction>) => any) {
+  dispatch(getChannels());
+  dispatch(fetchServers(updateChannelsAndServers));
+}
+
 let intervalID: any = null;
 export function initServers(interval: number): AsyncAction<ServersAction> {
   return (dispatch: (action: ServersAction | AsyncAction<ServersAction>) => any) => {
     dispatch(initializeServers());
-    intervalID = setInterval(() => {
-      dispatch(getChannels());
-      dispatch(fetchServers());
-    }, interval);
+    updateChannelsAndServers(dispatch);
   };
 }
+
+
 
 export function stopServersInterval() {
   if (intervalID) clearInterval(intervalID);
@@ -186,7 +190,7 @@ function getChannels(): ServersAction {
 
 
 // get online servers from cu web API
-function fetchServers(): AsyncAction<ServersAction> {
+function fetchServers(onSuccess: any): AsyncAction<ServersAction> {
   return (dispatch: (action: ServersAction | AsyncAction<ServersAction>) => any) => {
     dispatch(beginFetchServers());
     api.fetchServers()
@@ -194,6 +198,7 @@ function fetchServers(): AsyncAction<ServersAction> {
         dispatch(fetchServersSuccess(response.data));
         dispatch(fetchCharacters());
         dispatch(serversReady());
+        setTimeout(() => onSuccess(dispatch), 5000);
       })
       .catch((error: any) => dispatch(fetchServersFailed(error.problem)))
   }

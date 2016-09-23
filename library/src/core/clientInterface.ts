@@ -32,6 +32,7 @@ interface clientInterface {
   loginToken: string;
   pktHash: string;
   webAPIHost: string;
+  apiHost: string;
   serverURL: string;
   serverTime: number;
   vsync: number;

@@ -136,13 +136,6 @@ export function resize() {
   };
 }
 
-export function saySomething(s: string) : LayoutAction {
-  console.log(s);
-  return {
-    type: SAY_SOMETHING,
-  }
-}
-
 const minScale = 0.25;
 
 export interface LayoutState {

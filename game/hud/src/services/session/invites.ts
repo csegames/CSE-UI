@@ -141,8 +141,8 @@ export function fetchInvites() : AsyncAction<InvitesAction> {
   return (dispatch: (action: any) => any) => {
     dispatch(requestInvites());
     cu.api.getInvitesForCharacter(client.shardID, client.characterID)
-      .then((data: any) => console.log(data))
-      .catch((errors: any) => console.log(errors));
+      .then((data: any) => dispatch(fetchInvitesSuccess(data)))
+      .catch((response: any) => dispatch(fetchInvitesFailed(response.problem)));
   }
 }
 
@@ -181,10 +181,9 @@ actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, {isInitalizing: false
 actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => merge(state, {isFetching: true});
 
 actionDefs[ACCEPT_INVITE] = (state: InvitesState, action: InvitesAction) => {
-  console.log(state.invites.length);
-  const invites = remove(state.invites, action.invite, inviteEquals);
-  console.log(invites.length);
-  return merge(state, {invites: invites});
+  return merge(state, {
+    invites: removeWhere(state.invites, i => i.inviteCode === action.invite.inviteCode).result
+  });
 }
 
 actionDefs[DECLINE_INVITE] = (state: InvitesState, action: InvitesAction) => {
