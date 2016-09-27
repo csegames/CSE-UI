@@ -281,44 +281,47 @@ function defaultChannelAccess(channelID: number): AccessType {
 function apiServersToPatcherServers(patcherServers: PatcherServer[], servers: Server[]): PatcherServer[] {
   const result = [...patcherServers];
 
-  let i = servers.length;
-  while (--i >= 0) {
-    const s = servers[i];
-    let found = false;
-    let j = result.length;
-    while (!found && --j >= 0) {
-      const ps = result[j];
-      if (!ps) continue;
-      if (ps.name === s.name  && ps.channelID == s.channelID) {
-        found = true;
-        result[j] = merge(ps, {
+  if (servers && servers.length) {
+    let i = servers.length;
+    while (--i >= 0) {
+      const s = servers[i];
+      let found = false;
+      let j = result.length;
+      while (!found && --j >= 0) {
+        const ps = result[j];
+        if (!ps) continue;
+        if (ps.name === s.name  && ps.channelID == s.channelID) {
+          found = true;
+          result[j] = merge(ps, {
+            type: ServerType.CUGAME,
+            name: s.name,
+            channelID: s.channelID,
+            host: s.host,
+            accessLevel: s.accessLevel,
+            shardID: s.shardID,
+            maxPlayers: s.playerMaximum,
+          });
+        }
+      }
+
+      if (!found && s.name !== 'localhost') {
+        result.push({
+          id: ++idGen,
           type: ServerType.CUGAME,
           name: s.name,
           channelID: s.channelID,
+          channelStatus: ChannelStatus.NotInstalled,
           host: s.host,
           accessLevel: s.accessLevel,
           shardID: s.shardID,
           maxPlayers: s.playerMaximum,
+          selectedCharacter: null,
+          characters: []
         });
       }
     }
-
-    if (!found && s.name !== 'localhost') {
-      result.push({
-        id: ++idGen,
-        type: ServerType.CUGAME,
-        name: s.name,
-        channelID: s.channelID,
-        channelStatus: ChannelStatus.NotInstalled,
-        host: s.host,
-        accessLevel: s.accessLevel,
-        shardID: s.shardID,
-        maxPlayers: s.playerMaximum,
-        selectedCharacter: null,
-        characters: []
-      });
-    }
   }
+
 
   return result;
 }
@@ -326,40 +329,41 @@ function apiServersToPatcherServers(patcherServers: PatcherServer[], servers: Se
 function channelsToPatcherServers(patcherServers: PatcherServer[], channels: Channel[]): PatcherServer[] {
   const result = [...patcherServers];
   let i = channels.length;
-  while (--i >= 0) {
-    const c = channels[i];
-    let found = false;
-    let j = result.length;
-    while (--j >= 0) {
-      const ps = result[j];
-      if (!ps) continue;
-      if (ps.name === c.channelName && c.channelID) {
-        found = true;
-        result[j] = merge(ps, {
+  if (channels && channels.length) {
+    while (--i >= 0) {
+      const c = channels[i];
+      let found = false;
+      let j = result.length;
+      while (--j >= 0) {
+        const ps = result[j];
+        if (!ps) continue;
+        if (ps.name === c.channelName && c.channelID) {
+          found = true;
+          result[j] = merge(ps, {
+            type: getServerTypeFromChannel(c.channelID),
+            name: c.channelName,
+            channelID: c.channelID,
+            channelStatus: c.channelStatus,
+            shardID: ps.shardID || getDefaultShardIDForServerName(c.channelName),
+          });
+        } else if (ps.channelID === c.channelID) {
+          result[j].channelStatus = c.channelStatus;
+        }
+      }
+
+      if (!found) {
+        result.push({
+          id: ++idGen,
           type: getServerTypeFromChannel(c.channelID),
           name: c.channelName,
           channelID: c.channelID,
           channelStatus: c.channelStatus,
-          shardID: ps.shardID || getDefaultShardIDForServerName(c.channelName),
+          accessLevel: defaultChannelAccess(c.channelID),
+          shardID: getDefaultShardIDForServerName(c.channelName),
         });
-      } else if (ps.channelID === c.channelID) {
-        result[j].channelStatus = c.channelStatus;
       }
     }
-
-    if (!found) {
-      result.push({
-        id: ++idGen,
-        type: getServerTypeFromChannel(c.channelID),
-        name: c.channelName,
-        channelID: c.channelID,
-        channelStatus: c.channelStatus,
-        accessLevel: defaultChannelAccess(c.channelID),
-        shardID: getDefaultShardIDForServerName(c.channelName),
-      });
-    }
   }
-
   return result;
 }
 
@@ -371,14 +375,16 @@ function updateCharactersWithServers(patcherServers: PatcherServer[], characters
   const result = [...patcherServers];
 
   let i = characters.length;
-  while(--i >= 0) {
-    const character = clone(characters[i]);
+  if (characters && characters.length) {
+    while(--i >= 0) {
+      const character = clone(characters[i]);
 
-    let serverIndex = result.length;
-    while(--serverIndex >= 0) {
-      let s = result[serverIndex];
-      if (s.shardID === character.shardID) {
-        result[serverIndex].characters = addOrUpdate(result[serverIndex].characters, character, characterEquals);
+      let serverIndex = result.length;
+      while(--serverIndex >= 0) {
+        let s = result[serverIndex];
+        if (s.shardID === character.shardID) {
+          result[serverIndex].characters = addOrUpdate(result[serverIndex].characters, character, characterEquals);
+        }
       }
     }
   }
