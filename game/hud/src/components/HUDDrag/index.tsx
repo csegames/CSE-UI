@@ -204,16 +204,31 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     } as any);
   }
 
-  private onMouseMove = (e: MouseEvent) => {
+  
+  private lastPosition = {x: NaN , y: NaN}
+  private mouseMovement = (e: MouseEvent) => {
+    if (this.lastPosition.x === NaN) {
+      // just starting to move, so 0 move
+      this.lastPosition = {x: e.screenX, y: e.screenY};
+      return {x: 0, y: 0};
+    }
+    const movement = {x: e.screenX - this.lastPosition.x, y: e.screenY - this.lastPosition.y};
+    this.lastPosition = {x: e.screenX, y: e.screenY};
+    return movement;
+  }
+
+  private onMouseMove = (e: MouseEvent | any) => {
+    let mouseMove = this.mouseMovement(e);
     switch(this.state.mode) {
       default: return;
       case EditMode.NONE: return;
       case EditMode.MOVE:
       {
-        const deltaX = this.props.lockX ? 0 : e.movementX;
-        const deltaY = this.props.lockY ? 0 : e.movementY;
+        const deltaX = this.props.lockX ? 0 : mouseMove.x;
+        const deltaY = this.props.lockY ? 0 : mouseMove.y;
         const fixedPos = this.getPosition();
-
+        console.log(`${e.webkitMovementX},${deltaY}`);
+        console.log(`${deltaX},${deltaY}`);
         switch (this.state.layoutMode) {
           case LayoutMode.GRID:
           {
@@ -234,7 +249,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SIZEX:
       {
-        const deltaX = e.movementX;
+        const deltaX = mouseMove.x;
         this.setState({
           width: this.state.width + deltaX,
         } as any);
@@ -242,7 +257,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SIZEXLEFT:
       {
-        const deltaX = e.movementX;
+        const deltaX = mouseMove.x;
         this.setState({
           x: this.state.x + deltaX,
           width: this.state.width - deltaX,
@@ -251,7 +266,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SIZEY:
       {
-        const deltaY = e.movementY;
+        const deltaY = mouseMove.y;
         this.setState({
           height: this.state.height + deltaY,
         } as any);
@@ -259,7 +274,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SIZEYUP:
       {
-        const deltaY = e.movementY;
+        const deltaY = mouseMove.y;
         this.setState({
           y: this.state.y + deltaY,
           height: this.state.height - deltaY,
@@ -268,8 +283,8 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SIZEBOTH:
       {
-        const deltaX = e.movementX;
-        const deltaY = e.movementY;
+        const deltaX = mouseMove.x;
+        const deltaY = mouseMove.y;
         this.setState({
           width: this.state.width + deltaX,
           height: this.state.height + deltaY,
@@ -278,12 +293,12 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SCALE: 
       {
-        this.setScale(this.state.scale + (e.movementY * this.state.scaleFactor))
+        this.setScale(this.state.scale + (mouseMove.y * this.state.scaleFactor))
       }
       break;
       case EditMode.OPACITY: 
       {
-        this.setOpacity(this.state.opacity + (e.movementY * 0.01))
+        this.setOpacity(this.state.opacity + (mouseMove.y * 0.01))
       }
       break;
     }
@@ -296,9 +311,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     // for now we always allow it
     this.setMode(mode);
     e.preventDefault();
+    this.lastPosition = {x: e.screenX , y: e.screenY}
   }
 
   private onMouseUp = () => {
+    this.lastPosition = {x: NaN , y: NaN};
     this.mouseDownForScaleHold = false;
     if (this.mouseScaleHoldInitTimeout != null) {
       clearTimeout(this.mouseScaleHoldInitTimeout);

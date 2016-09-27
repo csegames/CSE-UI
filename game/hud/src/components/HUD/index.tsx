@@ -58,7 +58,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
   componentDidMount() {
     this.props.dispatch(initialize());
 
-    if (hasClientAPI()) {
+    if (client && client.OnCharacterHealthChanged) {
       // manage visibility of respawn widget based on having health or not
       client.OnCharacterHealthChanged((health: number) => {
         if (health <= 0) {
@@ -78,6 +78,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const w = widgets[name];
 
     return <HUDDrag name={name}
+                    key={w.zOrder}
                     defaultHeight={w.size.height}
                     defaultWidth={w.size.width}
                     defaultScale={w.scale}
@@ -147,7 +148,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     }
 
     return (
-      <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.5)'}}>
+      <div className='HUD' style={locked ? {} : {backgroundColor:'rgba(0, 0, 0, 0.2)'}}>
         <div id='cse-ui-crafting'>
           <Crafting/>
         </div>

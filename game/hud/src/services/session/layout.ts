@@ -352,9 +352,7 @@ actionDefs[SAVE_POSITION] = (s: LayoutState, a: LayoutAction) => {
 
 actionDefs[SET_VISIBILITY] = (s: LayoutState, a: LayoutAction) => {
   let widgets = clone(s.widgets);
-  let position = clone(a.position);
-  if (position.scale < minScale) position.scale = minScale;
-  widgets[a.widget] = merge(widgets[a.widget], position);
+  widgets[a.widget].visibility = a.visibility;
   return saveState(merge(s, {
     widgets: widgets,
     lastScreenSize: a.screen,
