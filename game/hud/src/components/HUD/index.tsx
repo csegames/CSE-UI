@@ -23,7 +23,7 @@ import InteractiveAlert, {Alert} from '../InteractiveAlert';
 import PlayerHealth from '../../widgets/PlayerHealth';
 import Respawn from '../../widgets/Respawn';
 import Warband from '../../widgets/Warband';
-
+import Welcome from '../../widgets/Welcome';
 
 function select(state: SessionState): HUDProps {
   return {
@@ -70,6 +70,20 @@ class HUD extends React.Component<HUDProps, HUDState> {
         }
       });
     }
+
+    // manage visibility of welcome widget based on localStorage
+    this.props.dispatch(setVisibility('Welcome', true));
+    try {
+      const delayInMin: number = 24 * 60;
+      const savedDelay = localStorage.getItem('cse-welcome-hide-start');
+      const currentDate: Date = new Date();
+      const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
+      savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin*60*1000));
+      if (currentDate < savedDelayDate) this.props.dispatch(setVisibility('Welcome', false));
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   setVisibility = (widget: string, vis: boolean) => {
@@ -148,6 +162,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           break;
         case 'Warband':
           orderedWidgets[w.zOrder] = this.draggable('Warband', widgets, Warband, {lockHeight: true, lockWidth: true}, {});
+          break;
+        case 'Welcome':
+          orderedWidgets[w.zOrder] = this.draggable('Welcome', widgets, Welcome, {lockHeight: true, lockWidth: true}, {});
           break;
       }
     }

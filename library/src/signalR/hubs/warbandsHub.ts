@@ -74,14 +74,14 @@ const registerEvents = (hub: any) => {
   /**
    * Called when you quit a warband.
    */
-  register(WARBAND_HUB_QUIT, () => {
+  register(WARBAND_HUB_QUIT, (id: string) => {
     events.fire(WARBAND_EVENTS_QUIT, null);
   });
 
   /**
    * Called when you abandon a warband.
    */
-  register(WARBAND_HUB_ABANDONED, () => {
+  register(WARBAND_HUB_ABANDONED, (id: string) => {
     events.fire(WARBAND_EVENTS_ABANDONED, null);
   });
 

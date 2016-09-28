@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 15:28:15
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-23 10:28:16
+ * @Last Modified time: 2016-09-27 18:45:37
  */
 
 import {client, GroupInvite, groupType, signalr, WarbandMember, events, cu} from 'camelot-unchained';
@@ -32,8 +32,8 @@ const MEMBER_REMOVED = `warband/warband/MEMBER_REMOVED`;
 function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
   events.on(signalr.WARBAND_EVENTS_JOINED, (info: {id: string, name: string}) => dispatch(warbandJoined(info.id, info.name)));
   events.on(signalr.WARBAND_EVENTS_UPDATE, (info: {id: string, name: string}) => dispatch(warbandJoined(info.id, info.name)));
-  events.on(signalr.WARBAND_EVENTS_QUIT, () => dispatch(warbandQuit()));
-  events.on(signalr.WARBAND_EVENTS_ABANDONED, () => dispatch(warbandAbandoned()));
+  events.on(signalr.WARBAND_EVENTS_QUIT, (id: string) => dispatch(warbandQuit(id)));
+  events.on(signalr.WARBAND_EVENTS_ABANDONED, (id: string) => dispatch(warbandAbandoned(id)));
   events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (member: WarbandMember) => dispatch(memberJoined(member)));
   events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (member: WarbandMember) => dispatch(memberUpdate(member)));
   events.on(signalr.WARBAND_EVENTS_MEMBERREMOVED, (characterID: string) => dispatch(memberRemoved(characterID)));
@@ -92,15 +92,16 @@ function warbandUpdate(warbandID: string, warbandName: string = ''): WarbandActi
   }
 }
 
-function warbandQuit(): WarbandAction {
+function warbandQuit(id: string): WarbandAction {
   systemMessage('You have quit your warband.');
   return {
     type: WARBAND_QUIT,
     when: new Date(),
+    id: id,
   }
 }
 
-function warbandAbandoned(): WarbandAction {
+function warbandAbandoned(id: string): WarbandAction {
   systemMessage('You have abandonded your warband.');
   return {
     type: WARBAND_ABANDONED,
@@ -213,17 +214,29 @@ actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
 }
 
 actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => {
-  return merge(s, {name: a.name, warbandID: a.id});
+  if (a.id !== s.warbandID) {
+    // we changed warbands 
+    return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
+  }
+  if (a.name !== s.name) {
+    return merge(s, {name: a.name});
+  }
 }
 
-actionDefs[WARBAND_QUIT] = (s, a) => {
-  events.fire('chat-leave-room', s.warbandID);
-  return merge(s, clearWarband());
+actionDefs[WARBAND_QUIT] = (s: WarbandState, a: WarbandAction) => {
+  if (s.warbandID === a.id) {
+    events.fire('chat-leave-room', s.warbandID);
+    return merge(s, clearWarband());
+  }
+  return s;
 }
 
 actionDefs[WARBAND_ABANDONED] = (s, a) => {
-  events.fire('chat-leave-room', s.warbandID);
-  return merge(s, clearWarband());
+  if (s.warbandID === a.id) {
+    events.fire('chat-leave-room', s.warbandID);
+    return merge(s, clearWarband());
+  }
+  return s;
 }
 
 actionDefs[MEMBER_JOINED] = (s: WarbandState, a: WarbandAction) => merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
