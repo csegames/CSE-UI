@@ -15,6 +15,7 @@ import {SessionState} from '../../services/session/reducer';
 import {InvitesState} from '../../services/session/invites';
 import HUDDrag, {HUDDragState, HUDDragOptions} from '../HUDDrag';
 
+import Compass from '../../widgets/Compass';
 import Crafting from '../../widgets/Crafting';
 import EnemyTargetHealth from '../../widgets/TargetHealth';
 import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
@@ -152,6 +153,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           break;
         case 'FriendlyTargetHealth':
           orderedWidgets[w.zOrder] = this.draggable('FriendlyTargetHealth', widgets, FriendlyTargetHealth, {lockHeight: true, lockWidth: true}, {});
+          break;
+        case 'Compass':
+          orderedWidgets[w.zOrder] = this.draggable('Compass', widgets, Compass, {lockHeight: true, lockWidth: true}, {});
           break;
         case 'Respawn':
           orderedWidgets[w.zOrder] = this.draggable('Respawn', widgets, Respawn, {}, {});

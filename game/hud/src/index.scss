@@ -37,6 +37,7 @@ html, body {
   @import './components/HUDDrag/index';
 
   // widgets
+  @import './widgets/Compass/index';
   @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
   @import './widgets/Respawn/index';
