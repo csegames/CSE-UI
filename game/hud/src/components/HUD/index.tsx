@@ -16,12 +16,13 @@ import {InvitesState} from '../../services/session/invites';
 import HUDDrag, {HUDDragState, HUDDragOptions} from '../HUDDrag';
 
 import Crafting from '../../widgets/Crafting';
-import PlayerHealth from '../../widgets/PlayerHealth';
 import EnemyTargetHealth from '../../widgets/TargetHealth';
 import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
-import Warband from '../../widgets/Warband';
-import Respawn from '../../widgets/Respawn';
 import InteractiveAlert, {Alert} from '../InteractiveAlert';
+import PlayerHealth from '../../widgets/PlayerHealth';
+import Respawn from '../../widgets/Respawn';
+import Warband from '../../widgets/Warband';
+import Welcome from '../../widgets/Welcome';
 
 function select(state: SessionState): HUDProps {
   return {
@@ -68,6 +69,20 @@ class HUD extends React.Component<HUDProps, HUDState> {
         }
       });
     }
+
+    // manage visibility of welcome widget based on localStorage
+    this.props.dispatch(setVisibility('Welcome', true));
+    try {
+      const delayInMin: number = 24 * 60;
+      const savedDelay = localStorage.getItem('cse-welcome-hide-start');
+      const currentDate: Date = new Date();
+      const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
+      savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin*60*1000));
+      if (currentDate < savedDelayDate) this.props.dispatch(setVisibility('Welcome', false));
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   setVisibility = (widget: string, vis: boolean) => {
@@ -144,6 +159,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
         case 'Warband':
           orderedWidgets[w.zOrder] = this.draggable('Warband', widgets, Warband, {lockHeight: true, lockWidth: true}, {});
           break;
+        case 'Welcome':
+          orderedWidgets[w.zOrder] = this.draggable('Welcome', widgets, Welcome, {lockHeight: true, lockWidth: true}, {});
+          break;
       }
     }
 
@@ -157,7 +175,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <InteractiveAlert dispatch={this.props.dispatch}
                           invites={this.props.invitesState.invites} />
-        
+
         <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked': 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
              onClick={e => this.onToggleClick(e)}
              data-hint={locked ? 'unlock hud | alt+click to reset': 'lock hud | alt+click to reset'}></div>

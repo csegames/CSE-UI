@@ -184,11 +184,12 @@ function initialState(): LayoutState {
     locked: true,
     widgets: {
       Chat:{x:{anchor:Edge.LEFT,offset:0},y:{anchor:Edge.BOTTOM,offset:50},size:{width:480,height:240},scale:1,opacity: 1,visibility:true,zOrder:0,layoutMode:LayoutMode.EDGESNAP},
-      PlayerHealth:{x:{anchor:3,offset:0},y:{anchor:7,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:1,layoutMode:LayoutMode.GRID},
       EnemyTargetHealth:{x:{anchor:5,offset:0},y:{anchor:6,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:2,layoutMode:LayoutMode.GRID},
       FriendlyTargetHealth:{x:{anchor:5,offset:0},y:{anchor:6,offset:150},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:3,layoutMode:LayoutMode.GRID},
+      PlayerHealth:{x:{anchor:3,offset:0},y:{anchor:7,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:1,layoutMode:LayoutMode.GRID},
+      Respawn:{x:{anchor:5,offset:-100},y:{anchor:3,offset:0},size:{width:200,height:200},scale:1,opacity: 1,visibility:false,zOrder:7,layoutMode:LayoutMode.GRID},
       Warband:{x:{anchor:Edge.LEFT,offset:-40},y:{anchor:Edge.TOP,offset:-130},size:{width:200,height:700},scale:0.6,opacity: 1,visibility:true,zOrder:4,layoutMode:LayoutMode.EDGESNAP},
-      Respawn:{x:{anchor:4,offset:0},y:{anchor:3,offset:0},size:{width:200,height:200},scale:1,opacity: 1,visibility:false,zOrder:5,layoutMode:LayoutMode.GRID},
+      Welcome:{x:{anchor:5,offset:-400},y:{anchor:4,offset:-350},size:{width:800,height:450},scale:1,opacity: 1,visibility:true,zOrder:5,layoutMode:LayoutMode.GRID},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }
@@ -330,7 +331,7 @@ actionDefs[RESET_HUD] = (s, a) => {
 actionDefs[SET_POSITION] = (s: LayoutState, a: LayoutAction) => {
   let widgets = clone(s.widgets);
   widgets[a.widget] = a.position;
-  
+
   return saveState(merge(s, {
     widgets: widgets,
     lastScreenSize: a.screen,
