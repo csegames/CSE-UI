@@ -42,6 +42,19 @@
   }
 }
 
+.PlayerStatusComponent__circle__leader {
+  position: absolute;
+  left: 32px;
+  top: 37px;
+  z-index: 3;
+  
+
+  img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
 .PlayerStatusComponent__circle__bg {
   position: absolute;
   top: -2.5px;

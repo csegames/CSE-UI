@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 let yargs = require('yargs-parser');
-import cu, {client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands} from 'camelot-unchained';
+import cu, {client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, warbandRoles, warbandRanks, warbandPermissions} from 'camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string): void => events.fire('system_message', message);
@@ -45,8 +45,8 @@ export default () => {
    */
 
   let friendlyTargetName: string = '';
-  events.on(events.clientEventTopics.handlesFriendlyTarget, (ft: any) => {
-    if (ft) friendlyTargetName = ft.name;
+  client.OnFriendlyTargetNameChanged((name: string) => {
+    friendlyTargetName = name;
   });
 
   registerSlashCommand('invite', 'Invite a player to your warband. Will use either your current friendly target, or a character name if you provide one.',
@@ -116,7 +116,8 @@ export default () => {
   /**
    * Quit your currently active Warband
    */
-  registerSlashCommand('quitWarband', 'Quit your active Warband.', () => {
+
+  function quitWarband() {
     cu.api.quitWarband(client.shardID, client.characterID)
      .then((response: any) => {
        if (!response.ok) {
@@ -125,7 +126,11 @@ export default () => {
          return;
        }
      });
-  });
+  }
+  registerSlashCommand('quitWarband', 'Quit your active Warband.', quitWarband);
+  registerSlashCommand('leaveWarband', 'Quit your active Warband.', quitWarband);
+  registerSlashCommand('leave', 'Quit your active Warband.', quitWarband);
+  registerSlashCommand('quit', 'Quit your active Warband.', quitWarband);
 
   /**
    * Abandon a Warband
@@ -141,5 +146,83 @@ export default () => {
      });
   });
 
+  /**
+   * Permissions, Rank, and Role management.
+   */
+  function setRole(targetName: string, role: warbandRoles) {
+    cu.api.setWarbandRoleByName(client.shardID, client.characterID, targetName, role)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  }
+
+  function setRank(targetName: string, rank: warbandRanks) {
+    cu.api.setWarbandRankByName(client.shardID, client.characterID, targetName, rank)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  }
+
+  function setPermissions(targetName: string, permissions: warbandPermissions) {
+    cu.api.setWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  }
+
+  function addPermissions(targetName: string, permissions: warbandPermissions) {
+    cu.api.addWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  }
+
+  function removePermissions(targetName: string, permissions: warbandPermissions) {
+    cu.api.removeWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+      .then((response: any) => {
+       if (!response.ok) {
+         // something went wrong
+         console.error(response);
+         return;
+       }
+     });
+  }
+
+  registerSlashCommand('makeleader', 'Make your friendly target the leader of your warband or if you provide a name, that character named.', (name: string = '') => {
+    if (name.length > 0) {
+       setRank(name, warbandRanks.LEADER);
+     } else if (friendlyTargetName && friendlyTargetName !== '') {
+       setRank(friendlyTargetName, warbandRanks.LEADER);
+     } else {
+       systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
+     }
+  });
+
+  registerSlashCommand('promote', 'Give invite permission to your friendly target or if you provide a name, that character named.', (name: string = '') => {
+    if (name.length > 0) {
+       addPermissions(name, warbandPermissions.INVITE);
+     } else if (friendlyTargetName && friendlyTargetName !== '') {
+       addPermissions(friendlyTargetName, warbandPermissions.INVITE);
+     } else {
+       systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
+     }
+  });
+  
 
 };

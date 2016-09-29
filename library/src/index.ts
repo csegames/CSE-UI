@@ -23,6 +23,9 @@ import plotPermissions from './core/constants/plotPermissions';
 import attributeType from './core/constants/attributeType';
 import faction from './core/constants/faction';
 import gender from './core/constants/gender';
+import warbandRoles from './core/constants/warbandRoles';
+import warbandRanks from './core/constants/warbandRanks';
+import warbandPermissions from './core/constants/warbandPermissions';
 
 // classes
 import Ability from './core/classes/Ability';
@@ -87,6 +90,9 @@ let cu = Object.assign({
   attributeType : attributeType,
   faction : faction,
   gender : gender,
+  warbandRoles: warbandRoles,
+  warbandRanks: warbandRanks,
+  warbandPermissions: warbandPermissions,
 
   // core classes
   Ability : Ability,
@@ -134,6 +140,9 @@ export {
   attributeType,
   faction,
   gender,
+  warbandRanks,
+  warbandRoles,
+  warbandPermissions,
 
   // core classes
   Ability,

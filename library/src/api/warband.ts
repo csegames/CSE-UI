@@ -6,11 +6,15 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 15:33:15
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-08-29 16:46:52
+ * @Last Modified time: 2016-09-30 15:33:24
  */
 
 import {create} from 'apisauce';
 import createOptions from './createOptions';
+
+import warbandRoles from '../core/constants/warbandRoles';
+import warbandRanks from '../core/constants/warbandRanks';
+import warbandPermissions from '../core/constants/warbandPermissions';
 
 const api = create(createOptions);
 
@@ -209,7 +213,137 @@ let warbandAPI = {
       shardID: shard,
       characterID: characterID
     });
-  }
+  },
+
+  setWarbandRoleByID: (shard: number, characterID: string, targetID: string, role: warbandRoles, warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+      role: role,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setRoleByID', params); 
+  },
+
+  setWarbandRoleByName: (shard: number, characterID: string, targetName: string, role: warbandRoles, warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+      role: role,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setRoleByName', params); 
+  },
+
+  setWarbandRankByID: (shard: number, characterID: string, targetID: string, rank: warbandRanks, warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+      rank: rank,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setRankByID', params); 
+  },
+
+  setWarbandRankByName: (shard: number, characterID: string, targetName: string, rank: warbandRanks, warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+      rank: rank,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setRankByName', params); 
+  },
+
+  setWarbandPermissionsByID: (shard: number, characterID: string, targetID: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setPermissionsByID', params); 
+  },
+
+  setWarbandPermissionsByName: (shard: number, characterID: string, targetName: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/setPermissionsByName', params); 
+  },
+
+  addWarbandPermissionsByID: (shard: number, characterID: string, targetID: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/addPermissionsByID', params); 
+  },
+
+  addWarbandPermissionsByName: (shard: number, characterID: string, targetName: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/addPermissionsByName', params); 
+  },
+
+  removeWarbandPermissionsByID: (shard: number, characterID: string, targetID: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/removePermissionsByID', params); 
+  },
+
+  removeWarbandPermissionsByName: (shard: number, characterID: string, targetName: string, permissions: warbandPermissions,  warbandID: string = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+      permissions: permissions,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/removePermissionsByName', params); 
+  },
 
 }
 

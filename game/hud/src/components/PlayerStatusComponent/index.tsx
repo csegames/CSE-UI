@@ -107,6 +107,13 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
           <div className='PlayerStatusComponent__circle__bg'></div>
           <div className='PlayerStatusComponent__circle__avatar'><img src={this.props.playerStatus.avatar} style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} /></div>
+          
+          {
+            this.props.isLeader ? 
+              <div className='PlayerStatusComponent__circle__leader'><img src='images/warband-leader.png' /></div>
+              : null
+          }
+
 
           <Pills orientation={Orientation.CircleTop}
                  containerClass='PlayerStatusComponent__circle__blood'

@@ -20,15 +20,16 @@ function prefix(command: string) : string { return `slash_${command}`}
  * window.
  */
 export function registerSlashCommand(command: string, helpText: string, callback: (args: string) => void) {
+  const cmd = command.toLowerCase();
   let found = false;
   for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == command) {
+    if (registry[i].command == cmd) {
       found = true;
       break;
     }
   }
-  if (!found) registry.push({command: command, helpText: helpText});  
-  events.on(prefix(command), callback);
+  if (!found) registry.push({command: cmd, helpText: helpText});  
+  events.on(prefix(cmd), callback);
 }
 
 /**
@@ -37,10 +38,11 @@ export function registerSlashCommand(command: string, helpText: string, callback
  * listening for this command will stop working.
  */
 export function unregisterSlashCommand(command: string) {
+  const cmd = command.toLowerCase();
   let index = -1;
   for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == command) {
-      events.off(command);
+    if (registry[i].command == cmd) {
+      events.off(prefix(cmd));
       index = i;
       break;
     }
@@ -58,10 +60,11 @@ export function unregisterSlashCommand(command: string) {
  */
 export function parseMessageForSlashCommand(command: string): boolean {
   const split = command.split(/ (.+)/);
+  const cmd = split[0].toLowerCase();  
   let found = false;
   for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == split[0]) {
-      events.fire(prefix(split[0]), split[1]);
+    if (registry[i].command == cmd.toLowerCase()) {
+      events.fire(prefix(cmd), split[1]);
       found = true;
       break;
     }

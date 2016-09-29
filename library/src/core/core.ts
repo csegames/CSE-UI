@@ -24,6 +24,9 @@ import plotPermissions from './constants/plotPermissions';
 import attributeType from './constants/attributeType';
 import faction from './constants/faction';
 import gender from './constants/gender';
+import warbandRanks from './constants/warbandRanks';
+import warbandRoles from './constants/warbandRoles';
+import warbandPermissions from './constants/warbandPermissions';
 
 // config
 export * from './config/config';
@@ -67,6 +70,9 @@ export {
   attributeType,
   faction,
   gender,
+  warbandRanks,
+  warbandRoles,
+  warbandPermissions,
 
   // core classes
   Ability,

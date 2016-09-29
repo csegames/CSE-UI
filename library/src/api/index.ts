@@ -8,6 +8,9 @@ import {api} from 'apisauce';
 import warband from './warband';
 import groups from './groups';
 import client from '../core/client';
+import warbandRoles from '../core/constants/warbandRoles';
+import warbandRanks from '../core/constants/warbandRanks';
+import warbandPermissions from '../core/constants/warbandPermissions';
 
 let combined = Object.assign({
   loginToken: client.loginToken,

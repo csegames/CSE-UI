@@ -51,7 +51,10 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   // show home point + 3 nearest controlled control points
 
   getSpawnPoints = (loaded: (spawns: RespawnLocation[]) => void): void => {
+    if (!hasClientAPI()) return;
+    console.log('getting spawn points')
     const spawns: RespawnLocation[] = [];
+
 
     // load control points
     restAPI.getControlGame(true).then((data:any) => {

@@ -7,29 +7,9 @@
 import race from '../../core/constants/race';
 import gender from '../../core/constants/gender';
 import archetype from '../../core/constants/archetype';
-
-
-export enum WarbandMemberRole {
-  Temporary,
-  Permanent,
-  Owner,
-}
-
-export enum WarbandMemberRank {
-  None,
-  Member,
-  Leader,
-}
-
-export enum WarbandMemberPermissions {
-  Join,
-  Invite,
-  Kick,
-  ManagePrivacy,
-  ManagePermanent,
-  ManageBanner,
-  ManageName,
-}
+import warbandRanks from '../../core/constants/warbandRanks';
+import warbandRoles from '../../core/constants/warbandRoles';
+import warbandPermissions from '../../core/constants/warbandPermissions';
 
 export interface WarbandMember {
   name: string,
@@ -62,7 +42,7 @@ export interface WarbandMember {
   };
   joined: string;
   parted: string;
-  rank: WarbandMemberRank;
-  role: WarbandMemberRole;
-  additionalPermissions: WarbandMemberPermissions[];
+  rank: warbandRanks;
+  role: warbandRoles;
+  additionalPermissions: warbandPermissions[];
 }

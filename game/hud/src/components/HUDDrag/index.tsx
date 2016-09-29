@@ -227,8 +227,6 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
         const deltaX = this.props.lockX ? 0 : mouseMove.x;
         const deltaY = this.props.lockY ? 0 : mouseMove.y;
         const fixedPos = this.getPosition();
-        console.log(`${e.webkitMovementX},${deltaY}`);
-        console.log(`${deltaX},${deltaY}`);
         switch (this.state.layoutMode) {
           case LayoutMode.GRID:
           {

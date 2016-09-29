@@ -67,7 +67,7 @@ const settings = new Settings(4);
 
 function makeAPIUrl(endpoint: string): string {
   if (endpoint.indexOf('://') != -1) return endpoint; // we already have a fully formed url, skip
-  let url = settings.url;
+  let url = settings.url || 'http://hatchery.camelotunchained.com';
   // only add port if it is required
   if ((url.indexOf('https://') === 0 && settings.port !== 443) || (url.indexOf('http://') === 0 && settings.port !== 80)) {
     url = url + ':' + settings.port;

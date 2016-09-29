@@ -63,7 +63,7 @@ export default () => {
   /**
    * Quit the game
    */
-  registerSlashCommand('quit', 'quit the game', () => client.Quit());
+  registerSlashCommand('exit', 'quit the game', () => client.Quit());
 
   /**
    * Build Var handling -- generally for dev use things only
