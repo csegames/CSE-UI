@@ -75,6 +75,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.PRIVATE:
         element = this.buildMessage(timestamp, this.props.message.text, 'chat-private');
         break;
+      case chatType.COMBAT:
       case chatType.SYSTEM:
       case chatType.BROADCAST:
         element = (

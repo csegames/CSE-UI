@@ -309,6 +309,9 @@ interface clientInterface {
   /* Logging */
   OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void): void;
 
+  /* Combat Logs */
+  OnCombatLogEvent(c: (events: any) => void): void;
+
 
   apiVersion?: number;
   characterID?: string;

@@ -11,6 +11,7 @@ enum chatType {
   GROUP = 4,
   SYSTEM = 5,
   BROADCAST = 6,
+  COMBAT = 7,
 }
 
 class ChatMessage {

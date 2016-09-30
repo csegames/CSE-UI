@@ -9,5 +9,6 @@
   "handlesInput": true,
   "handlesAnnouncements": true,
   "handlesEnemyTarget": true,
-  "handlesFriendlyTarget": true
+  "handlesFriendlyTarget": true,
+  "handlesCombatLog": true
 }

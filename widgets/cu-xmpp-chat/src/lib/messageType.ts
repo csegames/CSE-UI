@@ -10,6 +10,7 @@ enum messageType {
   UNAVAILIBLE =2,
   MESSAGE_GROUP = 3,
   MESSAGE_CHAT = 4,
+  COMBAT_LOG = 5,
 };
 
  export default messageType;

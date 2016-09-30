@@ -27,6 +27,10 @@ import gender from './constants/gender';
 import warbandRanks from './constants/warbandRanks';
 import warbandRoles from './constants/warbandRoles';
 import warbandPermissions from './constants/warbandPermissions';
+export * from './constants/bodyParts';
+export * from './constants/damageTypes';
+export * from './constants/resourceTypes';
+export * from './constants/skillTracks';
 
 // config
 export * from './config/config';
@@ -46,6 +50,8 @@ import EquippedGear from './classes/EquippedGear';
 import LogMessage from './classes/LogMessage';
 import ChatMessage from './classes/ChatMessage';
 import ConsoleMessage from './classes/ConsoleMessage';
+export * from './classes/PlayerStatus';
+export * from './classes/CombatLog';
 
 import {DEBUG_ASSERT,RUNTIME_ASSERT} from './utils/assert';
 
