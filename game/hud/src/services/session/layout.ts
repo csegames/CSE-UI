@@ -26,7 +26,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = '0.2.1'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.2.2'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 enum AxisAnchorRelativeTo {
   START = -1,
@@ -190,7 +190,7 @@ function initialState(): LayoutState {
       PlayerHealth:{x:{anchor:3,offset:0},y:{anchor:7,offset:0},size:{width:300,height:180},scale:0.6,opacity: 1,visibility:true,zOrder:1,layoutMode:LayoutMode.GRID},
       Respawn:{x:{anchor:5,offset:-100},y:{anchor:3,offset:0},size:{width:200,height:200},scale:1,opacity: 1,visibility:false,zOrder:7,layoutMode:LayoutMode.GRID},
       Warband:{x:{anchor:Edge.LEFT,offset:-40},y:{anchor:Edge.TOP,offset:-130},size:{width:200,height:700},scale:0.6,opacity: 1,visibility:true,zOrder:4,layoutMode:LayoutMode.EDGESNAP},
-      Welcome:{x:{anchor:5,offset:-400},y:{anchor:4,offset:-350},size:{width:800,height:450},scale:1,opacity: 1,visibility:true,zOrder:5,layoutMode:LayoutMode.GRID},
+      Welcome:{x:{anchor:5,offset:-400},y:{anchor:5,offset:-400},size:{width:800,height:600},scale:1,opacity: 1,visibility:true,zOrder:5,layoutMode:LayoutMode.GRID},
     },
     version: MIN_STATE_VERSION_ANCHORED
   }

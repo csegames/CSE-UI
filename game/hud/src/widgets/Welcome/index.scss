@@ -11,13 +11,24 @@ $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
 .Welcome {
   width: 100%;
   height: 100%;
+  position: relative;
 
   .Welcome__title {
     font-variant: small-caps;
   }
 
+  .cu-window-content {
+    overflow: hidden;
+    position: absolute;
+    left: 5px;
+    top: 35px;
+  }
+
   .Welcome__btnBar {
     width: 100%;
+    position: fixed;
+    bottom: 5px;
+    background: #3c3c3c;
 
     .Welcome__btnBar__dismiss {
       display: inline-block;
@@ -34,7 +45,7 @@ $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
 
       position: absolute;
       left: 50%;
-      bottom: 2.1em;
+      bottom: 20px;
       transform: translateX(-50%);
       -webkit-transform: translateX(-50%);
     }
@@ -42,13 +53,10 @@ $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
     .Welcome__btnBar__dismiss-delay {
       position: absolute;
       left: 50%;
-      bottom: 0.8em;
+      bottom: 0px;
       transform: translateX(-50%);
       -webkit-transform: translateX(-50%);
-      color: rgba(255,255,255,0.6);
-      &:hover {
-        color: rgba(255,255,255,0.8);
-      }
+      color: #ececec;
     }
   }
 
