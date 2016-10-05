@@ -17,7 +17,7 @@ import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
 const VALUE_PER_BODY_PARTY_PILL = 2500;
 const VALUE_PER_BLOOD_PILL = 1000;
-const VALUE_PER_STAMINA_PILL = 100;
+const VALUE_PER_STAMINA_PILL = 1000;
 
 const BLOOD_REGEN_FLASH_THRESHOLD = 1;             // 1%
 const STAMINA_REGEN_FLASH_THRESHOLD = 1;           // 1%
