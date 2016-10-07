@@ -30,7 +30,7 @@ if (window.opener && window.opener.cuAPI) {
   client = {
     loginToken: 'developer',
     apiVersion: 1,
-    apiHost: 'http://localhost:1337',
+    apiHost: 'https://api.camelotunchained.com',
     characterID: 'KCt3dNCC6dKPyNzD0SR200',
     shardID: 1,
     debug: true
