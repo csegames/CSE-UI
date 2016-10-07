@@ -223,6 +223,27 @@ export default () => {
        systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
      }
   });
+
+  function kick(targetName: string) {
+    cu.api.kickFromWarbandByName(client.shardID, client.characterID, targetName)
+      .then((response: any) => {
+        if (!response.ok) {
+        // something went wrong
+        console.error(response);
+        systemMessage('Failed to kick member.');
+        return;
+       }
+     });
+  }
   
+  registerSlashCommand('kick', 'Give a Warband member the boot.', (name: string = '') => {
+    if (name.length > 0) {
+       kick(name);
+     } else if (friendlyTargetName && friendlyTargetName !== '') {
+       kick(friendlyTargetName);
+     } else {
+       systemMessage('No friendly target to kick. Provide a name or select a friendly target and try again.');
+     }
+  });
 
 };

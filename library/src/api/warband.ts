@@ -345,6 +345,31 @@ let warbandAPI = {
     return api.call('warbands/removePermissionsByName', params); 
   },
 
+  
+  kickFromWarbandByID: (shard: number, characterID: string, targetID: string, warbandID: string  = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetID: targetID,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/kickByID', params);
+  },
+
+  kickFromWarbandByName: (shard: number, characterID: string, targetName: string, warbandID: string  = '') => {
+    var params: any = {
+      shardID: shard,
+      characterID: characterID,
+      targetName: targetName,
+    }
+
+    if (warbandID !== '') params.warbandID = warbandID;
+
+    return api.call('warbands/kickByName', params);
+  },
+
 }
 
 export default warbandAPI;
