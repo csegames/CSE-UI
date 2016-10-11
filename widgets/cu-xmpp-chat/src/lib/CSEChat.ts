@@ -33,6 +33,21 @@ CSELoginTokenMechanism.prototype.match = function (options: any) {
   return false;
 }
 
+function debounce(func: any, wait: number, immediate: boolean) {
+	let timeout: any = null;
+	return function() {
+		let context = this, args = arguments;
+		let later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		let callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
 class CSEChat  {
 
   client: xmpp.Client;
@@ -46,6 +61,8 @@ class CSEChat  {
   private _pings: any = {};
   private _pingsInFlight: number = 0;
   private _pinger: any;
+
+  private _recvQueue: Element[] = [];
 
   constructor(config = <Config>{}) {
     this.config = config;
@@ -84,6 +101,8 @@ class CSEChat  {
     this.client.end();
     this.client = null;
   }
+
+  
 
   sendMessageToRoom(message: string, roomName: string) {
     if (!this.client) return;
@@ -180,7 +199,29 @@ class CSEChat  {
       if (this._reconnect) this.connect();
     });
 
-    this.client.on('stanza', (stanza) => this._processStanza(stanza));
+    this.client.on('stanza', (stanza) => this._recvStanza(stanza));
+  }
+
+  private messageHandlerTimeout: any = null;
+
+  _recvStanza(stanza: Element) {
+    if (stanza.is('iq')) {
+      this._processStanza(stanza);
+      return;
+    }
+    this._recvQueue.push(stanza);
+    if (this.messageHandlerTimeout) return;
+    this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 1);
+  }
+
+  _messageHandler() {
+    const stanza = this._recvQueue.shift();
+    this._processStanza(stanza);
+    if (this._recvQueue.length == 0) {
+      this.messageHandlerTimeout = null;
+      return;
+    }
+    this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 2);
   }
 
   // called when we connect.  Initialise the ping response map, the inflight count
@@ -334,7 +375,7 @@ class CSEChat  {
 
     let s = new Sender(0, sender, senderName, isCSE);
     return new Message(this._idCounter++, new Date(), message, roomName, messageType.MESSAGE_GROUP, s);
-  }
+  } 
 
   _parseMessageChat(stanza:Element) {
 
