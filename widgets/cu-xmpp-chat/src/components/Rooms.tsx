@@ -28,6 +28,7 @@ class Rooms extends React.Component<RoomsProps, RoomsState> {
     let unreadTotal = 0;
     const content : JSX.Element[] = [];
     const rooms = this.props.rooms;
+    if (!rooms) return null;
     for (let i = 0; i < rooms.length; i++) {
       unreadTotal += rooms[i].unread;
       content.push(

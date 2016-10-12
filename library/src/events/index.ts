@@ -62,7 +62,7 @@ const emitter: EventEmitter = new EventEmitter();
  * @return {any} an event handler id (can be used to stop listening for the event)
  */
 
-export function on(topic: string, callback: (info: any) => void): any {
+export function on(topic: string, callback: (...params: any[]) => void): any {
   const listener = listeners[topic];
   if (listener) {
     const handle = emitter.addListener(topic, listener.once, callback);
@@ -82,7 +82,7 @@ export function on(topic: string, callback: (info: any) => void): any {
  * @return {any} an event handler id (can be used to stop listening for the event)
  */
 
-export function once(topic: string, callback: (info: any) => void): any {
+export function once(topic: string, callback: (...params: any[]) => void): any {
   const listener = listeners[topic];
   if (listener) {
     const handle = emitter.addListener(topic, true, callback);
@@ -115,15 +115,15 @@ export function off(listener: any): void {
  * @param data {any}      Data to be passed to registered handlers
  */
 
-export function fire(topic: string, data: any) : void {
-  emitter.emit(topic, data);
+export function fire(topic: string, ...params: any[]) : void {
+  emitter.emit(topic, ...params);
 }
 
 function diagnostics() : void {
   emitter.diagnostics();
 }
 
-export function addListener(topic: string, callback: (info: any) => void): void {
+export function addListener(topic: string, callback: (...params: any[]) => void): void {
   on(topic, callback);
 }
 

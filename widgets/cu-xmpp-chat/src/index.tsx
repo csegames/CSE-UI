@@ -42,7 +42,7 @@ class Chat extends React.Component<ChatProps, ChatState> {
     // handle updates to chat session
     this._eventHandlers.push(events.on('chat-session-update', this.update));
     this._eventHandlers.push(events.on('chat-show-room', this.joinRoom));
-    this._eventHandlers.push(events.on('chat-leave-room', this.leaveRoom));
+    this._eventHandlers.push(events.on('chat-leave-room', (name: string) =>  this.leaveRoom(new RoomId(name, chatType.GROUP))));
     this._eventHandlers.push(events.on('chat-options-update', this.optionsUpdated));
 
     // Initialize chat settings in localStorage

@@ -6,14 +6,14 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:11
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-12 13:00:39
+ * @Last Modified time: 2016-10-12 17:42:00
  */
 
 import client from '../core/client';
+import {SignalRHub} from './SignalRHub';
 
 import warbandsHub from './hubs/warbandsHub';
 import * as warbandEvents from './hubs/warbandsHub';
-const WARBANDS_HUB = 'hubs/warbands';
 
 import groupsHub from './hubs/groupsHub';
 import * as groupEvents from './hubs/groupsHub';
@@ -21,11 +21,6 @@ const GROUPS_HUB = 'hubs/groups';
 
 
 const hubsDef: HubDef = {};
-
-hubsDef[WARBANDS_HUB] =  {
-  init: (cb: InitCallback) => warbandsHub.initializeHub(cb),
-  unregister: () => warbandsHub.unregisterEvents(),
-};
 
 hubsDef[GROUPS_HUB] =  {
   init: (cb: InitCallback) => groupsHub.initializeHub(cb),
@@ -99,6 +94,7 @@ export default Object.assign({}, {
   reinitializeSignalR,
   initializeSignalRHubs,
   unregisterSignalRHubs,
-  WARBANDS_HUB,
+  SignalRHub,
+  warbandsHub,
   GROUPS_HUB,
 }, warbandEvents, groupEvents);

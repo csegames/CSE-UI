@@ -10,10 +10,10 @@ class Listener {
   id: number;
   topic: string;
   once: boolean;
-  callback: (data: any) => void;
+  callback: (...params: any[]) => void;
   fired: number = 0;
   last: number = 0;
-  constructor(topic: string, once: boolean, callback: (data: any) => void) {
+  constructor(topic: string, once: boolean, callback: (...params: any[]) => void) {
     this.topic = topic;
     this.once = once;
     this.callback = callback;
@@ -34,7 +34,7 @@ class EventEmitter {
    * @param once {boolean}         Fire event only once (auto-unregister) [optional]
    * @param callback {function}    Handler to call when topic is fired
    */
-  addListener(topic: string, once: boolean = false, callback: (data: any) => void): any {
+  addListener(topic: string, once: boolean = false, callback: (...params: any[]) => void): any {
     const listeners: Listener[] = this.events[topic] = this.events[topic] || [];
     const listener: Listener = new Listener(topic, once, callback);
     let i: number = listeners.indexOf(null);
@@ -52,7 +52,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param callback {function}    Handler to call when topic is fired
    */
-  on(topic: string, callback: (data: any) => void): any {
+  on(topic: string, callback: (...params: any[]) => void): any {
     return this.addListener(topic, false, callback);
   }
 
@@ -64,7 +64,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param callback {function}    Handler to call when topic is fired
    */
-  listenOnce(topic: string, callback: (data: any) => void): any {
+  listenOnce(topic: string, callback: (...params: any[]) => void): any {
     return this.addListener(topic, true, callback);
   }
 
@@ -91,7 +91,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param data {any}  The data being passed (depends on topic)
    */
-  emit(topic: string, data?: any): void {
+  emit(topic: string, ...params: any[]): void {
     const listeners: Listener[] = this.events[topic];
     if (listeners && listeners.length) {
       for (let i = 0; i < listeners.length; i++) {
@@ -101,8 +101,8 @@ class EventEmitter {
             listeners[i] = null;
           }
           listener.last = Date.now();
-          listener.fired ++;
-          listener.callback(data);
+          listener.fired++;
+          listener.callback(...params);
         }
       }
     }

@@ -30,12 +30,30 @@ const MEMBER_REMOVED = `warband/warband/MEMBER_REMOVED`;
  */
 
 function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
-  events.on(signalr.WARBAND_EVENTS_JOINED, (info: {id: string, name: string}) => dispatch(warbandJoined(info.id, info.name)));
-  events.on(signalr.WARBAND_EVENTS_UPDATE, (info: {id: string, name: string}) => dispatch(warbandJoined(info.id, info.name)));
+  events.on(signalr.WARBAND_EVENTS_JOINED, (id: string, name: string) => dispatch(warbandJoined(id, name)));
+  events.on(signalr.WARBAND_EVENTS_UPDATE, (id: string, name: string) => dispatch(warbandJoined(id, name)));
   events.on(signalr.WARBAND_EVENTS_QUIT, (id: string) => dispatch(warbandQuit(id)));
   events.on(signalr.WARBAND_EVENTS_ABANDONED, (id: string) => dispatch(warbandAbandoned(id)));
-  events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (member: WarbandMember) => dispatch(memberJoined(member)));
-  events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (member: WarbandMember) => dispatch(memberUpdate(member)));
+  events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (memberJSON: string) =>{
+    try {
+      var member = JSON.parse(memberJSON);
+      dispatch(memberJoined(member));
+    } catch(e) {
+      if (client.debug) {
+        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`)
+      }
+    }
+  });
+  events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (memberJSON: string) =>{
+    try {
+      var member = JSON.parse(memberJSON);
+      dispatch(memberUpdate(member));
+    } catch(e) {
+      if (client.debug) {
+        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`)
+      }
+    }
+  });
   events.on(signalr.WARBAND_EVENTS_MEMBERREMOVED, (characterID: string) => dispatch(memberRemoved(characterID)));
 }
 
@@ -144,19 +162,12 @@ export function initialize(): AsyncAction<WarbandAction> {
     dispatch(initSignalR());
 
     try {
-      signalr.initializeSignalRHubs({
-        name: signalr.WARBANDS_HUB,
-        callback: (succeeded: boolean) => {
-          if (succeeded) {
-            dispatch(initSignalRSuccess());
-            registerWarbandEvents(dispatch);
-          } else {
-            dispatch(initSignalRFailed());
-          }
-        }
+      signalr.warbandsHub.start(() => {
+        dispatch(initSignalRSuccess());
+        registerWarbandEvents(dispatch);
       });
     } catch(e) {
-      console.log(e);
+      console.error(e);
       dispatch(initSignalRFailed());
     }
   }
