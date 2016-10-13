@@ -15,6 +15,9 @@ import {SignalRHub} from './SignalRHub';
 import warbandsHub from './hubs/warbandsHub';
 import * as warbandEvents from './hubs/warbandsHub';
 
+import patcherHub from './hubs/patcherHub';
+import * as patcherEvents from './hubs/patcherHub';
+
 import groupsHub from './hubs/groupsHub';
 import * as groupEvents from './hubs/groupsHub';
 const GROUPS_HUB = 'hubs/groups';
@@ -96,5 +99,6 @@ export default Object.assign({}, {
   unregisterSignalRHubs,
   SignalRHub,
   warbandsHub,
+  patcherHub,
   GROUPS_HUB,
-}, warbandEvents, groupEvents);
+}, warbandEvents, groupEvents, patcherEvents);

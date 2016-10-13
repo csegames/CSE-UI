@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 16:47:55
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-06 18:31:44
+ * @Last Modified time: 2016-10-25 17:07:29
  */
 
 import * as React from 'react';
@@ -18,8 +18,8 @@ import {thunkMiddleware, loggingMiddleware} from './lib/reduxUtils';
 import reducer from './services/session';
 import PatcherApp from './components/App';
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware));
-const root = document.getElementById('cse-patcher');
+const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+const root = document.getElementById('Patcher');
 
 ReactDom.render(
   <Provider store={store}>

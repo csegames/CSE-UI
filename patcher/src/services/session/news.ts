@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:15:41
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-06 17:29:25
+ * @Last Modified time: 2016-10-27 19:19:46
  */
 
 import {Promise} from 'es6-promise';

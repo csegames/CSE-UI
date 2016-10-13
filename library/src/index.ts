@@ -49,9 +49,9 @@ import stores from './stores/stores';
 import components from './components/components';
 
 
-import * as restAPI from './restapi/RestAPI';
+import * as legacyAPI from './restapi/RestAPI';
 
-import api from './api';
+import * as webAPI from './webAPI';
 
 import * as groups from './groups';
 export * from './groups';
@@ -67,10 +67,10 @@ import {DEBUG_ASSERT,RUNTIME_ASSERT} from './core/core';
 export * from './slashCommands';
 import * as slashCommandsExports from './slashCommands';
 
-let cu = Object.assign({
+// utils
+import * as utils from './util';
 
-  // api
-  api,
+let cu = Object.assign({
 
   // core
   CoreSettings : CoreSettings,
@@ -110,7 +110,7 @@ let cu = Object.assign({
   ConsoleMessage : ConsoleMessage,
 
   // RestAPI
-  restAPI : restAPI,
+  legacyAPI : legacyAPI,
 
 }, groups, eventExports, slashCommandsExports);
 
@@ -118,8 +118,11 @@ export default cu;
 
 export {
 
+  webAPI,
+
   // cu
   cu,
+  utils,
 
   // core
   CoreSettings,
@@ -165,8 +168,8 @@ export {
   stores,
   components,
 
-  // RestAPI
-  restAPI,
+  // Legacy RestAPI
+  legacyAPI,
 
   // misc
   signalr,

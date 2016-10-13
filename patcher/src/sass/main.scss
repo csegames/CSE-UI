@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-@import 'cu-character-creation/lib/index.scss';
-
 @import 'constants';
 @import 'mixins';
 @import 'shapes';
@@ -156,17 +154,11 @@ img{
 @import 'modaldialog';
 @import 'header';
 @import 'sidebar';
-@import 'hero';
-@import 'channelselect';
-@import 'serverselect';
-@import 'characterselect';
 @import 'content';
 @import 'footer';
-@import 'news';
 @import 'patchbutton';
 @import 'login';
 @import 'alerts';
-@import 'font';
 @import 'chat';
 
 @import 'cu-xmpp-chat/lib/index.scss';

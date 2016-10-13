@@ -1,0 +1,74 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-26 18:31:30
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-31 16:21:55
+ */
+
+.ProgressBar {
+  flex: 1 1 auto;
+  display: flex;
+  margin: -7px 0 2px -5px;
+  label {
+    color: #A58867;
+    margin: 0px 5px;
+    font-size: 0.8em;
+  }
+}
+
+.ProgressBar__bar__fill {
+  height: 10px;
+  box-shadow: inset 0px 0px 6px 0px #1a1a1a;
+  transition: all 0.3s;
+}
+
+.ProgressBar__bar {
+  flex: 1 1 auto;
+  margin: 5px;
+  box-shadow: inset 0px 0px 3px 0px rgba(244, 244, 244, 0.25);
+}
+
+.ProgressBar__bar__fill--working {
+  background-color: darkorange;
+  border: 1px solid darkorange;
+}
+
+.ProgressBar__bar__fill--complete {
+  background-color: #5a8110;
+  border: 1px solid #5a8110;
+}
+
+.ProgressBar__bar__fill--error {
+  background-color: #a41515;
+  border: 1px solid #a41515;
+}
+
+.ProgressBar__pause {
+  color: #ececec;
+  cursor: pointer;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  margin: 0 5px;
+  &:hover {
+    color: darkorange;
+  }
+}
+
+.ProgressBar__settings {
+  color: #ececec;
+  cursor: pointer;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  margin: 0 5px;
+  &:hover {
+    color: darkorange;
+  }
+}
+
+.ProgressBar__settings--hidden {
+  display: none;
+}

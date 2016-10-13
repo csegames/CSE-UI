@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:59:52
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-06 18:02:12
+ * @Last Modified time: 2016-10-31 15:40:05
  */
 
 import * as React from 'react';
@@ -14,7 +14,7 @@ import {events} from 'camelot-unchained';
 
 import {Routes} from '../../services/session/routes';
 import {patcher} from '../../services/patcher';
-
+import {view} from '../OverlayView';
 
 export interface HeaderProps {
   changeRoute: (route: Routes) => void;
@@ -22,15 +22,18 @@ export interface HeaderProps {
   activeRoute: Routes;
 };
 
-export interface HeaderState {};
-
-class Header extends React.Component<HeaderProps, HeaderState> {
+class Header extends React.Component<HeaderProps, {}> {
   public name = 'cse-patcher-header';
   
   static propTypes = {
     changeRoute: React.PropTypes.func.isRequired,
     openChat: React.PropTypes.func.isRequired,
     activeRoute: React.PropTypes.number.isRequired
+  }
+
+  signOut() {
+    patcher.logout();
+    setTimeout(() => events.fire('logged-in'), 250);
   }
 
   externalLink = (url: string) => {
@@ -43,25 +46,27 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render() {
-    var chatOption = patcher.hasUserPass() ? <li><a onClick={this.props.openChat}>Chat</a></li> : null;
     return (
-      <div id={this.name} className='navbar-fixed'>
-        <nav>
-        <div className='nav-wrapper'>
-          <a className='brand-logo cu-logo' onClick={this.internalLink.bind(this, Routes.HERO)}><img src='images/cu_logo_metal.png' /></a>
-          <ul id='nav-mobile' className='right'>
-            <li className={this.props.activeRoute == Routes.HERO ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.HERO)}>Home</a></li>
-            <li className={this.props.activeRoute == Routes.NEWS ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.NEWS)}>News</a></li>
-            <li><a onClick={this.externalLink.bind(this, 'http://camelotunchained.com/v2/')} className='external-link'>Getting Started <i className="tiny material-icons">launch</i></a></li>
-            <li><a onClick={this.externalLink.bind(this, 'https://store.camelotunchained.com/')}>CSE Store <i className="tiny material-icons">launch</i></a></li>
-            {chatOption}
-          </ul>
+      <div className='Header'>
+        <a className='Header__logo cu-logo' onClick={() => this.externalLink('http://camelotunchained.com/v2/')}><img src='images/cu_logo_metal.png' /></a>
+        <div className='Header__menu'>
+          <div className={`Header__menu__item ${this.props.activeRoute == Routes.HERO ? 'active' : ''}`} onClick={() => this.internalLink(Routes.HERO)}>Home</div>
+          <div className={`Header__menu__item ${this.props.activeRoute == Routes.NEWS ? 'active' : ''}`} onClick={() => this.internalLink(Routes.NEWS)}>News</div>
+          <div className='Header__menu__item' onClick={() => this.externalLink('https://camelotunchained.com/')}>
+              CamelotUnchained.com &nbsp;<i className="fa fa-external-link" aria-hidden="true"></i>
+          </div>
+          <div className='Header__menu__item' onClick={() => this.externalLink('https://store.camelotunchained.com/')}>
+              CSE Store &nbsp;<i className="fa fa-external-link" aria-hidden="true"></i>
+          </div>
+          {patcher.hasLoginToken() ? <div className={`Header__menu__item ${this.props.activeRoute == Routes.CHAT ? 'active' : ''}`} onClick={() => this.internalLink(Routes.CHAT)}>Chat</div> : null}
         </div>
-        </nav>
       </div>
     );
   }
 };
+
+// LOGOUT REMOVED
+// {patcher.hasLoginToken() ? <div onClick={this.signOut} className='Header__menu__item'>Logout <i className="fa fa-sign-out" aria-hidden="true"></i></div> : null}
 
 // DISABLED -- paste into unordered list to re-enable
 // <li className={this.props.activeRoute == Routes.PATCHNOTES ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.PATCHNOTES)}>Patch Notes</a></li>

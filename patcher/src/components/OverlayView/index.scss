@@ -1,0 +1,53 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-27 11:50:56
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-28 12:33:54
+ */
+
+.OverlayView {
+  position: fixed;
+  top: 95px;
+  bottom: 123px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.OverlayView--hidden {
+  visibility: hidden;
+}
+
+.View {
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #1a1a1a;
+  transition: all 0.3s ease-in;
+  opacity: 0;
+}
+
+.View--show {
+  opacity: 1;
+}
+
+.View--hide {
+  display: none;
+}
+
+.View {
+  .cse-chat {
+    position: absolute;
+  }
+  .cu-character-creation {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}

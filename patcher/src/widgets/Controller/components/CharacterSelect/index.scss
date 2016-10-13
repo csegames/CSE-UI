@@ -1,0 +1,266 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-25 17:02:44
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-31 12:40:25
+ */
+$color1: #eaeaea; //rgba(234, 234, 234, 100)
+$color4: #131313; //rgba(25, 25, 25, 100)
+
+$colorA: #7B1D00;//border color
+$colorT: #1B5F00;//border color
+$colorV: #124d66;//border color
+
+@mixin circle($size) {
+  border-radius: 50%;
+  width: $size;
+  height: $size;
+}
+
+.CharacterSelect {
+  height: 60px;
+  width: 250px;
+  font-size: 1.2em;
+  font-weight: 300;
+}
+
+.ActiveCharacterView {
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+  -webkit-user-select: none;
+  align-items: center;
+  .char-icon {
+    margin: 5px;
+  }
+}
+
+.ActiveCharacterView--none {
+  padding: 10px;
+}
+
+.ActiveCharacterView__details {
+  flex: 1 1 auto;
+  padding: 10px;
+  div {
+    line-height: 17px;
+  }
+}
+
+.ActiveCharacterView__details__login {
+  color: #e0e0e0;
+  font-size: .6em;
+}
+
+.ActiveCharacterView__controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 10px;
+  color: rgba(150, 150, 150, 0.7);
+  .fa-times:hover {
+    color: darkred;
+  }
+  .fa-info-circle:hover {
+    color: darkorange;
+  }
+}
+
+
+.CharacterListView {
+  padding: 5px;
+}
+
+.character:before {
+    background: no-repeat;
+    background-size: contain;
+    content: '';
+    position: absolute;
+    margin-top: 2px;
+    left: 7px;
+    top: 11px;
+    width: 30px;
+    height: 26px;
+    z-index: 1;
+}
+
+.character-buttons {
+  button {
+    //background: $gradient2;
+    //border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    text-align: center;
+    height: 30px;
+    width: 135px;
+    margin: 5px 7px 10px 7px;
+    font-weight: 700;
+    font-size: 16px;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+}
+
+.character-select.quickselect-active {
+  -webkit-user-select: none !important;
+  cursor: pointer !important;
+  padding: 2px 7px;
+  &:hover {
+    background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+  h5 {
+    margin: 0.41rem 0 0.328rem 0;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+  h5.character {
+    color: $color1;
+  }
+  h5.label {
+    color: lighten($color4, 20%);
+    padding: 2.5px 0px 2.5px 0px;
+    font-size: 18px;
+  }
+}
+
+.character-select.quickselect-list {
+  padding: 2.5px;
+  background-color: $color4;
+  color: $color1;
+  cursor: pointer !important;
+  &:hover {
+    background-color: $color4;
+    -webkit-filter: brightness(1.2);
+    filter: brightness(1.2);
+  }
+  h5 {
+    font-size: 16px;
+    margin: 2px 0px;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+  h6 {
+    font-size: 14px;
+    margin: 2px 0px;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+  .character-status {
+    .indicator {
+      top: -10px !important;
+    }
+  }
+}
+
+.character-status {
+  position: relative;
+  width: 30px;
+  height: 10px;
+  .indicator {
+    @include circle(10px);
+    position: absolute;
+    top: -25px;
+  }
+  display: inline-block;
+  margin: 5px;
+}
+
+.character-details {
+  display: inline-block;
+  color: $color1;
+}
+
+.character-select.quickselect-active {
+  .character-details {
+    width: 240px;
+    overflow: hidden;
+  }
+}
+
+.character-select-none {
+  color: #464646;
+  padding: 2.5px;
+  font-size: 18px;
+  padding-left: 7.5px;
+}
+
+.char-icon {
+  background: no-repeat;
+  background-size: contain;
+  width: 30px;
+  height: 26px;
+}
+
+.char-icon--PICT-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png');
+  //border: 1px $colorA solid;
+}
+.char-icon--PICT-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png');
+  //border: 1px $colorA solid;
+}
+
+.char-icon--LUCHORPAN-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png');
+  //border: 1px $colorT solid;
+}
+
+.char-icon--LUCHORPAN-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png');
+  //border: 1px $colorT solid;
+}
+
+.char-icon--VALKYRIE-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png');
+  //border: 1px $colorV solid;
+}
+
+.char-icon--VALKYRIE-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-f.png');
+  //border: 1px $colorV solid;
+}
+
+.char-icon--HUMANMALEV-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-vik.png');
+  //border: 1px $colorV solid;
+}
+
+.char-icon--HUMANMALEA-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png');
+  //border: 1px $colorA solid;
+}
+
+.char-icon--HUMANMALET-MALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png');
+  //border: 1px $colorT solid;
+}
+
+.char-icon--HUMANMALEV-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png');
+  //border: 1px $colorV solid;
+}
+
+.char-icon--HUMANMALEA-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png');
+  //border: 1px $colorA solid;
+}
+
+.char-icon--HUMANMALET-FEMALE {
+  background-image: url('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png');
+  //border: 1px $colorT solid;
+}

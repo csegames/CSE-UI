@@ -1,0 +1,64 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-25 12:03:06
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-31 12:40:18
+ */
+
+.ServerSelect {
+  height: 60px;
+  width: 250px;
+  font-size: 1.2em;
+  font-weight: 300;
+}
+
+.ActiveServerView {
+  display: flex;
+}
+
+.ActiveServerView__access {
+  font-size: .6em;
+  color: #e0e0e0;
+  line-height: 15px;
+}
+
+.ActiveServerView__details {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  line-height: 17px;
+}
+
+.ActiveServerView__status {
+  padding: 5px 0 5px 5px;
+  
+  .online {
+    color: #5a8110;
+  }
+  .offline {
+    color: #a41515;
+  }
+}
+
+.ActiveServerView__controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 10px;
+  color: rgba(150, 150, 150, 0.7);
+  .fa-times:hover {
+    color: darkred;
+  }
+  .fa-line-chart:hover {
+    color: darkorange;
+  }
+}

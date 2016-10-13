@@ -1,0 +1,70 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.cu-character-creation__navigation {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2;
+  padding: 50px 0 20px 0;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.50));
+}
+
+.cu-character-creation__name {
+  position: absolute;
+  bottom: 75px;
+  width: calc(100% - 280px);
+  right: 0;
+  z-index: 20;
+  opacity: .7;
+  transition: opacity .2s ease-in-out;
+  &:focus, &:hover{
+      opacity: 1;
+  }
+
+  input {
+    width: 300px;
+    display: block;
+    margin: auto;
+    padding: 11px;
+    color: #ececec;
+    background-color: #1a1a1a;
+    transition: all 0.3s;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: 200;
+    box-shadow: inset 0px 0px 3px 0px rgba(200,200,200,.1);
+    border: 1px solid #1a1a1a;
+    cursor: pointer;
+    &:hover {
+      border: 1px solid darkorange;
+      color: darkorange;
+    }
+
+    &:focus {
+      outline: 0;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      color: rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0px 0px 3px 0px rgba(100,100,100,.1);
+    }
+
+    &.success {
+      color: darkorange;
+      border: 1px solid darkorange;
+    }
+
+    &.error {
+      color: red;
+      border: 1px solid red;
+    }
+
+
+  }
+}

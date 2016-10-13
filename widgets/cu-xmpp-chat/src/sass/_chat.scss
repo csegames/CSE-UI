@@ -214,6 +214,8 @@
   .chat-content {
     /* Chat Content */
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     width: 100px;
       /* ^^^
        * without this, content will expand to fit the chat lines if chat contains long words
@@ -235,9 +237,7 @@
     }
     .chat-text {
       margin: 0 0.5em;
-      height: 100%;
-      min-height: 100%;
-      max-height: 100%;
+      flex: 1 1 auto;
       overflow-y: auto;
       overflow-x: visible;
       .chat-line {
@@ -350,6 +350,7 @@
     .chat-input {
       height: 38px;
       margin: 0 5px;
+      display: flex;
       &.chat-expanded {
         height: 70px;             /* (3 x 16) + 11 + 11 */
       }
@@ -366,6 +367,7 @@
         outline: none;
         padding: 11px 10px;         /* 11px = (height-fontsize)/2 */
         margin: 0;
+        flex: 1 1 auto;
       }
       input:focus, button:focus {
         outline-width: 0;

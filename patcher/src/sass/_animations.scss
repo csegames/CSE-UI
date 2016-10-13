@@ -1,0 +1,57 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-27 16:22:27
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-27 16:22:27
+ */
+
+.wave-text {
+  i {
+    font-style: normal;
+    animation: waveText 1s infinite ease-in alternate;
+    -webkit-animation: waveText 1s infinite ease-in alternate;
+  }
+
+  @for $i from 0 through 30 {
+    i:nth-child(#{$i}) {
+      animation-delay: 0.1s * $i;
+      -webkit-animation-delay: 0.1s * $i;
+    }
+  }
+}
+
+@-webkit-keyframes waveText {
+  0% {
+    opacity: .3;
+    color: #ececec;
+  }
+  80% {
+    opacity: 1;
+    color: darkorange;
+  }
+  100% {
+    opacity: 1;
+    color: darkorange;
+    font-size: 1.1em;
+  }
+}
+
+@keyframes waveText {
+  0% {
+    opacity: .3;
+    color: #ececec;
+  }
+  80% {
+    opacity: 1;
+    color: darkorange;
+  }
+  100% {
+    opacity: 1;
+    color: darkorange;
+    font-size: 1.1em;
+  }
+}

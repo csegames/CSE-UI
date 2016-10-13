@@ -250,10 +250,10 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     return (
       <div className={inputClass.join(' ')}>
         <AtUserList users={this.state.atUsers} selectedIndex={this.state.atUsersIndex} selectUser={this.selectAtUser}/>
-        <label htmlFor="chat-text">Say something!</label>
         <textarea className="materialize-textarea"
                   id="chat-text"
                   ref="new-text"
+                  placeholder="Say something!"
                   onBlur={() => client.ReleaseInputOwnership()}
                   onFocus={() => client.RequestInputOwnership()}
                   onKeyDown={this.keyDown}

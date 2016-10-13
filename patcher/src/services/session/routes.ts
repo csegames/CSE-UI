@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 16:54:10
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-06 16:58:06
+ * @Last Modified time: 2016-10-28 11:52:38
  */
 
 import {BaseAction, defaultAction, merge} from '../../lib/reduxUtils';
@@ -15,7 +15,8 @@ export enum Routes {
   HERO,
   NEWS,
   PATCHNOTES,
-  SUPPORT
+  SUPPORT,
+  CHAT
 }
 
 export interface RoutesAction extends BaseAction {

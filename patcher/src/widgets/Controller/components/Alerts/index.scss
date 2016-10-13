@@ -1,0 +1,23 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-25 10:52:51
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-25 14:27:28
+ */
+
+.Alerts {
+  position: absolute;
+  top: -36px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, #600000, #600000 2px, #6F0000 2px, #6F0000 5px);
+  border-top: 3px solid #600000;
+  border-bottom: 3px solid #600000;
+  color: #ececec;
+  padding: 3px 15px;
+}

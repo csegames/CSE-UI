@@ -12,11 +12,9 @@ export * from './client';
 // constants
 import abilityTags from './constants/abilityConstants/abilityTags';
 import announcementType from './constants/announcementType';
-import archetype from './constants/archetype';
 import buildUIMode from './constants/buildUIMode';
 import channelId from './constants/channelId';
 import emotes from './constants/emotes';
-import race from './constants/race';
 import soundEvents from './constants/soundEvents';
 import tagConstraintType from './constants/tagConstraintType';
 import gearSlot from './constants/gearSlot';
@@ -31,6 +29,8 @@ export * from './constants/bodyParts';
 export * from './constants/damageTypes';
 export * from './constants/resourceTypes';
 export * from './constants/skillTracks';
+export * from './constants/archetype';
+export * from './constants/race';
 
 // config
 export * from './config/config';
@@ -64,11 +64,9 @@ export {
   // core constants
   abilityTags,
   announcementType,
-  archetype,
   buildUIMode,
   channelId,
   emotes,
-  race,
   soundEvents,
   tagConstraintType,
   gearSlot,

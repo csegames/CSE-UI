@@ -6,36 +6,55 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 14:38:35
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-12 16:44:03
+ * @Last Modified time: 2016-10-25 15:34:48
  */
 
 import {EventMap} from '../../util/eventMapper';
 import {SignalRHub} from '../SignalRHub';
 import client from '../../core/client';
 
-var warbandEventsMap: EventMap[] = [
+export const PATCHER_EVENTS_SERVERUPDATED = 'patcher/serverUpdated';
+export const PATCHER_EVENTS_SERVERUNAVAILABLE = 'patcher/serverUnavailable';
+export const PATCHER_EVENTS_ALERT = 'patcher/alert';
+export const PATCHER_EVENTS_CHARACTERREMOVED = 'patcher/characterRemoved';
+export const PATCHER_EVENTS_CHARACTERUPDATED = 'patcher/characterUpdated';
+
+var patcherEventsMap: EventMap[] = [
   {
-    recieve: 'warbandJoined',
-    send: 'warbands/joined'
-  },{
-    recieve: 'warbandUpdate',
-    send: 'warbands/update'
+    recieve: 'serverUpdate',
+    send: PATCHER_EVENTS_SERVERUPDATED
+  },
+  {
+    recieve: 'serverUnavailable',
+    send: PATCHER_EVENTS_SERVERUNAVAILABLE
+  },
+  {
+    recieve: 'patcherAlert',
+    send: PATCHER_EVENTS_ALERT
+  },
+  {
+    recieve: 'characterUpdated',
+    send: PATCHER_EVENTS_CHARACTERUPDATED
+  },
+  {
+    recieve: 'characterRemoved',
+    send: PATCHER_EVENTS_CHARACTERREMOVED
   }
 ];
 
-const patcherHub = new SignalRHub('warbandsHub', warbandEventsMap, {debug: client.debug});
+const patcherHub = new SignalRHub('patcherHub', patcherEventsMap, {debug: client.debug});
 
-patcherHub.onConnected = function(patcherHub: SignalRHub) {
-  patcherHub.invoke('identify', client.loginToken, client.shardID, client.characterID)
+patcherHub.onConnected = function(hub: SignalRHub) {
+  hub.invoke('identify', client.loginToken)
     .done((success: boolean) => {
       if (!success) {
-        console.log('failed to identify');
+        if (client.debug) console.log('PatcherHub identify failed.');
+        // Try again!
+        setTimeout(() => hub.onConnected(hub), 5000);
         return;
       }
       // invalidate to force a resend of all data to this client
-      //hub.server.invalidate();
-      patcherHub.invoke('invalidate');
-      console.log('identify success');
+      hub.invoke('invalidate');
     });
 }
 

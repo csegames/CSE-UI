@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-enum race {
+export enum race {
   NONE = -1,
   //TUATHA = 0,
   HAMADRYAD = 1,
@@ -31,5 +31,26 @@ enum race {
 
   PICT = 18,
 };
+
+export function raceToString(r: race): string {
+  switch(r) {
+  case race.HAMADRYAD: return 'Hamadryad';
+  case race.LUCHORPAN: return 'Luchorpán';
+  case race.FIRBOG: return 'Fir Bog';
+  case race.VALKYRIE: return 'Valkyrie';
+  case race.HELBOUND: return 'Helbound';
+  case race.FROSTGIANT: return 'Jötnar';
+  case race.STRM: return 'St’rm';
+  case race.CAITSITH: return 'Cait Sith';
+  case race.GOLEM: return 'Golem';
+  case race.STORMRIDERT: return 'Stormrider (T)';
+  case race.STORMRIDERA: return 'Stormrider';
+  case race.STORMRIDERV: return 'Stormrider (V)';
+  case race.HUMANMALEV: return 'Human';
+  case race.HUMANMALEA: return 'Human';
+  case race.HUMANMALET: return 'Human';
+  case race.PICT: return 'Pict';
+  }
+}
 
 export default race;

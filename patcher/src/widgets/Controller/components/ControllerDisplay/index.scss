@@ -1,0 +1,51 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-19 14:29:49
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-31 11:09:19
+ */
+
+.ControllerDisplay {
+  position: relative;
+  flex: none;
+  background: #131313;
+  padding: 10px;
+  z-index: 100;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-top: 3px solid rgba(200, 200, 200, 0.1);
+}
+
+.ControllerDisplay__selections {
+  display: flex;
+  color: #bdbdbd;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+
+  .QuickSelect {
+    margin-right: 20px;
+  }
+
+  a {
+    margin: 5px 0 0 10px;
+    text-decoration: none;
+    color: darken(darkorange, 10%);
+    transition: all 0.3s;
+    font-size: 0.9em;
+    text-align: left;
+    &:hover {
+      color: darkorange;
+    }
+  }
+}
+
+.ControllerDisplay__controls {
+  display: flex;
+  justify-content: space-between;
+}

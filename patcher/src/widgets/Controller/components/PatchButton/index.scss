@@ -1,0 +1,91 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-25 18:49:13
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-31 16:34:23
+ */
+
+.PatchButton {
+  display: flex;
+  flex-direction: row-reverse;
+  font-weight: 200;
+}
+
+.PatchButton__button {
+  padding: 11px;
+  color: #ececec;
+  background-color: #a68d72 ;
+  transition: all 0.3s;
+  text-align: center;
+  font-size: 1.3em;
+  box-shadow: inset 0px 0px 3px 0px rgba(200,200,200,.1);
+  border: 1px solid #796753;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 35px;
+  width: 200px;
+  font-weight: 600;
+  text-transform: uppercase;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  &:hover {
+    border: 1px solid #a68d72;
+    //color: darkorange;
+    background-color: #CAAC8C;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.PatchButton__button--disabled {
+  cursor: not-allowed;
+  color: #5F5143;
+
+  box-shadow: inset 0px 0px 3px 0px rgba(100,100,100,.1);
+  &:hover {
+    border: 1px solid #1a1a1a;
+    color: #5F5143;
+  }
+}
+
+.PatchButton__button--error {
+  color: red;
+  border: 1px solid red;
+}
+
+.PatchButton__button--success {
+  animation: successFade 1s ease-in once;
+}
+
+@keyframes successFade {
+  from {
+    color: darkorange;
+    border: 1px solid darkorange;
+  }
+  to {
+    color: #ececec;
+    border: 1px solid #1a1a1a;
+  }
+}
+
+.PatchButton__updateGroup {
+  display: flex;
+  flex-direction: row-reverse;
+  label {
+    color: #A58867;
+    font-size: 0.9em;
+  }
+}
+
+.PatchButton__updateText {
+  color: #ececec;
+  text-align: right;
+  font-size: .8em;
+  margin-right: 5px;
+}

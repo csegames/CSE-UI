@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:07:56
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-07 15:41:38
+ * @Last Modified time: 2016-10-28 15:52:40
  */
 
 import * as React from 'react';
@@ -29,13 +29,14 @@ import {ChatState, showChat, hideChat} from '../../services/session/chat';
 
 // Components
 import Hero from '../Hero';
-import News from '../News';
 import Sound from '../Sound';
 import Header from '../Header';
 import WindowHeader from '../WindowHeader';
 
+import OverlayView, {view} from '../OverlayView';
+
 // Widgets
-import Sidebar from '../../widgets/Sidebar';
+import Controller from '../../widgets/Controller';
 
 function select(state: GlobalState): PatcherAppProps {
   return {
@@ -61,6 +62,19 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   private heroContentInterval: any = null;
 
   onRouteChanged = (route: Routes) => {
+    if (route === Routes.HERO) {
+     events.fire('view-content', view.NONE, null);
+      events.fire('resume-videos');
+    } else if (route === Routes.NEWS) {
+      events.fire('view-content', view.NEWS, {
+        news:this.props.newsState,
+        fetchPage:this.fetchNewsPage
+      });
+      events.fire('pause-videos');
+    } else if (route === Routes.CHAT) {
+      events.fire('view-content', view.CHAT, null);
+      events.fire('pause-videos');
+    }
     this.props.dispatch(changeRoute(route));
     events.fire('play-sound', 'select');
   }
@@ -98,6 +112,16 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
       this.props.dispatch(validateHeroContent());
       if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     }, 60000 * 30);
+
+    events.on('view-content', (v: view) => {
+      if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
+        this.props.dispatch(changeRoute(Routes.HERO));
+      }
+    });
+
+    events.on('logged-in', () => {
+      this.setState({} as any);
+    });
   }
 
   componentDidUnMount() {
@@ -106,26 +130,6 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   }
 
   render() {
-    let content: any = null;
-    switch(this.props.currentRoute) {
-      case Routes.HERO:
-        content = (
-          <div key='0'>
-            <Hero isFetching={this.props.heroContentState.isFetching}
-                  lastUpdated={this.props.heroContentState.lastFetchSuccess}
-                  items={this.props.heroContentState.items} />
-          </div>
-        );
-        break;
-      case Routes.NEWS:
-        content = (
-          <div key='1'>
-            <News news={this.props.newsState}
-                  fetchPage={this.fetchNewsPage}/>
-          </div>
-        );
-        break;
-    }
 
     let chat: any = null;
     if (this.props.chatState.showChat) {
@@ -137,26 +141,33 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     }
 
     return (
-      <div id={this.name}>
+      <div className='PatcherApp'>
         <WindowHeader soundsState={this.props.soundsState}
           onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ? muteSounds(this.props.soundsState) : unMuteSounds(this.props.soundsState))}
           onMuteMusic={() => this.props.dispatch(this.props.soundsState.playMusic ? muteMusic(this.props.soundsState) : unMuteMusic(this.props.soundsState))}/>
-        <Header changeRoute={this.onRouteChanged} activeRoute={this.props.currentRoute} openChat={this.showChat} />
-        <Sidebar onLogIn={this.onLogIn} />
-        <div className='main-content'>
-        <Animate animationEnter='fadeIn' animationLeave='fadeOut'
-          durationEnter={400} durationLeave={500}>
-          {content}
-        </Animate>
+        <Header changeRoute={this.onRouteChanged}
+                activeRoute={this.props.currentRoute}
+                openChat={this.showChat} />
+        
+        
+        <div className='PatcherApp__content'>
+          <Hero isFetching={this.props.heroContentState.isFetching}
+                lastUpdated={this.props.heroContentState.lastFetchSuccess}
+                items={this.props.heroContentState.items} />
         </div>
-        <Animate animationEnter='slideInRight' animationLeave='slideOutRight'
-          durationEnter={400} durationLeave={500}>
-          {chat}
-        </Animate>
+        
+        <Controller onLogIn={this.onLogIn} />        
         <Sound soundsState={this.props.soundsState} />
+        <OverlayView />
       </div>
     );
   }
 };
 
 export default connect(select)(PatcherApp);
+
+          
+          // <Animate animationEnter='slideInRight' animationLeave='slideOutRight'
+          //   durationEnter={400} durationLeave={500}>
+          //   {chat}
+          // </Animate>

@@ -1,0 +1,238 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-09-06 17:31:11
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2016-10-27 18:01:58
+ */
+
+@import '../../sass/constants';
+
+@import './components/NewsItem/index';
+
+.News {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+}
+
+.News__content {
+  flex: 1 1 auto;
+  padding: 0 20px;
+  color: #ececec;
+}
+
+.News__loadMore {
+  margin-bottom: 40px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.News__loadMore--loading {
+  font-size: 2em;
+  font-weight: 700;
+} 
+
+// old
+
+.News {
+    
+  .cse-patcher-news-item {
+    display: inline-block;
+    margin-bottom: 8px;
+    width: calc(100% - 4px);
+    overflow: hidden;
+    text-align: left;
+    margin: 4px;
+  }
+  
+  a {
+      color: $colorg4;
+      &:hover{
+          color: lighten($colorg4, 50%);
+      }
+  }
+  .card {
+    overflow: hidden;
+    position: relative;
+    background-color: $color4;
+    padding: 0px;
+    margin: 0.5rem 0.7rem 0rem 0;
+    height: 300px;
+    cursor: pointer !important;
+    
+    img {
+      zoom: 100%; //remove later
+      position: absolute;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transition: all .5s ease-in-out;
+    }
+    
+    .card-content {
+      position: absolute;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 35px 20px 15px 15px;
+      bottom: -180px;
+      height: 100%;
+      transition: all .3s ease-in-out;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0, 0, 0, 0.7) 30%, rgba(0, 0, 0, 0.9) 80%);
+      
+      .card-title {
+        font-size: 20px !important;
+        line-height: 20px !important;
+        height: 75px;
+      }
+      
+      p {
+        margin-top: 25px;
+        opacity: 0;
+        transition: all .3s ease-in-out .2s;
+        }
+    }
+    
+    &:hover {
+      img {
+        transform: scale(1.1);
+        transform: translateY(1.1);
+        filter: brightness(0.8);
+      }
+      
+      .card-content {
+        bottom: -90px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0, 0, 0, 0.7) 30%, rgba(0, 0, 0, 0.9) 80%);
+        p {
+          opacity: 1;
+        }
+      }
+    }
+    
+    
+  }
+  
+  
+  
+  .card-reveal {
+    overflow: hidden;
+    height: 60%;
+
+  }
+  ul li {
+    list-style-type: inherit;
+    margin-bottom: 15px;
+  }
+  
+  .material-icons {
+    position: absolute;
+    right: 30px;
+    top: 15px;
+    display: block;
+    width: 20px;
+    overflow: hidden;
+    background: url("../images/news-close.png") no-repeat center center;
+    background-size: contain;
+    color: transparent;
+  }
+  
+  .date {
+    font-size: 12px;
+  }
+  
+  
+  
+  .front-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .card-reveal {
+    background-color: $color4;
+  }
+  
+  figure {
+    margin: 0;
+    overflow: hidden;
+  }
+  
+  figcaption {
+    margin-top: 15px;
+  }
+  
+  @media screen and (min-width: 1300px) {
+  .cse-patcher-news-item  {
+      width: calc(33.33% - 8px);
+    }
+  }
+  
+  @media screen and (min-width: 900px) and (max-width: 1299px) {
+  .cse-patcher-news-item  {
+      width: calc(50% - 8px);
+    }
+  }
+  
+  .full-article {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 95px;
+    bottom: 111px;
+    z-index: 16;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    
+    .article-content {
+      position: relative;
+      background-color: $color4;
+      overflow-y: auto;
+      overflow-x: hidden;
+      margin: 20px 20px;
+      height: calc(100% - 70px);
+      color: $color6;
+      padding: 20px;
+      
+      .content-container {
+        max-width: 90%;
+        margin: auto;
+        
+        img {
+          display: block;
+          margin: 0 auto;
+          height: auto;
+          max-width:100%;
+        }
+      }
+    }
+    
+    .fa-times {
+      cursor: pointer;
+      position: fixed;
+      top: 125px;
+      right: 45px;
+      transition: all 0.3s;
+      &:hover {
+        color: darkred;
+      }
+    }
+    
+    .card-title {
+      font-size: 2em;
+      p {
+        font-size: .5em;
+        text-align: right;
+        margin: 0;
+        color: #8a8a8a;
+      }
+    }
+  }
+}
+
+

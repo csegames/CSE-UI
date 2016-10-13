@@ -57,19 +57,13 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
     let settings: any = null;
     if (this.state.settingsOpen) settings = <h1 style={{color:'#fff'}} onClick={this.closeSettings}>Settings!</h1>;
     return (
-      <div id={this.name}>
-        <ul>
-          <li>
-            <a href='#' onClick={this.muteSounds} className='hint--left hint--slide' data-hint={muteSoundsTooltip}>
-              {soundMuteIcon}
-            </a>
-          </li>
-          <li>
-            <a href='#' onClick={this.muteMusic} className='hint--left hint--slide' data-hint={muteMusicTooltip}>
-              {musicMuteIcon}
-            </a>
-          </li>
-        </ul>
+      <div className='WindowHeader'>
+        <a href='#' onClick={this.muteSounds} className='hint--left hint--slide' data-hint={muteSoundsTooltip}>
+          {soundMuteIcon}
+        </a>
+        <a href='#' onClick={this.muteMusic} className='hint--left hint--slide' data-hint={muteMusicTooltip}>
+          {musicMuteIcon}
+        </a>
         <Animate animationEnter='slideInUp' animationLeave='slideOutDown'
           durationEnter={400} durationLeave={500}>
           {settings}

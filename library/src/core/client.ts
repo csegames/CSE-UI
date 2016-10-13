@@ -31,6 +31,7 @@ if (window.opener && window.opener.cuAPI) {
     loginToken: 'developer',
     apiVersion: 1,
     apiHost: 'https://api.camelotunchained.com',
+    //apiHost: 'http://localhost:1337',
     characterID: 'KCt3dNCC6dKPyNzD0SR200',
     shardID: 1,
     debug: true

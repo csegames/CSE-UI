@@ -38,6 +38,22 @@
       -webkit-filter: brightness(1.2);
     }
   }
+
+  input[type=text] {
+    box-sizing: border-box;
+    height: 100%!important;     /* override materialize-textarea annoying behaviour of setting textarea to height of contained text */
+    background-color: rgba(128,128,128,0.2);
+    border: 0;
+    color: silver;
+    font-size: 16px;
+    line-height: 16px;
+    min-height: 16px;
+    resize: none;
+    outline: none;
+    padding: 11px 10px;         /* 11px = (height-fontsize)/2 */
+    margin: 0;
+    flex: 1 1 auto;
+  }
 }
 
 .fullscreen-blackout {

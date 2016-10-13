@@ -58,7 +58,7 @@ warbandsHub.onConnected = (hub: SignalRHub) => {
   hub.invoke('identify', client.loginToken, client.shardID, client.characterID)
     .done((success: boolean) => {
       if (!success) {
-        if (client.debug) console.warn('WarbandsHub failed identify failed.');
+        if (client.debug) console.warn('WarbandsHub identify failed.');
         // Try again!
         setTimeout(() => hub.onConnected(hub), 5000);
         return;

@@ -70,11 +70,10 @@ class Animate extends React.Component<AnimateProps, {}> {
     const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props
 
     return (
-        <div key={this.props.key} className={`${this.props.className ? this.props.className : ''}`}>
 
-          <style dangerouslySetInnerHTML={ { __html: this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
 
           <ReactCSSTransitionGroup
+              key={this.props.key}
               component={this.props.component ? this.props.component : 'div'}
               transitionName={ {
                 enter: 'default-enter',
@@ -83,13 +82,14 @@ class Animate extends React.Component<AnimateProps, {}> {
                 leaveActive: animationLeave
               } }
               transitionEnterTimeout={durationEnter}
-              transitionLeaveTimeout={durationLeave}>
+              transitionLeaveTimeout={durationLeave}
+              className={`${this.props.className ? this.props.className : ''}`}>
+            <style dangerouslySetInnerHTML={ { __html: this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
 
             {children}
 
           </ReactCSSTransitionGroup>
 
-        </div>
     )
   }
 }

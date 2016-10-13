@@ -27,7 +27,7 @@ export interface ChatState {
 
 export interface ChatProps {
   loginToken: string,
-  hideChat: () => void;
+  hideChat?: () => void;
 }
 
 class Chat extends React.Component<ChatProps, ChatState> {
@@ -136,7 +136,6 @@ class Chat extends React.Component<ChatProps, ChatState> {
   render() {
     const current : RoomId = this.state.chat.currentRoom;
     const room : ChatRoomInfo = current ? this.state.chat.getRoom(current) : undefined;
-    const closeButton: any = this.props.hideChat ? <div className='chat-close' onClick={this.close}>Close</div> : null;
     return (
       <div className="cse-chat no-select">
         <div className="chat-frame">
@@ -152,7 +151,6 @@ class Chat extends React.Component<ChatProps, ChatState> {
             slashCommand={this.slashCommand}
             />
         </div>
-        {closeButton}
       </div>
     );
   }
