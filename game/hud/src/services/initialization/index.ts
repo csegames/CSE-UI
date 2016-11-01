@@ -38,10 +38,10 @@ export default () => {
   
 
     if (log.disruption) {
-      output += `${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) `;
+      output += `${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION `;
 
       if (log.disruption.tracksInterupted == skillTracks.NONE) {
-        output += `${skillTracks[skillTracks.NONE]} | `;
+        output += ` | `;
 
       } else {
 
@@ -61,7 +61,7 @@ export default () => {
           output += ` ${skillTracks[skillTracks.MIND]} `;
         }
 
-        output += '| ';
+        output += `INTERRUPTED | `;
       }
     }
 
@@ -103,6 +103,12 @@ export default () => {
         output += `${log.activeEffects[i]} `;
       }
       output += '|';
+    }
+      
+    if (log.errors) {
+      for (let i = 0; i < log.errors.length; ++i) {
+        output += `${log.errors[i]} `;
+      }
     }
 
     return output;

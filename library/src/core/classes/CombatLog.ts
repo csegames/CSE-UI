@@ -58,4 +58,8 @@ export interface CombatLog {
   };
 
   activeEffects?: string[];  // names of active effects
+  
+  errors?: {
+    msg: string;
+  }[];
 }
