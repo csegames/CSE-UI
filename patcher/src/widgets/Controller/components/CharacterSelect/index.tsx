@@ -149,7 +149,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
     let serverCharacters: webAPI.characters.SimpleCharacter[] = [];
     for (const key in characters) {
-      if (characters[key].shardID === selectedServer.shardID) serverCharacters.push(characters[key]); 
+      if (characters[key].shardID === selectedServer.shardID) serverCharacters.push(characters[key]);
     }
 
     if (serverCharacters.length == 0) {
@@ -164,6 +164,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                             </div>
                           )}
                         listViewComponentGenerator={c => null}
+                        itemHeight={67}
                         onSelectedItemChanged={() => null} />
       );
     }
@@ -195,6 +196,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                         selectedItemIndex={utils.findIndexWhere(serverCharacters, c => c.id === selectedCharacter.id)}
                         activeViewComponentGenerator={c => <ActiveCharacterView character={c} />}
                         listViewComponentGenerator={c => <CharacterListView character={c} />}
+                        itemHeight={67}
                         onSelectedItemChanged={this.selectCharacter} />;
   }
 }
