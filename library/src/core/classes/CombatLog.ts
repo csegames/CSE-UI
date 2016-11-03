@@ -14,6 +14,7 @@ import {bodyParts} from '../constants/bodyParts';
 import {damageTypes} from '../constants/damageTypes';
 import {resourceTypes} from '../constants/resourceTypes';
 import {skillTracks} from '../constants/skillTracks';
+import {activeEffectActions} from '../constants/activeEffectActions';
 
 export interface CombatLog {
   fromName: string;
@@ -57,7 +58,10 @@ export interface CombatLog {
     recieved: number;
   };
 
-  activeEffects?: string[];  // names of active effects
+  activeEffects?: {
+    name: string;
+    action: activeEffectActions;   
+  }[];
   
   errors?: {
     msg: string;
