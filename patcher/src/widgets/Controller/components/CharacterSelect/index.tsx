@@ -164,7 +164,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                             </div>
                           )}
                         listViewComponentGenerator={c => null}
-                        itemHeight={67}
+                        itemHeight={66}
                         onSelectedItemChanged={() => null} />
       );
     }
@@ -196,7 +196,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                         selectedItemIndex={utils.findIndexWhere(serverCharacters, c => c.id === selectedCharacter.id)}
                         activeViewComponentGenerator={c => <ActiveCharacterView character={c} />}
                         listViewComponentGenerator={c => <CharacterListView character={c} />}
-                        itemHeight={67}
+                        itemHeight={66}
                         onSelectedItemChanged={this.selectCharacter} />;
   }
 }
