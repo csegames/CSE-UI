@@ -18,6 +18,7 @@
 
 .ActiveServerView {
   display: flex;
+  height: 67px;
 }
 
 .ActiveServerView__access {
@@ -36,7 +37,7 @@
 
 .ActiveServerView__status {
   padding: 5px 0 5px 5px;
-  
+
   .online {
     color: #8AC51A;
   }

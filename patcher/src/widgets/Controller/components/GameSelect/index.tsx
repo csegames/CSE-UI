@@ -68,7 +68,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
                         selectedItemIndex={utils.findIndexWhere(values, t => t === selectedType)}
                         activeViewComponentGenerator={t => <ActiveGameView type={t} />}
                         listViewComponentGenerator={t => <GameListView type={t}/>}
-                        itemHeight={50}
+                        itemHeight={49}
                         onSelectedItemChanged={this.selectType} />;
   }
 }

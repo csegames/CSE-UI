@@ -153,7 +153,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
                         selectedItemIndex={utils.findIndexWhere(values, s => s.name === selectedServer.name)}
                         activeViewComponentGenerator={s => <ActiveServerView server={s} />}
                         listViewComponentGenerator={s => <ServerListView server={s} />}
-                        itemHeight={68}
+                        itemHeight={67}
                         onSelectedItemChanged={this.selectServer} />;
   }
 }
