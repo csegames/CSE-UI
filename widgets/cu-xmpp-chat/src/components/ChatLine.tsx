@@ -76,6 +76,14 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         element = this.buildMessage(timestamp, this.props.message.text, 'chat-private');
         break;
       case chatType.COMBAT:
+        const parser = new ChatLineParser();
+        element = (
+          <div className='chat-line'>
+            {timestamp}
+            <span key="0" className="chat-line-message">{parser.parse(this.props.message.text)}</span>
+          </div>
+        );
+        break;
       case chatType.SYSTEM:
       case chatType.BROADCAST:
         element = (

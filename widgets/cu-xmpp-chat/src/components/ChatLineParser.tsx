@@ -9,6 +9,7 @@ import { ChatTextParser, ChatTextParserToken } from './ChatTextParser';
 import { chatConfig } from './ChatConfig';
 
 import parseColors from './ParseColors';
+import parseBlink from './ParseBlink';
 import parseMarkdown from './ParseMarkdown';
 import parseLinks from './ParseLinks';
 import parseRooms from './ParseRooms';
@@ -24,9 +25,10 @@ class ChatLineParser {
   static EMOJI: number = ChatTextParser.TEXT + 2;
   static MARKDOWN: number = ChatTextParser.TEXT + 3;
   static COLOR: number = ChatTextParser.TEXT + 4;
-  static ROOM: number = ChatTextParser.TEXT + 5;
-  static HIGHLIGHT: number = ChatTextParser.TEXT + 6;
-  static NICK: number = ChatTextParser.TEXT + 7;
+  static BLINK: number = ChatTextParser.TEXT + 5;
+  static ROOM: number = ChatTextParser.TEXT + 6;
+  static HIGHLIGHT: number = ChatTextParser.TEXT + 7;
+  static NICK: number = ChatTextParser.TEXT + 8;
 
   _parseText(text: string): JSX.Element[] {
     return [ <span key={this._key++}>{text}</span> ];
@@ -48,6 +50,7 @@ class ChatLineParser {
     const tokens : ChatTextParserToken[] = [];
     // Parsers which need recursion should be first
     tokens.push({ token: ChatLineParser.COLOR, expr: parseColors.createRegExp() });
+    tokens.push({ token: ChatLineParser.BLINK, expr: parseBlink.createRegExp() });
     if (chatConfig.SHOW_MARKDOWN) {
       tokens.push({ token: ChatLineParser.MARKDOWN, expr: parseMarkdown.createRegExp() });
     }
@@ -68,6 +71,7 @@ class ChatLineParser {
     return parser.parse(text, (token: number, text: string, match: RegExpExecArray) => {
       switch(token) {
         case ChatLineParser.COLOR: return parseColors.fromText(text, keygen, match);
+        case ChatLineParser.BLINK: return parseBlink.fromText(text, keygen, match);
         case ChatLineParser.MARKDOWN: return parseMarkdown.fromText(text, keygen, match);
         case ChatLineParser.LINK: return parseLinks.fromText(text, keygen);
         case ChatLineParser.ROOM: return parseRooms.fromText(text, keygen);

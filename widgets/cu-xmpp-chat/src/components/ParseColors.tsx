@@ -9,10 +9,11 @@ import ChatLineParser from './ChatLineParser';
 import { chatConfig } from './ChatConfig';
 
 function fromText(text: string, keygen: () => number, match: RegExpExecArray) : JSX.Element[] {
-  const matchColor: string = match[1];
-  const matchText: string = match[2];
+  const textColor: string = match[1];
+  const bgColor: string = match[2];
+  const matchText: string = match[3];
   if (chatConfig.SHOW_COLORS) {
-    return [<span key={keygen()} style={{ color: matchColor }}>{this.parse(matchText)}</span>];
+    return [<span key={keygen()} style={{ color: textColor, backgroundColor: bgColor }}>{this.parse(matchText)}</span>];
   } else {
     return [<span key={keygen()}>{this.parse(matchText)}</span>];
   }
@@ -24,7 +25,8 @@ function parse(text: string): JSX.Element[] {
 }
 
 function createRegExp() : RegExp {
-  return /::([A-Za-z]+|#[A-Fa-f0-9]{3,6})::([\S\s]+)$/g;
+  //return /::([A-Za-z]+|#[A-Fa-f0-9]{3,6})::([\S\s]+)$/g;
+  return /(?=:::?#?[A-Za-z0-9]+)::([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})?:?([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})?::([\S\s]+)$/g;
 }
 
 export default {

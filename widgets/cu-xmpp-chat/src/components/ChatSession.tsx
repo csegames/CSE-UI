@@ -136,7 +136,7 @@ class ChatSession {
         this.recv(new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
         break;
       case messageType.COMBAT_LOG:
-        this.recv(new ChatMessage(chatType.SYSTEM, 'combat', '', args.message, false, new Date()));
+        this.recv(new ChatMessage(chatType.COMBAT, 'combat', '', args.message, false, new Date()));
         break;
       case messageType.AVAILIBLE:
       case messageType.UNAVAILIBLE:
