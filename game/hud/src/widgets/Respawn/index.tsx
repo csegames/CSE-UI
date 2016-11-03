@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, faction, restAPI, hasClientAPI} from 'camelot-unchained';
+import {client, events, faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
 import RespawnButton from './components/RespawnButton';
@@ -57,7 +57,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
 
     // load control points
-    restAPI.getControlGame(true).then((data:any) => {
+    legacyAPI.getControlGame(true).then((data:any) => {
       if (!hasClientAPI()) return;
       
       // data.controlPoints is an array of spawns, each member has

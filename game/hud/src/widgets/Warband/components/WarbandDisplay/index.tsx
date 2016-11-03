@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {Player, archetype, signalr, WarbandMember, cu, client} from 'camelot-unchained';
+import {Player, archetype, signalr, WarbandMember, cu, client, webAPI} from 'camelot-unchained';
 import {connect} from 'react-redux';
 
 import {WarbandSessionState, WarbandState} from '../../services/session';
@@ -46,11 +46,11 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
   // TESTING
 
   createWarband = () => {
-    cu.api.createWarband(client.shardID, client.characterID);
+    webAPI.warbands.createWarband(client.shardID, client.characterID);
   }
 
   quitWarband = () => {
-    cu.api.quitWarband(client.shardID, client.characterID);
+    webAPI.warbands.quitWarband(client.shardID, client.characterID);
   }
 
   initSignalRHub = () => {

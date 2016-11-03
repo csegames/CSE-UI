@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, faction, restAPI} from 'camelot-unchained';
+import {client, events, faction, webAPI, legacyAPI} from 'camelot-unchained';
 import * as React from 'react';
 
 export interface WelcomeProps {
@@ -57,7 +57,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 
   componentWillMount() {
-    restAPI.getMessageOfTheDay().then(this.onMessage, this.onMessageFailed);
+    legacyAPI.getMessageOfTheDay().then(this.onMessage, this.onMessageFailed);
   }
 
   render() {

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cu, {client, GroupInvite, groupType, hasClientAPI, signalr, events} from 'camelot-unchained';
+import {webAPI, client, GroupInvite, groupType, hasClientAPI, signalr, events} from 'camelot-unchained';
 import {Dictionary, clone, merge, BaseAction, AsyncAction, defaultAction, removeWhere, createReducer, ActionDefinitions, addOrUpdate, remove} from '../../lib/reduxUtils';
 
 const localStorageKey = 'cse_hud_invites-state';
@@ -121,7 +121,7 @@ export function initializeInvites() : AsyncAction<InvitesAction> {
 }
 
 export function acceptInvite(invite: GroupInvite) : InvitesAction {
-  cu.api.joinWarbandByID(client.shardID, invite.groupID, client.characterID, invite.inviteCode);
+  webAPI.warbands.joinWarbandByID(client.shardID, invite.groupID, client.characterID, invite.inviteCode);
   return {
     type: ACCEPT_INVITE,
     when: new Date(),
@@ -140,7 +140,7 @@ export function declineInvite(invite: GroupInvite) : InvitesAction {
 export function fetchInvites() : AsyncAction<InvitesAction> {
   return (dispatch: (action: any) => any) => {
     dispatch(requestInvites());
-    cu.api.getInvitesForCharacter(client.shardID, client.characterID)
+    webAPI.groups.getInvitesForCharacter(client.shardID, client.characterID)
       .then((data: any) => dispatch(fetchInvitesSuccess(data)))
       .catch((response: any) => dispatch(fetchInvitesFailed(response.problem)));
   }

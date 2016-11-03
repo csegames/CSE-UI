@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 let yargs = require('yargs-parser');
-import cu, {client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, warbandRoles, warbandRanks, warbandPermissions} from 'camelot-unchained';
+import {client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, warbandRoles, warbandRanks, warbandPermissions, webAPI} from 'camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string): void => events.fire('system_message', message);
@@ -24,7 +24,7 @@ export default () => {
    *    /createWarband Friendship Warriors
    */
   registerSlashCommand('createWarband', 'Create a Warband. Optionally, accepts a name if you wish to make this a permanent Warband.', (name: string = '') => {
-    cu.api.createWarband(client.shardID, client.characterID, false, name)
+    webAPI.warbands.createWarband(client.shardID, client.characterID, false, name)
       .then((response: any) => {
         if (!response.ok) {
           // something went wrong
@@ -52,7 +52,7 @@ export default () => {
   registerSlashCommand('invite', 'Invite a player to your warband. Will use either your current friendly target, or a character name if you provide one.',
    (name: string = '') => {
      if (name.length > 0) {
-       cu.api.inviteCharacterToWarbandByName(client.shardID, client.characterID, name)
+       webAPI.warbands.inviteCharacterToWarbandByName(client.shardID, client.characterID, name)
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -65,7 +65,7 @@ export default () => {
 
         });
      } else if (friendlyTargetName && friendlyTargetName !== '') {
-       cu.api.inviteCharacterToWarbandByName(client.shardID, client.characterID, friendlyTargetName)
+       webAPI.warbands.inviteCharacterToWarbandByName(client.shardID, client.characterID, friendlyTargetName)
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -85,7 +85,7 @@ export default () => {
     if (argv._.length === 1) {
       // name only
 
-      cu.api.joinWarbandByName(client.shardID, argv._[0], client.characterID)
+      webAPI.warbands.joinWarbandByName(client.shardID, argv._[0], client.characterID)
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -98,7 +98,7 @@ export default () => {
     } else if (argv._.length === 2) {
       // name and invite code
 
-      cu.api.joinWarbandByName(client.shardID, argv._[0], client.characterID, argv._[1])
+      webAPI.warbands.joinWarbandByName(client.shardID, argv._[0], client.characterID, argv._[1])
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -118,7 +118,7 @@ export default () => {
    */
 
   function quitWarband() {
-    cu.api.quitWarband(client.shardID, client.characterID)
+    webAPI.warbands.quitWarband(client.shardID, client.characterID)
      .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -136,7 +136,7 @@ export default () => {
    * Abandon a Warband
    */
   registerSlashCommand('abandonWarband', 'Abandon a Warband. Optionally, accepts a name if you are abandoning a Warband that is not your currently active Warband.', (name: string = '') => {
-    cu.api.abandonWarbandByName(client.shardID, client.characterID, name)
+    webAPI.warbands.abandonWarbandByName(client.shardID, client.characterID, name)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -150,7 +150,7 @@ export default () => {
    * Permissions, Rank, and Role management.
    */
   function setRole(targetName: string, role: warbandRoles) {
-    cu.api.setWarbandRoleByName(client.shardID, client.characterID, targetName, role)
+    webAPI.warbands.setWarbandRoleByName(client.shardID, client.characterID, targetName, role)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -161,7 +161,7 @@ export default () => {
   }
 
   function setRank(targetName: string, rank: warbandRanks) {
-    cu.api.setWarbandRankByName(client.shardID, client.characterID, targetName, rank)
+    webAPI.warbands.setWarbandRankByName(client.shardID, client.characterID, targetName, rank)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -172,7 +172,7 @@ export default () => {
   }
 
   function setPermissions(targetName: string, permissions: warbandPermissions) {
-    cu.api.setWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+    webAPI.warbands.setWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -183,7 +183,7 @@ export default () => {
   }
 
   function addPermissions(targetName: string, permissions: warbandPermissions) {
-    cu.api.addWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+    webAPI.warbands.addWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -194,7 +194,7 @@ export default () => {
   }
 
   function removePermissions(targetName: string, permissions: warbandPermissions) {
-    cu.api.removeWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
+    webAPI.warbands.removeWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
       .then((response: any) => {
        if (!response.ok) {
          // something went wrong
@@ -225,7 +225,7 @@ export default () => {
   });
 
   function kick(targetName: string) {
-    cu.api.kickFromWarbandByName(client.shardID, client.characterID, targetName)
+    webAPI.warbands.kickFromWarbandByName(client.shardID, client.characterID, targetName)
       .then((response: any) => {
         if (!response.ok) {
         // something went wrong
