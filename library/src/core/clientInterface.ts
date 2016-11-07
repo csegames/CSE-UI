@@ -208,7 +208,8 @@ interface clientInterface {
   OnCharacterStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
   OnCharacterEffectsChanged(c: (effects: string) => void): void;
   OnCharacterInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
-
+  OnCharacterAliveOrDead(c: (alive: boolean) => void): void;
+  
   /* EMOTE */
 
   Emote(emote: number): void;

@@ -26,7 +26,7 @@ const ON_RESIZE = 'hud/layout/ON_RESIZE';
 
 const CURRENT_STATE_VERSION: number = 4;
 const MIN_STATE_VERSION_ANCHORED: number = 3;
-const FORCE_RESET_CODE = '0.2.2'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.2.3'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 enum AxisAnchorRelativeTo {
   START = -1,
