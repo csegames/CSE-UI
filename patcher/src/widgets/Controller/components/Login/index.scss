@@ -15,28 +15,25 @@
   display: flex;
   input[type=email], input[type=password] {
     margin: 5px 10px;
-    background: #1F1913;
+    background: #1A1A1A;
     padding: 5px;
-    border: solid 1px #A58867;
+    border: solid 1px #8f8f8f;
     transition: border 0.3s;
     box-shadow: none;
-    color: #A58867;
+    color: #8f8f8f;
     font-size: 1.1em;
     box-shadow: inset 0px 0px 2px 0px rgba(200,200,200,.1);
     &:focus {
       outline: 0;
-      border: solid .5px darkorange;
+      border: solid .5px #3fd0b0;
       box-shadow: none;
     }
   }
 
   label {
     margin-left: 10px;
-    color: #A58867;
+    color: #8f8f8f;
     cursor: pointer !important;
-    &:hover {
-      color: darkorange;
-    }
   }
 
   ::-webkit-input-placeholder {
@@ -46,13 +43,13 @@
   a {
     margin: -5px 0 0 10px;
     text-decoration: none;
-    color: darken(darkorange, 10%);
+    color: darken(#3fd0b0, 10%);
     transition: all 0.3s;
     font-size: 0.9em;
     display: block;
     text-align: left;
     &:hover {
-      color: lighten(darkorange, 10%);
+      color: lighten(#3fd0b0, 10%);
     }
   }
 
@@ -71,21 +68,21 @@
   margin: 5px;
   padding: 11px;
   color: #ececec;
-  background-color: #a68d72;
+  background-color: #00a08f;
   transition: all 0.3s;
   text-align: center;
   font-size: 1.3em;
   font-weight: 700;
   text-transform: uppercase;
   box-shadow: inset 0px 0px 3px 0px rgba(200,200,200,.1);
-  border: 1px solid #796753;
+  border: 1px solid lighten(#00a08f, 10%);
   cursor: pointer;
   user-select: none !important;
   -webkit-user-select: none !important;
   &:hover {
-    border: 1px solid #a68d72;
-    //color: darkorange;
-    background-color: #CAAC8C;
+    border: 1px solid lighten(#00a08f, 25%);
+    //color: #3fd0b0;
+    background-color: lighten(#00a08f, 10%);
   }
 
   &:focus {
@@ -94,13 +91,15 @@
 
   &.disabled {
     cursor: not-allowed;
-    color: #5F5143;
+    color: #2D2D2D;
+    background-color: darken(#00a08f, 10%);
+    border: 1px solid darken(#00a08f, 25%);
     box-shadow: inset 0px 0px 3px 0px rgba(100,100,100,.1);
   }
 
   &.success {
-    color: darkorange;
-    border: 1px solid darkorange;
+    color: #3fd0b0;
+    border: 1px solid #3fd0b0;
   }
 
   &.error {
@@ -131,11 +130,11 @@
   }
   80% {
     opacity: 1;
-    color: darkorange;
+    color: #3fd0b0;
   }
   100% {
     opacity: 1;
-    color: darkorange;
+    color: #3fd0b0;
     font-size: 1.1em;
   }
 }
@@ -147,11 +146,11 @@
   }
   80% {
     opacity: 1;
-    color: darkorange;
+    color: #3fd0b0;
   }
   100% {
     opacity: 1;
-    color: darkorange;
+    color: #3fd0b0;
     font-size: 1.1em;
   }
 }
