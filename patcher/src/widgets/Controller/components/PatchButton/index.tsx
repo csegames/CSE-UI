@@ -171,7 +171,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           if (!selectedServer.available) {
             return <div className='PatchButton__button PatchButton__button--disabled'>Server Offline</div>;
           } else if (!selectedServer.characterCount || !this.props.selectedCharacter) {
-            return <div className='PatchButton__button PatchButton__button--disabled'>No Character Selected</div>;
+            return <div className='PatchButton__button PatchButton__button--disabled PatchButton__button--smallerText'>No Character Selected</div>;
           } else {
             return <div className='PatchButton__button PatchButton__button--success' onClick={this.playNow}>Play Now</div>;
           }

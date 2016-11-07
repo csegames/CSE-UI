@@ -12,7 +12,6 @@
 .ProgressBar {
   flex: 1 1 auto;
   display: flex;
-  margin: -7px 0 2px -5px;
   label {
     color: #A58867;
     margin: 0px 5px;
@@ -28,7 +27,7 @@
 
 .ProgressBar__bar {
   flex: 1 1 auto;
-  margin: 5px;
+  margin: -2px 0px 2px 0px;
   box-shadow: inset 0px 0px 3px 0px rgba(244, 244, 244, 0.25);
 }
 

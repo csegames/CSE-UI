@@ -16,6 +16,9 @@
 }
 
 .PatchButton__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 11px;
   color: #ececec;
   background-color: #a68d72 ;
@@ -41,6 +44,10 @@
   &:focus {
     outline: 0;
   }
+}
+
+.PatchButton__button--smallerText {
+  font-size: 1em;
 }
 
 .PatchButton__button--disabled {
