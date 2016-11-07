@@ -30,34 +30,34 @@
     margin: 5px 10px;
     background: transparent;
     padding: 15px;
-    background: #1F1913;
-    border: solid 1px #A58867;
+    background: #1A1A1A;
+    border: solid 1px #8f8f8f;
     transition: border 0.3s;
     box-shadow: none;
-    color: #A58867;
+    color: #8f8f8f;
     box-shadow: inset 0px 0px 2px 0px rgba(200,200,200,.1);
     &:focus {
       outline: 0;
-      border: solid .5px darkorange;
+      border: solid .5px #3fd0b0;
       box-shadow: none;
     }
   }
 
   label {
-    color: #A58867;
+    color: #8f8f8f;
   }
 }
 
 .CharacterDeleteModal__title {
   font-size: 2em;
   font-weight: 500;
-  color: darkorange;
+  color: #3fd0b0;
 }
 
 .CharacterDeleteModal__text {
   font-size: .9em;
   font-weight: 200;
-  color: darkorange;
+  color: #3fd0b0;
 }
 
 .CharacterDeleteModal__button {
@@ -73,8 +73,8 @@
   border: 1px solid #1a1a1a;
   cursor: pointer;
   &:hover {
-    border: 1px solid darkorange;
-    color: darkorange;
+    border: 1px solid #3fd0b0;
+    color: #3fd0b0;
   }
 
   &:focus {
@@ -88,8 +88,8 @@
   }
 
   &.success {
-    color: darkorange;
-    border: 1px solid darkorange;
+    color: #3fd0b0;
+    border: 1px solid #3fd0b0;
   }
 
   &.error {
