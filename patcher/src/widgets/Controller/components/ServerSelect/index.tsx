@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {webAPI, utils} from 'camelot-unchained';
 
-import {patcher, ChannelStatus} from '../../../../services/patcher';
+import {patcher, ChannelStatus, PatchPermissions, canAccessChannel} from '../../../../services/patcher';
 import QuickSelect from '../../../../components/QuickSelect';
 import {ServerType, PatcherServer} from '../../services/session/controller';
 
@@ -16,7 +16,7 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
   render() {
     const {server} = this.props;
     switch(server.type) {
-      
+
       default:
         return (
           <div className='ActiveServerView'>
@@ -30,12 +30,12 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
         return (
           <div className='ActiveServerView'>
             <div className='ActiveServerView__status'>
-              <div className={`${server.available ? 'online' : 'offline'}`}><i className="fa fa-power-off" aria-hidden="true"></i></div>
+              <div className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`} data-tooltip={server.available ? 'online' : 'offline'}><i className='fa fa-power-off' aria-hidden='true'></i></div>
             </div>
             <div className='ActiveServerView__details'>
               {server.name}
               {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>Open to {webAPI.servers.serverAccessLevelToString(server.accessLevel)} </div> : null}
+              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.servers.serverAccessLevelToString(server.accessLevel)} Access Only </div> : null}
             </div>
           </div>
         );
@@ -47,7 +47,7 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
   render() {
     const {server} = this.props;
     switch(server.type) {
-      
+
       default:
         return (
           <div className='ActiveServerView'>
@@ -69,12 +69,12 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
         return (
           <div className='ActiveServerView'>
             <div className='ActiveServerView__status'>
-              <div className={`${server.available ? 'online' : 'offline'}`}><i className="fa fa-power-off" aria-hidden="true"></i></div>
+              <div className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`} data-tooltip={server.available ? 'online' : 'offline'}><i className="fa fa-power-off" aria-hidden="true"></i></div>
             </div>
             <div className='ActiveServerView__details'>
               {server.name}
               {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>Open to {webAPI.servers.serverAccessLevelToString(server.accessLevel)} </div> : null}
+              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.servers.serverAccessLevelToString(server.accessLevel)} Access Only</div> : null}
             </div>
             <div className='ActiveServerView__controls'>
               <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>
@@ -136,9 +136,13 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
 
     let values: PatcherServer[] = [];
     for (const key in servers) {
-      if (servers[key].type == this.props.serverType) {
+      if (servers[key].type == this.props.serverType && canAccessChannel(patcher.getPermissions(), servers[key].channelPatchPermissions)) {
          values.push(servers[key]);
       }
+    }
+
+    if (values.length == 0) {
+      return <div className='ServerSelect'> No Servers Available </div>;
     }
 
     let {selectedServer} = this.state;
@@ -153,6 +157,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
                         selectedItemIndex={utils.findIndexWhere(values, s => s.name === selectedServer.name)}
                         activeViewComponentGenerator={s => <ActiveServerView server={s} />}
                         listViewComponentGenerator={s => <ServerListView server={s} />}
+                        itemHeight={67}
                         onSelectedItemChanged={this.selectServer} />;
   }
 }

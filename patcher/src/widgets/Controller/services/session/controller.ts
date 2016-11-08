@@ -77,6 +77,7 @@ export interface PatcherServer {
   type: ServerType;
   channelStatus: number;
   available: boolean;
+  channelPatchPermissions?: number;
   accessLevel?: webAPI.servers.ServerAccessLevel,
   host?: string,
   playerMaximum?: number,
@@ -145,6 +146,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
     type: type,
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
+    channelPatchPermissions: 4, // CSE only default
   };
 }
 
@@ -387,7 +389,7 @@ actionDefs[GET_CHANNELS] = function getChannelsReducer(state: ControllerState, a
   const servers = utils.clone(state.servers);
   for (const server in servers) {
     var s = servers[server];
-    servers[server].channelStatus = channelDict[s.channelID] ? channelDict[s.channelID].channelStatus : ChannelStatus.Ready;
+    servers[server].channelStatus = channelDict[s.channelID] ? channelDict[s.channelID].channelStatus : ChannelStatus.NotInstalled;
     servers[server].lastUpdated = channelDict[s.channelID] ? localStorage.getItem(`channel_updated_${channelDict[s.channelID].channelName}`) : undefined;
   }
   

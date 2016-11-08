@@ -40,6 +40,7 @@ export interface Server {
   playerMaximum: number,
   channelID: number,
   shardID: number,
+  channelPatchPermissions: number,
   arthurians?: number,
   tuathaDeDanann?: number,
   vikings?: number,
