@@ -41,8 +41,8 @@
     border: 1px solid #1a1a1a;
     cursor: pointer;
     &:hover {
-      border: 1px solid darkorange;
-      color: darkorange;
+      border: 1px solid #3fd0b0;
+      color: #3fd0b0;
     }
 
     &:focus {
@@ -56,8 +56,8 @@
     }
 
     &.success {
-      color: darkorange;
-      border: 1px solid darkorange;
+      color: #3fd0b0;
+      border: 1px solid #3fd0b0;
     }
 
     &.error {

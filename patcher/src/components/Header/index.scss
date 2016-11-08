@@ -18,8 +18,7 @@
   display: flex;
   justify-content: space-between;
   height: 75px;
-  border-bottom: 3px solid rgba(200, 200, 200, 0.1);
-  background-color: rgba(0, 0, 0, 0.2);
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
   user-select: none !important;
   -webkit-user-select: none !important;
 }
@@ -42,17 +41,15 @@
   display: flex;
   align-items: center;
   &:hover {
-    animation: glowStart .1s ease-in, glow 1.5s .1s ease-in-out infinite alternate;
-    -webkit-animation: glowStart .1s ease-in, glow 1.5s 0.1s ease-in-out infinite alternate;
+   color: #3fd0b0;
   }
 
   &.active {
-    animation: glowStart .1s ease-in, glow 1.5s .1s ease-in-out infinite alternate;
-    -webkit-animation: glowStart .1s ease-in, glow 1.5s 0.1s ease-in-out infinite alternate;
+   color: #7aeee2;
   }
 }
 
-$glow-highlight: darkorange;
+$glow-highlight: #3fd0b0;
 $glow-text: white;
 
 @keyframes glowStart {

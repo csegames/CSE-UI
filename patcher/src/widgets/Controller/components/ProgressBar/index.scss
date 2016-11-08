@@ -13,32 +13,35 @@
   flex: 1 1 auto;
   display: flex;
   label {
-    color: #A58867;
+    color: #8f8f8f;
     margin: 0px 5px;
     font-size: 0.8em;
   }
 }
 
 .ProgressBar__bar__fill {
-  height: 10px;
-  box-shadow: inset 0px 0px 6px 0px #1a1a1a;
+  height: 7px;
   transition: all 0.3s;
 }
 
 .ProgressBar__bar {
   flex: 1 1 auto;
+<<<<<<< HEAD
+  margin: 5px;
+  background: rgba(97, 97, 97, 0.25);
+=======
   margin: -2px 0px 2px 0px;
   box-shadow: inset 0px 0px 3px 0px rgba(244, 244, 244, 0.25);
+>>>>>>> a65b5cf5db1b66301f3884af4c605c7faaa42857
 }
 
 .ProgressBar__bar__fill--working {
-  background-color: darkorange;
-  border: 1px solid darkorange;
+  background: linear-gradient(to right, #0e7c6a, #1bc2ba);
+  border: 1px solid #1fd9d0;
 }
 
 .ProgressBar__bar__fill--complete {
-  background-color: #5a8110;
-  border: 1px solid #5a8110;
+  background-color: #128074;
 }
 
 .ProgressBar__bar__fill--error {
@@ -53,7 +56,7 @@
   -webkit-user-select: none !important;
   margin: 0 5px;
   &:hover {
-    color: darkorange;
+    color: #3fd0b0;
   }
 }
 
@@ -64,7 +67,7 @@
   -webkit-user-select: none !important;
   margin: 0 5px;
   &:hover {
-    color: darkorange;
+    color: #3fd0b0;
   }
 }
 
