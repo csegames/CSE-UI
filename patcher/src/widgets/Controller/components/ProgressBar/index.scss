@@ -26,13 +26,10 @@
 
 .ProgressBar__bar {
   flex: 1 1 auto;
-<<<<<<< HEAD
-  margin: 5px;
   background: rgba(97, 97, 97, 0.25);
-=======
   margin: -2px 0px 2px 0px;
+  height: 7px;
   box-shadow: inset 0px 0px 3px 0px rgba(244, 244, 244, 0.25);
->>>>>>> a65b5cf5db1b66301f3884af4c605c7faaa42857
 }
 
 .ProgressBar__bar__fill--working {
