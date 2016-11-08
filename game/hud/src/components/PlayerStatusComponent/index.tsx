@@ -82,8 +82,25 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     this.componentRef.className = this.componentRef.className.replace(` ${this.shakeAnimationName}`, '').trim();
   }
 
-  render() {
+  validPlayer = () => {
+    const {playerStatus} = this.props;
+    if (!playerStatus.name) return false;
+    if (!playerStatus.avatar) return false;
+    if (!playerStatus.race) return false;
+    if (!playerStatus.gender) return false;
+    if (!playerStatus.archetype) return false;
+    //if (!playerStatus.characterID) return false;
+    if (!playerStatus.health || playerStatus.health.length !== 6) return false;
+    if (!playerStatus.wounds || playerStatus.wounds.length !== 6) return false;
+    if (!playerStatus.stamina || !playerStatus.stamina.current || !playerStatus.stamina.maximum) return false;
+    if (!playerStatus.blood || !playerStatus.blood.current || !playerStatus.blood.maximum) return false;
+    //if (!playerStatus.panic || !playerStatus.panic.current || !playerStatus.panic.maximum) return false;
+    return true;
+  }
 
+  render() {
+    if (!this.validPlayer()) return null;
+    const {playerStatus} = this.props;
     const now = Date.now();
     // did we recently take damage?
     for (let i = this.props.events.length-1; i >= 0; --i) {

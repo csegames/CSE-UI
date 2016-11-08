@@ -12,14 +12,14 @@
 .ControllerDisplay {
   position: relative;
   flex: none;
-  background: rgba(19, 19, 19, 0.8);
+  background: rgba(19, 19, 19, 0.9);
   padding: 10px;
   z-index: 100;
   height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-top: 3px solid rgba(19, 19, 19, 0.8);
+  border-top: 3px solid rgba(19, 19, 19, 0.9);
 }
 
 .ControllerDisplay__selections {

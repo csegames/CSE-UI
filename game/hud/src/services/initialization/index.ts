@@ -116,5 +116,4 @@ export default () => {
   }
 
   client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => events.fire('combatlog_message', combatLogToString(e))));
-  client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => console.log(JSON.stringify(e))));
 }

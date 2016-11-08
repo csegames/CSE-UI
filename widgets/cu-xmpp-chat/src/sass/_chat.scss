@@ -226,7 +226,6 @@
     //flex-flow: column nowrap;
     //justify-content: space-between;
     position: relative;
-    padding-bottom: 45px;
     height: 100%;
     background-color: rgba(64,64,64,0.1);
     .chat-text::-webkit-scrollbar-thumb {
@@ -240,6 +239,7 @@
       flex: 1 1 auto;
       overflow-y: auto;
       overflow-x: visible;
+      height: 100px;
       .chat-line {
         text-align: left;
         margin: 0.2em;
@@ -348,7 +348,8 @@
       }
     }
     .chat-input {
-      height: 38px;
+      height: 45px;
+      padding-top: 5px;
       margin: 0 5px;
       display: flex;
       &.chat-expanded {

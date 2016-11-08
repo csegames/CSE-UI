@@ -121,48 +121,54 @@ class Pills extends React.Component<PillsProps, PillsState> {
   }
 
   clipPathForPills = (pillSize: number) => {
-    // generate a clip-path to represent the pills.  Work based on the following
-    //
-    // All values are in %
-    // pillSize is the size of a pill in % of total width (excluding any dividers)
-    // A divider starts off as 1% wide (for now)
-    // The number of pills is 100 / pill size
-    // The number of dividers is pills - 1
-    // The available width for pills is 100 minus dividers total width
-    // Pill size is re-calculated based on the number we need (calculated above)
-    //  and the available width
-    // Finally any remaining unused width is spread accross the dividers
-    let divider = PILL_DIVIDER_WIDTH;                         // divider start size
-    const count = (100 / pillSize)|0;                         // how many pills we need
-    const sep = (count - 1) * divider;                        // total divider space
-    const size = ((((100 - sep) / count) * 100)|0) / 100;     // pill size
-    const spare = 100 - (count * size + sep);                 // leftovers
-    divider += (((spare / (count - 1)) * 100)|0) / 100;       // spread across dividers
+    try {
+      // generate a clip-path to represent the pills.  Work based on the following
+      //
+      // All values are in %
+      // pillSize is the size of a pill in % of total width (excluding any dividers)
+      // A divider starts off as 1% wide (for now)
+      // The number of pills is 100 / pill size
+      // The number of dividers is pills - 1
+      // The available width for pills is 100 minus dividers total width
+      // Pill size is re-calculated based on the number we need (calculated above)
+      //  and the available width
+      // Finally any remaining unused width is spread accross the dividers
+      let divider = PILL_DIVIDER_WIDTH;                         // divider start size
+      const count = (100 / pillSize)|0;                         // how many pills we need
+      const sep = (count - 1) * divider;                        // total divider space
+      let size = ((((100 - sep) / count) * 100)|0) / 100;     // pill size
+      const spare = 100 - (count * size + sep);                 // leftovers
+      divider += (((spare / (count - 1)) * 100)|0) / 100;       // spread across dividers
 
-    // Now build a polygon that will mask each pill
-    //
-    //  The aim is to produce a path that looks like this (repeated for each pill required)
-    //  The sequence is across, up, accorss, down repeated for each pill
-    //  When the path closes, it completes the last side of the pill, and becase the joining
-    //  lines are not closed and 0 width, they cannot be seen.
-    //
-    //   +-----+ +-----+ +-----+ +-----+
-    //   |     | |     | |     | |     |
-    //   |     | |     | |     | |     |
-    //   +-----+-+-----+-+-----+-+-----+
-    //
-    let path: string = '';
-    let pcnt = 0;
-    while (pcnt < 100) {
-      if (path !== '') path += ',';
-      path += `${pcnt}% ${PILL_MARGIN}%,${pcnt}% ${100-PILL_MARGIN}%,`;        // Accross, Up
-      pcnt += size;
-      path += `${pcnt}% ${100-PILL_MARGIN}%,${pcnt}% ${PILL_MARGIN}%`;         // Accross, Down
-      if (pcnt < 100) {
-        pcnt += divider;        // divider width
+      divider = Math.max(PILL_DIVIDER_WIDTH, divider);
+      size = Math.max(20, size);
+      // Now build a polygon that will mask each pill
+      //
+      //  The aim is to produce a path that looks like this (repeated for each pill required)
+      //  The sequence is across, up, accorss, down repeated for each pill
+      //  When the path closes, it completes the last side of the pill, and becase the joining
+      //  lines are not closed and 0 width, they cannot be seen.
+      //
+      //   +-----+ +-----+ +-----+ +-----+
+      //   |     | |     | |     | |     |
+      //   |     | |     | |     | |     |
+      //   +-----+-+-----+-+-----+-+-----+
+      //
+      let path: string = '';
+      let pcnt = 0;
+      while (pcnt < 100) {
+        if (path !== '') path += ',';
+        path += `${pcnt}% ${PILL_MARGIN}%,${pcnt}% ${100-PILL_MARGIN}%,`;        // Accross, Up
+        pcnt += size;
+        path += `${pcnt}% ${100-PILL_MARGIN}%,${pcnt}% ${PILL_MARGIN}%`;         // Accross, Down
+        if (pcnt < 100) {
+          pcnt += divider;        // divider width
+        }
       }
+      return `polygon(${path})`;
+    } catch(e) {
+      return '';
     }
-    return `polygon(${path})`;
   }
 
   render() {

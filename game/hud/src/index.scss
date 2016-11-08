@@ -35,12 +35,12 @@ html, body {
   @import './components/InteractiveAlert/index';
   @import './components/Slider/index';
   @import './components/HUDDrag/index';
+  @import './components/Respawn/index';
 
   // widgets
   @import './widgets/Compass/index';
   @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
-  @import './widgets/Respawn/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';
   @import './widgets/Welcome/index';

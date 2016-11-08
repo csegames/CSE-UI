@@ -7,7 +7,6 @@
 import {client, events, faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
-import RespawnButton from './components/RespawnButton';
 
 export interface RespawnProps {
   setVisibility: (vis: boolean) => void;
@@ -84,6 +83,24 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     });
   }
 
+  renderButton = (location: RespawnLocation, label: string) => {
+    let distance: JSX.Element;
+    if (location.distance !== undefined) {
+      distance =
+        <div className='distance'>
+          ({Math.round(location.distance)}m)
+        </div>;
+    }
+    return (
+      <div className='button' onClick={() => client.Respawn(location.id + '')}>
+        <div className='label'>
+          {distance}
+          {label}
+        </div>
+      </div>
+    );
+  }
+
   render() {
     if (!hasClientAPI()) return null;
         
@@ -91,14 +108,14 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     let key: number = 0;
     if (this.state.nearest) {
       this.state.nearest.forEach((spawn: RespawnLocation): void => {
-        buttons.push(<RespawnButton key={key++} label="Control Point" location={spawn}/>);
+        buttons.push(this.renderButton(spawn, 'Control Point'));
       });
     }
     return (
       <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
         <div className="cu-window-header"><div className="title">Respawn</div></div>
         <div className="cu-window-content">
-          <RespawnButton label='Default' location={this.home}/>
+          {this.renderButton(this.home, 'Default')}
           {buttons}
         </div>
       </div>
