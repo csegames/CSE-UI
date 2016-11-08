@@ -22,7 +22,7 @@ import ProgressBar from '../ProgressBar';
 import {events} from 'camelot-unchained';
 import Animate from '../../../../lib/Animate';
 import QuickSelect from '../../../../lib/QuickSelect';
-import {patcher, Channel, ChannelStatus} from '../../../../services/patcher';
+import {patcher, Channel, ChannelStatus, PatchPermissions, permissionsString} from '../../../../services/patcher';
 import {view} from '../../../../components/OverlayView';
 
 import {GlobalState} from '../../services/session';
@@ -165,6 +165,8 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
                              characters={characters} />
             <i>Select or</i><a href='#' onClick={this.showCharacterCreation}>create new character</a>&nbsp;
           </div>
+
+          <div className='ControllerDisplay__permissions'>Your Access Level is {permissionsString(patcher.getPermissions())}.</div>
         </div>
       );
 
@@ -176,6 +178,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
             <GameSelect selectType={this.selectServerType} servers={this.props.ControllerState.servers} />
             <i>Select your game</i>&nbsp;
           </div>
+          <div className='ControllerDisplay__permissions'>Your Access Level is {permissionsString(patcher.getPermissions())}.</div>
         </div>
       );
 
@@ -196,10 +199,11 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
                           serverType={this.state.serverType} />
             <i>Select a server</i>&nbsp;
           </div>
+          <div className='ControllerDisplay__permissions'>Your Access Level is {permissionsString(patcher.getPermissions())}.</div>
         </div>
       );
 
-      default: return <h1>UNKNOWN SERVER TYPE</h1>;
+      default: return <h1>UNKNOWN GAME TYPE</h1>;
     }
   }
 

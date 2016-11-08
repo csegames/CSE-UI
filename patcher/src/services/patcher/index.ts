@@ -6,6 +6,34 @@
 
 // Define types
 
+export enum PatchPermissions {
+  Public = 0,
+  Backers = 1 << 0,
+  IT = 1 << 1,
+  Devs = 1 << 2,
+  Alpha = 1 << 3,
+  Beta1 = 1 << 4,
+  Beta2 = 1 << 5,
+  Beta3 = 1 << 6
+}
+
+export function permissionsString(p: PatchPermissions) {
+  if ((p & PatchPermissions.Devs) != 0) return 'Developer';
+  if ((p & PatchPermissions.IT) != 0) return 'IT';
+  if ((p & PatchPermissions.Alpha) != 0) return 'Alpha';
+  if ((p & PatchPermissions.Beta1) != 0) return 'Beta 1';
+  if ((p & PatchPermissions.Beta2) != 0) return 'Beta 2';
+  if ((p & PatchPermissions.Beta3) != 0) return 'Beta 3';
+  if ((p & PatchPermissions.Backers) != 0) return 'Backers';
+  if (p === PatchPermissions.Public) return 'Public';
+  return 'None';
+}
+
+export function canAccessChannel(p: PatchPermissions, channelPermissions: number) {
+  if (!channelPermissions) return false;
+  return (p & channelPermissions) != 0;
+}
+
 export interface User {
   email: string;
   password: string;
@@ -46,6 +74,7 @@ export class PatcherAPI {
         userEmail: "",
         userPass: "###",
         loginToken: "",
+        permissions: -1,
         screenName: "###",
         loginError: "",
         channelData: [
@@ -93,6 +122,13 @@ export class PatcherAPI {
   hasScreenName() :boolean {
     const screenName = this.getScreenName();
     return screenName && screenName.length > 0;
+  }
+  getPermissions() :PatchPermissions {
+    return this._api.permissions;
+  }
+  hasPermissions() :boolean {
+    const permissions = this.getPermissions();
+    return permissions >= 0;
   }
   hasLoginError() :boolean {
     const error = this.getLoginError();
