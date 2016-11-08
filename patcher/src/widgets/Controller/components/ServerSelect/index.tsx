@@ -16,7 +16,7 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
   render() {
     const {server} = this.props;
     switch(server.type) {
-      
+
       default:
         return (
           <div className='ActiveServerView'>
@@ -47,7 +47,7 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
   render() {
     const {server} = this.props;
     switch(server.type) {
-      
+
       default:
         return (
           <div className='ActiveServerView'>
@@ -153,6 +153,7 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
                         selectedItemIndex={utils.findIndexWhere(values, s => s.name === selectedServer.name)}
                         activeViewComponentGenerator={s => <ActiveServerView server={s} />}
                         listViewComponentGenerator={s => <ServerListView server={s} />}
+                        itemHeight={67}
                         onSelectedItemChanged={this.selectServer} />;
   }
 }
