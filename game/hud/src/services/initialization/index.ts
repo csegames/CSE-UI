@@ -32,13 +32,13 @@ export default () => {
     if (log.damages) {
       for (let i = 0; i < log.damages.length; ++i) {
         const d = log.damages[i];
-        output += `${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${bodyParts[d.part]} ${damageTypes[d.type]} | `;
+        output += `::red::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${bodyParts[d.part]} ${damageTypes[d.type]} | `;
       }
     }
   
 
     if (log.disruption) {
-      output += `${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION `;
+      output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION `;
 
       if (log.disruption.tracksInterupted == skillTracks.NONE) {
         output += ` | `;
@@ -68,12 +68,12 @@ export default () => {
     if (log.heals) {
       for (let i = 0; i < log.heals.length; ++i) {
         const h = log.heals[i];
-        output += `HEALED ${h.recieved.toFixed(0)}(${Math.abs(h.sent - h.recieved).toFixed(0)}) ${bodyParts[h.part]} | `;
+        output += `::green::HEALED ${h.recieved.toFixed(0)}(${Math.abs(h.sent - h.recieved).toFixed(0)}) ${bodyParts[h.part]} | `;
       }
     }
 
     if (log.cures) {
-      output += `CURED `;
+      output += `::blue::CURED `;
       let curedParts = [0,0,0,0,0,0];
       for (let i = 0; i < log.cures.length; ++i) {
         curedParts[log.cures[i]] += 1;
@@ -91,24 +91,24 @@ export default () => {
     if (log.resources) {
       for (let i = 0; i < log.resources.length; ++i) {
         const d = log.resources[i];
-        output += `${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${resourceTypes[d.type]} | `;
+        output += `::yellow::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${resourceTypes[d.type]} | `;
       }
     }
 
     if (log.impulse) {
-      output += `${log.impulse.recieved.toFixed(0)}(${Math.abs(log.impulse.sent - log.impulse.recieved).toFixed(0)}) IMPULSE | `;
+      output += `::indigo::${log.impulse.recieved.toFixed(0)}(${Math.abs(log.impulse.sent - log.impulse.recieved).toFixed(0)}) IMPULSE | `;
     }
 
     if (log.activeEffects) {
       for (let i = 0; i < log.activeEffects.length; ++i) {
-        output += `${log.activeEffects[i].name} ${activeEffectActions[log.activeEffects[i].action]} `;
+        output += `::violet::${log.activeEffects[i].name} ${activeEffectActions[log.activeEffects[i].action]} `;
       }
       output += '|';
     }
       
     if (log.errors) {
       for (let i = 0; i < log.errors.length; ++i) {
-        output += `${log.errors[i]} `;
+        output += `:::red::${log.errors[i]} `;
       }
     }
 
