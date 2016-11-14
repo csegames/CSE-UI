@@ -8,6 +8,7 @@ import {events} from 'camelot-unchained';
 import * as React from 'react';
 import { chatType, ChatMessage } from './ChatMessage';
 import ChatLineParser from './ChatLineParser';
+import CombatLogParser from './CombatLogParser';
 import { chatConfig } from './ChatConfig';
 import ChatSession from './ChatSession';
 
@@ -76,11 +77,11 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         element = this.buildMessage(timestamp, this.props.message.text, 'chat-private');
         break;
       case chatType.COMBAT:
-        const parser = new ChatLineParser();
+        const cbparser = new CombatLogParser();
         element = (
           <div className='chat-line'>
             {timestamp}
-            <span key="0" className="chat-line-message">{parser.parse(this.props.message.text)}</span>
+            <span key="0" className="chat-line-message">{cbparser.parse(this.props.message.text)}</span>
           </div>
         );
         break;

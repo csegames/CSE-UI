@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import * as React from 'react';
-import ChatLineParser from './ChatLineParser';
 import { chatConfig } from './ChatConfig';
 
-function fromText(text: string, keygen: () => number, match: RegExpExecArray) : JSX.Element[] {
+function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any) : JSX.Element[] {
   const textColor1: string = match[1];
   const textColor2: string = match[2];
   const bgColor1: string = match[3];
@@ -18,7 +17,7 @@ function fromText(text: string, keygen: () => number, match: RegExpExecArray) : 
   if (chatConfig.SHOW_COLORS) {
     return [
       <span key={keygen()} dangerouslySetInnerHTML={{__html: animationStyle(textColor1, textColor2, bgColor1, bgColor2, id)}} />,
-      <span key={keygen()} className={`blink-${id}`}>{this.parse(matchText)}</span>
+      <span key={keygen()} className={`blink-${id}`}>{parser.parse(matchText)}</span>
       ];
   } else {
     return [<span key={keygen()}>{this.parse(matchText)}</span>];
@@ -50,11 +49,6 @@ function animationStyle(textColor1: string, textColor2: string, bgColor1: string
   </style>`;
 }
 
-function parse(text: string): JSX.Element[] {
-    const parser = new ChatLineParser();
-    return parser.parse(text);
-}
-
 function createRegExp() : RegExp {
   return /(?=\^::?#?[A-Za-z0-9]+-)\^:(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:?(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:\^([\S\s]+)$/g;
 }
@@ -62,5 +56,4 @@ function createRegExp() : RegExp {
 export default {
   fromText,
   createRegExp,
-  parse
 }

@@ -122,7 +122,7 @@ export function raceChanged(status: PlayerStatus, action: HealthAction) {
 let key = 3;
 export function playerUpdate(status: PlayerStatus, events: any[], action: HealthAction) {
   
-  const doEvent = status.name == action.player.name;
+  const doEvent = false && status.name == action.player.name;
   
   let playerStatus = clone(status);
   playerStatus.name = action.player.name;

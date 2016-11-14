@@ -47,15 +47,16 @@ class ChatClient {
   }
 
   private _onerror(err:any) {
-    const connected: boolean = this.connected;
-    this._disconnect();
-    if (!connected) {
-      // if not connected when we got the error, connect failed
-      this._fire('connectfailed', err);
-    } else {
-      // if connected when got the error, signal we were disconnected
-      this._fire('disconnect');
-    }
+    return;
+    // const connected: boolean = this.connected;
+    // this._disconnect();
+    // if (!connected) {
+    //   // if not connected when we got the error, connect failed
+    //   this._fire('connectfailed', err);
+    // } else {
+    //   // if connected when got the error, signal we were disconnected
+    //   this._fire('disconnect');
+    // }
   }
 
   private _initializeEvents(): void {
