@@ -60,7 +60,8 @@ export interface CombatLog {
 
   activeEffects?: {
     name: string;
-    action: activeEffectActions;   
+    action: activeEffectActions;
+    duration: string;
   }[];
   
   errors?: {

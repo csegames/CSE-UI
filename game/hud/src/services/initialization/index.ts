@@ -102,6 +102,7 @@ export default () => {
     if (log.activeEffects) {
       for (let i = 0; i < log.activeEffects.length; ++i) {
         output += `::violet::${log.activeEffects[i].name} ${activeEffectActions[log.activeEffects[i].action]} `;
+        if (log.activeEffects[i].action === activeEffectActions.APPLIED) output += `${log.activeEffects[i].duration} `
       }
       output += '|';
     }
