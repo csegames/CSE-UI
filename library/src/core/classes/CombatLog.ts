@@ -35,6 +35,7 @@ export interface CombatLog {
     sent: number;
     recieved: number;
     tracksInterupted?: skillTracks;
+    source: string;
   };
   
   heals?: {

@@ -38,7 +38,7 @@ export default () => {
   
 
     if (log.disruption) {
-      output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION `;
+      output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION ${log.disruption.source} `;
 
       if (log.disruption.tracksInterupted == skillTracks.NONE) {
         output += ` | `;
@@ -61,7 +61,7 @@ export default () => {
           output += ` ${skillTracks[skillTracks.MIND]} `;
         }
 
-        output += `INTERRUPTED | `;
+        output += ` INTERRUPTED | `;
       }
     }
 
