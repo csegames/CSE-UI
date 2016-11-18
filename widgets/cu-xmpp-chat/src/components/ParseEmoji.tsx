@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import {utils} from 'camelot-unchained';
 
 enum emojis {
   ANGRY,
@@ -102,6 +103,8 @@ function emojiNameFromText(text:string): string {
       return 'SAD';
     case ':p': case ':-p': case ';p':
     case ';-p': case '8p': case '8-p':
+    case ':P': case ':-P': case ';P':
+    case ';-P': case '8P': case '8-P':
       return 'TONGUE';
     case ':>':
       return 'SMILE';
@@ -114,7 +117,7 @@ function emojiNameFromText(text:string): string {
   }
 
   var upper = text.replace(/:/g, '').toUpperCase();
-  return emojiNames.findIndex(n => n === upper) ? upper : null;
+  return utils.findIndexWhere(emojiNames, n => n === upper) ? upper : null;
 }
 
 function fromText(text: string, keygen: () => number) : JSX.Element[] {

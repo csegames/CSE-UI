@@ -49,6 +49,7 @@ function animationStyle(textColor1: string, textColor2: string, bgColor1: string
   </style>`;
 }
 
+// ^:textcolor-fadetocolor:bgcolor-fadetocolor:^ text and stuff
 function createRegExp() : RegExp {
   return /(?=\^::?#?[A-Za-z0-9]+-)\^:(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:?(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:\^([\S\s]+)$/g;
 }

@@ -205,13 +205,13 @@ class CSEChat  {
   private messageHandlerTimeout: any = null;
 
   _recvStanza(stanza: Element) {
-    if (stanza.is('iq')) {
+    if (stanza.is('presence')) {
+      this._recvQueue.push(stanza);
+      if (this.messageHandlerTimeout) return;
+      this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 1);
+    } else {
       this._processStanza(stanza);
-      return;
     }
-    this._recvQueue.push(stanza);
-    if (this.messageHandlerTimeout) return;
-    this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 1);
   }
 
   _messageHandler() {
