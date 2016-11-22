@@ -5,12 +5,13 @@
  */
 
 import client from '../core/client';
+import {CreateOptions} from '../util/apisaucelite';
 
-export default function() {
+export default function(): CreateOptions {
   return {
     baseURL: client.apiHost,
     headers: {
-      'api-version': client.apiVersion,
+      'api-version': client.apiVersion + '',
       'loginToken': client.loginToken,
     }
   };

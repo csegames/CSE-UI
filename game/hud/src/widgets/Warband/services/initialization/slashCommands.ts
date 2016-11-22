@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 let yargs = require('yargs-parser');
-import {client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, warbandRoles, warbandRanks, warbandPermissions, webAPI} from 'camelot-unchained';
+import { client, events, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, warbandRoles, warbandRanks, warbandPermissions, webAPI } from 'camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string): void => events.fire('system_message', message);
@@ -24,18 +24,34 @@ export default () => {
    *    /createWarband Friendship Warriors
    */
   registerSlashCommand('createWarband', 'Create a Warband. Optionally, accepts a name if you wish to make this a permanent Warband.', (name: string = '') => {
-    webAPI.warbands.createWarband(client.shardID, client.characterID, false, name)
-      .then((response: any) => {
-        if (!response.ok) {
-          // something went wrong
-          console.error(response);
+    if (name === '' || name.length === 0) {
+      webAPI.WarbandsAPI.createV1(client.shardID, client.characterID)
+        .then((response: any) => {
+          if (!response.ok) {
+            //console.error(response);
+            systemMessage('Failed to create Warband.');
+            //systemMessage(response.data);
+            return;
+          }
 
-          return;
-        }
-        
-        // success
+          systemMessage('Warband successfully created!');
+        });
+    } else {
+      webAPI.WarbandsAPI.createWithNameV1(client.shardID, client.characterID, name)
+        .then((response: any) => {
+          if (!response.ok) {
+            // something went wrong
+            //console.error(response);
+            systemMessage(`Failed to create Warband.`);
+            //systemMessage(response.data);
+            return;
+          }
 
-      });
+          // success
+          systemMessage(`Warband ${name} successfully created!`);
+        });
+    }
+
   });
 
   /**
@@ -50,34 +66,34 @@ export default () => {
   });
 
   registerSlashCommand('invite', 'Invite a player to your warband. Will use either your current friendly target, or a character name if you provide one.',
-   (name: string = '') => {
-     if (name.length > 0) {
-       webAPI.warbands.inviteCharacterToWarbandByName(client.shardID, client.characterID, name)
-        .then((response: any) => {
-          if (!response.ok) {
-            // something went wrong
-            console.error(response);
-            
-            return;
-          }
+    (name: string = '') => {
+      if (name.length > 0) {
+        webAPI.WarbandsAPI.inviteByNameV1(client.shardID, client.characterID, name)
+          .then((response: any) => {
+            if (!response.ok) {
+              // something went wrong
+              console.error(response);
 
-          // success
+              return;
+            }
 
-        });
-     } else if (friendlyTargetName && friendlyTargetName !== '') {
-       webAPI.warbands.inviteCharacterToWarbandByName(client.shardID, client.characterID, friendlyTargetName)
-        .then((response: any) => {
-          if (!response.ok) {
-            // something went wrong
-            console.error(response);
-            return;
-          }
-          // success
-        });
-     } else {
-       systemMessage('No friendly target to invite. Provide a name or select a friendly target and try again.');
-     }
-  });
+            // success
+
+          });
+      } else if (friendlyTargetName && friendlyTargetName !== '') {
+        webAPI.WarbandsAPI.inviteByNameV1(client.shardID, client.characterID, friendlyTargetName)
+          .then((response: any) => {
+            if (!response.ok) {
+              // something went wrong
+              console.error(response);
+              return;
+            }
+            // success
+          });
+      } else {
+        systemMessage('No friendly target to invite. Provide a name or select a friendly target and try again.');
+      }
+    });
 
 
   registerSlashCommand('joinWarband', 'Join an existing Warband.', (args: string) => {
@@ -85,7 +101,7 @@ export default () => {
     if (argv._.length === 1) {
       // name only
 
-      webAPI.warbands.joinWarbandByName(client.shardID, argv._[0], client.characterID)
+      webAPI.WarbandsAPI.joinByNameV1(client.shardID, argv._[0], client.characterID)
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -98,7 +114,7 @@ export default () => {
     } else if (argv._.length === 2) {
       // name and invite code
 
-      webAPI.warbands.joinWarbandByName(client.shardID, argv._[0], client.characterID, argv._[1])
+      webAPI.WarbandsAPI.joinByNameWithInviteV1(client.shardID, argv._[0], client.characterID, argv._[1])
         .then((response: any) => {
           if (!response.ok) {
             // something went wrong
@@ -118,14 +134,14 @@ export default () => {
    */
 
   function quitWarband() {
-    webAPI.warbands.quitWarband(client.shardID, client.characterID)
-     .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
+    webAPI.WarbandsAPI.quitV1(client.shardID, client.characterID)
+      .then((response: any) => {
+        if (!response.ok) {
+          // something went wrong
+          console.error(response);
+          return;
+        }
+      });
   }
   registerSlashCommand('quitWarband', 'Quit your active Warband.', quitWarband);
   registerSlashCommand('leaveWarband', 'Quit your active Warband.', quitWarband);
@@ -136,114 +152,82 @@ export default () => {
    * Abandon a Warband
    */
   registerSlashCommand('abandonWarband', 'Abandon a Warband. Optionally, accepts a name if you are abandoning a Warband that is not your currently active Warband.', (name: string = '') => {
-    webAPI.warbands.abandonWarbandByName(client.shardID, client.characterID, name)
-      .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
+    if (name === '') {
+      webAPI.WarbandsAPI.abandonV1(client.shardID, client.characterID)
+        .then((response: any) => {
+          if (!response.ok) {
+            // something went wrong
+            console.error(response);
+            return;
+          }
+        });
+    } else {
+      webAPI.WarbandsAPI.abandonByNameV1(client.shardID, client.characterID, name)
+        .then((response: any) => {
+          if (!response.ok) {
+            // something went wrong
+            console.error(response);
+            return;
+          }
+        });
+    }
   });
 
   /**
    * Permissions, Rank, and Role management.
    */
-  function setRole(targetName: string, role: warbandRoles) {
-    webAPI.warbands.setWarbandRoleByName(client.shardID, client.characterID, targetName, role)
-      .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
-  }
 
-  function setRank(targetName: string, rank: warbandRanks) {
-    webAPI.warbands.setWarbandRankByName(client.shardID, client.characterID, targetName, rank)
+  function setRank(targetName: string, rank: string) {
+    webAPI.WarbandsAPI.setRankByNameV1(client.shardID, client.characterID, targetName, rank)
       .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
-  }
-
-  function setPermissions(targetName: string, permissions: warbandPermissions) {
-    webAPI.warbands.setWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
-      .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
-  }
-
-  function addPermissions(targetName: string, permissions: warbandPermissions) {
-    webAPI.warbands.addWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
-      .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
-  }
-
-  function removePermissions(targetName: string, permissions: warbandPermissions) {
-    webAPI.warbands.removeWarbandPermissionsByName(client.shardID, client.characterID, targetName, permissions)
-      .then((response: any) => {
-       if (!response.ok) {
-         // something went wrong
-         console.error(response);
-         return;
-       }
-     });
+        if (!response.ok) {
+          // something went wrong
+          console.error(response);
+          return;
+        }
+      });
   }
 
   registerSlashCommand('makeleader', 'Make your friendly target the leader of your warband or if you provide a name, that character named.', (name: string = '') => {
     if (name.length > 0) {
-       setRank(name, warbandRanks.LEADER);
-     } else if (friendlyTargetName && friendlyTargetName !== '') {
-       setRank(friendlyTargetName, warbandRanks.LEADER);
-     } else {
-       systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
-     }
+      webAPI.WarbandsAPI.setLeaderByNameV1(client.shardID, client.characterID, name);
+    } else if (friendlyTargetName && friendlyTargetName !== '') {
+      webAPI.WarbandsAPI.setLeaderByNameV1(client.shardID, client.characterID, friendlyTargetName);
+    } else {
+      systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
+    }
   });
 
   registerSlashCommand('promote', 'Give invite permission to your friendly target or if you provide a name, that character named.', (name: string = '') => {
     if (name.length > 0) {
-       addPermissions(name, warbandPermissions.INVITE);
-     } else if (friendlyTargetName && friendlyTargetName !== '') {
-       addPermissions(friendlyTargetName, warbandPermissions.INVITE);
-     } else {
-       systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
-     }
+      webAPI.WarbandsAPI.setRankByNameV1(client.shardID, client.characterID, name, "Invite");
+    } else if (friendlyTargetName && friendlyTargetName !== '') {
+      webAPI.WarbandsAPI.setRankByNameV1(client.shardID, client.characterID, friendlyTargetName, "Invite");
+    } else {
+      systemMessage('No friendly target to make leader. Provide a name or select a friendly target and try again.');
+    }
   });
 
   function kick(targetName: string) {
-    webAPI.warbands.kickFromWarbandByName(client.shardID, client.characterID, targetName)
+    webAPI.WarbandsAPI.kickByNameV1(client.shardID, client.characterID, targetName)
       .then((response: any) => {
         if (!response.ok) {
-        // something went wrong
-        console.error(response);
-        systemMessage('Failed to kick member.');
-        return;
-       }
-     });
+          // something went wrong
+          console.error(response);
+          systemMessage('Failed to kick member.');
+          return;
+        }
+      });
   }
-  
+
   registerSlashCommand('kick', 'Give a Warband member the boot.', (name: string = '') => {
     if (name.length > 0) {
-       kick(name);
-     } else if (friendlyTargetName && friendlyTargetName !== '') {
-       kick(friendlyTargetName);
-     } else {
-       systemMessage('No friendly target to kick. Provide a name or select a friendly target and try again.');
-     }
+      kick(name);
+    } else if (friendlyTargetName && friendlyTargetName !== '') {
+      kick(friendlyTargetName);
+    } else {
+      systemMessage('No friendly target to kick. Provide a name or select a friendly target and try again.');
+    }
   });
 
 };

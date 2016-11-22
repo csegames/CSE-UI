@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {Player, archetype, race, gender, WarbandMember, warbandRanks} from 'camelot-unchained';
+import {WarbandMember, warbandRanks} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../../../components/PlayerStatusComponent';
 import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';

@@ -17,6 +17,9 @@ declare var window: WindowInterface;
 
 let client: clientInterface = null;
 
+/**
+ * Check if we have the client API object, this will be true when running within the CU game client, false otherwise. 
+ */
 export function hasClientAPI() {
   return (window.opener && window.opener.cuAPI) || window.cuAPI;
 }

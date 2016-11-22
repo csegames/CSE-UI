@@ -16,6 +16,8 @@ import initialize from './services/initialization';
 import reducer from './services/session/reducer';
 import HUD from './components/HUD';
 
+let s = createStore(reducer);
+
 let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
 let root = document.getElementById('hud');
 

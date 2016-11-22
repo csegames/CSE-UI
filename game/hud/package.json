@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "apisauce": "0.3.1",
-    "camelot-unchained": "^0.4.39",
+    "camelot-unchained": "^0.4.42",
     "cu-xmpp-chat": "^0.1.24",
     "es6-promise": "^3.2.1",
     "immutable": "^3.8.1",
@@ -95,7 +95,7 @@
     "react-slick": "^0.12.2",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
-    "redux-typed-modules": "^2.0.0",
+    "redux-typed-modules": "^2.0.1",
     "sass-importer-node": "^1.0.0",
     "yargs-parser": "^2.4.0"
   },

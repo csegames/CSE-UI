@@ -7,10 +7,12 @@ import clientCommands from './clientCommands';
 import generalCommands from './generalCommands';
 import uiCommands from './uiCommands';
 import emoteCommands from './emoteCommands';
+import orderCommands from './orderCommands';
 
 export default () => {
   clientCommands();
   generalCommands();
   uiCommands();
   emoteCommands();
+  orderCommands();
 }

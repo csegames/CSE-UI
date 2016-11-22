@@ -6,11 +6,9 @@
 
 import {combineReducers} from 'redux';
 
-import layoutReducer, {LayoutState} from './layout';
-let layout = layoutReducer;
+import layout, {LayoutState} from './layout';
 
-import invitesReducer, {InvitesState} from './invites';
-let invites = invitesReducer;
+import invites, {InvitesState} from './invites';
 
 export default combineReducers({
   layout,

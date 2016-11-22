@@ -39,6 +39,7 @@ export interface InvitesAction extends BaseAction {
 /**
  * INTERNAL ACTIONS
  */
+
 function initSignalR(): InvitesAction {
   return {
     type: INITIALIZE_SIGNALR,
@@ -121,7 +122,7 @@ export function initializeInvites() : AsyncAction<InvitesAction> {
 }
 
 export function acceptInvite(invite: GroupInvite) : InvitesAction {
-  webAPI.warbands.joinWarbandByID(client.shardID, invite.groupID, client.characterID, invite.inviteCode);
+  webAPI.WarbandsAPI.joinWithInviteV1(client.shardID, invite.groupID, client.characterID, invite.inviteCode);
   return {
     type: ACCEPT_INVITE,
     when: new Date(),
@@ -140,7 +141,7 @@ export function declineInvite(invite: GroupInvite) : InvitesAction {
 export function fetchInvites() : AsyncAction<InvitesAction> {
   return (dispatch: (action: any) => any) => {
     dispatch(requestInvites());
-    webAPI.groups.getInvitesForCharacter(client.shardID, client.characterID)
+    webAPI.GroupsAPI.getInvitesForCharacterV1(client.shardID, client.characterID)
       .then((data: any) => dispatch(fetchInvitesSuccess(data)))
       .catch((response: any) => dispatch(fetchInvitesFailed(response.problem)));
   }

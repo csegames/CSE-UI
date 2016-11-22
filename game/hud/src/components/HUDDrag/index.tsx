@@ -309,6 +309,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     // for now we always allow it
     this.setMode(mode);
     e.preventDefault();
+    e.stopPropagation();
     this.lastPosition = {x: e.screenX , y: e.screenY}
   }
 

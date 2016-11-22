@@ -4,16 +4,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as characters from './characters';
-import * as groups from './groups';
-import * as warbands from './warbands';
-import * as servers from './servers';
-import * as content from './content';
+import * as CharactersAPI from './controllers/Characters';
+import * as ContentAPI from './controllers/Content';
+import * as GameDataAPI from './controllers/GameData';
+import * as GroupsAPI from './controllers/Groups';
+import * as OrdersAPI from './controllers/Orders';
+import * as ServerListHelperAPI from './controllers/ServerListHelper';
+import * as WarbandsAPI from './controllers/Warbands';
+export * from './definitions';
 
 export {
-  characters,
-  groups,
-  warbands,
-  servers,
-  content,
+  CharactersAPI,
+  ContentAPI,
+  GameDataAPI,
+  GroupsAPI,
+  OrdersAPI,
+  ServerListHelperAPI,
+  WarbandsAPI,
 }

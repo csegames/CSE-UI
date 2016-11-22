@@ -6,11 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:24
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-23 10:24:37
+ * @Last Modified time: 2016-11-22 11:10:57
  */
 
 import * as React from 'react';
-import {Player, archetype, signalr, WarbandMember, cu, client, webAPI} from 'camelot-unchained';
+import {WarbandMember} from 'camelot-unchained';
 import {connect} from 'react-redux';
 
 import {WarbandSessionState, WarbandState} from '../../services/session';
@@ -41,16 +41,6 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
 
   renderMember = (member: WarbandMember): any => {
     return <WarbandMemberDisplay key={member.characterID} member={member} />;
-  }
-
-  // TESTING
-
-  createWarband = () => {
-    webAPI.warbands.createWarband(client.shardID, client.characterID);
-  }
-
-  quitWarband = () => {
-    webAPI.warbands.quitWarband(client.shardID, client.characterID);
   }
 
   initSignalRHub = () => {

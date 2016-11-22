@@ -1,6 +1,6 @@
 {
   "name": "camelot-unchained",
-  "version": "0.4.39",
+  "version": "0.4.42",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -10,8 +10,7 @@
     "JB (codecorsair) <jb@codecorsair.com>",
     "Mehuge <mehuge@sorcerer.co.uk>",
     "saddieeiddas <saddie.eiddas@gmail.com>",
-    "sYc0n <mathias.nachtmann@t-online.de>",
-    "James Harless <lemoni.king@gmail.com>"
+    "sYc0n <mathias.nachtmann@t-online.de>"
   ],
   "keywords": [
     "Camelot",
@@ -52,10 +51,11 @@
     "copies": "npm run copy:definitions && npm run copy:third-party && npm run copy:misc",
     "prebuild": "npm run clean -s",
     "build": "tsc && npm run sass && npm run copies && npm run babel && npm run browserify",
-    "postbuild": "rimraf tmp"
+    "postbuild": "rimraf tmp",
+    "docs": "typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/"
   },
   "dependencies": {
-    "apisauce": "0.3.1",
+    "axios": "^0.15.3",
     "bourbon": "^4.2.6",
     "es6-promise": "^3.0.2",
     "isomorphic-fetch": "^2.2.1",
@@ -72,7 +72,8 @@
     "browserify": "^13.0.0",
     "node-sass": "^3.8.0",
     "npm-watch": "^0.1.4",
-    "typescript": "^1.8.0",
+    "typedoc": "^10.5.2",
+    "typescript": "^2.0.10",
     "typings": "^1.3.2"
   }
 }

@@ -4,6 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/**
+ * USAGE EXAMPLE
+ * 
+ * <Slider>
+ *   {items.map((item: Item, index: number) => {
+ *     return (
+ *       <div className='InteractiveAlert__message' key={`alert_${index}`}>
+ *         {item.render()}
+ *       </div>
+ *     );
+ *   })}
+ * </Slider>
+ */
+
 import * as React from 'react';
 import {spring, presets, TransitionMotion} from 'react-motion';
 
@@ -22,7 +36,6 @@ export interface SliderState {
 }
 
 class Slider extends React.Component<SliderProps, SliderState> {
-
 
   constructor(props: SliderProps) {
     super(props);
@@ -74,7 +87,6 @@ class Slider extends React.Component<SliderProps, SliderState> {
     
   }
 
-  // Animations
   slideWillEnter = (): any => {
     return {left: 0};
   }
@@ -96,14 +108,14 @@ class Slider extends React.Component<SliderProps, SliderState> {
                             styles={items.map((item: any) => ({
                               key: this.keyGen++,
                               data: item,
-                              style: {left: spring(1, {stiffness: 50, damping: 15, precision: 0.01})}
+                              style: {opacity: spring(1, {stiffness: 50, damping: 15, precision: 0.01})}
                             }))}>
             {(interpolatedStyles: any) => 
               <div className='Slider__items'>
-                {interpolatedStyles.map((config: any) => {
+                {interpolatedStyles.map((slide: any) => {
                   return (
-                    <div key={config.key} className='Slider__item' style={{position: 'absolute', top: 0, opacity: config.style.left}}>
-                      {config.data}
+                    <div key={slide.key} className='Slider__item' style={{position: 'absolute', top: 0, opacity: slide.style.opacity}}>
+                      {slide.data}
                     </div>
                   )
                 })}

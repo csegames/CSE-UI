@@ -17,8 +17,8 @@ export function merge<T>(obj: T, ...args: any[]): T {
   return Object.assign({}, obj, ...args);
 }
 
-export interface Dictionary<value> {
-  [id: string]: value
+export interface Dictionary<T> {
+  [id: string]: T
 }
 
 export function tryParseJSON<T>(json: string, logError: boolean = false): T {

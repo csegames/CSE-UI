@@ -58,7 +58,6 @@ class InteractiveAlert extends React.Component<InteractiveAlertProps, Interactiv
   render() {
 
     const alerts = this.accumulateAlerts();
-
     if (alerts.length == 0) return null;
 
     return (

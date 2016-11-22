@@ -7,4 +7,10 @@ let yargs = require('yargs-parser');
 import {events} from 'camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
-export const systemMessage = (message: string): void => events.fire('system_message', message);
+export const systemMessage = (message: string | Object): void => {
+  if (typeof message === 'string') {
+    events.fire('system_message', message)
+  } else {
+    events.fire('system_message', JSON.stringify(message));
+  }
+};
