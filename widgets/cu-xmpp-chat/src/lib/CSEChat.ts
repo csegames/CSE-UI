@@ -205,13 +205,13 @@ class CSEChat  {
   private messageHandlerTimeout: any = null;
 
   _recvStanza(stanza: Element) {
-    if (stanza.is('iq')) {
+    if (stanza.is('presence')) {
+      this._recvQueue.push(stanza);
+      if (this.messageHandlerTimeout) return;
+      this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 1);
+    } else {
       this._processStanza(stanza);
-      return;
     }
-    this._recvQueue.push(stanza);
-    if (this.messageHandlerTimeout) return;
-    this.messageHandlerTimeout = setTimeout(() => this._messageHandler(), 1);
   }
 
   _messageHandler() {
@@ -249,16 +249,16 @@ class CSEChat  {
 
     // If inflight is not 0, then we have a ping that was not responded to
     // so decide what to do (atm we disconnect)
-    if (this._pingsInFlight > 0) {
+    // if (this._pingsInFlight > 0) {
 
-      // not got response to last ping, disconnect, stop ping timer
-      // and trigger an error condition.
-      this.disconnect();
-      clearInterval(this._pinger);
-      this._pinger = null;
-      this.eventEmitter.emit('error', 'Ping timed out');
-      return;
-    }
+    //   // not got response to last ping, disconnect, stop ping timer
+    //   // and trigger an error condition.
+    //   this.disconnect();
+    //   clearInterval(this._pinger);
+    //   this._pinger = null;
+    //   this.eventEmitter.emit('error', 'Ping timed out');
+    //   return;
+    // }
 
     // Create a new ping message
     const id : string = this._nextId('ping');

@@ -152,10 +152,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
           orderedWidgets[w.zOrder] = this.draggable('PlayerHealth', widgets, PlayerHealth, {lockHeight: true, lockWidth: true}, {});
           break;
         case 'EnemyTargetHealth':
-          //orderedWidgets[w.zOrder] = this.draggable('EnemyTargetHealth', widgets, EnemyTargetHealth, {lockHeight: true, lockWidth: true}, {});
+          orderedWidgets[w.zOrder] = this.draggable('EnemyTargetHealth', widgets, EnemyTargetHealth, {lockHeight: true, lockWidth: true}, {});
           break;
         case 'FriendlyTargetHealth':
-          //orderedWidgets[w.zOrder] = this.draggable('FriendlyTargetHealth', widgets, FriendlyTargetHealth, {lockHeight: true, lockWidth: true}, {});
+          orderedWidgets[w.zOrder] = this.draggable('FriendlyTargetHealth', widgets, FriendlyTargetHealth, {lockHeight: true, lockWidth: true}, {});
           break;
         case 'Compass':
           orderedWidgets[w.zOrder] = this.draggable('Compass', widgets, Compass, {lockHeight: true, lockWidth: true}, {});
@@ -164,7 +164,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           orderedWidgets[w.zOrder] = this.draggable('Respawn', widgets, Respawn, {}, {});
           break;
         case 'Warband':
-          //orderedWidgets[w.zOrder] = this.draggable('Warband', widgets, Warband, {lockHeight: true, lockWidth: true}, {});
+          orderedWidgets[w.zOrder] = this.draggable('Warband', widgets, Warband, {lockHeight: true, lockWidth: true}, {});
           break;
         case 'Welcome':
           orderedWidgets[w.zOrder] = this.draggable('Welcome', widgets, Welcome, {lockHeight: true, lockWidth: true}, {});

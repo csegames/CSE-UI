@@ -1,6 +1,6 @@
 {
   "name": "cu-xmpp-chat",
-  "version": "0.1.21",
+  "version": "0.1.24",
   "description": "Camelot Unchained XMPP Chat",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -31,7 +31,7 @@
     "postbuild": "rimraf tmp"
   },
   "dependencies": {
-    "camelot-unchained": "^0.4.16",
+    "camelot-unchained": "^0.4.38",
     "es6-promise": "^3.1.2",
     "isomorphic-fetch": "^2.2.1",
     "node-xmpp-client": "^2.1.0",

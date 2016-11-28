@@ -68,6 +68,9 @@ class ChatSession {
   }
 
   private internalConnect(login: LoginInfo) {
+    events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
+    events.on('combatlog_message', (msg: string) => this.onchat({type: messageType.COMBAT_LOG, message: msg}));
+
     if (!this.client) {
       this.client = new ChatClient();
       this.client.on('connect', this.onconnect);
@@ -78,8 +81,7 @@ class ChatSession {
       this.client.on('groupmessage', this.onchat);
       this.client.on('disconnect', this.ondisconnect);
       this.client.on('rooms', this.onrooms);
-      events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
-      events.on('combatlog_message', (msg: string) => this.onchat({type: messageType.COMBAT_LOG, message: msg}));
+      
       // if (!patcher.hasRealApi()) {
       //   if (username === "") username = window.prompt('username?');
       //   if (password === "###") password = window.prompt('password?');

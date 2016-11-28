@@ -35,6 +35,7 @@ export interface CombatLog {
     sent: number;
     recieved: number;
     tracksInterupted?: skillTracks;
+    source: string;
   };
   
   heals?: {
@@ -60,7 +61,8 @@ export interface CombatLog {
 
   activeEffects?: {
     name: string;
-    action: activeEffectActions;   
+    action: activeEffectActions;
+    duration: string;
   }[];
   
   errors?: {

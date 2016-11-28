@@ -99,7 +99,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
   }
 
   render() {
-    if (!this.validPlayer()) return null;
+    //if (!this.validPlayer()) return null;
     const {playerStatus} = this.props;
     const now = Date.now();
     // did we recently take damage?
