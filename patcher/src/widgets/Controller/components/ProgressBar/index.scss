@@ -27,8 +27,9 @@
 
 .ProgressBar__bar {
   flex: 1 1 auto;
-  margin: 5px;
   background: rgba(97, 97, 97, 0.25);
+  margin: -2px 0px 2px 0px;
+  height: 7px;
   box-shadow: inset 0px 0px 3px 0px rgba(244, 244, 244, 0.25);
 }
 
