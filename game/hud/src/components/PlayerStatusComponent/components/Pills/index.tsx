@@ -242,7 +242,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     }
 
     // build clip path for pills
-    const clipPath: any = { '-webkit-clip-path': this.clipPathForPills(pill) };
+    const clipPath: any = { 'WebkitClipPath': this.clipPathForPills(pill) };
 
     let dimension = orientation === Orientation.Horizontal ? 'width' : 'height';
 
