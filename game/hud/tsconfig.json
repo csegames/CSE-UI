@@ -6,7 +6,9 @@
         "outDir": "./tmp",
         "sourceMap": false,
         "jsx": "react",
-        "module": "commonjs"
+        "module": "commonjs",
+        "noImplicitUseStrict": true,
+        "alwaysStrict": false
     },
     "formatCodeOptions": {
         "indentSize": 2,

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 17:31:15
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-21 18:47:36
+ * @Last Modified time: 2016-12-13 17:14:51
  */
 
 export function clone<T>(obj: T): T {
@@ -157,7 +157,7 @@ export function crashReporterMiddleware(store: any) {
       return next(action)
     } catch (err) {
       console.error('Caught an exception!', err)
-      console.log('state', store.getState());
+      console.log('state', JSON.stringify(store.getState()));
       throw err
     }
   }
