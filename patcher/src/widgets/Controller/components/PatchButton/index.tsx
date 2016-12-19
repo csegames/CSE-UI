@@ -13,7 +13,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {webAPI, events, utils} from 'camelot-unchained';
 
-import {patcher, Channel, ChannelStatus} from '../../../../services/patcher';
+import {patcher, Channel, ChannelStatus, PatchPermissions} from '../../../../services/patcher';
 import {CSENormalizeString} from '../../../../lib/CSENormalizeString';
 
 import Animate from '../../../../lib/Animate';
@@ -65,6 +65,11 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
   playSound = (sound: string) => {
     events.fire('play-sound', sound);
+  }
+
+  playOffline = (evt: React.MouseEvent) => {
+    if (evt.altKey) return this.playNow(evt);
+    alert('Server is offline! - Hold alt + click Play Offline to pass command line arguments.');
   }
 
   playNow = (evt: React.MouseEvent) => {
@@ -167,9 +172,13 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
         this.startDownload = undefined;
 
+        const permissions = patcher.getPermissions();
+
         if (selectedServer.type === ServerType.CUGAME) {
-          if (!selectedServer.available) {
+          if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) == 0) {
             return <div className='PatchButton__button PatchButton__button--disabled'>Server Offline</div>;
+          } else if (!selectedServer.available) {
+            return <div className='PatchButton__button PatchButton__button--warning' onClick={this.playOffline}>Play Offline</div>;
           } else if (!selectedServer.characterCount || !this.props.selectedCharacter) {
             return <div className='PatchButton__button PatchButton__button--disabled PatchButton__button--smallerText'>No Character Selected</div>;
           } else {

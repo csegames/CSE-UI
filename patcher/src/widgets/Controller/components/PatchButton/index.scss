@@ -72,6 +72,10 @@
   animation: successFade 1s ease-in once;
 }
 
+.PatchButton__button--warning {
+  background-color: darkorange;
+}
+
 @keyframes successFade {
   from {
     color: #3fd0b0;
