@@ -63,15 +63,8 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
 
   render() {
     const itemGroups: JSX.Element[] = [];
-    const itemGroupsBySlot:any = {};
     this.state.itemGroups.forEach((group: ItemGroup, index: number) => {
-
-      const gearSlotName = this.getGearSlotName(group.item.gearSlot);
-      if(!itemGroupsBySlot.hasOwnProperty(gearSlotName)) {
-        itemGroupsBySlot[gearSlotName] = [];
-      }
-      
-      itemGroupsBySlot[gearSlotName].push((
+      itemGroups.push((
           <li className="inventory-item" key={'item-group' + index} onClick={() => this.simDblClick(this.useItem, group)} onContextMenu={this.dropItem.bind(this, group )}>
             <div className="quantity">{group.quantity}</div>
             <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
@@ -85,16 +78,6 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
           </li>
       ));
     });
-
-    Object.keys(itemGroupsBySlot).forEach(key => {
-      itemGroups.push((
-        <div>
-          <div className="cu-font-cinzel">{key}</div>
-          <ul>{itemGroupsBySlot[key]}</ul>
-        </div>
-      ));
-    });
-
     return (
       <div className="cu-window">
         <div className="cu-window-header cu-window-bg-brown">
