@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+ - "6"
+before_install:
+ - "cd game"
+before_script:
+ - "cd game"
+script:
+ - "npm start"
