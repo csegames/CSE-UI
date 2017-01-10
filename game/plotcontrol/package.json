@@ -29,9 +29,7 @@
     "name": "plotcontrol"
   },
   "scripts": {
-    "postinstall": "npm run typings",
-    "typings": "npm run clean:typings && typings install",
-    "clean:typings": "rimraf typings",
+    "postinstall": "rimraf typings && typings install",
     "clean:tmp": "rimraf tmp",
     "clean:tmpp": "rimraf tmpp",
     "clean:dist": "find dist/ -type d -empty -print0 | xargs -0 rmdir",
@@ -65,19 +63,21 @@
     "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
   },
   "dependencies": {
-    "camelot-unchained": "^0.2.5",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "camelot-unchained": "^0.4.42",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
     "babel-preset-es2015": "^6.5.0",
     "browserify": "^13.0.0",
+    "copyfiles": "^1.0.0",
     "http-server": "^0.9.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
-    "typescript": "^1.8.0",
-    "typings": "^0.6.8"
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.4",
+    "typings": "^2.1.0"
   }
 }
