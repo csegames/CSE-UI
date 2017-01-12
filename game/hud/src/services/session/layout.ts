@@ -490,7 +490,7 @@ export function initialize() {
     dispatch(init());
     window.onresize = () => {
       if (window.innerWidth >= 640 && window.innerHeight >= 480) {
-        dispatch(resize());
+        //dispatch(resize());
       }
     };
   }
