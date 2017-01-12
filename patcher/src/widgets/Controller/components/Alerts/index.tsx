@@ -9,7 +9,7 @@ import {webAPI} from 'camelot-unchained';
 import Animate from '../../../../lib/Animate';
 
 export interface AlertsProps {
-  alerts: webAPI.content.PatcherAlert[],  
+  alerts: webAPI.PatcherAlert[],  
 };
 
 export class Alerts extends React.Component<AlertsProps, {}> {

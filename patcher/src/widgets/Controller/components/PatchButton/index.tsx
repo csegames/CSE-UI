@@ -29,7 +29,7 @@ import {Progress} from '../../lib/Progress';
 export interface PatchButtonProps {
   servers: utils.Dictionary<PatcherServer>;
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.characters.SimpleCharacter;
+  selectedCharacter: webAPI.SimpleCharacter;
 }
 
 export interface PatchButtonState {
@@ -117,10 +117,10 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (!selectedServer) return;
 
     this.setState({ showEuala: false } as any);
-    let launchString = this.commands;
+    let launchString = this.commands.toLowerCase();
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID != 27) {
-      if (!launchString.includes('server=')) launchString += ` server=${selectedServer.host}`;
-      if (!launchString.includes('character=')) launchString += ` character=${selectedCharacter.id}`;
+      if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
+      if (!launchString.includes('character')) launchString += ` character=${selectedCharacter.id}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

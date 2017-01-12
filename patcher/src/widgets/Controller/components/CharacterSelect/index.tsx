@@ -19,7 +19,7 @@ import CharacterDeleteModal from '../CharacterDeleteModal';
 import * as moment from 'moment';
 
 export interface ActiveCharacterViewProps {
-  character: webAPI.characters.SimpleCharacter;
+  character: webAPI.SimpleCharacter;
 };
 export interface ActiveCharacterViewState {};
 class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, ActiveCharacterViewState> {
@@ -31,7 +31,7 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
         <i className={`char-icon char-icon--${race[character.race]}-${gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{archetypeToString(character.archetype)} - {raceToString(character.race)}</div>
+          <div className='ActiveCharacterView__details__login'>{webAPI.Archetype[character.archetype]} - {webAPI.Race[character.race]}</div>
         </div>
       </div>
     );
@@ -39,7 +39,7 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
 }
 
 export interface CharacterListViewProps {
-  character: webAPI.characters.SimpleCharacter;
+  character: webAPI.SimpleCharacter;
 };
 export interface CharacterListViewState {
   showDeleteConfirmation: boolean;
@@ -56,7 +56,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
 
   deleteCharacter = () => {
     const {character} = this.props;
-    webAPI.characters.deleteCharacter(character.shardID, character.id);
+    webAPI.CharactersAPI.deleteCharacterV1(character.shardID, character.id);
     this.showDeleteConfirmation(false);
   }
 
@@ -68,7 +68,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
         <i className={`char-icon char-icon--${race[character.race]}-${gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{archetypeToString(character.archetype)} - {raceToString(character.race)}</div>
+          <div className='ActiveCharacterView__details__login'>{webAPI.Archetype[character.archetype]} - {webAPI.Race[character.race]}</div>
         </div>
         <div className='ActiveCharacterView__controls'>
           <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>
@@ -92,20 +92,20 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
 }
 
 export interface CharacterSelectProps {
-  characters: utils.Dictionary<webAPI.characters.SimpleCharacter>,
-  selectCharacter: (character: webAPI.characters.SimpleCharacter) => void,
+  characters: utils.Dictionary<webAPI.SimpleCharacter>,
+  selectCharacter: (character: webAPI.SimpleCharacter) => void,
   selectedServer: PatcherServer;
 };
 
 export interface CharacterSelectState {
-  selectedCharacter: webAPI.characters.SimpleCharacter;
+  selectedCharacter: webAPI.SimpleCharacter;
   createdName: string;
 }
 
 class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSelectState> {
   public name: string = 'cse-patcher-Character-select';
-  private characters:Array<webAPI.characters.SimpleCharacter> = new Array<webAPI.characters.SimpleCharacter>();
-  private selectedCharacter:webAPI.characters.SimpleCharacter = null;
+  private characters:Array<webAPI.SimpleCharacter> = new Array<webAPI.SimpleCharacter>();
+  private selectedCharacter:webAPI.SimpleCharacter = null;
 
   constructor(props: CharacterSelectProps) {
     super(props);
@@ -126,7 +126,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     events.off('character-created');
   }
 
-  selectCharacter = (character: webAPI.characters.SimpleCharacter) => {
+  selectCharacter = (character: webAPI.SimpleCharacter) => {
     this.props.selectCharacter(character);
     this.setState({selectedCharacter: character} as any);
   }
@@ -147,7 +147,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
     const {characters} = this.props;
 
-    let serverCharacters: webAPI.characters.SimpleCharacter[] = [];
+    let serverCharacters: webAPI.SimpleCharacter[] = [];
     for (const key in characters) {
       if (characters[key].shardID === selectedServer.shardID) serverCharacters.push(characters[key]);
     }

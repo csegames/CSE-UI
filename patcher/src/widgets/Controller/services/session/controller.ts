@@ -32,8 +32,8 @@ const RESET = 'controller/RESET';
 export interface ControllerState {
   isInitializing: boolean;
   signalRInitialized: boolean;
-  alerts: utils.Dictionary<webAPI.content.PatcherAlert>;
-  characters: utils.Dictionary<webAPI.characters.SimpleCharacter>;
+  alerts: utils.Dictionary<webAPI.PatcherAlert>;
+  characters: utils.Dictionary<webAPI.SimpleCharacter>;
   servers: utils.Dictionary<PatcherServer>;
 }
 
@@ -49,9 +49,9 @@ function initialState(): ControllerState {
 
 export interface ControllerAction extends utils.BaseAction {
   id?: string;
-  alert?: webAPI.content.PatcherAlert;
-  server?: webAPI.servers.Server;
-  character?: webAPI.characters.SimpleCharacter;
+  alert?: webAPI.PatcherAlert;
+  server?: webAPI.ServerModel;
+  character?: webAPI.SimpleCharacter;
   channels?: Channel[];
 }
 
@@ -78,7 +78,7 @@ export interface PatcherServer {
   channelStatus: number;
   available: boolean;
   channelPatchPermissions?: number;
-  accessLevel?: webAPI.servers.ServerAccessLevel,
+  accessLevel?: webAPI.AccessType,
   host?: string,
   playerMaximum?: number,
   channelID?: number,
@@ -88,20 +88,20 @@ export interface PatcherServer {
   vikings?: number,
   max?: number,
   characterCount?: number;
-  selectedCharacter?: webAPI.characters.SimpleCharacter;
-  characters?: webAPI.characters.SimpleCharacter[];
+  selectedCharacter?: webAPI.SimpleCharacter;
+  characters?: webAPI.SimpleCharacter[];
   lastUpdated?: string;
 }
 
 // HELPER METHODS
 function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
   events.on(signalr.PATCHER_EVENTS_ALERT, (alertJSON: string) => {
-    const alert = utils.tryParseJSON<webAPI.content.PatcherAlert>(alertJSON, client.debug);
+    const alert = utils.tryParseJSON<webAPI.PatcherAlert>(alertJSON, client.debug);
     if (alert !== null) dispatch(alertRecieved(alert));
   });
 
   events.on(signalr.PATCHER_EVENTS_SERVERUPDATED, (serverJSON: string) => {
-    const server = utils.tryParseJSON<webAPI.servers.Server>(serverJSON, client.debug);
+    const server = utils.tryParseJSON<webAPI.ServerModel>(serverJSON, client.debug);
     if (server !== null) dispatch(serverUpdate(server));
   });
 
@@ -109,14 +109,14 @@ function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
 
   events.on(signalr.PATCHER_EVENTS_CHARACTERUPDATED, (characterJSON: string) => {
     console.log(characterJSON);
-    const character = utils.tryParseJSON<webAPI.characters.SimpleCharacter>(characterJSON, client.debug);
+    const character = utils.tryParseJSON<webAPI.SimpleCharacter>(characterJSON, client.debug);
     if (character !== null) dispatch(characterUpdate(character));
   });
 
   events.on(signalr.PATCHER_EVENTS_CHARACTERREMOVED, (id: string) => dispatch(characterRemoved(id)));
 }
 
-function webAPIServerToPatcherServer(server: webAPI.servers.Server): PatcherServer {
+function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
 
   const channels = patcher.getAllChannels();
   const channelIndex = utils.findIndexWhere(channels, c => c.channelID === server.channelID);
@@ -150,7 +150,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
   };
 }
 
-function updateCharacterCounts(servers: utils.Dictionary<PatcherServer>, characters: utils.Dictionary<webAPI.characters.SimpleCharacter>): utils.Dictionary<PatcherServer> {
+function updateCharacterCounts(servers: utils.Dictionary<PatcherServer>, characters: utils.Dictionary<webAPI.SimpleCharacter>): utils.Dictionary<PatcherServer> {
   // get character count by shardID
   let characterCounts: utils.Dictionary<number> = {};
   for (const key in characters) {
@@ -224,7 +224,7 @@ function initializeSignalRFailed(): ControllerAction {
 
 
 const alertTimeouts: utils.Dictionary<NodeJS.Timer> = {};
-function alertRecievedDispatcher(alert: webAPI.content.PatcherAlert): utils.AsyncAction<ControllerAction> {
+function alertRecievedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<ControllerAction> {
   return (dispatch: (action: ControllerAction) => any) => {
     dispatch(alertRecieved(alert));
 
@@ -239,7 +239,7 @@ function alertRecievedDispatcher(alert: webAPI.content.PatcherAlert): utils.Asyn
   };
 }
 
-function alertRecieved(alert: webAPI.content.PatcherAlert): ControllerAction {
+function alertRecieved(alert: webAPI.PatcherAlert): ControllerAction {
   return {
     type: ALERT_RECIEVED,
     when: new Date(),
@@ -255,7 +255,7 @@ function alertExpired(id: string): ControllerAction {
   };
 }
 
-function serverUpdate(server: webAPI.servers.Server): ControllerAction {
+function serverUpdate(server: webAPI.ServerModel): ControllerAction {
   return {
     type: SERVER_UPDATE,
     when: new Date(),
@@ -272,7 +272,7 @@ function serverUnavailable(name: string): ControllerAction {
 }
 
 
-function characterUpdate(character: webAPI.characters.SimpleCharacter): ControllerAction {
+function characterUpdate(character: webAPI.SimpleCharacter): ControllerAction {
   return {
     type: CHARACTER_UPDATE,
     when: new Date(),

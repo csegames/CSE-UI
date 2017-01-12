@@ -11,7 +11,7 @@ export interface SimpleCharacter {
   faction: Faction;
   gender: Gender;
   id: string;
-  lastLogin: Date;
+  lastLogin: string;
   name: string;
   race: Race;
   shardID: number;
@@ -25,7 +25,7 @@ export interface Character {
   faction: Faction;
   gender: Gender;
   id: string;
-  lastLogin: Date;
+  lastLogin: string;
   name: string;
   race: Race;
   shardID: number;
@@ -59,7 +59,7 @@ export interface FactionInfo {
 }
  
 export interface GroupInvite { 
-  created: Date;
+  created: string;
   groupType: GroupType;
   inviteCode: string;
   groupID: string;
@@ -76,16 +76,16 @@ export interface MessageOfTheDay {
 export interface PatcherAlert { 
   id: string;
   message: string;
-  utcDateEnd: Date;
-  utcDateStart: Date;
+  utcDateEnd: string;
+  utcDateStart: string;
 }
  
 export interface PatcherHeroContent { 
   content: string;
   id: string;
   priority: number;
-  utcDateEnd: Date;
-  utcDateStart: Date;
+  utcDateEnd: string;
+  utcDateStart: string;
 }
  
 export interface PermissionInfo { 
@@ -122,21 +122,6 @@ export interface RankInfo {
   permissions: string[];
 }
  
-export interface Host { 
-  address: string;
-  keepAliveNumber: number;
-  extraData: string;
-}
-
-export interface Server { 
-  accessLevel: AccessType;
-  channelID: number;
-  hosts: Host[];
-  name: string;
-  playerMaximum: number;
-  shardID: number;
-}
-
 export interface ServerModel { 
   accessLevel: AccessType;
   channelID: number;
@@ -146,6 +131,11 @@ export interface ServerModel {
   playerMaximum: number;
   shardID: number;
   status: ServerStatus;
+}
+ 
+export interface ServerPresence {
+  address: string;
+  zoneID: string; 
 }
  
 export interface ServerState { 
@@ -169,7 +159,7 @@ export interface PlayerCounts {
  
 export interface Warband { 
   banner: string;
-  created: Date;
+  created: string;
   id: string;
   members: WarbandMember[];
   name: string;
@@ -184,10 +174,10 @@ export interface WarbandMember {
   characterID: string;
   gender: Gender;
   health: CurrentMaxValue[];
-  joined: Date;
+  joined: string;
   name: string;
   panic: CurrentMaxValue;
-  parted: Date;
+  parted: string;
   race: Race;
   rank: string;
   stamina: CurrentMaxValue;

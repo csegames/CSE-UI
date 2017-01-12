@@ -9,8 +9,8 @@ import {components, race, webAPI, events} from 'camelot-unchained';
 
 export interface CharacterButtonsProps {
   creating: boolean;
-  selectedCharacter: webAPI.characters.SimpleCharacter,
-  onDelete: (character: webAPI.characters.SimpleCharacter) => void;
+  selectedCharacter: webAPI.SimpleCharacter,
+  onDelete: (character: webAPI.SimpleCharacter) => void;
   onCreate: () => void;
   onCancel: () => void;
 };

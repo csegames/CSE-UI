@@ -51,7 +51,7 @@ export interface ControllerDisplayState {
   showCreation: boolean;
   serverType: ServerType;
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.characters.SimpleCharacter;
+  selectedCharacter: webAPI.SimpleCharacter;
 };
 
 class ControllerDisplay extends React.Component<ControllerDisplayProps, ControllerDisplayState> {
@@ -130,7 +130,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     this.queueStateChange({selectedServer: server} as any);
   }
 
-  selectCharacter = (character: webAPI.characters.SimpleCharacter) => {
+  selectCharacter = (character: webAPI.SimpleCharacter) => {
     if (this.state.selectedCharacter === character) return;
     events.fire('play-sound', 'select');
     this.queueStateChange({selectedCharacter: character} as any);
@@ -212,7 +212,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     const selectedServer = this.state.selectedServer ? this.props.ControllerState.servers[this.state.selectedServer.name] : null;
     const selectedCharacter = this.state.selectedCharacter ? this.props.ControllerState.characters[this.state.selectedCharacter.id] : null;
     if (!selectedCharacter) selectedCharacter == null;
-    let alertArray: webAPI.content.PatcherAlert[] = [];
+    let alertArray: webAPI.PatcherAlert[] = [];
     for (let key in alerts) alertArray.push(alerts[key]);
 
     if (!patcher.hasLoginToken()) {

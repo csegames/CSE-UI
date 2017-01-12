@@ -8,9 +8,9 @@ import * as React from 'react';
 import {webAPI, events} from 'camelot-unchained';
 
 export interface CharacterDeleteModalProps {
-  character: webAPI.characters.SimpleCharacter;
+  character: webAPI.SimpleCharacter;
   closeModal: () => void;
-  deleteCharacter: (character: webAPI.characters.SimpleCharacter) => void;
+  deleteCharacter: (character: webAPI.SimpleCharacter) => void;
 }
 
 export interface CharacterDeleteModalState {
