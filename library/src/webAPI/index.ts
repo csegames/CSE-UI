@@ -12,6 +12,7 @@ import * as OrdersAPI from './controllers/Orders';
 import * as ServerListHelperAPI from './controllers/ServerListHelper';
 import * as WarbandsAPI from './controllers/Warbands';
 export * from './definitions';
+export * from './helpers';
 
 export {
   CharactersAPI,

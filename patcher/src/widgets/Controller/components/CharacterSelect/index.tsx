@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {components, race, gender, webAPI, events, utils, archetype, archetypeToString, raceToString} from 'camelot-unchained';
+import {components, webAPI, events, utils} from 'camelot-unchained';
 import QuickSelect from '../../../../components/QuickSelect';
 import {ServerType, PatcherServer} from '../../services/session/controller';
 import CharacterDeleteModal from '../CharacterDeleteModal';
@@ -28,10 +28,10 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
     const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(character.lastLogin).fromNow();
     return (
       <div className='ActiveCharacterView'>
-        <i className={`char-icon char-icon--${race[character.race]}-${gender[character.gender]}`}></i>
+        <i className={`char-icon char-icon--${webAPI.Race[character.race]}-${webAPI.Gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{webAPI.Archetype[character.archetype]} - {webAPI.Race[character.race]}</div>
+          <div className='ActiveCharacterView__details__login'>{webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}</div>
         </div>
       </div>
     );
@@ -65,10 +65,10 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
     const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(character.lastLogin).fromNow();
     return (
       <div className='ActiveCharacterView'>
-        <i className={`char-icon char-icon--${race[character.race]}-${gender[character.gender]}`}></i>
+        <i className={`char-icon char-icon--${webAPI.Race[character.race]}-${webAPI.Gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{webAPI.Archetype[character.archetype]} - {webAPI.Race[character.race]}</div>
+          <div className='ActiveCharacterView__details__login'>{webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}</div>
         </div>
         <div className='ActiveCharacterView__controls'>
           <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>

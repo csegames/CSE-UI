@@ -35,7 +35,7 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
             <div className='ActiveServerView__details'>
               {server.name}
               {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.AccessType[server.accessLevel]} Access Only </div> : null}
+              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.accessLevelString(server.accessLevel)} Access Only </div> : null}
             </div>
           </div>
         );
@@ -74,7 +74,7 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
             <div className='ActiveServerView__details'>
               {server.name}
               {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.AccessType[server.accessLevel]} Access Only</div> : null}
+              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.accessLevelString(server.accessLevel)} Access Only</div> : null}
             </div>
             <div className='ActiveServerView__controls'>
               <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>
