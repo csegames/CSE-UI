@@ -11,6 +11,7 @@ import * as GroupsAPI from './controllers/Groups';
 import * as OrdersAPI from './controllers/Orders';
 import * as ServerListHelperAPI from './controllers/ServerListHelper';
 import * as WarbandsAPI from './controllers/Warbands';
+import * as PlotsAPI from './controllers/Plots';
 export * from './definitions';
 export * from './helpers';
 
@@ -22,4 +23,5 @@ export {
   OrdersAPI,
   ServerListHelperAPI,
   WarbandsAPI,
+  PlotsAPI
 }

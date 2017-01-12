@@ -5,6 +5,28 @@ export interface ArchetypeInfo {
   id: Archetype;
   name: string;
 }
+
+ 
+
+export interface QueueStatusResponse {
+  errorMessage: string; 
+  queueStatusMessage: QueueStatusMessage;
+}
+
+export interface QueueStatusMessage {
+  status: string;
+  numContributors: number;
+  maxContributors: number;
+  blueprints: QueuedBlueprintMessage[]; 
+}
+
+export interface QueuedBlueprintMessage {
+  name: string;
+  percentComplete: number;
+  estTimeRemaining: number;
+  subName: string;
+  amtNeeded: number; 
+}
  
 export interface SimpleCharacter { 
   archetype: Archetype;
@@ -33,6 +55,7 @@ export interface Character {
 
 export interface CharacterValidation { 
 }
+
  
 export interface ControlGameState { 
   arthurianScore: number;
@@ -50,6 +73,7 @@ export interface ControlPoint {
   x: number;
   y: number;
 }
+
  
 export interface FactionInfo { 
   description: string;
@@ -57,6 +81,7 @@ export interface FactionInfo {
   name: string;
   shortName: string;
 }
+
  
 export interface GroupInvite { 
   created: string;
@@ -66,12 +91,14 @@ export interface GroupInvite {
   groupName: string;
   invitedByName: string;
 }
+
  
 export interface MessageOfTheDay { 
   id: string;
   message: string;
   duration: number;
 }
+
  
 export interface PatcherAlert { 
   id: string;
@@ -79,6 +106,7 @@ export interface PatcherAlert {
   utcDateEnd: string;
   utcDateStart: string;
 }
+
  
 export interface PatcherHeroContent { 
   content: string;
@@ -87,17 +115,20 @@ export interface PatcherHeroContent {
   utcDateEnd: string;
   utcDateStart: string;
 }
+
  
 export interface PermissionInfo { 
   description: string;
   name: string;
 }
+
  
 export interface PlayerAttributeOffset { 
   race: Race;
   gender: Gender;
   attributeOffsets: { [key: string]: number; };
 }
+
  
 export interface PlayerStatAttribute { 
   baseValue: number;
@@ -108,6 +139,7 @@ export interface PlayerStatAttribute {
   type: PlayerStatType;
   units: string;
 }
+
  
 export interface RaceInfo { 
   name: string;
@@ -115,12 +147,14 @@ export interface RaceInfo {
   faction: Faction;
   id: Race;
 }
+
  
 export interface RankInfo { 
   level: number;
   name: string;
   permissions: string[];
 }
+
  
 export interface ServerModel { 
   accessLevel: AccessType;
@@ -132,6 +166,7 @@ export interface ServerModel {
   shardID: number;
   status: ServerStatus;
 }
+
  
 export interface ServerPresence {
   address: string;
@@ -156,6 +191,7 @@ export interface PlayerCounts {
   tuatha: number;
   viking: number;
 }
+
  
 export interface Warband { 
   banner: string;
@@ -165,6 +201,7 @@ export interface Warband {
   name: string;
   shardID: number;
 }
+
  
 export interface WarbandMember { 
   additionalPermissions: string[];
@@ -184,6 +221,7 @@ export interface WarbandMember {
   temperature: Temperature;
   wounds: number[];
 }
+
 
 export interface CurrentMaxValue {
     current: number;

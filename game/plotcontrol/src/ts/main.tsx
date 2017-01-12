@@ -6,50 +6,8 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {client, events, plotPermissions, restAPI} from 'camelot-unchained';
+import {client, events, plotPermissions, webAPI} from 'camelot-unchained';
 
-  class ModifyPermissionsModel {
-      characterID: string;
-      loginToken: string;
-      entityID: string;
-      newPermissions: number;
-  }
-  
-  class DeleteQueuedBlueprintModel {
-      characterID: string;
-      loginToken: string;
-      entityID: string;
-      indexToRemove: number;
-  }
-  
-  class ReorderQueueModel {
-      characterID: string;
-      loginToken: string;
-      entityID: string;
-      indexToMove: number;
-      destinationIndex: number;
-  }
-  
-  class GetQueueStatusModel {
-      characterID: string;
-      loginToken: string;
-  }
-  
-  class BlueprintModel {
-      name: string;
-      percentComplete: number;
-      estTimeRemaining: number;
-      subName: string;
-      amtNeeded: number;
-  }
-  
-  class ReceiveQueueStatusModel {
-      status: string;
-      numContributors: number;
-      maxContributors: number;
-      blueprints: BlueprintModel[];
-  }
-  
 interface PlotControlUIState {
   plotOwned: boolean;
   currentPermissions: number;
@@ -57,7 +15,7 @@ interface PlotControlUIState {
   entityID: string;
   
   viewingQueue: boolean;
-  queue: BlueprintModel[];
+  queue: webAPI.QueuedBlueprintMessage[];
   queueState: string;
   numContributors: number;
 }
@@ -79,7 +37,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   componentWillMount() {
-    events.on(events.handlesPlot.topic, this.onPlotStatus);
+    events.on(events.clientEventTopics.handlesPlot, this.onPlotStatus);
     this.setState({
       plotOwned: false,
       currentPermissions: 0,
@@ -94,56 +52,32 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   componentWillUnmount() {
-    events.off(events.handlesPlot.topic);
+    events.off(events.clientEventTopics.handlesPlot);
   }
 
   changePermissions = (perm: plotPermissions) => {
-    let model: ModifyPermissionsModel = {
-    characterID: this.state.charID,
-    loginToken: client.loginToken,
-    entityID: this.state.entityID,
-    newPermissions: perm
-    };
-    restAPI.postPlotPermissions(model);
+    webAPI.PlotsAPI.modifyPermissionsV1(client.shardID, client.characterID, client.loginToken, this.state.entityID, perm);
   }
   
   releasePlot = () => {
-      restAPI.postReleasePlot({characterID: this.state.charID, loginToken: client.loginToken, entityID: this.state.entityID});
+    webAPI.PlotsAPI.releasePlotV1(client.shardID, client.characterID, client.loginToken, this.state.entityID);
   }
   
   removeQueuedBlueprint = (e: any) => {
       let index: number = this.getListIndex(e.target.parentNode);
-      let model: DeleteQueuedBlueprintModel = {
-        characterID: this.state.charID,
-        loginToken: client.loginToken,
-        entityID: this.state.entityID,
-        indexToRemove: index
-      };
-      restAPI.postRemoveQueuedBlueprint(model).then(this.getQueueStatus);
+      webAPI.PlotsAPI.removeQueuedBlueprintV1(client.shardID, client.characterID, client.loginToken, this.state.entityID, index).then(this.getQueueStatus);
   }
   
   reorderBuildQueue = (indexSource: number, indexDestination: number) => {
-      let model: ReorderQueueModel = {
-        characterID: this.state.charID,
-        loginToken: client.loginToken,
-        entityID: this.state.entityID,
-        indexToMove: indexSource,
-        destinationIndex: indexDestination
-      };
-      
-      restAPI.postReorderBuildQueue(model).then(this.getQueueStatus);
+      webAPI.PlotsAPI.reorderQueueV1(client.shardID, client.characterID, client.loginToken, this.state.entityID, indexSource, indexDestination).then(this.getQueueStatus);
   }
   
   getQueueStatus = () => {
-      let model: GetQueueStatusModel = {
-        characterID: this.state.charID,
-        loginToken: client.loginToken
-      };
-                                                                                                                                                                 
-      restAPI.postGetQueueStatus(model).then((data: ReceiveQueueStatusModel) => this.setState({queue: data.blueprints, queueState: data.status, 
+      let pcui: PlotControlUI = this;                                                                                                                                                         
+      let resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp: any) => this.setState({queue: resp.data.blueprints, queueState: resp.data.status, 
           // This calculation could easily be handled server-side, but sending both bits of data
           // lets the UI be more customizable.
-          numContributors: Math.min(data.numContributors, data.maxContributors),
+          numContributors: Math.min(resp.data.numContributors, resp.data.maxContributors),
           plotOwned: this.state.plotOwned, currentPermissions: this.state.currentPermissions,
           charID: this.state.charID, entityID: this.state.entityID, viewingQueue: this.state.viewingQueue}), (error: any) => console.log(error));
   }
