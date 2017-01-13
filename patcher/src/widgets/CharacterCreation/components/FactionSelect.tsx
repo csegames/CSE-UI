@@ -42,7 +42,6 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
       <div key={info.id}
            className={`cu-character-creation__faction-select__${info.shortName} ${ this.props.selectedFaction !== null ? this.props.selectedFaction.id == info.id ? 'active' : '' : ''}`}
            onClick={this.selectFaction.bind(this, info)}>
-        <video src={`videos/${info.shortName}.webm`} poster={`videos/${info.shortName}-bg.jpg`} autoPlay loop></video>
         <div className={`cu-character-creation__faction-select__${info.shortName}__shield`}
              onClick={this.selectFaction.bind(this, info)}></div>
              <h4>{info.description}</h4>
@@ -68,3 +67,6 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
 }
 
 export default FactionSelect;
+
+// remove video for now for better performance.
+//        <video src={`videos/${info.shortName}.webm`} poster={`videos/${info.shortName}-bg.jpg`} autoPlay loop></video>
