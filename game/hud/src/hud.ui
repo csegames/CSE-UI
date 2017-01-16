@@ -10,5 +10,6 @@
   "handlesAnnouncements": true,
   "handlesEnemyTarget": true,
   "handlesFriendlyTarget": true,
-  "handlesCombatLog": true
+  "handlesCombatLog": true,
+  "handlesBuilding": true
 }

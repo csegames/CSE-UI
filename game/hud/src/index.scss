@@ -4,7 +4,8 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -20,32 +21,47 @@ html, body {
   width: 100%;
   height: 100%;
   @import './_font.scss';
-
   .chat-window {
     position: relative;
     overflow: hidden;
     display: block;
   }
-
+  .click-effect {
+    &:active {
+      color: white;
+      -webkit-animation: glow .2s ease-in-out infinite alternate;
+      animation: glow .2s ease-in-out infinite alternate;
+    }
+  }
+  @-webkit-keyframes glow {
+    from {
+      text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #f4d142, 0 0 14px #f4d142, 0 0 16px #f4d142;
+    }
+    to {
+      text-shadow: 0 0 1px #efefef, 0 0 2px #efefef, 0 0 3px #efefef, 0 0 4px #f4d142, 0 0 7px #f4d142, 0 0 8px #f4d142;
+    }
+  }
+  @keyframes glow {
+    from {
+      text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #f4d142, 0 0 14px #f4d142, 0 0 16px #f4d142;
+    }
+    to {
+      text-shadow: 0 0 1px #efefef, 0 0 2px #efefef, 0 0 3px #efefef, 0 0 4px #f4d142, 0 0 7px #f4d142, 0 0 8px #f4d142;
+    }
+  }
   // components
   @import './components/PlayerStatusComponent/index';
   @import './components/HUD/index';
-  @import './components/ClassIcon/index';
-  @import './components/ActiveEffectIcon/index';
-  @import './components/InteractiveAlert/index';
-  @import './components/Slider/index';
   @import './components/HUDDrag/index';
   @import './components/Respawn/index';
-
+  @import './components/Compass/index';
   // widgets
-  @import './widgets/Compass/index';
   @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';
   @import './widgets/Welcome/index';
-
+  @import './widgets/Social/index';
   // external scss
   @import 'cu-xmpp-chat/lib/index.scss';
-
 }

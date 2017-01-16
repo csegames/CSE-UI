@@ -4,30 +4,33 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import * as React from 'react';
-import cu, { client, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchained';
+import cu, { client, events, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchained';
 
+import { Orientation } from '../../lib/LayoutLib';
 import { HUDDragOptions } from '../../components/HUDDrag';
 
-// Components
-import Chat from 'cu-xmpp-chat';
-import Compass from '../../widgets/Compass';
-import Crafting from '../../widgets/Crafting';
-import EnemyTargetHealth from '../../widgets/TargetHealth';
-import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
-import PlayerHealth from '../../widgets/PlayerHealth';
-import Respawn from '../../components/Respawn';
-import Warband from '../../widgets/Warband';
-import Welcome from '../../widgets/Welcome';
+
+// layout items
+import Chat from './layoutItems/Chat';
+import HUDNav from './layoutItems/HUDNav';
+import Welcome from './layoutItems/Welcome';
+import Warband from './layoutItems/Warband';
+import Respawn from './layoutItems/Respawn';
+import Compass from './layoutItems/Compass';
+import Crafting from './layoutItems/Crafting';
+import EnemyTarget from './layoutItems/EnemyTarget';
+import PlayerHealth from './layoutItems/PlayerHealth';
+import FriendlyTarget from './layoutItems/FriendlyTarget';
 
 import { LayoutMode, Edge } from '../../components/HUDDrag';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.3.0'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.4.0'; // if the local storage value for the reset code doesn't match this, then force a reset
 
-const CURRENT_STATE_VERSION: number = 5;
+const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
 
 enum AxisAnchorRelativeTo {
@@ -74,17 +77,6 @@ export interface LayoutState {
   locked?: boolean;
   lastScreenSize?: Size;
   widgets: Map<string, Widget<any>>;
-}
-
-export enum WidgetTypes {
-  CHAT,
-  RESPAWN,
-  COMPASS,
-  ENEMYTARGET,
-  FRIENDLYTARGET,
-  PLAYERHEALTH,
-  WARBAND,
-  WELCOME,
 }
 
 /////////////////////////////////
@@ -148,232 +140,34 @@ function initialState(): LayoutState {
 
   const widgets = Map<string, Widget<any>>([
     [
-      WidgetTypes[WidgetTypes.CHAT], {
-        position: {
-          x: {
-            anchor: Edge.LEFT,
-            offset: 0
-          },
-          y: {
-            anchor: Edge.BOTTOM,
-            offset: 50
-          },
-          size: {
-            width: 480,
-            height: 240
-          },
-          scale: 1,
-          opacity: 1,
-          visibility: true,
-          zOrder: 0,
-          layoutMode: LayoutMode.EDGESNAP
-        },
-        dragOptions: {},
-        component: Chat,
-        props: {
-          loginToken: client.loginToken
-        }
-      }
+      'chat', Chat
     ],
     [
-      WidgetTypes[WidgetTypes.COMPASS], {
-        position: {
-          x: {
-            anchor: 5,
-            offset: -200
-          },
-          y: {
-            anchor: Edge.TOP,
-            offset: 40
-          },
-          size: {
-            width: 400,
-            height: 45
-          },
-          scale: 1,
-          opacity: 1,
-          visibility: true,
-          zOrder: 6,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true
-        },
-        component: Compass,
-        props: {}
-      }
+      'crafting', Crafting
+    ],
+    // [
+    //   'hudNav', HUDNav
+    // ],
+    [
+      'welcome', Welcome
     ],
     [
-      WidgetTypes[WidgetTypes.ENEMYTARGET], {
-        position: {
-          x: {
-            anchor: 5,
-            offset: 0
-          },
-          y: {
-            anchor: 6,
-            offset: 0
-          },
-          size: {
-            width: 300,
-            height: 180
-          },
-          scale: 0.6,
-          opacity: 1,
-          visibility: true,
-          zOrder: 2,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true,
-        },
-        component: EnemyTargetHealth,
-        props: {}
-      }
+      'compass', Compass
     ],
     [
-      WidgetTypes[WidgetTypes.FRIENDLYTARGET], {
-        position: {
-          x: {
-            anchor: 5,
-            offset: 0
-          },
-          y: {
-            anchor: 6,
-            offset: 150
-          },
-          size: {
-            width: 300,
-            height: 180
-          },
-          scale: 0.6,
-          opacity: 1,
-          visibility: true,
-          zOrder: 3,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true,
-        },
-        component: FriendlyTargetHealth,
-        props: {}
-      }
+      'respawn', Respawn
     ],
     [
-      WidgetTypes[WidgetTypes.PLAYERHEALTH], {
-        position: {
-          x: {
-            anchor: 3,
-            offset: 0
-          },
-          y: {
-            anchor: 7,
-            offset: 0
-          },
-          size: {
-            width: 300,
-            height: 180
-          },
-          scale: 0.6,
-          opacity: 1,
-          visibility: true,
-          zOrder: 1,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true,
-        },
-        component: PlayerHealth,
-        props: {}
-      }
+      'warband', Warband
     ],
     [
-      WidgetTypes[WidgetTypes.RESPAWN], {
-        position: {
-          x: {
-            anchor: 5,
-            offset: -100
-          },
-          y: {
-            anchor: 3,
-            offset: 0
-          },
-          size: {
-            width: 200,
-            height: 200
-          },
-          scale: 1,
-          opacity: 1,
-          visibility: false,
-          zOrder: 7,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {},
-        component: Respawn,
-        props: {}
-      }
+      'enemyTarget', EnemyTarget
     ],
     [
-      WidgetTypes[WidgetTypes.WARBAND], {
-        position: {
-          x: {
-            anchor: Edge.LEFT,
-            offset: -40
-          },
-          y: {
-            anchor: Edge.TOP,
-            offset: -130
-          },
-          size: {
-            width: 200,
-            height: 700
-          },
-          scale: 0.6,
-          opacity: 1,
-          visibility: true,
-          zOrder: 4,
-          layoutMode: LayoutMode.EDGESNAP
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true,
-        },
-        component: Warband,
-        props: {}
-      }
+      'playerHealth', PlayerHealth
     ],
     [
-      WidgetTypes[WidgetTypes.WELCOME], {
-        position: {
-          x: {
-            anchor: 5,
-            offset: -400
-          },
-          y: {
-            anchor: 5,
-            offset: -400
-          },
-          size: {
-            width: 800,
-            height: 600
-          },
-          scale: 1,
-          opacity: 1,
-          visibility: true,
-          zOrder: 5,
-          layoutMode: LayoutMode.GRID
-        },
-        dragOptions: {
-          lockHeight: true,
-          lockWidth: true,
-        },
-        component: Welcome,
-        props: {}
-      }
+      'friendlyTarget', FriendlyTarget
     ],
   ]);
 
@@ -493,6 +287,24 @@ export function initialize() {
         //dispatch(resize());
       }
     };
+
+    // hook up to event triggers
+    events.on('hudnav--navigate', (name: string) => {
+      switch (name) {
+        case 'chat':
+        case 'crafting':
+          return dispatch(toggleVisibility(name));
+        case 'ui': return dispatch(toggleHUDLock());
+        case 'reset': return dispatch(resetHUD());
+        default: return;
+      }
+    });
+
+    window.window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.which === 27) {
+        dispatch(lockHUD());
+      }
+    });
   }
 }
 
@@ -502,6 +314,7 @@ export const lockHUD = module.createAction({
   type: 'layout/LOCK_HUD',
   action: () => null,
   reducer: function (s, a) {
+    if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     return {
       locked: true
     };
@@ -512,17 +325,35 @@ export const unlockHUD = module.createAction({
   type: 'layout/UNLOCK_HUD',
   action: () => null,
   reducer: (s, a) => {
+    if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     return {
       locked: false
     };
   }
-})
+});
+
+export const toggleHUDLock = module.createAction({
+  type: 'layout/TOGGLE_HUD_LOCK',
+  action: () => null,
+  reducer: function (s, a) {
+    if (s.locked) {
+      if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
+    } else {
+      if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
+    }
+    return {
+      locked: !s.locked
+    };
+  }
+});
 
 
 // Resets hud to last default state
 export const resetHUD = module.createAction({
   type: 'layout/RESET_HUD',
-  action: () => null,
+  action: () => {
+    return {};
+  },
   reducer: (s, a) => initialState()
 });
 
@@ -583,7 +414,22 @@ export const setVisibility = module.createAction({
   }
 });
 
-
-
+export const toggleVisibility = module.createAction({
+  type: 'layout/TOGGLE_VISIBILITY',
+  action: (name: string) => {
+    return {
+      name: name,
+    };
+  },
+  reducer: (s, a) => {
+    return {
+      widgets: s.widgets.update(a.name, v => {
+        if (typeof v === 'undefined') return v;
+        v.position.visibility = !v.position.visibility;
+        return v;
+      })
+    };
+  }
+});
 
 export default module.createReducer();

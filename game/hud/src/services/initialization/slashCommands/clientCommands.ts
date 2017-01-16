@@ -12,7 +12,7 @@ export default () => {
   /**
    * Set field of view
    */
-  registerSlashCommand('fov', 'set your field of view, client accepts values from 20 -> 179.9', (params: string) => {
+  registerSlashCommand('fov', 'set your field of view, client accepts values from 20 -> 179.9', (params: string = '') => {
     const argv = parseArgs(params);
     const degrees = argv._.length > 0 ? argv._[0] : 120;
     client.FOV(degrees);
@@ -23,7 +23,7 @@ export default () => {
    */
   registerSlashCommand('droplight',
    'drop a light at your location, options: (colors are 0-255) droplight <intensity> <radius> <red> <green> <blue>',
-   (params: string) => {
+   (params: string = '') => {
     if (params.length == 0) return;
 
     const argv = parseArgs(params);
@@ -48,7 +48,7 @@ export default () => {
   /**
    * Remove all lights placed with the drop light command
    */
-  registerSlashCommand('resetlights', 'removes all dropped lights from the world', (params: string) => {
+  registerSlashCommand('resetlights', 'removes all dropped lights from the world', (params: string = '') => {
     client.ResetLights();
   });
 
@@ -65,17 +65,7 @@ export default () => {
    */
   registerSlashCommand('exit', 'quit the game', () => client.Quit());
 
-  /**
-   * Build Var handling -- generally for dev use things only
-   */
-  registerSlashCommand('var', 'Buildvar control: No params = help, var name only = get value, var name and value = set value', (params: string) => {
-    if (params.length == 0) {
-      client.SendSlashCommand('help');
-    } else {
-      client.SendSlashCommand(params);
-    }
-  });
-  registerSlashCommand('replacesubstance', 'replace blocks with type args[0] with blocks with type of args[1]', (params: string) => {
+  registerSlashCommand('replacesubstance', 'replace blocks with type args[0] with blocks with type of args[1]', (params: string = '') => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
     if(argv._.length >= 2){
@@ -83,7 +73,7 @@ export default () => {
     }
     return;
   });
-  registerSlashCommand('replaceshape', 'replace blocks with shape args[0] with blocks with shape of args[1]', (params: string) => {
+  registerSlashCommand('replaceshape', 'replace blocks with shape args[0] with blocks with shape of args[1]', (params: string = '') => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
     if(argv._.length >= 2){
@@ -91,7 +81,7 @@ export default () => {
     }
     return;
   });
-  registerSlashCommand('replaceselectedsubstance', 'replace blocks with type args[0] with blocks with type of args[1] within selected range', (params: string) => {
+  registerSlashCommand('replaceselectedsubstance', 'replace blocks with type args[0] with blocks with type of args[1] within selected range', (params: string = '') => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
     if(argv._.length >= 2){
@@ -99,7 +89,7 @@ export default () => {
     }
     return;
   });
-  registerSlashCommand('replaceselectedshape', 'replace blocks with shape args[0] to blocks with shape of args[1] within selected range', (params: string) => {
+  registerSlashCommand('replaceselectedshape', 'replace blocks with shape args[0] to blocks with shape of args[1] within selected range', (params: string = '') => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
     if(argv._.length >= 2){
@@ -123,14 +113,14 @@ export default () => {
   registerSlashCommand('togglesnap', 'Toggle snap mode on or off', () => {
     client.SnapMode();
   });
-  registerSlashCommand('loopability', 'Loops specified Ability at Interval', (params: string) => {
+  registerSlashCommand('loopability', 'Loops specified Ability at Interval', (params: string = '') => {
     if (params.length == 0) return;
     const argv = parseArgs(params);
     if(argv._.length >= 2){
       client.LoopAbility(argv._[0], argv._[1]);
     }
   });
-  registerSlashCommand('endloop', 'Loops specified Ability at Interval', (params: string) => {
+  registerSlashCommand('endloop', 'Loops specified Ability at Interval', (params: string = '') => {
     client.EndLoopAbility();
   });
 };

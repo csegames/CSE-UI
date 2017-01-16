@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+.HUDDrag {
+}
 
 .HUDDrag__controls {
   position: absolute;
@@ -15,6 +17,7 @@
   -webkit-user-drag: none !important;
   z-index: 100;
   border: 1px dashed rgba(255, 255, 255, 0.5);
+  pointer-events: all;
 }
 
 .HUDDrag__controls__name {
@@ -239,23 +242,5 @@
     position: relative;
     top: -5px;
     cursor: pointer !important;
-  }
-}
-
-@-webkit-keyframes glow {
-  from {
-    text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #6798F5, 0 0 14px #6798F5, 0 0 16px #6798F5, 0 0 20px #6798F5, 0 0 30px #6798F5;
-  }
-  to {
-    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #6798F5, 0 0 7px #6798F5, 0 0 8px #6798F5, 0 0 10px #6798F5, 0 0 15px #6798F5;
-  }
-}
-
-@keyframes glow {
-  from {
-    text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #6798F5, 0 0 14px #6798F5, 0 0 16px #6798F5, 0 0 20px #6798F5, 0 0 30px #6798F5;
-  }
-  to {
-    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #6798F5, 0 0 7px #6798F5, 0 0 8px #6798F5, 0 0 10px #6798F5, 0 0 15px #6798F5;
   }
 }

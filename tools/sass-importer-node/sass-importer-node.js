@@ -14,7 +14,6 @@ module.exports = function(url, file, done) {
   try {
     var newPath = path.relative('.', require.resolve(url));
     aliases[url] = newPath;
-    console.log(newPath);
     // bourbon gives a js file.
     if (newPath.endsWith('.js')) {
       var module = require(url);

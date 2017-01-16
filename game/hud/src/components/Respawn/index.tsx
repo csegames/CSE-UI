@@ -92,7 +92,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         </div>;
     }
     return (
-      <div className='button' onClick={() => client.Respawn(location.id + '')}>
+      <div className='respawn__button' onClick={() => client.Respawn(location.id + '')}>
         <div className='label'>
           {distance}
           {label}

@@ -29,7 +29,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   constructor(props: WelcomeProps) {
     super(props);
 
-    const defaultMessage: JSX.Element[] = [<div>Welcome to Camelot Unchained! Loading welcome message...</div>];
+    const defaultMessage: JSX.Element[] = [<div key='0'>Welcome to Camelot Unchained! Loading welcome message...</div>];
     this.state = {
       message: defaultMessage
     };
@@ -57,7 +57,13 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 
   componentWillMount() {
-    legacyAPI.getMessageOfTheDay().then(this.onMessage, this.onMessageFailed);
+    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
+      if (response.ok) {
+        this.onMessage(response.data);
+        return;
+      }
+      this.onMessageFailed(response.problem);
+    });
   }
 
   render() {

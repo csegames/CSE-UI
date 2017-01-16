@@ -21,8 +21,6 @@ let s = createStore(reducer);
 let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
 let root = document.getElementById('hud');
 
-// #TODO Reminder: export a 'has api' check from the camelot-unchained lib
-// interface for window cuAPI
 interface WindowInterface extends Window {
   cuAPI: any;
   opener: WindowInterface;

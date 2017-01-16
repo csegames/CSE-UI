@@ -237,7 +237,7 @@ interface clientInterface {
   SendChat(type: number, to: string, body: string): void;
   JoinMUC(room: string): void;
   LeaveMUC(room: string): void;
-  SendSlashCommand(command: string, parameters: string): void;
+  //SendSlashCommand(command: string, parameters: string): void;
   Stuck(): void;
   ChangeZone(zoneID: number): void;
 

@@ -69,10 +69,6 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     const triggerMode: buildUIMode = active ? buildUIMode.NOTBUILDING : buildUIMode.PLACINGPHANTOM;
     return (
       <div className='building'>
-        <div id="building-button" className={active ? 'active' : ''}
-          onClick={() => requester.changeMode(triggerMode) }>
-          <div/>
-        </div>
         {this.createActionButton(active) }
         {this.createBuildingPanel(active) }
         {this.createSelectionView(active) }

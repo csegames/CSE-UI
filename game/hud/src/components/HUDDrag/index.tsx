@@ -161,20 +161,6 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     };
   }
 
-  getDefaultProps() {
-    return {
-      minScale: .25,
-      maxScale: 5,
-      defaultVisible: true,
-      lockHeight: false,
-      lockWidth: false,
-      lockScale: false,
-      lockX: false,
-      lockY: false,
-      lockDrag: false,
-    };
-  }
-
   componentWillReceiveProps(nextProps: HUDDragProps) {
     // update min & max height if needed
     let stateUpdate: any = {};
@@ -193,6 +179,10 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
     if (this.props.maxWidth !== nextProps.maxWidth) {
       stateUpdate.maxWidth = nextProps.maxWidth || nextProps.defaultWidth * 5;
+    }
+
+    if (this.props.defaultVisible !== nextProps.defaultVisible) {
+      stateUpdate.visible = nextProps.defaultVisible;
     }
 
     if (stateUpdate !== {}) this.setState(stateUpdate);
@@ -303,7 +293,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.didUpdate = true;
   }
 
-  private onMouseDown = (e: React.MouseEvent, mode: EditMode) => {
+  private onMouseDown = (e: any, mode: EditMode) => {
     // check if we can do this or not...
 
     // for now we always allow it
@@ -546,15 +536,17 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
             height: `${this.state.height}px`,
             width: `${this.state.width}px`,
             transform: `scale(${this.state.scale})`,
-            '-webkit-transform': `scale(${this.state.scale})`,
+            WebkitTransform: `scale(${this.state.scale})`,
             left: `${position.x}px`,
             top: `${position.y}px`,
+            pointerEvents: 'none',
           }}>
           <div style={{
                 height: '100%',
                 width: '100%',
                 opacity: this.state.opacity,
-                visibility: `${this.state.visible ? 'visible' : 'hidden'}`
+                visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
+                display: `${this.state.visible ? 'block': 'none'}`,
                }} >
             {this.props.render(clone(this.state))}
           </div>

@@ -7,27 +7,6 @@ export interface ArchetypeInfo {
 }
 
  
-
-export interface QueueStatusResponse {
-  errorMessage: string; 
-  queueStatusMessage: QueueStatusMessage;
-}
-
-export interface QueueStatusMessage {
-  status: string;
-  numContributors: number;
-  maxContributors: number;
-  blueprints: QueuedBlueprintMessage[]; 
-}
-
-export interface QueuedBlueprintMessage {
-  name: string;
-  percentComplete: number;
-  estTimeRemaining: number;
-  subName: string;
-  amtNeeded: number; 
-}
- 
 export interface SimpleCharacter { 
   archetype: Archetype;
   faction: Faction;
@@ -100,6 +79,27 @@ export interface MessageOfTheDay {
 }
 
  
+export interface Order { 
+  created: Date;
+  createdBy: string;
+  faction: Faction;
+  formerMembers: OrderMember[];
+  id: string;
+  members: OrderMember[];
+  name: string;
+  ranks: RankInfo[];
+  shardID: number;
+}
+ 
+export interface OrderMember { 
+  name: string;
+  id: string;
+  joined: Date;
+  parted: Date;
+  rank: string;
+  additionalPermissions: string[];
+}
+ 
 export interface PatcherAlert { 
   id: string;
   message: string;
@@ -170,7 +170,7 @@ export interface ServerModel {
  
 export interface ServerPresence {
   address: string;
-  zoneID: string; 
+  zoneID: number; 
 }
  
 export interface ServerState { 
@@ -912,6 +912,18 @@ export enum GroupType {
   ORDER = 1,
   ALLIANCE = 2,
   CAMPAIGN = 3
+}
+ 
+  
+export enum InfoAuthorizationType { 
+  NONE = 0,
+  PUBLIC = 2,
+  REALM = 4,
+  CAMPAIGN = 8,
+  ALLIANCE = 16,
+  ORDER = 32,
+  WARBAND = 64,
+  MEMBER = -1
 }
  
   

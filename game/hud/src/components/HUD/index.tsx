@@ -10,23 +10,20 @@ let Draggable = require('react-draggable');
 import { client, GroupInvite, groupType, hasClientAPI } from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
-import { LayoutState, lockHUD, unlockHUD, setPosition, initialize, resetHUD, setVisibility, Widget, WidgetTypes } from '../../services/session/layout';
+import { LayoutState, lockHUD, unlockHUD, setPosition, initialize, resetHUD, setVisibility, Widget } from '../../services/session/layout';
 import { SessionState } from '../../services/session/reducer';
 import { InvitesState } from '../../services/session/invites';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 
-import Compass from '../../widgets/Compass';
-import Crafting from '../../widgets/Crafting';
-import EnemyTargetHealth from '../../widgets/TargetHealth';
-import FriendlyTargetHealth from '../../widgets/FriendlyTargetHealth';
 import InteractiveAlert, { Alert } from '../InteractiveAlert';
-import PlayerHealth from '../../widgets/PlayerHealth';
-import Respawn from '../../components/Respawn';
-import Warband from '../../widgets/Warband';
-import Welcome from '../../widgets/Welcome';
+import Watermark from '../Watermark';
+import Tooltip from '../Tooltip';
+import Social from '../../widgets/Social';
 
 import { BodyParts } from '../../lib/PlayerStatus';
 
+// TEMP -- Disable this being movable/editable
+import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 function select(state: SessionState): HUDProps {
   return {
@@ -66,35 +63,35 @@ class HUD extends React.Component<HUDProps, HUDState> {
     if (client && client.OnCharacterHealthChanged) {
 
       client.OnCharacterAliveOrDead((alive: boolean) => {
-        const respawn = this.props.layout.widgets.get(WidgetTypes[WidgetTypes.RESPAWN]);
+        const respawn = this.props.layout.widgets.get('respawn');
         if (!alive && respawn && !respawn.position.visibility) {
-          this.setVisibility(WidgetTypes.RESPAWN, true);
+          this.setVisibility('respawn', true);
         } else if (respawn && respawn.position.visibility) {
-          this.setVisibility(WidgetTypes.RESPAWN, false);
+          this.setVisibility('respawn', false);
         }
       });
     }
 
     // manage visibility of welcome widget based on localStorage
-    this.setVisibility(WidgetTypes.WELCOME, true)
+    this.setVisibility('welcome', true)
     try {
       const delayInMin: number = 24 * 60;
       const savedDelay = localStorage.getItem('cse-welcome-hide-start');
       const currentDate: Date = new Date();
       const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
       savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
-      if (currentDate < savedDelayDate) this.setVisibility(WidgetTypes.WELCOME, false);
+      if (currentDate < savedDelayDate) this.setVisibility('welcome', false);
     } catch (error) {
       console.log(error);
     }
 
   }
 
-  setVisibility = (widget: WidgetTypes, vis: boolean) => {
-    this.props.dispatch(setVisibility({ name: WidgetTypes[widget], visibility: vis }));
+  setVisibility = (widgetName: string, vis: boolean) => {
+    this.props.dispatch(setVisibility({ name: widgetName, visibility: vis }));
   }
 
-  draggable = (type: string, widget: Widget<any>, Widget: any, options?: HUDDragOptions, props?: any) => {
+  draggable = (type: string, widget: Widget<any>, Widget: any, options?: HUDDragOptions, widgetProps?: any) => {
     return <HUDDrag name={type}
       key={widget.position.zOrder}
       defaultHeight={widget.position.size.height}
@@ -106,6 +103,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       defaultYAnchor={widget.position.y.anchor}
       defaultOpacity={widget.position.opacity}
       defaultMode={widget.position.layoutMode}
+      defaultVisible={widget.position.visibility}
       gridDivisions={10}
       locked={this.props.layout.locked}
       save={(s: HUDDragState) => {
@@ -122,15 +120,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
             layoutMode: widget.position.layoutMode,
           }
         }));
-      } }
+      }}
       render={() => {
         if (this.props.layout.locked && !widget.position.visibility) return null;
-        return <Widget setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({name: type, visibility: vis}))} {...props} />;
-      } }
+        return <Widget setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({ name: type, visibility: vis }))} {...widgetProps} />;
+      }}
       {...options} />;
   }
 
-  onToggleClick = (e: React.MouseEvent) => {
+  onToggleClick = (e: any) => {
     if (e.altKey) {
       this.props.dispatch(resetHUD());
       return;
@@ -150,18 +148,16 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-        <div id='cse-ui-crafting'>
-          <Crafting />
-        </div>
-
         {orderedWidgets.map(c => c)}
+
+        <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
+          <HUDNav.component {...HUDNav.props} />
+        </div>
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invitesState.invites} />
-
-        <div className={`HUD__toggle ${locked ? 'HUD__toggle--locked' : 'HUD__toggle--unlocked'} hint--top-left hint--slide`}
-          onClick={e => this.onToggleClick(e)}
-          data-hint={locked ? 'unlock hud | alt+click to reset' : 'lock hud | alt+click to reset'}></div>
+        <Social />
+        <Watermark />
       </div>
     );
   }

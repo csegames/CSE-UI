@@ -8,7 +8,9 @@
         "jsx": "react",
         "module": "commonjs",
         "noImplicitUseStrict": true,
-        "alwaysStrict": false
+        "alwaysStrict": false,
+        "skipLibCheck": true,
+        "suppressImplicitAnyIndexErrors": true
     },
     "formatCodeOptions": {
         "indentSize": 2,

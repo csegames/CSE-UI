@@ -11,7 +11,6 @@ export interface CraftingProps {
 }
 
 export interface CraftingState {
-  craftingIsActive: boolean;
   commandList: any[],
   activeCommand: string;
 }
@@ -21,7 +20,6 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
   constructor(props: CraftingProps) {
     super(props);
     this.state = {
-      craftingIsActive: false,
       commandList: [],
       activeCommand: ''
     };
@@ -29,7 +27,6 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
 
   componentWillMount() {
     this.setState({
-      craftingIsActive: false,
       commandList: this.getCommands(),
       activeCommand: ''
     });
@@ -39,18 +36,9 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
     client.ReleaseInputOwnership();
   }
 
-  toggleWindow = (): void => {
-    if (this.state.craftingIsActive) {
-      this.closeWindow();
-    }
-    else {
-      this.setState({ craftingIsActive: true } as any);
-    }
-  }
-
   closeWindow = (): void => {
     client.ReleaseInputOwnership();
-    this.setState({ craftingIsActive: false } as any);
+    events.fire('hudnav--navigate', 'crafting');
   }
 
   onCommandFocus = (event: any): void => {
@@ -152,7 +140,6 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
   }
 
   render() {
-    let craftWindowClassName: string = this.state.craftingIsActive ? 'crafting-active' : 'crafting-inactive';
     const cmdList: JSX.Element[] = [];
     let key: number = 0;
     this.state.commandList.forEach((tCmd: any): void => {
@@ -171,8 +158,7 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
     });
     return (
       <div onKeyDown={this.onKeyDown}>
-        <div id='crafting-button' className='hint--top hint--slide' data-hint={'Crafting'} onClick={this.toggleWindow}></div>
-        <div id="crafting-window" className={craftWindowClassName}>
+        <div id="crafting-window" className='crafting-active'>
           <div className="cu-window">
             <div className="cu-window-header">
               <div className="cu-window-title">Crafting Commands</div>

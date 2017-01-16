@@ -50,14 +50,24 @@ class Pills extends React.Component<PillsProps, PillsState> {
     }
   }
 
+  mounted = false;
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   private hoverTimeoutID: any = null;
 
   onEnter = () => {
-    if (this.hoverTimeoutID != null) return;
+    if (this.hoverTimeoutID != null || !this.mounted) return;
     this.hoverTimeoutID = setTimeout(() => this.setState({showTextValues: true} as any), 500);
   }
 
   onLeave = () => {
+    if (!this.mounted) return;
     clearTimeout(this.hoverTimeoutID);
     this.hoverTimeoutID = null;
     this.setState({showTextValues: false} as any);
@@ -103,18 +113,18 @@ class Pills extends React.Component<PillsProps, PillsState> {
   circlePill = (fillColor: string, depletedColor: string, fillPercent: number, deg: number, numPills: number, key: number, offsetX: number = 60) => {
     const liHeight = 150 / numPills;
     if (fillPercent <= 0) return <li key={key}
-                                     style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
+                                     style={{WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                                      onMouseEnter={() => this.onEnter()}
                                      onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
     if (fillPercent >= 100) return <li key={key}
-                                       style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
+                                       style={{WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                                        onMouseEnter={() => this.onEnter()}
                                        onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
 
     const remainder = 100 - fillPercent;
     const html = `<div style="background: linear-gradient(to bottom, ${fillColor} ${fillPercent.toFixed(2)}%, ${depletedColor} ${(fillPercent + 0.1).toFixed(2)}%, ${depletedColor} ${remainder.toFixed(2)}%);" />`;
     return <li key={key}
-               style={{'-webkit-transform': `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
+               style={{WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`, height: `${liHeight}px`}}
                dangerouslySetInnerHTML={{__html: html}}
                onMouseEnter={() => this.onEnter()}
                onMouseLeave={() => this.onLeave()} />;

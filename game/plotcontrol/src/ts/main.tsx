@@ -27,7 +27,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   closeWindow = () => {
-    client.CloseUI('plotcontrol');
+    client.HideUI('plotcontrol');
   }
 
   onPlotStatus = (eventData: any) => {

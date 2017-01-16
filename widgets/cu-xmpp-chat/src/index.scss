@@ -15,6 +15,7 @@
   text-align: left;     /* override #Content style */
   overflow: hidden;
   position: relative;
+  pointer-events: all;
   
   @import './sass/main';
 }

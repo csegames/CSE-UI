@@ -5,5 +5,3 @@
  */
 
 export * from './groupType';
-export * from './groupInvite';
-export * from './warbands';

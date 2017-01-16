@@ -5,11 +5,13 @@
  */
 
 import clientInterface from './clientInterface';
+import devClientInterface from './devClientInterface';
 
 // interface for window cuAPI
 interface WindowInterface extends Window {
   cuAPI: clientInterface;
   opener: WindowInterface;
+  cuOverrides: any;
 }
 
 // declare window implements WindowInterface
@@ -30,21 +32,22 @@ if (window.opener && window.opener.cuAPI) {
   client = window.cuAPI; // not a popout, so use existing cuAPI
 } else {
   // create a mock cuAPI to return
-  client = {
-    loginToken: 'developer',
-    apiVersion: 1,
-    apiHost: 'https://api.camelotunchained.com',
-    //apiHost: 'http://localhost:1337',
-    characterID: 'KCt3dNCC6dKPyNzD0SR200',
-    shardID: 1,
-    debug: true
-  } as any;
+  client = devClientInterface;
 
 }
 
 if (!client.apiVersion) client.apiVersion = 1;
 if (!client.shardID) client.shardID = 1;
-if (!client.characterID) client.characterID = 'KCt3dNCC6dKPyNzD0SR200';
+if (!client.characterID) client.characterID = 'Q3jItAvTU93AzbMFcCL200';
 client.signalRHost = `${client.apiHost}/signalr`;
+
+if (window.cuOverrides) {
+  client = {
+    ...client,
+    ...window.cuOverrides
+  }
+}
+
+console.log(client);
 
 export default client;

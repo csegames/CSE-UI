@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {WarbandMember, warbandRanks} from 'camelot-unchained';
+import {WarbandMember} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../../../components/PlayerStatusComponent';
 import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
@@ -31,11 +31,11 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
 
   render() {
     const mini = this.props.isMini || false;
-    const leader = this.props.member.rank == warbandRanks.LEADER;
+    const leader = false;// this.props.member.rank == warbandRanks.LEADER;
 
     return (
       <div key={this.props.key} className={`WarbandMemberDisplay ${mini ? 'mini': ''} ${this.props.containerClass}`}>
-        <PlayerStatusComponent containerClass='WarbandMemberDisplay__Health' playerStatus={this.props.member} isLeader={leader} events={[]}/>
+        <PlayerStatusComponent containerClass='WarbandMemberDisplay__Health' playerStatus={this.props.member as any} isLeader={leader} events={[]}/>
       </div>
     )
   }

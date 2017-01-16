@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {components} from 'camelot-unchained';
-let Animate = components.Animate;
+import Animate from '../../lib/Animate';
 
 import BooleanOption from './BooleanOption';
 import ChatDisplay from './ChatDisplay';

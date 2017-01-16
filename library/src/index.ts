@@ -46,12 +46,12 @@ import ConsoleMessage from './core/classes/ConsoleMessage';
 import * as core from './core/core';
 export * from './core/core';
 import stores from './stores/stores';
-import components from './components/components';
 
 
 import * as legacyAPI from './restapi/RestAPI';
 
 import * as webAPI from './webAPI';
+export * from './webAPI/definitions';
 
 import * as groups from './groups';
 export * from './groups';
@@ -166,7 +166,6 @@ export {
   core,
   events,
   stores,
-  components,
 
   // Legacy RestAPI
   legacyAPI,

@@ -23,6 +23,7 @@
 .PlayerStatusComponent__circle {
   position: relative;
   display: inline-block;
+  pointer-events: all;
 }
 
 .PlayerStatusComponent__circle__avatar {
@@ -154,6 +155,7 @@
   height: 90px;
   display: flex;
   flex-direction: column;
+  pointer-events: all;
   
   ul:nth-child(2) {
     position: relative;
@@ -220,6 +222,7 @@
   color: #ececec;
   font-size: 1.1em;
   width: 170px;
+  pointer-events: all;
 }
 
 .PlayerStatusComponent__name--mirrored {
