@@ -63,9 +63,8 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     webAPI.PlotsAPI.releasePlotV1(client.shardID, client.characterID, client.loginToken, this.state.entityID);
   }
   
-  removeQueuedBlueprint = (e: any) => {
-      let index: number = this.getListIndex(e.target.parentNode);
-      webAPI.PlotsAPI.removeQueuedBlueprintV1(client.shardID, client.characterID, client.loginToken, this.state.entityID, index).then(this.getQueueStatus);
+  removeQueuedBlueprint = (idx: number) => {
+      webAPI.PlotsAPI.removeQueuedBlueprintV1(client.shardID, client.characterID, client.loginToken, this.state.entityID, idx).then(this.getQueueStatus);
   }
   
   reorderBuildQueue = (indexSource: number, indexDestination: number) => {
@@ -89,25 +88,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   
   private source: Node;
   private sourceIndex: number;
-
-  getListIndex(node: Node) {
-    if (node.parentNode != null) {
-        for (let i = 0; i < node.parentNode.childNodes.length; ++i) {
-            // there are two extra items in this list that don't appear in the server-side list. Thus, they need to be culled from the index being sent.
-            if (node.parentNode.childNodes[i] == node) return i - 2;
-        }
-    }
-    return -1;
-  }
-  
-  isbefore(a: Node, b: Node) {
-    if (a.parentNode == b.parentNode) {
-      let aIndex = this.getListIndex(a);
-      let bIndex = this.getListIndex(b);
-      return aIndex < bIndex;
-    }
-    return false;
-  }
   
   renderPermissions() {
       let permString = "Current Permissions: ";
@@ -190,14 +170,14 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
             let upArrow: JSX.Element;
             if (i != 0) {
                 upArrow = (
-                  <a onMouseDown={this.reorderBuildQueue.bind(this, i, i-1)} className="plotMoveUp">↑</a>  
+                  <a onMouseDown={() => this.reorderBuildQueue(i, i-1)} className="plotMoveUp">↑</a>  
                 );
             }
 
             let downArrow: JSX.Element;
             if (i != this.state.queue.length - 1) {
                 downArrow = (
-                  <a onMouseDown={this.reorderBuildQueue.bind(this, i, i+1)} className="plotMoveDown">↓</a>
+                  <a onMouseDown={() => this.reorderBuildQueue(i, i+1)} className="plotMoveDown">↓</a>
                 );
             }
             
@@ -209,7 +189,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                   <progress value={blueprint.percentComplete.toString()} max="1"></progress>
                   {upArrow}
                   {downArrow}
-                  <a onMouseDown={this.removeQueuedBlueprint.bind(this)} className="cu-window-close"></a>
+                  <a onMouseDown={() => this.removeQueuedBlueprint(i)} className="cu-window-close"></a>
                 </li>
               );
             }
@@ -222,7 +202,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                     <progress value={blueprint.percentComplete.toString()} max="1"></progress>
                     {upArrow}
                     {downArrow}
-                    <a onMouseDown={this.removeQueuedBlueprint.bind(this)} className="cu-window-close"></a>
+                    <a onMouseDown={() => this.removeQueuedBlueprint(i)} className="cu-window-close"></a>
                     <div>
                       {blueprint.amtNeeded} {blueprint.subName} needed to complete.
                     </div>
