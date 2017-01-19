@@ -68,5 +68,5 @@ This project is split up into multiple sub projects, each as their own private n
 
 ## Private Registry
 
-This project requires that you install and build npm packages from a private NPM registry. The registry is found at http://registry.camelotunchained.com:4873. .npmrc files are included with each project so no setup is needed if you are just installing and building this project. If you are going to publish packages, talk to @codecorsair to get a user account set up on our registry.
+This project requires that you install and build npm packages from a private NPM registry. The registry is found at http://registry.camelotunchained.com:4873. .npmrc files are included alongside each npm project.json file so no setup is needed if you are just installing and building this project. If you are going to publish packages, talk to [@codecorsair](https://github.com/codecorsair) to get a user account set up on our registry.
 
