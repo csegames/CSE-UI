@@ -4,7 +4,7 @@ UI repository for Camelot Unchained, a tri-realm RvR MMORPG.
 
 ## Requires
 
-* NodeJS 7.4.x or higher
+* NodeJS 7.4.x
 
 ## Directory Structure
 
