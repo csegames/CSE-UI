@@ -1,6 +1,6 @@
 # Camelot-Unchained
 
-UI repository for Camelot Unchained, a tri-realm RvR MMORPG.
+UI repository for [Camelot Unchained](http://camelotunchained.com/v3/).
 
 ## Requires
 
