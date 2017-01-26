@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:38
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-31 16:04:17
+ * @Last Modified time: 2017-01-26 10:12:32
  */
 
 import * as React from 'react';
@@ -120,7 +120,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     let launchString = this.commands.toLowerCase();
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID != 27) {
       if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
-      if (!launchString.includes('character')) launchString += ` character=${selectedCharacter.id}`;
+      if (!launchString.includes('character=') || !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
