@@ -67,7 +67,7 @@
     "build": "tsc && npm run copy -s && npm run babel && npm run browserify && npm run build:sass",
     "postbuild": "npm run cleantemps -s",
     "clean:hatchery": "rimraf %localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud",
-    "copy:hatchery": "copyup build/**/* %localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud",
+    "copy:hatchery": "copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud\"",
     "build:hatchery": "npm run build && npm run clean:hatchery && npm run copy:hatchery",
     "clean:wyrmling": "rimraf %localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud",
     "copy:wyrmling": "copyup build/**/* %localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud",

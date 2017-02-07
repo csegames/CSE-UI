@@ -21,6 +21,7 @@ export interface HealthAction extends BaseAction {
   race?: race;
   faction?: faction;
   player?: Player;
+  avatar?: string;
 }
 
 export function fakePlayer(): PlayerStatus {
@@ -116,6 +117,12 @@ export function nameChanged(status: PlayerStatus, action: HealthAction) {
 export function raceChanged(status: PlayerStatus, action: HealthAction) {
   let playerStatus = clone(status);
   playerStatus.race = action.race;
+  return {playerStatus: playerStatus};
+}
+
+export function avatarChanged(status: PlayerStatus, action: HealthAction) {
+  let playerStatus = clone(status);
+  playerStatus.avatar = action.avatar;
   return {playerStatus: playerStatus};
 }
 

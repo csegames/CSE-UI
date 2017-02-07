@@ -7,7 +7,7 @@
 import {client, events, race, gender, archetype, faction, hasClientAPI, Player} from 'camelot-unchained';
 import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
 
-import {fakePlayer, fakeHealthEvents, HealthAction, staminaUpdated, healthUpdated, playerUpdate, nameChanged, raceChanged, healtEmulationTest} from '../../../../lib/reduxHealth';
+import {fakePlayer, fakeHealthEvents, HealthAction, staminaUpdated, healthUpdated, playerUpdate, nameChanged, raceChanged, healtEmulationTest, avatarChanged} from '../../../../lib/reduxHealth';
 import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
 const DO_THING = 'testthing';
 
@@ -18,7 +18,43 @@ const HEALTH_UPDATED = 'playerhealth/player/HEALTH_UPDATED';
 const RACE_CHANGED = 'playerhealth/player/RACE_CHANGED';
 const NAME_CHANGED = 'playerhealth/player/NAME_CHANGED';
 const FACTION_CHANGED = 'playerhealth/player/FACTION_CHANGED';
+const AVATAR_CHANGED = 'playerhealth/player/AVATAR_CHANGED';
 const PLAYER_UPDATE = 'playerhealth/player/PLAYER_UPDATE';
+
+const characterImages = {
+  humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
+  humanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png',
+  luchorpanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png',
+  luchorpanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png',
+  valkyrieM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  valkyrieF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmalevM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmaleaM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png',
+  humanmaletM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
+  humanmalevF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
+  humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
+  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png'
+};
+
+function getAvatar(gender: gender, race: race) {
+  if (gender === 1) { // MALE
+    switch (race) {
+      case 2: return characterImages.luchorpanM; // Luchorpan
+      case 4: return characterImages.valkyrieM; // Valkyrie
+      case 15: return characterImages.humanmalevM; // Humanmalev
+      case 16: return characterImages.humanmaleaM; // Humanmalea
+      case 17: return characterImages.humanmaletM; // Humanmalet
+    }
+  } else {
+    switch (race) {
+      case 2: return characterImages.luchorpanF; // Luchorpan
+      case 4: return characterImages.valkyrieF; // Valkyrie
+      case 15: return characterImages.humanmalevF; // Humanmalev
+      case 16: return characterImages.humanmaleaF; // Humanmalea
+      case 17: return characterImages.humanmaletF; // Humanmalet
+    }
+  }
+}
 
 export interface PlayerAction extends HealthAction {
 }
@@ -82,6 +118,14 @@ function onCharacterUpdate(player: Player): PlayerAction {
   }
 }
 
+function onAvatarChanged(avatar: string) {
+  return {
+    type: AVATAR_CHANGED,
+    when: new Date(),
+    avatar: avatar
+  }
+}
+
 export function DoThing(): PlayerAction {
   return {
     type: DO_THING,
@@ -98,9 +142,12 @@ export function initializePlayerSession() {
     // init handlers / events
     client.OnCharacterStaminaChanged((current: number, max: number) => dispatch(onStaminaChanged(current, max)));
     client.OnCharacterHealthChanged((current: number, max: number) => dispatch(onHealthChanged(current, max, BodyParts.Torso)));
-
+    
     client.OnCharacterNameChanged((name: string) => dispatch(onNameChanged(name)));
-    client.OnCharacterRaceChanged((race: race) => dispatch(onRaceChanged(race)));
+    client.OnCharacterRaceChanged((race: race) => {
+      dispatch(onRaceChanged(race));
+      dispatch(onAvatarChanged(getAvatar(gender.MALE, race)))
+    });
     client.OnCharacterFactionChanged((faction: faction) => dispatch(onFactionChanged(faction)));
 
     events.on(events.clientEventTopics.handlesCharacter, (player: Player) => dispatch(onCharacterUpdate(player)));
@@ -153,6 +200,11 @@ export default function reducer(state: PlayerState = initialState(), action: Pla
     case PLAYER_UPDATE:
     {
       return merge(state, playerUpdate(state.playerStatus, state.events, action));
+    }
+
+    case AVATAR_CHANGED:
+    {
+      return merge(state, avatarChanged(state.playerStatus, action));
     }
 
     case DO_THING:
