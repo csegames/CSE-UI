@@ -2,7 +2,7 @@ module.exports = {
   scripts: {
     dev: {
       default: {
-        script: 'nps clean,browserify.lib,build.dev && start nps dev.livereload && start nps dev.watch && start nps dev.serve',
+        script: 'nps clean,build.browserify.lib,build.dev && start nps dev.livereload && start nps dev.watch && start nps dev.serve',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
       serve: {
@@ -102,11 +102,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,clean.temps,report.success',
+        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
-        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,clean.temps,report.success,copy.dev',
+        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },

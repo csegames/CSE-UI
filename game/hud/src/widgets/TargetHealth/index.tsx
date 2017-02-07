@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
 const thunk = require('redux-thunk').default;
 import {WarbandMember, archetype, race, gender, hasClientAPI} from 'camelot-unchained';
@@ -15,8 +15,9 @@ import reducer, {SessionState} from './services/session';
 import {TargetState, DoThing, initializePlayerSession} from './services/session/target';
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
-const store = createStore(reducer, applyMiddleware(thunk));
 
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 
 export interface ContainerProps {
   containerClass?: string;

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import {client} from 'camelot-unchained';
 
@@ -15,7 +15,8 @@ import reducer from './services/session';
 import WarbandDisplay from './components/WarbandDisplay';
 
 
-let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 
 export interface WarbandContainerProps {
   containerClass?: string;

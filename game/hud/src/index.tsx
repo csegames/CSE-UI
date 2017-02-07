@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import cu, {client} from 'camelot-unchained';
 
-import {thunkMiddleware, loggingMiddleware, crashReporterMiddleware} from './lib/reduxUtils';
+import {thunkMiddleware, crashReporterMiddleware} from './lib/reduxUtils';
 
 import initialize from './services/initialization';
 import reducer from './services/session/reducer';
@@ -18,7 +18,8 @@ import HUD from './components/HUD';
 
 let s = createStore(reducer);
 
-let store = client.debug ? createStore(reducer, applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware)) : createStore(reducer, applyMiddleware(thunkMiddleware, crashReporterMiddleware));
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 let root = document.getElementById('hud');
 
 interface WindowInterface extends Window {

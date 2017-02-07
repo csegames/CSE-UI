@@ -6,19 +6,19 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 12:55:46
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-26 11:05:34
+ * @Last Modified time: 2017-02-07 16:25:07
  */
 
 import * as React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { client, events, hasClientAPI } from 'camelot-unchained';
-import { loggingMiddleware, crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
+import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
 import Main from './components/Main';
 import reducer from './services/session/reducer';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-let store = client.debug ? createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, loggingMiddleware, crashReporterMiddleware))) : createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
+let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 
 export interface SocialContainerProps {
   containerClass?: string;
