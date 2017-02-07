@@ -6,6 +6,7 @@
 
 import clientInterface from './clientInterface';
 import devClientInterface from './devClientInterface';
+import {merge} from 'lodash';
 
 // interface for window cuAPI
 interface WindowInterface extends Window {
@@ -42,12 +43,7 @@ if (!client.characterID) client.characterID = 'Q3jItAvTU93AzbMFcCL200';
 client.signalRHost = `${client.apiHost}/signalr`;
 
 if (window.cuOverrides) {
-  client = {
-    ...client,
-    ...window.cuOverrides
-  }
+  client = merge(client, window.cuOverrides);
 }
-
-console.log(client);
 
 export default client;

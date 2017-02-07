@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 14:26:25
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-08-30 14:50:12
+ * @Last Modified time: 2017-02-07 16:48:53
  */
 import {race, gender, archetype, faction, Player} from 'camelot-unchained';
 
@@ -53,8 +53,8 @@ export function fakePlayer(): PlayerStatus {
     }],
     wounds: [0, 0, 0, 0, 0, 0],
     stamina: {
-      current: 1000,
-      maximum: 2000
+      current: 5000,
+      maximum: 10000
     },
     blood: {
       current: 15000,

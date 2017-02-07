@@ -137,12 +137,12 @@ export function initializePlayerSession() {
   return (dispatch: (action: any) => any) => {
     dispatch(init());
 
-    if (!hasClientAPI()) return;
-
     // init handlers / events
     client.OnCharacterStaminaChanged((current: number, max: number) => dispatch(onStaminaChanged(current, max)));
     client.OnCharacterHealthChanged((current: number, max: number) => dispatch(onHealthChanged(current, max, BodyParts.Torso)));
     
+    client.OnCharacterInjuriesChanged((part: number, health: number, maxHealth: number) => dispatch(onHealthChanged(health, maxHealth, part)));
+
     client.OnCharacterNameChanged((name: string) => dispatch(onNameChanged(name)));
     client.OnCharacterRaceChanged((race: race) => {
       dispatch(onRaceChanged(race));
