@@ -38,98 +38,98 @@
   }
 }
 
-.thumb__PICT--MALE {
+.thumb__Pict--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png');
 }
-.thumb__PICT--FEMALE {
+.thumb__Pict--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png');
 }
 
-.thumb__LUCHORPAN--MALE {
+.thumb__Luchorpan--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png');
 }
 
-.thumb__LUCHORPAN--FEMALE {
+.thumb__Luchorpan--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png');
 }
 
-.thumb__VALKYRIE--MALE {
+.thumb__Valkyrie--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png');
 }
 
-.thumb__VALKYRIE--FEMALE {
+.thumb__Valkyrie--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-f.png');
 }
 
-.thumb__HUMANMALEV--MALE {
+.thumb__HumanMaleV--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-vik.png');
 }
 
-.thumb__HUMANMALEA--MALE {
+.thumb__HumanMaleA--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png');
 }
 
-.thumb__HUMANMALET--MALE {
+.thumb__HumanMaleT--Male {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png');
 }
 
-.thumb__HUMANMALEV--FEMALE {
+.thumb__HumanMaleV--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png');
 }
 
-.thumb__HUMANMALEA--FEMALE {
+.thumb__HumanMaleA--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png');
 }
 
-.thumb__HUMANMALET--FEMALE {
+.thumb__HumanMaleT--Female {
   @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png');
 }
 
 
-.standing__LUCHORPAN--MALE {
+.standing__Luchorpan--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-m.png');
 }
 
-.standing__LUCHORPAN--FEMALE {
+.standing__Luchorpan--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-f.png');
 }
 
-.standing__VALKYRIE--MALE {
+.standing__Valkyrie--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-m.png');
 }
 
-.standing__VALKYRIE--FEMALE {
+.standing__Valkyrie--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png');
 }
 
-.standing__PICT--MALE {
+.standing__Pict--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png');
 }
 
-.standing__PICT--FEMALE {
+.standing__Pict--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png');
 }
 
-.standing__HUMANMALEV--MALE {
+.standing__HumanMaleV--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-vik.png');
 }
 
-.standing__HUMANMALEA--MALE {
+.standing__HumanMaleA--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-art.png');
 }
 
-.standing__HUMANMALET--MALE {
+.standing__HumanMaleT--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-tdd.png');
 }
 
-.standing__HUMANMALEV--FEMALE {
+.standing__HumanMaleV--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-vik.png');
 }
 
-.standing__HUMANMALEA--FEMALE {
+.standing__HumanMaleA--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-art.png');
 }
 
-.standing__HUMANMALET--FEMALE {
+.standing__HumanMaleT--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png');
 }
