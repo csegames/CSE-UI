@@ -10,13 +10,13 @@ import 'isomorphic-fetch';
 import {fetchJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
 
-import {archetype, faction} from 'camelot-unchained';
+import {Archetype, Faction} from 'camelot-unchained';
 
 export interface PlayerClassInfo {
   name: string,
   description: string,
-  faction: faction,
-  id: archetype
+  faction: Faction,
+  id: Archetype
 }
 
 const FETCH_PLAYER_CLASS = 'cu-character-creation/player-class/FETCH_PLAYER_CLASS';

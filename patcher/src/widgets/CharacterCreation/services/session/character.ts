@@ -10,7 +10,7 @@ import 'isomorphic-fetch';
 import {checkStatus, parseJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
 
-import {race, faction, gender, archetype} from 'camelot-unchained';
+import {Race, Faction, Gender, Archetype} from 'camelot-unchained';
 
 declare var Materialize: any;
 
@@ -24,10 +24,10 @@ const defaultBoons = {"5429de0eda9beb2c3c3dd32b":1};
 
 export interface CharacterCreationModel {
   name: string;
-  race: race;
-  gender: gender;
-  faction: faction;
-  archetype: archetype;
+  race: Race;
+  gender: Gender;
+  faction: Faction;
+  archetype: Archetype;
   shardID: number;
   attributes: {}; // primary attributes
   banes?: {};
@@ -52,8 +52,6 @@ export function createCharacter(model: CharacterCreationModel,
                                 apiUrl: string = 'https://api.camelotunchained.com/',
                                 shard: number = 1,
                                 apiVersion: number = 1) {
-  model.banes = defaultBanes;
-  model.boons = defaultBoons;
   return (dispatch: (action: any) => any) => {
     dispatch(createCharacterStarted());
     return fetch(`${apiUrl}characters/${shard}`,
