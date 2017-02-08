@@ -27,6 +27,9 @@ let gender = gendersReducer;
 import characterReducer from './character';
 let character = characterReducer;
 
+import banesAndBoonsReducer from './banesAndBoons';
+let banesAndBoons = banesAndBoonsReducer;
+
 export default combineReducers({
   races,
   playerClasses,
@@ -35,4 +38,5 @@ export default combineReducers({
   gender,
   attributeOffsets,
   character,
+  banesAndBoons
 });
