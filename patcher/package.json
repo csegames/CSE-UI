@@ -43,8 +43,9 @@
     "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
   },
   "dependencies": {
+    "aphrodite": "^1.1.0",
     "apisauce": "^0.3.1",
-    "camelot-unchained": "^0.7.6",
+    "camelot-unchained": "^0.7.0",
     "cu-xmpp-chat": "^0.3.0",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
@@ -68,6 +69,7 @@
     "@types/lodash": "^4.14.52",
     "@types/react": "^15.0.14",
     "@types/react-addons-css-transition-group": "^15.0.1",
+    "@types/react-addons-transition-group": "^0.14.19",
     "@types/react-dom": "^0.14.23",
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",

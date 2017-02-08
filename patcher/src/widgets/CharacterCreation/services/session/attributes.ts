@@ -6,6 +6,7 @@
 
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
+import {Race, Gender} from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';

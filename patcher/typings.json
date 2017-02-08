@@ -9,10 +9,10 @@
   "globalDependencies": {
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
     "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
+    "node": "registry:dt/node#6.0.0+20160621231320",
     "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
     "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
     "reflux": "github:cumodsquad/Typings/reflux/reflux.d.ts",
-    "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts",
-    "node": "registry:dt/node#6.0.0+20160621231320"
+    "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts"
   }
 }
