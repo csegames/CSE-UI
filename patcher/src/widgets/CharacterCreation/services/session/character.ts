@@ -52,8 +52,6 @@ export function createCharacter(model: CharacterCreationModel,
                                 apiUrl: string = 'https://api.camelotunchained.com/',
                                 shard: number = 1,
                                 apiVersion: number = 1) {
-  model.banes = defaultBanes;
-  model.boons = defaultBoons;
   return (dispatch: (action: any) => any) => {
     dispatch(createCharacterStarted());
     return fetch(`${apiUrl}characters/${shard}`,
