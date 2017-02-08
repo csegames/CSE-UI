@@ -18,6 +18,7 @@ import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
+import BanesAndBoonsContainer from './widgets/BanesAndBoonsContainer';
 const Animate = require('react-animate.css');
 
 import reducer from './services/session/reducer';
@@ -43,7 +44,7 @@ function select(state: any): any {
     attributesState: state.attributes,
     attributeOffsetsState: state.attributeOffsets,
     gender: state.gender,
-    characterState: state.character,
+    characterState: state.character
   }
 }
 
@@ -51,6 +52,7 @@ export enum pages {
   FACTION_SELECT,
   RACE_SELECT,
   CLASS_SELECT,
+  BANES_AND_BOONS,
   ATTRIBUTES
 }
 
@@ -185,6 +187,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     events.fire('play-sound', 'select');
   }
 
+  banesAndBoonsNext = () => {
+    this.setState({ page: this.state.page + 1 });
+    events.fire('play-sound', 'select');
+  }
+
   previousPage = () => {
     this.setState({ page: this.state.page - 1 });
     events.fire('play-sound', 'select');
@@ -280,12 +287,27 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         next = (
           <a className='cu-btn right'
             onClick={this.classNext}
-            disabled={this.state.page == pages.ATTRIBUTES} >Next</a>
+            disabled={this.state.page == pages.BANES_AND_BOONS} >Next</a>
         );
         name = (
           <div className='cu-character-creation__name'>
             <input type='text' ref='name-input' placeholder='Character Name'/>
           </div>
+        );
+        break;
+      case pages.BANES_AND_BOONS:
+        content = (
+          <BanesAndBoonsContainer />
+        );
+        back = (
+          <a className='cu-btn left'
+             onClick={this.previousPage}
+             disabled={this.state.page == pages.CLASS_SELECT}>Back</a>
+        );
+        next = (
+          <a className='cu-btn right'
+             onClick={this.banesAndBoonsNext}
+             disabled={this.state.page == pages.ATTRIBUTES}>Next</a>
         );
         break;
       case pages.ATTRIBUTES:
