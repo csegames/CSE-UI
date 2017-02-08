@@ -10,8 +10,20 @@
   left: 0px;
   right: 0px;
   z-index: 2;
-  padding: 50px 0 20px 0;
+  padding: 0px 0 20px 0;
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.50));
+}
+
+.cu-character-creation__back {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.cu-character-creation__next {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 
 .cu-character-creation__name {

@@ -12,7 +12,7 @@ import {FactionInfo} from '../services/session/factions';
 export interface FactionSelectProps {
   factions: Array<FactionInfo>;
   selectedFaction: FactionInfo;
-  selectFaction: (faction: FactionInfo) => void;
+  selectFaction: (Faction: FactionInfo) => void;
 }
 
 export interface FactionSelectState {
