@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:22:21
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:08:45
+ * @Last Modified time: 2017-02-24 10:54:38
  */
 
 import FullOrder from './FullOrder';
@@ -27,6 +27,12 @@ export * from './PermissionInfo';
 import CustomRank from './CustomRank';
 export * from './CustomRank';
 
+import FullCharacter from './FullCharacter';
+export * from './FullCharacter';
+
+import Invite from './Invite';
+export * from './Invite';
+
 
 export default {
   FullOrder,
@@ -35,4 +41,6 @@ export default {
   FullWarbandmember,
   PermissionInfo,
   CustomRank,
+  FullCharacter,
+  Invite,
 };

@@ -6,11 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-25 18:41:19
+ * @Last Modified time: 2017-02-13 15:15:58
  */
 
 import * as React from 'react';
-import { LinkAddress } from '../../services/session/navigation';
+import { LinkAddress } from '../../services/session/nav/navTypes';
 
 export interface WarbandContentProps {
   dispatch: (action: any) => any;

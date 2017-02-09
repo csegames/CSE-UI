@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 14:43:06
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 19:30:31
+ * @Last Modified time: 2017-02-22 17:24:32
  */
 
 /*
@@ -43,6 +43,7 @@ export const defaultDialogStyle: DialogStyle = {
     alignItems: 'center',
     cursor: 'default',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    zIndex: 99999,
   },
 
   dialog: {

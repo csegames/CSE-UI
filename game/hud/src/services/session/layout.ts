@@ -9,9 +9,9 @@ import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
 import cu, { client, events, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchained';
 
-import { Orientation } from '../../lib/LayoutLib';
 import { HUDDragOptions } from '../../components/HUDDrag';
 import { cloneDeep } from 'lodash';
+import { LayoutMode, Edge } from '../../components/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';
@@ -25,7 +25,6 @@ import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
 
-import { LayoutMode, Edge } from '../../components/HUDDrag';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.4.0'; // if the local storage value for the reset code doesn't match this, then force a reset

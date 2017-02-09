@@ -8,7 +8,7 @@ import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
 const thunk = require('redux-thunk').default;
-import {WarbandMember, archetype, race, gender, hasClientAPI} from 'camelot-unchained';
+import {WarbandMember, hasClientAPI} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';

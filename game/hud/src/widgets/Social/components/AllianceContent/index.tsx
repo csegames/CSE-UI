@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { LinkAddress } from '../../services/session/navigation';
+import { LinkAddress } from '../../services/session/nav/navTypes';
 
 export interface AllianceContentProps {
   dispatch: (action: any) => any;

@@ -6,20 +6,25 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 16:06:24
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-20 18:15:45
+ * @Last Modified time: 2017-02-21 18:55:04
  */
 
-import {combineReducers} from 'redux';
-
+import {client} from 'camelot-unchained';
+import {crashReporterMiddleware, thunkMiddleware} from '../../../../lib/reduxUtils';
+import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
 import navigation, {NavigationState} from './navigation';
-import order, {OrderState} from './order';
 
-export default combineReducers({
+
+const reducer = combineReducers({
   navigation,
-  order,
 });
 
+export default reducer;
+
 export interface SessionState {
-  navigation: NavigationState,
-  order: OrderState,
+  navigation : NavigationState,
 }
+
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+export const store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
+

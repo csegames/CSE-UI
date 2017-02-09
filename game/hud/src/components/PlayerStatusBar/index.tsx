@@ -5,13 +5,11 @@
  */
 
 import * as React from 'react';
-import {client, archetype, race, gender} from 'camelot-unchained';
+import {client, Archetype, Race, Gender, SVGSprite, ClassIcon} from 'camelot-unchained';
 
-import SVGSprite from '../../components/SVGSprite';
 import Pills, {Orientation} from './components/Pills';
 import PlayerPhoto from './components/PlayerPhoto';
 import SlideIndicatorBar from './components/SlideIndicatorBar';
-import ClassIcon from '../../components/ClassIcon';
 import ActiveEffectIcon from '../../components/ActiveEffectIcon'
 
 export enum PlayerStatusStyle {
@@ -25,9 +23,9 @@ export enum PlayerStatusStyle {
 
 export interface PlayerStatus {
   name: string;
-  race: race;
-  gender: gender;
-  archetype: archetype;
+  race: Race;
+  gender: Gender;
+  archetype: Archetype;
   characterID: string;
   health: [{
     current: number,

@@ -6,13 +6,13 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:32:59
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:07:02
+ * @Last Modified time: 2017-02-20 17:13:38
  */
 import gql from 'graphql-tag';
 import {Faction, Race, Gender, Archetype} from '../..';
 
 export default gql`
-fragment FullWarbandMember on WarbandMemberQLType {
+fragment FullWarbandMember on WarbandMember {
   id
   name
   rank

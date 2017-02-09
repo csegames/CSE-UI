@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
+import {client, events, Faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
 
@@ -33,9 +33,9 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
     client.OnCharacterFactionChanged((cf: number) => {
       switch(cf) {
-        case faction.ARTHURIAN: this.faction = 'A'; break;
-        case faction.TDD: this.faction = 'T'; break;
-        case faction.VIKING: this.faction = 'V'; break;
+        case Faction.Arthurian: this.faction = 'A'; break;
+        case Faction.TDD: this.faction = 'T'; break;
+        case Faction.Viking: this.faction = 'V'; break;
       }
     });
 

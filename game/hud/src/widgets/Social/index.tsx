@@ -6,34 +6,31 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 12:55:46
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-07 16:25:07
+ * @Last Modified time: 2017-02-24 11:46:37
  */
 
 import * as React from 'react';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
-import { client, events, hasClientAPI } from 'camelot-unchained';
-import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
-import Main from './components/Main';
-import reducer from './services/session/reducer';
+import {createStore, applyMiddleware, compose} from 'redux';
+import {Provider} from 'react-redux';
+import {client, events, hasClientAPI} from 'camelot-unchained';
+import SocialMain from './components/SocialMain';
+import reducer, {store} from './services/session/reducer';
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 
 export interface SocialContainerProps {
   containerClass?: string;
 }
 
 export interface SocialContainerState {
-  visible: boolean;
+  visible : boolean;
 }
 
 class SocialContainer extends React.Component<SocialContainerProps, SocialContainerState> {
 
-  constructor(props: SocialContainerProps) {
+  constructor(props : SocialContainerProps) {
     super(props);
     this.state = {
-      visible: false,
+      visible: false
     };
   }
 
@@ -43,18 +40,18 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
       this.initialized = true;
     }
 
-    events.on('hudnav--navigate', (name: string) => {
+    events.on('hudnav--navigate', (name : string) => {
       if (name === 'social') {
         if (this.state.visible) {
           this.hide();
         } else {
           this.show();
+          if (this.mainRef !== null) this.mainRef.refresh();
         }
       }
     });
 
     window.addEventListener('keydown', this.onKeyDown)
-
   }
 
   componentWillUnmount() {
@@ -62,28 +59,34 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
     window.removeEventListener('keydown', this.onKeyDown)
   }
 
-  onKeyDown = (e: KeyboardEvent) => {
+  onKeyDown = (e : KeyboardEvent) => {
     if (e.which === 27 && this.state.visible) {
       this.hide();
     }
   }
 
   show = () => {
-    if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
-    this.setState({ visible: true });
+    if (typeof client.RequestInputOwnership === 'function') 
+      client.RequestInputOwnership();
+    this.setState({visible: true});
   }
 
   hide = () => {
-    if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
-    this.setState({ visible: false });
+    if (typeof client.ReleaseInputOwnership === 'function') 
+      client.ReleaseInputOwnership();
+    this.setState({visible: false});
   }
 
+  mainRef: any = null;
+
   render() {
-    return this.state.visible ? (
-      <Provider store={store}>
-        <Main {...this.props} />
-      </Provider>
-    ) : null;
+    return this.state.visible
+      ? (
+        <Provider store={store}>
+          <SocialMain ref={r => this.mainRef = r} {...this.props} />
+        </Provider>
+      )
+      : null;
   }
 }
 

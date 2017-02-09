@@ -6,18 +6,15 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 11:28:54
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-02 11:06:51
+ * @Last Modified time: 2017-02-16 18:31:38
  */
 
 import * as React from 'react';
 import { Map } from 'immutable';
-import { events } from 'camelot-unchained';
+import { events, Tooltip, utils } from 'camelot-unchained';
 import * as className from 'classnames';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';
-
-import { Orientation } from '../lib/LayoutLib';
-import Tooltip from './Tooltip';
 
 const defaultStyles: HUDNavStyle = {
   list: {
@@ -49,7 +46,7 @@ export interface HUDNavStyle {
 }
 
 export interface HUDNavData {
-  orientation: Orientation;
+  orientation: utils.Orientation;
   items: HUDNavItem[];
 }
 
@@ -82,13 +79,13 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
   show = () => {
     this.setState({
       collapsed: false,
-    } as any);
+    });
   }
 
   hide = () => {
     this.setState({
       collapsed: true,
-    } as any);
+    });
   }
 
   render() {
@@ -99,8 +96,12 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
 
         {
           this.state.collapsed ?
-            (<Tooltip content='Show Quick Menu'>
-              <li className={className({[css(ss.listHorizontal)]: this.props.orientation == Orientation.HORIZONTAL})} onClick={this.show}>
+            (<Tooltip content='Show Quick Menu' styles={{
+                tooltip: {
+                  backgroundColor: '#4d573e',
+                }
+              }}>
+              <li className={className({[css(ss.listHorizontal)]: this.props.orientation == utils.Orientation.HORIZONTAL})} onClick={this.show}>
                 <a href='#' className={className(css(ss.item), 'click-effect')}>
                   <span className='fa-stack click-effect'>
                     <i className='fa fa-square fa-stack-2x'></i>
@@ -113,8 +114,12 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
               <div>
                 {this.props.items.map(({name, tooltip, onClick, icon, iconClass}) => {
                   return (
-                    <Tooltip key={name} content={tooltip}>
-                      <li className={className({[css(ss.listHorizontal)]: this.props.orientation == Orientation.HORIZONTAL})}
+                    <Tooltip key={name} content={tooltip} styles={{
+                        tooltip: {
+                          backgroundColor: '#4d573e',
+                        }
+                      }}>
+                      <li className={className({[css(ss.listHorizontal)]: this.props.orientation == utils.Orientation.HORIZONTAL})}
                           id={name}
                           key={name}
                           onClick={onClick}>
@@ -128,8 +133,12 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                   );
                 })}
 
-                <Tooltip content='Collapse Quick Menu'>
-                  <li className={className({[css(ss.listHorizontal)]: this.props.orientation == Orientation.HORIZONTAL})} onClick={this.hide}>
+                <Tooltip content='Collapse Quick Menu' styles={{
+                    tooltip: {
+                      backgroundColor: '#4d573e',
+                    }
+                  }}>
+                  <li className={className({[css(ss.listHorizontal)]: this.props.orientation == utils.Orientation.HORIZONTAL})} onClick={this.hide}>
                     <a href='#' className={className(css(ss.item), 'click-effect')}>
                       <span className='fa-stack click-effect'>
                         <i className='fa fa-square fa-stack-2x'></i>

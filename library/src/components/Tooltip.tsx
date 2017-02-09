@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 11:47:41
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-17 17:39:52
+ * @Last Modified time: 2017-02-23 18:06:09
  */
 
 /*
@@ -34,19 +34,21 @@ export const defaultToolTipStyle: ToolTipStyle = {
     display: 'inline-block',
   },
 
-  content: {
+  tooltip: {
+    position: 'fixed',
     backgroundColor: '#444',
     border: '1px solid #4A4A4A',
     color: '#ececec',
     padding: '2px 5px',
     maxWidth: '200px',
-    'z-index': '9999',
+    zIndex: 1000,
+    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
   }
 };
 
 export interface ToolTipStyle extends StyleDeclaration {
   container: React.CSSProperties;
-  content: React.CSSProperties;
+  tooltip: React.CSSProperties;
 }
 
 export interface TooltipProps {
@@ -64,7 +66,7 @@ export interface TooltipState {
   x: number;
   y: number;
   wndRegion: Quadrant;
-  hidden: boolean;
+  show: boolean;
   ttClassName: string;
   offsetLeft: number;
   offsetRight: number;
@@ -79,7 +81,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       x: -99999,
       y: -99999,
       wndRegion: Quadrant.TopLeft,
-      hidden: true,
+      show: false,
       ttClassName: this.props.tooltipClassName || 'Tooltip',
       offsetLeft: this.props.offsetLeft || 10,
       offsetTop: this.props.offsetTop || 10,
@@ -89,7 +91,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   }
 
   onMouseMove = (e: any) => {
-    if (this.state.hidden == true) return;
+    if (this.state.show == false) return;
     this.setState({
       x: e.clientX,
       y: e.clientY
@@ -98,38 +100,34 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
   onMouseEnter = (e: any) => {
     this.setState({
-      hidden: false,
+      show: true,
       wndRegion: windowQuadrant(e.clientX, e.clientY),
     } as any);
   }
 
   onMouseleave = () => {
-    this.setState({hidden: true} as any);
+    this.setState({show: false} as any);
   }
 
   computeStyle = () => {
     switch (this.state.wndRegion) {
       case Quadrant.TopLeft:
         return {
-          position: 'fixed',
           left: `${this.state.x + this.state.offsetLeft}px`,
           top: `${this.state.y + this.state.offsetTop}px`
         };
       case Quadrant.TopRight:
       return {
-          position: 'fixed',
           right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
           top: `${this.state.y + this.state.offsetTop}px`
         };
       case Quadrant.BottomLeft:
       return {
-          position: 'fixed',
           left: `${this.state.x + this.state.offsetLeft}px`,
           bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
         };
       case Quadrant.BottomRight:
       return {
-          position: 'fixed',
           right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
           bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
         };
@@ -148,10 +146,10 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
            onMouseMove={this.onMouseMove}>
         {this.props.children}
         {
-          this.state.hidden ? null :
-          <div className={css(ss.content, custom.content)} style={this.computeStyle()}>
+          this.state.show ?
+          <div className={css(ss.tooltip, custom.tooltip)} style={this.computeStyle()}>
             {typeof this.props.content === 'string' ? this.props.content : <this.props.content {...this.props.contentProps} />}
-          </div>
+          </div> : null
         }
       </div>
     )

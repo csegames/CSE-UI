@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, hasClientAPI, signalr, CombatLog, faction, bodyParts, damageTypes, skillTracks, resourceTypes, activeEffectActions} from 'camelot-unchained';
+import {events, client, hasClientAPI, signalr, CombatLog, Faction, bodyParts, damageTypes, skillTracks, resourceTypes, activeEffectActions} from 'camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {
@@ -27,7 +27,7 @@ export default () => {
     // {impulse} (INDIGO) => recieved (sent - recieved) IMPULSE 
     // {activeEffects} (VIOLET) => activeEffects[0] activeEffects[1] ...
 
-    let output = `${log.fromName}(${faction[log.fromFaction]}) > ${log.toName}(${faction[log.toFaction]}) | `;
+    let output = `${log.fromName}(${Faction[log.fromFaction]}) > ${log.toName}(${Faction[log.toFaction]}) | `;
 
     if (log.damages) {
       for (let i = 0; i < log.damages.length; ++i) {

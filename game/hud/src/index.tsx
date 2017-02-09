@@ -13,13 +13,12 @@ import cu, {client} from 'camelot-unchained';
 import {thunkMiddleware, crashReporterMiddleware} from './lib/reduxUtils';
 
 import initialize from './services/initialization';
-import reducer from './services/session/reducer';
 import HUD from './components/HUD';
+import reducer, {apollo, store} from './services/session/reducer';
+import {ApolloProvider} from 'react-apollo';
 
 let s = createStore(reducer);
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 let root = document.getElementById('hud');
 
 interface WindowInterface extends Window {
@@ -34,16 +33,16 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   client.OnInitialized(() => {
     initialize();
     ReactDom.render(
-      <Provider store={store}>
+      <ApolloProvider store={store} client={apollo}>
         <HUD />
-      </Provider>,
+      </ApolloProvider>,
       root);
   });
 } else {
   initialize();
   ReactDom.render(
-    <Provider store={store}>
+    <ApolloProvider store={store} client={apollo}>
       <HUD />
-    </Provider>,
+    </ApolloProvider>,
     root);
 }

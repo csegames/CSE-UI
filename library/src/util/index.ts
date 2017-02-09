@@ -14,3 +14,10 @@ export * from './objectUtils';
 export * from './eventMapper';
 export * from './reduxUtils';
 export * from './layoutLib';
+
+import stringContains from './stringContains';
+import * as KeyCodes from './keyCodes';
+export {
+  KeyCodes,
+  stringContains,
+};

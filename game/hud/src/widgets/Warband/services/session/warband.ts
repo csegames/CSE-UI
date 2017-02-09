@@ -9,8 +9,9 @@
  * @Last Modified time: 2016-09-27 18:45:37
  */
 
-import {client, GroupInvite, groupType, signalr, WarbandMember, events, cu} from 'camelot-unchained';
-import {merge, clone, addOrUpdate, remove, BaseAction, defaultAction, AsyncAction, ActionDefinitions, Dictionary, createReducer, removeWhere} from '../../../../lib/reduxUtils';
+import cu, {client, events, GroupInvite, groupType, signalr, WarbandMember} from 'camelot-unchained';
+import {addOrUpdate, BaseAction, clone, defaultAction, merge, remove} from '../../../../lib/reduxUtils';
+import {ActionDefinitions, AsyncAction, createReducer, Dictionary, removeWhere} from '../../../../lib/reduxUtils';
 
 const INITIALIZE_SIGNALR = 'warband/warband/INITIALIZE_SIGNALR';
 const INITIALIZE_SIGNALR_SUCCESS = 'warband/warband/INITIALIZE_SIGNALR_SUCCESS';
@@ -34,23 +35,23 @@ function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
   events.on(signalr.WARBAND_EVENTS_UPDATE, (id: string, name: string) => dispatch(warbandJoined(id, name)));
   events.on(signalr.WARBAND_EVENTS_QUIT, (id: string) => dispatch(warbandQuit(id)));
   events.on(signalr.WARBAND_EVENTS_ABANDONED, (id: string) => dispatch(warbandAbandoned(id)));
-  events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (memberJSON: string) =>{
+  events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (memberJSON: string) => {
     try {
-      var member = JSON.parse(memberJSON);
+      const member = JSON.parse(memberJSON);
       dispatch(memberJoined(member));
-    } catch(e) {
+    } catch (e) {
       if (client.debug) {
-        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`)
+        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`);
       }
     }
   });
-  events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (memberJSON: string) =>{
+  events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (memberJSON: string) => {
     try {
-      var member = JSON.parse(memberJSON);
+      const member = JSON.parse(memberJSON);
       dispatch(memberUpdate(member));
-    } catch(e) {
+    } catch (e) {
       if (client.debug) {
-        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`)
+        console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`);
       }
     }
   });
@@ -73,50 +74,52 @@ function initSignalR(): WarbandAction {
   return {
     type: INITIALIZE_SIGNALR,
     when: new Date(),
-  }
+  };
 }
 
 function initSignalRSuccess(): WarbandAction {
   return {
     type: INITIALIZE_SIGNALR_SUCCESS,
     when: new Date(),
-  }
+  };
 }
 
 function initSignalRFailed(): WarbandAction {
   return {
     type: INITIALIZE_SIGNALR_FAILED,
     when: new Date(),
-  }
+  };
 }
 
 function warbandJoined(warbandID: string, warbandName: string = ''): WarbandAction {
   systemMessage(`You have joined ${warbandName && warbandName.length > 0 ? `the ${warbandName}` : 'a' } warband.`);
   return {
+    id: warbandID,
+    name: warbandName,
     type: WARBAND_JOINED,
     when: new Date(),
-    id: warbandID,
-    name: warbandName
-  }
+  };
 }
 
 function warbandUpdate(warbandID: string, warbandName: string = ''): WarbandAction {
-  systemMessage(`Your warband has been made ${warbandName && warbandName.length > 0 ? `permanent and is now named ${warbandName}.` : 'temporary.'}`);
+  systemMessage(`Your warband has been made ${warbandName && warbandName.length > 0 ?
+                                              `permanent and is now named ${warbandName}.` :
+                                              'temporary.'}`);
   return {
+    id: warbandID,
+    name: warbandName,
     type: WARBAND_UPDATE,
     when: new Date(),
-    id: warbandID,
-    name: warbandName
-  }
+  };
 }
 
 function warbandQuit(id: string): WarbandAction {
   systemMessage('You have quit your warband.');
   return {
     type: WARBAND_QUIT,
+    id,
     when: new Date(),
-    id: id,
-  }
+  };
 }
 
 function warbandAbandoned(id: string): WarbandAction {
@@ -124,32 +127,32 @@ function warbandAbandoned(id: string): WarbandAction {
   return {
     type: WARBAND_ABANDONED,
     when: new Date(),
-  }
+  };
 }
 
 function memberJoined(member: WarbandMember): WarbandAction {
   systemMessage(`${member.name} has joined your warband.`);
   return {
     type: MEMBER_JOINED,
+    member,
     when: new Date(),
-    member: member
-  }
+  };
 }
 
 function memberUpdate(member: WarbandMember): WarbandAction {
   return {
     type: MEMBER_UPDATE,
+    member,
     when: new Date(),
-    member: member
-  }
+  };
 }
 
 function memberRemoved(characterID: string): WarbandAction {
   return {
+    id: characterID,
     type: MEMBER_REMOVED,
     when: new Date(),
-    id: characterID
-  }
+  };
 }
 
 
@@ -166,11 +169,11 @@ export function initialize(): AsyncAction<WarbandAction> {
         dispatch(initSignalRSuccess());
         registerWarbandEvents(dispatch);
       });
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       dispatch(initSignalRFailed());
     }
-  }
+  };
 }
 
 export interface WarbandState {
@@ -186,18 +189,18 @@ export interface WarbandState {
 function initialState() {
   return {
     isInitializing: false,
-    signalRInitialized: false,
     locked: true,
-  }
+    signalRInitialized: false,
+  };
 }
 
 function clearWarband() {
   return {
+    activeMembers: <WarbandMember[]> [],
     name: '',
-    warbandID: <string>null,
-    activeMembers: <WarbandMember[]>[],
-    permanentMembers: <WarbandMember[]>[],
-  }
+    permanentMembers: <WarbandMember[]> [],
+    warbandID: <string> null,
+  };
 }
 
 function memberCompare(a: WarbandMember, b: WarbandMember): boolean {
@@ -209,30 +212,30 @@ const actionDefs: ActionDefinitions<WarbandState> = {};
 
 actionDefs[INITIALIZE_SIGNALR] = (s, a) => {
   return merge(s, {isInitalizing: false});
-}
+};
 
 actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => {
   return merge(s, {isInitalizing: false, signalRInitialized: true});
-}
+};
 
 actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => {
   return merge(s, {isInitalizing: false, signalRInitialized: true});
-}
+};
 
 actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
   events.fire('chat-show-room', a.id);
   return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
-}
+};
 
 actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => {
   if (a.id !== s.warbandID) {
-    // we changed warbands 
+    // we changed warbands
     return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
   }
   if (a.name !== s.name) {
     return merge(s, {name: a.name});
   }
-}
+};
 
 actionDefs[WARBAND_QUIT] = (s: WarbandState, a: WarbandAction) => {
   if (s.warbandID === a.id) {
@@ -240,7 +243,7 @@ actionDefs[WARBAND_QUIT] = (s: WarbandState, a: WarbandAction) => {
     return merge(s, clearWarband());
   }
   return s;
-}
+};
 
 actionDefs[WARBAND_ABANDONED] = (s, a) => {
   if (s.warbandID === a.id) {
@@ -248,16 +251,22 @@ actionDefs[WARBAND_ABANDONED] = (s, a) => {
     return merge(s, clearWarband());
   }
   return s;
+};
+
+actionDefs[MEMBER_JOINED] = (s, a) => {
+  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)})
+};
+
+actionDefs[MEMBER_UPDATE] = (s, a) => {
+  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
 }
-
-actionDefs[MEMBER_JOINED] = (s: WarbandState, a: WarbandAction) => merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
-
-actionDefs[MEMBER_UPDATE] = (s: WarbandState, a: WarbandAction) => merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
 
 actionDefs[MEMBER_REMOVED] = (s: WarbandState, a: WarbandAction) => {
-  var members = removeWhere(s.activeMembers, m => m.characterID === a.id);
-  if (members.removed.length > 0) systemMessage(`${members.removed[0].name} has left your warband.`);
+  let members = removeWhere(s.activeMembers, (m) => m.characterID === a.id);
+  if (members.removed.length > 0) {
+    systemMessage(`${members.removed[0].name} has left your warband.`);
+  }
   return merge(s, {activeMembers: members.result});
-}
+};
 
 export default createReducer<WarbandState>(initialState(), actionDefs);

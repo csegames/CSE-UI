@@ -9,7 +9,6 @@ import { client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashComma
 import { parseArgs, systemMessage } from './utils';
 
 export default () => {
-  if (!hasClientAPI()) return;
 
   interface Command {
     description: string;

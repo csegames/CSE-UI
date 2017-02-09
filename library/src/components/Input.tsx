@@ -59,7 +59,7 @@ export const Input = (props: Partial<InputProps>) => {
   const custom = StyleSheet.create(props.styles || {});
   return (
     <div className={css(ss.inputWrapper, custom.inputWrapper)}>
-      <label className={css(ss.label, custom.label)}>{props.label}</label>
+      {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null }
       <input ref={r => props.inputRef ? props.inputRef(r) : null} className={css(ss.input, custom.input)} {...props} />
     </div>
   );

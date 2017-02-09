@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-15 18:01:41
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-15 18:07:38
+ * @Last Modified time: 2017-02-24 11:30:07
  */
 
 import gql from 'graphql-tag';
@@ -14,7 +14,9 @@ import gql from 'graphql-tag';
 export default gql`
 query OrderActions($id: String!, $shard: Int!) {
   order(id: $id, shard: $shard) {
+    id
     recentActions {
+      id
       memberID
       type
       groupID
@@ -26,6 +28,7 @@ query OrderActions($id: String!, $shard: Int!) {
 `;
 
 export interface MemberAction {
+  id: string;
   memberID: string;
   type: string;
   groupID: string;
@@ -33,13 +36,14 @@ export interface MemberAction {
   message: string;
 }
 
-export interface OrderActions {
+export interface OrderActionsQuery {
   order: {
+    id: string;
     recentActions: MemberAction[];
   }
 }
 
-export interface OrderActionsVariables {
+export interface OrderActionsQueryVariables {
   id: string;
   shard: number;
 }

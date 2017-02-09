@@ -1,21 +1,28 @@
 module.exports = {
   scripts: {
+    lint: {
+      script: 'tslint src/**/*.ts',
+      description: 'Run TS-Lint"',
+    },
     dev: {
       default: {
-        script: 'nps clean,build.browserify.lib,build.dev && start nps dev.livereload && start nps dev.watch && start nps dev.serve',
+        script: 'nps clean,build.browserify.lib,build.dev,dev.livereload,dev.watch,dev.serve',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
+      start: {
+
+      },
       serve: {
-        script: 'http-server ./dist/ -p 9003 -o --cors -c-1',
+        script: 'start http-server ./dist/ -p 9003 -o --cors -c-1',
         hiddenFromHelp: true,
       },
       livereload: {
-        script: 'livereload ./dist/',
+        script: 'start livereload ./dist/',
         hiddenFromHelp: true,
       },
       watch: {
         default: {
-          script: 'nps -p dev.watch.ts,dev.watch.sass,dev.watch.misc',
+          script: 'start nps -p dev.watch.ts,dev.watch.sass,dev.watch.misc',
           description: 'Runs watch scripts in parallel to build whenever a file change is detected.',
           hiddenFromHelp: true,
         },

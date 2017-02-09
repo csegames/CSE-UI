@@ -122,14 +122,14 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
     window.removeEventListener('mousedown', this.windowMouseDown);
   }
 
-  show = () => {
+  public show = () => {
     this.setState({
       hidden: false
     } as any);
     this.mouseOver = false;
   }
 
-  hide = () => {
+  public hide = () => {
     this.setState({
       hidden: true
     } as any);
@@ -137,32 +137,32 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
     this.mouseOver = false;
   }
 
-  confirm = () => {
+  private confirm = () => {
+    this.hide();
     this.props.onConfirm();
-    this.hide();
   }
 
-  cancel = () => {
+  private cancel = () => {
+    this.hide();
     this.props.onCancel();
-    this.hide();
   }
 
-  mouseOver = false;
-  onMouseEnter = () => {
+  private mouseOver = false;
+  private onMouseEnter = () => {
     this.mouseOver = true;
   }
 
-  onMouseleave = () => {
+  private onMouseleave = () => {
     this.mouseOver = false;
   }
 
-  windowMouseDown = () => {
+  private windowMouseDown = () => {
     if (this.state.cancelOnClickOutside && !this.state.hidden && !this.mouseOver) {
       this.cancel();
     }
   }
 
-  clicked = () => {
+  private clicked = () => {
     if (!this.state.hidden) return;
     this.show();
     window.addEventListener('mousedown', this.windowMouseDown);

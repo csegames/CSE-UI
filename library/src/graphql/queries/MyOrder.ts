@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:43:14
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:07:15
+ * @Last Modified time: 2017-02-24 11:29:44
  */
 
 import gql from 'graphql-tag';
@@ -22,6 +22,6 @@ query MyOrder {
 ${FullOrderFragment}
 `;
 
-export interface MyOrder {
+export interface MyOrderQuery {
   myOrder : FullOrder;
 }

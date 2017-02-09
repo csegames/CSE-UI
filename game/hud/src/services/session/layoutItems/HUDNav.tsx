@@ -11,10 +11,11 @@
 
 import * as React from 'react';
 import { Map } from 'immutable';
-import { events, client } from 'camelot-unchained';
-import { Orientation } from '../../../lib/LayoutLib';
+import { events, client, utils } from 'camelot-unchained';
 import HUDNav, { HUDNavItem } from '../../../components/HUDNav';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
+
+const { Orientation } = utils;
 
 export default {
   position: {
@@ -44,19 +45,21 @@ export default {
   props: {
     orientation: Orientation.HORIZONTAL,
     items: [
-      // {
-      //   name: 'social',
-      //   tooltip: 'Social',
-      //   iconClass: 'fa-users',
-      //   icon: (
-      //     <span className='fa-stack click-effect'>
-      //       <i className='fa fa-square fa-stack-2x'></i>
-      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
-      //   hidden: false,
-      //   onClick: () => events.fire('hudnav--navigate', 'social')
-      // },
+      {
+        name: 'social',
+        tooltip: 'Social',
+        iconClass: 'fa-users',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-users fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'social')
+        }
+      },
       {
         name: 'spellbook',
         tooltip: 'Spellbook',

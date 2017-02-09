@@ -6,17 +6,17 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:27:49
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:06:02
+ * @Last Modified time: 2017-02-24 10:53:04
  */
 import gql from 'graphql-tag';
 
-import {Faction, Race, Gender, Archetype} from '../../';
-import FullOrderMemberFragment, { FullOrderMember}  from './FullOrderMember';
-import CustomRankFragment, {CustomRank} from './CustomRank';
-import PermissionInfoFragment, {PermissionInfo} from './PermissionInfo';
+import { Faction, Race, Gender, Archetype } from '../../';
+import FullOrderMemberFragment, { FullOrderMember }  from './FullOrderMember';
+import CustomRankFragment, { CustomRank } from './CustomRank';
+import PermissionInfoFragment, { PermissionInfo } from './PermissionInfo';
 
 export default gql`
-fragment FullOrder on OrderQLType {
+fragment FullOrder on Order {
   id
   name
   realm

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:27:49
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:06:46
+ * @Last Modified time: 2017-02-20 17:13:34
  */
 import gql from 'graphql-tag';
 
@@ -15,7 +15,7 @@ import FullWarbandMemberFragment, { FullWarbandMember}  from './FullWarbandMembe
 import CustomRankFragment, {CustomRank} from './CustomRank';
 
 export default gql`
-fragment FullWarband on WarbandQLType {
+fragment FullWarband on Warband {
   id
   name
   realm

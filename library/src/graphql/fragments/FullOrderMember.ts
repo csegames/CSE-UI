@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:32:59
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:06:29
+ * @Last Modified time: 2017-02-20 17:13:29
  */
 import gql from 'graphql-tag';
 import {Faction, Race, Gender, Archetype} from '../..';
@@ -14,7 +14,7 @@ import PermissionInfoFragment, {PermissionInfo} from './PermissionInfo';
 import CustomRankFragment, {CustomRank} from './CustomRank';
 
 export default gql`
-fragment FullOrderMember on OrderMemberQLType {
+fragment FullOrderMember on OrderMember {
   id
   name
   rank {

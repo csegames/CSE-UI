@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 let Draggable = require('react-draggable');
-import { client, GroupInvite, groupType, hasClientAPI } from 'camelot-unchained';
+import { client, GroupInvite, groupType, hasClientAPI, Tooltip } from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
 
 import { LayoutState, lockHUD, unlockHUD, setPosition, initialize, resetHUD, setVisibility, Widget } from '../../services/session/layout';
@@ -17,7 +17,6 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 
 import InteractiveAlert, { Alert } from '../InteractiveAlert';
 import Watermark from '../Watermark';
-import Tooltip from '../Tooltip';
 import Social from '../../widgets/Social';
 
 import { BodyParts } from '../../lib/PlayerStatus';

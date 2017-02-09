@@ -5,12 +5,10 @@
  */
 
 import * as React from 'react';
-import {client, archetype, race, gender, events} from 'camelot-unchained';
+import {client, events, SVGSprite, ClassIcon} from 'camelot-unchained';
 import {spring, presets, TransitionMotion} from 'react-motion';
 
-import SVGSprite from '../../components/SVGSprite';
 import Pills, {Orientation} from './components/Pills';
-import ClassIcon from '../../components/ClassIcon';
 import ActiveEffectIcon from '../../components/ActiveEffectIcon'
 
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';

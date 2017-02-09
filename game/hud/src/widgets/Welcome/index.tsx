@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, faction, webAPI, legacyAPI} from 'camelot-unchained';
+import {client, events, webAPI, legacyAPI} from 'camelot-unchained';
 import * as React from 'react';
 
 export interface WelcomeProps {

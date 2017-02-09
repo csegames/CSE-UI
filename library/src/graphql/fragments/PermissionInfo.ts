@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 11:30:36
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:58:35
+ * @Last Modified time: 2017-02-20 16:31:13
  */
 
 import gql from 'graphql-tag';
@@ -20,7 +20,7 @@ export interface PermissionInfo {
 }
 
 export default gql`
-  fragment PermissionInfo on PermissionInfoQLType {
+  fragment PermissionInfo on PermissionInfo {
     tag
     name
     description

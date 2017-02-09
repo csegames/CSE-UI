@@ -6,16 +6,20 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:43:16
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-13 17:51:18
+ * @Last Modified time: 2017-02-24 11:53:36
  */
 
 import gql from 'graphql-tag';
 
+import FullCharacterFragment, { FullCharacter } from '../fragments/fullCharacter';
 import FullOrderFragment, { FullOrder } from '../fragments/fullOrder';
 import FullWarbandFragment, { FullWarband } from '../fragments/fullWarband';
 
 export default gql`
 query MySocial {
+  myCharacter {
+    ...FullCharacter
+  }
   myOrder {
     ...FullOrder
   }
@@ -23,11 +27,13 @@ query MySocial {
     ...FullWarband
   }
 }
+${FullCharacterFragment}
 ${FullOrderFragment}
 ${FullWarbandFragment}
 `;
 
-export interface MySocial {
+export interface MySocialQuery {
+  myCharacter: FullCharacter;
   myOrder: FullOrder;
   myWarbands: FullWarband[];
 }

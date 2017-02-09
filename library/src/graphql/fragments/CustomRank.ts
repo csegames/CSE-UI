@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 12:04:43
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:08:17
+ * @Last Modified time: 2017-02-20 16:30:35
  */
 
 import gql from 'graphql-tag';
@@ -19,7 +19,7 @@ export interface CustomRank {
 }
 
 export default gql`
-fragment CustomRank on CustomRankQLType {
+fragment CustomRank on CustomRank {
   name
   level
   permissions {

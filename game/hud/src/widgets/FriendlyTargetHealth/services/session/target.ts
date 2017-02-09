@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, race, gender, archetype, faction, hasClientAPI, Player} from 'camelot-unchained';
+import {client, events, Race, Faction, hasClientAPI, Player} from 'camelot-unchained';
 import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
 import {fakePlayer, fakeHealthEvents, HealthAction, staminaUpdated, healthUpdated, playerUpdate, nameChanged, raceChanged, healtEmulationTest} from '../../../../lib/reduxHealth';
 import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
@@ -58,7 +58,7 @@ function onNameChanged(name: string): TargetAction {
 }
 
 
-function onRaceChanged(race: race): TargetAction {
+function onRaceChanged(race: Race): TargetAction {
   return {
     type: RACE_CHANGED,
     when: new Date(),
@@ -66,7 +66,7 @@ function onRaceChanged(race: race): TargetAction {
   };
 }
 
-function onFactionChanged(faction: faction): TargetAction {
+function onFactionChanged(faction: Faction): TargetAction {
   return {
     type: FACTION_CHANGED,
     when: new Date(),
