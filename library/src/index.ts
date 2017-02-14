@@ -103,7 +103,6 @@ let cu = Object.assign({
   Injury : Injury,
   Population : Population,
   Inventory : Inventory,
-  Item : Item,
   EquippedGear : EquippedGear,
   LogMessage : LogMessage,
   ChatMessage : ChatMessage,

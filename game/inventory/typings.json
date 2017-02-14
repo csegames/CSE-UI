@@ -2,10 +2,6 @@
   "name": "inventory",
   "globalDependencies": {
     "node": "registry:dt/node#6.0.0+20160621231320",
-    "react": "registry:dt/react#0.14.0+20160621225615",
-    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
-    "classnames": "github:CUModSquad/Typings/classnames/classnames.d.ts",
-    "rc-tooltip": "github:CUModSquad/Typings/rc-tooltip/rc-tooltip.d.ts",
     "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts"
   }
 }

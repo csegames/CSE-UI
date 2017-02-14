@@ -61,8 +61,7 @@ export class ItemGroup {
 
   static areItemsStackable(itemA: Item, itemB: Item): boolean {
     return itemA.name == itemB.name
-      && itemA.description == itemB.description
-      && itemA.resourceID == itemB.resourceID;
+      && itemA.description == itemB.description;
   }
 
   /**

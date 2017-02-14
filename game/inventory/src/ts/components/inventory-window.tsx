@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {client, events, Inventory, Item, gearSlot} from 'camelot-unchained';
-import ClassNames from 'classnames';
+import {client, events, Inventory, Item} from 'camelot-unchained';
 import {ItemGroup} from './item-group';
 
 export class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWindowState> {
@@ -42,7 +41,7 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
   }
 
   useItem(group: ItemGroup): void {
-    if (group.item.gearSlot != 0) {
+    if (group.item.gearSlot != 'NONE') {
       client.EquipItem(group.getFirstItemID());
     }
   }
@@ -66,19 +65,18 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
     const itemGroupsBySlot:any = {};
     this.state.itemGroups.forEach((group: ItemGroup, index: number) => {
 
-      const gearSlotName = this.getGearSlotName(group.item.gearSlot);
-      if(!itemGroupsBySlot.hasOwnProperty(gearSlotName)) {
-        itemGroupsBySlot[gearSlotName] = [];
+      if(!itemGroupsBySlot.hasOwnProperty(group.item.gearSlot)) {
+        itemGroupsBySlot[group.item.gearSlot] = [];
       }
       
-      itemGroupsBySlot[gearSlotName].push((
+      itemGroupsBySlot[group.item.gearSlot].push((
           <li className="inventory-item" key={'item-group' + index} onClick={() => this.simDblClick(this.useItem, group)} onContextMenu={this.dropItem.bind(this, group )}>
             <div className="quantity">{group.quantity}</div>
             <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
             <div className="name">{group.item.name}</div>
             <div className="tooltip">
               <h1 className="tooltip__title">{group.item.name}</h1>
-              <p className="tooltip__detail tooltip__slot">{this.getGearSlotName(group.item.gearSlot)}</p>
+              <p className="tooltip__detail tooltip__slot">{group.item.gearSlot}</p>
               <p className="tooltip__detail tooltip__description">{group.item.description}</p>
               <p className="tooltip__meta">Resource ID: {group.item.id}</p>
             </div>
@@ -110,41 +108,6 @@ export class InventoryWindow extends React.Component<InventoryWindowProps, Inven
         </div>
       </div>
     );
-  }
-
-  getGearSlotName(slot: gearSlot): string {
-    switch (slot) {
-      case gearSlot.NONE:
-        return 'None';
-      case gearSlot.CHEST:
-        return 'Chest';
-      case gearSlot.LEFT_HAND:
-        return 'Left Hand';
-      case gearSlot.RIGHT_HAND:
-        return 'Right Hand';
-      case gearSlot.TWO_HANDED:
-        return 'Two-Handed';
-      case gearSlot.PANTS:
-        return 'Pants';
-      case gearSlot.BOOTS:
-        return 'Boots';
-      case gearSlot.LEFT_GLOVE:
-        return 'Left Glove';
-      case gearSlot.RIGHT_GLOVE:
-        return 'Right Glove';
-      case gearSlot.HELMET:
-        return 'Helmet';
-      case gearSlot.BELT:
-        return 'Belt';
-      case gearSlot.SKIRT:
-        return 'Skirt';
-      case gearSlot.TABARD:
-        return 'Tabard';
-      case gearSlot.CAPE:
-        return 'Cape';
-      default:
-        return 'None';
-    }
   }
 }
 

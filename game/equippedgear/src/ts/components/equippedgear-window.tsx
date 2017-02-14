@@ -5,36 +5,44 @@
  */
 
 import * as React from 'react';
-import {client, events, EquippedGear, Item, gearSlot} from 'camelot-unchained';
-import ClassNames from 'classnames';
+import {client, Item} from 'camelot-unchained';
+
+export interface EquippedGearWindowProps {
+}
+
+export interface EquippedGearWindowState {
+  items: {
+    [id: string]: Item
+  }
+}
 
 export class EquippedGearWindow extends React.Component<EquippedGearWindowProps, EquippedGearWindowState> {
-  private listener: any;
-  private gearSlots: string[];
-
   constructor(props: any) {
     super(props);
     this.state = {
-      equippedgear: new EquippedGear()
+      items: {}
     };
-    this.gearSlots = Object.keys(gearSlot).filter((id: any) => {
-      return !isNaN(id) && id != gearSlot.NONE;
-    });
   }
 
   componentWillMount() {
-    this.listener = events.on(events.handlesEquippedGear.topic, (equippedgear: EquippedGear) => {
-      this.setState({
-        equippedgear: equippedgear
-      });
+    client.OnGearAdded(this.onGearAdded);
+    client.OnGearRemoved(this.onGearRemoved);
+  }
+
+  onGearAdded = (item: Item) => {
+    var items = Object.assign({}, this.state.items);
+    items[item.id] = item;
+    this.setState({
+      items 
     });
   }
 
-  componentWillUnmount() {
-    if (this.listener) {
-      events.off(this.listener);
-      this.listener = null;
-    }
+  onGearRemoved = (itemID: string) => {
+    var items = Object.assign({}, this.state.items);
+    delete items[itemID];
+    this.setState({
+      items
+    });
   }
 
   closeWindow(): void {
@@ -48,26 +56,25 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
   render() {
     const items: JSX.Element[] = [];
 
-    this.gearSlots.forEach((slotId: string, index: number) => {
-      const item = this.state.equippedgear.getItemInGearSlot(slotId);
-      if (item != null) {
-        items.push((
-          <li key={'gear-slot'+index} className="equippedgear-title cu-font-cinzel">{this.getGearSlotName(slotId)}</li>
+    for (const key in this.state.items) {
+      const item = this.state.items[key];
+      if (item == null) continue;
+      items.push((
+          <li key={item.gearSlot} className="equippedgear-title cu-font-cinzel">{item.gearSlot}</li>
         ));
         items.push((
-          <li className="equippedgear-item" key={'item'+index} onDoubleClick={this.unequipItem.bind(this, item)} onContextMenu={this.unequipItem.bind(this, item)}>
+          <li className="equippedgear-item" key={item.id} onDoubleClick={this.unequipItem.bind(this, item)} onContextMenu={this.unequipItem.bind(this, item)}>
             <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
             <div className="name">{item.name}</div>
             <div className="tooltip">
               <h1 className="tooltip__title">{item.name}</h1>
-              <p className="tooltip__detail tooltip__slot">{this.getGearSlotName(item.gearSlot)}</p>
+              <p className="tooltip__detail tooltip__slot">{item.gearSlot}</p>
               <p className="tooltip__detail tooltip__description">{item.description}</p>
               <p className="tooltip__meta">Resource ID: {item.id}</p>
             </div>
           </li>
         ))
-      }
-    });
+    }
     return (
       <div className="cu-window">
         <div className="cu-window-header">
@@ -84,46 +91,6 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
       </div>
     );
   }
-
-  getGearSlotName(slot: any): string {
-    switch (parseInt(slot, 10)) {
-      case gearSlot.NONE:
-        return 'None';
-      case gearSlot.CHEST:
-        return 'Chest';
-      case gearSlot.LEFT_HAND:
-        return 'Left Hand';
-      case gearSlot.RIGHT_HAND:
-        return 'Right Hand';
-      case gearSlot.TWO_HANDED:
-        return 'Two-Handed';
-      case gearSlot.PANTS:
-        return 'Pants';
-      case gearSlot.BOOTS:
-        return 'Boots';
-      case gearSlot.LEFT_GLOVE:
-        return 'Left Glove';
-      case gearSlot.RIGHT_GLOVE:
-        return 'Right Glove';
-      case gearSlot.HELMET:
-        return 'Helmet';
-      case gearSlot.BELT:
-        return 'Belt';
-      case gearSlot.SKIRT:
-        return 'Skirt';
-      case gearSlot.TABARD:
-        return 'Tabard';
-      case gearSlot.CAPE:
-        return 'Cape';
-      default:
-        return 'None';
-    }
-  }
 }
 
-export interface EquippedGearWindowProps {
-}
 
-export interface EquippedGearWindowState {
-  equippedgear: EquippedGear;
-}

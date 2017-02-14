@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import Item from './Item';
-import gearSlot from '../constants/gearSlot';
 
 /**
  * EquippedGear
@@ -26,7 +25,7 @@ class EquippedGear  {
    * @param  {gearSlot} slot - the gear slot to get item for
    * @return {Item} the item in gear slot, or null if there is no item equipped
    */
-  getItemInGearSlot(slot: gearSlot|string): Item {
+  getItemInGearSlot(slot: string): Item {
     let gearSlotItems = this.items.filter((item: Item) => {
       return item.gearSlot == slot;
     });
@@ -52,7 +51,7 @@ class EquippedGear  {
    * Removes an item from given gear slot
    * @param {gearSlot} slot the gear slot to remove item from
    */
-  removeItemInGearSlot(slot: gearSlot): void {
+  removeItemInGearSlot(slot: string): void {
     const ids: string[] = [];
     this.items.forEach((item: Item) => {
       if (item.gearSlot == slot) {
