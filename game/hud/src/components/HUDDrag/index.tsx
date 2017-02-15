@@ -342,6 +342,12 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   componentDidMount() {
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
+    const fixedPos = this.getPosition();
+    if(this.state.layoutMode === LayoutMode.EDGESNAP)
+    {
+      const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x, fixedPos.y, this.state.height, this.state.width);
+      this.setState(pos as any);
+    }
   }
 
   componentDidUnMount() {
