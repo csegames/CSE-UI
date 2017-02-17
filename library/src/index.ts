@@ -15,14 +15,11 @@ import archetype from './core/constants/archetype';
 import buildUIMode from './core/constants/buildUIMode';
 import channelId from './core/constants/channelId';
 import emotes from './core/constants/emotes';
-import race from './core/constants/race';
 import soundEvents from './core/constants/soundEvents';
 import tagConstraintType from './core/constants/tagConstraintType';
 import gearSlot from './core/constants/gearSlot';
 import plotPermissions from './core/constants/plotPermissions';
 import attributeType from './core/constants/attributeType';
-import faction from './core/constants/faction';
-import gender from './core/constants/gender';
 import warbandRoles from './core/constants/warbandRoles';
 import warbandRanks from './core/constants/warbandRanks';
 import warbandPermissions from './core/constants/warbandPermissions';
@@ -45,15 +42,12 @@ import ConsoleMessage from './core/classes/ConsoleMessage';
 // libraries
 import * as core from './core/core';
 export * from './core/core';
-import stores from './stores/stores';
-
 
 import * as legacyAPI from './restapi/RestAPI';
 
 import * as webAPI from './webAPI';
 export * from './webAPI/definitions';
 
-import * as groups from './groups';
 export * from './groups';
 
 export * from './building';
@@ -70,57 +64,64 @@ import * as slashCommandsExports from './slashCommands';
 // utils
 import * as utils from './util';
 
-let cu = Object.assign({
+// graphql
+import * as ql from './graphql';
+
+
+// components
+import * as components from './components';
+export * from './components';
+
+export default {
 
   // core
-  CoreSettings : CoreSettings,
-  client : client,
+  CoreSettings,
+  client,
 
-  // core constants
-  abilityTags : abilityTags,
-  archetype : archetype,
-  buildUIMode : buildUIMode,
-  channelId : channelId,
-  emotes : emotes,
-  race : race,
-  soundEvents : soundEvents,
-  tagConstraintType : tagConstraintType,
-  gearSlot : gearSlot,
-  plotPermissions : plotPermissions,
-  attributeType : attributeType,
-  faction : faction,
-  gender : gender,
-  warbandRoles: warbandRoles,
-  warbandRanks: warbandRanks,
-  warbandPermissions: warbandPermissions,
+  // core constants - #TODO: remove these (shouldn't be using them)
+  abilityTags,
+  archetype,
+  buildUIMode,
+  channelId,
+  emotes,
+  soundEvents,
+  tagConstraintType,
+  gearSlot,
+  plotPermissions,
+  attributeType,
+  warbandRoles,
+  warbandRanks,
+  warbandPermissions,
 
-  // core classes
-  Ability : Ability,
-  Combatant : Combatant,
-  Player : Player,
-  Character : Character,
-  ControlGame : ControlGame,
-  Injury : Injury,
-  Population : Population,
-  Inventory : Inventory,
-  EquippedGear : EquippedGear,
-  LogMessage : LogMessage,
-  ChatMessage : ChatMessage,
-  ConsoleMessage : ConsoleMessage,
+  // core classes - #TODO: remove these (shouldn't be using them)
+  Ability,
+  Combatant,
+  Player,
+  Character,
+  ControlGame,
+  Injury,
+  Population,
+  Inventory,
+  EquippedGear,
+  LogMessage,
+  ChatMessage,
+  ConsoleMessage,
 
   // RestAPI
-  legacyAPI : legacyAPI,
+  legacyAPI,
 
-}, groups, eventExports, slashCommandsExports);
+  components,
 
-export default cu;
+ ...eventExports,
+ ...slashCommandsExports
+
+};
 
 export {
 
   webAPI,
 
   // cu
-  cu,
   utils,
 
   // core
@@ -134,14 +135,11 @@ export {
   buildUIMode,
   channelId,
   emotes,
-  race,
   soundEvents,
   tagConstraintType,
   gearSlot,
   plotPermissions,
   attributeType,
-  faction,
-  gender,
   warbandRanks,
   warbandRoles,
   warbandPermissions,
@@ -164,7 +162,6 @@ export {
   // libraries
   core,
   events,
-  stores,
 
   // Legacy RestAPI
   legacyAPI,
@@ -173,4 +170,6 @@ export {
   signalr,
   DEBUG_ASSERT,
   RUNTIME_ASSERT,
+
+  ql,
 }
