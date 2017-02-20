@@ -8,10 +8,7 @@ import {Promise} from 'es6-promise';
 import * as RestClient from './../RestClient';
 import * as RestUtil from './../RestUtil';
 import channelId from '../../core/constants/channelId';
-import archetype from '../../core/constants/archetype';
-import faction from '../../core/constants/faction';
-import gender from '../../core/constants/gender';
-import race from '../../core/constants/race';
+import { Race, Faction, Gender, Archetype } from '../..'
 
 // Get Characters
 export function getCharacters(): Promise<SimpleCharacter[]> {
@@ -44,25 +41,25 @@ export function createCharacter(shardID: number, channelId: channelId, data: Cha
 
 // Response when calling getCharacters or getCharactersOnShard
 export interface SimpleCharacter {
-  archetype: archetype;
-  faction: faction;
-  gender: gender;
+  archetype: Archetype;
+  faction: Faction;
+  gender: Gender;
   id: string;
   lastLogin: string;
   name: string;
-  race: race;
+  race: Race;
   shardID: number;
 }
 
 // Response when calling getCharacterOnShard
 export interface Character {
-  archetype: archetype;
-  faction: faction;
-  gender: gender;
+  archetype: Archetype;
+  faction: Faction;
+  gender: Gender;
   id: string;
   lastLogin: string;
   name: string;
-  race: race;
+  race: Race;
   shardID: any;
 
   attributes: any;
@@ -73,9 +70,9 @@ export interface Character {
 // Request Model when calling createCharacter
 export interface CharacterCreateRequest {
   name: string,
-  faction: faction,
-  race: race,
-  gender: gender,
+  faction: Faction,
+  race: Race,
+  gender: Gender,
   attributes: {
     strength: number;
     dexterity: number;

@@ -5,7 +5,7 @@
  */
 
 import configGroup from './config/configGroup';
-import race from './constants/race';
+import { Race } from '..';
 import Item from './classes/Item';
 
 interface clientInterface {
@@ -202,7 +202,7 @@ interface clientInterface {
 
   OnCharacterIDChanged(c: (id: string) => void): void;
   OnCharacterFactionChanged(c: (faction: number) => void): void;
-  OnCharacterRaceChanged(c: (race: race) => void): void;
+  OnCharacterRaceChanged(c: (race: Race) => void): void;
   OnCharacterNameChanged(c: (name: string) => void): void;
   OnCharacterHealthChanged(c: (health: number, maxHealth: number) => void): void;
   OnCharacterStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;

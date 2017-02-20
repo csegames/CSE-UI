@@ -6,19 +6,16 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-29 16:32:36
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-29 16:33:13
+ * @Last Modified time: 2017-02-20 17:03:16
  */
-
-import race from '../constants/race';
-import gender from '../constants/gender';
-import archetype from '../constants/archetype';
+import { Race, Gender, Archetype } from '../..'
 
 export interface PlayerStatus {
   name: string;
   avatar: string;
-  race: race;
-  gender: gender;
-  archetype: archetype;
+  race: Race;
+  gender: Gender;
+  archetype: Archetype;
   characterID: string;
   health: {
     current: number;

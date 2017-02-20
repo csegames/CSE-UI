@@ -6,11 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 18:43:00
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-17 17:50:07
+ * @Last Modified time: 2017-02-20 17:10:47
  */
 
 import * as React from 'react';
-import { archetype } from '../';
+import { Archetype } from '../';
 import SVGSprite from './SVGSprite';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';
@@ -28,16 +28,16 @@ export interface ClassIconStyle {
 }
 
 export const ClassIcon = (props: {
-  playerClass: archetype;
+  playerClass: Archetype;
   style?: Partial<ClassIconStyle>;
 }) => {
   const ss = StyleSheet.create(merge(defaultStyle, props.style || {}));
   switch (this.props.playerClass) {
-    case archetype.BLACKGUARD:
+    case Archetype.Blackguard:
       return <SVGSprite sprite='images/class-icons.svg#archer-class-icon' svgClass={css(ss.icon)} />;
-    case archetype.BLACKKNIGHT:
+    case Archetype.BlackKnight:
       return <SVGSprite sprite='images/class-icons.svg#heavy-class-icon' svgClass={css(ss.icon)} />;
-    case archetype.EMPATH:
+    case Archetype.Empath:
       return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={css(ss.icon)} />;
     default: return <h1>Invalid Class</h1>;
   }

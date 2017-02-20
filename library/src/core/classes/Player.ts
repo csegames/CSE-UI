@@ -4,25 +4,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import Combatant from './Combatant';
-import race from '../constants/race';
-import archetype from '../constants/archetype';
+import {Race, Archetype} from '../..';
 
 class Player extends Combatant {
 
-  race: race;
-  archetype: archetype;
+  race: Race;
+  archetype: Archetype;
 
   constructor(player = <Player>{}) {
     super(player)
-    this.race = player.race || race.NONE;
-    this.archetype = player.archetype || archetype.NONE;
+    this.race = player.race || Race.Any;
+    this.archetype = player.archetype || Archetype.Any;
   }
 
-  setRace(race: race) {
+  setRace(race: Race) {
     this.race = race;
   }
     
-  setArchetype(archetype: archetype) {
+  setArchetype(archetype: Archetype) {
     this.archetype = archetype;
   }
 

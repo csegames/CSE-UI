@@ -6,10 +6,10 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-29 16:29:14
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-29 17:13:08
+ * @Last Modified time: 2017-02-20 17:01:48
  */
 
-import faction from '../constants/faction';
+import {Faction} from '../..';
 import {bodyParts} from '../constants/bodyParts';
 import {damageTypes} from '../constants/damageTypes';
 import {resourceTypes} from '../constants/resourceTypes';
@@ -18,10 +18,10 @@ import {activeEffectActions} from '../constants/activeEffectActions';
 
 export interface CombatLog {
   fromName: string;
-  fromFaction: faction;
+  fromFaction: Faction;
   
   toName: string;
-  toFaction: faction;
+  toFaction: Faction;
   
   damages?: {
     sent: number;

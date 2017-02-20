@@ -6,10 +6,10 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:32:59
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-13 17:47:17
+ * @Last Modified time: 2017-02-20 17:07:02
  */
 import gql from 'graphql-tag';
-import {faction, race, gender, archetype} from '../..';
+import {Faction, Race, Gender, Archetype} from '../..';
 
 export default gql`
 fragment FullWarbandMember on WarbandMemberQLType {
@@ -29,9 +29,9 @@ export interface FullWarbandMember {
   id : string;
   name : string;
   rank : string;
-  race : race;
-  gender : gender;
-  class : archetype;
+  race : Race;
+  gender : Gender;
+  class : Archetype;
   joined : string;
   lastLogin : string;
   kills : number;

@@ -7,7 +7,7 @@
 import EventEmitter from '../EventEmitter';
 import Combatant from '../../core/classes/Combatant';
 import Player from '../../core/classes/Player';
-import race from '../../core/constants/race';
+import { Race } from '../..';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
@@ -23,7 +23,7 @@ function run(emitter: EventEmitter, topic: string) {
     emitter.emit(topic, instance);
   }
 
-  function raceChanged(race: race) {
+  function raceChanged(race: Race) {
     instance.setRace(race);
     emitter.emit(topic, instance);
   }

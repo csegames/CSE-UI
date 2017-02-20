@@ -6,11 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:27:49
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:18:07
+ * @Last Modified time: 2017-02-20 17:06:46
  */
 import gql from 'graphql-tag';
 
-import {faction, race, gender, archetype} from '../../';
+import {Faction, Race, Gender, Archetype} from '../../';
 import FullWarbandMemberFragment, { FullWarbandMember}  from './FullWarbandMember';
 import CustomRankFragment, {CustomRank} from './CustomRank';
 
@@ -35,7 +35,7 @@ ${FullWarbandMemberFragment}
 export interface FullWarband {
   id : string;
   name : string;
-  realm : faction;
+  realm : Faction;
   creator : string;
   created : string;
   ranks : CustomRank[];

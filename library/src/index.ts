@@ -11,7 +11,6 @@ import client from './core/client';
 
 // constants
 import abilityTags from './core/constants/abilityConstants/abilityTags';
-import archetype from './core/constants/archetype';
 import buildUIMode from './core/constants/buildUIMode';
 import channelId from './core/constants/channelId';
 import emotes from './core/constants/emotes';
@@ -80,7 +79,6 @@ export default {
 
   // core constants - #TODO: remove these (shouldn't be using them)
   abilityTags,
-  archetype,
   buildUIMode,
   channelId,
   emotes,
@@ -131,7 +129,6 @@ export {
 
   // core constants
   abilityTags,
-  archetype,
   buildUIMode,
   channelId,
   emotes,

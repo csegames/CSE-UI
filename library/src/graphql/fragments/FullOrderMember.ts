@@ -6,10 +6,10 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:32:59
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:51:02
+ * @Last Modified time: 2017-02-20 17:06:29
  */
 import gql from 'graphql-tag';
-import {faction, race, gender, archetype} from '../..';
+import {Faction, Race, Gender, Archetype} from '../..';
 import PermissionInfoFragment, {PermissionInfo} from './PermissionInfo';
 import CustomRankFragment, {CustomRank} from './CustomRank';
 
@@ -41,9 +41,9 @@ export interface FullOrderMember {
   id : string;
   name : string;
   rank : CustomRank;
-  race : race;
-  gender : gender;
-  class : archetype;
+  race : Race;
+  gender : Gender;
+  class : Archetype;
   joined : string;
   lastLogin : string;
   kills : number;

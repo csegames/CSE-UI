@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import race from '../constants/race';
-import archetype from '../constants/archetype';
+import { Race, Archetype } from '../..';
 
 export interface Injury {
   part: number;
@@ -45,8 +44,8 @@ class Combatant {
     this.injuries = <Injury[]>[];
   }
 
-  setRace(race: race) { } // override to support race
-  setArchetype(archetype: archetype)  { } /// override to support archetype
+  setRace(race: Race) { } // override to support race
+  setArchetype(archetype: Archetype)  { } /// override to support archetype
 
   setName(name: string) {
     this.name = name;

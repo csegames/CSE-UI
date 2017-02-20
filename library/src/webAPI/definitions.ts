@@ -6,6 +6,48 @@ export interface ArchetypeInfo {
   name: string;
 }
 
+
+ 
+
+
+export interface UnspecifiedRequestError {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface InvalidModel {
+  modelErrors: ModelError[];
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface ModelError {
+  message: string;
+  paramName: string;
+  typeName: string; 
+}
+ 
+
+export interface QueueStatusResponse {
+  errorMessage: string; 
+  queueStatusMessage: QueueStatusMessage;
+}
+
+export interface QueueStatusMessage {
+  status: string;
+  numContributors: number;
+  maxContributors: number;
+  blueprints: QueuedBlueprintMessage[]; 
+}
+
+export interface QueuedBlueprintMessage {
+  name: string;
+  percentComplete: number;
+  estTimeRemaining: number;
+  subName: string;
+  amtNeeded: number; 
+}
+
  
 export interface SimpleCharacter { 
   archetype: Archetype;
@@ -15,7 +57,7 @@ export interface SimpleCharacter {
   lastLogin: string;
   name: string;
   race: Race;
-  shardID: number;
+  shardID: string;
 }
 
 export interface Character { 
@@ -35,6 +77,7 @@ export interface Character {
 export interface CharacterValidation { 
 }
 
+
  
 export interface ControlGameState { 
   arthurianScore: number;
@@ -53,6 +96,42 @@ export interface ControlPoint {
   y: number;
 }
 
+
+ 
+
+
+export interface UnspecifiedExecutionError {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface UnhandledExecutionException {
+  exception: string;
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface DoesNotExist {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface UserStateConflict {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface InsufficientResource {
+  resources: ResourceRequirement[];
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface ResourceRequirement {
+  name: string;
+  required: any;
+  available: any; 
+}
  
 export interface FactionInfo { 
   description: string;
@@ -60,6 +139,7 @@ export interface FactionInfo {
   name: string;
   shortName: string;
 }
+
 
  
 export interface GroupInvite { 
@@ -71,6 +151,7 @@ export interface GroupInvite {
   invitedByName: string;
 }
 
+
  
 export interface MessageOfTheDay { 
   id: string;
@@ -78,9 +159,28 @@ export interface MessageOfTheDay {
   duration: number;
 }
 
+
+ 
+
+
+export interface UnspecifiedNotAllowed {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface RateLimitExceeded {
+  retry: number;
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface InternalAction {
+  code: FieldCodes;
+  message: string; 
+}
  
 export interface Order { 
-  created: Date;
+  created: string;
   createdBy: string;
   faction: Faction;
   formerMembers: OrderMember[];
@@ -88,17 +188,21 @@ export interface Order {
   members: OrderMember[];
   name: string;
   ranks: RankInfo[];
-  shardID: number;
+  shardID: string;
 }
+
+
  
 export interface OrderMember { 
   name: string;
   id: string;
-  joined: Date;
-  parted: Date;
+  joined: string;
+  parted: string;
   rank: string;
   additionalPermissions: string[];
 }
+
+
  
 export interface PatcherAlert { 
   id: string;
@@ -106,6 +210,7 @@ export interface PatcherAlert {
   utcDateEnd: string;
   utcDateStart: string;
 }
+
 
  
 export interface PatcherHeroContent { 
@@ -116,11 +221,13 @@ export interface PatcherHeroContent {
   utcDateStart: string;
 }
 
+
  
 export interface PermissionInfo { 
   description: string;
   name: string;
 }
+
 
  
 export interface PlayerAttributeOffset { 
@@ -128,6 +235,7 @@ export interface PlayerAttributeOffset {
   gender: Gender;
   attributeOffsets: { [key: string]: number; };
 }
+
 
  
 export interface PlayerStatAttribute { 
@@ -140,6 +248,7 @@ export interface PlayerStatAttribute {
   units: string;
 }
 
+
  
 export interface RaceInfo { 
   name: string;
@@ -148,12 +257,14 @@ export interface RaceInfo {
   id: Race;
 }
 
+
  
 export interface RankInfo { 
   level: number;
   name: string;
   permissions: string[];
 }
+
 
  
 export interface ServerModel { 
@@ -167,11 +278,14 @@ export interface ServerModel {
   status: ServerStatus;
 }
 
+
  
 export interface ServerPresence {
   address: string;
   zoneID: number; 
 }
+
+
  
 export interface ServerState { 
   controlGameState: ControlGameState;
@@ -192,6 +306,56 @@ export interface PlayerCounts {
   viking: number;
 }
 
+
+ 
+
+
+export interface UnspecifiedServiceUnavailable {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface DatabaseUnavailable {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface GroupServiceUnavailable {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface GameServiceUnavailable {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface PresenceServiceUnavailable {
+  code: FieldCodes;
+  message: string; 
+}
+ 
+
+
+export interface UnspecifiedAuthorizationDenied {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface APIKeyAuthorizationFailed {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface LoginTokenAuthorizationFailed {
+  code: FieldCodes;
+  message: string; 
+}
+
+export interface RealmRestricted {
+  code: FieldCodes;
+  message: string; 
+}
  
 export interface Warband { 
   banner: string;
@@ -199,8 +363,9 @@ export interface Warband {
   id: string;
   members: WarbandMember[];
   name: string;
-  shardID: number;
+  shardID: string;
 }
+
 
  
 export interface WarbandMember { 
@@ -223,6 +388,7 @@ export interface WarbandMember {
 }
 
 
+
 export interface CurrentMaxValue {
     current: number;
     maximum: number;
@@ -236,1155 +402,1189 @@ export interface Temperature {
 
   
 export enum AbilityActionStat { 
-  NONE = 0,
-  AIMTIME = 1,
-  AREASPREADRATE = 2,
-  ARMORCLASSINCREASE = 3,
-  ARMORCLASSREDUCTION = 4,
-  ARMORPENETRATIONINCREASE = 5,
-  ARMORPENETRATIONREDUCTION = 6,
-  BARRIERPOWER = 7,
-  BLEEDPIERCING = 8,
-  BLEEDSLASHING = 9,
-  BLOCKPERCENTMODIFIER = 10,
-  BLOODCOST = 11,
-  BLOODCOSTINCREASE = 12,
-  BLOODCOSTREDUCTION = 13,
-  BLOODINCREASE = 14,
-  BLOODINCREASEOVERTIME = 15,
-  BLOODREDUCTION = 16,
-  BLOODREDUCTIONOVERTIME = 17,
-  BLOODREGENERATIONDECREASE = 18,
-  BLOODREGENERATIONINCREASE = 19,
-  CAMOUFLAGETRANSITION = 20,
-  CHANNELTIME = 21,
-  CHARGEEXPEND = 22,
-  CHARGEINCREASE = 23,
-  CONCEALMENTINCREASE = 24,
-  CONEAOEDURATION = 25,
-  CONEAOERANGE = 26,
-  CONEAOESIZE = 27,
-  COOLDOWNINCREASE = 28,
-  COOLDOWNREDUCTION = 29,
-  COOLDOWNTIME = 30,
-  CUREWOUND = 31,
-  DAMAGE = 32,
-  DAMAGECRUSHING = 33,
-  DAMAGEPIERCING = 34,
-  DAMAGESLASHING = 35,
-  DEFLECTIONPOWER = 36,
-  DEFLECTIONRATEMODIFIER = 37,
-  DISRUPTIONDAMAGE = 38,
-  DISRUPTIONHEALTH = 39,
-  DOTAMOUNT = 40,
-  DOTDURATION = 41,
-  DURATION = 42,
-  FALLBACKDAMAGE = 43,
-  FORCEFIELDDURATION = 44,
-  FORCEFIELDMAGNITUDE = 45,
-  FORCEFIELDSIZE = 46,
-  HEALING = 47,
-  HEALINGEFFECTPOWER = 48,
-  HEALINGPOWERINCREASE = 49,
-  HEALINGPOWERREDUCTION = 50,
-  HEALTHCOST = 51,
-  HEALTHREDUCTION = 52,
-  HEALTHREDUCTIONOVERTIME = 53,
-  HEALTHREGENERATIONINCREASE = 54,
-  HEALTHREGENERATIONREDUCTION = 55,
-  HEALTHTRANSFER = 56,
-  HOTAMOUNT = 57,
-  HOTDURATION = 58,
-  IGNOREHEALINGREDUCTION = 59,
-  IGNORERESISTANCE = 60,
-  IMMOBILIZEDURATION = 61,
-  INCOMINGDAMAGEINCREASE = 62,
-  INCOMINGDAMAGEREDUCTION = 63,
-  INSTANT = 64,
-  INVULNERABILITYTIME = 65,
-  KNOCKBACKAMOUNT = 66,
-  KNOCKBACKANGLE = 67,
-  LIFEDRAIN = 68,
-  MAXHEALTHAMOUNT = 69,
-  MAXHEALTHDURATION = 70,
-  MELEEARC = 71,
-  MELEERANGE = 72,
-  MOVEMENTCANCELS = 73,
-  MOVEMENTSPEEDREDUCTION = 74,
-  OBJECTDAMAGE = 75,
-  OBJECTDURATION = 76,
-  OBJECTHEALTH = 77,
-  OBJECTSIZE = 78,
-  OBJECTSPEED = 79,
-  OBJECTTRACKING = 80,
-  OUTGOINGDAMAGEINCREASE = 81,
-  OUTGOINGDAMAGEREDUCTION = 82,
-  PANICINCREASE = 83,
-  PANICREDUCTION = 84,
-  PENETRATION = 85,
-  PENETRATIONINCREASE = 86,
-  PENETRATIONPIERCING = 87,
-  PENETRATIONREDUCTION = 88,
-  PENETRATIONSLASHING = 89,
-  PERIODICINTERVALSPERSECOND = 90,
-  POWERFALLOFFMAXDISTANCE = 91,
-  POWERFALLOFFMINDISTANCE = 92,
-  POWERFALLOFFREDUCTION = 93,
-  PREPARATIONINCREASE = 94,
-  PREPARATIONREDUCTION = 95,
-  PREPARATIONTIME = 96,
-  PROJECTILEARC = 97,
-  PROJECTILEDURATION = 98,
-  PROJECTILESIZE = 99,
-  PROJECTILESPEED = 100,
-  PROJECTILESPEEDINCREASE = 101,
-  PROJECTILESPEEDREDUCTION = 102,
-  PROJECTILETRACKING = 103,
-  RANGE = 104,
-  RECOVERYINCREASE = 105,
-  RECOVERYREDUCTION = 106,
-  RECOVERYTIME = 107,
-  REDIRECTDURATION = 108,
-  REDIRECTEFFECT = 109,
-  REMOVEALLYEFFECTPOWER = 110,
-  REMOVEENEMYEFFECT = 111,
-  RESETDEFLECTION = 112,
-  RESISTANCEINCREASE = 113,
-  RESISTANCEREDUCTION = 114,
-  SELFDAMAGE = 115,
-  SELFIMMOBILIZEDURATION = 116,
-  SELFSNAREAMOUNT = 117,
-  SELFSNAREDURATION = 118,
-  SNAREAMOUNT = 119,
-  SNAREDURATION = 120,
-  SPEEDAMOUNT = 121,
-  SPEEDDURATION = 122,
-  SPHEREAOEDURATION = 123,
-  SPHEREAOESIZE = 124,
-  STABILITYINCREASE = 125,
-  STABILITYREDUCTION = 126,
-  STAMINACOST = 127,
-  STAMINACOSTINCREASE = 128,
-  STAMINACOSTREDUCTION = 129,
-  STAMINADRAIN = 130,
-  STAMINADRAINOVERTIME = 131,
-  STAMINADRAINOVERTIMEDURATION = 132,
-  STAMINAINCREASEOVERTIME = 133,
-  STAMINAREDUCTIONOVERTIME = 134,
-  STAMINAREGENERATIONINCREASE = 135,
-  STAMINAREGENERATIONREDUCTION = 136,
-  STAMINARESTORE = 137,
-  STAMINARESTOREOVERTIME = 138,
-  STAMINARESTOREOVERTIMEDURATION = 139,
-  STANCETRANSITION = 140,
-  STOPSMOVEMENT = 141,
-  SUPPRESSBLEEDINGTIME = 142,
-  SUPPRESSBLOODREGENERATIONTIME = 143,
-  SUPPRESSDEFLECTIONTIME = 144,
-  SUPPRESSHEALTHREGENERATIONTIME = 145,
-  SUPPRESSMOVEMENTREDUCTIONTIME = 146,
-  SUPPRESSSTAMINAREGENERATIONTIME = 147,
-  SUPPRESSWOUNDTIME = 148,
-  TARGETLIMIT = 149,
-  TOUCHCONTACT = 150,
-  VEILSTEALTHTRANSITION = 151,
-  WALLDURATION = 152,
-  WALLHEALTH = 153,
-  OVERALLPOWER = 154
+  None = 0,
+  AimTime = 1,
+  AreaSpreadRate = 2,
+  ArmorClassIncrease = 3,
+  ArmorClassReduction = 4,
+  ArmorPenetrationIncrease = 5,
+  ArmorPenetrationReduction = 6,
+  BarrierPower = 7,
+  BleedPiercing = 8,
+  BleedSlashing = 9,
+  BlockPercentModifier = 10,
+  BloodCost = 11,
+  BloodCostIncrease = 12,
+  BloodCostReduction = 13,
+  BloodIncrease = 14,
+  BloodIncreaseOverTime = 15,
+  BloodReduction = 16,
+  BloodReductionOverTime = 17,
+  BloodRegenerationDecrease = 18,
+  BloodRegenerationIncrease = 19,
+  CamouflageTransition = 20,
+  ChannelTime = 21,
+  ChargeExpend = 22,
+  ChargeIncrease = 23,
+  ConcealmentIncrease = 24,
+  ConeAoeDuration = 25,
+  ConeAoeRange = 26,
+  ConeAoeSize = 27,
+  CooldownIncrease = 28,
+  CooldownReduction = 29,
+  CooldownTime = 30,
+  CureWound = 31,
+  Damage = 32,
+  DamageCrushing = 33,
+  DamagePiercing = 34,
+  DamageSlashing = 35,
+  DeflectionPower = 36,
+  DeflectionRateModifier = 37,
+  DisruptionDamage = 38,
+  DisruptionHealth = 39,
+  DotAmount = 40,
+  DotDuration = 41,
+  Duration = 42,
+  FallbackDamage = 43,
+  ForceFieldDuration = 44,
+  ForceFieldMagnitude = 45,
+  ForceFieldSize = 46,
+  Healing = 47,
+  HealingEffectPower = 48,
+  HealingPowerIncrease = 49,
+  HealingPowerReduction = 50,
+  HealthCost = 51,
+  HealthReduction = 52,
+  HealthReductionOverTime = 53,
+  HealthRegenerationIncrease = 54,
+  HealthRegenerationReduction = 55,
+  HealthTransfer = 56,
+  HotAmount = 57,
+  HotDuration = 58,
+  IgnoreHealingReduction = 59,
+  IgnoreResistance = 60,
+  ImmobilizeDuration = 61,
+  IncomingDamageIncrease = 62,
+  IncomingDamageReduction = 63,
+  Instant = 64,
+  InvulnerabilityTime = 65,
+  KnockbackAmount = 66,
+  KnockbackAngle = 67,
+  Lifedrain = 68,
+  MaxHealthAmount = 69,
+  MaxHealthDuration = 70,
+  MeleeArc = 71,
+  MeleeRange = 72,
+  MovementCancels = 73,
+  MovementSpeedReduction = 74,
+  ObjectDamage = 75,
+  ObjectDuration = 76,
+  ObjectHealth = 77,
+  ObjectSize = 78,
+  ObjectSpeed = 79,
+  ObjectTracking = 80,
+  OutgoingDamageIncrease = 81,
+  OutgoingDamageReduction = 82,
+  PanicIncrease = 83,
+  PanicReduction = 84,
+  Penetration = 85,
+  PenetrationIncrease = 86,
+  PenetrationPiercing = 87,
+  PenetrationReduction = 88,
+  PenetrationSlashing = 89,
+  PeriodicIntervalsPerSecond = 90,
+  PowerFalloffMaxDistance = 91,
+  PowerFalloffMinDistance = 92,
+  PowerFalloffReduction = 93,
+  PreparationIncrease = 94,
+  PreparationReduction = 95,
+  PreparationTime = 96,
+  ProjectileArc = 97,
+  ProjectileDuration = 98,
+  ProjectileSize = 99,
+  ProjectileSpeed = 100,
+  ProjectileSpeedIncrease = 101,
+  ProjectileSpeedReduction = 102,
+  Projectiletracking = 103,
+  Range = 104,
+  RecoveryIncrease = 105,
+  RecoveryReduction = 106,
+  RecoveryTime = 107,
+  RedirectDuration = 108,
+  RedirectEffect = 109,
+  RemoveAllyEffectPower = 110,
+  RemoveEnemyEffect = 111,
+  ResetDeflection = 112,
+  ResistanceIncrease = 113,
+  ResistanceReduction = 114,
+  SelfDamage = 115,
+  SelfImmobilizeDuration = 116,
+  SelfSnareAmount = 117,
+  SelfSnareDuration = 118,
+  SnareAmount = 119,
+  SnareDuration = 120,
+  SpeedAmount = 121,
+  SpeedDuration = 122,
+  SphereAoeDuration = 123,
+  SphereAoeSize = 124,
+  StabilityIncrease = 125,
+  StabilityReduction = 126,
+  StaminaCost = 127,
+  StaminaCostIncrease = 128,
+  StaminaCostReduction = 129,
+  StaminaDrain = 130,
+  StaminaDrainOverTime = 131,
+  StaminaDrainOverTimeDuration = 132,
+  StaminaIncreaseOverTime = 133,
+  StaminaReductionOverTime = 134,
+  StaminaRegenerationIncrease = 135,
+  StaminaRegenerationReduction = 136,
+  StaminaRestore = 137,
+  StaminaRestoreOverTime = 138,
+  StaminaRestoreOverTimeDuration = 139,
+  StanceTransition = 140,
+  StopsMovement = 141,
+  SuppressBleedingTime = 142,
+  SuppressBloodRegenerationTime = 143,
+  SuppressDeflectionTime = 144,
+  SuppressHealthRegenerationTime = 145,
+  SuppressMovementReductionTime = 146,
+  SuppressStaminaRegenerationTime = 147,
+  SuppressWoundTime = 148,
+  TargetLimit = 149,
+  TouchContact = 150,
+  VeilStealthTransition = 151,
+  WallDuration = 152,
+  WallHealth = 153,
+  OverallPower = 154
 }
  
   
 export enum AbilityActionStatValueType { 
-  COST = 0,
-  POWER = 1
+  Cost = 0,
+  Power = 1
 }
  
   
 export enum AbilityActionType { 
-  NONE = 0,
-  DAMAGE = 1,
-  DISRUPTION = 2,
+  None = 0,
+  Damage = 1,
+  Disruption = 2,
   DOT = 3,
-  HEALING = 4,
+  Healing = 4,
   HOT = 5,
-  STAMINADRAIN = 6,
-  STAMINADRAINOVERTIME = 7,
-  STAMINARESTORE = 8,
-  STAMINARESTOREOVERTIME = 9,
-  CUREWOUNDS = 10,
-  LIFEDRAIN = 11,
-  SNARE = 12,
-  IMMOBILIZE = 13,
-  KNOCKBACK = 14,
-  SPEED = 15,
-  MAXHEALTH = 16,
-  WALL = 17,
-  FIELD = 18,
-  PROJECTILE = 19,
-  SPHEREAOE = 20,
-  CONEAOE = 21,
-  STANCE = 22,
-  BLOCKING = 23
+  StaminaDrain = 6,
+  StaminaDrainOverTime = 7,
+  StaminaRestore = 8,
+  StaminaRestoreOverTime = 9,
+  CureWounds = 10,
+  Lifedrain = 11,
+  Snare = 12,
+  Immobilize = 13,
+  Knockback = 14,
+  Speed = 15,
+  MaxHealth = 16,
+  Wall = 17,
+  Field = 18,
+  Projectile = 19,
+  SphereAoE = 20,
+  ConeAoE = 21,
+  Stance = 22,
+  Blocking = 23
 }
  
   
 export enum AbilityComponentID { 
-  NONE = 0
+  None = 0
 }
  
   
 export enum AbilityComponentSubType { 
-  NONE = 0,
-  RUNE = 1,
-  SHAPE = 2,
-  RANGE = 4,
-  SIZE = 8,
-  INFUSION = 16,
-  FOCUS = 32,
-  TRANSPOSITION = 64,
-  MAGICALTYPE = 127,
-  WEAPON = 128,
-  STYLE = 256,
-  SPEED = 512,
-  POTENTIAL = 1024,
-  STANCE = 2048,
-  PHYSICALTYPE = 3968,
-  RANGEDWEAPON = 4096,
-  LOAD = 8192,
-  PREPARE = 16384,
-  DRAW = 32768,
-  AIM = 65536,
-  RANGEDTYPE = 126976,
-  VOICE = 131072,
-  INSTRUMENT = 262144,
-  SHOUT = 524288,
-  SONG = 1048576,
-  INFLECTION = 2097152,
-  TECHNIQUE = 4194304,
-  SOUNDTYPE = 8257536,
-  STONE = 8388608,
-  DELIVERY = 16777216,
-  STONETYPE = 25165824,
-  RUNESELF = 33554432,
-  SHAPESELF = 67108864,
-  MAGICSELF = 100663420,
-  RUNENOPARTS = 134217728,
-  MAGICNOPARTS = 134217854,
-  RUNESELFNOPARTS = 268435456,
-  MAGICSELFNOPARTS = 335544444,
-  TARGET = 536870912
+  None = 0,
+  Rune = 1,
+  Shape = 2,
+  Range = 4,
+  Size = 8,
+  Infusion = 16,
+  Focus = 32,
+  Transposition = 64,
+  MagicalType = 127,
+  Weapon = 128,
+  Style = 256,
+  Speed = 512,
+  Potential = 1024,
+  Stance = 2048,
+  PhysicalType = 3968,
+  RangedWeapon = 4096,
+  Load = 8192,
+  Prepare = 16384,
+  Draw = 32768,
+  Aim = 65536,
+  RangedType = 126976,
+  Voice = 131072,
+  Instrument = 262144,
+  Shout = 524288,
+  Song = 1048576,
+  Inflection = 2097152,
+  Technique = 4194304,
+  SoundType = 8257536,
+  Stone = 8388608,
+  Delivery = 16777216,
+  StoneType = 25165824,
+  RuneSelf = 33554432,
+  ShapeSelf = 67108864,
+  MagicSelf = 100663420,
+  RuneNoParts = 134217728,
+  MagicNoParts = 134217854,
+  RuneSelfNoParts = 268435456,
+  MagicSelfNoParts = 335544444,
+  Target = 536870912
 }
  
   
 export enum AbilityComponentType { 
-  PRIMARY = 0,
-  SECONDARY = 1,
-  OPTIONALMODIFIER = 2,
-  SPECIALMODAL = 3,
-  INDEPENDANTMODAL = 4
+  Primary = 0,
+  Secondary = 1,
+  OptionalModifier = 2,
+  SpecialModal = 3,
+  IndependantModal = 4
 }
  
   
 export enum AbilityLifetimeEvent { 
-  BEGIN = 0,
-  HIT = 1
+  Begin = 0,
+  Hit = 1
 }
  
   
 export enum AbilityTag { 
   SYSTEM = 0,
-  NONAGGRESSIVE = 1,
-  NONINTERACTABLE = 2,
-  NOMAGIC = 3,
-  SLASHING = 4,
-  PIERCING = 5,
-  CRUSHING = 6,
-  WEAPON = 7,
-  STYLE = 8,
-  SPEED = 9,
-  POTENTIAL = 10,
-  VOICE = 11,
-  SHOUT = 12,
-  INFLECTION = 13,
-  AIR = 14,
-  EARTH = 15,
-  FIRE = 16,
-  WATER = 17,
-  BLAST = 18,
-  LAVA = 19,
-  MUD = 20,
-  SAND = 21,
-  STEAM = 22,
-  SPRAY = 23,
-  ACID = 24,
-  POISON = 25,
-  DISEASE = 26,
-  LIGHTNING = 27,
-  PRIMALLIGHTNING = 28,
-  GROUNDEDLIGHTNING = 29,
-  CELESTIALLIGHTNING = 30,
-  CHAINLIGHTNING = 31,
-  FROST = 32,
-  LIFE = 33,
-  MIND = 34,
-  SPIRIT = 35,
-  RADIANT = 36,
-  DEATH = 37,
-  SHADOW = 38,
-  CHAOS = 39,
-  VOID = 40,
-  ARCANE = 41,
-  HEALING = 42,
-  RESTORATION = 43,
-  LIFEDRAIN = 44,
-  SWIFTNESS = 45,
-  DISPLACEMENT = 46,
-  MAGIC = 47,
-  RUNE = 48,
-  SHAPE = 49,
-  RANGE = 50,
-  SIZE = 51,
-  INFUSION = 52,
-  FOCUS = 53,
-  ELIXIR = 54,
-  POTION = 55,
-  BOTTLE = 56,
-  STONE = 57,
-  SELF = 58,
-  DIRECT = 59,
-  TOUCH = 60,
-  DART = 61,
-  BALL = 62,
-  CLOUD = 63,
-  FOUNTAIN = 64,
-  WALL = 65,
-  FIELD = 66,
-  WAVE = 67,
-  POOL = 68,
-  CONE = 69,
-  BLOCKING = 70,
-  COUNTERATTACK = 71,
-  TARGETING = 72,
-  TRAUMA = 73,
-  WOUND = 74,
-  ATTACK = 75,
-  MELEE = 76,
-  RANGED = 77,
-  BOW = 78,
-  SHIELD = 79,
-  CHANNEL = 80,
-  STANCE = 81,
-  UNBLOCKABLE = 82,
-  POSITIVE = 83,
-  NEGATIVE = 84,
-  BLEEDING = 85,
-  COMBATSTANCE = 86,
-  TRAVELSTANCE = 87,
-  TESTTAGA = 88,
-  TESTTAGB = 89,
-  TESTTAGC = 90,
-  TESTTAGD = 91,
-  TESTTAGE = 92,
-  HEALINGREDUCTION = 93,
-  REGROWTHELIXIR = 94,
-  SHAREDRESILIENCE = 95,
-  VIOLENTFEEDBACK = 96,
-  SELFANOINTMENT = 97,
-  DELIVERY = 98,
-  SELFRUNE = 99,
-  SELFSHAPE = 100,
-  RUNENOPARTS = 101,
-  SELFRUNENOPARTS = 102,
+  NonAggressive = 1,
+  NonInteractable = 2,
+  NoMagic = 3,
+  Slashing = 4,
+  Piercing = 5,
+  Crushing = 6,
+  Weapon = 7,
+  Style = 8,
+  Speed = 9,
+  Potential = 10,
+  Voice = 11,
+  Shout = 12,
+  Inflection = 13,
+  Air = 14,
+  Earth = 15,
+  Fire = 16,
+  Water = 17,
+  Blast = 18,
+  Lava = 19,
+  Mud = 20,
+  Sand = 21,
+  Steam = 22,
+  Spray = 23,
+  Acid = 24,
+  Poison = 25,
+  Disease = 26,
+  Lightning = 27,
+  PrimalLightning = 28,
+  GroundedLightning = 29,
+  CelestialLightning = 30,
+  ChainLightning = 31,
+  Frost = 32,
+  Life = 33,
+  Mind = 34,
+  Spirit = 35,
+  Radiant = 36,
+  Death = 37,
+  Shadow = 38,
+  Chaos = 39,
+  Void = 40,
+  Arcane = 41,
+  Healing = 42,
+  Restoration = 43,
+  Lifedrain = 44,
+  Swiftness = 45,
+  Displacement = 46,
+  Magic = 47,
+  Rune = 48,
+  Shape = 49,
+  Range = 50,
+  Size = 51,
+  Infusion = 52,
+  Focus = 53,
+  Elixir = 54,
+  Potion = 55,
+  Bottle = 56,
+  Stone = 57,
+  Self = 58,
+  Direct = 59,
+  Touch = 60,
+  Dart = 61,
+  Ball = 62,
+  Cloud = 63,
+  Fountain = 64,
+  Wall = 65,
+  Field = 66,
+  Wave = 67,
+  Pool = 68,
+  Cone = 69,
+  Blocking = 70,
+  CounterAttack = 71,
+  Targeting = 72,
+  Trauma = 73,
+  Wound = 74,
+  Attack = 75,
+  Melee = 76,
+  Ranged = 77,
+  Bow = 78,
+  Shield = 79,
+  Channel = 80,
+  Stance = 81,
+  Unblockable = 82,
+  Positive = 83,
+  Negative = 84,
+  Bleeding = 85,
+  CombatStance = 86,
+  TravelStance = 87,
+  TestTagA = 88,
+  TestTagB = 89,
+  TestTagC = 90,
+  TestTagD = 91,
+  TestTagE = 92,
+  HealingReduction = 93,
+  RegrowthElixir = 94,
+  SharedResilience = 95,
+  ViolentFeedback = 96,
+  SelfAnointment = 97,
+  Delivery = 98,
+  SelfRune = 99,
+  SelfShape = 100,
+  RuneNoParts = 101,
+  SelfRuneNoParts = 102,
   COUNT = 103
 }
  
    
 export enum AccessType { 
-  INVALID = -1,
-  PUBLIC = 0,
-  BETA3 = 1,
-  BETA2 = 2,
-  BETA1 = 3,
-  ALPHA = 4,
-  INTERNALTEST = 5,
-  EMPLOYEES = 6
+  Invalid = -1,
+  Public = 0,
+  Beta3 = 1,
+  Beta2 = 2,
+  Beta1 = 3,
+  Alpha = 4,
+  InternalTest = 5,
+  Employees = 6
 }
 
   
 export enum AimingMode { 
-  AUTOTARGET = 0,
-  AIMEDDIRECTION = 1
+  AutoTarget = 0,
+  AimedDirection = 1
 }
  
   
 export enum AnimSetID { 
-  TRAVEL = 0
+  Travel = 0
 }
  
   
 export enum Archetype { 
-  FIREMAGE = 0,
-  EARTHMAGE = 1,
-  WATERMAGE = 2,
-  FIGHTER = 3,
-  HEALER = 4,
-  MELEECOMBATTEST = 5,
-  ARCHERTEST = 6,
-  BLACKKNIGHT = 7,
-  FIANNA = 8,
-  MJOLNIR = 9,
-  PHYSICIAN = 10,
-  EMPATH = 11,
-  STONEHEALER = 12,
-  BLACKGUARD = 13,
-  FORESTSTALKER = 14,
-  WINTERSSHADOW = 15,
-  ANY = 16
+  FireMage = 0,
+  EarthMage = 1,
+  WaterMage = 2,
+  Fighter = 3,
+  Healer = 4,
+  MeleeCombatTest = 5,
+  ArcherTest = 6,
+  BlackKnight = 7,
+  Fianna = 8,
+  Mjolnir = 9,
+  Physician = 10,
+  Empath = 11,
+  Stonehealer = 12,
+  Blackguard = 13,
+  ForestStalker = 14,
+  WintersShadow = 15,
+  Any = 16
 }
  
  
 export enum BackerLevel { 
-  NONE = 0,
-  BUILDER = 10,
-  FOUNDER = 20
+  none = 0,
+  builder = 10,
+  founder = 20
 }
 
 export enum Permissions { 
-  CSEEMPLOYEE = 0,
-  ACCOUNTEDITOR = 1,
-  ACCOUNTVIEWER = 2,
-  OZEDITOR = 3,
-  INTERNALTESTER = 4,
-  TRUSTEDTESTER = 5,
-  MODSQUAD = 6,
-  OLDSCHOOLGAMING = 7,
-  BUILDERSBRIGADE = 8
+  CSEEmployee = 0,
+  AccountEditor = 1,
+  AccountViewer = 2,
+  OzEditor = 3,
+  InternalTester = 4,
+  TrustedTester = 5,
+  ModSquad = 6,
+  OldSchoolGaming = 7,
+  BuildersBrigade = 8
 }
   
   
 export enum BoonBaneID { 
-  NONE = 0
+  None = 0
 }
 
 export enum BoonBaneType { 
-  BOON = 0,
-  BANE = 1
+  Boon = 0,
+  Bane = 1
 }
 
 export enum BoonBaneCategory { 
-  GENERAL = 0,
-  FACTION = 1,
-  RACE = 2,
-  ARCHETYPE = 3
+  General = 0,
+  Faction = 1,
+  Race = 2,
+  Archetype = 3
 }
  
   
 export enum CASAbilityParams { 
-  INVALID = 0,
-  DURATION = 1,
-  STARTTIME = 2,
-  VFXCOMPONENT = 3,
+  Invalid = 0,
+  Duration = 1,
+  StartTime = 2,
+  VFXComponent = 3,
   CASID = 4,
-  TARGETTYPE = 5,
-  TARGETBONE = 6,
-  AUDIOAKID = 7,
-  TRACKINGMODE = 8,
-  TRACKINGSTRENGTH = 9,
-  MODELID = 10,
-  CANCELLEDBYMOVEMENT = 11,
-  STOPSMOVEMENT = 12,
-  CANCELLATIONTIME = 13,
-  PREPARATIONTIME = 14,
-  RECOVERYTIME = 15,
-  HASPROJECTILE = 16,
-  MAXTRIGGERHOLDTIME = 17,
-  ALWAYSAIMED = 18,
-  AIMINGOPTIONAL = 19,
-  NEVERAIMED = 20,
-  ANIMACTIONINDEX = 21,
-  HITNOTE = 22,
-  GEOMETRYTYPE = 23,
-  GEOMETRYBOXX = 24,
-  GEOMETRYBOXY = 25,
-  GEOMETRYBOXZ = 26,
-  GEOMETRYRADIUS = 27,
-  GEOMETRYHEIGHT = 28,
-  GEOMETRYDEPTH = 29,
-  TARGETGROUP = 30,
-  TARGETREQUIRED = 31,
-  TARGETINGVOLUMETYPE = 32,
-  TARGETINGRADIUS = 33,
-  TARGETINGCONEANGLE = 34
+  TargetType = 5,
+  TargetBone = 6,
+  AudioAKID = 7,
+  TrackingMode = 8,
+  TrackingStrength = 9,
+  ModelID = 10,
+  CancelledByMovement = 11,
+  StopsMovement = 12,
+  CancellationTime = 13,
+  PreparationTime = 14,
+  RecoveryTime = 15,
+  HasProjectile = 16,
+  MaxTriggerHoldTime = 17,
+  AlwaysAimed = 18,
+  AimingOptional = 19,
+  NeverAimed = 20,
+  AnimActionIndex = 21,
+  HitNote = 22,
+  GeometryType = 23,
+  GeometryBoxX = 24,
+  GeometryBoxY = 25,
+  GeometryBoxZ = 26,
+  GeometryRadius = 27,
+  GeometryHeight = 28,
+  GeometryDepth = 29,
+  TargetGroup = 30,
+  TargetRequired = 31,
+  TargetingVolumeType = 32,
+  TargetingRadius = 33,
+  TargetingConeAngle = 34
 }
  
   
 export enum CASEffectsTrigger { 
-  NONE = 0,
-  TIME = 1,
-  HITWALL = 2,
-  HITPLAYER = 3,
-  BEGIN = 4,
-  TRIGGERTIME = 5,
-  TRIGGERHELD = 6,
-  CANCELED = 7,
-  ENDED = 8
+  None = 0,
+  Time = 1,
+  HitWall = 2,
+  HitPlayer = 3,
+  Begin = 4,
+  TriggerTime = 5,
+  TriggerHeld = 6,
+  Canceled = 7,
+  Ended = 8
 }
  
   
 export enum CASEffectsType { 
-  NONE = 0,
-  PARTICLE = 1,
-  SOUND = 2,
-  ANIMATION = 3,
-  ABILITY = 4,
-  GEOMETRY = 5,
-  MODEL = 6,
-  TARGETING = 7
+  None = 0,
+  Particle = 1,
+  Sound = 2,
+  Animation = 3,
+  Ability = 4,
+  Geometry = 5,
+  Model = 6,
+  Targeting = 7
 }
  
   
 export enum CASEntityType { 
-  STANDARD = 0,
-  PROJECTILE = 1
+  Standard = 0,
+  Projectile = 1
 }
  
   
 export enum CASParamDataType { 
-  INVALID = 0,
-  INT32 = 1,
-  INT64 = 2,
-  FLOAT = 3,
-  BOOL = 4
-}
- 
-  
-export enum ChangedRoleResultStatus { 
-  MEMBERALREADYINROLE = 6
+  Invalid = 0,
+  Int32 = 1,
+  Int64 = 2,
+  Float = 3,
+  Bool = 4
 }
  
   
 export enum DamageType { 
-  NONE = 0,
-  SLASHING = 1,
-  PIERCING = 2,
-  CRUSHING = 4,
-  ACID = 8,
-  POISON = 16,
-  DISEASE = 32,
-  EARTH = 64,
-  WATER = 128,
-  FIRE = 256,
-  AIR = 512,
-  LIGHTNING = 1024,
-  FROST = 2048,
-  PHYSICSIMPACT = 4096,
-  WEAPON = 7,
-  PHYSICALTYPES = 8191,
-  LIFE = 8192,
-  MIND = 16384,
-  SPIRIT = 32768,
-  RADIANT = 65536,
-  DEATH = 131072,
-  SHADOW = 262144,
-  CHAOS = 524288,
-  VOID = 1048576,
-  ARCANE = 2097152,
-  MAGICALTYPES = 4186112,
-  ALL = -1,
+  None = 0,
+  Slashing = 1,
+  Piercing = 2,
+  Crushing = 4,
+  Acid = 8,
+  Poison = 16,
+  Disease = 32,
+  Earth = 64,
+  Water = 128,
+  Fire = 256,
+  Air = 512,
+  Lightning = 1024,
+  Frost = 2048,
+  Life = 8192,
+  Mind = 16384,
+  Spirit = 32768,
+  Radiant = 65536,
+  Death = 131072,
+  Shadow = 262144,
+  Chaos = 524288,
+  Void = 1048576,
+  Arcane = 2097152,
+  Physical = 7,
+  Elemental = 4032,
+  Light = 122880,
+  Dark = 1966080,
+  Other = 2097208,
+  All = -1,
   SYSTEM = -2147483648
 }
  
   
 export enum DBVarType { 
-  INT8 = 0,
-  INT16 = 1,
-  INT32 = 2,
-  INT64 = 3,
-  UINT8 = 4,
-  UINT16 = 5,
-  UINT32 = 6,
-  UINT64 = 7,
-  FLOAT = 8,
-  DOUBLE = 9,
-  CHAR = 10,
-  STRING = 11,
-  BOOL = 12
+  Int8 = 0,
+  Int16 = 1,
+  Int32 = 2,
+  Int64 = 3,
+  UInt8 = 4,
+  UInt16 = 5,
+  UInt32 = 6,
+  UInt64 = 7,
+  Float = 8,
+  Double = 9,
+  Char = 10,
+  String = 11,
+  Bool = 12
+}
+ 
+  
+export enum EntitySourceKind { 
+  Command = 0,
+  Placeable = 1,
+  Terrain = 2
 }
  
   
 export enum EquipmentModelSlots { 
-  TABARD = 0,
-  HAIR = 1,
-  HEADBACK = 2,
-  FACEUPPER = 3,
-  FACELOWER = 4,
-  BEARD = 5,
-  NECK = 6,
-  CHEST = 7,
-  TORSO = 8,
-  LEFTPAULDRON = 9,
-  RIGHTPAULDRON = 10,
-  LEFTUPPERARM1 = 11,
-  LEFTUPPERARM2 = 12,
-  LEFTLOWERARM1 = 13,
-  LEFTLOWERARM2 = 14,
-  LEFTHAND = 15,
-  RIGHTUPPERARM1 = 16,
-  RIGHTUPPERARM2 = 17,
-  RIGHTLOWERARM1 = 18,
-  RIGHTLOWERARM2 = 19,
-  RIGHTHAND = 20,
-  BELT = 21,
-  PELVIS = 22,
-  UPPERLEG1 = 23,
-  UPPERLEG2 = 24,
-  LOWERLEG1 = 25,
-  LOWERLEG2 = 26,
-  FOOT = 27,
-  KNEE = 28,
-  UPPERCLOAK1 = 29,
-  UPPERCLOAK2 = 30,
-  LOWERCLOAK1 = 31,
-  LOWERCLOAK2 = 32,
-  RIGHTELBOW = 33,
-  LEFTELBOW = 34,
-  TASET = 35,
-  HELMET = 36,
-  CAPE = 37,
-  HORNS = 38,
-  COLLAR = 39
+  Tabard = 0,
+  Hair = 1,
+  HeadBack = 2,
+  FaceUpper = 3,
+  FaceLower = 4,
+  Beard = 5,
+  Neck = 6,
+  Chest = 7,
+  Torso = 8,
+  LeftPauldron = 9,
+  RightPauldron = 10,
+  LeftUpperArm1 = 11,
+  LeftUpperArm2 = 12,
+  LeftLowerArm1 = 13,
+  LeftLowerArm2 = 14,
+  LeftHand = 15,
+  RightUpperArm1 = 16,
+  RightUpperArm2 = 17,
+  RightLowerArm1 = 18,
+  RightLowerArm2 = 19,
+  RightHand = 20,
+  Belt = 21,
+  Pelvis = 22,
+  UpperLeg1 = 23,
+  UpperLeg2 = 24,
+  LowerLeg1 = 25,
+  LowerLeg2 = 26,
+  Foot = 27,
+  Knee = 28,
+  UpperCloak1 = 29,
+  UpperCloak2 = 30,
+  LowerCloak1 = 31,
+  LowerCloak2 = 32,
+  RightElbow = 33,
+  LeftElbow = 34,
+  Taset = 35,
+  Helmet = 36,
+  Cape = 37,
+  Horns = 38,
+  Collar = 39
 }
  
   
 export enum EXETypes { 
-  NONE = 0,
+  None = 0,
   X86 = 1,
   X64 = 2
 }
  
   
 export enum Faction { 
-  FACTIONLESS = 0,
+  Factionless = 0,
   TDD = 1,
-  VIKING = 2,
-  ARTHURIAN = 3,
+  Viking = 2,
+  Arthurian = 3,
   COUNT = 4
 }
  
+ 
+export enum FieldCodes { 
+  UnspecifiedAuthorizationDenied = 1000,
+  APIKeyAuthorizationFailed = 1001,
+  LoginTokenAuthorizationFailed = 1002,
+  RealmRestricted = 1003,
+  UnspecifiedNotAllowed = 2000,
+  RateLimitExceeded = 2001,
+  InternalAction = 2002,
+  UnspecifiedRequestError = 3000,
+  InvalidModel = 30001,
+  UnspecifiedExecutionError = 4000,
+  UnhandledExecutionException = 4001,
+  DoesNotExist = 4002,
+  UserStateConflict = 4003,
+  InsufficientResource = 4004,
+  UnspecifiedServiceUnavailable = 5000,
+  DatabaseUnavailable = 5001,
+  GroupServiceUnavailable = 5002,
+  GameServiceUnavailable = 5003,
+  PresenceServiceUnavailable = 5004
+}
+  
   
 export enum GearSlot { 
-  NONE = 0,
-  CHEST = 1,
-  LEFTHAND = 2,
-  RIGHTHAND = 4,
-  PANTS = 8,
-  BOOTS = 16,
-  LEFTGLOVE = 32,
-  RIGHTGLOVE = 64,
-  HELMET = 128,
-  BELT = 256,
-  SKIRT = 512,
-  TABARD = 1024,
-  CAPE = 2048,
+  None = 0,
+  Chest = 1,
+  LeftHand = 2,
+  RightHand = 4,
+  Pants = 8,
+  Boots = 16,
+  LeftGlove = 32,
+  RightGlove = 64,
+  Helmet = 128,
+  Belt = 256,
+  Skirt = 512,
+  Tabard = 1024,
+  Cape = 2048,
   NUMSLOTS = 12,
-  USEONESLOT = 4096,
-  NUMVALUES = 8192
+  NUMVALUES = 4096
 }
  
   
 export enum Gender { 
-  NONE = 0,
-  MALE = 1,
-  FEMALE = 2
-}
- 
-  
-export enum GroupMemberType { 
-  CHARACTER = 0,
-  WARBAND = 1,
-  ORDER = 2,
-  ALLIANCE = 3
+  None = 0,
+  Male = 1,
+  Female = 2
 }
  
   
 export enum GroupType { 
-  WARBAND = 0,
-  ORDER = 1,
-  ALLIANCE = 2,
-  CAMPAIGN = 3
+  Warband = 0,
+  Order = 1,
+  Alliance = 2,
+  Campaign = 3
 }
  
   
-export enum InfoAuthorizationType { 
-  NONE = 0,
-  PUBLIC = 2,
-  REALM = 4,
-  CAMPAIGN = 8,
-  ALLIANCE = 16,
-  ORDER = 32,
-  WARBAND = 64,
-  MEMBER = -1
+export enum InviteStatus { 
+  Active = 0,
+  Accepted = 1,
+  Declined = 2,
+  Rescinded = 3,
+  Expired = 4
 }
  
   
 export enum ItemType { 
-  NONE = 0,
-  EQUIPPABLE = 1,
-  RESOURCE = 2
+  None = 0,
+  Equippable = 1,
+  Resource = 2
 }
  
  
 export enum LanguageCode { 
-  UNASSIGNED = 0,
-  EN_US = 1,
-  EN_GB = 2,
-  EN_AU = 3,
-  DE_DE = 4
+  Unassigned = 0,
+  en_US = 1,
+  en_GB = 2,
+  en_AU = 3,
+  de_DE = 4
 }
   
   
 export enum MemberActionType { 
-  CREATED = 0,
-  DISBANDED = 1,
-  JOINED = 2,
-  QUIT = 3,
-  KICKED = 4,
-  LOGGEDIN = 5,
-  LOGGEDOUT = 6,
-  INVITED = 7,
-  CHARACTERACCEPTEDINVITE = 8,
-  CHANGEDROLE = 9,
-  CHANGEDRANK = 10,
-  UPDATEDROLEPERMISSIONS = 11,
-  UPDATEDRANKPERMISSIONS = 12,
-  CHANGEDNAME = 13,
-  PERMISSIONSCHANGED = 14,
-  CREATERANK = 15,
-  REMOVERANK = 16,
-  RENAMERANK = 17,
-  ADDRANKPERMISSIONS = 18,
-  REMOVERANKPERMISSIONS = 19,
-  CHANGERANKLEVEL = 20,
-  TRANSFEREDOWNERSHIP = 21,
-  SHAREDCOUNT = 22,
-  ABANDONDED = 22,
-  WARBANDCOUNT = 23,
-  CHANGEDISPLAYORDER = 24,
-  SETLEADER = 25,
-  DEPOSITEDITEMINSTASH = 22,
-  WITHDREWITEMFROMSTASH = 23,
-  DEPOSITEDCURRENCYINSTASH = 24,
-  WITHDREWCURRENCYFROMSTASH = 25,
-  ORDERCOUNT = 26,
-  INVITEDORDER = 22,
-  ORDERACCEPTEDINVITE = 23,
-  ALLIANCESHAREDCOUNT = 24,
-  ALLIANCECOUNT = 24,
-  INVITEDALLIANCE = 24,
-  ALLIANCEACCEPTEDINVITE = 25,
-  INVITEDWARBAND = 26,
-  WARBANDACCEPTEDINVITE = 27,
-  CAMPAIGNCOUNT = 28
+  Created = 0,
+  Disbanded = 1,
+  CharacterJoined = 2,
+  GroupJoined = 3,
+  CharacterQuit = 4,
+  GroupQuit = 5,
+  CharacterKicked = 6,
+  GroupKicked = 7,
+  CharacterInvited = 8,
+  GroupInvited = 9,
+  CharacterAcceptedInvite = 10,
+  ChangedRole = 11,
+  ChangedRank = 12,
+  UpdatedRolePermissions = 13,
+  UpdatedRankPermissions = 14,
+  ChangedName = 15,
+  CharacterPermissionsChanged = 16,
+  GroupPermissionsChanged = 17,
+  CreateRank = 18,
+  RemoveRank = 19,
+  RenameRank = 20,
+  AddRankPermissions = 21,
+  RemoveRankPermissions = 22,
+  ChangeRankLevel = 23,
+  TransferedOwnership = 24,
+  SharedCount = 25,
+  Abandonded = 25,
+  WarbandCount = 26,
+  ChangeDisplayOrder = 27,
+  SetLeader = 28,
+  DepositedItemInStash = 25,
+  WithdrewItemFromStash = 26,
+  DepositedCurrencyInStash = 27,
+  WithdrewCurrencyFromStash = 28,
+  OrderCount = 29,
+  InvitedOrder = 25,
+  OrderAcceptedInvite = 26,
+  AllianceSharedCount = 27,
+  AllianceCount = 27,
+  InvitedAlliance = 27,
+  AllianceAcceptedInvite = 28,
+  InvitedWarband = 29,
+  WarbandAcceptedInvite = 30,
+  CampaignCount = 31
 }
  
   
 export enum PatchPermissions { 
-  PUBLIC = 0,
-  ALLBACKERS = 1,
-  INTERNALTEST = 2,
-  DEVELOPMENT = 4,
-  ALPHA = 8,
-  BETA1 = 16,
-  BETA2 = 32,
-  BETA3 = 64
+  Public = 0,
+  AllBackers = 1,
+  InternalTest = 2,
+  Development = 4,
+  Alpha = 8,
+  Beta1 = 16,
+  Beta2 = 32,
+  Beta3 = 64
+}
+ 
+  
+export enum PermissionRegionType { 
+  None = 0,
+  Self = 2,
+  Friends = 4,
+  MutualFriends = 8,
+  TempWarband = 16,
+  PermanentWarband = 32,
+  Order = 64,
+  Alliance = 128,
+  Campaign = 256,
+  Realm = 512,
+  AllRealm = 1022,
+  Public = 1024,
+  All = -1
 }
  
  
 export enum Platforms { 
-  UNDEFINED = 0,
-  WINDOWS = 1,
-  MAC = 2,
-  IPHONE = 3,
-  IPAD = 4,
-  ANDROID = 5,
-  WEB = 6
+  Undefined = 0,
+  Windows = 1,
+  Mac = 2,
+  iPhone = 3,
+  iPad = 4,
+  Android = 5,
+  Web = 6
 }
 
 export enum Subset { 
-  NONE = 0,
-  PAID = 1,
-  FREE = 2
+  None = 0,
+  Paid = 1,
+  Free = 2
 }
   
   
 export enum PlayerStat { 
-  STRENGTH = 0,
-  DEXTERITY = 1,
-  AGILITY = 2,
-  VITALITY = 3,
-  ENDURANCE = 4,
-  ATTUNEMENT = 5,
-  WILL = 6,
-  FAITH = 7,
-  RESONANCE = 8,
-  EYESIGHT = 9,
-  HEARING = 10,
-  PRESENCE = 11,
-  CLARITY = 12,
-  AFFINITY = 13,
-  MASS = 14,
-  MAXMOVESPEED = 15,
-  MOVEACCELERATION = 16,
-  MAXTURNSPEED = 17,
-  VISION = 18,
-  DETECTION = 19,
-  ENCUMBRANCE = 20,
-  ENCUMBRANCEREDUCTION = 21,
-  CARRYCAPACITY = 22,
-  MAXPANIC = 23,
-  PANICDECAY = 24,
-  MAXHP = 25,
-  HEALTHREGENERATION = 26,
-  MAXSTAMINA = 27,
-  STAMINAREGENERATION = 28,
-  ABILITYPREPARATIONSPEED = 29,
-  ABILITYRECOVERYSPEED = 30,
-  COOLDOWNSPEED = 31,
-  AGE = 32,
-  CONCEALMENT = 33,
-  VEILSUBTLETY = 34,
-  VEILRESIST = 35,
-  HEALINGRECEIVEDBONUS = 36,
-  ENHANCEMENTDURATION = 37,
-  HEATTOLERANCE = 38,
-  COLDTOLERANCE = 39,
-  MAXBLOOD = 40,
-  BLOODREGENERATION = 41,
-  EFFECTPOWERBONUS = 42,
-  NONE = 43,
+  Strength = 0,
+  Dexterity = 1,
+  Agility = 2,
+  Vitality = 3,
+  Endurance = 4,
+  Attunement = 5,
+  Will = 6,
+  Faith = 7,
+  Resonance = 8,
+  Eyesight = 9,
+  Hearing = 10,
+  Presence = 11,
+  Clarity = 12,
+  Affinity = 13,
+  Mass = 14,
+  MaxMoveSpeed = 15,
+  MoveAcceleration = 16,
+  MaxTurnSpeed = 17,
+  Vision = 18,
+  Detection = 19,
+  Encumbrance = 20,
+  EncumbranceReduction = 21,
+  CarryCapacity = 22,
+  MaxPanic = 23,
+  PanicDecay = 24,
+  MaxHP = 25,
+  HealthRegeneration = 26,
+  MaxStamina = 27,
+  StaminaRegeneration = 28,
+  AbilityPreparationSpeed = 29,
+  AbilityRecoverySpeed = 30,
+  CooldownSpeed = 31,
+  Age = 32,
+  Concealment = 33,
+  VeilSubtlety = 34,
+  VeilResist = 35,
+  HealingReceivedBonus = 36,
+  EnhancementDuration = 37,
+  HeatTolerance = 38,
+  ColdTolerance = 39,
+  MaxBlood = 40,
+  BloodRegeneration = 41,
+  EffectPowerBonus = 42,
+  None = 43,
   COUNT = 43
 }
  
   
 export enum PlayerStatType { 
-  NONE = 0,
-  PRIMARY = 1,
-  SECONDARY = 2,
-  DERIVED = 3,
-  HIDDEN = 4
+  None = 0,
+  Primary = 1,
+  Secondary = 2,
+  Derived = 3,
+  Hidden = 4
 }
  
   
 export enum PlotType { 
-  SMALL = 0,
-  MEDIUM = 1,
-  LARGE = 2,
-  CUSTOM = 3
+  Small = 0,
+  Medium = 1,
+  Large = 2,
+  Custom = 3
 }
 
 export enum BuildPermissions { 
-  NONE = 0,
-  SELF = 0,
-  GROUP = 1,
-  FRIENDS = 2,
-  GUILD = 4,
-  REALM = 8,
-  ALL = 16,
+  None = 0,
+  Self = 0,
+  Group = 1,
+  Friends = 2,
+  Guild = 4,
+  Realm = 8,
+  All = 16,
   COUNT = 32
 }
 
 export enum PlotSource { 
-  COMMAND = 0,
-  COG = 1,
+  Command = 0,
+  Cog = 1,
   COUNT = 2
 }
  
  
 export enum PrereleaseAccess { 
-  NONE = 0,
-  BETA3 = 1,
-  BETA2 = 2,
-  BETA1 = 3,
-  ALPHA = 4,
-  INTERNALTESTING = 5
+  none = 0,
+  beta3 = 1,
+  beta2 = 2,
+  beta1 = 3,
+  alpha = 4,
+  internalTesting = 5
 }
 
 export enum ForumAccess { 
-  FOUNDERREADONLY = 0,
-  FOUNDER = 1,
-  INTERNALTEST = 2,
-  BUILDER = 3
+  founderReadOnly = 0,
+  founder = 1,
+  internalTest = 2,
+  builder = 3
 }
   
   
 export enum ProjectileTrackingMode { 
-  NONE = 0,
-  LARGEANGLE = 1,
-  FULL = 2,
-  HORIZONTAL = 3,
-  ATTRACTOR = 4,
-  GRAVITY = 5
+  None = 0,
+  LargeAngle = 1,
+  Full = 2,
+  Horizontal = 3,
+  Attractor = 4,
+  Gravity = 5
 }
  
   
 export enum Race { 
-  TUATHA = 0,
-  HAMADRYAD = 1,
-  LUCHORPAN = 2,
-  FIRBOG = 3,
-  VALKYRIE = 4,
-  HELBOUND = 5,
-  FROSTGIANT = 6,
-  DVERGR = 7,
-  STRM = 8,
-  CAITSITH = 9,
-  GOLEM = 10,
-  GARGOYLE = 11,
-  STORMRIDER = 12,
-  STORMRIDERT = 13,
-  STORMRIDERV = 14,
-  HUMANMALEV = 15,
-  HUMANMALEA = 16,
-  HUMANMALET = 17,
-  PICT = 18,
-  ANY = 19
+  Tuatha = 0,
+  Hamadryad = 1,
+  Luchorpan = 2,
+  Firbog = 3,
+  Valkyrie = 4,
+  Helbound = 5,
+  FrostGiant = 6,
+  Dvergr = 7,
+  Strm = 8,
+  CaitSith = 9,
+  Golem = 10,
+  Gargoyle = 11,
+  StormRider = 12,
+  StormRiderT = 13,
+  StormRiderV = 14,
+  HumanMaleV = 15,
+  HumanMaleA = 16,
+  HumanMaleT = 17,
+  Pict = 18,
+  Any = 19
 }
  
  
 export enum RedeemError { 
-  SUCCESS = 0,
-  ALREADYREDEEMED = 1,
-  DATABASEERROR = 2,
-  DUPLICATETRANSACTIONID = 3,
-  INVALIDATED = 4,
-  BADSTATE = 5,
-  NOTREVEALED = 6
+  Success = 0,
+  AlreadyRedeemed = 1,
+  DatabaseError = 2,
+  DuplicateTransactionID = 3,
+  Invalidated = 4,
+  BadState = 5,
+  NotRevealed = 6
 }
   
   
 export enum RequirementApplicationType { 
-  ABILITYEFFECT = 0,
-  COMBATANT = 1,
-  SUBJECTCASTER = 2
+  AbilityEffect = 0,
+  Combatant = 1,
+  SubjectCaster = 2
 }
 
 export enum ComparisonType { 
-  EQUAL = 0,
-  LESSTHAN = 1,
-  GREATERTHAN = 2
+  Equal = 0,
+  LessThan = 1,
+  GreaterThan = 2
 }
 
 export enum ListComparison { 
-  ANY = 0,
-  ONE = 1,
-  ALL = 2
+  Any = 0,
+  One = 1,
+  All = 2
 }
  
   
 export enum ResourceType { 
-  HEALTH = 0,
-  BLOOD = 0,
-  STAMINA = 1,
-  ELIXIRSTART = 2,
-  ELIXIR1 = 2,
-  ELIXIR2 = 3,
-  ELIXIREND = 4,
-  ELIXIRCOUNT = 2,
-  ARROWSTART = 5,
-  BASICARROW = 5,
-  BLACKARROW = 6,
-  FLIGHTARROW = 7,
-  BLUNTARROW = 8,
-  BROADHEADARROW = 9,
-  BARBEDARROW = 10,
-  LEAFBLADEARROW = 11,
-  SERRATEDARROW = 12,
-  NOTCHEDARROW = 13,
-  CRESCENTARROW = 14,
-  LIGHTARROW = 15,
-  DARTPOINTARROW = 16,
-  FORKEDARROW = 17,
-  HEAVYWARARROW = 18,
-  ARROWEND = 19,
-  ARROWCOUNT = 14,
-  DOODAD = 20
+  Health = 0,
+  Blood = 0,
+  Stamina = 1,
+  ElixirStart = 2,
+  Elixir1 = 2,
+  Elixir2 = 3,
+  ElixirEnd = 4,
+  ElixirCount = 2,
+  ArrowStart = 5,
+  BasicArrow = 5,
+  BlackArrow = 6,
+  FlightArrow = 7,
+  BluntArrow = 8,
+  BroadheadArrow = 9,
+  BarbedArrow = 10,
+  LeafbladeArrow = 11,
+  SerratedArrow = 12,
+  NotchedArrow = 13,
+  CrescentArrow = 14,
+  LightArrow = 15,
+  DartPointArrow = 16,
+  ForkedArrow = 17,
+  HeavyWarArrow = 18,
+  ArrowEnd = 19,
+  ArrowCount = 14,
+  Doodad = 20
 }
  
   
 export enum ServerStatus { 
-  OFFLINE = 0,
-  STARTING = 1,
-  ONLINE = 2
+  Offline = 0,
+  Starting = 1,
+  Online = 2
 }
  
  
 export enum ShapeType { 
-  BOX = 0,
-  CAPSULE = 1,
-  SPHERE = 2,
-  CONE = 3
+  Box = 0,
+  Capsule = 1,
+  Sphere = 2,
+  Cone = 3
 }
   
   
 export enum StanceID { 
-  DEFAULT = 0
+  Default = 0
 }
  
   
 export enum StatModificationOperatorType { 
-  ADDPERCENT = 0,
-  ADDVALUE = 1,
-  REPLACEVALUE = 2
+  AddPercent = 0,
+  AddValue = 1,
+  ReplaceValue = 2
 }
  
   
 export enum StoneTypes { 
-  LIFE = 0,
-  CURING = 1,
-  SHIELDING = 2,
-  REJUVENATION = 3,
-  INVERSION = 4,
-  DEFLECTION = 5
+  Life = 0,
+  Curing = 1,
+  Shielding = 2,
+  Rejuvenation = 3,
+  Inversion = 4,
+  Deflection = 5
 }
  
   
 export enum TagConstraintType { 
-  ALLOF = 0,
-  ANYOF = 1,
-  NONEOF = 2
+  AllOf = 0,
+  AnyOf = 1,
+  NoneOf = 2
 }
  
   
 export enum TargetType { 
-  NONE = 0,
-  ENEMY = 1,
-  FRIEND = 2,
-  ANY = 3,
-  SELF = 4,
-  FRIENDORSELF = 5
+  None = 0,
+  Enemy = 1,
+  Friend = 2,
+  Any = 3,
+  Self = 4,
+  FriendOrSelf = 5
 }
  
   
 export enum TestItemFlags { 
-  NONE = 0,
-  STORMRIDER = 1,
-  HUMANMALE = 2,
-  ARCHERY = 4,
-  FUTURERELEASE = 8
+  None = 0,
+  StormRider = 1,
+  HumanMale = 2,
+  Archery = 4,
+  FutureRelease = 8
 }
  
  
 export enum TransactionType { 
-  PAYPAL = 1,
-  KICKSTARTER = 2,
-  CHILD = 3,
-  STRIPE = 4
+  Paypal = 1,
+  Kickstarter = 2,
+  Child = 3,
+  Stripe = 4
 }
   
   
 export enum TriggerBehaviorMode { 
-  NONE = 0,
-  ATTACHTOTARGET = 1,
-  MOVETOWARDSTARGET = 2,
+  None = 0,
+  AttachToTarget = 1,
+  MoveTowardsTarget = 2,
   COUNT = 3
 }
  
   
 export enum TriggerFilter { 
-  ANY = 0,
-  FRIEND = 1,
-  ENEMY = 2
+  Any = 0,
+  Friend = 1,
+  Enemy = 2
 }
  
   
 export enum TriggerType { 
-  NONE = 0,
-  ABILITYUSE = 1,
-  ABILITYHIT = 2,
-  DAMAGE = 3,
-  HEALING = 4,
-  WOUND = 5,
-  DEATH = 6,
-  COLLISION = 7
+  None = 0,
+  AbilityUse = 1,
+  AbilityHit = 2,
+  Damage = 3,
+  Healing = 4,
+  Wound = 5,
+  Death = 6,
+  Collision = 7
 }
  
   
 export enum WeaponStat { 
-  NONE = 0,
-  PIERCINGDAMAGE = 1,
-  PIERCINGBLEED = 2,
-  PIERCINGARMORPENETRATION = 3,
-  SLASHINGDAMAGE = 4,
-  SLASHINGBLEED = 5,
-  SLASHINGARMORPENETRATION = 6,
-  CRUSHINGDAMAGE = 7,
-  FALLBACKCRUSHINGDAMAGE = 8,
-  DISRUPTION = 9,
-  DEFLECTIONAMOUNT = 10,
-  PHYSICALPROJECTILESPEED = 11,
-  KNOCKBACKAMOUNT = 12,
-  STABILITY = 13,
-  FALLOFFMINDISTANCE = 14,
-  FALLOFFMAXDISTANCE = 15,
-  FALLOFFREDUCTION = 16,
-  DEFLECTIONRECOVERY = 17,
-  STAMINACOST = 18,
-  PHYSICALPREPARATIONTIME = 19,
-  PHYSICALRECOVERYTIME = 20,
-  RANGE = 21,
-  REPAIRSALLOWED = 22,
-  CURRENTDURABILITY = 23,
-  FRACTURETHRESHOLD = 24,
-  FRACTURECHANCE = 25,
-  WEIGHT = 26,
-  ENCUMBRANCE = 27,
-  STARTINGDURABILITY = 28,
-  BASEHARDNESS = 29,
-  FIRERESISTANCE = 30,
-  WEIGHTPCF = 31,
-  MALLEABILITY = 32,
-  MELTINGPOINT = 33,
-  DENSITY = 34,
-  STRENGTHREQUIREMENT = 35,
-  DEXTERITYREQUIREMENT = 36,
-  AGILITYREQUIREMENT = 37
+  None = 0,
+  PiercingDamage = 1,
+  PiercingBleed = 2,
+  PiercingArmorPenetration = 3,
+  SlashingDamage = 4,
+  SlashingBleed = 5,
+  SlashingArmorPenetration = 6,
+  CrushingDamage = 7,
+  FallbackCrushingDamage = 8,
+  Disruption = 9,
+  DeflectionAmount = 10,
+  PhysicalProjectileSpeed = 11,
+  KnockbackAmount = 12,
+  Stability = 13,
+  FalloffMinDistance = 14,
+  FalloffMaxDistance = 15,
+  FalloffReduction = 16,
+  DeflectionRecovery = 17,
+  StaminaCost = 18,
+  PhysicalPreparationTime = 19,
+  PhysicalRecoveryTime = 20,
+  Range = 21,
+  RepairsAllowed = 22,
+  CurrentDurability = 23,
+  FractureThreshold = 24,
+  FractureChance = 25,
+  Weight = 26,
+  Encumbrance = 27,
+  StartingDurability = 28,
+  BaseHardness = 29,
+  FireResistance = 30,
+  WeightPCF = 31,
+  Malleability = 32,
+  MeltingPoint = 33,
+  Density = 34,
+  StrengthRequirement = 35,
+  DexterityRequirement = 36,
+  AgilityRequirement = 37
 }
  
   
 export enum WeaponType { 
   NONE = 0,
-  ARROW = 1,
-  DAGGER = 2,
-  SWORD = 4,
-  HAMMER = 8,
-  AXE = 16,
-  MACE = 32,
-  GREATSWORD = 64,
-  GREATHAMMER = 128,
-  GREATAXE = 256,
-  GREATMACE = 512,
-  SPEAR = 1024,
-  STAFF = 2048,
-  POLEARM = 4096,
-  SHIELD = 8192,
-  BOW = 16384,
-  THROWING = 32768,
-  ALL = 65535
+  Arrow = 1,
+  Dagger = 2,
+  Sword = 4,
+  Hammer = 8,
+  Axe = 16,
+  Mace = 32,
+  GreatSword = 64,
+  GreatHammer = 128,
+  GreatAxe = 256,
+  GreatMace = 512,
+  Spear = 1024,
+  Staff = 2048,
+  Polearm = 4096,
+  Shield = 8192,
+  Bow = 16384,
+  Throwing = 32768,
+  All = 65535
 }
 
 export enum NetworkWeaponType { 
-  DEFAULT = 0,
-  SHIELD = 1,
-  BOW = 2
+  Default = 0,
+  Shield = 1,
+  Bow = 2
 }
  
   
 export enum WireCompressionType { 
-  NONE = 0,
+  None = 0,
   LZMA = 1
 }
 
 export enum ResourceCompressionType { 
-  NONE = 0
+  None = 0
 }
  

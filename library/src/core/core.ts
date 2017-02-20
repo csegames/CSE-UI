@@ -20,8 +20,6 @@ import tagConstraintType from './constants/tagConstraintType';
 import gearSlot from './constants/gearSlot';
 import plotPermissions from './constants/plotPermissions';
 import attributeType from './constants/attributeType';
-import faction from './constants/faction';
-import gender from './constants/gender';
 import warbandRanks from './constants/warbandRanks';
 import warbandRoles from './constants/warbandRoles';
 import warbandPermissions from './constants/warbandPermissions';
@@ -30,8 +28,6 @@ export * from './constants/damageTypes';
 export * from './constants/resourceTypes';
 export * from './constants/skillTracks';
 export * from './constants/activeEffectActions';
-export * from './constants/archetype';
-export * from './constants/race';
 
 // config
 export * from './config/config';
@@ -73,8 +69,6 @@ export {
   gearSlot,
   plotPermissions,
   attributeType,
-  faction,
-  gender,
   warbandRanks,
   warbandRoles,
   warbandPermissions,

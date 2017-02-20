@@ -6,12 +6,12 @@
  * @Author: JB (jb@codecorsair.com {})
  * @Date: 2017-01-26 17:40:13
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-26 17:57:11
+ * @Last Modified time: 2017-02-20 17:05:16
  */
 
 import clientInterface from './clientInterface';
 import configGroup from './config/configGroup';
-import race from './constants/race';
+import { Race } from '..';
 import Item from './classes/Item';
 
 const devClientInterface: clientInterface = {
@@ -209,7 +209,7 @@ const devClientInterface: clientInterface = {
 
   OnCharacterIDChanged: function(c: (id: string) => void): void {},
   OnCharacterFactionChanged: function(c: (faction: number) => void): void {},
-  OnCharacterRaceChanged: function(c: (race: race) => void): void {},
+  OnCharacterRaceChanged: function(c: (race: Race) => void): void {},
   OnCharacterNameChanged: function(c: (name: string) => void): void {},
   OnCharacterHealthChanged: function(c: (health: number, maxHealth: number) => void): void {},
   OnCharacterStaminaChanged: function(c: (stamina: number, maxStamina: number) => void): void {},
