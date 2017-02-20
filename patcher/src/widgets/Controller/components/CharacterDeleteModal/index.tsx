@@ -32,7 +32,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     (this.refs['name'] as HTMLInputElement).focus();
   }
 
-  onKeyUp = (e: React.KeyboardEvent) : void => {
+  onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) : void => {
     const input : HTMLInputElement = this.refs['name'] as HTMLInputElement;
     this.setState({ deleteEnabled: input.value === this.props.character.name });
   }

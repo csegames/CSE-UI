@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {components, webAPI, events, utils} from 'camelot-unchained';
+import {webAPI, events, utils} from 'camelot-unchained';
 import QuickSelect from '../../../../components/QuickSelect';
 import {ServerType, PatcherServer} from '../../services/session/controller';
 import CharacterDeleteModal from '../CharacterDeleteModal';

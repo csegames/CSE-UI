@@ -67,12 +67,12 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     events.fire('play-sound', sound);
   }
 
-  playOffline = (evt: React.MouseEvent) => {
+  playOffline = (evt: React.MouseEvent<HTMLDivElement>) => {
     if (evt.altKey) return this.playNow(evt);
     alert('Server is offline! - Hold alt + click Play Offline to pass command line arguments.');
   }
 
-  playNow = (evt: React.MouseEvent) => {
+  playNow = (evt: React.MouseEvent<HTMLDivElement>) => {
     const {selectedServer} = this.props;
 
     if (evt.altKey) {

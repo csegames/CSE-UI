@@ -74,7 +74,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   getInputNode(): HTMLInputElement {
     return this.refs['new-text'] as HTMLInputElement;
   }
-  keyDown(e: React.KeyboardEvent): void {
+  keyDown(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     // current input field value
     const textArea: HTMLTextAreaElement = e.target as HTMLTextAreaElement;
     const value: string = textArea.value;
@@ -168,7 +168,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       }
     }
   }
-  keyUp(e: React.KeyboardEvent): void {
+  keyUp(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     const textArea: HTMLTextAreaElement = e.target as HTMLTextAreaElement;
 
     // if user deletes all the content, shrink the input area again
@@ -183,7 +183,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       this.expand(textArea);
     }
   }
-  parseInput(e: React.KeyboardEvent): void {
+  parseInput(e: React.ChangeEvent<HTMLTextAreaElement>): void {
     const textArea: HTMLTextAreaElement = e.target as HTMLTextAreaElement;
 
     // Handle @name completion

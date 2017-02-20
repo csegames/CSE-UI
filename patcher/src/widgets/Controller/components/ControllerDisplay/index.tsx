@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {race, archetype, faction, utils, webAPI} from 'camelot-unchained';
-import CharacterCreation, {CharacterCreationModel} from 'cu-character-creation';
+import {CharacterCreationModel} from '../../../CharacterCreation';
 
 import Login from '../Login';
 import Alerts from '../Alerts';
