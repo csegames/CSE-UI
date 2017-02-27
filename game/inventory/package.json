@@ -65,13 +65,15 @@
     "build:cube": "npm run build && npm run clean:cube && npm run copy:cube"
   },
   "dependencies": {
+    "aphrodite": "^1.1.0",
     "camelot-unchained": "latest",
     "classnames": "^2.2.1",
+    "es6-promise": "^3.0.0",
     "react": "^0.14.7",
-    "react-dom": "^0.14.7",
-    "es6-promise": "^3.0.0"
+    "react-dom": "^0.14.7"
   },
   "devDependencies": {
+    "@types/aphrodite": "^0.5.5",
     "@types/classnames": "0.0.32",
     "@types/lodash": "^4.14.52",
     "@types/react": "^15.0.9",
