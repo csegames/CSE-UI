@@ -7,8 +7,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 let Draggable = require('react-draggable');
-import { client, GroupInvite, groupType, hasClientAPI, Tooltip } from 'camelot-unchained';
+import { client, GroupInvite, groupType, hasClientAPI, Tooltip, ql, events } from 'camelot-unchained';
 import Chat from 'cu-xmpp-chat';
+import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import { LayoutState, lockHUD, unlockHUD, setPosition, initialize, resetHUD, setVisibility, Widget } from '../../services/session/layout';
 import { SessionState } from '../../services/session/reducer';
@@ -24,23 +25,18 @@ import { BodyParts } from '../../lib/PlayerStatus';
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
-function select(state: SessionState): HUDProps {
-  return {
-    layout: state.layout,
-    invitesState: state.invites,
-  }
-}
 
-export interface HUDProps {
+export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch?: (action: any) => void;
   layout?: LayoutState;
-  invitesState?: InvitesState;
+  invites?: InvitesState;
 }
 
 export interface HUDState {
   activeDrags: number;
   deltaPosition: { x: number, y: number };
   controlledPosition: { x: number, y: number };
+  orderName: string
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
@@ -53,6 +49,24 @@ class HUD extends React.Component<HUDProps, HUDState> {
       activeDrags: 0,
       deltaPosition: { x: 0, y: 0 },
       controlledPosition: { x: 100, y: 100 },
+      orderName: '',
+    }
+  }
+
+  componentWillReceiveProps(props: HUDProps) {
+    if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
+      
+        events.fire('chat-leave-room', this.state.orderName);
+      
+      // we either are just loading up, or we've changed order.
+      if (props.data.myOrder.id) {
+        // we left our order, leave chat room
+        events.fire('chat-show-room', props.data.myOrder.name);
+      }
+      
+      this.setState({
+        orderName: props.data.myOrder.name,
+      });
     }
   }
 
@@ -154,7 +168,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
 
         <InteractiveAlert dispatch={this.props.dispatch}
-          invites={this.props.invitesState.invites} />
+          invites={this.props.invites.invites} />
         <Social />
         <Watermark />
       </div>
@@ -164,4 +178,5 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
 
 
-export default connect(select)(HUD);
+const HUDWithQL = graphql(ql.queries.MySocial)(HUD);
+export default connect(s => s)(HUDWithQL);

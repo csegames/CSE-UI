@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-19 15:16:21
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:05:38
+ * @Last Modified time: 2017-02-28 16:37:34
  */
 
 import * as React from 'react';
@@ -77,12 +77,33 @@ export interface SocialMainProps extends InjectedGraphQLProps<ql.MySocialQuery> 
   styles?: Partial<SocialMainStyle>;
 }
 
-export interface SocialMainState { }
+export interface SocialMainState {
+  orderName: string
+ }
 
 class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainState> {
   constructor(props: SocialMainProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      orderName: '',
+    };
+  }
+
+  componentWillReceiveProps(props: SocialMainProps) {
+    if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
+      
+        events.fire('chat-leave-room', this.state.orderName);
+      
+      // we either are just loading up, or we've changed order.
+      if (props.data.myOrder.id) {
+        // we left our order, leave chat room
+        events.fire('chat-show-room', props.data.myOrder.name);
+      }
+      
+      this.setState({
+        orderName: props.data.myOrder.name,
+      });
+    }
   }
 
   componentDidMount() {
