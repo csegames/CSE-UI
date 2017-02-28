@@ -42,7 +42,6 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
   }
 
   onGearAdded = (item: Item) => {
-    console.log(`adding gear ${item.name}`)
     var items = Object.assign({}, this.state.items);
     items[item.id] = item;
     this.setState({
@@ -51,7 +50,6 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
   }
 
   onGearRemoved = (itemID: string) => {
-    console.log(`removing gear ${itemID}`)
     var items = Object.assign({}, this.state.items);
     delete items[itemID];
     this.setState({
