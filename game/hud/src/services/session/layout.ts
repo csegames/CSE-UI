@@ -11,7 +11,7 @@ import cu, { client, events, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchai
 
 import { Orientation } from '../../lib/LayoutLib';
 import { HUDDragOptions } from '../../components/HUDDrag';
-
+import { cloneDeep } from 'lodash';
 
 // layout items
 import Chat from './layoutItems/Chat';
@@ -140,34 +140,34 @@ function initialState(): LayoutState {
 
   const widgets = Map<string, Widget<any>>([
     [
-      'chat', Chat
+      'chat', cloneDeep(Chat)
     ],
     [
-      'crafting', Crafting
+      'crafting', cloneDeep(Crafting)
     ],
     // [
     //   'hudNav', HUDNav
     // ],
     [
-      'welcome', Welcome
+      'welcome', cloneDeep(Welcome)
     ],
     [
-      'compass', Compass
+      'compass', cloneDeep(Compass)
     ],
     [
-      'respawn', Respawn
+      'respawn', cloneDeep(Respawn)
     ],
     [
-      'warband', Warband
+      'warband', cloneDeep(Warband)
     ],
     [
-      'enemyTarget', EnemyTarget
+      'enemyTarget', cloneDeep(EnemyTarget)
     ],
     [
-      'playerHealth', PlayerHealth
+      'playerHealth', cloneDeep(PlayerHealth)
     ],
     [
-      'friendlyTarget', FriendlyTarget
+      'friendlyTarget', cloneDeep(FriendlyTarget)
     ],
   ]);
 
@@ -175,7 +175,7 @@ function initialState(): LayoutState {
     reset: FORCE_RESET_CODE,
     locked: true,
     version: CURRENT_STATE_VERSION,
-    widgets: widgets,
+    widgets,
   };
 }
 

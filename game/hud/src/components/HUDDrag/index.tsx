@@ -136,7 +136,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   constructor(props: HUDDragProps) {
     super(props);
-    this.state ={
+    this.state = {
       height: props.defaultHeight,
       width: props.defaultWidth,
       scale: props.defaultScale,
@@ -161,28 +161,56 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     };
   }
 
-  componentWillReceiveProps(nextProps: HUDDragProps) {
+  componentWillReceiveProps(props: HUDDragProps) {
+
+    if (this.state.mode == EditMode.NONE) {
+      this.setState({
+      height: props.defaultHeight,
+      width: props.defaultWidth,
+      scale: props.defaultScale,
+      opacity: props.defaultOpacity,
+      x: props.defaultX,
+      y: props.defaultY,
+      xAnchor: props.defaultXAnchor,
+      yAnchor: props.defaultYAnchor,
+      visible: props.defaultVisible || true,
+
+      minHeight: props.minHeight || props.defaultHeight / 4,
+      maxHeight: props.maxHeight || props.defaultHeight * 5,
+      minWidth: props.minWidth || props.defaultWidth / 4,
+      maxWidth: props.maxWidth || props.defaultWidth * 5,
+      minScale: props.minScale || 0.5,
+      maxScale: props.maxScale || 3,
+
+      scaleFactor: props.scaleFactor || 0.01,
+
+      mode: EditMode.NONE,
+      layoutMode: props.defaultMode || LayoutMode.GRID,
+    });
+    }
+
+
     // update min & max height if needed
     let stateUpdate: any = {};
 
-    if (this.props.minHeight !== nextProps.minHeight) {
-      stateUpdate.minHeight = nextProps.minHeight || nextProps.defaultHeight / 4;
+    if (this.props.minHeight !== props.minHeight) {
+      stateUpdate.minHeight = props.minHeight || props.defaultHeight / 4;
     }
 
-    if (this.props.maxHeight !== nextProps.maxHeight) {
-      stateUpdate.maxHeight = nextProps.maxHeight || nextProps.defaultHeight * 5;
+    if (this.props.maxHeight !== props.maxHeight) {
+      stateUpdate.maxHeight = props.maxHeight || props.defaultHeight * 5;
     }
 
-    if (this.props.minWidth !== nextProps.minWidth) {
-      stateUpdate.minWidth = nextProps.minWidth || nextProps.defaultWidth / 4;
+    if (this.props.minWidth !== props.minWidth) {
+      stateUpdate.minWidth = props.minWidth || props.defaultWidth / 4;
     }
 
-    if (this.props.maxWidth !== nextProps.maxWidth) {
-      stateUpdate.maxWidth = nextProps.maxWidth || nextProps.defaultWidth * 5;
+    if (this.props.maxWidth !== props.maxWidth) {
+      stateUpdate.maxWidth = props.maxWidth || props.defaultWidth * 5;
     }
 
-    if (this.props.defaultVisible !== nextProps.defaultVisible) {
-      stateUpdate.visible = nextProps.defaultVisible;
+    if (this.props.defaultVisible !== props.defaultVisible) {
+      stateUpdate.visible = props.defaultVisible;
     }
 
     if (stateUpdate !== {}) this.setState(stateUpdate);
