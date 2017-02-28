@@ -117,41 +117,31 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
       const stack = this.state.stacks[key];
       const firstItem = this.state.items[stack[0]];
 
-      const group = sortByGroup[firstItem.gearSlot] || {name: firstItem.gearSlot, elements: []};
-
-      group.elements.push(
-        (
-            <li className="inventory-item" 
-                key={key}
-                onClick={() => this.simDblClick(this.useItem, key)}
-                onContextMenu={() => this.dropItem(key)}>
-              <div className="quantity">{stack.length}</div>
-              <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
-              <div className="name">{firstItem.name}</div>
-              <div className="tooltip">
-                <h1 className="tooltip__title">{firstItem.name}</h1>
-                <p className="tooltip__detail tooltip__slot">{firstItem.gearSlot}</p>
-                <p className="tooltip__detail tooltip__description">{firstItem.description}</p>
-                <p className="tooltip__meta">Resource ID: {firstItem.id}</p>
-              </div>
-            </li>
-          )
-      );
-      sortByGroup[firstItem.gearSlot] = group;
-    }
-
-    for (const key in sortByGroup) {
-      const group = sortByGroup[key];
       toRender.push(
-      (
-        <div>
-          <div className='cu-font-cinzel'>{group.name}</div>
-          <ul>{group.elements}</ul>
-        </div>
-      ));
+        (
+          <li className="inventory-item" 
+              key={key}
+              onClick={() => this.simDblClick(this.useItem, key)}
+              onContextMenu={() => this.dropItem(key)}>
+            <div className="quantity">{stack.length}</div>
+            <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
+            <div className="name">{firstItem.name}</div>
+            <div className="tooltip">
+              <h1 className="tooltip__title">{firstItem.name}</h1>
+              <p className="tooltip__detail tooltip__slot">{firstItem.gearSlot}</p>
+              <p className="tooltip__detail tooltip__description">{firstItem.description}</p>
+              <p className="tooltip__meta">Resource ID: {firstItem.id}</p>
+            </div>
+          </li>
+        )
+      );
     }
 
-    return toRender;
+    return (
+      <div>
+        <ul>{toRender}</ul>
+      </div>
+    );
   }
 
   render() {
