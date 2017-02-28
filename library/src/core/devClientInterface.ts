@@ -217,6 +217,7 @@ const devClientInterface: clientInterface = {
   OnCharacterEffectsChanged: function(c: (effects: string) => void): void {},
   OnCharacterInjuriesChanged: function(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void {},
   OnCharacterAliveOrDead: function(c: (alive: boolean) => void): void {},
+  OnCharacterPositionChanged: function(c: (x: number, y: number, z: number) => void): void {},
   
   /* EMOTE */
 
@@ -233,6 +234,7 @@ const devClientInterface: clientInterface = {
   OnEnemyTargetEffectsChanged: function(c: (effects: string) => void): void {},
   OnEnemyTargetInjuriesChanged: function(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void {},
   OnEnemyTargetAliveOrDead: function(c: (alive: boolean) => void): void {},
+  OnEnemyTargetPositionChanged: function(c: (x: number, y: number, z: number) => void): void {},
 
   /* Friendly Target */
 
@@ -245,6 +247,7 @@ const devClientInterface: clientInterface = {
   OnFriendlyTargetEffectsChanged: function(c: (effects: string) => void): void {},
   OnFriendlyTargetInjuriesChanged: function(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void {},
   OnFriendlyTargetAliveOrDead: function(c: (alive: boolean) => void): void {},
+  OnFriendlyTargetPositionChanged: function(c: (x: number, y: number, z: number) => void): void {},
 
   /* Chat */
 

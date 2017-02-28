@@ -214,6 +214,7 @@ interface clientInterface {
   OnCharacterEffectsChanged(c: (effects: string) => void): void;
   OnCharacterInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
   OnCharacterAliveOrDead(c: (alive: boolean) => void): void;
+  OnCharacterPositionChanged(c: (x: number, y: number, z: number) => void): void;
   
   
   /* Enemy Target */
@@ -227,6 +228,7 @@ interface clientInterface {
   OnEnemyTargetEffectsChanged(c: (effects: string) => void): void;
   OnEnemyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
   OnEnemyTargetAliveOrDead(c: (alive: boolean) => void): void;
+  OnEnemyTargetPositionChanged(c: (x: number, y: number, z: number) => void): void;
 
   /* Friendly Target */
 
@@ -239,6 +241,7 @@ interface clientInterface {
   OnFriendlyTargetEffectsChanged(c: (effects: string) => void): void;
   OnFriendlyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
   OnFriendlyTargetAliveOrDead(c: (alive: boolean) => void): void;
+  OnFriendlyTargetPositionChanged(c: (x: number, y: number, z: number) => void): void;
 
   /* Chat */
 
