@@ -5,7 +5,7 @@
  */
 
 import configGroup from './config/configGroup';
-import { Race } from '..';
+import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
 
 interface clientInterface {
@@ -198,11 +198,16 @@ interface clientInterface {
 
   OnPlotStatus(c: (plotOwned: boolean, permissions: number, charID: string, entityID: string) => void): void;
 
+  /* EMOTE */
+
+  Emote(emote: number): void;
+
   /* Character */
 
   OnCharacterIDChanged(c: (id: string) => void): void;
-  OnCharacterFactionChanged(c: (faction: number) => void): void;
+  OnCharacterFactionChanged(c: (faction: Faction) => void): void;
   OnCharacterRaceChanged(c: (race: Race) => void): void;
+  OnCharacterGenderChanged(c: (gender: Gender) => void): void;
   OnCharacterNameChanged(c: (name: string) => void): void;
   OnCharacterHealthChanged(c: (health: number, maxHealth: number) => void): void;
   OnCharacterStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
@@ -210,25 +215,30 @@ interface clientInterface {
   OnCharacterInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
   OnCharacterAliveOrDead(c: (alive: boolean) => void): void;
   
-  /* EMOTE */
-
-  Emote(emote: number): void;
-
+  
   /* Enemy Target */
 
-  OnEnemyTargetNameChanged(callback: (name: string) => void): void;
-  OnEnemyTargetHealthChanged(callback: (health: number, maxHealth: number) => void): void;
-  OnEnemyTargetStaminaChanged(callback: (stamina: number, maxStamina: number) => void): void;
-  OnEnemyTargetEffectsChanged(callback: (effects: string) => void): void;
+  OnEnemyTargetFactionChanged(c: (faction: Faction) => void): void;
+  OnEnemyTargetRaceChanged(c: (race: Race) => void): void;
+  OnEnemyTargetGenderChanged(c: (gender: Gender) => void): void;
+  OnEnemyTargetNameChanged(c: (name: string) => void): void;
+  OnEnemyTargetHealthChanged(c: (health: number, maxHealth: number) => void): void;
+  OnEnemyTargetStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
+  OnEnemyTargetEffectsChanged(c: (effects: string) => void): void;
   OnEnemyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
+  OnEnemyTargetAliveOrDead(c: (alive: boolean) => void): void;
 
   /* Friendly Target */
 
-  OnFriendlyTargetNameChanged(callback: (name: string) => void): void;
-  OnFriendlyTargetHealthChanged(callback: (health: number, maxHealth: number) => void): void;
-  OnFriendlyTargetStaminaChanged(callback: (stamina: number, maxStamina: number) => void): void;
-  OnFriendlyTargetEffectsChanged(callback: (effects: string) => void): void;
+  OnFriendlyTargetFactionChanged(c: (faction: Faction) => void): void;
+  OnFriendlyTargetRaceChanged(c: (race: Race) => void): void;
+  OnFriendlyTargetGenderChanged(c: (gender: Gender) => void): void;
+  OnFriendlyTargetNameChanged(c: (name: string) => void): void;
+  OnFriendlyTargetHealthChanged(c: (health: number, maxHealth: number) => void): void;
+  OnFriendlyTargetStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
+  OnFriendlyTargetEffectsChanged(c: (effects: string) => void): void;
   OnFriendlyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
+  OnFriendlyTargetAliveOrDead(c: (alive: boolean) => void): void;
 
   /* Chat */
 

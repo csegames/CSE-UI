@@ -11,7 +11,7 @@
 
 import clientInterface from './clientInterface';
 import configGroup from './config/configGroup';
-import { Race } from '..';
+import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
 
 const devClientInterface: clientInterface = {
@@ -208,8 +208,9 @@ const devClientInterface: clientInterface = {
   /* Character */
 
   OnCharacterIDChanged: function(c: (id: string) => void): void {},
-  OnCharacterFactionChanged: function(c: (faction: number) => void): void {},
+  OnCharacterFactionChanged: function(c: (faction: Faction) => void): void {},
   OnCharacterRaceChanged: function(c: (race: Race) => void): void {},
+  OnCharacterGenderChanged: function(c: (gender: Gender) => void): void {},
   OnCharacterNameChanged: function(c: (name: string) => void): void {},
   OnCharacterHealthChanged: function(c: (health: number, maxHealth: number) => void): void {},
   OnCharacterStaminaChanged: function(c: (stamina: number, maxStamina: number) => void): void {},
@@ -223,19 +224,27 @@ const devClientInterface: clientInterface = {
 
   /* Enemy Target */
 
-  OnEnemyTargetNameChanged: function(callback: (name: string) => void): void {},
-  OnEnemyTargetHealthChanged: function(callback: (health: number, maxHealth: number) => void): void {},
-  OnEnemyTargetStaminaChanged: function(callback: (stamina: number, maxStamina: number) => void): void {},
-  OnEnemyTargetEffectsChanged: function(callback: (effects: string) => void): void {},
+  OnEnemyTargetFactionChanged: function(c: (faction: Faction) => void): void {},
+  OnEnemyTargetRaceChanged: function(c: (race: Race) => void): void {},
+  OnEnemyTargetGenderChanged: function(c: (gender: Gender) => void): void {},
+  OnEnemyTargetNameChanged: function(c: (name: string) => void): void {},
+  OnEnemyTargetHealthChanged: function(c: (health: number, maxHealth: number) => void): void {},
+  OnEnemyTargetStaminaChanged: function(c: (stamina: number, maxStamina: number) => void): void {},
+  OnEnemyTargetEffectsChanged: function(c: (effects: string) => void): void {},
   OnEnemyTargetInjuriesChanged: function(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void {},
+  OnEnemyTargetAliveOrDead: function(c: (alive: boolean) => void): void {},
 
   /* Friendly Target */
 
-  OnFriendlyTargetNameChanged: function(callback: (name: string) => void): void {},
-  OnFriendlyTargetHealthChanged: function(callback: (health: number, maxHealth: number) => void): void {},
-  OnFriendlyTargetStaminaChanged: function(callback: (stamina: number, maxStamina: number) => void): void {},
-  OnFriendlyTargetEffectsChanged: function(callback: (effects: string) => void): void {},
+  OnFriendlyTargetFactionChanged: function(c: (faction: Faction) => void): void {},
+  OnFriendlyTargetRaceChanged: function(c: (race: Race) => void): void {},
+  OnFriendlyTargetGenderChanged: function(c: (gender: Gender) => void): void {},
+  OnFriendlyTargetNameChanged: function(c: (name: string) => void): void {},
+  OnFriendlyTargetHealthChanged: function(c: (health: number, maxHealth: number) => void): void {},
+  OnFriendlyTargetStaminaChanged: function(c: (stamina: number, maxStamina: number) => void): void {},
+  OnFriendlyTargetEffectsChanged: function(c: (effects: string) => void): void {},
   OnFriendlyTargetInjuriesChanged: function(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void {},
+  OnFriendlyTargetAliveOrDead: function(c: (alive: boolean) => void): void {},
 
   /* Chat */
 
