@@ -13,7 +13,7 @@ The primary HUD elements for Camelot Unchained's in-game UI.
     cd game/hud
     ```
 
-1. Install npm packages.  (Ensure you've already set up the correct registry, *see above*)
+1. Install npm packages.
     ```sh
     npm i
     ```
