@@ -1,4 +1,4 @@
-# HUD MOdule
+# HUD Module
 
 The primary HUD elements for Camelot Unchained's in-game UI.
 
