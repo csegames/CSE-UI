@@ -14,19 +14,21 @@ import {
   Input,
   jsKeyCodes,
   parseMessageForSlashCommand,
+  events,
 } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface ConsoleStyle extends StyleDeclaration {
   container: React.CSSProperties;
   input: React.CSSProperties;
-  lines: React.CSSProperties;
+  consoleMessages: React.CSSProperties;
   line: React.CSSProperties;
 }
 
 export const defaultConsoleStyle: ConsoleStyle = {
   container: {
     position: 'fixed',
+    flexDirection: 'column',
     top: '0px',
     left: '0px',
     right: '0px',
@@ -36,18 +38,20 @@ export const defaultConsoleStyle: ConsoleStyle = {
 
   input: {
     flex: '0 0 auto',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
   },
 
-  lines: {
-    flex: '1 1 auto',
+  consoleMessages: {
     display: 'flex',
-    alignContent: 'stetch',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    flex: '1 1 auto',
+    flexDirection: 'column-reverse',
+    overflowY: 'scroll',
+    height: '350px',
   },
 
   line: {
-    flex: '1 1 auto',
+    flex: '0 0 auto',
+    color: '#ececec',
   },
 };
 
@@ -62,8 +66,8 @@ export interface ConsoleState {
 }
 
 class CircularArray<T> {
-  private data: T[];
-  private _length: number;
+  private data: T[] = [];
+  private _length: number = 0;
 
   public constructor(private maxLength: number = 50) {
   }
@@ -94,7 +98,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   }
 
   componentWillMount() {
-    client.OnConsoleText(this.onConsoleText);
+    events.on('system_message', this.onConsoleText)
   }
 
   onConsoleText = (s: string) => {
@@ -112,6 +116,8 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       if (!parseMessageForSlashCommand(text)) {
         client.SendSlashCommand(text);
       }
+
+      this.inputRef.value = '';
     }
   }
 
@@ -124,7 +130,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
         </div>
       ))
     }
-    return lines;
+    return lines.reverse();
   }
 
   inputRef: HTMLInputElement = null;
@@ -132,13 +138,21 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     const ss = StyleSheet.create(defaultConsoleStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     return (
-      <div className={css(ss.container, custom.container)}>
-        <div className={css(ss.lines, custom.lines)}>
+      <div className={css(ss.container, custom.container)}
+        >
+        <div className={css(ss.consoleMessages, custom.consoleMessages)}>
           {this.renderTextLines(ss, custom)}
         </div>
         <div className={css(ss.input, custom.input)}>
           <Input type='text'
                  inputRef={r => this.inputRef = r}
+                 onFocus={() => client.RequestInputOwnership()}
+                 onBlue={() => client.ReleaseInputOwnership()}
+                 onMouseEnter={() => client.RequestInputOwnership()}
+                 onMouseLeave={() => {
+                   console.log('release input ownership');
+                   client.ReleaseInputOwnership();
+                 }}
                  onKeyDown={this.onKeyDown} />
         </div>
       </div>
