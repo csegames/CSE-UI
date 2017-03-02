@@ -25,6 +25,8 @@ import { BodyParts } from '../../lib/PlayerStatus';
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
+import Console from '../Console';
+
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch?: (action: any) => void;
@@ -36,7 +38,8 @@ export interface HUDState {
   activeDrags: number;
   deltaPosition: { x: number, y: number };
   controlledPosition: { x: number, y: number };
-  orderName: string
+  orderName: string;
+  showConsole: boolean;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
@@ -50,6 +53,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       deltaPosition: { x: 0, y: 0 },
       controlledPosition: { x: 100, y: 100 },
       orderName: '',
+      showConsole: false,
     }
   }
 
@@ -98,6 +102,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
       console.log(error);
     }
 
+    events.on('hudnav--navigate', this.handleHUDNavNavigate);
+  }
+
+  handleHUDNavNavigate = (navItem: string) => {
+    if (navItem === 'console') {
+      this.setState({
+        showConsole: this.state.showConsole,
+      });
+    }
   }
 
   setVisibility = (widgetName: string, vis: boolean) => {
@@ -162,6 +175,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {orderedWidgets.map(c => c)}
+
+        <Console />
 
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
