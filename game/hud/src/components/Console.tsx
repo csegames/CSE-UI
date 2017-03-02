@@ -63,6 +63,7 @@ export interface ConsoleState {
   historyIndex: number;
   commandHistory: CircularArray<string>;
   textLines: CircularArray<string>;
+  show: boolean;
 }
 
 class CircularArray<T> {
@@ -94,11 +95,13 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       historyIndex: 0,
       commandHistory: new CircularArray<string>(50),
       textLines: new CircularArray<string>(200),
+      show: false,
     };
   }
 
   componentWillMount() {
     events.on('system_message', this.onConsoleText)
+    events.on('hudnav--navigate', this.handleHUDNavNavigate);
   }
 
   onConsoleText = (s: string) => {
@@ -107,6 +110,17 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     this.setState({
       textLines,
     });
+  }
+
+  handleHUDNavNavigate = (navItem: string) => {
+    if (navItem === 'console') {
+      if (this.state.show) {
+        client.ReleaseInputOwnership();
+      }
+      this.setState({
+        show: !this.state.show,
+      });
+    }
   }
 
   onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -137,9 +151,11 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   render() {
     const ss = StyleSheet.create(defaultConsoleStyle);
     const custom = StyleSheet.create(this.props.styles || {});
+
+    if (!this.state.show) return null;
+
     return (
-      <div className={css(ss.container, custom.container)}
-        >
+      <div className={css(ss.container, custom.container)}>
         <div className={css(ss.consoleMessages, custom.consoleMessages)}>
           {this.renderTextLines(ss, custom)}
         </div>

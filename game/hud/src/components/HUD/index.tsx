@@ -39,7 +39,6 @@ export interface HUDState {
   deltaPosition: { x: number, y: number };
   controlledPosition: { x: number, y: number };
   orderName: string;
-  showConsole: boolean;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
@@ -53,7 +52,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
       deltaPosition: { x: 0, y: 0 },
       controlledPosition: { x: 100, y: 100 },
       orderName: '',
-      showConsole: false,
     }
   }
 
@@ -100,19 +98,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
       if (currentDate < savedDelayDate) this.setVisibility('welcome', false);
     } catch (error) {
       console.log(error);
-    }
-
-    events.on('hudnav--navigate', this.handleHUDNavNavigate);
-  }
-
-  handleHUDNavNavigate = (navItem: string) => {
-    if (navItem === 'console') {
-      if (this.state.showConsole) {
-        client.ReleaseInputOwnership();
-      }
-      this.setState({
-        showConsole: !this.state.showConsole,
-      });
     }
   }
 
@@ -179,9 +164,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {orderedWidgets.map(c => c)}
 
-        {
-         this.state.showConsole ? <Console /> : null
-        }
+        <Console />
 
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
