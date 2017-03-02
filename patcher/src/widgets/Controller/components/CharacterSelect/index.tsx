@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:15:34
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-28 17:34:08
+ * @Last Modified time: 2017-03-02 12:39:30
  */
 
 import * as React from 'react';
@@ -56,7 +56,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
 
   deleteCharacter = () => {
     const {character} = this.props;
-    webAPI.CharactersAPI.deleteCharacterV1(character.shardID, character.id);
+    webAPI.CharactersAPI.deleteCharacterV1(Number.parseInt(character.shardID), character.id);
     this.showDeleteConfirmation(false);
   }
 
@@ -149,7 +149,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
     let serverCharacters: webAPI.SimpleCharacter[] = [];
     for (const key in characters) {
-      if (characters[key].shardID === selectedServer.shardID) serverCharacters.push(characters[key]);
+      if (Number.parseInt(characters[key].shardID) === selectedServer.shardID) serverCharacters.push(characters[key]);
     }
 
     if (serverCharacters.length == 0) {
@@ -185,7 +185,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
         }
       }
     }
-    if (!selectedCharacter || selectedCharacter === null || !this.props.characters[selectedCharacter.id] || selectedCharacter.shardID != selectedServer.shardID) {
+    if (!selectedCharacter || selectedCharacter === null || !this.props.characters[selectedCharacter.id] || Number.parseInt(selectedCharacter.shardID) != selectedServer.shardID) {
       // get from local storage or use the first in the list.
       selectedCharacter = serverCharacters[0];
       this.props.selectCharacter(selectedCharacter);

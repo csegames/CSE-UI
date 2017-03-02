@@ -12,7 +12,7 @@ import {connect, Provider} from 'react-redux';
 const thunk = require('redux-thunk').default;
 import {events} from 'camelot-unchained';
 
-import {gender} from 'camelot-unchained';
+import {Gender} from 'camelot-unchained';
 
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
@@ -66,7 +66,7 @@ export interface CharacterCreationProps {
   factionsState?: FactionsState;
   attributesState?: AttributesState;
   attributeOffsetsState?: AttributeOffsetsState;
-  gender?: gender;
+  gender?: Gender;
   characterState?: CharacterState;
 }
 
@@ -246,7 +246,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectedRace={this.props.racesState.selected}
             selectRace={this.raceSelect}
             selectedGender={this.props.gender}
-            selectGender={(selected: gender) => this.props.dispatch(selectGender(selected)) }
+            selectGender={(selected: Gender) => this.props.dispatch(selectGender(selected)) }
             selectedFaction={this.props.factionsState.selected} />
         );
         back = (

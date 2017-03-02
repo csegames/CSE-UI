@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {race, faction, gender} from 'camelot-unchained';
+import {Race, Faction, Gender} from 'camelot-unchained';
 import {events} from 'camelot-unchained';
 
 import {RaceInfo} from '../services/session/races';
@@ -32,8 +32,8 @@ export interface RaceSelectProps {
   races: Array<RaceInfo>;
   selectedRace: RaceInfo;
   selectRace: (race: RaceInfo) => void;
-  selectedGender: gender;
-  selectGender: (selected: gender) => void;
+  selectedGender: Gender;
+  selectGender: (selected: Gender) => void;
 }
 
 export interface RaceSelectState {
@@ -52,12 +52,12 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
   generateRaceContent = (info: RaceInfo) => {
     return (
       <a key={info.id}
-         className={`thumb__${race[info.id]}--${gender[this.props.selectedGender]} ${this.props.selectedRace !== null ? this.props.selectedRace.id == info.id ? 'active' : '' : ''}`}
+         className={`thumb__${Race[info.id]}--${Gender[this.props.selectedGender]} ${this.props.selectedRace !== null ? this.props.selectedRace.id == info.id ? 'active' : '' : ''}`}
          onClick={this.selectRace.bind(this, info)}></a>
     );
   }
 
-  selectGender = (gender: gender) => {
+  selectGender = (gender: Gender) => {
     this.props.selectGender(gender);
     events.fire('play-sound', 'select');
   }
@@ -70,8 +70,8 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
     let name: any = null;
     if (this.props.selectedRace) {
       name = <h2 className='display-name'>{this.props.selectedRace.name}</h2>
-      view = <div key={`${race[this.props.selectedRace.id]}--${gender[this.props.selectedGender]}`} className={`standing__${race[this.props.selectedRace.id]}--${gender[this.props.selectedGender]}`}></div>
-      text = <div className='selection-description'>{raceText[race[this.props.selectedRace.id]]}</div>
+      view = <div key={`${Race[this.props.selectedRace.id]}--${Gender[this.props.selectedGender]}`} className={`standing__${Race[this.props.selectedRace.id]}--${Gender[this.props.selectedGender]}`}></div>
+      text = <div className='selection-description'>{raceText[Race[this.props.selectedRace.id]]}</div>
     }
 
     return (
@@ -82,10 +82,10 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
           <h6>Choose your race</h6>
           {this.props.races.filter((r: any) => r.faction === this.props.selectedFaction.id).map(this.generateRaceContent)}
           <h6>Choose your gender</h6>
-          <a className={`gender-btn ${this.props.selectedGender == gender.MALE ? 'selected' : ''}`}
-             onClick={() => this.selectGender(gender.MALE)}>Male</a>
-          <a className={`gender-btn ${this.props.selectedGender == gender.FEMALE ? 'selected' : ''}`}
-             onClick={() => this.selectGender(gender.FEMALE)}>Female</a>
+          <a className={`gender-btn ${this.props.selectedGender == Gender.Male ? 'selected' : ''}`}
+             onClick={() => this.selectGender(Gender.Male)}>Male</a>
+          <a className={`gender-btn ${this.props.selectedGender == Gender.Female ? 'selected' : ''}`}
+             onClick={() => this.selectGender(Gender.Female)}>Female</a>
           {text}
         </div>
         <div className='view-content'>

@@ -6,14 +6,14 @@
 
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
-import {race, gender} from 'camelot-unchained';
+import {Race, Gender} from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
 
 export interface AttributeOffsetInfo {
-  race: race;
-  gender: gender;
+  race: Race;
+  gender: Gender;
   attributeOffsets: any;
 }
 

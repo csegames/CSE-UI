@@ -11,14 +11,14 @@
 import events from '../events';
 
 export interface EventMap {
-  recieve: string;
+  receive: string;
   send: string;
 }
 
-export function eventToEvent(recieve: string, send: string) {
-  events.on(recieve, (...params: any[]) => events.fire(send, ...params));
+export function eventToEvent(receive: string, send: string) {
+  events.on(receive, (...params: any[]) => events.fire(send, ...params));
 }
 
 export function eventMapper(evtMap: EventMap[], fn: (...params: any[]) => void, ...params: any[]) {
-  evtMap.map((evt: EventMap) => fn(evt.recieve, evt.send, ...params));
+  evtMap.map((evt: EventMap) => fn(evt.receive, evt.send, ...params));
 }

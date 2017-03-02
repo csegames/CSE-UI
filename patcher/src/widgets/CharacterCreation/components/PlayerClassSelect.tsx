@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {archetype, faction} from 'camelot-unchained';
+import {Archetype, Faction} from 'camelot-unchained';
 
 import {PlayerClassInfo} from '../services/session/playerClasses';
 import {FactionInfo} from '../services/session/factions';
@@ -56,7 +56,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
   generateClassContent = (info: PlayerClassInfo) => {
     return (
       <a key={info.id}
-              className={`thumb__${archetype[info.id]} ${this.props.selectedClass !== null ? this.props.selectedClass.id == info.id ? 'active' : '' : ''}`}
+              className={`thumb__${Archetype[info.id]} ${this.props.selectedClass !== null ? this.props.selectedClass.id == info.id ? 'active' : '' : ''}`}
               onClick={this.selectClass.bind(this, info)}></a>
     );
   }
@@ -70,19 +70,19 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
     let name: any = null;
     if (this.props.selectedClass) {
       name = <h2 className='display-name'>{this.props.selectedClass.name}</h2>
-      view = <div className={`standing__${archetype[this.props.selectedClass.id]}`}></div>
-      text = <div className='selection-description'>{classText[archetype[this.props.selectedClass.id]]}</div>
+      view = <div className={`standing__${Archetype[this.props.selectedClass.id]}`}></div>
+      text = <div className='selection-description'>{classText[Archetype[this.props.selectedClass.id]]}</div>
       switch(this.props.selectedClass.id)
       {
-        case archetype.WINTERSSHADOW: videoTitle = 'class_archer'; break;
-        case archetype.FORESTSTALKER: videoTitle = 'class_archer'; break;
-        case archetype.BLACKGUARD: videoTitle = 'class_archer'; break;
-        case archetype.BLACKKNIGHT: videoTitle = 'heavy'; break;
-        case archetype.FIANNA: videoTitle = 'heavy'; break;
-        case archetype.MJOLNIR: videoTitle = 'heavy'; break;
-        case archetype.PHYSICIAN: videoTitle = 'healers'; break;
-        case archetype.EMPATH: videoTitle = 'healers'; break;
-        case archetype.STONEHEALER: videoTitle = 'healers'; break;
+        case Archetype.WintersShadow: videoTitle = 'class_archer'; break;
+        case Archetype.ForestStalker: videoTitle = 'class_archer'; break;
+        case Archetype.Blackguard: videoTitle = 'class_archer'; break;
+        case Archetype.BlackKnight: videoTitle = 'heavy'; break;
+        case Archetype.Fianna: videoTitle = 'heavy'; break;
+        case Archetype.Mjolnir: videoTitle = 'heavy'; break;
+        case Archetype.Physician: videoTitle = 'healers'; break;
+        case Archetype.Empath: videoTitle = 'healers'; break;
+        case Archetype.Stonehealer: videoTitle = 'healers'; break;
       }
     }
 
@@ -95,7 +95,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
           {name}
         <div className='selection-box'>
           <h6>Choose your class</h6>
-          {this.props.classes.filter((c:any) => c.faction === this.props.selectedFaction.id || c.faction == faction.FACTIONLESS).map(this.generateClassContent)}
+          {this.props.classes.filter((c:any) => c.faction === this.props.selectedFaction.id || c.faction == Faction.Factionless).map(this.generateClassContent)}
           {text}
         </div>
         <div className='view-content'>

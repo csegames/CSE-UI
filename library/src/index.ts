@@ -54,7 +54,7 @@ export * from './building';
 import events from './events';
 import * as eventExports from './events'
 
-import signalr from './signalr';
+import * as signalr from './signalr';
 import {DEBUG_ASSERT,RUNTIME_ASSERT} from './core/core';
 
 export * from './slashCommands';
