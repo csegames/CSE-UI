@@ -1,6 +1,17 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-03 16:12:15
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-03 16:19:16
+ */
+
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
 import { TraitStyle } from './Trait';
@@ -48,18 +59,18 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
 }
 
 export interface BanesAndBoonsProps {
-  generalBoons: Array<BanesAndBoonsInfo>;
-  playerClassBoons: Array<BanesAndBoonsInfo>;
-  raceBoons: Array<BanesAndBoonsInfo>;
-  factionBoons: Array<BanesAndBoonsInfo>;
-  generalBanes: Array<BanesAndBoonsInfo>;
-  playerClassBanes: Array<BanesAndBoonsInfo>;
-  raceBanes: Array<BanesAndBoonsInfo>;
-  factionBanes: Array<BanesAndBoonsInfo>;
-  addedBanes: Array<BanesAndBoonsInfo>;
-  addedBoons: Array<BanesAndBoonsInfo>;
-  allPrerequisites: Array<BanesAndBoonsInfo>;
-  allExclusives: Array<BanesAndBoonsInfo>;
+  generalBoons: TraitMap;
+  playerClassBoons: TraitMap;
+  raceBoons: TraitMap;
+  factionBoons: TraitMap;
+  generalBanes: TraitMap;
+  playerClassBanes: TraitMap;
+  raceBanes: TraitMap;
+  factionBanes: TraitMap;
+  addedBanes: BanesAndBoonsInfo[];
+  addedBoons: BanesAndBoonsInfo[];
+  allPrerequisites: TraitMap;
+  allExclusives: TraitMap;
   onBoonClick: Function;
   onBaneClick: Function;
   onCancelBoonClick: Function;
@@ -423,7 +434,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     this.setState(Object.assign({}, this.state, { showResetAlertDialog: false }))
   };
 
-  private showTraitsSection = (listOfTraits: Array<BanesAndBoonsInfo>, title: string, type: 'boon' | 'bane') => {
+  private showTraitsSection = (listOfTraits: any, title: string, type: 'boon' | 'bane') => {
     const {
       onBaneClick,
       onBoonClick,
@@ -442,15 +453,15 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
     return (
-      listOfTraits.length > 0 &&
+      listOfTraits &&
       <div>
         <p className={css(type === 'boon' ? ss.boonTitle : ss.baneTitle, type === 'boon' ? custom.boonTitle : custom.baneTitle)}>{title}</p>
         <div className={css(type === 'boon' ? ss.boonsContainer : ss.banesContainer, type === 'boon' ? ss.banesContainer : custom.banesContainer)}>
-          {listOfTraits.map((trait, index) => (
+          {Object.keys(listOfTraits).map((key, index) => (
             type === 'boon' ?
             <Boon
               key={index}
-              trait={trait}
+              trait={listOfTraits[key]}
               onBoonClick={onBoonClick}
               onCancelBoon={onCancelBoonClick}
               allPrerequisites={allPrerequisites}
@@ -461,7 +472,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             /> :
               <Bane
                 key={index}
-                trait={trait}
+                trait={listOfTraits[key]}
                 onBaneClick={onBaneClick}
                 onCancelBane={onCancelBaneClick}
                 allPrerequisites={allPrerequisites}

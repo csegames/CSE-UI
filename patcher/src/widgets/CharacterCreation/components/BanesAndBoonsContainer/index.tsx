@@ -1,3 +1,14 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-03 16:12:25
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-03 17:16:16
+ */
+
 import * as React from 'react';
 import BanesAndBoons from '../../components/BanesAndBoons';
 import { RacesState } from '../../services/session/races';
@@ -63,74 +74,54 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
     if (traitType === 'boon') {
       switch (trait.category) {
         case 'Class':
-          dispatch(onUpdatePlayerClassBoons(updateType, trait));
+          dispatch(onUpdatePlayerClassBoons({ event: updateType, boon: trait }));
           return;
         case 'Race':
-          dispatch(onUpdateRaceBoons(updateType, trait));
+          dispatch(onUpdateRaceBoons({ event: updateType, boon: trait}));
           return;
         case 'Faction':
-          dispatch(onUpdateFactionBoons(updateType, trait));
+          dispatch(onUpdateFactionBoons({ event: updateType, boon: trait }));
           return;
         default:
-          dispatch(onUpdateGeneralBoons(updateType, trait));
+          dispatch(onUpdateGeneralBoons({ event: updateType, boon: trait }));
           return;
       }
     } else {
       switch (trait.category) {
         case 'Class':
-          dispatch(onUpdatePlayerClassBanes(updateType, trait));
+          dispatch(onUpdatePlayerClassBanes({ event: updateType, bane: trait }));
           return;
         case 'Race':
-          dispatch(onUpdateRaceBanes(updateType, trait));
+          dispatch(onUpdateRaceBanes({ event: updateType, bane: trait }));
           return;
         case 'Faction':
-          dispatch(onUpdateFactionBanes(updateType, trait));
+          dispatch(onUpdateFactionBanes({ event: updateType, bane: trait }));
           return;
         default:
-          dispatch(onUpdateGeneralBanes(updateType, trait));
+          dispatch(onUpdateGeneralBanes({ event: updateType, bane: trait }));
           return;
       }
     }
   };
   private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (boon.ranks) {
-      if (boon.rank === 0) dispatch(onSelectBoon(boon));
-      dispatch(onUpdateRankBoons('select', boon))
-    } else {
-      dispatch(onSelectBoon(boon));
-      this.onUpdateTrait(boon, 'boon', 'select');
-    }
+    dispatch(onSelectBoon({ boon: boon }));
+    this.onUpdateTrait(boon, 'boon', 'select');
   };
   private onSelectBaneClick = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (bane.ranks) {
-      if (bane.rank === 0) dispatch(onSelectBane(bane));
-      dispatch(onUpdateRankBanes('select', bane))
-    } else {
-      dispatch(onSelectBane(bane));
-      this.onUpdateTrait(bane, 'bane', 'select');
-    }
+    dispatch(onSelectBane({ bane: bane }));
+    this.onUpdateTrait(bane, 'bane', 'select');
   };
   private onCancelBoon = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (boon.ranks) {
-      if (boon.rank === 0) dispatch(onCancelBoonClick(boon));
-      dispatch(onUpdateRankBoons('cancel', boon));
-    } else {
-      dispatch(onCancelBoonClick(boon));
-      this.onUpdateTrait(boon, 'boon', 'cancel');
-    }
+    dispatch(onCancelBoonClick({ boon: boon }));
+    this.onUpdateTrait(boon, 'boon', 'cancel');
   };
   private onCancelBane = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (bane.ranks){
-      if (bane.rank === 0) dispatch(onCancelBaneClick(bane));
-      dispatch(onUpdateRankBanes('cancel', bane));
-    } else {
-      dispatch(onCancelBaneClick(bane));
-      this.onUpdateTrait(bane, 'bane', 'cancel');
-    }
+    dispatch(onCancelBaneClick({ bane: bane }));
+    this.onUpdateTrait(bane, 'bane', 'cancel');
   };
   private onResetClick = () => {
     const { dispatch, playerClass, race, faction } = this.props;
@@ -156,7 +147,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       allExclusives,
       totalPoints
     } = this.props.banesAndBoons;
-    const { styles, traitSummaryStyles, baneStyles, boonStyles } = this.props;
+    const { styles, traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
     return (
       <BanesAndBoons
         generalBoons={generalBoons}
@@ -177,8 +168,8 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         onCancelBaneClick={this.onCancelBane}
         onCancelBoonClick={this.onCancelBoon}
         onResetClick={this.onResetClick}
-        onUpdateRankBoon={onUpdateRankBoons}
-        onUpdateRankBane={onUpdateRankBanes}
+        onUpdateRankBoon={(event: 'select' | 'cancel', boon: BanesAndBoonsInfo) => dispatch(onUpdateRankBoons({ event: event, boon: boon }))}
+        onUpdateRankBane={(event: 'select' | 'cancel', bane: BanesAndBoonsInfo) => dispatch(onUpdateRankBanes({ event: event, bane: bane }))}
         styles={styles}
         traitSummaryStyles={traitSummaryStyles}
         baneStyles={baneStyles}
