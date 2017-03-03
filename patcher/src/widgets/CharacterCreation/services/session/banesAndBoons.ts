@@ -1,6 +1,5 @@
 import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
-import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -191,7 +190,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
         playerClass: payload.playerClass,
         race: payload.race,
         faction: payload.faction,
-        banesAndBoons: traitsExampleResponse
+        banesAndBoons: []
       }))); // TODO: Handle not finding anything
   }
 };
