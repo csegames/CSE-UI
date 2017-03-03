@@ -5,14 +5,14 @@
  */
 
 import * as React from 'react';
-import {faction} from 'camelot-unchained';
+import {Faction} from 'camelot-unchained';
 
 import {FactionInfo} from '../services/session/factions';
 
 export interface FactionSelectProps {
   factions: Array<FactionInfo>;
   selectedFaction: FactionInfo;
-  selectFaction: (faction: FactionInfo) => void;
+  selectFaction: (Faction: FactionInfo) => void;
 }
 
 export interface FactionSelectState {
@@ -37,7 +37,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
   }
 
   generateFactionContent = (info: FactionInfo) => {
-    if (info.id == faction.FACTIONLESS) return null;  // players can not be factionless!
+    if (info.id == Faction.Factionless) return null;  // players can not be factionless!
     return (
       <div key={info.id}
            className={`cu-character-creation__faction-select__${info.shortName} ${ this.props.selectedFaction !== null ? this.props.selectedFaction.id == info.id ? 'active' : '' : ''}`}

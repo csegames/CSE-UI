@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {race, gender} from 'camelot-unchained';
+import {Race, Gender} from 'camelot-unchained';
 import {AttributeInfo, attributeType} from '../services/session/attributes';
 import {AttributeOffsetInfo} from '../services/session/attributeOffsets';
 import {events} from 'camelot-unchained';
@@ -14,8 +14,8 @@ import {events} from 'camelot-unchained';
 export interface AttributesSelectProps {
   attributes: Array<AttributeInfo>;
   attributeOffsets: Array<AttributeOffsetInfo>;
-  selectedRace: race;
-  selectedGender: gender;
+  selectedRace: Race;
+  selectedGender: Gender;
   remainingPoints: number;
   allocatePoint: (name: string, value: number) => void;
 }

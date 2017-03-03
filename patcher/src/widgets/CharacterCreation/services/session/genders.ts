@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {gender} from 'camelot-unchained';
+import {Gender} from 'camelot-unchained';
 
 const SELECT_GENDER = 'cu-character-creation/genders/SELECT_GENDER';
 const RESET_GENDER = 'cu-character-creation/geners/RESET_GENDER';
 
-export function selectGender(selected: gender) {
+export function selectGender(selected: Gender) {
     return {
         type: SELECT_GENDER,
         selected: selected
@@ -22,9 +22,9 @@ export function resetGender() {
     };
 }
 
-const initialState = gender.MALE;
+const initialState = Gender.Male;
 
-export default function reducer(state: gender = initialState, action: any = {}) {
+export default function reducer(state: Gender = initialState, action: any = {}) {
     switch(action.type) {
         case RESET_GENDER: return initialState;
         case SELECT_GENDER:

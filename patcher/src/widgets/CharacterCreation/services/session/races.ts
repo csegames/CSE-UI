@@ -6,7 +6,7 @@
 
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
-import {race, faction} from 'camelot-unchained';
+import {Race, Faction} from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
@@ -15,8 +15,8 @@ import ResponseError from '../../lib/ResponseError';
 export interface RaceInfo {
   name: string,
   description: string,
-  faction: faction,
-  id: race
+  faction: Faction,
+  id: Race
 }
 
 const FETCH_RACES = 'cu-character-creation/races/FETCH_RACES';
