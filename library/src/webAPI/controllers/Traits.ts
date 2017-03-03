@@ -10,17 +10,9 @@ import createOptions from '../createOptions';
 import { Character } from '../definitions';
 
 
-export function getInvitesForCharacterV1(shardID: number, characterID: string) {
-  return create(createOptions()).call('v1/groups/getInvitesForCharacter', { 
-    shardID: shardID, 
-    characterID: characterID
-  });
-}
-
-export function getInvitesForGroupV1(shardID: number, groupID: string) {
-  return create(createOptions()).call('v1/groups/getInvitesForGroup', { 
-    shardID: shardID, 
-    groupID: groupID
+export function getTraitsV1(shardID: number) {
+  return create(createOptions()).get('v1/traits', { 
+    shardID: shardID
   });
 }
 
