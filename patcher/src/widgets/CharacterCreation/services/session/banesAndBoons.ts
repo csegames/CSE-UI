@@ -438,67 +438,67 @@ export const onUpdateRankBanes = module.createAction({
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let gBanes = state.generalBanes;
-       let cBanes = state.playerClassBanes;
-       let rBanes = state.raceBanes;
-       let fBanes = state.factionBanes;
-       let addedBanesClone = state.addedBanes;
-       let totalPointRankBanes = state.totalPoints;
-       const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? Object.assign({},
-           state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1]),
-           {
-             rank: action.bane.rank + 1,
-             ranks: action.bane.ranks,
-             category: action.bane.category,
-             selected: true
-           }) : Object.assign({}, action.bane, { selected: true, finished: true });
-       const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? Object.assign({},
-           state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank - 1]),
-           {
-             rank: action.bane.rank - 1,
-             ranks: action.bane.ranks,
-             category: action.bane.category,
-             selected: action.bane.rank !== 1
-           }) : Object.assign({}, action.bane, { selected: false, finished: true });
-       const addedBaneSelectIndex = addedBanesClone.findIndex((bane: BanesAndBoonsInfo) => bane.id === previousRankBane.id);
-       const addedBaneCancelIndex = addedBanesClone.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id);
-       if (action.event === 'select') {
-         if (addedBaneSelectIndex !== -1) addedBanesClone[addedBaneSelectIndex] = action.bane;
-         if (!action.bane.finished)
-           totalPointRankBanes = totalPointRankBanes + (action.bane.points - previousRankBane.points);
-         switch (action.bane.category) {
-           case 'General':
-             gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
-           case 'Class':
-             cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
-           case 'Race':
-             rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
-           case 'Faction':
-             fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
-         }
-       }
-       if (action.event === 'cancel') {
-         if (addedBaneCancelIndex !== -1) addedBanesClone[addedBaneCancelIndex] = previousRankBane;
-         if (!action.bane.finished)
-           totalPointRankBanes = totalPointRankBanes - (action.bane.points - previousRankBane.points);
-         switch (action.bane.category) {
-           case 'General':
-             gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
-           case 'Class':
-             cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
-           case 'Race':
-             rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
-           case 'Faction':
-             fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
-         }
-       }
-       return Object.assign({}, state, {
-         addedBanes: addedBanesClone,
-         generalBanes: gBanes,
-         classBanes: cBanes,
-         raceBanes: rBanes,
-         factionBanes: fBanes,
-         totalPoints: totalPointRankBanes
-       });
+    let cBanes = state.playerClassBanes;
+    let rBanes = state.raceBanes;
+    let fBanes = state.factionBanes;
+    let addedBanesClone = state.addedBanes;
+    let totalPointRankBanes = state.totalPoints;
+    const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? Object.assign({},
+        state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1]),
+        {
+          rank: action.bane.rank + 1,
+          ranks: action.bane.ranks,
+          category: action.bane.category,
+          selected: true
+        }) : Object.assign({}, action.bane, { selected: true, finished: true });
+    const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? Object.assign({},
+        state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank - 1]),
+        {
+          rank: action.bane.rank - 1,
+          ranks: action.bane.ranks,
+          category: action.bane.category,
+          selected: action.bane.rank !== 1
+        }) : Object.assign({}, action.bane, { selected: false, finished: true });
+    const addedBaneSelectIndex = addedBanesClone.findIndex((bane: BanesAndBoonsInfo) => bane.id === previousRankBane.id);
+    const addedBaneCancelIndex = addedBanesClone.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id);
+    if (action.event === 'select') {
+      if (addedBaneSelectIndex !== -1) addedBanesClone[addedBaneSelectIndex] = action.bane;
+      if (!action.bane.finished)
+        totalPointRankBanes = totalPointRankBanes + (action.bane.points - previousRankBane.points);
+      switch (action.bane.category) {
+        case 'General':
+          gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+        case 'Class':
+          cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+        case 'Race':
+          rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+        case 'Faction':
+          fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+      }
+    }
+    if (action.event === 'cancel') {
+      if (addedBaneCancelIndex !== -1) addedBanesClone[addedBaneCancelIndex] = previousRankBane;
+      if (!action.bane.finished)
+        totalPointRankBanes = totalPointRankBanes - (action.bane.points - previousRankBane.points);
+      switch (action.bane.category) {
+        case 'General':
+          gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+        case 'Class':
+          cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+        case 'Race':
+          rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+        case 'Faction':
+          fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+      }
+    }
+    return Object.assign({}, state, {
+      addedBanes: addedBanesClone,
+      generalBanes: gBanes,
+      classBanes: cBanes,
+      raceBanes: rBanes,
+      factionBanes: fBanes,
+      totalPoints: totalPointRankBanes
+    });
   }
 })
 

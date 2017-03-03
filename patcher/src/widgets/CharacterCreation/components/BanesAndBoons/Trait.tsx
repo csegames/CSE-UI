@@ -205,12 +205,13 @@ class Trait extends React.Component<TraitProps, {}> {
       (trait.ranks[trait.rank - 1] === boon.id || trait.ranks[trait.rank] === boon.id));
 
     if (e.shiftKey) {
-        if (addedRankTrait.ranks) {
-          if (addedRankTrait.rank === 0) onCancelTrait(addedRankTrait);
-          onUpdateRankTrait('cancel', addedRankTrait);
-        }
-        if (trait.rank === 0 && addedTraits.indexOf(trait) === -1) onTraitClick(trait);
-        onUpdateRankTrait('select', trait);
+      if (addedRankTrait.ranks) {
+        if (addedRankTrait.rank === 0) onCancelTrait(addedRankTrait);
+        onUpdateRankTrait('cancel', addedRankTrait);
+      }
+    } else {
+      if (trait.rank === 0 && addedTraits.indexOf(trait) === -1) onTraitClick(trait);
+      onUpdateRankTrait('select', trait);
     }
   };
 
