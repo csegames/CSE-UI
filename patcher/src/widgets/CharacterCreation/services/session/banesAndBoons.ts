@@ -11,9 +11,8 @@
 
 import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
-import { Module, generateID } from 'redux-typed-modules';
-import { Archetype, Faction, Race } from 'camelot-unchained';
-import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
+import { Module } from 'redux-typed-modules';
+import { webAPI, client, Faction, Race } from 'camelot-unchained';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -70,19 +69,17 @@ const ON_RESET_BANES_AND_BOONS = 'cu-character-creation/banes-and-boons/ON_RESET
 
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }, apiUrl: string = 'https://api.camelotunchained.com/') => {
   return (dispatch: (action: any) => any) => {
-    return fetchJSON(`${apiUrl}v1/traits?shardID=1`)
-      .then((traits: Array<BanesAndBoonsInfo>) => dispatch(onInitializeTraits({
-        playerClass: payload.playerClass,
-        race: payload.race,
-        faction: payload.faction,
-        banesAndBoons: traits
-      })))
-      .catch((err: ResponseError) => dispatch(onInitializeTraits({
-        playerClass: payload.playerClass,
-        race: payload.race,
-        faction: payload.faction,
-        banesAndBoons: []
-      }))); // TODO: Handle not finding anything
+    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
+      .then((result: any) => {
+        if (result.ok) {
+          dispatch(onInitializeTraits({
+            playerClass: payload.playerClass,
+            race: payload.race,
+            faction: payload.faction,
+            banesAndBoons: result
+          }));
+        }
+      })
   }
 };
 
@@ -100,24 +97,6 @@ const emptyBaneOrBoon = {
   exclusivityGroup: -1,
   minRequired: -1,
   maxAllowed: -1
-};
-
-const initialState: BanesAndBoonsState = {
-  initial: true,
-  totalPoints: 0,
-  addedBanes: Array(5).fill(emptyBaneOrBoon),
-  addedBoons: Array(5).fill(emptyBaneOrBoon),
-  generalBoons: [],
-  playerClassBoons: [],
-  raceBoons: [],
-  factionBoons: [],
-  generalBanes: [],
-  playerClassBanes: [],
-  raceBanes: [],
-  factionBanes: [],
-  allPrerequisites: [],
-  allRanks: [],
-  allExclusives: []
 };
 
 export const module = new Module({
@@ -138,7 +117,7 @@ export const module = new Module({
     allRanks: [],
     allExclusives: []
   }
-})
+});
 
 export const onSelectBane = module.createAction({
   type: ON_SELECT_BANE,
@@ -166,7 +145,7 @@ export const onSelectBane = module.createAction({
       totalPoints: state.totalPoints + action.bane.points
     });
   }
-})
+});
 
 export const onSelectBoon = module.createAction({
   type: ON_SELECT_BOON,
@@ -194,7 +173,7 @@ export const onSelectBoon = module.createAction({
       totalPoints: state.totalPoints + action.boon.points
     });
   }
-})
+});
 
 export const onCancelBaneClick = module.createAction({
   type: ON_CANCEL_BANE,
@@ -218,7 +197,7 @@ export const onCancelBaneClick = module.createAction({
       totalPoints: state.totalPoints - action.bane.points
     });
   }
-})
+});
 
 export const onCancelBoonClick = module.createAction({
   type: ON_CANCEL_BOON,
@@ -242,7 +221,7 @@ export const onCancelBoonClick = module.createAction({
       totalPoints: state.totalPoints - action.boon.points
     });
   }
-})
+});
 
 export const onUpdateGeneralBoons = module.createAction({
   type: ON_UPDATE_GENERAL_BOONS,
@@ -257,7 +236,7 @@ export const onUpdateGeneralBoons = module.createAction({
     generalBoonsClone[indexOfGeneralBoon] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { generalBoons: generalBoonsClone });
   }
-})
+});
 
 export const onUpdateGeneralBanes = module.createAction({
   type: ON_UPDATE_GENERAL_BANES,
@@ -272,7 +251,7 @@ export const onUpdateGeneralBanes = module.createAction({
     generalBanesClone[indexOfGeneralBane] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { generalBanes: generalBanesClone });
   }
-})
+});
 
 export const onUpdatePlayerClassBoons = module.createAction({
   type: ON_UPDATE_PLAYER_CLASS_BOONS,
@@ -287,7 +266,7 @@ export const onUpdatePlayerClassBoons = module.createAction({
     playerClassBoonsClone[indexOfPlayerClassBoon] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { playerClassBoons: playerClassBoonsClone });
   }
-})
+});
 
 export const onUpdatePlayerClassBanes = module.createAction({
   type: ON_UPDATE_PLAYER_CLASS_BANES,
@@ -302,7 +281,7 @@ export const onUpdatePlayerClassBanes = module.createAction({
     playerClassBanesClone[indexOfPlayerClassBane] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { playerClassBanes: playerClassBanesClone });
   }
-})
+});
 
 export const onUpdateFactionBoons = module.createAction({
   type: ON_UPDATE_FACTION_BOONS,
@@ -317,7 +296,7 @@ export const onUpdateFactionBoons = module.createAction({
     factionBoonsClone[indexOfFactionBoon] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { factionBoons: factionBoonsClone });
   }
-})
+});
 
 export const onUpdateFactionBanes = module.createAction({
   type: ON_UPDATE_FACTION_BANES,
@@ -332,7 +311,7 @@ export const onUpdateFactionBanes = module.createAction({
     factionBanesClone[indexOfFactionBane] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { factionBanes: factionBanesClone });
   }
-})
+});
 
 export const onUpdateRaceBoons = module.createAction({
   type: ON_UPDATE_RACE_BOONS,
@@ -347,7 +326,7 @@ export const onUpdateRaceBoons = module.createAction({
     raceBoonsClone[indexOfRaceBoon] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { raceBoons: raceBoonsClone });
   }
-})
+});
 
 export const onUpdateRaceBanes = module.createAction({
   type: ON_UPDATE_RACE_BANES,
@@ -362,7 +341,7 @@ export const onUpdateRaceBanes = module.createAction({
     raceBanesClone[indexOfRaceBane] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { raceBanes: raceBanesClone });
   }
-})
+});
 
 export const onUpdateRankBoons = module.createAction({
   type: ON_UPDATE_RANK_BOONS,
@@ -500,7 +479,7 @@ export const onUpdateRankBanes = module.createAction({
       totalPoints: totalPointRankBanes
     });
   }
-})
+});
 
 export const onInitializeTraits = module.createAction({
   type: ON_INITIALIZE_TRAITS,
@@ -701,14 +680,14 @@ export const onInitializeTraits = module.createAction({
       allExclusives: allExclusiveTraits
     });
   }
-})
+});
 
 export const resetBanesAndBoons = module.createAction({
   type: ON_RESET_BANES_AND_BOONS,
   action: () => null,
-  reducer: (state, action) => {
+  reducer: () => {
     return module.initialState;
   }
-})
+});
 
 export default module.createReducer();
