@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:18
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:13:12
+ * @Last Modified time: 2017-03-03 16:19:37
  */
 
 import * as React from 'react';
@@ -40,9 +40,9 @@ export interface TraitProps {
   onTraitClick: Function;
   onCancelTrait: Function;
   onUpdateRankTrait: Function;
-  allPrerequisites: Array<BanesAndBoonsInfo>;
-  allExclusives: Array<BanesAndBoonsInfo>;
-  addedTraits: Array<BanesAndBoonsInfo>;
+  allPrerequisites: BanesAndBoonsInfo[];
+  allExclusives: BanesAndBoonsInfo[];
+  addedTraits: BanesAndBoonsInfo[];
   primaryColor: string;
   styles: Partial<TraitStyle>;
 }

@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:08
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:13:14
+ * @Last Modified time: 2017-03-03 16:22:10
  */
 
 import * as React from 'react';
@@ -19,9 +19,9 @@ const Boon = (props: {
   onBoonClick: Function;
   onCancelBoon: Function;
   onUpdateRankBoon: Function;
-  allPrerequisites: Array<BanesAndBoonsInfo>;
-  allExclusives: Array<BanesAndBoonsInfo>;
-  addedBoons: Array<BanesAndBoonsInfo>;
+  allPrerequisites: BanesAndBoonsInfo[];
+  allExclusives: BanesAndBoonsInfo[];
+  addedBoons: BanesAndBoonsInfo[];
   styles: Partial<TraitStyle>;
 }) => {
   const {

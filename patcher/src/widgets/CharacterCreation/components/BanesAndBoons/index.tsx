@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:15
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:13:12
+ * @Last Modified time: 2017-03-03 16:19:16
  */
 
 import * as React from 'react';
@@ -59,18 +59,18 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
 }
 
 export interface BanesAndBoonsProps {
-  generalBoons: Array<BanesAndBoonsInfo>;
-  playerClassBoons: Array<BanesAndBoonsInfo>;
-  raceBoons: Array<BanesAndBoonsInfo>;
-  factionBoons: Array<BanesAndBoonsInfo>;
-  generalBanes: Array<BanesAndBoonsInfo>;
-  playerClassBanes: Array<BanesAndBoonsInfo>;
-  raceBanes: Array<BanesAndBoonsInfo>;
-  factionBanes: Array<BanesAndBoonsInfo>;
-  addedBanes: Array<BanesAndBoonsInfo>;
-  addedBoons: Array<BanesAndBoonsInfo>;
-  allPrerequisites: Array<BanesAndBoonsInfo>;
-  allExclusives: Array<BanesAndBoonsInfo>;
+  generalBoons: BanesAndBoonsInfo[];
+  playerClassBoons: BanesAndBoonsInfo[];
+  raceBoons: BanesAndBoonsInfo[];
+  factionBoons: BanesAndBoonsInfo[];
+  generalBanes: BanesAndBoonsInfo[];
+  playerClassBanes: BanesAndBoonsInfo[];
+  raceBanes: BanesAndBoonsInfo[];
+  factionBanes: BanesAndBoonsInfo[];
+  addedBanes: BanesAndBoonsInfo[];
+  addedBoons: BanesAndBoonsInfo[];
+  allPrerequisites: BanesAndBoonsInfo[];
+  allExclusives: BanesAndBoonsInfo[];
   onBoonClick: Function;
   onBaneClick: Function;
   onCancelBoonClick: Function;

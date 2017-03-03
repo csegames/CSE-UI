@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:13
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:13:14
+ * @Last Modified time: 2017-03-03 16:21:53
  */
 
 import * as React from 'react';
@@ -19,9 +19,9 @@ const Bane = (props: {
   onBaneClick: Function;
   onCancelBane: Function;
   onUpdateRankBane: Function;
-  allPrerequisites: Array<BanesAndBoonsInfo>;
-  allExclusives: Array<BanesAndBoonsInfo>;
-  addedBanes: Array<BanesAndBoonsInfo>;
+  allPrerequisites: BanesAndBoonsInfo[];
+  allExclusives: BanesAndBoonsInfo[];
+  addedBanes: BanesAndBoonsInfo[];
   styles: Partial<TraitStyle>;
 }) => {
   const {
