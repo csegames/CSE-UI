@@ -122,6 +122,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
           }
           return acc;
         }),
+        banes: this.props.banesAndBoonsState.addedBanes,
+        boons: this.props.banesAndBoonsState.addedBoons
       };
       this.props.dispatch(createCharacter(model,
         this.props.apiKey,
