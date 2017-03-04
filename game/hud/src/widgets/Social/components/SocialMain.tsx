@@ -31,7 +31,7 @@ import SocialNav from './SocialNav';
 export interface SocialMainStyle extends StyleDeclaration {
   container: React.CSSProperties;
   closeButton: React.CSSProperties;
-  content: React.CSSProperties; 
+  content: React.CSSProperties;
 }
 
 export const defaultSocialMainStyle: SocialMainStyle = {
@@ -171,7 +171,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
         break;
     }
     }
-    
+
     return (
       <div className={css(ss.container, custom.container)}>
 

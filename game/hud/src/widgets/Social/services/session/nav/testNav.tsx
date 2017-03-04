@@ -109,7 +109,7 @@ export default function() {
               displayName: 'Browse',
               icon: <i className='fa fa-bars'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => false,
+              display: (social: ql.MySocialQuery) => true,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,

@@ -19,6 +19,7 @@ import RankList from './RankList';
 import MemberList from './MemberList';
 import CreateGroup from './CreateGroup';
 import OrderAdmin from './OrderAdmin';
+import OrdersList from './OrdersList';
 
 export interface OrderContentProps {
   dispatch: (action: any) => any;
@@ -54,10 +55,10 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
 
     if (!props.order) {
       switch (props.address.id) {
-        case 'create': 
-        case 'list': 
+        case 'create':
+        case 'list':
           break;
-        default: 
+        default:
           if (!props.order) {
             props.dispatch(selectLink({
               kind: 'Primary',
@@ -99,10 +100,12 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
                       group={this.props.order}
                       userPermissions={this.props.order.myMemberInfo.permissions}
                       refetch={this.props.refetch} />
-      case 'admin': 
+      case 'admin':
         return <OrderAdmin dispatch={this.props.dispatch}
                            order={this.props.order}
                            refetch={this.props.refetch} />
+      case 'list':
+        return <OrdersList refetch={this.props.refetch} />;
       default:
         return <div>NO CONTENT</div>;
     }
