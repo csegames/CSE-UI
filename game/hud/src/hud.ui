@@ -1,7 +1,7 @@
 {
   "name": "hud",
   "mainFile": "hud.html",
-  "layer": 1,
+  "layer": 2,
   "handlesCharacter": true,
   "handlesChat": true,
   "handlesBeginChat": true,

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:38
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-26 10:12:32
+ * @Last Modified time: 2017-03-06 17:08:43
  */
 
 import * as React from 'react';
@@ -122,7 +122,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
       if (!launchString.includes('character=') || !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
       const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
-      if (!launchString.includes('apihost=') || !launchString.includes('apihost =')) launchString += ` apihost=${apiHost}`;
+      if (!launchString.includes('webapihost=') || !launchString.includes('webapihost =')) launchString += ` webapihost=${apiHost}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

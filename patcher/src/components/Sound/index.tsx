@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:53:23
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-06 17:53:57
+ * @Last Modified time: 2017-03-06 18:41:29
  */
 
 import * as React from 'react';
@@ -33,7 +33,7 @@ export class Sound extends React.Component<SoundProps, SoundState> {
       let sound = this.getSound(name);
       if (sound) {
         sound.play();
-        sound.volume = 0.75;
+        sound.volume = 0.5;
       }
     }
   }
