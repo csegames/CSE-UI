@@ -17,3 +17,4 @@ export function getStartingServer(shardID: number, characterID: string) {
   });
 }
 
+ 

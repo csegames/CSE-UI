@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 16:44:22
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 11:41:57
+ * @Last Modified time: 2017-03-06 16:29:06
  */
 
 import * as React from 'react';
@@ -19,6 +19,7 @@ import {
   Input,
   client,
   jsKeyCodes,
+  Tooltip,
 } from 'camelot-unchained';
 
 export interface InviteButtonStyle extends StyleDeclaration {
@@ -27,12 +28,12 @@ export interface InviteButtonStyle extends StyleDeclaration {
   inputHidden: React.CSSProperties;
   container: React.CSSProperties;
   error: React.CSSProperties;
+  status: React.CSSProperties;
 }
 
 export const defaultInviteButtonStyle: InviteButtonStyle = {
 
   container: {
-    display: 'flex',
   },
 
   button: {
@@ -41,6 +42,10 @@ export const defaultInviteButtonStyle: InviteButtonStyle = {
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  status: {
+    fontSize: '0.9em',
   },
 
   inputVisible: {
@@ -68,6 +73,7 @@ export interface InviteButtonState {
   showInput: boolean;
   inviting: boolean;
   error: string;
+  status: string;
 }
 
 export class InviteButton extends React.Component<InviteButtonProps, InviteButtonState> {
@@ -77,6 +83,7 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
       showInput: false,
       inviting: false,
       error: null,
+      status: null,
     }
   }
 
@@ -98,6 +105,7 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
             inviting: false,
             showInput: false,
             error: null,
+            status: `${name} as been invited!`,
           });
           this.props.refetch();
           return;
@@ -135,18 +143,39 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
 
     return (
       <div className={css(ss.container, custom.container)}>
-        <div>
-        {this.state.error ? <div className={css(ss.error, custom.error)}>{this.state.error}</div> : null}
+        {
+            this.state.error ?
+            (
+              <div className={css(ss.error, custom.error)}>
+                <Tooltip content={() => <span>{this.state.error}</span>}>
+                  <i className="fa fa-exclamation-circle"></i> Save failed.
+                </Tooltip>
+              </div>
+            ) : null
+          }
+          {
+            this.state.status ?
+            (
+              <div className={css(ss.status, custom.status)}>
+                <Tooltip content={() => <span>{this.state.status}</span>}>
+                  <i className="fa fa-info-circle"></i> success!
+                </Tooltip>
+              </div>
+            ) : null
+          }
+
+        <div style={{display: 'flex'}}>
         <Input inputRef={r => this.inputRef = r}
                placeholder={'Enter name & hit enter'}
                onKeyDown={this.onKeyDown}
                styles={{
                  inputWrapper: this.state.showInput ? defaultInviteButtonStyle.inputVisible : defaultInviteButtonStyle.inputHidden
                }} />
+          
+          <RaisedButton onClick={this.toggleInputVisibilty} styles={{button: defaultInviteButtonStyle.button}}>
+            {this.state.inviting ? <Spinner /> : this.state.showInput ?  <i className='fa fa-minus'></i> : <i className='fa fa-plus'></i>}
+          </RaisedButton>
         </div>
-        <RaisedButton onClick={this.toggleInputVisibilty} styles={{button: defaultInviteButtonStyle.button}}>
-          {this.state.inviting ? <Spinner /> : this.state.showInput ?  <i className='fa fa-minus'></i> : <i className='fa fa-plus'></i>}
-        </RaisedButton>
       </div>
     );
   }

@@ -241,30 +241,30 @@ export default () => {
       }
     },
 
-    'showranks': {
-      description: 'Show all ranks in your Order.',
-      handler: function () {
-        systemMessage('Fetching ranks from the Web API...');
+    // 'showranks': {
+    //   description: 'Show all ranks in your Order.',
+    //   handler: function () {
+    //     systemMessage('Fetching ranks from the Web API...');
+    //
+    //     webAPI.OrdersAPI.showRanksV1(client.shardID, client.characterID)
+    //       .then((response: any) => {
+    //         if (!response.ok) {
+    //           console.error(response);
+    //           systemMessage('Failed to fetch ranks. :(');
+    //           if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
+    //           return;
+    //         }
 
-        webAPI.OrdersAPI.showRanksV1(client.shardID, client.characterID)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to fetch ranks. :(');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
+    //         const ranks = <webAPI.RankInfo[]>response.data;
 
-            const ranks = <webAPI.RankInfo[]>response.data;
+    //         for (let i = 0; i < ranks.length; ++i) {
+    //           const r = ranks[i];
+    //           systemMessage(`${r.name} ${r.level} ${r.permissions.length > 0 ? r.permissions.join(', ') : 'No Permissions'}`);
+    //         }
 
-            for (let i = 0; i < ranks.length; ++i) {
-              const r = ranks[i];
-              systemMessage(`${r.name} ${r.level} ${r.permissions.length > 0 ? r.permissions.join(', ') : 'No Permissions'}`);
-            }
-
-          });
-      }
-    },
+    //       });
+    //   }
+    // },
 
     'addrankpermissions': {
       description: 'Add permissions to a rank in your Order.',

@@ -217,7 +217,10 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => b.level - a.level,
     renderItem: (r: ql.CustomRank, renderData?: { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void, }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
-        return <InlineNumberInputEdit value={r.level} onSave={(currentLevel: number, newLevel: string): any  => {
+        return <InlineNumberInputEdit value={r.level}
+                                      min={2}
+                                      max={1000}
+                                      onSave={(currentLevel: number, newLevel: string): any  => {
             return webAPI.GroupsAPI.setRankLevelV1(client.shardID, client.characterID, renderData.groupId, r.name, Number.parseInt(newLevel))
               .then(result => {
                 if (result.ok) {
