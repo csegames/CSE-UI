@@ -121,6 +121,8 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID != 27) {
       if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
       if (!launchString.includes('character=') || !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
+      const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
+      if (!launchString.includes('apihost=') || !launchString.includes('apihost =')) launchString += ` apihost=${apiHost}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

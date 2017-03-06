@@ -10,7 +10,7 @@
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
-import {patcher, Channel, ChannelStatus} from '../../../../services/patcher';
+import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
 import { Module } from 'redux-typed-modules';
 
 export interface ControllerState {
@@ -77,6 +77,7 @@ export interface PatcherServer {
   selectedCharacter?: webAPI.SimpleCharacter;
   characters?: webAPI.SimpleCharacter[];
   lastUpdated?: string;
+  apiHost: string;
 }
 
 // HELPER METHODS
@@ -113,6 +114,7 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
     available: server.playerMaximum > 0,
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
+    apiHost: server.apiHost
   }, server);
 }
 
@@ -133,6 +135,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
     channelPatchPermissions: 4, // CSE only default
+    apiHost: 'https://api.camelotunchained.com',    
   };
 }
 

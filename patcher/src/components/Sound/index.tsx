@@ -72,7 +72,7 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         <audio src='sounds/select.ogg' ref='sound-select' />
         <audio src='sounds/launch-game.ogg' ref='sound-launch-game' />
         <audio src='sounds/patch-complete.ogg' ref='sound-patch-complete' />
-        <audio src='sounds/patcher-theme-v0.1.ogg' ref='sound-bg' />
+        <audio src='sounds/patcher-theme.ogg' ref='sound-bg' />
       </div>
     );
   }

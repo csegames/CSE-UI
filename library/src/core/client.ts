@@ -13,6 +13,7 @@ interface WindowInterface extends Window {
   cuAPI: clientInterface;
   opener: WindowInterface;
   cuOverrides: any;
+  patcherAPI: any;
 }
 
 // declare window implements WindowInterface
@@ -41,6 +42,10 @@ if (!client.apiVersion) client.apiVersion = 1;
 if (!client.shardID) client.shardID = 1;
 if (!client.characterID) client.characterID = 'Q3jItAvTU93AzbMFcCL200';
 client.signalRHost = `${client.apiHost}/signalr`;
+
+if (window.patcherAPI) {
+  client = merge(client, window.patcherAPI);
+}
 
 if (window.cuOverrides) {
   client = merge(client, window.cuOverrides);
