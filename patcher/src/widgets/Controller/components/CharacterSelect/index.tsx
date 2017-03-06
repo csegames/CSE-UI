@@ -56,7 +56,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
 
   deleteCharacter = () => {
     const {character} = this.props;
-    webAPI.CharactersAPI.deleteCharacterV1(character.shardID, character.id);
+    webAPI.CharactersAPI.deleteCharacterV1(Number(character.shardID), character.id);
     this.showDeleteConfirmation(false);
   }
 

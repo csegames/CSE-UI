@@ -13,6 +13,7 @@ import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
 import { Module } from 'redux-typed-modules';
 import { webAPI, client, Faction, Race } from 'camelot-unchained';
+import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -67,7 +68,7 @@ const ON_UPDATE_RANK_BANES = 'cu-character-creation/banes-and-boons/ON_UPDATE_RA
 const ON_INITIALIZE_TRAITS = 'cu-character-creation/banes-and-boons/ON_INITIALIZE_TRAITS';
 const ON_RESET_BANES_AND_BOONS = 'cu-character-creation/banes-and-boons/ON_RESET_BANES_AND_BOONS';
 
-export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }, apiUrl: string = 'https://api.camelotunchained.com/') => {
+export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
     return webAPI.TraitsAPI.getTraitsV1(client.shardID)
       .then((result: any) => {
@@ -485,15 +486,18 @@ export const onInitializeTraits = module.createAction({
   type: ON_INITIALIZE_TRAITS,
   action: (action: { playerClass: string, faction: string, race: string, banesAndBoons: any }) => action,
   reducer: (state, action) => {
-    const { playerClass, faction, race, banesAndBoons } = action;
+    const { playerClass, faction, race, /* banesAndBoons */ } = action;
     /* !!To test ranks, exclusivity, and prerequisites: Uncomment the line below and comment the banesAndBoons variable above!! */
-    // let banesAndBoons = traitsExampleResponse;
+    let banesAndBoons = traitsExampleResponse;
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
     const ranks = banesAndBoons.ranks;
     const exclusives = banesAndBoons.exclusivity;
+
     const allTraits = banesAndBoons.traits;
+    const traits: { [id: string]: BanesAndBoonsInfo } = {};
+    banesAndBoons.traits.forEach((i: BanesAndBoonsInfo) => traits[i.id] = i)
 
     // Rank traits
     const allRanks = ranks.map((rankArray: Array<string>) =>
@@ -506,9 +510,15 @@ export const onInitializeTraits = module.createAction({
           }
         )
       ));
-    const firstRanks = allRanks.map((rankArray: Array<BanesAndBoonsInfo>) =>
+
+    const firstRanksArr = allRanks.map((rankArray: Array<BanesAndBoonsInfo>) =>
       rankArray.find((rank: BanesAndBoonsInfo) => rank.rank === 0));
-    const combinedRanks = allRanks.reduce((rank1: Array<BanesAndBoonsInfo>, rank2: Array<BanesAndBoonsInfo>) => rank1.concat(rank2));
+    const firstRanks: { [id: string]: BanesAndBoonsInfo } = {};
+    firstRanksArr.forEach((trait: BanesAndBoonsInfo) => firstRanks[trait.id] = trait);
+
+    const combinedRanksArr = allRanks.reduce((rank1: Array<BanesAndBoonsInfo>, rank2: Array<BanesAndBoonsInfo>) => rank1.concat(rank2));
+    const combinedRanks: { [id: string]: BanesAndBoonsInfo } = {};
+    combinedRanksArr.forEach((trait: BanesAndBoonsInfo) => combinedRanks[trait.id] = trait);
 
     // Exclusive traits
     interface ExclusiveInfo {
@@ -528,31 +538,26 @@ export const onInitializeTraits = module.createAction({
     // Getting all the non-general traits
     const allClassTraits = Object.keys(playerClasses).map((playerClass) => {
       const optional = playerClasses[playerClass] && playerClasses[playerClass].optional ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => playerClasses[playerClass].optional
-          .filter((optTrait: string) => trait.id === optTrait).length !== 0) : [];
+        playerClasses[playerClass].optional.map((pcId: string) => traits[pcId]) : [];
       const required = playerClasses[playerClass] && playerClasses[playerClass].required ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => playerClasses[playerClass].required
-          .filter((reqTrait: string) => trait.id === reqTrait).length !== 0) : [];
+        playerClasses[playerClass].required.map((pcId: string) => traits[pcId]) : [];
       return Object.assign({}, { optional: optional, required: required });
     });
 
+
     const allRaceTraits = Object.keys(races).map((race) => {
       const optional = races[race] && races[race].optional ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => races[race].optional
-          .filter((optTrait: string) => trait.id === optTrait).length !== 0) : [];
+        races[race].optional.map((rId: string) => traits[rId]) : [];
       const required = races[race] && races[race].required ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => races[race].required
-          .filter((reqTrait: string) => trait.id === reqTrait).length !== 0) : [];
+        races[race].required.map((rId: string) => traits[rId]): [];
       return Object.assign({}, { optional: optional, required: required });
     });
 
     const allFactionTraits = Object.keys(factions).map((faction) => {
       const optional = factions[faction] && factions[faction].optional ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => factions[faction].optional
-          .filter((optTrait: string) => trait.id === optTrait).length !== 0) : [];
+       factions[faction].optional.map((fId: string) => traits[fId]) : [];
       const required = factions[faction] && factions[faction].required ?
-        allTraits.filter((trait: BanesAndBoonsInfo) => factions[faction].required
-          .filter((reqTrait: string) => trait.id === reqTrait).length !== 0) : [];
+       factions[faction].required.map((fId: string) => traits[fId]) : [];
       return Object.assign({}, { optional: optional, required: required });
     });
 
@@ -580,76 +585,55 @@ export const onInitializeTraits = module.createAction({
     ].map((bane) => Object.assign({}, bane, { required: true }));
 
     // Player class traits
-    const playerClassBoons = playerClassTraits && playerClassTraits.optional ? [...playerClassTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points >= 1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-        ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-          playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points >= 1))
-      ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Class', selected: false })) : [];
+    const playerClassBoons = playerClassTraits && playerClassTraits.optional ?
+     [...playerClassTraits.optional.filter((trait: BanesAndBoonsInfo) =>  trait.points >= 1 && !combinedRanks[trait.id]) || [],
+      ...playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points >= 1) || []
+     ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Class', selected: false })) : [];
 
-    const playerClassBanes = playerClassTraits && playerClassTraits.optional ? [...playerClassTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points <= -1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-        ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-          playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points <= -1))
-      ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Class', selected: false })) : [];
+    const playerClassBanes = playerClassTraits && playerClassTraits.optional ?
+     [...playerClassTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && !combinedRanks[trait.id]) || [],
+      ...playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
+     ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Class', selected: false })) : [];
+
+      // Faction traits
+    const factionBoons = factionTraits && factionTraits.optional && 
+    [...factionTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points >= 1 && !combinedRanks[trait.id]) || [],
+     ...factionTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points >= 1) || []
+    ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Faction', selected: false }));
+
+    const factionBanes = factionTraits && factionTraits.optional &&
+      factionTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && (!combinedRanks[trait.id] || firstRanks[trait.id])) || []
+      .map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Faction', selected: false }));
 
     // Race traits
-    const raceBoons = raceTraits && raceTraits.optional && [...raceTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points >= 1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-        ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-        raceTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points <= -1))
-      ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Race', selected: false }));
+    const raceBoons = raceTraits && raceTraits.optional &&
+     [...raceTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points >= 1 && !combinedRanks[trait.id]) || [],
+      ...raceTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
+     ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Race', selected: false }));
 
-    const raceBanes = raceTraits && raceTraits.optional && [...raceTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points <= -1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-        ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-        raceTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points <= -1))
-      ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Race', selected: false }));
-
-    // Faction traits
-    const factionBoons = factionTraits && factionTraits.optional && [...factionTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points >= 1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-      ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-        factionTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points >= 1))
-      ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Faction', selected: false }));
-
-    const factionBanes = factionTraits && factionTraits.optional && [...factionTraits.optional
-      .filter((trait: BanesAndBoonsInfo) => trait.points <= -1 &&
-      !combinedRanks.find((rank: BanesAndBoonsInfo) => trait.id === rank.id)),
-        ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-        factionTraits.optional.find((trait: BanesAndBoonsInfo) => trait.id === rank.id && trait.points <= -1))
-      ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Faction', selected: false }));
+    const raceBanes = raceTraits && raceTraits.optional &&
+     [...raceTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && !combinedRanks[trait.id]) || [],
+      ...raceTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
+     ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Race', selected: false }));
 
     // General
-    const undesirableTraits = [
+    const undesirableTraits: { [id: string]: BanesAndBoonsInfo } = {};
+    [
       ...allClassTraits.map((playerClass) => [...playerClass.optional, ...playerClass.required]).reduce((a, b) => a.concat(b)),
       ...allRaceTraits.map((race) => [...race.optional, ...race.required]).reduce((a, b) => a.concat(b)),
       ...allFactionTraits.map((faction) => [...faction.optional, ...faction.required]).reduce((a, b) => a.concat(b))
-    ];
+    ].forEach((trait: BanesAndBoonsInfo) => undesirableTraits[trait.id] = trait);
+    
 
     // Finding the Banes & Boons from the undesirableTraits
     const generalBoons = [
-      ...allTraits.filter((trait: BanesAndBoonsInfo) => {
-        return !combinedRanks.find((rank: BanesAndBoonsInfo) => rank.id === trait.id) &&
-          !undesirableTraits.find((usedBoon) => usedBoon.id === trait.id) &&
-          trait.points >= 1;
-      }),
-      ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-      !undesirableTraits.find((usedBoon) => usedBoon.id === rank.id) && rank.points >= 1)
+      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points >= 1),
+      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points >= 1)
     ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'General', selected: false }));
 
     const generalBanes = [
-      ...allTraits.filter((trait: BanesAndBoonsInfo) => {
-        return !combinedRanks.find((rank: BanesAndBoonsInfo) => rank.id === trait.id) &&
-          !undesirableTraits.find((usedBane) => usedBane.id === trait.id) &&
-          trait.points <= -1;
-      }),
-      ...firstRanks.filter((rank: BanesAndBoonsInfo) =>
-      !undesirableTraits.find((usedBane) => usedBane.id === rank.id) && rank.points <= -1)
+      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points <= -1),
+      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id])
     ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'General', selected: false }));
 
     // Total points
