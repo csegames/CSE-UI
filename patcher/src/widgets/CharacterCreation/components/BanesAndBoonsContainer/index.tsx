@@ -105,43 +105,23 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
   };
   private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (boon.ranks) {
-      if (boon.rank === 0) dispatch(onSelectBoon({ boon: boon }));
-      dispatch(onUpdateRankBoons({ event: 'select', boon: boon }))
-    } else {
-      dispatch(onSelectBoon({ boon: boon }));
-      this.onUpdateTrait(boon, 'boon', 'select');
-    }
+    dispatch(onSelectBoon({ boon: boon }));
+    this.onUpdateTrait(boon, 'boon', 'select');
   };
   private onSelectBaneClick = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (bane.ranks) {
-      if (bane.rank === 0) dispatch(onSelectBane({ bane: bane }));
-      dispatch(onUpdateRankBanes({ event: 'select', bane: bane }))
-    } else {
-      dispatch(onSelectBane({ bane: bane }));
-      this.onUpdateTrait(bane, 'bane', 'select');
-    }
+    dispatch(onSelectBane({ bane: bane }));
+    this.onUpdateTrait(bane, 'bane', 'select');
   };
   private onCancelBoon = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (boon.ranks) {
-      if (boon.rank === 0) dispatch(onCancelBoonClick({ boon: boon }));
-      dispatch(onUpdateRankBoons({ event: 'cancel', boon: boon }));
-    } else {
-      dispatch(onCancelBoonClick({ boon: boon }));
-      this.onUpdateTrait(boon, 'boon', 'cancel');
-    }
+    dispatch(onCancelBoonClick({ boon: boon }));
+    this.onUpdateTrait(boon, 'boon', 'cancel');
   };
   private onCancelBane = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
-    if (bane.ranks){
-      if (bane.rank === 0) dispatch(onCancelBaneClick({ bane: bane }));
-      dispatch(onUpdateRankBanes({ event: 'cancel', bane: bane }));
-    } else {
-      dispatch(onCancelBaneClick({ bane: bane }));
-      this.onUpdateTrait(bane, 'bane', 'cancel');
-    }
+    dispatch(onCancelBaneClick({ bane: bane }));
+    this.onUpdateTrait(bane, 'bane', 'cancel');
   };
   private onResetClick = () => {
     const { dispatch, playerClass, race, faction } = this.props;

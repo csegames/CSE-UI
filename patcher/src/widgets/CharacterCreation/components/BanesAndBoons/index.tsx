@@ -59,14 +59,14 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
 }
 
 export interface BanesAndBoonsProps {
-  generalBoons: BanesAndBoonsInfo[];
-  playerClassBoons: BanesAndBoonsInfo[];
-  raceBoons: BanesAndBoonsInfo[];
-  factionBoons: BanesAndBoonsInfo[];
-  generalBanes: BanesAndBoonsInfo[];
-  playerClassBanes: BanesAndBoonsInfo[];
-  raceBanes: BanesAndBoonsInfo[];
-  factionBanes: BanesAndBoonsInfo[];
+  generalBoons: any;
+  playerClassBoons: any;
+  raceBoons: any;
+  factionBoons: any;
+  generalBanes: any;
+  playerClassBanes: any;
+  raceBanes: any;
+  factionBanes: any;
   addedBanes: BanesAndBoonsInfo[];
   addedBoons: BanesAndBoonsInfo[];
   allPrerequisites: BanesAndBoonsInfo[];
@@ -434,7 +434,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     this.setState(Object.assign({}, this.state, { showResetAlertDialog: false }))
   };
 
-  private showTraitsSection = (listOfTraits: Array<BanesAndBoonsInfo>, title: string, type: 'boon' | 'bane') => {
+  private showTraitsSection = (listOfTraits: any, title: string, type: 'boon' | 'bane') => {
     const {
       onBaneClick,
       onBoonClick,
@@ -453,15 +453,15 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
     return (
-      listOfTraits.length > 0 &&
+      listOfTraits &&
       <div>
         <p className={css(type === 'boon' ? ss.boonTitle : ss.baneTitle, type === 'boon' ? custom.boonTitle : custom.baneTitle)}>{title}</p>
         <div className={css(type === 'boon' ? ss.boonsContainer : ss.banesContainer, type === 'boon' ? ss.banesContainer : custom.banesContainer)}>
-          {listOfTraits.map((trait, index) => (
+          {Object.keys(listOfTraits).map((key, index) => (
             type === 'boon' ?
             <Boon
               key={index}
-              trait={trait}
+              trait={listOfTraits[key]}
               onBoonClick={onBoonClick}
               onCancelBoon={onCancelBoonClick}
               allPrerequisites={allPrerequisites}
@@ -472,7 +472,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             /> :
               <Bane
                 key={index}
-                trait={trait}
+                trait={listOfTraits[key]}
                 onBaneClick={onBaneClick}
                 onCancelBane={onCancelBaneClick}
                 allPrerequisites={allPrerequisites}

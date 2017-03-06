@@ -25,7 +25,7 @@ export interface BanesAndBoonsInfo {
   category: string;
   selected: boolean;
   prerequisites: Array<string>;
-  rank: any;
+  rank: number;
   ranks: Array<string>;
   exclusivityGroup: number;
   minRequired: number;
@@ -38,16 +38,16 @@ export interface BanesAndBoonsState {
   totalPoints: number;
   addedBanes: BanesAndBoonsInfo[];
   addedBoons: BanesAndBoonsInfo[];
-  generalBoons: BanesAndBoonsInfo[];
-  playerClassBoons: BanesAndBoonsInfo[];
-  raceBoons: BanesAndBoonsInfo[];
-  factionBoons: BanesAndBoonsInfo[];
-  generalBanes: BanesAndBoonsInfo[];
-  playerClassBanes: BanesAndBoonsInfo[];
-  raceBanes: BanesAndBoonsInfo[];
-  factionBanes: BanesAndBoonsInfo[];
+  generalBoons: any;
+  playerClassBoons: any;
+  raceBoons: any;
+  factionBoons: any;
+  generalBanes: any;
+  playerClassBanes: any;
+  raceBanes: any;
+  factionBanes: any;
   allPrerequisites: BanesAndBoonsInfo[];
-  allRanks: BanesAndBoonsInfo[];
+  allRanks: any;
   allExclusives: BanesAndBoonsInfo[];
 }
 
@@ -70,7 +70,7 @@ const ON_RESET_BANES_AND_BOONS = 'cu-character-creation/banes-and-boons/ON_RESET
 
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
-    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
+    /*return webAPI.TraitsAPI.getTraitsV1(client.shardID)
       .then((result: any) => {
         if (result.ok) {
           dispatch(onInitializeTraits({
@@ -80,7 +80,13 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             banesAndBoons: result
           }));
         }
-      })
+      })*/
+      return dispatch(onInitializeTraits({
+        playerClass: payload.playerClass,
+        race: payload.race,
+        faction: payload.faction,
+        banesAndBoons: traitsExampleResponse
+      }))
   }
 };
 
@@ -106,16 +112,16 @@ export const module = new Module({
     totalPoints: 0,
     addedBanes: Array(5).fill(emptyBaneOrBoon),
     addedBoons: Array(5).fill(emptyBaneOrBoon),
-    generalBoons: [],
-    playerClassBoons: [],
-    raceBoons: [],
-    factionBoons: [],
-    generalBanes: [],
-    playerClassBanes: [],
-    raceBanes: [],
-    factionBanes: [],
+    generalBoons: null,
+    playerClassBoons: null,
+    raceBoons: null,
+    factionBoons: null,
+    generalBanes: null,
+    playerClassBanes: null,
+    raceBanes: null,
+    factionBanes: null,
     allPrerequisites: [],
-    allRanks: [],
+    allRanks: null,
     allExclusives: []
   }
 });
@@ -229,12 +235,11 @@ export const onUpdateGeneralBoons = module.createAction({
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let generalBoonsClone = state.generalBoons;
-    const indexOfGeneralBoon = generalBoonsClone.findIndex((boon) => boon.id === action.boon.id);
     if (action.event === 'select') {
-      generalBoonsClone[indexOfGeneralBoon] = Object.assign({}, action.boon, { selected: true });
+      generalBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: true });
       return Object.assign({}, state, { generalBoons: generalBoonsClone });
     }
-    generalBoonsClone[indexOfGeneralBoon] = Object.assign({}, action.boon, { selected: false });
+    generalBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { generalBoons: generalBoonsClone });
   }
 });
@@ -244,12 +249,11 @@ export const onUpdateGeneralBanes = module.createAction({
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let generalBanesClone = state.generalBanes;
-    const indexOfGeneralBane = generalBanesClone.findIndex((bane) => bane.id === action.bane.id);
     if (action.event === 'select') {
-      generalBanesClone[indexOfGeneralBane] = Object.assign({}, action.bane, { selected: true });
+      generalBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: true });
       return Object.assign({}, state, { generalBanes: generalBanesClone });
     }
-    generalBanesClone[indexOfGeneralBane] = Object.assign({}, action.bane, { selected: false });
+    generalBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { generalBanes: generalBanesClone });
   }
 });
@@ -259,12 +263,11 @@ export const onUpdatePlayerClassBoons = module.createAction({
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let playerClassBoonsClone = state.playerClassBoons;
-    const indexOfPlayerClassBoon = playerClassBoonsClone.findIndex((boon) => boon.id === action.boon.id);
     if (action.event === 'select') {
-      playerClassBoonsClone[indexOfPlayerClassBoon] = Object.assign({}, action.boon, { selected: true });
+      playerClassBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: true });
       return Object.assign({}, state, { playerClassBoons: playerClassBoonsClone });
     }
-    playerClassBoonsClone[indexOfPlayerClassBoon] = Object.assign({}, action.boon, { selected: false });
+    playerClassBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { playerClassBoons: playerClassBoonsClone });
   }
 });
@@ -274,12 +277,11 @@ export const onUpdatePlayerClassBanes = module.createAction({
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let playerClassBanesClone = state.playerClassBanes;
-    const indexOfPlayerClassBane = playerClassBanesClone.findIndex((bane) => bane.id === action.bane.id);
     if (action.event === 'select') {
-      playerClassBanesClone[indexOfPlayerClassBane] = Object.assign({}, action.bane, { selected: true });
+      playerClassBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: true });
       return Object.assign({}, state, { playerClassBanes: playerClassBanesClone });
     }
-    playerClassBanesClone[indexOfPlayerClassBane] = Object.assign({}, action.bane, { selected: false });
+    playerClassBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { playerClassBanes: playerClassBanesClone });
   }
 });
@@ -289,12 +291,11 @@ export const onUpdateFactionBoons = module.createAction({
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let factionBoonsClone = state.factionBoons;
-    const indexOfFactionBoon = factionBoonsClone.findIndex((boon) => boon.id === action.boon.id);
     if (action.event === 'select') {
-      factionBoonsClone[indexOfFactionBoon] = Object.assign({}, action.boon, { selected: true });
+      factionBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: true });
       return Object.assign({}, state, { factionBoons: factionBoonsClone });
     }
-    factionBoonsClone[indexOfFactionBoon] = Object.assign({}, action.boon, { selected: false });
+    factionBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { factionBoons: factionBoonsClone });
   }
 });
@@ -304,12 +305,11 @@ export const onUpdateFactionBanes = module.createAction({
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let factionBanesClone = state.factionBanes;
-    const indexOfFactionBane = factionBanesClone.findIndex((bane) => bane.id === action.bane.id);
     if (action.event === 'select') {
-      factionBanesClone[indexOfFactionBane] = Object.assign({}, action.bane, { selected: true });
+      factionBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: true });
       return Object.assign({}, state, { factionBanes: factionBanesClone });
     }
-    factionBanesClone[indexOfFactionBane] = Object.assign({}, action.bane, { selected: false });
+    factionBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { factionBanes: factionBanesClone });
   }
 });
@@ -319,12 +319,11 @@ export const onUpdateRaceBoons = module.createAction({
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let raceBoonsClone = state.raceBoons;
-    const indexOfRaceBoon = raceBoonsClone.findIndex((boon) => boon.id === action.boon.id);
     if (action.event === 'select') {
-      raceBoonsClone[indexOfRaceBoon] = Object.assign({}, action.boon, { selected: true });
+      raceBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: true });
       return Object.assign({}, state, { raceBoons: raceBoonsClone });
     }
-    raceBoonsClone[indexOfRaceBoon] = Object.assign({}, action.boon, { selected: false });
+    raceBoonsClone[action.boon.id] = Object.assign({}, action.boon, { selected: false });
     return Object.assign({}, state, { raceBoons: raceBoonsClone });
   }
 });
@@ -334,12 +333,11 @@ export const onUpdateRaceBanes = module.createAction({
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let raceBanesClone = state.raceBanes;
-    const indexOfRaceBane = raceBanesClone.findIndex((bane) => bane.id === action.bane.id);
     if (action.event === 'select') {
-      raceBanesClone[indexOfRaceBane] = Object.assign({}, action.bane, { selected: true });
+      raceBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: true });
       return Object.assign({}, state, { raceBanes: raceBanesClone });
     }
-    raceBanesClone[indexOfRaceBane] = Object.assign({}, action.bane, { selected: false });
+    raceBanesClone[action.bane.id] = Object.assign({}, action.bane, { selected: false });
     return Object.assign({}, state, { raceBanes: raceBanesClone });
   }
 });
@@ -355,7 +353,7 @@ export const onUpdateRankBoons = module.createAction({
     let addedBoonsClone = state.addedBoons;
     let totalPointRankBoons = state.totalPoints;
     const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? Object.assign({},
-      state.allRanks.find((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank + 1]),
+      state.allRanks[action.boon.ranks[action.boon.rank + 1]],
       {
         rank: action.boon.rank + 1,
         ranks: action.boon.ranks,
@@ -363,7 +361,7 @@ export const onUpdateRankBoons = module.createAction({
         selected: true
       }) : Object.assign({}, action.boon, { selected: true, finished: true });
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? Object.assign({},
-      state.allRanks.find((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank - 1]),
+      state.allRanks[action.boon.ranks[action.boon.rank - 1]],
       {
         rank: action.boon.rank - 1,
         ranks: action.boon.ranks,
@@ -378,13 +376,25 @@ export const onUpdateRankBoons = module.createAction({
         totalPointRankBoons = totalPointRankBoons + (action.boon.points - previousRankBoon.points);
       switch (action.boon.category) {
         case 'General':
-          gBoons[gBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.id)] = nextRankBoon;
+          gBoons[action.boon.id] = nextRankBoon;
+          gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = gBoons[action.boon.id];
+          delete gBoons[action.boon.id];
+          break;
         case 'Class':
-          cBoons[cBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.id)] = nextRankBoon;
+          cBoons[action.boon.id] = nextRankBoon;
+          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
+          delete cBoons[action.boon.id];
+          break;
         case 'Race':
-          rBoons[rBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.id)] = nextRankBoon;
+          rBoons[action.boon.id] = nextRankBoon;
+          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
+          delete cBoons[action.boon.id];
+          break;
         case 'Faction':
-          fBoons[fBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.id)] = nextRankBoon;
+          fBoons[action.boon.id] = nextRankBoon;
+          fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = fBoons[action.boon.id];
+          delete fBoons[action.boon.id];
+          break;
       }
     }
     if (action.event === 'cancel') {
@@ -393,13 +403,25 @@ export const onUpdateRankBoons = module.createAction({
         totalPointRankBoons = totalPointRankBoons - (action.boon.points - previousRankBoon.points);
       switch (action.boon.category) {
         case 'General':
-          gBoons[gBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank + 1])] = action.boon;
+          gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]] = action.boon;
+          gBoons[action.boon.id] = gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]];
+          delete gBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
         case 'Class':
-          cBoons[cBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank + 1])] = action.boon;
+          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]] = action.boon;
+          cBoons[action.boon.id] = cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]];
+          delete cBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
         case 'Race':
-          rBoons[rBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank + 1])] = action.boon;
+          rBoons[action.boon.ranks[action.boon.rank + 1] || action.boon.id] = action.boon;
+          rBoons[action.boon.id] = rBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]];
+          delete rBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
         case 'Faction':
-          fBoons[fBoons.findIndex((boon: BanesAndBoonsInfo) => boon.id === action.boon.ranks[action.boon.rank + 1])] = action.boon;
+          fBoons[action.boon.ranks[action.boon.rank + 1] || action.boon.id] = action.boon;
+          fBoons[action.boon.id] = fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]];
+          delete fBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
       }
     }
     return Object.assign({}, state, {
@@ -424,7 +446,7 @@ export const onUpdateRankBanes = module.createAction({
     let addedBanesClone = state.addedBanes;
     let totalPointRankBanes = state.totalPoints;
     const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? Object.assign({},
-        state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1]),
+        state.allRanks[action.bane.ranks[action.bane.rank + 1]],
         {
           rank: action.bane.rank + 1,
           ranks: action.bane.ranks,
@@ -432,7 +454,7 @@ export const onUpdateRankBanes = module.createAction({
           selected: true
         }) : Object.assign({}, action.bane, { selected: true, finished: true });
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? Object.assign({},
-        state.allRanks.find((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank - 1]),
+        state.allRanks[action.bane.ranks[action.bane.rank - 1]],
         {
           rank: action.bane.rank - 1,
           ranks: action.bane.ranks,
@@ -447,13 +469,25 @@ export const onUpdateRankBanes = module.createAction({
         totalPointRankBanes = totalPointRankBanes + (action.bane.points - previousRankBane.points);
       switch (action.bane.category) {
         case 'General':
-          gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+          gBanes[action.bane.id] = nextRankBane;
+          gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = gBanes[action.bane.id];
+          delete gBanes[action.bane.id];
+          break;
         case 'Class':
-          cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+          cBanes[action.bane.id] = nextRankBane;
+          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
+          delete cBanes[action.bane.id];
+          break;
         case 'Race':
-          rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+          rBanes[action.bane.id] = nextRankBane;
+          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
+          delete cBanes[action.bane.id];
+          break;
         case 'Faction':
-          fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.id)] = nextRankBane;
+          fBanes[action.bane.id] = nextRankBane;
+          fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = fBanes[action.bane.id];
+          delete fBanes[action.bane.id];
+          break;
       }
     }
     if (action.event === 'cancel') {
@@ -462,13 +496,25 @@ export const onUpdateRankBanes = module.createAction({
         totalPointRankBanes = totalPointRankBanes - (action.bane.points - previousRankBane.points);
       switch (action.bane.category) {
         case 'General':
-          gBanes[gBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+          gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]] = action.bane;
+          gBanes[action.bane.id] = gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          delete gBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
         case 'Class':
-          cBanes[cBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]] = action.bane;
+          cBanes[action.bane.id] = cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          delete cBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
         case 'Race':
-          rBanes[rBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+          rBanes[action.bane.ranks[action.bane.rank + 1] || action.bane.id] = action.bane;
+          rBanes[action.bane.id] = rBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          delete rBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
         case 'Faction':
-          fBanes[fBanes.findIndex((bane: BanesAndBoonsInfo) => bane.id === action.bane.ranks[action.bane.rank + 1])] = action.bane;
+          fBanes[action.bane.ranks[action.bane.rank + 1] || action.bane.id] = action.bane;
+          fBanes[action.bane.id] = fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          delete fBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
       }
     }
     return Object.assign({}, state, {
@@ -503,7 +549,7 @@ export const onInitializeTraits = module.createAction({
     const allRanks = ranks.map((rankArray: Array<string>) =>
       rankArray.map((rankId: string, i: number) =>
         Object.assign({},
-          allTraits.find((trait: BanesAndBoonsInfo) => trait.id === rankId),
+          traits[rankId],
           {
             rank: i,
             ranks: rankArray
@@ -585,36 +631,43 @@ export const onInitializeTraits = module.createAction({
     ].map((bane) => Object.assign({}, bane, { required: true }));
 
     // Player class traits
-    const playerClassBoons = playerClassTraits && playerClassTraits.optional ?
+    const playerClassBoons: { [boonId: string]: BanesAndBoonsInfo } = {}
+    playerClassTraits && playerClassTraits.optional &&
      [...playerClassTraits.optional.filter((trait: BanesAndBoonsInfo) =>  trait.points >= 1 && !combinedRanks[trait.id]) || [],
       ...playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points >= 1) || []
-     ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Class', selected: false })) : [];
+     ].map((boon: BanesAndBoonsInfo) => playerClassBoons[boon.id] = Object.assign({}, boon, { category: 'Class', selected: false }));
 
-    const playerClassBanes = playerClassTraits && playerClassTraits.optional ?
+    const playerClassBanes: { [baneId: string]: BanesAndBoonsInfo } = {};
+    playerClassTraits && playerClassTraits.optional &&
      [...playerClassTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && !combinedRanks[trait.id]) || [],
       ...playerClassTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
-     ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Class', selected: false })) : [];
+     ].map((bane: BanesAndBoonsInfo) => playerClassBanes[bane.id] = Object.assign({}, bane, { category: 'Class', selected: false }));
 
       // Faction traits
-    const factionBoons = factionTraits && factionTraits.optional && 
+    const factionBoons: { [boonId: string]: BanesAndBoonsInfo } = {};
+    factionTraits && factionTraits.optional && 
     [...factionTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points >= 1 && !combinedRanks[trait.id]) || [],
      ...factionTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points >= 1) || []
-    ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Faction', selected: false }));
+    ].map((boon: BanesAndBoonsInfo) => factionBoons[boon.id] = Object.assign({}, boon, { category: 'Faction', selected: false }))
 
-    const factionBanes = factionTraits && factionTraits.optional &&
-      factionTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && (!combinedRanks[trait.id] || firstRanks[trait.id])) || []
-      .map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Faction', selected: false }));
+    const factionBanes: { [baneId: string]: BanesAndBoonsInfo } = {};
+    factionTraits && factionTraits.optional &&
+    [...factionTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && !combinedRanks[trait.id]) || [],
+      ...factionTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
+    ].map((bane: BanesAndBoonsInfo) => factionBanes[bane.id] = Object.assign({}, bane, { category: 'Faction', selected: false }))
 
     // Race traits
-    const raceBoons = raceTraits && raceTraits.optional &&
+    const raceBoons: { [boonId: string]: BanesAndBoonsInfo } = {};
+    raceTraits && raceTraits.optional &&
      [...raceTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points >= 1 && !combinedRanks[trait.id]) || [],
-      ...raceTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
-     ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'Race', selected: false }));
+      ...raceTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points >= 1) || []
+     ].map((boon: BanesAndBoonsInfo) => raceBoons[boon.id] = Object.assign({}, boon, { category: 'Race', selected: false }))
 
-    const raceBanes = raceTraits && raceTraits.optional &&
+    const raceBanes: { [baneId: string]: BanesAndBoonsInfo } = {}
+    raceTraits && raceTraits.optional &&
      [...raceTraits.optional.filter((trait: BanesAndBoonsInfo) => trait.points <= -1 && !combinedRanks[trait.id]) || [],
       ...raceTraits.optional.find((trait: BanesAndBoonsInfo) => firstRanks[trait.id] && trait.points <= -1) || []
-     ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'Race', selected: false }));
+     ].map((bane: BanesAndBoonsInfo) => raceBanes[bane.id] = Object.assign({}, bane, { category: 'Race', selected: false }))
 
     // General
     const undesirableTraits: { [id: string]: BanesAndBoonsInfo } = {};
@@ -623,18 +676,19 @@ export const onInitializeTraits = module.createAction({
       ...allRaceTraits.map((race) => [...race.optional, ...race.required]).reduce((a, b) => a.concat(b)),
       ...allFactionTraits.map((faction) => [...faction.optional, ...faction.required]).reduce((a, b) => a.concat(b))
     ].forEach((trait: BanesAndBoonsInfo) => undesirableTraits[trait.id] = trait);
-    
-
+  
     // Finding the Banes & Boons from the undesirableTraits
-    const generalBoons = [
-      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points >= 1),
-      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points >= 1)
-    ].map((boon: BanesAndBoonsInfo) => Object.assign({}, boon, { category: 'General', selected: false }));
+    const generalBoons: { [boonId: string]: BanesAndBoonsInfo } = {};
+    [
+      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points >= 1) || [],
+      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points >= 1) || []
+    ].map((boon: BanesAndBoonsInfo) => generalBoons[boon.id] = Object.assign({}, boon, { category: 'General', selected: false }))
 
-    const generalBanes = [
-      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points <= -1),
-      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id])
-    ].map((bane: BanesAndBoonsInfo) => Object.assign({}, bane, { category: 'General', selected: false }));
+    const generalBanes: { [baneId: string]: BanesAndBoonsInfo } = {};
+    [
+      ...allTraits.filter((trait: BanesAndBoonsInfo) => !combinedRanks[trait.id] && !undesirableTraits[trait.id] && trait.points <= -1) || [],
+      ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points <= -1) || []
+    ].map((bane: BanesAndBoonsInfo) => generalBanes[bane.id] = Object.assign({}, bane, { category: 'General', selected: false }))
 
     // Total points
     const totalPoints = (requiredBoons.length > 0 && requiredBoons.map((boon) => boon.points).reduce((a, b) => a + b)) +
