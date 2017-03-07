@@ -4,7 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, hasClientAPI, signalr, CombatLog, Faction, bodyParts, damageTypes, skillTracks, resourceTypes, activeEffectActions} from 'camelot-unchained';
+import {
+  events,
+  client,
+  hasClientAPI,
+  signalr,
+  CombatLog,
+  Faction,
+  bodyParts,
+  damageTypes,
+  skillTracks,
+  resourceTypes,
+  activeEffectActions,
+} from 'camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {

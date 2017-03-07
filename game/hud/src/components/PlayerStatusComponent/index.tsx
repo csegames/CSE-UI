@@ -5,8 +5,16 @@
  */
 
 import * as React from 'react';
-import {client, events, SVGSprite, ClassIcon} from 'camelot-unchained';
-import {spring, presets, TransitionMotion} from 'react-motion';
+import {
+  client,
+  events,
+  SVGSprite,
+  ClassIcon,
+  CombatLog,
+  damageTypes,
+} from 'camelot-unchained';
+import { spring, presets, TransitionMotion } from 'react-motion';
+import { generateID } from 'redux-typed-modules';
 
 import Pills, {Orientation} from './components/Pills';
 import ActiveEffectIcon from '../../components/ActiveEffectIcon'
@@ -28,6 +36,24 @@ const DEPLETED_COLOR_DEAD = '#4e4e4e';
 const WOUND_COLOR = '#301bd0';
 const WOUND_COLOR_DEAD = '#4e4e4e';
 
+
+export interface DamageEvent {
+  kind: 'damage';
+  id: string;
+  type: damageTypes;
+  value: number;
+  when: number;
+}
+
+export interface HealEvent {
+  kind: 'heal';
+  id: string;
+  value: number;
+  when: number;
+}
+
+type CombatEvent = DamageEvent | HealEvent;
+
 export interface PlayerStatusComponentProps {
   containerClass?: string;
   mirror?: boolean;
@@ -37,11 +63,80 @@ export interface PlayerStatusComponentProps {
 }
 
 export interface PlayerStatusComponentState {
+  events: CombatEvent[];
 }
 
 class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, PlayerStatusComponentState> {
   constructor(props: PlayerStatusComponentProps) {
     super(props);
+    this.state = {
+      events: [],
+    }
+  }
+
+  componentWillMount() {
+    client.OnCombatLogEvent(this.parseCombatLogEvent);
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
+    const events: CombatEvent[] = [];
+    
+    combatLogs.forEach(e => {
+      if (e.toName !== this.props.playerStatus.name) return;
+      if (e.damages) {
+        let value = 0;
+        let max = 0;
+        let type = damageTypes.NONE;
+        e.damages.forEach(d => {
+          if (d.recieved > max) {
+            max = d.recieved | 0;
+            type = d.type;
+          }
+          value += d.recieved | 0;
+        });
+        events.push({
+          id: generateID(7),
+          kind: 'damage',
+          type,
+          value,
+          when: Date.now(),
+        });
+      }
+
+      if (e.heals) {
+        let value = 0;
+        let max = 0;
+        let type = damageTypes.NONE;
+        e.heals.forEach(d => {
+          if (d.recieved > max) {
+            max = d.recieved | 0;
+          }
+          value += d.recieved | 0;
+        });
+        events.push({
+          id: generateID(7),
+          kind: 'heal',
+          value,
+          when: Date.now(),
+        });
+      }
+    });
+
+    if (events.length > 0) {
+      if (this.state.events.length > 0 && (Date.now() - this.state.events[this.state.events.length-1].when) > 200) {
+        this.setState({
+          events,
+        });
+      } else {
+        this.setState({
+          events: this.state.events.concat(events),
+        });
+      }
+    }
   }
 
   private shakeAnimationName: string = 'shakeit';
@@ -101,27 +196,38 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     const {playerStatus} = this.props;
     const now = Date.now();
     // did we recently take damage?
-    for (let i = this.props.events.length-1; i >= 0; --i) {
-      const e = this.props.events[i];
-      if (now - e.timestamp > 200) break;
-      if (e.textType == 'damage') {
+    for (let i = this.state.events.length-1; i >= 0; --i) {
+      const e = this.state.events[i];
+      if (now - e.when > 200) break;
+      if (e.kind === 'damage') {
         this.endTime = now + 200;
-        setTimeout(() => this.shakeIt(), 1);
+        setTimeout(() => this.shakeIt());
         setTimeout(() => this.endShake(), 201);
         break;
       }
     }
 
-    const dead = this.props.playerStatus.blood.current <= 0 || this.props.playerStatus.health[BodyParts.Torso].current <= 0 || this.props.playerStatus.health[BodyParts.Head].current <= 0;
+    const dead = this.props.playerStatus.blood.current <= 0 || 
+                 this.props.playerStatus.health[BodyParts.Torso].current <= 0 ||
+                 this.props.playerStatus.health[BodyParts.Head].current <= 0;
 
     return (
-      <div className={`${this.props.containerClass ? this.props.containerClass : ''} PlayerStatusComponent ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}
+      <div className={
+              `${this.props.containerClass ?
+                this.props.containerClass :
+                ''} PlayerStatusComponent ${this.props.mirror ? 
+                  'PlayerStatusComponent--mirrored' : 
+                  ''}`
+           }
            ref={(r: any) => this.componentRef = r}>
 
         <div className='PlayerStatusComponent__circle'>
 
           <div className='PlayerStatusComponent__circle__bg'></div>
-          <div className='PlayerStatusComponent__circle__avatar'><img src={this.props.playerStatus.avatar} style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} /></div>
+          <div className='PlayerStatusComponent__circle__avatar'>
+            <img src={this.props.playerStatus.avatar}
+                 style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} />
+          </div>
           
           {
             this.props.isLeader ? 
@@ -154,15 +260,17 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
           <TransitionMotion willLeave={this.eventIconWillLeave}
                             willEnter={this.eventIconWillEnter}
-                            styles={this.props.events.map((item: any) => ({
-                              key: item.key,
-                              data: item,
+                            styles={this.state.events.map(e => ({
+                              key: e.id,
+                              data: e,
                               style: {opacity: spring(0), r: Math.random() * 90 - 45}
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__eventIcon'>
                 {interpolatedStyles.map((config: any) => {
-                  return <div className={`PlayerStatusComponent__circle__eventIcon--${config.data.iconType}`} key={config.key} style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}></div>
+                  return <div className={`PlayerStatusComponent__circle__eventIcon--piercing`}
+                              key={config.key}
+                              style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}/>
                 })}
               </div>
             }
@@ -170,15 +278,25 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
           <TransitionMotion willLeave={this.flyTextWillLeave}
                             willEnter={this.flyTextWillEnter}
-                            styles={this.props.events.map((item: any) => ({
-                              key: item.key,
-                              data: item,
+                            styles={this.state.events.map(e => ({
+                              key: e.id,
+                              data: e,
                               style: {opacity: spring(0), top: spring(-140)}
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__flyText'>
                 {interpolatedStyles.map((config: any) => {
-                  return <div className={`PlayerStatusComponent__circle__flyText--${config.data.textType} ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} key={config.key} style={{opacity: config.style.opacity, top: config.style.top}}>{config.data.value}</div>
+                  return (
+                    <div className={
+                          `PlayerStatusComponent__circle__flyText--${config.data.kind} ${this.props.mirror ?
+                            'PlayerStatusComponent--mirrored' :
+                            ''}`
+                         }
+                         key={config.key}
+                         style={{opacity: config.style.opacity, top: config.style.top}}>
+                      {config.data.value}
+                    </div>
+                  )
                 })}
               </div>
             }
@@ -283,7 +401,9 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
         </div>
 
-        <div className={`PlayerStatusComponent__name ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >{this.props.playerStatus.name}</div>
+        <div className={`PlayerStatusComponent__name ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >
+          {this.props.playerStatus.name}
+        </div>
 
       </div>
     );
