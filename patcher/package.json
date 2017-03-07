@@ -49,7 +49,7 @@
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
     "isomorphic-fetch": "^2.2.1",
-    "moment": "^2.13.0",
+    "moment": "^2.17.1",
     "node-xmpp-client": "^2.1.0",
     "normalizr": "^2.0.0",
     "react": "^0.14.7",

@@ -56,6 +56,7 @@ export interface Channel {
   channelName: string;
   channelID: number;
   channelStatus: ChannelStatus;
+  lastUpdated: number;
 }
 
 const API : string = "patcherAPI";

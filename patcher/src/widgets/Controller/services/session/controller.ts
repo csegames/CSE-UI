@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com) 
  * @Date: 2016-10-13 00:25:42 
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-02 14:24:58
+ * @Last Modified time: 2017-03-07 11:59:40
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
@@ -76,7 +76,7 @@ export interface PatcherServer {
   characterCount?: number;
   selectedCharacter?: webAPI.SimpleCharacter;
   characters?: webAPI.SimpleCharacter[];
-  lastUpdated?: string;
+  lastUpdated?: number;
   apiHost: string;
 }
 
@@ -135,7 +135,8 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
     channelPatchPermissions: 4, // CSE only default
-    apiHost: 'https://api.camelotunchained.com',    
+    apiHost: 'https://api.camelotunchained.com',
+    lastUpdated: channel.lastUpdated || 0,
   };
 }
 
@@ -235,10 +236,6 @@ export const getChannels = module.createAction({
       if (!s.servers[c.channelName]) {
         // create a server for this channel
         channelServers[c.channelName] = channelToPatcherServer(c);
-        let lastUpdated = localStorage.getItem(`channel_updated_${c.channelName}`);
-        if (lastUpdated) {
-          channelServers[c.channelName].lastUpdated = lastUpdated;
-        }
       } else {
         // if it's not it's own server add to a dictionary to update servers by channel id
         channelDict[c.channelID] = c;
@@ -254,7 +251,7 @@ export const getChannels = module.createAction({
     for (const key in servers) {
       var server = servers[key];
       servers[key].channelStatus = channelDict[server.channelID] ? channelDict[server.channelID].channelStatus : ChannelStatus.NotInstalled;
-      servers[key].lastUpdated = channelDict[server.channelID] ? localStorage.getItem(`channel_updated_${channelDict[server.channelID].channelName}`) : undefined;
+      servers[key].lastUpdated = channelDict[server.channelID].lastUpdated || 0;
     }
 
     return {

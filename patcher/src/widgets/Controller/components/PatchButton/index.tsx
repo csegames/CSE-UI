@@ -6,12 +6,14 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:38
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-06 17:08:43
+ * @Last Modified time: 2017-03-07 12:02:36
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {webAPI, events, utils} from 'camelot-unchained';
+import * as moment from 'moment';
+
 
 import {patcher, Channel, ChannelStatus, PatchPermissions} from '../../../../services/patcher';
 import {CSENormalizeString} from '../../../../lib/CSENormalizeString';
@@ -249,7 +251,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
-            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? selectedServer.lastUpdated : 'never'}.</label>          
+            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(new Date(selectedServer.lastUpdated)).fromNow() : 'never'}.</label>          
           </div>
           {this.renderProgressText()}
         </div>
