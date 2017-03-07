@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:38
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-07 12:02:36
+ * @Last Modified time: 2017-03-07 12:58:53
  */
 
 import * as React from 'react';
@@ -251,7 +251,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
-            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(new Date(selectedServer.lastUpdated)).fromNow() : 'never'}.</label>          
+            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
           </div>
           {this.renderProgressText()}
         </div>

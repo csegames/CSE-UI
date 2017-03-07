@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:15:34
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-02 12:39:30
+ * @Last Modified time: 2017-03-07 15:15:25
  */
 
 import * as React from 'react';
@@ -83,7 +83,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
             <CharacterDeleteModal
               character={character}
               closeModal={() => this.showDeleteConfirmation(false)}
-              deleteCharacter={this.deleteCharacter}/>
+              onSuccess={() => this.showDeleteConfirmation(false)}/>
           </div>
         ) : null}
       </div>

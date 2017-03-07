@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-28 12:05:21
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-31 16:53:19
+ * @Last Modified time: 2017-03-07 15:09:32
  */
 
 .CharacterDeleteModal {
@@ -96,4 +96,12 @@
     color: red;
     border: 1px solid red;
   }
+}
+
+.ChracterDeleteModal__error {
+  color: red;
+}
+
+.ChracterDeleteModal__success {
+  color: #3fd0b0;
 }
