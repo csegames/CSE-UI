@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider} from 'react-redux';
-import {client, events, hasClientAPI} from 'camelot-unchained';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider} from 'react-redux';
+import { client, events, hasClientAPI, jsKeyCodes } from 'camelot-unchained';
 import SocialMain from './components/SocialMain';
-import reducer, {store} from './services/session/reducer';
+import reducer, { store } from './services/session/reducer';
 
 
 export interface SocialContainerProps {
@@ -60,7 +60,8 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   }
 
   onKeyDown = (e : KeyboardEvent) => {
-    if (e.which === 27 && this.state.visible) {
+    if (e.which === jsKeyCodes.ESC && this.state.visible) {
+      client.ReleaseInputOwnership();
       this.hide();
     }
   }

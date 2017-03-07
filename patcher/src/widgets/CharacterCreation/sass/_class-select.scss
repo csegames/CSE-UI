@@ -4,74 +4,74 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-.thumb__BlackKnight{
+.thumb__BlackKnight {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_black-knight.png');
 }
 
-.thumb__Fianna{
+.thumb__Fianna {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_fianna.png');
 }
 
-.thumb__Mjolnir{
+.thumb__Mjolnir {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_mjolnir.png');
 }
 
-.thumb__Physician{
+.thumb__Physician {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_physician.png');
 }
 
-.thumb__Empath{
+.thumb__Empath {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_empath.png');
 }
 
-.thumb__Stonehealer{
+.thumb__Stonehealer {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_stonehealer.png');
 }
 
-.thumb__Blackguard{
+.thumb__Blackguard {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_blackguard.png');
 }
 
-.thumb__ForestStalker{
+.thumb__ForestStalker {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_forest-stalker.png');
 }
 
-.thumb__WintersShadow{
+.thumb__WintersShadow {
     @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_winter-shadow.png');
 }
 
-.standing__Empath{
+.standing__Empath {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/empath.png');
 }
 
-.standing__BlackKnight{
+.standing__BlackKnight {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/black-knight.png');
 }
 
-.standing__Fianna{
+.standing__Fianna {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/fianna.png');
 }
 
-.standing__Mjolnir{
+.standing__Mjolnir {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/mjolnir.png');
 }
 
-.standing__Physician{
+.standing__Physician {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/physician.png');
 }
 
-.standing__Stonehealer{
+.standing__Stonehealer {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/stonehealer.png');
 }
 
-.standing__Blackguard{
+.standing__Blackguard {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/blackguard.png');
 }
 
-.standing__ForestStalker{
+.standing__ForestStalker {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/forest-stalker.png');
 }
 
-.standing__WintersShadow{
+.standing__WintersShadow {
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/winters-shadow.png');
 }

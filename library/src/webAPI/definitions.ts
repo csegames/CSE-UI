@@ -276,6 +276,7 @@ export interface ServerModel {
   playerMaximum: number;
   shardID: number;
   status: ServerStatus;
+  apiHost: string;
 }
 
 
@@ -1136,7 +1137,7 @@ export enum MemberActionType {
   GroupInvited = 9,
   CharacterAcceptedInvite = 10,
   ChangedRole = 11,
-  ChangedRank = 12,
+  AssignRank = 12,
   UpdatedRolePermissions = 13,
   UpdatedRankPermissions = 14,
   ChangedName = 15,
@@ -1147,27 +1148,28 @@ export enum MemberActionType {
   RenameRank = 20,
   AddRankPermissions = 21,
   RemoveRankPermissions = 22,
-  ChangeRankLevel = 23,
-  TransferedOwnership = 24,
-  SharedCount = 25,
-  Abandonded = 25,
-  WarbandCount = 26,
-  ChangeDisplayOrder = 27,
-  SetLeader = 28,
-  DepositedItemInStash = 25,
-  WithdrewItemFromStash = 26,
-  DepositedCurrencyInStash = 27,
-  WithdrewCurrencyFromStash = 28,
-  OrderCount = 29,
-  InvitedOrder = 25,
-  OrderAcceptedInvite = 26,
-  AllianceSharedCount = 27,
-  AllianceCount = 27,
-  InvitedAlliance = 27,
-  AllianceAcceptedInvite = 28,
-  InvitedWarband = 29,
-  WarbandAcceptedInvite = 30,
-  CampaignCount = 31
+  SetRankPermissions = 23,
+  ChangeRankLevel = 24,
+  TransferedOwnership = 25,
+  SharedCount = 26,
+  Abandonded = 26,
+  WarbandCount = 27,
+  ChangeDisplayOrder = 28,
+  SetLeader = 29,
+  DepositedItemInStash = 26,
+  WithdrewItemFromStash = 27,
+  DepositedCurrencyInStash = 28,
+  WithdrewCurrencyFromStash = 29,
+  OrderCount = 30,
+  InvitedOrder = 26,
+  OrderAcceptedInvite = 27,
+  AllianceSharedCount = 28,
+  AllianceCount = 28,
+  InvitedAlliance = 28,
+  AllianceAcceptedInvite = 29,
+  InvitedWarband = 30,
+  WarbandAcceptedInvite = 31,
+  CampaignCount = 32
 }
  
   

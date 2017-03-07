@@ -72,7 +72,12 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'social')
+          events.fire('hudnav--navigate', 'social');
+          client.HideUI('spellbook');
+          client.HideUI('ability-builder');
+          client.HideUI('inventory');
+          client.HideUI('equippedgear');
+          client.HideUI('plotcontrol');
         }
       },
       {

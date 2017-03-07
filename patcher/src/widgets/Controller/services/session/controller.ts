@@ -6,28 +6,12 @@
  * @Author: JB (jb@codecorsair.com) 
  * @Date: 2016-10-13 00:25:42 
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-11-01 18:13:45
+ * @Last Modified time: 2017-03-07 11:59:40
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
-import {patcher, Channel, ChannelStatus} from '../../../../services/patcher';
-
-const INITIALIZE_SIGNALR = 'controller/INITIALIZE_SIGNALR';
-const INITIALIZE_SIGNALR_SUCCESS = 'controller/INITIALIZE_SIGNALR_SUCCESS';
-const INITIALIZE_SIGNALR_FAILED = 'controller/INITIALIZE_SIGNALR_FAILED';
-
-const ALERT_RECIEVED = 'controller/ALERT_RECIEVED';
-const ALERT_EXPIRED = 'controller/ALERT_EXPIRED';
-
-const SERVER_UPDATE = 'controller/SERVER_UPDATE';
-const SERVER_UNAVAILABLE = 'controller/SERVER_UNAVAILABLE';
-
-const CHARACTER_UPDATE = 'controller/CHARACTER_UPDATE';
-const CHARACTER_REMOVED = 'controller/CHARACTER_REMOVED';
-
-const GET_CHANNELS = 'controller/GET_CHANNELS';
-
-const RESET = 'controller/RESET';
+import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
+import { Module } from 'redux-typed-modules';
 
 export interface ControllerState {
   isInitializing: boolean;
@@ -35,6 +19,7 @@ export interface ControllerState {
   alerts: utils.Dictionary<webAPI.PatcherAlert>;
   characters: utils.Dictionary<webAPI.SimpleCharacter>;
   servers: utils.Dictionary<PatcherServer>;
+  connectionSlow: boolean;
 }
 
 function initialState(): ControllerState {
@@ -44,6 +29,7 @@ function initialState(): ControllerState {
     alerts: {},
     characters: {},
     servers: {},
+    connectionSlow: false,
   };
 }
 
@@ -90,14 +76,15 @@ export interface PatcherServer {
   characterCount?: number;
   selectedCharacter?: webAPI.SimpleCharacter;
   characters?: webAPI.SimpleCharacter[];
-  lastUpdated?: string;
+  lastUpdated?: number;
+  apiHost: string;
 }
 
 // HELPER METHODS
 function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
   events.on(signalr.PATCHER_EVENTS_ALERT, (alertJSON: string) => {
     const alert = utils.tryParseJSON<webAPI.PatcherAlert>(alertJSON, client.debug);
-    if (alert !== null) dispatch(alertRecieved(alert));
+    if (alert !== null) dispatch(alertReceived(alert));
   });
 
   events.on(signalr.PATCHER_EVENTS_SERVERUPDATED, (serverJSON: string) => {
@@ -108,12 +95,12 @@ function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
   events.on(signalr.PATCHER_EVENTS_SERVERUNAVAILABLE, (name: string) => dispatch(serverUnavailable(name)));
 
   events.on(signalr.PATCHER_EVENTS_CHARACTERUPDATED, (characterJSON: string) => {
-    console.log(characterJSON);
     const character = utils.tryParseJSON<webAPI.SimpleCharacter>(characterJSON, client.debug);
     if (character !== null) dispatch(characterUpdate(character));
   });
 
   events.on(signalr.PATCHER_EVENTS_CHARACTERREMOVED, (id: string) => dispatch(characterRemoved(id)));
+
 }
 
 function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
@@ -127,6 +114,7 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
     available: server.playerMaximum > 0,
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
+    apiHost: server.apiHost
   }, server);
 }
 
@@ -147,6 +135,8 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
     channelPatchPermissions: 4, // CSE only default
+    apiHost: 'https://api.camelotunchained.com',
+    lastUpdated: channel.lastUpdated || 0,
   };
 }
 
@@ -170,63 +160,11 @@ function updateCharacterCounts(servers: utils.Dictionary<PatcherServer>, charact
 
 // ACTIONS
 let channelUpdateInterval: NodeJS.Timer = null;
-export function initialize(): utils.AsyncAction<ControllerAction> {
-  client.loginToken = patcher.getLoginToken();
-  return (dispatch: (action: ControllerAction) => any) => {
-    dispatch(reset());
-    dispatch(initializeSignalR());
-
-
-    try {
-      signalr.patcherHub.start(() => {
-        dispatch(initializeSignalRSuccess());
-        registerPatcherHubEvents(dispatch);
-        dispatch(getChannels())
-        // update channel info on a timer...
-        if (channelUpdateInterval === null) {
-          channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
-        }
-      });
-    } catch (e) {
-      console.error(e);
-      dispatch(initializeSignalRFailed());
-    }
-  };
-}
-
-export function reset(): ControllerAction {
-  return {
-    type: RESET,
-    when: new Date()
-  };
-}
-
-function initializeSignalR(): ControllerAction {
-  return {
-    type: INITIALIZE_SIGNALR,
-    when: new Date()
-  };
-}
-
-function initializeSignalRSuccess(): ControllerAction {
-  return {
-    type: INITIALIZE_SIGNALR_SUCCESS,
-    when: new Date()
-  };
-}
-
-function initializeSignalRFailed(): ControllerAction {
-  return {
-    type: INITIALIZE_SIGNALR_FAILED,
-    when: new Date()
-  };
-}
-
 
 const alertTimeouts: utils.Dictionary<NodeJS.Timer> = {};
-function alertRecievedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<ControllerAction> {
+function alertReceivedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<ControllerAction> {
   return (dispatch: (action: ControllerAction) => any) => {
-    dispatch(alertRecieved(alert));
+    dispatch(alertReceived(alert));
 
     // timeout handles removal of the alert when it expires.
     if (alertTimeouts[alert.id]) {
@@ -239,163 +177,242 @@ function alertRecievedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<
   };
 }
 
-function alertRecieved(alert: webAPI.PatcherAlert): ControllerAction {
-  return {
-    type: ALERT_RECIEVED,
-    when: new Date(),
-    alert: alert
-  };
-}
 
-function alertExpired(id: string): ControllerAction {
-  return {
-    type: ALERT_EXPIRED,
-    when: new Date(),
-    id: id
-  };
-}
+var module = new Module({
+  initialState: initialState(),
+  actionExtraData: () => {
+    return {
+      when: new Date(),
+    };
+  },
+});
 
-function serverUpdate(server: webAPI.ServerModel): ControllerAction {
-  return {
-    type: SERVER_UPDATE,
-    when: new Date(),
-    server: server
-  };
-}
+export const reset = module.createAction({
+  type: 'controller/reset',
+  action: () => null,
+  reducer: () => initialState(),
+});
 
-function serverUnavailable(name: string): ControllerAction {
-  return {
-    type: SERVER_UNAVAILABLE,
-    when: new Date(),
-    id: name
-  };
-}
+export const initialize = module.createAction({
+  type: 'controller/initialize',
+  action: () => {
+    client.loginToken = patcher.getLoginToken();
+    return (dispatch: (action: ControllerAction) => any) => {
+      dispatch(reset());
+      dispatch(initSignalR());
 
-
-function characterUpdate(character: webAPI.SimpleCharacter): ControllerAction {
-  return {
-    type: CHARACTER_UPDATE,
-    when: new Date(),
-    character: character
-  };
-}
-
-function characterRemoved(id: string): ControllerAction {
-  return {
-    type: CHARACTER_REMOVED,
-    when: new Date(),
-    id: id
-  };
-}
-
-function getChannels(): ControllerAction {
-  const channels = patcher.getAllChannels() || [];
-  return {
-    type: GET_CHANNELS,
-    when: new Date(),
-    channels: channels,
-  };
-}
-
-
-// REDUCER
-
-const actionDefs: utils.ActionDefinitions<ControllerState> = {};
-
-actionDefs[RESET] = (s, a) => initialState();
-
-actionDefs[INITIALIZE_SIGNALR] = (s, a) => utils.merge(s, { isInitializing: false });
-actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => utils.merge(s, { isInitializing: false, signalRInitialized: true });
-actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => utils.merge(s, { isInitializing: false, signalRInitialized: false });
-
-actionDefs[ALERT_RECIEVED] = function alertRecievedReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  const alerts = utils.clone(state.alerts);
-  alerts[action.alert.id] = action.alert;
-  return utils.merge(state, {
-    alerts: alerts
-  });
-};
-
-actionDefs[ALERT_EXPIRED] = function alertExpiredReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  const alerts = utils.clone(state.alerts);
-  delete alerts[action.id];
-  return utils.merge(state, {
-    alerts: alerts
-  });
-}
-
-actionDefs[SERVER_UPDATE] = function serverUpdateReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  if (action.server.name === 'localhost') return state;
-  const servers = utils.clone(state.servers);
-  servers[action.server.name] = utils.merge(servers[action.server.name], webAPIServerToPatcherServer(action.server));
-  return utils.merge(state, {
-    servers: servers
-  });
-}
-
-actionDefs[SERVER_UNAVAILABLE] = function serverUnavailableReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  const servers = utils.clone(state.servers);
-  servers[action.id].available = false;
-  return utils.merge(state, {
-    servers: servers
-  });
-}
-
-actionDefs[CHARACTER_UPDATE] = function characterUpdateReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  const characters = utils.clone(state.characters);
-  characters[action.character.id] = action.character;
-  const servers = updateCharacterCounts(utils.clone(state.servers), characters);
-  return utils.merge(state, {
-    characters: characters,
-    servers: servers
-  });
-}
-
-actionDefs[CHARACTER_REMOVED] = function characterRemovedReducer(state: ControllerState, action: ControllerAction): ControllerState {
-  const characters = utils.clone(state.characters);
-  delete characters[action.id];
-  const servers = updateCharacterCounts(utils.clone(state.servers), characters);
-  return utils.merge(state, {
-    characters: characters,
-    servers: servers
-  });
-}
-
-actionDefs[GET_CHANNELS] = function getChannelsReducer(state: ControllerState, action: ControllerAction): ControllerState {
-
-  const channelServers: utils.Dictionary<PatcherServer> = {};
-  const channelDict: utils.Dictionary<Channel> = {};
-  for (let i = 0; i < action.channels.length; ++i) {
-    const c = action.channels[i];
-    // check if we have a server with a matching name to a channel, if not the channel becomes it's own 'server'.
-    if (!state.servers[c.channelName]) {
-      // create a server for this channel
-      channelServers[c.channelName] = channelToPatcherServer(c);
-      let lastUpdated = localStorage.getItem(`channel_updated_${c.channelName}`);
-      if (lastUpdated) {
-        channelServers[c.channelName].lastUpdated = lastUpdated;
+      try {
+        signalr.patcherHub.start(() => {
+          dispatch(initSignalRSuccess());
+          registerPatcherHubEvents(dispatch);
+          dispatch(getChannels())
+          // update channel info on a timer...
+          if (channelUpdateInterval === null) {
+            channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
+          }
+        });
+      } catch (e) {
+        console.error(e);
+        dispatch(initSignalRFailed());
       }
-    } else {
-      // if it's not it's own server add to a dictionary to update servers by channel id
-      channelDict[c.channelID] = c;
+    };
+  },
+});
 
-      // while we're here lets see if we need to update the last updated time
-      if (state.servers[c.channelName].channelStatus === ChannelStatus.Updating && c.channelStatus === ChannelStatus.Ready) {
-        localStorage.setItem(`channel_updated_${c.channelName}`, action.when.toLocaleString());
+export const getChannels = module.createAction({
+  type: 'controllers/getChannels',
+  action: () => {
+    const channels = patcher.getAllChannels() || [];
+    return {
+      channels,
+    };
+  },
+  reducer: (s, a) => {
+    const channelServers: utils.Dictionary<PatcherServer> = {};
+    const channelDict: utils.Dictionary<Channel> = {};
+    for (let i = 0; i < a.channels.length; ++i) {
+      const c = a.channels[i];
+      // check if we have a server with a matching name to a channel, if not the channel becomes it's own 'server'.
+      if (!s.servers[c.channelName]) {
+        // create a server for this channel
+        channelServers[c.channelName] = channelToPatcherServer(c);
+      } else {
+        // if it's not it's own server add to a dictionary to update servers by channel id
+        channelDict[c.channelID] = c;
+
+        // while we're here lets see if we need to update the last updated time
+        if (s.servers[c.channelName].channelStatus === ChannelStatus.Updating && c.channelStatus === ChannelStatus.Ready) {
+          localStorage.setItem(`channel_updated_${c.channelName}`, a.when.toLocaleString());
+        }
       }
     }
-  }
 
-  const servers = utils.clone(state.servers);
-  for (const server in servers) {
-    var s = servers[server];
-    servers[server].channelStatus = channelDict[s.channelID] ? channelDict[s.channelID].channelStatus : ChannelStatus.NotInstalled;
-    servers[server].lastUpdated = channelDict[s.channelID] ? localStorage.getItem(`channel_updated_${channelDict[s.channelID].channelName}`) : undefined;
-  }
-  
-  return utils.merge(state, {
-    servers: utils.merge(servers, channelServers)
-  });
-}
+    const servers = utils.clone(s.servers);
+    for (const key in servers) {
+      var server = servers[key];
+      servers[key].channelStatus = channelDict[server.channelID] ? channelDict[server.channelID].channelStatus : ChannelStatus.NotInstalled;
+      servers[key].lastUpdated = channelDict[server.channelID].lastUpdated || 0;
+    }
 
-export default utils.createReducer<ControllerState>(initialState(), actionDefs);
+    return {
+      servers: utils.merge(servers, channelServers)
+    };
+  }
+});
+
+///////////////////////////////
+// ALERTS
+///////////////////////////////
+
+export const alertReceived = module.createAction({
+  type: 'controller/alertReceived',
+  action: (alert: webAPI.PatcherAlert) => {
+    return {
+      alert,
+    };
+  },
+  reducer: (s, a) => {
+    const alerts = utils.clone(s.alerts);
+    alerts[a.alert.id] = a.alert;
+    return {
+      alerts
+    };
+  }
+});
+
+export const alertExpired = module.createAction({
+  type: 'controller/alertExpired',
+  action: (id: string) => {
+    return {
+      id,
+    };
+  },
+  reducer: (s, a) => {
+    const alerts = utils.clone(s.alerts);
+    delete alerts[a.id];
+    return {
+      alerts,
+    };
+  }
+})
+
+///////////////////////////////
+// SIGNALR 
+///////////////////////////////
+
+export const initSignalR = module.createAction({
+  type: 'controller/initSignalr',
+  action: () => null,
+  reducer: (s, a) => {
+    return {
+      isInitializing: true,
+      signalRInitialized: false,
+    }
+  }
+});
+
+export const initSignalRSuccess = module.createAction({
+  type: 'controller/initSignalrSuccess',
+  action: () => null,
+  reducer: (s, a) => {
+    return {
+      isInitializing: false,
+      signalRInitialized: false,
+    }
+  }
+});
+
+export const initSignalRFailed = module.createAction({
+  type: 'controller/initSignalrFailed',
+  action: () => null,
+  reducer: (s, a) => {
+    return {
+      isInitializing: false,
+      signalRInitialized: false,
+    }
+  }
+});
+
+const connectionSlow = module.createAction({
+  type: 'controller/connectionSlow',
+  action: () => true,
+  reducer: (s, a) => {
+    return {
+      connectionSlow: true,
+    };
+  }
+});
+
+
+export const serverUpdate = module.createAction({
+  type: 'controller/serverUpdate',
+  action: (server: webAPI.ServerModel) => {
+    return {
+      server,
+    }
+  },
+  reducer: (s, a) => {
+    if (a.server.name === 'localhost') return {};
+    const servers = utils.clone(s.servers);
+    servers[a.server.name] = utils.merge(servers[a.server.name], webAPIServerToPatcherServer(a.server));
+    return {
+      servers,
+    };
+  }
+});
+
+export const serverUnavailable = module.createAction({
+  type: 'controller/serverUnavailable',
+  action: (id: string) => {
+    return {
+      id,
+    };
+  },
+  reducer: (s, a) => {
+    const servers = utils.clone(s.servers);
+    servers[a.id].available = false;
+    return {
+      servers: servers
+    };
+  }
+});
+
+export const characterUpdate = module.createAction({
+  type: 'controller/characterUpdate',
+  action: (character: webAPI.SimpleCharacter) => {
+    return {
+      character,
+    };
+  },
+  reducer: (s, a) => {
+    const characters = utils.clone(s.characters);
+    characters[a.character.id] = a.character;
+    const servers = updateCharacterCounts(utils.clone(s.servers), characters);
+    return {
+      characters,
+      servers,
+    };
+  }
+});
+
+export const characterRemoved = module.createAction({
+  type: 'controller/characterRemoved',
+  action: (id: string) => {
+    return {
+      id,
+    };
+  },
+  reducer: (s, a) => {
+    const characters = utils.clone(s.characters);
+    delete characters[a.id];
+    const servers = updateCharacterCounts(utils.clone(s.servers), characters);
+    return {
+      characters,
+      servers,
+    };
+  }
+});
+
+
+export const reducer = module.createReducer();
+export default reducer;

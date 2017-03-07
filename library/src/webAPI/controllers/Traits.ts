@@ -3,18 +3,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
+ 
 import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
 import { Character } from '../definitions';
 
 
-export function getStartingServer(shardID: number, characterID: string) {
-  return create(createOptions()).get('v1/presence/startingServer/{shardID}/{characterID}', { 
-    shardID: shardID, 
-    characterID: characterID
+export function getTraitsV1(shardID: number) {
+  return create(createOptions()).get('v1/traits', { 
+    shardID: shardID
   });
 }
 
- 

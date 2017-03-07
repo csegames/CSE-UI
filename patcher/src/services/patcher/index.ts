@@ -56,6 +56,7 @@ export interface Channel {
   channelName: string;
   channelID: number;
   channelStatus: ChannelStatus;
+  lastUpdated: number;
 }
 
 const API : string = "patcherAPI";
@@ -77,6 +78,7 @@ export class PatcherAPI {
         permissions: -1,
         screenName: "###",
         loginError: "",
+        apiHost: 'https://api.camelotunchained.com',
         channelData: [
           { channelID: 4, channelName: 'Hatchery', channelStatus: ChannelStatus.Ready },
           { channelID: 10, channelName: 'Wyrmling', channelStatus: ChannelStatus.Ready },
@@ -95,6 +97,9 @@ export class PatcherAPI {
         MarkFAQAsRead: function() {}
       };
     }
+  }
+  apiHost(): string {
+    return this._api.apiHost || 'https://api.camelotunchained.com';
   }
   hasApi() :boolean {
     return this._api !== undefined;

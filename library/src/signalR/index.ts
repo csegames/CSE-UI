@@ -10,25 +10,14 @@
  */
 
 import client from '../core/client';
-import {SignalRHub} from './SignalRHub';
-
-import warbandsHub from './hubs/warbandsHub';
-import * as warbandEvents from './hubs/warbandsHub';
-
-import patcherHub from './hubs/patcherHub';
-import * as patcherEvents from './hubs/patcherHub';
-
-import groupsHub from './hubs/groupsHub';
-import * as groupEvents from './hubs/groupsHub';
-const GROUPS_HUB = 'hubs/groups';
+import { findIndexWhere } from '../util/arrayutils'
+export * from './SignalRHub';
+export * from './hubs/groupsHub';
+export * from './hubs/patcherHub';
+export * from './hubs/warbandsHub';
 
 
 const hubsDef: HubDef = {};
-
-hubsDef[GROUPS_HUB] =  {
-  init: (cb: InitCallback) => groupsHub.initializeHub(cb),
-  unregister: () => groupsHub.unregisterEvents(),
-};
 
 interface HubDef {
   [id: string]: {
@@ -44,7 +33,7 @@ export interface InitCallback {
 const initializedHubs: string[] = [];
 
 let initialized = false;
-const initializeSignalR = () => {
+export const initializeSignalR = () => {
   if (initialized) return;
   initialized = true;
   $(() => {
@@ -54,21 +43,12 @@ const initializeSignalR = () => {
   })
 };
 
-const reinitializeSignalR = () => {
+export const reinitializeSignalR = () => {
   initialized = false;
   initializeSignalR();
 };
 
-function findIndexWhere<T>(arr: T[], predicate: (a: T) => boolean): number {
-  if (!arr) return -1;
-  let i = arr.length;
-  while(--i >= 0) {
-    if (predicate(arr[i])) return i;
-  }
-  return -1;
-}
-
-const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
+export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h == hubs[i].name) == -1) {
       const hub = hubs[i];
@@ -80,7 +60,7 @@ const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]
   }
 }
 
-const unregisterSignalRHubs = (...hubNames: string[]) => {
+export const unregisterSignalRHubs = (...hubNames: string[]) => {
   for (let i = 0; i < hubNames.length; ++i) {
     var index = findIndexWhere(initializedHubs, name => name == hubNames[i]);
     if (index != -1) {
@@ -92,13 +72,3 @@ const unregisterSignalRHubs = (...hubNames: string[]) => {
   }
 }
 
-export default Object.assign({}, {
-  initializeSignalR,
-  reinitializeSignalR,
-  initializeSignalRHubs,
-  unregisterSignalRHubs,
-  SignalRHub,
-  warbandsHub,
-  patcherHub,
-  GROUPS_HUB,
-}, warbandEvents, groupEvents, patcherEvents);

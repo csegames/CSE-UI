@@ -6,12 +6,14 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:38
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-26 10:12:32
+ * @Last Modified time: 2017-03-07 12:58:53
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {webAPI, events, utils} from 'camelot-unchained';
+import * as moment from 'moment';
+
 
 import {patcher, Channel, ChannelStatus, PatchPermissions} from '../../../../services/patcher';
 import {CSENormalizeString} from '../../../../lib/CSENormalizeString';
@@ -121,6 +123,8 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID != 27) {
       if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
       if (!launchString.includes('character=') || !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
+      const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
+      if (!launchString.includes('webapihost=') || !launchString.includes('webapihost =')) launchString += ` webapihost=${apiHost}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
@@ -247,7 +251,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
-            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? selectedServer.lastUpdated : 'never'}.</label>          
+            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
           </div>
           {this.renderProgressText()}
         </div>

@@ -102,11 +102,11 @@
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png');
 }
 
-.standing__Pict--Male {
+.standing__PICT--Male {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png');
 }
 
-.standing__Pict--Female {
+.standing__PICT--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png');
 }
 

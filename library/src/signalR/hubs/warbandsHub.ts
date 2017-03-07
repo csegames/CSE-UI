@@ -1,7 +1,12 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2017-03-02 15:51:12
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-03-02 15:51:12
  */
 
 import client from '../../core/client';
@@ -19,40 +24,40 @@ export const WARBAND_EVENTS_INVITERECEIVED = 'warbands/inviteReceived';
 
 const warbandEventsMap = [
   {
-    recieve: 'warbandJoined',
+    receive: 'warbandJoined',
     send: WARBAND_EVENTS_JOINED,
   },
   {
-    recieve: 'warbandUpdate',
+    receive: 'warbandUpdate',
     send: WARBAND_EVENTS_UPDATE,
   },
   {
-    recieve: 'warbandQuit',
+    receive: 'warbandQuit',
     send: WARBAND_EVENTS_QUIT,
   },
   {
-    recieve: 'warbandAbandoned',
+    receive: 'warbandAbandoned',
     send: WARBAND_EVENTS_ABANDONED,
   },
   {
-    recieve: 'warbandMemberJoined',
+    receive: 'warbandMemberJoined',
     send: WARBAND_EVENTS_MEMBERJOINED,
   },
   {
-    recieve: 'warbandMemberUpdate',
+    receive: 'warbandMemberUpdate',
     send: WARBAND_EVENTS_MEMBERUPDATE,
   },
   {
-    recieve: 'warbandMemberRemoved',
+    receive: 'warbandMemberRemoved',
     send: WARBAND_EVENTS_MEMBERREMOVED,
   },
   {
-    recieve: 'warbandInviteReceived',
+    receive: 'warbandInviteReceived',
     send: WARBAND_EVENTS_INVITERECEIVED,
   }
 ];
 
-const warbandsHub = new SignalRHub('warbandsHub', warbandEventsMap, {debug: client.debug});
+export const warbandsHub = new SignalRHub('warbandsHub', warbandEventsMap, {debug: client.debug});
 
 warbandsHub.onConnected = (hub: SignalRHub) => {
   hub.invoke('identify', client.loginToken, client.shardID, client.characterID)

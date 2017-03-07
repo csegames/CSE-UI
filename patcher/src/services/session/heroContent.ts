@@ -12,7 +12,9 @@ import {BaseAction, defaultAction, FetchStatus, defaultFetchStatus, merge, hashM
 import ResponseError from '../../lib/ResponseError';
 import {fetchJSON} from '../../lib/fetchHelpers';
 
-const HeroContentUrl = 'http://api.camelotunchained.com/patcherherocontent';
+import {patcher} from '../patcher';
+
+const HeroContentUrl = `${patcher.apiHost()}/patcherherocontent`;
 
 export interface HeroContentItem {
   id: string,

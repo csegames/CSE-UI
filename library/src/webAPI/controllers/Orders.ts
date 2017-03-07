@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
+ 
 import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
@@ -12,6 +12,24 @@ import { Character } from '../definitions';
 
 export function createV1(shardID: number, characterID: string, name: string) {
   return create(createOptions()).call('v1/orders/create', { 
+    shardID: shardID, 
+    characterID: characterID, 
+    name: name
+  });
+}
+
+export function createRankV1(shardID: number, characterID: string, name: string, level: number, permissions: string[]) {
+  return create(createOptions()).call('v1/orders/createRank', { 
+    shardID: shardID, 
+    characterID: characterID, 
+    name: name, 
+    level: level, 
+    permissions: permissions
+  });
+}
+
+export function removeRankV1(shardID: number, characterID: string, name: string) {
+  return create(createOptions()).call('v1/orders/removeRank', { 
     shardID: shardID, 
     characterID: characterID, 
     name: name
@@ -62,31 +80,6 @@ export function disbandV1(shardID: number, characterID: string) {
   return create(createOptions()).call('v1/orders/disband', { 
     shardID: shardID, 
     characterID: characterID
-  });
-}
-
-export function showRanksV1(shardID: number, characterID: string) {
-  return create(createOptions()).call('v1/orders/showRanks', { 
-    shardID: shardID, 
-    characterID: characterID
-  });
-}
-
-export function createRankV1(shardID: number, characterID: string, name: string, level: number, permissions: string[]) {
-  return create(createOptions()).call('v1/orders/createRank', { 
-    shardID: shardID, 
-    characterID: characterID, 
-    name: name, 
-    level: level, 
-    permissions: permissions
-  });
-}
-
-export function removeRankV1(shardID: number, characterID: string, name: string) {
-  return create(createOptions()).call('v1/orders/removeRank', { 
-    shardID: shardID, 
-    characterID: characterID, 
-    name: name
   });
 }
 
