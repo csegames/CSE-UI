@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
 import Trait, { TraitStyle } from './Trait';
 import { styleConstants } from '../../styleConstants';
 
@@ -19,8 +19,8 @@ const Boon = (props: {
   onBoonClick: Function;
   onCancelBoon: Function;
   onUpdateRankBoon: Function;
-  allPrerequisites: BanesAndBoonsInfo[];
-  allExclusives: BanesAndBoonsInfo[];
+  allPrerequisites: TraitMap;
+  allExclusives: TraitMap;
   addedBoons: BanesAndBoonsInfo[];
   styles: Partial<TraitStyle>;
 }) => {

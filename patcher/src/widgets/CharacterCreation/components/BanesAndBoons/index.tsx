@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
 import { TraitStyle } from './Trait';
@@ -59,18 +59,18 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
 }
 
 export interface BanesAndBoonsProps {
-  generalBoons: any;
-  playerClassBoons: any;
-  raceBoons: any;
-  factionBoons: any;
-  generalBanes: any;
-  playerClassBanes: any;
-  raceBanes: any;
-  factionBanes: any;
+  generalBoons: TraitMap;
+  playerClassBoons: TraitMap;
+  raceBoons: TraitMap;
+  factionBoons: TraitMap;
+  generalBanes: TraitMap;
+  playerClassBanes: TraitMap;
+  raceBanes: TraitMap;
+  factionBanes: TraitMap;
   addedBanes: BanesAndBoonsInfo[];
   addedBoons: BanesAndBoonsInfo[];
-  allPrerequisites: BanesAndBoonsInfo[];
-  allExclusives: BanesAndBoonsInfo[];
+  allPrerequisites: TraitMap;
+  allExclusives: TraitMap;
   onBoonClick: Function;
   onBaneClick: Function;
   onCancelBoonClick: Function;

@@ -13,7 +13,6 @@ import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
 import { Module } from 'redux-typed-modules';
 import { webAPI, client, Faction, Race } from 'camelot-unchained';
-import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -27,10 +26,14 @@ export interface BanesAndBoonsInfo {
   prerequisites: Array<string>;
   rank: number;
   ranks: Array<string>;
-  exclusivityGroup: number;
+  exclusivityGroup: Array<BanesAndBoonsInfo>;
   minRequired: number;
   maxAllowed: number;
   finished: boolean;
+}
+
+export interface TraitMap {
+  [id: string]: BanesAndBoonsInfo
 }
 
 export interface BanesAndBoonsState {
@@ -38,17 +41,17 @@ export interface BanesAndBoonsState {
   totalPoints: number;
   addedBanes: BanesAndBoonsInfo[];
   addedBoons: BanesAndBoonsInfo[];
-  generalBoons: any;
-  playerClassBoons: any;
-  raceBoons: any;
-  factionBoons: any;
-  generalBanes: any;
-  playerClassBanes: any;
-  raceBanes: any;
-  factionBanes: any;
-  allPrerequisites: BanesAndBoonsInfo[];
-  allRanks: any;
-  allExclusives: BanesAndBoonsInfo[];
+  generalBoons: TraitMap;
+  playerClassBoons: TraitMap;
+  raceBoons: TraitMap;
+  factionBoons: TraitMap;
+  generalBanes: TraitMap;
+  playerClassBanes: TraitMap;
+  raceBanes: TraitMap;
+  factionBanes: TraitMap;
+  allPrerequisites: TraitMap;
+  allRanks: TraitMap;
+  allExclusives: TraitMap;
 }
 
 const ON_SELECT_BANE = 'cu-character-creation/banes-and-boons/ON_SELECT_BANE';
@@ -70,7 +73,7 @@ const ON_RESET_BANES_AND_BOONS = 'cu-character-creation/banes-and-boons/ON_RESET
 
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
-    /*return webAPI.TraitsAPI.getTraitsV1(client.shardID)
+    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
       .then((result: any) => {
         if (result.ok) {
           dispatch(onInitializeTraits({
@@ -80,13 +83,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             banesAndBoons: result
           }));
         }
-      })*/
-      return dispatch(onInitializeTraits({
-        playerClass: payload.playerClass,
-        race: payload.race,
-        faction: payload.faction,
-        banesAndBoons: traitsExampleResponse
-      }))
+      })
   }
 };
 
@@ -106,22 +103,24 @@ const emptyBaneOrBoon = {
   maxAllowed: -1
 };
 
+const defaultTraitMap: { [id: string]: BanesAndBoonsInfo } = {};
+
 export const module = new Module({
   initialState: {
     initial: true,
     totalPoints: 0,
     addedBanes: Array(5).fill(emptyBaneOrBoon),
     addedBoons: Array(5).fill(emptyBaneOrBoon),
-    generalBoons: null,
-    playerClassBoons: null,
-    raceBoons: null,
-    factionBoons: null,
-    generalBanes: null,
-    playerClassBanes: null,
-    raceBanes: null,
-    factionBanes: null,
-    allPrerequisites: [],
-    allRanks: null,
+    generalBoons: defaultTraitMap,
+    playerClassBoons: defaultTraitMap,
+    raceBoons: defaultTraitMap,
+    factionBoons: defaultTraitMap,
+    generalBanes: defaultTraitMap,
+    playerClassBanes: defaultTraitMap,
+    raceBanes: defaultTraitMap,
+    factionBanes: defaultTraitMap,
+    allPrerequisites: defaultTraitMap,
+    allRanks: defaultTraitMap,
     allExclusives: []
   }
 });
@@ -532,9 +531,7 @@ export const onInitializeTraits = module.createAction({
   type: ON_INITIALIZE_TRAITS,
   action: (action: { playerClass: string, faction: string, race: string, banesAndBoons: any }) => action,
   reducer: (state, action) => {
-    const { playerClass, faction, race, /* banesAndBoons */ } = action;
-    /* !!To test ranks, exclusivity, and prerequisites: Uncomment the line below and comment the banesAndBoons variable above!! */
-    let banesAndBoons = traitsExampleResponse;
+    const { playerClass, faction, race, banesAndBoons } = action;
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
@@ -572,14 +569,16 @@ export const onInitializeTraits = module.createAction({
       minRequired: number,
       maxAllowed: number
     }
-    const allExclusiveTraits = exclusives.map((exclusiveArray: ExclusiveInfo, index: number) =>
+    const allExclusiveTraits: { [id: string]: BanesAndBoonsInfo } = {};
+     exclusives.map((exclusiveArray: ExclusiveInfo, index: number) =>
       exclusiveArray.ids.map((exclusive: string) =>
       Object.assign({}, allTraits.find((trait: BanesAndBoonsInfo) => trait.id === exclusive),
       {
-        exclusivityGroup: index,
+        exclusivityGroup: exclusiveArray.ids.map((exclusive: string) => traits[exclusive]),
         minRequired: exclusiveArray.minRequired,
         maxAllowed: exclusiveArray.maxAllowed,
-      }))).reduce((a: Array<ExclusiveInfo>, b: Array<ExclusiveInfo>) => a.concat(b));
+      }))).reduce((a: Array<ExclusiveInfo>, b: Array<ExclusiveInfo>) => a.concat(b))
+      .forEach((exclusive: BanesAndBoonsInfo) => allExclusiveTraits[exclusive.id] = exclusive);
 
     // Getting all the non-general traits
     const allClassTraits = Object.keys(playerClasses).map((playerClass) => {
@@ -696,9 +695,9 @@ export const onInitializeTraits = module.createAction({
 
     // Prerequisite traits
     const allTraitsWithPrerequisites = allTraits.filter((trait: BanesAndBoonsInfo) => trait.prerequisites);
-    const allPrerequisites = allTraits.filter((trait: BanesAndBoonsInfo) =>
-    allTraitsWithPrerequisites.filter((t: BanesAndBoonsInfo) =>
-      t.prerequisites.find((preReq) => preReq === trait.id)).length !== 0);
+    const allPrerequisites: { [id: string]: BanesAndBoonsInfo } = {};
+     allTraitsWithPrerequisites.filter((t: BanesAndBoonsInfo) => t.prerequisites.filter((preReq) => traits[preReq]).length !== 0)
+     .forEach((boon: BanesAndBoonsInfo) => boon.prerequisites.forEach((preReq) => allPrerequisites[preReq] = traits[preReq]))
 
     return Object.assign({}, state, {
       initial: false,
