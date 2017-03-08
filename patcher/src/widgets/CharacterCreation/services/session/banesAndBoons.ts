@@ -54,23 +54,6 @@ export interface BanesAndBoonsState {
   allExclusives: TraitMap;
 }
 
-const ON_SELECT_BANE = 'cu-character-creation/banes-and-boons/ON_SELECT_BANE';
-const ON_SELECT_BOON = 'cu-character-creation/banes-and-boons/ON_SELECT_BOON';
-const ON_CANCEL_BANE = 'cu-character-creation/banes-and-boons/ON_CANCEL_BANE';
-const ON_CANCEL_BOON = 'cu-character-creation/banes-and-boons/ON_CANCEL_BOON';
-const ON_UPDATE_GENERAL_BOONS ='cu-character-creation/banes-and-boons/ON_UPDATE_GENERAL_BOONS';
-const ON_UPDATE_PLAYER_CLASS_BOONS = 'cu-character-creation/banes-and-boons/ON_UPDATE_PLAYER_CLASS_BOONS';
-const ON_UPDATE_RACE_BOONS ='cu-character-creation/banes-and-boons/ON_UPDATE_RACE_BOONS';
-const ON_UPDATE_FACTION_BOONS ='cu-character-creation/banes-and-boons/ON_UPDATE_FACTION_BOONS';
-const ON_UPDATE_GENERAL_BANES ='cu-character-creation/banes-and-boons/ON_UPDATE_GENERAL_BANES';
-const ON_UPDATE_PLAYER_CLASS_BANES ='cu-character-creation/banes-and-boons/ON_UPDATE_PLAYER_CLASS_BANES';
-const ON_UPDATE_RACE_BANES ='cu-character-creation/banes-and-boons/ON_UPDATE_RACE_BANES';
-const ON_UPDATE_FACTION_BANES ='cu-character-creation/banes-and-boons/ON_UPDATE_FACTION_BANES';
-const ON_UPDATE_RANK_BOONS = 'cu-character-creeation/banes-and-boons/ON_UPDATE_RANK_BOONS';
-const ON_UPDATE_RANK_BANES = 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES';
-const ON_INITIALIZE_TRAITS = 'cu-character-creation/banes-and-boons/ON_INITIALIZE_TRAITS';
-const ON_RESET_BANES_AND_BOONS = 'cu-character-creation/banes-and-boons/ON_RESET_BANES_AND_BOONS';
-
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
     return webAPI.TraitsAPI.getTraitsV1(client.shardID)
@@ -126,7 +109,7 @@ export const module = new Module({
 });
 
 export const onSelectBane = module.createAction({
-  type: ON_SELECT_BANE,
+  type: 'cu-character-creation/banes-and-boons/ON_SELECT_BANE',
   action: (action: { bane: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
     let updatedBanes = false;
@@ -146,15 +129,16 @@ export const onSelectBane = module.createAction({
         totalPoints: state.totalPoints + action.bane.points
       })
     }
-    return Object.assign({}, state, {
+    return {
+      ...state,
       addedBanes: addedBanes,
       totalPoints: state.totalPoints + action.bane.points
-    });
+    };
   }
 });
 
 export const onSelectBoon = module.createAction({
-  type: ON_SELECT_BOON,
+  type: 'cu-character-creation/banes-and-boons/ON_SELECT_BOON',
   action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
     let updatedBoons = false;
@@ -182,7 +166,7 @@ export const onSelectBoon = module.createAction({
 });
 
 export const onCancelBaneClick = module.createAction({
-  type: ON_CANCEL_BANE,
+  type: 'cu-character-creation/banes-and-boons/ON_CANCEL_BANE',
   action: (action: { bane: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
     if (state.addedBanes.length === 5) {
@@ -206,7 +190,7 @@ export const onCancelBaneClick = module.createAction({
 });
 
 export const onCancelBoonClick = module.createAction({
-  type: ON_CANCEL_BOON,
+  type: 'cu-character-creation/banes-and-boons/ON_CANCEL_BOON',
   action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
     if (state.addedBoons.length === 5) {
@@ -230,7 +214,7 @@ export const onCancelBoonClick = module.createAction({
 });
 
 export const onUpdateGeneralBoons = module.createAction({
-  type: ON_UPDATE_GENERAL_BOONS,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_GENERAL_BOONS',
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let generalBoonsClone = state.generalBoons;
@@ -244,7 +228,7 @@ export const onUpdateGeneralBoons = module.createAction({
 });
 
 export const onUpdateGeneralBanes = module.createAction({
-  type: ON_UPDATE_GENERAL_BANES,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_GENERAL_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let generalBanesClone = state.generalBanes;
@@ -258,7 +242,7 @@ export const onUpdateGeneralBanes = module.createAction({
 });
 
 export const onUpdatePlayerClassBoons = module.createAction({
-  type: ON_UPDATE_PLAYER_CLASS_BOONS,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_PLAYER_CLASS_BOONS',
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let playerClassBoonsClone = state.playerClassBoons;
@@ -272,7 +256,7 @@ export const onUpdatePlayerClassBoons = module.createAction({
 });
 
 export const onUpdatePlayerClassBanes = module.createAction({
-  type: ON_UPDATE_PLAYER_CLASS_BANES,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_PLAYER_CLASS_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let playerClassBanesClone = state.playerClassBanes;
@@ -286,7 +270,7 @@ export const onUpdatePlayerClassBanes = module.createAction({
 });
 
 export const onUpdateFactionBoons = module.createAction({
-  type: ON_UPDATE_FACTION_BOONS,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_FACTION_BOONS',
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let factionBoonsClone = state.factionBoons;
@@ -300,7 +284,7 @@ export const onUpdateFactionBoons = module.createAction({
 });
 
 export const onUpdateFactionBanes = module.createAction({
-  type: ON_UPDATE_FACTION_BANES,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_FACTION_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let factionBanesClone = state.factionBanes;
@@ -314,7 +298,7 @@ export const onUpdateFactionBanes = module.createAction({
 });
 
 export const onUpdateRaceBoons = module.createAction({
-  type: ON_UPDATE_RACE_BOONS,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RACE_BOONS',
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let raceBoonsClone = state.raceBoons;
@@ -328,7 +312,7 @@ export const onUpdateRaceBoons = module.createAction({
 });
 
 export const onUpdateRaceBanes = module.createAction({
-  type: ON_UPDATE_RACE_BANES,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let raceBanesClone = state.raceBanes;
@@ -342,7 +326,7 @@ export const onUpdateRaceBanes = module.createAction({
 });
 
 export const onUpdateRankBoons = module.createAction({
-  type: ON_UPDATE_RANK_BOONS,
+  type: 'cu-character-creeation/banes-and-boons/ON_UPDATE_RANK_BOONS',
   action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let gBoons = state.generalBoons;
@@ -435,7 +419,7 @@ export const onUpdateRankBoons = module.createAction({
 })
 
 export const onUpdateRankBanes = module.createAction({
-  type: ON_UPDATE_RANK_BANES,
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
     let gBanes = state.generalBanes;
@@ -528,7 +512,7 @@ export const onUpdateRankBanes = module.createAction({
 });
 
 export const onInitializeTraits = module.createAction({
-  type: ON_INITIALIZE_TRAITS,
+  type: 'cu-character-creation/banes-and-boons/ON_INITIALIZE_TRAITS',
   action: (action: { playerClass: string, faction: string, race: string, banesAndBoons: any }) => action,
   reducer: (state, action) => {
     const { playerClass, faction, race, banesAndBoons } = action;
@@ -720,7 +704,7 @@ export const onInitializeTraits = module.createAction({
 });
 
 export const resetBanesAndBoons = module.createAction({
-  type: ON_RESET_BANES_AND_BOONS,
+  type: 'cu-character-creation/banes-and-boons/ON_RESET_BANES_AND_BOONS',
   action: () => null,
   reducer: () => {
     return module.initialState;
