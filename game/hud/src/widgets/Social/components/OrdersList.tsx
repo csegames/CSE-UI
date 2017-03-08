@@ -46,7 +46,7 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
     super(props);
     this.state = {
       page: 0,
-      itemsPerPage: 10,       // TODO: Should be calculated to fit space
+      itemsPerPage: 25,       // TODO: Should be calculated to fit space
       filter: '',
       sort: '',
       reverse: false

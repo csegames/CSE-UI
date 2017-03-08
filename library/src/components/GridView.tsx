@@ -160,11 +160,6 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
       sortedItems: items,
       page: 0,
     } as S;
-    (this.state as S).page | 0;
-  }
-
-  public get customPager() : any {      // TODO Type it
-    return null;
   }
 
   componentWillReceiveProps = (nextProps: P) => {
@@ -310,8 +305,8 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
   }
 
   renderGrid = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
-    var state = this.state as S;
-    var startIndex = state.page * state.itemsPerPage;
+    const state = this.state as S;
+    const startIndex = state.page * state.itemsPerPage;
     const rows: JSX.Element[] = [];
 
     for (let index = startIndex;
@@ -327,6 +322,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
       </div>
     )
   }
+
   renderPagination = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
     const state = this.state as S;
     const itemCount = this.getItemCount();
