@@ -8,7 +8,7 @@ import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
 const thunk = require('redux-thunk').default;
-import {WarbandMember, hasClientAPI} from 'camelot-unchained';
+import {WarbandMember, hasClientAPI, client, Gender, Race} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';
@@ -53,10 +53,20 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
     const hide = this.props.player.playerStatus.name == '';
     if (hide) return null;
 
-    const dead = this.props.player.playerStatus.blood.current <= 0 || this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
+    const dead = this.props.player.playerStatus.blood.current <= 0 ||
+      this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
     return (
-      <div className={`player-health ${this.props.containerClass}`} onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
-        <PlayerStatusComponent containerClass='TargetHealth' mirror={true} playerStatus={this.props.player.playerStatus} events={this.props.player.events}/>
+      <div className={`player-health ${this.props.containerClass}`}
+       onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+        <PlayerStatusComponent
+          containerClass='TargetHealth'
+          mirror={true}
+          playerStatus={this.props.player.playerStatus}
+          events={this.props.player.events}
+        />
+        <div className='player-health-distance'>
+          {this.props.player.playerStatus.distance} m
+        </div>
       </div>
     );
   }

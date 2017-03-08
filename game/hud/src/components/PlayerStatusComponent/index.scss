@@ -42,6 +42,8 @@
   align-items: center;
   img {
     height: 70px;
+    width: auto;
+    overflow: hidden;
   }
 }
 
