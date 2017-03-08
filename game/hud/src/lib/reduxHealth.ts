@@ -22,6 +22,7 @@ export interface HealthAction extends BaseAction {
   faction?: Faction;
   player?: Player;
   avatar?: string;
+  distance?: number;
 }
 
 export function fakePlayer(): PlayerStatus {
@@ -32,6 +33,7 @@ export function fakePlayer(): PlayerStatus {
     gender: Gender.Male,
     archetype: Archetype.WintersShadow,
     characterID: '',
+    distance: 0,
     health: [{
       current: 10000,
       maximum: 10000,
@@ -124,6 +126,12 @@ export function avatarChanged(status: PlayerStatus, action: HealthAction) {
   let playerStatus = clone(status);
   playerStatus.avatar = action.avatar;
   return {playerStatus: playerStatus};
+}
+
+export function distanceChanged(status: PlayerStatus, action: HealthAction) {
+  let playerStatus = clone(status);
+  playerStatus.distance = action.distance;
+  return {playerState: playerStatus};
 }
 
 let key = 3;

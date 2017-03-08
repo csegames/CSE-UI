@@ -118,7 +118,7 @@ function onCharacterUpdate(player: Player): PlayerAction {
   }
 }
 
-function onAvatarChanged(avatar: string) {
+function onAvatarChanged(avatar: string): PlayerAction {
   return {
     type: AVATAR_CHANGED,
     when: new Date(),
@@ -140,15 +140,14 @@ export function initializePlayerSession() {
     // init handlers / events
     client.OnCharacterStaminaChanged((current: number, max: number) => dispatch(onStaminaChanged(current, max)));
     client.OnCharacterHealthChanged((current: number, max: number) => dispatch(onHealthChanged(current, max, BodyParts.Torso)));
-    
     client.OnCharacterInjuriesChanged((part: number, health: number, maxHealth: number) => dispatch(onHealthChanged(health, maxHealth, part)));
-
     client.OnCharacterNameChanged((name: string) => dispatch(onNameChanged(name)));
+
+    client.OnCharacterFactionChanged((faction: Faction) => dispatch(onFactionChanged(faction)));
     client.OnCharacterRaceChanged((race: Race) => {
       dispatch(onRaceChanged(race));
-      dispatch(onAvatarChanged(getAvatar(Gender.Male, race)))
+      client.OnCharacterGenderChanged((gender: Gender) => dispatch(onAvatarChanged(getAvatar(gender, race))))
     });
-    client.OnCharacterFactionChanged((faction: Faction) => dispatch(onFactionChanged(faction)));
 
     events.on(events.clientEventTopics.handlesCharacter, (player: Player) => dispatch(onCharacterUpdate(player)));
 
