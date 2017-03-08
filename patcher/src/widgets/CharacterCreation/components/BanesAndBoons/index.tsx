@@ -453,7 +453,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
     return (
-      listOfTraits &&
+      Object.keys(listOfTraits).length !== 0 &&
       <div>
         <p className={css(type === 'boon' ? ss.boonTitle : ss.baneTitle, type === 'boon' ? custom.boonTitle : custom.baneTitle)}>{title}</p>
         <div className={css(type === 'boon' ? ss.boonsContainer : ss.banesContainer, type === 'boon' ? ss.banesContainer : custom.banesContainer)}>
