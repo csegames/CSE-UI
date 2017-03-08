@@ -38,6 +38,8 @@ interface OrdersListState {
   page: number;
   itemsPerPage: number;
   filter: string;
+  sort: string;
+  reverse: boolean;
 }
 
 class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
@@ -46,8 +48,10 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
     super(props);
     this.state = {
       page: 0,
-      itemsPerPage: 25,       // TODO: Should be calculated to fit space
-      filter: ''
+      itemsPerPage: 10,       // TODO: Should be calculated to fit space
+      filter: '',
+      sort: '',
+      reverse: false
     };
   }
   onFilterChanged = (e: any) => {
@@ -77,7 +81,16 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
           itemsPerPage={this.state.itemsPerPage}
           gotoPage={(page: number) => {
             this.setState({ page: page });
-          }} />
+          }}
+          sort={this.state.sort} reverse={this.state.reverse}
+          orderBy={(name: string, asc: boolean) => {
+            // sort
+            this.setState({
+              sort: name,
+              reverse: !asc
+            } as OrdersListState);
+          }}
+          />
       </div>
     );
   }

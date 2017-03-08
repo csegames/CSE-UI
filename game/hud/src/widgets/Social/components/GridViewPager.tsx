@@ -10,12 +10,14 @@
  */
 
 import * as React from 'react';
-import { GridViewImpl, GridViewProps, GridViewState } from 'camelot-unchained';
+import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition, SortInfo } from 'camelot-unchained';
+import { clone } from 'lodash';
 
 export interface GridViewPagerProps extends GridViewProps {
   total: number;
   currentPage: number;
   gotoPage: (page: number) => void;
+  onSort: (index: number, asc: boolean) => void;
 }
 
 export interface GridViewPagerState extends GridViewState {
@@ -30,5 +32,12 @@ export default class GridViewPager extends GridViewImpl<GridViewPagerProps, Grid
   }
   goToPage = (page: number) => {
     this.props.gotoPage(page);
+  }
+  setSort = (index: number, sortBy: GridViewSort) => {
+    this.props.onSort(index, sortBy == GridViewSort.Up);
+    this.setState({ currentSort: { index: index, sorted: sortBy } });
+  }
+  sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
+    return input;
   }
 }
