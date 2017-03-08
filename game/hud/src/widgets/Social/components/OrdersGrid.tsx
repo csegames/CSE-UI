@@ -3,10 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2017-01-30 14:52:18
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 11:49:08
+ * @Author: Mehuge (mehuge@sorcerer.co.uk)
+ * @Date: 2017-03-08
  */
 
 import * as React from 'react';
@@ -146,14 +144,14 @@ const query = gql`
 `;
 
 const options = (props: OrdersGridProps) => {
-  var opts = {
+  const opts = {
     variables: {
       filter: props.filter||"",
       shard: props.shard|0,
       skip: props.skip|0,
       count: props.itemsPerPage|0,
       sort: props.sort||"",
-      reverse: props.reverse||false
+      reverse: props.reverse||false,
     }
   }
   return opts;
@@ -161,4 +159,3 @@ const options = (props: OrdersGridProps) => {
 
 const OrdersGridWithQL = graphql(query, { options: options })(OrdersGrid);
 export default OrdersGridWithQL;
-
