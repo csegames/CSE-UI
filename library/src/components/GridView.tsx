@@ -122,7 +122,8 @@ export enum GridViewSort {
   Down
 }
 
-export interface ExtendedColumnDefinition extends ColumnDefinition {
+export interface SortInfo {
+  index: number;
   sorted: GridViewSort;
 }
 
@@ -140,9 +141,7 @@ export interface GridViewProps {
 }
 
 export interface GridViewState {
-  columnDefinitions: {
-    [id: string]: ExtendedColumnDefinition
-  }
+  currentSort: SortInfo;
   items: any[];
   itemsPerPage: number;
   sortedItems: any[];
@@ -154,9 +153,8 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
     super(props);
 
     const items = cloneDeep(props.items);
-    const columnDefinitions = this.mapColumnDefinitions(props.columnDefinitions);
     this.state = {
-      columnDefinitions,
+      currentSort: { index: -1, sorted: GridViewSort.None },
       items,
       itemsPerPage: props.itemsPerPage || 25,
       sortedItems: items,
@@ -170,43 +168,31 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
   }
 
   componentWillReceiveProps = (nextProps: P) => {
-    let items = cloneDeep(nextProps.items);
-    const columnDefinitions = this.mapColumnDefinitions(nextProps.columnDefinitions);
-
-    nextProps.columnDefinitions.forEach((def, index) => {
-      items = GridViewImpl.sortItems(items, columnDefinitions['$'+index]);
-    });
-
+    const items = cloneDeep(nextProps.items);
     this.setState({
-      columnDefinitions,
       items,
       itemsPerPage: this.props.itemsPerPage || 25,
       sortedItems: items,
     } as S);
   }
 
-  mapColumnDefinitions = (input: ColumnDefinition[]) => {
-    const map: any = {};
-    input.forEach((def, index) => map['$'+index] = {...def, sorted: this.state ? this.state.columnDefinitions['$'+index].sorted || GridViewSort.None : GridViewSort.None});
-    return map;
-  }
-
-  static sortItems(input: any[], sortBy: ExtendedColumnDefinition) {
-    if (sortBy.sorted === GridViewSort.None) return input;
-    if (sortBy.sortFunction) {
-      return input.sort((a, b) => sortBy.sorted == GridViewSort.Down ? sortBy.sortFunction(a, b) : (sortBy.sortFunction(a, b) * -1))
+  sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
+    if (sorted === GridViewSort.None) return input;
+    if (column.sortFunction) {
+      return input.sort((a, b) => sorted == GridViewSort.Down ? column.sortFunction(a, b) : (column.sortFunction(a, b) * -1))
     }
-    return sortBy.sorted == GridViewSort.Down ? input.sort() : input.sort().reverse();
+    return sorted == GridViewSort.Down ? input.sort() : input.sort().reverse();
   }
 
   setSort = (index: number, sortBy: GridViewSort) => {
-    const columnDefinitions = (this.state as S).columnDefinitions;
-    const def = clone(this.state.columnDefinitions['$'+index]);
-    def.sorted = sortBy;
-    const sortedItems = GridViewImpl.sortItems(this.state.sortedItems, def);
+    const currentSort = { index: index, sorted: sortBy };
     this.setState({
-      columnDefinitions: {...columnDefinitions, ['$'+index]: def},
-      sortedItems,
+      currentSort: currentSort,
+      sortedItems: this.sortItems(
+        this.state.sortedItems,
+        this.props.columnDefinitions[index],
+        currentSort.sorted
+      )
     } as S);
   }
 
@@ -239,7 +225,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
   renderHeaderItems = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
     const headerItems: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
-      const def = this.state.columnDefinitions['$'+index];
+      const def = this.props.columnDefinitions[index];
+      const sorted = index === this.state.currentSort.index
+                  ? this.state.currentSort.sorted : GridViewSort.None;
 
       if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) == false) return;
 
@@ -249,16 +237,19 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                         : css(ss.headerItem, custom.headerItem)}
              style={def.style}
              onClick={def.sortable ? () => {
-               switch(def.sorted) {
-                 case GridViewSort.None: this.setSort(index, GridViewSort.Up); return;
-                 case GridViewSort.Down: this.setSort(index, GridViewSort.Up); return;
-                 case GridViewSort.Up: this.setSort(index, GridViewSort.Down); return;
+               switch(sorted) {
+                 case GridViewSort.None: case GridViewSort.Down:
+                  this.setSort(index, GridViewSort.Up);
+                  return;
+                 case GridViewSort.Up:
+                  this.setSort(index, GridViewSort.Down);
+                  return;
                }
              }: null}>
           {def.title}&nbsp;
           {
-            def.sorted === GridViewSort.None ? null :
-            <i className={`fa fa-caret-${def.sorted == GridViewSort.Up ? 'up' : 'down'}`}></i>
+            sorted === GridViewSort.None ? null :
+            <i className={`fa fa-caret-${sorted == GridViewSort.Up ? 'up' : 'down'}`}></i>
           }
         </div>
       ));
@@ -270,7 +261,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
 
     const items: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
-      const def = this.state.columnDefinitions['$'+index];
+      const def = this.props.columnDefinitions[index];
 
       if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) == false) return;
 
