@@ -78,7 +78,7 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
                             refetch={this.props.refetch}
                             dispatch={this.props.dispatch} />;
       case 'list':
-        // todo
+        return <OrdersList refetch={this.props.refetch} />;
     }
 
     if (!this.props.order) {
@@ -104,8 +104,6 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
         return <OrderAdmin dispatch={this.props.dispatch}
                            order={this.props.order}
                            refetch={this.props.refetch} />
-      case 'list':
-        return <OrdersList refetch={this.props.refetch} />;
       default:
         return <div>NO CONTENT</div>;
     }

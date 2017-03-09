@@ -30,6 +30,7 @@ export const defaultOrdersListStyle : OrdersListStyle = {
 
 export interface OrdersListProps {
   refetch: () => void;
+  styles?: Partial<OrdersListStyle>;
 };
 
 interface OrdersListState {
@@ -58,9 +59,10 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
 
   render() {
     const ss = StyleSheet.create(defaultOrdersListStyle);
+    const custom = StyleSheet.create(this.props.styles || {});
     const skip = this.state.itemsPerPage * this.state.page;
     return (
-      <div className={css(ss.container)}>
+      <div className={css(ss.container, custom.container)}>
         <GroupTitle refetch={this.props.refetch}>
           Orders
         </GroupTitle>

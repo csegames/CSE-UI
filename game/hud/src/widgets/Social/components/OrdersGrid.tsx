@@ -34,6 +34,9 @@ export interface OrdersGridQuery {
     data: {
       id: string;
       name: string;
+      realm: string;
+      created: string;
+      creator: string;
     }[]
   }
 }
@@ -50,18 +53,6 @@ export interface OrdersGridProps extends InjectedGraphQLProps<OrdersGridQuery> {
   reverse: boolean;
   orderBy: (by: string, asc: boolean) => void;
 };
-
-function stricmp(a: string, b: string) {
-  a = a.toLowerCase();
-  b = b.toLowerCase();
-  return a < b ? -1 : b > a ? 1 : 0;
-}
-
-function datecmp(a: string, b: string) {
-  const da = new Date(a);
-  const db = new Date(b);
-  return da < db ? -1 : da > db ? 1 : 0;
-}
 
 interface OrdersListColumn extends ColumnDefinition {
   sortField?: string;
