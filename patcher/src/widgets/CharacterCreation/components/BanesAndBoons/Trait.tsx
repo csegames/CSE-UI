@@ -199,7 +199,9 @@ class Trait extends React.Component<TraitProps, {}> {
       onCancelTrait,
       onUpdateRankTrait
     } = this.props;
-    const addedRankTrait = addedTraits[trait.ranks && (trait.ranks[trait.rank - 1] || trait.ranks[trait.rank])];
+    
+    const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
+
     if (e.shiftKey) {
       if (addedRankTrait.ranks) {
         if (addedRankTrait.rank === 0) onCancelTrait(addedRankTrait);
@@ -230,7 +232,7 @@ class Trait extends React.Component<TraitProps, {}> {
     const shouldBeDisabledBecausePreReqs = preReqs && preReqs.filter((preReq: BanesAndBoonsInfo) =>
      addedTraits[preReq.id]).length !== preReqs.length;
 
-    const addedRankTrait = addedTraits[trait.ranks && (trait.ranks[trait.rank - 1] || trait.ranks[trait.rank])];
+    const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
     const exclusivityGroup = allExclusives[trait.id] ? allExclusives[trait.id].exclusivityGroup : [];
 
@@ -261,7 +263,7 @@ class Trait extends React.Component<TraitProps, {}> {
               <p className={css(ss.traitName, custom.traitName)} style={{ color: primaryColor }}>{trait.name}</p>
               <p className={css(ss.traitPoints, custom.traitPoints)}>Points: {trait.points}</p>
               <p className={css(ss.traitCategory, custom.traitCategory)}>{trait.category} {type}</p>
-              {(addedRankTrait || trait.rank === 0) &&
+              {trait.ranks &&
               <p className={css(ss.regularText, custom.regularText)}>
                 Rank: {trait.rank === 0 ? 0 : addedRankTrait.rank + 1} / {trait.ranks.length}
               </p>}
@@ -293,7 +295,7 @@ class Trait extends React.Component<TraitProps, {}> {
                {trait.ranks && <p className={css(ss.regularText, custom.regularText)}>Shift + Left Click to downgrade</p>}
             </div>
             )}>
-          {(addedRankTrait || trait.rank === 0) &&
+          {trait.ranks &&
           <p className={css(ss.rankText, custom.rankText)}>
             {trait.rank === 0 ? 0 : addedRankTrait.rank + 1} / {trait.ranks.length}
           </p>}
