@@ -10,6 +10,7 @@
  */
 
 import * as React from 'react';
+import { events } from 'camelot-unchained';
 
 enum QuickSelectDirection {
   DOWN,
@@ -47,7 +48,8 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
   }
 
   showList = (visible: boolean) => {
-    this.setState({showList: visible} as any);
+    if (visible) events.fire('play-sound', 'select-change');
+    this.setState({showList: visible});
   }
 
   onItemSelect = (item: any, itemIndex: number) => {

@@ -87,8 +87,8 @@ class Login extends React.Component<LoginProps, LoginState> {
   }
 
   login = () => {
+    events.fire('play-sound', 'server-select');
     this.setState({status: LoginStatus.WORKING} as any);
-    events.fire('play-sound', 'select');
     patcher.login({
       email: this.emailRef.value,
       password: this.passwordRef.value,

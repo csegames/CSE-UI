@@ -80,6 +80,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   }
 
   create = () => {
+    events.fire('play-sound', 'create-character');
     // validate name
     const modelName = (this.refs['name-input'] as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
@@ -120,7 +121,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         this.props.apiHost,
         this.props.shard,
         this.props.apiVersion));
-      events.fire('play-sound', 'select');
     }
   }
 
@@ -150,7 +150,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(selectPlayerClass(factionClasses[0]))
     this.props.dispatch(selectRace(factionRaces[0]))
     this.setState({ page: this.state.page + 1 });
-    events.fire('play-sound', 'select');
+    events.fire('play-sound', 'realm-select');
   }
 
   raceSelect = (selected: RaceInfo) => {

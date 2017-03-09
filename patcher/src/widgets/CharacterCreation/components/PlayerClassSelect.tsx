@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import {Archetype, Faction} from 'camelot-unchained';
+import { Archetype, Faction, events } from 'camelot-unchained';
 
-import {PlayerClassInfo} from '../services/session/playerClasses';
-import {FactionInfo} from '../services/session/factions';
+import { PlayerClassInfo } from '../services/session/playerClasses';
+import { FactionInfo } from '../services/session/factions';
 const Animate = require('react-animate.css');
 
 const classText: any = {
@@ -50,6 +50,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
   }
 
   selectClass = (info: PlayerClassInfo) => {
+    events.fire('play-sound', 'select');
     this.props.selectClass(info);
   }
 
