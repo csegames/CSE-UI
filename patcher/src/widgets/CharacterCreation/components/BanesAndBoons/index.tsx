@@ -67,8 +67,9 @@ export interface BanesAndBoonsProps {
   playerClassBanes: TraitMap;
   raceBanes: TraitMap;
   factionBanes: TraitMap;
-  addedBanes: BanesAndBoonsInfo[];
-  addedBoons: BanesAndBoonsInfo[];
+  traits: TraitMap;
+  addedBanes: TraitMap;
+  addedBoons: TraitMap;
   allPrerequisites: TraitMap;
   allExclusives: TraitMap;
   onBoonClick: Function;
@@ -216,6 +217,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     justifyContent: 'space-between',
     padding: '10px 10px 0 10px',
     backgroundColor: colors.transparentBg,
+    minHeight: '47px',
     maxHeight: '10vh',
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -448,7 +450,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       onUpdateRankBane,
       styles,
       boonStyles,
-      baneStyles
+      baneStyles,
+      traits
     } = this.props;
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
@@ -461,7 +464,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             type === 'boon' ?
             <Boon
               key={index}
-              trait={listOfTraits[key]}
+              trait={traits[key]}
               onBoonClick={onBoonClick}
               onCancelBoon={onCancelBoonClick}
               allPrerequisites={allPrerequisites}
@@ -472,7 +475,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             /> :
               <Bane
                 key={index}
-                trait={listOfTraits[key]}
+                trait={traits[key]}
                 onBaneClick={onBaneClick}
                 onCancelBane={onCancelBaneClick}
                 allPrerequisites={allPrerequisites}
@@ -543,34 +546,18 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             </div>
             <div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
               <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
-                {addedBoons.map((boon: BanesAndBoonsInfo, index: number) => {
-                  if (boon.id === '') {
-                    return (
-                      <div className={css(ss.emptyAddBoon, custom.emptyAddBoon)} key={index} />
-                    )
-                  } else {
-                    return (
-                      <div className={css(ss.addBoon, custom.addBoon)} key={index}>
-                        <img className={css(ss.addTraitImage, custom.addTraitImage)} src={boon.icon} />
-                      </div>
-                    )
-                  }
-                })}
+                {Object.keys(addedBoons).map((key: string, index: number) => (
+                  <div className={css(ss.addBoon, custom.addBoon)} key={index}>
+                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={addedBoons[key].icon} />
+                  </div>
+                ))}
               </div>
               <div className={css(ss.addedBaneContainer, custom.addedBaneContainer)}>
-                {addedBanes.map((bane: BanesAndBoonsInfo, index: number) => {
-                  if (bane.id === '') {
-                    return (
-                      <div className={css(ss.emptyAddBane, custom.emptyAddBane)} key={index} />
-                    )
-                  } else {
-                    return (
-                      <div className={css(ss.addBane, custom.addBane)} key={index}>
-                        <img className={css(ss.addTraitImage, custom.addTraitImage)} src={bane.icon} />
-                      </div>
-                    )
-                  }
-                })}
+                {Object.keys(addedBanes).map((key: string, index: number) => (
+                  <div className={css(ss.addBane, custom.addBane)} key={index}>
+                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={addedBanes[key].icon} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -582,42 +569,30 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             </div>
             <div className={css(ss.innerSummaryWrapper, custom.innerSummaryWrapper)}>
               <div className={css(ss.addedBoonSummaryWrapper, custom.addedBoonSummaryWrapper)}>
-                {addedBoons.slice(0).reverse().map((boon: BanesAndBoonsInfo, index: number) => {
-                  if (boon.id === '') {
-                    return null;
-                  } else {
-                    return (
-                      <TraitSummary
-                        key={index}
-                        trait={boon}
-                        onCancelClick={onCancelBoonClick}
-                        onUpdateRankBoon={onUpdateRankBoon}
-                        onUpdateRankBane={onUpdateRankBane}
-                        type='Boon'
-                        styles={traitSummaryStyles}
-                      />
-                    )
-                  }
-                })}
+                {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
+                  <TraitSummary
+                    key={index}
+                    trait={addedBoons[key]}
+                    onCancelClick={onCancelBoonClick}
+                    onUpdateRankBoon={onUpdateRankBoon}
+                    onUpdateRankBane={onUpdateRankBane}
+                    type='Boon'
+                    styles={traitSummaryStyles}
+                  />
+                ))}
               </div>
               <div className={css(ss.addedBaneSummaryWrapper, custom.addedBaneSummaryWrapper)}>
-                {addedBanes.slice(0).reverse().map((bane: BanesAndBoonsInfo, index: number) => {
-                  if (bane.id === '') {
-                    return null;
-                  } else {
-                    return (
-                      <TraitSummary
-                        key={index}
-                        trait={bane}
-                        onCancelClick={onCancelBaneClick}
-                        onUpdateRankBoon={onUpdateRankBoon}
-                        onUpdateRankBane={onUpdateRankBane}
-                        type='Bane'
-                        styles={traitSummaryStyles}
-                      />
-                    )
-                  }
-                })}
+                {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
+                  <TraitSummary
+                    key={index}
+                    trait={addedBanes[key]}
+                    onCancelClick={onCancelBaneClick}
+                    onUpdateRankBoon={onUpdateRankBoon}
+                    onUpdateRankBane={onUpdateRankBane}
+                    type='Bane'
+                    styles={traitSummaryStyles}
+                  />
+                ))}
               </div>
             </div>
             <div className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}

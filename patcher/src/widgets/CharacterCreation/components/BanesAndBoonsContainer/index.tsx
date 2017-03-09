@@ -27,14 +27,6 @@ import {
   onUpdateRankBanes,
   onCancelBaneClick,
   onCancelBoonClick,
-  onUpdatePlayerClassBanes,
-  onUpdatePlayerClassBoons,
-  onUpdateGeneralBanes,
-  onUpdateGeneralBoons,
-  onUpdateRaceBanes,
-  onUpdateRaceBoons,
-  onUpdateFactionBanes,
-  onUpdateFactionBoons,
   fetchTraits
 } from '../../services/session/banesAndBoons';
 
@@ -67,61 +59,22 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         faction: Faction[faction.selected.id]
       }));
     }
-  }
-  private onUpdateTrait = (trait: BanesAndBoonsInfo, traitType: 'bane' | 'boon', updateType: 'select' | 'cancel') => {
-    // This function should be useful when adding in ranks and dependencies
-    const { dispatch } = this.props;
-    if (traitType === 'boon') {
-      switch (trait.category) {
-        case 'Class':
-          dispatch(onUpdatePlayerClassBoons({ event: updateType, boon: trait }));
-          return;
-        case 'Race':
-          dispatch(onUpdateRaceBoons({ event: updateType, boon: trait}));
-          return;
-        case 'Faction':
-          dispatch(onUpdateFactionBoons({ event: updateType, boon: trait }));
-          return;
-        default:
-          dispatch(onUpdateGeneralBoons({ event: updateType, boon: trait }));
-          return;
-      }
-    } else {
-      switch (trait.category) {
-        case 'Class':
-          dispatch(onUpdatePlayerClassBanes({ event: updateType, bane: trait }));
-          return;
-        case 'Race':
-          dispatch(onUpdateRaceBanes({ event: updateType, bane: trait }));
-          return;
-        case 'Faction':
-          dispatch(onUpdateFactionBanes({ event: updateType, bane: trait }));
-          return;
-        default:
-          dispatch(onUpdateGeneralBanes({ event: updateType, bane: trait }));
-          return;
-      }
-    }
   };
   private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
     dispatch(onSelectBoon({ boon: boon }));
-    this.onUpdateTrait(boon, 'boon', 'select');
   };
   private onSelectBaneClick = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
     dispatch(onSelectBane({ bane: bane }));
-    this.onUpdateTrait(bane, 'bane', 'select');
   };
   private onCancelBoon = (boon: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
     dispatch(onCancelBoonClick({ boon: boon }));
-    this.onUpdateTrait(boon, 'boon', 'cancel');
   };
   private onCancelBane = (bane: BanesAndBoonsInfo) => {
     const { dispatch } = this.props;
     dispatch(onCancelBaneClick({ bane: bane }));
-    this.onUpdateTrait(bane, 'bane', 'cancel');
   };
   private onResetClick = () => {
     const { dispatch, playerClass, race, faction } = this.props;
@@ -133,6 +86,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
   };
   render() {
     const {
+      traits,
       addedBanes,
       addedBoons,
       generalBoons,
@@ -159,6 +113,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         raceBanes={raceBanes}
         factionBanes={factionBanes}
         totalPoints={totalPoints}
+        traits={traits}
         addedBanes={addedBanes}
         addedBoons={addedBoons}
         allPrerequisites={allPrerequisites}

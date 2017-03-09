@@ -42,7 +42,7 @@ export interface TraitProps {
   onUpdateRankTrait: Function;
   allPrerequisites: TraitMap;
   allExclusives: TraitMap;
-  addedTraits: BanesAndBoonsInfo[];
+  addedTraits: TraitMap;
   primaryColor: string;
   styles: Partial<TraitStyle>;
 }
@@ -173,8 +173,8 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
 
-    const shouldBeDisabled = preReqs && addedTraits.filter((addedTrait: BanesAndBoonsInfo) =>
-      preReqs.find((preReq: BanesAndBoonsInfo) => addedTrait.id === preReq.id)).length !== preReqs.length;
+    const shouldBeDisabled = preReqs && preReqs.filter((preReq: BanesAndBoonsInfo) =>
+     addedTraits[preReq.id]).length !== preReqs.length;
 
     if (shouldBeDisabled && trait.selected) {
       onCancelTrait(trait)
@@ -199,17 +199,17 @@ class Trait extends React.Component<TraitProps, {}> {
       onCancelTrait,
       onUpdateRankTrait
     } = this.props;
-    const addedRankTrait =
-      addedTraits.find((boon: BanesAndBoonsInfo) => trait.ranks &&
-      (trait.ranks[trait.rank - 1] === boon.id || trait.ranks[trait.rank] === boon.id));
-
+    const addedRankTrait = addedTraits[trait.ranks && (trait.ranks[trait.rank - 1] || trait.ranks[trait.rank])];
     if (e.shiftKey) {
       if (addedRankTrait.ranks) {
         if (addedRankTrait.rank === 0) onCancelTrait(addedRankTrait);
         onUpdateRankTrait('cancel', addedRankTrait);
       }
     } else {
-      if (trait.rank === 0 && addedTraits.indexOf(trait) === -1) onTraitClick(trait);
+      if (trait.rank === 0 && !addedTraits[trait.id]) {
+        onTraitClick(trait);
+        console.log('testttt');
+      }
       onUpdateRankTrait('select', trait);
     }
   };
@@ -227,17 +227,16 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
 
-    const shouldBeDisabledBecausePreReqs = preReqs && addedTraits.filter((addedTrait: BanesAndBoonsInfo) =>
-      preReqs.find((preReq: BanesAndBoonsInfo) => addedTrait.id === preReq.id)).length !== preReqs.length;
+    const shouldBeDisabledBecausePreReqs = preReqs && preReqs.filter((preReq: BanesAndBoonsInfo) =>
+     addedTraits[preReq.id]).length !== preReqs.length;
 
-    const addedRankTrait = addedTraits.find((boon: BanesAndBoonsInfo) => trait.ranks && (trait.ranks[trait.rank - 1] === boon.id ||
-      trait.ranks[trait.rank] === boon.id));
+    const addedRankTrait = addedTraits[trait.ranks && (trait.ranks[trait.rank - 1] || trait.ranks[trait.rank])];
 
     const exclusivityGroup = allExclusives[trait.id] ? allExclusives[trait.id].exclusivityGroup : [];
 
     const shouldBeDisabledBecauseExclusives = exclusivityGroup && exclusivityGroup.length > 0 &&
-      addedTraits.filter((addedTrait: BanesAndBoonsInfo) => exclusivityGroup.find((exclusive: BanesAndBoonsInfo) =>
-      addedTrait.id === exclusive.id) && trait.id !== addedTrait.id).length >= allExclusives[trait.id].maxAllowed;
+      exclusivityGroup.filter((exclusive: BanesAndBoonsInfo) => addedTraits[exclusive.id] &&
+      !addedTraits[trait.id]).length >= allExclusives[trait.id].maxAllowed;
 
     const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives;
 
@@ -272,7 +271,7 @@ class Trait extends React.Component<TraitProps, {}> {
                   Dependencies: {preReqs.map((preReq: BanesAndBoonsInfo, i: number) =>
                    <p key={i}
                     className={css(ss.dependencyText, custom.dependencyText)}
-                    style={{ color: addedTraits.find((addedBoon: BanesAndBoonsInfo) => addedBoon.id === preReq.id) ? colors.success : 'red'}}>
+                    style={{ color: addedTraits[preReq.id] ? colors.success : 'red'}}>
                     {preReq.name}{preReq.id !== preReqs[preReqs.length - 1].id && ', '}
                    </p>)}
                </div>}
@@ -282,7 +281,7 @@ class Trait extends React.Component<TraitProps, {}> {
                   Exclusive group: {exclusivityGroup.map((exclusive: BanesAndBoonsInfo, i: number) =>
                     <p key={i}
                     className={css(ss.dependencyText, custom.dependencyText)}
-                    style={{ color: addedTraits.find((addedBoon: BanesAndBoonsInfo) => addedBoon.id === exclusive.id) ? colors.success : 'red'}}>
+                    style={{ color: addedTraits[exclusive.id] ? colors.success : 'red'}}>
                       {exclusive.name}{exclusive.id !== exclusivityGroup[exclusivityGroup.length - 1].id && ', '}
                     </p>
                   )}

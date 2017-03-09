@@ -21,7 +21,7 @@ const Bane = (props: {
   onUpdateRankBane: Function;
   allPrerequisites: TraitMap;
   allExclusives: TraitMap;
-  addedBanes: BanesAndBoonsInfo[];
+  addedBanes: TraitMap;
   styles: Partial<TraitStyle>;
 }) => {
   const {

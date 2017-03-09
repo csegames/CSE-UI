@@ -21,7 +21,7 @@ const Boon = (props: {
   onUpdateRankBoon: Function;
   allPrerequisites: TraitMap;
   allExclusives: TraitMap;
-  addedBoons: BanesAndBoonsInfo[];
+  addedBoons: TraitMap;
   styles: Partial<TraitStyle>;
 }) => {
   const {
