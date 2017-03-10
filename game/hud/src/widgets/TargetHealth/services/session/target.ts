@@ -158,10 +158,11 @@ export function initializePlayerSession() {
   return (dispatch: (action: any) => any) => {
     dispatch(init());
 
+    // Update avatar
     client.OnEnemyTargetGenderChanged((gender: Gender) =>
-      client.OnEnemyTargetRaceChanged((race: Race) =>
+      client.OnEnemyTargetRaceChanged((race: Race) => {
         dispatch(onAvatarChanged(getAvatar(gender, race)))
-      )
+      })
     )
     client.OnEnemyTargetRaceChanged((race: Race) =>
       client.OnEnemyTargetGenderChanged((gender: Gender) => {
@@ -169,22 +170,19 @@ export function initializePlayerSession() {
       })
     )
 
-    client.OnEnemyTargetGenderChanged((gender: Gender) => console.log(gender));
-    client.OnCharacterPositionChanged((x: number, y: number) => console.log(`x: ${x}, y: ${y}`));
-
-    // Making sure to dispatch onDistanceChanged when either character or target moves
-    client.OnEnemyTargetPositionChanged((x1: number, y1: number) =>
-      client.OnCharacterPositionChanged((x2: number, y2) => {
-         const a = x1 - x2;
-         const b = y1 - y2;
-         dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
-      })
-    )
+    // Update distance
     client.OnCharacterPositionChanged((x1: number, y1: number) =>
       client.OnEnemyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
         dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
+      })
+    )
+    client.OnEnemyTargetPositionChanged((x1: number, y1: number) =>
+      client.OnCharacterPositionChanged((x2: number, y2) => {
+         const a = x1 - x2;
+         const b = y1 - y2;
+         dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
       })
     )
 
@@ -243,6 +241,8 @@ export default function reducer(state: TargetState = initialState(), action: Tar
 
     case DISTANCE_CHANGED:
     {
+      console.log(merge(state, distanceChanged(state.playerStatus, action)));
+      console.log(action);
       return merge(state, distanceChanged(state.playerStatus, action));
     }
 

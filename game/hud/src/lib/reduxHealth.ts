@@ -131,7 +131,7 @@ export function avatarChanged(status: PlayerStatus, action: HealthAction) {
 export function distanceChanged(status: PlayerStatus, action: HealthAction) {
   let playerStatus = clone(status);
   playerStatus.distance = action.distance;
-  return {playerState: playerStatus};
+  return {playerStatus: playerStatus};
 }
 
 let key = 3;

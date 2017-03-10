@@ -157,6 +157,7 @@ export function initializePlayerSession() {
   return (dispatch: (action: any) => any) => {
     dispatch(init());
 
+    // Update avatar
     client.OnFriendlyTargetGenderChanged((gender: Gender) =>
       client.OnFriendlyTargetRaceChanged((race: Race) =>
         dispatch(onAvatarChanged(getAvatar(gender, race)))
@@ -168,21 +169,19 @@ export function initializePlayerSession() {
       })
     )
 
-    client.OnFriendlyTargetGenderChanged((gender: Gender) => console.log(gender));
-    client.OnCharacterPositionChanged((x: number, y: number) => console.log(`x: ${x}, y: ${y}`));
-
-    client.OnFriendlyTargetPositionChanged((x1: number, y1: number) =>
-      client.OnCharacterPositionChanged((x2: number, y2: number) => {
-        const a = x1 - x2;
-        const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
-      })
-    )
+    // Update distance
     client.OnCharacterPositionChanged((x1: number, y1: number) =>
       client.OnFriendlyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
         dispatch(onDistanceChanged(Math.sqrt( a*a + b*b)));
+      })
+    )
+    client.OnFriendlyTargetPositionChanged((x1: number, y1: number) =>
+      client.OnCharacterPositionChanged((x2: number, y2: number) => {
+        const a = x1 - x2;
+        const b = y1 - y2;
+        dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
       })
     )
 
