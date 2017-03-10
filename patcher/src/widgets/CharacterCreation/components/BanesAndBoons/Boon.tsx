@@ -10,22 +10,24 @@
  */
 
 import * as React from 'react';
-import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Trait, { TraitStyle } from './Trait';
 import { styleConstants } from '../../styleConstants';
 
 const Boon = (props: {
   trait: BanesAndBoonsInfo;
+  traits: TraitMap;
   onBoonClick: Function;
   onCancelBoon: Function;
   onUpdateRankBoon: Function;
   allPrerequisites: TraitMap;
-  allExclusives: TraitMap;
+  allExclusives: TraitIdMap;
   addedBoons: TraitMap;
   styles: Partial<TraitStyle>;
 }) => {
   const {
     trait,
+    traits,
     onBoonClick,
     onCancelBoon,
     onUpdateRankBoon,
@@ -43,6 +45,7 @@ const Boon = (props: {
     <Trait
       type='Boon'
       trait={trait}
+      traits={traits}
       onTraitClick={onBoonClick}
       onCancelTrait={onCancelBoon}
       onUpdateRankTrait={onUpdateRankBoon}

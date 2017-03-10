@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
 import { TraitStyle } from './Trait';
@@ -59,19 +59,19 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
 }
 
 export interface BanesAndBoonsProps {
-  generalBoons: TraitMap;
-  playerClassBoons: TraitMap;
-  raceBoons: TraitMap;
-  factionBoons: TraitMap;
-  generalBanes: TraitMap;
-  playerClassBanes: TraitMap;
-  raceBanes: TraitMap;
-  factionBanes: TraitMap;
+  generalBoons: TraitIdMap;
+  playerClassBoons: TraitIdMap;
+  raceBoons: TraitIdMap;
+  factionBoons: TraitIdMap;
+  generalBanes: TraitIdMap;
+  playerClassBanes: TraitIdMap;
+  raceBanes: TraitIdMap;
+  factionBanes: TraitIdMap;
   traits: TraitMap;
   addedBanes: TraitMap;
   addedBoons: TraitMap;
   allPrerequisites: TraitMap;
-  allExclusives: TraitMap;
+  allExclusives: TraitIdMap;
   onBoonClick: Function;
   onBaneClick: Function;
   onCancelBoonClick: Function;
@@ -464,6 +464,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             type === 'boon' ?
             <Boon
               key={index}
+              traits={traits}
               trait={traits[key]}
               onBoonClick={onBoonClick}
               onCancelBoon={onCancelBoonClick}
@@ -475,6 +476,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             /> :
               <Bane
                 key={index}
+                traits={traits}
                 trait={traits[key]}
                 onBaneClick={onBaneClick}
                 onCancelBane={onCancelBaneClick}

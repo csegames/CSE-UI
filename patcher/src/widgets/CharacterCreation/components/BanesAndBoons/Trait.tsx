@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { BanesAndBoonsInfo, TraitMap } from '../../services/session/banesAndBoons';
+import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
@@ -37,11 +37,12 @@ export interface TraitStyle extends StyleDeclaration {
 export interface TraitProps {
   type: 'Boon' | 'Bane';
   trait: BanesAndBoonsInfo;
+  traits: TraitMap;
   onTraitClick: Function;
   onCancelTrait: Function;
   onUpdateRankTrait: Function;
   allPrerequisites: TraitMap;
-  allExclusives: TraitMap;
+  allExclusives: TraitIdMap;
   addedTraits: TraitMap;
   primaryColor: string;
   styles: Partial<TraitStyle>;
@@ -220,6 +221,7 @@ class Trait extends React.Component<TraitProps, {}> {
     const {
       type,
       trait,
+      traits,
       allPrerequisites,
       allExclusives,
       addedTraits,
@@ -234,11 +236,11 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
-    const exclusivityGroup = allExclusives[trait.id] ? allExclusives[trait.id].exclusivityGroup : [];
+    const exclusivityGroup = allExclusives[trait.id] ? trait.exclusivityGroup : [];
 
     const shouldBeDisabledBecauseExclusives = exclusivityGroup && exclusivityGroup.length > 0 &&
-      exclusivityGroup.filter((exclusive: BanesAndBoonsInfo) => addedTraits[exclusive.id] &&
-      !addedTraits[trait.id]).length >= allExclusives[trait.id].maxAllowed;
+      exclusivityGroup.filter((exclusive: string) => addedTraits[exclusive] &&
+      !addedTraits[trait.id]).length >= trait.maxAllowed;
 
     const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives;
 
@@ -280,16 +282,16 @@ class Trait extends React.Component<TraitProps, {}> {
                {exclusivityGroup.length > 0 &&
                <div>
                   <div className={css(ss.dependenciesContainer, custom.dependenciesContainer)}>
-                  Exclusive group: {exclusivityGroup.map((exclusive: BanesAndBoonsInfo, i: number) =>
+                  Exclusive group: {exclusivityGroup.map((exclusive: string, i: number) =>
                     <p key={i}
                     className={css(ss.dependencyText, custom.dependencyText)}
-                    style={{ color: addedTraits[exclusive.id] ? colors.success : 'red'}}>
-                      {exclusive.name}{exclusive.id !== exclusivityGroup[exclusivityGroup.length - 1].id && ', '}
+                    style={{ color: addedTraits[exclusive] ? colors.success : 'red'}}>
+                      {traits[exclusive].name}{exclusive !== exclusivityGroup[exclusivityGroup.length - 1] && ', '}
                     </p>
                   )}
                   </div>
-                  <p className={css(ss.regularText, custom.regularText)}>Minimum exclusives required: {allExclusives[trait.id].minRequired}</p>
-                  <p className={css(ss.regularText, custom.regularText)}>Maximum exclusives allowed: {allExclusives[trait.id].maxAllowed}</p>
+                  <p className={css(ss.regularText, custom.regularText)}>Minimum exclusives required: {trait.minRequired}</p>
+                  <p className={css(ss.regularText, custom.regularText)}>Maximum exclusives allowed: {trait.maxAllowed}</p>
                </div>
                }
                {trait.ranks && <p className={css(ss.regularText, custom.regularText)}>Shift + Left Click to downgrade</p>}

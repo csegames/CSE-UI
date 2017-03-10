@@ -27,7 +27,7 @@ export interface BanesAndBoonsInfo {
   prerequisites: Array<string>;
   rank: number;
   ranks: Array<string>;
-  exclusivityGroup: Array<BanesAndBoonsInfo>;
+  exclusivityGroup: Array<string>;
   minRequired: number;
   maxAllowed: number;
   finished: boolean;
@@ -37,23 +37,27 @@ export interface TraitMap {
   [id: string]: BanesAndBoonsInfo
 }
 
+export interface TraitIdMap {
+  [id: string]: string
+}
+
 export interface BanesAndBoonsState {
   initial: boolean;
   totalPoints: number;
   traits: TraitMap;
   addedBanes: TraitMap;
   addedBoons: TraitMap;
-  generalBoons: TraitMap;
-  playerClassBoons: TraitMap;
-  raceBoons: TraitMap;
-  factionBoons: TraitMap;
-  generalBanes: TraitMap;
-  playerClassBanes: TraitMap;
-  raceBanes: TraitMap;
-  factionBanes: TraitMap;
+  generalBoons: TraitIdMap;
+  playerClassBoons: TraitIdMap;
+  raceBoons: TraitIdMap;
+  factionBoons: TraitIdMap;
+  generalBanes: TraitIdMap;
+  playerClassBanes: TraitIdMap;
+  raceBanes: TraitIdMap;
+  factionBanes: TraitIdMap;
   allPrerequisites: TraitMap;
   allRanks: TraitMap;
-  allExclusives: TraitMap;
+  allExclusives: TraitIdMap;
 }
 
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
@@ -95,8 +99,6 @@ const emptyBaneOrBoon = {
   minRequired: -1,
   maxAllowed: -1
 };
-
-const defaultTraitMap: TraitMap = {};
 
 export function getInitialState() {
   const initialState: BanesAndBoonsState = {
@@ -200,82 +202,75 @@ export const onUpdateRankBoons = module.createAction({
     const fBoons = state.factionBoons;
     const addedBoonsClone = state.addedBoons;
     const traitsClone = state.traits;
-    const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? Object.assign({},
-      state.traits[action.boon.ranks[action.boon.rank + 1]],
-      {
-        rank: action.boon.rank + 1,
-        ranks: action.boon.ranks,
-        category: action.boon.category,
-        selected: true
-      }) : Object.assign({}, action.boon, { selected: true, finished: true });
-    const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? Object.assign({},
-      state.traits[action.boon.ranks[action.boon.rank - 1]],
-      {
-        rank: action.boon.rank - 1,
-        ranks: action.boon.ranks,
-        category: action.boon.category,
-        selected: action.boon.rank !== 1
-      }) : Object.assign({}, action.boon, { selected: false, finished: true });
+    const nextRankBoon = action.boon.ranks[action.boon.rank + 1];
+    const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
+     action.boon.ranks[action.boon.rank];
     if (action.event === 'select') {
+      if (addedBoonsClone[previousRankBoon] && addedBoonsClone[previousRankBoon].rank !== action.boon.ranks.length - 1)
+        totalPointRankBoons = totalPointRankBoons + (action.boon.points - state.traits[previousRankBoon].points);
       if (action.boon.rank !== 0) {
-        addedBoonsClone[previousRankBoon.id] = action.boon;
-        addedBoonsClone[action.boon.id] = addedBoonsClone[previousRankBoon.id]
-        delete addedBoonsClone[previousRankBoon.id];
+        addedBoonsClone[previousRankBoon] = action.boon;
+        addedBoonsClone[action.boon.id] = addedBoonsClone[previousRankBoon]
+        delete addedBoonsClone[previousRankBoon];
       }
-      if (!action.boon.finished)
-        totalPointRankBoons = totalPointRankBoons + (action.boon.points - previousRankBoon.points);
       switch (action.boon.category) {
         case 'General':
-          gBoons[action.boon.id] = nextRankBoon.id;
+          gBoons[action.boon.id] = nextRankBoon;
           if (action.boon.ranks.length - 1 !== action.boon.rank) {
             gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = gBoons[action.boon.id];
             delete gBoons[action.boon.id];
           }
           break;
         case 'Class':
-          cBoons[action.boon.id] = nextRankBoon.id;
-          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
-          delete cBoons[action.boon.id];
+          cBoons[action.boon.id] = nextRankBoon;
+          if (action.boon.ranks.length - 1 !== action.boon.rank) {
+            cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
+            delete cBoons[action.boon.id];
+          }
           break;
         case 'Race':
-          rBoons[action.boon.id] = nextRankBoon.id;
-          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
-          delete cBoons[action.boon.id];
+          rBoons[action.boon.id] = nextRankBoon;
+          if (action.boon.ranks.length - 1 !== action.boon.rank) {
+            cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
+            delete cBoons[action.boon.id];
+          }
           break;
         case 'Faction':
-          fBoons[action.boon.id] = nextRankBoon.id;
-          fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = fBoons[action.boon.id];
-          delete fBoons[action.boon.id];
+          fBoons[action.boon.id] = nextRankBoon;
+          if (action.boon.ranks.length - 1 !== action.boon.rank) {
+            fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = fBoons[action.boon.id];
+            delete fBoons[action.boon.id];
+          }
           break;
       }
     }
     if (action.event === 'cancel') {
       if (action.boon.rank !== 0) {
-        addedBoonsClone[action.boon.id] = previousRankBoon;
-        addedBoonsClone[previousRankBoon.id] = addedBoonsClone[action.boon.id];
+        addedBoonsClone[action.boon.id] = state.traits[previousRankBoon];
+        addedBoonsClone[previousRankBoon] = addedBoonsClone[action.boon.id];
         delete addedBoonsClone[action.boon.id];
       }
-      if (!action.boon.finished)
-        totalPointRankBoons = totalPointRankBoons - (action.boon.points - previousRankBoon.points);
+      if (action.boon.rank !== 0)
+        totalPointRankBoons = totalPointRankBoons - (action.boon.points - state.traits[previousRankBoon].points);
       switch (action.boon.category) {
         case 'General':
-          gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]] = action.boon.id;
-          gBoons[action.boon.id] = gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]].id;
+          gBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          gBoons[action.boon.id] = gBoons[action.boon.ranks[action.boon.rank + 1]];
           delete gBoons[action.boon.ranks[action.boon.rank + 1]];
           break;
         case 'Class':
-          cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]] = action.boon.id;
-          cBoons[action.boon.id] = cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]].id;
+          cBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          cBoons[action.boon.id] = cBoons[action.boon.ranks[action.boon.rank + 1]];
           delete cBoons[action.boon.ranks[action.boon.rank + 1]];
           break;
         case 'Race':
-          rBoons[action.boon.ranks[action.boon.rank + 1] || action.boon.id] = action.boon.id;
-          rBoons[action.boon.id] = rBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]].id;
+          rBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          rBoons[action.boon.id] = rBoons[action.boon.ranks[action.boon.rank + 1]];
           delete rBoons[action.boon.ranks[action.boon.rank + 1]];
           break;
         case 'Faction':
-          fBoons[action.boon.ranks[action.boon.rank + 1] || action.boon.id] = action.boon.id;
-          fBoons[action.boon.id] = fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.id]].id;
+          fBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          fBoons[action.boon.id] = fBoons[action.boon.ranks[action.boon.rank + 1]];
           delete fBoons[action.boon.ranks[action.boon.rank + 1]];
           break;
       }
@@ -295,86 +290,82 @@ export const onUpdateRankBanes = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
   action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
   reducer: (state, action) => {
-    let gBanes = state.generalBanes;
-    let cBanes = state.playerClassBanes;
-    let rBanes = state.raceBanes;
-    let fBanes = state.factionBanes;
-    let addedBanesClone = state.addedBanes;
     let totalPointRankBanes = state.totalPoints;
-    const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? Object.assign({},
-        state.allRanks[action.bane.ranks[action.bane.rank + 1]],
-        {
-          rank: action.bane.rank + 1,
-          ranks: action.bane.ranks,
-          category: action.bane.category,
-          selected: true
-        }) : Object.assign({}, action.bane, { selected: true, finished: true });
-    const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? Object.assign({},
-        state.allRanks[action.bane.ranks[action.bane.rank - 1]],
-        {
-          rank: action.bane.rank - 1,
-          ranks: action.bane.ranks,
-          category: action.bane.category,
-          selected: action.bane.rank !== 1
-        }) : Object.assign({}, action.bane, { selected: false, finished: true });
+    const gBanes = state.generalBanes;
+    const cBanes = state.playerClassBanes;
+    const rBanes = state.raceBanes;
+    const fBanes = state.factionBanes;
+    const addedBanesClone = state.addedBanes;
+    const traitsClone = state.traits;
+    const nextRankBane = action.bane.ranks[action.bane.rank + 1];
+    const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
+     action.bane.ranks[action.bane.rank];
     if (action.event === 'select') {
-      if (addedBanesClone[previousRankBane.id]) {
-        addedBanesClone[previousRankBane.id] = action.bane;
-        addedBanesClone[action.bane.id] = addedBanesClone[previousRankBane.id];
-        delete addedBanesClone[previousRankBane.id];
+      if (addedBanesClone[previousRankBane] && addedBanesClone[previousRankBane].rank !== action.bane.ranks.length - 1)
+        totalPointRankBanes = totalPointRankBanes + (action.bane.points - state.traits[previousRankBane].points);
+      if (action.bane.rank !== 0) {
+        addedBanesClone[previousRankBane] = action.bane;
+        addedBanesClone[action.bane.id] = addedBanesClone[previousRankBane]
+        delete addedBanesClone[previousRankBane];
       }
-      if (!action.bane.finished)
-        totalPointRankBanes = totalPointRankBanes + (action.bane.points - previousRankBane.points);
       switch (action.bane.category) {
         case 'General':
           gBanes[action.bane.id] = nextRankBane;
-          gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = gBanes[action.bane.id];
-          delete gBanes[action.bane.id];
+          if (action.bane.ranks.length - 1 !== action.bane.rank) {
+            gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = gBanes[action.bane.id];
+            delete gBanes[action.bane.id];
+          }
           break;
         case 'Class':
           cBanes[action.bane.id] = nextRankBane;
-          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
-          delete cBanes[action.bane.id];
+          if (action.bane.ranks.length - 1 !== action.bane.rank) {
+            cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
+            delete cBanes[action.bane.id];
+          }
           break;
         case 'Race':
           rBanes[action.bane.id] = nextRankBane;
-          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
-          delete cBanes[action.bane.id];
+          if (action.bane.ranks.length - 1 !== action.bane.rank) {
+            cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
+            delete cBanes[action.bane.id];
+          }
           break;
         case 'Faction':
           fBanes[action.bane.id] = nextRankBane;
-          fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = fBanes[action.bane.id];
-          delete fBanes[action.bane.id];
+          if (action.bane.ranks.length - 1 !== action.bane.rank) {
+            fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = fBanes[action.bane.id];
+            delete fBanes[action.bane.id];
+          }
           break;
       }
     }
     if (action.event === 'cancel') {
-      if (addedBanesClone[action.bane.id]) {
-        addedBanesClone[action.bane.id] = previousRankBane;
-        addedBanesClone[previousRankBane.id] = addedBanesClone[action.bane.id];
+      if (action.bane.rank !== 0) {
+        addedBanesClone[action.bane.id] = state.traits[previousRankBane];
+        addedBanesClone[previousRankBane] = addedBanesClone[action.bane.id];
         delete addedBanesClone[action.bane.id];
       }
-      if (!action.bane.finished)
-        totalPointRankBanes = totalPointRankBanes - (action.bane.points - previousRankBane.points);
+      if (action.bane.rank !== 0)
+        totalPointRankBanes = totalPointRankBanes - (action.bane.points - state.traits[previousRankBane].points);
       switch (action.bane.category) {
         case 'General':
-          gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]] = action.bane;
-          gBanes[action.bane.id] = gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          gBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          gBanes[action.bane.id] = gBanes[action.bane.ranks[action.bane.rank + 1]];
           delete gBanes[action.bane.ranks[action.bane.rank + 1]];
           break;
         case 'Class':
-          cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]] = action.bane;
-          cBanes[action.bane.id] = cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          cBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          cBanes[action.bane.id] = cBanes[action.bane.ranks[action.bane.rank + 1]];
           delete cBanes[action.bane.ranks[action.bane.rank + 1]];
           break;
         case 'Race':
-          rBanes[action.bane.ranks[action.bane.rank + 1] || action.bane.id] = action.bane;
-          rBanes[action.bane.id] = rBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          rBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          rBanes[action.bane.id] = rBanes[action.bane.ranks[action.bane.rank + 1]];
           delete rBanes[action.bane.ranks[action.bane.rank + 1]];
           break;
         case 'Faction':
-          fBanes[action.bane.ranks[action.bane.rank + 1] || action.bane.id] = action.bane;
-          fBanes[action.bane.id] = fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.id]];
+          fBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          fBanes[action.bane.id] = fBanes[action.bane.ranks[action.bane.rank + 1]];
           delete fBanes[action.bane.ranks[action.bane.rank + 1]];
           break;
       }
@@ -434,16 +425,18 @@ export const onInitializeTraits = module.createAction({
       minRequired: number,
       maxAllowed: number
     }
-    const allExclusiveTraits: { [id: string]: BanesAndBoonsInfo } = {};
-     exclusives.map((exclusiveArray: ExclusiveInfo, index: number) =>
-      exclusiveArray.ids.map((exclusive: string) =>
-      Object.assign({}, allTraits.find((trait: BanesAndBoonsInfo) => trait.id === exclusive),
-      {
-        exclusivityGroup: exclusiveArray.ids.map((exclusive: string) => traits[exclusive]),
+    const allExclusiveTraits: { [id: string]: string } = {};
+     exclusives.forEach((exclusiveArray: ExclusiveInfo, index: number) =>
+      exclusiveArray.ids.forEach((exclusive: string) => {
+      traits[exclusive] = Object.assign({},
+        traits[exclusive],
+        {
+        exclusivityGroup: exclusiveArray.ids,
         minRequired: exclusiveArray.minRequired,
         maxAllowed: exclusiveArray.maxAllowed,
-      }))).reduce((a: Array<ExclusiveInfo>, b: Array<ExclusiveInfo>) => a.concat(b))
-      .forEach((exclusive: BanesAndBoonsInfo) => allExclusiveTraits[exclusive.id] = exclusive);
+      })
+      allExclusiveTraits[exclusive] = exclusive;
+     }))
 
     // Getting all the non-general traits
     const allClassTraits = Object.keys(playerClasses).map((playerClass) => {
@@ -610,6 +603,17 @@ export const onInitializeTraits = module.createAction({
     requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait);
 
     console.log(traits);
+    console.log(generalBoons);
+    console.log(generalBanes);
+    console.log(playerClassBoons);
+    console.log(playerClassBanes);
+    console.log(raceBoons);
+    console.log(raceBanes);
+    console.log(factionBoons);
+    console.log(factionBanes);
+    console.log(allPrerequisites);
+    console.log(combinedRanks);
+    console.log(allExclusiveTraits)
 
     return Object.assign({}, state, {
       initial: false,
