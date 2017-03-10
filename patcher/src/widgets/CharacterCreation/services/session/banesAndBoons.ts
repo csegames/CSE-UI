@@ -13,7 +13,6 @@ import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
 import { Module } from 'redux-typed-modules';
 import { webAPI, client, Faction, Race } from 'camelot-unchained';
-import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -59,9 +58,11 @@ export interface BanesAndBoonsState {
   allExclusives: TraitIdMap;
 }
 
+declare var toastr: any;
+
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
-    /*return webAPI.TraitsAPI.getTraitsV1(client.shardID)
+    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
       .then((result: any) => {
         if (result.ok) {
           dispatch(onInitializeTraits({
@@ -71,15 +72,13 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             banesAndBoons: result
           }));
         } else {
-          console.log('Failed to retrieve Banes and Boons');
+          toastr.error(
+            'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
+            'Oh No!!',
+            {timeOut: 5000}
+          );
         }
-      })*/
-      dispatch(onInitializeTraits({
-        playerClass: payload.playerClass,
-        race: payload.race,
-        faction: payload.faction,
-        banesAndBoons: traitsExampleResponse
-      }))
+      })
   }
 };
 
@@ -200,7 +199,6 @@ export const onUpdateRankBoons = module.createAction({
     const fBoons = state.factionBoons;
     const addedBoonsClone = state.addedBoons;
     const traitsClone = state.traits;
-    console.log(action.boon);
     const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? action.boon.ranks[action.boon.rank + 1] :
       action.boon.ranks[action.boon.rank];
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
@@ -602,19 +600,6 @@ export const onInitializeTraits = module.createAction({
 
     const addedBanes: { [id: string]: BanesAndBoonsInfo } = {};
     requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
-
-    console.log(traits);
-    console.log(generalBoons);
-    console.log(generalBanes);
-    console.log(playerClassBoons);
-    console.log(playerClassBanes);
-    console.log(raceBoons);
-    console.log(raceBanes);
-    console.log(factionBoons);
-    console.log(factionBanes);
-    console.log(allPrerequisites);
-    console.log(combinedRanks);
-    console.log(allExclusiveTraits)
 
     return Object.assign({}, state, {
       initial: false,

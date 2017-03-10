@@ -11,7 +11,7 @@ import {createStore, applyMiddleware} from 'redux';
 import {connect, Provider} from 'react-redux';
 const thunk = require('redux-thunk').default;
 
-import {events, Gender, Archetype, Faction, Race} from 'camelot-unchained';
+import {events, Gender, Archetype, Faction, Race, webAPI, client} from 'camelot-unchained';
 
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
@@ -91,11 +91,20 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     const modelName = (this.refs['name-input'] as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
     let errors: any = [];
-    if (normalName.length < 2 || modelName.length > 20) errors.push('A character name must be between 2 and 20 characters in length.');
-    if (modelName.search(/^[a-zA-Z]/) === -1) errors.push('A character name must begin with a letter.');
-    if (modelName.search(/[\-'][\-']/) > -1) errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
-    if (modelName.search(/^[a-zA-Z\-']+$/) === -1) errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
-    if (this.props.banesAndBoonsState.totalPoints !== 0) errors.push('You must equally distribute points into your Boons and Banes');
+    if (normalName.length < 2 || modelName.length > 20)
+      errors.push('A character name must be between 2 and 20 characters in length.');
+    if (modelName.search(/^[a-zA-Z]/) === -1)
+      errors.push('A character name must begin with a letter.');
+    if (modelName.search(/[\-'][\-']/) > -1)
+      errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
+    if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
+      errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
+    if (this.props.banesAndBoonsState.totalPoints !== 0)
+      errors.push('You must equally distribute points into your Boons and Banes');
+    if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then((res) => res.ok))
+      errors.push(
+        'We are having technical difficulties. You will not be able to create a character until they have been fixed.'
+      )
     if (errors.length > 0) {
       errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
     } else {
