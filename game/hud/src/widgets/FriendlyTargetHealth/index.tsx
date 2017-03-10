@@ -54,8 +54,18 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
 
     const dead = this.props.player.playerStatus.blood.current <= 0 || this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
     return (
-      <div className={`player-health ${this.props.containerClass}`} onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
-        <PlayerStatusComponent containerClass='TargetHealth' mirror={true} playerStatus={this.props.player.playerStatus} events={this.props.player.events}/>
+      <div
+        className={`player-health ${this.props.containerClass}`}
+        onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+        <PlayerStatusComponent
+          containerClass='TargetHealth'
+          mirror={true}
+          playerStatus={this.props.player.playerStatus}
+          events={this.props.player.events}
+        />
+        <div className='player-health-distance'>
+          {this.props.player.playerStatus.distance} m
+        </div>
       </div>
     );
   }

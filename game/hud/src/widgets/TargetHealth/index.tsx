@@ -64,8 +64,8 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
           playerStatus={this.props.player.playerStatus}
           events={this.props.player.events}
         />
-        <div style={{ width: '200px', backgroundColor: 'blue', color: 'white', textAlign: 'right', fontSize: '20px' }}>
-          {this.props.player.playerStatus.distance}
+        <div className='player-health-distance'>
+          {this.props.player.playerStatus.distance} m
         </div>
       </div>
     );
