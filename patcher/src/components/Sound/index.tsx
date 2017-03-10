@@ -64,7 +64,7 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/launch-game.ogg'
+                      src='sounds/UI_Patcher_PlayButton_v3.ogg'
                       ref={r => this.audioRefs[id] = r }/>
       case 'patch-complete': 
         return <audio key={id}
