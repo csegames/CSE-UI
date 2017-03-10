@@ -175,14 +175,14 @@ export function initializePlayerSession() {
       client.OnEnemyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
+        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
       })
     )
     client.OnEnemyTargetPositionChanged((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2) => {
          const a = x1 - x2;
          const b = y1 - y2;
-         dispatch(onDistanceChanged(Math.sqrt(a*a + b*b)));
+         dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
       })
     )
 
