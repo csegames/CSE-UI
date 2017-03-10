@@ -251,7 +251,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
-            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
+            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && (selectedServer.lastUpdated && selectedServer.lastUpdated > 0 ) ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
           </div>
           {this.renderProgressText()}
         </div>
