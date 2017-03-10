@@ -20,9 +20,9 @@ const Bane = (props: {
   onBaneClick: Function;
   onCancelBane: Function;
   onUpdateRankBane: Function;
-  allPrerequisites: TraitMap;
+  allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
-  addedBanes: TraitMap;
+  addedBanes: TraitIdMap;
   styles: Partial<TraitStyle>;
 }) => {
   const {

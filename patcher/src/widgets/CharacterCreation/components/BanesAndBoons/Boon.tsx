@@ -20,9 +20,9 @@ const Boon = (props: {
   onBoonClick: Function;
   onCancelBoon: Function;
   onUpdateRankBoon: Function;
-  allPrerequisites: TraitMap;
+  allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
-  addedBoons: TraitMap;
+  addedBoons: TraitIdMap;
   styles: Partial<TraitStyle>;
 }) => {
   const {

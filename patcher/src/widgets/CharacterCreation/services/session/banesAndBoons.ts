@@ -45,8 +45,8 @@ export interface BanesAndBoonsState {
   initial: boolean;
   totalPoints: number;
   traits: TraitMap;
-  addedBanes: TraitMap;
-  addedBoons: TraitMap;
+  addedBanes: TraitIdMap;
+  addedBoons: TraitIdMap;
   generalBoons: TraitIdMap;
   playerClassBoons: TraitIdMap;
   raceBoons: TraitIdMap;
@@ -55,8 +55,7 @@ export interface BanesAndBoonsState {
   playerClassBanes: TraitIdMap;
   raceBanes: TraitIdMap;
   factionBanes: TraitIdMap;
-  allPrerequisites: TraitMap;
-  allRanks: TraitMap;
+  allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
 }
 
@@ -116,7 +115,6 @@ export function getInitialState() {
     raceBanes: {},
     factionBanes: {},
     allPrerequisites: {},
-    allRanks: {},
     allExclusives: {}
   }
   return initialState;
@@ -132,7 +130,7 @@ export const onSelectBane = module.createAction({
   reducer: (state, action) => {
     const addedBanesClone = state.addedBanes;
     const traitsClone = state.traits;
-    addedBanesClone[action.bane.id] = action.bane;
+    addedBanesClone[action.bane.id] = action.bane.id;
     traitsClone[action.bane.id] = { ...action.bane, selected: true };
     return {
       ...state,
@@ -149,7 +147,7 @@ export const onSelectBoon = module.createAction({
   reducer: (state, action) => {
     const addedBoonsClone = state.addedBoons;
     const traitsClone = state.traits;
-    addedBoonsClone[action.boon.id] = action.boon;
+    addedBoonsClone[action.boon.id] = action.boon.id;
     traitsClone[action.boon.id] = { ...action.boon, selected: true };
     return {
       ...state,
@@ -202,14 +200,16 @@ export const onUpdateRankBoons = module.createAction({
     const fBoons = state.factionBoons;
     const addedBoonsClone = state.addedBoons;
     const traitsClone = state.traits;
-    const nextRankBoon = action.boon.ranks[action.boon.rank + 1];
+    console.log(action.boon);
+    const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? action.boon.ranks[action.boon.rank + 1] :
+      action.boon.ranks[action.boon.rank];
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
-     action.boon.ranks[action.boon.rank];
+      action.boon.ranks[action.boon.rank];
     if (action.event === 'select') {
-      if (addedBoonsClone[previousRankBoon] && addedBoonsClone[previousRankBoon].rank !== action.boon.ranks.length - 1)
+      if (addedBoonsClone[previousRankBoon] && state.traits[previousRankBoon].rank !== action.boon.ranks.length - 1)
         totalPointRankBoons = totalPointRankBoons + (action.boon.points - state.traits[previousRankBoon].points);
       if (action.boon.rank !== 0) {
-        addedBoonsClone[previousRankBoon] = action.boon;
+        addedBoonsClone[previousRankBoon] = action.boon.id;
         addedBoonsClone[action.boon.id] = addedBoonsClone[previousRankBoon]
         delete addedBoonsClone[previousRankBoon];
       }
@@ -246,7 +246,7 @@ export const onUpdateRankBoons = module.createAction({
     }
     if (action.event === 'cancel') {
       if (action.boon.rank !== 0) {
-        addedBoonsClone[action.boon.id] = state.traits[previousRankBoon];
+        addedBoonsClone[action.boon.id] = state.traits[previousRankBoon].id;
         addedBoonsClone[previousRankBoon] = addedBoonsClone[action.boon.id];
         delete addedBoonsClone[action.boon.id];
       }
@@ -297,14 +297,15 @@ export const onUpdateRankBanes = module.createAction({
     const fBanes = state.factionBanes;
     const addedBanesClone = state.addedBanes;
     const traitsClone = state.traits;
-    const nextRankBane = action.bane.ranks[action.bane.rank + 1];
+    const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? action.bane.ranks[action.bane.rank + 1] :
+      action.bane.id;
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
-     action.bane.ranks[action.bane.rank];
+      action.bane.id;
     if (action.event === 'select') {
-      if (addedBanesClone[previousRankBane] && addedBanesClone[previousRankBane].rank !== action.bane.ranks.length - 1)
+      if (addedBanesClone[previousRankBane] && state.traits[previousRankBane].rank !== action.bane.ranks.length - 1)
         totalPointRankBanes = totalPointRankBanes + (action.bane.points - state.traits[previousRankBane].points);
       if (action.bane.rank !== 0) {
-        addedBanesClone[previousRankBane] = action.bane;
+        addedBanesClone[previousRankBane] = action.bane.id;
         addedBanesClone[action.bane.id] = addedBanesClone[previousRankBane]
         delete addedBanesClone[previousRankBane];
       }
@@ -341,7 +342,7 @@ export const onUpdateRankBanes = module.createAction({
     }
     if (action.event === 'cancel') {
       if (action.bane.rank !== 0) {
-        addedBanesClone[action.bane.id] = state.traits[previousRankBane];
+        addedBanesClone[action.bane.id] = state.traits[previousRankBane].id;
         addedBanesClone[previousRankBane] = addedBanesClone[action.bane.id];
         delete addedBanesClone[action.bane.id];
       }
@@ -417,7 +418,7 @@ export const onInitializeTraits = module.createAction({
     firstRanksArr.forEach((trait: BanesAndBoonsInfo) => firstRanks[trait.id] = trait);
     const combinedRanksArr = allRanks.reduce((rank1: Array<BanesAndBoonsInfo>, rank2: Array<BanesAndBoonsInfo>) => rank1.concat(rank2));
     const combinedRanks: { [id: string]: BanesAndBoonsInfo } = {};
-    combinedRanksArr.forEach((trait: BanesAndBoonsInfo) => combinedRanks[trait.id] = trait);
+    combinedRanksArr.forEach((trait: BanesAndBoonsInfo) => combinedRanks[trait.id] = trait.id);
 
     // Exclusive traits
     interface ExclusiveInfo {
@@ -592,15 +593,15 @@ export const onInitializeTraits = module.createAction({
 
     // Prerequisite traits
     const allTraitsWithPrerequisites = allTraits.filter((trait: BanesAndBoonsInfo) => trait.prerequisites);
-    const allPrerequisites: { [id: string]: BanesAndBoonsInfo } = {};
+    const allPrerequisites: { [id: string]: string } = {};
      allTraitsWithPrerequisites.filter((t: BanesAndBoonsInfo) => t.prerequisites.filter((preReq) => traits[preReq]).length !== 0)
-     .forEach((boon: BanesAndBoonsInfo) => boon.prerequisites.forEach((preReq) => allPrerequisites[preReq] = traits[preReq]))
+     .forEach((boon: BanesAndBoonsInfo) => boon.prerequisites.forEach((preReq) => allPrerequisites[preReq] = preReq))
 
     const addedBoons: { [id: string]: BanesAndBoonsInfo } = {};
-    requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait);
+    requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
 
     const addedBanes: { [id: string]: BanesAndBoonsInfo } = {};
-    requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait);
+    requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
 
     console.log(traits);
     console.log(generalBoons);
@@ -630,7 +631,6 @@ export const onInitializeTraits = module.createAction({
       factionBanes: factionBanes,
       totalPoints: totalPoints,
       allPrerequisites: allPrerequisites,
-      allRanks: combinedRanks,
       allExclusives: allExclusiveTraits
     });
   }

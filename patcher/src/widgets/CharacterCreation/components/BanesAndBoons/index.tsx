@@ -68,9 +68,9 @@ export interface BanesAndBoonsProps {
   raceBanes: TraitIdMap;
   factionBanes: TraitIdMap;
   traits: TraitMap;
-  addedBanes: TraitMap;
-  addedBoons: TraitMap;
-  allPrerequisites: TraitMap;
+  addedBanes: TraitIdMap;
+  addedBoons: TraitIdMap;
+  allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   onBoonClick: Function;
   onBaneClick: Function;
@@ -494,6 +494,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
 
   render() {
     const {
+      traits,
       generalBoons,
       playerClassBoons,
       raceBoons,
@@ -550,14 +551,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
               <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
                 {Object.keys(addedBoons).map((key: string, index: number) => (
                   <div className={css(ss.addBoon, custom.addBoon)} key={index}>
-                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={addedBoons[key].icon} />
+                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
                   </div>
                 ))}
               </div>
               <div className={css(ss.addedBaneContainer, custom.addedBaneContainer)}>
                 {Object.keys(addedBanes).map((key: string, index: number) => (
                   <div className={css(ss.addBane, custom.addBane)} key={index}>
-                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={addedBanes[key].icon} />
+                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
                   </div>
                 ))}
               </div>
@@ -574,7 +575,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                 {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
                   <TraitSummary
                     key={index}
-                    trait={addedBoons[key]}
+                    trait={traits[key]}
                     onCancelClick={onCancelBoonClick}
                     onUpdateRankBoon={onUpdateRankBoon}
                     onUpdateRankBane={onUpdateRankBane}
@@ -587,7 +588,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                 {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
                   <TraitSummary
                     key={index}
-                    trait={addedBanes[key]}
+                    trait={traits[key]}
                     onCancelClick={onCancelBaneClick}
                     onUpdateRankBoon={onUpdateRankBoon}
                     onUpdateRankBane={onUpdateRankBane}

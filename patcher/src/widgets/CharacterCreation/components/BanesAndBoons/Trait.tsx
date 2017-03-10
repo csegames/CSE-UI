@@ -41,9 +41,9 @@ export interface TraitProps {
   onTraitClick: Function;
   onCancelTrait: Function;
   onUpdateRankTrait: Function;
-  allPrerequisites: TraitMap;
+  allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
-  addedTraits: TraitMap;
+  addedTraits: TraitIdMap;
   primaryColor: string;
   styles: Partial<TraitStyle>;
 }
@@ -174,8 +174,8 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
 
-    const shouldBeDisabled = preReqs && preReqs.filter((preReq: BanesAndBoonsInfo) =>
-     addedTraits[preReq.id]).length !== preReqs.length;
+    const shouldBeDisabled = preReqs && preReqs.filter((preReq: string) =>
+     addedTraits[preReq]).length !== preReqs.length;
 
     if (shouldBeDisabled && trait.selected) {
       onCancelTrait(trait)
@@ -195,6 +195,7 @@ class Trait extends React.Component<TraitProps, {}> {
   private onRankClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const {
       trait,
+      traits,
       addedTraits,
       onTraitClick,
       onCancelTrait,
@@ -204,9 +205,9 @@ class Trait extends React.Component<TraitProps, {}> {
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
     if (e.shiftKey) {
-      if (addedRankTrait.ranks) {
-        if (addedRankTrait.rank === 0) onCancelTrait(addedRankTrait);
-        onUpdateRankTrait('cancel', addedRankTrait);
+      if (traits[addedRankTrait].ranks) {
+        if (traits[addedRankTrait].rank === 0) onCancelTrait(traits[addedRankTrait]);
+        onUpdateRankTrait('cancel', traits[addedRankTrait]);
       }
     } else {
       if (trait.rank === 0 && !addedTraits[trait.id]) {
@@ -231,8 +232,8 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
 
-    const shouldBeDisabledBecausePreReqs = preReqs && preReqs.filter((preReq: BanesAndBoonsInfo) =>
-     addedTraits[preReq.id]).length !== preReqs.length;
+    const shouldBeDisabledBecausePreReqs = preReqs && preReqs.filter((preReq: string) =>
+     addedTraits[preReq]).length !== preReqs.length;
 
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
@@ -267,16 +268,16 @@ class Trait extends React.Component<TraitProps, {}> {
               <p className={css(ss.traitCategory, custom.traitCategory)}>{trait.category} {type}</p>
               {trait.ranks &&
               <p className={css(ss.regularText, custom.regularText)}>
-                Rank: {trait.rank === 0 ? 0 : addedRankTrait.rank + 1} / {trait.ranks.length}
+                Rank: {trait.rank === 0 ? 0 : traits[addedRankTrait].rank + 1} / {trait.ranks.length}
               </p>}
               <p>{trait.description}</p>
               {preReqs &&
                <div className={css(ss.dependenciesContainer, custom.dependenciesContainer)}>
-                  Dependencies: {preReqs.map((preReq: BanesAndBoonsInfo, i: number) =>
+                  Dependencies: {preReqs.map((preReq: string, i: number) =>
                    <p key={i}
                     className={css(ss.dependencyText, custom.dependencyText)}
-                    style={{ color: addedTraits[preReq.id] ? colors.success : 'red'}}>
-                    {preReq.name}{preReq.id !== preReqs[preReqs.length - 1].id && ', '}
+                    style={{ color: addedTraits[preReq] ? colors.success : 'red'}}>
+                    {traits[preReq].name}{preReq !== preReqs[preReqs.length - 1] && ', '}
                    </p>)}
                </div>}
                {exclusivityGroup.length > 0 &&
@@ -299,7 +300,7 @@ class Trait extends React.Component<TraitProps, {}> {
             )}>
           {trait.ranks &&
           <p className={css(ss.rankText, custom.rankText)}>
-            {trait.rank === 0 ? 0 : addedRankTrait.rank + 1} / {trait.ranks.length}
+            {trait.rank === 0 ? 0 : traits[addedRankTrait].rank + 1} / {trait.ranks.length}
           </p>}
           <div className={css(
             ss.shadow,
