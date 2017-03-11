@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-27 11:51:44
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-11-01 12:55:52
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-03-11 13:33:36
  */
 
 import * as React from 'react';
@@ -78,7 +78,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     });
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     events.off('view-content');
   }
 
@@ -92,10 +92,10 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
       default:
       case view.NONE: return null;
 
-      case view.CHARACTERCREATION: 
+      case view.CHARACTERCREATION:
         return null;
-      
-      case view.NEWS: 
+
+      case view.NEWS:
         return (
           <div className={`View ${className}`}>
             <News {...props} />
@@ -115,13 +115,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         {this.renderView(false)}
         {this.renderView(true)}
 
-        {patcher.hasLoginToken() ? 
+        {patcher.hasLoginToken() ?
         <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
           <Chat loginToken={patcher.getLoginToken()} />
         </div>
         : null }
 
-        {patcher.hasLoginToken() ? 
+        {patcher.hasLoginToken() ?
         <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
           <CharacterCreation {...this.state.currentProps} />
         </div>
