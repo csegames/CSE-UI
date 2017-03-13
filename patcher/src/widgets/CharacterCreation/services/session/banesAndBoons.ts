@@ -78,7 +78,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             {timeOut: 5000}
           );
         }
-      })
+    })
   }
 };
 
@@ -285,7 +285,7 @@ export const onCancelRankBoon = module.createAction({
       totalPoints
     }
   }
-})
+});
 
 export const onSelectRankBane = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
