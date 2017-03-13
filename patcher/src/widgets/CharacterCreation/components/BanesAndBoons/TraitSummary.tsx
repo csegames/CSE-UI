@@ -33,8 +33,7 @@ export interface TraitSummaryProps {
   trait: BanesAndBoonsInfo;
   onCancelClick: Function;
   type: 'Bane' | 'Boon';
-  onUpdateRankBoon: Function;
-  onUpdateRankBane: Function;
+  onCancelRankTrait: Function;
   styles: Partial<TraitSummaryStyle>;
 }
 
@@ -99,14 +98,11 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
 
 class TraitSummary extends React.Component<TraitSummaryProps, {}> {
   private onCancelClick = () => {
-    const { type, trait, onCancelClick, onUpdateRankBoon, onUpdateRankBane } = this.props;
+    const { trait, onCancelClick, onCancelRankTrait } = this.props;
     events.fire('play-sound', 'select');
-    if (type === BOON && trait.ranks) {
+    if (trait.ranks) {
       if (trait.rank === 0) onCancelClick(trait);
-      onUpdateRankBoon('cancel', trait);
-    } else if (type === BANE && trait.ranks) {
-      if (trait.rank === 0) onCancelClick(trait);
-      onUpdateRankBane('cancel', trait);
+      onCancelRankTrait(trait);
     } else {
       onCancelClick(trait);
     }

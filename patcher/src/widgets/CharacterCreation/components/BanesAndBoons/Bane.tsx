@@ -19,7 +19,8 @@ const Bane = (props: {
   traits: TraitMap;
   onBaneClick: Function;
   onCancelBane: Function;
-  onUpdateRankBane: Function;
+  onSelectRankBane: Function;
+  onCancelRankBane: Function;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   addedBanes: TraitIdMap;
@@ -30,7 +31,8 @@ const Bane = (props: {
     traits,
     onBaneClick,
     onCancelBane,
-    onUpdateRankBane,
+    onSelectRankBane,
+    onCancelRankBane,
     allPrerequisites,
     allExclusives,
     addedBanes,
@@ -48,7 +50,8 @@ const Bane = (props: {
       traits={traits}
       onTraitClick={onBaneClick}
       onCancelTrait={onCancelBane}
-      onUpdateRankTrait={onUpdateRankBane}
+      onSelectRankTrait={onSelectRankBane}
+      onCancelRankTrait={onCancelRankBane}
       allPrerequisites={allPrerequisites}
       allExclusives={allExclusives}
       addedTraits={addedBanes}

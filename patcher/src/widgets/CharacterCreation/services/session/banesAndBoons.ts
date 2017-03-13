@@ -78,7 +78,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             {timeOut: 5000}
           );
         }
-      })
+    })
   }
 };
 
@@ -127,14 +127,13 @@ export const onSelectBane = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_SELECT_BANE',
   action: (action: { bane: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    const addedBanesClone = state.addedBanes;
-    const traitsClone = state.traits;
-    addedBanesClone[action.bane.id] = action.bane.id;
-    traitsClone[action.bane.id] = { ...action.bane, selected: true };
+    const addedBanes = state.addedBanes;
+    const traits = state.traits;
+    addedBanes[action.bane.id] = action.bane.id;
+    traits[action.bane.id] = { ...action.bane, selected: true };
     return {
-      ...state,
-      traits: traitsClone,
-      addedBanes: addedBanesClone,
+      traits,
+      addedBanes,
       totalPoints: state.totalPoints + action.bane.points
     }
   }
@@ -144,14 +143,13 @@ export const onSelectBoon = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_SELECT_BOON',
   action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    const addedBoonsClone = state.addedBoons;
-    const traitsClone = state.traits;
-    addedBoonsClone[action.boon.id] = action.boon.id;
-    traitsClone[action.boon.id] = { ...action.boon, selected: true };
+    const addedBoons = state.addedBoons;
+    const traits = state.traits;
+    addedBoons[action.boon.id] = action.boon.id;
+    traits[action.boon.id] = { ...action.boon, selected: true };
     return {
-      ...state,
-      traits: traitsClone,
-      addedBoons: addedBoonsClone,
+      traits,
+      addedBoons,
       totalPoints: state.totalPoints + action.boon.points
     }
   }
@@ -161,13 +159,13 @@ export const onCancelBaneClick = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_CANCEL_BANE',
   action: (action: { bane: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    const addedBanesClone = state.addedBanes;
-    const traitsClone = state.traits;
-    traitsClone[action.bane.id] = { ...action.bane, selected: false };
-    delete addedBanesClone[action.bane.id];
+    const addedBanes = state.addedBanes;
+    const traits = state.traits;
+    traits[action.bane.id] = { ...action.bane, selected: false };
+    delete addedBanes[action.bane.id];
     return {
-      traits: traitsClone,
-      addedBanes: addedBanesClone,
+      traits,
+      addedBanes,
       totalPoints: state.totalPoints - action.bane.points
     }
   }
@@ -177,208 +175,249 @@ export const onCancelBoonClick = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_CANCEL_BOON',
   action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    const addedBoonsClone = state.addedBoons;
-    const traitsClone = state.traits;
-    traitsClone[action.boon.id] = { ...action.boon, selected: false }
-    delete addedBoonsClone[action.boon.id];
-    return Object.assign({}, state, {
-      addedBoons: addedBoonsClone,
+    const addedBoons = state.addedBoons;
+    const traits = state.traits;
+    traits[action.boon.id] = { ...action.boon, selected: false }
+    delete addedBoons[action.boon.id];
+    return {
+      traits,
+      addedBoons,
       totalPoints: state.totalPoints - action.boon.points
-    });
+    };
   }
 });
 
-export const onUpdateRankBoons = module.createAction({
-  type: 'cu-character-creeation/banes-and-boons/ON_UPDATE_RANK_BOONS',
-  action: (action: { boon: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
+export const onSelectRankBoon = module.createAction({
+  type: 'cu-character-creeation/banes-and-boons/ON_SELECT_RANK_BOONS',
+  action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    let totalPointRankBoons = state.totalPoints;
-    const gBoons = state.generalBoons;
-    const cBoons = state.playerClassBoons;
-    const rBoons = state.raceBoons;
-    const fBoons = state.factionBoons;
-    const addedBoonsClone = state.addedBoons;
-    const traitsClone = state.traits;
+    let totalPoints = state.totalPoints;
+    const generalBoons = state.generalBoons;
+    const classBoons = state.playerClassBoons;
+    const raceBoons = state.raceBoons;
+    const factionBoons = state.factionBoons;
+    const addedBoons = state.addedBoons;
+    const traits = state.traits;
     const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? action.boon.ranks[action.boon.rank + 1] :
       action.boon.ranks[action.boon.rank];
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
       action.boon.ranks[action.boon.rank];
-    if (action.event === 'select') {
-      if (addedBoonsClone[previousRankBoon] && state.traits[previousRankBoon].rank !== action.boon.ranks.length - 1)
-        totalPointRankBoons = totalPointRankBoons + (action.boon.points - state.traits[previousRankBoon].points);
-      if (action.boon.rank !== 0) {
-        addedBoonsClone[previousRankBoon] = action.boon.id;
-        addedBoonsClone[action.boon.id] = addedBoonsClone[previousRankBoon]
-        delete addedBoonsClone[previousRankBoon];
-      }
-      switch (action.boon.category) {
-        case 'General':
-          gBoons[action.boon.id] = nextRankBoon;
-          if (action.boon.ranks.length - 1 !== action.boon.rank) {
-            gBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = gBoons[action.boon.id];
-            delete gBoons[action.boon.id];
-          }
-          break;
-        case 'Class':
-          cBoons[action.boon.id] = nextRankBoon;
-          if (action.boon.ranks.length - 1 !== action.boon.rank) {
-            cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
-            delete cBoons[action.boon.id];
-          }
-          break;
-        case 'Race':
-          rBoons[action.boon.id] = nextRankBoon;
-          if (action.boon.ranks.length - 1 !== action.boon.rank) {
-            cBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = cBoons[action.boon.id];
-            delete cBoons[action.boon.id];
-          }
-          break;
-        case 'Faction':
-          fBoons[action.boon.id] = nextRankBoon;
-          if (action.boon.ranks.length - 1 !== action.boon.rank) {
-            fBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = fBoons[action.boon.id];
-            delete fBoons[action.boon.id];
-          }
-          break;
-      }
+    if (addedBoons[previousRankBoon] && state.traits[previousRankBoon].rank !== action.boon.ranks.length - 1)
+      totalPoints = totalPoints + (action.boon.points - state.traits[previousRankBoon].points);
+    if (action.boon.rank !== 0) {
+      addedBoons[previousRankBoon] = action.boon.id;
+      addedBoons[action.boon.id] = addedBoons[previousRankBoon]
+      delete addedBoons[previousRankBoon];
     }
-    if (action.event === 'cancel') {
-      if (action.boon.rank !== 0) {
-        addedBoonsClone[action.boon.id] = state.traits[previousRankBoon].id;
-        addedBoonsClone[previousRankBoon] = addedBoonsClone[action.boon.id];
-        delete addedBoonsClone[action.boon.id];
-      }
-      if (action.boon.rank !== 0)
-        totalPointRankBoons = totalPointRankBoons - (action.boon.points - state.traits[previousRankBoon].points);
-      switch (action.boon.category) {
-        case 'General':
-          gBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
-          gBoons[action.boon.id] = gBoons[action.boon.ranks[action.boon.rank + 1]];
-          delete gBoons[action.boon.ranks[action.boon.rank + 1]];
-          break;
-        case 'Class':
-          cBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
-          cBoons[action.boon.id] = cBoons[action.boon.ranks[action.boon.rank + 1]];
-          delete cBoons[action.boon.ranks[action.boon.rank + 1]];
-          break;
-        case 'Race':
-          rBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
-          rBoons[action.boon.id] = rBoons[action.boon.ranks[action.boon.rank + 1]];
-          delete rBoons[action.boon.ranks[action.boon.rank + 1]];
-          break;
-        case 'Faction':
-          fBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
-          fBoons[action.boon.id] = fBoons[action.boon.ranks[action.boon.rank + 1]];
-          delete fBoons[action.boon.ranks[action.boon.rank + 1]];
-          break;
-      }
+    switch (action.boon.category) {
+      case 'General':
+        generalBoons[action.boon.id] = nextRankBoon;
+        if (action.boon.ranks.length - 1 !== action.boon.rank) {
+          generalBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = generalBoons[action.boon.id];
+          delete generalBoons[action.boon.id];
+        }
+        break;
+      case 'Class':
+        classBoons[action.boon.id] = nextRankBoon;
+        if (action.boon.ranks.length - 1 !== action.boon.rank) {
+          classBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = classBoons[action.boon.id];
+          delete classBoons[action.boon.id];
+        }
+        break;
+      case 'Race':
+        raceBoons[action.boon.id] = nextRankBoon;
+        if (action.boon.ranks.length - 1 !== action.boon.rank) {
+          classBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = classBoons[action.boon.id];
+          delete classBoons[action.boon.id];
+        }
+        break;
+      case 'Faction':
+        factionBoons[action.boon.id] = nextRankBoon;
+        if (action.boon.ranks.length - 1 !== action.boon.rank) {
+          factionBoons[action.boon.ranks[action.boon.rank + 1 || action.boon.rank]] = factionBoons[action.boon.id];
+          delete factionBoons[action.boon.id];
+        }
+        break;
     }
-    return Object.assign({}, state, {
-      addedBoons: addedBoonsClone,
-      generalBoons: gBoons,
-      classBoons: cBoons,
-      raceBoons: rBoons,
-      factionBoons: fBoons,
-      totalPoints: totalPointRankBoons
-    });
+    console.log(generalBoons);
+    return {
+      addedBoons,
+      generalBoons,
+      classBoons,
+      raceBoons,
+      factionBoons,
+      totalPoints
+    };
   }
 });
 
-export const onUpdateRankBanes = module.createAction({
-  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
-  action: (action: { bane: BanesAndBoonsInfo, event: 'select' | 'cancel' }) => action,
+export const onCancelRankBoon = module.createAction({
+  type: 'cu-character-creation/banes-and-boons/ON_CANCEL_RANK_BOON',
+  action: (action: { boon: BanesAndBoonsInfo }) => action,
   reducer: (state, action) => {
-    let totalPointRankBanes = state.totalPoints;
-    const gBanes = state.generalBanes;
-    const cBanes = state.playerClassBanes;
-    const rBanes = state.raceBanes;
-    const fBanes = state.factionBanes;
-    const addedBanesClone = state.addedBanes;
-    const traitsClone = state.traits;
+    let totalPoints = state.totalPoints;
+    const generalBoons = state.generalBoons;
+    const classBoons = state.playerClassBoons;
+    const raceBoons = state.raceBoons;
+    const factionBoons = state.factionBoons;
+    const addedBoons = state.addedBoons;
+    const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
+      action.boon.ranks[action.boon.rank];
+    if (action.boon.rank !== 0) {
+        addedBoons[action.boon.id] = state.traits[previousRankBoon].id;
+        addedBoons[previousRankBoon] = addedBoons[action.boon.id];
+        delete addedBoons[action.boon.id];
+      }
+      if (action.boon.rank !== 0)
+        totalPoints = totalPoints - (action.boon.points - state.traits[previousRankBoon].points);
+      switch (action.boon.category) {
+        case 'General':
+          generalBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          generalBoons[action.boon.id] = generalBoons[action.boon.ranks[action.boon.rank + 1]];
+          delete generalBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
+        case 'Class':
+          classBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          classBoons[action.boon.id] = classBoons[action.boon.ranks[action.boon.rank + 1]];
+          delete classBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
+        case 'Race':
+          raceBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          raceBoons[action.boon.id] = raceBoons[action.boon.ranks[action.boon.rank + 1]];
+          delete raceBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
+        case 'Faction':
+          factionBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
+          factionBoons[action.boon.id] = factionBoons[action.boon.ranks[action.boon.rank + 1]];
+          delete factionBoons[action.boon.ranks[action.boon.rank + 1]];
+          break;
+      }
+    return {
+      addedBoons,
+      generalBoons,
+      classBoons,
+      raceBoons,
+      factionBoons,
+      totalPoints
+    }
+  }
+});
+
+export const onSelectRankBane = module.createAction({
+  type: 'cu-character-creation/banes-and-boons/ON_UPDATE_RANK_BANES',
+  action: (action: { bane: BanesAndBoonsInfo }) => action,
+  reducer: (state, action) => {
+    let totalPoints = state.totalPoints;
+    const generalBanes = state.generalBanes;
+    const classBanes = state.playerClassBanes;
+    const raceBanes = state.raceBanes;
+    const factionBanes = state.factionBanes;
+    const addedBanes = state.addedBanes;
+    const traits = state.traits;
     const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? action.bane.ranks[action.bane.rank + 1] :
       action.bane.id;
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
       action.bane.id;
-    if (action.event === 'select') {
-      if (addedBanesClone[previousRankBane] && state.traits[previousRankBane].rank !== action.bane.ranks.length - 1)
-        totalPointRankBanes = totalPointRankBanes + (action.bane.points - state.traits[previousRankBane].points);
-      if (action.bane.rank !== 0) {
-        addedBanesClone[previousRankBane] = action.bane.id;
-        addedBanesClone[action.bane.id] = addedBanesClone[previousRankBane]
-        delete addedBanesClone[previousRankBane];
-      }
-      switch (action.bane.category) {
-        case 'General':
-          gBanes[action.bane.id] = nextRankBane;
-          if (action.bane.ranks.length - 1 !== action.bane.rank) {
-            gBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = gBanes[action.bane.id];
-            delete gBanes[action.bane.id];
-          }
-          break;
-        case 'Class':
-          cBanes[action.bane.id] = nextRankBane;
-          if (action.bane.ranks.length - 1 !== action.bane.rank) {
-            cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
-            delete cBanes[action.bane.id];
-          }
-          break;
-        case 'Race':
-          rBanes[action.bane.id] = nextRankBane;
-          if (action.bane.ranks.length - 1 !== action.bane.rank) {
-            cBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = cBanes[action.bane.id];
-            delete cBanes[action.bane.id];
-          }
-          break;
-        case 'Faction':
-          fBanes[action.bane.id] = nextRankBane;
-          if (action.bane.ranks.length - 1 !== action.bane.rank) {
-            fBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = fBanes[action.bane.id];
-            delete fBanes[action.bane.id];
-          }
-          break;
-      }
+    if (addedBanes[previousRankBane] && state.traits[previousRankBane].rank !== action.bane.ranks.length - 1)
+      totalPoints = totalPoints + (action.bane.points - state.traits[previousRankBane].points);
+    if (action.bane.rank !== 0) {
+      addedBanes[previousRankBane] = action.bane.id;
+      addedBanes[action.bane.id] = addedBanes[previousRankBane]
+      delete addedBanes[previousRankBane];
     }
-    if (action.event === 'cancel') {
-      if (action.bane.rank !== 0) {
-        addedBanesClone[action.bane.id] = state.traits[previousRankBane].id;
-        addedBanesClone[previousRankBane] = addedBanesClone[action.bane.id];
-        delete addedBanesClone[action.bane.id];
-      }
-      if (action.bane.rank !== 0)
-        totalPointRankBanes = totalPointRankBanes - (action.bane.points - state.traits[previousRankBane].points);
-      switch (action.bane.category) {
-        case 'General':
-          gBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
-          gBanes[action.bane.id] = gBanes[action.bane.ranks[action.bane.rank + 1]];
-          delete gBanes[action.bane.ranks[action.bane.rank + 1]];
-          break;
-        case 'Class':
-          cBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
-          cBanes[action.bane.id] = cBanes[action.bane.ranks[action.bane.rank + 1]];
-          delete cBanes[action.bane.ranks[action.bane.rank + 1]];
-          break;
-        case 'Race':
-          rBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
-          rBanes[action.bane.id] = rBanes[action.bane.ranks[action.bane.rank + 1]];
-          delete rBanes[action.bane.ranks[action.bane.rank + 1]];
-          break;
-        case 'Faction':
-          fBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
-          fBanes[action.bane.id] = fBanes[action.bane.ranks[action.bane.rank + 1]];
-          delete fBanes[action.bane.ranks[action.bane.rank + 1]];
-          break;
-      }
+    switch (action.bane.category) {
+      case 'General':
+        generalBanes[action.bane.id] = nextRankBane;
+        if (action.bane.ranks.length - 1 !== action.bane.rank) {
+          generalBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = generalBanes[action.bane.id];
+          delete generalBanes[action.bane.id];
+        }
+        break;
+      case 'Class':
+        classBanes[action.bane.id] = nextRankBane;
+        if (action.bane.ranks.length - 1 !== action.bane.rank) {
+          classBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = classBanes[action.bane.id];
+          delete classBanes[action.bane.id];
+        }
+        break;
+      case 'Race':
+        raceBanes[action.bane.id] = nextRankBane;
+        if (action.bane.ranks.length - 1 !== action.bane.rank) {
+          classBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = classBanes[action.bane.id];
+          delete classBanes[action.bane.id];
+        }
+        break;
+      case 'Faction':
+        factionBanes[action.bane.id] = nextRankBane;
+        if (action.bane.ranks.length - 1 !== action.bane.rank) {
+          factionBanes[action.bane.ranks[action.bane.rank + 1 || action.bane.rank]] = factionBanes[action.bane.id];
+          delete factionBanes[action.bane.id];
+        }
+        break;
     }
-    return Object.assign({}, state, {
-      addedBanes: addedBanesClone,
-      generalBanes: gBanes,
-      classBanes: cBanes,
-      raceBanes: rBanes,
-      factionBanes: fBanes,
-      totalPoints: totalPointRankBanes
-    });
+    return {
+      addedBanes,
+      generalBanes,
+      classBanes,
+      raceBanes,
+      factionBanes,
+      totalPoints
+    };
   }
 });
+
+export const onCancelRankBane = module.createAction({
+  type: 'cu-character-creation/banes-and-boons/ON_CANCEL_RANK_BANE',
+  action: (action: { bane: BanesAndBoonsInfo }) => action,
+  reducer: (state, action) => {
+    let totalPoints = state.totalPoints;
+    const generalBanes = state.generalBanes;
+    const classBanes = state.playerClassBanes;
+    const raceBanes = state.raceBanes;
+    const factionBanes = state.factionBanes;
+    const addedBanes = state.addedBanes;
+    const traits = state.traits;
+    const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
+      action.bane.id;
+    if (action.bane.rank !== 0) {
+        addedBanes[action.bane.id] = state.traits[previousRankBane].id;
+        addedBanes[previousRankBane] = addedBanes[action.bane.id];
+        delete addedBanes[action.bane.id];
+      }
+      if (action.bane.rank !== 0)
+        totalPoints = totalPoints - (action.bane.points - state.traits[previousRankBane].points);
+      switch (action.bane.category) {
+        case 'General':
+          generalBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          generalBanes[action.bane.id] = generalBanes[action.bane.ranks[action.bane.rank + 1]];
+          delete generalBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
+        case 'Class':
+          classBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          classBanes[action.bane.id] = classBanes[action.bane.ranks[action.bane.rank + 1]];
+          delete classBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
+        case 'Race':
+          raceBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          raceBanes[action.bane.id] = raceBanes[action.bane.ranks[action.bane.rank + 1]];
+          delete raceBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
+        case 'Faction':
+          factionBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
+          factionBanes[action.bane.id] = factionBanes[action.bane.ranks[action.bane.rank + 1]];
+          delete factionBanes[action.bane.ranks[action.bane.rank + 1]];
+          break;
+      }
+    return {
+      addedBanes,
+      generalBanes,
+      classBanes,
+      raceBanes,
+      factionBanes,
+      totalPoints
+    }
+  }
+})
 
 export const onInitializeTraits = module.createAction({
   type: 'cu-character-creation/banes-and-boons/ON_INITIALIZE_TRAITS',
@@ -424,7 +463,7 @@ export const onInitializeTraits = module.createAction({
       minRequired: number,
       maxAllowed: number
     }
-    const allExclusiveTraits: { [id: string]: string } = {};
+    const allExclusives: { [id: string]: string } = {};
      exclusives.forEach((exclusiveArray: ExclusiveInfo, index: number) =>
       exclusiveArray.ids.forEach((exclusive: string) => {
       traits[exclusive] = Object.assign({},
@@ -434,7 +473,7 @@ export const onInitializeTraits = module.createAction({
         minRequired: exclusiveArray.minRequired,
         maxAllowed: exclusiveArray.maxAllowed,
       })
-      allExclusiveTraits[exclusive] = exclusive;
+      allExclusives[exclusive] = exclusive;
      }))
 
     // Getting all the non-general traits
@@ -595,29 +634,29 @@ export const onInitializeTraits = module.createAction({
      allTraitsWithPrerequisites.filter((t: BanesAndBoonsInfo) => t.prerequisites.filter((preReq) => traits[preReq]).length !== 0)
      .forEach((boon: BanesAndBoonsInfo) => boon.prerequisites.forEach((preReq) => allPrerequisites[preReq] = preReq))
 
-    const addedBoons: { [id: string]: BanesAndBoonsInfo } = {};
+    const addedBoons: { [id: string]: string } = {};
     requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
 
-    const addedBanes: { [id: string]: BanesAndBoonsInfo } = {};
+    const addedBanes: { [id: string]: string } = {};
     requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
 
-    return Object.assign({}, state, {
+    return {
       initial: false,
-      addedBoons: addedBoons,
-      addedBanes: addedBanes,
-      traits: traits,
-      generalBoons: generalBoons,
-      generalBanes: generalBanes,
-      playerClassBoons: playerClassBoons,
-      playerClassBanes: playerClassBanes,
-      raceBoons: raceBoons,
-      raceBanes: raceBanes,
-      factionBoons: factionBoons,
-      factionBanes: factionBanes,
-      totalPoints: totalPoints,
-      allPrerequisites: allPrerequisites,
-      allExclusives: allExclusiveTraits
-    });
+      addedBoons,
+      addedBanes,
+      traits,
+      generalBoons,
+      generalBanes,
+      playerClassBoons,
+      playerClassBanes,
+      raceBoons,
+      raceBanes,
+      factionBoons,
+      factionBanes,
+      totalPoints,
+      allPrerequisites,
+      allExclusives
+    };
   }
 });
 

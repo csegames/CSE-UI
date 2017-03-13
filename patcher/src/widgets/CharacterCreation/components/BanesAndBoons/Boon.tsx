@@ -19,7 +19,8 @@ const Boon = (props: {
   traits: TraitMap;
   onBoonClick: Function;
   onCancelBoon: Function;
-  onUpdateRankBoon: Function;
+  onSelectRankBoon: Function;
+  onCancelRankBoon: Function;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   addedBoons: TraitIdMap;
@@ -30,7 +31,8 @@ const Boon = (props: {
     traits,
     onBoonClick,
     onCancelBoon,
-    onUpdateRankBoon,
+    onSelectRankBoon,
+    onCancelRankBoon,
     allPrerequisites,
     allExclusives,
     addedBoons,
@@ -48,7 +50,8 @@ const Boon = (props: {
       traits={traits}
       onTraitClick={onBoonClick}
       onCancelTrait={onCancelBoon}
-      onUpdateRankTrait={onUpdateRankBoon}
+      onSelectRankTrait={onSelectRankBoon}
+      onCancelRankTrait={onCancelRankBoon}
       allPrerequisites={allPrerequisites}
       allExclusives={allExclusives}
       addedTraits={addedBoons}
