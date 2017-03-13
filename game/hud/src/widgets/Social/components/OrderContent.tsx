@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 12:44:04
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-03-08
  */
 
 import * as React from 'react';
@@ -19,6 +19,7 @@ import RankList from './RankList';
 import MemberList from './MemberList';
 import CreateGroup from './CreateGroup';
 import OrderAdmin from './OrderAdmin';
+import OrdersList from './OrdersList';
 
 export interface OrderContentProps {
   dispatch: (action: any) => any;
@@ -54,10 +55,10 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
 
     if (!props.order) {
       switch (props.address.id) {
-        case 'create': 
-        case 'list': 
+        case 'create':
+        case 'list':
           break;
-        default: 
+        default:
           if (!props.order) {
             props.dispatch(selectLink({
               kind: 'Primary',
@@ -77,7 +78,7 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
                             refetch={this.props.refetch}
                             dispatch={this.props.dispatch} />;
       case 'list':
-        // todo
+        return <OrdersList refetch={this.props.refetch} />;
     }
 
     if (!this.props.order) {
@@ -99,7 +100,7 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
                       group={this.props.order}
                       userPermissions={this.props.order.myMemberInfo.permissions}
                       refetch={this.props.refetch} />
-      case 'admin': 
+      case 'admin':
         return <OrderAdmin dispatch={this.props.dispatch}
                            order={this.props.order}
                            refetch={this.props.refetch} />
