@@ -241,8 +241,6 @@ export default function reducer(state: TargetState = initialState(), action: Tar
 
     case DISTANCE_CHANGED:
     {
-      console.log(merge(state, distanceChanged(state.playerStatus, action)));
-      console.log(action);
       return merge(state, distanceChanged(state.playerStatus, action));
     }
 
