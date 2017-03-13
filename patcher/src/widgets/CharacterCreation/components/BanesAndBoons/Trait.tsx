@@ -40,7 +40,8 @@ export interface TraitProps {
   traits: TraitMap;
   onTraitClick: Function;
   onCancelTrait: Function;
-  onUpdateRankTrait: Function;
+  onSelectRankTrait: Function;
+  onCancelRankTrait: Function;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   addedTraits: TraitIdMap;
@@ -199,7 +200,8 @@ class Trait extends React.Component<TraitProps, {}> {
       addedTraits,
       onTraitClick,
       onCancelTrait,
-      onUpdateRankTrait
+      onSelectRankTrait,
+      onCancelRankTrait
     } = this.props;
     
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
@@ -207,14 +209,13 @@ class Trait extends React.Component<TraitProps, {}> {
     if (e.shiftKey) {
       if (traits[addedRankTrait].ranks) {
         if (traits[addedRankTrait].rank === 0) onCancelTrait(traits[addedRankTrait]);
-        onUpdateRankTrait('cancel', traits[addedRankTrait]);
+        onCancelRankTrait(traits[addedRankTrait]);
       }
     } else {
       if (trait.rank === 0 && !addedTraits[trait.id]) {
         onTraitClick(trait);
-        console.log('testttt');
       }
-      onUpdateRankTrait('select', trait);
+      onSelectRankTrait(trait);
     }
   };
 

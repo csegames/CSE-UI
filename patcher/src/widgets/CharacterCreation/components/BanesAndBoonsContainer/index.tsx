@@ -23,8 +23,10 @@ import {
   BanesAndBoonsState,
   onSelectBane,
   onSelectBoon,
-  onUpdateRankBoons,
-  onUpdateRankBanes,
+  onSelectRankBoon,
+  onSelectRankBane,
+  onCancelRankBoon,
+  onCancelRankBane,
   onCancelBaneClick,
   onCancelBoonClick,
   fetchTraits
@@ -123,8 +125,10 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         onCancelBaneClick={this.onCancelBane}
         onCancelBoonClick={this.onCancelBoon}
         onResetClick={this.onResetClick}
-        onUpdateRankBoon={(event: 'select' | 'cancel', boon: BanesAndBoonsInfo) => dispatch(onUpdateRankBoons({ event: event, boon: boon }))}
-        onUpdateRankBane={(event: 'select' | 'cancel', bane: BanesAndBoonsInfo) => dispatch(onUpdateRankBanes({ event: event, bane: bane }))}
+        onSelectRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onSelectRankBoon({ boon: boon }))}
+        onSelectRankBane={(bane: BanesAndBoonsInfo) => dispatch(onSelectRankBane({ bane: bane }))}
+        onCancelRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onCancelRankBoon({ boon: boon }))}
+        onCancelRankBane={(bane: BanesAndBoonsInfo) => dispatch(onCancelRankBane({ bane: bane }))}
         styles={styles}
         traitSummaryStyles={traitSummaryStyles}
         baneStyles={baneStyles}

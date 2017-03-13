@@ -77,8 +77,10 @@ export interface BanesAndBoonsProps {
   onCancelBoonClick: Function;
   onCancelBaneClick: Function;
   onResetClick: Function;
-  onUpdateRankBoon: Function;
-  onUpdateRankBane: Function;
+  onSelectRankBoon: Function;
+  onSelectRankBane: Function;
+  onCancelRankBoon: Function;
+  onCancelRankBane: Function;
   totalPoints: number;
   styles: Partial<BanesAndBoonsStyle>;
   traitSummaryStyles: Partial<TraitSummaryStyle>;
@@ -446,8 +448,10 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       allExclusives,
       addedBanes,
       addedBoons,
-      onUpdateRankBoon,
-      onUpdateRankBane,
+      onSelectRankBoon,
+      onSelectRankBane,
+      onCancelRankBoon,
+      onCancelRankBane,
       styles,
       boonStyles,
       baneStyles,
@@ -471,7 +475,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
               allPrerequisites={allPrerequisites}
               allExclusives={allExclusives}
               addedBoons={addedBoons}
-              onUpdateRankBoon={onUpdateRankBoon}
+              onSelectRankBoon={onSelectRankBoon}
+              onCancelRankBoon={onCancelRankBoon}
               styles={boonStyles}
             /> :
               <Bane
@@ -483,7 +488,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                 allPrerequisites={allPrerequisites}
                 allExclusives={allExclusives}
                 addedBanes={addedBanes}
-                onUpdateRankBane={onUpdateRankBane}
+                onSelectRankBane={onSelectRankBane}
+                onCancelRankBane={onCancelRankBane}
                 styles={baneStyles}
               />
           ))}
@@ -508,8 +514,10 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       onCancelBoonClick,
       onCancelBaneClick,
       totalPoints,
-      onUpdateRankBoon,
-      onUpdateRankBane,
+      onSelectRankBoon,
+      onSelectRankBane,
+      onCancelRankBoon,
+      onCancelRankBane,
       styles,
       traitSummaryStyles
     } = this.props;
@@ -577,8 +585,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     key={index}
                     trait={traits[key]}
                     onCancelClick={onCancelBoonClick}
-                    onUpdateRankBoon={onUpdateRankBoon}
-                    onUpdateRankBane={onUpdateRankBane}
+                    onCancelRankTrait={onCancelRankBoon}
                     type='Boon'
                     styles={traitSummaryStyles}
                   />
@@ -590,8 +597,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     key={index}
                     trait={traits[key]}
                     onCancelClick={onCancelBaneClick}
-                    onUpdateRankBoon={onUpdateRankBoon}
-                    onUpdateRankBane={onUpdateRankBane}
+                    onCancelRankTrait={onCancelRankBoon}
                     type='Bane'
                     styles={traitSummaryStyles}
                   />
