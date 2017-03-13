@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:07:56
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-28 15:52:40
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-03-11 13:49:38
  */
 
 import * as React from 'react';
@@ -124,7 +124,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     });
   }
 
-  componentDidUnMount() {
+  componentWillUnmount() {
     // unregister intervals
     clearInterval(this.heroContentInterval);
   }
@@ -148,15 +148,15 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
         <Header changeRoute={this.onRouteChanged}
                 activeRoute={this.props.currentRoute}
                 openChat={this.showChat} />
-        
-        
+
+
         <div className='PatcherApp__content'>
           <Hero isFetching={this.props.heroContentState.isFetching}
                 lastUpdated={this.props.heroContentState.lastFetchSuccess}
                 items={this.props.heroContentState.items} />
         </div>
-        
-        <Controller onLogIn={this.onLogIn} />        
+
+        <Controller onLogIn={this.onLogIn} />
         <Sound soundsState={this.props.soundsState} />
         <OverlayView />
       </div>
@@ -166,7 +166,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
 
 export default connect(select)(PatcherApp);
 
-          
+
           // <Animate animationEnter='slideInRight' animationLeave='slideOutRight'
           //   durationEnter={400} durationLeave={500}>
           //   {chat}
