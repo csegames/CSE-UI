@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-13 18:27:51
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-13 18:44:57
+ * @Last Modified time: 2017-03-13 18:52:32
  */
 
 import * as FieldCodes from './fieldCodes';
@@ -65,3 +65,5 @@ export interface ServiceUnavailable {
           FieldCodes.PresenceServiceUnavailable
         ];
 }
+
+export type CSEError = Unauthorized | NotAllowed | BadRequest | ExecutionError | ServiceUnavailable;
