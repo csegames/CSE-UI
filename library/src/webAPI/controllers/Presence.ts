@@ -8,13 +8,12 @@ import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
 import { Character } from '../definitions';
-
+import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
 export function getStartingServer(shardID: number, characterID: string) {
-  return create(createOptions()).get('v1/presence/startingServer/{shardID}/{characterID}', { 
-    shardID: shardID, 
+  return create(createOptions()).get('v1/presence/startingServer/{shardID}/{characterID}', {
+    shardID: shardID,
     characterID: characterID
   });
 }
 
- 

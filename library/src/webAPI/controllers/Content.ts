@@ -8,21 +8,20 @@ import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
 import { Character } from '../definitions';
-
+import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
 export function messageOfTheDayV1() {
-  return create(createOptions()).get('v1/messageoftheday', { 
+  return create(createOptions()).get('v1/messageoftheday', {
   });
 }
 
 export function patcherHeroContentV1() {
-  return create(createOptions()).get('v1/patcherherocontent', { 
+  return create(createOptions()).get('v1/patcherherocontent', {
   });
 }
 
 export function patcherAlertsV1() {
-  return create(createOptions()).get('v1/patcheralerts', { 
+  return create(createOptions()).get('v1/patcheralerts', {
   });
 }
 
- 

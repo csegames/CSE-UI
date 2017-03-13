@@ -8,24 +8,23 @@ import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
 import { Character } from '../definitions';
-
+import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
 export function getServersV1() {
-  return create(createOptions()).get('v1/servers/getAll', { 
+  return create(createOptions()).get('v1/servers/getAll', {
   });
 }
 
 export function getServersForChannelV1(channelId: number) {
-  return create(createOptions()).get('v1/servers/getForChannel', { 
+  return create(createOptions()).get('v1/servers/getForChannel', {
     channelId: channelId
   });
 }
 
 export function getHostsForServerV1(channelId: number, name: string) {
-  return create(createOptions()).get('v1/servers/getHosts', { 
-    channelId: channelId, 
+  return create(createOptions()).get('v1/servers/getHosts', {
+    channelId: channelId,
     name: name
   });
 }
 
- 
