@@ -22,6 +22,8 @@ import * as WarbandsAPI from './controllers/Warbands';
 export * from './definitions';
 export * from './helpers';
 
+import * as Errors from './apierrors';
+
 export {
   CharactersAPI,
   ContentAPI,
@@ -33,4 +35,5 @@ export {
   ServerListHelperAPI,
   TraitsAPI,
   WarbandsAPI,
+  Errors,
 }
