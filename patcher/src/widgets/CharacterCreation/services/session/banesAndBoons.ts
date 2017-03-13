@@ -82,22 +82,6 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
   }
 };
 
-const emptyBaneOrBoon = {
-  id: '',
-  name: '',
-  description: '',
-  points: 0,
-  icon: '',
-  required: false,
-  category: '',
-  selected: false,
-  rank: -1,
-  ranks: [''],
-  exclusivityGroup: -1,
-  minRequired: -1,
-  maxAllowed: -1
-};
-
 export function getInitialState() {
   const initialState: BanesAndBoonsState = {
     initial: true,
