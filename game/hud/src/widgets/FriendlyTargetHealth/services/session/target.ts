@@ -57,6 +57,7 @@ function getAvatar(gender: Gender, race: Race) {
       case 15: return characterImages.humanmalevM; // Humanmalev
       case 16: return characterImages.humanmaleaM; // Humanmalea
       case 17: return characterImages.humanmaletM; // Humanmalet
+      case 18: return characterImages.humanM; // Pict
     }
   } else {
     switch (race) {
@@ -65,6 +66,7 @@ function getAvatar(gender: Gender, race: Race) {
       case 15: return characterImages.humanmalevF; // Humanmalev
       case 16: return characterImages.humanmaleaF; // Humanmalea
       case 17: return characterImages.humanmaletF; // Humanmalet
+      case 18: return characterImages.humanF; // Pict
     }
   }
 }
