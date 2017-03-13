@@ -13,7 +13,6 @@ import { fetchJSON } from '../../../../lib/fetchHelpers';
 import ResponseError from '../../../../lib/ResponseError';
 import { Module } from 'redux-typed-modules';
 import { webAPI, client, Faction, Race } from 'camelot-unchained';
-import traitsExampleResponse from '../../components/BanesAndBoonsContainer/traitsExampleResponse';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -63,7 +62,7 @@ declare var toastr: any;
 
 export const fetchTraits = (payload: { playerClass: string, race: string, faction: string }) => {
   return (dispatch: (action: any) => any) => {
-    /*return webAPI.TraitsAPI.getTraitsV1(client.shardID)
+    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
       .then((result: any) => {
         if (result.ok) {
           dispatch(onInitializeTraits({
@@ -79,13 +78,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             {timeOut: 5000}
           );
         }
-      })*/
-      return dispatch(onInitializeTraits({
-        playerClass: payload.playerClass,
-        race: payload.race,
-        faction: payload.faction,
-        banesAndBoons: traitsExampleResponse
-      }))
+      })
   }
 };
 
