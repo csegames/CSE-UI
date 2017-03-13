@@ -122,7 +122,8 @@ export enum GridViewSort {
   Down
 }
 
-export interface ExtendedColumnDefinition extends ColumnDefinition {
+export interface SortInfo {
+  index: number;
   sorted: GridViewSort;
 }
 
@@ -140,74 +141,76 @@ export interface GridViewProps {
 }
 
 export interface GridViewState {
-  columnDefinitions: {
-    [id: string]: ExtendedColumnDefinition
-  }
+  currentSort: SortInfo;
   items: any[];
   itemsPerPage: number;
   sortedItems: any[];
   page: number;
 }
 
-export class GridView extends React.Component<GridViewProps, GridViewState> {
-  constructor(props: GridViewProps) {
+export class GridViewImpl<P extends GridViewProps, S extends GridViewState> extends React.Component<P, S> {
+  constructor(props: P) {
     super(props);
-    
+
     const items = cloneDeep(props.items);
-    const columnDefinitions = this.mapColumnDefinitions(props.columnDefinitions);
     this.state = {
-      columnDefinitions,
+      currentSort: { index: -1, sorted: GridViewSort.None },
       items,
       itemsPerPage: props.itemsPerPage || 25,
       sortedItems: items,
       page: 0,
-    };
+    } as S;
   }
 
-  componentWillReceiveProps = (nextProps: GridViewProps) => {
-    let items = cloneDeep(nextProps.items);
-    const columnDefinitions = this.mapColumnDefinitions(nextProps.columnDefinitions);
-
-    nextProps.columnDefinitions.forEach((def, index) => {
-      items = GridView.sortItems(items, columnDefinitions['$'+index]);
-    });
-
+  componentWillReceiveProps = (nextProps: P) => {
+    const items = cloneDeep(nextProps.items);
     this.setState({
-      columnDefinitions,
       items,
       itemsPerPage: this.props.itemsPerPage || 25,
       sortedItems: items,
-    });
+    } as S);
   }
 
-  mapColumnDefinitions = (input: ColumnDefinition[]) => {
-    const map: any = {};
-    input.forEach((def, index) => map['$'+index] = {...def, sorted: this.state ? this.state.columnDefinitions['$'+index].sorted || GridViewSort.None : GridViewSort.None});
-    return map;
-  }
-
-  static sortItems(input: any[], sortBy: ExtendedColumnDefinition) {
-    if (sortBy.sorted === GridViewSort.None) return input;
-    if (sortBy.sortFunction) {
-      return input.sort((a, b) => sortBy.sorted == GridViewSort.Down ? sortBy.sortFunction(a, b) : (sortBy.sortFunction(a, b) * -1))
+  sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
+    if (sorted === GridViewSort.None) return input;
+    if (column.sortFunction) {
+      return input.sort((a, b) => sorted == GridViewSort.Down ? column.sortFunction(a, b) : (column.sortFunction(a, b) * -1))
     }
-    return sortBy.sorted == GridViewSort.Down ? input.sort() : input.sort().reverse();
+    return sorted == GridViewSort.Down ? input.sort() : input.sort().reverse();
   }
 
   setSort = (index: number, sortBy: GridViewSort) => {
-    const def = clone(this.state.columnDefinitions['$'+index]);
-    def.sorted = sortBy;
-    const sortedItems = GridView.sortItems(this.state.sortedItems, def);
+    const currentSort = { index: index, sorted: sortBy };
     this.setState({
-      columnDefinitions: {...this.state.columnDefinitions, ['$'+index]: def},
-      sortedItems,
-    });
+      currentSort: currentSort,
+      sortedItems: this.sortItems(
+        this.state.sortedItems,
+        this.props.columnDefinitions[index],
+        currentSort.sorted
+      )
+    } as S);
+  }
+
+  /*
+   * PAGING interface
+   */
+
+  getItemCount = () : number => {
+    return (this.state as S).items.length;
+  }
+
+  getItemsPerPage = () : number => {
+    return (this.state as S).itemsPerPage;
+  }
+
+  getCurrentPage = () : number => {
+    return (this.state as S).page;
   }
 
   goToPage = (page: number) => {
     this.setState({
       page,
-    });
+    } as S);
   }
 
   /*
@@ -217,7 +220,9 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
   renderHeaderItems = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
     const headerItems: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
-      const def = this.state.columnDefinitions['$'+index];
+      const def = this.props.columnDefinitions[index];
+      const sorted = index === this.state.currentSort.index
+                  ? this.state.currentSort.sorted : GridViewSort.None;
 
       if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) == false) return;
 
@@ -227,28 +232,31 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
                         : css(ss.headerItem, custom.headerItem)}
              style={def.style}
              onClick={def.sortable ? () => {
-               switch(def.sorted) {
-                 case GridViewSort.None: this.setSort(index, GridViewSort.Up); return;
-                 case GridViewSort.Down: this.setSort(index, GridViewSort.Up); return;
-                 case GridViewSort.Up: this.setSort(index, GridViewSort.Down); return;
+               switch(sorted) {
+                 case GridViewSort.None: case GridViewSort.Down:
+                  this.setSort(index, GridViewSort.Up);
+                  return;
+                 case GridViewSort.Up:
+                  this.setSort(index, GridViewSort.Down);
+                  return;
                }
              }: null}>
           {def.title}&nbsp;
-          { 
-            def.sorted === GridViewSort.None ? null :
-            <i className={`fa fa-caret-${def.sorted == GridViewSort.Up ? 'up' : 'down'}`}></i>
+          {
+            sorted === GridViewSort.None ? null :
+            <i className={`fa fa-caret-${sorted == GridViewSort.Up ? 'up' : 'down'}`}></i>
           }
         </div>
       ));
     });
-    return headerItems; 
+    return headerItems;
   }
 
   renderRow = (item: any, rowKey: number, ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
 
     const items: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
-      const def = this.state.columnDefinitions['$'+index];
+      const def = this.props.columnDefinitions[index];
 
       if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) == false) return;
 
@@ -297,14 +305,15 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
   }
 
   renderGrid = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
-    var startIndex = this.state.page * this.state.itemsPerPage;
+    const state = this.state as S;
+    const startIndex = state.page * state.itemsPerPage;
     const rows: JSX.Element[] = [];
 
     for (let index = startIndex;
-         (index - startIndex) < this.state.itemsPerPage
-         && index < this.state.sortedItems.length;
+         (index - startIndex) < state.itemsPerPage
+         && index < state.sortedItems.length;
          ++index) {
-      rows.push(this.renderRow(this.state.sortedItems[index], index, ss, custom));
+      rows.push(this.renderRow(state.sortedItems[index], index, ss, custom));
     }
 
     return (
@@ -315,7 +324,12 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
   }
 
   renderPagination = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
-    var pageCount = Math.ceil(this.state.items.length / this.state.itemsPerPage);
+    const state = this.state as S;
+    const itemCount = this.getItemCount();
+    const itemsPerPage = this.getItemsPerPage();
+    const page = this.getCurrentPage();
+    const pageCount = Math.ceil(itemCount / itemsPerPage);
+
     if (pageCount <= 1) {
       return null;
     }
@@ -325,7 +339,7 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
     // back to 0 button
     pages.push(
       (
-        <RaisedButton key={'back-full'} disabled={this.state.page < 1}
+        <RaisedButton key={'back-full'} disabled={page < 1}
                       onClick={() => this.goToPage(0)}
                       styles={{
                         button: {
@@ -345,8 +359,8 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
     // back a single page button
     pages.push(
       (
-        <RaisedButton key={'back-one'} disabled={this.state.page < 1}
-                      onClick={() => this.goToPage(this.state.page-1)}
+        <RaisedButton key={'back-one'} disabled={page < 1}
+                      onClick={() => this.goToPage(page-1)}
                       styles={{
                         button: {
                           margin: '5px',
@@ -363,14 +377,14 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
     );
 
     // insert page numbers
-    let start = this.state.page - 2;
+    let start = page - 2;
     if (start < 0) start = 0;
-    let end = this.state.page + 3;
+    let end = page + 3;
     if (end > pageCount) end = pageCount;
 
     for (let i = start; i < end; ++i) {
       // render current page as disabled
-      if (i == this.state.page) {
+      if (i == page) {
         pages.push(
           (
             <RaisedButton key={i} disabled={true}
@@ -407,13 +421,13 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
           </RaisedButton>
         )
       );
-    }    
+    }
 
     // forward one page button
     pages.push(
       (
-        <RaisedButton key={'forward-one'} disabled={this.state.page > pageCount-2}
-                      onClick={() => this.goToPage(this.state.page+1)}
+        <RaisedButton key={'forward-one'} disabled={page > pageCount-2}
+                      onClick={() => this.goToPage(page+1)}
                       styles={{
                         button: {
                           margin: '5px',
@@ -432,7 +446,7 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
     // go to last page button
     pages.push(
       (
-        <RaisedButton key={'forward-full'} disabled={this.state.page > pageCount-2}
+        <RaisedButton key={'forward-full'} disabled={page > pageCount-2}
                       onClick={() => this.goToPage(pageCount-1)}
                       styles={{
                         button: {
@@ -471,4 +485,6 @@ export class GridView extends React.Component<GridViewProps, GridViewState> {
   }
 }
 
+export class GridView extends GridViewImpl<GridViewProps, GridViewState> {
+};
 export default GridView;
