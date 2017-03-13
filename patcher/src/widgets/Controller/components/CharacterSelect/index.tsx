@@ -126,6 +126,13 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     events.off('character-created');
   }
 
+  componentWillReceiveProps(nextProps: CharacterSelectProps) {
+    if (!this.state.selectedCharacter || !this.props.selectedServer) return;
+    if (this.props.selectedServer.shardID !== nextProps.selectedServer.shardID) {
+      this.selectCharacter(nextProps.characters[0]);
+    }
+  }
+
   selectCharacter = (character: webAPI.SimpleCharacter) => {
     this.props.selectCharacter(character);
     this.setState({selectedCharacter: character} as any);

@@ -122,9 +122,9 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     let launchString = this.commands.toLowerCase();
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID != 27) {
       if (!launchString.includes('servershardid') && !launchString.includes('server')) launchString += ` servershardid=${selectedServer.shardID}`;
-      if (!launchString.includes('character=') || !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
+      if (!launchString.includes('character=') && !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
       const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
-      if (!launchString.includes('webapihost=') || !launchString.includes('webapihost =')) launchString += ` webapihost=${apiHost}`;
+      if (!launchString.includes('webapihost=') && !launchString.includes('webapihost =')) launchString += ` webapihost=${apiHost}`;
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
@@ -251,7 +251,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
-            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && selectedServer.lastUpdated ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
+            <label>Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && (selectedServer.lastUpdated && selectedServer.lastUpdated > 0 ) ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.</label>          
           </div>
           {this.renderProgressText()}
         </div>

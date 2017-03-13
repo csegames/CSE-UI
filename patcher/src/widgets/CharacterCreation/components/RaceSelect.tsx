@@ -5,11 +5,10 @@
  */
 
 import * as React from 'react';
-import {Race, Faction, Gender} from 'camelot-unchained';
-import {events} from 'camelot-unchained';
+import { Race, Faction, Gender, events } from 'camelot-unchained';
 
-import {RaceInfo} from '../services/session/races';
-import {FactionInfo} from '../services/session/factions';
+import { RaceInfo } from '../services/session/races';
+import { FactionInfo } from '../services/session/factions';
 
 const Animate = require('react-animate.css');
 
@@ -47,6 +46,7 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
 
   selectRace = (race: RaceInfo) => {
     this.props.selectRace(race);
+    events.fire('play-sound', 'select');
   }
 
   generateRaceContent = (info: RaceInfo) => {

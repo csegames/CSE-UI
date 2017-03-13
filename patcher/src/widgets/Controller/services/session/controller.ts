@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com) 
  * @Date: 2016-10-13 00:25:42 
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-07 11:59:40
+ * @Last Modified time: 2017-03-08 10:36:32
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
@@ -121,7 +121,7 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
 function getServerTypeFromChannel(channelID: number): ServerType {
   switch(channelID) {
     default: return ServerType.CHANNEL;
-    case 4: case 10: case 11: return ServerType.CUGAME;
+    case 4: case 10: case 11: case 30: case 31: return ServerType.CUGAME;
     case 27: return ServerType.CUBE;
   }
 }

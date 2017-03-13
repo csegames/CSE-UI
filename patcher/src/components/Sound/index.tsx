@@ -10,69 +10,134 @@
  */
 
 import * as React from 'react';
-import {events} from 'camelot-unchained';
+import { events } from 'camelot-unchained';
+import { generateID } from 'redux-typed-modules';
 
-import {SoundsState} from '../../services/session/sounds';
+import { SoundsState } from '../../services/session/sounds';
 
 export interface SoundProps {
   soundsState: SoundsState;
 }
 
-export interface SoundState { };
+export interface SoundState {
+  sounds: { [id: string]: string };
+ };
 
 export class Sound extends React.Component<SoundProps, SoundState> {
-  public name = 'cse-patcher-sound';
-  private playOnce = false;
-
-  getSound(name: string): HTMLAudioElement {
-    return this.refs[name] as HTMLAudioElement;
+  constructor(props: SoundProps) {
+    super(props);
+    this.state = {
+      sounds: {},
+    };
   }
 
-  playSound(name: string) {
+  private playSound(name: string) {
     if (this.props.soundsState.playSound) {
-      let sound = this.getSound(name);
-      if (sound) {
-        sound.play();
-        sound.volume = 0.5;
+      const id = generateID(7);
+      this.setState({
+        sounds: {...this.state.sounds, [id]: name}
+      });
+    }
+  }
+
+  private onEnded = (id: string) => {
+    const sounds = {...this.state.sounds};
+    delete sounds[id];
+    delete this.audioRefs[id];
+    this.setState({
+      sounds,
+    });
+  }
+
+  private bgRef: HTMLAudioElement = null;
+  private audioRefs: { [id: string]: HTMLAudioElement } = {};
+
+  private generateAudioElement = (sound: string, id: string) => {
+    switch(sound) {
+      case 'select':
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Menu_GenericSelect_v1_02.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'launch-game': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Patcher_PlayButton_v3.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'patch-complete': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/patch-complete.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'select-change': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'create-character': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Menu_CreateNewCharacter_v1_01.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'realm-select': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Menu_SelectRealm_v1_01.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      case 'server-select': 
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src='sounds/UI_Menu_ServerSelect_v1_01.ogg'
+                      ref={r => this.audioRefs[id] = r }/>
+      default: return null;
+    }
+  }
+
+  public componentDidUpdate() {
+    if (this.bgRef) {
+      if (!this.props.soundsState.playMusic && !this.bgRef.paused) {
+        this.bgRef.pause();
+      } else if (this.props.soundsState.playMusic && this.bgRef.paused) {
+        this.bgRef.play();
+        this.bgRef.volume = 0.5;
       }
     }
   }
 
-  componentDidUpdate() {
-    let soundBg = this.getSound('sound-bg');
-    if (soundBg) {
-      if (!this.props.soundsState.playMusic && !soundBg.paused) {
-        soundBg.pause();
-      } else if (this.props.soundsState.playMusic && soundBg.paused && !this.playOnce) {
-        soundBg.play();
-        soundBg.volume = 0.5;
-      }
-    }
-  }
-
-  componentDidMount() {
-    let soundBg = this.getSound('sound-bg');
-    if (soundBg) {
+  public componentDidMount() {
+    if (this.bgRef) {
       if (this.props.soundsState.playMusic) {
-        soundBg.play();
-        soundBg.volume = 0.5;
+        this.bgRef.play();
+        this.bgRef.volume = 0.5;
       }
-      soundBg.onended = () => this.playOnce = true;
     }
-    events.on('play-sound', (info: any) => this.playSound('sound-' + info));
+    events.on('play-sound', (name: string) => this.playSound(name));
   }
 
-  componentDidUnMount() {
+  public componentDidUnMount() {
     events.off('play-sound');
   }
+  
+  private renderAudioElements = () => {
+    const elements = [];
+    for (const key in this.state.sounds) {
+      elements.push(this.generateAudioElement(this.state.sounds[key], key));
+    }
+    return elements;
+  }
 
-  render() {
+  public render() {
     return (
       <div>
-        <audio src='sounds/select.ogg' ref='sound-select' />
-        <audio src='sounds/launch-game.ogg' ref='sound-launch-game' />
-        <audio src='sounds/patch-complete.ogg' ref='sound-patch-complete' />
-        <audio src='sounds/patcher-theme.ogg' ref='sound-bg' />
+        <audio src='sounds/patcher-theme.ogg' ref={r => this.bgRef = r }/>
+        {this.renderAudioElements()}     
       </div>
     );
   }
