@@ -174,7 +174,7 @@ function initialState(): LayoutState {
     reset: FORCE_RESET_CODE,
     locked: true,
     version: CURRENT_STATE_VERSION,
-    widgets,
+    widgets: widgets,
   };
 }
 
@@ -211,7 +211,7 @@ function loadState(state: LayoutState = loadStateFromStorage()): LayoutState {
 
         let widgets = Map<string, Widget<any>>().asMutable();
         defaultWidgets.forEach((value, key) => {
-          const widget = state.widgets.get(key) || value;
+          const widget = state.widgets[key] || value;
           if (widget) {
             widgets.set(key, {
               position: forceOnScreen(widget.position, screen),
@@ -228,19 +228,17 @@ function loadState(state: LayoutState = loadStateFromStorage()): LayoutState {
       }
     }
   }
-
   return null;
 }
 
-function saveState(state: LayoutState) {
-  const screen: Size = { width: window.innerWidth, height: window.innerHeight };
-  const save = {
-    reset: FORCE_RESET_CODE,
-    version: CURRENT_STATE_VERSION,
-    locked: state.locked,
-    widgets: state.widgets.toMap
-  };
-  localStorage.setItem(localStorageKey, JSON.stringify(save));
+function saveState(state: LayoutState, widget: Widget<any>, name: string) {
+  const widgets = state.widgets;
+  const stateClone = {
+    ...state,
+    widgets: widgets.set(name, widget)
+  }
+  localStorage.setItem(localStorageKey, JSON.stringify(stateClone))
+  console.log(localStorage.getItem(localStorageKey));
 }
 
 
@@ -307,7 +305,6 @@ export function initialize() {
   }
 }
 
-
 // Lock / Unlock HUD
 export const lockHUD = module.createAction({
   type: 'layout/LOCK_HUD',
@@ -360,8 +357,13 @@ export const resetHUD = module.createAction({
 // Set the position of a widget
 export const setPosition = module.createAction({
   type: 'layout/SET_POSITION',
-  action: (a: { name: string, position: Position }) => a,
+  action: (a: { name: string, widget: Widget<any>, position: Position }) => a,
   reducer: (s, a) => {
+    // Save the position into local storage everytime position is changed
+    const widget = { ...a.widget, position: a.position };
+    console.log(JSON.stringify(widget));
+    saveState(s, widget, a.name);
+
     return {
       widgets: s.widgets.update(a.name, v => {
         if (typeof v === 'undefined') return v;
