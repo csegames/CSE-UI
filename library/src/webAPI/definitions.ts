@@ -10,15 +10,16 @@ export interface ArchetypeInfo {
  
 
 
-export interface UnspecifiedRequestError {
+export interface BadRequestFieldCode {
   code: FieldCodes;
   message: string; 
 }
 
+export interface UnspecifiedRequestError { 
+}
+
 export interface InvalidModel {
-  modelErrors: ModelError[];
-  code: FieldCodes;
-  message: string; 
+  modelErrors: ModelError[]; 
 }
 
 export interface ModelError {
@@ -63,8 +64,7 @@ export interface SimpleCharacter {
 export interface Character { 
   archetype: Archetype;
   attributes: { [key: string]: number; };
-  banes: { [key: string]: number; };
-  boons: { [key: string]: number; };
+  traitIDs: string[];
   faction: Faction;
   gender: Gender;
   id: string;
@@ -100,31 +100,26 @@ export interface ControlPoint {
  
 
 
-export interface UnspecifiedExecutionError {
+export interface ExecutionErrorFieldCode {
   code: FieldCodes;
   message: string; 
+}
+
+export interface UnspecifiedExecutionError { 
 }
 
 export interface UnhandledExecutionException {
-  exception: string;
-  code: FieldCodes;
-  message: string; 
+  exception: string; 
 }
 
-export interface DoesNotExist {
-  code: FieldCodes;
-  message: string; 
+export interface DoesNotExist { 
 }
 
-export interface UserStateConflict {
-  code: FieldCodes;
-  message: string; 
+export interface UserStateConflict { 
 }
 
 export interface InsufficientResource {
-  resources: ResourceRequirement[];
-  code: FieldCodes;
-  message: string; 
+  resources: ResourceRequirement[]; 
 }
 
 export interface ResourceRequirement {
@@ -153,6 +148,11 @@ export interface GroupInvite {
 
 
  
+
+
+export interface FieldCodeHelper { 
+}
+ 
 export interface MessageOfTheDay { 
   id: string;
   message: string;
@@ -163,20 +163,19 @@ export interface MessageOfTheDay {
  
 
 
-export interface UnspecifiedNotAllowed {
+export interface NotAllowedFieldCode {
   code: FieldCodes;
   message: string; 
+}
+
+export interface UnspecifiedNotAllowed { 
 }
 
 export interface RateLimitExceeded {
-  retry: number;
-  code: FieldCodes;
-  message: string; 
+  retry: number; 
 }
 
-export interface InternalAction {
-  code: FieldCodes;
-  message: string; 
+export interface InternalAction { 
 }
  
 export interface Order { 
@@ -311,51 +310,43 @@ export interface PlayerCounts {
  
 
 
-export interface UnspecifiedServiceUnavailable {
+export interface ServiceUnavailableFieldCode {
   code: FieldCodes;
   message: string; 
 }
 
-export interface DatabaseUnavailable {
-  code: FieldCodes;
-  message: string; 
+export interface UnspecifiedServiceUnavailable { 
 }
 
-export interface GroupServiceUnavailable {
-  code: FieldCodes;
-  message: string; 
+export interface DatabaseUnavailable { 
 }
 
-export interface GameServiceUnavailable {
-  code: FieldCodes;
-  message: string; 
+export interface GroupServiceUnavailable { 
 }
 
-export interface PresenceServiceUnavailable {
-  code: FieldCodes;
-  message: string; 
+export interface GameServiceUnavailable { 
+}
+
+export interface PresenceServiceUnavailable { 
 }
  
 
 
-export interface UnspecifiedAuthorizationDenied {
+export interface UnauthorizedFieldCode {
   code: FieldCodes;
   message: string; 
 }
 
-export interface APIKeyAuthorizationFailed {
-  code: FieldCodes;
-  message: string; 
+export interface UnspecifiedAuthorizationDenied { 
 }
 
-export interface LoginTokenAuthorizationFailed {
-  code: FieldCodes;
-  message: string; 
+export interface APIKeyAuthorizationFailed { 
 }
 
-export interface RealmRestricted {
-  code: FieldCodes;
-  message: string; 
+export interface LoginTokenAuthorizationFailed { 
+}
+
+export interface RealmRestricted { 
 }
  
 export interface Warband { 
