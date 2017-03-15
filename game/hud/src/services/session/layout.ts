@@ -361,7 +361,6 @@ export const setPosition = module.createAction({
   reducer: (s, a) => {
     // Save the position into local storage everytime position is changed
     const widget = { ...a.widget, position: a.position };
-    console.log(JSON.stringify(widget));
     saveState(s, widget, a.name);
 
     return {
