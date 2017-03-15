@@ -165,30 +165,35 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
     if (this.state.mode == EditMode.NONE) {
       this.setState({
-      height: props.defaultHeight,
-      width: props.defaultWidth,
-      scale: props.defaultScale,
-      opacity: props.defaultOpacity,
-      x: props.defaultX,
-      y: props.defaultY,
-      xAnchor: props.defaultXAnchor,
-      yAnchor: props.defaultYAnchor,
-      visible: props.defaultVisible || true,
+        height: props.defaultHeight,
+        width: props.defaultWidth,
+        scale: props.defaultScale,
+        opacity: props.defaultOpacity,
+        x: props.defaultX,
+        y: props.defaultY,
+        xAnchor: props.defaultXAnchor,
+        yAnchor: props.defaultYAnchor,
+        visible: props.defaultVisible || true,
 
-      minHeight: props.minHeight || props.defaultHeight / 4,
-      maxHeight: props.maxHeight || props.defaultHeight * 5,
-      minWidth: props.minWidth || props.defaultWidth / 4,
-      maxWidth: props.maxWidth || props.defaultWidth * 5,
-      minScale: props.minScale || 0.5,
-      maxScale: props.maxScale || 3,
+        minHeight: props.minHeight || props.defaultHeight / 4,
+        maxHeight: props.maxHeight || props.defaultHeight * 5,
+        minWidth: props.minWidth || props.defaultWidth / 4,
+        maxWidth: props.maxWidth || props.defaultWidth * 5,
+        minScale: props.minScale || 0.5,
+        maxScale: props.maxScale || 3,
 
-      scaleFactor: props.scaleFactor || 0.01,
+        scaleFactor: props.scaleFactor || 0.01,
 
-      mode: EditMode.NONE,
-      layoutMode: props.defaultMode || LayoutMode.GRID,
-    });
+        mode: EditMode.NONE,
+        layoutMode: props.defaultMode || LayoutMode.GRID,
+      });
     }
-
+  
+  if (this.state.layoutMode === LayoutMode.EDGESNAP) {
+    const fixedPos = this.getPosition();
+    const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x, fixedPos.y, this.state.height, this.state.width);
+    this.setState(pos as any);
+  }
 
     // update min & max height if needed
     let stateUpdate: any = {};
