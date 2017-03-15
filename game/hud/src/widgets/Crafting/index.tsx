@@ -136,6 +136,97 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
       ex: '/cr make "Sword" "Marc\'s Sword of Amazingness" do'
     });
 
+    crCommands.push({
+      cmd: '/cr vox setjob',
+      params: '[purify|refine|grind|make]',
+      desc: 'Sets the type of crafting job for your vox. If there is a current job it must be cleared before setting a new one',
+      ex: '/cr vox setjob'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox clearjob',
+      desc: 'Clears out the current job. All ingredients must be removed from the vox before running this command.'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox setrecipe',
+      params: '"<recipeID>"',
+      desc: 'Sets the recipe to be used in the crafting process.',
+      ex: '/cr vox setrecipe craft_purify_aluminum'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox listpossibleingredients',
+      desc: 'Lists integredents from your inventory in a numbered list.  This number is used to add the ingredient to the vox'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox addingredient',
+      params: '[ingredient#]',
+      desc: 'Takes the item from your inventory and adds it to the vox.',
+      ex: '/cr vox addingredient'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox removeingredient',
+      desc: 'Removes the last ingredient from the vox and moves it to your inventory.'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox setquality',
+      params: '[1-100]',
+      desc: 'Sets the quality when performing a refine job',
+      ex: '/cr vox setquality 50'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox settemplate',
+      params: '[weaponID]',
+      desc: 'Sets which weapon to create during a make job.',
+      ex: '/cr vox settemplate item_Arthurian_WeaponDagger01'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox setname',
+      params: '[name]',
+      desc: 'Sets the custom name for the weapon being made in the vox.',
+      ex: '/cr vox setname TheMightySword'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox status',
+      desc: 'Gives details about your nearby vox.'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox startjob',
+      desc: 'Starts the job currently setup in the vox'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox cancel',
+      desc: 'Cancel a job in the running state'
+    });
+
+    crCommands.push({
+      cmd: '/cr vox collect',
+      desc: 'Collect the output of a finished vox job.'
+    });
+
+    crCommands.push({
+      cmd: '/cr list',
+      params: '"<inventory|weapons|armor|substances|munitions|purifyrecipes|refinerecipes|grindrecipes>"',
+      desc: 'Lists templates for various types of items and recipes',
+      ex: '/cr list substances'
+    });
+
+    crCommands.push({
+      cmd: '/cr nearby',
+      params: '[range]',
+      desc: 'Shows nearby crafing entities such as substances, alloys, and voxes.',
+      ex: '/cr nearby 20'
+    });
+
     return crCommands;
   }
 
