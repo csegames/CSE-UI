@@ -109,7 +109,6 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
   };
   render() {
     const { trait, type, styles } = this.props;
-    console.log(trait);
     const ss = StyleSheet.create(defaultTraitSummaryStyles);
     const custom = StyleSheet.create(styles || {});
     return (
