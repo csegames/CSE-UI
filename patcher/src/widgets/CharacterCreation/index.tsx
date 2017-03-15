@@ -109,6 +109,10 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     if (errors.length > 0) {
       errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
     } else {
+      const traitIDs = [
+        ...Object.keys(this.props.banesAndBoonsState.addedBanes),
+        ...Object.keys(this.props.banesAndBoonsState.addedBoons)
+      ]
       // try to create...
       let model: CharacterCreationModel = {
         name: modelName,
@@ -132,8 +136,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
           }
           return acc;
         }),
-        banes: this.props.banesAndBoonsState.addedBanes,
-        boons: this.props.banesAndBoonsState.addedBoons
+        traitIDs: traitIDs
       };
       this.props.dispatch(createCharacter(model,
         this.props.apiKey,
