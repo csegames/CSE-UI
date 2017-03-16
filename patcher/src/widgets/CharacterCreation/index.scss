@@ -40,11 +40,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.5);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: darken($color1, 70%);
+    background: linear-gradient(to bottom,transparent, #454545, transparent);
     border: 1px solid #4E4E4E;
   }
 

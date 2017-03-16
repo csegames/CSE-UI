@@ -67,6 +67,9 @@ export const colors = {
   boonPrimary: '#41ACE9',
   banePrimary: '#E85143',
   transparentBoon: 'rgba(65,172,233,0.3)',
-  transparentBane: 'rgb(232,81,67,0.3)',
+  transparentBane: 'rgba(232,81,67,0.3)',
+  classTrait: '#8D6CAB',
+  raceTrait: '#00A0DC',
+  factionTrait: '#D63C32',
   success: '#ACE0AC'
 };

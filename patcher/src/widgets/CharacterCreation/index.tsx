@@ -56,8 +56,8 @@ export enum pages {
   FACTION_SELECT,
   RACE_SELECT,
   CLASS_SELECT,
-  BANES_AND_BOONS,
-  ATTRIBUTES
+  ATTRIBUTES,
+  BANES_AND_BOONS
 }
 
 export interface CharacterCreationProps {
@@ -89,6 +89,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   create = () => {
     events.fire('play-sound', 'create-character');
     // validate name
+    console.log(this.props.attributesState.maxPoints);
+    console.log(this.props.attributesState.pointsAllocated);
     const modelName = (this.refs['name-input'] as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
     let errors: any = [];
@@ -102,6 +104,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
     if (this.props.banesAndBoonsState.totalPoints !== 0)
       errors.push('You must equally distribute points into your Boons and Banes');
+    if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
+      errors.push(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
+      You have only spent ${this.props.attributesState.pointsAllocated} points.`)
     if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then((res) => res.ok))
       errors.push(
         'We are having technical difficulties. You will not be able to create a character until they have been fixed.'
@@ -207,7 +212,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     events.fire('play-sound', 'select');
   };
 
-  banesAndBoonsNext = () => {
+  attributesNext = () => {
+    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
+      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
+      You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000})
+      return;
+    }
     this.setState({page: this.state.page + 1});
     events.fire('play-sound', 'select');
   };
@@ -321,6 +331,31 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
           </div>
         );
         break;
+      case pages.ATTRIBUTES:
+        content = (
+          <AttributesSelect attributes={this.props.attributesState.attributes}
+            attributeOffsets={this.props.attributeOffsetsState.offsets}
+            selectedGender={this.props.gender}
+            selectedRace={this.props.racesState.selected.id}
+            allocatePoint={(name: string, value: number) => this.props.dispatch(allocateAttributePoint(name, value)) }
+            remainingPoints={this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated} />
+        );
+        back = (
+          <a className='cu-btn left'
+            onClick={this.previousPage}
+            disabled={this.state.page == pages.CLASS_SELECT} >Back</a>
+        );
+        next = (
+           <a className='cu-btn right'
+              onClick={this.attributesNext}
+              disabled={this.state.page == pages.BANES_AND_BOONS}>Next</a>
+        );
+        name = (
+          <div className='cu-character-creation__name'>
+            <input type='text' ref='name-input' placeholder='Character Name'/>
+          </div>
+        );
+        break;
       case pages.BANES_AND_BOONS:
         const { dispatch, racesState, factionsState, playerClassesState, banesAndBoonsState } = this.props;
         content = (
@@ -338,34 +373,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         );
         back = (
           <a className='cu-btn left'
-             onClick={this.previousPage}
-             disabled={this.state.page == pages.CLASS_SELECT}>Back</a>
-        );
-        next = (
-          <a className='cu-btn right'
-             onClick={this.banesAndBoonsNext}
-             disabled={this.state.page == pages.ATTRIBUTES}>Next</a>
-        );
-        break;
-      case pages.ATTRIBUTES:
-        content = (
-          <AttributesSelect attributes={this.props.attributesState.attributes}
-            attributeOffsets={this.props.attributeOffsetsState.offsets}
-            selectedGender={this.props.gender}
-            selectedRace={this.props.racesState.selected.id}
-            allocatePoint={(name: string, value: number) => this.props.dispatch(allocateAttributePoint(name, value)) }
-            remainingPoints={this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated} />
-        );
-        back = (
-          <a className='cu-btn left'
-            onClick={this.previousPage}
-            disabled={this.state.page == pages.FACTION_SELECT} >Back</a>
+              onClick={this.previousPage}
+              disabled={this.state.page == pages.ATTRIBUTES}>Back</a>
         );
         next = (
           <a className={`cu-btn right`} disabled={this.props.characterState.isFetching} onClick={this.create} >Create</a>
         );
         name = (
-          <div className='cu-character-creation__name'>
+          <div className='cu-character-creation__name banes-and-boons-screen'>
             <input type='text' ref='name-input' placeholder='Character Name'/>
           </div>
         );
@@ -377,8 +392,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         <div className='cu-character-creation__content'>
           {content}
         </div>
-        {name}
         <div className="cu-character-creation__back">{back}</div>
+        {name}
         <div className="cu-character-creation__next">{next}</div>
       </div>
     )

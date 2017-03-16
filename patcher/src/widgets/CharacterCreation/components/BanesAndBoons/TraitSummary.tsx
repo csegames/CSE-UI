@@ -27,6 +27,7 @@ export interface TraitSummaryStyle extends StyleDeclaration {
   traitCategory: React.CSSProperties;
   traitIcon: React.CSSProperties;
   cancelTrait: React.CSSProperties;
+  additionalInfoContainer: React.CSSProperties;
 }
 
 export interface TraitSummaryProps {
@@ -49,7 +50,8 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
 
   traitName: {
     fontSize: '1.1em',
-    marginBottom: 0,
+    lineHeight: '1.1em',
+    marginBottom: '5px',
     marginTop: 0
   },
 
@@ -69,15 +71,14 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
   },
 
   traitCategory: {
-    color: '#777',
     marginTop: 0,
-    marginBottom: '2px'
+    marginBottom: '2px',
+    marginRight: '5px'
   },
 
   traitIcon: {
-    width: '80px',
-    height: '80px',
-    border: '2px solid #ccc'
+    width: '60px',
+    height: '60px',
   },
 
   cancelTrait: {
@@ -93,6 +94,10 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
     ':active': {
       boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)'
     }
+  },
+
+  additionalInfoContainer: {
+    display: 'flex'
   }
 };
 
@@ -111,6 +116,10 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
     const { trait, type, styles } = this.props;
     const ss = StyleSheet.create(defaultTraitSummaryStyles);
     const custom = StyleSheet.create(styles || {});
+
+    const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
+     colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
+
     return (
       <div className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
         <div className={css(ss.titleContainer, custom.titleContainer)}>
@@ -119,10 +128,12 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
              style={{ color: type === BOON ? colors.boonPrimary : colors.banePrimary }}>
               {trait.name}
             </p>
-            <p className={css(ss.traitPoints, custom.traitPoints)}>
-              Points: {type === BOON && '+'}{trait.points}
+            <p className={css(ss.traitCategory, custom.traitCategory)} style={{ color: traitColor }}>
+              {trait.required ? 'Required' : trait.category ? trait.category : 'General'} {type}
             </p>
-            <p className={css(ss.traitCategory, custom.traitCategory)}>{trait.required ? 'Required' : trait.category} {type}</p>
+            <p className={css(ss.traitPoints, custom.traitPoints)}>
+              Value: {type === BANE ? trait.points * -1 : trait.points}
+            </p>
           </div>
           <img className={css(ss.traitIcon, custom.traitIcon)} src={trait.icon} />
         </div>
