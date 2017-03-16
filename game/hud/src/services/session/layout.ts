@@ -174,7 +174,7 @@ function initialState(): LayoutState {
     reset: FORCE_RESET_CODE,
     locked: true,
     version: CURRENT_STATE_VERSION,
-    widgets: widgets,
+    widgets
   };
 }
 
