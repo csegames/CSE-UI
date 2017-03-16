@@ -130,9 +130,11 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     overflowY: 'auto',
     paddingLeft: '15px',
     paddingRight: '15px',
+    borderBottom: '1px solid #454545',
     '::-webkit-scrollbar': {
-      width: '5px',
-      borderRadius: '2px'
+      width: '8px',
+      borderRadius: '2px',
+      backroundColor: 'rgba(0,0,0,0.5)'
     }
   },
 
@@ -145,9 +147,11 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     overflowY: 'auto',
     paddingLeft: '15px',
     paddingRight: '15px',
+    borderBottom: '1px solid #454545',
     '::-webkit-scrollbar': {
-      width: '5px',
-      borderRadius: '2px'
+      width: '8px',
+      borderRadius: '2px',
+      backgroundColor: 'rgba(0,0,0,0.5)'
     },
     ...styleConstants.alignItems.flexEnd,
   },
