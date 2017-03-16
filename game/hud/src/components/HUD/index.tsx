@@ -123,6 +123,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       save={(s: HUDDragState) => {
         this.props.dispatch(setPosition({
           name: type,
+          widget: widget,
           position: {
             x: { anchor: s.xAnchor, offset: s.x },
             y: { anchor: s.yAnchor, offset: s.y },
