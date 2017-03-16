@@ -416,6 +416,22 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     }
   }
 
+  private componentDidMount() {
+    const { totalPoints } = this.props;
+    const shouldAffectBoonBar = totalPoints * -1 < 0;
+    const shouldAffectBaneBar = totalPoints * -1 > 0;
+    if (shouldAffectBoonBar) {
+      this.setState(Object.assign({}, this.state, { flexOfBoonBar: totalPoints + 0.5, flexOfBaneBar: 1 }));
+    }
+    if (shouldAffectBaneBar) {
+      this.setState(Object.assign({}, this.state, { flexOfBaneBar: (totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
+    }
+    if (totalPoints === 0) {
+      events.fire('play-sound', 'success');
+      this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
+    }
+  }
+
   private componentWillUpdate(nextProps: BanesAndBoonsProps) {
     if (nextProps.totalPoints != this.props.totalPoints) {
       const shouldAffectBoonBar = nextProps.totalPoints * -1 < 0;
