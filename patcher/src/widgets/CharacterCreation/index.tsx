@@ -213,6 +213,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   };
 
   attributesNext = () => {
+    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
+      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
+      You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000})
+      return;
+    }
     this.setState({page: this.state.page + 1});
     events.fire('play-sound', 'select');
   };

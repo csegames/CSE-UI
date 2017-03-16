@@ -295,7 +295,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '45vh',
+    height: '51vh',
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -572,7 +572,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                 />
               </div>
             </div>
-            <div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
+            {/*<div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
               <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
                 {Object.keys(addedBoons).map((key: string, index: number) => (
                   <div className={css(ss.addBoon, custom.addBoon)} key={index}>
@@ -587,7 +587,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                   </div>
                 ))}
               </div>
-            </div>
+            </div>*/}
           </div>
           <div>
             <div className={css(ss.summaryHeaderContainer, custom.summaryHeaderContainer)}>
