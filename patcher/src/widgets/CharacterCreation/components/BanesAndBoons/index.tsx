@@ -295,7 +295,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '48vh',
+    height: '45vh',
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -435,6 +435,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
 
   private onResetClick = () => {
     setTimeout(() => this.props.onResetClick(), 100);
+    events.fire('play-sound', 'reset-traits');
     this.setState(Object.assign({}, this.state, { showResetAlertDialog: false }))
   };
 

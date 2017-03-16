@@ -32,6 +32,7 @@ export interface TraitStyle extends StyleDeclaration {
   dependencyText: React.CSSProperties;
   rankText: React.CSSProperties;
   regularText: React.CSSProperties;
+  traitPointsCircle: React.CSSProperties;
 }
 
 export interface TraitProps {
@@ -68,7 +69,8 @@ export const defaultTraitStyles: TraitStyle = {
     cursor: 'pointer',
     border: '2px solid #636262',
     marginRight: 0,
-    marginLeft: 0
+    marginLeft: 0,
+    userSelect: 'none'
   },
 
   selectedTrait: {
@@ -161,6 +163,21 @@ export const defaultTraitStyles: TraitStyle = {
 
   regularText: {
     ...styleConstants.marginZero
+  },
+
+  traitPointsCircle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '0',
+    right: '0',
+    width: '15px',
+    height: '15px',
+    borderRadius: '1px',
+    fontSize: '0.7em',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    color: 'white'
   }
 };
 
@@ -253,6 +270,7 @@ class Trait extends React.Component<TraitProps, {}> {
       <div className={css(ss.trait, trait.selected && ss.selectedTrait, shouldBeDisabled && ss.disabledTrait,
        custom.trait, shouldBeDisabled && custom.disabledTrait, trait.selected && custom.selectedTrait)}
        onClick={shouldBeDisabled ? () => {} : trait.ranks ? this.onRankClick : this.onTraitClick}>
+       <div className={css(ss.traitPointsCircle, custom.traitPointsCircle)}>{trait.points}</div>
         <img className={css(ss.traitImage, custom.traitImage)} src={trait.icon} />
         <Tooltip
           styles={{

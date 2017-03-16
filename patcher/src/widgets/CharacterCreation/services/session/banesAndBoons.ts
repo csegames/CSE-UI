@@ -223,7 +223,6 @@ export const onSelectRankBoon = module.createAction({
         }
         break;
     }
-    console.log(generalBoons);
     return {
       addedBoons,
       generalBoons,

@@ -22,6 +22,19 @@ export interface SoundProps {
 export interface SoundState {
   sounds: { [id: string]: string };
  };
+ 
+ const sounds = {
+   select: 'sounds/UI_Menu_GenericSelect_v1_02.ogg',
+   launchGame: 'sounds/UI_Patcher_PlayButton_v3.ogg',
+   patchComplete: 'sounds/patch-complete.ogg',
+   selectChange: 'sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg',
+   createCharacter: 'sounds/UI_Menu_CreateNewCharacter_v1_01.ogg',
+   realmSelect: 'sounds/UI_Menu_SelectRealm_v1_01.ogg',
+   serverSelect: 'sounds/UI_Menu_ServerSelect_v1_01.ogg',
+   resetTraits: 'sounds/UI_AbilityCrafting_Reset_v1_01.ogg',
+   boonSelect: 'sounds/UI_Menu_BoonSelect_v1_01.ogg',
+   baneSelect: 'sounds/UI_Menu_BaneSelect_v1_01.ogg'
+ }
 
 export class Sound extends React.Component<SoundProps, SoundState> {
   constructor(props: SoundProps) {
@@ -58,44 +71,62 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Menu_GenericSelect_v1_02.ogg'
+                      src={sounds.select}
                       ref={r => this.audioRefs[id] = r }/>
       case 'launch-game': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Patcher_PlayButton_v3.ogg'
+                      src={sounds.launchGame}
                       ref={r => this.audioRefs[id] = r }/>
       case 'patch-complete': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/patch-complete.ogg'
+                      src={sounds.patchComplete}
                       ref={r => this.audioRefs[id] = r }/>
       case 'select-change': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg'
+                      src={sounds.selectChange}
                       ref={r => this.audioRefs[id] = r }/>
       case 'create-character': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Menu_CreateNewCharacter_v1_01.ogg'
+                      src={sounds.createCharacter}
                       ref={r => this.audioRefs[id] = r }/>
       case 'realm-select': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Menu_SelectRealm_v1_01.ogg'
+                      src={sounds.realmSelect}
                       ref={r => this.audioRefs[id] = r }/>
       case 'server-select': 
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
-                      src='sounds/UI_Menu_ServerSelect_v1_01.ogg'
-                      ref={r => this.audioRefs[id] = r }/>
+                      src={sounds.serverSelect}
+                      ref={r => this.audioRefs[id] = r } />
+      case 'reset-traits':
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src={sounds.resetTraits}
+                      ref={r => this.audioRefs[id] = r } />
+      case 'boon-select':
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src={sounds.boonSelect}
+                      ref={r => this.audioRefs[id] = r } />
+      case 'bane-select':
+        return <audio key={id}
+                      autoPlay
+                      onEnded={() => this.onEnded(id)}
+                      src={sounds.baneSelect}
+                      ref={r => this.audioRefs[id] = r } />
       default: return null;
     }
   }

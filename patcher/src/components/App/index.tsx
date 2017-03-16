@@ -113,6 +113,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
       if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     }, 60000 * 30);
 
+    window.resizeTo(1450, 850);
+
     events.on('view-content', (v: view) => {
       if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
         this.props.dispatch(changeRoute(Routes.HERO));

@@ -10,6 +10,7 @@
  */
 
 import * as React from 'react';
+import { events } from 'camelot-unchained';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Trait, { TraitStyle } from './Trait';
 import { styleConstants } from '../../styleConstants';
@@ -38,6 +39,10 @@ const Bane = (props: {
     addedBanes,
     styles
   } = props;
+  const onBaneSelect = (trait: BanesAndBoonsInfo) => {
+    onBaneClick(trait);
+    events.fire('play-sound', 'bane-select');
+  }
   const baneStyles = Object.assign(
     {},
     { trait: { ...styleConstants.marginLeft, ...styles.trait } },
@@ -48,7 +53,7 @@ const Bane = (props: {
       type='Bane'
       trait={trait}
       traits={traits}
-      onTraitClick={onBaneClick}
+      onTraitClick={onBaneSelect}
       onCancelTrait={onCancelBane}
       onSelectRankTrait={onSelectRankBane}
       onCancelRankTrait={onCancelRankBane}
