@@ -43,12 +43,12 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
 
   increaseAttribute = (attributeName: string) => {
     this.props.allocatePoint(attributeName, 1);
-    events.fire('play-sound', 'select');
+    if (this.props.remainingPoints !== 0) events.fire('play-sound', 'select');
   }
 
-  decreaseAttribute = (attributeName: string) => {
-    this.props.allocatePoint(attributeName, -1);
-    events.fire('play-sound', 'select');
+  decreaseAttribute = (attributeInfo: AttributeInfo) => {
+    this.props.allocatePoint(attributeInfo.name, -1);
+    if (attributeInfo.allocatedPoints !== 0) events.fire('play-sound', 'select');
   }
 
   generateAttributeContent = (attributeInfo: AttributeInfo, offset: AttributeOffsetInfo) => {
@@ -60,7 +60,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
         <span>{attributeInfo.name} </span>
         <button className='rightarrow right' onClick={() => this.increaseAttribute(attributeInfo.name)} ></button>
         <span className='attribute-points right'>{attributeInfo.baseValue + attributeInfo.allocatedPoints + offsetValue}</span>
-        <button className='leftarrow right' onClick={() => this.decreaseAttribute(attributeInfo.name)}></button>
+        <button className='leftarrow right' onClick={() => this.decreaseAttribute(attributeInfo)}></button>
       </div>
     );
   }

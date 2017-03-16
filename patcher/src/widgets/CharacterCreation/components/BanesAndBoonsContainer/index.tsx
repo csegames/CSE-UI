@@ -29,6 +29,7 @@ import {
   onCancelRankBane,
   onCancelBaneClick,
   onCancelBoonClick,
+  resetBaneOrBoon,
   fetchTraits
 } from '../../services/session/banesAndBoons';
 
@@ -58,7 +59,8 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       dispatch(fetchTraits({
         playerClass: Archetype[playerClass.selected.id],
         race: Race[race.selected.id],
-        faction: Faction[faction.selected.id]
+        faction: Faction[faction.selected.id],
+        initType: 'both'
       }));
     }
   };
@@ -78,13 +80,14 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
     const { dispatch } = this.props;
     dispatch(onCancelBaneClick({ bane: bane }));
   };
-  private onResetClick = () => {
+  private onResetClick = (initType: 'banes' | 'boons') => {
     const { dispatch, playerClass, race, faction } = this.props;
-    dispatch(fetchTraits({
+    dispatch(resetBaneOrBoon({
       playerClass: Archetype[playerClass.selected.id],
       race: Race[race.selected.id],
-      faction: Faction[faction.selected.id]
-    }));
+      faction: Faction[faction.selected.id],
+      initType: initType
+    }))
   };
   render() {
     const {
@@ -101,7 +104,9 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       factionBanes,
       allPrerequisites,
       allExclusives,
-      totalPoints
+      totalPoints,
+      minPoints,
+      maxPoints
     } = this.props.banesAndBoons;
     const { styles, traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
     return (
@@ -118,6 +123,8 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         traits={traits}
         addedBanes={addedBanes}
         addedBoons={addedBoons}
+        minPoints={minPoints}
+        maxPoints={maxPoints}
         allPrerequisites={allPrerequisites}
         allExclusives={allExclusives}
         onBaneClick={this.onSelectBaneClick}

@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:19
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:13:11
+ * @Last Modified time: 2017-03-21 15:06:36
  */
 
 import * as React from 'react';
@@ -27,6 +27,9 @@ export interface TraitSummaryStyle extends StyleDeclaration {
   traitCategory: React.CSSProperties;
   traitIcon: React.CSSProperties;
   cancelTrait: React.CSSProperties;
+  additionalInfoContainer: React.CSSProperties;
+  divider: React.CSSProperties;
+  removeButton: React.CSSProperties;
 }
 
 export interface TraitSummaryProps {
@@ -49,13 +52,15 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
 
   traitName: {
     fontSize: '1.1em',
-    marginBottom: 0,
+    lineHeight: '1.1em',
+    marginBottom: '5px',
     marginTop: 0
   },
 
   traitPoints: {
     margin: 0,
-    color: 'orange'
+    color: 'orange',
+    marginLeft: '5px'
   },
 
   titleContainer: {
@@ -65,19 +70,19 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
   },
 
   traitDescription: {
-    color: '#CCC'
+    color: '#CCC',
+    marginBottom: 0
   },
 
   traitCategory: {
-    color: '#777',
     marginTop: 0,
-    marginBottom: '2px'
+    marginBottom: 0,
+    marginRight: '5px'
   },
 
   traitIcon: {
-    width: '80px',
-    height: '80px',
-    border: '2px solid #ccc'
+    width: '60px',
+    height: '60px',
   },
 
   cancelTrait: {
@@ -92,6 +97,36 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
     },
     ':active': {
       boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)'
+    }
+  },
+
+  additionalInfoContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+
+  divider: {
+    fontSize: '1em',
+    margin: 0,
+    color: '#8f8f8f'
+  },
+
+  removeButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '-5px',
+    right: '-5px',
+    width: '20px',
+    height: '20px',
+    borderRadius: '10px',
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    color: 'white',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    ':hover': {
+      backgroundColor: colors.banePrimary
     }
   }
 };
@@ -111,25 +146,34 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
     const { trait, type, styles } = this.props;
     const ss = StyleSheet.create(defaultTraitSummaryStyles);
     const custom = StyleSheet.create(styles || {});
+
+    const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
+     colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
+
     return (
       <div className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
+        {!trait.required && <div className={css(ss.removeButton, custom.removeButton)} onClick={this.onCancelClick}>
+          X
+        </div>}
         <div className={css(ss.titleContainer, custom.titleContainer)}>
           <div>
             <p className={css(ss.traitName, custom.traitName)}
              style={{ color: type === BOON ? colors.boonPrimary : colors.banePrimary }}>
               {trait.name}
             </p>
-            <p className={css(ss.traitPoints, custom.traitPoints)}>
-              Points: {type === BOON && '+'}{trait.points}
-            </p>
-            <p className={css(ss.traitCategory, custom.traitCategory)}>{trait.required ? 'Required' : trait.category} {type}</p>
+            <div className={css(ss.additionalInfoContainer)}>
+              <p className={css(ss.traitCategory, custom.traitCategory)} style={{ color: traitColor }}>
+                {trait.required ? 'Required' : trait.category ? trait.category : 'General'} {type}
+              </p>
+              <p className={css(ss.divider, custom.divider)}>|</p>
+              <p className={css(ss.traitPoints, custom.traitPoints)}>
+                Value: {type === BANE ? trait.points * -1 : trait.points}
+              </p>
+            </div>
           </div>
           <img className={css(ss.traitIcon, custom.traitIcon)} src={trait.icon} />
         </div>
         <p className={css(ss.traitDescription, custom.traitDescription)}>{trait.description}</p>
-        {!trait.required && <div className={css(ss.cancelTrait)} onClick={this.onCancelClick}>
-          Remove
-        </div>}
       </div>
     )
   }

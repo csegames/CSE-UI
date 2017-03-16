@@ -16,13 +16,13 @@
 
 .cu-character-creation__back {
   position: absolute;
-  bottom: 20px;
+  bottom: 5px;
   left: 20px;
 }
 
 .cu-character-creation__next {
   position: absolute;
-  bottom: 20px;
+  bottom: 5px;
   right: 20px;
 }
 
@@ -78,5 +78,12 @@
     }
 
 
+  }
+
+  &.banes-and-boons-screen {
+    bottom: 1px;
+    right: 0;
+    left: 0;
+    margin: auto;
   }
 }
