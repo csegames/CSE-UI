@@ -46,7 +46,7 @@ const Boon = (props: {
   const boonStyles = Object.assign(
     {},
     styles,
-    { trait: { ...styleConstants.marginRight, ...styles.trait } }
+    { trait: { marginRight: '10px', ...styles.trait } }
   );
   return (
     <Trait

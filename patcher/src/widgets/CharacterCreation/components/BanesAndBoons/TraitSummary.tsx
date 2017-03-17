@@ -69,7 +69,6 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
   },
 
   traitCategory: {
-    color: '#777',
     marginTop: 0,
     marginBottom: '2px'
   },
@@ -111,8 +110,12 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
     const { trait, type, styles } = this.props;
     const ss = StyleSheet.create(defaultTraitSummaryStyles);
     const custom = StyleSheet.create(styles || {});
+
+    const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
+     colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
+
     return (
-      <div className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
+      <div className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)} style={{ border: `1px solid ${traitColor}` }}>
         <div className={css(ss.titleContainer, custom.titleContainer)}>
           <div>
             <p className={css(ss.traitName, custom.traitName)}
@@ -120,9 +123,11 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
               {trait.name}
             </p>
             <p className={css(ss.traitPoints, custom.traitPoints)}>
-              Points: {type === BOON && '+'}{trait.points}
+              Value: {type === BANE ? trait.points * -1 : trait.points}
             </p>
-            <p className={css(ss.traitCategory, custom.traitCategory)}>{trait.required ? 'Required' : trait.category} {type}</p>
+            <p className={css(ss.traitCategory, custom.traitCategory)} style={{ color: traitColor }}>
+              {trait.required ? 'Required' : trait.category} {type}
+            </p>
           </div>
           <img className={css(ss.traitIcon, custom.traitIcon)} src={trait.icon} />
         </div>

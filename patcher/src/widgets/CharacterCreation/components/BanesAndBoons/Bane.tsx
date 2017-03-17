@@ -45,7 +45,7 @@ const Bane = (props: {
   }
   const baneStyles = Object.assign(
     {},
-    { trait: { ...styleConstants.marginLeft, ...styles.trait } },
+    { trait: { marginLeft: '10px', ...styles.trait } },
     styles
   );
   return (
