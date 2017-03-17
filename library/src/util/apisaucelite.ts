@@ -1,20 +1,21 @@
 /**
  * TypeScript conversion with addtion of call method
  * based on apisauce https://github.com/skellock/apisauce
- * 
+ *
  * apisauce is licensed by the MIT license:
  *  Copyright (c) <year> <copyright holders>
- * 
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  *  and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, Promise} from 'axios'
 import {findIndex} from './arrayUtils';
+import {CSEError} from '../webAPI/apierrors';
 
 // the default headers given to axios
 export const DEFAULT_HEADERS = {
@@ -115,6 +116,27 @@ export const create = (config: CreateOptions) => {
       .catch((error: AxiosError) => convertResponse(startedAt, error))
   }
 
+  const parseError = (error: AxiosError) : CSEError => {
+    const stack = error.stack
+    let err
+
+    // try and json parse the response, if successful, assume its
+    // the newer response type
+    if (error.response.headers['content-type'] == 'text/json') {
+      err = error.response.data;
+    } else {
+      // old style error response, map to new style
+      err = {
+        Code: error.code || error.response.status,
+        Message: error.response.data || error.message
+      }
+    }
+
+    // extract basic error name from status
+    // err.Name = getProblemFromStatus(error.response.status)()
+    return err
+  }
+
   /**
     Converts an axios response/error into our response.
    */
@@ -123,17 +145,17 @@ export const create = (config: CreateOptions) => {
     const duration = (end - startedAt)
 
     // new in Axios 0.13 -- some data could be buried 1 level now
-    const isError = axiosResponse instanceof Error
-    const response: AxiosResponse = isError ? (axiosResponse as AxiosError).response : axiosResponse as AxiosResponse
+    const error = axiosResponse instanceof Error && parseError(axiosResponse)
+    const response: AxiosResponse = error ? (axiosResponse as AxiosError).response : axiosResponse as AxiosResponse
     const status = response && response.status || null
-    const problem = isError ? getProblemFromError(axiosResponse as AxiosError) : getProblemFromStatus(status)
+    const problem = error ? getProblemFromError(axiosResponse as AxiosError) : getProblemFromStatus(status)
     const ok = in200s(status)
     const config = axiosResponse.config || null
     const headers = response && response.headers || null
-    let data = response && response.data || null
+    const data = response && response.data || null
 
     // give an opportunity for anything to the response transforms to change stuff along the way
-    return { duration, problem, ok, status, headers, config, data }
+    return { duration, problem, ok, status, headers, config, data, error }
   }
 
   /**

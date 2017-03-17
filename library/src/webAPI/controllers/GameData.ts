@@ -12,40 +12,39 @@ import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorize
 
 
 export function getFactionInfoV1() {
-  return create(createOptions()).get('v1/gamedata/factionInfo', { 
+  return create(createOptions()).get('v1/gamedata/factionInfo', {
   });
 }
 
 export function getFactionsV1() {
-  return create(createOptions()).get('v1/gamedata/factions', { 
+  return create(createOptions()).get('v1/gamedata/factions', {
   });
 }
 
 export function getAttributeInfoV1(shard: number) {
-  return create(createOptions()).get('v1/gamedata/attributeInfo', { 
+  return create(createOptions()).get('v1/gamedata/attributeInfo', {
     shard: shard
   });
 }
 
 export function getArchetypesV1() {
-  return create(createOptions()).get('v1/gamedata/archetypes', { 
+  return create(createOptions()).get('v1/gamedata/archetypes', {
   });
 }
 
 export function getRacesV1() {
-  return create(createOptions()).get('v1/gamedata/races', { 
+  return create(createOptions()).get('v1/gamedata/races', {
   });
 }
 
 export function getAttributeOffsetsV1(shard: number) {
-  return create(createOptions()).get('v1/gamedata/attributeOffsets', { 
+  return create(createOptions()).get('v1/gamedata/attributeOffsets', {
     shard: shard
   });
 }
 
 export function getOrderPermissionsV1() {
-  return create(createOptions()).get('v1/gamedata/orderPermissions', { 
+  return create(createOptions()).get('v1/gamedata/orderPermissions', {
   });
 }
 
- 
