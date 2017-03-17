@@ -10,6 +10,7 @@ import createOptions from '../createOptions';
 import { Character } from '../definitions';
 import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
+
 export function getFactionInfoV1() {
   return create(createOptions()).get('v1/gamedata/factionInfo', {
   });

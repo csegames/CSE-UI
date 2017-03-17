@@ -45,7 +45,7 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "apisauce": "^0.3.1",
-    "camelot-unchained": "^0.7.0",
+    "camelot-unchained": "^0.8.3",
     "cu-xmpp-chat": "^0.3.0",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",

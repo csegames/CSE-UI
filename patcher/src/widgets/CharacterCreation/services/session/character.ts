@@ -30,8 +30,7 @@ export interface CharacterCreationModel {
   archetype: Archetype;
   shardID: number;
   attributes: {}; // primary attributes
-  banes?: {};
-  boons?: {};
+  traitIDs: string[];
 }
 
 const CREATE_CHARACTER = 'cu-character-creation/character/CREATE_CHARACTER';

@@ -69,7 +69,7 @@ export const fetchTraits = (payload: { playerClass: string, race: string, factio
             playerClass: payload.playerClass,
             race: payload.race,
             faction: payload.faction,
-            banesAndBoons: result
+            banesAndBoons: result.data
           }));
         } else {
           toastr.error(
@@ -494,7 +494,10 @@ export const onInitializeTraits = module.createAction({
         factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : []
-    ].map((id) => Object.assign({}, traits[id], { required: true }));
+    ].map((id) => {
+      traits[id] = {...traits[id], required: true};
+      return Object.assign({}, traits[id], { required: true })
+    });
 
     const requiredBanes = [
       ...playerClassTraits && playerClassTraits.required ?
@@ -503,7 +506,10 @@ export const onInitializeTraits = module.createAction({
         factionTraits.required.filter((id: string) => traits[id].points <= -1) : [],
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points <= -1) : []
-    ].map((id) => Object.assign({}, traits[id], { required: true }));
+    ].map((id) => {
+      traits[id] = {...traits[id], required: true}
+      return Object.assign({}, traits[id], { required: true })
+    });
 
     // Player class traits
     const playerClassBoons: { [boonId: string]: string } = {}
