@@ -70,6 +70,6 @@ export const colors = {
   transparentBane: 'rgba(232,81,67,0.3)',
   classTrait: '#8D6CAB',
   raceTrait: '#00A0DC',
-  factionTrait: '#7CB82F',
+  factionTrait: '#D63C32',
   success: '#ACE0AC'
 };

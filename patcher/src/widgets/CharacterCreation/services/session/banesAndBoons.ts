@@ -781,10 +781,12 @@ export const onResetBoons = module.createAction({
       return Object.assign({}, traits[id], { required: true })
     });
 
-    const totalPoints = (requiredBoons.length > 0 && requiredBoons.map((boon) => boon.points).reduce((a, b) => a + b)) +
-      (requiredBanes.length > 0 && requiredBanes.map((bane) => bane.points).reduce((a, b) => a + b));
-
     requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
+
+    const totalPoints = (Object.keys(state.addedBanes).length > 0 &&
+    Object.keys(state.addedBanes).map((id) => traits[id].points).reduce((a, b) => a + b)) +
+    (Object.keys(addedBoons).length > 0 &&
+    Object.keys(addedBoons).map((id) => traits[id].points).reduce((a, b) => a + b));
     
     const allBoonIds = [
       ...Object.keys(generalBoons),
@@ -857,11 +859,11 @@ export const onResetBanes = module.createAction({
 
     const requiredBoons = [
       ...playerClassTraits && playerClassTraits.required ?
-        playerClassTraits.required.filter((id: string) => traits[id].points <= -1) : [],
+        playerClassTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...factionTraits && factionTraits.required ?
-        factionTraits.required.filter((id: string) => traits[id].points <= -1) : [],
+        factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...raceTraits && raceTraits.required ?
-        raceTraits.required.filter((id: string) => traits[id].points <= -1) : []
+        raceTraits.required.filter((id: string) => traits[id].points >= 1) : []
     ].map((id) => {
       traits[id] = {...traits[id], required: true}
       return Object.assign({}, traits[id], { required: true })
@@ -879,10 +881,12 @@ export const onResetBanes = module.createAction({
       return Object.assign({}, traits[id], { required: true })
     });
 
-    const totalPoints = (requiredBoons.length > 0 && requiredBoons.map((boon) => boon.points).reduce((a, b) => a + b)) +
-      (requiredBanes.length > 0 && requiredBanes.map((bane) => bane.points).reduce((a, b) => a + b));
-
     requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
+
+    const totalPoints = (Object.keys(addedBanes).length > 0 &&
+    Object.keys(addedBanes).map((id) => traits[id].points).reduce((a, b) => a + b)) +
+    (Object.keys(state.addedBoons).length > 0 &&
+    Object.keys(state.addedBoons).map((id) => traits[id].points).reduce((a, b) => a + b));
     
     const allBaneIds = [
       ...Object.keys(generalBanes),
