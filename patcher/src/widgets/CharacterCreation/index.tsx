@@ -116,7 +116,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
       Minimum points required: ${banesAndBoonsState.minPoints}`);
     if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
-      errors.push(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
+      errors.push(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
       You have only spent ${this.props.attributesState.pointsAllocated} points.`)
     if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then((res) => res.ok))
       errors.push(
@@ -225,7 +225,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
 
   attributesNext = () => {
     if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
-      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
+      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
       You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000})
       return;
     }
