@@ -392,11 +392,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         <div className='cu-character-creation__content'>
           {content}
         </div>
-        <div className="cu-character-creation__nav-container">
-          <div className="cu-character-creation__back">{back}</div>
-          {name}
-          <div className="cu-character-creation__next">{next}</div>
-        </div>
+        <div className="cu-character-creation__back">{back}</div>
+        {name}
+        <div className="cu-character-creation__next">{next}</div>
       </div>
     )
   }
