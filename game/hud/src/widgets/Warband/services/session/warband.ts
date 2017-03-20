@@ -9,9 +9,9 @@
  * @Last Modified time: 2016-09-27 18:45:37
  */
 
-import cu, {client, events, GroupInvite, groupType, signalr, WarbandMember} from 'camelot-unchained';
-import {addOrUpdate, BaseAction, clone, defaultAction, merge, remove} from '../../../../lib/reduxUtils';
-import {ActionDefinitions, AsyncAction, createReducer, Dictionary, removeWhere} from '../../../../lib/reduxUtils';
+import cu, { client, events, GroupInvite, groupType, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
+import { addOrUpdate, BaseAction, clone, defaultAction, merge, remove } from '../../../../lib/reduxUtils';
+import { ActionDefinitions, AsyncAction, createReducer, Dictionary, removeWhere } from '../../../../lib/reduxUtils';
 
 const INITIALIZE_SIGNALR = 'warband/warband/INITIALIZE_SIGNALR';
 const INITIALIZE_SIGNALR_SUCCESS = 'warband/warband/INITIALIZE_SIGNALR_SUCCESS';
@@ -26,6 +26,43 @@ const MEMBER_JOINED = `warband/warband/MEMBER_JOINED`;
 const MEMBER_UPDATE = `warband/warband/MEMBER_UPDATE`;
 const MEMBER_REMOVED = `warband/warband/MEMBER_REMOVED`;
 
+const characterImages = {
+  humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
+  humanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png',
+  luchorpanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png',
+  luchorpanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png',
+  valkyrieM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  valkyrieF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmalevM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmaleaM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png',
+  humanmaletM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
+  humanmalevF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
+  humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
+  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png'
+};
+
+function getAvatar(gender: Gender, race: Race) {
+  if (gender === Gender.Male) { // MALE
+    switch (race) {
+      case 2: return characterImages.luchorpanM; // Luchorpan
+      case 4: return characterImages.valkyrieM; // Valkyrie
+      case 15: return characterImages.humanmalevM; // Humanmalev
+      case 16: return characterImages.humanmaleaM; // Humanmalea
+      case 17: return characterImages.humanmaletM; // Humanmalet
+      case 18: return characterImages.humanM; // Pict
+    }
+  } else {
+    switch (race) {
+      case 2: return characterImages.luchorpanF; // Luchorpan
+      case 4: return characterImages.valkyrieF; // Valkyrie
+      case 15: return characterImages.humanmalevF; // Humanmalev
+      case 16: return characterImages.humanmaleaF; // Humanmalea
+      case 17: return characterImages.humanmaletF; // Humanmalet
+      case 18: return characterImages.humanF; // Pict
+    }
+  }
+}
+
 /**
  * Helper methods
  */
@@ -38,6 +75,7 @@ function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
   events.on(signalr.WARBAND_EVENTS_MEMBERJOINED, (memberJSON: string) => {
     try {
       const member = JSON.parse(memberJSON);
+      member.avatar = getAvatar(member.gender, member.race);
       dispatch(memberJoined(member));
     } catch (e) {
       if (client.debug) {
@@ -48,6 +86,7 @@ function registerWarbandEvents(dispatch: (action: WarbandAction) => any) {
   events.on(signalr.WARBAND_EVENTS_MEMBERUPDATE, (memberJSON: string) => {
     try {
       const member = JSON.parse(memberJSON);
+      member.avatar = getAvatar(member.gender, member.race);
       dispatch(memberUpdate(member));
     } catch (e) {
       if (client.debug) {

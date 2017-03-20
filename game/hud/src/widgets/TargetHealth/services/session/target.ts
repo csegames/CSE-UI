@@ -50,7 +50,7 @@ const characterImages = {
 };
 
 function getAvatar(gender: Gender, race: Race) {
-  if (gender === 1) { // MALE
+  if (gender === Gender.Male) { // MALE
     switch (race) {
       case 2: return characterImages.luchorpanM; // Luchorpan
       case 4: return characterImages.valkyrieM; // Valkyrie
