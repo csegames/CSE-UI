@@ -324,7 +324,11 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+<<<<<<< HEAD
     height: '47.5vh',
+=======
+    height: '45vh',
+>>>>>>> 09e86d0c773e46b0e94d872acc003b47a2c469cd
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -451,7 +455,11 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
   rangePointsText: {
     margin: 0,
     fontSize: '1em',
+<<<<<<< HEAD
     color: '#eee'
+=======
+    color: '#8f8f8f'
+>>>>>>> 09e86d0c773e46b0e94d872acc003b47a2c469cd
   }
 };
 
@@ -721,7 +729,11 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                      }}>
                   Cancel
                 </div>
+<<<<<<< HEAD
                 <div className={css(ss.resetAlertButton, custom.resetAlertButton)}
+=======
+                <div className={css(ss.alertButton, ss.resetAlertButton, custom.alertButton, custom.resetAlertButton)}
+>>>>>>> 09e86d0c773e46b0e94d872acc003b47a2c469cd
                      onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' : 'boons')}>
                   Yes, reset!
                 </div>
