@@ -324,7 +324,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '45vh',
+    height: '47.5vh',
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -434,9 +434,15 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
   },
 
   resetAlertButton: {
+    cursor: 'pointer',
+    padding: '5px 10px',
     backgroundColor: colors.banePrimary,
     color: 'white',
+    transition: 'background-color 0.1s',
     ...styleConstants.marginLeft,
+    ':active': {
+      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.3)'
+    },
     ':hover': {
       backgroundColor: '#bf4333'
     }
@@ -445,7 +451,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
   rangePointsText: {
     margin: 0,
     fontSize: '1em',
-    color: '#8f8f8f'
+    color: '#eee'
   }
 };
 
@@ -704,7 +710,9 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                  style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog ? 1 : 0,
                   visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ? 'visible' : 'hidden' }}>
               <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText, custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
-              <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>Are you sure you want to reset all Banes and Boons?</p>
+              <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
+                Are you sure you want to reset all {showResetBoonAlertDialog && 'Boons'}{showResetBaneAlertDialog && 'Banes'}?
+              </p>
               <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
                 <div className={css(ss.alertButton, custom.alertButton)}
                      onClick={() => {
@@ -713,7 +721,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                      }}>
                   Cancel
                 </div>
-                <div className={css(ss.alertButton, ss.resetAlertButton, custom.alertButton, custom.resetAlertButton)}
+                <div className={css(ss.resetAlertButton, custom.resetAlertButton)}
                      onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' : 'boons')}>
                   Yes, reset!
                 </div>

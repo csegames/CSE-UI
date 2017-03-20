@@ -89,10 +89,15 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   create = () => {
     events.fire('play-sound', 'create-character');
     // validate name
-    console.log(this.props.attributesState.maxPoints);
-    console.log(this.props.attributesState.pointsAllocated);
+    const { banesAndBoonsState } = this.props;
     const modelName = (this.refs['name-input'] as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
+    .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
+    banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0)
+    
     let errors: any = [];
     if (normalName.length < 2 || modelName.length > 20)
       errors.push('A character name must be between 2 and 20 characters in length.');
@@ -102,8 +107,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
     if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
       errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
-    if (this.props.banesAndBoonsState.totalPoints !== 0)
+    if (banesAndBoonsState.totalPoints !== 0)
       errors.push('You must equally distribute points into your Boons and Banes');
+    if (sumOfTraitValues > banesAndBoonsState.maxPoints) 
+      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, exceeds the maximum points allowed. 
+      Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
+    if(sumOfTraitValues < banesAndBoonsState.minPoints) 
+      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
+      Minimum points required: ${banesAndBoonsState.minPoints}`);
     if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
       errors.push(`You must spend all ${this.props.attributesState.maxPoints} into your character's attributes.
       You have only spent ${this.props.attributesState.pointsAllocated} points.`)
@@ -115,8 +126,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
     } else {
       const traitIDs = [
-        ...Object.keys(this.props.banesAndBoonsState.addedBanes),
-        ...Object.keys(this.props.banesAndBoonsState.addedBoons)
+        ...Object.keys(banesAndBoonsState.addedBanes),
+        ...Object.keys(banesAndBoonsState.addedBoons)
       ]
       // try to create...
       let model: CharacterCreationModel = {

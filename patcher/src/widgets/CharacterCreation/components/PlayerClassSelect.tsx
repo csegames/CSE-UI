@@ -72,7 +72,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
     if (this.props.selectedClass) {
       name = <h2 className='display-name'>{this.props.selectedClass.name}</h2>
       view = <div className={`standing__${Archetype[this.props.selectedClass.id]}`}></div>
-      text = <div className='selection-description'>{classText[Archetype[this.props.selectedClass.id]]}</div>
+      text = <div className='selection-description player-class-s-d'>{classText[Archetype[this.props.selectedClass.id]]}</div>
       switch(this.props.selectedClass.id)
       {
         case Archetype.WintersShadow: videoTitle = 'class_archer'; break;
