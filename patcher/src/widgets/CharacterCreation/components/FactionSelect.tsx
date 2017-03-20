@@ -47,7 +47,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
              <h4>{info.description}</h4>
         <div className={`cu-character-creation__faction-select__${info.shortName}__description`}
              onClick={this.selectFaction.bind(this, info)}>
-             {realmText[info.shortName]}
+             {/*realmText[info.shortName]*/}
         </div>
       </div>
     )

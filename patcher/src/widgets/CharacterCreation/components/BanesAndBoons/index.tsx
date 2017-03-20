@@ -129,7 +129,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
 
   boonsInnerWrapper: {
     flex: 1,
-    height: '55vh',
+    height: '50vh',
     width: '24vw',
     display: 'flex',
     flexDirection: 'column',
@@ -148,7 +148,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
 
   banesInnerWrapper: {
     flex: 1,
-    height: '55vh',
+    height: '50vh',
     width: '24vw',
     display: 'flex',
     flexDirection: 'column',
@@ -324,7 +324,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '52vh',
+    height: '45vh',
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
