@@ -16,7 +16,7 @@ import Bane from './Bane';
 import Boon from './Boon';
 import { TraitStyle } from './Trait';
 import TraitSummary, { TraitSummaryStyle } from './TraitSummary';
-import { events } from 'camelot-unchained';
+import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from "../../styleConstants";
 
 export interface BanesAndBoonsStyle extends StyleDeclaration {
@@ -58,6 +58,7 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
   resetAlertButtonContainer: React.CSSProperties;
   alertButton: React.CSSProperties;
   resetAlertButton: React.CSSProperties;
+  rangePointsText: React.CSSProperties;
 }
 
 export interface BanesAndBoonsProps {
@@ -88,6 +89,8 @@ export interface BanesAndBoonsProps {
   traitSummaryStyles: Partial<TraitSummaryStyle>;
   baneStyles: Partial<TraitStyle>;
   boonStyles: Partial<TraitStyle>;
+  minPoints: number;
+  maxPoints: number;
 }
 
 export interface BanesAndBoonsState {
@@ -437,6 +440,12 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     ':hover': {
       backgroundColor: '#bf4333'
     }
+  },
+
+  rangePointsText: {
+    margin: 0,
+    fontSize: '1em',
+    color: '#8f8f8f'
   }
 };
 
@@ -517,7 +526,9 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       styles,
       boonStyles,
       baneStyles,
-      traitSummaryStyles
+      traitSummaryStyles,
+      maxPoints,
+      minPoints
     } = this.props;
     const {
       flexOfBoonBar,
@@ -539,10 +550,15 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       ...Object.keys(factionBanes).map((id: string) => traits[id]),
       ...Object.keys(generalBanes).map((id: string) => traits[id])
     ]
+    const boonPoints = Object.keys(addedBoons).length > 0 && Object.keys(addedBoons).map((id: string) =>
+      traits[id].points).reduce((a, b) => a + b) || 0;
+    const banePoints = Object.keys(addedBanes).length > 0 && Object.keys(addedBanes).map((id: string) =>
+      traits[id].points * -1).reduce((a, b) => a + b) || 0;
     return (
       <div className={css(ss.banesAndBoonsContainer, custom.banesAndBoonsContainer)}>
         <div className={css(ss.outerContainer, custom.outerContainer)}>
           <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
+          
           <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
             <div className={css(ss.boonsContainer, custom.boonsContainer)}>
               {allBoons.map((trait: BanesAndBoonsInfo, index: number) => {
@@ -571,27 +587,55 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
               <div className={css(ss.pointsBarContainer, custom.pointsBarContainer)}>
                 <p className={css(ss.totalPointsText, custom.totalPointsText)}
                    style={{ color: colors.boonPrimary, marginTop: 0, marginBottom: '-5px' }}>
-                  {Object.keys(this.props.addedBoons).length > 0 && Object.keys(this.props.addedBoons).map((id: string) =>
-                  this.props.traits[id].points).reduce((a, b) => a + b) || 0}
+                  {boonPoints}
                 </p>
-                <p className={css(ss.tooManyTraitsText, custom.tooManyTraitsText)}
-                  style={{ color: totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ? colors.banePrimary : colors.success }}>
-                  {totalPoints > 0 && 'Too many Boons'}
-                  {totalPoints < 0 && 'Too many Banes'}
-                  {totalPoints === 0 && 'Balanced'}
-                </p>
+                <Tooltip
+                  styles={{
+                    tooltip: {
+                      backgroundColor: 'rgba(0,0,0,0.9)',
+                      maxWidth: '200px',
+                      ...styleConstants.direction.ltr
+                    }
+                  }}
+                  content={() => (
+                    <p>
+                      {
+                        banePoints + boonPoints < minPoints ? `A minimumn of ${minPoints} points spent in both Banes and Boons
+                        is required. Current value: ${banePoints + boonPoints}` :
+                        banePoints + boonPoints > maxPoints ? `The maximumn number of points spent in both Banes and Boons is
+                        ${maxPoints}. Current value: ${banePoints + boonPoints}` :
+                        totalPoints > 0 ? `The value of Banes, ${banePoints}, must equal the value of Boons, ${boonPoints}` :
+                        totalPoints < 0 ? `The value of Boons, ${boonPoints}, must equal the value of Boons, ${banePoints}` :
+                        'Balanced'
+                      }
+                    </p>
+                )}>
+                  <p className={css(ss.tooManyTraitsText, custom.tooManyTraitsText)}
+                    style={{ color: totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ||
+                    banePoints + boonPoints < minPoints || banePoints + boonPoints > maxPoints ?
+                    colors.banePrimary : colors.success }}>
+                    {
+                      banePoints + boonPoints < minPoints ? 'Too few Banes and Boons' :
+                      banePoints + boonPoints > maxPoints ? 'Too many Banes and Boons' :
+                      totalPoints > 0 ? 'Not enough Banes' :
+                      totalPoints < 0 ? 'Not enough Boons' :
+                      'Balanced'
+                    }
+                  </p>
+                </Tooltip>
                 <p className={css(ss.totalPointsText, custom.totalPointsText)}
                    style={{ color: colors.banePrimary }}>
-                  {Object.keys(this.props.addedBanes).length > 0 && Object.keys(addedBanes).map((id: string) =>
-                  traits[id].points * -1).reduce((a, b) => a + b) || 0}
+                  {banePoints}
                 </p>
               </div>
               <div className={css(ss.pointsMeter, custom.pointsMeter)}>
                 <div className={css(ss.balanceBar, custom.balanceBar)}
-                  style={{ flex: flexOfBoonBar, backgroundColor: totalPoints !== 0 ? colors.boonPrimary : colors.success }}
+                  style={{ flex: flexOfBoonBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                  banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success }}
                 />
                 <div className={css(ss.balanceBar, custom.balanceBar)}
-                  style={{ flex: flexOfBaneBar, backgroundColor: totalPoints !== 0 ? colors.banePrimary : colors.success }}
+                  style={{ flex: flexOfBaneBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                  banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success }}
                 />
               </div>
               <div className={css(ss.resetButtonsContainer)}>
@@ -600,6 +644,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                      events.fire('play-sound', 'select');
                      this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }))
                    }}>Reset boons</div>
+                   <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
+                   <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
                 <div className={css(ss.baneResetButton, custom.baneResetButton)}
                     onClick={() => {
                      events.fire('play-sound', 'select');

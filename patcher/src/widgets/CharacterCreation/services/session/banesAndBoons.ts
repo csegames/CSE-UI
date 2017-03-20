@@ -56,6 +56,8 @@ export interface BanesAndBoonsState {
   factionBanes: TraitIdMap;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
+  minPoints: number;
+  maxPoints: number;
 }
 
 declare var toastr: any;
@@ -131,7 +133,9 @@ export function getInitialState() {
     raceBanes: {},
     factionBanes: {},
     allPrerequisites: {},
-    allExclusives: {}
+    allExclusives: {},
+    minPoints: 0,
+    maxPoints: 0
   }
   return initialState;
 }
@@ -574,6 +578,10 @@ export const onInitializeTraits = module.createAction({
         traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : traits[id];
         return traits[id].points >= 1 && !combinedRanks[id];
       }) || [],
+      ...playerClassTraits.required.filter((id: string) => {
+        traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : { ...traits[id], selected: true };
+        return traits[id].points >= 1 && !combinedRanks[id];
+      }) || [],
       playerClassTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1)
      ].filter((id: string) => id).forEach((key: string) => {
        playerClassBoons[key] = key;
@@ -586,6 +594,10 @@ export const onInitializeTraits = module.createAction({
         traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction' } : traits[id];
         return traits[id].points >= 1 && !combinedRanks[id];
       }) || [],
+      ...factionTraits.required.filter((id: string) => {
+        traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction', selected: true } : { ...traits[id], selected: true }
+        return traits[id].points >= 1 && !combinedRanks[id];
+      }) || [],
       factionTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1)
       ].filter((id: string) => id).forEach((key: string) => {
         factionBoons[key] = key;
@@ -596,6 +608,10 @@ export const onInitializeTraits = module.createAction({
       raceTraits && raceTraits.optional && [
       ...raceTraits.optional.filter((id: string) => {
         traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race' } : traits[id];
+        return traits[id].points >= 1 && !combinedRanks[id];
+      }) || [],
+      ...raceTraits.required.filter((id: string) => {
+        traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race', selected: true } : { ...traits[id], selected: true };
         return traits[id].points >= 1 && !combinedRanks[id];
       }) || [],
       raceTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1)
@@ -697,7 +713,9 @@ export const onInitializeTraits = module.createAction({
       factionBanes,
       totalPoints,
       allPrerequisites,
-      allExclusives
+      allExclusives,
+      minPoints: 10,
+      maxPoints: 30
     };
   }
 });
@@ -765,7 +783,7 @@ export const onResetBoons = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : []
     ].map((id) => {
-      traits[id] = {...traits[id], required: true}
+      traits[id] = {...traits[id], selected: true, required: true}
       return Object.assign({}, traits[id], { required: true })
     });
 
@@ -777,7 +795,7 @@ export const onResetBoons = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points <= -1) : []
     ].map((id) => {
-      traits[id] = {...traits[id], required: true}
+      traits[id] = {...traits[id], selected: true, required: true}
       return Object.assign({}, traits[id], { required: true })
     });
 
@@ -795,7 +813,7 @@ export const onResetBoons = module.createAction({
       ...Object.keys(factionBoons)
     ];
 
-    allBoonIds.forEach((id: string) => traits[id] = { ...traits[id], selected: false });
+    allBoonIds.forEach((id: string) => traits[id] = !traits[id].required ? { ...traits[id], selected: false } : traits[id]);
 
     return {
       ...state,
@@ -865,7 +883,7 @@ export const onResetBanes = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : []
     ].map((id) => {
-      traits[id] = {...traits[id], required: true}
+      traits[id] = {...traits[id], selected: true, required: true}
       return Object.assign({}, traits[id], { required: true })
     });
 
@@ -877,7 +895,7 @@ export const onResetBanes = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points <= -1) : []
     ].map((id) => {
-      traits[id] = {...traits[id], required: true}
+      traits[id] = {...traits[id], selected: true, required: true}
       return Object.assign({}, traits[id], { required: true })
     });
 
@@ -895,7 +913,7 @@ export const onResetBanes = module.createAction({
       ...Object.keys(factionBanes)
     ];
 
-    allBaneIds.forEach((id: string) => traits[id] = { ...traits[id], selected: false });
+    allBaneIds.forEach((id: string) => traits[id] = !traits[id].required ? { ...traits[id], selected: false } : traits[id]);
 
     return {
       ...state,

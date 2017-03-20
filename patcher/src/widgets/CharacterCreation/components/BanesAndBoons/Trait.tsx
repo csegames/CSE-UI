@@ -98,7 +98,7 @@ export const defaultTraitStyles: TraitStyle = {
       boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)'
     },
     ':hover': {
-      backgroundColor: 'rgba(255,255,255,0.4)'
+      backgroundColor: 'rgba(255,255,255,0.4)',
     }
   },
 
@@ -107,10 +107,13 @@ export const defaultTraitStyles: TraitStyle = {
   },
 
   disabledShadow: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    transition: 'background-color 0.3s',
     backgroundColor: 'rgba(55,55,55,0.7)',
-    ':active': {
-      boxShadow: 'none'
-    },
     ':hover': {
       backgroundColor: 'rgba(55,55,55,0.7)'
     }
@@ -205,8 +208,8 @@ class Trait extends React.Component<TraitProps, {}> {
 
   private onTraitClick = () => {
     const { trait, onTraitClick, onCancelTrait } = this.props;
-    events.fire('play-sound', 'select');
     if (trait.selected) {
+      events.fire('play-sound', 'select');
       onCancelTrait(trait);
     } else {
       onTraitClick(trait);
@@ -264,7 +267,7 @@ class Trait extends React.Component<TraitProps, {}> {
       exclusivityGroup.filter((exclusive: string) => addedTraits[exclusive] &&
       !addedTraits[trait.id]).length >= trait.maxAllowed;
 
-    const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives;
+    const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives || trait.required;
 
     const ss = StyleSheet.create(defaultTraitStyles);
     const custom = StyleSheet.create(styles || {});
@@ -296,7 +299,7 @@ class Trait extends React.Component<TraitProps, {}> {
                 Value: {type === 'Bane' ? trait.points * -1 : trait.points}
               </p>
               <p className={css(ss.traitCategory, custom.traitCategory)} style={{ color: traitColor }}>
-                {trait.category || 'General'} {type}
+                {trait.required ? 'Required' : trait.category || 'General'} {type}
               </p>
               {trait.ranks &&
               <p className={css(ss.regularText, custom.regularText)}>
@@ -334,14 +337,15 @@ class Trait extends React.Component<TraitProps, {}> {
           <p className={css(ss.rankText, custom.rankText)}>
             {trait.rank === 0 ? 0 : traits[addedRankTrait].rank + 1} / {trait.ranks.length}
           </p>}
-          <div className={css(
+          {!shouldBeDisabled ? <div className={css(
             ss.shadow,
-            shouldBeDisabled && ss.disabledShadow,
             custom.shadow,
-            shouldBeDisabled && custom.disabledShadow,
-            trait.selected && ss.selectedShadow,
-            custom.selectedShadow
-          )} />
+            trait.selected && ss.selectedShadow, custom.selectedShadow)} /> :
+           <div className={css(
+             ss.disabledShadow,
+             custom.disabledShadow,
+             trait.selected && ss.selectedShadow,
+             trait.selected && custom.selectedShadow)} />}
         </Tooltip>
       </div>
     )

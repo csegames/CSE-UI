@@ -104,7 +104,9 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       factionBanes,
       allPrerequisites,
       allExclusives,
-      totalPoints
+      totalPoints,
+      minPoints,
+      maxPoints
     } = this.props.banesAndBoons;
     const { styles, traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
     return (
@@ -121,6 +123,8 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         traits={traits}
         addedBanes={addedBanes}
         addedBoons={addedBoons}
+        minPoints={minPoints}
+        maxPoints={maxPoints}
         allPrerequisites={allPrerequisites}
         allExclusives={allExclusives}
         onBaneClick={this.onSelectBaneClick}
