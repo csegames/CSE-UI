@@ -5,13 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:25:29
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-02 10:43:35
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-23 11:58:12
  */
 
 import * as React from 'react';
 import { Map } from 'immutable';
-import { events, client, utils } from 'camelot-unchained';
+import { events, client, utils, soundEvents } from 'camelot-unchained';
 import HUDNav, { HUDNavItem } from '../../../components/HUDNav';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 
@@ -93,6 +93,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'spellbook');
+          client.PlaySoundEvent(soundEvents.PLAY_UI_SPELLBOOK_OPEN);
           client.ShowUI('spellbook');
         }
       },
