@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:07:56
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-21 15:01:27
+ * @Last Modified time: 2017-03-24 16:03:52
  */
 
 import * as React from 'react';
@@ -112,6 +112,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
       this.props.dispatch(validateHeroContent());
       if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     }, 60000 * 30);
+
     events.on('view-content', (v: view) => {
       if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
         this.props.dispatch(changeRoute(Routes.HERO));
