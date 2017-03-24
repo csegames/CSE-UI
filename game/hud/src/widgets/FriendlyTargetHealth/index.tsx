@@ -78,7 +78,7 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
   }
 }
 
-const TargetComp = connect(select)(TargetHealth);
+const TargetComp = connect<TargetHealthProps, {}, TargetHealthProps>(select)(TargetHealth);
 
 class Container extends React.Component<ContainerProps,{}> {
   public render() {

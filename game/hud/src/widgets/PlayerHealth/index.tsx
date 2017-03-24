@@ -65,7 +65,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 }
 
-const PlayerComp = connect(select)(PlayerHealth);
+const PlayerComp = connect<PlayerHealthProps, {}, PlayerHealthProps>(select)(PlayerHealth);
 
 class Container extends React.Component<ContainerProps,{}> {
   public render() {

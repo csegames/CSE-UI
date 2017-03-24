@@ -43,3 +43,4 @@ library/docs/
 .idea/
 *.config.js
 dev.config
+**__snapshots__

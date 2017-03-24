@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:27:05
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 14:47:37
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-05-08 10:31:01
  */
 
 import MyCharacter from './MyCharacter';
@@ -39,9 +39,16 @@ export * from './InlineWarband';
 import Order from './Order';
 export * from './Order';
 
+import MyInventoryItems from './MyInventoryItems';
+export * from './MyInventoryItems';
+
+import MyEquippedItems from './MyEquippedItems';
+export * from './MyEquippedItems';
+
 export default {
   MyCharacter,
   MyCharacterInvites,
+  MyEquippedItems,
   MyOrder,
   MyWarbands,
   MySocial,

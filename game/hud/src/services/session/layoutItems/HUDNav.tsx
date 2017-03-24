@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:25:29
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-23 11:58:12
+ * @Last Modified time: 2017-04-20 17:52:10
  */
 
 import * as React from 'react';
@@ -58,6 +58,26 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'console');
+        },
+      },
+      {
+        name: 'character',
+        tooltip: 'Character',
+        iconClass: 'fa-user',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'character');
+          client.HideUI('spellbook');
+          client.HideUI('ability-builder');
+          client.HideUI('inventory');
+          client.HideUI('equippedgear');
+          client.HideUI('plotcontrol');
         },
       },
       {

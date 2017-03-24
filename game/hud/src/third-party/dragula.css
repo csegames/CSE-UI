@@ -1,0 +1,27 @@
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  -webkit-filter: alpha(opacity=80);
+  filter: alpha(opacity=80);
+  transform: scale(0.7, 0.7);
+  -webkit-transform: scale(0.7, 0.7);
+}
+.gu-hide {
+  display: none !important;
+}
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  outline: 1px solid teal;
+  outline-offset: -4px;
+  opacity: 0.2;
+  filter: (alpha(opacity=20));
+  -webkit-filter: (alpha(opacity=20));
+}

@@ -6,13 +6,12 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 11:35:54
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-17 18:22:26
+ * @Last Modified time: 2017-05-05 14:51:03
  */
 
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { Quadrant, windowQuadrant } from '../util';
-
 const defaultStyles = {
   flyout: {
     backgroundColor: '#4d573e',
@@ -21,11 +20,9 @@ const defaultStyles = {
     'z-index': '9998',
   },
 };
-
 export interface FlyoutContentProps {
   close: () => void;
 }
-
 export interface FlyoutProps {
   content: (props: FlyoutContentProps) => any;
   contentProps?: any;
@@ -35,7 +32,6 @@ export interface FlyoutProps {
   offsetBottom?: number;
   style?: React.CSSProperties;
 }
-
 export interface FlyoutState {
   x: number;
   y: number;
@@ -46,11 +42,8 @@ export interface FlyoutState {
   offsetTop: number;
   offsetBottom: number;
 }
-
 export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
-
   private mouseOverElement = false;
-
   constructor(props: FlyoutProps) {
     super(props);
     this.state = {
@@ -64,18 +57,14 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
       offsetBottom: this.props.offsetBottom || 5,
     };
   }
-
   public render() {
-
     const ss = StyleSheet.create({
       Flyout: {
         ...defaultStyles.flyout,
         ...(this.props.style || {}),
       },
     });
-
     const contentProps = this.props.contentProps || {};
-
     return (
       <div onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
         style={{ display: 'inline-block' }}>
@@ -89,13 +78,11 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
       </div>
     );
   }
-
   public hide = () => {
     this.setState({ hidden: true } as any);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('mousedown', this.onMouseDown);
   }
-
   public show = (clientX: number, clientY: number) => {
     this.setState({
       hidden: false,
@@ -104,41 +91,34 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
       y: clientY,
     } as any);
   }
-
   private componentWillUnmount() {
     // unreg window handlers
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('mousedown', this.onMouseDown);
   }
-
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.which === 27 && !this.state.hidden) {
       // escape, close this
       this.hide();
     }
   }
-
   private onMouseDown = (e: MouseEvent) => {
     if (!this.mouseOverElement && !this.state.hidden) {
       this.hide();
     }
   }
-
   private onMouseEnter = () => {
     this.mouseOverElement = true;
   }
-
   private onMouseLeave = () => {
     this.mouseOverElement = false;
   }
-
   private onClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!this.state.hidden) return;
     this.show(e.clientX, e.clientY);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('mousedown', this.onMouseDown);
   }
-
   private computeStyle = (): React.CSSProperties => {
     switch (this.state.wndRegion) {
       case Quadrant.TopLeft:
@@ -168,5 +148,4 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     }
   }
 }
-
 export default Flyout;

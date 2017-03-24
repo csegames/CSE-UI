@@ -98,6 +98,9 @@ module.exports = {
       default: {
         script: 'nps report.test && nps test.jest'
       },
+      update: {
+        script: 'nps report.test && nps test.jest.update'
+      },
       watch: {
         script: 'nps report.test && nps test.jest.watch'
       },
@@ -110,6 +113,9 @@ module.exports = {
           script: 'jest --watch',
           hiddenFromHelp: true,
         },
+        update: {
+          script: 'jest --updateSnapshot'
+        }
       }
     },
     build: {

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:22:21
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 10:54:38
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-05-08 10:31:00
  */
 
 import FullOrder from './FullOrder';
@@ -33,6 +33,44 @@ export * from './FullCharacter';
 import Invite from './Invite';
 export * from './Invite';
 
+import AlloyItemStats from './items/AlloyItemStats';
+export * from './items/AlloyItemStats';
+
+import AlloyStats from './items/AlloyStats';
+export * from './items/AlloyStats';
+
+import ArmorItemStats from './items/ArmorItemStats';
+export * from './items/ArmorItemStats';
+
+import ArmorPartStats from './items/ArmorPartStats';
+export * from './items/ArmorPartStats';
+
+import ArmorStats from './items/ArmorStats';
+export * from './items/ArmorStats';
+
+import BasicItemStats from './items/BasicItemStats';
+export * from './items/BasicItemStats';
+
+import DamageTypeValues from './items/DamageTypeValues';
+export * from './items/DamageTypeValues';
+
+import DurabilityStats from './items/DurabilityStats';
+export * from './items/DurabilityStats';
+
+import ItemStats from './items/ItemStats';
+export * from './items/ItemStats';
+
+import SubstanceItemStats from './items/SubstanceItemStats';
+export * from './items/SubstanceItemStats';
+
+import SubstanceStats from './items/SubstanceStats';
+export * from './items/SubstanceStats';
+
+import WeaponItemStats from './items/WeaponItemStats';
+export * from './items/WeaponItemStats';
+
+import WeaponStats from './items/WeaponStats';
+export * from './items/WeaponStats';
 
 export default {
   FullOrder,
@@ -43,4 +81,17 @@ export default {
   CustomRank,
   FullCharacter,
   Invite,
+  AlloyItemStats,
+  AlloyStats,
+  ArmorItemStats,
+  ArmorPartStats,
+  ArmorStats,
+  BasicItemStats,
+  DamageTypeValues,
+  DurabilityStats,
+  ItemStats,
+  SubstanceItemStats,
+  SubstanceStats,
+  WeaponItemStats,
+  WeaponStats,
 };

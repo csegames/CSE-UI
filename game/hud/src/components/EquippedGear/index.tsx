@@ -5,8 +5,8 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-27 16:37:20
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-30 16:30:36
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-05-12 16:22:55
  */
 
 import { client, Item, events, jsKeyCodes, hasClientAPI } from 'camelot-unchained';
@@ -87,15 +87,15 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
   }
 
   private componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
-      if (name === 'equippedgear') {
-        if (!this.state.visible) {
-          this.show();
-        } else {
-          this.hide();
-        }
-      }
-    });
+    // events.on('hudnav--navigate', (name: string) => {
+    //   if (name === 'equippedgear') {
+    //     if (!this.state.visible) {
+    //       this.show();
+    //     } else {
+    //       this.hide();
+    //     }
+    //   }
+    // });
     window.addEventListener('keydown', e => this.onKeyDown(e));
   }
 

@@ -69,15 +69,15 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
   }
 
   private componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
-      if (name === 'inventory') {
-        if (this.state.visible) {
-          this.setState((state, props) => ({ visible: false }));
-        } else {
-          this.setState((state, props) => ({ visible: true }));
-        }
-      }
-    });
+    // events.on('hudnav--navigate', (name: string) => {
+    //   if (name === 'inventory') {
+    //     if (this.state.visible) {
+    //       this.setState((state, props) => ({ visible: false }));
+    //     } else {
+    //       this.setState((state, props) => ({ visible: true }));
+    //     }
+    //   }
+    // });
   }
 
   private componentWillUnmount() {

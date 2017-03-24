@@ -28,6 +28,7 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import InteractiveAlert, { Alert } from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import Social from '../../widgets/Social';
+import Character from '../../widgets/Character';
 
 import { ZoneName } from '../ZoneName';
 
@@ -73,8 +74,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     const orderedWidgets: JSX.Element[] = [];
     widgets.forEach((widget, key) => {
-      orderedWidgets[widget.position.zOrder] =
-        this.draggable(key, widget, widget.component, widget.dragOptions, widget.props);
+      orderedWidgets[widget.position.zOrder] = 
+      this.draggable(key, widget, widget.component, widget.dragOptions, widget.props);
     });
 
     return (
@@ -91,6 +92,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />
         <Social />
+        <Character />
         <Watermark />
       </div>
     );
