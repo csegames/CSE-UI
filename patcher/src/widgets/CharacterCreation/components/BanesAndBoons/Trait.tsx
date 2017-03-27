@@ -15,6 +15,8 @@ import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/
 import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
+declare var toastr: any;
+
 export interface TraitStyle extends StyleDeclaration {
   traitContainer: React.CSSProperties;
   trait: React.CSSProperties;
@@ -51,6 +53,8 @@ export interface TraitProps {
   addedTraits: TraitIdMap;
   primaryColor: string;
   styles: Partial<TraitStyle>;
+  maxPoints: number;
+  totalPoints: number;
 }
 
 export const defaultTraitStyles: TraitStyle = {
@@ -223,11 +227,11 @@ class Trait extends React.Component<TraitProps, {}> {
   }
 
   private onTraitClick = () => {
-    const { trait, onTraitClick, onCancelTrait } = this.props;
+    const { trait, onTraitClick, onCancelTrait, maxPoints, totalPoints } = this.props;
     if (trait.selected) {
       events.fire('play-sound', 'select');
       onCancelTrait(trait);
-    } else {
+    } else {      
       onTraitClick(trait);
     }
   };
@@ -267,7 +271,9 @@ class Trait extends React.Component<TraitProps, {}> {
       allExclusives,
       addedTraits,
       primaryColor,
-      styles
+      styles,
+      maxPoints,
+      totalPoints
     } = this.props;
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
@@ -283,7 +289,9 @@ class Trait extends React.Component<TraitProps, {}> {
       exclusivityGroup.filter((exclusive: string) => addedTraits[exclusive] &&
       !addedTraits[trait.id]).length >= trait.maxAllowed;
 
-    const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives || trait.required;
+    const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives || trait.required ||
+    (trait.points <= -1 && totalPoints + (trait.points * -1) > maxPoints && !trait.selected) ||
+    (trait.points >= 1 && totalPoints + (trait.points) > maxPoints && !trait.selected);
 
     const ss = StyleSheet.create(defaultTraitStyles);
     const custom = StyleSheet.create(styles || {});

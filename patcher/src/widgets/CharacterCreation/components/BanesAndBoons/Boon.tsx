@@ -26,6 +26,8 @@ const Boon = (props: {
   allExclusives: TraitIdMap;
   addedBoons: TraitIdMap;
   styles: Partial<TraitStyle>;
+  maxPoints: number;
+  totalPoints: number;
 }) => {
   const {
     trait,
@@ -37,7 +39,9 @@ const Boon = (props: {
     allPrerequisites,
     allExclusives,
     addedBoons,
-    styles
+    styles,
+    maxPoints,
+    totalPoints
   } = props;
   const onBoonSelect = (trait: BanesAndBoonsInfo) => {
     onBoonClick(trait);
@@ -62,6 +66,8 @@ const Boon = (props: {
       addedTraits={addedBoons}
       primaryColor='#41ACE9'
       styles={boonStyles}
+      maxPoints={maxPoints}
+      totalPoints={totalPoints}
     />
   )
 };

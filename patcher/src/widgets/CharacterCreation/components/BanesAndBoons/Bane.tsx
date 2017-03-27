@@ -26,6 +26,8 @@ const Bane = (props: {
   allExclusives: TraitIdMap;
   addedBanes: TraitIdMap;
   styles: Partial<TraitStyle>;
+  maxPoints: number;
+  totalPoints: number;
 }) => {
   const {
     trait,
@@ -37,7 +39,9 @@ const Bane = (props: {
     allPrerequisites,
     allExclusives,
     addedBanes,
-    styles
+    styles,
+    maxPoints,
+    totalPoints
   } = props;
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     onBaneClick(trait);
@@ -62,6 +66,8 @@ const Bane = (props: {
       addedTraits={addedBanes}
       primaryColor='#E85143'
       styles={baneStyles}
+      maxPoints={maxPoints}
+      totalPoints={totalPoints}
     />
   )
 };

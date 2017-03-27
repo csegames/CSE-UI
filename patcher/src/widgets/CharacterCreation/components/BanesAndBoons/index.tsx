@@ -581,6 +581,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     onSelectRankBoon={onSelectRankBoon}
                     onCancelRankBoon={onCancelRankBoon}
                     styles={boonStyles}
+                    maxPoints={maxPoints}
+                    totalPoints={boonPoints + banePoints}
                   />
                 )
               })}
@@ -747,6 +749,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     onSelectRankBane={onSelectRankBane}
                     onCancelRankBane={onCancelRankBane}
                     styles={baneStyles}
+                    maxPoints={maxPoints}
+                    totalPoints={boonPoints + banePoints}
                   />
                 )
               })}
