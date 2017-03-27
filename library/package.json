@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
-    "@types/lodash": "^4.14.52",
+    "@types/lodash": "4.14.56",
     "@types/react": "^15.0.11",
     "@types/react-dom": "^0.14.23",
     "babel-cli": "^6.5.1",
