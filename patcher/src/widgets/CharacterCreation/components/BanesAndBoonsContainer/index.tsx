@@ -80,7 +80,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
     const { dispatch } = this.props;
     dispatch(onCancelBaneClick({ bane: bane }));
   };
-  private onResetClick = (initType: 'banes' | 'boons') => {
+  private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
     const { dispatch, playerClass, race, faction } = this.props;
     dispatch(resetBaneOrBoon({
       playerClass: Archetype[playerClass.selected.id],

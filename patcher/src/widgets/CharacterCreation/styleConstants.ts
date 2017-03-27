@@ -71,5 +71,6 @@ export const colors = {
   classTrait: '#8D6CAB',
   raceTrait: '#00A0DC',
   factionTrait: '#D63C32',
-  success: '#ACE0AC'
+  success: '#ACE0AC',
+  transparentSuccess: 'rgba(172, 224, 172, 0.3)'
 };

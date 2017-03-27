@@ -112,6 +112,20 @@ export const resetBaneOrBoon = (payload: {
             faction: payload.faction,
             banesAndBoons: result.data
           }));
+          if (payload.initType === 'both') {
+            dispatch(onResetBoons({
+              playerClass: payload.playerClass,
+              race: payload.race,
+              faction: payload.faction,
+              banesAndBoons: result.data
+            }));
+            dispatch(onResetBanes({
+              playerClass: payload.playerClass,
+              race: payload.race,
+              faction: payload.faction,
+              banesAndBoons: result.data
+            }));
+          }
         }
       })
   }
@@ -456,6 +470,8 @@ export const onInitializeTraits = module.createAction({
     const ranks = banesAndBoons.ranks;
     const exclusives = banesAndBoons.exclusivity;
     const allTraits = banesAndBoons.traits;
+    const minPoints = banesAndBoons.minPoints;
+    const maxPoints = banesAndBoons.maxPoints;
     const generalBoons: { [id: string]: string } = {};
     const generalBanes: { [id: string]: string } = {};
     const playerClassBoons: { [id: string]: string } = {};
@@ -714,8 +730,8 @@ export const onInitializeTraits = module.createAction({
       totalPoints,
       allPrerequisites,
       allExclusives,
-      minPoints: 10,
-      maxPoints: 30
+      minPoints,
+      maxPoints
     };
   }
 });
