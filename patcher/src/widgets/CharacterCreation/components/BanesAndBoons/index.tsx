@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:15
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 16:19:16
+ * @Last Modified time: 2017-03-21 15:07:24
  */
 
 import * as React from 'react';
@@ -25,6 +25,7 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
   summaryContainer: React.CSSProperties;
   boonsInnerWrapper: React.CSSProperties;
   banesInnerWrapper: React.CSSProperties;
+  headerContainer: React.CSSProperties;
   boonsHeader: React.CSSProperties;
   banesHeader: React.CSSProperties;
   boonsContainer: React.CSSProperties;
@@ -49,6 +50,7 @@ export interface BanesAndBoonsStyle extends StyleDeclaration {
   addedBoonSummaryWrapper: React.CSSProperties;
   addedBaneSummaryWrapper: React.CSSProperties;
   resetButtonsContainer: React.CSSProperties;
+  resetAllButton: React.CSSProperties;
   boonResetButton: React.CSSProperties;
   baneResetButton: React.CSSProperties;
   resetAlertOverlay: React.CSSProperties;
@@ -98,6 +100,7 @@ export interface BanesAndBoonsState {
   flexOfBaneBar: number;
   showResetBoonAlertDialog: boolean;
   showResetBaneAlertDialog: boolean;
+  showResetAllAlertDialog: boolean;
 }
 
 export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
@@ -166,19 +169,25 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     ...styleConstants.alignItems.flexEnd,
   },
 
+  headerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: '15px',
+    paddingLeft: '15px'
+  },
+
   banesHeader: {
     fontSize: '1.7em',
     marginTop: '10px',
     marginBottom: '10px',
-    ...styleConstants.marginRight,
     ...styleConstants.textAlign.right
   },
 
   boonsHeader: {
     fontSize: '1.7em',
     marginTop: '10px',
-    marginBottom: '10px',
-    ...styleConstants.marginLeft
+    marginBottom: '10px'
   },
 
   boonTitle: {
@@ -349,6 +358,18 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     marginBottom: '15px'
   },
 
+  resetAllButton: {
+    cursor: 'pointer',
+    fontSize: '1em',
+    transition: 'color 0.3s',
+    textAlign: 'center',
+    color: colors.success,
+    margin: 0,
+    ':hover': {
+      color: colors.transparentSuccess
+    }
+  },
+
   boonResetButton: {
     cursor: 'pointer',
     fontSize: '1em',
@@ -462,7 +483,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       flexOfBoonBar: 1,
       flexOfBaneBar: 1,
       showResetBoonAlertDialog: false,
-      showResetBaneAlertDialog: false
+      showResetBaneAlertDialog: false,
+      showResetAllAlertDialog: false
     }
   }
 
@@ -502,7 +524,11 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
     setTimeout(() => this.props.onResetClick(initType), 100);
     events.fire('play-sound', 'reset-traits');
-    this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: false, showResetBaneAlertDialog: false }))
+    this.setState(Object.assign({}, this.state, {
+      showResetBoonAlertDialog: false,
+      showResetBaneAlertDialog: false,
+      showResetAllAlertDialog: false
+    }))
   };
 
   render() {
@@ -540,7 +566,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       flexOfBoonBar,
       flexOfBaneBar,
       showResetBaneAlertDialog,
-      showResetBoonAlertDialog
+      showResetBoonAlertDialog,
+      showResetAllAlertDialog
     } = this.state;
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
@@ -548,14 +575,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       ...Object.keys(playerClassBoons).map((id: string) => traits[id]),
       ...Object.keys(raceBoons).map((id: string) => traits[id]),
       ...Object.keys(factionBoons).map((id: string) => traits[id]),
-      ...Object.keys(generalBoons).map((id: string) => traits[id])
-    ]
+      ...Object.keys(generalBoons).map((id: string) => traits[id]).sort((a, b) => a.points - b.points)
+    ];
     const allBanes = [
       ...Object.keys(playerClassBanes).map((id: string) => traits[id]),
       ...Object.keys(raceBanes).map((id: string) => traits[id]),
       ...Object.keys(factionBanes).map((id: string) => traits[id]),
-      ...Object.keys(generalBanes).map((id: string) => traits[id])
-    ]
+      ...Object.keys(generalBanes).map((id: string) => traits[id]).sort((a, b) => (a.points * -1) - (b.points * -1))
+    ];
     const boonPoints = Object.keys(addedBoons).length > 0 && Object.keys(addedBoons).map((id: string) =>
       traits[id].points).reduce((a, b) => a + b) || 0;
     const banePoints = Object.keys(addedBanes).length > 0 && Object.keys(addedBanes).map((id: string) =>
@@ -563,8 +590,13 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     return (
       <div className={css(ss.banesAndBoonsContainer, custom.banesAndBoonsContainer)}>
         <div className={css(ss.outerContainer, custom.outerContainer)}>
-          <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
-          
+          <div className={css(ss.headerContainer, custom.headerContainer)}>
+            <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
+            <div>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+            </div>
+          </div>
           <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
             <div className={css(ss.boonsContainer, custom.boonsContainer)}>
               {allBoons.map((trait: BanesAndBoonsInfo, index: number) => {
@@ -581,6 +613,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     onSelectRankBoon={onSelectRankBoon}
                     onCancelRankBoon={onCancelRankBoon}
                     styles={boonStyles}
+                    maxPoints={maxPoints}
+                    totalPoints={boonPoints + banePoints}
                   />
                 )
               })}
@@ -650,8 +684,13 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                      events.fire('play-sound', 'select');
                      this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }))
                    }}>Reset boons</div>
-                   <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
-                   <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
+                <div className={css(ss.resetAllButton, custom.resetAllButton)}
+                  onClick={() => {
+                    events.fire('play-sound', 'select');
+                    this.setState(Object.assign({}, this.state, { showResetAllAlertDialog: true }))
+                  }}>
+                  Reset all
+                </div>
                 <div className={css(ss.baneResetButton, custom.baneResetButton)}
                     onClick={() => {
                      events.fire('play-sound', 'select');
@@ -704,25 +743,29 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
               </div>
             </div>
             <div className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
-                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog ? 1 : 0,
-                 visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ? 'visible' : 'hidden' }} />
+                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                 visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 'visible' : 'hidden' }} />
             <div className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
-                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog ? 1 : 0,
-                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ? 'visible' : 'hidden' }}>
+                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 'visible' : 'hidden' }}>
               <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText, custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
               <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
-                Are you sure you want to reset all {showResetBoonAlertDialog && 'Boons'}{showResetBaneAlertDialog && 'Banes'}?
+                Are you sure you want to reset all {showResetBoonAlertDialog && 'Boons'}{showResetBaneAlertDialog && 'Banes'}
+                {showResetAllAlertDialog && 'Banes & Boons'}?
               </p>
               <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
                 <div className={css(ss.alertButton, custom.alertButton)}
                      onClick={() => {
                        events.fire('play-sound', 'select');
-                       this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: false, showResetBaneAlertDialog: false }))
+                       this.setState(Object.assign({}, this.state, {
+                         showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false
+                       }))
                      }}>
                   Cancel
                 </div>
                 <div className={css(ss.resetAlertButton, custom.resetAlertButton)}
-                     onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' : 'boons')}>
+                     onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' :
+                     showResetBoonAlertDialog ? 'boons' : 'both')}>
                   Yes, reset!
                 </div>
               </div>
@@ -730,7 +773,13 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           </div>
         </div>
         <div className={css(ss.outerContainer, custom.outerContainer)}>
-          <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
+          <div className={css(ss.headerContainer, custom.headerContainer)}>
+            <div>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+            </div>
+            <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
+          </div>
           <div className={css(ss.banesInnerWrapper, custom.banesInnerWrapper)}>
             <div className={css(ss.banesContainer, custom.banesContainer)}>
               {allBanes.map((trait: BanesAndBoonsInfo, index: number) => {
@@ -747,6 +796,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     onSelectRankBane={onSelectRankBane}
                     onCancelRankBane={onCancelRankBane}
                     styles={baneStyles}
+                    maxPoints={maxPoints}
+                    totalPoints={boonPoints + banePoints}
                   />
                 )
               })}
