@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:15
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-21 15:07:24
+ * @Last Modified time: 2017-03-29 17:07:36
  */
 
 import * as React from 'react';
@@ -593,8 +593,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
             </div>
           </div>
           <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
@@ -775,8 +775,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         <div className={css(ss.outerContainer, custom.outerContainer)}>
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
             </div>
             <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
           </div>
