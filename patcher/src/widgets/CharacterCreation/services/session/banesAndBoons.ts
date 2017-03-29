@@ -730,8 +730,8 @@ export const onInitializeTraits = module.createAction({
       totalPoints,
       allPrerequisites,
       allExclusives,
-      minPoints,
-      maxPoints
+      minPoints: minPoints * 2,
+      maxPoints: maxPoints * 2
     };
   }
 });

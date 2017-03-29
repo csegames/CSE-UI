@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
-    "@types/lodash": "^4.14.52",
+    "@types/lodash": "4.14.30",
     "@types/react": "^15.0.14",
     "@types/react-addons-css-transition-group": "^15.0.1",
     "@types/react-addons-transition-group": "^0.14.19",

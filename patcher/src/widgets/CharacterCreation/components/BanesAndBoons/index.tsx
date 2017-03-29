@@ -166,7 +166,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
       borderRadius: '2px',
       backgroundColor: 'rgba(0,0,0,0.5)'
     },
-    ...styleConstants.alignItems.flexEnd,
+    alignItems: 'flex-end',
   },
 
   headerContainer: {
@@ -199,7 +199,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     fontSize: '20px',
     color: '#727272',
     ...styleConstants.textAlign.right,
-    ...styleConstants.alignItems.flexEnd
+    alignItems: 'flex-end'
   },
 
   boonsContainer: {
@@ -593,8 +593,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
             </div>
           </div>
           <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
@@ -775,8 +775,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         <div className={css(ss.outerContainer, custom.outerContainer)}>
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
             </div>
             <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
           </div>
