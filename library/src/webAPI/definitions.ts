@@ -330,6 +330,39 @@ export interface GameServiceUnavailable {
 export interface PresenceServiceUnavailable { 
 }
  
+export interface Trait { 
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  points: number;
+  prerequisites: string[];
+}
+
+
+ 
+export interface OptionalAndRequiredTraits { 
+  required: string[];
+  optional: string[];
+}
+
+export interface ExclusiveTraits { 
+  ids: string[];
+  minRequired: number;
+  maxAllowed: number;
+}
+
+export interface TraitList { 
+  traits: Trait[];
+  factions: { [key: string]: OptionalAndRequiredTraits; };
+  races: { [key: string]: OptionalAndRequiredTraits; };
+  archetypes: { [key: string]: OptionalAndRequiredTraits; };
+  ranks: string[][];
+  exclusivity: ExclusiveTraits[];
+}
+
+
+ 
 
 
 export interface UnauthorizedFieldCode {
@@ -786,18 +819,19 @@ export enum Archetype {
   WaterMage = 2,
   Fighter = 3,
   Healer = 4,
-  MeleeCombatTest = 5,
-  ArcherTest = 6,
-  BlackKnight = 7,
-  Fianna = 8,
-  Mjolnir = 9,
-  Physician = 10,
-  Empath = 11,
-  Stonehealer = 12,
-  Blackguard = 13,
-  ForestStalker = 14,
-  WintersShadow = 15,
-  Any = 16
+  Archer = 5,
+  MeleeCombatTest = 6,
+  ArcherTest = 7,
+  BlackKnight = 8,
+  Fianna = 9,
+  Mjolnir = 10,
+  Physician = 11,
+  Empath = 12,
+  Stonehealer = 13,
+  Blackguard = 14,
+  ForestStalker = 15,
+  WintersShadow = 16,
+  Any = 17
 }
  
  
@@ -1400,7 +1434,7 @@ export enum ResourceType {
   HeavyWarArrow = 18,
   ArrowEnd = 19,
   ArrowCount = 14,
-  Doodad = 20
+  None = 15
 }
  
   
@@ -1502,6 +1536,13 @@ export enum TriggerType {
 }
  
   
+export enum VoxJobStatus { 
+  Configuring = 0,
+  Running = 1,
+  Finished = 2
+}
+ 
+  
 export enum WeaponStat { 
   None = 0,
   PiercingDamage = 1,
@@ -1562,13 +1603,21 @@ export enum WeaponType {
   Shield = 8192,
   Bow = 16384,
   Throwing = 32768,
-  All = 65535
+  Focus = 65536,
+  LongSword = 131072,
+  All = 262143
 }
 
 export enum NetworkWeaponType { 
   Default = 0,
   Shield = 1,
   Bow = 2
+}
+
+export enum NetworkWeaponSlot { 
+  PrimaryHand = 0,
+  SecondaryHand = 1,
+  TwoHands = 2
 }
  
   

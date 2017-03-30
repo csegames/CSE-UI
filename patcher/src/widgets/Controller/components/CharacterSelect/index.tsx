@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:15:34
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-07 15:15:25
+ * @Last Modified time: 2017-03-30 18:29:35
  */
 
 import * as React from 'react';
@@ -147,8 +147,10 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     const {selectedServer} = this.props;
 
     // If no server, we have no characters to display selections for.
-    if (!selectedServer || selectedServer == null) {
-      console.log('no server selected');
+    if (!selectedServer || selectedServer == null || !selectedServer.shardID) {
+      try {
+        console.log(`no server selected ${JSON.stringify(selectedServer)}`);
+      } catch(e) {}
       return null;
     }
 

@@ -52,6 +52,7 @@ export function archetypeString(archetype: def.Archetype) {
   case def.Archetype.Fighter: return 'Fighter';
   case def.Archetype.Healer: return 'Healer';
   case def.Archetype.MeleeCombatTest: return 'Melee Test';
+  case def.Archetype.Archer: return 'Archer';
   case def.Archetype.ArcherTest: return 'Archer Test';
   case def.Archetype.BlackKnight: return 'Black Knight';
   case def.Archetype.Fianna: return 'Fianna';
