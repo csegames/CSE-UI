@@ -173,7 +173,6 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'equipped');
-          client.ShowUI('equippedgear');
         }
       },
       {

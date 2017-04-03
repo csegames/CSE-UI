@@ -27,6 +27,22 @@ body {
   width: 100%;
   height: 100%;
   @import './_font.scss';
+  // components
+  @import './components/PlayerStatusComponent/index';
+  @import './components/HUD/index';
+  @import './components/HUDDrag/index';
+  @import './components/Respawn/index';
+  @import './components/Compass/index';
+  // widgets
+  @import './widgets/EquippedGear/index';
+  @import './widgets/Crafting/index';
+  @import './widgets/PlayerHealth/index';
+  @import './widgets/TargetHealth/index';
+  @import './widgets/Warband/index';
+  @import './widgets/Welcome/index';
+  @import './widgets/Social/index';
+  // external scss
+  @import 'cu-xmpp-chat/lib/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;
@@ -69,20 +85,4 @@ body {
     margin: 0;
     padding: 0;
   }
-
-  // components
-  @import './components/PlayerStatusComponent/index';
-  @import './components/HUD/index';
-  @import './components/HUDDrag/index';
-  @import './components/Respawn/index';
-  @import './components/Compass/index';
-  // widgets
-  @import './widgets/Crafting/index';
-  @import './widgets/PlayerHealth/index';
-  @import './widgets/TargetHealth/index';
-  @import './widgets/Warband/index';
-  @import './widgets/Welcome/index';
-  @import './widgets/Social/index';
-  // external scss
-  @import 'cu-xmpp-chat/lib/index.scss';
 }

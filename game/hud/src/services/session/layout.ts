@@ -24,6 +24,7 @@ import Crafting from './layoutItems/Crafting';
 import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
+import EquippedGear from './layoutItems/EquippedGear';
 
 
 const localStorageKey = 'cse_hud_layout-state';
@@ -168,6 +169,9 @@ function initialState(): LayoutState {
     [
       'friendlyTarget', cloneDeep(FriendlyTarget)
     ],
+    [
+      'equippedGear', cloneDeep(EquippedGear)
+    ]
   ]);
 
   return {

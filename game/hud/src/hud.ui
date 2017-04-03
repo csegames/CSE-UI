@@ -12,5 +12,6 @@
   "handlesFriendlyTarget": true,
   "handlesCombatLog": true,
   "handlesBuilding": true,
-  "handlesAbilities": true
+  "handlesAbilities": true,
+  "handlesEquippedGear": true
 }

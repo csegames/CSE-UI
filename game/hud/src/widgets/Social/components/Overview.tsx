@@ -70,7 +70,7 @@ const defaultStyle : OverviewStyle = {
     flexWrap: 'wrap',
     paddingLeft: '15px',
     alignContent: 'space-around',
-    alignItems: 'space-around'
+    justifyContent: 'space-around'
   },
 
   summaryItem: {
@@ -94,9 +94,9 @@ const defaultStyle : OverviewStyle = {
     display: 'flex',
     flexDirection: 'column',
     margin: '10px',
-    alignContent: 'top',
+    alignContent: 'flex-start',
     alignSelf: 'stretch',
-    overflowX: 'none'
+    overflowX: 'hidden'
   },
 
   recentActivityHeader: {
@@ -153,7 +153,7 @@ function parseFor(s : string, regex: RegExp, component: any, shard : number) : I
       }
     });
     match = regex.exec(s);
-    if (match === null || typeof match === 'null') return result;
+    if (match === null || !match) return result;
   }
   return result;
 }

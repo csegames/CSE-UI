@@ -42,3 +42,4 @@ widgets/cu-character-creation/lib/
 library/docs/
 .idea/
 *.config.js
+dev.config
