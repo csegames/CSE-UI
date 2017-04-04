@@ -26,7 +26,7 @@ import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
 import EquippedGear from './layoutItems/EquippedGear';
 import Inventory from './layoutItems/Inventory';
-
+import ErrorMessages from './layoutItems/ErrorMessages';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.4.0'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -175,6 +175,9 @@ function initialState(): LayoutState {
     ],
     [
       'inventory', cloneDeep(Inventory)
+    ],
+    [
+      'errorMessages', cloneDeep(ErrorMessages)
     ]
   ]);
 

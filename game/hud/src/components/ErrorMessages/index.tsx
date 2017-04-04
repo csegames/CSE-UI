@@ -1,7 +1,12 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-28 17:00:44
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-28 17:00:44
  */
 
 import {client, events} from 'camelot-unchained'
@@ -86,6 +91,4 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
   }
 }
 
-ReactDom.render(<ErrorMessagesApp />, document.getElementById('content'));
-
-
+export default ErrorMessagesApp;
