@@ -26,21 +26,7 @@
     "name": "cu-patcher-ui"
   },
   "scripts": {
-    "postinstall": "rimraf typings && typings install",
-    "copy:misc": "copyup src/third-party/**/* src/sounds/**/* src/images/**/* src/font/**/* src/**/*.html src/videos/**/* dist/ui",
-    "babel": "babel tmp -d tmpp",
-    "browserify": "browserify tmpp/index.js -o dist/ui/js/%npm_package_config_name%.js --fast --noparse=FILE -u camelot-unchained -u es6-promise -u eventemitter3 -u isomorphic-fetch -u moment -u node-xmpp-client -u normalizr -u react -u react-addons-css-transition-group -u react-dom  -u react-uedux -u react-tap-event-plugin -u redux -u redux-thunk -u reflux",
-    "browserify:lib": "browserify -r camelot-unchained -r es6-promise -r eventemitter3 -r isomorphic-fetch -r moment -r node-xmpp-client -r normalizr -r react -r react-addons-css-transition-group -r react-dom  -r react-redux -r react-tap-event-plugin -r redux -r redux-thunk -r reflux > dist/ui/js/lib.js",
-    "prebrowserify:lib": "mkdirp dist/ui/js",
-    "build:sass": "node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js",
-    "build": "npm run build:sass && npm run copy:misc -s && tsc && npm run babel && npm run browserify",
-    "postbuild": "rimraf tmp && rimraf tmpp",
-    "prebuild": "rimraf tmp && rimraf tmpp && rimraf dist/ui && npm run browserify:lib",
-    "publish": "npm run build",
-    "serve": "http-server -p 9000 dist/ui/",
-    "debug": "npm run build && npm run copy:patcher && npm run patcher",
-    "copy:patcher": "copyup dist/ui/**/* PatchClient/cpui",
-    "patcher": "cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0"
+    "start": "nps"
   },
   "dependencies": {
     "aphrodite": "^1.1.0",
@@ -79,6 +65,7 @@
     "http-server": "^0.9.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
+    "nps": "^5.0.5",
     "rimraf": "^2.5.2",
     "typescript": "2.2.1",
     "typings": "^1.3.2"
