@@ -34,7 +34,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 8,
+    zOrder: 9,
     layoutMode: LayoutMode.GRID
   },
   dragOptions: {

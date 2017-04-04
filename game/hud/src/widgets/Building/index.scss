@@ -1,0 +1,67 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-30 11:42:32
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-31 14:22:08
+ */
+ 
+@import './widgets/_font.scss';
+
+// html, body {
+//   overflow: hidden;
+//   margin: 0;
+//   padding: 0;
+//   font-family: "TitilliumWeb";
+// }
+
+#building-button {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 67px;
+  height: 61px;
+  background: url('../../../../images/building-btn.jpg') no-repeat bottom left;
+  
+  &.active div {
+      background: url('../../../../images/active-frame.gif') no-repeat bottom left;
+      background-size: 67px 61px;
+      width: 100%;
+      height: 100%;
+   }
+}
+
+.button-inactive {
+  display: none;
+}
+
+.button-active {
+  width: 100%;
+  height: 100%;
+}
+
+.building {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: "TitilliumWeb";
+  pointer-events: all;
+}
+
+#cse-ui-building {
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+// third party
+@import '../../../node_modules/react-select/scss/default';
+@import './widgets/SelectionView/index';
+@import './widgets/Actionbar/index';
+@import './widgets/BuildPanel/index';
+@import './widgets/SavedDraggable/index';

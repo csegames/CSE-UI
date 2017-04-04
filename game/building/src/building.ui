@@ -1,7 +1,0 @@
-{
-  "name": "building",
-  "mainFile": "index.html",
-  "handlesBuilding": true,
-  "handlesInput": true,
-  "layer": 1
-}

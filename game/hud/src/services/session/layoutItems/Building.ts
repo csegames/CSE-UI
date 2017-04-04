@@ -4,38 +4,38 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Date: 2017-03-29 15:38:08
+ * @Date: 2017-03-30 12:05:40
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-29 15:40:22
+ * @Last Modified time: 2017-03-30 16:09:09
  */
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import PlotControl from '../../../components/PlotControl';
+import Building from '../../../widgets/Building';
 
 export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: 100
+      offset: 0
     },
     y: {
-      anchor: Edge.TOP,
-      offset: 100
+      anchor: 5,
+      offset: 0
     },
     size: {
-      width: 250,
-      height: 250
+      width: window.innerWidth,
+      height: window.innerHeight
     },
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 14,
-    layoutMode: LayoutMode.GRID
+    zOrder: 0,
+    layoutMode: LayoutMode.EDGESNAP
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true
   },
-  component: PlotControl,
+  component: Building,
   props: {}
-}
+};

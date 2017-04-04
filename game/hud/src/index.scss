@@ -41,6 +41,7 @@ body {
   @import './components/PlotControl/index';
   @import './components/Announcement/index';
   // widgets
+  @import './widgets/Building/index';
   @import './widgets/PlayerHealth/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';

@@ -29,7 +29,7 @@ export default {
     scale: 0.6,
     opacity: 1,
     visibility: true,
-    zOrder: 4,
+    zOrder: 5,
     layoutMode: LayoutMode.EDGESNAP
   },
   dragOptions: {

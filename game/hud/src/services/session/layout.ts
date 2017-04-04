@@ -29,6 +29,7 @@ import Inventory from './layoutItems/Inventory';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
 import Announcement from './layoutItems/Announcement';
+import Building from './layoutItems/Building';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.4.0'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -186,6 +187,9 @@ function initialState(): LayoutState {
     ],
     [
       'announcement', cloneDeep(Announcement)
+    ],
+    [
+      'building', cloneDeep(Building)
     ]
   ]);
 
