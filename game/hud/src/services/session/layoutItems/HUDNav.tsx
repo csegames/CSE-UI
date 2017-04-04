@@ -187,7 +187,6 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'plotcontrol');
-          client.ShowUI('plotcontrol');
         }
       },
       // {

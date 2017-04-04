@@ -1,11 +1,20 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-29 15:37:28
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-29 17:33:33
  */
 
 $cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
-@import "../../node_modules/camelot-unchained/lib/index.scss";
+@import "../../../node_modules/camelot-unchained/lib/index.scss";
+
+#plotcontrol-container {
+  pointer-events: all;
+}
 
 #cse-ui-plotcontrol {
   width: 250px;
