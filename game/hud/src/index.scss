@@ -33,13 +33,14 @@ body {
   @import './components/HUDDrag/index';
   @import './components/Respawn/index';
   @import './components/Compass/index';
+  @import './components/Inventory/index';
+  @import './components/EquippedGear/index';
+  @import './components/Welcome/index';
+  @import './components/Crafting/index';
   // widgets
-  @import './widgets/EquippedGear/index';
-  @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';
-  @import './widgets/Welcome/index';
   @import './widgets/Social/index';
   // external scss
   @import 'cu-xmpp-chat/lib/index.scss';

@@ -1,7 +1,0 @@
-{
-  "name": "inventory",
-  "globalDependencies": {
-    "node": "registry:dt/node#6.0.0+20160621231320",
-    "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts"
-  }
-}

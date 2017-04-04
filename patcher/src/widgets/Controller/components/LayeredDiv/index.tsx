@@ -20,8 +20,7 @@ class LayeredDiv extends React.Component<LayeredDivProps, {}> {
   render() {
     const {className, renderLayers} = this.props;
     const props = Object.assign({}, this.props);
-    delete props.className;
-    delete props.renderLayers;
+    
     return (
       <div className={`LayeredDiv ${className || ''}`} {...props} >
         {renderLayers.map((layerRender, index) => <div key={index} className='LayeredDiv__Layer'>{layerRender()}</div>)}

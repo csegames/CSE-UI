@@ -5,11 +5,11 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 14:48:27
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-24 15:45:50
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-05 14:25:18
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import Crafting from '../../../widgets/Crafting';
+import Crafting from '../../../components/Crafting';
 
 export default {
   position: {

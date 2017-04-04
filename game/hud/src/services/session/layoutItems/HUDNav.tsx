@@ -157,7 +157,6 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'inventory');
-          client.ShowUI('inventory');
         }
       },
       {

@@ -4,19 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Date: 2017-03-27 15:59:35
+ * @Date: 2017-03-28 15:14:45
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-05 14:41:06
+ * @Last Modified time: 2017-04-05 14:21:49
  */
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import EquippedGear from '../../../components/EquippedGear';
+import Inventory from '../../../components/Inventory';
 
 export default {
   position: {
     x: {
       anchor: 5,
-      offset: 127
+      offset: 430
     },
     y: {
       anchor: Edge.TOP,
@@ -29,13 +29,13 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 11,
+    zOrder: 12,
     layoutMode: LayoutMode.GRID
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true
   },
-  component: EquippedGear,
+  component: Inventory,
   props: {}
 }

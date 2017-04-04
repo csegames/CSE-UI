@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, Item} from 'camelot-unchained';
+import {events, client, Item, jsKeyCodes} from 'camelot-unchained';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -16,6 +16,7 @@ export interface InventoryWindowProps {
 export interface InventoryWindowState {
   items: Items;
   stacks: Stack;
+  visible: boolean;
 }
 
 export interface Items {
@@ -32,53 +33,75 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     this.state = {
       items: {},
       stacks: {},
+      visible: false
     }
   }
 
   componentWillMount() {
+    client.SubscribeInventory(true);
     client.OnInventoryAdded(this.addItem);
     client.OnInventoryRemoved(this.removeItem);
   }
 
+  componentDidMount() {
+    events.on('hudnav--navigate', (name: string) => {
+      if (name === 'inventory') {
+        if (this.state.visible) {
+          this.setState((state, props) => ({ visible: false }));
+        } else {
+          this.setState((state, props) => ({ visible: true }));
+        }
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    events.off('hudnav--navigate');
+    client.ReleaseInputOwnership();
+  }
+
   addItem = (item: Item) => {
-    const items = {...this.state.items, [item.id]: item};
-
-    // should this stack??
-    // stacking is determined by name and gear slot
-    const stackId = item.name + item.gearSlot;
-    const stack = this.state.stacks[stackId] ? this.state.stacks[stackId].concat(item.id) : [item.id];
-    const stacks = {...this.state.stacks, [stackId]: stack};
-
-    this.setState({
-      items,
-      stacks
-    });
+    this.setState((state, props) => {
+      const items = {...state.items, [item.id]: item};
+      // should this stack??
+      // stacking is determined by name and gear slot
+      const stackId = item.name + item.gearSlot;
+      const stack = state.stacks[stackId] ? state.stacks[stackId].concat(item.id) : [item.id];
+      const stacks = {...state.stacks, [stackId]: stack};
+      return {
+        items,
+        stacks
+      };
+    })
   }
 
   removeItem = (id: string) => {
-    const items = {...this.state.items};
-    const stacks = {...this.state.stacks};
-    if (!items[id]) return;
+    this.setState((state, props) => {
+      const items = {...this.state.items};
+      const stacks = {...this.state.stacks};
+      if (!items[id]) return;
 
-    const stackId = items[id].name + items[id].gearSlot;
-    delete items[id];
-    if (stacks[stackId].length > 1) {
-      // stack remains
-      const index = stacks[stackId].findIndex(s => s === id);
-      stacks[stackId].splice(index, 1);
-    } else {
-      // stack is removed
-      delete stacks[stackId];
-    }
-
-    this.setState({
-      items,
-      stacks,
-    });
+      const stackId = items[id].name + items[id].gearSlot;
+      delete items[id];
+      if (stacks[stackId].length > 1) {
+        // stack remains
+        const index = stacks[stackId].findIndex(s => s === id);
+        stacks[stackId].splice(index, 1);
+      } else {
+        // stack is removed
+        delete stacks[stackId];
+      }
+      return {
+        items,
+        stacks,
+      }
+    })
   }
 
   hideWindow = () => {
-    client.HideUI('inventory');
+    this.setState((state, props) => ({
+      visible: false
+    }));
   }
 
   useItem = (stackId: string) => {
@@ -145,26 +168,26 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
   }
 
   render() {
-    return (
-      <div className="cu-window">
-        <div className="cu-window-header cu-window-bg-brown">
-          <div className="cu-window-title">Inventory</div>
-          <div className="cu-window-actions">
-            <a onClick={this.hideWindow} className="cu-window-close"></a>
+    if (this.state.visible) {
+      return (
+        <div className="inventory-container cu-window">
+          <div className="cu-window-header cu-window-bg-brown">
+            <div className="cu-window-title">Inventory</div>
+            <div className="cu-window-actions">
+              <a onClick={this.hideWindow} className="cu-window-close"></a>
+            </div>
+          </div>
+          <div className="cu-window-content">
+            <ul className="inventory-list inventory-list--vertical">
+              {this.renderItems()}
+            </ul>
           </div>
         </div>
-        <div className="cu-window-content">
-          <ul className="inventory-list inventory-list--vertical">
-            {this.renderItems()}
-          </ul>
-        </div>
-      </div>
-    )
+      )
+    } else {
+      return null;
+    }
   }
 }
 
-
-events.on('init', () => {
-  ReactDOM.render(<InventoryWindow />, document.getElementById('inventory'));
-  client.SubscribeInventory(true);
-});
+export default InventoryWindow;

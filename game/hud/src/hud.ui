@@ -13,5 +13,6 @@
   "handlesCombatLog": true,
   "handlesBuilding": true,
   "handlesAbilities": true,
-  "handlesEquippedGear": true
+  "handlesEquippedGear": true,
+  "handlesInventory": true
 }

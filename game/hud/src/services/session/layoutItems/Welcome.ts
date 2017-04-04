@@ -5,10 +5,10 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:31:27
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:32:22
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-05 14:25:10
  */
-import Welcome from '../../../widgets/Welcome';
+import Welcome from '../../../components/Welcome';
 import { LayoutMode } from '../../../components/HUDDrag';
 
 export default {
