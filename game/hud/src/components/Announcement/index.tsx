@@ -1,7 +1,12 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-03-30 11:11:15
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-03-30 11:13:15
  */
 
 import {events, core} from 'camelot-unchained';
@@ -31,7 +36,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
   
   componentWillMount() {
-    events.on(events.handlesAnnouncements.topic, this.onMessage);
+    events.on('handlesAnnouncements', this.onMessage);
     this.setState({message: ''});
   }
   
@@ -55,6 +60,4 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
 };
 
-events.on('init', () => {
-  ReactDom.render(<Announcement/>, document.getElementById("cse-ui-announcement"));
-});
+export default Announcement;
