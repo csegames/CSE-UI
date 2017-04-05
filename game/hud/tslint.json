@@ -5,7 +5,7 @@
    * - the name of an NPM module which has a "main" file that exports a config object
    * - a relative path to a JSON file
    */
-  "extends": "tslint:recommended",
+  "extends": "tslint-config-airbnb",
   "rules": {
     /*
      * Any rules specified here will override those from the base config we are extending.
@@ -30,7 +30,39 @@
     "interface-name": [
       true,
       "never-prefix"
-    ]
+    ],
+    "no-inferred-empty-object-type": true,
+    "no-floating-promises": true,
+    "no-for-in-array": true,
+    "no-misused-new": true,
+    "no-void-expression": true,
+    "await-promise": true,
+    "no-namespace": true,
+    "no-internal-module": true,
+    "no-var-requires": true,
+    "member-access": [
+      true, 
+      "check-accessor"
+    ],
+    "adjacent-overload-signatures": true,
+    "member-ordering": [
+      true, 
+      { 
+        "order": [
+          "static-field",
+          "instance-field",
+          "constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
+      }
+    ],
+    "max-line-length": [
+      true,
+      125
+    ],
+    "no-increment-decrement": false
   },
   "jsRules": {
     /*
