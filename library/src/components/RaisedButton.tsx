@@ -33,7 +33,7 @@ export const defaultRaisedButtonStyle: RaisedButtonStyle = {
     ':active': {
       boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
       backgroundColor: '#AAA',
-    }
+    },
   },
 
   buttonDisabled: {
@@ -43,8 +43,8 @@ export const defaultRaisedButtonStyle: RaisedButtonStyle = {
     cursor: 'default',
     userSelect: 'none',
     webkitUserSelect: 'none',
-  }
-}
+  },
+};
 
 export interface RaisedButtonProps {
   styles?: Partial<RaisedButtonStyle>;
@@ -68,6 +68,6 @@ export const RaisedButton = (props: RaisedButtonProps) => {
       {props.children}
     </div>
   );
-}
+};
 
 export default RaisedButton;

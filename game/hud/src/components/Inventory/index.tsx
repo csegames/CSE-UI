@@ -28,22 +28,47 @@ export interface Stack {
 }
 
 class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWindowState> {
+
+  private lastClicked: number = 0;
+
   constructor(props: InventoryWindowProps) {
     super(props);
     this.state = {
       items: {},
       stacks: {},
-      visible: false
+      visible: false,
+    };
+  }
+
+  public render() {
+    if (this.state.visible) {
+      return (
+        <div className='inventory-container cu-window'>
+          <div className='cu-window-header cu-window-bg-brown'>
+            <div className='cu-window-title'>Inventory</div>
+            <div className='cu-window-actions'>
+              <a onClick={this.hideWindow} className='cu-window-close'></a>
+            </div>
+          </div>
+          <div className='cu-window-content'>
+            <ul className='inventory-list inventory-list--vertical'>
+              {this.renderItems()}
+            </ul>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
     }
   }
 
-  componentWillMount() {
+  private componentWillMount() {
     client.SubscribeInventory(true);
     client.OnInventoryAdded(this.addItem);
     client.OnInventoryRemoved(this.removeItem);
   }
 
-  componentDidMount() {
+  private componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'inventory') {
         if (this.state.visible) {
@@ -52,15 +77,15 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
           this.setState((state, props) => ({ visible: true }));
         }
       }
-    })
+    });
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     events.off('hudnav--navigate');
     client.ReleaseInputOwnership();
   }
 
-  addItem = (item: Item) => {
+  private addItem = (item: Item) => {
     this.setState((state, props) => {
       const items = {...state.items, [item.id]: item};
       // should this stack??
@@ -70,12 +95,12 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
       const stacks = {...state.stacks, [stackId]: stack};
       return {
         items,
-        stacks
+        stacks,
       };
-    })
+    });
   }
 
-  removeItem = (id: string) => {
+  private removeItem = (id: string) => {
     this.setState((state, props) => {
       const items = {...this.state.items};
       const stacks = {...this.state.stacks};
@@ -94,35 +119,34 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
       return {
         items,
         stacks,
-      }
-    })
+      };
+    });
   }
 
-  hideWindow = () => {
+  private hideWindow = () => {
     this.setState((state, props) => ({
-      visible: false
+      visible: false,
     }));
   }
 
-  useItem = (stackId: string) => {
+  private useItem = (stackId: string) => {
     const itemId = this.state.stacks[stackId][0];
     const item = this.state.items[itemId];
-    if (item && item.gearSlot != 'NONE') {
+    if (item && item.gearSlot !== 'NONE') {
       client.EquipItem(itemId);
     }
   }
 
-  dropItem = (stackId: string) => {
+  private dropItem = (stackId: string) => {
     const itemId = this.state.stacks[stackId][0];
     const item = this.state.items[itemId];
-    if (item && item.gearSlot != 'NONE') {
+    if (item && item.gearSlot !== 'NONE') {
       client.DropItem(itemId);
     }
   }
 
-  lastClicked: number = 0;
-  simDblClick(onDblClick: any, ...args : any[]) {
-    let now:number = Date.now();
+  private simDblClick(onDblClick: any, ...args : any[]) {
+    const now:number = Date.now();
     if (now - this.lastClicked < 500) {
       onDblClick(...args);
       this.lastClicked = 0;
@@ -131,31 +155,31 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     }
   }
 
-  renderItems = () => {
+  private renderItems = () => {
     const toRender: JSX.Element[] = [];
     const sortByGroup: {[id: string]: { name: string, elements:  JSX.Element[]}} = {};
 
     Object.keys(this.state.stacks).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).forEach((key: string) => {
       const stack = this.state.stacks[key];
-      const firstItem = this.state.items[stack[0]]
+      const firstItem = this.state.items[stack[0]];
 
       toRender.push(
         (
-          <li className="inventory-item" 
+          <li className='inventory-item' 
               key={key}
               onClick={() => this.simDblClick(this.useItem, key)}
               onContextMenu={() => this.dropItem(key)}>
-            <div className="quantity">{stack.length}</div>
-            <div className="icon"><img src="../../interface-lib/camelot-unchained/images/items/icon.png" /></div>
-            <div className="name">{firstItem.name}</div>
-            <div className="tooltip">
-              <h1 className="tooltip__title">{firstItem.name}</h1>
-              <p className="tooltip__detail tooltip__slot">{firstItem.gearSlot}</p>
-              <p className="tooltip__detail tooltip__description">{firstItem.description}</p>
-              <p className="tooltip__meta">Resource ID: {firstItem.id}</p>
+            <div className='quantity'>{stack.length}</div>
+            <div className='icon'><img src='../../interface-lib/camelot-unchained/images/items/icon.png' /></div>
+            <div className='name'>{firstItem.name}</div>
+            <div className='tooltip'>
+              <h1 className='tooltip__title'>{firstItem.name}</h1>
+              <p className='tooltip__detail tooltip__slot'>{firstItem.gearSlot}</p>
+              <p className='tooltip__detail tooltip__description'>{firstItem.description}</p>
+              <p className='tooltip__meta'>Resource ID: {firstItem.id}</p>
             </div>
           </li>
-        )
+        ),
       );
     });
 
@@ -164,28 +188,6 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
         <ul>{toRender}</ul>
       </div>
     );
-  }
-
-  render() {
-    if (this.state.visible) {
-      return (
-        <div className="inventory-container cu-window">
-          <div className="cu-window-header cu-window-bg-brown">
-            <div className="cu-window-title">Inventory</div>
-            <div className="cu-window-actions">
-              <a onClick={this.hideWindow} className="cu-window-close"></a>
-            </div>
-          </div>
-          <div className="cu-window-content">
-            <ul className="inventory-list inventory-list--vertical">
-              {this.renderItems()}
-            </ul>
-          </div>
-        </div>
-      )
-    } else {
-      return null;
-    }
   }
 }
 

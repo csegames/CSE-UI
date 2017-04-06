@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 15:18:16
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 18:22:01
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 11:05:20
  */
 import * as React from 'react';
 import { Map } from 'immutable';
@@ -50,7 +50,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
                 id: 'overview',
-              }
+              },
             },
             {
               id: 'invites',
@@ -62,7 +62,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
                 id: 'invites',
-              }
+              },
             },
             {
               id: 'contacts',
@@ -74,7 +74,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
                 id: 'contacts',
-              }
+              },
             },
             {
               id: 'privacy',
@@ -86,11 +86,11 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
                 id: 'privacy',
-              }
+              },
             },
           ],
-          ...utils.defaultFetchStatus
-        }
+          ...utils.defaultFetchStatus,
+        },
       ],
       // ORDER
       [
@@ -114,7 +114,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'list',
-              }
+              },
             },
             {
               id: 'create',
@@ -126,7 +126,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'create',
-              }
+              },
             },
             {
               id: 'overview',
@@ -138,7 +138,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'overview',
-              }
+              },
             }, {
               id: 'members',
               displayName: 'Members',
@@ -149,7 +149,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'members',
-              }
+              },
             }, {
               id: 'ranks',
               displayName: 'Ranks',
@@ -160,7 +160,7 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'ranks',
-              }
+              },
             },
             // {
             //   id: 'assets',
@@ -193,12 +193,13 @@ export default function() {
                 kind: 'Primary',
                 category: SocialCategory.Order,
                 id: 'admin',
-              }
+              },
             },
           ],
-          ...utils.defaultFetchStatus
-        }
-      ]//,
+          ...utils.defaultFetchStatus,
+        },
+      ],
+      // ,
       // ALLIANCE
       // [
       //   SocialCategory.Alliance, {
@@ -465,7 +466,7 @@ export default function() {
         //   ]),
         //   ...utils.defaultFetchStatus
         // }
-      //],
+      // ],
     ]),
-  }
+  };
 }

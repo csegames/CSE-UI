@@ -80,7 +80,7 @@ enum abilityTags {
   TESTTAGE = 52,
 
   // Total number of tags.  Do not use as a tag.
-  COUNT = 53
-};
+  COUNT = 53,
+}
 
 export default abilityTags;

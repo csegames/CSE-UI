@@ -9,7 +9,7 @@ enum baneBoonCategory {
   GENERAL = 1,
   FACTION = 2,
   RACE = 3,
-  ARCHETYPE = 4
-};
+  ARCHETYPE = 4,
+}
 
 export default baneBoonCategory;

@@ -6,10 +6,10 @@
 declare const cuAPI: any;
 
 export default class RespawnLocation {
-  id: number;
-  x: number;
-  y: number;
-  distance: number;
+  public id: number;
+  public x: number;
+  public y: number;
+  public distance: number;
   constructor(id: number, x: number, y: number) {
     this.id = id;
     this.x = x;
@@ -21,6 +21,6 @@ export default class RespawnLocation {
   public calcDistanceFromXY = (x: number, y: number): number => {
     const Dx : number = x - this.x;
     const Dy : number = y - this.y;
-    return this.distance = Math.sqrt((Dx*Dx)+(Dy*Dy));
+    return this.distance = Math.sqrt((Dx * Dx) + (Dy * Dy));
   }
 }

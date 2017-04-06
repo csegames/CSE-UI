@@ -4,31 +4,31 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers, IReducer} from 'redux';
+import { combineReducers, IReducer } from 'redux';
 
 import racesReducer from './races';
-let races = racesReducer;
+const races = racesReducer;
 
 import playerClassesReducer from './playerClasses';
-let playerClasses = playerClassesReducer;
+const playerClasses = playerClassesReducer;
 
 import factionsReducer from './factions';
-let factions = factionsReducer;
+const factions = factionsReducer;
 
 import attributesReducer from './attributes';
-let attributes = attributesReducer;
+const attributes = attributesReducer;
 
 import attributeOffsetsReducer from './attributeOffsets';
-let attributeOffsets = attributeOffsetsReducer;
+const attributeOffsets = attributeOffsetsReducer;
 
 import gendersReducer from './genders';
-let gender = gendersReducer;
+const gender = gendersReducer;
 
 import characterReducer from './character';
-let character = characterReducer;
+const character = characterReducer;
 
 import banesAndBoonsReducer from './banesAndBoons';
-let banesAndBoons = banesAndBoonsReducer;
+const banesAndBoons = banesAndBoonsReducer;
 
 export default combineReducers({
   races,
@@ -38,5 +38,5 @@ export default combineReducers({
   gender,
   attributeOffsets,
   character,
-  banesAndBoons
+  banesAndBoons,
 });

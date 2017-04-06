@@ -6,16 +6,16 @@
 import Player from './Player';
 import Character from './Character';
 class Group  {
-  self: Character;
-  members: Player[];
+  public self: Character;
+  public members: Player[];
 
   constructor(group = <Group>{}) {
     group.self = group.self ||  new Character();
     group.members = group.members ||  <Player[]>[];
   }
 
-  static create() {
-    let a = new Group();
+  public static create() {
+    const a = new Group();
     return a;
   }
 }

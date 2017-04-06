@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-const ReactSelect = require('react-select');
+import * as ReactSelect from 'react-select';
 
 import {BuildingBlueprint} from 'camelot-unchained';
 
@@ -23,7 +23,7 @@ import {fireBuildingItemSelected} from '../../../../../../services/events';
 function select(state: GlobalState): BlueprintsPaneProps {
   return {
     blueprintsState: state.blueprints,
-  }
+  };
 }
 
 export interface BlueprintsPaneStateToPropsInfo {
@@ -47,20 +47,46 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
   constructor(props: BlueprintsPaneProps) {
     super(props);
-    this.state = { filter: '', saveMode: false }
+    this.state = { filter: '', saveMode: false };
   }
 
-  onBlueprintSelect = (blueprint: BuildingBlueprint) => {
+  public render() {
+    const bpState: BlueprintsState = this.props.blueprintsState;
+
+    return (
+      <div className= 'BlueprintsPane' >
+        <div className='item'>
+          <div className='list'>
+            <BlueprintList blueprints={bpState.blueprints}
+              selected={bpState.selected}
+              selectBlueprint={this.selectBlueprint}
+              hoverBlueprint={this.hoverBlueprint}
+              />
+          </div>
+        </div>
+        <div className='item'>
+          {this.createSaveAndDeleteButtons(bpState) }
+        </div>
+        <div className='item'>
+          {this.createCopyPasteButtons(bpState) }
+        </div>
+
+        {this.createSaveView(bpState) }
+      </div>
+    );
+  }
+
+  private onBlueprintSelect = (blueprint: BuildingBlueprint) => {
     if (blueprint != null && blueprint.icon == null)
       blueprintService.loadIcon(blueprint);
 
     const item = {
-      name: "Blueprint",
+      name: 'Blueprint',
       description: blueprint.name,
       element: (<img src={'data:image/png;base64,' + blueprint.icon}/>),
       id: blueprint.index + '-' + BuildingItemType.Blueprint,
       type: BuildingItemType.Blueprint,
-      select: () => { this.selectBlueprint(blueprint) }
+      select: () => { this.selectBlueprint(blueprint); },
 
     } as BuildingItem;
 
@@ -68,55 +94,55 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
 
-  onFilterChanged = (val: any) => {
-    //adding the ',' so we can find the last item in the filter
+  private onFilterChanged = (val: any) => {
+    // adding the ',' so we can find the last item in the filter
     this.setState((state, props) => ({ filter: val + ',' } as any));
   }
 
-  toggleSaveBlueprint = () => {
+  private toggleSaveBlueprint = () => {
     this.setState((state, props) => ({ saveMode: !state.saveMode } as any));
   }
 
-  triggerCancelSave = () => {
+  private triggerCancelSave = () => {
     this.setState((state, props) => ({ saveMode: false } as any));
   }
 
-  triggerSaveBlueprint = (name: string) => {
+  private triggerSaveBlueprint = (name: string) => {
     blueprintService.save(name);
     this.setState((state, props) => ({ saveMode: false } as any));
   }
 
-  triggerDeleteBlueprint = () => {
-    blueprintService.remove(this.props.blueprintsState.selected)
+  private triggerDeleteBlueprint = () => {
+    blueprintService.remove(this.props.blueprintsState.selected);
   }
 
-  triggerCopyBlueprint = () => {
+  private triggerCopyBlueprint = () => {
     blueprintService.copy();
   }
 
-  triggerPasteBlueprint = () => {
+  private triggerPasteBlueprint = () => {
     blueprintService.paste();
   }
 
-  selectBlueprint = (blueprint: BuildingBlueprint) => {
+  private selectBlueprint = (blueprint: BuildingBlueprint) => {
     blueprintService.select(blueprint);
     this.onBlueprintSelect(blueprint);
   }
 
-  hoverBlueprint = (blueprint: BuildingBlueprint) => {
+  private hoverBlueprint = (blueprint: BuildingBlueprint) => {
     if (blueprint != null && blueprint.icon == null)
       blueprintService.loadIcon(blueprint);
 
-    this.props.handlePreviewIcon( blueprint? blueprint.icon: null);
+    this.props.handlePreviewIcon( blueprint ? blueprint.icon : null);
   }
 
-  createSaveView(bpState: BlueprintsState) {
+  private createSaveView(bpState: BlueprintsState) {
     if (this.state.saveMode) {
-      const blueprintNames: string[] = bpState.blueprints.map((bp: BuildingBlueprint) => { return bp.name })
+      const blueprintNames: string[] = bpState.blueprints.map((bp: BuildingBlueprint) => { return bp.name; });
       return (<BlueprintSaveView
         onSave={(name: string) => this.triggerSaveBlueprint(name) }
         onCancel={() => this.triggerCancelSave() }
-        reservedNames={blueprintNames}/>)
+        reservedNames={blueprintNames}/>);
     }
     return null;
   }
@@ -168,48 +194,22 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   */
 
 
-  createSaveAndDeleteButtons(bpState: BlueprintsState) {
+  private createSaveAndDeleteButtons(bpState: BlueprintsState) {
     return (
-      <div className="save">
+      <div className='save'>
         <button onClick={this.toggleSaveBlueprint} disabled={!bpState.copyable}>Save</button>
         <button onClick={this.triggerDeleteBlueprint} disabled={bpState.selected == null}>Delete</button>
       </div>
     );
   }
 
-  createCopyPasteButtons(bpState: BlueprintsState) {
+  private createCopyPasteButtons(bpState: BlueprintsState) {
     return (
-      <div className="copy">
+      <div className='copy'>
         <button onClick={this.triggerCopyBlueprint} disabled={!bpState.copyable}>Copy</button>
         <button onClick={this.triggerPasteBlueprint} disabled={!bpState.pastable}>Paste</button>
       </div>
     );
-  }
-
-  render() {
-    const bpState: BlueprintsState = this.props.blueprintsState;
-
-    return (
-      <div className= 'BlueprintsPane' >
-        <div className="item">
-          <div className="list">
-            <BlueprintList blueprints={bpState.blueprints}
-              selected={bpState.selected}
-              selectBlueprint={this.selectBlueprint}
-              hoverBlueprint={this.hoverBlueprint}
-              />
-          </div>
-        </div>
-        <div className="item">
-          {this.createSaveAndDeleteButtons(bpState) }
-        </div>
-        <div className="item">
-          {this.createCopyPasteButtons(bpState) }
-        </div>
-
-        {this.createSaveView(bpState) }
-      </div>
-    )
   }
 }
 

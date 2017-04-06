@@ -51,26 +51,14 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
   constructor(props: QuickSelectProps) {
     super(props);
     this.state = {
-      selectedIndex: 0
+      selectedIndex: 0,
     };
   }
 
-  onItemSelect = (item: any, itemIndex: number) => {
-    this.setState({selectedIndex: itemIndex});
-    this.props.onSelectedItemChanged(item);
-  }
-
-  buildListItem = (item: any, itemIndex: number) => {
-    return (
-      <div key={itemIndex} onClick={this.onItemSelect.bind(this, item, itemIndex)} className='quickselect-auto-width'>
-        {this.props.listViewComponentGenerator(item)}
-      </div>
-    );
-  }
-
-  render() {
-    if (this.props.items.length == 0) return <div>No Elements</div>;
-    const selectedIndex = this.props.selectedItemIndex !== undefined ? this.props.selectedItemIndex : this.state.selectedIndex;
+  public render() {
+    if (this.props.items.length === 0) return <div>No Elements</div>;
+    const selectedIndex = this.props.selectedItemIndex !== undefined ? this.props.selectedItemIndex :
+      this.state.selectedIndex;
     return(
       <div>
         <div className={'dropdown-button quickselect-auto-width'} data-beloworigin='true'
@@ -81,6 +69,19 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
         <div id={this.uniqueId} className='quickselect-default'>
           {this.props.items.map(this.buildListItem)}
         </div>
+      </div>
+    );
+  }
+
+  private onItemSelect = (item: any, itemIndex: number) => {
+    this.setState({selectedIndex: itemIndex});
+    this.props.onSelectedItemChanged(item);
+  }
+
+  private buildListItem = (item: any, itemIndex: number) => {
+    return (
+      <div key={itemIndex} onClick={this.onItemSelect.bind(this, item, itemIndex)} className='quickselect-auto-width'>
+        {this.props.listViewComponentGenerator(item)}
       </div>
     );
   }

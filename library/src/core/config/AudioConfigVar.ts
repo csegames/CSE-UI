@@ -11,11 +11,11 @@ import {AudioSetting} from './AudioSetting';
 class AudioConfigVar extends ConfigVar  {
   public _value: AudioSetting;
   
-  get value ():AudioSetting {
+  public get value ():AudioSetting {
     return this._value;
   }
   
-  set value (v: AudioSetting) {
+  public set value (v: AudioSetting) {
     this._value = v;
   }
   
@@ -24,7 +24,7 @@ class AudioConfigVar extends ConfigVar  {
   }
   
   public create() {
-    let c = new AudioConfigVar();
+    const c = new AudioConfigVar();
     return c;
   }
 }

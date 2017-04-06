@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 14:57:24
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 15:30:31
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:24:50
  */
 
 import * as React from 'react';
@@ -62,7 +62,7 @@ export const defaultInlineDropDownSelectEditStyle: InlineDropDownSelectEditStyle
   error: {
     color: 'darkred',
     fontSize: '0.9em',
-  }
+  },
 };
 
 export interface InlineDropDownSelectEditProps {
@@ -84,6 +84,12 @@ export interface InlineDropDownSelectEditState {
 }
 
 export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSelectEditProps, InlineDropDownSelectEditState> {
+
+  private static editModeActiveEvent = 'input-edit-mode-active';
+  private editModeListenerID: any = null;
+  private id: string = '';
+  private dropDownRef: DropDownSelect = null;
+
   constructor(props: InlineDropDownSelectEditProps) {
     super(props);
     this.id = generateID(7);
@@ -95,91 +101,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
     };
   }
 
-  static editModeActiveEvent = 'input-edit-mode-active';
-  editModeListenerID: any = null;
-  id: string = '';
-  
-  componentDidMount() {
-    this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
-  }
-
-  componentWillUnmount() {
-    events.off(this.editModeListenerID)
-    this.editModeListenerID = null;
-  }
-
-  onEditModeActiveEvent = (id: string) => {
-    if (this.id == id) return;
-    if (this.state.editMode) {
-      this.deactivateEditMode();
-    }
-  }
-
-  onMouseleave = () => {
-    if (this.state.showEditButton == false) return;
-    this.setState({showEditButton: false});
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // escape pressed
-    if (e.keyCode == 27) {
-      if (this.state.editMode) {
-        this.deactivateEditMode();
-        e.stopPropagation();
-      }
-    }
-
-    // enter pressed
-    if (e.keyCode == 13) {
-      this.doSave();
-    }
-  }
-
-  showEditButton = () => {
-    if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
-  }
-
-  doSave = () => {
-    if (this.props.value == this.dropDownRef.selectedItem()) {
-      this.deactivateEditMode();
-      return;
-    }
-    this.props.onSave(this.props.value, this.dropDownRef.selectedItem())
-      .then(result => {
-        if (result.ok) {
-          this.dropDownRef = null;
-          this.setState({
-            saving: false,
-            editMode: false,
-            errors: null,
-          });
-        }
-        this.setState({
-          saving: false,
-          errors: result.error,
-        });
-      });
-
-    this.setState({saving: true});
-  }
-
-  activateEditMode = () => {
-    this.setState({
-      editMode: true,
-      showEditButton: false,
-    });
-    events.fire(InlineDropDownSelectEdit.editModeActiveEvent, this.id);
-  }
-
-  deactivateEditMode = () => {
-    this.dropDownRef = null;
-    this.setState({editMode: false});
-  }
-
-  dropDownRef: DropDownSelect = null;
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultInlineDropDownSelectEditStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -192,7 +114,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
             (
               <div className={css(ss.error, custom.error)}>
                 <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className="fa fa-exclamation-circle"></i> Save failed.
+                  <i className='fa fa-exclamation-circle'></i> Save failed.
                 </Tooltip>
               </div>
             ) : null
@@ -240,6 +162,84 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
           ) : null}
       </div>
     );
+  }
+  
+  private componentDidMount() {
+    this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
+  }
+
+  private componentWillUnmount() {
+    events.off(this.editModeListenerID);
+    this.editModeListenerID = null;
+  }
+
+  private onEditModeActiveEvent = (id: string) => {
+    if (this.id === id) return;
+    if (this.state.editMode) {
+      this.deactivateEditMode();
+    }
+  }
+
+  private onMouseleave = () => {
+    if (this.state.showEditButton === false) return;
+    this.setState({showEditButton: false});
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // escape pressed
+    if (e.keyCode === 27) {
+      if (this.state.editMode) {
+        this.deactivateEditMode();
+        e.stopPropagation();
+      }
+    }
+
+    // enter pressed
+    if (e.keyCode === 13) {
+      this.doSave();
+    }
+  }
+
+  private showEditButton = () => {
+    if (this.state.showEditButton) return;
+    this.setState({showEditButton: true});
+  }
+
+  private doSave = () => {
+    if (this.props.value === this.dropDownRef.selectedItem()) {
+      this.deactivateEditMode();
+      return;
+    }
+    this.props.onSave(this.props.value, this.dropDownRef.selectedItem())
+      .then((result) => {
+        if (result.ok) {
+          this.dropDownRef = null;
+          this.setState({
+            saving: false,
+            editMode: false,
+            errors: null,
+          });
+        }
+        this.setState({
+          saving: false,
+          errors: result.error,
+        });
+      });
+
+    this.setState({saving: true});
+  }
+
+  private activateEditMode = () => {
+    this.setState({
+      editMode: true,
+      showEditButton: false,
+    });
+    events.fire(InlineDropDownSelectEdit.editModeActiveEvent, this.id);
+  }
+
+  private deactivateEditMode = () => {
+    this.dropDownRef = null;
+    this.setState({editMode: false});
   }
 }
 

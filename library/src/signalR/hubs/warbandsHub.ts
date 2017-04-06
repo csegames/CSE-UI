@@ -54,7 +54,7 @@ const warbandEventsMap = [
   {
     receive: 'warbandInviteReceived',
     send: WARBAND_EVENTS_INVITERECEIVED,
-  }
+  },
 ];
 
 export const warbandsHub = new SignalRHub('warbandsHub', warbandEventsMap, {debug: client.debug});
@@ -71,6 +71,6 @@ warbandsHub.onConnected = (hub: SignalRHub) => {
       // invalidate to force a resend of all data to this client
       hub.invoke('invalidate');
     });
-}
+};
 
 export default warbandsHub;

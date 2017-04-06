@@ -581,13 +581,13 @@ export enum AbilityActionStat {
   VeilStealthTransition = 151,
   WallDuration = 152,
   WallHealth = 153,
-  OverallPower = 154
+  OverallPower = 154,
 }
  
   
 export enum AbilityActionStatValueType { 
   Cost = 0,
-  Power = 1
+  Power = 1,
 }
  
   
@@ -615,12 +615,12 @@ export enum AbilityActionType {
   SphereAoE = 20,
   ConeAoE = 21,
   Stance = 22,
-  Blocking = 23
+  Blocking = 23,
 }
  
   
 export enum AbilityComponentID { 
-  None = 0
+  None = 0,
 }
  
   
@@ -663,7 +663,7 @@ export enum AbilityComponentSubType {
   MagicNoParts = 134217854,
   RuneSelfNoParts = 268435456,
   MagicSelfNoParts = 335544444,
-  Target = 536870912
+  Target = 536870912,
 }
  
   
@@ -672,13 +672,13 @@ export enum AbilityComponentType {
   Secondary = 1,
   OptionalModifier = 2,
   SpecialModal = 3,
-  IndependantModal = 4
+  IndependantModal = 4,
 }
  
   
 export enum AbilityLifetimeEvent { 
   Begin = 0,
-  Hit = 1
+  Hit = 1,
 }
  
   
@@ -786,7 +786,7 @@ export enum AbilityTag {
   SelfShape = 100,
   RuneNoParts = 101,
   SelfRuneNoParts = 102,
-  COUNT = 103
+  COUNT = 103,
 }
  
    
@@ -798,18 +798,18 @@ export enum AccessType {
   Beta1 = 3,
   Alpha = 4,
   InternalTest = 5,
-  Employees = 6
+  Employees = 6,
 }
 
   
 export enum AimingMode { 
   AutoTarget = 0,
-  AimedDirection = 1
+  AimedDirection = 1,
 }
  
   
 export enum AnimSetID { 
-  Travel = 0
+  Travel = 0,
 }
  
   
@@ -831,14 +831,14 @@ export enum Archetype {
   Blackguard = 14,
   ForestStalker = 15,
   WintersShadow = 16,
-  Any = 17
+  Any = 17,
 }
  
  
 export enum BackerLevel { 
   none = 0,
   builder = 10,
-  founder = 20
+  founder = 20,
 }
 
 export enum Permissions { 
@@ -850,24 +850,24 @@ export enum Permissions {
   TrustedTester = 5,
   ModSquad = 6,
   OldSchoolGaming = 7,
-  BuildersBrigade = 8
+  BuildersBrigade = 8,
 }
   
   
 export enum BoonBaneID { 
-  None = 0
+  None = 0,
 }
 
 export enum BoonBaneType { 
   Boon = 0,
-  Bane = 1
+  Bane = 1,
 }
 
 export enum BoonBaneCategory { 
   General = 0,
   Faction = 1,
   Race = 2,
-  Archetype = 3
+  Archetype = 3,
 }
  
   
@@ -906,7 +906,7 @@ export enum CASAbilityParams {
   TargetRequired = 31,
   TargetingVolumeType = 32,
   TargetingRadius = 33,
-  TargetingConeAngle = 34
+  TargetingConeAngle = 34,
 }
  
   
@@ -919,7 +919,7 @@ export enum CASEffectsTrigger {
   TriggerTime = 5,
   TriggerHeld = 6,
   Canceled = 7,
-  Ended = 8
+  Ended = 8,
 }
  
   
@@ -931,13 +931,13 @@ export enum CASEffectsType {
   Ability = 4,
   Geometry = 5,
   Model = 6,
-  Targeting = 7
+  Targeting = 7,
 }
  
   
 export enum CASEntityType { 
   Standard = 0,
-  Projectile = 1
+  Projectile = 1,
 }
  
   
@@ -946,7 +946,7 @@ export enum CASParamDataType {
   Int32 = 1,
   Int64 = 2,
   Float = 3,
-  Bool = 4
+  Bool = 4,
 }
  
   
@@ -979,7 +979,7 @@ export enum DamageType {
   Dark = 1966080,
   Other = 2097208,
   All = -1,
-  SYSTEM = -2147483648
+  SYSTEM = -2147483648,
 }
  
   
@@ -996,14 +996,14 @@ export enum DBVarType {
   Double = 9,
   Char = 10,
   String = 11,
-  Bool = 12
+  Bool = 12,
 }
  
   
 export enum EntitySourceKind { 
   Command = 0,
   Placeable = 1,
-  Terrain = 2
+  Terrain = 2,
 }
  
   
@@ -1047,14 +1047,14 @@ export enum EquipmentModelSlots {
   Helmet = 36,
   Cape = 37,
   Horns = 38,
-  Collar = 39
+  Collar = 39,
 }
  
   
 export enum EXETypes { 
   None = 0,
   X86 = 1,
-  X64 = 2
+  X64 = 2,
 }
  
   
@@ -1063,7 +1063,7 @@ export enum Faction {
   TDD = 1,
   Viking = 2,
   Arthurian = 3,
-  COUNT = 4
+  COUNT = 4,
 }
  
  
@@ -1086,7 +1086,7 @@ export enum FieldCodes {
   DatabaseUnavailable = 5001,
   GroupServiceUnavailable = 5002,
   GameServiceUnavailable = 5003,
-  PresenceServiceUnavailable = 5004
+  PresenceServiceUnavailable = 5004,
 }
   
   
@@ -1105,14 +1105,14 @@ export enum GearSlot {
   Tabard = 1024,
   Cape = 2048,
   NUMSLOTS = 12,
-  NUMVALUES = 4096
+  NUMVALUES = 4096,
 }
  
   
 export enum Gender { 
   None = 0,
   Male = 1,
-  Female = 2
+  Female = 2,
 }
  
   
@@ -1120,7 +1120,7 @@ export enum GroupType {
   Warband = 0,
   Order = 1,
   Alliance = 2,
-  Campaign = 3
+  Campaign = 3,
 }
  
   
@@ -1129,14 +1129,14 @@ export enum InviteStatus {
   Accepted = 1,
   Declined = 2,
   Rescinded = 3,
-  Expired = 4
+  Expired = 4,
 }
  
   
 export enum ItemType { 
   None = 0,
   Equippable = 1,
-  Resource = 2
+  Resource = 2,
 }
  
  
@@ -1145,7 +1145,7 @@ export enum LanguageCode {
   en_US = 1,
   en_GB = 2,
   en_AU = 3,
-  de_DE = 4
+  de_DE = 4,
 }
   
   
@@ -1194,7 +1194,7 @@ export enum MemberActionType {
   AllianceAcceptedInvite = 29,
   InvitedWarband = 30,
   WarbandAcceptedInvite = 31,
-  CampaignCount = 32
+  CampaignCount = 32,
 }
  
   
@@ -1206,7 +1206,7 @@ export enum PatchPermissions {
   Alpha = 8,
   Beta1 = 16,
   Beta2 = 32,
-  Beta3 = 64
+  Beta3 = 64,
 }
  
   
@@ -1223,7 +1223,7 @@ export enum PermissionRegionType {
   Realm = 512,
   AllRealm = 1022,
   Public = 1024,
-  All = -1
+  All = -1,
 }
  
  
@@ -1234,13 +1234,13 @@ export enum Platforms {
   iPhone = 3,
   iPad = 4,
   Android = 5,
-  Web = 6
+  Web = 6,
 }
 
 export enum Subset { 
   None = 0,
   Paid = 1,
-  Free = 2
+  Free = 2,
 }
   
   
@@ -1289,7 +1289,7 @@ export enum PlayerStat {
   BloodRegeneration = 41,
   EffectPowerBonus = 42,
   None = 43,
-  COUNT = 43
+  COUNT = 43,
 }
  
   
@@ -1298,7 +1298,7 @@ export enum PlayerStatType {
   Primary = 1,
   Secondary = 2,
   Derived = 3,
-  Hidden = 4
+  Hidden = 4,
 }
  
   
@@ -1306,7 +1306,7 @@ export enum PlotType {
   Small = 0,
   Medium = 1,
   Large = 2,
-  Custom = 3
+  Custom = 3,
 }
 
 export enum BuildPermissions { 
@@ -1317,13 +1317,13 @@ export enum BuildPermissions {
   Guild = 4,
   Realm = 8,
   All = 16,
-  COUNT = 32
+  COUNT = 32,
 }
 
 export enum PlotSource { 
   Command = 0,
   Cog = 1,
-  COUNT = 2
+  COUNT = 2,
 }
  
  
@@ -1333,14 +1333,14 @@ export enum PrereleaseAccess {
   beta2 = 2,
   beta1 = 3,
   alpha = 4,
-  internalTesting = 5
+  internalTesting = 5,
 }
 
 export enum ForumAccess { 
   founderReadOnly = 0,
   founder = 1,
   internalTest = 2,
-  builder = 3
+  builder = 3,
 }
   
   
@@ -1350,7 +1350,7 @@ export enum ProjectileTrackingMode {
   Full = 2,
   Horizontal = 3,
   Attractor = 4,
-  Gravity = 5
+  Gravity = 5,
 }
  
   
@@ -1374,7 +1374,7 @@ export enum Race {
   HumanMaleA = 16,
   HumanMaleT = 17,
   Pict = 18,
-  Any = 19
+  Any = 19,
 }
  
  
@@ -1385,26 +1385,26 @@ export enum RedeemError {
   DuplicateTransactionID = 3,
   Invalidated = 4,
   BadState = 5,
-  NotRevealed = 6
+  NotRevealed = 6,
 }
   
   
 export enum RequirementApplicationType { 
   AbilityEffect = 0,
   Combatant = 1,
-  SubjectCaster = 2
+  SubjectCaster = 2,
 }
 
 export enum ComparisonType { 
   Equal = 0,
   LessThan = 1,
-  GreaterThan = 2
+  GreaterThan = 2,
 }
 
 export enum ListComparison { 
   Any = 0,
   One = 1,
-  All = 2
+  All = 2,
 }
  
   
@@ -1434,14 +1434,14 @@ export enum ResourceType {
   HeavyWarArrow = 18,
   ArrowEnd = 19,
   ArrowCount = 14,
-  None = 15
+  None = 15,
 }
  
   
 export enum ServerStatus { 
   Offline = 0,
   Starting = 1,
-  Online = 2
+  Online = 2,
 }
  
  
@@ -1449,19 +1449,19 @@ export enum ShapeType {
   Box = 0,
   Capsule = 1,
   Sphere = 2,
-  Cone = 3
+  Cone = 3,
 }
   
   
 export enum StanceID { 
-  Default = 0
+  Default = 0,
 }
  
   
 export enum StatModificationOperatorType { 
   AddPercent = 0,
   AddValue = 1,
-  ReplaceValue = 2
+  ReplaceValue = 2,
 }
  
   
@@ -1471,14 +1471,14 @@ export enum StoneTypes {
   Shielding = 2,
   Rejuvenation = 3,
   Inversion = 4,
-  Deflection = 5
+  Deflection = 5,
 }
  
   
 export enum TagConstraintType { 
   AllOf = 0,
   AnyOf = 1,
-  NoneOf = 2
+  NoneOf = 2,
 }
  
   
@@ -1488,7 +1488,7 @@ export enum TargetType {
   Friend = 2,
   Any = 3,
   Self = 4,
-  FriendOrSelf = 5
+  FriendOrSelf = 5,
 }
  
   
@@ -1497,7 +1497,7 @@ export enum TestItemFlags {
   StormRider = 1,
   HumanMale = 2,
   Archery = 4,
-  FutureRelease = 8
+  FutureRelease = 8,
 }
  
  
@@ -1505,7 +1505,7 @@ export enum TransactionType {
   Paypal = 1,
   Kickstarter = 2,
   Child = 3,
-  Stripe = 4
+  Stripe = 4,
 }
   
   
@@ -1513,14 +1513,14 @@ export enum TriggerBehaviorMode {
   None = 0,
   AttachToTarget = 1,
   MoveTowardsTarget = 2,
-  COUNT = 3
+  COUNT = 3,
 }
  
   
 export enum TriggerFilter { 
   Any = 0,
   Friend = 1,
-  Enemy = 2
+  Enemy = 2,
 }
  
   
@@ -1532,14 +1532,14 @@ export enum TriggerType {
   Healing = 4,
   Wound = 5,
   Death = 6,
-  Collision = 7
+  Collision = 7,
 }
  
   
 export enum VoxJobStatus { 
   Configuring = 0,
   Running = 1,
-  Finished = 2
+  Finished = 2,
 }
  
   
@@ -1581,7 +1581,7 @@ export enum WeaponStat {
   Density = 34,
   StrengthRequirement = 35,
   DexterityRequirement = 36,
-  AgilityRequirement = 37
+  AgilityRequirement = 37,
 }
  
   
@@ -1605,28 +1605,28 @@ export enum WeaponType {
   Throwing = 32768,
   Focus = 65536,
   LongSword = 131072,
-  All = 262143
+  All = 262143,
 }
 
 export enum NetworkWeaponType { 
   Default = 0,
   Shield = 1,
-  Bow = 2
+  Bow = 2,
 }
 
 export enum NetworkWeaponSlot { 
   PrimaryHand = 0,
   SecondaryHand = 1,
-  TwoHands = 2
+  TwoHands = 2,
 }
  
   
 export enum WireCompressionType { 
   None = 0,
-  LZMA = 1
+  LZMA = 1,
 }
 
 export enum ResourceCompressionType { 
-  None = 0
+  None = 0,
 }
  

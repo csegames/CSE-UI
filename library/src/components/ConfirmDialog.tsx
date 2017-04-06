@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 14:43:06
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-01 17:49:37
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:13:53
  */
 
 /*
@@ -79,7 +79,7 @@ const defaultStyles: ConfirmDialogStyle = {
     ':hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
-  }
+  },
 };
 
 export interface ConfirmDialogStyle {
@@ -109,6 +109,8 @@ export interface ConfirmDialogState {
 
 export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogProps<ContentProps>, ConfirmDialogState> {
 
+  private mouseOver = false;
+
   constructor(props: ConfirmDialogProps<ContentProps>) {
     super(props);
 
@@ -118,57 +120,7 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
     };
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('mousedown', this.windowMouseDown);
-  }
-
-  public show = () => {
-    this.setState({
-      hidden: false
-    } as any);
-    this.mouseOver = false;
-  }
-
-  public hide = () => {
-    this.setState({
-      hidden: true
-    } as any);
-    window.removeEventListener('mousedown', this.windowMouseDown);
-    this.mouseOver = false;
-  }
-
-  private confirm = () => {
-    this.hide();
-    this.props.onConfirm();
-  }
-
-  private cancel = () => {
-    this.hide();
-    this.props.onCancel();
-  }
-
-  private mouseOver = false;
-  private onMouseEnter = () => {
-    this.mouseOver = true;
-  }
-
-  private onMouseleave = () => {
-    this.mouseOver = false;
-  }
-
-  private windowMouseDown = () => {
-    if (this.state.cancelOnClickOutside && !this.state.hidden && !this.mouseOver) {
-      this.cancel();
-    }
-  }
-
-  private clicked = () => {
-    if (!this.state.hidden) return;
-    this.show();
-    window.addEventListener('mousedown', this.windowMouseDown);
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(merge(defaultStyles, this.props.style || {}));
     return (
       <div onClick={this.clicked} style={{ display: 'inline-block' }}>
@@ -193,6 +145,55 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
         }
       </div>
     );
+  }
+  
+  public show = () => {
+    this.setState({
+      hidden: false,
+    } as any);
+    this.mouseOver = false;
+  }
+
+  public hide = () => {
+    this.setState({
+      hidden: true,
+    } as any);
+    window.removeEventListener('mousedown', this.windowMouseDown);
+    this.mouseOver = false;
+  }
+
+  private componentWillUnmount() {
+    window.removeEventListener('mousedown', this.windowMouseDown);
+  }
+
+  private confirm = () => {
+    this.hide();
+    this.props.onConfirm();
+  }
+
+  private cancel = () => {
+    this.hide();
+    this.props.onCancel();
+  }
+
+  private onMouseEnter = () => {
+    this.mouseOver = true;
+  }
+
+  private onMouseleave = () => {
+    this.mouseOver = false;
+  }
+
+  private windowMouseDown = () => {
+    if (this.state.cancelOnClickOutside && !this.state.hidden && !this.mouseOver) {
+      this.cancel();
+    }
+  }
+
+  private clicked = () => {
+    if (!this.state.hidden) return;
+    this.show();
+    window.addEventListener('mousedown', this.windowMouseDown);
   }
 }
 

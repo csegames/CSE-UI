@@ -9,11 +9,11 @@ import * as React from 'react';
 
 export interface CompassProps {
   setVisibility: (vis: boolean) => void;
-};
+}
 
 export interface CompassState {
   facing: number;
-};
+}
 
 declare const cuAPI: any;
 
@@ -26,11 +26,38 @@ class Compass extends React.Component<CompassProps, CompassState> {
   constructor(props: CompassProps) {
     super(props);
     this.state = {
-      facing: 0
+      facing: 0,
     };
   }
 
-  angleToPercentage = (facing: number, angle: number): number => {
+  public render() {
+    const key: number = 0;
+    const facing: number = this.state.facing;
+    return (
+      <div className='Compass'>
+        <div className='Compass__Cardinal-direction'>
+          <h1 className='Compass__Cardinal' style={this.position(facing, -360) }>E</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, -315) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, -270) }>N</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, -225) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, -180) }>W</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, -135) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, -90) }>S</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, -45) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, 0) }>E</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, 45) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, 90) }>N</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, 135) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, 180) }>W</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, 225) }>.</h1>
+          <h1 className='Compass__Cardinal' style={this.position(facing, 270) }>S</h1>
+          <h1 className='Compass__Cardinal dot' style={this.position(facing, 315) }>.</h1>
+        </div>
+      </div>
+    );
+  }
+
+  private angleToPercentage = (facing: number, angle: number): number => {
     let diff: number = angle - (facing % 360);
     const fit = 0.75;
     const half = 50;
@@ -43,56 +70,29 @@ class Compass extends React.Component<CompassProps, CompassState> {
     }
   }
 
-  updateFacingFromClient = () => {
+  private updateFacingFromClient = () => {
     const facing: number = client.facing;
-    if (this.state.facing != facing) {
-      this.setState({ facing: facing } as any);
-    };
+    if (this.state.facing !== facing) {
+      this.setState({ facing } as any);
+    }
   }
 
-  componentWillMount() {
+  private componentWillMount() {
     this.updateFacingFromClient();
   }
 
-  componentDidMount() {
+  private componentDidMount() {
     this.updateFacingFromClient();
     clearInterval(this.intervalId);
     this.intervalId = setInterval(() => this.updateFacingFromClient(), this.updateSpeed);
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     clearInterval(this.intervalId);
   }
 
-  position(facing: number, angle: number) {
+  private position(facing: number, angle: number) {
     return { left: this.angleToPercentage(facing, angle) + '%' };
-  }
-
-  render() {
-    const key: number = 0;
-    let facing: number = this.state.facing;
-    return (
-      <div className="Compass">
-        <div className="Compass__Cardinal-direction">
-          <h1 className="Compass__Cardinal" style={this.position(facing, -360) }>E</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, -315) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, -270) }>N</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, -225) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, -180) }>W</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, -135) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, -90) }>S</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, -45) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, 0) }>E</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, 45) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, 90) }>N</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, 135) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, 180) }>W</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, 225) }>.</h1>
-          <h1 className="Compass__Cardinal" style={this.position(facing, 270) }>S</h1>
-          <h1 className="Compass__Cardinal dot" style={this.position(facing, 315) }>.</h1>
-        </div>
-      </div>
-    );
   }
 }
 

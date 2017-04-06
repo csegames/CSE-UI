@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 12:39:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 15:26:31
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:44:18
  */
 
 import * as React from 'react';
@@ -16,7 +16,7 @@ import {
   ql,
   ConfirmDialog,
   webAPI,
-  client
+  client,
 } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
@@ -36,7 +36,7 @@ export const defaultMemberListMenuStyle: MemberListMenuStyle = {
     userSelect: 'none',
     ':hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    }
+    },
   },
 };
 
@@ -51,17 +51,17 @@ const confirmPromoteDialog = (props: {}) => {
       
     </div>
   );
-}
+};
 
 
 function kickMember(m: {id: string}, groupId: string, onSuccess: () => void) {
   webAPI.GroupsAPI.kickV1(client.shardID, client.characterID, groupId, m.id)
-    .then(result => {
+    .then((result) => {
       if (result.ok) {
         // ok
         onSuccess();
       }
-    })
+    });
 }
 
 

@@ -13,19 +13,19 @@ import {thunkMiddleware, loggingMiddleware, crashReporterMiddleware} from '../..
 import reducer from './services/session';
 import ControllerDisplay from './components/ControllerDisplay';
 
-let store = createStore(reducer, applyMiddleware(thunkMiddleware));
+const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
 export interface ControllerProps {
   onLogIn: () => void;
 }
 
 class ControllerContainer extends React.Component<ControllerProps, {}> {
-  render() {
+  public render() {
     return (
       <Provider store={store}>
         <ControllerDisplay {...this.props} />
       </Provider>
-    )
+    );
   }
 }
 

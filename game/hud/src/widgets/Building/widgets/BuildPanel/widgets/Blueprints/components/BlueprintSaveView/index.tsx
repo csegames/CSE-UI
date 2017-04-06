@@ -11,7 +11,7 @@ import NameInput from './NameInput';
 export interface BlueprintSaveViewProps {
   onSave: (name: string) => void;
   onCancel: () => void;
-  reservedNames: string[]
+  reservedNames: string[];
 }
 
 export interface BlueprintSaveViewState {
@@ -23,21 +23,36 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
 
   constructor(props: BlueprintSaveViewProps) {
     super(props);
-    this.state = { saveable: false, name: '' }
+    this.state = { saveable: false, name: '' };
   }
 
-  triggerSave() {
+  public render() {
+    return (
+      <div className='blueprint-save-panel'>
+        <NameInput ref='name' placeholder='Save Blueprint As...'
+          maxLength={20}
+          onKeyUp={this.onKeyUp}
+          grabFocus={true}/>
+
+        <button onClick={() => this.triggerSave() } disabled={!this.state.saveable}>Ok</button>
+        <button onClick={() => this.triggerCancel() } >Cancel</button>
+      </div>
+    );
+  }
+
+  private triggerSave() {
     this.props.onSave(this.state.name);
   }
 
-  triggerCancel() {
+  private triggerCancel() {
     this.props.onCancel();
   }
-  onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  
+  private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const input: HTMLInputElement = e.target as HTMLInputElement;
     const compareValue: string = input.value.toLowerCase();
     const duplicate: boolean = this.props.reservedNames.filter((name: string) => {
-      return name.toLowerCase() == compareValue;
+      return name.toLowerCase() === compareValue;
     }).length > 0;
 
     if (!duplicate && e.which === 13) {   // handle ENTER
@@ -56,22 +71,8 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
 
     this.setState((state, props) => ({
       name: input.value,
-      saveable: input.value && !duplicate
-    }))
-  }
-
-  render() {
-    return (
-      <div className='blueprint-save-panel'>
-        <NameInput ref="name" placeholder="Save Blueprint As..."
-          maxLength={20}
-          onKeyUp={this.onKeyUp}
-          grabFocus={true}/>
-
-        <button onClick={() => this.triggerSave() } disabled={!this.state.saveable}>Ok</button>
-        <button onClick={() => this.triggerCancel() } >Cancel</button>
-      </div>
-    )
+      saveable: input.value && !duplicate,
+    }));
   }
 }
 

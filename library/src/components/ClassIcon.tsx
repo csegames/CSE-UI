@@ -21,7 +21,7 @@ const defaultStyle: ClassIconStyle = {
     height: '100%',
     width: '100%',
   },
-}
+};
 
 export interface ClassIconStyle {
   icon: React.CSSProperties;
@@ -41,6 +41,6 @@ export const ClassIcon = (props: {
       return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={css(ss.icon)} />;
     default: return <h1>Invalid Class</h1>;
   }
-}
+};
 
 export default ClassIcon;

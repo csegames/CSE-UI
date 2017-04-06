@@ -15,6 +15,6 @@ enum emotes {
 
   // None is last
   NONE = 5,
-};
+}
 
 export default emotes;

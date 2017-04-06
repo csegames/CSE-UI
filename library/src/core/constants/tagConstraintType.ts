@@ -8,6 +8,6 @@ enum tagContstraintType {
   ALLOF = 0,
   ANYOF = 1,
   NONEOF = 2,
-};
+}
 
 export default tagContstraintType;

@@ -15,10 +15,10 @@ function run(emitter: EventEmitter, topic: string) {
 }
 
 export default class BeginChatListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesChat;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesChat;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

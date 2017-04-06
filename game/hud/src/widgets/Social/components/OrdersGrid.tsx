@@ -24,7 +24,7 @@ export const defaultOrdersGridStyle : OrdersGridStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 };
 
@@ -38,7 +38,7 @@ export interface OrdersGridQuery {
       created: string;
       creator: string;
     }[]
-  }
+  };
 }
 
 export interface OrdersGridProps extends InjectedGraphQLProps<OrdersGridQuery> {
@@ -52,7 +52,7 @@ export interface OrdersGridProps extends InjectedGraphQLProps<OrdersGridQuery> {
   sort: string;
   reverse: boolean;
   orderBy: (by: string, asc: boolean) => void;
-};
+}
 
 interface OrdersListColumn extends ColumnDefinition {
   sortField?: string;
@@ -63,26 +63,26 @@ export const defaultOrdersGridColumnDefinitions: OrdersListColumn[] = [
     key: (m: {name: string}) => m.name,
     title: 'Name',
     sortable: true,
-    sortField: "name",
+    sortField: 'name',
     style: { width: '40%' },
   },
   {
     key: (m: {realm: string}) => m.realm,
     title: 'Realm',
     sortable: true,
-    sortField: "realm",
+    sortField: 'realm',
     style: { width: '15%' },
   },
   {
     key: (m: {creator: string}) => m.creator,
     title: 'Creator',
-    sortable: false, sortField: "creator",    // not supported
+    sortable: false, sortField: 'creator',    // not supported
     style: { width: '35%' },
   },
   {
     key: (m: {created: string}) => new Date(m.created).toLocaleDateString(),
     title: 'Created',
-    sortable: false, sortField: "created",    // not supported
+    sortable: false, sortField: 'created',    // not supported
     style: { width: '10%' },
   },
 ];
@@ -100,7 +100,7 @@ const OrdersGrid = (props : OrdersGridProps) => {
           /* Pager Props */
           gotoPage={props.gotoPage}
           total={props.data.orders.totalCount}
-          currentPage={props.skip/props.itemsPerPage}
+          currentPage={props.skip / props.itemsPerPage}
           onSort={(index: number, asc: boolean) => {
             props.orderBy(columnDefs[index].sortField, asc);
           }}
@@ -113,7 +113,7 @@ const OrdersGrid = (props : OrdersGridProps) => {
       : <Spinner/>
       }
     </div>
-  )
+  );
 };
 
 const query = gql`
@@ -137,16 +137,16 @@ const query = gql`
 const options = (props: OrdersGridProps) => {
   const opts = {
     variables: {
-      filter: props.filter||"",
-      shard: props.shard|0,
-      skip: props.skip|0,
-      count: props.itemsPerPage|0,
-      sort: props.sort||"",
-      reverse: props.reverse||false,
-    }
-  }
+      filter: props.filter || '',
+      shard: props.shard | 0,
+      skip: props.skip | 0,
+      count: props.itemsPerPage | 0,
+      sort: props.sort || '',
+      reverse: props.reverse || false,
+    },
+  };
   return opts;
 };
 
-const OrdersGridWithQL = graphql(query, { options: options })(OrdersGrid);
+const OrdersGridWithQL = graphql(query, { options })(OrdersGrid);
 export default OrdersGridWithQL;

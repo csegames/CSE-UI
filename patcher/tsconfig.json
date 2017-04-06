@@ -39,6 +39,9 @@
       "PatchClient",
       "node_modules"
     ],
+    "files": [
+      "node_modules/redux-thunk/index.d.ts"
+    ],
     "atom": {
         "rewriteTsconfig": false
     }

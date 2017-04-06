@@ -7,7 +7,7 @@
 export enum componentBranchState {
   Disabled = 0,
   Open = 1,
-  Slotted = 2
+  Slotted = 2,
 }
 
 export default componentBranchState;

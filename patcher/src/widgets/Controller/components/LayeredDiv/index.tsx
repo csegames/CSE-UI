@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-19 10:54:05
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 17:10:12
+ * @Last Modified time: 2017-04-10 11:47:15
  */
 
 import * as React from 'react';
@@ -17,8 +17,8 @@ export interface LayeredDivProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 class LayeredDiv extends React.Component<LayeredDivProps, {}> {
-  render() {
-    const {className, renderLayers} = this.props;
+  public render() {
+    const { className, renderLayers } = this.props;
     const props = Object.assign({}, this.props);
 
     return (

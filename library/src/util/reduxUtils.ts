@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 17:31:15
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-12 23:57:49
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 12:47:54
  */
 
 import {clone, merge, Dictionary} from './objectUtils';
@@ -23,7 +23,7 @@ export interface BaseAction {
 
 export const defaultAction: any = {
   type: null,
-  when: null
+  when: null,
 };
 
 export interface FetchStatus {
@@ -50,38 +50,39 @@ export function loggingMiddleware(store: any) {
     console.log('next state', store.getState());
     console.groupEnd();
     return result;
-  }
+  };
 }
 
 export function crashReporterMiddleware(store: any) {
   return (next: (action: BaseAction) => BaseAction) => (action: BaseAction) => {
     try {
-      return next(action)
+      return next(action);
     } catch (err) {
-      console.error('Caught an exception!', err)
+      console.error('Caught an exception!', err);
       console.log('state', store.getState());
-      throw err
+      throw err;
     }
-  }
+  };
 }
 
 export function thunkMiddleware(store: any) {
   return (next: any) => (action: any) => {
     return typeof action === 'function' ? action(store.dispatch, store.getState) : next(action);
-  }
+  };
 }
 
 export interface Action<STATETYPE> {
   (state: STATETYPE, action: any): STATETYPE;
 }
 
-export function createReducer<STATETYPE>(defaultState: STATETYPE, actions: Dictionary<Action<STATETYPE>>): (state: STATETYPE, action: BaseAction) => STATETYPE {
+export function createReducer<STATETYPE>(defaultState: STATETYPE, actions: Dictionary<Action<STATETYPE>>):
+ (state: STATETYPE, action: BaseAction) => STATETYPE {
   const actionDefs = clone(actions);
   return (state: STATETYPE = defaultState, action: BaseAction = defaultAction) => {
-    let def = actionDefs[action.type];
+    const def = actionDefs[action.type];
     if (typeof def === 'undefined' || def === null) return state;
     return def(state, action);
   };
 }
 
-export type ActionDefinitions<STATETYPE> = Dictionary<Action<STATETYPE>>
+export type ActionDefinitions<STATETYPE> = Dictionary<Action<STATETYPE>>;

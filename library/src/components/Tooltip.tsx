@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 11:47:41
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 18:06:09
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 14:55:15
  */
 
 /*
@@ -42,8 +42,8 @@ export const defaultToolTipStyle: ToolTipStyle = {
     padding: '2px 5px',
     maxWidth: '200px',
     zIndex: 1000,
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
-  }
+    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+  },
 };
 
 export interface ToolTipStyle extends StyleDeclaration {
@@ -90,51 +90,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     };
   }
 
-  onMouseMove = (e: any) => {
-    if (this.state.show == false) return;
-    this.setState({
-      x: e.clientX,
-      y: e.clientY
-    } as any);
-  }
-
-  onMouseEnter = (e: any) => {
-    this.setState({
-      show: true,
-      wndRegion: windowQuadrant(e.clientX, e.clientY),
-    } as any);
-  }
-
-  onMouseleave = () => {
-    this.setState({show: false} as any);
-  }
-
-  computeStyle = () => {
-    switch (this.state.wndRegion) {
-      case Quadrant.TopLeft:
-        return {
-          left: `${this.state.x + this.state.offsetLeft}px`,
-          top: `${this.state.y + this.state.offsetTop}px`
-        };
-      case Quadrant.TopRight:
-      return {
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
-          top: `${this.state.y + this.state.offsetTop}px`
-        };
-      case Quadrant.BottomLeft:
-      return {
-          left: `${this.state.x + this.state.offsetLeft}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
-        };
-      case Quadrant.BottomRight:
-      return {
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
-        };
-    }
-  }
-
-  render() {
+  public render() {
 
     const ss = StyleSheet.create(defaultToolTipStyle);
     const custom = StyleSheet.create(this.props.styles || {});
@@ -148,11 +104,56 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         {
           this.state.show ?
           <div className={css(ss.tooltip, custom.tooltip)} style={this.computeStyle()}>
-            {typeof this.props.content === 'string' ? this.props.content : <this.props.content {...this.props.contentProps} />}
+            {typeof this.props.content === 'string' ? this.props.content : 
+              <this.props.content {...this.props.contentProps} />}
           </div> : null
         }
       </div>
-    )
+    );
+  }
+
+  private onMouseMove = (e: any) => {
+    if (this.state.show === false) return;
+    this.setState({
+      x: e.clientX,
+      y: e.clientY,
+    } as any);
+  }
+
+  private onMouseEnter = (e: any) => {
+    this.setState({
+      show: true,
+      wndRegion: windowQuadrant(e.clientX, e.clientY),
+    } as any);
+  }
+
+  private onMouseleave = () => {
+    this.setState({show: false} as any);
+  }
+
+  private computeStyle = () => {
+    switch (this.state.wndRegion) {
+      case Quadrant.TopLeft:
+        return {
+          left: `${this.state.x + this.state.offsetLeft}px`,
+          top: `${this.state.y + this.state.offsetTop}px`,
+        };
+      case Quadrant.TopRight:
+      return {
+          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
+          top: `${this.state.y + this.state.offsetTop}px`,
+        };
+      case Quadrant.BottomLeft:
+      return {
+          left: `${this.state.x + this.state.offsetLeft}px`,
+          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`,
+        };
+      case Quadrant.BottomRight:
+      return {
+          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
+          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`,
+        };
+    }
   }
 }
 

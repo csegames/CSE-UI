@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-29 16:29:14
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:01:48
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 14:43:08
  */
 
 import {Faction} from '../..';
@@ -44,7 +44,8 @@ export interface CombatLog {
     part: bodyParts;
   }[];
   
-  cures?: bodyParts[]; // Array of body Part ids that recieved a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
+  // Array of body Part ids that recieved a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
+  cures?: bodyParts[];
   
   // resources spent or gained
   resources?: {

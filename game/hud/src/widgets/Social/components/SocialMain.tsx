@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-19 15:16:21
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-28 16:37:34
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:23:58
  */
 
 import * as React from 'react';
@@ -66,8 +66,8 @@ export const defaultSocialMainStyle: SocialMainStyle = {
     color: '#cdcdcd',
     display: 'flex',
     alignItems: 'stretch',
-  }
-}
+  },
+};
 
 
 export interface SocialMainProps extends InjectedGraphQLProps<ql.MySocialQuery> {
@@ -78,10 +78,13 @@ export interface SocialMainProps extends InjectedGraphQLProps<ql.MySocialQuery> 
 }
 
 export interface SocialMainState {
-  orderName: string
+  orderName: string;
  }
 
 class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainState> {
+  
+  private ready = false;
+
   constructor(props: SocialMainProps) {
     super(props);
     this.state = {
@@ -89,68 +92,6 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     };
   }
 
-  componentWillReceiveProps(props: SocialMainProps) {
-    if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
-      
-        events.fire('chat-leave-room', this.state.orderName);
-      
-      // we either are just loading up, or we've changed order.
-      if (props.data.myOrder.id) {
-        // we left our order, leave chat room
-        events.fire('chat-show-room', props.data.myOrder.name);
-      }
-      
-      this.setState({
-        orderName: props.data.myOrder.name,
-      });
-    }
-  }
-
-  componentDidMount() {
-    this.props.data.refetch();
-  }
-
-  renderLinks = (links: NavLink[]) => {
-    return links.map(link => (
-      <li className={`${linkAddressEquals(link.address, this.props.navigation.currentView) ? 'active' : ''} ${link.enabled ? '' : 'disabled'}`}
-        onClick={link.enabled ? () => this.props.dispatch(selectLink(link.address)) : null}
-        key={link.id}>
-        {link.icon}
-        {link.displayName}
-      </li>
-    ));
-  }
-
-  renderNavSection = (navSection: NavSection) => {
-    return (
-      <ul className='fa-ul'>
-        {this.renderLinks(navSection.links)}
-      </ul>
-    );
-  }
-
-  renderCategoryContent = (category: CategoryNav): any => {
-    switch (category.category) {
-      case SocialCategory.Warbands:
-        return category.warbands.map(v => this.renderCategory(v, true));
-      case SocialCategory.Campaigns:
-        return category.campaigns.map(v => this.renderCategory(v, true));
-      default:
-        return this.renderNavSection(category);
-    }
-  }
-
-  renderCategory = (category: CategoryNav, isSub = false) => {
-    return (
-      <section key={category.displayName} className={`SocialMain__navigation__group${isSub ? '__subGroup' : ''} ${category.collapsed ? `SocialMain__navigation__group${isSub ? '__subGroup' : ''}--collapsed` : ''}`}>
-        <hgroup onClick={() => this.props.dispatch(toggleCollapsedCategory(category.address))}>
-          {category.displayName}
-          {category.collapsed ? <i className='fa fa-chevron-down'></i> : <i className='fa fa-window-minimize'></i>}
-        </hgroup>
-        {this.renderCategoryContent(category)}
-      </section>
-    );
-  }
 
   // Refresh Apollo GraphQL data, ignore what is in the cache
   // and hit the server!
@@ -158,8 +99,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     this.props.data.refetch();
   }
 
-  ready = false;
-  render() {
+  public render() {
 
     const ss = StyleSheet.create(defaultSocialMainStyle);
     const custom = StyleSheet.create(this.props.styles || {});
@@ -176,19 +116,22 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
         content = <PersonalContent dispatch={this.props.dispatch}
                                    address={this.props.navigation.currentView}
                                    refetch={this.refresh}
-                                   myCharacter={this.props.data.myCharacter}/>
+                                   myCharacter={this.props.data.myCharacter} />;
         break;
       case SocialCategory.Order:
-        content = <OrderContent dispatch={this.props.dispatch} address={this.props.navigation.currentView} order={this.props.data.myOrder} refetch={this.refresh}/>
+        content = <OrderContent dispatch={this.props.dispatch}
+                                address={this.props.navigation.currentView}
+                                order={this.props.data.myOrder}
+                                refetch={this.refresh} />;
         break;
       case SocialCategory.Alliance:
-        content = <AllianceContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>
+        content = <AllianceContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
         break;
       case SocialCategory.Warbands:
-        content = <WarbandContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>
+        content = <WarbandContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
         break;
       case SocialCategory.Campaigns:
-        content = <CampaignContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>
+        content = <CampaignContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
         break;
     }
     }
@@ -214,12 +157,79 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
           this.props.data.loading ? <FloatSpinner /> : null
         }
       </div>
-    )
+    );
+  }
+
+  private componentWillReceiveProps(props: SocialMainProps) {
+    if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
+      
+        events.fire('chat-leave-room', this.state.orderName);
+      
+      // we either are just loading up, or we've changed order.
+      if (props.data.myOrder.id) {
+        // we left our order, leave chat room
+        events.fire('chat-show-room', props.data.myOrder.name);
+      }
+      
+      this.setState({
+        orderName: props.data.myOrder.name,
+      });
+    }
+  }
+
+  private componentDidMount() {
+    this.props.data.refetch();
+  }
+
+  private renderLinks = (links: NavLink[]) => {
+    return links.map(link => (
+      <li className={`${linkAddressEquals(link.address, this.props.navigation.currentView) ? 'active' : ''} ${
+                        link.enabled ? '' : 'disabled'}`}
+        onClick={link.enabled ? () => this.props.dispatch(selectLink(link.address)) : null}
+        key={link.id}>
+        {link.icon}
+        {link.displayName}
+      </li>
+    ));
+  }
+
+  private renderNavSection = (navSection: NavSection) => {
+    return (
+      <ul className='fa-ul'>
+        {this.renderLinks(navSection.links)}
+      </ul>
+    );
+  }
+
+  private renderCategoryContent = (category: CategoryNav): any => {
+    switch (category.category) {
+      case SocialCategory.Warbands:
+        return category.warbands.map(v => this.renderCategory(v, true));
+      case SocialCategory.Campaigns:
+        return category.campaigns.map(v => this.renderCategory(v, true));
+      default:
+        return this.renderNavSection(category);
+    }
+  }
+
+  private renderCategory = (category: CategoryNav, isSub = false) => {
+    return (
+      <section
+        key={category.displayName}
+        className={`SocialMain__navigation__group${isSub ? '__subGroup' : ''}
+          ${category.collapsed ? `SocialMain__navigation__group${isSub ? '__subGroup' : ''}--collapsed` : ''}`}>
+        <hgroup onClick={() => this.props.dispatch(toggleCollapsedCategory(category.address))}>
+          {category.displayName}
+          {category.collapsed ? <i className='fa fa-chevron-down'></i> : <i className='fa fa-window-minimize'></i>}
+        </hgroup>
+        {this.renderCategoryContent(category)}
+      </section>
+    );
   }
 }
 
 const SocialMainWithQL = graphql(ql.queries.MySocial, {
   options: {
-  }
+  },
 })(SocialMain);
 export default connect(s => s)(SocialMainWithQL);

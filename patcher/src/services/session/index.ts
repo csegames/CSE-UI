@@ -12,19 +12,19 @@
 import {combineReducers} from 'redux';
 
 import routesReducer, {RoutesState} from './routes';
-let routes = routesReducer;
+const routes = routesReducer;
 
 import heroContentReducer, {HeroContentState} from './heroContent';
-let heroContent = heroContentReducer;
+const heroContent = heroContentReducer;
 
 import newsReducer, {NewsState} from './news';
-let news = newsReducer;
+const news = newsReducer;
 
 import soundsReducer, {SoundsState} from './sounds';
-let sounds = soundsReducer;
+const sounds = soundsReducer;
 
 import chatReducer, {ChatState} from './chat';
-let chat = chatReducer;
+const chat = chatReducer;
 
 export default combineReducers({
   routes,

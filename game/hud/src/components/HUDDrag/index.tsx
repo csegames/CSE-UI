@@ -11,7 +11,7 @@ export enum LayoutMode {
   FLOAT,
   GRID,
   EDGESNAP,
-  WIDGETSNAP
+  WIDGETSNAP,
 }
 
 export enum Edge {
@@ -126,13 +126,18 @@ export interface HUDDragState {
   scaleFactor: number;
 
   // controls
-  mode: EditMode
+  mode: EditMode;
   layoutMode: LayoutMode;
 }
 
 class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   private didUpdate: boolean = false;
+  private lastPosition = {x: NaN , y: NaN};
+  private mouseDownForScaleHold: boolean = false;
+  private mouseScaleHoldInitTimeout: NodeJS.Timer = null;
+  private mouseDownForOpacityHold: boolean = false;
+  private mouseOpacityHoldInitTimeout: NodeJS.Timer = null;
 
   constructor(props: HUDDragProps) {
     super(props);
@@ -161,9 +166,37 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     };
   }
 
-  componentWillReceiveProps(props: HUDDragProps) {
+  public render() {
+    const position = this.getPosition();
+    return (
+      <div className={`HUDDrag`}
+          style={{
+            position: 'fixed',
+            height: `${this.state.height}px`,
+            width: `${this.state.width}px`,
+            transform: `scale(${this.state.scale})`,
+            WebkitTransform: `scale(${this.state.scale})`,
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            pointerEvents: 'none',
+          }}>
+          <div style={{
+                height: '100%',
+                width: '100%',
+                opacity: this.state.opacity,
+                visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
+                display: `${this.state.visible ? 'block' : 'none'}`,
+               }} >
+            {this.props.render(clone(this.state))}
+          </div>
+        {this.props.locked ? null : this.renderEditControls()}
+      </div>
+    );
+  }
 
-    if (this.state.mode == EditMode.NONE) {
+  private componentWillReceiveProps(props: HUDDragProps) {
+
+    if (this.state.mode === EditMode.NONE) {
       this.setState({
         height: props.defaultHeight,
         width: props.defaultWidth,
@@ -196,7 +229,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     }
 
     // update min & max height if needed
-    let stateUpdate: any = {};
+    const stateUpdate: any = {};
 
     if (this.props.minHeight !== props.minHeight) {
       stateUpdate.minHeight = props.minHeight || props.defaultHeight / 4;
@@ -223,12 +256,10 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   private setMode = (m: EditMode) => {
     this.setState({
-      mode: m
+      mode: m,
     } as any);
   }
 
-  
-  private lastPosition = {x: NaN , y: NaN}
   private mouseMovement = (e: MouseEvent) => {
     if (this.lastPosition.x === NaN) {
       // just starting to move, so 0 move
@@ -241,8 +272,8 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private onMouseMove = (e: MouseEvent | any) => {
-    let mouseMove = this.mouseMovement(e);
-    switch(this.state.mode) {
+    const mouseMove = this.mouseMovement(e);
+    switch (this.state.mode) {
       default: return;
       case EditMode.NONE: return;
       case EditMode.MOVE:
@@ -259,7 +290,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           break;
           case LayoutMode.EDGESNAP:
           {
-            const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x + deltaX, fixedPos.y + deltaY, this.state.height, this.state.width);
+            const pos = HUDDrag.fixedToEdgeSnap(
+              fixedPos.x + deltaX, fixedPos.y + deltaY,
+              this.state.height,
+              this.state.width,
+            );
             this.setState(pos as any);
           }
           break;
@@ -314,12 +349,12 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       break;
       case EditMode.SCALE: 
       {
-        this.setScale(this.state.scale + (mouseMove.y * this.state.scaleFactor))
+        this.setScale(this.state.scale + (mouseMove.y * this.state.scaleFactor));
       }
       break;
       case EditMode.OPACITY: 
       {
-        this.setOpacity(this.state.opacity + (mouseMove.y * 0.01))
+        this.setOpacity(this.state.opacity + (mouseMove.y * 0.01));
       }
       break;
     }
@@ -333,7 +368,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.setMode(mode);
     e.preventDefault();
     e.stopPropagation();
-    this.lastPosition = {x: e.screenX , y: e.screenY}
+    this.lastPosition = {x: e.screenX , y: e.screenY};
   }
 
   private onMouseUp = () => {
@@ -346,7 +381,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     if (this.mouseDownForOpacityHold != null) {
       clearTimeout(this.mouseOpacityHoldInitTimeout);
     }
-    if (this.state.mode != EditMode.NONE) this.setMode(EditMode.NONE);
+    if (this.state.mode !== EditMode.NONE) this.setMode(EditMode.NONE);
     if (this.didUpdate) {
       this.props.save(clone(this.state));
       this.didUpdate = false;
@@ -372,20 +407,18 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.didUpdate = true;
   }
 
-  componentDidMount() {
+  private componentDidMount() {
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
   }
 
-  componentDidUnMount() {
-    window.removeEventListener('mouseup', this.onMouseUp)
+  private componentDidUnMount() {
+    window.removeEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
   }
 
-  private mouseDownForScaleHold: boolean = false;
-  private mouseScaleHoldInitTimeout: NodeJS.Timer = null;
   private startScaleHold = (up: boolean) => {
-    if (this.mouseDownForScaleHold || this.state.mode != EditMode.NONE) return;
+    if (this.mouseDownForScaleHold || this.state.mode !== EditMode.NONE) return;
     this.mouseDownForScaleHold = true;
     
     this.mouseScaleHoldInitTimeout = setTimeout(() => {
@@ -397,17 +430,15 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private runScaleHold = (up: boolean, initial: boolean, speed: number) => {
-    if (!initial && this.state.mode != EditMode.SCALEHOLD) return;
+    if (!initial && this.state.mode !== EditMode.SCALEHOLD) return;
 
     const s = up ? this.state.scale + this.state.scaleFactor : this.state.scale - this.state.scaleFactor;
     this.setScale(s);
     setTimeout(() => this.runScaleHold(up, false, speed - 0.00001), 700 * speed > 0.5 ? speed : 0.5);
   }
 
-  private mouseDownForOpacityHold: boolean = false;
-  private mouseOpacityHoldInitTimeout: NodeJS.Timer = null;
   private startOpacityHold = (up: boolean) => {
-    if (this.mouseDownForOpacityHold || this.state.mode != EditMode.NONE) return;
+    if (this.mouseDownForOpacityHold || this.state.mode !== EditMode.NONE) return;
     this.mouseDownForOpacityHold = true;
     
     this.mouseScaleHoldInitTimeout = setTimeout(() => {
@@ -419,7 +450,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private runOpacityHold = (up: boolean, initial: boolean, speed: number) => {
-    if (!initial && this.state.mode != EditMode.OPACITYHOLD) return;
+    if (!initial && this.state.mode !== EditMode.OPACITYHOLD) return;
 
     const o = this.state.opacity + (up ? 0.01 : -0.01);
     this.setOpacity(o);
@@ -427,15 +458,24 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private getPosition = () => {
-    switch(this.state.layoutMode) {
+    switch (this.state.layoutMode) {
       default: return null;
-      case LayoutMode.GRID: return HUDDrag.gridToFixed(this.state.x, this.state.y, this.state.xAnchor, this.state.yAnchor, this.props.gridDivisions);
+      case LayoutMode.GRID: 
+        return HUDDrag.gridToFixed(
+          this.state.x,
+          this.state.y,
+          this.state.xAnchor,
+          this.state.yAnchor,
+          this.props.gridDivisions,
+        );
       case LayoutMode.EDGESNAP:
       {
         const screen = { width: window.innerWidth, height: window.innerHeight };
         return {
-          x: this.state.xAnchor == Edge.LEFT ?  this.state.x : screen.width - this.state.width * this.state.scale - this.state.x,
-          y: this.state.yAnchor == Edge.TOP ? this.state.y : screen.height - this.state.height * this.state.scale - this.state.y
+          x: this.state.xAnchor === Edge.LEFT ?
+           this.state.x : screen.width - this.state.width * this.state.scale - this.state.x,
+          y: this.state.yAnchor === Edge.TOP ?
+           this.state.y : screen.height - this.state.height * this.state.scale - this.state.y,
         };
       }
     }
@@ -448,8 +488,8 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
     return {
       x: (width / divisions) * xGrid + x,
-      y: (height / divisions) * yGrid + y
-    }
+      y: (height / divisions) * yGrid + y,
+    };
   }
 
   private static fixedToGrid(x: number, y: number, divisions: number) {
@@ -466,34 +506,52 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       x: x - segmentWidth * xGrid,
       xAnchor: xGrid,
       y: y - segmentHeight * yGrid,
-      yAnchor: yGrid
-    }
+      yAnchor: yGrid,
+    };
   }
 
   private static fixedToEdgeSnap(x: number, y: number, h: number, w: number) {
     const s = { w: window.innerWidth, h: window.innerHeight };
 
-    let left = y < (s.w - (y - w));
-    let top = x < (s.h - (x - h));
+    const left = y < (s.w - (y - w));
+    const top = x < (s.h - (x - h));
 
     return {
       x: left ? x : s.w - x + w,
       xAnchor: left ? Edge.LEFT : Edge.RIGHT,
       y: top ? y : s.h - y + h,
       yAnchor: top ? Edge.TOP : Edge.BOTTOM,
-    }
+    };
   }
 
   private renderEditControls = () => {
     return (
       <div className='HUDDrag__controls'>
         <div className='HUDDrag__controls__name'>{this.props.name}</div>
-        {this.props.lockDrag || (this.props.lockX && this.props.lockY) ? null : <div className='HUDDrag__controls__dragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVE)}/>}
-        {this.props.lockWidth ? null : <div className='HUDDrag__controls__resizeXHandle HUDDrag__controls__resizeXHandle--left' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEXLEFT)}/>}
-        {this.props.lockWidth ? null : <div className='HUDDrag__controls__resizeXHandle HUDDrag__controls__resizeXHandle--right' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEX)}/>}
-        {this.props.lockHeight ? null : <div className='HUDDrag__controls__resizeYHandle HUDDrag__controls__resizeYHandle--top' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEYUP)}/>}
-        {this.props.lockHeight ? null : <div className='HUDDrag__controls__resizeYHandle HUDDrag__controls__resizeYHandle--bottom' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEY)}/>}
-        {this.props.lockWidth || this.props.lockHeight ? null : <div className='HUDDrag__controls__resizeXYHandle' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEBOTH)}/>}
+        {this.props.lockDrag || (this.props.lockX && this.props.lockY) ? null :
+          <div className='HUDDrag__controls__dragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVE)}/>}
+        {this.props.lockWidth ? null :
+          <div
+            className='HUDDrag__controls__resizeXHandle HUDDrag__controls__resizeXHandle--left'
+            onMouseDown={e => this.onMouseDown(e, EditMode.SIZEXLEFT)}
+          />}
+        {this.props.lockWidth ? null :
+          <div
+            className='HUDDrag__controls__resizeXHandle HUDDrag__controls__resizeXHandle--right'
+            onMouseDown={e => this.onMouseDown(e, EditMode.SIZEX)}
+          />}
+        {this.props.lockHeight ? null :
+          <div
+            className='HUDDrag__controls__resizeYHandle HUDDrag__controls__resizeYHandle--top'
+            onMouseDown={e => this.onMouseDown(e, EditMode.SIZEYUP)}
+          />}
+        {this.props.lockHeight ? null :
+          <div
+            className='HUDDrag__controls__resizeYHandle HUDDrag__controls__resizeYHandle--bottom'
+            onMouseDown={e => this.onMouseDown(e, EditMode.SIZEY)}
+          />}
+        {this.props.lockWidth || this.props.lockHeight ? null :
+          <div className='HUDDrag__controls__resizeXYHandle' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEBOTH)}/>}
         
         <div className='HUDDrag__controls__toolbar'>
 
@@ -524,11 +582,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
                 </div>
                 <a href='#' className='HUDDrag__controls__toolbar__dragControl'
                    onMouseDown={e => this.onMouseDown(e, EditMode.OPACITY)}
-                   onWheel={e => {
+                   onWheel={(e) => {
                      const deltaY = e.deltaY;
-                     setTimeout(() => this.setOpacity(this.state.opacity + (deltaY < 0 ? 0.01 : -0.01)))
+                     setTimeout(() => this.setOpacity(this.state.opacity + (deltaY < 0 ? 0.01 : -0.01)));
                    }}>
-                  <i className="fa fa-sun-o"></i>
+                  <i className='fa fa-sun-o'></i>
                 </a>
                 <div className='HUDDrag__controls__scaleText'>{`${(this.state.opacity * 100).toFixed(0)}%`}</div>
               </div>
@@ -545,11 +603,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
                 </div>
                 <a href='#'  className='HUDDrag__controls__toolbar__dragControl'
                      onMouseDown={e => this.onMouseDown(e, EditMode.SCALE)}
-                     onWheel={e => {
+                     onWheel={(e) => {
                        const deltaY = e.deltaY;
-                       setTimeout(() => this.setScale(this.state.scale + (deltaY < 0 ? 0.01 : -0.01)))
+                       setTimeout(() => this.setScale(this.state.scale + (deltaY < 0 ? 0.01 : -0.01)));
                       }}>
-                  <i className="fa fa-search-plus"></i>
+                  <i className='fa fa-search-plus'></i>
                 </a>
                 <div className='HUDDrag__controls__scaleText'>{`${(this.state.scale * 100).toFixed(0)}%`}</div>
               </div>
@@ -557,35 +615,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           
         </div>
       </div>
-    )
-  }
-
-  render() {
-    const position = this.getPosition();
-    return (
-      <div className={`HUDDrag`}
-          style={{
-            position: 'fixed',
-            height: `${this.state.height}px`,
-            width: `${this.state.width}px`,
-            transform: `scale(${this.state.scale})`,
-            WebkitTransform: `scale(${this.state.scale})`,
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            pointerEvents: 'none',
-          }}>
-          <div style={{
-                height: '100%',
-                width: '100%',
-                opacity: this.state.opacity,
-                visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
-                display: `${this.state.visible ? 'block': 'none'}`,
-               }} >
-            {this.props.render(clone(this.state))}
-          </div>
-        {this.props.locked ? null : this.renderEditControls()}
-      </div>
-    )
+    );
   }
 }
 

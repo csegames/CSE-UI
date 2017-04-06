@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import {client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands} from 'camelot-unchained';
-import {parseArgs, systemMessage} from './utils';
+import { client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands } from 'camelot-unchained';
+import { parseArgs, systemMessage } from './utils';
 
 export default () => {
   /**
@@ -13,7 +13,7 @@ export default () => {
   registerSlashCommand('help', 'show available slash commands', () => {
     const commands = getSlashCommands();
     for (let i = 0; i < commands.length; ++i) {
-     systemMessage(`${commands[i].command} : ${commands[i].helpText}`);
+      systemMessage(`${commands[i].command} : ${commands[i].helpText}`);
     }
   });
 
@@ -25,7 +25,7 @@ export default () => {
   /**
    * Change your zone -- Only works on Hatchery / Debug & Internal builds
    */
-  registerSlashCommand('zone', 'change your zone', (params: string) => client.ChangeZone(parseInt(params)));
+  registerSlashCommand('zone', 'change your zone', (params: string) => client.ChangeZone(parseInt(params, 10)));
 
   /**
    * Change camera mode
@@ -43,4 +43,4 @@ export default () => {
   registerSlashCommand('loc', 'tells you your current location', () => {
     setTimeout(() => systemMessage(`${client.locationX},${client.locationY},${client.locationZ}`), 100);
   });
-}
+};

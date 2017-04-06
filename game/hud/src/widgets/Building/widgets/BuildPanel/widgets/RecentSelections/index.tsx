@@ -7,10 +7,10 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
-import {initializeRecents} from './services/session/recents'
+import {initializeRecents} from './services/session/recents';
 
 import {BuildPaneProps} from '../../lib/BuildPane';
 import {BuildingItem} from '../../../../lib/BuildingItem';
@@ -27,10 +27,10 @@ interface ContainerState {
 
 class Container extends React.Component<BuildPaneProps, ContainerState> {
 
-  render() {
+  public render() {
     return (
       <Provider store={store}>
-        <TabbedPane name="recents"
+        <TabbedPane name='recents'
         tabs={[this.props.minimized ? 'Recent' : 'Recently Used']} 
           defaultX={[0, Anchor.TO_END]} 
           defaultY={[200, Anchor.TO_START]} 
@@ -39,7 +39,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           <RecentSelections />
         </TabbedPane>
       </Provider>
-    )
+    );
   }
 }
 

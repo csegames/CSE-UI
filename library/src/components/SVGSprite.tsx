@@ -20,6 +20,6 @@ export const SVGSprite = (props: {
       dangerouslySetInnerHTML={{ __html: `<use xlink:href=${this.props.sprite}></use>` }}>
     </svg>
   );
-}
+};
 
 export default SVGSprite;

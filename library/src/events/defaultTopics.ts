@@ -18,5 +18,5 @@ export const clientEventTopics = {
   handlesControlGame: 'controlgame',
   handlesConsole: 'console',
   handlesChat: 'chat',
-  handlesCharacter: 'character'
-}
+  handlesCharacter: 'character',
+};

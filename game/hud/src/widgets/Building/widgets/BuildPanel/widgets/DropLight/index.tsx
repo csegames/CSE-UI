@@ -7,11 +7,11 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
 import {loadLights} from './services/session/lights';
-import {BuildingItem} from '../../../../lib/BuildingItem'
+import {BuildingItem} from '../../../../lib/BuildingItem';
 import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 
@@ -31,10 +31,10 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     super(props);
   }
 
-  render() {
+  public render() {
     return (
       <Provider store={store}>
-        <TabbedPane name="droplights" className="drop-light" tabs={[this.props.minimized ? 'Light' : 'Drop Light']}
+        <TabbedPane name='droplights' className='drop-light' tabs={[this.props.minimized ? 'Light' : 'Drop Light']}
           defaultX={[0, Anchor.TO_END]}
           defaultY={[600, Anchor.TO_START]}
           defaultSize={[200, 200]}
@@ -43,7 +43,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           <LightSelector />
         </TabbedPane>
       </Provider>
-    )
+    );
   }
 }
 

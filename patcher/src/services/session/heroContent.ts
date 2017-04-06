@@ -17,11 +17,11 @@ import {patcher} from '../patcher';
 const HeroContentUrl = `${patcher.apiHost()}/patcherherocontent`;
 
 export interface HeroContentItem {
-  id: string,
-  priority: number,
-  content: string,
-  utcDateStart: string,
-  utcDateEnd: string
+  id: string;
+  priority: number;
+  content: string;
+  utcDateStart: string;
+  utcDateEnd: string;
 }
 
 export interface HeroContentAction extends BaseAction {
@@ -37,7 +37,7 @@ const VALIDATE_HERO_ITEMS = 'cse-patcher/herocontent/VALIDATE_HERO_ITEMS';
 // sync actions
 export function requestHeroContent() {
   return {
-    type: FETCH_HERO_ITEMS
+    type: FETCH_HERO_ITEMS,
   };
 }
 
@@ -45,7 +45,7 @@ export function fetchHeroContentSuccess(items: HeroContentItem[]): HeroContentAc
   return {
     type: FETCH_HERO_ITEMS_SUCCESS,
     when: new Date(),
-    items: items,
+    items,
   };
 }
 
@@ -53,14 +53,14 @@ export function fetchHeroContentFailed(error: ResponseError): HeroContentAction 
   return {
     type: FETCH_HERO_ITEMS_FAILED,
     when: new Date(),
-    error: error.message
+    error: error.message,
   };
 }
 
 export function validateHeroContent(): HeroContentAction {
   return {
     type: VALIDATE_HERO_ITEMS,
-    when: new Date()
+    when: new Date(),
   };
 }
 
@@ -70,10 +70,10 @@ export function fetchHeroContent() {
     dispatch(requestHeroContent());
     return fetchJSON(HeroContentUrl)
       .then((items: HeroContentItem[]) => {
-        dispatch(fetchHeroContentSuccess(items))
+        dispatch(fetchHeroContentSuccess(items));
       })
       .catch((error: ResponseError) => dispatch(fetchHeroContentFailed(error)));
-  }
+  };
 }
 
 export interface HeroContentState extends FetchStatus {
@@ -82,12 +82,12 @@ export interface HeroContentState extends FetchStatus {
 
 function getInitialState(): HeroContentState {
   return merge(defaultFetchStatus, {
-    items: []
+    items: [],
   });
 }
 
 export default function reducer(state: HeroContentState = getInitialState(), action: HeroContentAction = defaultAction) {
-  switch(action.type) {
+  switch (action.type) {
     default: return state;
 
     case FETCH_HERO_ITEMS:
@@ -96,12 +96,11 @@ export default function reducer(state: HeroContentState = getInitialState(), act
         lastFetchStart: action.when,
       });
 
-    case FETCH_HERO_ITEMS_SUCCESS:
-    {
+    case FETCH_HERO_ITEMS_SUCCESS: {
       return merge(state, {
         isFetching: false,
         lastFetchSuccess: action.when,
-        items: hashMerge((o: HeroContentItem) => o.id, action.items, state.items).sort(function(a, b) {
+        items: hashMerge((o: HeroContentItem) => o.id, action.items, state.items).sort((a, b) => {
           const aDate = new Date(a.utcDateStart);
           const bDate = new Date(b.utcDateStart);
           return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;

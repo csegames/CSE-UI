@@ -12,15 +12,15 @@ import {ServerType, serverTypeToString, PatcherServer} from '../../services/sess
 
 
 class ActiveGameView extends React.Component<{type: ServerType}, {}> {
-  render() {
-    const {type} = this.props;
+  public render() {
+    const { type } = this.props;
     return <div className='ActiveGameView'>{serverTypeToString(type)}</div>;
   }
 }
 
 class GameListView extends React.Component<{type: ServerType}, {}> {
-  render() {
-    const {type} = this.props;
+  public render() {
+    const { type } = this.props;
     return <div className='ActiveGameView'>{serverTypeToString(type)}</div>;
   }
 }
@@ -44,25 +44,20 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     };
   }
 
-  selectType = (type: ServerType) => {
-    this.props.selectType(type);
-    this.setState({selectedType: type} as any);
-  }
+  public render() {
 
-  render() {
-
-    let values: ServerType[] = [];
+    const values: ServerType[] = [];
     for (let i = ServerType.CUGAME; i < ServerType.UNKNOWN; ++i) {
       let anyOfType = false;
       for (const key in this.props.servers) {
-        if (this.props.servers[key].type == i) {
-         anyOfType = true;
-         break;
+        if (this.props.servers[key].type === i) {
+          anyOfType = true;
+          break;
         }
       }
       if (anyOfType) values.push(i);
     }
-    let {selectedType} = this.state;
+    const {selectedType} = this.state;
     return <QuickSelect items={values}
                         containerClass='GameSelect'
                         selectedItemIndex={utils.findIndexWhere(values, t => t === selectedType)}
@@ -70,6 +65,11 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
                         listViewComponentGenerator={t => <GameListView type={t}/>}
                         itemHeight={49}
                         onSelectedItemChanged={this.selectType} />;
+  }
+
+  private selectType = (type: ServerType) => {
+    this.props.selectType(type);
+    this.setState({selectedType: type} as any);
   }
 }
 

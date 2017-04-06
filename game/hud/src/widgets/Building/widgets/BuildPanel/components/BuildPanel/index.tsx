@@ -16,8 +16,8 @@ import DropLight from '../../widgets/DropLight';
 import Blueprints from '../../widgets/Blueprints';
 import MaterialSelector from '../../widgets/MaterialSelector';
 
-import {BuildingItem} from '../../../../lib/BuildingItem'
-import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane'
+import {BuildingItem} from '../../../../lib/BuildingItem';
+import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
 
 export interface BuildPanelProps {
 
@@ -36,36 +36,14 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
 
   constructor(props: BuildPanelProps) {
     super(props);
-    let yPos = 0;
+    const yPos = 0;
     this.state = {
       minimized: false,
       showMaterialSelector: false,
-    }
+    };
   }
 
-  onMinMax() {
-    this.setState((state, props) => ({ minimized: !state.minimized } as BuildPanelState));
-  }
-
-  materialSelectorActivated = () => {
-    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
-  }
-
-  materialSelectorDeactivated = () => {
-    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
-  }
-
-  componentDidMount() {
-    events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
-    events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
-  }
-
-  componentWillUnmount() {
-    events.removeListener(this.materialSelectorActivated);
-    events.removeListener(this.materialSelectorDeactivated);
-  }
-
-  render() {
+  public render() {
     let matSelector: JSX.Element = null;
     if (this.state.showMaterialSelector)
       matSelector = (<MaterialSelector minimized={this.state.minimized} />);
@@ -78,7 +56,29 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
         <Blueprints minimized={this.state.minimized} />
         <DropLight minimized={this.state.minimized} />
       </div>
-    )
+    );
+  }
+
+  private onMinMax() {
+    this.setState((state, props) => ({ minimized: !state.minimized } as BuildPanelState));
+  }
+
+  private materialSelectorActivated = () => {
+    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
+  }
+
+  private materialSelectorDeactivated = () => {
+    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
+  }
+
+  private componentDidMount() {
+    events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
+    events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
+  }
+
+  private componentWillUnmount() {
+    events.removeListener(this.materialSelectorActivated);
+    events.removeListener(this.materialSelectorDeactivated);
   }
 }
 

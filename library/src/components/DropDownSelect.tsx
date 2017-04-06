@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 11:20:43
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 15:28:23
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:40:47
  */
 
 import * as React from 'react';
@@ -128,49 +128,7 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
     };
   }
 
-  public selectedItem = () => {
-    return this.state.selectedItem;
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // down or right
-    if (e.keyCode == 40 || e.keyCode == 39) {
-      if (this.state.keyboardIndex + 1 < this.state.items.length) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex+1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // up or left
-    if (e.keyCode == 38 || e.keyCode == 37) {
-      if (this.state.keyboardIndex - 1 > -1) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex-1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // enter
-    if (e.keyCode == 13) {
-      if (this.state.keyboardIndex > -1) {
-        this.selectItem(this.state.items[this.state.keyboardIndex]);
-        e.stopPropagation();
-      }
-    }
-  }
-
-  selectItem = (item: any) => {
-    this.setState({
-      keyboardIndex: -1,
-      selectedItem: item,
-      dropDownOpen: false,
-    });
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultDropDownSelectStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -187,14 +145,15 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
           </div>
         </div>
         <div className={css(ss.listWrapper, custom.listWrapper)}>
-          <div className={this.state.dropDownOpen ? css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
+          <div className={this.state.dropDownOpen ?
+           css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
             {
               this.state.items.map((item, index) => {
                 if (item === this.state.selectedItem) return null;
                 return (
                   <div key={index} 
                        className={
-                       this.state.keyboardIndex == index ?
+                       this.state.keyboardIndex === index ?
                          css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
                          css(ss.listItem, custom.listItem)
                        }
@@ -207,7 +166,49 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
           </div>
         </div>
       </div>
-    )
+    );
+  }
+
+  public selectedItem = () => {
+    return this.state.selectedItem;
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // down or right
+    if (e.keyCode === 40 || e.keyCode === 39) {
+      if (this.state.keyboardIndex + 1 < this.state.items.length) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex + 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // up or left
+    if (e.keyCode === 38 || e.keyCode === 37) {
+      if (this.state.keyboardIndex - 1 > -1) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex - 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // enter
+    if (e.keyCode === 13) {
+      if (this.state.keyboardIndex > -1) {
+        this.selectItem(this.state.items[this.state.keyboardIndex]);
+        e.stopPropagation();
+      }
+    }
+  }
+
+  private selectItem = (item: any) => {
+    this.setState({
+      keyboardIndex: -1,
+      selectedItem: item,
+      dropDownOpen: false,
+    });
   }
 }
 

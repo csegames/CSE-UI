@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-30 10:37:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:24:51
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:43:38
  */
 
 import * as React from 'react';
@@ -24,13 +24,13 @@ const defaultStyle : OverviewStyle = {
   containter: {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   title: {
     padding: '15px',
     boxShadow: '0 2px 5px rgba(0,0,0,0.19)',
-    backgroundColor: '#4d573e'
+    backgroundColor: '#4d573e',
   },
 
   content: {
@@ -41,26 +41,26 @@ const defaultStyle : OverviewStyle = {
     alignContent: 'flex-start',
     alignItems: 'flex-start',
     justifyContent: 'space-around',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
   },
 
   contentTop: {
     display: 'flex',
     flexDirection: 'column',
     flex: '0 0 300px',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   logo: {
     width: '150px',
     height: '150px',
     padding: '5px',
-    margin: '5px'
+    margin: '5px',
   },
 
   logoIMG: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
 
   summary: {
@@ -70,23 +70,23 @@ const defaultStyle : OverviewStyle = {
     flexWrap: 'wrap',
     paddingLeft: '15px',
     alignContent: 'space-around',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
 
   summaryItem: {
     flex: '1 1 auto',
     minWidth: '40%',
-    maxWidth: '50%'
+    maxWidth: '50%',
   },
 
   summaryHeader: {
     color: '#777',
-    fontWeight: 600
+    fontWeight: 600,
   },
 
   row: {
     flex: '1 1 auto',
-    display: 'flex'
+    display: 'flex',
   },
 
   recentActivity: {
@@ -96,18 +96,18 @@ const defaultStyle : OverviewStyle = {
     margin: '10px',
     alignContent: 'flex-start',
     alignSelf: 'stretch',
-    overflowX: 'hidden'
+    overflowX: 'hidden',
   },
 
   recentActivityHeader: {
     color: '#777',
-    fontSize: '1.1em'
+    fontSize: '1.1em',
   },
 
   recentActivityItem: {
     margin: '0',
-    padding: '0'
-  }
+    padding: '0',
+  },
 };
 
 export interface OverviewStyle extends StyleDeclaration {
@@ -146,11 +146,11 @@ function parseFor(s : string, regex: RegExp, component: any, shard : number) : I
   while (match != null) {
     result.push({
       replace: match[0],
-      component: component,
+      component,
       componentProps: {
         id: match[1],
-        shard: shard
-      }
+        shard,
+      },
     });
     match = regex.exec(s);
     if (match === null || !match) return result;
@@ -167,16 +167,16 @@ function parseForOrder(s : string, shard : number) : InlineCardComponentDetails[
 }
 
 function generateMessage(s : string, currentIndex : number, elements : InlineCardComponentDetails[]) : JSX.Element {
-  if (s == '') return null;
+  if (s === '') return null;
 
-  if(currentIndex >= elements.length) {
+  if (currentIndex >= elements.length) {
     return <span>{s}</span>;
   }
 
   const current = elements[currentIndex];
   if (s.indexOf(current.replace) === -1) return generateMessage(s, currentIndex + 1, elements);
 
-  var split = s.split(new RegExp(`${current.replace}(.*)`));
+  const split = s.split(new RegExp(`${current.replace}(.*)`));
   return (
     <span>
       {generateMessage(split[0], currentIndex + 1, elements)}
@@ -187,24 +187,12 @@ function generateMessage(s : string, currentIndex : number, elements : InlineCar
 }
 
 function unCamelize(s: string) {
-  return s.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })
+  return s.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
 }
 
 class Overview extends React.Component<OrderOverviewProps, {}> {
-
-  renderActionCard = (action : ql.MemberAction, key: number, ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
-    const elements = parseForCharacter(action.message, client.shardID)
-      .concat(parseForOrder(action.message, client.shardID));
-    return (
-      <TitleCard key={key} title={unCamelize(action.type)} date={new Date(action.when)}>
-        <div className={css(ss.recentActivityItem, custom.recentActivityItem)}>
-          {generateMessage(action.message, 0, elements)}
-        </div>
-      </TitleCard>
-    );
-  }
-
-  render() {
+  
+  public render() {
     const ss = StyleSheet.create(defaultStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     const order = this.props.order;
@@ -212,7 +200,7 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
     return (
       <div className={css(ss.containter, custom.containter)}>
           <GroupTitle styles={{
-                        title: ss.title
+                        title: ss.title,
                       }}
                       refetch={this.props.refetch}>
           {order.name}
@@ -256,13 +244,25 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
               {
                 this.props.data.loading
                   ? <Spinner />
-                  : this.props.data.order.recentActions.map((a, index)=> this.renderActionCard(a, index, ss, custom))
+                  : this.props.data.order.recentActions.map((a, index) => this.renderActionCard(a, index, ss, custom))
               }
             </div>
           </div>
         </div>
       </div>
-    )
+    );
+  }
+
+  private renderActionCard = (action : ql.MemberAction, key: number, ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
+    const elements = parseForCharacter(action.message, client.shardID)
+      .concat(parseForOrder(action.message, client.shardID));
+    return (
+      <TitleCard key={key} title={unCamelize(action.type)} date={new Date(action.when)}>
+        <div className={css(ss.recentActivityItem, custom.recentActivityItem)}>
+          {generateMessage(action.message, 0, elements)}
+        </div>
+      </TitleCard>
+    );
   }
 }
 
@@ -270,10 +270,10 @@ const OverviewQL = graphql(ql.queries.OrderActions, {
   options: (props : OrderOverviewProps) => ({
     variables: {
       id: props.order.id,
-      shard: client.shardID
+      shard: client.shardID,
     },
     // poll every 30 seconds for updated data
-    pollInterval: 30000
-  })
+    pollInterval: 30000,
+  }),
 })(Overview);
 export default OverviewQL;

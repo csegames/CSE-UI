@@ -14,18 +14,18 @@ import Stats from './Stats';
 
 class Character extends Player{
 
-  inventory: Inventory;
-  banes: BaneBoon[];
-  boons: BaneBoon[];
-  equippedGear: EquippedGear;
-  spellBook: SpellBook;
-  group: Group;
-  stats: Stats;
+  public inventory: Inventory;
+  public banes: BaneBoon[];
+  public boons: BaneBoon[];
+  public equippedGear: EquippedGear;
+  public spellBook: SpellBook;
+  public group: Group;
+  public stats: Stats;
 
 
 
   constructor(character = <Character>{}) {
-    super(character)
+    super(character);
     this.inventory = character.inventory || new Inventory();
     this.equippedGear = character.equippedGear || new EquippedGear();
     this.spellBook = character.spellBook || new SpellBook();
@@ -35,8 +35,8 @@ class Character extends Player{
     this.stats = character.stats || new Stats();
   }
 
-  static create() {
-    let a = new Character();
+  public static create() {
+    const a = new Character();
     return a;
   }
 

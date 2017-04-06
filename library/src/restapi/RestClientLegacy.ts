@@ -21,12 +21,12 @@ import * as RestUtil from './RestUtil';
 // you can't customise the settings at all (e.g. like define
 // the api key or current channel)
 class Settings {
-  core: CoreSettings;
-  url: string;
-  port: number;
-  apiKey: string;
-  channelId: channelId;
-  timeout: number;
+  public core: CoreSettings;
+  public url: string;
+  public port: number;
+  public apiKey: string;
+  public channelId: channelId;
+  public timeout: number;
   constructor(channel: channelId) {
     this.core = new CoreSettings();			// TODO: This class is a bit weird
     this.channelId = channel;
@@ -44,7 +44,7 @@ class Settings {
         break;
     }
   }
-  getApiKey() {
+  public getApiKey() {
     if (!this.apiKey) {
       this.apiKey = client.loginToken;		// in fake API will prompt for token
     }
@@ -57,13 +57,13 @@ let settings = new Settings(4);
 if (hasClientAPI()) {
   events.on('init', () => {
     settings = new Settings(client.patchResourceChannel);
-  })
+  });
 }
 
 function makeAPIUrl(endpoint: string, useHttps: boolean): string {
-  if (endpoint.indexOf('://') != -1) return endpoint; // we already have a fully formed url, skip
-  var protocol = useHttps ? 'https' : 'http';
-  var port = useHttps ? '4443' : '8000';
+  if (endpoint.indexOf('://') !== -1) return endpoint; // we already have a fully formed url, skip
+  const protocol = useHttps ? 'https' : 'http';
+  const port = useHttps ? '4443' : '8000';
   return protocol + '://' + settings.url + ':' + port + '/api/' + endpoint.replace(/^\//, '');
 }
 
@@ -74,16 +74,21 @@ export function getJSON(endpoint: string, useHttps: boolean = false, query: any 
 }
 
 // old API requires loginToken to be in the data object
-export function postJSON(endpoint: string, useHttps: boolean = false, requireAuth: boolean = false, data: any = {}, version: number = 1): Promise<any> {
+export function postJSON(
+  endpoint: string,
+  useHttps: boolean = false,
+  requireAuth: boolean = false,
+  data: any = {},
+  version: number = 1): Promise<any> {
   return fetch(makeAPIUrl(endpoint, useHttps), {
     method: 'post',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       'api-version': `${version}`,
-      'loginToken': client.loginToken
+      loginToken: client.loginToken,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);

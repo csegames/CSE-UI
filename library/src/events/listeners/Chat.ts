@@ -12,20 +12,20 @@ import client from '../../core/client';
 function run(emitter: EventEmitter, topic: string) {
   client.OnChat((type: number, from: string, body: string, nick: string, iscse: boolean) => {
     emitter.emit(topic, new ChatMessage({
-      type: type,
-      from: from,
-      body: body,
-      nick: nick,
-      iscse: iscse
+      type,
+      from,
+      body,
+      nick,
+      iscse,
     }));
   });
 }
 
 export default class ChatListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesChat;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesChat;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

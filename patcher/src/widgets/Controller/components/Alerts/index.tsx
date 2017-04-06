@@ -9,15 +9,15 @@ import {webAPI} from 'camelot-unchained';
 import Animate from '../../../../lib/Animate';
 
 export interface AlertsProps {
-  alerts: webAPI.PatcherAlert[],  
-};
+  alerts: webAPI.PatcherAlert[];  
+}
 
 export class Alerts extends React.Component<AlertsProps, {}> {
-  static propTypes = {
+  private static propTypes = {
     alerts: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  }
+  };
   
-  render() {
+  public render() {
     if (this.props.alerts.length === 0) return null;
     return <div className='Alerts'>{this.props.alerts[0].message}</div>;
   }

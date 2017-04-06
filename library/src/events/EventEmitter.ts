@@ -7,12 +7,12 @@
 let internalId = 0;
 
 class Listener {
-  id: number;
-  topic: string;
-  once: boolean;
-  callback: (...params: any[]) => void;
-  fired: number = 0;
-  last: number = 0;
+  public id: number;
+  public topic: string;
+  public once: boolean;
+  public callback: (...params: any[]) => void;
+  public fired: number = 0;
+  public last: number = 0;
   constructor(topic: string, once: boolean, callback: (...params: any[]) => void) {
     this.topic = topic;
     this.once = once;
@@ -22,7 +22,7 @@ class Listener {
 }
 
 class EventEmitter {
-  events: any;
+  public events: any;
   constructor() {
     this.events = {};
   }
@@ -34,10 +34,10 @@ class EventEmitter {
    * @param once {boolean}         Fire event only once (auto-unregister) [optional]
    * @param callback {function}    Handler to call when topic is fired
    */
-  addListener(topic: string, once: boolean = false, callback: (...params: any[]) => void): any {
+  public addListener(topic: string, once: boolean = false, callback: (...params: any[]) => void): any {
     const listeners: Listener[] = this.events[topic] = this.events[topic] || [];
     const listener: Listener = new Listener(topic, once, callback);
-    let i: number = listeners.indexOf(null);
+    const i: number = listeners.indexOf(null);
     if (i === -1) {
       listeners.push(listener);
     } else {
@@ -52,7 +52,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param callback {function}    Handler to call when topic is fired
    */
-  on(topic: string, callback: (...params: any[]) => void): any {
+  public on(topic: string, callback: (...params: any[]) => void): any {
     return this.addListener(topic, false, callback);
   }
 
@@ -64,7 +64,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param callback {function}    Handler to call when topic is fired
    */
-  listenOnce(topic: string, callback: (...params: any[]) => void): any {
+  public listenOnce(topic: string, callback: (...params: any[]) => void): any {
     return this.addListener(topic, true, callback);
   }
 
@@ -73,7 +73,7 @@ class EventEmitter {
    *
    * @param listener {any}   Handle returned by previous call to addListener()
    */
-  removeListener(listener: any): void {
+  public removeListener(listener: any): void {
     const listeners: Listener[] = this.events[listener.topic];
     if (listeners && listeners.length) {
       for (let i = 0; i < listeners.length; i++) {
@@ -91,7 +91,7 @@ class EventEmitter {
    * @param topic {string}         Topic name
    * @param data {any}  The data being passed (depends on topic)
    */
-  emit(topic: string, ...params: any[]): void {
+  public emit(topic: string, ...params: any[]): void {
     const listeners: Listener[] = this.events[topic];
     if (listeners && listeners.length) {
       for (let i = 0; i < listeners.length; i++) {
@@ -111,8 +111,8 @@ class EventEmitter {
   /**
    * diagnostics() - dump data to console.log
    */  
-  diagnostics = () : void => {
-    for (let key in this.events) {
+  public diagnostics = () : void => {
+    for (const key in this.events) {
       if (this.events.hasOwnProperty(key)) {
         const listeners : Listener[] = this.events[key];
         listeners.forEach((listener: Listener, index: number) : void => {
@@ -125,7 +125,7 @@ class EventEmitter {
               + ' once ' + listener.once
               + ' callback ' + typeof(listener.callback)
               + ' fired ' + listener.fired
-              + ' last ' + (new Date(listener.last)).toISOString()
+              + ' last ' + (new Date(listener.last)).toISOString(),
             );
           } else {
             console.log('Event: Index ' + index + ' is free (null)');

@@ -12,8 +12,8 @@ import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorize
 
 export function getStartingServer(shardID: number, characterID: string) {
   return create(createOptions()).get('v1/presence/startingServer/{shardID}/{characterID}', {
-    shardID: shardID,
-    characterID: characterID
+    shardID,
+    characterID,
   });
 }
 

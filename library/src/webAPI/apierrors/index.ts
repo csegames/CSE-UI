@@ -13,7 +13,7 @@ import * as FieldCodes from './fieldCodes';
 
 export {
   FieldCodes,
-}
+};
 
 export interface Unauthorized {
   Code: 401;

@@ -12,8 +12,8 @@ import componentBranchState from '../constants/abilityConstants/componentBranchS
 import stats from './Stats';
 
 export class ComponentBranch {
-    parts: any[];
-    state: componentBranchState;
+    public parts: any[];
+    public state: componentBranchState;
 }
 
 export interface ComponentSlot {
@@ -33,41 +33,41 @@ export interface ComponentSlot {
 
 export class AbilityComponent {
 
-  cooldown: number;
-  duration: number;
-  tooltip: string;
-  id: string;
-  baseComponentID: number;
-  name: string;
-  description: string;
-  icon: string;
-  type: componentType;
-  subType: componentSubType;
-  path: componentPath;
-  abillityStats: stats; //TODO use Stats from Character ?ß
-  abilityTags: abilityTags[];
-  //tagConstraints: Array<TagConstraint>;
-  slot: ComponentSlot;
-  rank: number;
-  isTrained: boolean;
-  isHalted: boolean;
+  public cooldown: number;
+  public duration: number;
+  public tooltip: string;
+  public id: string;
+  public baseComponentID: number;
+  public name: string;
+  public description: string;
+  public icon: string;
+  public type: componentType;
+  public subType: componentSubType;
+  public path: componentPath;
+  public abillityStats: stats; // TODO use Stats from Character ?ï¿½
+  public abilityTags: abilityTags[];
+  // tagConstraints: Array<TagConstraint>;
+  public slot: ComponentSlot;
+  public rank: number;
+  public isTrained: boolean;
+  public isHalted: boolean;
     
     
 
   constructor(abilityComponent = <AbilityComponent>{}) {
-    this.id = abilityComponent.id || "";
-    this.icon = abilityComponent.icon || "";
+    this.id = abilityComponent.id || '';
+    this.icon = abilityComponent.icon || '';
     this.cooldown = abilityComponent.cooldown || 0;
     this.duration = abilityComponent.duration || 0;
-    this.name = abilityComponent.name || "";
-    this.tooltip = abilityComponent.tooltip || "";
+    this.name = abilityComponent.name || '';
+    this.tooltip = abilityComponent.tooltip || '';
     this.abilityTags = abilityComponent.abilityTags || <abilityTags[]>[];
-      //....
+      // ....
 
   }
 
-  static create() {
-    let a = new AbilityComponent();
+  public static create() {
+    const a = new AbilityComponent();
     return a;
   }
 

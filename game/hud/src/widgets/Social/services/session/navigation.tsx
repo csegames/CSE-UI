@@ -5,14 +5,14 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-20 18:08:12
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 22:04:37
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:18:40
  */
 import * as React from 'react';
-import { Module } from 'redux-typed-modules'
+import { Module } from 'redux-typed-modules';
 import { Map } from 'immutable';
 import { utils, ql } from 'camelot-unchained';
-import { ApolloClient } from 'apollo-client'
+import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 
 import { LinkAddress,
@@ -40,7 +40,7 @@ function initialState() {
 
 function toggleCollapsed(state: Readonly<NavigationState>, address: CategoryAddress): Partial<NavigationState> {
   return {
-    categories: state.categories.update(address.category, value => {
+    categories: state.categories.update(address.category, (value) => {
       switch (address.kind) {
         case 'Primary':
           value.collapsed = !value.collapsed;
@@ -48,13 +48,13 @@ function toggleCollapsed(state: Readonly<NavigationState>, address: CategoryAddr
         case 'Sub':
           switch (value.category) {
             case SocialCategory.Warbands:
-              value.warbands = value.warbands.update(address.subKey, subValue => {
+              value.warbands = value.warbands.update(address.subKey, (subValue) => {
                 subValue.collapsed = !subValue.collapsed;
                 return subValue;
               });
               return value;
             case SocialCategory.Campaigns:
-              value.campaigns = value.campaigns.update(address.subKey, subValue => {
+              value.campaigns = value.campaigns.update(address.subKey, (subValue) => {
                 subValue.collapsed = !subValue.collapsed;
                 return subValue;
               });
@@ -63,14 +63,14 @@ function toggleCollapsed(state: Readonly<NavigationState>, address: CategoryAddr
         // should never hit this!!
         default: return value;
       }
-    })
+    }),
   };
 }
 
 /*
  * MODULE ACTIONS
  */
-var module = new Module({
+const module = new Module({
   initialState: initialState(),
   actionExtraData: () => {
     return {
@@ -86,35 +86,35 @@ export const initialize = module.createAction({
       // apollo.query({
       //   query: ql.queries.MySocial,
       // });
-    }
-  }
-})
+    };
+  },
+});
 
 
 export const selectLink = module.createAction({
   type: 'social/navigation/selectLink',
   action: (address: LinkAddress) => {
     return {
-      address: address
+      address,
     };
   },
   reducer: (s, a) => {
     return {
-      currentView: a.address
+      currentView: a.address,
     };
-  }
+  },
 });
 
 export const toggleCollapsedCategory = module.createAction({
   type: 'social/navigation/toggleCollapsedCategory',
   action: (address: CategoryAddress) => {
     return {
-      address: address
+      address,
     };
   },
   reducer: (s, a) => {
     return toggleCollapsed(s, a.address);
-  }
+  },
 });
 
 export default module.createReducer();

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:09:20
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-07 12:10:22
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 11:53:45
  */
 
 import * as React from 'react';
@@ -28,7 +28,19 @@ class UninstallButton extends React.Component<UninstallButtonProps, UninstallBut
     this.state = { showConfirmDialog: false };
   }
 
-  generateConfirmDialog = (): JSX.Element => {
+  public render() {
+    return (
+      <div>
+        <a className='uninstall-link' onClick={this.showModal}>Uninstall {this.props.name}</a>
+        <Animate animationEnter='slideInUp' animationLeave='slideOutDown'
+          durationEnter={400} durationLeave={500}>
+          {this.generateConfirmDialog()}
+        </Animate>
+      </div>
+    );
+  }
+
+  private generateConfirmDialog = (): JSX.Element => {
     return  this.state.showConfirmDialog ? (
       <div className='fullscreen-modal' key='confirm-dialog'>
         <ConfirmDialog onYes={this.props.uninstall} onNo={this.hideModal}>
@@ -38,26 +50,13 @@ class UninstallButton extends React.Component<UninstallButtonProps, UninstallBut
     ) : null;
   }
 
-  showModal = () => {
+  private showModal = () => {
     this.setState({ showConfirmDialog: true } as any);
   }
 
-  hideModal = () => {
+  private hideModal = () => {
     this.setState({ showConfirmDialog: false } as any);
   }
-
-  render() {
-    return (
-      <div>
-        <a className='uninstall-link' onClick={this.showModal}>Uninstall {this.props.name}</a>
-        <Animate animationEnter='slideInUp' animationLeave='slideOutDown'
-          durationEnter={400} durationLeave={500}>
-          {this.generateConfirmDialog()}
-        </Animate>
-      </div>
-      );
-  }
-
 }
 
 export default UninstallButton;

@@ -1,6 +1,13 @@
 module.exports = {
   scripts: {
-    postinstall: 'rimraf typings && typings install',
+    lint: {
+      script: 'tslint src/**/*.ts{,x}',
+      description: 'Run TS-Lint"',
+      fix: {
+        script: 'tslint --fix src/**/*.ts{,x}',
+        description: 'Fix TS-Lint errors'
+      }
+    },
     copy: {
       misc: 'copyup src/third-party/**/* src/sounds/**/* src/images/**/* src/font/**/* src/**/*.html src/videos/**/* dist/ui',
       patcher: 'copyup dist/ui/**/* PatchClient/cpui'
@@ -15,7 +22,7 @@ module.exports = {
     },
     build: {
       sass: 'node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js',
-      default: 'nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify'
+      default: 'nps lint && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify'
     },
     postbuild: 'rimraf tmp && rimraf tmpp',
     prebuild: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib',

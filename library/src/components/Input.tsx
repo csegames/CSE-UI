@@ -44,7 +44,7 @@ export const defaultInputStyle: InputStyle = {
   label: {
     flex: '1 1 auto',
   },
-}
+};
 
 export interface InputProps {
   styles?: Partial<InputStyle>;
@@ -63,6 +63,6 @@ export const Input = (props: Partial<InputProps>) => {
       <input ref={r => props.inputRef ? props.inputRef(r) : null} className={css(ss.input, custom.input)} {...props} />
     </div>
   );
-}
+};
 
 export default Input;

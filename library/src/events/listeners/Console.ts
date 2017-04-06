@@ -11,15 +11,15 @@ import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
   client.OnConsoleText((text: string) => {
-    emitter.emit(topic, new ConsoleMessage({text: text}));
+    emitter.emit(topic, new ConsoleMessage({text}));
   });
 }
 
 export default class ConsoleListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesConsole;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesConsole;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

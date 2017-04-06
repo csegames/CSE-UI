@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 11:20:43
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 14:30:34
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:39:25
  */
 
 import * as React from 'react';
@@ -88,6 +88,9 @@ export interface FilterSelectState {
 }
 
 export class FilterSelect extends React.Component<FilterSelectProps, FilterSelectState> {
+
+  private inputRef: HTMLInputElement = null;
+
   constructor(props: FilterSelectProps) {
     super(props);
     const items = cloneDeep(this.props.items);
@@ -100,65 +103,7 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
     };
   }
 
-  onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (this.state.filterText == value) return;
-    this.applyFilter(value);
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // down or right
-    if (e.keyCode == 40 || e.keyCode == 39) {
-      if (this.state.keyboardIndex + 1 < this.state.filteredItems.length) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex+1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // up or left
-    if (e.keyCode == 38 || e.keyCode == 37) {
-      if (this.state.keyboardIndex - 1 > -1) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex-1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // enter
-    if (e.keyCode == 13) {
-      if (this.state.keyboardIndex > -1) {
-        this.selectItem(this.state.filteredItems[this.state.keyboardIndex]);
-        e.stopPropagation();
-      }
-    }
-  }
-
-  applyFilter = (s: string) => {
-
-    const filteredItems: any[] = [];
-    this.state.items.forEach(item => {
-      if (this.props.filter(s, item)) filteredItems.push(item);
-    });
-
-    this.setState({
-      filteredItems,
-      filterText: s,
-    });
-  }
-
-  selectItem = (item: any) => {
-    this.setState({
-      keyboardIndex: -1,
-      selectedItem: item
-    });
-  }
-
-  inputRef: HTMLInputElement = null;
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultFilterSelectStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -184,7 +129,7 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
               return (
                 <div key={index} 
                      className={
-                     this.state.keyboardIndex == index ?
+                     this.state.keyboardIndex === index ?
                        css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
                        css(ss.listItem, custom.listItem)
                      }
@@ -197,7 +142,63 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
         </div>
         </div>
       </div>
-    )
+    );
+  }
+
+  private onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (this.state.filterText === value) return;
+    this.applyFilter(value);
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // down or right
+    if (e.keyCode === 40 || e.keyCode === 39) {
+      if (this.state.keyboardIndex + 1 < this.state.filteredItems.length) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex + 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // up or left
+    if (e.keyCode === 38 || e.keyCode === 37) {
+      if (this.state.keyboardIndex - 1 > -1) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex - 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // enter
+    if (e.keyCode === 13) {
+      if (this.state.keyboardIndex > -1) {
+        this.selectItem(this.state.filteredItems[this.state.keyboardIndex]);
+        e.stopPropagation();
+      }
+    }
+  }
+
+  private applyFilter = (s: string) => {
+
+    const filteredItems: any[] = [];
+    this.state.items.forEach((item) => {
+      if (this.props.filter(s, item)) filteredItems.push(item);
+    });
+
+    this.setState({
+      filteredItems,
+      filterText: s,
+    });
+  }
+
+  private selectItem = (item: any) => {
+    this.setState({
+      keyboardIndex: -1,
+      selectedItem: item,
+    });
   }
 }
 

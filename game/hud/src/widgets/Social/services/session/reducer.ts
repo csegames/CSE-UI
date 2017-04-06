@@ -9,10 +9,10 @@
  * @Last Modified time: 2017-02-21 18:55:04
  */
 
-import {client} from 'camelot-unchained';
-import {crashReporterMiddleware, thunkMiddleware} from '../../../../lib/reduxUtils';
-import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
-import navigation, {NavigationState} from './navigation';
+import { client } from 'camelot-unchained';
+import { crashReporterMiddleware, thunkMiddleware } from '../../../../lib/reduxUtils';
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
+import navigation, { NavigationState } from './navigation';
 
 
 const reducer = combineReducers({
@@ -22,7 +22,7 @@ const reducer = combineReducers({
 export default reducer;
 
 export interface SessionState {
-  navigation : NavigationState,
+  navigation : NavigationState;
 }
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -5,12 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-22 12:08:53
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-22 16:36:35
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:23:05
  */
 
 import * as React from 'react';
-import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle,  } from './InlineInputEdit';
+import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle  } from './InlineInputEdit';
 
 export interface InlineTextInputEditProps {
   value: string;
@@ -18,6 +18,6 @@ export interface InlineTextInputEditProps {
   styles?: Partial<InlineInputEditStyle>;
 }
 
-export function InlineTextInputEdit(props: InlineTextInputEditProps) {
-  return <InlineInputEdit type='text' value={props.value} onSave={props.onSave} styles={props.styles} />
+export const InlineTextInputEdit = (props: InlineTextInputEditProps) => {
+  return <InlineInputEdit type='text' value={props.value} onSave={props.onSave} styles={props.styles} />;
 };

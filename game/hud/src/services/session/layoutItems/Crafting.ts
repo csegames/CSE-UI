@@ -15,26 +15,26 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: -200
+      offset: -200,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 40
+      offset: 40,
     },
     size: {
       width: 650,
-      height: 450
+      height: 450,
     },
     scale: 1,
     opacity: 1,
     visibility: false,
     zOrder: 8,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: Crafting,
-  props: {}
+  props: {},
 };

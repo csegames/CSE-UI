@@ -5,25 +5,25 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:08:25
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-31 15:31:28
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 12:20:08
  */
 
 import * as React from 'react';
-import {events} from 'camelot-unchained';
-import {patcher, User} from '../../../../services/patcher';
+import { events } from 'camelot-unchained';
+import { patcher, User } from '../../../../services/patcher';
 import LayeredDiv from '../LayeredDiv';
 
 export interface LoginProps {
   onLogin: () => void;
-};
+}
 
 enum LoginStatus {
   IDLE,
   INVALIDINPUT,
   WORKING,
   SUCCESS,
-  FAILED
+  FAILED,
 }
 
 export interface LoginState {
@@ -31,12 +31,17 @@ export interface LoginState {
   password: string;
   rememberMe: boolean;
   status: LoginStatus;
-};
+}
 
 class Login extends React.Component<LoginProps, LoginState> {
+  
   public name: string = 'cse-patcher-login';
   public intervalHandle: any;
   public intervalCounter: any;
+
+  private emailRef: HTMLInputElement;
+  private passwordRef: HTMLInputElement;
+  private rememberRef: HTMLInputElement;
 
   constructor(props: LoginProps) {
     super(props);
@@ -58,82 +63,12 @@ class Login extends React.Component<LoginProps, LoginState> {
     }, 500);
   }
 
-  componentDidMount() : void {
-    // without this timeout, the label doesn't animate up above the input box
-    if (this.emailRef.value.length === 0) {
-      this.emailRef.focus();
-    } else {
-      this.passwordRef.focus();
-    }
-  }
+  public render() {
 
-  onEmailChanged = (evt: any) => {
-    this.setState({
-      email: evt.target.value,
-      status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT
-    } as any);
-  }
-
-  onPasswordChanged = (evt: any) => {
-    this.setState({
-      password: evt.target.value,
-      status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT
-    } as any);
-  }
-
-  onRememberMe = (evt: any) => {
-    this.setState({rememberMe: !this.state.rememberMe} as any);
-    events.fire('play-sound', 'select');
-  }
-
-  login = () => {
-    events.fire('play-sound', 'server-select');
-    this.setState({status: LoginStatus.WORKING} as any);
-    patcher.login({
-      email: this.emailRef.value,
-      password: this.passwordRef.value,
-      rememberMe: this.rememberRef.checked,
-    });
-
-    setTimeout(() => this.checkLoginStatus(500), 500);
-  }
-
-  checkLoginStatus = (waitTime: number) => {
-    if (patcher.hasLoginToken()) {
-      // success! notify, then trigger switch
-      setTimeout(() => this.props.onLogin(), 1000);
-      this.setState({status: LoginStatus.SUCCESS} as any);
-      events.fire('logged-in');
-      return;
-    } else if (waitTime > 5000 || patcher.hasLoginError()) {
-      this.setState({status: LoginStatus.FAILED} as any);
-      setTimeout(() => this.setState({status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
-      return;
-    }
-    setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
-  }
-
-  onHelp = () => {
-    window.open('https://api.citystateentertainment.com/Account/ForgottenPassword', '_blank');
-    events.fire('play-sound', 'select');
-  }
-
-  onKeyDown = (event: any) => {
-    if (event.key == 'Enter') {
-      this.login();
-    }
-  }
-
-  private emailRef: HTMLInputElement;
-  private passwordRef: HTMLInputElement;
-  private rememberRef: HTMLInputElement;
-
-  render() {
-
-    const disableInput = this.state.status != LoginStatus.IDLE && this.state.status != LoginStatus.INVALIDINPUT;
+    const disableInput = this.state.status !== LoginStatus.IDLE && this.state.status !== LoginStatus.INVALIDINPUT;
 
     let LoginButton: JSX.Element = null;
-    switch(this.state.status) {
+    switch (this.state.status) {
       case LoginStatus.INVALIDINPUT:
         LoginButton = <div className='Login__button disabled' onClick={e => e.preventDefault()}>Login</div>;
         break;
@@ -141,13 +76,17 @@ class Login extends React.Component<LoginProps, LoginState> {
         LoginButton = <div className='Login__button' tabIndex={4} onClick={this.login}>Login</div>;
         break;
       case LoginStatus.WORKING:
-        LoginButton = <div className='Login__button disabled' onClick={e => e.preventDefault()}><span className='wave-text'><i>V</i><i>e</i><i>r</i><i>i</i><i>f</i><i>y</i><i>i</i><i>n</i><i>g</i><i>.</i><i>.</i><i>.</i></span></div>;
+        LoginButton = <div className='Login__button disabled' onClick={e => e.preventDefault()}>
+          <span className='wave-text'>
+            <i>V</i><i>e</i><i>r</i><i>i</i><i>f</i><i>y</i><i>i</i><i>n</i><i>g</i><i>.</i><i>.</i><i>.</i>
+          </span>
+        </div>;
         break;
       case LoginStatus.SUCCESS:
         LoginButton = <div className='Login__button disabled success'>Success!</div>;
         break;
       case LoginStatus.FAILED:
-        LoginButton = <div className='Login__button disabled error'>Login Failed</div>
+        LoginButton = <div className='Login__button disabled error'>Login Failed</div>;
         break;
     }
 
@@ -167,9 +106,9 @@ class Login extends React.Component<LoginProps, LoginState> {
           
           <div className='Login__rememberMe'>
             
-            <input type="checkbox"
-                   className="filled-in"
-                   id="remember-me"
+            <input type='checkbox'
+                   className='filled-in'
+                   id='remember-me'
                    ref={r => this.rememberRef = r}
                    checked={this.state.rememberMe}
                    onChange={this.onRememberMe}
@@ -177,7 +116,7 @@ class Login extends React.Component<LoginProps, LoginState> {
                    disabled={disableInput}
                    tabIndex={3}/>
             
-            <label htmlFor="remember-me">Remember me</label>
+            <label htmlFor='remember-me'>Remember me</label>
           </div>
         </div>
         
@@ -194,7 +133,9 @@ class Login extends React.Component<LoginProps, LoginState> {
                  disabled={disableInput}
                  required/>
           
-          <a href='https://api.citystateentertainment.com/Account/ForgottenPassword' target='_blank'>Forgot your password?</a>
+          <a href='https://api.citystateentertainment.com/Account/ForgottenPassword' target='_blank'>
+            Forgot your password?
+          </a>
         </div>
         
         <div className='flex-column' style={{marginTop: '20px'}}>
@@ -205,6 +146,73 @@ class Login extends React.Component<LoginProps, LoginState> {
       </div>
     );
   }
-};
+
+  private componentDidMount() : void {
+    // without this timeout, the label doesn't animate up above the input box
+    if (this.emailRef.value.length === 0) {
+      this.emailRef.focus();
+    } else {
+      this.passwordRef.focus();
+    }
+  }
+
+  private onEmailChanged = (evt: any) => {
+    this.setState({
+      email: evt.target.value,
+      status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT,
+    } as any);
+  }
+
+  private onPasswordChanged = (evt: any) => {
+    this.setState({
+      password: evt.target.value,
+      status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT,
+    } as any);
+  }
+
+  private onRememberMe = (evt: any) => {
+    this.setState({rememberMe: !this.state.rememberMe} as any);
+    events.fire('play-sound', 'select');
+  }
+
+  private login = () => {
+    events.fire('play-sound', 'server-select');
+    this.setState({status: LoginStatus.WORKING} as any);
+    patcher.login({
+      email: this.emailRef.value,
+      password: this.passwordRef.value,
+      rememberMe: this.rememberRef.checked,
+    });
+
+    setTimeout(() => this.checkLoginStatus(500), 500);
+  }
+
+  private checkLoginStatus = (waitTime: number) => {
+    if (patcher.hasLoginToken()) {
+      // success! notify, then trigger switch
+      setTimeout(() => this.props.onLogin(), 1000);
+      this.setState({ status: LoginStatus.SUCCESS } as any);
+      events.fire('logged-in');
+      return;
+    } else if (waitTime > 5000 || patcher.hasLoginError()) {
+      this.setState({ status: LoginStatus.FAILED } as any);
+      setTimeout(() => this.setState({status: this.passwordRef.validity.valid && this.emailRef.validity.valid ?
+         LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
+      return;
+    }
+    setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
+  }
+
+  private onHelp = () => {
+    window.open('https://api.citystateentertainment.com/Account/ForgottenPassword', '_blank');
+    events.fire('play-sound', 'select');
+  }
+
+  private onKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      this.login();
+    }
+  }
+}
 
 export default Login;

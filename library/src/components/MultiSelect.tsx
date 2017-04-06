@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 11:20:43
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 17:59:07
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:18:07
  */
 
 import * as React from 'react';
@@ -125,6 +125,9 @@ export interface MultiSelectState {
 }
 
 export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectState> {
+  
+  private inputRef: HTMLInputElement = null;
+
   constructor(props: MultiSelectProps) {
     super(props);
     const items = cloneDeep(props.items);
@@ -137,78 +140,11 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
     };
   }
 
-  onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (this.state.filterText == value) return;
-    this.applyFilter(value);
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.keyCode == KeyCodes.KEY_DownArrow || e.keyCode == KeyCodes.KEY_RightArrow) {
-      if (this.state.keyboardIndex + 1 < this.state.filteredItems.length) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex+1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // up or left
-    if (e.keyCode == KeyCodes.KEY_UpArrow || e.keyCode == KeyCodes.KEY_LeftArrow) {
-      if (this.state.keyboardIndex - 1 > -1) {
-        this.setState({
-          keyboardIndex: this.state.keyboardIndex-1,
-        });
-        e.stopPropagation();
-      }
-    }
-
-    // enter
-    if (e.keyCode == KeyCodes.KEY_Enter) {
-      if (this.state.keyboardIndex > -1) {
-        this.selectItem(this.state.filteredItems[this.state.keyboardIndex]);
-        e.stopPropagation();
-      }
-    }
-  }
-
-  applyFilter = (s: string) => {
-
-    const filteredItems: any[] = [];
-    this.state.items.forEach(item => {
-      if (this.props.filter(s, item)) filteredItems.push(item);
-    });
-
-    this.setState({
-      filteredItems,
-      filterText: s,
-    });
-  }
-
-  selectItem = (item: any) => {
-    this.setState({
-      keyboardIndex: -1,
-      selectedItems: this.state.selectedItems.concat([item]),
-    });
-  }
-
-  unselectItem = (item: any) => {
-    const index = utils.findIndexWhere(this.state.selectedItems, a => this.props.itemComparison(a, item));
-    const selectedItems = cloneDeep(this.state.selectedItems);
-    selectedItems.splice(index, 1);
-    this.setState({
-      keyboardIndex: -1,
-      selectedItems,
-    });
-  }
-
   public selectedItems = () => {
     return cloneDeep(this.state.selectedItems);
   }
 
-  inputRef: HTMLInputElement = null;
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultMultiSelectStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -219,10 +155,10 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
                onKeyDown={this.onKeyDown}
                {...this.props.inputProps} />
         <div style={{position: 'relative'}}>
-          <div style={{position: 'absolute', width: '100%', zIndex: 1,}}>
+          <div style={{position: 'absolute', width: '100%', zIndex: 1}}>
             <div className={css(ss.selectedItemList, custom.selectedItemList)}>
               {
-              this.state.selectedItems.map(i => {
+              this.state.selectedItems.map((i) => {
                 return (
                   <div className={css(ss.selected, custom.selected)} onClick={() => this.unselectItem(i)}>
                   <div className={css(ss.selectedItem, custom.selectedItem)}>
@@ -239,11 +175,12 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
             <div className={css(ss.list, custom.list)}>
               {
                 this.state.filteredItems.map((item, index) => {
-                  if (utils.findIndexWhere(this.state.selectedItems, (i) => this.props.itemComparison(i, item)) > -1) return null;
+                  if (utils.findIndexWhere(this.state.selectedItems, i => this.props.itemComparison(i, item)) > -1)
+                    return null;
                   return (
                     <div key={index} 
                          className={
-                         this.state.keyboardIndex == index ?
+                         this.state.keyboardIndex === index ?
                            css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
                            css(ss.listItem, custom.listItem)
                          }
@@ -257,7 +194,72 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
           </div>
         </div>
       </div>
-    )
+    );
+  }
+
+  private onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (this.state.filterText === value) return;
+    this.applyFilter(value);
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === KeyCodes.KEY_DownArrow || e.keyCode === KeyCodes.KEY_RightArrow) {
+      if (this.state.keyboardIndex + 1 < this.state.filteredItems.length) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex + 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // up or left
+    if (e.keyCode === KeyCodes.KEY_UpArrow || e.keyCode === KeyCodes.KEY_LeftArrow) {
+      if (this.state.keyboardIndex - 1 > -1) {
+        this.setState({
+          keyboardIndex: this.state.keyboardIndex - 1,
+        });
+        e.stopPropagation();
+      }
+    }
+
+    // enter
+    if (e.keyCode === KeyCodes.KEY_Enter) {
+      if (this.state.keyboardIndex > -1) {
+        this.selectItem(this.state.filteredItems[this.state.keyboardIndex]);
+        e.stopPropagation();
+      }
+    }
+  }
+
+  private applyFilter = (s: string) => {
+
+    const filteredItems: any[] = [];
+    this.state.items.forEach((item) => {
+      if (this.props.filter(s, item)) filteredItems.push(item);
+    });
+
+    this.setState({
+      filteredItems,
+      filterText: s,
+    });
+  }
+
+  private selectItem = (item: any) => {
+    this.setState({
+      keyboardIndex: -1,
+      selectedItems: this.state.selectedItems.concat([item]),
+    });
+  }
+
+  private unselectItem = (item: any) => {
+    const index = utils.findIndexWhere(this.state.selectedItems, a => this.props.itemComparison(a, item));
+    const selectedItems = cloneDeep(this.state.selectedItems);
+    selectedItems.splice(index, 1);
+    this.setState({
+      keyboardIndex: -1,
+      selectedItems,
+    });
   }
 }
 

@@ -15,26 +15,26 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: -200
+      offset: -200,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 40
+      offset: 40,
     },
     size: {
       width: 400,
-      height: 45
+      height: 45,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 7,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: Compass,
-  props: {}
+  props: {},
 };

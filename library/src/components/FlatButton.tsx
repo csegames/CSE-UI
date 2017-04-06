@@ -28,9 +28,9 @@ export const defaultFlatButtonStyle: FlatButtonStyle = {
     },
     ':active': {
       backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    }
-  }
-}
+    },
+  },
+};
 
 export interface FlatButtonProps {
   styles?: Partial<FlatButtonStyle>;
@@ -46,6 +46,6 @@ export const FlatButton = (props: FlatButtonProps) => {
       {props.children}
     </div>
   );
-}
+};
 
 export default FlatButton;

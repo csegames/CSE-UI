@@ -17,7 +17,7 @@ interface WindowInterface extends Window {
 }
 
 // declare window implements WindowInterface
-declare var window: WindowInterface;
+declare const window: WindowInterface;
 
 let client: clientInterface = null;
 

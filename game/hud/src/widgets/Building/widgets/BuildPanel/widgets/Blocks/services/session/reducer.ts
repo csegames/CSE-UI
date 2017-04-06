@@ -4,19 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import materialsReducer, {MaterialsState} from './materials';
-import materialsReplaceReducer, {MaterialsReplaceState} from './materials-replace';
+import materialsReducer, { MaterialsState } from './materials';
+import materialsReplaceReducer, { MaterialsReplaceState } from './materials-replace';
 const materials = materialsReducer;
 const replace = materialsReplaceReducer;
 
 export default combineReducers({
   materials,
-  replace
+  replace,
 });
 
 export interface GlobalState {
-  materials: MaterialsState,
-  replace: MaterialsReplaceState
+  materials: MaterialsState;
+  replace: MaterialsReplaceState;
 }

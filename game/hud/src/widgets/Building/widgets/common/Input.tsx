@@ -16,35 +16,24 @@ export interface NameInputProps {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onKeyUp?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   grabFocus?: boolean;
-};
+}
 export interface NameInputState {
-};
+}
 
 class Input extends React.Component<NameInputProps, NameInputState> {
   public name: string = 'Input';
-  input: HTMLInputElement = null;
+  private input: HTMLInputElement = null;
 
   constructor(props: NameInputProps) {
     super(props);
     this.inputRef = this.inputRef.bind(this);
   }
 
-  getValue = (): string => {
-    return this.input ? this.input.value : undefined;
-  }
-
-  inputRef = (input: HTMLInputElement): void => {
-    this.input = input;
-    if (input && this.props.grabFocus) {
-      input.focus();    // doesn't work
-    }
-  }
-
-  render() {
+  public render() {
     // autoFocus doesn't work either
     return (
       <input
-        className="Input-control" 
+        className='Input-control'
         ref={this.inputRef}
         autoFocus={this.props.grabFocus}
         type={this.props.type}
@@ -55,6 +44,17 @@ class Input extends React.Component<NameInputProps, NameInputState> {
         onKeyUp={this.props.onKeyUp}
       />
     );
+  }
+
+  public getValue = (): string => {
+    return this.input ? this.input.value : undefined;
+  }
+
+  private inputRef = (input: HTMLInputElement): void => {
+    this.input = input;
+    if (input && this.props.grabFocus) {
+      input.focus();    // doesn't work
+    }
   }
 }
 

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:07:56
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-24 16:03:52
+ * @Last Modified time: 2017-04-10 14:25:11
  */
 
 import * as React from 'react';
@@ -61,14 +61,50 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   public name = 'cse-patcher';
   private heroContentInterval: any = null;
 
-  onRouteChanged = (route: Routes) => {
+  public render() {
+
+    let chat: any = null;
+    if (this.props.chatState.showChat) {
+      chat = (
+        <div id='chat-window' key='0'>
+          <Chat hideChat={this.hideChat} loginToken={patcher.getLoginToken()} />
+        </div>
+      );
+    }
+
+    return (
+      <div className='PatcherApp'>
+        <WindowHeader soundsState={this.props.soundsState}
+          onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ?
+            muteSounds(this.props.soundsState) : unMuteSounds(this.props.soundsState))}
+          onMuteMusic={() => this.props.dispatch(this.props.soundsState.playMusic ?
+            muteMusic(this.props.soundsState) : unMuteMusic(this.props.soundsState))}/>
+        <Header changeRoute={this.onRouteChanged}
+                activeRoute={this.props.currentRoute}
+                openChat={this.showChat} />
+
+
+        <div className='PatcherApp__content'>
+          <Hero isFetching={this.props.heroContentState.isFetching}
+                lastUpdated={this.props.heroContentState.lastFetchSuccess}
+                items={this.props.heroContentState.items} />
+        </div>
+
+        <Controller onLogIn={this.onLogIn} />
+        <Sound soundsState={this.props.soundsState} />
+        <OverlayView />
+      </div>
+    );
+  }
+
+  private onRouteChanged = (route: Routes) => {
     if (route === Routes.HERO) {
-     events.fire('view-content', view.NONE, null);
+      events.fire('view-content', view.NONE, null);
       events.fire('resume-videos');
     } else if (route === Routes.NEWS) {
       events.fire('view-content', view.NEWS, {
         news:this.props.newsState,
-        fetchPage:this.fetchNewsPage
+        fetchPage:this.fetchNewsPage,
       });
       events.fire('pause-videos');
     } else if (route === Routes.CHAT) {
@@ -79,33 +115,33 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     events.fire('play-sound', 'select');
   }
 
-  hideChat = () => {
+  private hideChat = () => {
     this.props.dispatch(hideChat());
     events.fire('play-sound', 'select');
   }
 
-  showChat = () => {
+  private showChat = () => {
     this.props.dispatch(showChat());
     events.fire('play-sound', 'select');
   }
 
-  fetchNewsPage = (page: number) => {
+  private fetchNewsPage = (page: number) => {
     this.props.dispatch(fetchPage(page));
     events.fire('play-sound', 'select');
   }
 
-  onPatcherAPIUpdate = () => {
+  private onPatcherAPIUpdate = () => {
     this.setState({});
   }
 
-  onLogIn = () => {
+  private onLogIn = () => {
     setTimeout(() => this.setState({}), 500);
   }
 
-  componentDidUpdate() {
+  private componentDidUpdate() {
   }
 
-  componentDidMount() {
+  private componentDidMount() {
     // fetch initial hero content and then every 30 minutes validate & fetch hero content.
     if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     this.heroContentInterval = setInterval(() => {
@@ -124,45 +160,11 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     });
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     // unregister intervals
     clearInterval(this.heroContentInterval);
   }
-
-  render() {
-
-    let chat: any = null;
-    if (this.props.chatState.showChat) {
-      chat = (
-        <div id="chat-window" key='0'>
-          <Chat hideChat={this.hideChat} loginToken={patcher.getLoginToken()} />
-        </div>
-      );
-    }
-
-    return (
-      <div className='PatcherApp'>
-        <WindowHeader soundsState={this.props.soundsState}
-          onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ? muteSounds(this.props.soundsState) : unMuteSounds(this.props.soundsState))}
-          onMuteMusic={() => this.props.dispatch(this.props.soundsState.playMusic ? muteMusic(this.props.soundsState) : unMuteMusic(this.props.soundsState))}/>
-        <Header changeRoute={this.onRouteChanged}
-                activeRoute={this.props.currentRoute}
-                openChat={this.showChat} />
-
-
-        <div className='PatcherApp__content'>
-          <Hero isFetching={this.props.heroContentState.isFetching}
-                lastUpdated={this.props.heroContentState.lastFetchSuccess}
-                items={this.props.heroContentState.items} />
-        </div>
-
-        <Controller onLogIn={this.onLogIn} />
-        <Sound soundsState={this.props.soundsState} />
-        <OverlayView />
-      </div>
-    );
-  }
-};
+}
 
 export default connect(select)(PatcherApp);
 

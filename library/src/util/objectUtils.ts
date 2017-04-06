@@ -18,13 +18,13 @@ export function merge<T>(obj: T, ...args: any[]): T {
 }
 
 export interface Dictionary<T> {
-  [id: string]: T
+  [id: string]: T;
 }
 
 export function tryParseJSON<T>(json: string, logError: boolean = false): T {
   try {
     return JSON.parse(json);
-  } catch(e) {
+  } catch (e) {
     if (logError) console.error(`Failed to parse json. | ${json}`);
     return null;
   }

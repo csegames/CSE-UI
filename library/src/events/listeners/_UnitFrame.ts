@@ -16,7 +16,7 @@ function run(emitter: EventEmitter, topic: string) {
 
   // Event receivers
   function nameChanged(name: string) {
-    if (name === "") {
+    if (name === '') {
       instance.reset();             // reset if no target
     }
     instance.setName(name);
@@ -73,12 +73,12 @@ function run(emitter: EventEmitter, topic: string) {
 }
 
 export default class UnitFrameListener {
-  listening: boolean = false;
-  topic: string;
+  public listening: boolean = false;
+  public topic: string;
   constructor(handlesTopic: string) {
     this.topic = handlesTopic;
   }
-  start(emitter: EventEmitter): void {
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

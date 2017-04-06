@@ -11,6 +11,6 @@ const BuildingEventTopics = {
   handlesBlueprintSelect: 'blueprint-select',
   handlesBlueprintCopy: 'blueprint-copy',
   handlesBlueprints: 'blueprint-updated',
-}
+};
 
 export default BuildingEventTopics;

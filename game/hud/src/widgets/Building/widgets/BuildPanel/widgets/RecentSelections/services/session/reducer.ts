@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import recentsReducer, {RecentsState} from './recents';
+import recentsReducer, { RecentsState } from './recents';
 
 const recents = recentsReducer;
 
 export default combineReducers({
-  recents
+  recents,
 });
 
 export interface GlobalState {
-  recents: RecentsState,
+  recents: RecentsState;
 }

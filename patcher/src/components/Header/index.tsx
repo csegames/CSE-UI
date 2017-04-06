@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:59:52
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-31 15:40:05
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 14:23:48
  */
 
 import * as React from 'react';
@@ -20,51 +20,63 @@ export interface HeaderProps {
   changeRoute: (route: Routes) => void;
   openChat: () => void;
   activeRoute: Routes;
-};
+}
 
 class Header extends React.Component<HeaderProps, {}> {
-  public name = 'cse-patcher-header';
-  
-  static propTypes = {
+  private static propTypes = {
     changeRoute: React.PropTypes.func.isRequired,
     openChat: React.PropTypes.func.isRequired,
-    activeRoute: React.PropTypes.number.isRequired
-  }
+    activeRoute: React.PropTypes.number.isRequired,
+  };
 
-  signOut() {
-    patcher.logout();
-    setTimeout(() => events.fire('logged-in'), 250);
-  }
+  public name = 'cse-patcher-header';
 
-  externalLink = (url: string) => {
-    window.open(url, '_blank');
-    events.fire('play-sound', 'select');
-  }
-  
-  internalLink = (route: Routes) => {
-    this.props.changeRoute(route);
-  }
-
-  render() {
+  public render() {
     return (
       <div className='Header'>
-        <a className='Header__logo cu-logo' onClick={() => this.externalLink('http://camelotunchained.com/v2/')}><img src='images/cu_logo_metal.png' /></a>
+        <a
+          className='Header__logo cu-logo'
+          onClick={() => this.externalLink('http://camelotunchained.com/v2/')}>
+          <img src='images/cu_logo_metal.png' />
+        </a>
         <div className='Header__menu'>
-          <div className={`Header__menu__item ${this.props.activeRoute == Routes.HERO ? 'active' : ''}`} onClick={() => this.internalLink(Routes.HERO)}>Home</div>
-          <div className={`Header__menu__item ${this.props.activeRoute == Routes.NEWS ? 'active' : ''}`} onClick={() => this.internalLink(Routes.NEWS)}>News</div>
+          <div
+            className={`Header__menu__item ${this.props.activeRoute === Routes.HERO ? 'active' : ''}`}
+            onClick={() => this.internalLink(Routes.HERO)}>Home</div>
+          <div
+            className={`Header__menu__item ${this.props.activeRoute === Routes.NEWS ? 'active' : ''}`}
+            onClick={() => this.internalLink(Routes.NEWS)}>News</div>
           <div className='Header__menu__item' onClick={() => this.externalLink('https://camelotunchained.com/')}>
-              CamelotUnchained.com &nbsp;<i className="fa fa-external-link" aria-hidden="true"></i>
+              CamelotUnchained.com &nbsp;<i className='fa fa-external-link' aria-hidden='true'></i>
           </div>
           <div className='Header__menu__item' onClick={() => this.externalLink('https://store.camelotunchained.com/')}>
-              CSE Store &nbsp;<i className="fa fa-external-link" aria-hidden="true"></i>
+              CSE Store &nbsp;<i className='fa fa-external-link' aria-hidden='true'></i>
           </div>
-          {patcher.hasLoginToken() ? <div className={`Header__menu__item ${this.props.activeRoute == Routes.CHAT ? 'active' : ''}`} onClick={() => this.internalLink(Routes.CHAT)}>Chat</div> : null}
+          {patcher.hasLoginToken() ?
+            <div
+              className={`Header__menu__item ${this.props.activeRoute === Routes.CHAT ? 'active' : ''}`}
+              onClick={() => this.internalLink(Routes.CHAT)}>Chat</div> : null}
         </div>
       </div>
     );
   }
-};
 
+  private signOut() {
+    patcher.logout();
+    setTimeout(() => events.fire('logged-in'), 250);
+  }
+
+  private externalLink = (url: string) => {
+    window.open(url, '_blank');
+    events.fire('play-sound', 'select');
+  }
+  
+  private internalLink = (route: Routes) => {
+    this.props.changeRoute(route);
+  }
+}
+
+/* tslint:disable */
 // LOGOUT REMOVED
 // {patcher.hasLoginToken() ? <div onClick={this.signOut} className='Header__menu__item'>Logout <i className="fa fa-sign-out" aria-hidden="true"></i></div> : null}
 

@@ -28,7 +28,7 @@ export const defaultInlineWarbandStyle: InlineWarbandStyle = {
   card: {
 
   },
-}
+};
 
 const inlineWarband = (props: InlineWarbandProps) => {
   if (props.data.loading) {
@@ -38,14 +38,14 @@ const inlineWarband = (props: InlineWarbandProps) => {
       <a href={`#warband/${props.data.warband.id}`}>
         {props.data.warband.name}
       </a>
-    )
-}
+    );
+};
 
 export default graphql(ql.queries.InlineWarband, {
   options: (props: InlineWarbandProps) => ({
     variables: {
       id: props.id,
       shard: props.shard,
-    }
-  })
+    },
+  }),
 })(inlineWarband);

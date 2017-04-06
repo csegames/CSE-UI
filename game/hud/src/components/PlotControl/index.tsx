@@ -28,15 +28,47 @@ interface PlotControlUIState {
 interface PlotControlUIProps {}
 
 class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUIState> {
+
+  private source: Node;
+  private sourceIndex: number;
+  
   constructor(props: PlotControlUIProps) {
     super(props);
   }
 
-  closeWindow = () => {
+  // Render the unit frame using character data-perm
+  public render() {
+    let body: any;
+    if (this.state.plotOwned === true) {
+      if (!this.state.viewingQueue) {
+        body = this.renderPermissions();
+      } else {
+        body = this.renderConstruction();
+      }
+    } else {
+      body = (<div className='cu-window-content'>You don't own a plot!</div>);
+    }
+
+    if (this.state.visible) {
+      return (
+        <div id='plotcontrol-container' className='cu-window'>
+          <div className='cu-window-header'>
+            <div className='cu-window-title'>Your Plot</div>
+            <div className='cu-window-actions'>
+              <a onMouseDown={this.closeWindow} className='cu-window-close'></a>
+            </div>
+          </div>
+          {body}
+        </div>
+      );
+    } else return null;
+  }
+
+  private closeWindow = () => {
     events.fire('hudnav--navigate', 'plotcontrol');
   }
 
-  onPlotStatus = (eventData: any) => {
+  private onPlotStatus = (eventData: any) => {
     this.setState((state, props) => {
       const plotOwned = eventData.plotOwned;
       const currentPermissions = eventData.permissions;
@@ -47,29 +79,29 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         plotOwned,
         currentPermissions,
         charID,
-        entityID
-      }
-    })
+        entityID,
+      };
+    });
     this.getQueueStatus();
   }
 
-  componentWillMount() {
+  private componentWillMount() {
     hasClientAPI() && events.on(events.clientEventTopics.handlesPlot, this.onPlotStatus);
     this.setState((state, props) => ({
       plotOwned: false,
       currentPermissions: 0,
-      charID: "",
-      entityID: "",
+      charID: '',
+      entityID: '',
       viewingQueue: false,
       queue: [],
-      queueState: "",
+      queueState: '',
       numContributors: 0,
-      visible: false
-    }))
-    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus()}, 2000); 
+      visible: false,
+    }));
+    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus();}, 2000); 
   }
 
-  componentDidMount() {
+  private componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'plotcontrol') {
         if (!this.state.visible) {
@@ -78,201 +110,187 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
           this.setState((state, props) => ({ visible: false }));
         }
       }
-    })
+    });
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     hasClientAPI() && events.off(events.clientEventTopics.handlesPlot);
   }
 
-  changePermissions = (perm: plotPermissions) => {
+  private changePermissions = (perm: plotPermissions) => {
     webAPI.PlotsAPI.modifyPermissionsV1(
       client.shardID,
       client.characterID,
       client.loginToken,
       this.state.entityID,
-      perm
+      perm,
     );
   }
   
-  releasePlot = () => {
+  private releasePlot = () => {
     webAPI.PlotsAPI.releasePlotV1(
       client.shardID,
       client.characterID,
       client.loginToken,
-      this.state.entityID
+      this.state.entityID,
     );
   }
   
-  removeQueuedBlueprint = (idx: number) => {
+  private removeQueuedBlueprint = (idx: number) => {
     webAPI.PlotsAPI.removeQueuedBlueprintV1(
       client.shardID,
       client.characterID,
       client.loginToken,
       this.state.entityID,
-      idx
+      idx,
     ).then(this.getQueueStatus);
   }
   
-  reorderBuildQueue = (indexSource: number, indexDestination: number) => {
+  private reorderBuildQueue = (indexSource: number, indexDestination: number) => {
     webAPI.PlotsAPI.reorderQueueV1(
       client.shardID,
       client.characterID,
       client.loginToken,
       this.state.entityID,
       indexSource,
-      indexDestination
+      indexDestination,
     ).then(this.getQueueStatus);
   }
   
-  getQueueStatus = () => {
-    let pcui: PlotControlUI = this;                                                                                                                                                         
-    let resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp: any) => 
+  private getQueueStatus = () => {
+    const resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp: any) => 
       this.setState((state, props) => ({
         ...state,
         queue: resp.data.blueprints,
         queueState: resp.data.status,
-        numContributors: Math.min(resp.data.numContributors, resp.data.maxContributors)
+        numContributors: Math.min(resp.data.numContributors, resp.data.maxContributors),
       })),
     (err: any) => console.log(err));
   }
   
-  toggleQueue = () => {
+  private toggleQueue = () => {
     this.setState((state, props) => ({
       ...state,
-      viewingQueue: !state.viewingQueue
-    }))
+      viewingQueue: !state.viewingQueue,
+    }));
   }
   
-  private source: Node;
-  private sourceIndex: number;
-  
-  renderPermissions() {
-    let permString = "Current Permissions: ";
+  private renderPermissions() {
+    let permString = 'Current Permissions: ';
     let prevPermission = false;
-    if (this.state.currentPermissions == plotPermissions.Self) {
-      permString += "Self Only";
-    }
-    else
-    {
-      if ((this.state.currentPermissions & plotPermissions.Group) == plotPermissions.Group) {
-        permString += "Group"
+    if (this.state.currentPermissions === plotPermissions.Self) {
+      permString += 'Self Only';
+    } else {
+      if ((this.state.currentPermissions & plotPermissions.Group) === plotPermissions.Group) {
+        permString += 'Group';
         prevPermission = true;
-      }
-      if ((this.state.currentPermissions & plotPermissions.Friends) == plotPermissions.Friends) {
-        if (prevPermission) permString += ", ";
-        permString += "Friends";
+      } if ((this.state.currentPermissions & plotPermissions.Friends) === plotPermissions.Friends) {
+        if (prevPermission) permString += ', ';
+        permString += 'Friends';
         prevPermission = true;
-      }
-      if ((this.state.currentPermissions & plotPermissions.Guild) == plotPermissions.Guild) {
-        if (prevPermission) permString += ", ";
-        permString += "Guild";
+      } if ((this.state.currentPermissions & plotPermissions.Guild) === plotPermissions.Guild) {
+        if (prevPermission) permString += ', ';
+        permString += 'Guild';
         prevPermission = true;
-      }
-      if ((this.state.currentPermissions & plotPermissions.Realm) == plotPermissions.Realm) {
-        if (prevPermission) permString += ", ";
-        permString += "Realm";
+      } if ((this.state.currentPermissions & plotPermissions.Realm) === plotPermissions.Realm) {
+        if (prevPermission) permString += ', ';
+        permString += 'Realm';
         prevPermission = true;
-      }
-      if ((this.state.currentPermissions & plotPermissions.All) == plotPermissions.All) {
-        if (prevPermission) permString += ", ";
-        permString += "All";
+      } if ((this.state.currentPermissions & plotPermissions.All) === plotPermissions.All) {
+        if (prevPermission) permString += ', ';
+        permString += 'All';
         prevPermission = true;
       }
     }
 
-    permString += ".";
+    permString += '.';
     return (
-      <div className="cu-window-content">
-        <ul className="list">
+      <div className='cu-window-content'>
+        <ul className='list'>
           <li>{permString}</li>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.Self)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Self)}>
             Self Only
           </button>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.Group)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Group)}>
             Group
           </button>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.Friends)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Friends)}>
             Friends
           </button>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.Guild)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Guild)}>
             Guild
           </button>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.Realm)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Realm)}>
             Realm
           </button>
-          <button className="plotButton" onMouseDown={this.changePermissions.bind(this, plotPermissions.All)}>
+          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.All)}>
             All
           </button>
         </ul>
-        <button className="plotButton" onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
-        <button className="plotButton" onMouseDown={this.toggleQueue.bind(this)}>View Queue</button>
+        <button className='plotButton' onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
+        <button className='plotButton' onMouseDown={this.toggleQueue.bind(this)}>View Queue</button>
       </div>
     );
   }
   
-  renderConstruction() {
+  private renderConstruction() {
     let renderedQueue: JSX.Element;
-    if (this.state.queueState != "InCombat") {
+    if (this.state.queueState !== 'InCombat') {
       const blueprints: JSX.Element[] = [];
-      for(let i = 0; i < this.state.queue.length; ++i) {
-          let blueprint = this.state.queue[i];
+      for (let i = 0; i < this.state.queue.length; ++i) {
+          const blueprint = this.state.queue[i];
           let renderedBlueprint: JSX.Element;
         
           let timeRemaining: JSX.Element;
           let timeRemainingSeconds = Math.round(blueprint.estTimeRemaining);
-          if (timeRemainingSeconds != -1) {
-            let timeRemainingHours = Math.floor(timeRemainingSeconds / 3600);
+          if (timeRemainingSeconds !== -1) {
+            const timeRemainingHours = Math.floor(timeRemainingSeconds / 3600);
             timeRemainingSeconds = timeRemainingSeconds % 3600;
-            let timeRemainingMinutes = Math.floor(timeRemainingSeconds / 60);
+            const timeRemainingMinutes = Math.floor(timeRemainingSeconds / 60);
             timeRemainingSeconds = timeRemainingSeconds % 60;
             timeRemaining = (
-              <div>{timeRemainingHours + "h " + timeRemainingMinutes + "m " + timeRemainingSeconds + "s"}</div>  
+              <div>{timeRemainingHours + 'h ' + timeRemainingMinutes + 'm ' + timeRemainingSeconds + 's'}</div>  
             );
-          }
-          else
-          {
+          } else {
             timeRemaining = (
               <div>"Inf"</div>  
             );
           }
         
           let upArrow: JSX.Element;
-          if (i != 0) {
+          if (i !== 0) {
             upArrow = (
-              <a onMouseDown={() => this.reorderBuildQueue(i, i-1)} className="plotMoveUp">↑</a>  
+              <a onMouseDown={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>  
             );
           }
 
           let downArrow: JSX.Element;
-          if (i != this.state.queue.length - 1) {
+          if (i !== this.state.queue.length - 1) {
             downArrow = (
-              <a onMouseDown={() => this.reorderBuildQueue(i, i+1)} className="plotMoveDown">↓</a>
+              <a onMouseDown={() => this.reorderBuildQueue(i, i + 1)} className='plotMoveDown'>↓</a>
             );
           }
           
-          if (blueprint.subName == "") {
+          if (blueprint.subName === '') {
             renderedBlueprint = (
-              <li className="blueprint">
+              <li className='blueprint'>
                 {blueprint.name}
                 {timeRemaining}
-                <progress value={blueprint.percentComplete.toString()} max="1"></progress>
+                <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className="cu-window-close"></a>
+                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
               </li>
             );
-          }
-          else
-          {
+          } else {
             renderedBlueprint = (
-              <li className="matBlueprint">
+              <li className='matBlueprint'>
                 {blueprint.name}
                 {timeRemaining}
-                <progress value={blueprint.percentComplete.toString()} max="1"></progress>
+                <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className="cu-window-close"></a>
+                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
                 <div>
                   {blueprint.amtNeeded} {blueprint.subName} needed to complete.
                 </div>
@@ -282,58 +300,24 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
           blueprints.push(renderedBlueprint);
       }
       renderedQueue = (
-      <ul className="list">
+      <ul className='list'>
       Allies on Plot: {this.state.numContributors}
       {blueprints}
       </ul>   
       );
-    }
-    else
-    {
+    } else {
       renderedQueue = (
-        <div className="list">Your plot is under attack!</div>
+        <div className='list'>Your plot is under attack!</div>
       );
     }
       
     return (
-      <div className="cu-window-content">
+      <div className='cu-window-content'>
         {renderedQueue}
-        <button className="plotButton" onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
-        <button className="plotButton" onMouseDown={this.toggleQueue.bind(this)}>Permissions</button>
+        <button className='plotButton' onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
+        <button className='plotButton' onMouseDown={this.toggleQueue.bind(this)}>Permissions</button>
       </div>  
     );
-  }
-
-  // Render the unit frame using character data-perm
-  render() {
-    let body: any;
-    if (this.state.plotOwned === true) {
-      if (!this.state.viewingQueue) {
-        body = this.renderPermissions();
-      }
-      else 
-      {
-        body = this.renderConstruction();
-      }
-    }
-    else
-    {
-      body = (<div className="cu-window-content">You don't own a plot!</div>);
-    }
-
-    if (this.state.visible) {
-      return (
-        <div id="plotcontrol-container" className="cu-window">
-          <div className="cu-window-header">
-            <div className="cu-window-title">Your Plot</div>
-            <div className="cu-window-actions">
-              <a onMouseDown={this.closeWindow} className="cu-window-close"></a>
-            </div>
-          </div>
-          {body}
-        </div>
-      );
-    } else return null;
   }
 }
 

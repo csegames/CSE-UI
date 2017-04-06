@@ -8,7 +8,7 @@ export enum componentPath {
   'Path 1' = 0,
   'Path 2' = 1,
   'Path 3' = 2,
-  'Path 4' = 3
+  'Path 4' = 3,
 }
 
 export default componentPath;

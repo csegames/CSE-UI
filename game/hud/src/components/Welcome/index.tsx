@@ -9,11 +9,11 @@ import * as React from 'react';
 
 export interface WelcomeProps {
   setVisibility: (vis: boolean) => void;
-};
+}
 
 export interface WelcomeState {
   message: JSX.Element[];
-};
+}
 
 export interface WelcomeData {
   id: string;
@@ -31,46 +31,17 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
 
     const defaultMessage: JSX.Element[] = [<div key='0'>Welcome to Camelot Unchained! Loading welcome message...</div>];
     this.state = {
-      message: defaultMessage
+      message: defaultMessage,
     };
   }
 
-  onMessage = (data: WelcomeData) => {
-    if (data.message == '') return;
-    const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{__html: data.message}} />;
-    this.setState({ message: welcomeMessage } as any);
-  }
-
-  onMessageFailed = (error: any) => {
-    //**TODO: Proper logging?
-    console.log(error);
-  }
-
-  hide = (): void => {
-    this.props.setVisibility(false);
-  }
-
-  hideDelay = (): void => {
-    this.hide();
-    const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
-  }
-
-  componentWillMount() {
-    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
-      if (response.ok) {
-        this.onMessage(response.data);
-        return;
-      }
-      this.onMessageFailed(response.problem);
-    });
-  }
-
-  render() {
+  public render() {
     return (
       <div className='frame cu-window cu-window-transparent Welcome'>
-        <div className="cu-window-header"><div className="cu-window-title Welcome__title">Welcome to Camelot Unchained</div></div>
-        <div className="cu-window-content">
+        <div className='cu-window-header'>
+          <div className='cu-window-title Welcome__title'>Welcome to Camelot Unchained</div>
+        </div>
+        <div className='cu-window-content'>
           {this.state.message}
           <div className='Welcome__btnBar'>
             <a className='Welcome__btnBar__dismiss' onClick={this.hide}>Dismiss</a>
@@ -79,6 +50,37 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
         </div>
       </div>
     );
+  }
+
+  private onMessage = (data: WelcomeData) => {
+    if (data.message === '') return;
+    const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{__html: data.message}} />;
+    this.setState({ message: welcomeMessage } as any);
+  }
+
+  private onMessageFailed = (error: any) => {
+    // **TODO: Proper logging?
+    console.log(error);
+  }
+
+  private hide = (): void => {
+    this.props.setVisibility(false);
+  }
+
+  private hideDelay = (): void => {
+    this.hide();
+    const hideDelayStart: Date = new Date();
+    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
+  }
+
+  private componentWillMount() {
+    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
+      if (response.ok) {
+        this.onMessage(response.data);
+        return;
+      }
+      this.onMessageFailed(response.problem);
+    });
   }
 }
 

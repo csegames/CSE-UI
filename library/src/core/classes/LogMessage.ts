@@ -5,12 +5,12 @@
  */
 
 class LogMessage  {
-  category: string;
-  level: number;
-  time: string;
-  process: number;
-  thread: number;
-  message: string;
+  public category: string;
+  public level: number;
+  public time: string;
+  public process: number;
+  public thread: number;
+  public message: string;
 
   constructor(logMessage = <LogMessage>{}) {
     this.category = logMessage.category;
@@ -21,8 +21,8 @@ class LogMessage  {
     this.message = logMessage.message;
   }
 
-  static create() {
-    let a = new LogMessage();
+  public static create() {
+    const a = new LogMessage();
     return a;
   }
 }

@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import {client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands} from 'camelot-unchained';
-import {parseArgs, systemMessage} from './utils';
+import { client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands } from 'camelot-unchained';
+import { parseArgs, systemMessage } from './utils';
 
 export default () => {
   /**
@@ -41,12 +41,12 @@ export default () => {
    */
   registerSlashCommand('showui', 'show a hidden ui module', (params: string) => {
     if (params.length > 0) client.ShowUI(params);
-  })
+  });
 
   /**
    * Hide a UI module
    */
   registerSlashCommand('hideui', 'hide a ui module', (params: string) => {
     if (params.length > 0) client.HideUI(params);
-  })
-}
+  });
+};

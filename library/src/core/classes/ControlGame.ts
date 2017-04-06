@@ -10,16 +10,16 @@ export interface ControlPoint {
   size: string;
   x: number;
   y: number;
-};
+}
 
 class ControlGame {
 
-  arthurianScore: number;
-  controlPoints: ControlPoint[];
-  gameState: number;
-  timeLeft: number;
-  tuathaDeDanannScore: number;
-  vikingScore: number;
+  public arthurianScore: number;
+  public controlPoints: ControlPoint[];
+  public gameState: number;
+  public timeLeft: number;
+  public tuathaDeDanannScore: number;
+  public vikingScore: number;
 
   constructor(controlGame = <ControlGame>{}) {
 
@@ -38,8 +38,8 @@ class ControlGame {
     this.controlPoints = controlGame.controlPoints || <ControlPoint[]>[];
   }
 
-  static create() {
-    let a = new ControlGame();
+  public static create() {
+    const a = new ControlGame();
     return a;
   }
 

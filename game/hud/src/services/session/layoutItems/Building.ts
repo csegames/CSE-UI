@@ -16,26 +16,26 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: 0
+      offset: 0,
     },
     y: {
       anchor: 5,
-      offset: 0
+      offset: 0,
     },
     size: {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 0,
-    layoutMode: LayoutMode.EDGESNAP
+    layoutMode: LayoutMode.EDGESNAP,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: Building,
-  props: {}
+  props: {},
 };

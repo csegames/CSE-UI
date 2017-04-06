@@ -10,29 +10,50 @@ import RespawnLocation from './RespawnLocation';
 
 export interface RespawnProps {
   setVisibility: (vis: boolean) => void;
-};
+}
 export interface RespawnState {
   nearest: RespawnLocation[];
-};
+}
 
 class Respawn extends React.Component<RespawnProps, RespawnState> {
   public name: string = 'Respawn';
-  home: RespawnLocation = new RespawnLocation(-1, 0, 0);
-  faction: string = null;
+  public home: RespawnLocation = new RespawnLocation(-1, 0, 0);
+  public faction: string = null;
 
   constructor(props: RespawnProps) {
     super(props);
     this.state = {
-      nearest: null
+      nearest: null,
     };
   }
 
-  componentDidMount() {
+  public render() {
+    if (!hasClientAPI()) return null;
+        
+    const buttons: JSX.Element[] = [];
+    const key: number = 0;
+    if (this.state.nearest) {
+      this.state.nearest.forEach((spawn: RespawnLocation): void => {
+        buttons.push(this.renderButton(spawn, 'Control Point'));
+      });
+    }
+    return (
+      <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
+        <div className='cu-window-header'><div className='title'>Respawn</div></div>
+        <div className='cu-window-content'>
+          {this.renderButton(this.home, 'Default')}
+          {buttons}
+        </div>
+      </div>
+    );
+  }
+
+  private componentDidMount() {
 
     if (!hasClientAPI()) return;
 
     client.OnCharacterFactionChanged((cf: number) => {
-      switch(cf) {
+      switch (cf) {
         case Faction.Arthurian: this.faction = 'A'; break;
         case Faction.TDD: this.faction = 'T'; break;
         case Faction.Viking: this.faction = 'V'; break;
@@ -49,9 +70,9 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   // control points are spawnable if owned
   // show home point + 3 nearest controlled control points
 
-  getSpawnPoints = (loaded: (spawns: RespawnLocation[]) => void): void => {
+  private getSpawnPoints = (loaded: (spawns: RespawnLocation[]) => void): void => {
     if (!hasClientAPI()) return;
-    console.log('getting spawn points')
+    console.log('getting spawn points');
     const spawns: RespawnLocation[] = [];
 
 
@@ -83,7 +104,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     });
   }
 
-  renderButton = (location: RespawnLocation, label: string) => {
+  private renderButton = (location: RespawnLocation, label: string) => {
     let distance: JSX.Element;
     if (location.distance !== undefined) {
       distance =
@@ -96,27 +117,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         <div className='label'>
           {distance}
           {label}
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    if (!hasClientAPI()) return null;
-        
-    const buttons: JSX.Element[] = [];
-    let key: number = 0;
-    if (this.state.nearest) {
-      this.state.nearest.forEach((spawn: RespawnLocation): void => {
-        buttons.push(this.renderButton(spawn, 'Control Point'));
-      });
-    }
-    return (
-      <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
-        <div className="cu-window-header"><div className="title">Respawn</div></div>
-        <div className="cu-window-content">
-          {this.renderButton(this.home, 'Default')}
-          {buttons}
         </div>
       </div>
     );

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 14:34:12
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:52:31
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 11:03:20
  */
 
 import * as React from 'react';
@@ -15,7 +15,7 @@ import { SocialCategory, OrderCategory, defaultCategoryNav } from './navTypes';
 
 export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, previousNav = defaultCategoryNav()) {
 
-  let links = [
+  const links = [
     {
         id: 'overview',
         displayName: 'Overview',
@@ -24,8 +24,8 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'overview'
-        }
+          id: 'overview',
+        },
       }, {
         id: 'members',
         displayName: 'Members',
@@ -34,8 +34,8 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'members'
-        }
+          id: 'members',
+        },
       },
       // {   id: 'assets',   displayName: 'Assets',   icon: <i className='fa
       // fa-bank'></i>,   enabled: true,   address: {     kind: 'Primary',
@@ -59,8 +59,8 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'ranks'
-        }
+          id: 'ranks',
+        },
       });
 
     if (memberRank.level > 1) {
@@ -72,9 +72,9 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'admin'
-        }
-      })
+          id: 'admin',
+        },
+      });
     }
 
   } else {
@@ -86,8 +86,8 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'ranks'
-        }
+          id: 'ranks',
+        },
       });
 
       links.push({
@@ -98,9 +98,9 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
         address: {
           kind: 'Primary',
           category: SocialCategory.Order,
-          id: 'admin'
-        }
-      })
+          id: 'admin',
+        },
+      });
   }
 
   return {
@@ -110,9 +110,9 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
     collapsed: previousNav.collapsed,
     address: {
       kind: 'Primary',
-      category: SocialCategory.Order
+      category: SocialCategory.Order,
     },
     links,
-    ...utils.defaultFetchStatus
+    ...utils.defaultFetchStatus,
   };
 }

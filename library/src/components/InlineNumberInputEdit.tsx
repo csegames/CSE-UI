@@ -5,12 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-22 12:08:53
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-22 16:42:51
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:23:18
  */
 
 import * as React from 'react';
-import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle,  } from './InlineInputEdit';
+import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle  } from './InlineInputEdit';
 
 export interface InlineNumberInputEditProps {
   value: number;
@@ -20,6 +20,11 @@ export interface InlineNumberInputEditProps {
   styles?: Partial<InlineInputEditStyle>;
 }
 
-export function InlineNumberInputEdit(props: InlineNumberInputEditProps) {
-  return <InlineInputEdit type='number' inputProps={{min: props.min, max: props.max}} value={props.value} onSave={props.onSave} styles={props.styles} />
+export const InlineNumberInputEdit = (props: InlineNumberInputEditProps) => {
+  return <InlineInputEdit
+            type='number'
+            inputProps={{min: props.min, max: props.max}}
+            value={props.value}
+            onSave={props.onSave}
+            styles={props.styles} />;
 };

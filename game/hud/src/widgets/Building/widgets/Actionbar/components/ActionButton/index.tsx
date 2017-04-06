@@ -20,12 +20,12 @@ class ActionButton extends React.Component<ActionButtonProps, ActionButtonState>
     super(props);
   }
 
-  render() {
+  public render() {
     return (
       <img src={this.props.icon}
         className={`action-bar__action-button icon ${this.props.isActive ? 'active' : ''}`}
         style={{ width: '18px', height: '18px' }}/>
-    )
+    );
   }
 }
 

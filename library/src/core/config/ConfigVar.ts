@@ -20,7 +20,7 @@ class ConfigVar  {
   }
   
   public create() {
-    let c = new ConfigVar();
+    const c = new ConfigVar();
     return c;
   }
 }

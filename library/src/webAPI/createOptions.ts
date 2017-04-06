@@ -12,7 +12,7 @@ export default function(): CreateOptions {
     baseURL: client.apiHost,
     headers: {
       'api-version': client.apiVersion + '',
-      'loginToken': client.loginToken,
-    }
+      loginToken: client.loginToken,
+    },
   };
 }

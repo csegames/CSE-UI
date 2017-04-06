@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import {events} from 'camelot-unchained';
 import reducer from './services/session/reducer';
@@ -32,15 +32,13 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     super(props);
   }
 
-  onTabChange = () => {
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
-  }
-
-
-  render() {
+  public render() {
     return (
       <Provider store={store}>
-        <TabbedPane name="blocks" tabs={['Blocks', 'Replace']} onTabChange={ (index: number, name: string) => this.onTabChange }
+        <TabbedPane
+          name='blocks'
+          tabs={['Blocks', 'Replace']}
+          onTabChange={(index: number, name: string) => this.onTabChange}
           defaultX={[0, Anchor.TO_END]} 
           defaultY={[0, Anchor.TO_START]} 
           defaultSize={[200, 200]} 
@@ -50,7 +48,11 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
         </TabbedPane>
 
       </Provider>
-    )
+    );
+  }
+
+  private onTabChange = () => {
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }
 

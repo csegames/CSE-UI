@@ -41,16 +41,16 @@ const Bane = (props: {
     addedBanes,
     styles,
     maxPoints,
-    totalPoints
+    totalPoints,
   } = props;
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     onBaneClick(trait);
     events.fire('play-sound', 'bane-select');
-  }
+  };
   const baneStyles = Object.assign(
     {},
     { trait: { marginLeft: '10px', ...styles.trait } },
-    styles
+    styles,
   );
   return (
     <Trait
@@ -69,7 +69,7 @@ const Bane = (props: {
       maxPoints={maxPoints}
       totalPoints={totalPoints}
     />
-  )
+  );
 };
 
 export default Bane;

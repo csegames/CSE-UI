@@ -9,9 +9,8 @@ import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
 import cu, { client, events, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchained';
 
-import { HUDDragOptions } from '../../components/HUDDrag';
 import { cloneDeep } from 'lodash';
-import { LayoutMode, Edge } from '../../components/HUDDrag';
+import { HUDDragOptions, LayoutMode, Edge } from '../../components/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';
@@ -69,10 +68,10 @@ interface Position {
 }
 
 export interface Widget<T> {
-  position: Position,
-  dragOptions: Partial<HUDDragOptions>,
-  component: React.ComponentClass<T>,
-  props: T
+  position: Position;
+  dragOptions: Partial<HUDDragOptions>;
+  component: React.ComponentClass<T>;
+  props: T;
 }
 
 export interface LayoutState {
@@ -90,11 +89,11 @@ export interface LayoutState {
 function axis2anchor(anchor: AxisAnchorRelativeTo, position: number, range: number): AnchoredAxis {
   switch (anchor) {
     case AxisAnchorRelativeTo.START:
-      return { anchor: anchor, offset: position };
+      return { anchor, offset: position };
     case AxisAnchorRelativeTo.END:
-      return { anchor: anchor, offset: range - position };
+      return { anchor, offset: range - position };
   }
-  return { anchor: anchor, offset: position - (range * 0.5) };
+  return { anchor, offset: position - (range * 0.5) };
 }
 
 function anchor2axis(anchored: AnchoredAxis, range: number): number {
@@ -144,60 +143,60 @@ function initialState(): LayoutState {
 
   const widgets = Map<string, Widget<any>>([
     [
-      'chat', cloneDeep(Chat)
+      'chat', cloneDeep(Chat),
     ],
     [
-      'crafting', cloneDeep(Crafting)
+      'crafting', cloneDeep(Crafting),
     ],
     // [
     //   'hudNav', HUDNav
     // ],
     [
-      'welcome', cloneDeep(Welcome)
+      'welcome', cloneDeep(Welcome),
     ],
     [
-      'compass', cloneDeep(Compass)
+      'compass', cloneDeep(Compass),
     ],
     [
-      'respawn', cloneDeep(Respawn)
+      'respawn', cloneDeep(Respawn),
     ],
     [
-      'warband', cloneDeep(Warband)
+      'warband', cloneDeep(Warband),
     ],
     [
-      'enemyTarget', cloneDeep(EnemyTarget)
+      'enemyTarget', cloneDeep(EnemyTarget),
     ],
     [
-      'playerHealth', cloneDeep(PlayerHealth)
+      'playerHealth', cloneDeep(PlayerHealth),
     ],
     [
-      'friendlyTarget', cloneDeep(FriendlyTarget)
+      'friendlyTarget', cloneDeep(FriendlyTarget),
     ],
     [
-      'equippedgear', cloneDeep(EquippedGear)
+      'equippedgear', cloneDeep(EquippedGear),
     ],
     [
-      'inventory', cloneDeep(Inventory)
+      'inventory', cloneDeep(Inventory),
     ],
     [
-      'errorMessages', cloneDeep(ErrorMessages)
+      'errorMessages', cloneDeep(ErrorMessages),
     ],
     [
-      'plotControl', cloneDeep(PlotControl)
+      'plotControl', cloneDeep(PlotControl),
     ],
     [
-      'announcement', cloneDeep(Announcement)
+      'announcement', cloneDeep(Announcement),
     ],
     [
-      'building', cloneDeep(Building)
-    ]
+      'building', cloneDeep(Building),
+    ],
   ]);
 
   return {
     reset: FORCE_RESET_CODE,
     locked: true,
     version: CURRENT_STATE_VERSION,
-    widgets
+    widgets,
   };
 }
 
@@ -232,7 +231,7 @@ function loadState(state: LayoutState = loadStateFromStorage()): LayoutState {
         const screen: Size = { width: window.innerWidth, height: window.innerHeight };
         const defaultWidgets = initialState().widgets;
 
-        let widgets = Map<string, Widget<any>>().asMutable();
+        const widgets = Map<string, Widget<any>>().asMutable();
         defaultWidgets.forEach((value, key) => {
           const widget = state.widgets[key] || value;
           if (widget) {
@@ -240,10 +239,12 @@ function loadState(state: LayoutState = loadStateFromStorage()): LayoutState {
               position: forceOnScreen(widget.position, screen),
               dragOptions: value.dragOptions,
               component: value.component,
-              props: value.props
+              props: value.props,
             });
-            //DEBUG_ASSERT(widgets[key].width > 1, `Widget ${key} width (${widgets[key].width}) should be larger than one pixel`);
-            //DEBUG_ASSERT(widgets[key].height > 1, `Widget ${key} height (${widgets[key].height}) should be larger than one pixel`);
+            // DEBUG_ASSERT(widgets[key].width > 1, `Widget ${key} width (${widgets[key].width})
+            // should be larger than one pixel`);
+            // DEBUG_ASSERT(widgets[key].height > 1, `Widget ${key} height (${widgets[key].height})
+            // should be larger than one pixel`);
           }
         });
         state.widgets = widgets.asImmutable();
@@ -258,9 +259,9 @@ function saveState(state: LayoutState, widget: Widget<any>, name: string) {
   const widgets = state.widgets;
   const stateClone = {
     ...state,
-    widgets: widgets.set(name, widget)
-  }
-  localStorage.setItem(localStorageKey, JSON.stringify(stateClone))
+    widgets: widgets.set(name, widget),
+  };
+  localStorage.setItem(localStorageKey, JSON.stringify(stateClone));
   console.log(localStorage.getItem(localStorageKey));
 }
 
@@ -275,16 +276,16 @@ const module = new Module({
     const screen: Size = { width: window.innerWidth, height: window.innerHeight };
     return {
       when: new Date(),
-      screen: screen
+      screen,
     };
   },
   postReducer: (state) => {
     const screen: Size = { width: window.innerWidth, height: window.innerHeight };
     return {
       ...state,
-      lastScreenSize: screen
-    }
-  }
+      lastScreenSize: screen,
+    };
+  },
 });
 
 /////////////////////////////////
@@ -295,7 +296,7 @@ const module = new Module({
 const init = module.createAction({
   type: 'layout/INITIALIZE',
   action: () => null,
-  reducer: s => s
+  reducer: s => s,
 });
 
 // Async init - allows window onresize to dispatch actions
@@ -304,7 +305,7 @@ export function initialize() {
     dispatch(init());
     window.onresize = () => {
       if (window.innerWidth >= 640 && window.innerHeight >= 480) {
-        //dispatch(resize());
+        // dispatch(resize());
       }
     };
 
@@ -325,19 +326,19 @@ export function initialize() {
         dispatch(lockHUD());
       }
     });
-  }
+  };
 }
 
 // Lock / Unlock HUD
 export const lockHUD = module.createAction({
   type: 'layout/LOCK_HUD',
   action: () => null,
-  reducer: function (s, a) {
+  reducer: (s, a) => {
     if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     return {
-      locked: true
+      locked: true,
     };
-  }
+  },
 });
 
 export const unlockHUD = module.createAction({
@@ -346,24 +347,24 @@ export const unlockHUD = module.createAction({
   reducer: (s, a) => {
     if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     return {
-      locked: false
+      locked: false,
     };
-  }
+  },
 });
 
 export const toggleHUDLock = module.createAction({
   type: 'layout/TOGGLE_HUD_LOCK',
   action: () => null,
-  reducer: function (s, a) {
+  reducer: (s, a) => {
     if (s.locked) {
       if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     } else {
       if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     }
     return {
-      locked: !s.locked
+      locked: !s.locked,
     };
-  }
+  },
 });
 
 
@@ -373,7 +374,7 @@ export const resetHUD = module.createAction({
   action: () => {
     return {};
   },
-  reducer: (s, a) => initialState()
+  reducer: (s, a) => initialState(),
 });
 
 
@@ -387,13 +388,13 @@ export const setPosition = module.createAction({
     saveState(s, widget, a.name);
 
     return {
-      widgets: s.widgets.update(a.name, v => {
+      widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position = a.position;
         return v;
-      })
+      }),
     };
-  }
+  },
 });
 
 
@@ -412,13 +413,13 @@ export const resize = module.createAction({
         position: forceOnScreen(value.position, a.screen),
         dragOptions: value.dragOptions,
         component: value.component,
-        props: value.props
+        props: value.props,
       });
     });
     return {
-      widgets: onScreenWidgets
+      widgets: onScreenWidgets,
     };
-  }
+  },
 });
 
 
@@ -428,31 +429,31 @@ export const setVisibility = module.createAction({
   action: (a: { name: string, visibility: boolean }) => a,
   reducer: (s, a) => {
     return {
-      widgets: s.widgets.update(a.name, v => {
+      widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = a.visibility;
         return v;
-      })
+      }),
     };
-  }
+  },
 });
 
 export const toggleVisibility = module.createAction({
   type: 'layout/TOGGLE_VISIBILITY',
   action: (name: string) => {
     return {
-      name: name,
+      name,
     };
   },
   reducer: (s, a) => {
     return {
-      widgets: s.widgets.update(a.name, v => {
+      widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = !v.position.visibility;
         return v;
-      })
+      }),
     };
-  }
+  },
 });
 
 export default module.createReducer();

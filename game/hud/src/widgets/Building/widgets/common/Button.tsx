@@ -11,9 +11,9 @@ export interface ButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: any;
   disabled?: boolean;
-};
+}
 export interface ButtonState {
-};
+}
 
 class Button extends React.Component<ButtonProps, ButtonState> {
   public name: string = 'Button';
@@ -22,12 +22,7 @@ class Button extends React.Component<ButtonProps, ButtonState> {
     super(props);
   }
 
-  onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    inputOwnership(e);
-    if (this.props.onClick) this.props.onClick(e);
-  }
-
-  render() {
+  public render() {
     return (
       <button
         onFocus={inputOwnership} onBlur={inputOwnership}
@@ -35,6 +30,11 @@ class Button extends React.Component<ButtonProps, ButtonState> {
         disabled={this.props.disabled}
       >{this.props.children}</button>
     );
+  }
+
+  private onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    inputOwnership(e);
+    if (this.props.onClick) this.props.onClick(e);
   }
 }
 

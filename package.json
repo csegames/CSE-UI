@@ -1,0 +1,32 @@
+{
+  "name": "camelotunchainedui",
+  "version": "0.1.0",
+  "description": "Camelot Unchained UI",
+  "main": "index.js",
+  "dependencies": {
+    "pre-commit": "^1.2.2",
+    "tslint": "^5.1.0",
+    "typescript": "^2.2.2"
+  },
+  "devDependencies": {
+    "pre-commit": "^1.2.2",
+    "tslint": "^5.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "cd game/hud && nps lint && cd ../../library && nps lint && cd ../patcher && nps lint"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/csegames/cu-ui.git"
+  },
+  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/csegames/cu-ui/issues"
+  },
+  "homepage": "https://github.com/csegames/cu-ui#readme"
+}

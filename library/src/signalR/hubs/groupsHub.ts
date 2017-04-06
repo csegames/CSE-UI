@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-16 15:29:13
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-02 15:56:52
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 12:50:40
  */
 
 import client from '../../core/client';
@@ -21,20 +21,20 @@ const groupsHubEventsMap: EventMap[] = [
   {
     receive: 'inviteReceived',
     send: GROUP_EVENTS_INVITE_RECEIVED,
-  }
+  },
 ];
 
 export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, {debug: client.debug});
 
 groupsHub.onConnected = function(hub: SignalRHub) {
   hub.invoke('identify', client.loginToken, client.shardID, client.characterID)
-    //hub.server.identify(client.loginToken, client.shardID, client.characterID)
+    // hub.server.identify(client.loginToken, client.shardID, client.characterID)
     .done((success: boolean) => {
       if (!success) {
         setTimeout(() => hub.onConnected(hub), 5000);
         return;
       }
     });
-}
+};
 
 export default groupsHub;

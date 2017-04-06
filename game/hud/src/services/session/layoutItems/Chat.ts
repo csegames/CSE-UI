@@ -16,25 +16,25 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: 0
+      offset: 0,
     },
     y: {
       anchor: Edge.BOTTOM,
-      offset: 50
+      offset: 50,
     },
     size: {
       width: 480,
-      height: 240
+      height: 240,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 1,
-    layoutMode: LayoutMode.EDGESNAP
+    layoutMode: LayoutMode.EDGESNAP,
   },
   dragOptions: {},
   component: Chat,
   props: {
-    loginToken: client.loginToken
-  }
+    loginToken: client.loginToken,
+  },
 };

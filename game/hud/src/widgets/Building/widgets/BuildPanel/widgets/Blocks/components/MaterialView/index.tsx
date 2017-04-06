@@ -22,7 +22,7 @@ class MaterialView extends React.Component<MaterialViewProps, MaterialViewState>
     super(props);
   }
 
-  render() {
+  public render() {
     if (this.props.selectedMaterial == null || this.props.selectedMaterial.icon == null) {
       return (<div className='material-view' onClick={() => this.props.onClick() }></div>);
     }

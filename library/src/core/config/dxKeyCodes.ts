@@ -149,6 +149,6 @@ enum dxKeyCodes {
   'MYCMPTR' = 0xEB,
   'MAIL' = 0xEC,
   'MEDIASLCT' = 0xED,
-};
+}
 
 export default dxKeyCodes;

@@ -17,14 +17,14 @@ export function getServersV1() {
 
 export function getServersForChannelV1(channelId: number) {
   return create(createOptions()).get('v1/servers/getForChannel', {
-    channelId: channelId
+    channelId,
   });
 }
 
 export function getHostsForServerV1(channelId: number, name: string) {
   return create(createOptions()).get('v1/servers/getHosts', {
-    channelId: channelId,
-    name: name
+    channelId,
+    name,
   });
 }
 

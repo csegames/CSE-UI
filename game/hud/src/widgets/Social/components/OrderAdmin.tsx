@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 00:27:11
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 12:04:00
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:43:53
  */
 
 import * as React from 'react';
@@ -67,7 +67,7 @@ export const defaultOrderAdminStyle: OrderAdminStyle = {
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
-  }
+  },
 };
 
 export interface OrderAdminProps {
@@ -96,53 +96,7 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
     };
   }
 
-  abandon = () => {
-    webAPI.OrdersAPI.abandonV1(client.shardID, client.characterID)
-      .then(result => {
-        if (result.ok) {
-          this.setState({
-            abandoning: false,
-            abandonError: null,
-          });
-          this.props.dispatch(selectLink({
-            kind: 'Primary',
-            category: SocialCategory.Order,
-            id: 'create'
-          }));
-          this.props.refetch();
-          return;
-        }
-        this.setState({
-            abandoning: false,
-            abandonError: result.data,
-          });
-      });
-  }
-
-  disband = () => {
-    webAPI.OrdersAPI.disbandV1(client.shardID, client.characterID)
-      .then(result => {
-        if (result.ok) {
-          this.setState({
-            disbanding: false,
-            disbandError: null,
-          });
-          this.props.dispatch(selectLink({
-            kind: 'Primary',
-            category: SocialCategory.Order,
-            id: 'create'
-          }));
-          this.props.refetch();
-          return;
-        }
-        this.setState({
-            disbanding: false,
-            disbandError: result.data,
-          });
-      });
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultOrderAdminStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     return (
@@ -157,7 +111,8 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
             Abandon Order
           </div>
           <div className={css(ss.sectionText, custom.sectionText)}>
-            This action will abandon this order for this character. You will no longer be a member of the order and will be able to join another or create a new one.
+            This action will abandon this order for this character.
+             You will no longer be a member of the order and will be able to join another or create a new one.
           </div>
           <div className={css(ss.sectionActionErrors, custom.sectionActionErrors)}>
             {this.state.abandonError}
@@ -182,7 +137,8 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
                 Disband Order
               </div>
               <div className={css(ss.sectionText, custom.sectionText)}>
-                This action will disband the order. You will no longer be a member of the order and will be able to join another or create a new one.
+                This action will disband the order.
+                 You will no longer be a member of the order and will be able to join another or create a new one.
               </div>
               <div className={css(ss.sectionActionErrors, custom.sectionActionErrors)}>
                 {this.state.disbandError}
@@ -202,6 +158,52 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
 
       </div>
     );
+  }
+
+  private abandon = () => {
+    webAPI.OrdersAPI.abandonV1(client.shardID, client.characterID)
+      .then((result) => {
+        if (result.ok) {
+          this.setState({
+            abandoning: false,
+            abandonError: null,
+          });
+          this.props.dispatch(selectLink({
+            kind: 'Primary',
+            category: SocialCategory.Order,
+            id: 'create',
+          }));
+          this.props.refetch();
+          return;
+        }
+        this.setState({
+            abandoning: false,
+            abandonError: result.data,
+          });
+      });
+  }
+
+  private disband = () => {
+    webAPI.OrdersAPI.disbandV1(client.shardID, client.characterID)
+      .then((result) => {
+        if (result.ok) {
+          this.setState({
+            disbanding: false,
+            disbandError: null,
+          });
+          this.props.dispatch(selectLink({
+            kind: 'Primary',
+            category: SocialCategory.Order,
+            id: 'create',
+          }));
+          this.props.refetch();
+          return;
+        }
+        this.setState({
+            disbanding: false,
+            disbandError: result.data,
+          });
+      });
   }
 }
 

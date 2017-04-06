@@ -5,10 +5,10 @@
  */
 class Population {
 
-  arthurians: number;
-  tuathaDeDanann: number;
-  vikings: number;
-  max: number;
+  public arthurians: number;
+  public tuathaDeDanann: number;
+  public vikings: number;
+  public max: number;
 
   constructor(population = <Population>{}) {
 
@@ -21,8 +21,8 @@ class Population {
     this.vikings = population.vikings || 0;
   }
 
-  static create() {
-    let a = new Population();
+  public static create() {
+    const a = new Population();
     return a;
   }
 

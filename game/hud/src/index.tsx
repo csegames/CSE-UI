@@ -17,9 +17,9 @@ import HUD from './components/HUD';
 import reducer, {apollo, store} from './services/session/reducer';
 import {ApolloProvider} from 'react-apollo';
 
-let s = createStore(reducer);
+const s = createStore(reducer);
 
-let root = document.getElementById('hud');
+const root = document.getElementById('hud');
 
 interface WindowInterface extends Window {
   cuAPI: any;
@@ -27,7 +27,7 @@ interface WindowInterface extends Window {
 }
 
 // declare window implements WindowInterface
-declare var window: WindowInterface;
+declare const window: WindowInterface;
 
 if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   client.OnInitialized(() => {

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-27 11:51:44
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-03-11 13:33:36
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 14:25:55
  */
 
 import * as React from 'react';
@@ -53,7 +53,30 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     };
   }
 
-  componentDidMount() {
+  public render() {
+    return (
+      <div
+        className={`OverlayView ${this.state.previousView === view.NONE && this.state.currentView === view.NONE ?
+          'OverlayView--hidden' : ''}`}>
+        {this.renderView(false)}
+        {this.renderView(true)}
+
+        {patcher.hasLoginToken() ?
+        <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
+          <Chat loginToken={patcher.getLoginToken()} />
+        </div>
+        : null }
+
+        {patcher.hasLoginToken() ?
+        <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
+          <CharacterCreation {...this.state.currentProps} />
+        </div>
+        : null }
+      </div>
+    );
+  }
+
+  private componentDidMount() {
     events.on('view-content', (v: view, props: any) => {
       if (v === this.state.currentView) return;
 
@@ -73,22 +96,22 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
       setTimeout(() => this.setState({
         previousView: view.NONE,
         previousProps: null,
-        inTransition: false
+        inTransition: false,
       } as any), 333);
     });
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     events.off('view-content');
   }
 
 
-  renderView = (current: boolean): JSX.Element => {
+  private renderView = (current: boolean): JSX.Element => {
     const v = current ? this.state.currentView : this.state.previousView;
     const props = current ? this.state.currentProps : this.state.previousProps;
     const className = current ? this.state.inTransition ? '' : 'View--show' : '';
 
-    switch(v) {
+    switch (v) {
       default:
       case view.NONE: return null;
 
@@ -107,27 +130,6 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
 
       // others later
     }
-  }
-
-  render() {
-    return (
-      <div className={`OverlayView ${this.state.previousView === view.NONE && this.state.currentView == view.NONE ? 'OverlayView--hidden': ''}`}>
-        {this.renderView(false)}
-        {this.renderView(true)}
-
-        {patcher.hasLoginToken() ?
-        <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
-          <Chat loginToken={patcher.getLoginToken()} />
-        </div>
-        : null }
-
-        {patcher.hasLoginToken() ?
-        <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
-          <CharacterCreation {...this.state.currentProps} />
-        </div>
-        : null }
-      </div>
-    )
   }
 }
 

@@ -16,7 +16,7 @@ import WarbandDisplay from './components/WarbandDisplay';
 
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-let store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunkMiddleware, crashReporterMiddleware)));
 
 export interface WarbandContainerProps {
   containerClass?: string;
@@ -29,19 +29,20 @@ export interface WarbandContainerState {
 class WarbandContainer extends React.Component<WarbandContainerProps, WarbandContainerState> {
 
   private initialized = false;
-  componentWillMount() {
-    if (!this.initialized) {
-      initialize();
-      this.initialized = true;
-    }
-  }
 
-  render() {
+  public render() {
     return (
       <Provider store={store}>
         <WarbandDisplay {...this.props} />
       </Provider>
-    )
+    );
+  }
+
+  private componentWillMount() {
+    if (!this.initialized) {
+      initialize();
+      this.initialized = true;
+    }
   }
 }
 

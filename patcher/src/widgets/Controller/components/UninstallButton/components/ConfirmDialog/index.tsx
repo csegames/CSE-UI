@@ -22,14 +22,14 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
     super(props);
   }
 
-  render() {
+  public render() {
     return (
-      <div className="confirm-modal">
-        <div className="confirm-message">
+      <div className='confirm-modal'>
+        <div className='confirm-message'>
           {this.props.children}
         </div>
-        <button className="wave-effects btn-flat" onClick={this.props.onYes}>{this.props.yes||'HELL YES!'}</button>
-        <button className="wave-effects btn-flat" onClick={this.props.onNo} >{this.props.no||'NO NO NO!'}</button>
+        <button className='wave-effects btn-flat' onClick={this.props.onYes}>{this.props.yes || 'HELL YES!'}</button>
+        <button className='wave-effects btn-flat' onClick={this.props.onNo} >{this.props.no || 'NO NO NO!'}</button>
       </div>
     );
   }

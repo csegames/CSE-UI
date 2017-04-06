@@ -5,26 +5,26 @@
  */
 
 class Injury {
-  part: number;
-  health: number;
-  maxHealth: number;
-  wounds: number;
-  empty: boolean; // placeholder
+  public part: number;
+  public health: number;
+  public maxHealth: number;
+  public wounds: number;
+  public empty: boolean; // placeholder
 
   constructor(injury = <Injury>{}) {
     this.refresh(injury);
   }
 
-  refresh(injury = <Injury>{}) {
+  public refresh(injury = <Injury>{}) {
     this.part = injury.part || 0;
     this.health = injury.health || 0;
     this.maxHealth = injury.maxHealth || 0;
     this.wounds = injury.wounds || 0;
-    this.empty = (this.maxHealth == 0);
+    this.empty = (this.maxHealth === 0);
   }
 
-  static create() {
-    let a = new Injury();
+  public static create() {
+    const a = new Injury();
     return a;
   }
 }

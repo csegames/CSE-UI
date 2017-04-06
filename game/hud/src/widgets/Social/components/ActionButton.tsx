@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 17:42:57
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 11:58:07
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:49:06
  */
 
 import * as React from 'react';
@@ -63,25 +63,7 @@ export class ActionButton extends React.Component<ActionButtonProps, ActionButto
     };
   }
 
-  doExecute = () => {
-    this.props.action().then(result => {
-      if (result.ok) {
-        this.setState({
-          executed: true,
-          executing: false,
-          error: null,
-        });
-        this.props.onActionSuccess();
-        return;
-      }
-      this.setState({
-        executing: false,
-        error: result.error,
-      });
-    });
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultActionButtonStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -92,7 +74,7 @@ export class ActionButton extends React.Component<ActionButtonProps, ActionButto
             (
               <div className={css(ss.error, custom.error)}>
                 <Tooltip content={() => <span>{this.state.error}</span>}>
-                  <i className="fa fa-exclamation-circle"></i> error.
+                  <i className='fa fa-exclamation-circle'></i> error.
                 </Tooltip>
               </div>
             ) : null
@@ -108,6 +90,24 @@ export class ActionButton extends React.Component<ActionButtonProps, ActionButto
         </RaisedButton>
       </div>
     );
+  }
+
+  private doExecute = () => {
+    this.props.action().then((result) => {
+      if (result.ok) {
+        this.setState({
+          executed: true,
+          executing: false,
+          error: null,
+        });
+        this.props.onActionSuccess();
+        return;
+      }
+      this.setState({
+        executing: false,
+        error: result.error,
+      });
+    });
   }
 }
 

@@ -7,7 +7,7 @@
 enum attributeType {
   PRIMARY = 1,
   SECONDARY = 2,
-  DERIVED = 3
-};
+  DERIVED = 3,
+}
 
 export default attributeType;

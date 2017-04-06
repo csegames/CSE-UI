@@ -6,18 +6,18 @@
 
 import * as React from 'react';
 import Animate from '../../lib/Animate';
-import {patcher} from '../../services/patcher';
-import {SoundsState} from '../../services/session/sounds';
+import { patcher } from '../../services/patcher';
+import { SoundsState } from '../../services/session/sounds';
 
 export interface WindowHeaderProps {
   soundsState: SoundsState;
   onMuteSounds: () => void;
   onMuteMusic: () => void;
-};
+}
 
 export interface WindowHeaderState {
   settingsOpen: boolean;
-};
+}
 
 class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState> {
   public name: string = 'cse-patcher-windowheader';
@@ -25,35 +25,16 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
   constructor(props: WindowHeaderProps) {
     super(props);
     this.state = {
-      settingsOpen: false
-    }
+      settingsOpen: false,
+    };
   }
 
-  closeSettings = () => {
-    this.setState({
-      settingsOpen: false
-    });
-  }
-
-  openSettings = () => {
-    this.setState({
-      settingsOpen: true
-    });
-  }
-
-  muteSounds = () => {
-    this.props.onMuteSounds();
-  }
-
-  muteMusic = () => {
-    this.props.onMuteMusic();
-  }
-
-  render() {
-    let soundMuteIcon = this.props.soundsState.playSound ? <img src='images/mute-fx.png' /> : <img src='images/muted-fx.png' />;
-    let musicMuteIcon = this.props.soundsState.playMusic ? <img src='images/mute.png' /> : <img src='images/muted.png' />;
-    let muteSoundsTooltip = this.props.soundsState.playSound ? 'mute sound effects' : 'un-mute sound effects';
-    let muteMusicTooltip = this.props.soundsState.playMusic ? 'mute music' : 'un-mute music';
+  public render() {
+    const soundMuteIcon = this.props.soundsState.playSound ? <img src='images/mute-fx.png' /> :
+      <img src='images/muted-fx.png' />;
+    const musicMuteIcon = this.props.soundsState.playMusic ? <img src='images/mute.png' /> : <img src='images/muted.png' />;
+    const muteSoundsTooltip = this.props.soundsState.playSound ? 'mute sound effects' : 'un-mute sound effects';
+    const muteMusicTooltip = this.props.soundsState.playMusic ? 'mute music' : 'un-mute music';
     let settings: any = null;
     if (this.state.settingsOpen) settings = <h1 style={{color:'#fff'}} onClick={this.closeSettings}>Settings!</h1>;
     return (
@@ -71,7 +52,27 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
       </div>
     );
   }
-};
+
+  private closeSettings = () => {
+    this.setState({
+      settingsOpen: false,
+    });
+  }
+
+  private openSettings = () => {
+    this.setState({
+      settingsOpen: true,
+    });
+  }
+
+  private muteSounds = () => {
+    this.props.onMuteSounds();
+  }
+
+  private muteMusic = () => {
+    this.props.onMuteMusic();
+  }
+}
 
 // DISABLED WINDOW CONTROLS FOR NOW
 // <li><a href='#' onClick={patcher.closeWindow}><img src='images/close.png' /></a></li>

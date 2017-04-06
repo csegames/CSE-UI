@@ -36,4 +36,4 @@ export {
   TraitsAPI,
   WarbandsAPI,
   Errors,
-}
+};

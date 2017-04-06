@@ -15,7 +15,7 @@ class Inventory  {
    * The items currently in the inventory
    * @type {Item[]}
    */
-  items: Item[];
+  public items: Item[];
 
   /**
    * Inventory Constructor
@@ -30,9 +30,9 @@ class Inventory  {
    * @param  {string} id - the id of item to look for
    * @return {boolean} returns true if the item existing in the inventory
    */
-  hasItem(id: string): boolean {
+  public hasItem(id: string): boolean {
     return this.items.filter((item: Item) => {
-      return item.id == id;
+      return item.id === id;
     }).length > 0;
   }
 
@@ -40,8 +40,8 @@ class Inventory  {
    * Adds an item to the inventory
    * @param {Item} item - the item to add to inventory
    */
-  addItem(item: Item): void {
-    if (this.hasItem(item.id) == false) {
+  public addItem(item: Item): void {
+    if (this.hasItem(item.id) === false) {
       this.items.push(item);
     }
   }
@@ -50,11 +50,11 @@ class Inventory  {
    * Removes an item from the inventory with the given item id
    * @param {string} id - the item id to remove
    */
-  removeItem(id: string): void {
+  public removeItem(id: string): void {
     if (this.hasItem(id)) {
       let itemIndex: number = null;
       this.items.forEach((item: Item, index: number) => {
-        if (item.id == id) {
+        if (item.id === id) {
           itemIndex = index;
         }
       });
@@ -68,7 +68,7 @@ class Inventory  {
    * Get a list of all item ID's currently in the inventory
    * @return {string[]} an array of item ID's
    */
-  getItemIDs(): string[] {
+  public getItemIDs(): string[] {
     const itemIDs: string[] = [];
     this.items.forEach((item: Item) => {
       itemIDs.push(item.id);
@@ -76,8 +76,8 @@ class Inventory  {
     return itemIDs;
   }
 
-  static create() {
-    let a = new Inventory();
+  public static create() {
+    const a = new Inventory();
     return a;
   }
 

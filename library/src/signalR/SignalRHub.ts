@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 16:17:30
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-02 15:05:21
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 12:50:16
  */
 import events from '../events';
 import client from '../core/client';
@@ -66,7 +66,8 @@ export class SignalRHub {
   // Raised when the underlying transport has reconnected
   public onReconnected: (hub: SignalRHub) => void;
   
-  // Raised when the connection state changes. Provides the old state and the new state (Connecting, Connected, Reconnecting, or Disconnect)
+  // Raised when the connection state changes. Provides the old state and the new state 
+  // (Connecting, Connected, Reconnecting, or Disconnect)
   public onStateChanged: (hub: SignalRHub, state: {oldState: ConnectionState, newState: ConnectionState}) => void;
 
   // Raised when the connection has disconnected
@@ -137,7 +138,7 @@ export class SignalRHub {
 
   // Raised when the client detecs a slow or frequently dropping connection
   private internalOnConnectionSlow = () => {
-    if (this.onConnectionSlow) this.onConnectionSlow(this)
+    if (this.onConnectionSlow) this.onConnectionSlow(this);
   }
 
   // Raised when the underlying transport begins reconnecting
@@ -150,10 +151,11 @@ export class SignalRHub {
     if (this.onReconnected) this.onReconnected(this);
   }
 
-  // Raised when the connection state changes. Provides the old state and the new state (Connecting, Connected, Reconnecting, or Disconnect)
+  // Raised when the connection state changes. Provides the old state and the new state
+  // (Connecting, Connected, Reconnecting, or Disconnect)
   private internalOnStateChanged = (state: {oldState: ConnectionState, newState: ConnectionState}) => {
     this.connectionState = state.newState;
-    if (state.newState == ConnectionState.Connected) {
+    if (state.newState === ConnectionState.Connected) {
       if (this.onConnected) this.onConnected(this);
     }
     if (this.onStateChanged) this.onStateChanged(this, state);

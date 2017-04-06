@@ -16,11 +16,11 @@ export enum Routes {
   NEWS,
   PATCHNOTES,
   SUPPORT,
-  CHAT
+  CHAT,
 }
 
 export interface RoutesAction extends BaseAction {
-  current: Routes
+  current: Routes;
 }
 
 const CHANGE_ROUTE = 'cse-patcher/routes/CHANGE_ROUTE';
@@ -39,12 +39,12 @@ export interface RoutesState {
 
 function getInitialState(): RoutesState {
   return {
-    current: Routes.HERO
+    current: Routes.HERO,
   };
 }
 
 export default function reducer(state: RoutesState = getInitialState(), action: RoutesAction = defaultAction): RoutesState {
-  switch(action.type) {
+  switch (action.type) {
     default: return state;
     case CHANGE_ROUTE: return merge(state, {current: action.current});
   }

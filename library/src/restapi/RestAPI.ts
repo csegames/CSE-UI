@@ -8,21 +8,21 @@ import {Promise} from 'es6-promise';
 import * as RestClientLegacy from './RestClientLegacy';
 import * as RestClient from './RestClient';
 
-export function getMessageOfTheDay(){
+export function getMessageOfTheDay() {
   return RestClient.getJSON('messageoftheday');
 }
 
 // TODO update this to use new Rest Client
 export function getCraftedAbilities(loginToken: string, characterID: string) {
   return RestClientLegacy.getJSON('craftedabilities', true, {
-    loginToken: loginToken,
-    characterID: characterID
+    loginToken,
+    characterID,
   });
 }
 
 // TODO update this to use new Rest Client
 export function getControlGame(includeControlPoints: boolean = false) {
-  return RestClientLegacy.getJSON('game/controlgame', false, { includeControlPoints: includeControlPoints });
+  return RestClientLegacy.getJSON('game/controlgame', false, { includeControlPoints });
 }
 
 // TODO update this to use new Rest Client
@@ -47,8 +47,7 @@ export function postRemoveQueuedBlueprint(query: Object) {
     return RestClientLegacy.postJSON('plot/removequeuedblueprint', true, false, query);
 }
 
-export function postReorderBuildQueue(query: Object)
-{
+export function postReorderBuildQueue(query: Object) {
     return RestClientLegacy.postJSON('plot/reorderqueue', true, false, query);
 }
 

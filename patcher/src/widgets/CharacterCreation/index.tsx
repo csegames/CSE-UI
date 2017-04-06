@@ -7,37 +7,55 @@
 import 'es6-promise';
 import 'isomorphic-fetch';
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {connect, Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import { createStore, applyMiddleware } from 'redux';
+import { connect, Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
-import {events, Gender, Archetype, Faction, Race, webAPI, client} from 'camelot-unchained';
+import { events, Gender, Archetype, Faction, Race, webAPI, client } from 'camelot-unchained';
 
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
-const Animate = require('react-animate.css');
+import Animate from 'react-animate.css';
 
 import reducer from './services/session/reducer';
-import {RacesState, fetchRaces, selectRace, RaceInfo, resetRace} from './services/session/races';
-import {FactionsState, fetchFactions, selectFaction, FactionInfo, resetFaction} from './services/session/factions';
-import {PlayerClassesState, fetchPlayerClasses, selectPlayerClass, PlayerClassInfo, resetClass} from './services/session/playerClasses';
-import {AttributesState, fetchAttributes, allocateAttributePoint, AttributeInfo, attributeType, resetAttributes} from './services/session/attributes';
-import {AttributeOffsetsState, fetchAttributeOffsets, AttributeOffsetInfo, resetAttributeOffsets} from './services/session/attributeOffsets';
-import {CharacterState, createCharacter, CharacterCreationModel, resetCharacter} from './services/session/character';
-import {selectGender, resetGender} from './services/session/genders';
+import { RacesState, fetchRaces, selectRace, RaceInfo, resetRace } from './services/session/races';
+import { FactionsState, fetchFactions, selectFaction, FactionInfo, resetFaction } from './services/session/factions';
+import {
+  PlayerClassesState,
+  fetchPlayerClasses,
+  selectPlayerClass,
+  PlayerClassInfo,
+  resetClass,
+} from './services/session/playerClasses';
+import {
+  AttributesState,
+  fetchAttributes,
+  allocateAttributePoint,
+  AttributeInfo,
+  attributeType,
+  resetAttributes,
+} from './services/session/attributes';
+import {
+  AttributeOffsetsState,
+  fetchAttributeOffsets,
+  AttributeOffsetInfo,
+  resetAttributeOffsets,
+} from './services/session/attributeOffsets';
+import { CharacterState, createCharacter, CharacterCreationModel, resetCharacter } from './services/session/character';
+import { selectGender, resetGender } from './services/session/genders';
 import {
   BanesAndBoonsState,
   resetBanesAndBoons,
 } from './services/session/banesAndBoons';
 
-export {CharacterCreationModel} from './services/session/character';
+export { CharacterCreationModel } from './services/session/character';
 
-declare var Materialize: any;
+declare const Materialize: any;
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(thunk as any));
 
 function select(state: any): any {
   return {
@@ -48,8 +66,8 @@ function select(state: any): any {
     attributeOffsetsState: state.attributeOffsets,
     gender: state.gender,
     characterState: state.character,
-    banesAndBoonsState: state.banesAndBoons
-  }
+    banesAndBoonsState: state.banesAndBoons,
+  };
 }
 
 export enum pages {
@@ -57,7 +75,7 @@ export enum pages {
   RACE_SELECT,
   CLASS_SELECT,
   ATTRIBUTES,
-  BANES_AND_BOONS
+  BANES_AND_BOONS,
 }
 
 export interface CharacterCreationProps {
@@ -77,206 +95,16 @@ export interface CharacterCreationProps {
   banesAndBoonsState: BanesAndBoonsState;
 }
 
-declare var toastr: any;
+declare const toastr: any;
 
 class CharacterCreation extends React.Component<CharacterCreationProps, any> {
 
   constructor(props: any) {
     super(props);
-    this.state = { page: pages.FACTION_SELECT }
+    this.state = { page: pages.FACTION_SELECT };
   }
 
-  create = () => {
-    events.fire('play-sound', 'create-character');
-    // validate name
-    const { banesAndBoonsState } = this.props;
-    const modelName = (this.refs['name-input'] as any).value.trim();
-    const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
-    Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
-    .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
-    Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
-    banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0)
-    
-    let errors: any = [];
-    if (normalName.length < 2 || modelName.length > 20)
-      errors.push('A character name must be between 2 and 20 characters in length.');
-    if (modelName.search(/^[a-zA-Z]/) === -1)
-      errors.push('A character name must begin with a letter.');
-    if (modelName.search(/[\-'][\-']/) > -1)
-      errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
-    if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
-      errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
-    if (banesAndBoonsState.totalPoints !== 0)
-      errors.push('You must equally distribute points into your Boons and Banes');
-    if (sumOfTraitValues > banesAndBoonsState.maxPoints) 
-      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, exceeds the maximum points allowed. 
-      Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
-    if(sumOfTraitValues < banesAndBoonsState.minPoints) 
-      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
-      Minimum points required: ${banesAndBoonsState.minPoints}`);
-    if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
-      errors.push(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
-      You have only spent ${this.props.attributesState.pointsAllocated} points.`)
-    if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then((res) => res.ok))
-      errors.push(
-        'We are having technical difficulties. You will not be able to create a character until they have been fixed.'
-      )
-    if (errors.length > 0) {
-      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
-    } else {
-      const traitIDs = [
-        ...Object.keys(banesAndBoonsState.addedBanes),
-        ...Object.keys(banesAndBoonsState.addedBoons)
-      ]
-      // try to create...
-      let model: CharacterCreationModel = {
-        name: modelName,
-        race: this.props.racesState.selected.id,
-        gender: this.props.gender,
-        faction: this.props.factionsState.selected.id,
-        archetype: this.props.playerClassesState.selected.id,
-        shardID: this.props.shard,
-        attributes: this.props.attributesState.attributes.reduce((acc: any, cur: AttributeInfo) => {
-          if (cur.type !== attributeType.PRIMARY) return acc;
-          if (typeof acc.name !== 'undefined') {
-            let name = acc.name;
-            let val = acc.allocatedPoints;
-            acc = {};
-            acc[name] = val;
-          }
-          if (typeof acc[cur.name] === 'undefined' || isNaN(acc[cur.name])) {
-            acc[cur.name] = cur.allocatedPoints;
-          } else {
-            acc[cur.name] += cur.allocatedPoints;
-          }
-          return acc;
-        }),
-        traitIDs: traitIDs
-      };
-      this.props.dispatch(createCharacter(model,
-        this.props.apiKey,
-        this.props.apiHost,
-        this.props.shard,
-        this.props.apiVersion));
-    }
-  };
-
-  factionSelect = (selected: FactionInfo) => {
-    this.props.dispatch(selectFaction(selected));
-
-    let factionRaces = this.props.racesState.races.filter((r: RaceInfo) => r.faction == selected.id);
-    let factionClasses = this.props.playerClassesState.playerClasses.filter((c: PlayerClassInfo) => c.faction == selected.id);
-    this.props.dispatch(selectPlayerClass(factionClasses[0]))
-    this.props.dispatch(selectRace(factionRaces[0]))
-
-    // reset race & class if they are not of the selected faction
-    if (this.props.racesState.selected && this.props.racesState.selected.faction != selected.id) {
-      this.props.dispatch(selectRace(null));
-      this.props.dispatch(selectPlayerClass(null));
-    }
-    events.fire('play-sound', 'select');
-  };
-
-  factionNext = () => {
-    if (this.props.factionsState.selected == null) {
-      Materialize.toast('Choose a faction to continue.', 3000);
-      return;
-    }
-    let factionRaces = this.props.racesState.races.filter((r: RaceInfo) => r.faction == this.props.factionsState.selected.id);
-    let factionClasses = this.props.playerClassesState.playerClasses.filter((c: PlayerClassInfo) => c.faction == this.props.factionsState.selected.id);
-    this.props.dispatch(selectPlayerClass(factionClasses[0]));
-    this.props.dispatch(selectRace(factionRaces[0]));
-    this.setState({ page: this.state.page + 1 });
-    events.fire('play-sound', 'realm-select');
-  }
-
-  raceSelect = (selected: RaceInfo) => {
-    this.props.dispatch(selectRace(selected));
-    events.fire('play-sound', 'select');
-  };
-
-  raceNext = () => {
-    if (this.props.racesState.selected == null) {
-      Materialize.toast('Choose a race to continue.', 3000);
-      return;
-    }
-    if (this.props.gender == 0) {
-      Materialize.toast('Choose a gender to continue.', 3000);
-      return;
-    }
-    this.setState({ page: this.state.page + 1 });
-    events.fire('play-sound', 'select');
-  };
-
-  classSelect = (selected: PlayerClassInfo) => {
-    this.props.dispatch(selectPlayerClass(selected));
-    events.fire('play-sound', 'select');
-  };
-
-  classNext = () => {
-    if (this.props.playerClassesState.selected == null) {
-      Materialize.toast('Choose a class to continue.', 3000);
-      return;
-    }
-    this.setState({ page: this.state.page + 1 });
-    events.fire('play-sound', 'select');
-  };
-
-  attributesNext = () => {
-    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
-      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
-      You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000})
-      return;
-    }
-    this.setState({page: this.state.page + 1});
-    events.fire('play-sound', 'select');
-  };
-
-  previousPage = () => {
-    this.setState({ page: this.state.page - 1 });
-    events.fire('play-sound', 'select');
-  };
-
-  resetAndInit = () => {
-    this.props.dispatch(resetFaction());
-    this.props.dispatch(resetRace());
-    this.props.dispatch(resetGender());
-    this.props.dispatch(resetClass());
-    this.props.dispatch(resetAttributeOffsets());
-    this.props.dispatch(resetAttributes());
-    this.props.dispatch(resetCharacter());
-    this.props.dispatch(fetchFactions(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchRaces(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchPlayerClasses(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchAttributes(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchAttributeOffsets(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.setState({page: pages.FACTION_SELECT});
-  };
-
-  componentWillReceiveProps(nextProps: CharacterCreationProps) {
-    if (this.props && nextProps && this.props.shard !== nextProps.shard) this.resetAndInit();
-    if (this.props.factionsState !== nextProps.factionsState ||
-        this.props.playerClassesState !== nextProps.playerClassesState ||
-        this.props.racesState !== nextProps.racesState)
-    {
-      this.props.dispatch(resetBanesAndBoons());
-    }
-  }
-
-
-  componentDidMount() {
-    this.resetAndInit();
-  }
-
-  componentDidUpdate() {
-    if (this.props.characterState.success) {
-      this.props.created(this.props.characterState.created);
-      this.resetAndInit();
-    }
-  }
-
-  render() {
+  public render() {
     let content: any = null;
     let next: any = null;
     let back: any = null;
@@ -291,7 +119,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         next = (
           <a className='cu-btn right'
             onClick={this.factionNext}
-            disabled={this.state.page == pages.ATTRIBUTES} >Next</a>
+            disabled={this.state.page === pages.ATTRIBUTES} >Next</a>
         );
         break;
       case pages.RACE_SELECT:
@@ -306,12 +134,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         back = (
           <a className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page == pages.FACTION_SELECT} >Back</a>
+            disabled={this.state.page === pages.FACTION_SELECT} >Back</a>
         );
         next = (
           <a className='cu-btn right'
             onClick={this.raceNext}
-            disabled={this.state.page == pages.ATTRIBUTES} >Next</a>
+            disabled={this.state.page === pages.ATTRIBUTES} >Next</a>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -329,12 +157,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         back = (
           <a className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page == pages.FACTION_SELECT} >Back</a>
+            disabled={this.state.page === pages.FACTION_SELECT} >Back</a>
         );
         next = (
           <a className='cu-btn right'
             onClick={this.classNext}
-            disabled={this.state.page == pages.BANES_AND_BOONS} >Next</a>
+            disabled={this.state.page === pages.BANES_AND_BOONS} >Next</a>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -354,12 +182,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         back = (
           <a className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page == pages.CLASS_SELECT} >Back</a>
+            disabled={this.state.page === pages.CLASS_SELECT} >Back</a>
         );
         next = (
            <a className='cu-btn right'
               onClick={this.attributesNext}
-              disabled={this.state.page == pages.BANES_AND_BOONS}>Next</a>
+              disabled={this.state.page === pages.BANES_AND_BOONS}>Next</a>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -385,7 +213,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         back = (
           <a className='cu-btn left'
               onClick={this.previousPage}
-              disabled={this.state.page == pages.ATTRIBUTES}>Back</a>
+              disabled={this.state.page === pages.ATTRIBUTES}>Back</a>
         );
         next = (
           <a className={`cu-btn right`} disabled={this.props.characterState.isFetching} onClick={this.create} >Create</a>
@@ -403,11 +231,204 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         <div className='cu-character-creation__content'>
           {content}
         </div>
-        <div className="cu-character-creation__back">{back}</div>
+        <div className='cu-character-creation__back'>{back}</div>
         {name}
-        <div className="cu-character-creation__next">{next}</div>
+        <div className='cu-character-creation__next'>{next}</div>
       </div>
-    )
+    );
+  }
+
+  private create = () => {
+    events.fire('play-sound', 'create-character');
+    // validate name
+    const { banesAndBoonsState } = this.props;
+    const modelName = (this.refs['name-input'] as any).value.trim();
+    const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
+    .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
+    banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0);
+    
+    const errors: any = [];
+    if (normalName.length < 2 || modelName.length > 20)
+      errors.push('A character name must be between 2 and 20 characters in length.');
+    if (modelName.search(/^[a-zA-Z]/) === -1)
+      errors.push('A character name must begin with a letter.');
+    if (modelName.search(/[\-'][\-']/) > -1)
+      errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
+    if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
+      errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
+    if (banesAndBoonsState.totalPoints !== 0)
+      errors.push('You must equally distribute points into your Boons and Banes');
+    if (sumOfTraitValues > banesAndBoonsState.maxPoints) 
+      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, exceeds the maximum points allowed. 
+      Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
+    if (sumOfTraitValues < banesAndBoonsState.minPoints) 
+      errors.push(
+        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
+      Minimum points required: ${banesAndBoonsState.minPoints}`);
+    if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
+      errors.push(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
+      You have only spent ${this.props.attributesState.pointsAllocated} points.`);
+    if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then(res => res.ok))
+      errors.push(
+        'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
+      );
+    if (errors.length > 0) {
+      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
+    } else {
+      const traitIDs = [
+        ...Object.keys(banesAndBoonsState.addedBanes),
+        ...Object.keys(banesAndBoonsState.addedBoons),
+      ];
+      // try to create...
+      const model: CharacterCreationModel = {
+        name: modelName,
+        race: this.props.racesState.selected.id,
+        gender: this.props.gender,
+        faction: this.props.factionsState.selected.id,
+        archetype: this.props.playerClassesState.selected.id,
+        shardID: this.props.shard,
+        attributes: this.props.attributesState.attributes.reduce((acc: any, cur: AttributeInfo) => {
+          if (cur.type !== attributeType.PRIMARY) return acc;
+          if (typeof acc.name !== 'undefined') {
+            const name = acc.name;
+            const val = acc.allocatedPoints;
+            acc = {};
+            acc[name] = val;
+          }
+          if (typeof acc[cur.name] === 'undefined' || isNaN(acc[cur.name])) {
+            acc[cur.name] = cur.allocatedPoints;
+          } else {
+            acc[cur.name] += cur.allocatedPoints;
+          }
+          return acc;
+        }),
+        traitIDs,
+      };
+      this.props.dispatch(createCharacter(model,
+        this.props.apiKey,
+        this.props.apiHost,
+        this.props.shard,
+        this.props.apiVersion));
+    }
+  }
+
+  private factionSelect = (selected: FactionInfo) => {
+    this.props.dispatch(selectFaction(selected));
+
+    const factionRaces = this.props.racesState.races.filter((r: RaceInfo) => r.faction === selected.id);
+    const factionClasses = this.props.playerClassesState.playerClasses
+      .filter((c: PlayerClassInfo) => c.faction === selected.id);
+    this.props.dispatch(selectPlayerClass(factionClasses[0]));
+    this.props.dispatch(selectRace(factionRaces[0]));
+
+    // reset race & class if they are not of the selected faction
+    if (this.props.racesState.selected && this.props.racesState.selected.faction !== selected.id) {
+      this.props.dispatch(selectRace(null));
+      this.props.dispatch(selectPlayerClass(null));
+    }
+    events.fire('play-sound', 'select');
+  }
+
+  private factionNext = () => {
+    if (this.props.factionsState.selected == null) {
+      Materialize.toast('Choose a faction to continue.', 3000);
+      return;
+    }
+    const factionRaces = this.props.racesState.races
+      .filter((r: RaceInfo) => r.faction === this.props.factionsState.selected.id);
+    const factionClasses = this.props.playerClassesState.playerClasses
+      .filter((c: PlayerClassInfo) => c.faction === this.props.factionsState.selected.id);
+    this.props.dispatch(selectPlayerClass(factionClasses[0]));
+    this.props.dispatch(selectRace(factionRaces[0]));
+    this.setState({ page: this.state.page + 1 });
+    events.fire('play-sound', 'realm-select');
+  }
+
+  private raceSelect = (selected: RaceInfo) => {
+    this.props.dispatch(selectRace(selected));
+    events.fire('play-sound', 'select');
+  }
+
+  private raceNext = () => {
+    if (this.props.racesState.selected == null) {
+      Materialize.toast('Choose a race to continue.', 3000);
+      return;
+    }
+    if (this.props.gender === 0) {
+      Materialize.toast('Choose a gender to continue.', 3000);
+      return;
+    }
+    this.setState({ page: this.state.page + 1 });
+    events.fire('play-sound', 'select');
+  }
+
+  private classSelect = (selected: PlayerClassInfo) => {
+    this.props.dispatch(selectPlayerClass(selected));
+    events.fire('play-sound', 'select');
+  }
+
+  private classNext = () => {
+    if (this.props.playerClassesState.selected == null) {
+      Materialize.toast('Choose a class to continue.', 3000);
+      return;
+    }
+    this.setState({ page: this.state.page + 1 });
+    events.fire('play-sound', 'select');
+  }
+
+  private attributesNext = () => {
+    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
+      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
+      You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000});
+      return;
+    }
+    this.setState({page: this.state.page + 1});
+    events.fire('play-sound', 'select');
+  }
+
+  private previousPage = () => {
+    this.setState({ page: this.state.page - 1 });
+    events.fire('play-sound', 'select');
+  }
+
+  private resetAndInit = () => {
+    this.props.dispatch(resetFaction());
+    this.props.dispatch(resetRace());
+    this.props.dispatch(resetGender());
+    this.props.dispatch(resetClass());
+    this.props.dispatch(resetAttributeOffsets());
+    this.props.dispatch(resetAttributes());
+    this.props.dispatch(resetCharacter());
+    this.props.dispatch(fetchFactions(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchRaces(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchPlayerClasses(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchAttributes(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchAttributeOffsets(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.setState({page: pages.FACTION_SELECT});
+  }
+
+  private componentWillReceiveProps(nextProps: CharacterCreationProps) {
+    if (this.props && nextProps && this.props.shard !== nextProps.shard) this.resetAndInit();
+    if (this.props.factionsState !== nextProps.factionsState ||
+        this.props.playerClassesState !== nextProps.playerClassesState ||
+        this.props.racesState !== nextProps.racesState) {
+      this.props.dispatch(resetBanesAndBoons());
+    }
+  }
+
+
+  private componentDidMount() {
+    this.resetAndInit();
+  }
+
+  private componentDidUpdate() {
+    if (this.props.characterState.success) {
+      this.props.created(this.props.characterState.created);
+      this.resetAndInit();
+    }
   }
 }
 
@@ -422,7 +443,7 @@ export interface ContainerProps {
 }
 
 class Container extends React.Component<ContainerProps, any> {
-  render() {
+  public render() {
     return (
       <div id='cu-character-creation'>
         <Provider store={store}>
@@ -434,7 +455,7 @@ class Container extends React.Component<ContainerProps, any> {
         </Provider>
         <div className='preloader' ></div>
       </div>
-    )
+    );
   }
 }
 

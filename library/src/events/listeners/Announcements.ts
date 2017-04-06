@@ -11,17 +11,17 @@ import client from '../../core/client';
 function run(emitter: EventEmitter, topic: string) {
   client.OnAnnouncement((message: string, type: number) => {
     emitter.emit(topic, {
-      message: message,
-      type: type
+      message,
+      type,
     });
   });
 }
 
 export default class AnnouncementsListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesAnnouncements;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesAnnouncements;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

@@ -15,5 +15,5 @@ export enum bodyParts {
   LEFTARM,
   RIGHTARM,
   LEFTLEG,
-  RIGHTLEG
+  RIGHTLEG,
 }

@@ -16,26 +16,26 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: 0
+      offset: 0,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 20
+      offset: 20,
     },
     size: {
       width: 350,
-      height: 22
+      height: 22,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 16,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: ErrorMessages,
-  props: {}
-}
+  props: {},
+};

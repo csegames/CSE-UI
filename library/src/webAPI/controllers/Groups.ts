@@ -12,124 +12,145 @@ import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorize
 
 export function getInvitesForCharacterV1(shardID: number, characterID: string) {
   return create(createOptions()).call('v1/groups/getInvitesForCharacter', {
-    shardID: shardID,
-    characterID: characterID
+    shardID,
+    characterID,
   });
 }
 
-export function createRankV1(shardID: number, characterID: string, groupID: string, name: string, level: number, permissions: string[]) {
+export function createRankV1(
+  shardID: number,
+  characterID: string,
+  groupID: string,
+  name: string,
+  level: number,
+  permissions: string[]) {
   return create(createOptions()).call('v1/groups/createRank', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    level: level,
-    permissions: permissions
+    shardID,
+    characterID,
+    groupID,
+    name,
+    level,
+    permissions,
   });
 }
 
 export function removeRankV1(shardID: number, characterID: string, groupID: string, name: string) {
   return create(createOptions()).call('v1/groups/removeRank', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name
+    shardID,
+    characterID,
+    groupID,
+    name,
   });
 }
 
 export function renameRankV1(shardID: number, characterID: string, groupID: string, name: string, newName: string) {
   return create(createOptions()).call('v1/groups/renameRank', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    newName: newName
+    shardID,
+    characterID,
+    groupID,
+    name,
+    newName,
   });
 }
 
-export function addRankPermissionsV1(shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+export function addRankPermissionsV1(
+  shardID: number,
+  characterID: string,
+  groupID: string,
+  name: string,
+  permissions: string[]) {
   return create(createOptions()).call('v1/groups/addRankPermissions', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    permissions: permissions
+    shardID,
+    characterID,
+    groupID,
+    name,
+    permissions,
   });
 }
 
-export function removeRankPermissionsV1(shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+export function removeRankPermissionsV1(
+  shardID: number,
+  characterID: string,
+  groupID: string,
+  name: string,
+  permissions: string[]) {
   return create(createOptions()).call('v1/groups/removeRankPermissions', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    permissions: permissions
+    shardID,
+    characterID,
+    groupID,
+    name,
+    permissions,
   });
 }
 
-export function setRankPermissionsV1(shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+export function setRankPermissionsV1(
+  shardID: number,
+  characterID: string,
+  groupID: string,
+  name: string,
+  permissions: string[]) {
   return create(createOptions()).call('v1/groups/setRankPermissions', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    permissions: permissions
+    shardID,
+    characterID,
+    groupID,
+    name,
+    permissions,
   });
 }
 
 export function setRankLevelV1(shardID: number, characterID: string, groupID: string, name: string, level: number) {
   return create(createOptions()).call('v1/groups/setRankLevel', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    name: name,
-    level: level
+    shardID,
+    characterID,
+    groupID,
+    name,
+    level,
   });
 }
 
 export function assignRankV1(shardID: number, characterID: string, groupID: string, targetID: string, rankName: string) {
   return create(createOptions()).call('v1/groups/assignRank', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    targetID: targetID,
-    rankName: rankName
+    shardID,
+    characterID,
+    groupID,
+    targetID,
+    rankName,
   });
 }
 
 export function kickV1(shardID: number, characterID: string, groupID: string, targetID: string) {
   return create(createOptions()).call('v1/groups/kick', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    targetID: targetID
+    shardID,
+    characterID,
+    groupID,
+    targetID,
   });
 }
 
 export function inviteV1(shardID: number, characterID: string, groupID: string, targetID: string) {
   return create(createOptions()).call('v1/groups/invite', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    targetID: targetID
+    shardID,
+    characterID,
+    groupID,
+    targetID,
   });
 }
 
 export function inviteByNameV1(shardID: number, characterID: string, groupID: string, targetName: string) {
   return create(createOptions()).call('v1/groups/inviteByName', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    targetName: targetName
+    shardID,
+    characterID,
+    groupID,
+    targetName,
   });
 }
 
 export function acceptInviteV1(shardID: number, characterID: string, groupID: string, inviteCode: string) {
   return create(createOptions()).call('v1/groups/acceptInvite', {
-    shardID: shardID,
-    characterID: characterID,
-    groupID: groupID,
-    inviteCode: inviteCode
+    shardID,
+    characterID,
+    groupID,
+    inviteCode,
   });
 }
 

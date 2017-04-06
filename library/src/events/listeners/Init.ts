@@ -16,11 +16,11 @@
 // registered handler to be deregistered as soon as it is fired,
 // (once time only events).
 //
-//	Usage:
-//		import events from 'cu-events';
-//		events.on("init", () => {
-//			// cuAPI initialised / already initialised.
-//  	});
+// Usage:
+//  import events from 'cu-events';
+//  events.on("init", () => {
+// // cuAPI initialised / already initialised.
+//  });
 //
 
 import EventEmitter from '../EventEmitter';
@@ -44,11 +44,11 @@ function run(emitter: EventEmitter) {
 }
 
 export default class InitListener {
-  once: boolean;
+  public once: boolean;
   constructor() {
     this.once = true;
   }
-  start(emitter: EventEmitter): void {
+  public start(emitter: EventEmitter): void {
     // for the init listener, we always want to run it
     // because it may be called post-init, in which case
     // it needs to fire the handler immediately

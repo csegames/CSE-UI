@@ -3,10 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import {Light} from '../../lib/Light';
-import {Color} from '../../lib/Color';
-
-const assign = require('object-assign');
+import { Light } from '../../lib/Light';
+import { Color } from '../../lib/Color';
+import * as assign from 'object-assign';
 
 
 const LIGHT_STORAGE_KEY = 'cu/game/building/droplights';
@@ -25,56 +24,56 @@ const PRESETS: Light[] = [
     radius: 5,
     intensity: 10,
     preset: true,
-    presetName: "Candle"
+    presetName: 'Candle',
   } as Light,
   {
     color: { red: 255, green: 147, blue: 41 } as Color,
     radius: 10,
     intensity: 15,
     preset: true,
-    presetName: "Torchlight"
+    presetName: 'Torchlight',
   } as Light,
   {
     color: { red: 255, green: 197, blue: 143 } as Color,
     radius: 10,
     intensity: 15,
     preset: true,
-    presetName: "Lamp"
+    presetName: 'Lamp',
   } as Light,
   {
     color: { red: 255, green: 200, blue: 150 } as Color,
     radius: 1000,
     intensity: 1,
     preset: true,
-    presetName: "Dim Ambient"
+    presetName: 'Dim Ambient',
   } as Light,
   {
     color: { red: 255, green: 200, blue: 150 } as Color,
     radius: 1000,
     intensity: 8,
     preset: true,
-    presetName: "Bright Ambient"
+    presetName: 'Bright Ambient',
   } as Light,
   {
     color: { red: 255, green: 200, blue: 150 } as Color,
     radius: 1000,
     intensity: 20,
     preset: true,
-    presetName: "Sunny Day"
+    presetName: 'Sunny Day',
   } as Light,
   {
     color: { red: 167, green: 0, blue: 255 } as Color,
     radius: 1000,
     intensity: 20,
     preset: true,
-    presetName: "Black Light"
+    presetName: 'Black Light',
   } as Light,
 ];
 
 const DEFAULT_LIGHT: Light = {
   color: { red: 255, green: 147, blue: 14 } as Color,
   radius: 5,
-  intensity: 10
+  intensity: 10,
 } as Light;
 
 export function getLightAsString(light: Light): string {
@@ -88,7 +87,7 @@ function getColorAsString(color: Color): string {
   return '{ "red":' + color.red +
     ', "green": ' + color.green +
     ', "blue": ' + color.blue +
-    '}'
+    '}';
 }
 function isCustomLight(light: Light): boolean {
   return !light.preset;
@@ -97,7 +96,7 @@ function isCustomLight(light: Light): boolean {
 function saveLights(lights: Light[]) {
   const lightStrings: string[] = lights.filter(isCustomLight).map(getLightAsString);
   
-  localStorage.setItem(LIGHT_STORAGE_KEY, "[" + lightStrings.join(', ') + "]");
+  localStorage.setItem(LIGHT_STORAGE_KEY, '[' + lightStrings.join(', ') + ']');
 }
 
 export function loadLights(dispatch: (action: any) => void) {
@@ -106,18 +105,17 @@ export function loadLights(dispatch: (action: any) => void) {
   if (lightString) {
     try {
       lights = JSON.parse(lightString);
-    } catch(e) {
+    } catch (e) {
       localStorage.setItem(LIGHT_STORAGE_KEY, null);
       loadLights(dispatch);
       return;
     }
-  }
-  else {
+  } else {
     for (let i = 0; i < 10; i++) {
       const newLight = {
         color: { red: 255, green: 147, blue: 14 } as Color,
         radius: 5,
-        intensity: 10
+        intensity: 10,
       } as Light;
 
       lights.push(newLight);
@@ -125,49 +123,49 @@ export function loadLights(dispatch: (action: any) => void) {
   }
   lights = lights.concat(PRESETS);
 
-  lights.forEach((l: Light, index: number) => { l.index = index })
+  lights.forEach((l: Light, index: number) => { l.index = index; });
   dispatch(setLights(lights));
 }
 
 export function showSelector(show: boolean) {
   return {
     type: SHOW_SELECTOR,
-    show: show
-  }
+    show,
+  };
 }
 
 export function selectLight(light: Light) {
   return {
     type: SELECT_LIGHT,
-    selectedLight: light
-  }
+    selectedLight: light,
+  };
 }
 
 export function updateColor(color: Color) {
   return {
     type: UPDATE_LIGHT_COLOR,
-    color: color
-  }
+    color,
+  };
 }
 
 export function updateRadius(radius: number) {
   return {
     type: UPDATE_LIGHT_RADIUS,
-    radius: radius
-  }
+    radius,
+  };
 }
 export function updateIntensity(intensity: number) {
   return {
     type: UPDATE_LIGHT_INTENSITY,
-    intensity: intensity
-  }
+    intensity,
+  };
 }
 
 function setLights(lights: Light[]) {
   return {
     type: SET_LIGHTS,
-    lights: lights
-  }
+    lights,
+  };
 }
 
 export interface LightsState {
@@ -179,8 +177,8 @@ export interface LightsState {
 const initialState: LightsState = {
   lights: [],
   selectedIndex: 0,
-  showLightSelector: false
-}
+  showLightSelector: false,
+};
 
 function getSelectedLight(state: LightsState): Light {
   return state.lights[state.selectedIndex];
@@ -203,15 +201,15 @@ export default function reducer(state: LightsState = initialState, action: any =
         selectedIndex: 0,
       });
     case UPDATE_LIGHT_COLOR:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { color: action.color }))
+      setSelectedLight(state, assign({}, getSelectedLight(state), { color: action.color }));
       saveLights(state.lights);
       return assign({}, state, { list: [...state.lights] });
     case UPDATE_LIGHT_RADIUS:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { radius: action.radius }))
+      setSelectedLight(state, assign({}, getSelectedLight(state), { radius: action.radius }));
       saveLights(state.lights);
       return assign({}, state, { list: [...state.lights] });
     case UPDATE_LIGHT_INTENSITY:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { intensity: action.intensity }))
+      setSelectedLight(state, assign({}, getSelectedLight(state), { intensity: action.intensity }));
       saveLights(state.lights);
       return assign({}, state, { list: [...state.lights] });
     default: return state;

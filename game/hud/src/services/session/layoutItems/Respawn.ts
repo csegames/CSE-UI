@@ -15,23 +15,23 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: -100
+      offset: -100,
     },
     y: {
       anchor: 3,
-      offset: 0
+      offset: 0,
     },
     size: {
       width: 200,
-      height: 200
+      height: 200,
     },
     scale: 1,
     opacity: 1,
     visibility: false,
     zOrder: 10,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {},
   component: Respawn,
-  props: {}
+  props: {},
 };

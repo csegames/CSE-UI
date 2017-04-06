@@ -8,5 +8,5 @@ export enum groupType {
   Warband,
   Order,
   Alliance,
-  Campaign
+  Campaign,
 }

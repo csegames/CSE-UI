@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-26 15:52:18
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-27 11:04:40
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 11:54:25
  */
 
 export class Progress {
@@ -20,7 +20,7 @@ export class Progress {
     return this.totalDataSize - this.dataCompleted;
   }
 
-  static bytesToString(bytes: number): string {
+  public static bytesToString(bytes: number): string {
     if (bytes >= 1099511627776) {
       // display as TB
       return (bytes / 1099511627776).toFixed(2) + 'TB';
@@ -36,7 +36,7 @@ export class Progress {
     }
   }
 
-  static bypsToString(bytes: number): string {
+  public static bypsToString(bytes: number): string {
     if (bytes >= 1000000000) {
       // display as GB
       return (bytes / 1000000000).toFixed(2) + 'GB/s';
@@ -49,11 +49,11 @@ export class Progress {
     }
   }
 
-  static secondsToString(val: number): string {
-    let days = Math.floor(val / 86400)
-    let hours = Math.floor((val % 86400) / 3600);
-    let minutes = Math.floor((val % 3600) / 60);
-    let seconds = Math.floor(val % 60);
+  public static secondsToString(val: number): string {
+    const days = Math.floor(val / 86400);
+    const hours = Math.floor((val % 86400) / 3600);
+    const minutes = Math.floor((val % 3600) / 60);
+    const seconds = Math.floor(val % 60);
     return (days > 0 ? days + 'd ' : '')
       + (hours > 0 ? hours + 'h ' : '')
       + (minutes > 0 ? minutes < 10 ? '0' + minutes + 'm ' : minutes + 'm ' : '')

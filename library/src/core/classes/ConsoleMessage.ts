@@ -5,14 +5,14 @@
  */
 
 class ConsoleMessage  {
-  text: string;
+  public text: string;
 
   constructor(consoleMessage = <ConsoleMessage>{}) {
     this.text = consoleMessage.text;
   }
 
-  static create() {
-    let a = new ConsoleMessage();
+  public static create() {
+    const a = new ConsoleMessage();
     return a;
   }
 }

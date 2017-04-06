@@ -19,6 +19,6 @@ enum gearSlot {
   SKIRT = 512,
   TABARD = 1024,
   CAPE = 2048,
-};
+}
 
 export default gearSlot;

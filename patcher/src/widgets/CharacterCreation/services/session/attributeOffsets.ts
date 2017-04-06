@@ -4,11 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
-import {Race, Gender} from 'camelot-unchained';
+import { Race, Gender } from 'camelot-unchained';
 
-import {fetchJSON} from '../../lib/fetchHelpers';
+import { fetchJSON } from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
 
 export interface AttributeOffsetInfo {
@@ -26,59 +26,62 @@ const RESET = 'cu-character-creation/attribute-offsets/RESET';
 export function resetAttributeOffsets() {
   return {
     type: RESET,
-  }
+  };
 }
 
 export function requestAttributeOffsets() {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS,
-  }
+  };
 }
 
-export function fetchAttributeOffsetsSuccess(offsets: Array<AttributeOffsetInfo>) {
+export function fetchAttributeOffsetsSuccess(offsets: AttributeOffsetInfo[]) {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS_SUCCESS,
-    offsets: offsets,
+    offsets,
     receivedAt: Date.now(),
-  }
+  };
 }
 
 export function fetchAttributeOffsetsFailed(error: ResponseError) {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS_FAILED,
     error: error.message,
-  }
+  };
 }
 
-export function fetchAttributeOffsets(apiUrl: string = 'https://api.camelotunchained.com/', shard: number = 1, apiVersion: number = 1) {
+export function fetchAttributeOffsets(
+  apiUrl: string = 'https://api.camelotunchained.com/',
+  shard: number = 1,
+  apiVersion: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
     return fetchJSON(`${apiUrl}gamedata/attributeoffsets/${shard}?api-version=${apiVersion}`)
-      .then((offsets: Array<AttributeOffsetInfo>) => dispatch(fetchAttributeOffsetsSuccess(offsets)))
+      .then((offsets: AttributeOffsetInfo[]) => dispatch(fetchAttributeOffsetsSuccess(offsets)))
       .catch((error: ResponseError) => dispatch(fetchAttributeOffsetsFailed(error)));
-  }
+  };
 }
 
 export interface AttributeOffsetsState {
   isFetching?: boolean;
   lastUpdated?: Date;
-  offsets?: Array<AttributeOffsetInfo>;
+  offsets?: AttributeOffsetInfo[];
   error?: string;
 }
 
 const initialState: AttributeOffsetsState = {
   isFetching: false,
   lastUpdated: <Date>null,
-  offsets: <Array<AttributeOffsetInfo>>[],
+  offsets: [],
   error: null,
-}
+};
 
 export default function reducer(state: AttributeOffsetsState = initialState, action: any = {}) {
-  switch(action.type) {
+  switch (action.type) {
     case RESET: return initialState;
     case FETCH_ATTRIBUTE_OFFSETS:
       return Object.assign({}, state, {
-        isFetching: true
+        isFetching: true,
       });
     case FETCH_ATTRIBUTE_OFFSETS_SUCCESS:
       return Object.assign({}, state, {

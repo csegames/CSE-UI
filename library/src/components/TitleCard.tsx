@@ -31,7 +31,7 @@ export const defaultTitleCardStyle : TitleCardStyle = {
     textAlign: 'right',
   },
 
-}
+};
 
 export interface TitleCardStyle extends CardStyle {
   title : React.CSSProperties;

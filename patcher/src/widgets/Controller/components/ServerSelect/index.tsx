@@ -13,9 +13,9 @@ import {ServerType, PatcherServer} from '../../services/session/controller';
 
 
 class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
-  render() {
-    const {server} = this.props;
-    switch(server.type) {
+  public render() {
+    const { server } = this.props;
+    switch (server.type) {
 
       default:
         return (
@@ -30,12 +30,18 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
         return (
           <div className='ActiveServerView'>
             <div className='ActiveServerView__status'>
-              <div className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`} data-tooltip={server.available ? 'online' : 'offline'}><i className='fa fa-power-off' aria-hidden='true'></i></div>
+              <div
+                className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`}
+                data-tooltip={server.available ? 'online' : 'offline'}>
+                  <i className='fa fa-power-off' aria-hidden='true'></i>
+              </div>
             </div>
             <div className='ActiveServerView__details'>
               {server.name}
-              {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.accessLevelString(server.accessLevel)} Access Only </div> : null}
+              {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> :
+                 null}
+              {server.accessLevel ? <div className='ActiveServerView__access'>
+                {webAPI.accessLevelString(server.accessLevel)} Access Only </div> : null}
             </div>
           </div>
         );
@@ -44,9 +50,9 @@ class ActiveServerView extends React.Component<{server: PatcherServer}, {}> {
 }
 
 class ServerListView extends React.Component<{server: PatcherServer}, {}> {
-  render() {
-    const {server} = this.props;
-    switch(server.type) {
+  public render() {
+    const { server } = this.props;
+    switch (server.type) {
 
       default:
         return (
@@ -55,10 +61,10 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
               {server.name}
             </div>
             <div className='ActiveServerView__controls'>
-              {server.channelStatus == ChannelStatus.NotInstalled ? ' ' : (
+              {server.channelStatus === ChannelStatus.NotInstalled ? ' ' : (
                 <span className='simptip-position-left simptip-fade' data-tooltip='uninstall'
                       onClick={() => patcher.uninstallChannel(server.channelID)}>
-                  <i className="fa fa-times" aria-hidden="true"></i>
+                  <i className='fa fa-times' aria-hidden='true'></i>
                 </span>
               )}
             </div>
@@ -69,21 +75,28 @@ class ServerListView extends React.Component<{server: PatcherServer}, {}> {
         return (
           <div className='ActiveServerView'>
             <div className='ActiveServerView__status'>
-              <div className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`} data-tooltip={server.available ? 'online' : 'offline'}><i className="fa fa-power-off" aria-hidden="true"></i></div>
+              <div
+                className={`simptip-position-right simptip-fade ${server.available ? 'online' : 'offline'}`}
+                data-tooltip={server.available ? 'online' : 'offline'}>
+                  <i className='fa fa-power-off' aria-hidden='true'></i>
+              </div>
             </div>
             <div className='ActiveServerView__details'>
               {server.name}
-              {server.characterCount ? <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
-              {server.accessLevel ? <div className='ActiveServerView__access'>{webAPI.accessLevelString(server.accessLevel)} Access Only</div> : null}
+              {server.characterCount ?
+                <div className='ActiveServerView__access'>{server.characterCount} Characters</div> : null}
+              {server.accessLevel ?
+                <div className='ActiveServerView__access'>{webAPI.accessLevelString(server.accessLevel)} Access Only</div> :
+                  null}
             </div>
             <div className='ActiveServerView__controls'>
               <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>
-                <i className="fa fa-line-chart" aria-hidden="true"></i>
+                <i className='fa fa-line-chart' aria-hidden='true'></i>
               </span>
-              {server.channelStatus == ChannelStatus.NotInstalled ? ' ' : (
+              {server.channelStatus === ChannelStatus.NotInstalled ? ' ' : (
                 <span className='simptip-position-left simptip-fade' data-tooltip='uninstall'
                       onClick={() => patcher.uninstallChannel(server.channelID)}>
-                  <i className="fa fa-times" aria-hidden="true"></i>
+                  <i className='fa fa-times' aria-hidden='true'></i>
                 </span>
               )}
             </div>
@@ -114,19 +127,14 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
     };
   }
 
-  selectServer = (server: PatcherServer) => {
-    this.props.selectServer(server);
-    this.setState({selectedServer: server} as any);
-  }
+  public render() {
+    const { servers } = this.props;
 
-  render() {
-    const {servers} = this.props;
-
-    if (this.props.serverType != ServerType.CUGAME && this.props.serverType != ServerType.CHANNEL) {
+    if (this.props.serverType !== ServerType.CUGAME && this.props.serverType !== ServerType.CHANNEL) {
       return null;
     }
 
-    if (!servers || Object.keys(servers).length == 0) {
+    if (!servers || Object.keys(servers).length === 0) {
       // TODO: Better error message & a spinner or some shit
       return <div className='ServerSelect ServerSelect--fetching'>
         <div className='wave-text'><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i></div>
@@ -134,19 +142,20 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
       </div>;
     }
 
-    let values: PatcherServer[] = [];
+    const values: PatcherServer[] = [];
     for (const key in servers) {
-      if (servers[key].type == this.props.serverType && canAccessChannel(patcher.getPermissions(), servers[key].channelPatchPermissions)) {
-         values.push(servers[key]);
+      if (servers[key].type === this.props.serverType &&
+        canAccessChannel(patcher.getPermissions(), servers[key].channelPatchPermissions)) {
+        values.push(servers[key]);
       }
     }
 
-    if (values.length == 0) {
+    if (values.length === 0) {
       return <div className='ServerSelect'> No Servers Available </div>;
     }
 
-    let {selectedServer} = this.state;
-    if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type != this.props.serverType) {
+    let { selectedServer } = this.state;
+    if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type !== this.props.serverType) {
       // get from local storage or use the first in the list.
       selectedServer = values[0];
       this.selectServer(selectedServer);
@@ -159,6 +168,11 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
                         listViewComponentGenerator={s => <ServerListView server={s} />}
                         itemHeight={67}
                         onSelectedItemChanged={this.selectServer} />;
+  }
+
+  private selectServer = (server: PatcherServer) => {
+    this.props.selectServer(server);
+    this.setState({selectedServer: server} as any);
   }
 }
 

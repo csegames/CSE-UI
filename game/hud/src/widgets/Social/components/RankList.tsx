@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 12:11:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:22:09
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:40:18
  */
 
 import * as React from 'react';
@@ -50,7 +50,7 @@ export const defaultRanksStyle : RanksStyle = {
     flex: '1 1 auto',
     flexDirection: 'column',
     flexWrap: 'nowrap',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
   },
 
   listHeader: {
@@ -58,7 +58,7 @@ export const defaultRanksStyle : RanksStyle = {
     color: '#777',
     fontWeight: 'bold',
     minHeight: '2em',
-    padding: '5px'
+    padding: '5px',
   },
 
   listSection: {
@@ -66,31 +66,31 @@ export const defaultRanksStyle : RanksStyle = {
     padding: '5px',
     minHeight: '2em',
     ':nth-child(even)': {
-      backgroundColor: 'rgba(0, 0, 0, 0.1)'
-    }
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
   },
 
   item: {
     flex: '1 1 auto',
-    margin: '0 5px'
+    margin: '0 5px',
   },
 
   name: {
     minWidth: '150px',
     maxWidth: '150px',
     width: '150px',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
   },
 
   level: {
     minWidth: '75px',
     maxWidth: '75px',
-    width: '75px'
+    width: '75px',
   },
 
   permissions: {
     minWidth: '250px',
-    textOverflow: 'wrap'
+    textOverflow: 'wrap',
   },
 
   options: {
@@ -98,7 +98,7 @@ export const defaultRanksStyle : RanksStyle = {
     maxWidth: '10px',
     width: '10px',
     cursor: 'pointer',
-    flex: '0 0 auto'
+    flex: '0 0 auto',
   },
 
   // ButtonBar is the buttons on the top above the rank list
@@ -108,7 +108,7 @@ export const defaultRanksStyle : RanksStyle = {
     justifyContent: 'flex-end',
     padding: '10px',
   },
-}
+};
 
 export interface RanksStyle extends StyleDeclaration {
   container : React.CSSProperties;
@@ -147,7 +147,7 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
                   <RaisedButton styles={{
                       button: {
                         flex: '0 0 auto',
-                      }
+                      },
                     }}>
                     Create Rank
                   </RaisedButton>
@@ -184,27 +184,32 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
       textOverflow: 'ellipsis',
     },
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => a.name < b.name ? 1 : -1,
-    renderItem: (r: ql.CustomRank, renderData?: { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void, }) => {
+    renderItem: (r: ql.CustomRank, renderData?:
+     { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
         return <InlineTextInputEdit value={r.name} onSave={(currentName: string, newName: string): any  => {
-            return webAPI.GroupsAPI.renameRankV1(client.shardID, client.characterID, renderData.groupId, currentName, newName)
-              .then(result => {
+            return webAPI.GroupsAPI.renameRankV1(
+              client.shardID,
+              client.characterID,
+              renderData.groupId,
+              currentName,
+              newName).then((result) => {
                 if (result.ok) {
                   renderData.refetch();
                   return {
-                    ok: true
+                    ok: true,
                   };
                 }
                 return {
                   ok: false,
                   error: result.data,
-                }
-              })
+                };
+              });
           }} />;
       } else {
         return <span>{r.name}</span>;
       }
-    }
+    },
   },
   {
     key: (r: ql.CustomRank) => r.level,
@@ -212,33 +217,38 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     sortable: true,
     style: {
       flex: '0 0 120px !important',
-      width: '120px'
+      width: '120px',
     },
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => b.level - a.level,
-    renderItem: (r: ql.CustomRank, renderData?: { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void, }) => {
+    renderItem: (r: ql.CustomRank, renderData?:
+    { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
         return <InlineNumberInputEdit value={r.level}
                                       min={2}
                                       max={1000}
                                       onSave={(currentLevel: number, newLevel: string): any  => {
-            return webAPI.GroupsAPI.setRankLevelV1(client.shardID, client.characterID, renderData.groupId, r.name, Number.parseInt(newLevel))
-              .then(result => {
+            return webAPI.GroupsAPI.setRankLevelV1(
+              client.shardID,
+              client.characterID,
+              renderData.groupId,
+              r.name,
+              Number.parseInt(newLevel)).then((result) => {
                 if (result.ok) {
                   renderData.refetch();
                   return {
-                    ok: true
+                    ok: true,
                   };
                 }
                 return {
                   ok: false,
                   error: result.data,
-                }
-              })
+                };
+              });
           }} />;
       } else {
         return <span>{r.level}</span>;
       }
-    }
+    },
   },
   {
     key: (r: ql.CustomRank) => r.permissions,
@@ -246,7 +256,9 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     style: {
       textOverflow: 'wrap',
     },
-    renderItem: (item: ql.CustomRank, renderData?: { userPermissions: ql.PermissionInfo[], groupPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void, }) => {
+    renderItem: (item: ql.CustomRank, renderData?:
+    {
+    userPermissions: ql.PermissionInfo[], groupPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
 
       return <InlineMultiSelectEdit items={renderData.groupPermissions}
@@ -254,7 +266,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
                                     styles={{
                                       container: {
                                         width: '600px',
-                                      }
+                                      },
                                     }}
                                     renderListItem={(p: ql.PermissionInfo) => {
                                       return (
@@ -268,58 +280,63 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
                                     renderSelectedItem={(p: ql.PermissionInfo) => {
                                       return (
                                         <Tooltip key={p.tag} content={p.description}>
-                                          <span style={{paddingRight: '5px'}}>{p.name+' '}</span>
+                                          <span style={{paddingRight: '5px'}}>{p.name + ' '}</span>
                                         </Tooltip>
                                       );
                                     }}
-                                    itemComparison={(a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag == b.tag}
+                                    itemComparison={(a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
                                     filter={(text: string, p: ql.PermissionInfo) => stringContains(p.name, text)}
                                     onSave={(existing: ql.PermissionInfo[], permissions: ql.PermissionInfo[]): any  => {
                                       console.log(permissions.map(p => p.tag).join());
-                                      return webAPI.GroupsAPI.setRankPermissionsV1(client.shardID, client.characterID, renderData.groupId, item.name, permissions.map(p => p.tag))
-                                        .then(result => {
+                                      return webAPI.GroupsAPI.setRankPermissionsV1(
+                                        client.shardID,
+                                        client.characterID,
+                                        renderData.groupId,
+                                        item.name,
+                                        permissions.map(p => p.tag)).then((result) => {
                                           if (result.ok) {
                                             renderData.refetch();
                                             return {
-                                              ok: true
+                                              ok: true,
                                             };
                                           }
                                           return {
                                             ok: false,
                                             error: result.data,
-                                          }
-                                        })
-                                    }} />
+                                          };
+                                        });
+                                    }} />;
       } else {
-      return <span>{
-        item.permissions
-            .map(p => {
-              return (
-                <Tooltip
-                  key={p.tag}
-                  content={() => {
-                  return (
-                    <div>
-                      <div>{p.description}</div>
-                      <i>id: {p.tag}</i>
-                    </div>
-                  );
-                }}
-                  styles={{
-                  container: {
-                    margin: '2px',
-                  },
-                  content: {
-                    backgroundColor: '#444',
-                    border: '1px solid #4A4A4A',
-                    maxWidth: '300px',
-                  }
-                }}>
-                  {p.name}
-                </Tooltip>
-              )
-            })}</span>
-    }}
+        return <span>{
+          item.permissions
+              .map((p) => {
+                return (
+                  <Tooltip
+                    key={p.tag}
+                    content={() => {
+                    return (
+                      <div>
+                        <div>{p.description}</div>
+                        <i>id: {p.tag}</i>
+                      </div>
+                    );
+                  }}
+                    styles={{
+                    container: {
+                      margin: '2px',
+                    },
+                    content: {
+                      backgroundColor: '#444',
+                      border: '1px solid #4A4A4A',
+                      maxWidth: '300px',
+                    },
+                  }}>
+                    {p.name}
+                  </Tooltip>
+                );
+              })}</span>;
+      }
+    },
   },
 ];
 
@@ -333,7 +350,7 @@ export default (props : RanksProps) => {
   return (
     <div className={css(ss.container, custom.container)}>
       <GroupTitle styles={{
-                    title: ss.title
+                    title: ss.title,
                   }}
                   refetch={props.refetch}>
         {props.group.name}
@@ -351,7 +368,7 @@ export default (props : RanksProps) => {
                   return <RankListItemMenu refetch={props.refetch}
                                            groupId={props.group.id}
                                            close={close}
-                                           rank={item} />
+                                           rank={item} />;
                 }}
                 renderData={{
                   userPermissions: props.userPermissions,
@@ -361,8 +378,8 @@ export default (props : RanksProps) => {
                 }}
                 rowMenuStyle={{
                   backgroundColor: '#444',
-                  border: '1px solid #4A4A4A'
+                  border: '1px solid #4A4A4A',
                 }} />
     </div>
-  )
-}
+  );
+};

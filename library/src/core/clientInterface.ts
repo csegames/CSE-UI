@@ -16,11 +16,6 @@ interface clientInterface {
   // cu.OnInitialized(), which will be called after the page is loaded
   // and this is fully set up.
   initialized: boolean;
-  OnInitialized(c: () => void): number;
-  CancelOnInitialized(c: number): void;
-
-  // Everything else only exists after this.initialized is set and the
-  // OnInitialized callbacks are invoked.
 
   /* Client Options */
   muteVolume: boolean;
@@ -36,6 +31,60 @@ interface clientInterface {
   serverURL: string;
   serverTime: number;
   vsync: number;
+
+  placedBlockCount: number;
+  blockTypes: number;
+
+  /* Stats */
+
+  fps: number;
+  frameTime: number;
+  netstats_udpPackets: number;
+  netstats_udpBytes: number;
+  netstats_tcpMessages: number;
+  netstats_tcpBytes: number;
+  netstats_players_updateBits: number;
+  netstats_players_updateCount: number;
+  netstats_players_newCount: number;
+  netstats_players_newBits: number;
+  netstats_lag: number;
+  netstats_delay: number;
+  netstats_selfUpdatesPerSec: number;
+  netstats_syncsPerSec: number;
+  particlesRenderedCount: number;
+  characters: number;
+  terrain: number;
+  perfHUD: string;
+
+  /* Physics Debugging */
+
+  locationX: number;
+  locationY: number;
+  locationZ: number;
+  serverLocationX: number;
+  serverLocationY: number;
+  serverLocationZ: number;
+  facing: number;
+  velocityX: number;
+  velocityY: number;
+  velocityZ: number;
+  speed: number;
+  horizontalSpeed: number;
+  velFacing: number;
+  downCollisionAngle: number;
+  terrainCollisionAngle: number;
+
+  apiVersion?: number;
+  characterID?: string;
+  debug?: boolean;
+  signalRHost?: string;
+  shardID?: number;
+
+  OnInitialized(c: () => void): number;
+  CancelOnInitialized(c: number): void;
+
+  // Everything else only exists after this.initialized is set and the
+  // OnInitialized callbacks are invoked.
 
   FOV(degrees: number): void;
   DropLight(intensity: number, radius: number, red: number, green: number, blue: number): void;
@@ -80,7 +129,8 @@ interface clientInterface {
   OnAbilityCooldown(c: (cooldownID: number, timeStarted: number, duration: number) => void): number;
   CancelOnAbilityCooldown(c: number): void;
 
-  OnAbilityActive(c: (currentAbility: string, timeStarted: number, timeTriggered: number, queuedAbility: string) => any): number;
+  OnAbilityActive(c: (currentAbility: string, timeStarted: number, timeTriggered: number, queuedAbility: string) => any):
+   number;
   CancelOnAbilityActive(c: number): void;
 
   OnAbilityError(c: (message: string) => void): void;
@@ -181,9 +231,6 @@ interface clientInterface {
   BlockTypes(): void;
   LoopAbility(hotbarIndex: number, interval: number): void;
   EndLoopAbility(): void;
-
-  placedBlockCount: number;
-  blockTypes: number;
   
   SelectBlueprint(index: number): void;
   RequestBlueprints(): void;
@@ -253,7 +300,7 @@ interface clientInterface {
   SendChat(type: number, to: string, body: string): void;
   JoinMUC(room: string): void;
   LeaveMUC(room: string): void;
-  //SendSlashCommand(command: string, parameters: string): void;
+  // SendSlashCommand(command: string, parameters: string): void;
   Stuck(): void;
   ChangeZone(zoneID: number): void;
 
@@ -274,45 +321,6 @@ interface clientInterface {
   RegisterAbility(abilityID: string, primaryBaseComponentID: string, secondaryBaseComponentID: string): void;
   OnAbilityRegistered(callback: (abilityID: string, cooldowns: string, duration: number, triggerTime: number) => void): void;
 
-  /* Stats */
-
-  fps: number;
-  frameTime: number;
-  netstats_udpPackets: number;
-  netstats_udpBytes: number;
-  netstats_tcpMessages: number;
-  netstats_tcpBytes: number;
-  netstats_players_updateBits: number;
-  netstats_players_updateCount: number;
-  netstats_players_newCount: number;
-  netstats_players_newBits: number;
-  netstats_lag: number;
-  netstats_delay: number;
-  netstats_selfUpdatesPerSec: number;
-  netstats_syncsPerSec: number;
-  particlesRenderedCount: number;
-  characters: number;
-  terrain: number;
-  perfHUD: string;
-
-  /* Physics Debugging */
-
-  locationX: number;
-  locationY: number;
-  locationZ: number;
-  serverLocationX: number;
-  serverLocationY: number;
-  serverLocationZ: number;
-  facing: number;
-  velocityX: number;
-  velocityY: number;
-  velocityZ: number;
-  speed: number;
-  horizontalSpeed: number;
-  velFacing: number;
-  downCollisionAngle: number;
-  terrainCollisionAngle: number;
-
   /* Console */
 
   OnConsoleText(c: (text: string) => void): void;
@@ -324,17 +332,11 @@ interface clientInterface {
   Connect(host: string, port: string, character: string, webAPIHost: string): void;
 
   /* Logging */
-  OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void): void;
+  OnLogMessage(c: (category: string, level: number, time: string, process: number, thread: number, message: string) => void):
+   void;
 
   /* Combat Logs */
   OnCombatLogEvent(c: (events: any) => void): void;
-
-
-  apiVersion?: number;
-  characterID?: string;
-  debug?: boolean;
-  signalRHost?: string;
-  shardID?: number;
 }
 
 export default clientInterface;

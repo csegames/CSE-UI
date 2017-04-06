@@ -9,17 +9,17 @@
  * @Last Modified time: 2017-03-28 17:00:44
  */
 
-import {client, events} from 'camelot-unchained'
+import {client, events} from 'camelot-unchained';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
 interface ErrorMessageAppProps { }
 
 class ErrorMessagesAppState {
-  public items: Array<string>;
+  public items: string[];
 
   constructor() {
-    this.items = new Array<string>();
+    this.items = [];
   }
 }
 
@@ -34,35 +34,43 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
     events.on('init', this.init);
   }
 
-  init() {
+  public render() {
+    return (
+      <ul id='messages'>
+        {this.state.items.map(this.getMessageNodes)}
+      </ul>
+    );
+  }
+
+  private init() {
     client.OnAbilityError((message: any) => {
-      const newErrorMessage = this.getMessageText(parseInt(message));
+      const newErrorMessage = this.getMessageText(parseInt(message, 10));
 
       if (!newErrorMessage) {
         return;
       }
 
-      //add the new error to the top of the array
-      let nextItems = new Array<string>(newErrorMessage).concat(this.state.items);
+      // add the new error to the top of the array
+      const nextItems = [...newErrorMessage].concat(this.state.items);
       this.setState({ items: nextItems });
 
       setTimeout(this.removeMessage, 3000);
     });
   }
 
-  removeMessage() {
-    //remove the bottom item from the array
-    if (0 == this.state.items.length) {
+  private removeMessage() {
+    // remove the bottom item from the array
+    if (0 === this.state.items.length) {
       return;
     }
 
-    let nextItems = this.state.items;
-    let startIndex = nextItems.length - 1;
+    const nextItems = this.state.items;
+    const startIndex = nextItems.length - 1;
     nextItems.splice(startIndex, 1);
     this.setState({ items: nextItems });
   }
 
-  getMessageText(mId: number): string {
+  private getMessageText(mId: number): string {
     switch (mId) {
       case 1: return 'Your target is out of range.';
       case 2: return 'Your target is invalid.';
@@ -76,18 +84,10 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
     }
   }
 
-  getMessageNodes(message: string, index: number) {
+  private getMessageNodes(message: string, index: number) {
     return (
       <li className='message' key={index}>{message}</li>
       );
-  }
-
-  render() {
-    return (
-      <ul id='messages'>
-        {this.state.items.map(this.getMessageNodes)}
-      </ul>
-    );
   }
 }
 

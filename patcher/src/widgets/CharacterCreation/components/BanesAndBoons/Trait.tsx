@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:18
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-21 15:05:58
+ * @Last Modified time: 2017-04-10 11:56:40
  */
 
 import * as React from 'react';
@@ -15,7 +15,7 @@ import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/
 import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
-declare var toastr: any;
+declare const toastr: any;
 
 export interface TraitStyle extends StyleDeclaration {
   traitContainer: React.CSSProperties;
@@ -60,7 +60,7 @@ export interface TraitProps {
 export const defaultTraitStyles: TraitStyle = {
   traitContainer: {
     position: 'relative',
-    overflow: 'visible'
+    overflow: 'visible',
   },
 
   trait: {
@@ -76,7 +76,7 @@ export const defaultTraitStyles: TraitStyle = {
     marginBottom: '10px',
     marginRight: 0,
     marginLeft: 0,
-    userSelect: 'none'
+    userSelect: 'none',
   },
 
   selectedTrait: {
@@ -84,13 +84,13 @@ export const defaultTraitStyles: TraitStyle = {
   },
 
   disabledTrait: {
-    cursor: 'not-allowed'
+    cursor: 'not-allowed',
   },
 
   traitImage: {
     flexShrink: 0,
     minWidth: '100%',
-    minHeight: '100%'
+    minHeight: '100%',
   },
 
   shadow: {
@@ -101,15 +101,15 @@ export const defaultTraitStyles: TraitStyle = {
     left: 0,
     transition: 'background-color 0.3s',
     ':active': {
-      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)'
+      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)',
     },
     ':hover': {
       backgroundColor: 'rgba(255,255,255,0.4)',
-    }
+    },
   },
 
   selectedShadow: {
-    boxShadow: 'inset 0 0 10px yellow'
+    boxShadow: 'inset 0 0 10px yellow',
   },
 
   disabledShadow: {
@@ -121,30 +121,30 @@ export const defaultTraitStyles: TraitStyle = {
     transition: 'background-color 0.3s',
     backgroundColor: 'rgba(55,55,55,0.7)',
     ':hover': {
-      backgroundColor: 'rgba(55,55,55,0.7)'
-    }
+      backgroundColor: 'rgba(55,55,55,0.7)',
+    },
   },
 
   tooltipText: {
-    fontSize: '0.8em'
+    fontSize: '0.8em',
   },
 
   titleContainer: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   traitName: {
     fontSize: '1.3em',
-    margin: '0px 0px -4px 0px'
+    margin: '0px 0px -4px 0px',
   },
 
   traitCategory: {
     fontSize: '1.2em',
     marginTop: 0,
     marginBottom: 0,
-    marginRight: '5px'
+    marginRight: '5px',
   },
 
   traitPoints: {
@@ -153,17 +153,17 @@ export const defaultTraitStyles: TraitStyle = {
     color: 'orange',
     marginLeft: '5px',
     marginTop: 0,
-    marginBottom: 0
+    marginBottom: 0,
   },
 
   dependenciesContainer: {
     display: 'flex',
     alignItems: 'center',
-    ...styleConstants.marginZero
+    ...styleConstants.marginZero,
   },
 
   dependencyText: {
-    margin: '0 0 -1px 5px'
+    margin: '0 0 -1px 5px',
   },
 
   rankText: {
@@ -173,11 +173,11 @@ export const defaultTraitStyles: TraitStyle = {
     right: 0,
     backgroundColor: 'rgba(0,0,0,0.5)',
     direction: 'ltr',
-    ...styleConstants.marginZero
+    ...styleConstants.marginZero,
   },
 
   regularText: {
-    ...styleConstants.marginZero
+    ...styleConstants.marginZero,
   },
 
   traitPointsCircle: {
@@ -192,19 +192,19 @@ export const defaultTraitStyles: TraitStyle = {
     borderRadius: '1px',
     fontSize: '0.7em',
     backgroundColor: 'rgba(0,0,0,0.8)',
-    color: 'white'
+    color: 'white',
   },
 
   additionalInfoContainer: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   divider: {
     fontSize: '1.2em',
     margin: 0,
-    color: '#8f8f8f'
-  }
+    color: '#8f8f8f',
+  },
 };
 
 class Trait extends React.Component<TraitProps, {}> {
@@ -212,57 +212,7 @@ class Trait extends React.Component<TraitProps, {}> {
     super(props);
   }
 
-  private componentWillUpdate(nextProps: TraitProps) {
-    // This gets rid of a selected trait after one of its prerequisites have been unselected.
-    const { trait, allPrerequisites, addedTraits, onCancelTrait } = nextProps;
-
-    const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
-
-    const shouldBeDisabled = preReqs && preReqs.filter((preReq: string) =>
-     addedTraits[preReq]).length !== preReqs.length;
-
-    if (shouldBeDisabled && trait.selected) {
-      onCancelTrait(trait)
-    }
-  }
-
-  private onTraitClick = () => {
-    const { trait, onTraitClick, onCancelTrait, maxPoints, totalPoints } = this.props;
-    if (trait.selected) {
-      events.fire('play-sound', 'select');
-      onCancelTrait(trait);
-    } else {      
-      onTraitClick(trait);
-    }
-  };
-
-  private onRankClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const {
-      trait,
-      traits,
-      addedTraits,
-      onTraitClick,
-      onCancelTrait,
-      onSelectRankTrait,
-      onCancelRankTrait
-    } = this.props;
-    
-    const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
-
-    if (e.shiftKey) {
-      if (traits[addedRankTrait].ranks) {
-        if (traits[addedRankTrait].rank === 0) onCancelTrait(traits[addedRankTrait]);
-        onCancelRankTrait(traits[addedRankTrait]);
-      }
-    } else {
-      if (trait.rank === 0 && !addedTraits[trait.id]) {
-        onTraitClick(trait);
-      }
-      onSelectRankTrait(trait);
-    }
-  };
-
-  render() {
+  public render() {
     const {
       type,
       trait,
@@ -273,7 +223,7 @@ class Trait extends React.Component<TraitProps, {}> {
       primaryColor,
       styles,
       maxPoints,
-      totalPoints
+      totalPoints,
     } = this.props;
 
     const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
@@ -313,8 +263,8 @@ class Trait extends React.Component<TraitProps, {}> {
             tooltip: {
               backgroundColor: 'rgba(0,0,0,0.9)',
               maxWidth: '500px',
-              ...styleConstants.direction.ltr
-            }
+              ...styleConstants.direction.ltr,
+            },
           }}
           content={() => (
             <div>
@@ -350,7 +300,7 @@ class Trait extends React.Component<TraitProps, {}> {
                     className={css(ss.dependencyText, custom.dependencyText)}
                     style={{ color: addedTraits[exclusive] ? colors.success : 'red'}}>
                       {traits[exclusive].name}{exclusive !== exclusivityGroup[exclusivityGroup.length - 1] && ', '}
-                    </p>
+                    </p>,
                   )}
                   </div>
                   <p className={css(ss.regularText, custom.regularText)}>Minimum exclusives required: {trait.minRequired}</p>
@@ -375,7 +325,57 @@ class Trait extends React.Component<TraitProps, {}> {
              trait.selected && custom.selectedShadow)} />}
         </Tooltip>
       </div>
-    )
+    );
+  }
+
+  private componentWillUpdate(nextProps: TraitProps) {
+    // This gets rid of a selected trait after one of its prerequisites have been unselected.
+    const { trait, allPrerequisites, addedTraits, onCancelTrait } = nextProps;
+
+    const preReqs = trait.prerequisites && trait.prerequisites.map((preReq: string) => allPrerequisites[preReq]);
+
+    const shouldBeDisabled = preReqs && preReqs.filter((preReq: string) =>
+     addedTraits[preReq]).length !== preReqs.length;
+
+    if (shouldBeDisabled && trait.selected) {
+      onCancelTrait(trait);
+    }
+  }
+
+  private onTraitClick = () => {
+    const { trait, onTraitClick, onCancelTrait, maxPoints, totalPoints } = this.props;
+    if (trait.selected) {
+      events.fire('play-sound', 'select');
+      onCancelTrait(trait);
+    } else {      
+      onTraitClick(trait);
+    }
+  }
+
+  private onRankClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const {
+      trait,
+      traits,
+      addedTraits,
+      onTraitClick,
+      onCancelTrait,
+      onSelectRankTrait,
+      onCancelRankTrait,
+    } = this.props;
+    
+    const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
+
+    if (e.shiftKey) {
+      if (traits[addedRankTrait].ranks) {
+        if (traits[addedRankTrait].rank === 0) onCancelTrait(traits[addedRankTrait]);
+        onCancelRankTrait(traits[addedRankTrait]);
+      }
+    } else {
+      if (trait.rank === 0 && !addedTraits[trait.id]) {
+        onTraitClick(trait);
+      }
+      onSelectRankTrait(trait);
+    }
   }
 }
 

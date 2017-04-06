@@ -26,5 +26,5 @@ export {
   KeyBind,
   KeyBindConfigVar,
   keyboardModifier,
-  AudioConfigVar
-}
+  AudioConfigVar,
+};

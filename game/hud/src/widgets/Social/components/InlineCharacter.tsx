@@ -27,7 +27,7 @@ interface InlineCharacterProps extends InjectedGraphQLProps <{
     realm: string;
     gender: string;
     class: string;
-  }
+  },
 } > {
   id: string;
   shard: number;
@@ -37,7 +37,7 @@ export const defaultInlineCharacterStyle: InlineCharacterStyle = {
   card: {
 
   },
-}
+};
 
 const inlineCharacter = (props: InlineCharacterProps) => {
   if (props.data.loading) {
@@ -47,8 +47,8 @@ const inlineCharacter = (props: InlineCharacterProps) => {
       <a href={`#character/${props.data.character.id}`}>
         {props.data.character.name}
       </a>
-    )
-}
+    );
+};
 
 export default graphql(gql`
       query InlineCharacter($id: String!, $shard: Int!) {
@@ -66,6 +66,6 @@ export default graphql(gql`
     variables: {
       id: props.id,
       shard: props.shard,
-    }
-  })
+    },
+  }),
 })(inlineCharacter);

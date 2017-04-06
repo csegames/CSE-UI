@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-22 12:08:53
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 15:01:41
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:23:50
  */
 
 import * as React from 'react';
@@ -66,7 +66,7 @@ export const defaultInlineInputEditStyle: InlineInputEditStyle = {
   error: {
     color: 'darkred',
     fontSize: '0.9em',
-  }
+  },
 };
 
 export interface InlineInputEditProps {
@@ -86,6 +86,12 @@ export interface InlineInputEditState {
 }
 
 export class InlineInputEdit extends React.Component<InlineInputEditProps, InlineInputEditState> {
+
+  private static editModeActiveEvent = 'input-edit-mode-active';
+  private editModeListenerID: any = null;
+  private id: string = '';
+  private inputRef: HTMLInputElement = null;
+
   constructor(props: InlineInputEditProps) {
     super(props);
     this.id = generateID(7);
@@ -97,95 +103,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
     };
   }
 
-  static editModeActiveEvent = 'input-edit-mode-active';
-  editModeListenerID: any = null;
-  id: string = '';
-  
-  componentDidMount() {
-    this.editModeListenerID = events.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
-  }
-
-  componentWillUnmount() {
-    events.off(this.editModeListenerID)
-    this.editModeListenerID = null;
-  }
-
-  onEditModeActiveEvent = (id: string) => {
-    if (this.id == id) return;
-    if (this.state.editMode) {
-      this.deactivateEditMode();
-    }
-  }
-
-  onMouseleave = () => {
-    if (this.state.showEditButton == false) return;
-    this.setState({showEditButton: false});
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // escape pressed
-    if (e.keyCode == 27) {
-      if (this.state.editMode) {
-        this.deactivateEditMode();
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    }
-
-    // enter pressed
-    if (e.keyCode == 13) {
-      this.doSave();
-    }
-  }
-
-  showEditButton = () => {
-    if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
-  }
-
-  doSave = () => {
-    if (this.props.value + '' === this.inputRef.value) {
-      this.deactivateEditMode();
-      return;
-    }
-    this.props.onSave(this.props.value, this.inputRef.value)
-      .then(result => {
-        if (result.ok) {
-          this.inputRef = null;
-          this.setState({
-            saving: false,
-            editMode: false,
-            errors: null,
-          });
-        }
-        this.setState({
-          saving: false,
-          errors: result.error,
-        });
-      });
-
-    this.setState({saving: true});
-  }
-
-  activateEditMode = () => {
-    this.setState({
-      editMode: true,
-      showEditButton: false,
-    });
-    setTimeout(() => {
-      if (this.inputRef) this.inputRef.focus();
-    }, 200);
-    events.fire(InlineInputEdit.editModeActiveEvent, this.id);
-  }
-
-  deactivateEditMode = () => {
-    this.inputRef = null;
-    this.setState({editMode: false});
-  }
-
-  inputRef: HTMLInputElement = null;
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultInlineInputEditStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -197,7 +115,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
             (
               <div className={css(ss.error, custom.error)}>
                 <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className="fa fa-exclamation-circle"></i> Save failed.
+                  <i className='fa fa-exclamation-circle'></i> Save failed.
                 </Tooltip>
               </div>
             ) : null
@@ -211,7 +129,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
                    },
                    input: {
                      padding: '1px 10px',
-                   }
+                   },
                  }}
                  onKeyDown={this.onKeyDown}
                  {...this.props.inputProps} />
@@ -251,6 +169,88 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
           ) : null}
       </div>
     );
+  }
+  
+  private componentDidMount() {
+    this.editModeListenerID = events.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
+  }
+
+  private componentWillUnmount() {
+    events.off(this.editModeListenerID);
+    this.editModeListenerID = null;
+  }
+
+  private onEditModeActiveEvent = (id: string) => {
+    if (this.id === id) return;
+    if (this.state.editMode) {
+      this.deactivateEditMode();
+    }
+  }
+
+  private onMouseleave = () => {
+    if (this.state.showEditButton === false) return;
+    this.setState({showEditButton: false});
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // escape pressed
+    if (e.keyCode === 27) {
+      if (this.state.editMode) {
+        this.deactivateEditMode();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+
+    // enter pressed
+    if (e.keyCode === 13) {
+      this.doSave();
+    }
+  }
+
+  private showEditButton = () => {
+    if (this.state.showEditButton) return;
+    this.setState({showEditButton: true});
+  }
+
+  private doSave = () => {
+    if (this.props.value + '' === this.inputRef.value) {
+      this.deactivateEditMode();
+      return;
+    }
+    this.props.onSave(this.props.value, this.inputRef.value)
+      .then((result) => {
+        if (result.ok) {
+          this.inputRef = null;
+          this.setState({
+            saving: false,
+            editMode: false,
+            errors: null,
+          });
+        }
+        this.setState({
+          saving: false,
+          errors: result.error,
+        });
+      });
+
+    this.setState({saving: true});
+  }
+
+  private activateEditMode = () => {
+    this.setState({
+      editMode: true,
+      showEditButton: false,
+    });
+    setTimeout(() => {
+      if (this.inputRef) this.inputRef.focus();
+    }, 200);
+    events.fire(InlineInputEdit.editModeActiveEvent, this.id);
+  }
+
+  private deactivateEditMode = () => {
+    this.inputRef = null;
+    this.setState({editMode: false});
   }
 }
 

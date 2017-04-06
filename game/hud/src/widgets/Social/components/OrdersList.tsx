@@ -16,22 +16,22 @@ import { client, Input } from 'camelot-unchained';
 export interface OrdersListStyle extends StyleDeclaration {
   container : React.CSSProperties;
   filterBox : React.CSSProperties;
-};
+}
 export const defaultOrdersListStyle : OrdersListStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   filterBox: {
-    padding: '0.5em'
-  }
+    padding: '0.5em',
+  },
 };
 
 export interface OrdersListProps {
   refetch: () => void;
   styles?: Partial<OrdersListStyle>;
-};
+}
 
 interface OrdersListState {
   page: number;
@@ -42,7 +42,7 @@ interface OrdersListState {
 }
 
 class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
-  searchRef: HTMLInputElement = null;
+  private searchRef: HTMLInputElement = null;
   constructor(props: OrdersListProps) {
     super(props);
     this.state = {
@@ -50,14 +50,11 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
       itemsPerPage: 25,       // TODO: Should be calculated to fit space
       filter: '',
       sort: '',
-      reverse: false
+      reverse: false,
     };
   }
-  onFilterChanged = (e: any) => {
-    this.setState({ filter: this.searchRef.value.toLowerCase() });
-  }
 
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultOrdersListStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     const skip = this.state.itemsPerPage * this.state.page;
@@ -80,20 +77,24 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
           filter={this.state.filter}
           itemsPerPage={this.state.itemsPerPage}
           gotoPage={(page: number) => {
-            this.setState({ page: page });
+            this.setState({ page });
           }}
           sort={this.state.sort} reverse={this.state.reverse}
           orderBy={(name: string, asc: boolean) => {
             // sort
             this.setState({
               sort: name,
-              reverse: !asc
+              reverse: !asc,
             } as OrdersListState);
           }}
           />
       </div>
     );
   }
-};
+
+  private onFilterChanged = (e: any) => {
+    this.setState({ filter: this.searchRef.value.toLowerCase() });
+  }
+}
 
 export default OrdersList;

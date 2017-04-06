@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:07:27
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-07 12:07:27
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 11:46:04
  */
 
 import * as React from 'react';
@@ -25,14 +25,14 @@ class EualaModal extends React.Component<EualaModalProps, EualaModalState> {
     super(props);
   }
 
-  render() {
+  public render() {
     return (
       <div className='euala-modal'>
-        <iframe src="http://camelotunchained.com/v2/euala.html" width="100%" height="100%" frameBorder="0"></iframe>
-			  <button className="accept" onClick={this.props.accept}>Accept</button>
-			  <button className="decline" onClick={this.props.decline}>Decline</button>
+        <iframe src='http://camelotunchained.com/v2/euala.html' width='100%' height='100%' frameBorder='0'></iframe>
+			  <button className='accept' onClick={this.props.accept}>Accept</button>
+			  <button className='decline' onClick={this.props.decline}>Decline</button>
       </div>
-    )
+    );
   }
 }
 

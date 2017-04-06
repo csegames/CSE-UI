@@ -11,14 +11,14 @@
 
 export enum Orientation {
   HORIZONTAL,
-  VERTICAL
+  VERTICAL,
 }
 
 export enum Quadrant {
   TopLeft,
   TopRight,
   BottomLeft,
-  BottomRight
+  BottomRight,
 }
 
 export function windowQuadrant(mouseX: number, mouseY: number) {

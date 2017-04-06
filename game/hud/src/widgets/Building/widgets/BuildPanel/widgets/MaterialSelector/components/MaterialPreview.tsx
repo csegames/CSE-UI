@@ -11,11 +11,11 @@ import {BuildingMaterial} from 'camelot-unchained';
 import {GlobalState} from '../services/session/reducer';
 
 function select(state: GlobalState): MaterialPreviewProps {
-  let mat = state.materialSelector.hoverMaterial
+  const mat = state.materialSelector.hoverMaterial;
   return {
     material: mat,
-    show: mat != null
-  }
+    show: mat != null,
+  };
 }
 
 export interface MaterialPreviewProps {
@@ -33,7 +33,7 @@ class MaterialPreview extends React.Component<MaterialPreviewProps, MaterialPrev
     super(props);
   }
 
-  render() {
+  public render() {
     if (!this.props.show)
       return null;
 
@@ -42,9 +42,9 @@ class MaterialPreview extends React.Component<MaterialPreviewProps, MaterialPrev
     return (
       <div className='material-preview'>
         <img src={`data:image/png;base64, ${this.props.material.icon}`} />
-        <div className="name">{name}</div>
+        <div className='name'>{name}</div>
       </div>
-    )
+    );
   }
 }
 

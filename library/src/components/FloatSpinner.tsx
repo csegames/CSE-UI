@@ -23,9 +23,9 @@ export const defaultFloatSpinnerStyle: FloatSpinnerStyle = {
     position: 'fixed',
     bottom: '10px',
     right: '10px',
-    zIndex: 99999
-  }
-}
+    zIndex: 99999,
+  },
+};
 
 export interface FloatSpinnerProps {
   styles?: Partial<FloatSpinnerStyle>;
@@ -33,6 +33,6 @@ export interface FloatSpinnerProps {
 
 export const FloatSpinner = (props: FloatSpinnerProps) => {
   return <Spinner styles={merge(defaultFloatSpinnerStyle, props.styles || {})} />;
-}
+};
 
 export default FloatSpinner;

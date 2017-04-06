@@ -9,7 +9,7 @@ import * as RestClientLegacy from './../RestClientLegacy';
 
 // Control Game
 export function getControlGame(includeControlPoints: boolean = false) {
-  return RestClientLegacy.getJSON('game/controlgame', false, { includeControlPoints: includeControlPoints });
+  return RestClientLegacy.getJSON('game/controlgame', false, { includeControlPoints });
 }
 
 // Spawn Points

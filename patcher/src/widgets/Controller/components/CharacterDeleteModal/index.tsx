@@ -37,16 +37,62 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     };
   }
 
-  componentDidMount() {
+  public render() {
+    return (
+      <div className='CharacterDeleteModal'>
+        <div className='CharacterDeleteModal__title'>Delete character?</div>
+        <div className='CharacterDeleteModal__text'>Warning! This cannot be undone.</div>
+        <label>Enter character name to confirm</label>
+        <input id='name' ref='name' type='text' onKeyUp={this.onKeyUp}/>
+        {
+          this.state.error ?
+            <div className='ChracterDeleteModal__error'>
+              <Tooltip content={() => <span>{this.state.error || 'An unknown error occurred.'}</span>}>
+                  <i className='fa fa-exclamation-circle'></i> Delete failed.
+                </Tooltip>
+            </div> :
+            null
+        }
+
+        {
+          this.state.success ?
+            <div className='ChracterDeleteModal__success'>
+              <Tooltip content={() => <span>{`${this.props.character.name} was deleted.`}</span>}
+                       styles={{tooltip: {maxWidth: '400px'}}}>
+                  <i className='fa fa-info-circle'></i> Success!
+                </Tooltip>
+            </div> :
+            null
+        }
+        <div className='CharacterDeleteModal__buttons'>
+          {
+            this.state.deleting ?
+              <button className='CharacterDeleteModal__button'>
+                <Spinner />
+              </button> :
+              <button className='CharacterDeleteModal__button'
+                      disabled={!this.state.deleteEnabled}
+                      onClick={this.deleteCharacter}>
+                Delete
+              </button>
+
+          }
+          <button className='CharacterDeleteModal__button' onClick={this.cancelDelete}>Cancel</button>
+        </div>
+      </div>
+    );
+  }
+
+  private componentDidMount() {
     (this.refs['name'] as HTMLInputElement).focus();
   }
 
-  onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) : void => {
+  private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) : void => {
     const input : HTMLInputElement = this.refs['name'] as HTMLInputElement;
     this.setState({ deleteEnabled: input.value === this.props.character.name });
   }
 
-  deleteCharacter = (): void => {
+  private deleteCharacter = (): void => {
 
     events.fire('play-sound', 'select');
     this.setState({
@@ -55,7 +101,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
 
     const character = this.props.character;
     webAPI.CharactersAPI.deleteCharacterV1(Number.parseInt(character.shardID), character.id)
-      .then(result => {
+      .then((result) => {
         if (result.ok) {
           // success
 
@@ -80,55 +126,9 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
       });
   }
 
-  cancelDelete = (): void => {
+  private cancelDelete = (): void => {
     this.props.closeModal();
     events.fire('play-sound', 'select');
-  }
-
-  render() {
-    return (
-      <div className='CharacterDeleteModal'>
-        <div className='CharacterDeleteModal__title'>Delete character?</div>
-        <div className='CharacterDeleteModal__text'>Warning! This cannot be undone.</div>
-        <label>Enter character name to confirm</label>
-        <input id='name' ref='name' type='text' onKeyUp={this.onKeyUp}/>
-        {
-          this.state.error ?
-            <div className='ChracterDeleteModal__error'>
-              <Tooltip content={() => <span>{this.state.error || "An unknown error occurred."}</span>}>
-                  <i className="fa fa-exclamation-circle"></i> Delete failed.
-                </Tooltip>
-            </div> :
-            null
-        }
-
-        {
-          this.state.success ?
-            <div className='ChracterDeleteModal__success'>
-              <Tooltip content={() => <span>{`${this.props.character.name} was deleted.`}</span>}
-                       styles={{tooltip: {maxWidth: '400px'}}}>
-                  <i className="fa fa-info-circle"></i> Success!
-                </Tooltip>
-            </div> :
-            null
-        }
-        <div className='CharacterDeleteModal__buttons'>
-          {
-            this.state.deleting ?
-              <button className='CharacterDeleteModal__button'>
-                <Spinner />
-              </button> :
-              <button className='CharacterDeleteModal__button'
-                      disabled={!this.state.deleteEnabled}
-                      onClick={this.deleteCharacter}>
-                Delete
-              </button>
-
-          }
-          <button className='CharacterDeleteModal__button' onClick={this.cancelDelete}>Cancel</button>
-        </div>
-      </div>
-    );
   }
 }
 

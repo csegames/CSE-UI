@@ -8,7 +8,7 @@ export function checkStatus(response: any) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    let error = new Error(response.statusText);
+    const error = new Error(response.statusText);
     (<any>error).response = response;
     throw error;
   }
@@ -21,15 +21,16 @@ export function parseJSON(response: any) {
 export function makeQueryString(url: string, params: any = {}): string {
   if (!params) return url;
 
+  // tslint:disable-next-line
   let key: string;
-  let qs: string[] = [];
+  const qs: string[] = [];
   for (key in params) {
     if (params.hasOwnProperty(key)) {
-      qs.push(key + "=" + encodeURIComponent(params[key]));
+      qs.push(key + '=' + encodeURIComponent(params[key]));
     }
   }
   if (qs.length) {
-    url += "?" + qs.join("&");
+    url += '?' + qs.join('&');
   }
   return url;
 }

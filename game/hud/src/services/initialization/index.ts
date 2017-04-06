@@ -31,10 +31,11 @@ export default () => {
   client.OnToggleHUDItem((name: string) => {
     console.log(name);
     events.fire('hudnav--navigate', name);
-  })
+  });
 
   function combatLogToString(log: CombatLog): string {
-    // fromName (fromFaction) > toName (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}
+    // fromName (fromFaction) > toName
+    // (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}
     //
     // {damages} (RED) => recieved (sent - recieved) part type  [100(20) RIGHTLEG SLASHING]
     // {disruption} (ORANGE) => recieved (sent - receieved) tracks  [100(20) PRIMARYWEAPON]
@@ -49,15 +50,17 @@ export default () => {
     if (log.damages) {
       for (let i = 0; i < log.damages.length; ++i) {
         const d = log.damages[i];
-        output += `::red::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${bodyParts[d.part]} ${damageTypes[d.type]} | `;
+        output += `::red::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${bodyParts[d.part]}
+        ${damageTypes[d.type]} | `;
       }
     }
   
 
     if (log.disruption) {
-      output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved).toFixed(0)}) DISRUPTION ${log.disruption.source} `;
+      output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved)
+        .toFixed(0)}) DISRUPTION ${log.disruption.source} `;
 
-      if (log.disruption.tracksInterupted == skillTracks.NONE) {
+      if (log.disruption.tracksInterupted === skillTracks.NONE) {
         output += ` | `;
 
       } else {
@@ -85,13 +88,14 @@ export default () => {
     if (log.heals) {
       for (let i = 0; i < log.heals.length; ++i) {
         const h = log.heals[i];
-        output += `::green::HEALED ${h.recieved.toFixed(0)}(${Math.abs(h.sent - h.recieved).toFixed(0)}) ${bodyParts[h.part]} | `;
+        output += `::green::HEALED ${h.recieved.toFixed(0)}(${Math.abs(h.sent - h.recieved).toFixed(0)})
+        ${bodyParts[h.part]} | `;
       }
     }
 
     if (log.cures) {
       output += `::blue::CURED `;
-      let curedParts = [0,0,0,0,0,0];
+      const curedParts = [0,0,0,0,0,0];
       for (let i = 0; i < log.cures.length; ++i) {
         curedParts[log.cures[i]] += 1;
       }
@@ -108,18 +112,20 @@ export default () => {
     if (log.resources) {
       for (let i = 0; i < log.resources.length; ++i) {
         const d = log.resources[i];
-        output += `::yellow::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)}) ${resourceTypes[d.type]} | `;
+        output += `::yellow::${d.recieved.toFixed(0)}(${Math.abs(d.sent - d.recieved).toFixed(0)})
+        ${resourceTypes[d.type]} | `;
       }
     }
 
     if (log.impulse) {
-      output += `::indigo::${log.impulse.recieved.toFixed(0)}(${Math.abs(log.impulse.sent - log.impulse.recieved).toFixed(0)}) IMPULSE | `;
+      output += `::indigo::${log.impulse.recieved.toFixed(0)}(${Math.abs(log.impulse.sent - log.impulse.recieved)
+        .toFixed(0)}) IMPULSE | `;
     }
 
     if (log.activeEffects) {
       for (let i = 0; i < log.activeEffects.length; ++i) {
         output += `::violet::${log.activeEffects[i].name} ${activeEffectActions[log.activeEffects[i].action]} `;
-        if (log.activeEffects[i].action === activeEffectActions.APPLIED) output += `${log.activeEffects[i].duration} `
+        if (log.activeEffects[i].action === activeEffectActions.APPLIED) output += `${log.activeEffects[i].duration} `;
       }
       output += '|';
     }
@@ -134,4 +140,4 @@ export default () => {
   }
 
   client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => events.fire('combatlog_message', combatLogToString(e))));
-}
+};

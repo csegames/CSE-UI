@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-03-08
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:29:14
  */
 
 import * as React from 'react';
@@ -40,16 +40,55 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
     this.state = {};
   }
 
-  componentWillReceiveProps(nextProps: OrderContentProps) {
+  public render() {
+
+    switch (this.props.address.id) {
+      case 'create':
+        return <CreateGroup category={SocialCategory.Order}
+                            refetch={this.props.refetch}
+                            dispatch={this.props.dispatch} />;
+      case 'list':
+        return <OrdersList refetch={this.props.refetch} />;
+    }
+
+    if (!this.props.order) {
+      return <Spinner />;
+    }
+
+    switch (this.props.address.id) {
+      case 'overview':
+        return <Overview dispatch={this.props.dispatch}
+                         refetch={this.props.refetch}
+                         order={this.props.order} />;
+      case 'members':
+        return <MemberList dispatch={this.props.dispatch}
+                           group={this.props.order}
+                           userPermissions={this.props.order.myMemberInfo.permissions}
+                           refetch={this.props.refetch} />;
+      case 'ranks':
+        return <RankList dispatch={this.props.dispatch}
+                      group={this.props.order}
+                      userPermissions={this.props.order.myMemberInfo.permissions}
+                      refetch={this.props.refetch} />;
+      case 'admin':
+        return <OrderAdmin dispatch={this.props.dispatch}
+                           order={this.props.order}
+                           refetch={this.props.refetch} />;
+      default:
+        return <div>NO CONTENT</div>;
+    }
+  }
+
+  private componentWillReceiveProps(nextProps: OrderContentProps) {
     this.handleJoinLeaveNavUpdate(nextProps);
   }
 
-  handleJoinLeaveNavUpdate = (props: OrderContentProps) => {
+  private handleJoinLeaveNavUpdate = (props: OrderContentProps) => {
     if (props.order && props.address.id === 'create') {
       props.dispatch(selectLink({
         kind: 'Primary',
         category: SocialCategory.Order,
-        id: 'overview'
+        id: 'overview',
       }));
     }
 
@@ -63,49 +102,10 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
             props.dispatch(selectLink({
               kind: 'Primary',
               category: SocialCategory.Order,
-              id: 'create'
+              id: 'create',
             }));
           }
       }
-    }
-  }
-
-  render() {
-
-    switch (this.props.address.id) {
-      case 'create':
-        return <CreateGroup category={SocialCategory.Order}
-                            refetch={this.props.refetch}
-                            dispatch={this.props.dispatch} />;
-      case 'list':
-        return <OrdersList refetch={this.props.refetch} />;
-    }
-
-    if (!this.props.order) {
-      return <Spinner />
-    }
-
-    switch (this.props.address.id) {
-      case 'overview':
-        return <Overview dispatch={this.props.dispatch}
-                         refetch={this.props.refetch}
-                         order={this.props.order} />;
-      case 'members':
-        return <MemberList dispatch={this.props.dispatch}
-                           group={this.props.order}
-                           userPermissions={this.props.order.myMemberInfo.permissions}
-                           refetch={this.props.refetch} />
-      case 'ranks':
-        return <RankList dispatch={this.props.dispatch}
-                      group={this.props.order}
-                      userPermissions={this.props.order.myMemberInfo.permissions}
-                      refetch={this.props.refetch} />
-      case 'admin':
-        return <OrderAdmin dispatch={this.props.dispatch}
-                           order={this.props.order}
-                           refetch={this.props.refetch} />
-      default:
-        return <div>NO CONTENT</div>;
     }
   }
 }

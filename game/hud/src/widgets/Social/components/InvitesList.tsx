@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 14:14:09
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 16:40:18
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:46:53
  */
 
 import * as React from 'react';
@@ -37,7 +37,7 @@ export const defaultInviteListStyle: InvitesListStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 };
 
@@ -63,9 +63,9 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                     sortable: true,
                     renderItem: (i: ql.Invite) => {
                       if (i.groupType === 'Order') {
-                        return <InlineOrder id={i.groupID} shard={client.shardID} />
+                        return <InlineOrder id={i.groupID} shard={client.shardID} />;
                       }
-                      return <InlineWarband id={i.groupID} shard={client.shardID} />
+                      return <InlineWarband id={i.groupID} shard={client.shardID} />;
                     },
                   },
                   {
@@ -89,8 +89,11 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                                              inActionContent={() => <Spinner />}
                                              postActionContent={() => <span>Accepted</span>}
                                              action={() => {
-                                               return webAPI.GroupsAPI.acceptInviteV1(client.shardID, client.characterID, i.groupID, i.inviteCode)
-                                                .then(result => {
+                                               return webAPI.GroupsAPI.acceptInviteV1(
+                                                 client.shardID,
+                                                 client.characterID,
+                                                 i.groupID,
+                                                 i.inviteCode).then((result) => {
                                                   return {
                                                     ok: result.ok,
                                                     error: JSON.stringify(result.data),
@@ -100,10 +103,10 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                                              onActionSuccess={() => {
                                                 props.refetch();
                                                 props.data.refetch();
-                                             }} />
+                                             }} />;
                       }
-                      return <span> - </span>
-                    }
+                      return <span> - </span>;
+                    },
                   },
                 ]} />;
   }
@@ -114,7 +117,7 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
     </div>
   );
 }
-
+/* tslint:disable */
 function PreQLInvitesList(props: InvitesListProps) {
   const ss = StyleSheet.create(defaultInviteListStyle);
   const custom = StyleSheet.create(props.styles || {});

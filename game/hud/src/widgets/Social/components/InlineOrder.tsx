@@ -23,7 +23,7 @@ interface InlineOrderProps extends InjectedGraphQLProps <{
    order: {
     id: string;
     name: string;
-  }
+  },
 } > {
   id: string;
   shard: number;
@@ -33,7 +33,7 @@ export const defaultInlineOrderStyle: InlineOrderStyle = {
   card: {
 
   },
-}
+};
 
 const inlineOrder = (props: InlineOrderProps) => {
   if (props.data.loading) {
@@ -43,8 +43,8 @@ const inlineOrder = (props: InlineOrderProps) => {
       <a href={`#order/${props.data.order.id}`}>
         {props.data.order.name}
       </a>
-    )
-}
+    );
+};
 
 export default graphql(gql`
       query InlineOrder($id: String!, $shard: Int!) {
@@ -58,6 +58,6 @@ export default graphql(gql`
     variables: {
       id: props.id,
       shard: props.shard,
-    }
-  })
+    },
+  }),
 })(inlineOrder);

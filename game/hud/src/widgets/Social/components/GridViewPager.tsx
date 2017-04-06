@@ -22,20 +22,20 @@ export interface GridViewPagerState extends GridViewState {
 }
 
 export default class GridViewPager extends GridViewImpl<GridViewPagerProps, GridViewPagerState> {
-  getItemCount = () : number => {
+  public getItemCount = () : number => {
     return this.props.total;
   }
-  getCurrentPage = () => {
+  public getCurrentPage = () => {
     return this.props.currentPage;
   }
-  goToPage = (page: number) => {
+  public goToPage = (page: number) => {
     this.props.gotoPage(page);
   }
-  setSort = (index: number, sortBy: GridViewSort) => {
-    this.props.onSort(index, sortBy == GridViewSort.Up);
-    this.setState({ currentSort: { index: index, sorted: sortBy } });
+  public setSort = (index: number, sortBy: GridViewSort) => {
+    this.props.onSort(index, sortBy === GridViewSort.Up);
+    this.setState({ currentSort: { index, sorted: sortBy } });
   }
-  sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
+  public sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
     return input;
   }
 }

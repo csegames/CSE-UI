@@ -15,16 +15,16 @@ export interface Injury {
 
 class Combatant {
 
-  name: string;
-  health: number;
-  maxHealth: number;
-  stamina: number;
-  maxStamina: number;
+  public name: string;
+  public health: number;
+  public maxHealth: number;
+  public stamina: number;
+  public maxStamina: number;
 
-  injuries: Injury[];
+  public injuries: Injury[];
 
   constructor(combatant = <Combatant>{}) {
-    this.name = combatant.name || "";
+    this.name = combatant.name || '';
     this.health = combatant.health || 0;
     this.maxHealth = combatant.maxHealth || 0;
     this.stamina = combatant.stamina || 0;
@@ -35,8 +35,8 @@ class Combatant {
   /**
    *  Reset combatant state to nil [for when not got a target]
    */
-  reset() {
-    this.name = "";
+  public reset() {
+    this.name = '';
     this.health = 0;
     this.maxHealth = 0;
     this.stamina = 0;
@@ -44,33 +44,33 @@ class Combatant {
     this.injuries = <Injury[]>[];
   }
 
-  setRace(race: Race) { } // override to support race
-  setArchetype(archetype: Archetype)  { } /// override to support archetype
+  public setRace(race: Race) { } // override to support race
+  public setArchetype(archetype: Archetype)  { } /// override to support archetype
 
-  setName(name: string) {
+  public setName(name: string) {
     this.name = name;
   }
 
-  setHealth(health: number, maxHealth: number) {
+  public setHealth(health: number, maxHealth: number) {
     this.health = health;
     this.maxHealth = maxHealth;
   }
 
-  setStamina(stamina: number, maxStamina: number) {
+  public setStamina(stamina: number, maxStamina: number) {
     this.stamina = stamina;
     this.maxStamina = maxStamina;
   }
 
-  setInjury(part: number, health: number, maxHealth: number, wounds: number) {
-    let injury = this.injuries[part] = this.injuries[part] || <Injury>{};
+  public setInjury(part: number, health: number, maxHealth: number, wounds: number) {
+    const injury = this.injuries[part] = this.injuries[part] || <Injury>{};
     injury.part = part;
     injury.health = health;
     injury.maxHealth = maxHealth;
     injury.wounds = wounds;
   }
 
-  static create() {
-    let a = new Combatant();
+  public static create() {
+    const a = new Combatant();
     return a;
   }
 

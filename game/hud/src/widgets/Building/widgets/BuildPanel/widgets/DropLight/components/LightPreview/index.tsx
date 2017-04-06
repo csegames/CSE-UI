@@ -9,7 +9,7 @@ import {Color} from '../../lib/Color';
 import {Light} from '../../lib/Light';
 
 export interface LightPreviewProps {
-  light: Light
+  light: Light;
   selectLight?: (light: Light) => void;
   className?: string;
 }
@@ -25,25 +25,27 @@ class LightPreview extends React.Component<LightPreviewProps, LightPreviewState>
     super(props);
   }
 
-  selectLight = (light: Light) => {
-    if (this.props.selectLight != undefined)
-      this.props.selectLight(light);
-  }
-
-
-  render() {
+  public render() {
     const maxR = this.maxRadius;
     const maxI = this.maxIntensity;
     const light = this.props.light;
     const color: Color = light.color;
     const rgb = `rgb(${color.red}, ${color.green}, ${color.blue})`;
-    const rgbIntensity = `rgba(${color.red}, ${color.green}, ${color.blue}, ${light.intensity / (2 * maxI)})`
+    const rgbIntensity = `rgba(${color.red}, ${color.green}, ${color.blue}, ${light.intensity / (2 * maxI)})`;
     return (
       <div
         onClick={() => this.selectLight(light)}
         className={'drop-light__preview ' + this.props.className}
-        style={{ backgroundImage: `radial-gradient(50% 50%, ${rgb}, ${rgb} ${(light.radius / maxR) * 70}%, ${rgbIntensity} ${(light.radius / maxR) * 70 + 30}%, rgb(0,0,0) 200%)` }} />
-    )
+        style={{
+          backgroundImage: `radial-gradient(50% 50%, ${rgb}, ${rgb} ${(light.radius / maxR) * 70}%,
+           ${rgbIntensity} ${(light.radius / maxR) * 70 + 30}%, rgb(0,0,0) 200%)`,
+        }} />
+    );
+  }
+
+  private selectLight = (light: Light) => {
+    if (this.props.selectLight !== undefined)
+      this.props.selectLight(light);
   }
 }
 

@@ -5,9 +5,9 @@
  */
 
 class BuildingBlueprint {
-  name: string;
-  icon: string;
-  index: number;
+  public name: string;
+  public icon: string;
+  public index: number;
 
   constructor(block = <BuildingBlueprint>{}) {
     this.name = block.name;
@@ -15,7 +15,7 @@ class BuildingBlueprint {
     this.index = block.index;
   }
 
-  static create() {
+  public static create() {
     const a = new BuildingBlueprint();
     return a;
   }

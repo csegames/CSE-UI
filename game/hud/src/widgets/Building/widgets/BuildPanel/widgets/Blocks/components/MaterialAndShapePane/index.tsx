@@ -23,8 +23,8 @@ import ShapesView from '../ShapesView';
 
 function select(state: GlobalState): MaterialAndShapePaneStateToPropsInfo {
   return {
-    materialsState: state.materials
-  }
+    materialsState: state.materials,
+  };
 }
 
 export interface MaterialAndShapePaneStateToPropsInfo {
@@ -44,67 +44,12 @@ export interface MaterialAndShapePaneState {
 
 class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, MaterialAndShapePaneState> {
 
-  private blockSelectionListener = (info: { material: BuildingMaterial, block: BuildingBlock }) => {
-    this.onBlockSelect(info.material, info.block);
-  }
-
-
   constructor(props: MaterialAndShapePaneProps) {
     super(props);
     this.state = { showMatSelect: false };
   }
 
-  onBlockSelect = (material: BuildingMaterial, block: BuildingBlock) => {
-    if (block != null) {
-      const item = {
-        name: block.shapeId + ". " + block.shapeTags.join(', '),
-        description: block.materialId + ". " + block.materialTags.join(', '),
-        matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
-        element: (<img src={'data:image/png;base64,' + block.icon}/>),
-        id: material.id + '-' + BuildingItemType.Block,
-        type: BuildingItemType.Block,
-        select: () => { this.selectMaterial(material) }
-      } as BuildingItem;
-      fireBuildingItemSelected(item);
-    } else {
-      fireBuildingItemSelected(null);
-    }
-  }
-
-
-  showMatSelector = (show: boolean) => {
-    if (show) {
-      const selected: BuildingMaterial = this.props.materialsState.selectedMaterial;
-      events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: selected, onSelect: this.selectMaterial });
-    }
-    else {
-      events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
-    }
-    this.setState((state, props) => ({ showMatSelect: show } as MaterialAndShapePaneState));
-  }
-
-  selectBlock(block: BuildingBlock) {
-    blockRequester.changeBlockSelection(block);
-  }
-
-  selectMaterial = (mat: BuildingMaterial) => {
-    const currentBlock = this.props.materialsState.selectedBlock;
-    const requestedBlock: BuildingBlock = mat.getBlockForShape(currentBlock.shapeId);
-    blockRequester.changeBlockSelection(requestedBlock);
-    this.setState((state, props) => ({ showMatSelect: false } as any));
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
-  }
-
-  componentDidMount() {
-    events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
-  }
-
-  componentWillUnmount() {
-    events.removeListener(this.blockSelectionListener);
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
-  }
-
-  render() {
+  public render() {
 
     const selectedMaterial: BuildingMaterial = this.props.materialsState.selectedMaterial;
     const selectedShape: BuildingBlock = this.props.materialsState.selectedBlock;
@@ -128,11 +73,65 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
           <ShapesView minimized={this.props.minimized}
             shapes={selectedMaterial.blocks}
             selected={selectedShape}
-            selectShape={(block: BuildingBlock) => { this.selectBlock(block) } }/>
+            selectShape={(block: BuildingBlock) => { this.selectBlock(block); } }/>
         </div>
       </div>
-    )
+    );
+  }
+
+  private blockSelectionListener = (info: { material: BuildingMaterial, block: BuildingBlock }) => {
+    this.onBlockSelect(info.material, info.block);
+  }
+
+  private onBlockSelect = (material: BuildingMaterial, block: BuildingBlock) => {
+    if (block != null) {
+      const item = {
+        name: block.shapeId + '. ' + block.shapeTags.join(', '),
+        description: block.materialId + '. ' + block.materialTags.join(', '),
+        matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
+        element: (<img src={'data:image/png;base64,' + block.icon}/>),
+        id: material.id + '-' + BuildingItemType.Block,
+        type: BuildingItemType.Block,
+        select: () => this.selectMaterial(material),
+      } as BuildingItem;
+      fireBuildingItemSelected(item);
+    } else {
+      fireBuildingItemSelected(null);
+    }
+  }
+
+
+  private showMatSelector = (show: boolean) => {
+    if (show) {
+      const selected: BuildingMaterial = this.props.materialsState.selectedMaterial;
+      events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: selected, onSelect: this.selectMaterial });
+    } else {
+      events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+    }
+    this.setState((state, props) => ({ showMatSelect: show } as MaterialAndShapePaneState));
+  }
+
+  private selectBlock(block: BuildingBlock) {
+    blockRequester.changeBlockSelection(block);
+  }
+
+  private selectMaterial = (mat: BuildingMaterial) => {
+    const currentBlock = this.props.materialsState.selectedBlock;
+    const requestedBlock: BuildingBlock = mat.getBlockForShape(currentBlock.shapeId);
+    blockRequester.changeBlockSelection(requestedBlock);
+    this.setState((state, props) => ({ showMatSelect: false } as any));
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+  }
+
+  private componentDidMount() {
+    events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
+  }
+
+  private componentWillUnmount() {
+    events.removeListener(this.blockSelectionListener);
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }
 
-export default connect<MaterialAndShapePaneStateToPropsInfo, {}, MaterialAndShapePanePropsInfo>(select)(MaterialAndShapePane);
+export default
+connect<MaterialAndShapePaneStateToPropsInfo, {}, MaterialAndShapePanePropsInfo>(select)(MaterialAndShapePane);

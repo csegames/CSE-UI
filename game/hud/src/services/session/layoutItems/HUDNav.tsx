@@ -21,21 +21,21 @@ export default {
   position: {
     x: {
       anchor: 0,
-      offset: 2
+      offset: 2,
     },
     y: {
       anchor: 0,
-      offset: 2
+      offset: 2,
     },
     size: {
       width: 900,
-      height: 200
+      height: 200,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 9,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
@@ -57,8 +57,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'console')
-        }
+          events.fire('hudnav--navigate', 'console');
+        },
       },
       {
         name: 'social',
@@ -78,7 +78,7 @@ export default {
           client.HideUI('inventory');
           client.HideUI('equippedgear');
           client.HideUI('plotcontrol');
-        }
+        },
       },
       {
         name: 'spellbook',
@@ -95,7 +95,7 @@ export default {
           events.fire('hudnav--navigate', 'spellbook');
           client.PlaySoundEvent(soundEvents.PLAY_UI_SPELLBOOK_OPEN);
           client.ShowUI('spellbook');
-        }
+        },
       },
       {
         name: 'skillbuilder',
@@ -111,7 +111,7 @@ export default {
         onClick: () => {
           events.fire('hudnav--navigate', 'skillbuilder');
           client.ShowUI('ability-builder');
-        }
+        },
       },
       {
         name: 'building',
@@ -127,7 +127,7 @@ export default {
         onClick: () => {
           events.fire('hudnav--navigate', 'building');
           client.ToggleBuildingMode();
-        }
+        },
       },
       {
         name: 'crafting',
@@ -142,7 +142,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'crafting');
-        }
+        },
       },
       {
         name: 'inventory',
@@ -157,7 +157,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'inventory');
-        }
+        },
       },
       {
         name: 'equippedgear',
@@ -172,7 +172,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'equippedgear');
-        }
+        },
       },
       {
         name: 'plotcontrol',
@@ -187,7 +187,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'plotcontrol');
-        }
+        },
       },
       // {
       //   name: 'chat',
@@ -217,7 +217,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'ui');
-        }
+        },
       },
       {
         name: 'reset',
@@ -232,8 +232,8 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'reset');
-        }
+        },
       },
     ],
-  }
+  },
 };

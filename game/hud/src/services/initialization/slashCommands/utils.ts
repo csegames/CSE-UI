@@ -3,13 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-let yargs = require('yargs-parser');
-import {events} from 'camelot-unchained';
+import yargs from 'yargs-parser';
+import { events } from 'camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string | Object): void => {
   if (typeof message === 'string') {
-    events.fire('system_message', message)
+    events.fire('system_message', message);
   } else {
     events.fire('system_message', JSON.stringify(message));
   }

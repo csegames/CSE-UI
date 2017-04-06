@@ -7,15 +7,15 @@
 export enum BuildingItemType {
   Block = 0,
   Blueprint = 1,
-  Droplight = 2
+  Droplight = 2,
 }
 
 export interface BuildingItem {
-  id: string
-  type: BuildingItemType,
-  matElement: JSX.Element,
-  element: JSX.Element,
-  name: string,
-  description: string
+  id: string;
+  type: BuildingItemType;
+  matElement: JSX.Element;
+  element: JSX.Element;
+  name: string;
+  description: string;
   select: () => void;
 }

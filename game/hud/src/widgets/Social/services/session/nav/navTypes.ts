@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 14:36:31
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:02:20
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 11:02:04
  */
 import { utils, ql } from 'camelot-unchained';
 import { Map } from 'immutable';
@@ -18,7 +18,7 @@ export enum SocialCategory {
   Warbands,
   Warband,
   Campaigns,
-  Campaign
+  Campaign,
 }
 
 export interface NavLink {
@@ -76,7 +76,8 @@ export interface CampaignsCategory extends utils.FetchStatus {
   displayName: string;
 }
 
-export type CategoryNav = PersonalCategory | OrderCategory | AllianceCategory | WarbandCategory | CampaignCategory | WarbandsCategory | CampaignsCategory;
+export type CategoryNav = PersonalCategory | OrderCategory | AllianceCategory | WarbandCategory | CampaignCategory |
+WarbandsCategory | CampaignsCategory;
 
 export interface PrimaryLinkAddress {
   kind : 'Primary';
@@ -107,7 +108,7 @@ export interface SubCategoryAddress {
 export type CategoryAddress = PrimaryCategoryAddress | SubCategoryAddress;
 
 export function defaultCategoryNav() {
-  return {id: '', displayName: '', links: []as any, collapsed: false}
+  return { id: '', displayName: '', links: []as any, collapsed: false };
 }
 
 export function linkAddressEquals(a: LinkAddress, b: LinkAddress) {
@@ -128,6 +129,6 @@ export function categoryAddressEquals(a: CategoryAddress, b: CategoryAddress) {
       return a.category === b.category;
     case 'Sub':
       if (b.kind === 'Primary') return false;
-      return a.category === b.category && a.subKey === b.subKey
+      return a.category === b.category && a.subKey === b.subKey;
   }
 }

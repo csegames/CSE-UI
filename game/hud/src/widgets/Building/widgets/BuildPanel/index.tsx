@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import Panel from './components/BuildPanel';
 import {BuildingItem} from '../../lib/BuildingItem';
@@ -19,10 +19,10 @@ export interface ContainerState {
 }
 
 class Container extends React.Component<ContainerProps, ContainerState> {
-  render() {
+  public render() {
     return (
       <Panel  />
-    )
+    );
   }
 }
 

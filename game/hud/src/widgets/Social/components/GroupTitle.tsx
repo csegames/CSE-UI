@@ -33,7 +33,7 @@ export const defaultGroupTitleStyle: GroupTitleStyle = {
     fontSize: '0.8em',
     userSelect: 'non',
   },
-}
+};
 
 export interface GroupTitleProps {
   children?: React.ReactNode;
@@ -53,4 +53,4 @@ export default(props: GroupTitleProps) => {
       </a>*/}
     </div>
   );
-}
+};

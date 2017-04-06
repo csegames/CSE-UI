@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:24
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-11-22 11:10:57
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:14:44
  */
 
 import * as React from 'react';
@@ -20,7 +20,7 @@ import WarbandMemberDisplay from '../WarbandMemberDisplay';
 function select(state: WarbandSessionState): WarbandDisplayProps {
   return {
     warband: state.warband,
-  }
+  };
 }
 
 export interface WarbandDisplayProps {
@@ -39,27 +39,27 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
     super(props);
   }
 
-  renderMember = (member: WarbandMember): any => {
-    return <WarbandMemberDisplay key={member.characterID} member={member} />;
-  }
-
-  initSignalRHub = () => {
-    this.props.dispatch(warbandInit());
-  }
-
-  componentDidMount() {
-    setTimeout(() => this.props.dispatch(warbandInit()), 1000);
-  }
-
-  // END TESTING
-
-  render() {
+  public render() {
     return (
       <div className={`WarbandDisplay ${this.props.containerClass}`}>
         {this.props.warband.activeMembers ? this.props.warband.activeMembers.map(this.renderMember) : null}
       </div>
-    )
+    );
   }
+
+  private renderMember = (member: WarbandMember): any => {
+    return <WarbandMemberDisplay key={member.characterID} member={member} />;
+  }
+
+  private initSignalRHub = () => {
+    this.props.dispatch(warbandInit());
+  }
+
+  private componentDidMount() {
+    setTimeout(() => this.props.dispatch(warbandInit()), 1000);
+  }
+
+  // END TESTING
 }
 
 export default connect(select)(WarbandDisplay);

@@ -26,18 +26,22 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
     super(props);
   }
 
-  renderMembers = () => {
-  }
-
-  render() {
+  public render() {
     const mini = this.props.isMini || false;
     const leader = false;// this.props.member.rank == warbandRanks.LEADER;
 
     return (
-      <div key={this.props.key} className={`WarbandMemberDisplay ${mini ? 'mini': ''} ${this.props.containerClass}`}>
-        <PlayerStatusComponent containerClass='WarbandMemberDisplay__Health' playerStatus={this.props.member as any} isLeader={leader} events={[]}/>
+      <div key={this.props.key} className={`WarbandMemberDisplay ${mini ? 'mini' : ''} ${this.props.containerClass}`}>
+        <PlayerStatusComponent
+          containerClass='WarbandMemberDisplay__Health'
+          playerStatus={this.props.member as any}
+          isLeader={leader} events={[]}
+        />
       </div>
-    )
+    );
+  }
+
+  private renderMembers = () => {
   }
 }
 

@@ -20,4 +20,4 @@ export default (props: {
       <img src={this.props.icon} />
     </div>
   );
-}
+};

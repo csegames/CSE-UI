@@ -6,14 +6,14 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-30 11:42:19
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 17:32:26
+ * @Last Modified time: 2017-04-11 16:03:17
  */
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
 import {initializeBuilding} from './services/session/building';
@@ -39,14 +39,43 @@ export interface BuildingState {
   visible: boolean;
 }
 
-class Building extends React.Component<{}, BuildingState> {
+export interface BuildingProps {
+}
+
+class Building extends React.Component<BuildingProps, BuildingState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
+    };
+  }
+
+  public render() {
+    if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
+      if (this.state.visible) {
+        initializeBuilding(store.dispatch);
+        initializeSelections(store.dispatch);
+      }
+      return (
+        <Provider store={store}>
+          <App />
+        </Provider>
+      );
+    } else {
+      if (this.state.visible) {
+        document.body.style.backgroundImage = "url('../../images/building/cube-bg.jpg')";
+        initializeBuilding(store.dispatch);
+        initializeSelections(store.dispatch);
+      }
+      return (
+        <Provider store={store}>
+          <App />
+        </Provider>
+      );
     }
   }
-  componentDidMount() {
+
+  private componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         if (!this.state.visible) {
@@ -55,29 +84,7 @@ class Building extends React.Component<{}, BuildingState> {
           this.setState((state, props) => ({ visible: false }));
         }
       }
-    })
-  }
-  render() {
-    if (this.state.visible) {
-      if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
-        initializeBuilding(store.dispatch);
-        initializeSelections(store.dispatch);
-        return (
-          <Provider store={store}>
-            <App />
-          </Provider>
-        )
-      } else {
-        document.body.style.backgroundImage = "url('../../images/building/cube-bg.jpg')";
-        initializeBuilding(store.dispatch);
-        initializeSelections(store.dispatch);
-        return (
-          <Provider store={store}>
-            <App />
-          </Provider>
-        )
-      }
-    } else return null;
+    });
   }
 }
 

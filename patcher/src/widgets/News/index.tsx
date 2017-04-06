@@ -17,66 +17,66 @@ import {NewsState, Post} from '../../services/session/news';
 import {FetchStatus, defaultFetchStatus, hashMerge} from '../../lib/reduxUtils';
 
 export interface RenderedObject {
-  rendered: string
+  rendered: string;
 }
 
 export interface WPData {
-  id: number,
-  date: string,
-  guid: RenderedObject
-  link: string,
-  modified: string,
-  modified_gmt: string,
-  slug: string,
-  title: RenderedObject,
-  author: number,
-  comment_status: string,
-  ping_status: string,
-  type: string,
-  _links: any,
+  id: number;
+  date: string;
+  guid: RenderedObject;
+  link: string;
+  modified: string;
+  modified_gmt: string;
+  slug: string;
+  title: RenderedObject;
+  author: number;
+  comment_status: string;
+  ping_status: string;
+  type: string;
+  _links: any;
 }
 
 export interface Post extends WPData {
-  status: string,
-  content: RenderedObject,
-  excerpt: RenderedObject,
-  featured_image: number,
-  sticky: boolean,
-  format: string,
+  status: string;
+  content: RenderedObject;
+  excerpt: RenderedObject;
+  featured_image: number;
+  sticky: boolean;
+  format: string;
 }
 
 export interface Media extends WPData {
-  alt_text: string,
-  caption: string,
-  description: string,
-  media_type: string,
-  media_details: any
+  alt_text: string;
+  caption: string;
+  description: string;
+  media_type: string;
+  media_details: any;
 }
 
 export interface ImageSize {
-  file: string,
-  width: number,
-  height: number,
-  'mime-type': string,
-  source_url: string
+  file: string;
+  width: number;
+  height: number;
+  'mime-type': string;
+  source_url: string;
 }
 
 export interface ImageMediaDetails {
-  width: number,
-  height: number,
-  file: string,
+  width: number;
+  height: number;
+  file: string;
   sizes: {
     thumbnail: ImageSize,
     'portfolio-one-third': ImageSize,
-    'portfolio-one-fourth': ImageSize
-  },
-  post: number,
-  source_url: string
+    'portfolio-one-fourth': ImageSize,
+  };
+  post: number;
+  source_url: string;
 }
 
 
 export interface NewsProps {
-};
+}
 
 export interface NewsState extends FetchStatus {
   didInvalidate?: boolean;
@@ -95,8 +95,8 @@ let stateCache: NewsState = utils.merge(defaultFetchStatus, {
   didInvalidate: false,
   nextPage: 1,
   fetchedPageCount: 0,
-  posts: []
-});;
+  posts: [],
+});
 
 class News extends React.Component<NewsProps, NewsState> {
   public name: string = 'cse-patcher-news';
@@ -106,12 +106,48 @@ class News extends React.Component<NewsProps, NewsState> {
     this.state = stateCache;
   }
 
-  fetchNextPage = () => {
+  public render() {
+
+    let spinner: any = <div />;
+    if (this.state.isFetching) {
+      spinner = (
+        <div className='preloader-wrapper small active'>
+          <div className='spinner-layer spinner-yellow-only'>
+            <div className='circle-clipper left'>
+              <div className='circle'></div>
+            </div><div className='gap-patch'>
+              <div className='circle'></div>
+            </div><div className='circle-clipper right'>
+              <div className='circle'></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const newsItems = this.state.posts.map(this.renderNewsItem);
+    return (
+      <div className='News'>
+          <ul className='News__content'>
+            {newsItems}
+          </ul>
+          {
+            this.state.isFetching ?
+              <div className='News__loadMore News__loadMore--loading wave-text'>
+                <i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i>
+              </div> :
+                <a className='News__loadMore' href='#' onClick={this.fetchNextPage}>Load More</a>
+          }
+      </div>
+    );
+  }
+
+  private fetchNextPage = () => {
     if (this.state.isFetching) return;
     this.fetchPage(this.state.nextPage);
   }
 
-  renderNewsItem = (post: Post) => {
+  private renderNewsItem = (post: Post) => {
     return (
       <li className='cse-patcher-news-item' key={post.id}>
         <NewsItem post={post} />
@@ -119,18 +155,18 @@ class News extends React.Component<NewsProps, NewsState> {
     );
   }
 
-  componentDidMount() {
-    if (this.state.posts.length == 0) {
+  private componentDidMount() {
+    if (this.state.posts.length === 0) {
       this.fetchNextPage();
     }
   }
 
-  fetchPage = (page: number) => {
+  private fetchPage = (page: number) => {
     this.setState({isFetching: true} as any);
     fetchJSON(makePostsUrl(page))
       .then((posts: Post[]) => {
-        let mergedPosts = hashMerge((p: Post) => '' + p.id, this.state.posts, posts);
-        mergedPosts.sort(function(a, b) {
+        const mergedPosts = hashMerge((p: Post) => '' + p.id, this.state.posts, posts);
+        mergedPosts.sort((a, b) => {
           const aDate = new Date(a.date);
           const bDate = new Date(b.date);
           return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
@@ -140,51 +176,17 @@ class News extends React.Component<NewsProps, NewsState> {
           didInvalidate: false,
           nextPage: this.state.nextPage + 1,
           lastUpdated: new Date(),
-          posts: mergedPosts
+          posts: mergedPosts,
         }) as any;
-        this.setState(stateCache)
+        this.setState(stateCache);
       })
       .catch((error: ResponseError) => {
         this.setState(utils.merge(this.state, {
           isFetching: false,
-          error: error
+          error,
         }));
-      })
+      });
   }
-
-  render() {
-
-    let spinner: any = <div />;
-    if (this.state.isFetching) {
-      spinner = (
-        <div className="preloader-wrapper small active">
-          <div className="spinner-layer spinner-yellow-only">
-            <div className="circle-clipper left">
-              <div className="circle"></div>
-            </div><div className="gap-patch">
-              <div className="circle"></div>
-            </div><div className="circle-clipper right">
-              <div className="circle"></div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    let newsItems = this.state.posts.map(this.renderNewsItem);
-    return (
-      <div className='News'>
-          <ul className='News__content'>
-            {newsItems}
-          </ul>
-          {
-            this.state.isFetching ?
-              <div className='News__loadMore News__loadMore--loading wave-text'><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i></div> :
-              <a className='News__loadMore' href='#' onClick={this.fetchNextPage}>Load More</a>
-          }
-      </div>
-    );
-  }
-};
+}
 
 export default News;

@@ -41,7 +41,7 @@ function getInitialState(): ChatState {
 }
 
 export default function reducer(state: ChatState = getInitialState(), action: ChatAction = defaultAction): ChatState {
-  switch(action.type) {
+  switch (action.type) {
     default: return state;
     case SHOW_CHAT: return merge(state, {showChat: true});
     case HIDE_CHAT: return merge(state, {showChat: false});

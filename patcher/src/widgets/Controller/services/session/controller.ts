@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com) 
  * @Date: 2016-10-13 00:25:42 
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-08 10:36:32
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 11:35:03
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
@@ -45,11 +45,11 @@ export enum ServerType {
   CUGAME,
   CUBE,
   CHANNEL,
-  UNKNOWN
+  UNKNOWN,
 }
 
 export function serverTypeToString(t: ServerType) {
-  switch(t) {
+  switch (t) {
     case ServerType.CUGAME: return 'Camelot Unchained';
     case ServerType.CUBE: return 'C.U.B.E.';
     case ServerType.CHANNEL: return 'Tools';
@@ -59,20 +59,20 @@ export function serverTypeToString(t: ServerType) {
 
 // Server interface which the Controller will use for rendering
 export interface PatcherServer {
-  name: string,
+  name: string;
   type: ServerType;
   channelStatus: number;
   available: boolean;
   channelPatchPermissions?: number;
-  accessLevel?: webAPI.AccessType,
-  host?: string,
-  playerMaximum?: number,
-  channelID?: number,
-  shardID?: number,
-  arthurians?: number,
-  tuathaDeDanann?: number,
-  vikings?: number,
-  max?: number,
+  accessLevel?: webAPI.AccessType;
+  host?: string;
+  playerMaximum?: number;
+  channelID?: number;
+  shardID?: number;
+  arthurians?: number;
+  tuathaDeDanann?: number;
+  vikings?: number;
+  max?: number;
   characterCount?: number;
   selectedCharacter?: webAPI.SimpleCharacter;
   characters?: webAPI.SimpleCharacter[];
@@ -114,12 +114,12 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
     available: server.playerMaximum > 0,
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
-    apiHost: server.apiHost
+    apiHost: server.apiHost,
   }, server);
 }
 
 function getServerTypeFromChannel(channelID: number): ServerType {
-  switch(channelID) {
+  switch (channelID) {
     default: return ServerType.CHANNEL;
     case 4: case 10: case 11: case 30: case 31: return ServerType.CUGAME;
     case 27: return ServerType.CUBE;
@@ -131,7 +131,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
   return {
     name: channel.channelName,
     available: type !== ServerType.CUGAME,
-    type: type,
+    type,
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
     channelPatchPermissions: 4, // CSE only default
@@ -140,13 +140,15 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
   };
 }
 
-function updateCharacterCounts(servers: utils.Dictionary<PatcherServer>, characters: utils.Dictionary<webAPI.SimpleCharacter>): utils.Dictionary<PatcherServer> {
+function updateCharacterCounts(
+  servers: utils.Dictionary<PatcherServer>,
+  characters: utils.Dictionary<webAPI.SimpleCharacter>): utils.Dictionary<PatcherServer> {
   // get character count by shardID
-  let characterCounts: utils.Dictionary<number> = {};
+  const characterCounts: utils.Dictionary<number> = {};
   for (const key in characters) {
     const shard = characters[key].shardID;
     if (characterCounts[shard]) {
-       characterCounts[shard]++;
+      characterCounts[shard]++;
     } else {
       characterCounts[shard] = 1;
     }
@@ -178,7 +180,7 @@ function alertReceivedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<
 }
 
 
-var module = new Module({
+const module = new Module({
   initialState: initialState(),
   actionExtraData: () => {
     return {
@@ -205,7 +207,7 @@ export const initialize = module.createAction({
         signalr.patcherHub.start(() => {
           dispatch(initSignalRSuccess());
           registerPatcherHubEvents(dispatch);
-          dispatch(getChannels())
+          dispatch(getChannels());
           // update channel info on a timer...
           if (channelUpdateInterval === null) {
             channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
@@ -249,15 +251,16 @@ export const getChannels = module.createAction({
 
     const servers = utils.clone(s.servers);
     for (const key in servers) {
-      var server = servers[key];
-      servers[key].channelStatus = channelDict[server.channelID] ? channelDict[server.channelID].channelStatus : ChannelStatus.NotInstalled;
+      const server = servers[key];
+      servers[key].channelStatus = channelDict[server.channelID] ? channelDict[server.channelID].channelStatus :
+        ChannelStatus.NotInstalled;
       servers[key].lastUpdated = channelDict[server.channelID].lastUpdated || 0;
     }
 
     return {
-      servers: utils.merge(servers, channelServers)
+      servers: utils.merge(servers, channelServers),
     };
-  }
+  },
 });
 
 ///////////////////////////////
@@ -275,9 +278,9 @@ export const alertReceived = module.createAction({
     const alerts = utils.clone(s.alerts);
     alerts[a.alert.id] = a.alert;
     return {
-      alerts
+      alerts,
     };
-  }
+  },
 });
 
 export const alertExpired = module.createAction({
@@ -293,8 +296,8 @@ export const alertExpired = module.createAction({
     return {
       alerts,
     };
-  }
-})
+  },
+});
 
 ///////////////////////////////
 // SIGNALR 
@@ -307,8 +310,8 @@ export const initSignalR = module.createAction({
     return {
       isInitializing: true,
       signalRInitialized: false,
-    }
-  }
+    };
+  },
 });
 
 export const initSignalRSuccess = module.createAction({
@@ -318,8 +321,8 @@ export const initSignalRSuccess = module.createAction({
     return {
       isInitializing: false,
       signalRInitialized: false,
-    }
-  }
+    };
+  },
 });
 
 export const initSignalRFailed = module.createAction({
@@ -329,8 +332,8 @@ export const initSignalRFailed = module.createAction({
     return {
       isInitializing: false,
       signalRInitialized: false,
-    }
-  }
+    };
+  },
 });
 
 const connectionSlow = module.createAction({
@@ -340,7 +343,7 @@ const connectionSlow = module.createAction({
     return {
       connectionSlow: true,
     };
-  }
+  },
 });
 
 
@@ -349,7 +352,7 @@ export const serverUpdate = module.createAction({
   action: (server: webAPI.ServerModel) => {
     return {
       server,
-    }
+    };
   },
   reducer: (s, a) => {
     if (a.server.name === 'localhost') return {};
@@ -358,7 +361,7 @@ export const serverUpdate = module.createAction({
     return {
       servers,
     };
-  }
+  },
 });
 
 export const serverUnavailable = module.createAction({
@@ -372,9 +375,9 @@ export const serverUnavailable = module.createAction({
     const servers = utils.clone(s.servers);
     servers[a.id].available = false;
     return {
-      servers: servers
+      servers,
     };
-  }
+  },
 });
 
 export const characterUpdate = module.createAction({
@@ -392,7 +395,7 @@ export const characterUpdate = module.createAction({
       characters,
       servers,
     };
-  }
+  },
 });
 
 export const characterRemoved = module.createAction({
@@ -410,7 +413,7 @@ export const characterRemoved = module.createAction({
       characters,
       servers,
     };
-  }
+  },
 });
 
 

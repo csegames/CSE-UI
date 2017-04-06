@@ -10,6 +10,6 @@ enum buildUIMode {
   PHANTOMPLACED = 2,
   SELECTINGBLOCK = 4,
   BLOCKSELECTED = 8,
-};
+}
 
 export default buildUIMode;

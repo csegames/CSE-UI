@@ -16,26 +16,26 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: 100
+      offset: 100,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 100
+      offset: 100,
     },
     size: {
       width: 250,
-      height: 250
+      height: 250,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 14,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: PlotControl,
-  props: {}
-}
+  props: {},
+};

@@ -8,7 +8,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {client} from 'camelot-unchained';
 
-import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem'
+import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
 import {fireBuildingItemSelected} from '../../../../../../services/events';
 
 import {GlobalState} from '../../services/session/reducer';
@@ -24,8 +24,8 @@ import {Light} from '../../lib/Light';
 function select(state: GlobalState): DropLightPaneProps {
   return {
     lightsState: state.lights,
-    showSelector: state.lights.showLightSelector
-  }
+    showSelector: state.lights.showLightSelector,
+  };
 }
 
 export interface DropLightPaneStateToPropsInfo {
@@ -50,101 +50,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
     this.state = { preview: false };
   }
 
-  radiusChanged = (event: any) => {
-    const radius: number = parseInt(event.target.value, 10);
-    this.props.dispatch(lightService.updateRadius(radius));
-    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
-  }
-
-  intensityChanged = (event: any) => {
-    const intensity: number = parseInt(event.target.value, 10);
-    this.props.dispatch(lightService.updateIntensity(intensity));
-    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
-  }
-
-  colorChanged = (color: Color) => {
-    this.props.dispatch(lightService.updateColor(color));
-    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
-  }
-
-  triggerDrop = (light: Light) => {
-    client.DropLight(light.intensity, light.radius,
-      light.color.red, light.color.green, light.color.blue);
-  }
-
-  selectLightAsBuildingItem(light: Light) {
-    let item: BuildingItem = null;
-    if (light != null) {
-      const descr = "RGB: (" + light.color.red + ", " + light.color.green + ", " + light.color.blue + ") Intensity:" +
-        light.intensity + " Radius:" + light.radius;
-
-      item = {
-        name: 'DropLight',
-        description: descr,
-        element: (<LightPreview light={light} />),
-        id: light.index + '-' + BuildingItemType.Droplight,
-        type: BuildingItemType.Droplight,
-        select: () => { this.selectLight(light) }
-      } as BuildingItem;
-    }
-    fireBuildingItemSelected(item);
-  }
-
-  selectLight = (light: Light) => {
-    this.props.dispatch(lightService.selectLight(light));
-    this.selectLightAsBuildingItem(light);
-  }
-
-  triggerClear = () => {
-    client.ResetLights();
-  }
-
-  toggleLightSelector = () => {
-    this.props.dispatch(lightService.showSelector(!this.props.showSelector));
-  }
-
-  createLightRadius(light: Light) {
-    if (this.props.minimized || light.preset) return null;
-
-    return (
-      <div className="control">
-        <span className="label">radius</span>
-        <input className="label-input" type='number' min='1' max='100' step='1'
-          value={`${light.radius}`} onChange={this.radiusChanged}/>
-      </div>
-    );
-  }
-
-  createLightIntensity(light: Light) {
-    if (this.props.minimized || light.preset) return null;
-
-    return (
-      <div className="control">
-        <span className="label">intensity</span>
-        <input className="label-input" type='number' min='1' max='100' step='1'
-          value ={`${light.intensity}`} onChange={this.intensityChanged}/>
-      </div>
-    );
-  }
-
-  createColorControls(light: Light) {
-    if (this.props.minimized || light.preset) return null;
-
-    return (
-      <ColorSelect color={light.color} colorChanged={this.colorChanged} />
-    )
-  }
-
-  createDropControls(light: Light) {
-    return (
-      <div className="drop-buttons">
-        <button onClick={() => this.triggerDrop(light) } >Drop</button>
-        <button onClick={this.triggerClear} >Clear</button>
-      </div>
-    );
-  }
-
-  render() {
+  public render() {
     const light = this.props.lightsState.lights[this.props.lightsState.selectedIndex];
 
     return (
@@ -155,7 +61,101 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
         {this.createColorControls(light) }
         {this.createDropControls(light) }
       </div>
-    )
+    );
+  }
+
+  private radiusChanged = (event: any) => {
+    const radius: number = parseInt(event.target.value, 10);
+    this.props.dispatch(lightService.updateRadius(radius));
+    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
+  }
+
+  private intensityChanged = (event: any) => {
+    const intensity: number = parseInt(event.target.value, 10);
+    this.props.dispatch(lightService.updateIntensity(intensity));
+    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
+  }
+
+  private colorChanged = (color: Color) => {
+    this.props.dispatch(lightService.updateColor(color));
+    this.selectLightAsBuildingItem(this.props.lightsState.lights[this.props.lightsState.selectedIndex]);
+  }
+
+  private triggerDrop = (light: Light) => {
+    client.DropLight(light.intensity, light.radius,
+      light.color.red, light.color.green, light.color.blue);
+  }
+
+  private selectLightAsBuildingItem(light: Light) {
+    let item: BuildingItem = null;
+    if (light != null) {
+      const descr = 'RGB: (" + light.color.red + ", " + light.color.green + ", " + light.color.blue + ") Intensity:' +
+        light.intensity + ' Radius:' + light.radius;
+
+      item = {
+        name: 'DropLight',
+        description: descr,
+        element: (<LightPreview light={light} />),
+        id: light.index + '-' + BuildingItemType.Droplight,
+        type: BuildingItemType.Droplight,
+        select: () => { this.selectLight(light); },
+      } as BuildingItem;
+    }
+    fireBuildingItemSelected(item);
+  }
+
+  private selectLight = (light: Light) => {
+    this.props.dispatch(lightService.selectLight(light));
+    this.selectLightAsBuildingItem(light);
+  }
+
+  private triggerClear = () => {
+    client.ResetLights();
+  }
+
+  private toggleLightSelector = () => {
+    this.props.dispatch(lightService.showSelector(!this.props.showSelector));
+  }
+
+  private createLightRadius(light: Light) {
+    if (this.props.minimized || light.preset) return null;
+
+    return (
+      <div className='control'>
+        <span className='label'>radius</span>
+        <input className='label-input' type='number' min='1' max='100' step='1'
+          value={`${light.radius}`} onChange={this.radiusChanged}/>
+      </div>
+    );
+  }
+
+  private createLightIntensity(light: Light) {
+    if (this.props.minimized || light.preset) return null;
+
+    return (
+      <div className='control'>
+        <span className='label'>intensity</span>
+        <input className='label-input' type='number' min='1' max='100' step='1'
+          value ={`${light.intensity}`} onChange={this.intensityChanged}/>
+      </div>
+    );
+  }
+
+  private createColorControls(light: Light) {
+    if (this.props.minimized || light.preset) return null;
+
+    return (
+      <ColorSelect color={light.color} colorChanged={this.colorChanged} />
+    );
+  }
+
+  private createDropControls(light: Light) {
+    return (
+      <div className='drop-buttons'>
+        <button onClick={() => this.triggerDrop(light) } >Drop</button>
+        <button onClick={this.triggerClear} >Clear</button>
+      </div>
+    );
   }
 }
 

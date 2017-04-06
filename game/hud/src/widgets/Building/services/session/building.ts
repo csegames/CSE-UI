@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, buildUIMode} from 'camelot-unchained';
+import { events, buildUIMode } from 'camelot-unchained';
 import requester from './requester';
-
-const assign = require('object-assign');
+import * as assign from 'object-assign';
 
 const CHANGE_MODE = 'building/mode/CHANGE_MODE';
 
@@ -17,8 +16,8 @@ const fake: boolean = (win.cuAPI == null);
 function setMode(mode: buildUIMode) {
   return {
     type: CHANGE_MODE,
-    mode: mode,
-  }
+    mode,
+  };
 }
 
 export function initializeBuilding(dispatch: any) {
@@ -35,8 +34,8 @@ export interface BuildingState {
 }
 
 const initialState = {
-  mode: buildUIMode.NOTBUILDING
-}
+  mode: buildUIMode.NOTBUILDING,
+};
 
 export default function reducer(state: BuildingState = initialState, action: any = {}) {
   switch (action.type) {

@@ -11,11 +11,11 @@ import Animate from '../../../../lib/Animate';
 
 export interface NewsItemProps {
   post: Post;
-};
+}
 
 export interface NewsItemState {
   showFullArticle: boolean;
-};
+}
 
 class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
   public name: string = 'cse-patcher-news-item';
@@ -23,34 +23,11 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
   constructor(props: NewsItemProps) {
     super(props);
     this.state = {
-      showFullArticle: false
+      showFullArticle: false,
     };
   }
-  
-  showFullArticle = () => {
-    this.setState({
-      showFullArticle: true
-    });
-  }
-  
-  hideFullArticle = () => {
-    this.setState({
-      showFullArticle: false
-    });
-  }
-  
-  componentDidUpdate(prevProps: NewsItemProps, prevState: NewsItemState) {
-    const root: HTMLDivElement = (this.refs as any).newsContent;
-    if (root) {
-      const as: NodeListOf<HTMLAnchorElement> = root.getElementsByTagName("a");
-      for (let i = 0; i < as.length; i++) {
-        const a: HTMLAnchorElement = as[i];
-        a.target = "_blank";
-      }
-    }
-  }
 
-  render() {
+  public render() {
     const {post} = this.props;
     const title = post.title.rendered.split('&#8211;')[0].split('–')[0];
     const dateString = new Date(post.date).toLocaleString();
@@ -62,40 +39,42 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
           <div className='article-content card-panel'>
             <div className='content-container'>
                 <span className='card-title grey-text' onClick={this.hideFullArticle}
-                dangerouslySetInnerHTML={{__html: `${title}<i class="fa fa-times" aria-hidden="true"></i><p>${dateString}</p>`}} />
-                <div ref="newsContent" className='words' dangerouslySetInnerHTML={{__html: post.content.rendered}} />
+                dangerouslySetInnerHTML={{
+                  __html: `${title}<i class="fa fa-times" aria-hidden="true"></i><p>${dateString}</p>`,
+                }} />
+                <div ref='newsContent' className='words' dangerouslySetInnerHTML={{__html: post.content.rendered}} />
             </div>
           </div>
         </div>
       );
     }
     
-    var c = document.createElement('div');
+    const c = document.createElement('div');
     c.innerHTML = post.content.rendered;
     c.getElementsByTagName('img');
-    let images = c.getElementsByTagName('img');
+    const images = c.getElementsByTagName('img');
     let imgSrc: any = 'images/other-bg.png';
     let imgClass: any = 'wide';
     let imgWidth: any = 500;
-    if(images.length > 0) {
+    if (images.length > 0) {
       let index = images.length - 1;
       do {
-        let img = images[index];
+        const img = images[index];
         if (img.width > imgWidth) {
           imgSrc = img.src;
           imgWidth = img.width;
-          if(img.width / img.height <= 1) imgClass = 'tall'
+          if (img.width / img.height <= 1) imgClass = 'tall';
           break;
         }
         --index;
-      } while(index >= 0)
+      } while (index >= 0);
       
     }
     
     return (
       <div>
         <div className='card news-card' onClick={this.showFullArticle}>
-            <img className={imgClass} src={imgSrc} style={{marginLeft: `-${imgWidth/2}px`}} />
+            <img className={imgClass} src={imgSrc} style={{marginLeft: `-${imgWidth / 2}px`}} />
           <div className='card-content'>
             <span className='card-title' dangerouslySetInnerHTML={{__html: title}} />
             <h6 className='date'>{dateString}</h6>
@@ -108,6 +87,29 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
         </Animate>
       </div>
     );
+  }
+  
+  private showFullArticle = () => {
+    this.setState({
+      showFullArticle: true,
+    });
+  }
+  
+  private hideFullArticle = () => {
+    this.setState({
+      showFullArticle: false,
+    });
+  }
+  
+  private componentDidUpdate(prevProps: NewsItemProps, prevState: NewsItemState) {
+    const root: HTMLDivElement = (this.refs as any).newsContent;
+    if (root) {
+      const as: NodeListOf<HTMLAnchorElement> = root.getElementsByTagName('a');
+      for (let i = 0; i < as.length; i++) {
+        const a: HTMLAnchorElement = as[i];
+        a.target = '_blank';
+      }
+    }
   }
 }
 

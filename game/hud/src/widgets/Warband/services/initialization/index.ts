@@ -8,4 +8,4 @@ import slashCommands from './slashCommands';
 
 export default () => {
   slashCommands();
-}
+};

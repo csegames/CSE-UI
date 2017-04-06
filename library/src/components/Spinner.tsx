@@ -29,8 +29,8 @@ export const defaultSpinnerStyle: SpinnerStyle = {
     ':hover': {
       borderTopColor: '#3fd0b0',
     },
-  }
-}
+  },
+};
 
 export interface SpinnerProps {
   styles?: Partial<SpinnerStyle>;
@@ -42,6 +42,6 @@ export const Spinner = (props: SpinnerProps) => {
   return (
     <div className={css(ss.spinner, custom.spinner)}></div>
   );
-}
+};
 
 export default Spinner;

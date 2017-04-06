@@ -17,7 +17,7 @@ function select(state: GlobalState): MaterialSelectorProps {
     materialsByType: state.materialSelector.materialsByType,
     selectMaterial: state.materialSelector.onMaterialSelected,
     selected: state.materialSelector.selectedMaterial,
-  }
+  };
 }
 
 export interface MaterialSelectorProps {
@@ -36,28 +36,7 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
     super(props);
   }
 
-  selectMaterial = (mat: BuildingMaterial) => {
-    this.props.selectMaterial(mat);
-    this.props.dispatch(setSelectedMaterial(mat));
-  }
-
-  generateMaterialIcon = (mat: BuildingMaterial, selectedId: number) => {
-    return (
-      <img key={mat.id}
-        className={mat.id == selectedId ? 'active' : ''}
-        src={`data:image/png;base64, ${mat.icon}`}
-        onClick={() => this.selectMaterial(mat) }
-        onMouseOver={() => this.onHover(mat) }
-        onMouseOut={() => this.onHover(null) }
-        />
-    )
-  }
-
-  onHover = (material: BuildingMaterial) => {
-      this.props.dispatch(setHoverMaterial(material));
-  }
-
-  render() {
+  public render() {
     const selectedId: number = this.props.selected ? this.props.selected.id : null;
 
     return (
@@ -66,12 +45,35 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
         {this.props.materialsByType.stoneBlocks.map((mat: BuildingMaterial) => this.generateMaterialIcon(mat, selectedId)) }
 
         <header>Stone Tiles & Sheets</header>
-        {this.props.materialsByType.stoneTilesAndSheets.map((mat: BuildingMaterial) => this.generateMaterialIcon(mat, selectedId)) }
+        {this.props.materialsByType.stoneTilesAndSheets.map((mat: BuildingMaterial) =>
+          this.generateMaterialIcon(mat, selectedId))}
 
         <header>Wood & Organic</header>
-        {this.props.materialsByType.woodAndOrganic.map((mat: BuildingMaterial) => this.generateMaterialIcon(mat, selectedId)) }
+        {this.props.materialsByType.woodAndOrganic.map((mat: BuildingMaterial) =>
+          this.generateMaterialIcon(mat, selectedId))}
       </div>
-    )
+    );
+  }
+
+  private selectMaterial = (mat: BuildingMaterial) => {
+    this.props.selectMaterial(mat);
+    this.props.dispatch(setSelectedMaterial(mat));
+  }
+
+  private generateMaterialIcon = (mat: BuildingMaterial, selectedId: number) => {
+    return (
+      <img key={mat.id}
+        className={mat.id === selectedId ? 'active' : ''}
+        src={`data:image/png;base64, ${mat.icon}`}
+        onClick={() => this.selectMaterial(mat) }
+        onMouseOver={() => this.onHover(mat) }
+        onMouseOut={() => this.onHover(null) }
+        />
+    );
+  }
+
+  private onHover = (material: BuildingMaterial) => {
+      this.props.dispatch(setHoverMaterial(material));
   }
 }
 

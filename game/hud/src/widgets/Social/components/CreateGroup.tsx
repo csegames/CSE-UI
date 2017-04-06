@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 23:07:01
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 16:08:29
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:48:43
  */
 
 import * as React from 'react';
@@ -59,7 +59,7 @@ export const defaultCreateGroupStyle: CreateGroupStyle = {
   create: {
     fontSize: '1.5em',
     flex: '0 0 auto',
-  }
+  },
 };
 
 export interface CreateGroupProps {
@@ -76,6 +76,8 @@ export interface CreateGroupState {
 
 export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupState> {
 
+  private inputRef: HTMLInputElement = null;
+
   constructor(props: CreateGroupProps) {
     super(props);
     this.state = {
@@ -84,12 +86,37 @@ export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupSt
     };
   }
 
-  create = () => {
+  public render() {
+    const ss = StyleSheet.create(defaultCreateGroupStyle);
+    const custom = StyleSheet.create(this.props.styles || {});
+
+    return (
+      <div className={css(ss.container, custom.container)}>
+        <GroupTitle refetch={this.props.refetch}>
+          Create Order
+        </GroupTitle>
+        <div className={css(ss.content, custom.content)}>
+          <div className={css(ss.message, custom.message)}>Hey! You're not in an Order. Would you like to make one?</div>
+          <div className={css(ss.create, custom.create)}>
+            <div className={css(ss.error, custom.error)}>{this.state.error}</div>
+            Enter a name:
+            <Input type='text'
+                   inputRef={r => this.inputRef = r} />
+            <RaisedButton onClick={this.create} disabled={this.state.creating}>
+              { this.state.creating ? <Spinner /> :  <span>Create</span> }
+            </RaisedButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private create = () => {
     if (this.inputRef == null) return;
     const name = this.inputRef.value;
 
     webAPI.OrdersAPI.createV1(client.shardID, client.characterID, name)
-      .then(result => {
+      .then((result) => {
         if (result.ok) {
           this.setState({
             creating: false,
@@ -114,33 +141,6 @@ export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupSt
       creating: true,
       error: null,
     });
-  }
-
-  inputRef: HTMLInputElement = null
-
-  render() {
-    const ss = StyleSheet.create(defaultCreateGroupStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
-    return (
-      <div className={css(ss.container, custom.container)}>
-        <GroupTitle refetch={this.props.refetch}>
-          Create Order
-        </GroupTitle>
-        <div className={css(ss.content, custom.content)}>
-          <div className={css(ss.message, custom.message)}>Hey! You're not in an Order. Would you like to make one?</div>
-          <div className={css(ss.create, custom.create)}>
-            <div className={css(ss.error, custom.error)}>{this.state.error}</div>
-            Enter a name:
-            <Input type='text'
-                   inputRef={r => this.inputRef = r} />
-            <RaisedButton onClick={this.create} disabled={this.state.creating}>
-              { this.state.creating ? <Spinner /> :  <span>Create</span> }
-            </RaisedButton>
-          </div>
-        </div>
-      </div>
-    );
   }
 }
 

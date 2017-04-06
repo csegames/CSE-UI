@@ -13,7 +13,7 @@ export function checkStatus(response: any) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    let error = new ResponseError(response, response.statusText);
+    const error = new ResponseError(response, response.statusText);
     throw error;
   }
 }

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 18:46:37
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:26:31
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:48:10
  */
 
 import * as React from 'react';
@@ -36,8 +36,8 @@ export const defaultCreateRankStyle: CreateRankStyle = {
     display: 'flex',
     justifyContent: 'flex-end',
     alignContent: 'center',
-  }
-}
+  },
+};
 
 export interface CreateRankProps {
   dispatch: (action : any) => any;
@@ -49,7 +49,7 @@ export interface CreateRankProps {
 }
 
 export interface CreateRankState {
-  permissions: {},
+  permissions: {};
   requestActive: boolean;
   success: boolean;
   errors: string;
@@ -58,12 +58,17 @@ export interface CreateRankState {
 }
 
 class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState> {
+
+  private nameInputRef: HTMLInputElement = null;
+  private levelInputRef: HTMLInputElement = null;
+  private listSelectRef: DualListSelect = null;
+
   constructor(props: CreateRankProps) {
     super(props);
 
     const permissions = {};
-    props.permissions.forEach(p => {
-      permissions[p.tag] = <Tooltip content={p.description}>{p.name}</Tooltip>
+    props.permissions.forEach((p) => {
+      permissions[p.tag] = <Tooltip content={p.description}>{p.name}</Tooltip>;
     });
 
     this.state = {
@@ -76,78 +81,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
     };
   }
 
-  createRank = () => {
-    const name = this.nameInputRef.value;
-    const level = Number.parseInt(this.levelInputRef.value);
-    const permisisons = this.listSelectRef.getRightKeys();
-
-    this.setState({
-      requestActive: true,
-    });
-
-    webAPI.GroupsAPI.createRankV1(client.shardID, client.characterID, this.props.groupId, name, level, permisisons)
-      .then(response => {
-        if (response.ok) {
-          this.setState({
-            requestActive: false,
-            success: true,
-            errors: null
-          });
-          setTimeout(() => this.props.onCreated(), 200);
-          return;
-        }
-        this.setState({
-          requestActive: false,
-          errors: response.problem
-        });
-      });
-  }
-
-  nameInputRef: HTMLInputElement = null;
-  levelInputRef: HTMLInputElement = null;
-  listSelectRef: DualListSelect = null;
-
-  createButton = () => {
-    if (this.state.requestActive) {
-      return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  }
-                }}><Spinner /></FlatButton>;
-    }
-
-    if (this.state.success) {
-      return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  }
-                }}>Success!</FlatButton>;
-    }
-
-    return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  }
-                }}
-                onClick={this.createRank}>Create</FlatButton>
-  }
-
-  onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      name: e.target.value,
-    });
-  }
-
-  onLevelChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      level: Number.parseInt(e.target.value),
-    });
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultCreateRankStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     return (
@@ -171,8 +105,8 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
             styles={{
               container: {
                 margin: '10px',
-                height: '300px'
-              }
+                height: '300px',
+              },
             }}
             ref={r => this.listSelectRef = r}
             labelLeft={'Available permissions'}
@@ -184,13 +118,80 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
               button: {
                 margin: '10px',
                 fontSize: '1.5em',
-              }
+              },
             }}
             onClick={() => this.props.onCancel()}>Cancel</FlatButton>
           </div>
         </div>
       </div>
     );
+  }
+
+  private createRank = () => {
+    const name = this.nameInputRef.value;
+    const level = Number.parseInt(this.levelInputRef.value);
+    const permisisons = this.listSelectRef.getRightKeys();
+
+    this.setState({
+      requestActive: true,
+    });
+
+    webAPI.GroupsAPI.createRankV1(client.shardID, client.characterID, this.props.groupId, name, level, permisisons)
+      .then((response) => {
+        if (response.ok) {
+          this.setState({
+            requestActive: false,
+            success: true,
+            errors: null,
+          });
+          setTimeout(() => this.props.onCreated(), 200);
+          return;
+        }
+        this.setState({
+          requestActive: false,
+          errors: response.problem,
+        });
+      });
+  }
+
+  private createButton = () => {
+    if (this.state.requestActive) {
+      return <FlatButton styles={{
+                  button: {
+                    margin: '10px',
+                    fontSize: '1.5em',
+                  },
+                }}><Spinner /></FlatButton>;
+    }
+
+    if (this.state.success) {
+      return <FlatButton styles={{
+                  button: {
+                    margin: '10px',
+                    fontSize: '1.5em',
+                  },
+                }}>Success!</FlatButton>;
+    }
+
+    return <FlatButton styles={{
+                  button: {
+                    margin: '10px',
+                    fontSize: '1.5em',
+                  },
+                }}
+                onClick={this.createRank}>Create</FlatButton>;
+  }
+
+  private onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      name: e.target.value,
+    });
+  }
+
+  private onLevelChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      level: Number.parseInt(e.target.value),
+    });
   }
 }
 

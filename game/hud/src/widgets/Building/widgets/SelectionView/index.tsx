@@ -22,10 +22,10 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
     super(props);
   }
 
-  render() {
+  public render() {
     if (this.props.item == null) return null;
     return (
-     <SavedDraggable saveName="building/selectionview" 
+     <SavedDraggable saveName='building/selectionview'
         defaultX={[-100, Anchor.TO_CENTER]} 
         defaultY={[150, Anchor.TO_END]} 
  >
@@ -38,7 +38,7 @@ class SelectionView extends React.Component<SelectionViewProps, SelectionViewSta
         <p>{this.props.item.description}</p>
       </div>
       </SavedDraggable>
-    )
+    );
   }
 }
 

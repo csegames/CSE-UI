@@ -45,7 +45,7 @@ export const defaultCardStyle : CardStyle = {
     boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)',
     transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
   },
-}
+};
 
 export interface CardStyle extends StyleDeclaration {
   card : React.CSSProperties;
@@ -61,7 +61,7 @@ export enum CardLevel {
   Two,
   Three,
   Four,
-  Five
+  Five,
 }
 
 export const Card = (props : {
@@ -74,7 +74,7 @@ export const Card = (props : {
   const level = props.level || CardLevel.One;
   let levelCSS = ss.levelOne;
   let customLevelCSS = custom.levelOne;
-  switch(level) {
+  switch (level) {
     case CardLevel.Two: 
       levelCSS = ss.levelTwo;
       customLevelCSS = custom.levelTwo;

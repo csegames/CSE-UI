@@ -16,26 +16,26 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: 127
+      offset: 127,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 350
+      offset: 350,
     },
     size: {
       width: 277,
-      height: 350
+      height: 350,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: 12,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: EquippedGear,
-  props: {}
-}
+  props: {},
+};

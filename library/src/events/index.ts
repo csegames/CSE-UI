@@ -24,8 +24,8 @@ import LoggingListener from './listeners/Logging';
 import PlotListener from './listeners/Plot';
 import BlockSelectListener from '../building/events/BlockSelect';
 import BuildingModeListener from '../building/events/BuildingMode';
-import BlueprintSelectListener from '../building/events/BlueprintSelect'
-import BlueprintCopyListener from '../building/events/BlueprintCopy'
+import BlueprintSelectListener from '../building/events/BlueprintSelect';
+import BlueprintCopyListener from '../building/events/BlueprintCopy';
 
 const buildingEventTopics = BuildingEventTopics;
 // Listeners
@@ -47,7 +47,7 @@ const listeners: any = {
   [buildingEventTopics.handlesBlockSelect]: new BlockSelectListener(),
   [buildingEventTopics.handlesBuildingMode]: new BuildingModeListener(),
   [buildingEventTopics.handlesBlueprintSelect]: new BlueprintSelectListener(),
-  [buildingEventTopics.handlesBlueprintCopy]: new BlueprintCopyListener()
+  [buildingEventTopics.handlesBlueprintCopy]: new BlueprintCopyListener(),
 };
 
 // Event Emitter.  A single instance of event emitter handles all cu-events events
@@ -140,5 +140,5 @@ export default {
   fire,
   diagnostics,
   addListener,
-  removeListener
-}
+  removeListener,
+};

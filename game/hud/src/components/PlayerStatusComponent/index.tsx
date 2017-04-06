@@ -17,7 +17,7 @@ import { spring, presets, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
 
 import Pills, {Orientation} from './components/Pills';
-import ActiveEffectIcon from '../../components/ActiveEffectIcon'
+import ActiveEffectIcon from '../../components/ActiveEffectIcon';
 
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
@@ -67,136 +67,24 @@ export interface PlayerStatusComponentState {
 }
 
 class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, PlayerStatusComponentState> {
+
+  private shakeAnimationName: string = 'shakeit';
+  private endTime: number = 0;
+  private componentRef: HTMLDivElement = null;
+
   constructor(props: PlayerStatusComponentProps) {
     super(props);
     this.state = {
       events: [],
-    }
+    };
   }
 
-  componentWillMount() {
-    client.OnCombatLogEvent(this.parseCombatLogEvent);
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
-    const events: CombatEvent[] = [];
-    
-    combatLogs.forEach(e => {
-      if (e.toName !== this.props.playerStatus.name) return;
-      if (e.damages) {
-        let value = 0;
-        let max = 0;
-        let type = damageTypes.NONE;
-        e.damages.forEach(d => {
-          if (d.recieved > max) {
-            max = d.recieved | 0;
-            type = d.type;
-          }
-          value += d.recieved | 0;
-        });
-        events.push({
-          id: generateID(7),
-          kind: 'damage',
-          type,
-          value,
-          when: Date.now(),
-        });
-      }
-
-      if (e.heals) {
-        let value = 0;
-        let max = 0;
-        let type = damageTypes.NONE;
-        e.heals.forEach(d => {
-          if (d.recieved > max) {
-            max = d.recieved | 0;
-          }
-          value += d.recieved | 0;
-        });
-        events.push({
-          id: generateID(7),
-          kind: 'heal',
-          value,
-          when: Date.now(),
-        });
-      }
-    });
-
-    if (events.length > 0) {
-      if (this.state.events.length > 0 && (Date.now() - this.state.events[this.state.events.length-1].when) > 200) {
-        this.setState({
-          events,
-        });
-      } else {
-        this.setState({
-          events: this.state.events.concat(events),
-        });
-      }
-    }
-  }
-
-  private shakeAnimationName: string = 'shakeit';
-  componentWillReceiveProps(props: PlayerStatusComponentProps) {
-    if (props.mirror) this.shakeAnimationName = 'shakeit-mirrored';
-  }
-
-  // Transitions
-  flyTextWillLeave = (): any => {
-    return {opacity: spring(0, {stiffness: 50, damping: 15, precision: 0.01}), top: spring(-120, {stiffness: 75, damping: 15, precision: 1})};
-  }
-
-  flyTextWillEnter = (): any => {
-    return {opacity: 7, top: 0};
-  }
-
-  eventIconWillLeave = (): any => {
-    return {opacity: spring(0, {stiffness: 50, damping: 15, precision: 0.01})};
-  }
-
-  eventIconWillEnter = (): any => {
-    return {opacity: 5};
-  }
-
-  // animations
-  shakeIt = () => {
-    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) != -1) return;
-    this.componentRef.className += ` ${this.shakeAnimationName}`;
-  }
-
-  private endTime: number = 0;
-  private componentRef: HTMLDivElement = null;
-  endShake = () => {
-    if (Date.now() < this.endTime) return;
-    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) == -1) return;
-    this.componentRef.className = this.componentRef.className.replace(` ${this.shakeAnimationName}`, '').trim();
-  }
-
-  validPlayer = () => {
-    const {playerStatus} = this.props;
-    if (!playerStatus.name) return false;
-    if (!playerStatus.avatar) return false;
-    if (!playerStatus.race) return false;
-    if (!playerStatus.gender) return false;
-    if (!playerStatus.archetype) return false;
-    //if (!playerStatus.characterID) return false;
-    if (!playerStatus.health || playerStatus.health.length !== 6) return false;
-    if (!playerStatus.wounds || playerStatus.wounds.length !== 6) return false;
-    if (!playerStatus.stamina || !playerStatus.stamina.current || !playerStatus.stamina.maximum) return false;
-    if (!playerStatus.blood || !playerStatus.blood.current || !playerStatus.blood.maximum) return false;
-    //if (!playerStatus.panic || !playerStatus.panic.current || !playerStatus.panic.maximum) return false;
-    return true;
-  }
-
-  render() {
-    //if (!this.validPlayer()) return null;
+  public render() {
+    // if (!this.validPlayer()) return null;
     const {playerStatus} = this.props;
     const now = Date.now();
     // did we recently take damage?
-    for (let i = this.state.events.length-1; i >= 0; --i) {
+    for (let i = this.state.events.length - 1; i >= 0; --i) {
       const e = this.state.events[i];
       if (now - e.when > 200) break;
       if (e.kind === 'damage') {
@@ -263,14 +151,14 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                             styles={this.state.events.map(e => ({
                               key: e.id,
                               data: e,
-                              style: {opacity: spring(0), r: Math.random() * 90 - 45}
+                              style: {opacity: spring(0), r: Math.random() * 90 - 45},
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__eventIcon'>
                 {interpolatedStyles.map((config: any) => {
                   return <div className={`PlayerStatusComponent__circle__eventIcon--piercing`}
                               key={config.key}
-                              style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}/>
+                              style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}/>;
                 })}
               </div>
             }
@@ -281,7 +169,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                             styles={this.state.events.map(e => ({
                               key: e.id,
                               data: e,
-                              style: {opacity: spring(0), top: spring(-140)}
+                              style: {opacity: spring(0), top: spring(-140)},
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__flyText'>
@@ -296,7 +184,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                          style={{opacity: config.style.opacity, top: config.style.top}}>
                       {config.data.value}
                     </div>
-                  )
+                  );
                 })}
               </div>
             }
@@ -312,7 +200,9 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
             <li className={`${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}>&nbsp;H</li>
             <li className={`${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}>&nbsp;T</li>
             <li className={`inner ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >RL</li>
-            <li className={`outer ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} style={{left: '-7px'}}>LL</li>
+            <li className={`outer ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} style={{left: '-7px'}}>
+              LL
+            </li>
           </ul>
 
           <Pills orientation={Orientation.Horizontal}
@@ -407,6 +297,130 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
       </div>
     );
+  }
+
+  private componentWillMount() {
+    client.OnCombatLogEvent(this.parseCombatLogEvent);
+  }
+
+  private componentWillUnmount() {
+
+  }
+
+  private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
+    const events: CombatEvent[] = [];
+    
+    combatLogs.forEach((e) => {
+      if (e.toName !== this.props.playerStatus.name) return;
+      if (e.damages) {
+        let value = 0;
+        let max = 0;
+        let type = damageTypes.NONE;
+        e.damages.forEach((d) => {
+          if (d.recieved > max) {
+            max = d.recieved | 0;
+            type = d.type;
+          }
+          value += d.recieved | 0;
+        });
+        events.push({
+          id: generateID(7),
+          kind: 'damage',
+          type,
+          value,
+          when: Date.now(),
+        });
+      }
+
+      if (e.heals) {
+        let value = 0;
+        let max = 0;
+        const type = damageTypes.NONE;
+        e.heals.forEach((d) => {
+          if (d.recieved > max) {
+            max = d.recieved | 0;
+          }
+          value += d.recieved | 0;
+        });
+        events.push({
+          id: generateID(7),
+          kind: 'heal',
+          value,
+          when: Date.now(),
+        });
+      }
+    });
+
+    if (events.length > 0) {
+      if (this.state.events.length > 0 && (Date.now() - this.state.events[this.state.events.length - 1].when) > 200) {
+        this.setState({
+          events,
+        });
+      } else {
+        this.setState({
+          events: this.state.events.concat(events),
+        });
+      }
+    }
+  }
+
+  private componentWillReceiveProps(props: PlayerStatusComponentProps) {
+    if (props.mirror) this.shakeAnimationName = 'shakeit-mirrored';
+  }
+
+  // Transitions
+  private flyTextWillLeave = (): any => {
+    return {
+      opacity: spring(0, {
+        stiffness: 50,
+        damping: 15,
+        precision: 0.01,
+      }), top: spring(-120, {
+        stiffness: 75,
+        damping: 15,
+        precision: 1,
+      }),
+    };
+  }
+
+  private flyTextWillEnter = (): any => {
+    return {opacity: 7, top: 0};
+  }
+
+  private eventIconWillLeave = (): any => {
+    return {opacity: spring(0, {stiffness: 50, damping: 15, precision: 0.01})};
+  }
+
+  private eventIconWillEnter = (): any => {
+    return {opacity: 5};
+  }
+
+  // animations
+  private shakeIt = () => {
+    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) !== -1) return;
+    this.componentRef.className += ` ${this.shakeAnimationName}`;
+  }
+
+  private endShake = () => {
+    if (Date.now() < this.endTime) return;
+    if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) === -1) return;
+    this.componentRef.className = this.componentRef.className.replace(` ${this.shakeAnimationName}`, '').trim();
+  }
+
+  private validPlayer = () => {
+    const {playerStatus} = this.props;
+    if (!playerStatus.name) return false;
+    if (!playerStatus.avatar) return false;
+    if (!playerStatus.race) return false;
+    if (!playerStatus.gender) return false;
+    if (!playerStatus.archetype) return false;
+    // if (!playerStatus.characterID) return false;
+    if (!playerStatus.health || playerStatus.health.length !== 6) return false;
+    if (!playerStatus.wounds || playerStatus.wounds.length !== 6) return false;
+    if (!playerStatus.stamina || !playerStatus.stamina.current || !playerStatus.stamina.maximum) return false;
+    if (!playerStatus.blood || !playerStatus.blood.current || !playerStatus.blood.maximum) return false;
+    // if (!playerStatus.panic || !playerStatus.panic.current || !playerStatus.panic.maximum) return false;
+    return true;
   }
 }
 

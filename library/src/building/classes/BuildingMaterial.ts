@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,10 +8,10 @@
 import BuildingBlock from './BuildingBlock';
 
 class BuildingMaterial {
-  id: number;
-  icon: string;
-  tags: string[];
-  blocks: BuildingBlock[];
+  public id: number;
+  public icon: string;
+  public tags: string[];
+  public blocks: BuildingBlock[];
 
   constructor(substance = <BuildingMaterial>{}) {
     this.id = substance.id;
@@ -21,7 +21,7 @@ class BuildingMaterial {
   }
 
   public getBlockForShape(shapeId: number) {
-    for (let i in this.blocks) {
+    for (const i in this.blocks) {
       const block = this.blocks[i];
       if (block.shapeId === shapeId) {
         return block;
@@ -29,7 +29,7 @@ class BuildingMaterial {
     }
   }
 
-  static create() {
+  public static create() {
     const a = new BuildingMaterial();
     return a;
   }

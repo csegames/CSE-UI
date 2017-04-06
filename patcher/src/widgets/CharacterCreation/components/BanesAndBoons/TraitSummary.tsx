@@ -6,12 +6,12 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:19
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-21 15:06:36
+ * @Last Modified time: 2017-04-10 11:57:17
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from "aphrodite";
-import { BanesAndBoonsInfo } from "../../services/session/banesAndBoons";
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
 import { events } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
@@ -47,37 +47,37 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
     marginTop: '15px',
     marginBottom: '15px',
     backgroundColor: 'rgba(49,49,49,0.7)',
-    ...styleConstants.marginRight
+    ...styleConstants.marginRight,
   },
 
   traitName: {
     fontSize: '1.1em',
     lineHeight: '1.1em',
     marginBottom: '5px',
-    marginTop: 0
+    marginTop: 0,
   },
 
   traitPoints: {
     margin: 0,
     color: 'orange',
-    marginLeft: '5px'
+    marginLeft: '5px',
   },
 
   titleContainer: {
     display: 'flex',
     alignItems: 'flex-start',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   traitDescription: {
     color: '#CCC',
-    marginBottom: 0
+    marginBottom: 0,
   },
 
   traitCategory: {
     marginTop: 0,
     marginBottom: 0,
-    marginRight: '5px'
+    marginRight: '5px',
   },
 
   traitIcon: {
@@ -93,22 +93,22 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
     backgroundColor: 'rgba(49,49,49,0.7)',
     transition: 'background-color 0.5s',
     ':hover': {
-      backgroundColor: '#a0241b'
+      backgroundColor: '#a0241b',
     },
     ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)'
-    }
+      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
+    },
   },
 
   additionalInfoContainer: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   divider: {
     fontSize: '1em',
     margin: 0,
-    color: '#8f8f8f'
+    color: '#8f8f8f',
   },
 
   removeButton: {
@@ -126,23 +126,14 @@ export const defaultTraitSummaryStyles: TraitSummaryStyle = {
     cursor: 'pointer',
     transition: 'background-color 0.3s',
     ':hover': {
-      backgroundColor: colors.banePrimary
-    }
-  }
+      backgroundColor: colors.banePrimary,
+    },
+  },
 };
 
 class TraitSummary extends React.Component<TraitSummaryProps, {}> {
-  private onCancelClick = () => {
-    const { trait, onCancelClick, onCancelRankTrait } = this.props;
-    events.fire('play-sound', 'select');
-    if (trait.ranks) {
-      if (trait.rank === 0) onCancelClick(trait);
-      onCancelRankTrait(trait);
-    } else {
-      onCancelClick(trait);
-    }
-  };
-  render() {
+
+  public render() {
     const { trait, type, styles } = this.props;
     const ss = StyleSheet.create(defaultTraitSummaryStyles);
     const custom = StyleSheet.create(styles || {});
@@ -175,7 +166,18 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
         </div>
         <p className={css(ss.traitDescription, custom.traitDescription)}>{trait.description}</p>
       </div>
-    )
+    );
+  }
+  
+  private onCancelClick = () => {
+    const { trait, onCancelClick, onCancelRankTrait } = this.props;
+    events.fire('play-sound', 'select');
+    if (trait.ranks) {
+      if (trait.rank === 0) onCancelClick(trait);
+      onCancelRankTrait(trait);
+    } else {
+      onCancelClick(trait);
+    }
   }
 }
 

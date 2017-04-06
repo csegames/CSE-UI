@@ -14,7 +14,7 @@ class EquippedGear  {
    * The items currently in the equippedgear
    * @type {Item[]}
    */
-  items: Item[];
+  public items: Item[];
 
   constructor(equippedgear: EquippedGear = <EquippedGear>{}) {
     this.items = equippedgear.items || <Item[]>[];
@@ -25,9 +25,9 @@ class EquippedGear  {
    * @param  {gearSlot} slot - the gear slot to get item for
    * @return {Item} the item in gear slot, or null if there is no item equipped
    */
-  getItemInGearSlot(slot: string): Item {
-    let gearSlotItems = this.items.filter((item: Item) => {
-      return item.gearSlot == slot;
+  public getItemInGearSlot(slot: string): Item {
+    const gearSlotItems = this.items.filter((item: Item) => {
+      return item.gearSlot === slot;
     });
     if (gearSlotItems.length > 0) {
       return gearSlotItems[0];
@@ -41,9 +41,9 @@ class EquippedGear  {
    * @param  {string} id - the id of item to look for
    * @return {boolean} returns true if the item existing in the equippedgear
    */
-  hasItem(id: string): boolean {
+  public hasItem(id: string): boolean {
     return this.items.filter((item: Item) => {
-      return item.id == id;
+      return item.id === id;
     }).length > 0;
   }
 
@@ -51,10 +51,10 @@ class EquippedGear  {
    * Removes an item from given gear slot
    * @param {gearSlot} slot the gear slot to remove item from
    */
-  removeItemInGearSlot(slot: string): void {
+  public removeItemInGearSlot(slot: string): void {
     const ids: string[] = [];
     this.items.forEach((item: Item) => {
-      if (item.gearSlot == slot) {
+      if (item.gearSlot === slot) {
         ids.push(item.id);
       }
     });
@@ -67,7 +67,7 @@ class EquippedGear  {
    * Adds an item to the equippedgear
    * @param {Item} item - the item to add to equippedgear
    */
-  addItem(item: Item): void {
+  public addItem(item: Item): void {
     this.removeItemInGearSlot(item.gearSlot);
     this.items.push(item);
   }
@@ -76,10 +76,10 @@ class EquippedGear  {
    * Removes an item from the equippedgear with the given item id
    * @param {string} id - the item id to remove
    */
-  removeItem(id: string): void {
+  public removeItem(id: string): void {
     let itemIndex: number = null;
     this.items.forEach((item: Item, index: number) => {
-      if (item.id == id) {
+      if (item.id === id) {
         itemIndex = index;
       }
     });
@@ -92,7 +92,7 @@ class EquippedGear  {
    * Get a list of all item ID's currently in the equippedgear
    * @return {string[]} an array of item ID's
    */
-  getItemIDs(): string[] {
+  public getItemIDs(): string[] {
     const itemIDs: string[] = [];
     this.items.forEach((item: Item) => {
       itemIDs.push(item.id);
@@ -100,8 +100,8 @@ class EquippedGear  {
     return itemIDs;
   }
 
-  static create() {
-    let a = new EquippedGear();
+  public static create() {
+    const a = new EquippedGear();
     return a;
   }
 

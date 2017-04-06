@@ -23,10 +23,10 @@ const jsToDXKeyCodeMap = {
   38: 0xC8,
   39: 0xCD,
   40: 0xD0,
-  //PRINT_SCREEN: 44,
+  // PRINT_SCREEN: 44,
   45: 0xD2,
   46: 0xD3,
-  //0 - 9
+  // 0 - 9
   48: 0x0B,
   49: 0x02,
   50: 0x03,
@@ -37,7 +37,7 @@ const jsToDXKeyCodeMap = {
   55: 0x08,
   56: 0x09,
   57: 0x0A,
-  //A - Z
+  // A - Z
   65: 0x1E,
   66: 0x30,
   67: 0x2E,
@@ -66,7 +66,7 @@ const jsToDXKeyCodeMap = {
   90: 0x2C,
   91: 0xDB,
   92: 0xDC,
-  //CONTEXT_MENU: 93,
+  // CONTEXT_MENU: 93,
   // NUMPAD0-9
   96: 0x52,
   97: 0x4F,

@@ -8,25 +8,25 @@ import {Race, Archetype} from '../..';
 
 class Player extends Combatant {
 
-  race: Race;
-  archetype: Archetype;
+  public race: Race;
+  public archetype: Archetype;
 
   constructor(player = <Player>{}) {
-    super(player)
+    super(player);
     this.race = player.race || Race.Any;
     this.archetype = player.archetype || Archetype.Any;
   }
 
-  setRace(race: Race) {
+  public setRace(race: Race) {
     this.race = race;
   }
     
-  setArchetype(archetype: Archetype) {
+  public setArchetype(archetype: Archetype) {
     this.archetype = archetype;
   }
 
-  static create() {
-    let a = new Player();
+  public static create() {
+    const a = new Player();
     return a;
   }
 

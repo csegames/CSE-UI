@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {BuildingBlock, BuildingMaterial} from 'camelot-unchained'
+import { BuildingBlock, BuildingMaterial } from 'camelot-unchained';
 import requester from '../../../../../../services/session/requester';
-
-const assign = require('object-assign');
+import * as assign from 'object-assign';
 
 const BLOCKS_SELECTED = 'buildpanel/panes/BLOCKS_SELECTED';
 const SELECT_FROM_MATERIAL = 'buildpanel/panes/SELECT_FROM_MATERIAL';
@@ -17,29 +16,29 @@ const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
   id: -1,
   icon: '',
   tags: ['default'],
-  blocks: []
+  blocks: [],
 } as BuildingMaterial);
 
 
 export function selectFromMaterial(material: BuildingMaterial) {
   return {
     type: SELECT_FROM_MATERIAL,
-    selectedMaterial: material
-  }
+    selectedMaterial: material,
+  };
 }
 
 export function selectToMaterial(material: BuildingMaterial) {
   return {
     type: SELECT_TO_MATERIAL,
-    selectedMaterial: material
-  }
+    selectedMaterial: material,
+  };
 }
 
 export function setBlockMode(blocksSelected: boolean) {
   return {
     type: BLOCKS_SELECTED,
-    selected: blocksSelected
-  }
+    selected: blocksSelected,
+  };
 }
 
 export interface MaterialsReplaceState {
@@ -51,8 +50,8 @@ export interface MaterialsReplaceState {
 const initialState: MaterialsReplaceState = {
   from: DEFAULT_MATERIAL,
   to: DEFAULT_MATERIAL,
-  blocksSelected: false
-}
+  blocksSelected: false,
+};
 
 export default function reducer(state: MaterialsReplaceState = initialState, action: any = {}) {
   switch (action.type) {

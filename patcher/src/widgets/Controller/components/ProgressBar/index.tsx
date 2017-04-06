@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-26 18:32:00
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-11-01 11:52:34
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 11:50:43
  */
 
 import * as React from 'react';
@@ -24,24 +24,15 @@ export interface ProgressBarState {
 }
 
 class ProgressBar extends React.Component<ProgressBarProps, ProgressBarState> {
+
+  private installingChannel: number;
+
   constructor(props: ProgressBarProps) {
     super(props);
     this.state = {};
   }
-  
-  private installingChannel: number;
-  componentWillReceiveProps(nextProps: ProgressBarProps) {
-    for (const key in nextProps.servers) {
-      const s = nextProps.servers[key];
-      if (s.channelStatus === ChannelStatus.Updating) {
-        this.installingChannel = s.channelID;
-        return;
-      }
-    }
-    this.installingChannel = -1;
-  }
 
-  render() {
+  public render() {
     let bar: any = null;
     let percentDone: number = null;
     if (this.installingChannel !== -1) {
@@ -50,24 +41,39 @@ class ProgressBar extends React.Component<ProgressBarProps, ProgressBarState> {
       const downloadRemaining: number = patcher.getDownloadRemaining();
       const estimate: number = patcher.getDownloadEstimate();
       percentDone = estimate ? 100.0 - ((downloadRemaining / estimate) * 100) : 0;
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--working' style={{width: `${percentDone}%`}} />
+      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--working' style={{width: `${percentDone}%`}} />;
     } else if (this.props.selectedServer &&
-      (this.props.selectedServer.channelStatus == ChannelStatus.Ready ||
-       this.props.selectedServer.channelStatus == ChannelStatus.Running ||
-       this.props.selectedServer.channelStatus == ChannelStatus.Launching)) {
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--complete' style={{width: `100%`}} />
+      (this.props.selectedServer.channelStatus === ChannelStatus.Ready ||
+       this.props.selectedServer.channelStatus === ChannelStatus.Running ||
+       this.props.selectedServer.channelStatus === ChannelStatus.Launching)) {
+      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--complete' style={{width: `100%`}} />;
     } else {
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--error' style={{width: `0%`}} />
+      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--error' style={{width: `0%`}} />;
     }
 
     return (
       <div className='ProgressBar'>
         <div className='ProgressBar__bar'>{bar}</div>
         {percentDone === null ? null : <label>{percentDone.toFixed(0)}%</label>}        
-        <div className='ProgressBar__pause ProgressBar__settings--hidden'><i className="fa fa-pause" aria-hidden="true"></i></div>
-        <div className='ProgressBar__settings ProgressBar__settings--hidden'><i className="fa fa-cog" aria-hidden="true"></i></div>
+        <div className='ProgressBar__pause ProgressBar__settings--hidden'>
+          <i className='fa fa-pause' aria-hidden='true'></i>
+        </div>
+        <div className='ProgressBar__settings ProgressBar__settings--hidden'>
+          <i className='fa fa-cog' aria-hidden='true'></i>
+        </div>
       </div>
-    )
+    );
+  }
+
+  private componentWillReceiveProps(nextProps: ProgressBarProps) {
+    for (const key in nextProps.servers) {
+      const s = nextProps.servers[key];
+      if (s.channelStatus === ChannelStatus.Updating) {
+        this.installingChannel = s.channelID;
+        return;
+      }
+    }
+    this.installingChannel = -1;
   }
 }
 

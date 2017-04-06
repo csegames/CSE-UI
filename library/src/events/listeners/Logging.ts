@@ -12,21 +12,21 @@ import client from '../../core/client';
 function run(emitter: EventEmitter, topic: string) {
   client.OnLogMessage((category: string, level: number, time: string, process: number, thread: number, message: string) => {
     emitter.emit(topic, new LogMessage({
-      category: category,
-      level: level,
-      time: time,
-      process: process,
-      thread: thread,
-      message: message
+      category,
+      level,
+      time,
+      process,
+      thread,
+      message,
     }));
   });
 }
 
 export default class LoggingListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesLogging;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesLogging;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

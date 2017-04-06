@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-30 12:05:06
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 17:33:03
+ * @Last Modified time: 2017-04-06 11:09:21
  */
 
 import * as React from 'react';
@@ -23,8 +23,8 @@ import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
 function select(state: any): any {
   return {
     selectedItem: state.selection.selectedItem,
-    buildingMode: state.building.mode
-  }
+    buildingMode: state.building.mode,
+  };
 }
 
 export interface BuildingAppProps {
@@ -45,36 +45,7 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     super(props);
   }
 
-  componentDidMount() {
-    
-  }
-
-  createActionButton(active: boolean): JSX.Element {
-    if (active) {
-      return (<ActionBar buildingMode={this.props.buildingMode}/>);
-    }
-    return null;
-  }
-
-  selectedItem = (item: BuildingItem) => {
-    this.setState((state, props) => ({ selectedItem: item }));
-  }
-
-  createBuildingPanel(active: boolean): JSX.Element {
-    if (active) {
-      return (<BuildingPanel />);
-    }
-    return null;
-  }
-
-  createSelectionView(active: boolean): JSX.Element {
-    if (active) {
-      return (<SelectionView item={this.props.selectedItem} />);
-    }
-    return null;
-  }
-
-  render() {
+  public render() {
     const active: boolean = this.props.buildingMode > 0;
     const triggerMode: buildUIMode = active ? buildUIMode.NOTBUILDING : buildUIMode.PLACINGPHANTOM;
     return (
@@ -83,7 +54,36 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
         {this.createBuildingPanel(active)}
         {this.createSelectionView(active)}
       </div>
-    )
+    );
+  }
+
+  private componentDidMount() {
+    
+  }
+
+  private createActionButton(active: boolean): JSX.Element {
+    if (active) {
+      return (<ActionBar buildingMode={this.props.buildingMode}/>);
+    }
+    return null;
+  }
+
+  private selectedItem = (item: BuildingItem) => {
+    this.setState((state, props) => ({ selectedItem: item }));
+  }
+
+  private createBuildingPanel(active: boolean): JSX.Element {
+    if (active) {
+      return (<BuildingPanel />);
+    }
+    return null;
+  }
+
+  private createSelectionView(active: boolean): JSX.Element {
+    if (active) {
+      return (<SelectionView item={this.props.selectedItem} />);
+    }
+    return null;
   }
 }
 

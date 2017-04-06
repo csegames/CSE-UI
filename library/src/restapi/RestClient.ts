@@ -14,12 +14,12 @@ import events from '../events';
 import * as RestUtil from './RestUtil';
 
 class Settings {
-  core: CoreSettings;
-  url: string;
-  port: number;
-  channelId: channelId;
-  apiToken: string;
-  timeout: number;
+  public core: CoreSettings;
+  public url: string;
+  public port: number;
+  public channelId: channelId;
+  public apiToken: string;
+  public timeout: number;
   constructor(channel: channelId) {
     this.core = new CoreSettings();
     this.timeout = 2000;
@@ -28,20 +28,19 @@ class Settings {
         this.apiToken = client.loginToken;
         this.channelId = client.patchResourceChannel;
         this.determineApiDetails();
-      })
-    }
-    else if ("patcherAPI" in window) {
+      });
+    } else if ('patcherAPI' in window) {
       // running under the patcher, loginToken is not yet available, so
       // define apiToken as a getter and fetch loginToken when we actually
       // need it.
       const patcherAPI: any = (window as any).patcherAPI;
       this.url = 'https://api.camelotunchained.com';
       this.port = 443;
-      Object.defineProperty(this, "apiToken", {
-        get: function() {
+      Object.defineProperty(this, 'apiToken', {
+        get: () => {
           return patcherAPI.loginToken;
-        }
-      })
+        },
+      });
     }
   }
   private determineApiDetails() {
@@ -66,7 +65,7 @@ class Settings {
 const settings = new Settings(4);
 
 function makeAPIUrl(endpoint: string): string {
-  if (endpoint.indexOf('://') != -1) return endpoint; // we already have a fully formed url, skip
+  if (endpoint.indexOf('://') !== -1) return endpoint; // we already have a fully formed url, skip
   let url = settings.url || 'http://hatchery.camelotunchained.com';
   // only add port if it is required
   if ((url.indexOf('https://') === 0 && settings.port !== 443) || (url.indexOf('http://') === 0 && settings.port !== 80)) {
@@ -93,24 +92,33 @@ export function getJSON(endpoint: string, requireAuth: boolean = false, query: a
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
     method: 'get',
-    headers: headers
+    headers,
   } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);
 }
 
-export function deleteJSON(endpoint: string, requireAuth: boolean = false, query: any = {}, version: number = 1): Promise<any> {
+export function deleteJSON(
+  endpoint: string,
+  requireAuth: boolean = false,
+  query: any = {},
+  version: number = 1): Promise<any> {
   const headers = {};
   addDefaultHeaders(headers, requireAuth, version);
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
     method: 'delete',
-    headers: headers
+    headers,
   } as any)
     .then(RestUtil.checkStatus);    // no response body for a DELETE
 }
 
-export function postJSON(endpoint: string, requireAuth: boolean = false, data: any = {}, query: any = {}, version: number = 1): Promise<any> {
+export function postJSON(
+  endpoint: string,
+  requireAuth: boolean = false,
+  data: any = {},
+  query: any = {},
+  version: number = 1): Promise<any> {
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -118,8 +126,8 @@ export function postJSON(endpoint: string, requireAuth: boolean = false, data: a
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
     method: 'post',
-    headers: headers,
-    body: JSON.stringify(data)
+    headers,
+    body: JSON.stringify(data),
   } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);

@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:25
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-03 17:16:16
+ * @Last Modified time: 2017-04-10 11:57:52
  */
 
 import * as React from 'react';
@@ -30,7 +30,7 @@ import {
   onCancelBaneClick,
   onCancelBoonClick,
   resetBaneOrBoon,
-  fetchTraits
+  fetchTraits,
 } from '../../services/session/banesAndBoons';
 
 export interface BanesAndBoonsContainerProps {
@@ -42,7 +42,7 @@ export interface BanesAndBoonsContainerProps {
   traitSummaryStyles: Partial<TraitSummaryStyle>;
   baneStyles: Partial<TraitStyle>;
   boonStyles: Partial<TraitStyle>;
-  dispatch: any
+  dispatch: any;
 }
 
 export interface BanesAndBoonsContainerState {
@@ -52,44 +52,8 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
   constructor(props: BanesAndBoonsContainerProps) {
     super(props);
   }
-  private componentDidMount() {
-    // Initialize all Banes & Boons
-    const { banesAndBoons, dispatch, playerClass, race, faction } = this.props;
-    if (banesAndBoons.initial) {
-      dispatch(fetchTraits({
-        playerClass: Archetype[playerClass.selected.id],
-        race: Race[race.selected.id],
-        faction: Faction[faction.selected.id],
-        initType: 'both'
-      }));
-    }
-  };
-  private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
-    const { dispatch } = this.props;
-    dispatch(onSelectBoon({ boon: boon }));
-  };
-  private onSelectBaneClick = (bane: BanesAndBoonsInfo) => {
-    const { dispatch } = this.props;
-    dispatch(onSelectBane({ bane: bane }));
-  };
-  private onCancelBoon = (boon: BanesAndBoonsInfo) => {
-    const { dispatch } = this.props;
-    dispatch(onCancelBoonClick({ boon: boon }));
-  };
-  private onCancelBane = (bane: BanesAndBoonsInfo) => {
-    const { dispatch } = this.props;
-    dispatch(onCancelBaneClick({ bane: bane }));
-  };
-  private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
-    const { dispatch, playerClass, race, faction } = this.props;
-    dispatch(resetBaneOrBoon({
-      playerClass: Archetype[playerClass.selected.id],
-      race: Race[race.selected.id],
-      faction: Faction[faction.selected.id],
-      initType: initType
-    }))
-  };
-  render() {
+
+  public render() {
     const {
       traits,
       addedBanes,
@@ -106,7 +70,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       allExclusives,
       totalPoints,
       minPoints,
-      maxPoints
+      maxPoints,
     } = this.props.banesAndBoons;
     const { styles, traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
     return (
@@ -132,16 +96,59 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         onCancelBaneClick={this.onCancelBane}
         onCancelBoonClick={this.onCancelBoon}
         onResetClick={this.onResetClick}
-        onSelectRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onSelectRankBoon({ boon: boon }))}
-        onSelectRankBane={(bane: BanesAndBoonsInfo) => dispatch(onSelectRankBane({ bane: bane }))}
-        onCancelRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onCancelRankBoon({ boon: boon }))}
-        onCancelRankBane={(bane: BanesAndBoonsInfo) => dispatch(onCancelRankBane({ bane: bane }))}
+        onSelectRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onSelectRankBoon({ boon }))}
+        onSelectRankBane={(bane: BanesAndBoonsInfo) => dispatch(onSelectRankBane({ bane }))}
+        onCancelRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onCancelRankBoon({ boon }))}
+        onCancelRankBane={(bane: BanesAndBoonsInfo) => dispatch(onCancelRankBane({ bane }))}
         styles={styles}
         traitSummaryStyles={traitSummaryStyles}
         baneStyles={baneStyles}
         boonStyles={boonStyles}
       />
-    )
+    );
+  }
+
+  private componentDidMount() {
+    // Initialize all Banes & Boons
+    const { banesAndBoons, dispatch, playerClass, race, faction } = this.props;
+    if (banesAndBoons.initial) {
+      dispatch(fetchTraits({
+        playerClass: Archetype[playerClass.selected.id],
+        race: Race[race.selected.id],
+        faction: Faction[faction.selected.id],
+        initType: 'both',
+      }));
+    }
+  }
+
+  private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
+    const { dispatch } = this.props;
+    dispatch(onSelectBoon({ boon }));
+  }
+
+  private onSelectBaneClick = (bane: BanesAndBoonsInfo) => {
+    const { dispatch } = this.props;
+    dispatch(onSelectBane({ bane }));
+  }
+
+  private onCancelBoon = (boon: BanesAndBoonsInfo) => {
+    const { dispatch } = this.props;
+    dispatch(onCancelBoonClick({ boon }));
+  }
+
+  private onCancelBane = (bane: BanesAndBoonsInfo) => {
+    const { dispatch } = this.props;
+    dispatch(onCancelBaneClick({ bane }));
+  }
+  
+  private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
+    const { dispatch, playerClass, race, faction } = this.props;
+    dispatch(resetBaneOrBoon({
+      playerClass: Archetype[playerClass.selected.id],
+      race: Race[race.selected.id],
+      faction: Faction[faction.selected.id],
+      initType,
+    }));
   }
 }
 

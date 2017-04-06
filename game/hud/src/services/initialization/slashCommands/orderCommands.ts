@@ -4,8 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-let yargs = require('yargs-parser');
-import { client, registerSlashCommand, hasClientAPI, SlashCommand, getSlashCommands, webAPI, utils } from 'camelot-unchained';
+import yargs from 'yargs-parser';
+import {
+  client,
+  registerSlashCommand,
+  hasClientAPI,
+  SlashCommand,
+  getSlashCommands,
+  webAPI,
+  utils,
+} from 'camelot-unchained';
 import { parseArgs, systemMessage } from './utils';
 
 export default () => {
@@ -32,19 +40,19 @@ export default () => {
   }
 
   const orderCommands: utils.Dictionary<Command> = {
-    'help': {
+    help: {
       description: 'Displays help information',
-      handler: function () {
+      handler: () => {
         // list commands
         for (const key in orderCommands) {
-          systemMessage(`${key} : ${orderCommands[key].description}`)
+          systemMessage(`${key} : ${orderCommands[key].description}`);
         }
-      }
+      },
     },
 
-    'create': {
+    create: {
       description: 'Create an order.',
-      handler: function (name: string) {
+      handler: (name: string) => {
         if (name.length === 0 || name === 'help' || name === '-h' || name === '--help') {
           // display help
           systemMessage(`${orderCommands['create'].description}`);
@@ -63,12 +71,12 @@ export default () => {
 
             systemMessage(`Order ${name} successfully created!`);
           });
-      }
+      },
     },
 
-    'invite': {
+    invite: {
       description: 'Invite another player to your Order',
-      handler: function (name: string) {
+      handler: (name: string) => {
         if (name === 'help' || name === '-h' || name === '--help') {
           // display help
           systemMessage(`${orderCommands['invite'].description}`);
@@ -90,12 +98,12 @@ export default () => {
 
             systemMessage(`An Order invite has been sent to ${toInvite}.`);
           });
-      }
+      },
     },
 
-    'abandon': {
+    abandon: {
       description: 'Abandon your Order.',
-      handler: function () {
+      handler: () => {
         systemMessage('Attempting to abandon your Order...');
 
         webAPI.OrdersAPI.abandonV1(client.shardID, client.characterID)
@@ -108,19 +116,19 @@ export default () => {
             }
             systemMessage('You are no longer a member of an Order.');
           });
-      }
+      },
     },
 
-    'quit': {
+    quit: {
       description: 'Abandon your Order.',
-      handler: function () {
+      handler: () => {
         orderCommands['abandon'].handler();
-      }
+      },
     },
 
-    'disband': {
+    disband: {
       description: 'Disband your Order.',
-      handler: function() {
+      handler: () => {
         systemMessage('Attemping to disband your Order...');
 
         webAPI.OrdersAPI.disbandV1(client.shardID, client.characterID)
@@ -133,12 +141,12 @@ export default () => {
             }
             systemMessage('Your Order has been disbanded.');
           });
-      }
+      },
     },
 
-    'showpermissions': {
+    showpermissions: {
       description: 'List what permissions are available to be assigned to Order ranks.',
-      handler: function (params: string) {
+      handler: (params: string) => {
         systemMessage('Fetching permissions info...');
         // no args...
         webAPI.GameDataAPI.getOrderPermissionsV1()
@@ -156,13 +164,13 @@ export default () => {
               systemMessage(`${p.name} : ${p.description}`);
             }
           });
-      }
+      },
     },
 
 
-    'createrank': {
+    createrank: {
       description: 'Create a new custom rank for your Order.',
-      handler: function (params: string) {
+      handler: (params: string) => {
         const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
@@ -186,12 +194,12 @@ export default () => {
 
             systemMessage(`Order rank ${argv._[0]} created!`);
           });
-      }
+      },
     },
 
-    'removerank': {
+    removerank: {
       description: 'Remove a custom rank from your Order.',
-      handler: function (params: string) {
+      handler: (params: string) => {
         const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
@@ -212,12 +220,12 @@ export default () => {
 
             systemMessage(`Order rank ${argv._[0]} was removed.`);
           });
-      }
+      },
     },
 
-    'renamerank': {
+    renamerank: {
       description: 'Rename a custom rank in your Order.',
-      handler: function (params: string) {
+      handler: (params: string) => {
         const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
@@ -238,7 +246,7 @@ export default () => {
 
             systemMessage(`Successfully renamed rank ${argv._[0]} to ${argv._[1]}!`);
           });
-      }
+      },
     },
 
     // 'showranks': {
@@ -259,17 +267,18 @@ export default () => {
 
     //         for (let i = 0; i < ranks.length; ++i) {
     //           const r = ranks[i];
-    //           systemMessage(`${r.name} ${r.level} ${r.permissions.length > 0 ? r.permissions.join(', ') : 'No Permissions'}`);
+    //           systemMessage(`${r.name} ${r.level} ${r.permissions.length > 0 ? r.permissions.join(', ') :
+    //           'No Permissions'}`);
     //         }
 
     //       });
     //   }
     // },
 
-    'addrankpermissions': {
+    addrankpermissions: {
       description: 'Add permissions to a rank in your Order.',
-      handler: function (params: string) {
-        var argv = argsWithHelp(params);
+      handler: (params: string) => {
+        const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['addrankpermissions'].description}`);
@@ -292,13 +301,13 @@ export default () => {
 
             systemMessage(`Successfully added ${permissions.join(', ')} permisions to rank ${argv._[0]}`);
           });
-      }
+      },
     },
 
-    'removerankpermissions': {
+    removerankpermissions: {
       description: 'Remove permissions to a rank in your Order.',
-      handler: function (params: string) {
-        var argv = argsWithHelp(params);
+      handler: (params: string) => {
+        const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['removerankpermissions'].description}`);
@@ -321,13 +330,13 @@ export default () => {
 
             systemMessage(`Successfully removed ${permissions.join(', ')} permisions from rank ${argv._[0]}`);
           });
-      }
+      },
     },
 
-    'changeranklevel': {
+    changeranklevel: {
       description: 'Change level of a rank in your Order.',
-      handler: function (params: string) {
-        var argv = argsWithHelp(params);
+      handler: (params: string) => {
+        const argv = argsWithHelp(params);
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['changeranklevel'].description}`);
@@ -347,12 +356,12 @@ export default () => {
 
             systemMessage(`Successfully changed level of rank ${argv._[0]} to ${argv._[1]}`);
           });
-      }
+      },
     },
 
-    'rank': {
+    rank: {
       description: 'View your rank!',
-      handler: function () {
+      handler: () => {
         systemMessage('Fetching your rank...');
         webAPI.OrdersAPI.getMyRankV1(client.shardID, client.characterID)
           .then((response: any) => {
@@ -363,11 +372,11 @@ export default () => {
               return;
             }
 
-            var rank = <webAPI.RankInfo>response.data;
+            const rank = <webAPI.RankInfo>response.data;
             systemMessage(`${rank.name} ${rank.level} ${rank.permissions.join(', ')}`);
           });
-      }
-    }
+      },
+    },
 
   };
 
@@ -376,10 +385,9 @@ export default () => {
       orderCommands['help'].handler('');
       return;
     }
-    const splitParams = params.trim().split(/ (.+)?/)
+    const splitParams = params.trim().split(/ (.+)?/);
     let command = orderCommands[splitParams[0].toLowerCase()];
     if (typeof command === 'undefined' || params.length === 0) command = orderCommands['help'];
     command.handler(splitParams.length > 1 ? splitParams[1] : '');
   });
-}
-
+};

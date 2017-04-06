@@ -5,11 +5,11 @@
  */
 
 class ChatMessage  {
-  type: number;
-  from: string;
-  body: string;
-  nick: string;
-  iscse: boolean;
+  public type: number;
+  public from: string;
+  public body: string;
+  public nick: string;
+  public iscse: boolean;
 
   constructor(chatMessage = <ChatMessage>{}) {
     this.type = chatMessage.type;
@@ -19,8 +19,8 @@ class ChatMessage  {
     this.iscse = chatMessage.iscse;
   }
 
-  static create() {
-    let a = new ChatMessage();
+  public static create() {
+    const a = new ChatMessage();
     return a;
   }
 }

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-25 18:34:04
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:35:40
  */
 
 import * as React from 'react';
@@ -28,14 +28,14 @@ export class CampaignContent extends React.Component<CampaignContentProps, Campa
     this.state = {};
   }
 
-  render() {
+  public render() {
     return (
       <div className='CampaignContent'>
         Campaign content under construction.
         <br />
         Viewing page {this.props.address.id}.
       </div>
-    )
+    );
   }
 }
 

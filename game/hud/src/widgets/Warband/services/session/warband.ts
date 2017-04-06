@@ -10,8 +10,19 @@
  */
 
 import cu, { client, events, GroupInvite, groupType, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
-import { addOrUpdate, BaseAction, clone, defaultAction, merge, remove } from '../../../../lib/reduxUtils';
-import { ActionDefinitions, AsyncAction, createReducer, Dictionary, removeWhere } from '../../../../lib/reduxUtils';
+import {
+  addOrUpdate,
+  BaseAction,
+  clone,
+  defaultAction,
+  merge,
+  remove,
+  ActionDefinitions,
+  AsyncAction,
+  createReducer,
+  Dictionary,
+  removeWhere,
+} from '../../../../lib/reduxUtils';
 
 const INITIALIZE_SIGNALR = 'warband/warband/INITIALIZE_SIGNALR';
 const INITIALIZE_SIGNALR_SUCCESS = 'warband/warband/INITIALIZE_SIGNALR_SUCCESS';
@@ -38,7 +49,7 @@ const characterImages = {
   humanmaletM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
   humanmalevF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
   humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
-  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png'
+  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
 };
 
 function getAvatar(gender: Gender, race: Race) {
@@ -250,29 +261,29 @@ function memberCompare(a: WarbandMember, b: WarbandMember): boolean {
 const actionDefs: ActionDefinitions<WarbandState> = {};
 
 actionDefs[INITIALIZE_SIGNALR] = (s, a) => {
-  return merge(s, {isInitalizing: false});
+  return merge(s, { isInitalizing: false });
 };
 
 actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => {
-  return merge(s, {isInitalizing: false, signalRInitialized: true});
+  return merge(s, { isInitalizing: false, signalRInitialized: true });
 };
 
 actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => {
-  return merge(s, {isInitalizing: false, signalRInitialized: true});
+  return merge(s, { isInitalizing: false, signalRInitialized: true });
 };
 
 actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
   events.fire('chat-show-room', a.id);
-  return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
+  return merge(s, clearWarband(), { name: a.name, warbandID: a.id });
 };
 
 actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => {
   if (a.id !== s.warbandID) {
     // we changed warbands
-    return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
+    return merge(s, clearWarband(), { name: a.name, warbandID: a.id });
   }
   if (a.name !== s.name) {
-    return merge(s, {name: a.name});
+    return merge(s, { name: a.name });
   }
 };
 
@@ -293,19 +304,19 @@ actionDefs[WARBAND_ABANDONED] = (s, a) => {
 };
 
 actionDefs[MEMBER_JOINED] = (s, a) => {
-  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)})
+  return merge(s, { activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare) });
 };
 
 actionDefs[MEMBER_UPDATE] = (s, a) => {
-  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
-}
+  return merge(s, { activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare) });
+};
 
 actionDefs[MEMBER_REMOVED] = (s: WarbandState, a: WarbandAction) => {
-  let members = removeWhere(s.activeMembers, (m) => m.characterID === a.id);
+  const members = removeWhere(s.activeMembers, m => m.characterID === a.id);
   if (members.removed.length > 0) {
     systemMessage(`${members.removed[0].name} has left your warband.`);
   }
-  return merge(s, {activeMembers: members.result});
+  return merge(s, { activeMembers: members.result });
 };
 
 export default createReducer<WarbandState>(initialState(), actionDefs);

@@ -29,5 +29,5 @@ export interface MyCharacterInvitesQuery {
   myCharacter: {
     id: string;
     invites: Invite[];
-  }
+  };
 }

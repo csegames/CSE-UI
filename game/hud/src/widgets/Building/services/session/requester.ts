@@ -1,4 +1,4 @@
-import {channelId, events, building, BuildingBlock} from 'camelot-unchained';
+import { channelId, events, building, BuildingBlock } from 'camelot-unchained';
 import faker from './requester_fake';
 
 class BuildingRequests {

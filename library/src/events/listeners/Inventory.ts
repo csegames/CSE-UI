@@ -23,10 +23,10 @@ function run(emitter: EventEmitter, topic: string) {
 }
 
 export default class InventoryListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesInventory;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesInventory;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

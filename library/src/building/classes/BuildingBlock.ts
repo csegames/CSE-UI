@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -6,12 +6,12 @@
  */
 
 class BuildingBlock {
-  id: number;
-  icon: string;
-  shapeId: number;
-  shapeTags: string[];
-  materialId: number;
-  materialTags: string[];
+  public id: number;
+  public icon: string;
+  public shapeId: number;
+  public shapeTags: string[];
+  public materialId: number;
+  public materialTags: string[];
 
   constructor(block = <BuildingBlock>{}) {
     this.id = block.id;
@@ -22,7 +22,7 @@ class BuildingBlock {
     this.materialTags = block.materialTags || [];
   }
 
-  static create() {
+  public static create() {
     const a = new BuildingBlock();
     return a;
   }

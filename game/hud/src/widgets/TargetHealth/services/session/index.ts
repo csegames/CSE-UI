@@ -4,15 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import playerReducer, {TargetState} from './target';
-let player = playerReducer;
+import playerReducer, { TargetState } from './target';
+const player = playerReducer;
 
 export default combineReducers({
   player,
 });
 
 export interface SessionState {
-  player: TargetState,
+  player: TargetState;
 }

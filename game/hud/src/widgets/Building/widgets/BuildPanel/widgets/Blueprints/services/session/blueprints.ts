@@ -4,10 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, buildUIMode, BuildingBlueprint} from 'camelot-unchained';
+import { events, buildUIMode, BuildingBlueprint } from 'camelot-unchained';
 import requester from './requester';
-
-const assign = require('object-assign');
+import * as assign from 'object-assign';
 
 const UPDATE_BLUEPRINTS = 'buildpanel/panes/UPDATE_BLUEPRINTS';
 const SELECT_BLUEPRINT = 'buildpanel/panes/SELECT_BLUEPRINT';
@@ -24,7 +23,7 @@ export function loadBlueprints(dispatch: (action: any) => void) {
   });
 
   events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
-    dispatch(copyModeChanged(info.mode == buildUIMode.BLOCKSELECTED));
+    dispatch(copyModeChanged(info.mode === buildUIMode.BLOCKSELECTED));
   });
 
   events.addListener(events.buildingEventTopics.handlesBlueprintCopy, () => {
@@ -37,29 +36,29 @@ export function loadBlueprints(dispatch: (action: any) => void) {
 function copyModeChanged(copy: boolean) {
   return {
     type: MODE_CHANGED,
-    copy: copy
-  }
+    copy,
+  };
 }
 
 function pasteModeChanged(paste: boolean) {
   return {
     type: MODE_CHANGED,
-    paste: paste
-  }
+    paste,
+  };
 }
 
 function updateBlueprints(blueprints: BuildingBlueprint[]) {
   return {
     type: UPDATE_BLUEPRINTS,
-    blueprints: blueprints
-  }
+    blueprints,
+  };
 }
 
 function selectBlueprint(blueprint: BuildingBlueprint) {
   return {
     type: SELECT_BLUEPRINT,
-    blueprint: blueprint
-  }
+    blueprint,
+  };
 }
 
 export interface BlueprintsState {
@@ -74,26 +73,26 @@ const initialState: BlueprintsState = {
   selected: null,
   copyable: false,
   pastable: false,
-}
+};
 
 function remove(blueprints: BuildingBlueprint[], blueprint: BuildingBlueprint) {
-  return blueprints.filter((bp: BuildingBlueprint) => { return bp.name != blueprint.name });
+  return blueprints.filter((bp: BuildingBlueprint) => { return bp.name !== blueprint.name; });
 }
 
 export default function reducer(state: BlueprintsState = initialState, action: any = {}) {
   switch (action.type) {
     case UPDATE_BLUEPRINTS:
       return assign({}, state, {
-        blueprints: [...action.blueprints]
+        blueprints: [...action.blueprints],
       });
     case SELECT_BLUEPRINT:
       return assign({}, state, {
-        selected: action.blueprint
+        selected: action.blueprint,
       });
     case MODE_CHANGED:
       return assign({}, state, {
-        copyable: action.copy == undefined ? state.copyable : action.copy,
-        pastable: action.paste == undefined ? state.pastable : action.paste
+        copyable: action.copy === undefined ? state.copyable : action.copy,
+        pastable: action.paste === undefined ? state.pastable : action.paste,
       });
     default: return state;
   }

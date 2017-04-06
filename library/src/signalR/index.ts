@@ -5,12 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:11
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-12 17:42:00
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 12:50:34
  */
 
 import client from '../core/client';
-import { findIndexWhere } from '../util/arrayutils'
+import { findIndexWhere } from '../util/arrayutils';
 export * from './SignalRHub';
 export * from './hubs/groupsHub';
 export * from './hubs/patcherHub';
@@ -23,8 +23,8 @@ interface HubDef {
   [id: string]: {
     init: (cb: InitCallback) => void;
     unregister: () => void;
-  }
-};
+  };
+}
 
 export interface InitCallback {
   (succeeded: boolean): any;
@@ -40,7 +40,7 @@ export const initializeSignalR = () => {
     ($ as any).connection(client.signalRHost);
     ($ as any).connection.hub.url = client.signalRHost;
     ($ as any).connection.hub.start();
-  })
+  });
 };
 
 export const reinitializeSignalR = () => {
@@ -50,7 +50,7 @@ export const reinitializeSignalR = () => {
 
 export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
   for (let i = 0; i < hubs.length; ++i) {
-    if (findIndexWhere(initializedHubs, h => h == hubs[i].name) == -1) {
+    if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {
       const hub = hubs[i];
       const def = hubsDef[hub.name];
       if (typeof def === 'undefined' || def == null || typeof def.init !== 'function') continue;
@@ -58,17 +58,17 @@ export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCall
       initializedHubs.push(hub.name);
     }
   }
-}
+};
 
 export const unregisterSignalRHubs = (...hubNames: string[]) => {
   for (let i = 0; i < hubNames.length; ++i) {
-    var index = findIndexWhere(initializedHubs, name => name == hubNames[i]);
-    if (index != -1) {
+    const index = findIndexWhere(initializedHubs, name => name === hubNames[i]);
+    if (index !== -1) {
       const def = hubsDef[hubNames[i]];
       if (typeof def === 'undefined' || def == null || typeof def.unregister !== 'function') continue;
       def.unregister();
       initializedHubs.splice(index, 1);
     }
   }
-}
+};
 

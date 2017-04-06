@@ -7,12 +7,12 @@
 import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 import {WarbandMember, hasClientAPI} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';
-import {PlayerState, DoThing, initializePlayerSession} from './services/session/player';
+import {PlayerState, doThing, initializePlayerSession} from './services/session/player';
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -33,8 +33,8 @@ export interface PlayerHealthState {
 
 function select(state: SessionState): PlayerHealthProps {
   return {
-    player: state.player
-  }
+    player: state.player,
+  };
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
@@ -43,18 +43,14 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     super(props);
   }
 
-  componentDidMount() {
-    this.props.dispatch(initializePlayerSession());
-  }
-
-  render() {
-    const hide = this.props.player.playerStatus.name == '';
+  public render() {
+    const hide = this.props.player.playerStatus.name === '';
     if (hide) return null;
     const dead = this.props.player.playerStatus.blood.current <= 0 ||
       this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
     return (
       <div className={`Playerhealth ${this.props.containerClass}`}
-       onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+       onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(doThing())}>
         <PlayerStatusComponent
           containerClass='PlayerHealth'
           playerStatus={this.props.player.playerStatus}
@@ -63,17 +59,21 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
       </div>
     );
   }
+
+  private componentDidMount() {
+    this.props.dispatch(initializePlayerSession());
+  }
 }
 
 const PlayerComp = connect(select)(PlayerHealth);
 
 class Container extends React.Component<ContainerProps,{}> {
-  render() {
+  public render() {
     return (
       <Provider store={store}>
         <PlayerComp {...this.props}/>
       </Provider>
-    )
+    );
   }
 }
 

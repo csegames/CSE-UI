@@ -27,7 +27,7 @@ export interface InlineWarbandQuery {
     id: string;
     name: string;
     realm: Faction;
-  }
+  };
 }
 
 export interface InlineWarbandQueryVariables {

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 15:10:00
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:41:01
  */
 
 import * as React from 'react';
@@ -25,14 +25,15 @@ export interface PersonalContentProps {
   myCharacter: ql.FullCharacter;
 }
 
+/* tslint:disable */
 export function PersonalContent(props: PersonalContentProps) {
-  switch(props.address.id) {
+  switch (props.address.id) {
     case 'invites':
       return <InvitesList dispatch={props.dispatch}
-                          refetch={props.refetch} />
+                          refetch={props.refetch} />;
   }
 
-  return <div>NO CONTENT</div>
+  return <div>NO CONTENT</div>;
 }
 
 export default PersonalContent;

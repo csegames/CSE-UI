@@ -105,6 +105,6 @@ enum jsKeyCodes {
   '\\' = 220,
   ']' = 221,
   '\'' = 222,
-};
+}
 
 export default jsKeyCodes;

@@ -12,6 +12,6 @@ enum configGroup {
   KEYBIND = 2,
   INPUT = 6,
   AUDIO = 8,
-};
+}
 
 export default configGroup;

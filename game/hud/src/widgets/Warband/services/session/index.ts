@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import warbandReducer, {WarbandState} from './warband';
+import warbandReducer, { WarbandState } from './warband';
 export * from './warband';
-let warband = warbandReducer;
+const warband = warbandReducer;
 
 export default combineReducers({
   warband,
 });
 
 export interface WarbandSessionState {
-  warband: WarbandState,
+  warband: WarbandState;
 }

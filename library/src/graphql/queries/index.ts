@@ -50,4 +50,4 @@ export default {
   InlineCharacter,
   InlineWarband,
   Order,
-}
+};

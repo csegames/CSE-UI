@@ -80,7 +80,7 @@ const defaultStyles: SliderStyle = {
     border: '1px solid #eee',
     cursor: 'default !important',
   },
-}
+};
 
 export interface SliderStyle {
   container: React.CSSProperties;
@@ -110,13 +110,73 @@ export interface SliderState {
 
 class Slider extends React.Component<SliderProps, SliderState> {
 
+  private keyGen: number = 0;
+
   constructor(props: SliderProps) {
     super(props);
 
     this.state = {
       index: 0,
-      single: false
+      single: false,
+    };
+  }
+
+  public render() {
+
+    const ss = StyleSheet.create(merge(defaultStyles, this.props.style));
+
+    if (this.state.single) {
+      return (
+        <div className={css(ss.container)}>
+          {this.props.children}
+        </div>
+      );
     }
+
+    const items = this.props.children.slice(this.state.index, this.state.index + 1) as any;
+
+    return (
+      <div className={css(ss.container)}>
+        <TransitionMotion willLeave={this.slideWillLeave}
+          willEnter={this.slideWillEnter}
+          styles={items.map((item: any) => ({
+            key: this.keyGen++,
+            data: item,
+            style: { opacity: spring(1, { stiffness: 50, damping: 15, precision: 0.01 }) },
+          }))}>
+          {(interpolatedStyles: any) =>
+            <div className={css(ss.items)}>
+              {interpolatedStyles.map((slide: any) => {
+                return (
+                  <div
+                    key={slide.key}
+                    className={css(ss.item)}
+                    style={{ position: 'absolute', top: 0, opacity: slide.style.opacity }}>
+                    {slide.data}
+                  </div>
+                );
+              })}
+              <div className={css(ss.counter)}>
+                {this.state.index + 1} / {this.props.children.length}
+              </div>
+            </div>
+          }
+        </TransitionMotion>
+        <a className={className(
+          css(ss.arrow),
+          css(ss.arrowLeft),
+          { [css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 })}
+          onClick={() => this.prev()}>
+        </a>
+        <a className={className(
+          css(ss.arrow),
+          css(ss.arrowLeft),
+          { [css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) &&
+           this.state.index === this.props.children.length - 1 })}
+          onClick={() => this.next()}>
+        </a>
+      </div>
+    );
   }
 
   public next = () => {
@@ -124,7 +184,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
 
     let index = this.state.index + 1;
     if (index >= this.props.children.length) index = this.props.loop ? 0 : this.props.children.length - 1;
-    if (index != this.state.index) this.setState({ index: index } as any);
+    if (index !== this.state.index) this.setState({ index } as any);
   }
 
   public prev = () => {
@@ -132,7 +192,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
 
     let index = this.state.index - 1;
     if (index < 0) index = this.props.loop ? this.props.children.length - 1 : 0;
-    if (index != this.state.index) this.setState({ index: index } as any);
+    if (index !== this.state.index) this.setState({ index } as any);
   }
 
   public selectSlide = (index: number) => {
@@ -145,76 +205,27 @@ class Slider extends React.Component<SliderProps, SliderState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: SliderProps) {
+  private componentWillReceiveProps(nextProps: SliderProps) {
     const single = !Array.isArray(this.props.children);
     if (single) {
       this.setState({
-        single: single
+        single,
       } as any);
     } else {
       this.setState({
-        single: single,
+        single,
         index: this.state.index > nextProps.children.length - 1 ? 0 : this.state.index,
       } as any);
     }
 
   }
 
-  slideWillEnter = (): any => {
+  private slideWillEnter = (): any => {
     return { left: 0 };
   }
 
-  slideWillLeave = (): any => {
+  private slideWillLeave = (): any => {
     return { left: spring(0, { stiffness: 50, damping: 15, precision: 0.01 }) };
-  }
-
-  private keyGen: number = 0;
-  render() {
-
-    const ss = StyleSheet.create(merge(defaultStyles, this.props.style));
-
-    if (this.state.single) {
-      return (
-        <div className={css(ss.container)}>
-          {this.props.children}
-        </div>
-      );
-    }
-
-    var items = this.props.children.slice(this.state.index, this.state.index + 1) as any;
-
-    return (
-      <div className={css(ss.container)}>
-        <TransitionMotion willLeave={this.slideWillLeave}
-          willEnter={this.slideWillEnter}
-          styles={items.map((item: any) => ({
-            key: this.keyGen++,
-            data: item,
-            style: { opacity: spring(1, { stiffness: 50, damping: 15, precision: 0.01 }) }
-          }))}>
-          {(interpolatedStyles: any) =>
-            <div className={css(ss.items)}>
-              {interpolatedStyles.map((slide: any) => {
-                return (
-                  <div key={slide.key} className={css(ss.item)} style={{ position: 'absolute', top: 0, opacity: slide.style.opacity }}>
-                    {slide.data}
-                  </div>
-                )
-              })}
-              <div className={css(ss.counter)}>
-                {this.state.index + 1} / {this.props.children.length}
-              </div>
-            </div>
-          }
-        </TransitionMotion>
-        <a className={className(css(ss.arrow), css(ss.arrowLeft), { [css(ss.arrowDisabled)]: (this.props.children.length == 1 || !this.props.loop) && this.state.index == 0 })}
-          onClick={() => this.prev()}>
-        </a>
-        <a className={className(css(ss.arrow), css(ss.arrowLeft), { [css(ss.arrowDisabled)]: (this.props.children.length == 1 || !this.props.loop) && this.state.index === this.props.children.length - 1 })}
-          onClick={() => this.next()}>
-        </a>
-      </div>
-    )
   }
 }
 

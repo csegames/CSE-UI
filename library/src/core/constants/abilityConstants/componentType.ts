@@ -9,7 +9,7 @@ export enum componentType {
   Secondary = 1,
   OptionalModifier = 2,
   SpecialModal = 3,
-  IndependantModal = 4
+  IndependantModal = 4,
 }
 
 

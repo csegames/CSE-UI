@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-25 18:34:08
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:35:45
  */
 
 import * as React from 'react';
@@ -28,14 +28,14 @@ export class AllianceContent extends React.Component<AllianceContentProps, Allia
     this.state = {};
   }
 
-  render() {
+  public render() {
     return (
       <div className='AllianceContent'>
         Alliance content under construction.
         <br />
         Viewing page {this.props.address.id}.
       </div>
-    )
+    );
   }
 }
 

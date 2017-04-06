@@ -12,19 +12,19 @@ declare const cuAPI: any;
 function run(emitter: EventEmitter, topic: string) {
   cuAPI.OnPlotStatus((plotOwned: boolean, permissions: number, charID: string, entityID: string) => {
     emitter.emit(topic, {
-      plotOwned: plotOwned,
-      permissions: permissions,
-      charID: charID,
-      entityID: entityID
+      plotOwned,
+      permissions,
+      charID,
+      entityID,
     });
   });
 }
 
 export default class PlotListener {
-  listening: boolean = false;
-  type: string;
-  topic: string = clientEventTopics.handlesPlot;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public type: string;
+  public topic: string = clientEventTopics.handlesPlot;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

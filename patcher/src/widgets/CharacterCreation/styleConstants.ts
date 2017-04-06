@@ -1,14 +1,14 @@
 export const styleConstants = {
   marginLeft: {
-    marginLeft: '15px'
+    marginLeft: '15px',
   },
 
   marginRight: {
-    marginRight: '15px'
+    marginRight: '15px',
   },
 
   marginZero: {
-    margin: 0
+    margin: 0,
   },
 
   overflowHidden: {
@@ -17,48 +17,48 @@ export const styleConstants = {
 
   alignItems: {
     center: {
-      alignItems: 'center'
+      alignItems: 'center',
     },
     flexStart: {
-      alignItems: 'flex-start'
+      alignItems: 'flex-start',
     },
     flexEnd: {
-      alignItems: 'flex-end'
-    }
+      alignItems: 'flex-end',
+    },
   },
 
   justifyContent: {
     center: {
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     flexStart: {
-      justifyContent: 'flex-start'
+      justifyContent: 'flex-start',
     },
     flexEnd: {
-      justifyContent: 'flex-end'
-    }
+      justifyContent: 'flex-end',
+    },
   },
 
   textAlign: {
     center: {
-      textAlign: 'center'
+      textAlign: 'center',
     },
     right: {
-      textAlign: 'right'
+      textAlign: 'right',
     },
     left: {
-      textAlign: 'left'
-    }
+      textAlign: 'left',
+    },
   },
 
   direction: {
     ltr: {
-      direction: 'ltr'
+      direction: 'ltr',
     },
     rtl: {
-      direction: 'rtl'
-    }
-  }
+      direction: 'rtl',
+    },
+  },
 };
 
 export const colors = {
@@ -72,5 +72,5 @@ export const colors = {
   raceTrait: '#00A0DC',
   factionTrait: '#D63C32',
   success: '#ACE0AC',
-  transparentSuccess: 'rgba(172, 224, 172, 0.3)'
+  transparentSuccess: 'rgba(172, 224, 172, 0.3)',
 };

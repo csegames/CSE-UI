@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-30 14:52:18
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-27 11:49:08
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:46:17
  */
 
 import * as React from 'react';
@@ -51,12 +51,12 @@ export const defaultMemberListStyle : MemberListStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   title: {
     padding: '10px',
-    borderBottom: '2px solid #777'
+    borderBottom: '2px solid #777',
   },
 
   list: {
@@ -64,7 +64,7 @@ export const defaultMemberListStyle : MemberListStyle = {
     flex: '1 1 auto',
     flexDirection: 'column',
     flexWrap: 'nowrap',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
   },
 
   listHeader: {
@@ -72,7 +72,7 @@ export const defaultMemberListStyle : MemberListStyle = {
     color: '#777',
     fontWeight: 'bold',
     minHeight: '2em',
-    padding: '5px'
+    padding: '5px',
   },
 
   listSection: {
@@ -80,32 +80,32 @@ export const defaultMemberListStyle : MemberListStyle = {
     padding: '5px',
     minHeight: '2em',
     ':nth-child(even)': {
-      backgroundColor: 'rgba(0, 0, 0, 0.1)'
-    }
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
   },
 
   item: {
     flex: '1 1 auto',
-    margin: '0 5px'
+    margin: '0 5px',
   },
 
   // modifiers for elements
   name: {
-    minWidth: '100px'
+    minWidth: '100px',
   },
 
   rank: {
-    maxWidth: '200px'
+    maxWidth: '200px',
   },
 
   joined: {
-    maxWidth: '150px'
+    maxWidth: '150px',
   },
 
   more: {
     maxWidth: '10px',
     cursor: 'pointer',
-    flex: '0 0 auto'
+    flex: '0 0 auto',
   },
 
   // ButtonBar is the buttons on the top above the rank list
@@ -145,9 +145,10 @@ export const defaultMemberListColumnDefinitions = [
     sortFunction: (a: {rank: ql.CustomRank}, b: {rank: ql.CustomRank}) => b.rank.level - a.rank.level,
     style: {
       flex: '0 0 120px !important',
-      width: '120px'
+      width: '120px',
     },
-    renderItem: (m: {id: string, rank: ql.CustomRank}, renderData?: { ranks: ql.CustomRank[], userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void, }) => {
+    renderItem: (m: {id: string, rank: ql.CustomRank}, renderData?: { ranks: ql.CustomRank[],
+      userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'assign-ranks')) {
         return <InlineDropDownSelectEdit value={m.rank}
                                          items={renderData.ranks}
@@ -166,24 +167,28 @@ export const defaultMemberListColumnDefinitions = [
                                            );
                                          }}
                                          onSave={(current: ql.CustomRank, r: ql.CustomRank): any  => {
-                                           return webAPI.GroupsAPI.assignRankV1(client.shardID, client.characterID, renderData.groupId, m.id, r.name)
-                                             .then(result => {
+                                           return webAPI.GroupsAPI.assignRankV1(
+                                             client.shardID,
+                                             client.characterID,
+                                             renderData.groupId,
+                                             m.id,
+                                             r.name).then((result) => {
                                                if (result.ok) {
                                                  renderData.refetch();
                                                  return {
-                                                   ok: true
+                                                   ok: true,
                                                  };
                                                }
                                                return {
                                                  ok: false,
                                                  error: result.data,
-                                               }
-                                             })
+                                               };
+                                             });
                                          }} />;
       } else {
         return <span>{m.rank.name}</span>;
       }
-    }
+    },
   },
   {
     key: (m: {race: Race}) => m.race,
@@ -192,7 +197,7 @@ export const defaultMemberListColumnDefinitions = [
     sortFunction: (a: {race: Race}, b: {race: Race}) => a.race < b.race ? 1 : -1,
     style: {
       flex: '0 0 120px !important',
-      width: '120px'
+      width: '120px',
     },
   },
   {
@@ -202,7 +207,7 @@ export const defaultMemberListColumnDefinitions = [
     sortFunction: (a: {class: Archetype}, b: {class: Archetype}) => a.class < b.class ? 1 : -1,
     style: {
       flex: '0 0 120px !important',
-      width: '120px'
+      width: '120px',
     },
   },
   {
@@ -212,7 +217,7 @@ export const defaultMemberListColumnDefinitions = [
     sortFunction: (a: {joined: string}, b: {joined: string}) => a.joined < b.joined ? 1 : -1,
     style: {
       flex: '0 0 180px !important',
-      width: '180px'
+      width: '180px',
     },
     renderItem: (m: ql.FullOrderMember) => {
       return (
@@ -221,13 +226,13 @@ export const defaultMemberListColumnDefinitions = [
           styles={{
           tooltip: {
             backgroundColor: '#444',
-            border: '1px solid #4A4A4A'
-          }
+            border: '1px solid #4A4A4A',
+          },
         }}>
           {moment(m.joined as any).fromNow()}
         </Tooltip>
       );
-    }
+    },
   },
   {
     key: (m: {lastLogin: string}) => m.lastLogin,
@@ -236,7 +241,7 @@ export const defaultMemberListColumnDefinitions = [
     sortFunction: (a: {lastLogin: string}, b: {lastLogin: string}) => a.lastLogin < b.lastLogin ? 1 : -1,
     style: {
       flex: '0 0 180px !important',
-      width: '180px'
+      width: '180px',
     },
     renderItem: (m: ql.FullOrderMember) => {
       return (
@@ -245,13 +250,13 @@ export const defaultMemberListColumnDefinitions = [
           styles={{
           tooltip: {
             backgroundColor: '#444',
-            border: '1px solid #4A4A4A'
-          }
+            border: '1px solid #4A4A4A',
+          },
         }}>
           {moment(m.lastLogin as any).fromNow()}
         </Tooltip>
       );
-    }
+    },
   },
 ];
 
@@ -299,14 +304,14 @@ export default (props : MemberListProps) => {
                   return <MemberListMenu member={item}
                                          close={close}
                                          refetch={props.refetch}
-                                         groupId={props.group.id} />
+                                         groupId={props.group.id} />;
                 }}
                 rowMenuStyle={{
                   backgroundColor: '#444',
-                  border: '1px solid #4A4A4A'
+                  border: '1px solid #4A4A4A',
                 }} />
     </div>
-  )
+  );
 };
 
 

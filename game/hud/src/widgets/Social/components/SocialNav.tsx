@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 21:48:36
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 11:52:27
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:36:38
  */
 
 import * as React from 'react';
@@ -140,14 +140,24 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
     super(props);
     this.state = {
       minimized: false,
-    }
+    };
+  }
+  
+  public render() {
+    const ss = StyleSheet.create(defaultSocialNavStyle);
+    const custom = StyleSheet.create(this.props.styles || {});
+    return (
+      <div className={css(ss.container, custom.container)}>
+          {this.props.navigation.categories.map(category => this.renderCategory(category, false, ss, custom))}
+      </div>
+    );
   }
 
-  renderLinks = (links: NavLink[], ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
+  private renderLinks = (links: NavLink[], ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
     const activeClass = css(ss.activeNavGroupListItem, custom.activeNavGroupListItem);
     const disabledClass = css(ss.disabledNavGroupListItem, custom.disabledNavGroupListItem);
-    return links.map(link => {
-      if (link.display(this.props.mySocial) == false) return null;
+    return links.map((link) => {
+      if (link.display(this.props.mySocial) === false) return null;
       const isActive = linkAddressEquals(link.address, this.props.navigation.currentView);
       return (
         <li className={classNames(
@@ -160,11 +170,11 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
           <span className={css(ss.navGroupListItemIcon, custom.navGroupListItemIcon)}>{link.icon}</span>
           {link.displayName}
         </li>
-      )
+      );
     });
   }
 
-  renderNavSection = (navSection: NavSection, ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
+  private renderNavSection = (navSection: NavSection, ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
     return (
       <ul className={classNames('fa-ul', css(ss.navGroupList, custom.navGroupList))}>
         {this.renderLinks(navSection.links, ss, custom)}
@@ -172,7 +182,7 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
     );
   }
 
-  renderCategoryContent = (category: CategoryNav, ss: SocialNavStyle, custom: Partial<SocialNavStyle>): any => {
+  private renderCategoryContent = (category: CategoryNav, ss: SocialNavStyle, custom: Partial<SocialNavStyle>): any => {
     switch (category.category) {
       case SocialCategory.Warbands:
         return category.warbands.map(v => this.renderCategory(v, true, ss, custom));
@@ -183,7 +193,7 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
     }
   }
 
-  renderCategory = (category: CategoryNav, isSub: boolean, ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
+  private renderCategory = (category: CategoryNav, isSub: boolean, ss: SocialNavStyle, custom: Partial<SocialNavStyle>) => {
     const subGroupClass = css(ss.subGroup, custom.subGroup);
     const collapsedClass = css(ss.navGroupCollapsed, custom.navGroupCollapsed);
     return (
@@ -193,7 +203,8 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
                  { [subGroupClass]: isSub },
                  { [collapsedClass]: category.collapsed },
                )}>
-        <hgroup className={isSub ? css(ss.subGroupHeader, custom.subGroupHeader) : css(ss.navGroupHeader, custom.navGroupHeader)}
+        <hgroup className={isSub ? css(ss.subGroupHeader, custom.subGroupHeader) :
+          css(ss.navGroupHeader, custom.navGroupHeader)}
                 onClick={() => this.props.dispatch(toggleCollapsedCategory(category.address))}>
           {category.displayName}
           {
@@ -204,16 +215,6 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
         </hgroup>
         { category.collapsed ? null : this.renderCategoryContent(category, ss, custom)}
       </section>
-    );
-  }
-
-  render() {
-    const ss = StyleSheet.create(defaultSocialNavStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-    return (
-      <div className={css(ss.container, custom.container)}>
-          {this.props.navigation.categories.map(category => this.renderCategory(category, false, ss, custom))}
-      </div>
     );
   }
 }

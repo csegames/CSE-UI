@@ -6,7 +6,7 @@
 
 export enum AudioSettingType {
   RANGE,
-  BOOL
+  BOOL,
 }
 
 export class AudioSetting {

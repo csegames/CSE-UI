@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-31 12:29:59
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 17:34:51
+ * @Last Modified time: 2017-04-06 11:16:34
  */
 
 import * as React from 'react';
@@ -20,8 +20,8 @@ import SavedDraggable, {Anchor} from '../SavedDraggable';
 
 function select(state: GlobalState): any {
   return {
-    buildingMode: state.building.mode
-  }
+    buildingMode: state.building.mode,
+  };
 }
 
 export interface ActionBarProps {
@@ -33,66 +33,15 @@ export interface ActionBarState {
 }
 
 class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
-  private modeListener: { (buildingMode: number):void } = (buildingMode: number) => {
-    this.setState((state, props) => ({ buldingMode: buildingMode } as any));
-  };
 
   constructor(props: ActionBarProps) {
     super(props);
     this.state = {
       minimized: false,
-    }    
+    };
   }
 
-  onMinMax() {
-    this.setState((state, props) => ({ minimized: !state.minimized }));
-  }
-
-  onSelect() {
-    if (this.props.buildingMode != buildUIMode.SELECTINGBLOCK) {
-      buildingActions.changeMode(buildUIMode.SELECTINGBLOCK);
-    } else {
-      buildingActions.changeMode(buildUIMode.PLACINGPHANTOM);
-    }
-  }
-
-  onComit() {
-    buildingActions.commit();
-  }
-
-  onUndo() {
-    buildingActions.undo();
-  }
-
-  onRedo() {
-    buildingActions.redo();
-  }
-
-  onRotX() {
-    buildingActions.rotX();
-  }
-
-  onRotY() {
-    buildingActions.rotY();
-  }
-
-  onRotZ() {
-    buildingActions.rotZ();
-  }
-
-  onFlipX() {
-    buildingActions.flipX();
-  }
-
-  onFlipY() {
-    buildingActions.flipY();
-  }
-
-  onFlipZ() {
-    buildingActions.flipZ();
-  }
-
-  render() {
+  public render() {
 
     const ACTION_BAR_IMAGES = {
       actionBarSelect: 'images/building/action-bar-select.png',
@@ -105,76 +54,77 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
       actionBarRotateZ: 'images/building/action-bar-rotate-z.png',
       actionBarFlipX: 'images/building/action-bar-flip-x.png',
       actionBarFlipY: 'images/building/action-bar-flip-y.png',
-      actionBarFlipZ: 'images/building/action-bar-flip-z.png'
-    }
+      actionBarFlipZ: 'images/building/action-bar-flip-z.png',
+    };
 
     return (
-     <SavedDraggable saveName="building/actionbar" 
+     <SavedDraggable saveName='building/actionbar' 
         defaultX={[0, Anchor.TO_START]} 
         defaultY={[-200, Anchor.TO_CENTER]} 
  >
 
       <div className='action-bar'>
-        <header className="action-bar-header">
-            <div className="dragHandle"></div>
+        <header className='action-bar-header'>
+            <div className='dragHandle'></div>
         </header>
-        <ul className="action-bar-container">
+        <ul className='action-bar-container'>
 
-          <li className="action-bar-item" onClick={() => this.onSelect() }>
+          <li className='action-bar-item' onClick={() => this.onSelect() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarSelect} />
             {this.state.minimized ? null : <em>`</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onComit()}>
+          <li className='action-bar-item' onClick={() => this.onComit()}>
             <ActionButton isActive={false}
-              icon={this.props.buildingMode < 4 ? ACTION_BAR_IMAGES.actionBarAddBlock : ACTION_BAR_IMAGES.actionBarDelBlock} />
+              icon={this.props.buildingMode < 4 ? ACTION_BAR_IMAGES.actionBarAddBlock : ACTION_BAR_IMAGES.actionBarDelBlock}
+            />
             {this.state.minimized ? null : <em>1</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onUndo() }>
+          <li className='action-bar-item' onClick={() => this.onUndo() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarUndo} />
             {this.state.minimized ? null : <em>2</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onRedo() }>
+          <li className='action-bar-item' onClick={() => this.onRedo() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarRedo} />
             {this.state.minimized ? null : <em>3</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onRotX() }>
+          <li className='action-bar-item' onClick={() => this.onRotX() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarRotateX} />
             {this.state.minimized ? null : <em>4</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onRotY() }>
+          <li className='action-bar-item' onClick={() => this.onRotY() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarRotateY} />
             {this.state.minimized ? null : <em>5</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onRotZ() }>
+          <li className='action-bar-item' onClick={() => this.onRotZ() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarRotateZ} />
             {this.state.minimized ? null : <em>6</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onFlipX() }>
+          <li className='action-bar-item' onClick={() => this.onFlipX() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarFlipX} />
             {this.state.minimized ? null : <em>7</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onFlipY() }>
+          <li className='action-bar-item' onClick={() => this.onFlipY() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarFlipY} />
             {this.state.minimized ? null : <em>8</em>}
           </li>
 
-          <li className="action-bar-item" onClick={() => this.onFlipZ() }>
+          <li className='action-bar-item' onClick={() => this.onFlipZ() }>
             <ActionButton isActive={false}
               icon={ACTION_BAR_IMAGES.actionBarFlipZ} />
             {this.state.minimized ? null : <em>9</em>}
@@ -183,7 +133,59 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
         </ul>
       </div>
       </SavedDraggable>
-    )
+    );
+  }
+
+  private modeListener: { (buildingMode: number):void } = (buildingMode: number) => {
+    this.setState((state, props) => ({ buldingMode: buildingMode } as any));
+  }
+
+  private onMinMax() {
+    this.setState((state, props) => ({ minimized: !state.minimized }));
+  }
+
+  private onSelect() {
+    if (this.props.buildingMode !== buildUIMode.SELECTINGBLOCK) {
+      buildingActions.changeMode(buildUIMode.SELECTINGBLOCK);
+    } else {
+      buildingActions.changeMode(buildUIMode.PLACINGPHANTOM);
+    }
+  }
+
+  private onComit() {
+    buildingActions.commit();
+  }
+
+  private onUndo() {
+    buildingActions.undo();
+  }
+
+  private onRedo() {
+    buildingActions.redo();
+  }
+
+  private onRotX() {
+    buildingActions.rotX();
+  }
+
+  private onRotY() {
+    buildingActions.rotY();
+  }
+
+  private onRotZ() {
+    buildingActions.rotZ();
+  }
+
+  private onFlipX() {
+    buildingActions.flipX();
+  }
+
+  private onFlipY() {
+    buildingActions.flipY();
+  }
+
+  private onFlipZ() {
+    buildingActions.flipZ();
   }
 }
 

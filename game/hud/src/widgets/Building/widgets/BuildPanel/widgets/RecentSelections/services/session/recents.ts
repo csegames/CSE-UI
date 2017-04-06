@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events} from 'camelot-unchained';
-import {BuildingItem} from '../../../../../../lib/BuildingItem';
-const assign = require('object-assign');
+import { events } from 'camelot-unchained';
+import { BuildingItem } from '../../../../../../lib/BuildingItem';
+import * as assign from 'object-assign';
 
 const CHANGE_SELECTION = 'building/selection/CHANGE_SELECTION';
 const ITEM_SELECTED_EVENT = 'building/selection/ITEM_SELECTED_EVENT';
@@ -21,8 +21,8 @@ export function initializeRecents(dispatch: any) {
 export function selectItem(item: BuildingItem) {
   return {
     type: CHANGE_SELECTION,
-    item: item,
-  }
+    item,
+  };
 }
 
 export interface RecentsState {
@@ -32,15 +32,15 @@ export interface RecentsState {
 
 const initialState: RecentsState = {
   selectedItem: <BuildingItem>null,
-  recentSelections: updateRecentItemList(null, [])
-}
+  recentSelections: updateRecentItemList(null, []),
+};
 
 function updateRecentItemList(item: BuildingItem, items: BuildingItem[]) {
   const newItems: BuildingItem[] = [];
   newItems.push(item);
   for (let i = 0; i < 11; i++) {
     const current: BuildingItem = items[i];
-    const add: boolean = current == null || !(current.id == item.id && current.type == item.type);
+    const add: boolean = current == null || !(current.id === item.id && current.type === item.type);
     if (add) {
       newItems.push(current);
     }

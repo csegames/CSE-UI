@@ -40,7 +40,7 @@ export interface OrderActionsQuery {
   order: {
     id: string;
     recentActions: MemberAction[];
-  }
+  };
 }
 
 export interface OrderActionsQueryVariables {

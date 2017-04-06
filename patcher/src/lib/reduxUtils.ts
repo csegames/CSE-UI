@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-29 17:31:15
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-21 19:34:47
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 14:26:37
  */
 
 export function clone<T>(obj: T): T {
@@ -22,7 +22,7 @@ export function merge<T>(obj: T, ...args: any[]): T {
 }
 
 export interface AsyncAction<T> {
-    (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
+  (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
 }
 
 export interface BaseAction {
@@ -33,7 +33,7 @@ export interface BaseAction {
 
 export const defaultAction: any = {
   type: null,
-  when: null
+  when: null,
 };
 
 export interface FetchStatus {
@@ -54,7 +54,7 @@ export const defaultFetchStatus: FetchStatus = {
 
 
 export interface Dictionary<value> {
-  [id: string]: value
+  [id: string]: value;
 }
 
 function defaultCompare<T>(a: T, b: T): boolean {
@@ -64,7 +64,7 @@ function defaultCompare<T>(a: T, b: T): boolean {
 export function findIndexWhere<T>(arr: T[], predicate: (a: T) => boolean): number {
   if (!arr) return -1;
   let i = arr.length;
-  while(--i >= 0) {
+  while (--i >= 0) {
     if (predicate(arr[i])) return i;
   }
   return -1;
@@ -73,7 +73,7 @@ export function findIndexWhere<T>(arr: T[], predicate: (a: T) => boolean): numbe
 export function findIndex<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): number {
   if (!arr) return -1;
   let i = arr.length;
-  while(--i >= 0) {
+  while (--i >= 0) {
     if (equals(obj, arr[i])) return i;
   }
   return -1;
@@ -81,7 +81,7 @@ export function findIndex<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean =
 
 export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): T[] {
   const copy = !arr ? [] : arr.slice();
-  let index = findIndex(copy, obj, equals);
+  const index = findIndex(copy, obj, equals);
   if (index >= 0) {
     copy[index] = obj;
   } else {
@@ -97,7 +97,7 @@ export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = de
   let index = -1;
   let i = copy.length;
   
-  while(--i > -1) {
+  while (--i > -1) {
     if (equals(obj, copy[i])) {
       index = i;
       break;
@@ -113,27 +113,26 @@ export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = de
 
 
 export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result: T[], removed: T[]} {
-  let result: T[] = [];
+  const result: T[] = [];
   const removed: T[] = [];
 
   if (!(arr && arr.length)) return {result, removed};
   let i = arr.length;
-  while(--i > -1) {
+  while (--i > -1) {
     const o = Array.isArray(arr[i]) ? cloneArray(arr[i] as any) as any : clone(arr[i]);
     if (predicate(o)) {
-      removed.push(o)
+      removed.push(o);
     } else {
       result.unshift(o);
     }
   }
 
-  return {result, removed};
+  return { result, removed };
 }
 
 // works with arrays of basic types, number, string, boolean
-export function simpleMergeUnique<T>( ...arrays: T[] )
-{
-  return [ ...new Set( [].concat( ...arrays ) ) ];
+export function simpleMergeUnique<T>(...arrays: T[]) {
+  return [...new Set( [].concat(...arrays))];
 }
 
 export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
@@ -142,13 +141,13 @@ export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
   while (--i >= 0) {
     if (!arrays[i]) continue;
     let j = arrays[i].length;
-    while(--j >= 0) {
+    while (--j >= 0) {
       const hash = hashFn(arrays[i][j]);
       if (!map[hash]) map[hash] = arrays[i][j];
     }
   }
   const result: T[] = [];
-  for (var key in map) {
+  for (const key in map) {
     result.push(map[key]);
   }
   return result;
@@ -165,37 +164,39 @@ export function loggingMiddleware(store: any) {
     console.log('next state', store.getState());
     console.groupEnd();
     return result;
-  }
+  };
 }
 
 export function crashReporterMiddleware(store: any) {
   return (next: (action: BaseAction) => BaseAction) => (action: BaseAction) => {
     try {
-      return next(action)
+      return next(action);
     } catch (err) {
-      console.error('Caught an exception!', err)
-      throw err
+      console.error('Caught an exception!', err);
+      throw err;
     }
-  }
+  };
 }
 
 export function thunkMiddleware(store: any) {
   return (next: any) => (action: any) => {
     return typeof action === 'function' ? action(store.dispatch, store.getState) : next(action);
-  }
+  };
 }
 
 export interface Action<STATETYPE> {
   (state: STATETYPE, action: any): STATETYPE;
 }
 
-export function createReducer<STATETYPE>(defaultState: STATETYPE, actions: Dictionary<Action<STATETYPE>>): (state: STATETYPE, action: BaseAction) => STATETYPE {
+export function createReducer<STATETYPE>(
+  defaultState: STATETYPE,
+  actions: Dictionary<Action<STATETYPE>>): (state: STATETYPE, action: BaseAction) => STATETYPE {
   const actionDefs = clone(actions);
   return (state: STATETYPE = defaultState, action: BaseAction = defaultAction) => {
-    let def = actionDefs[action.type];
+    const def = actionDefs[action.type];
     if (typeof def === 'undefined' || def === null) return state;
     return def(state, action);
   };
 }
 
-export type ActionDefinitions<STATETYPE> = Dictionary<Action<STATETYPE>>
+export type ActionDefinitions<STATETYPE> = Dictionary<Action<STATETYPE>>;

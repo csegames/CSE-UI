@@ -7,34 +7,34 @@
 
 class Stats{
     
-  strength: number;
-  agility: number;
-  endurance: number;
-  will: number;
-  resonance: number;
-  dexterity: number;
-  vitality: number;
-  attunement: number;
-  faith: number;
-  eyesight: number;
+  public strength: number;
+  public agility: number;
+  public endurance: number;
+  public will: number;
+  public resonance: number;
+  public dexterity: number;
+  public vitality: number;
+  public attunement: number;
+  public faith: number;
+  public eyesight: number;
     
     
     
-  hearing: number;
-  clarity: number;
-  mass: number;
-  presence: number;
-  affinity: number;
+  public hearing: number;
+  public clarity: number;
+  public mass: number;
+  public presence: number;
+  public affinity: number;
     
     
-  maxMoveSpeed: number;
-  vision: number;
-  detection: number;
-  carryCapacity: number;
-  maxPanic: number;
-  panicDelay: number;
-  healthRegeneration: number;
-  staminaRegeneration: number;
+  public maxMoveSpeed: number;
+  public vision: number;
+  public detection: number;
+  public carryCapacity: number;
+  public maxPanic: number;
+  public panicDelay: number;
+  public healthRegeneration: number;
+  public staminaRegeneration: number;
     
   constructor(stats = <Stats>{}) {
         
@@ -65,8 +65,8 @@ class Stats{
     this.staminaRegeneration = stats.staminaRegeneration || 0;
   }
     
-  static create() {
-    let a = new Stats();
+  public static create() {
+    const a = new Stats();
     return a;
   }
 } 

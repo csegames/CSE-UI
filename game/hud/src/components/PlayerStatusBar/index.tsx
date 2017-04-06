@@ -10,7 +10,7 @@ import {client, Archetype, Race, Gender, SVGSprite, ClassIcon} from 'camelot-unc
 import Pills, {Orientation} from './components/Pills';
 import PlayerPhoto from './components/PlayerPhoto';
 import SlideIndicatorBar from './components/SlideIndicatorBar';
-import ActiveEffectIcon from '../../components/ActiveEffectIcon'
+import ActiveEffectIcon from '../../components/ActiveEffectIcon';
 
 export enum PlayerStatusStyle {
   FullSelf,
@@ -29,24 +29,24 @@ export interface PlayerStatus {
   characterID: string;
   health: [{
     current: number,
-    maximum: number
+    maximum: number,
   }];
   stamina: {
     current: number,
-    maximum: number
+    maximum: number,
   };
   blood: {
     current: number,
-    maximum: number
+    maximum: number,
   };
   panic: {
     current: number,
-    maximum: number
+    maximum: number,
   };
   temperature: {
     current: number,
     maximum: number,
-    minimum: number
+    minimum: number,
   };
 }
 
@@ -56,7 +56,7 @@ export enum BodyParts {
   LeftArm,
   RightArm,
   LeftLeg,
-  RightLeg
+  RightLeg,
 }
 
 export interface PlayerStatusBarProps {
@@ -75,7 +75,19 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     super(props);
   }
 
-  bodyParts = (style: string = 'left') : any => {
+  public render() {
+    switch (this.props.style) {
+      case PlayerStatusStyle.FullSelf: return this.fullSelf();
+      case PlayerStatusStyle.FullTarget: return this.fullTarget();
+      case PlayerStatusStyle.FullParty: return this.fullParty();
+      case PlayerStatusStyle.MiniSelf: return this.miniSelf();
+      case PlayerStatusStyle.MiniParty: return this.miniParty();
+      case PlayerStatusStyle.MiniTarget: return this.miniTarget();
+      default: return null;
+    }
+  }
+
+  private bodyParts = (style: string = 'left') : any => {
     const mini = style === 'mini' || style === 'mini-party';
     const health = this.props.playerStatus.health;
     return (
@@ -178,14 +190,14 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
         </div>
-    )
+    );
   }
 
-  portrait = (url: string, style: string = 'left'): any => {
+  private portrait = (url: string, style: string = 'left'): any => {
     return <PlayerPhoto photo={url} containerClass={`player-status-bar__portrait ${style}`}/>;
   }
 
-  bloodAndStamFull = (position: string = 'left'): any => {
+  private bloodAndStamFull = (position: string = 'left'): any => {
     return (
       <div className={`player-status-bar__blood-and-stam ${position}`}>
         <div className='player-status-bar__column'>
@@ -197,7 +209,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
                  containerClass={'player-status-bar__blood'}
                  size={10} />
 
-          <div className='player-status-bar__label'>{`${this.props.playerStatus.blood.current}/${this.props.playerStatus.blood.maximum}`}</div>
+          <div className='player-status-bar__label'>
+            {`${this.props.playerStatus.blood.current}/${this.props.playerStatus.blood.maximum}`}
+          </div>
 
           <SlideIndicatorBar containerClass='player-status-bar__panic-bar'
                              indicatorClass='player-status-bar__indicator'
@@ -215,7 +229,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
                  containerClass={'player-status-bar__stamina'}
                  size={10} />
 
-          <div className='player-status-bar__label'>{`${this.props.playerStatus.stamina.current}/${this.props.playerStatus.stamina.maximum}`}</div>
+          <div className='player-status-bar__label'>
+            {`${this.props.playerStatus.stamina.current}/${this.props.playerStatus.stamina.maximum}`}
+          </div>
 
           <SlideIndicatorBar containerClass='player-status-bar__temp-bar'
                              indicatorClass='player-status-bar__indicator'
@@ -226,7 +242,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  bloodAndStamParty = (style: string = 'left'): any => {
+  private bloodAndStamParty = (style: string = 'left'): any => {
     return (
       <div className={`player-status-bar__blood-and-stam ${style}`}>
         <div className='player-status-bar__column'>
@@ -260,7 +276,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  classIcon = (style: string = 'left'): any => {
+  private classIcon = (style: string = 'left'): any => {
     return (
       <div className={`player-status-bar__class ${style}`}>
         <ClassIcon playerClass={this.props.playerStatus.archetype} />
@@ -268,13 +284,13 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  name = (style: string = 'left'): any => {
+  private name = (style: string = 'left'): any => {
     return (
       <div className={`player-status-bar__name ${style}`}>CSE JB</div>
     );
   }
 
-  activeEffects = (style: string = 'left'): any => {
+  private activeEffects = (style: string = 'left'): any => {
     return (
       <div className={`PlayerStatusBar__ActiveEffects ${style}`}>
         <ActiveEffectIcon containerClass={`PlayerStatusBar__ActiveEffects__Icon ${style}`}
@@ -291,7 +307,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  fullSelf = (): any => {
+  private fullSelf = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`} >
 
@@ -309,7 +325,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  fullTarget = (): any => {
+  private fullTarget = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`} >
         
@@ -327,7 +343,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     );
   }
 
-  fullParty = (): any => {
+  private fullParty = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`} >
         
@@ -342,10 +358,10 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
         {this.activeEffects('party')}
       
       </div>
-    )
+    );
   }
 
-  miniSelf = (): any => {
+  private miniSelf = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`}>
 
@@ -357,10 +373,10 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
         {this.activeEffects('mini')}
 
       </div>
-    )
+    );
   }
 
-  miniParty = (): any => {
+  private miniParty = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`}>
 
@@ -371,10 +387,10 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
         {this.activeEffects('mini')}
 
       </div>
-    )
+    );
   }
 
-  miniTarget = (): any => {
+  private miniTarget = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`}>
 
@@ -385,19 +401,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
         {this.activeEffects('mini')}
 
       </div>
-    )
-  }
-
-  render() {
-    switch(this.props.style) {
-      case PlayerStatusStyle.FullSelf: return this.fullSelf();
-      case PlayerStatusStyle.FullTarget: return this.fullTarget();
-      case PlayerStatusStyle.FullParty: return this.fullParty();
-      case PlayerStatusStyle.MiniSelf: return this.miniSelf();
-      case PlayerStatusStyle.MiniParty: return this.miniParty();
-      case PlayerStatusStyle.MiniTarget: return this.miniTarget();
-      default: return null;
-    }
+    );
   }
 }
 

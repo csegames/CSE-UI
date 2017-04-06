@@ -13,7 +13,7 @@ export interface SlashCommand {
 
 const registry: SlashCommand[] = [];
 
-function prefix(command: string) : string { return `slash_${command}`}
+function prefix(command: string) : string { return `slash_${command}`;}
 
 /**
  * Registers a method to be executed when a slash command is entered in the chat
@@ -22,13 +22,13 @@ function prefix(command: string) : string { return `slash_${command}`}
 export function registerSlashCommand(command: string, helpText: string, callback: (args: string) => void) {
   const cmd = command.toLowerCase();
   let found = false;
-  for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == cmd) {
+  for (let i = 0; i < registry.length; ++i) {
+    if (registry[i].command === cmd) {
       found = true;
       break;
     }
   }
-  if (!found) registry.push({command: cmd, helpText: helpText});  
+  if (!found) registry.push({command: cmd, helpText});  
   events.on(prefix(cmd), callback);
 }
 
@@ -40,8 +40,8 @@ export function registerSlashCommand(command: string, helpText: string, callback
 export function unregisterSlashCommand(command: string) {
   const cmd = command.toLowerCase();
   let index = -1;
-  for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == cmd) {
+  for (let i = 0; i < registry.length; ++i) {
+    if (registry[i].command === cmd) {
       events.off(prefix(cmd));
       index = i;
       break;
@@ -62,8 +62,8 @@ export function parseMessageForSlashCommand(command: string): boolean {
   const split = command.split(/ (.+)/);
   const cmd = split[0].toLowerCase();  
   let found = false;
-  for (var i = 0; i < registry.length; ++i) {
-    if (registry[i].command == cmd.toLowerCase()) {
+  for (let i = 0; i < registry.length; ++i) {
+    if (registry[i].command === cmd.toLowerCase()) {
       events.fire(prefix(cmd), split[1]);
       found = true;
       break;

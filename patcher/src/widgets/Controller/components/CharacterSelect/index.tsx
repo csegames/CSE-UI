@@ -5,33 +5,36 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-07 12:15:34
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-30 18:29:35
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 14:29:50
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {webAPI, events, utils} from 'camelot-unchained';
+import { connect } from 'react-redux';
+import { webAPI, events, utils } from 'camelot-unchained';
 import QuickSelect from '../../../../components/QuickSelect';
-import {ServerType, PatcherServer} from '../../services/session/controller';
+import { ServerType, PatcherServer } from '../../services/session/controller';
 import CharacterDeleteModal from '../CharacterDeleteModal';
 
 import * as moment from 'moment';
 
 export interface ActiveCharacterViewProps {
   character: webAPI.SimpleCharacter;
-};
-export interface ActiveCharacterViewState {};
+}
+export interface ActiveCharacterViewState {}
 class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, ActiveCharacterViewState> {
-  render() {
-    const {character} = this.props;
-    const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(character.lastLogin).fromNow();
+  public render() {
+    const { character } = this.props;
+    const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(character.lastLogin)
+      .fromNow();
     return (
       <div className='ActiveCharacterView'>
         <i className={`char-icon char-icon--${webAPI.Race[character.race]}-${webAPI.Gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}</div>
+          <div className='ActiveCharacterView__details__login'>
+            {webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}
+          </div>
         </div>
       </div>
     );
@@ -40,42 +43,35 @@ class ActiveCharacterView extends React.Component<ActiveCharacterViewProps, Acti
 
 export interface CharacterListViewProps {
   character: webAPI.SimpleCharacter;
-};
+}
 export interface CharacterListViewState {
   showDeleteConfirmation: boolean;
-};
+}
 class CharacterListView extends React.Component<CharacterListViewProps, CharacterListViewState> {
   constructor(props: CharacterListViewProps) {
     super(props);
     this.state = {showDeleteConfirmation: false};
   }
 
-  showDeleteConfirmation = (show: boolean) => {
-    this.setState({showDeleteConfirmation: show})
-  }
-
-  deleteCharacter = () => {
-    const {character} = this.props;
-    webAPI.CharactersAPI.deleteCharacterV1(Number(character.shardID), character.id);
-    this.showDeleteConfirmation(false);
-  }
-
-  render() {
-    const {character} = this.props;
-    const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' : moment(character.lastLogin).fromNow();
+  public render() {
+    const { character } = this.props;
+    const lastLogin: string = character.lastLogin === '0001-01-01T00:00:00Z' ? 'Never' :
+      moment(character.lastLogin).fromNow();
     return (
       <div className='ActiveCharacterView'>
         <i className={`char-icon char-icon--${webAPI.Race[character.race]}-${webAPI.Gender[character.gender]}`}></i>
         <div className='ActiveCharacterView__details'>
           <div>{character.name}</div>
-          <div className='ActiveCharacterView__details__login'>{webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}</div>
+          <div className='ActiveCharacterView__details__login'>
+            {webAPI.archetypeString(character.archetype)} - {webAPI.raceString(character.race)}
+          </div>
         </div>
         <div className='ActiveCharacterView__controls'>
           <span className='simptip-position-left simptip-fade' data-tooltip='coming soon'>
-            <i className="fa fa-info-circle" aria-hidden="true"></i>
+            <i className='fa fa-info-circle' aria-hidden='true'></i>
           </span>
           <span className='simptip-position-left simptip-fade' data-tooltip='delete character'>
-            <i className="fa fa-times" onClick={() => this.showDeleteConfirmation(true)}></i>
+            <i className='fa fa-times' onClick={() => this.showDeleteConfirmation(true)}></i>
           </span>
         </div>
         {this.state.showDeleteConfirmation ? (
@@ -89,13 +85,23 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
       </div>
     );
   }
+
+  private showDeleteConfirmation = (show: boolean) => {
+    this.setState({showDeleteConfirmation: show});
+  }
+
+  private deleteCharacter = () => {
+    const {character} = this.props;
+    webAPI.CharactersAPI.deleteCharacterV1(Number(character.shardID), character.id);
+    this.showDeleteConfirmation(false);
+  }
 }
 
 export interface CharacterSelectProps {
-  characters: utils.Dictionary<webAPI.SimpleCharacter>,
-  selectCharacter: (character: webAPI.SimpleCharacter) => void,
+  characters: utils.Dictionary<webAPI.SimpleCharacter>;
+  selectCharacter: (character: webAPI.SimpleCharacter) => void;
   selectedServer: PatcherServer;
-};
+}
 
 export interface CharacterSelectState {
   selectedCharacter: webAPI.SimpleCharacter;
@@ -104,7 +110,7 @@ export interface CharacterSelectState {
 
 class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSelectState> {
   public name: string = 'cse-patcher-Character-select';
-  private characters:Array<webAPI.SimpleCharacter> = new Array<webAPI.SimpleCharacter>();
+  private characters: webAPI.SimpleCharacter[] = [];
   private selectedCharacter:webAPI.SimpleCharacter = null;
 
   constructor(props: CharacterSelectProps) {
@@ -116,52 +122,30 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     };
   }
 
-  componentDidMount() {
-    events.on('character-created', (name: string) => {
-      this.setState({ createdName: name } as any);
-    });
-  }
-
-  componentWillUnmount() {
-    events.off('character-created');
-  }
-
-  componentWillReceiveProps(nextProps: CharacterSelectProps) {
-    if (!this.state.selectedCharacter || !this.props.selectedServer) return;
-    if (this.props.selectedServer.shardID !== nextProps.selectedServer.shardID) {
-      this.selectCharacter(nextProps.characters[0]);
-    }
-  }
-
-  selectCharacter = (character: webAPI.SimpleCharacter) => {
-    this.props.selectCharacter(character);
-    this.setState({selectedCharacter: character} as any);
-  }
-
   public onSelectedServerChanged = (server: PatcherServer) => {
-    console.log('on selected server changed -- character select')
+    console.log('on selected server changed -- character select');
     this.setState({selectedServer: server} as any);
   }
 
-  render() {
+  public render() {
     const {selectedServer} = this.props;
 
     // If no server, we have no characters to display selections for.
     if (!selectedServer || selectedServer == null || !selectedServer.shardID) {
       try {
         console.log(`no server selected ${JSON.stringify(selectedServer)}`);
-      } catch(e) {}
+      } catch (e) {}
       return null;
     }
 
     const {characters} = this.props;
 
-    let serverCharacters: webAPI.SimpleCharacter[] = [];
+    const serverCharacters: webAPI.SimpleCharacter[] = [];
     for (const key in characters) {
       if (characters[key].shardID.toString() === selectedServer.shardID.toString()) serverCharacters.push(characters[key]);
     }
 
-    if (serverCharacters.length == 0) {
+    if (serverCharacters.length === 0) {
       return (
         // TODO: Do this better
         <QuickSelect items={[]}
@@ -180,7 +164,9 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
     serverCharacters.sort((a, b) => Date.parse(b.lastLogin) - Date.parse(a.lastLogin));
 
-    let {selectedCharacter, createdName} = this.state;
+    const createdName = this.state.createdName;
+    let selectedCharacter = this.state.selectedCharacter;
+    
     if (createdName) {
       for (let i = 0; i < serverCharacters.length; ++i) {
         if (serverCharacters[i].name === createdName) {
@@ -188,13 +174,14 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
           this.props.selectCharacter(selectedCharacter);
           setTimeout(() => this.setState({
             createdName: null,
-            selectedCharacter: selectedCharacter,
+            selectedCharacter,
           } as any), 100);
           break;
         }
       }
     }
-    if (!selectedCharacter || selectedCharacter === null || !this.props.characters[selectedCharacter.id] || selectedCharacter.shardID.toString() != selectedServer.shardID.toString()) {
+    if (!selectedCharacter || selectedCharacter === null || !this.props.characters[selectedCharacter.id] ||
+        selectedCharacter.shardID.toString() !== selectedServer.shardID.toString()) {
       // get from local storage or use the first in the list.
       selectedCharacter = serverCharacters[0];
       this.props.selectCharacter(selectedCharacter);
@@ -207,6 +194,28 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                         listViewComponentGenerator={c => <CharacterListView character={c} />}
                         itemHeight={66}
                         onSelectedItemChanged={this.selectCharacter} />;
+  }
+
+  private componentDidMount() {
+    events.on('character-created', (name: string) => {
+      this.setState({ createdName: name } as any);
+    });
+  }
+
+  private componentWillUnmount() {
+    events.off('character-created');
+  }
+
+  private componentWillReceiveProps(nextProps: CharacterSelectProps) {
+    if (!this.state.selectedCharacter || !this.props.selectedServer) return;
+    if (this.props.selectedServer.shardID !== nextProps.selectedServer.shardID) {
+      this.selectCharacter(nextProps.characters[0]);
+    }
+  }
+
+  private selectCharacter = (character: webAPI.SimpleCharacter) => {
+    this.props.selectCharacter(character);
+    this.setState({selectedCharacter: character} as any);
   }
 }
 

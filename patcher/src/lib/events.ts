@@ -76,5 +76,5 @@ export {
   once,
   off,
   fire,
-  diagnostics
+  diagnostics,
 };

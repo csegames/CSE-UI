@@ -7,7 +7,7 @@
 enum announcementType {
   TEXT = 1,   // Display in the chat window.
   POPUP = 2,  // Display in Announcement Module
-  ALL = TEXT | POPUP
-};
+  ALL = TEXT | POPUP,
+}
 
 export default announcementType;

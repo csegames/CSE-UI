@@ -58,9 +58,9 @@ export function unMuteMusic(state: SoundsState): SoundsAction {
 }
 
 function getInitialState(): SoundsState {
-  let initialState: SoundsState = {
+  const initialState: SoundsState = {
     playMusic: true,
-    playSound: true
+    playSound: true,
   };
   try {
     const savedState = JSON.parse(localStorage.getItem(localStorageKey));
@@ -73,7 +73,7 @@ function getInitialState(): SoundsState {
 }
 
 export default function reducer(state: SoundsState = getInitialState(), action: SoundsAction = defaultAction): SoundsState {
-  switch(action.type) {
+  switch (action.type) {
     default: return state;
     case MUTE_SOUNDS:
       return merge(state, {playSound: false});

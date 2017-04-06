@@ -16,15 +16,15 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: -293
+      offset: -293,
     },
     y: {
       anchor: 5,
-      offset: -97
+      offset: -97,
     },
     size: {
       width: 293,
-      height: 97
+      height: 97,
     },
     scale: 1,
     opacity: 1,
@@ -34,8 +34,8 @@ export default {
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true
+    lockWidth: true,
   },
   component: Announcement,
-  props: {}
-}
+  props: {},
+};

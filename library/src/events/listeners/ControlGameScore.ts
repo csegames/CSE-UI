@@ -59,15 +59,15 @@ function run(emitter: EventEmitter, topic: string) {
 }
 
 export default class ControlGameScoreListener {
-  listening: boolean = false;
-  topic: string = clientEventTopics.handlesControlGameScore;
-  start(emitter: EventEmitter): void {
+  public listening: boolean = false;
+  public topic: string = clientEventTopics.handlesControlGameScore;
+  public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);
     }
   }
-  stop() {
+  public stop() {
     if (timer) {
       clearTimeout(timer);
       timer = null;

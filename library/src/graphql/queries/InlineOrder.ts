@@ -27,7 +27,7 @@ export interface InlineOrderQuery {
     id: string;
     name: string;
     realm: Faction;
-  }
+  };
 }
 
 export interface InlineOrderQueryVariables {

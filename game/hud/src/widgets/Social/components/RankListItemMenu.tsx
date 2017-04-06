@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-22 19:12:59
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-23 11:18:47
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:36:58
  */
 
 import * as React from 'react';
@@ -55,15 +55,28 @@ class RankListItemMenu<T> extends React.Component<RankListItemMenuProps, RankLis
       deleteError: null,
     };
   }
+  
+  public render() {
+    const ss = StyleSheet.create(defaultRankListItemMenuStyle);
+    const custom = StyleSheet.create(this.props.styles || {});
+    return (
+      <ul className={css(ss.list, custom.list)}>
+        <li className={css(ss.listItem, custom.listItem)}
+            onClick={this.doDelete}>
+            Delete {this.state.deleting ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null}
+        </li>
+      </ul>
+    );
+  }
 
-  doDelete = () => {
+  private doDelete = () => {
     this.setState({
       deleting: true,
       deleteError: null,
     });
 
     webAPI.GroupsAPI.removeRankV1(client.shardID, client.characterID, this.props.groupId, this.props.rank.name)
-      .then(result => {
+      .then((result) => {
         if (result.ok) {
           this.setState({
             deleting: false,
@@ -76,19 +89,6 @@ class RankListItemMenu<T> extends React.Component<RankListItemMenuProps, RankLis
           deleteError: result.data,
         });
       });
-  }
-
-  render() {
-    const ss = StyleSheet.create(defaultRankListItemMenuStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-    return (
-      <ul className={css(ss.list, custom.list)}>
-        <li className={css(ss.listItem, custom.listItem)}
-            onClick={this.doDelete}>
-            Delete {this.state.deleting ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null}
-        </li>
-      </ul>
-    )
   }
 }
 

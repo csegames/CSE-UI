@@ -7,7 +7,7 @@
 enum channelId {
   NONE = -1,
   HATCHERY = 4,
-  WYRMLING = 10
-};
+  WYRMLING = 10,
+}
 
 export default channelId;

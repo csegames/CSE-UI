@@ -79,7 +79,8 @@ class CircularArray<T> {
 
   public get(index: number): T {
     if (index < 0 || index > this.maxLength) return undefined;
-    return this._length <= this.maxLength ? this.data[index] : this.data[((this._length % this.maxLength)+1+index) % this.maxLength]
+    return this._length <= this.maxLength ?
+      this.data[index] : this.data[((this._length % this.maxLength) + 1 + index) % this.maxLength];
   }
 
   public push(item: T) {
@@ -89,6 +90,9 @@ class CircularArray<T> {
 }
 
 export class Console extends React.Component<ConsoleProps, ConsoleState> {
+
+  private inputRef: HTMLInputElement = null;
+  
   constructor(props: ConsoleProps) {
     super(props);
     this.state = {
@@ -99,56 +103,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     };
   }
 
-  componentWillMount() {
-    events.on('system_message', this.onConsoleText)
-    events.on('hudnav--navigate', this.handleHUDNavNavigate);
-  }
-
-  onConsoleText = (s: string) => {
-    const textLines = this.state.textLines;
-    textLines.push(s);
-    this.setState({
-      textLines,
-    });
-  }
-
-  handleHUDNavNavigate = (navItem: string) => {
-    if (navItem === 'console') {
-      if (this.state.show) {
-        client.ReleaseInputOwnership();
-      }
-      this.setState({
-        show: !this.state.show,
-      });
-    }
-  }
-
-  onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.keyCode === jsKeyCodes.ENTER) {
-      // submit command 
-      const text = this.inputRef.value;
-      if (!parseMessageForSlashCommand(text)) {
-        client.SendSlashCommand(text);
-      }
-
-      this.inputRef.value = '';
-    }
-  }
-
-  renderTextLines = (ss: ConsoleStyle, custom: Partial<ConsoleStyle>) => {
-    const lines: JSX.Element[] = [];
-    for (let i = 0; i < this.state.textLines.length; ++i) {
-      lines.push((
-        <div key={i} className={css(ss.line, custom.line)}>
-          {this.state.textLines.get(i)}
-        </div>
-      ))
-    }
-    return lines.reverse();
-  }
-
-  inputRef: HTMLInputElement = null;
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultConsoleStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -173,6 +128,54 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
         </div>
       </div>
     );
+  }
+
+  private componentWillMount() {
+    events.on('system_message', this.onConsoleText);
+    events.on('hudnav--navigate', this.handleHUDNavNavigate);
+  }
+
+  private onConsoleText = (s: string) => {
+    const textLines = this.state.textLines;
+    textLines.push(s);
+    this.setState({
+      textLines,
+    });
+  }
+
+  private handleHUDNavNavigate = (navItem: string) => {
+    if (navItem === 'console') {
+      if (this.state.show) {
+        client.ReleaseInputOwnership();
+      }
+      this.setState({
+        show: !this.state.show,
+      });
+    }
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === jsKeyCodes.ENTER) {
+      // submit command 
+      const text = this.inputRef.value;
+      if (!parseMessageForSlashCommand(text)) {
+        client.SendSlashCommand(text);
+      }
+
+      this.inputRef.value = '';
+    }
+  }
+
+  private renderTextLines = (ss: ConsoleStyle, custom: Partial<ConsoleStyle>) => {
+    const lines: JSX.Element[] = [];
+    for (let i = 0; i < this.state.textLines.length; ++i) {
+      lines.push((
+        <div key={i} className={css(ss.line, custom.line)}>
+          {this.state.textLines.get(i)}
+        </div>
+      ));
+    }
+    return lines.reverse();
   }
 }
 

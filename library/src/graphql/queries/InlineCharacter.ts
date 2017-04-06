@@ -34,7 +34,7 @@ export interface InlineCharacterQuery {
     gender: Gender;
     realm: Faction;
     class: Archetype;
-  }
+  };
 }
 
 export interface InlineCharacterQueryVariables {

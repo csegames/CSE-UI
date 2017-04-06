@@ -15,26 +15,26 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: 0
+      offset: 0,
     },
     y: {
       anchor: 6,
-      offset: 0
+      offset: 0,
     },
     size: {
       width: 300,
-      height: 180
+      height: 180,
     },
     scale: 0.6,
     opacity: 1,
     visibility: true,
     zOrder: 3,
-    layoutMode: LayoutMode.GRID
+    layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true,
   },
   component: EnemyTargetHealth,
-  props: {}
+  props: {},
 };

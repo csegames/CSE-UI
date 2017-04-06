@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 12:55:46
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 11:46:37
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 11:01:03
  */
 
 import * as React from 'react';
@@ -27,15 +27,27 @@ export interface SocialContainerState {
 
 class SocialContainer extends React.Component<SocialContainerProps, SocialContainerState> {
 
+  private initialized = false;
+  private mainRef: any = null;
+
   constructor(props : SocialContainerProps) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
     };
   }
 
-  private initialized = false;
-  componentDidMount() {
+  public render() {
+    return this.state.visible
+      ? (
+        <Provider store={store}>
+          <SocialMain ref={r => this.mainRef = r} {...this.props} />
+        </Provider>
+      )
+      : null;
+  }
+  
+  private componentDidMount() {
     if (!this.initialized) {
       this.initialized = true;
     }
@@ -51,43 +63,31 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
       }
     });
 
-    window.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('keydown', this.onKeyDown);
   }
 
-  componentWillUnmount() {
+  private componentWillUnmount() {
     events.off('hudnav--navigate');
-    window.removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('keydown', this.onKeyDown);
   }
 
-  onKeyDown = (e : KeyboardEvent) => {
+  private onKeyDown = (e : KeyboardEvent) => {
     if (e.which === jsKeyCodes.ESC && this.state.visible) {
       client.ReleaseInputOwnership();
       this.hide();
     }
   }
 
-  show = () => {
+  private show = () => {
     if (typeof client.RequestInputOwnership === 'function') 
       client.RequestInputOwnership();
     this.setState({visible: true});
   }
 
-  hide = () => {
+  private hide = () => {
     if (typeof client.ReleaseInputOwnership === 'function') 
       client.ReleaseInputOwnership();
     this.setState({visible: false});
-  }
-
-  mainRef: any = null;
-
-  render() {
-    return this.state.visible
-      ? (
-        <Provider store={store}>
-          <SocialMain ref={r => this.mainRef = r} {...this.props} />
-        </Provider>
-      )
-      : null;
   }
 }
 

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 14:43:06
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-22 17:24:32
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:13:21
  */
 
 /*
@@ -56,7 +56,7 @@ export const defaultDialogStyle: DialogStyle = {
 
   contentWrapper: {
     flex: '1 1 auto',
-  }
+  },
 };
 
 export interface DialogProps<ContentProps> {
@@ -73,6 +73,8 @@ export interface DialogState {
 
 export class Dialog<ContentProps> extends React.Component<DialogProps<ContentProps>, DialogState> {
 
+  private mouseOver = false;
+
   constructor(props: DialogProps<ContentProps>) {
     super(props);
 
@@ -82,47 +84,7 @@ export class Dialog<ContentProps> extends React.Component<DialogProps<ContentPro
     };
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('mousedown', this.windowMouseDown);
-  }
-
-  public show = () => {
-    this.setState({
-      hidden: false
-    } as any);
-    this.mouseOver = false;
-  }
-
-  public hide = () => {
-    this.setState({
-      hidden: true
-    } as any);
-    window.removeEventListener('mousedown', this.windowMouseDown);
-    this.mouseOver = false;
-  }
-
-  mouseOver = false;
-  onMouseEnter = () => {
-    this.mouseOver = true;
-  }
-
-  onMouseleave = () => {
-    this.mouseOver = false;
-  }
-
-  windowMouseDown = () => {
-    if (this.state.closeOnClickOutside && !this.state.hidden && !this.mouseOver) {
-      this.hide();
-    }
-  }
-
-  clicked = () => {
-    if (!this.state.hidden) return;
-    this.show();
-    window.addEventListener('mousedown', this.windowMouseDown);
-  }
-
-  render() {
+  public render() {
     const ss = StyleSheet.create(defaultDialogStyle);
     const custom = StyleSheet.create(this.props.style || {});
     return (
@@ -131,7 +93,10 @@ export class Dialog<ContentProps> extends React.Component<DialogProps<ContentPro
         {
           this.state.hidden ? null :
             <div className={css(ss.container, custom.container)}>
-              <div className={css(ss.dialog, custom.dialog)} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave}>
+              <div
+                className={css(ss.dialog, custom.dialog)}
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseleave}>
                 <div className={css(ss.contentWrapper, custom.contentWrapper)}>
                   <this.props.content {...this.props.contentProps} />
                 </div>
@@ -140,6 +105,45 @@ export class Dialog<ContentProps> extends React.Component<DialogProps<ContentPro
         }
       </div>
     );
+  }
+
+  public show = () => {
+    this.setState({
+      hidden: false,
+    } as any);
+    this.mouseOver = false;
+  }
+
+  public hide = () => {
+    this.setState({
+      hidden: true,
+    } as any);
+    window.removeEventListener('mousedown', this.windowMouseDown);
+    this.mouseOver = false;
+  }
+
+  private componentWillUnmount() {
+    window.removeEventListener('mousedown', this.windowMouseDown);
+  }
+
+  private onMouseEnter = () => {
+    this.mouseOver = true;
+  }
+
+  private onMouseleave = () => {
+    this.mouseOver = false;
+  }
+
+  private windowMouseDown = () => {
+    if (this.state.closeOnClickOutside && !this.state.hidden && !this.mouseOver) {
+      this.hide();
+    }
+  }
+
+  private clicked = () => {
+    if (!this.state.hidden) return;
+    this.show();
+    window.addEventListener('mousedown', this.windowMouseDown);
   }
 }
 

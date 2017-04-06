@@ -16,7 +16,7 @@ export function getBlueprintIcon(id: number): Promise<string> {
 export function getBlueprints(charId: string): Promise<any> {
   return RestClientLegacy.getJSON('blueprint', true, {
     characterID: charId,
-    loginToken: client.loginToken
+    loginToken: client.loginToken,
   });
 }
 
@@ -25,6 +25,6 @@ export function addBlueprint(charId: string, name: string, data: any): Promise<a
     characterID: charId,
     loginToken: client.loginToken,
     newBlueprintName: name,
-    newBlueprintData: data
+    newBlueprintData: data,
   });
 }

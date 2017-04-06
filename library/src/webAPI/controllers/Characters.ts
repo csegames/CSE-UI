@@ -17,28 +17,28 @@ export function getCharactersV1() {
 
 export function getCharactersOnShardV1(shardID: number) {
   return create(createOptions()).call('v1/characters/getAllOnShard', {
-    shardID: shardID
+    shardID,
   });
 }
 
 export function getCharacterV1(shardID: number, characterID: string) {
   return create(createOptions()).call('v1/characters/get', {
-    shardID: shardID,
-    characterID: characterID
+    shardID,
+    characterID,
   });
 }
 
 export function deleteCharacterV1(shardID: number, characterID: string) {
   return create(createOptions()).call('v1/characters/delete', {
-    shardID: shardID,
-    characterID: characterID
+    shardID,
+    characterID,
   });
 }
 
 export function createCharacterV1(shardID: number, character: Character) {
   return create(createOptions()).call('v1/characters/create', {
-    shardID: shardID,
-    character: character
+    shardID,
+    character,
   });
 }
 

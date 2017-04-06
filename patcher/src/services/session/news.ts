@@ -5,74 +5,82 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:15:41
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-27 19:19:46
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-10 12:44:13
  */
 
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 
-import {BaseAction, defaultAction, AsyncAction, FetchStatus, defaultFetchStatus, merge, hashMerge} from '../../lib/reduxUtils';
+import {
+  BaseAction,
+  defaultAction,
+  AsyncAction,
+  FetchStatus,
+  defaultFetchStatus,
+  merge,
+  hashMerge,
+} from '../../lib/reduxUtils';
 import ResponseError from '../../lib/ResponseError';
-import {fetchJSON} from '../../lib/fetchHelpers';
+import { fetchJSON } from '../../lib/fetchHelpers';
 
 
 export interface RenderedObject {
-  rendered: string
+  rendered: string;
 }
 
 export interface WPData {
-  id: number,
-  date: string,
-  guid: RenderedObject
-  link: string,
-  modified: string,
-  modified_gmt: string,
-  slug: string,
-  title: RenderedObject,
-  author: number,
-  comment_status: string,
-  ping_status: string,
-  type: string,
-  _links: any,
+  id: number;
+  date: string;
+  guid: RenderedObject;
+  link: string;
+  modified: string;
+  modified_gmt: string;
+  slug: string;
+  title: RenderedObject;
+  author: number;
+  comment_status: string;
+  ping_status: string;
+  type: string;
+  _links: any;
 }
 
 export interface Post extends WPData {
-  status: string,
-  content: RenderedObject,
-  excerpt: RenderedObject,
-  featured_image: number,
-  sticky: boolean,
-  format: string,
+  status: string;
+  content: RenderedObject;
+  excerpt: RenderedObject;
+  featured_image: number;
+  sticky: boolean;
+  format: string;
 }
 
 export interface Media extends WPData {
-  alt_text: string,
-  caption: string,
-  description: string,
-  media_type: string,
-  media_details: any
+  alt_text: string;
+  caption: string;
+  description: string;
+  media_type: string;
+  media_details: any;
 }
 
 export interface ImageSize {
-  file: string,
-  width: number,
-  height: number,
-  'mime-type': string,
-  source_url: string
+  file: string;
+  width: number;
+  height: number;
+  'mime-type': string;
+  source_url: string;
 }
 
 export interface ImageMediaDetails {
-  width: number,
-  height: number,
-  file: string,
+  width: number;
+  height: number;
+  file: string;
   sizes: {
     thumbnail: ImageSize,
     'portfolio-one-third': ImageSize,
-    'portfolio-one-fourth': ImageSize
-  },
-  post: number,
-  source_url: string
+    'portfolio-one-fourth': ImageSize,
+  };
+  post: number;
+  source_url: string;
 }
 
 const INVALIDATE_NEWS = 'cse-patcher/news/INVALIDATE_NEWS';
@@ -92,7 +100,7 @@ export function requestPage(page: number): NewsAction {
   return {
     type: FETCH_NEXT_PAGE,
     when: new Date(),
-    page: page,
+    page,
   };
 }
 
@@ -100,7 +108,7 @@ export function fetchPageSuccess(posts: Post[]): NewsAction {
   return {
     type: FETCH_PAGE_SUCCESS,
     when: new Date(),
-    posts: posts,
+    posts,
   };
 }
 
@@ -122,7 +130,7 @@ export function fetchPage(page: number): AsyncAction<NewsAction> {
     return fetchJSON(makePostsUrl(page))
       .then((posts: Post[]) => dispatch(fetchPageSuccess(posts)))
       .catch((error: ResponseError) => dispatch(fetchPageFailed(error)));
-  }
+  };
 }
 
 // reducer
@@ -130,7 +138,7 @@ export interface NewsState extends FetchStatus {
   didInvalidate?: boolean;
   nextPage?: number;
   fetchedPageCount?: number;
-  posts?: Array<Post>;
+  posts?: Post[];
 }
 
 function getInitialState(): NewsState {
@@ -138,25 +146,25 @@ function getInitialState(): NewsState {
     didInvalidate: false,
     nextPage: 1,
     fetchedPageCount: 0,
-    posts: []
+    posts: [],
   });
 }
 
 export default function reducer(state: NewsState = getInitialState(), action: NewsAction = defaultAction): NewsState {
-  switch(action.type) {
+  switch (action.type) {
     default: return state;
     case INVALIDATE_NEWS:
       return merge(state, {
         didInvalidate: true,
-        fetchedPageCount: 0
+        fetchedPageCount: 0,
       });
     case FETCH_NEXT_PAGE:
       return merge(state, {
-        isFetching: true
+        isFetching: true,
       });
     case FETCH_PAGE_SUCCESS:
-      let posts = hashMerge((p: Post) => '' + p.id, state.posts, action.posts);
-      posts.sort(function(a, b) {
+      const posts = hashMerge((p: Post) => '' + p.id, state.posts, action.posts);
+      posts.sort((a, b) => {
         const aDate = new Date(a.date);
         const bDate = new Date(b.date);
         return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
@@ -166,12 +174,12 @@ export default function reducer(state: NewsState = getInitialState(), action: Ne
         didInvalidate: false,
         nextPage: state.nextPage + 1,
         lastUpdated: action.when,
-        posts
+        posts,
       });
     case FETCH_PAGE_FAILED:
       return merge(state, {
         isFetching: false,
-        error: action.error
+        error: action.error,
       });
   }
 }

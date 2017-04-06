@@ -41,16 +41,16 @@ const Boon = (props: {
     addedBoons,
     styles,
     maxPoints,
-    totalPoints
+    totalPoints,
   } = props;
   const onBoonSelect = (trait: BanesAndBoonsInfo) => {
     onBoonClick(trait);
     events.fire('play-sound', 'boon-select');
-  }
+  };
   const boonStyles = Object.assign(
     {},
     styles,
-    { trait: { marginRight: '10px', ...styles.trait } }
+    { trait: { marginRight: '10px', ...styles.trait } },
   );
   return (
     <Trait
@@ -69,7 +69,7 @@ const Boon = (props: {
       maxPoints={maxPoints}
       totalPoints={totalPoints}
     />
-  )
+  );
 };
 
 export default Boon;

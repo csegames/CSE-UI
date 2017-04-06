@@ -23,7 +23,7 @@ export function getFactionsV1() {
 
 export function getAttributeInfoV1(shard: number) {
   return create(createOptions()).get('v1/gamedata/attributeInfo', {
-    shard: shard
+    shard,
   });
 }
 
@@ -39,7 +39,7 @@ export function getRacesV1() {
 
 export function getAttributeOffsetsV1(shard: number) {
   return create(createOptions()).get('v1/gamedata/attributeOffsets', {
-    shard: shard
+    shard,
   });
 }
 

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
 import {initialize} from './services/session/materials-by-type';
@@ -30,10 +30,10 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     super(props);
   }
 
-  render() {
+  public render() {
     return (
       <Provider store={store}>
-        <TabbedPane name="materials" tabs={['Materials']} className="material-selector" 
+        <TabbedPane name='materials' tabs={['Materials']} className='material-selector'
           defaultX={[405, Anchor.TO_END]} 
           defaultY={[20, Anchor.TO_START]} 
           defaultSize={[200, 750]} 
@@ -42,7 +42,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           <MaterialPreview />
         </TabbedPane>
       </Provider>
-    )
+    );
   }
 }
 

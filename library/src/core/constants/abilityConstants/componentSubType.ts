@@ -36,7 +36,7 @@ export enum componentSubType {
   Technique =     1 << 23,
   // TODO : remove these when abilities get updated, these are to cull components from showing in the UI
   DeadPrimary =   1 << 24,
-  DeadSecondary = 1 << 25
+  DeadSecondary = 1 << 25,
 }
 
 export default componentSubType;

@@ -16,19 +16,19 @@ function loadBlueprints() {
   client.OnNewBlueprint((index: number, name: string) => {
     const current = new Date().getTime();
 
-    //special case, this is not a real blueprint
-    if (name == "Small Control Island")
+    // special case, this is not a real blueprint
+    if (name === 'Small Control Island')
       return;
 
     const blueprint = new BuildingBlueprint({
-      index: index,
-      name: name,
+      index,
+      name,
     } as BuildingBlueprint);
 
     blueprintsList.push(blueprint);
 
     if (blueprintsLoaded) {
-      events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: blueprintsList })
+      events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
     }
 
   });
@@ -44,20 +44,19 @@ function requestBlueprintPaste() {
   client.PasteBlueprint();
 }
 
-function fireHandleBlueprints()
-{
+function fireHandleBlueprints() {
   events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
 }
 
 function requestBlueprintDelete(blueprint: BuildingBlueprint) {
-  //no feedback on this delete, we just call it and cross our fingers
+  // no feedback on this delete, we just call it and cross our fingers
   client.DeleteLocalBlueprint(blueprint.name);
 
-  //there is no client.OnDeleteBlueprint
-  //so we will just remove the blueprint and hope the delete really worked
+  // there is no client.OnDeleteBlueprint
+  // so we will just remove the blueprint and hope the delete really worked
   for (let index = 0; index <= blueprintsList.length; index++) {
-    const bp: BuildingBlueprint = blueprintsList[index]
-    if (bp.name == blueprint.name) {
+    const bp: BuildingBlueprint = blueprintsList[index];
+    if (bp.name === blueprint.name) {
       blueprintsList.splice(index, 1);
       fireHandleBlueprints();
       return;
@@ -71,7 +70,7 @@ function requestBlueprintSave(name: string) {
 
 function requestBlueprintSelect(blueprint: BuildingBlueprint) {
   client.SelectBlueprint(blueprint.index);
-  events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint: blueprint });
+  events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 
 function requestBlueprintIcon(blueprint: BuildingBlueprint) {
@@ -80,7 +79,7 @@ function requestBlueprintIcon(blueprint: BuildingBlueprint) {
       fireHandleBlueprints();
   }, (): void => {
       fireHandleBlueprints();
-  })
+  });
 }
 
 function requestBlueprints() {
@@ -92,9 +91,9 @@ function requestBlueprints() {
   if (blueprintsLoaded) {
       fireHandleBlueprints();
   } else {
-    //we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded 
-    //we are only firing off the event periodically to avoid re-rendering the list possibly 100s of times on startup.
-    //The blueprints are loaded using the client.OnNewBlueprint() event which fires for every blueprint
+    // we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded 
+    // we are only firing off the event periodically to avoid re-rendering the list possibly 100s of times on startup.
+    // The blueprints are loaded using the client.OnNewBlueprint() event which fires for every blueprint
     waitForBlueprintsToLoad();
   }
 }
@@ -114,5 +113,5 @@ function waitForBlueprintsToLoad() {
 export {
 requestBlueprints, requestBlueprintIcon, requestBlueprintSelect,
 requestBlueprintSave, requestBlueprintDelete,
-requestBlueprintCopy, requestBlueprintPaste
+requestBlueprintCopy, requestBlueprintPaste,
 };

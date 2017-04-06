@@ -30,8 +30,8 @@ const defaultStyles: WatermarkStyle = {
     '-webkit-touch-callout': 'none',
     userSelect: 'none',
     cursor: 'default',
-  }
-}
+  },
+};
 
 export interface WatermarkStyle {
   watermark: React.CSSProperties;
@@ -42,4 +42,4 @@ export default (props: {
 }) => {
   const ss = StyleSheet.create(merge(defaultStyles, props.style || {}));
   return <i className={css(ss.watermark)}>Engine/Tech Alpha - Do not stream or distribute.</i>;
-}
+};

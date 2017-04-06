@@ -25,20 +25,33 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     this.state = { hoverIcon: null };
   }
 
-  generateBlueprintItem = (bp: BuildingBlueprint) => {
+  public render() {
+    // const categorizedBlueprints:
+    //  { [key: string]: BuildingBlueprint[] } = this.categorizeBlueprints(this.props.blueprints);
+
+    return (
+      <div className='blueprints__list'>
+        <ul>
+          {this.props.blueprints.map(this.generateBlueprintItem) }
+        </ul>
+      </div>
+    );
+  }
+
+  private generateBlueprintItem = (bp: BuildingBlueprint) => {
     return (
       <li key={bp.name}
         onClick={() => this.props.selectBlueprint(bp) }
         onMouseOver={() => this.props.hoverBlueprint(bp) }
         onMouseOut={() => this.props.hoverBlueprint(null) }
-        className={this.props.selected == bp ? 'active' : ''}
+        className={this.props.selected === bp ? 'active' : ''}
         >{bp.name}</li>
-    )
+    );
   }
-  generateBlueprintList(category: string, blueprints: BuildingBlueprint[]) {
+  private generateBlueprintList(category: string, blueprints: BuildingBlueprint[]) {
     return (
       <div>
-        <div className="category">{category}</div>
+        <div className='category'>{category}</div>
         <ul>
           {blueprints.map(this.generateBlueprintItem) }
         </ul>
@@ -67,17 +80,6 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     return categorized;
   }
 */
-  render() {
-    //const categorizedBlueprints: { [key: string]: BuildingBlueprint[] } = this.categorizeBlueprints(this.props.blueprints);
-
-    return (
-      <div className='blueprints__list'>
-        <ul>
-          {this.props.blueprints.map(this.generateBlueprintItem) }
-        </ul>
-      </div>
-    )
-  }
 }
 
 export default BlueprintList;

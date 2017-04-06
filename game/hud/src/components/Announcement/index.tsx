@@ -25,22 +25,8 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   constructor(props: AnnouncementProps) {
     super(props);
   }
-  
-  onMessage = (eventData: any) => {
-    let announcement = eventData as core.Announcement;
-    if (announcement.type !== core.announcementType.POPUP) return;
-    this.setState({message: announcement.message});
-    setTimeout(() => {
-      this.setState({message: ''});
-    }, 20000);
-  }
-  
-  componentWillMount() {
-    events.on('handlesAnnouncements', this.onMessage);
-    this.setState({message: ''});
-  }
-  
-  render() {
+
+  public render() {
     const messageClassNames = 'message ' + (this.state.message.length < 20 ? 'large ' : '');
     let announcement: any;
     if (this.state.message) {
@@ -58,6 +44,20 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
       </ReactCSSTransitionGroup>
     );
   }
-};
+  
+  private onMessage = (eventData: any) => {
+    const announcement = eventData as core.Announcement;
+    if (announcement.type !== core.announcementType.POPUP) return;
+    this.setState({message: announcement.message});
+    setTimeout(() => {
+      this.setState({message: ''});
+    }, 20000);
+  }
+  
+  private componentWillMount() {
+    events.on('handlesAnnouncements', this.onMessage);
+    this.setState({message: ''});
+  }
+}
 
 export default Announcement;

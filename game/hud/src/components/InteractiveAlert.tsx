@@ -59,7 +59,7 @@ const defaultStyle: InteractiveAlertStyle = {
 
   },
 
-}
+};
 
 
 export interface InteractiveAlertStyle {
@@ -83,26 +83,32 @@ export default (props: {
 
   const ss = StyleSheet.create(merge(defaultStyle, props.style || {}));
 
-  let alerts: Alert[] = [];
+  const alerts: Alert[] = [];
 
   if (props.invites && props.invites.length > 0) {
-    props.invites.forEach(i => {
+    props.invites.forEach((i) => {
       alerts.push({
         render: () => {
           return (
             <div className={css(ss.invite)}>
               <h6>{i.invitedByName} has invited you to a {groupType[i.groupType]}.</h6>
               <em>Invite code: {i.inviteCode}</em>
-              <div className={className(css(ss.button, ss.acceptButton))} onClick={() => props.dispatch(acceptInvite(i))}>Accept</div>
-              <div className={className(css(ss.button), css(ss.declineButton))} onClick={() => props.dispatch(declineInvite(i))}>Decline</div>
+              <div className={className(css(ss.button, ss.acceptButton))} onClick={() => props.dispatch(acceptInvite(i))}>
+                Accept
+              </div>
+              <div
+                className={className(css(ss.button), css(ss.declineButton))}
+                onClick={() => props.dispatch(declineInvite(i))}>
+                Decline
+              </div>
             </div>
           );
-        }
+        },
       });
     });
   }
 
-  if (alerts.length == 0) return <div style={{display: 'none'}}></div>;
+  if (alerts.length === 0) return <div style={{display: 'none'}}></div>;
 
   return (
     <div className={css(ss.container)}>
@@ -116,6 +122,5 @@ export default (props: {
         })}
       </Slider>
     </div>
-  )
-}
-
+  );
+};

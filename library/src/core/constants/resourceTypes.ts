@@ -30,5 +30,5 @@ export enum resourceTypes {
   FORKED_ARROW,
   HEAVY_WAR_ARROW,
   ARROW_END,
-  DOODAD
+  DOODAD,
 }

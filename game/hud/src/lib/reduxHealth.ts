@@ -8,10 +8,10 @@
  * @Last Modified by: JB (jb@codecorsair.com)
  * @Last Modified time: 2017-02-20 17:27:34
  */
-import {Race, Gender, Archetype, Faction, Player} from 'camelot-unchained';
+import { Race, Gender, Archetype, Faction, Player } from 'camelot-unchained';
 
-import {PlayerStatus, BodyParts} from './PlayerStatus';
-import {clone, BaseAction} from './reduxUtils';
+import { PlayerStatus, BodyParts } from './PlayerStatus';
+import { clone, BaseAction } from './reduxUtils';
 
 export interface HealthAction extends BaseAction {
   current?: number;
@@ -56,22 +56,22 @@ export function fakePlayer(): PlayerStatus {
     wounds: [0, 0, 0, 0, 0, 0],
     stamina: {
       current: 5000,
-      maximum: 10000
+      maximum: 10000,
     },
     blood: {
       current: 15000,
-      maximum: 15000
+      maximum: 15000,
     },
     panic: {
       current: 1,
-      maximum: 3
+      maximum: 3,
     },
     temperature: {
       current: 50,
       freezingThreshold: 0,
-      burningThreshold: 100
-    }
-  }
+      burningThreshold: 100,
+    },
+  };
 }
 
 export function fakeHealthEvents() {
@@ -97,49 +97,49 @@ export function fakeHealthEvents() {
 }
 
 export function staminaUpdated(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.stamina.current = action.current;
   playerStatus.stamina.maximum = action.max;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 export function healthUpdated(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.health[action.part].current = action.current;
   playerStatus.health[action.part].maximum = action.max;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 export function nameChanged(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.name = action.text;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 export function raceChanged(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.race = action.race;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 export function avatarChanged(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.avatar = action.avatar;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 export function distanceChanged(status: PlayerStatus, action: HealthAction) {
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.distance = action.distance;
-  return {playerStatus: playerStatus};
+  return { playerStatus };
 }
 
 let key = 3;
 export function playerUpdate(status: PlayerStatus, events: any[], action: HealthAction) {
   
-  const doEvent = false && status.name == action.player.name;
+  const doEvent = false && status.name === action.player.name;
   
-  let playerStatus = clone(status);
+  const playerStatus = clone(status);
   playerStatus.name = action.player.name;
   playerStatus.archetype = action.player.archetype;
   playerStatus.race = action.player.race;
@@ -150,13 +150,13 @@ export function playerUpdate(status: PlayerStatus, events: any[], action: Health
   
   // make an event -- hacky for now
   let index = 0;
-  let now = Date.now();
+  const now = Date.now();
   for (; index < events.length; ++index) {
     if (now - events[index].timestamp < 1000) break;
   }
   
-  var newEvents = events.slice(index);
-  action.player.injuries.forEach(e => {
+  const newEvents = events.slice(index);
+  action.player.injuries.forEach((e) => {
     const valueChange = playerStatus.health[e.part].current - e.health;
     playerStatus.health[e.part].current = e.health;
     playerStatus.health[e.part].maximum = e.maxHealth > 0 ? e.maxHealth : 10000;
@@ -186,46 +186,47 @@ export function playerUpdate(status: PlayerStatus, events: any[], action: Health
   });
 
   return {
-    playerStatus: playerStatus,
-    events: newEvents
+    playerStatus,
+    events: newEvents,
   };
 }
 
 export function healtEmulationTest(status: PlayerStatus, events: any[], action: HealthAction) {
   // clean out any old events
   let index = 0;
-  let now = Date.now();
+  const now = Date.now();
   
   for (; index < events.length; ++index) {
     if (now - events[index].timestamp < 1000) break;
   }
 
-  var newEvents = events.slice(index);
-  let damage  = Math.random() * 2 > .5;
+  const newEvents = events.slice(index);
+  const damage  = Math.random() * 2 > .5;
   const e = {
     key: key++,
-    value: (Math.random()*2000 + 750).toFixed(0),
+    value: (Math.random() * 2000 + 750).toFixed(0),
     timestamp: now,
     textType: damage ? 'damage' : 'heal',
     iconType: damage ? 'piercing' : 'heal',
   };
   newEvents.push(e);
   
-  let playerStatus = clone(status);
-  const part = parseInt((Math.random() * 5).toFixed(0));
+  const playerStatus = clone(status);
+  const part = parseInt((Math.random() * 5).toFixed(0), 10);
   
   if (damage) {
-    playerStatus.health[part].current = playerStatus.health[part].current - parseInt(e.value);
+    playerStatus.health[part].current = playerStatus.health[part].current - parseInt(e.value, 10);
   } else {
-    playerStatus.health[part].current = playerStatus.health[part].current + parseInt(e.value);
+    playerStatus.health[part].current = playerStatus.health[part].current + parseInt(e.value, 10);
   }
   
   // range check
-  if (playerStatus.health[part].current > playerStatus.health[part].maximum) playerStatus.health[part].current = playerStatus.health[part].maximum;
+  if (playerStatus.health[part].current > playerStatus.health[part].maximum)
+    playerStatus.health[part].current = playerStatus.health[part].maximum;
   if (playerStatus.health[part].current < 0) playerStatus.health[part].current = 0;
   
   // Rubbish wounds emulation
-  let wounds = playerStatus.wounds[part] + (1 - ((Math.random() * 3)|0));
+  let wounds = playerStatus.wounds[part] + (1 - ((Math.random() * 3) | 0));
   if (wounds < 0) wounds = 0;
   if (wounds > 3) wounds = 3;
   playerStatus.wounds[part] = wounds;
@@ -244,6 +245,6 @@ export function healtEmulationTest(status: PlayerStatus, events: any[], action: 
   
   return {
     events: newEvents,
-    playerStatus: playerStatus,
+    playerStatus,
   };
 }

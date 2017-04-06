@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-25 18:09:02
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-13 15:15:58
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-06 15:19:31
  */
 
 import * as React from 'react';
@@ -28,7 +28,7 @@ export class WarbandContent extends React.Component<WarbandContentProps, Warband
     this.state = {};
   }
 
-  render() {
+  public render() {
     if (this.props.address.kind === 'Primary') {
       return <div>INVALID ADDRESS PROVIDED TO WARBAND CONTENT COMPONENT!</div>;
     }
@@ -38,7 +38,7 @@ export class WarbandContent extends React.Component<WarbandContentProps, Warband
         <br />
         Viewing page {this.props.address.id} for warband {this.props.address.subKey}.
       </div>
-    )
+    );
   }
 }
 

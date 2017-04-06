@@ -12,7 +12,7 @@ enum plotPermissions {
   Guild = 1 << 2,
   Realm = 1 << 3,
   All = 1 << 4,
-  COUNT = 1 << 5
+  COUNT = 1 << 5,
 }
 
 export default plotPermissions;

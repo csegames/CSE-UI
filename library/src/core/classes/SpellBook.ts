@@ -6,14 +6,14 @@
 import Ability from './Ability';
 
 class SpellBook  {
-  abilities: Ability[];
+  public abilities: Ability[];
 
   constructor(spellbook = <SpellBook>{}) {
     spellbook.abilities = spellbook.abilities ||  <Ability[]>[];
   }
 
-  static create() {
-    let a = new SpellBook();
+  public static create() {
+    const a = new SpellBook();
     return a;
   }
 

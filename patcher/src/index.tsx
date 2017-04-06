@@ -25,5 +25,5 @@ ReactDom.render(
   <Provider store={store}>
     <PatcherApp />
   </Provider>,
-  root
+  root,
 );

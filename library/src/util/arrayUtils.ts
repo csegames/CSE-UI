@@ -22,7 +22,7 @@ export function defaultCompare<T>(a: T, b: T): boolean {
 export function findIndexWhere<T>(arr: T[], predicate: (a: T) => boolean): number {
   if (!arr) return -1;
   let i = arr.length;
-  while(--i >= 0) {
+  while (--i >= 0) {
     if (predicate(arr[i])) return i;
   }
   return -1;
@@ -31,7 +31,7 @@ export function findIndexWhere<T>(arr: T[], predicate: (a: T) => boolean): numbe
 export function findIndex<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): number {
   if (!arr) return -1;
   let i = arr.length;
-  while(--i >= 0) {
+  while (--i >= 0) {
     if (equals(obj, arr[i])) return i;
   }
   return -1;
@@ -42,7 +42,7 @@ export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean
   let index = -1;
   let i = copy.length;
   
-  while(--i >= 0) {
+  while (--i >= 0) {
     if (equals(obj, copy[i])) {
        index = i;
        break;
@@ -65,7 +65,7 @@ export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = de
   let index = -1;
   let i = copy.length;
   
-  while(--i > -1) {
+  while (--i > -1) {
     if (equals(obj, copy[i])) {
       index = i;
       break;
@@ -86,10 +86,10 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
   if (!(arr && arr.length)) return {result, removed};
   
   let i = arr.length;
-  while(--i > -1) {
+  while (--i > -1) {
     const o = Array.isArray(arr[i]) ? cloneArray(arr[i] as any) as any : clone(arr[i]);
     if (predicate(o)) {
-      removed.push(o)
+      removed.push(o);
     } else {
       result.unshift(o);
     }

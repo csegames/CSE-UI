@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:12:15
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-29 17:07:36
+ * @Last Modified time: 2017-04-10 12:41:45
  */
 
 import * as React from 'react';
@@ -17,7 +17,7 @@ import Boon from './Boon';
 import { TraitStyle } from './Trait';
 import TraitSummary, { TraitSummaryStyle } from './TraitSummary';
 import { events, Tooltip } from 'camelot-unchained';
-import { styleConstants, colors } from "../../styleConstants";
+import { styleConstants, colors } from '../../styleConstants';
 
 export interface BanesAndBoonsStyle extends StyleDeclaration {
   banesAndBoonsContainer: React.CSSProperties;
@@ -113,7 +113,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(49,49,49,0.3)'
+    backgroundColor: 'rgba(49,49,49,0.3)',
   },
 
   outerContainer: {
@@ -122,12 +122,12 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     paddingBottom: '15px',
     backgroundColor: colors.transparentBg,
     border: `1px solid ${colors.lightGray}`,
-    overflow: 'visible'
+    overflow: 'visible',
   },
 
   summaryContainer: {
     width: '48vw',
-    padding: '0 15px'
+    padding: '0 15px',
   },
 
   boonsInnerWrapper: {
@@ -145,8 +145,8 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     '::-webkit-scrollbar': {
       width: '8px',
       borderRadius: '2px',
-      backroundColor: 'rgba(0,0,0,0.5)'
-    }
+      backroundColor: 'rgba(0,0,0,0.5)',
+    },
   },
 
   banesInnerWrapper: {
@@ -164,7 +164,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     '::-webkit-scrollbar': {
       width: '8px',
       borderRadius: '2px',
-      backgroundColor: 'rgba(0,0,0,0.5)'
+      backgroundColor: 'rgba(0,0,0,0.5)',
     },
     alignItems: 'flex-end',
   },
@@ -174,20 +174,20 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingRight: '15px',
-    paddingLeft: '15px'
+    paddingLeft: '15px',
   },
 
   banesHeader: {
     fontSize: '1.7em',
     marginTop: '10px',
     marginBottom: '10px',
-    ...styleConstants.textAlign.right
+    ...styleConstants.textAlign.right,
   },
 
   boonsHeader: {
     fontSize: '1.7em',
     marginTop: '10px',
-    marginBottom: '10px'
+    marginBottom: '10px',
   },
 
   boonTitle: {
@@ -199,56 +199,56 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     fontSize: '20px',
     color: '#727272',
     ...styleConstants.textAlign.right,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
 
   boonsContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
 
   banesContainer: {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
 
   pointsContainer: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   tooManyTraitsText: {
     fontSize: '24px',
     textAlign: 'center',
-    margin: 0
+    margin: 0,
   },
 
   totalPointsText: {
     fontSize: '1em',
     textAlign: 'center',
     marginTop: 0,
-    marginBottom: '-28px'
+    marginBottom: '-28px',
   },
 
   pointsMeter: {
     display: 'flex',
     height: '20px',
     marginTop: '10px',
-    marginBottom: '2px'
+    marginBottom: '2px',
   },
 
   pointsBarContainer: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   balanceBar: {
-    transition: 'flex 0.5s, background-color 0.5s'
+    transition: 'flex 0.5s, background-color 0.5s',
   },
 
   dropZoneContainer: {
@@ -262,15 +262,15 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     overflow: 'auto',
     '::-webkit-scrollbar': {
       width: '5px',
-      borderRadius: '2px'
-    }
+      borderRadius: '2px',
+    },
   },
 
   addedBoonContainer: {
     flex: 1,
     display: 'flex',
     alignItems: 'center',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
 
   addedBaneContainer: {
@@ -278,7 +278,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
-    ...styleConstants.direction.rtl
+    ...styleConstants.direction.rtl,
   },
 
   addBoon: {
@@ -291,7 +291,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     marginBottom: '10px',
     border: '1px solid #ccc',
     backgroundColor: 'white',
-    ...styleConstants.marginRight
+    ...styleConstants.marginRight,
   },
 
   addBane: {
@@ -304,13 +304,13 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     marginBottom: '10px',
     border: '1px solid #ccc',
     backgroundColor: 'white',
-    ...styleConstants.marginLeft
+    ...styleConstants.marginLeft,
   },
 
   addTraitImage: {
     flexShrink: 0,
     width: '55px',
-    height: '55px'
+    height: '55px',
   },
 
   emptyAddBoon: {
@@ -318,7 +318,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     height: '35px',
     marginBottom: '10px',
     border: '1px solid #ccc',
-    ...styleConstants.marginRight
+    ...styleConstants.marginRight,
   },
 
   emptyAddBane: {
@@ -326,7 +326,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     height: '35px',
     marginBottom: '10px',
     border: '1px solid #ccc',
-    ...styleConstants.marginLeft
+    ...styleConstants.marginLeft,
   },
 
   innerSummaryWrapper: {
@@ -338,24 +338,24 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     overflow: 'auto',
     '::-webkit-scrollbar': {
       width: '5px',
-      borderRadius: '2px'
-    }
+      borderRadius: '2px',
+    },
   },
 
   addedBoonSummaryWrapper: {
     flex: 1,
-    ...styleConstants.marginLeft
+    ...styleConstants.marginLeft,
   },
 
   addedBaneSummaryWrapper: {
-    flex: 1
+    flex: 1,
   },
 
   resetButtonsContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '15px'
+    marginBottom: '15px',
   },
 
   resetAllButton: {
@@ -366,8 +366,8 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     color: colors.success,
     margin: 0,
     ':hover': {
-      color: colors.transparentSuccess
-    }
+      color: colors.transparentSuccess,
+    },
   },
 
   boonResetButton: {
@@ -378,8 +378,8 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     color: colors.boonPrimary,
     margin: 0,
     ':hover': {
-      color: colors.transparentBoon
-    }
+      color: colors.transparentBoon,
+    },
   },
 
   baneResetButton: {
@@ -390,8 +390,8 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     color: colors.banePrimary,
     margin: 0,
     ':hover': {
-      color: colors.transparentBane
-    }
+      color: colors.transparentBane,
+    },
   },
 
   resetAlertOverlay: {
@@ -402,7 +402,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.7)',
     transition: 'opacity 0.3s',
-    zIndex: 10
+    zIndex: 10,
   },
 
   resetAlertDialog: {
@@ -422,22 +422,22 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     height: '200px',
     zIndex: 11,
     transition: 'opacity 0.3s',
-    borderRadius: '7px'
+    borderRadius: '7px',
   },
 
   resetAlertDialogText: {
-    color: '#858585'
+    color: '#858585',
   },
 
   alertPrimaryText: {
     fontSize: '1.6em',
     fontWeight: 'bold',
-    ...styleConstants.marginZero
+    ...styleConstants.marginZero,
   },
 
   resetAlertButtonContainer: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   alertButton: {
@@ -447,11 +447,11 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     color: '#444',
     transition: 'background-color 0.1s',
     ':active': {
-      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.3)'
+      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.3)',
     },
     ':hover': {
-      backgroundColor: '#bfbfbf'
-    }
+      backgroundColor: '#bfbfbf',
+    },
   },
 
   resetAlertButton: {
@@ -462,18 +462,18 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     transition: 'background-color 0.1s',
     ...styleConstants.marginLeft,
     ':active': {
-      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.3)'
+      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.3)',
     },
     ':hover': {
-      backgroundColor: '#bf4333'
-    }
+      backgroundColor: '#bf4333',
+    },
   },
 
   rangePointsText: {
     margin: 0,
     fontSize: '1em',
-    color: '#eee'
-  }
+    color: '#eee',
+  },
 };
 
 class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsState> {
@@ -484,54 +484,11 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       flexOfBaneBar: 1,
       showResetBoonAlertDialog: false,
       showResetBaneAlertDialog: false,
-      showResetAllAlertDialog: false
-    }
+      showResetAllAlertDialog: false,
+    };
   }
 
-  private componentDidMount() {
-    const { totalPoints } = this.props;
-    const shouldAffectBoonBar = totalPoints * -1 < 0;
-    const shouldAffectBaneBar = totalPoints * -1 > 0;
-    if (shouldAffectBoonBar) {
-      this.setState(Object.assign({}, this.state, { flexOfBoonBar: totalPoints + 0.5, flexOfBaneBar: 1 }));
-    }
-    if (shouldAffectBaneBar) {
-      this.setState(Object.assign({}, this.state, { flexOfBaneBar: (totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
-    }
-    if (totalPoints === 0) {
-      events.fire('play-sound', 'success');
-      this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
-    }
-  }
-
-  private componentWillUpdate(nextProps: BanesAndBoonsProps) {
-    if (nextProps.totalPoints != this.props.totalPoints) {
-      const shouldAffectBoonBar = nextProps.totalPoints * -1 < 0;
-      const shouldAffectBaneBar = nextProps.totalPoints * -1 > 0;
-      if (shouldAffectBoonBar) {
-        this.setState(Object.assign({}, this.state, { flexOfBoonBar: nextProps.totalPoints + 0.5, flexOfBaneBar: 1 }));
-      }
-      if (shouldAffectBaneBar) {
-        this.setState(Object.assign({}, this.state, { flexOfBaneBar: (nextProps.totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
-      }
-      if (nextProps.totalPoints === 0) {
-        events.fire('play-sound', 'success');
-        this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
-      }
-    }
-  };
-
-  private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
-    setTimeout(() => this.props.onResetClick(initType), 100);
-    events.fire('play-sound', 'reset-traits');
-    this.setState(Object.assign({}, this.state, {
-      showResetBoonAlertDialog: false,
-      showResetBaneAlertDialog: false,
-      showResetAllAlertDialog: false
-    }))
-  };
-
-  render() {
+  public render() {
     const {
       traits,
       generalBoons,
@@ -560,14 +517,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       baneStyles,
       traitSummaryStyles,
       maxPoints,
-      minPoints
+      minPoints,
     } = this.props;
     const {
       flexOfBoonBar,
       flexOfBaneBar,
       showResetBaneAlertDialog,
       showResetBoonAlertDialog,
-      showResetAllAlertDialog
+      showResetAllAlertDialog,
     } = this.state;
     const ss = StyleSheet.create(defaultBanesAndBoonsStyles);
     const custom = StyleSheet.create(styles || {});
@@ -575,13 +532,13 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       ...Object.keys(playerClassBoons).map((id: string) => traits[id]),
       ...Object.keys(raceBoons).map((id: string) => traits[id]),
       ...Object.keys(factionBoons).map((id: string) => traits[id]),
-      ...Object.keys(generalBoons).map((id: string) => traits[id]).sort((a, b) => a.points - b.points)
+      ...Object.keys(generalBoons).map((id: string) => traits[id]).sort((a, b) => a.points - b.points),
     ];
     const allBanes = [
       ...Object.keys(playerClassBanes).map((id: string) => traits[id]),
       ...Object.keys(raceBanes).map((id: string) => traits[id]),
       ...Object.keys(factionBanes).map((id: string) => traits[id]),
-      ...Object.keys(generalBanes).map((id: string) => traits[id]).sort((a, b) => (a.points * -1) - (b.points * -1))
+      ...Object.keys(generalBanes).map((id: string) => traits[id]).sort((a, b) => (a.points * -1) - (b.points * -1)),
     ];
     const boonPoints = Object.keys(addedBoons).length > 0 && Object.keys(addedBoons).map((id: string) =>
       traits[id].points).reduce((a, b) => a + b) || 0;
@@ -616,7 +573,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     maxPoints={maxPoints}
                     totalPoints={boonPoints + banePoints}
                   />
-                )
+                );
               })}
             </div>
           </div>
@@ -634,14 +591,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     tooltip: {
                       backgroundColor: 'rgba(0,0,0,0.9)',
                       maxWidth: '200px',
-                      ...styleConstants.direction.ltr
-                    }
+                      ...styleConstants.direction.ltr,
+                    },
                   }}
                   content={() => (
                     <p>
                       {
-                        banePoints + boonPoints < minPoints ? `A minimumn of ${minPoints} points spent in both Banes and Boons
-                        is required. Current value: ${banePoints + boonPoints}` :
+                        banePoints + boonPoints < minPoints ? `A minimumn of ${minPoints} points spent
+                        in both Banes and Boons is required. Current value: ${banePoints + boonPoints}` :
                         banePoints + boonPoints > maxPoints ? `The maximumn number of points spent in both Banes and Boons is
                         ${maxPoints}. Current value: ${banePoints + boonPoints}` :
                         totalPoints > 0 ? `The value of Banes, ${banePoints}, must equal the value of Boons, ${boonPoints}` :
@@ -682,20 +639,20 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                 <div className={css(ss.boonResetButton, custom.boonResetButton)}
                    onClick={() => {
                      events.fire('play-sound', 'select');
-                     this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }))
+                     this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }));
                    }}>Reset boons</div>
                 <div className={css(ss.resetAllButton, custom.resetAllButton)}
                   onClick={() => {
                     events.fire('play-sound', 'select');
-                    this.setState(Object.assign({}, this.state, { showResetAllAlertDialog: true }))
+                    this.setState(Object.assign({}, this.state, { showResetAllAlertDialog: true }));
                   }}>
                   Reset all
                 </div>
                 <div className={css(ss.baneResetButton, custom.baneResetButton)}
                     onClick={() => {
-                     events.fire('play-sound', 'select');
-                     this.setState(Object.assign({}, this.state, { showResetBaneAlertDialog: true }))
-                   }}>Reset banes</div>
+                      events.fire('play-sound', 'select');
+                      this.setState(Object.assign({}, this.state, { showResetBaneAlertDialog: true }));
+                    }}>Reset banes</div>
               </div>
             </div>
             {/*<div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
@@ -744,11 +701,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             </div>
             <div className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
                  style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                 visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 'visible' : 'hidden' }} />
+                   visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                   showResetAllAlertDialog ? 'visible' : 'hidden' }} />
             <div className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
                  style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 'visible' : 'hidden' }}>
-              <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText, custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
+                   visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                   showResetAllAlertDialog ? 'visible' : 'hidden' }}>
+              <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText,
+                custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
               <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
                 Are you sure you want to reset all {showResetBoonAlertDialog && 'Boons'}{showResetBaneAlertDialog && 'Banes'}
                 {showResetAllAlertDialog && 'Banes & Boons'}?
@@ -758,8 +718,8 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                      onClick={() => {
                        events.fire('play-sound', 'select');
                        this.setState(Object.assign({}, this.state, {
-                         showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false
-                       }))
+                         showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false,
+                       }));
                      }}>
                   Cancel
                 </div>
@@ -799,13 +759,58 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                     maxPoints={maxPoints}
                     totalPoints={boonPoints + banePoints}
                   />
-                )
+                );
               })}
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  private componentDidMount() {
+    const { totalPoints } = this.props;
+    const shouldAffectBoonBar = totalPoints * -1 < 0;
+    const shouldAffectBaneBar = totalPoints * -1 > 0;
+    if (shouldAffectBoonBar) {
+      this.setState(Object.assign({}, this.state, { flexOfBoonBar: totalPoints + 0.5, flexOfBaneBar: 1 }));
+    }
+    if (shouldAffectBaneBar) {
+      this.setState(Object.assign({}, this.state, { flexOfBaneBar: (totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
+    }
+    if (totalPoints === 0) {
+      events.fire('play-sound', 'success');
+      this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
+    }
+  }
+
+  private componentWillUpdate(nextProps: BanesAndBoonsProps) {
+    if (nextProps.totalPoints !== this.props.totalPoints) {
+      const shouldAffectBoonBar = nextProps.totalPoints * -1 < 0;
+      const shouldAffectBaneBar = nextProps.totalPoints * -1 > 0;
+      if (shouldAffectBoonBar) {
+        this.setState(Object.assign({}, this.state, { flexOfBoonBar: nextProps.totalPoints + 0.5, flexOfBaneBar: 1 }));
+      }
+      if (shouldAffectBaneBar) {
+        this.setState(
+          Object.assign({}, this.state, { flexOfBaneBar: (nextProps.totalPoints * -1) + 0.5, flexOfBoonBar: 1 }),
+        );
+      }
+      if (nextProps.totalPoints === 0) {
+        events.fire('play-sound', 'success');
+        this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
+      }
+    }
+  }
+
+  private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
+    setTimeout(() => this.props.onResetClick(initType), 100);
+    events.fire('play-sound', 'reset-traits');
+    this.setState(Object.assign({}, this.state, {
+      showResetBoonAlertDialog: false,
+      showResetBaneAlertDialog: false,
+      showResetAllAlertDialog: false,
+    }));
   }
 }
 

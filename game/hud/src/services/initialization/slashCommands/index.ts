@@ -15,4 +15,4 @@ export default () => {
   uiCommands();
   emoteCommands();
   orderCommands();
-}
+};

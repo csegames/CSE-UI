@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import lightsReducer, {LightsState} from './lights';
+import lightsReducer, { LightsState } from './lights';
 
 const lights = lightsReducer;
 
 export default combineReducers({
-  lights
+  lights,
 });
 
 export interface GlobalState {
-  lights: LightsState,
+  lights: LightsState;
 }

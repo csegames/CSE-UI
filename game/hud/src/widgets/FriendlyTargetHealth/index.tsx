@@ -7,12 +7,12 @@
 import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
-const thunk = require('redux-thunk').default;
+import thunk from 'redux-thunk';
 import {WarbandMember, hasClientAPI} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';
-import {PlayerState, DoThing, initializePlayerSession} from './services/session/target';
+import {PlayerState, doThing, initializePlayerSession} from './services/session/target';
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -33,8 +33,8 @@ export interface TargetHealthState {
 
 function select(state: SessionState): TargetHealthProps {
   return {
-    player: state.player
-  }
+    player: state.player,
+  };
 }
 
 class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState> {
@@ -43,20 +43,18 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
     super(props);
   }
 
-  componentDidMount() {
-    this.props.dispatch(initializePlayerSession());
-  }
+  public render() {
 
-  render() {
-
-    const hide = this.props.player.playerStatus.name == '';
+    const hide = this.props.player.playerStatus.name === '';
     if (hide) return null;
 
-    const dead = this.props.player.playerStatus.blood.current <= 0 || this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
+    const dead = this.props.player.playerStatus.blood.current <= 0 ||
+      this.props.player.playerStatus.health[BodyParts.Torso].current <= 0;
+
     return (
       <div
         className={`player-health ${this.props.containerClass}`}
-        onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(DoThing())}>
+        onClick={() =>  hasClientAPI() || dead ? '' : this.props.dispatch(doThing())}>
         <PlayerStatusComponent
           containerClass='TargetHealth'
           mirror={true}
@@ -69,17 +67,21 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
       </div>
     );
   }
+
+  private componentDidMount() {
+    this.props.dispatch(initializePlayerSession());
+  }
 }
 
 const TargetComp = connect(select)(TargetHealth);
 
 class Container extends React.Component<ContainerProps,{}> {
-  render() {
+  public render() {
     return (
       <Provider store={store}>
         <TargetComp {...this.props}/>
       </Provider>
-    )
+    );
   }
 }
 

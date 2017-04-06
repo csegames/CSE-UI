@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, Race, Faction, hasClientAPI, Player, Gender} from 'camelot-unchained';
-import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
+import { client, events, Race, Faction, hasClientAPI, Player, Gender } from 'camelot-unchained';
+import { PlayerStatus, BodyParts } from '../../../../lib/PlayerStatus';
 import {
   fakePlayer,
   fakeHealthEvents,
@@ -17,10 +17,10 @@ import {
   raceChanged,
   avatarChanged,
   distanceChanged,
-  healtEmulationTest
+  healtEmulationTest,
 } from '../../../../lib/reduxHealth';
 import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
-const _ = require('lodash');
+import * as _ from 'lodash';
 
 const DO_THING = 'testthing';
 
@@ -47,7 +47,7 @@ const characterImages = {
   humanmaletM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
   humanmalevF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
   humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
-  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png'
+  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
 };
 
 function getAvatar(gender: Gender, race: Race) {
@@ -86,8 +86,8 @@ function onStaminaChanged(current: number, max: number): TargetAction {
   return {
     type: STAMINA_UPDATED,
     when: new Date(),
-    current: current,
-    max: max,
+    current,
+    max,
   };
 }
 
@@ -95,9 +95,9 @@ function onHealthChanged(current: number, max: number, part: BodyParts): TargetA
   return {
     type: HEALTH_UPDATED,
     when: new Date(),
-    current: current,
-    max: max,
-    part: part,
+    current,
+    max,
+    part,
   };
 }
 
@@ -113,7 +113,7 @@ function onRaceChanged(race: Race): TargetAction {
   return {
     type: RACE_CHANGED,
     when: new Date(),
-    race: race,
+    race,
   };
 }
 
@@ -121,7 +121,7 @@ function onFactionChanged(faction: Faction): TargetAction {
   return {
     type: FACTION_CHANGED,
     when: new Date(),
-    faction: faction,
+    faction,
   };
 }
 
@@ -129,31 +129,31 @@ function onAvatarChanged(avatar: string): TargetAction {
   return {
     type: AVATAR_CHANGED,
     when: new Date(),
-    avatar: avatar
-  }
+    avatar,
+  };
 }
 
 function onDistanceChanged(distance: number): TargetAction {
   return {
     type: DISTANCE_CHANGED,
     when: new Date(),
-    distance: distance
-  }
+    distance,
+  };
 }
 
 function onCharacterUpdate(player: Player): TargetAction {
   return {
     type: PLAYER_UPDATE,
     when: new Date(),
-    player: player,
-  }
+    player,
+  };
 }
 
-export function DoThing(): TargetAction {
+export function doThing(): TargetAction {
   return {
     type: DO_THING,
-    when: new Date()
-  }
+    when: new Date(),
+  };
 }
 
 export function initializePlayerSession() {
@@ -163,39 +163,23 @@ export function initializePlayerSession() {
     // Update avatar
     client.OnFriendlyTargetGenderChanged((gender: Gender) =>
       client.OnFriendlyTargetRaceChanged((race: Race) =>
-        dispatch(onAvatarChanged(getAvatar(gender, race)))
-      )
-    )
+        dispatch(onAvatarChanged(getAvatar(gender, race))),
+      ),
+    );
     client.OnFriendlyTargetRaceChanged((race: Race) =>
       client.OnFriendlyTargetGenderChanged((gender: Gender) => {
-        dispatch(onAvatarChanged(getAvatar(gender, race)))
-      })
-    )
-    
-    function debounce(func: any, wait: number, immediate: boolean) {
-      let timeout: any = null;
-      return function() {
-          let context = this, args = arguments;
-          let later = function() {
-              timeout = null;
-              if (!immediate) func.apply(context, args);
-          };
-          let callNow = immediate && !timeout;
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-          if (callNow) func.apply(context, args);
-      };
-    };
+        dispatch(onAvatarChanged(getAvatar(gender, race)));
+      }),
+    );
 
     // Update distance
     client.OnCharacterPositionChanged(_.debounce((x1: number, y1: number) =>
       client.OnFriendlyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a * a + b * b) * 100) / 100));
       }), 250,
     ));
-
     client.OnFriendlyTargetPositionChanged(_.debounce((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
@@ -229,48 +213,48 @@ function initialState() {
 }
 
 export default function reducer(state: PlayerState = initialState(), action: TargetAction = defaultAction) : PlayerState {
-  switch(action.type) {
+  switch (action.type) {
     case INIT: return merge(state, {});
 
     case STAMINA_UPDATED:
-    {
-      return merge(state, staminaUpdated(state.playerStatus, action));
-    }
+      {
+        return merge(state, staminaUpdated(state.playerStatus, action));
+      }
 
     case HEALTH_UPDATED:
-    {
-      return merge(state, healthUpdated(state.playerStatus, action));
-    }
+      {
+        return merge(state, healthUpdated(state.playerStatus, action));
+      }
 
     case NAME_CHANGED:
-    {
-      return merge(state, nameChanged(state.playerStatus, action));
-    }
+      {
+        return merge(state, nameChanged(state.playerStatus, action));
+      }
 
     case RACE_CHANGED:
-    {
-      return merge(state, raceChanged(state.playerStatus, action));
-    }
+      {
+        return merge(state, raceChanged(state.playerStatus, action));
+      }
     
     case AVATAR_CHANGED:
-    {
-      return merge(state, avatarChanged(state.playerStatus, action));
-    }
+      {
+        return merge(state, avatarChanged(state.playerStatus, action));
+      }
 
     case DISTANCE_CHANGED:
-    {
-      return merge(state, distanceChanged(state.playerStatus, action));
-    }
+      {
+        return merge(state, distanceChanged(state.playerStatus, action));
+      }
 
     case PLAYER_UPDATE:
-    {
-      return merge(state, playerUpdate(state.playerStatus, state.events, action));
-    }
+      {
+        return merge(state, playerUpdate(state.playerStatus, state.events, action));
+      }
 
     case DO_THING:
-    {
-      return merge(state, healtEmulationTest(state.playerStatus, state.events, action));
-    }
+      {
+        return merge(state, healtEmulationTest(state.playerStatus, state.events, action));
+      }
 
     default: return state;
   }

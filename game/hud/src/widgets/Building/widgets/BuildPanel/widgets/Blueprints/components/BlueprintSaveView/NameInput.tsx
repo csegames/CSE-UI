@@ -14,9 +14,9 @@ export interface NameInputProps {
   onTimeout?: (value: string) => void;
   timeout?: number;
   grabFocus?: boolean;
-};
+}
 export interface NameInputState {
-};
+}
 
 class NameInput extends React.Component<NameInputProps, NameInputState> {
   public name: string = 'NameInput';
@@ -26,15 +26,28 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
   constructor(props: NameInputProps) {
     super(props);
  
-    //letters
+    // letters
     for (let letter = 65; letter <= 90; letter++) {
       this.allowedKeys.push(letter);
     }
 
-    //numbers
+    // numbers
     for (let number = 48; number <= 57; number++) {
       this.allowedKeys.push(number);
     }
+  }
+
+  public render() {
+    return (
+      <Input ref='node'
+        type='text'
+        placeholder={this.props.placeholder}
+        maxLength={this.props.maxLength}
+        onKeyDown={this.onKeyDown}
+        onKeyUp={this.onKeyUp}
+        grabFocus={this.props.grabFocus}
+        />
+    );
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -57,21 +70,8 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
     }
   }
 
-  getValue = (): string => {
+  private getValue = (): string => {
     return (this.refs['node'] as Input).getValue();
-  }
-
-  render() {
-    return (
-      <Input ref="node"
-        type="text"
-        placeholder={this.props.placeholder}
-        maxLength={this.props.maxLength}
-        onKeyDown={this.onKeyDown}
-        onKeyUp={this.onKeyUp}
-        grabFocus={this.props.grabFocus}
-        />
-    );
   }
 }
 

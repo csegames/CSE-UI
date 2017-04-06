@@ -23,7 +23,7 @@ class SlideIndicatorBar extends React.Component<SlideIndicatorBarProps, SlideInd
     super(props);
   }
 
-  render() {
+  public render() {
 
     const min = this.props.minValue ? this.props.minValue : 0;
     const current = this.props.currentValue - min;
@@ -32,9 +32,9 @@ class SlideIndicatorBar extends React.Component<SlideIndicatorBarProps, SlideInd
     return (
       <div className={`player-status-bar__slide-indicator-bar ${this.props.containerClass || ''}`}>
         <div className={`player-status-bar__slide-indicator-bar--indicator ${this.props.indicatorClass || ''}`}
-             style={{left:`${(current / max)*100}%`}} />
+             style={{left:`${(current / max) * 100}%`}} />
       </div>
-    )
+    );
   }
 }
 

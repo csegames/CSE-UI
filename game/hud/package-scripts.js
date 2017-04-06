@@ -1,8 +1,14 @@
 module.exports = {
   scripts: {
     lint: {
-      script: 'tslint src/**/*.ts',
+      script: 'tslint src/**/*.ts{,x}',
       description: 'Run TS-Lint"',
+      hiddenFromHelp: true,
+      fix: {
+        script: 'tslint --fix src/**/*.ts{,x}',
+        description: 'Fix TS-Lint errors',
+        hiddenFromHelp: true,
+      }
     },
     dev: {
       default: {
@@ -109,11 +115,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && nps lint && nps report.lint && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
-        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
+        script: 'nps report.start && nps lint && nps report.lint && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
@@ -133,6 +139,10 @@ module.exports = {
     report: {
       start: {
         script: 'echo "Build started..."',
+        hiddenFromHelp: true,
+      },
+      lint: {
+        script: 'echo "TSLint complete"',
         hiddenFromHelp: true,
       },
       tsc: {

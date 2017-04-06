@@ -17,6 +17,6 @@ enum configCategory {
   AUDIO_PRIMARY = 6,
   VIDEO_PRIMARY = 7,
   GAME_PRIMARY = 8,
-};
+}
 
 export default configCategory;

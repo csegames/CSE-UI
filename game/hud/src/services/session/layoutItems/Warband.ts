@@ -16,26 +16,26 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: -40
+      offset: -40,
     },
     y: {
       anchor: Edge.TOP,
-      offset: -150
+      offset: -150,
     },
     size: {
       width: 200,
-      height: 700
+      height: 700,
     },
     scale: 0.6,
     opacity: 1,
     visibility: true,
     zOrder: 5,
-    layoutMode: LayoutMode.EDGESNAP
+    layoutMode: LayoutMode.EDGESNAP,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true,
   },
   component: Warband,
-  props: {}
+  props: {},
 };

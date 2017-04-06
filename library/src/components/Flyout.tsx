@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 11:35:54
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-22 19:08:13
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 15:27:06
  */
 
 import * as React from 'react';
@@ -19,7 +19,7 @@ const defaultStyles = {
     border: '1px solid darken(#4d573e, 20%)',
     color: '#ececec',
     'z-index': '9998',
-  }
+  },
 };
 
 export interface FlyoutContentProps {
@@ -48,6 +48,9 @@ export interface FlyoutState {
 }
 
 export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
+
+  private mouseOverElement = false;
+
   constructor(props: FlyoutProps) {
     super(props);
     this.state = {
@@ -62,92 +65,13 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     };
   }
 
-  componentWillUnmount() {
-    // unreg window handlers
-    window.removeEventListener("keydown", this.onKeyDown);
-    window.removeEventListener("mousedown", this.onMouseDown);
-  }
-
-  onKeyDown = (e: KeyboardEvent) => {
-    if (e.which == 27 && !this.state.hidden) {
-      // escape, close this
-      this.hide();
-    }
-  }
-
-  onMouseDown = (e: MouseEvent) => {
-    if (!this.mouseOverElement && !this.state.hidden) {
-      this.hide();
-    }
-  }
-
-  private mouseOverElement = false;
-  onMouseEnter = () => {
-    this.mouseOverElement = true;
-  }
-
-  onMouseLeave = () => {
-    this.mouseOverElement = false;
-  }
-
-  onClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!this.state.hidden) return;
-    this.show(e.clientX, e.clientY);
-    window.addEventListener("keydown", this.onKeyDown);
-    window.addEventListener("mousedown", this.onMouseDown);
-  }
-
-  public hide = () => {
-    this.setState({ hidden: true } as any);
-    window.removeEventListener("keydown", this.onKeyDown);
-    window.removeEventListener("mousedown", this.onMouseDown);
-  }
-
-  show = (clientX: number, clientY: number) => {
-    this.setState({
-      hidden: false,
-      wndRegion: windowQuadrant(clientX, clientY),
-      x: clientX,
-      y: clientY,
-    } as any);
-  }
-
-  computeStyle = () => {
-    switch (this.state.wndRegion) {
-      case Quadrant.TopLeft:
-        return {
-          position: 'fixed',
-          left: `${this.state.x + this.state.offsetLeft}px`,
-          top: `${this.state.y + this.state.offsetTop}px`
-        };
-      case Quadrant.TopRight:
-        return {
-          position: 'fixed',
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
-          top: `${this.state.y + this.state.offsetTop}px`
-        };
-      case Quadrant.BottomLeft:
-        return {
-          position: 'fixed',
-          left: `${this.state.x + this.state.offsetLeft}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
-        };
-      case Quadrant.BottomRight:
-        return {
-          position: 'fixed',
-          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
-          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`
-        };
-    }
-  }
-
-  render() {
+  public render() {
 
     const ss = StyleSheet.create({
       Flyout: {
         ...defaultStyles.flyout,
-        ...(this.props.style || {})
-      }
+        ...(this.props.style || {}),
+      },
     });
 
     const contentProps = this.props.contentProps || {};
@@ -163,7 +87,85 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
             </div>
         }
       </div>
-    )
+    );
+  }
+
+  public hide = () => {
+    this.setState({ hidden: true } as any);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('mousedown', this.onMouseDown);
+  }
+
+  public show = (clientX: number, clientY: number) => {
+    this.setState({
+      hidden: false,
+      wndRegion: windowQuadrant(clientX, clientY),
+      x: clientX,
+      y: clientY,
+    } as any);
+  }
+
+  private componentWillUnmount() {
+    // unreg window handlers
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('mousedown', this.onMouseDown);
+  }
+
+  private onKeyDown = (e: KeyboardEvent) => {
+    if (e.which === 27 && !this.state.hidden) {
+      // escape, close this
+      this.hide();
+    }
+  }
+
+  private onMouseDown = (e: MouseEvent) => {
+    if (!this.mouseOverElement && !this.state.hidden) {
+      this.hide();
+    }
+  }
+
+  private onMouseEnter = () => {
+    this.mouseOverElement = true;
+  }
+
+  private onMouseLeave = () => {
+    this.mouseOverElement = false;
+  }
+
+  private onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!this.state.hidden) return;
+    this.show(e.clientX, e.clientY);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('mousedown', this.onMouseDown);
+  }
+
+  private computeStyle = () => {
+    switch (this.state.wndRegion) {
+      case Quadrant.TopLeft:
+        return {
+          position: 'fixed',
+          left: `${this.state.x + this.state.offsetLeft}px`,
+          top: `${this.state.y + this.state.offsetTop}px`,
+        };
+      case Quadrant.TopRight:
+        return {
+          position: 'fixed',
+          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
+          top: `${this.state.y + this.state.offsetTop}px`,
+        };
+      case Quadrant.BottomLeft:
+        return {
+          position: 'fixed',
+          left: `${this.state.x + this.state.offsetLeft}px`,
+          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`,
+        };
+      case Quadrant.BottomRight:
+        return {
+          position: 'fixed',
+          right: `${window.window.innerWidth - this.state.x + this.state.offsetRight}px`,
+          bottom: `${window.window.innerHeight - this.state.y + this.state.offsetBottom}px`,
+        };
+    }
   }
 }
 

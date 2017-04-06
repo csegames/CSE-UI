@@ -20,12 +20,12 @@ class PlayerPhoto extends React.Component<PlayerPhotoProps, PlayerPhotoState> {
     super(props);
   }
 
-  render() {
+  public render() {
     return (
       <div className={`player-status-bar__player-photo ${this.props.containerClass || ''}`}>
         <img src={this.props.photo} />
       </div>
-    )
+    );
   }
 }
 
