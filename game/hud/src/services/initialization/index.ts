@@ -28,6 +28,11 @@ export default () => {
   // hook up for console messages to system messages
   client.OnConsoleText((text: string) => events.fire('system_message', text));
 
+  client.OnToggleHUDItem((name: string) => {
+    console.log(name);
+    events.fire('hudnav--navigate', name);
+  })
+
   function combatLogToString(log: CombatLog): string {
     // fromName (fromFaction) > toName (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}
     //

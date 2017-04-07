@@ -38,7 +38,7 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
 
   private componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
-      if (name === 'equipped') {
+      if (name === 'equippedgear') {
         if (!this.state.visible) {
           this.show();
         } else {

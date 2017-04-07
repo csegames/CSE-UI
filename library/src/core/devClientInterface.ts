@@ -92,6 +92,9 @@ const devClientInterface: clientInterface = {
 
   OnAbilityError: function(c: (message: string) => void): void {},
 
+  /* HUD */
+  OnToggleHUDItem: function(c: (name: string) => void): void {},
+
   /* Equipped Gear */
 
   SubscribeGear: function(subscribe: boolean): void {},

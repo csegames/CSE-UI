@@ -174,7 +174,7 @@ function initialState(): LayoutState {
       'friendlyTarget', cloneDeep(FriendlyTarget)
     ],
     [
-      'equipped', cloneDeep(EquippedGear)
+      'equippedgear', cloneDeep(EquippedGear)
     ],
     [
       'inventory', cloneDeep(Inventory)

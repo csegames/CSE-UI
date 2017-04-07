@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 16:44:22
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-06 16:29:06
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-07 18:05:19
  */
 
 import * as React from 'react';
@@ -49,6 +49,7 @@ export const defaultInviteButtonStyle: InviteButtonStyle = {
   },
 
   inputVisible: {
+    display: 'flex',
     maxWidth: '99999px',
   },
 
@@ -168,11 +169,11 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
         <Input inputRef={r => this.inputRef = r}
                placeholder={'Enter name & hit enter'}
                onKeyDown={this.onKeyDown}
-               styles={{
+               /*styles={{
                  inputWrapper: this.state.showInput ? defaultInviteButtonStyle.inputVisible : defaultInviteButtonStyle.inputHidden
-               }} />
+               }}*/ />
           
-          <RaisedButton onClick={this.toggleInputVisibilty} styles={{button: defaultInviteButtonStyle.button}}>
+          <RaisedButton onClick={this.toggleInputVisibilty} /*styles={{button: defaultInviteButtonStyle.button}}*/>
             {this.state.inviting ? <Spinner /> : this.state.showInput ?  <i className='fa fa-minus'></i> : <i className='fa fa-plus'></i>}
           </RaisedButton>
         </div>

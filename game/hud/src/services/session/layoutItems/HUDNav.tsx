@@ -160,7 +160,7 @@ export default {
         }
       },
       {
-        name: 'equipped',
+        name: 'equippedgear',
         tooltip: 'Equipped Items',
         iconClass: 'fa-user',
         icon: (
@@ -171,7 +171,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'equipped');
+          events.fire('hudnav--navigate', 'equippedgear');
         }
       },
       {

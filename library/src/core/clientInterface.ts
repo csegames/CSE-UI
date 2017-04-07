@@ -85,6 +85,9 @@ interface clientInterface {
 
   OnAbilityError(c: (message: string) => void): void;
 
+  /* HUD */
+  OnToggleHUDItem(c: (name: string) => void): void;
+
   /* Equipped Gear */
 
   SubscribeGear(subscribe: boolean): void;
