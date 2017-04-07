@@ -188,20 +188,20 @@ export function initializePlayerSession() {
     };
 
     // Update distance
-    client.OnCharacterPositionChanged((x1: number, y1: number) =>
+    client.OnCharacterPositionChanged(_.debounce((x1: number, y1: number) =>
       client.OnFriendlyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
-      })
-    )
-    client.OnFriendlyTargetPositionChanged((x1: number, y1: number) =>
+        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+      }), 250
+    ))
+    client.OnFriendlyTargetPositionChanged(_.debounce((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
-      })
-    )
+        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+      }), 250
+    ))
 
     // init handlers / events
     events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
