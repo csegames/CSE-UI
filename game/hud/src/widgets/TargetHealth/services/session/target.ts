@@ -20,6 +20,7 @@ import {
   distanceChanged,
   healtEmulationTest
 } from '../../../../lib/reduxHealth';
+const _ = require('lodash');
 
 const DO_THING = 'testthing';
 
@@ -177,14 +178,14 @@ export function initializePlayerSession() {
       client.OnEnemyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+        _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
       })
     )
     client.OnEnemyTargetPositionChanged((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2) => {
          const a = x1 - x2;
          const b = y1 - y2;
-         dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+         _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
       })
     )
 

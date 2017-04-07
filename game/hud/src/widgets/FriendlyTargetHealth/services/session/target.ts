@@ -20,6 +20,7 @@ import {
   healtEmulationTest
 } from '../../../../lib/reduxHealth';
 import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
+const _ = require('lodash');
 
 const DO_THING = 'testthing';
 
@@ -170,20 +171,35 @@ export function initializePlayerSession() {
         dispatch(onAvatarChanged(getAvatar(gender, race)))
       })
     )
+    
+    function debounce(func: any, wait: number, immediate: boolean) {
+      let timeout: any = null;
+      return function() {
+          let context = this, args = arguments;
+          let later = function() {
+              timeout = null;
+              if (!immediate) func.apply(context, args);
+          };
+          let callNow = immediate && !timeout;
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+          if (callNow) func.apply(context, args);
+      };
+    };
 
     // Update distance
     client.OnCharacterPositionChanged((x1: number, y1: number) =>
       client.OnFriendlyTargetPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+        _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
       })
     )
     client.OnFriendlyTargetPositionChanged((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
+        _.debounce(dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100)), 250);
       })
     )
 
