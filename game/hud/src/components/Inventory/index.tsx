@@ -135,10 +135,9 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     const toRender: JSX.Element[] = [];
     const sortByGroup: {[id: string]: { name: string, elements:  JSX.Element[]}} = {};
 
-
-    for (const key in this.state.stacks) {
+    Object.keys(this.state.stacks).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).forEach((key: string) => {
       const stack = this.state.stacks[key];
-      const firstItem = this.state.items[stack[0]];
+      const firstItem = this.state.items[stack[0]]
 
       toRender.push(
         (
@@ -158,7 +157,7 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
           </li>
         )
       );
-    }
+    });
 
     return (
       <div>
