@@ -193,15 +193,16 @@ export function initializePlayerSession() {
         const a = x1 - x2;
         const b = y1 - y2;
         dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
-      }), 250
-    ))
+      }), 250,
+    ));
+
     client.OnFriendlyTargetPositionChanged(_.debounce((x1: number, y1: number) =>
       client.OnCharacterPositionChanged((x2: number, y2: number) => {
         const a = x1 - x2;
         const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a*a + b*b) * 100) / 100));
-      }), 250
-    ))
+        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a * a + b * b) * 100) / 100));
+      }), 250,
+    ));
 
     // init handlers / events
     events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
