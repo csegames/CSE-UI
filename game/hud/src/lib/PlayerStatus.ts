@@ -13,7 +13,8 @@ export interface PlayerStatus {
   gender: Gender;
   archetype: Archetype;
   characterID: string;
-  distance: number;
+  position: { x: number, y: number };
+  targetPosition: { x: number, y: number };
   health: {
     current: number;
     maximum: number;

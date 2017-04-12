@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 14:26:25
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:27:34
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-12 12:02:33
  */
 import { Race, Gender, Archetype, Faction, Player } from 'camelot-unchained';
 
@@ -22,7 +22,8 @@ export interface HealthAction extends BaseAction {
   faction?: Faction;
   player?: Player;
   avatar?: string;
-  distance?: number;
+  position?: { x: number, y: number };
+  targetPosition?: { x: number, y: number };
 }
 
 export function fakePlayer(): PlayerStatus {
@@ -33,7 +34,8 @@ export function fakePlayer(): PlayerStatus {
     gender: Gender.Male,
     archetype: Archetype.WintersShadow,
     characterID: '',
-    distance: 0,
+    position: { x: 0, y: 0 },
+    targetPosition: { x: 0, y: 0 },
     health: [{
       current: 10000,
       maximum: 10000,
@@ -128,9 +130,15 @@ export function avatarChanged(status: PlayerStatus, action: HealthAction) {
   return { playerStatus };
 }
 
-export function distanceChanged(status: PlayerStatus, action: HealthAction) {
+export function characterPositionChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
-  playerStatus.distance = action.distance;
+  playerStatus.position = action.position;
+  return { playerStatus };
+}
+
+export function targetPositionChanged(status: PlayerStatus, action: HealthAction) {
+  const playerStatus = clone(status);
+  playerStatus.targetPosition = action.targetPosition;
   return { playerStatus };
 }
 

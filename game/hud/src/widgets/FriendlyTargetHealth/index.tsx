@@ -44,8 +44,13 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
   }
 
   public render() {
-
     const hide = this.props.player.playerStatus.name === '';
+
+    const { position, targetPosition } = this.props.player.playerStatus;
+    const a = position.x - targetPosition.x;
+    const b = position.y - targetPosition.y;
+    const distance = Math.ceil(Math.sqrt( a * a + b * b ) * 100) / 100;
+
     if (hide) return null;
 
     const dead = this.props.player.playerStatus.blood.current <= 0 ||
@@ -62,7 +67,7 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
           events={this.props.player.events}
         />
         <div className='player-health-distance'>
-          {this.props.player.playerStatus.distance} m
+          {distance} m
         </div>
       </div>
     );

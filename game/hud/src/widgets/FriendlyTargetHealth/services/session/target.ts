@@ -16,7 +16,8 @@ import {
   nameChanged,
   raceChanged,
   avatarChanged,
-  distanceChanged,
+  characterPositionChanged,
+  targetPositionChanged,
   healtEmulationTest,
 } from '../../../../lib/reduxHealth';
 import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
@@ -32,7 +33,8 @@ const RACE_CHANGED = 'playerhealth/player/RACE_CHANGED';
 const NAME_CHANGED = 'playerhealth/player/NAME_CHANGED';
 const FACTION_CHANGED = 'playerhealth/player/FACTION_CHANGED';
 const AVATAR_CHANGED = 'playerhealth/player/AVATAR_CHANGED';
-const DISTANCE_CHANGED = 'playerhealth/player/DISTANCE_CHANGED';
+const CHARACTER_POSITION_CHANGED = 'playerhealth/player/CHARACTER_POSITION_CHANGED';
+const TARGET_POSITION_CHANGED = 'playerhealth/player/TARGET_POSITION_CHANGED';
 const PLAYER_UPDATE = 'playerhealth/player/PLAYER_UPDATE';
 
 const characterImages = {
@@ -133,19 +135,27 @@ function onAvatarChanged(avatar: string): TargetAction {
   };
 }
 
-function onDistanceChanged(distance: number): TargetAction {
-  return {
-    type: DISTANCE_CHANGED,
-    when: new Date(),
-    distance,
-  };
-}
-
 function onCharacterUpdate(player: Player): TargetAction {
   return {
     type: PLAYER_UPDATE,
     when: new Date(),
     player,
+  };
+}
+
+function onCharacterPositionChanged(position: { x: number, y: number }): TargetAction {
+  return {
+    type: CHARACTER_POSITION_CHANGED,
+    when: new Date(),
+    position,
+  };
+}
+
+function onTargetPositionChanged(targetPosition: { x: number, y: number }): TargetAction {
+  return {
+    type: TARGET_POSITION_CHANGED,
+    when: new Date(),
+    targetPosition,
   };
 }
 
@@ -172,21 +182,11 @@ export function initializePlayerSession() {
       }),
     );
 
-    // Update distance
-    client.OnCharacterPositionChanged(_.debounce((x1: number, y1: number) =>
-      client.OnFriendlyTargetPositionChanged((x2: number, y2: number) => {
-        const a = x1 - x2;
-        const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a * a + b * b) * 100) / 100));
-      }), 250,
-    ));
-    client.OnFriendlyTargetPositionChanged(_.debounce((x1: number, y1: number) =>
-      client.OnCharacterPositionChanged((x2: number, y2: number) => {
-        const a = x1 - x2;
-        const b = y1 - y2;
-        dispatch(onDistanceChanged(Math.ceil(Math.sqrt( a * a + b * b) * 100) / 100));
-      }), 250,
-    ));
+    client.OnCharacterPositionChanged(_.throttle((x: number, y: number) =>
+      dispatch(onCharacterPositionChanged({ x, y })), 250));
+
+    client.OnFriendlyTargetPositionChanged(_.throttle((x: number, y: number) =>
+      dispatch(onTargetPositionChanged({ x, y })), 250));
 
     // init handlers / events
     events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
@@ -241,9 +241,14 @@ export default function reducer(state: PlayerState = initialState(), action: Tar
         return merge(state, avatarChanged(state.playerStatus, action));
       }
 
-    case DISTANCE_CHANGED:
+    case CHARACTER_POSITION_CHANGED:
       {
-        return merge(state, distanceChanged(state.playerStatus, action));
+        return merge(state, characterPositionChanged(state.playerStatus, action));
+      }
+
+    case TARGET_POSITION_CHANGED:
+      {
+        return merge(state, targetPositionChanged(state.playerStatus, action));  
       }
 
     case PLAYER_UPDATE:
