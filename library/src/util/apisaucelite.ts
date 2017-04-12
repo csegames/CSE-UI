@@ -132,7 +132,6 @@ export const create = (config: CreateOptions) => {
     if (error.response.headers['content-type'] === 'text/json') {
       err = error.response.data;
     } else {
-      // old style error response, map to new style
       err = {
         Code: error.code || error.response.status,
         Message: error.response.data || error.message,
