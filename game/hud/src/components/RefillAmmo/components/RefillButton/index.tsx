@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-04-12 19:39:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-04-13 15:42:41
+ * @Last Modified time: 2017-04-13 16:28:12
  */
 
 import * as React from 'react';
@@ -52,7 +52,7 @@ const RefillButton = (props : RefillButtonProps) => {
   const custom = StyleSheet.create(props.styles || {});
 
   return (
-    <div className={[css(ss.container), props.className].join(' ')} onClick={() => props.refill()}>
+    <div className={[css(ss.container, custom.container), props.className].join(' ')} onClick={() => props.refill()}>
       <i className='fa fa-bullseye fa-inverse'/> Refill Ammo
     </div>
   );
