@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-30 11:42:19
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-11 16:03:17
+ * @Last Modified time: 2017-04-13 16:18:08
  */
 
 import * as React from 'react';
@@ -51,40 +51,30 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   }
 
   public render() {
-    if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
-      if (this.state.visible) {
-        initializeBuilding(store.dispatch);
-        initializeSelections(store.dispatch);
-      }
-      return (
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
-    } else {
-      if (this.state.visible) {
-        document.body.style.backgroundImage = "url('../../images/building/cube-bg.jpg')";
-        initializeBuilding(store.dispatch);
-        initializeSelections(store.dispatch);
-      }
-      return (
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+    if (window.opener && !window.opener.cuAPI || !window.cuAPI) {
+      if (this.state.visible) document.body.style.backgroundImage = "url('../../images/building/cube-bg.jpg')";
+      if (!this.state.visible) document.body.style.backgroundImage = '';
     }
+    return (
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
   }
 
   private componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
-        if (!this.state.visible) {
-          this.setState((state, props) => ({ visible: true }));
-        } else {
-          this.setState((state, props) => ({ visible: false }));
-        }
+        this.setState((state, props) => {
+          if (state.visible) return { visible: false };
+          if (!state.visible) return { visible: true };
+        });
       }
     });
+    if (window.opener && window.opener.cuAPI || window.cuAPI) {
+      initializeBuilding(store.dispatch);
+      initializeSelections(store.dispatch);
+    }
   }
 }
 
