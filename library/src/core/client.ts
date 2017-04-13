@@ -29,9 +29,10 @@ export function hasClientAPI() {
 }
 
 if (window.opener && window.opener.cuAPI) {
-  client = window.opener.cuAPI; // bind the alias to parent (as this instance will only have basic cuAPI functions)
+   // bind the alias to parent (as this instance will only have basic cuAPI functions)
+  client = {...(devClientInterface as any), ...window.opener.cuAPI};
 } else if (window.cuAPI) {
-  client = window.cuAPI; // not a popout, so use existing cuAPI
+  client = { ...(devClientInterface as any), ...window.cuAPI}; // not a popout, so use existing cuAPI
 } else {
   // create a mock cuAPI to return
   client = devClientInterface;

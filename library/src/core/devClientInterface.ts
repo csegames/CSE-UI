@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com {})
  * @Date: 2017-01-26 17:40:13
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 14:24:17
+ * @Last Modified time: 2017-04-13 18:47:45
  */
 
 import clientInterface from './clientInterface';
@@ -16,7 +16,7 @@ import Item from './classes/Item';
 
 const devClientInterface: clientInterface = {
   initialized: true,
-  OnInitialized: (c: () => void) => {
+  OnInitialized: (c: () => void): number => {
     c();
     return -1;
   },
