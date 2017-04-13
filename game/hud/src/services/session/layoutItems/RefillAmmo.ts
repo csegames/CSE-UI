@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-04-12 20:01:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-04-12 23:06:44
+ * @Last Modified time: 2017-04-13 15:58:56
  */
 
 
@@ -16,12 +16,12 @@ import RefillAmmo from '../../../widgets/RefillAmmo';
 export default {
   position: {
     x: {
-      anchor: Edge.LEFT,
-      offset: 0,
+      anchor: 9,
+      offset: 3,
     },
     y: {
-      anchor: Edge.TOP,
-      offset: 0,
+      anchor: 7,
+      offset: 75,
     },
     size: {
       width: 120,
