@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-04-12 19:39:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-04-13 00:05:53
+ * @Last Modified time: 2017-04-13 15:42:41
  */
 
 import * as React from 'react';
@@ -31,7 +31,7 @@ export const defaultRefillButtonStyle : RefillButtonStyle = {
     textAlign: 'center',
     backgroundColor: '#444',
     cursor: 'pointer',
-    opacity: 0.5,
+    opacity: 0.7,
     userSelect: 'none',
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     pointerEvents: 'auto',
