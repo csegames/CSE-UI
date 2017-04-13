@@ -27,11 +27,12 @@ import EquippedGear from './layoutItems/EquippedGear';
 import Inventory from './layoutItems/Inventory';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
+import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.5.0'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.6.0'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -180,6 +181,9 @@ function initialState(): LayoutState {
     ],
     [
       'errorMessages', cloneDeep(ErrorMessages),
+    ],
+    [
+      'refillAmmo', cloneDeep(RefillAmmo),
     ],
     [
       'plotControl', cloneDeep(PlotControl),
