@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-04-12 20:01:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-04-13 15:58:56
+ * @Last Modified time: 2017-04-13 16:24:33
  */
 
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import RefillAmmo from '../../../widgets/RefillAmmo';
+import RefillAmmo from '../../../components/RefillAmmo';
 
 export default {
   position: {
