@@ -27,6 +27,7 @@ import EquippedGear from './layoutItems/EquippedGear';
 import Inventory from './layoutItems/Inventory';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
+import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
 
@@ -180,6 +181,9 @@ function initialState(): LayoutState {
     ],
     [
       'errorMessages', cloneDeep(ErrorMessages),
+    ],
+    [
+      'refillAmmo', cloneDeep(RefillAmmo),
     ],
     [
       'plotControl', cloneDeep(PlotControl),
