@@ -67,10 +67,8 @@ export class Sound extends React.Component<SoundProps, SoundState> {
   }
 
   private playSound(name: string) {
-    console.log('SOUND: playSound playSound=' + this.props.soundsState.playSound);
     if (this.props.soundsState.playSound) {
       const id = generateID(7);
-      console.log('SOUND: playSound ' + name + ' id=' + id);
       this.setStateAsync({
         sounds: { ...this.state.sounds, [id]: name },
       });
@@ -87,7 +85,6 @@ export class Sound extends React.Component<SoundProps, SoundState> {
     const sounds = { ...this.state.sounds };
     delete sounds[id];
     delete this.audioRefs[id];
-    console.log('SOUND: sound finished id=' + id);
     this.setStateAsync({ sounds });
   }
 
@@ -187,18 +184,11 @@ export class Sound extends React.Component<SoundProps, SoundState> {
   }
 
   private componentDidUpdate() {
-    console.log('SOUND: componentDidUpdate:'
-      + ' playMusic=' + this.props.soundsState.playMusic
-      + ' playSound=' + this.props.soundsState.playSound
-      + ' paused=' + this.state.paused);
     if (this.bgRef) {
       const paused = this.state.paused || !this.props.soundsState.playMusic;
-      console.log('SOUND: pause/play? ' + paused);
       if (paused && !this.bgRef.paused) {
         this.pause(true);
-        console.log('SOUND: bgRef.pause()');
       } else if (!paused && this.bgRef.paused) {
-        console.log('SOUND: bgRef.play()');
         this.pause(false);
       }
     }
