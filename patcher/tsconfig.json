@@ -7,7 +7,10 @@
         "sourceMap": false,
         "jsx": "react",
         "module": "commonjs",
-        "newLine": "LF"
+        "noImplicitUseStrict": true,
+        "alwaysStrict": false,
+        "skipLibCheck": true,
+        "suppressImplicitAnyIndexErrors": true
     },
     "formatCodeOptions": {
         "indentSize": 2,
@@ -38,9 +41,6 @@
       "publish",
       "PatchClient",
       "node_modules"
-    ],
-    "files": [
-      "node_modules/redux-thunk/index.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": false
