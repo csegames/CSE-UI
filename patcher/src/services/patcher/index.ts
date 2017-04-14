@@ -153,7 +153,7 @@ export class PatcherAPI {
     if (this._api.channelData) {
       return Array.prototype.slice.call(this._api.channelData).sort((a:Channel, b:Channel) => {
         return this.getChannelValue(a) - this.getChannelValue(b);
-      }).bind(this);
+      });
     }
     return [];
   }
