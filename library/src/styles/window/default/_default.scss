@@ -16,9 +16,9 @@
 
   .cu-window-header {
     @include not-selectable();
-    @include display(flex);
-    @include flex-direction(row);
-    @include align-items(center);
+    display: 'flex';
+    flex-direction: 'row';
+    align-items: 'center';
     padding: 6px 15px;
     &:after {
       bottom: -7px;
@@ -94,12 +94,11 @@
   // Default Colours
 
   @include cu-window-header-bg(true) {
-    @include background(
-      linear-gradient(to bottom, #0e0e0e 0%, #373737 50%, #373737 50%, #272727 50%, #272727 50%, #0c0c0c 100%)
-    );
+    background:
+      linear-gradient(to bottom, #0e0e0e 0%, #373737 50%, #373737 50%, #272727 50%, #272727 50%, #0c0c0c 100%);
   }
   @include cu-window-footer-bg(true) {
-    @include background($color-dark);
+    background: $color-dark;
   }
   @include cu-window-content-bg(false, $main-background);
 
@@ -123,12 +122,11 @@
 
   .cu-window-bg-green {
     @include cu-window-header-bg {
-      @include background(
+      background:
         linear-gradient(to bottom, $color-green-light 0%, $color-green 50%, $color-green-dark 50%, darken($color-green-dark, 5%) 100%)
-      );
     }
     @include cu-window-footer-bg {
-      @include background($color-green-dark);
+      background: $color-green-dark;
     }
   }
   @include cu-window-content-bg(
@@ -140,12 +138,11 @@
 
   .cu-window-bg-blue {
     @include cu-window-header-bg {
-      @include background(
+      background:
         linear-gradient(to bottom, lighten($color-blue-light, 10%) 0%, $color-blue-light 50%, $color-blue 50%, $color-blue-dark 100%)
-      );
     }
     @include cu-window-footer-bg {
-      @include background($color-blue-dark);
+      background: $color-blue-dark;
     }
   }
   @include cu-window-content-bg(
@@ -157,12 +154,11 @@
 
   .cu-window-bg-yellow {
     @include cu-window-header-bg {
-      @include background(
+      background:
         linear-gradient(to bottom, $color-yellow 0%, darken($color-yellow, 10%) 50%, darken($color-yellow-dark, 10%) 50%, darken($color-yellow-dark, 20%) 100%)
-      );
     }
     @include cu-window-footer-bg {
-      @include background($color-yellow-dark);
+      background: $color-yellow-dark;
     }
   }
   @include cu-window-content-bg(
@@ -174,12 +170,11 @@
 
   .cu-window-bg-brown {
     @include cu-window-header-bg {
-      @include background(
+      background:
         linear-gradient(to bottom, $color-brown-light 0%, $color-brown 50%, $color-brown-dark 50%, darken($color-brown-dark, 5%) 100%)
-      );
     }
     @include cu-window-footer-bg {
-      @include background($color-brown-dark);
+      background: $color-brown-dark;
     }
   }
   @include cu-window-content-bg(

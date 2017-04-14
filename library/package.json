@@ -43,7 +43,6 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "axios": "^0.15.3",
-    "bourbon": "^4.2.6",
     "es6-promise": "^3.0.2",
     "graphql-tag": "^1.2.4",
     "isomorphic-fetch": "^2.2.1",
