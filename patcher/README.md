@@ -13,7 +13,7 @@
 
 3. Build
       ```sh
-      npm run build
+      npm start build
       ```
 
 ## Debugging & Testing within the live Patch Client (Windows Only)
@@ -26,5 +26,5 @@
 
 2. Run the debug npm script.  This will build, copy files through the symlink into your live Patch Client directory, then start the patcher with ui output disabled.
       ```sh
-      npm run debug
+      npm start debug
       ```

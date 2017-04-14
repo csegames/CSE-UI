@@ -46,40 +46,40 @@ Development
 
 To develop the UI you have the following commands
 
-#### `npm run clean`
+#### `npm start clean`
 
 This will delete the 'publish' directory.
 
-#### `npm run build`
+#### `npm start build`
 
 This will build all the modules into the 'publish' directory.
 
-#### `npm run build:install`
+#### `npm start build.install`
 
 This will run npm install within each module.
 
-#### `npm run build:hatchery`
+#### `npm start build.hatchery`
 
 This will build all the modules into the user-ui override directory for Hatchery. '%localappdata%/CSE/CamelotUnchained/4/INTERFACE'
 
-#### `npm run build:wyrmling`
+#### `npm start build.wyrmling`
 
 This will build all the modules into the user-ui override directory for Wyrmling. '%localappdata%/CSE/CamelotUnchained/10/INTERFACE'
 
-#### `npm run build:cube`
+#### `npm start build.cube`
 
 This will build all the modules into the user-ui override directory for C.U.B.E. '%localappdata%/CSE/CamelotUnchained/27/INTERFACE'
 
-#### `npm run clean:hatchery`
+#### `npm start clean.hatchery`
 
 This will delete the user-ui override directory for Hatchery. '%localappdata%/CSE/CamelotUnchained/4/INTERFACE'
 
 
-#### `npm run clean:wyrmling`
+#### `npm start clean.wyrmling`
 
 This will delete the user-ui override directory for Wyrmling. '%localappdata%/CSE/CamelotUnchained/10/INTERFACE'
 
-#### `npm run clean:cube`
+#### `npm start clean.cube`
 
 This will delete the user-ui override directory for C.U.B.E. '%localappdata%/CSE/CamelotUnchained/27/INTERFACE'
 

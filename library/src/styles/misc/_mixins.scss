@@ -6,18 +6,22 @@
 
 @mixin selectable() {
   cursor: auto;
+  -webkit-user-select: text !important;
   user-select: text !important;
   > * {
     cursor: auto;
+    -webkit-user-select: text !important;
     user-select: text !important;
   }
 }
 
 @mixin not-selectable() {
   cursor: default;
+  -webkit-user-select: none;
   user-select: none;
   > * {
     cursor: default;
+    -webkit-user-select: none;
     user-select: none;
   }
 }
