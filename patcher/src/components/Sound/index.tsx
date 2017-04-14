@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 17:53:23
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-10 14:17:44
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-04-14 21:50:05
  */
 
 import * as React from 'react';
@@ -21,8 +21,9 @@ export interface SoundProps {
 
 export interface SoundState {
   sounds: { [id: string]: string };
+  paused: boolean;
 }
- 
+
 const sounds = {
   select: 'sounds/UI_Menu_GenericSelect_v1_02.ogg',
   launchGame: 'sounds/UI_Patcher_PlayButton_v3.ogg',
@@ -39,30 +40,46 @@ const sounds = {
 export class Sound extends React.Component<SoundProps, SoundState> {
 
   private bgRef: HTMLAudioElement = null;
+  private evhs: any[] = [];       // event handlers
   private audioRefs: { [id: string]: HTMLAudioElement } = {};
 
   constructor(props: SoundProps) {
     super(props);
     this.state = {
       sounds: {},
+      paused: false,
     };
   }
 
   public render() {
     return (
       <div>
-        <audio src='sounds/patcher-theme.ogg' ref={r => this.bgRef = r }/>
-        {this.renderAudioElements()}     
+        <audio loop={true}
+               src='sounds/patcher-theme.ogg'
+               ref={r => this.bgRef = r }/>
+        {this.renderAudioElements()}
       </div>
     );
   }
 
+  private setStateAsync = (sparseState: any) => {
+    setTimeout(() => { this.setState(sparseState); },0);
+  }
+
   private playSound(name: string) {
+    console.log('SOUND: playSound playSound=' + this.props.soundsState.playSound);
     if (this.props.soundsState.playSound) {
       const id = generateID(7);
-      this.setState({
+      console.log('SOUND: playSound ' + name + ' id=' + id);
+      this.setStateAsync({
         sounds: { ...this.state.sounds, [id]: name },
       });
+    }
+  }
+
+  private pauseMusic(paused: boolean) {
+    if (this.state.paused !== paused) {
+      this.setStateAsync({ paused });
     }
   }
 
@@ -70,9 +87,8 @@ export class Sound extends React.Component<SoundProps, SoundState> {
     const sounds = { ...this.state.sounds };
     delete sounds[id];
     delete this.audioRefs[id];
-    this.setState({
-      sounds,
-    });
+    console.log('SOUND: sound finished id=' + id);
+    this.setStateAsync({ sounds });
   }
 
   private generateAudioElement = (sound: string, id: string) => {
@@ -83,37 +99,37 @@ export class Sound extends React.Component<SoundProps, SoundState> {
                       onEnded={() => this.onEnded(id)}
                       src={sounds.select}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'launch-game': 
+      case 'launch-game':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
                       src={sounds.launchGame}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'patch-complete': 
+      case 'patch-complete':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
                       src={sounds.patchComplete}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'select-change': 
+      case 'select-change':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
                       src={sounds.selectChange}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'create-character': 
+      case 'create-character':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
                       src={sounds.createCharacter}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'realm-select': 
+      case 'realm-select':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
                       src={sounds.realmSelect}
                       ref={r => this.audioRefs[id] = r }/>;
-      case 'server-select': 
+      case 'server-select':
         return <audio key={id}
                       autoPlay
                       onEnded={() => this.onEnded(id)}
@@ -141,13 +157,49 @@ export class Sound extends React.Component<SoundProps, SoundState> {
     }
   }
 
-  private  componentDidUpdate() {
-    if (this.bgRef) {
-      if (!this.props.soundsState.playMusic && !this.bgRef.paused) {
+  private pause = (pause: boolean) => {
+    const fade = (from: number, to: number, increment: number, done?: () => void) => {
+      if (increment > 0 ? from < to : from > to) {
+        this.bgRef.volume = from;
+        setTimeout(() => fade(from + increment, to, increment, done), 100);
+      } else {
+        this.bgRef.volume = to;
+        if (done) done();
+      }
+    };
+    // Note:-
+    // When pausing due to play, we fade-out, and when finished playing we fade in.
+    // When muting, we mute immediately, but when unmuting we fade in (the quirk)
+    // This is because at the moment it isn't possible to differentiate between
+    // finishing playing and unmuting.
+    if (pause) {
+      if (this.props.soundsState.playMusic) {
+        // fade-out
+        fade(0.5, 0.0, -0.1, () => { this.bgRef.pause(); });
+      } else {
         this.bgRef.pause();
-      } else if (this.props.soundsState.playMusic && this.bgRef.paused) {
-        this.bgRef.play();
-        this.bgRef.volume = 0.5;
+      }
+    } else {
+      // fade-in
+      fade(0.0, 0.5, 0.05);
+      this.bgRef.play();
+    }
+  }
+
+  private componentDidUpdate() {
+    console.log('SOUND: componentDidUpdate:'
+      + ' playMusic=' + this.props.soundsState.playMusic
+      + ' playSound=' + this.props.soundsState.playSound
+      + ' paused=' + this.state.paused);
+    if (this.bgRef) {
+      const paused = this.state.paused || !this.props.soundsState.playMusic;
+      console.log('SOUND: pause/play? ' + paused);
+      if (paused && !this.bgRef.paused) {
+        this.pause(true);
+        console.log('SOUND: bgRef.pause()');
+      } else if (!paused && this.bgRef.paused) {
+        console.log('SOUND: bgRef.play()');
+        this.pause(false);
       }
     }
   }
@@ -159,13 +211,14 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         this.bgRef.volume = 0.5;
       }
     }
-    events.on('play-sound', (name: string) => this.playSound(name));
+    this.evhs.push(events.on('play-sound', (name: string) => this.playSound(name)));
+    this.evhs.push(events.on('pause-music', (paused: boolean) => this.pauseMusic(paused)));
   }
 
-  private componentDidUnMount() {
-    events.off('play-sound');
+  private componentWillUnMount() {
+    this.evhs.map((h: any) => events.off(h));
   }
-  
+
   private renderAudioElements = () => {
     const elements = [];
     for (const key in this.state.sounds) {
