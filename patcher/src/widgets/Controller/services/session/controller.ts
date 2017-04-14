@@ -3,10 +3,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * @Author: JB (jb@codecorsair.com) 
- * @Date: 2016-10-13 00:25:42 
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-10 11:35:03
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2016-10-13 00:25:42
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-04-14 18:09:53
  */
 
 import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
@@ -252,9 +252,14 @@ export const getChannels = module.createAction({
     const servers = utils.clone(s.servers);
     for (const key in servers) {
       const server = servers[key];
-      servers[key].channelStatus = channelDict[server.channelID] ? channelDict[server.channelID].channelStatus :
-        ChannelStatus.NotInstalled;
-      servers[key].lastUpdated = channelDict[server.channelID].lastUpdated || 0;
+      const channel = channelDict[server.channelID];
+      if (channel) {
+        servers[key].channelStatus = channelDict[server.channelID].channelStatus;
+        servers[key].lastUpdated = channelDict[server.channelID].lastUpdated;
+      } else {
+        servers[key].channelStatus = ChannelStatus.NotInstalled;
+        servers[key].lastUpdated = 0;
+      }
     }
 
     return {
@@ -300,7 +305,7 @@ export const alertExpired = module.createAction({
 });
 
 ///////////////////////////////
-// SIGNALR 
+// SIGNALR
 ///////////////////////////////
 
 export const initSignalR = module.createAction({
