@@ -58,24 +58,24 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     }
     return (
       <div className='PatchButton'>
-        
+
         <div className='PatchButton__updateGroup'>
           <div>
             {this.renderButton()}
             <label>
               Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && (selectedServer.lastUpdated &&
               selectedServer.lastUpdated > 0 ) ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.
-            </label>          
+            </label>
           </div>
           {this.renderProgressText()}
         </div>
-        
+
         <Animate animationEnter='slideInUp' animationLeave='slideOutDown' durationEnter={400} durationLeave={500}>
-          
+
           {this.state.showEuala ? (<div className='fullscreen-blackout flex-row' key='accept-euala'>
                                       <EualaModal accept={this.launchClient} decline={this.closeEualaModal} />
                                     </div>) : null}
-        
+
         </Animate>
       </div>
     );
@@ -92,11 +92,15 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       }
     }
     this.installingChannel = -1;
-    this.startDownload = undefined;    
+    this.startDownload = undefined;
   }
 
   private playSound = (sound: string) => {
     events.fire('play-sound', sound);
+  }
+
+  private pauseMusic = (paused: boolean) => {
+    events.fire('pause-music', paused);
   }
 
   private playOffline = (evt: React.MouseEvent<HTMLDivElement>) => {
@@ -120,7 +124,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       this.commands = '';
     }
 
-    
+
     // Save selected channel, server, and character
     const lastPlay = {
       channelID: selectedServer.channelID as number,
@@ -186,23 +190,24 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     // const index = utils.findIndexWhere(channels, c => c.channelID === selectedServer.channelID);
 
     switch (selectedServer.channelStatus) {
-      
+
       case ChannelStatus.NotInstalled:
         return <div className='PatchButton__button' onClick={this.install}>Install</div>;
-      
+
       case ChannelStatus.Validating:
         this.startDownload = undefined;
         return <div className='PatchButton__button PatchButton__button--disabled'>Validating</div>;
-      
+
       case ChannelStatus.Updating:
 
         return <div className='PatchButton__button PatchButton__button--disabled'>Installing</div>;
-      
+
       case ChannelStatus.OutOfDate:
         return <div className='PatchButton__button PatchButton__button--disabled'>Awaiting Update</div>;
-      
+
       case ChannelStatus.Ready:
 
+        this.pauseMusic(false);
         for (let vid: any = 0; vid < videoElements.length; vid++) {
           videoElements[vid].play();
         }
@@ -226,29 +231,30 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
             return <div className='PatchButton__button PatchButton__button--success' onClick={this.playNow}>Play Now</div>;
           }
         }
-        
+
         return <div className='PatchButton__button PatchButton__button--success' onClick={this.playNow}>Play Now</div>;
-      
+
       case ChannelStatus.Launching:
         return <div className='PatchButton__button PatchButton__button--disabled'>Launching</div>;
-      
+
       case ChannelStatus.Running:
+        this.pauseMusic(true);
         for (let vid: any = 0; vid < videoElements.length; vid++) {
           videoElements[vid].pause();
         }
         return <div className='PatchButton__button PatchButton__button--disabled'>Playing</div>;
-      
+
       case ChannelStatus.Uninstalling:
         this.startDownload = undefined;
         return <div className='PatchButton__button PatchButton__button--disabled'>Uninstalling</div>;
-      
+
       case ChannelStatus.UpdateFailed:
         return <div className='PatchButton__button PatchButton__button--error' onClick={this.install}>Update Failed.</div>;
     }
   }
 
   private renderProgressText = () => {
-    
+
     if (this.installingChannel === -1) return null;
 
     if (this.startDownload === undefined) this.startDownload = Date.now();
