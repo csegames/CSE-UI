@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "cd game/hud && nps lint && cd ../../library && nps lint && cd ../patcher && nps lint"
+    "lint": "cd game/hud && npm start lint && cd ../../library && npm start lint && cd ../patcher && npm start lint"
   },
   "pre-commit": [
     "lint"

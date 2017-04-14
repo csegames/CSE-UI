@@ -38,7 +38,8 @@
     }
   },
   "scripts": {
-    "start": "nps"
+    "start": "nps",
+    "postinstall": "rimraf typings && typings install"
   },
   "dependencies": {
     "aphrodite": "^1.1.0",

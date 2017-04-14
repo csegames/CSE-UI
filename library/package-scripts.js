@@ -8,7 +8,6 @@ module.exports = {
         description: 'Fix TS-Lint errors'
       }
     },
-    postinstall: 'rimraf typings && typings install',
     dev: 'start npm-watch',
     clean: 'rimraf tmp && rimraf lib',
     babel: 'babel tmp -d lib',
@@ -21,9 +20,7 @@ module.exports = {
       definitions: '(robocopy tmp\ lib\ *.d.ts /s /mov) ^& IF %ERRORLEVEL% LEQ 1 exit 0'
     },
     copies: 'nps copy.definitions && nps copy.third-party && nps copy.misc',
-    prebuild: 'nps clean -s',
-    build: 'nps lint && tsc && nps sass && nps copies && nps babel && nps browserify',
-    postbuild: 'rimraf tmp',
+    build: 'nps clean -s && nps lint && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
     docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/'
   }
 };
