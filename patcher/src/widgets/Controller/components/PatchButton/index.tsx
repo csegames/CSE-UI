@@ -181,6 +181,21 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     this.playSound('select');
   }
 
+  private shouldPauseMusic = () => {
+    const { servers } = this.props;
+    let running = false;
+    if (servers) {
+      for (const key in servers) {
+        const server = servers[key];
+        if (server.channelStatus === ChannelStatus.Running) {
+          running = true;
+        }
+      }
+    }
+    // music should be paused if there are any clients running
+    return running;
+  }
+
   private renderButton = () => {
     const { selectedServer } = this.props;
     const videoElements: any = document.getElementsByTagName('video');
@@ -207,7 +222,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
       case ChannelStatus.Ready:
 
-        this.pauseMusic(false);
+        this.pauseMusic(this.shouldPauseMusic());
         for (let vid: any = 0; vid < videoElements.length; vid++) {
           videoElements[vid].play();
         }
