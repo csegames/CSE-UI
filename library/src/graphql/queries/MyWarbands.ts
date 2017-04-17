@@ -5,13 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:43:14
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 11:29:54
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-18 11:39:34
  */
 
 import gql from 'graphql-tag';
 
-import FullWarbandFragment, {FullWarband} from '../fragments/fullWarband';
+import FullWarbandFragment, {FullWarband} from '../fragments/FullWarband';
 
 export default gql`
 query MyWarbands {

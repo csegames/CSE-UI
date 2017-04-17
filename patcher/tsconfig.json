@@ -10,7 +10,8 @@
         "noImplicitUseStrict": true,
         "alwaysStrict": false,
         "skipLibCheck": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "forceConsistentCasingInFileNames": true
     },
     "formatCodeOptions": {
         "indentSize": 2,

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com {})
  * @Date: 2017-01-26 17:40:13
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-13 18:47:45
+ * @Last Modified time: 2017-04-18 12:17:19
  */
 
 import clientInterface from './clientInterface';

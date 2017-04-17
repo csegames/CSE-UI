@@ -47,7 +47,7 @@ import { client } from 'camelot-unchained';
 
 let timer: any;
 
-export const inputOwnership = (e: React.FocusEvent<any>): void => {
+export const inputOwnership = (e: React.FocusEvent<any> | React.MouseEvent<any>): void => {
   if (e.type === 'focus') {
     if (timer) {  // don't release input ownership if focus moving to another field
       clearTimeout(timer);
