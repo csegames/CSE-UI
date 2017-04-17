@@ -9,7 +9,9 @@ import { Archetype, Faction, events } from 'camelot-unchained';
 
 import { PlayerClassInfo } from '../services/session/playerClasses';
 import { FactionInfo } from '../services/session/factions';
-import Animate from 'react-animate.css';
+
+// tslint:disable-next-line
+const Animate = require('react-animate.css');
 
 /* tslint:disable */
 const classText: any = {

@@ -18,7 +18,9 @@ import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
-import Animate from 'react-animate.css';
+
+// tslint:disable-next-line
+const Animate =  require('react-animate.css');
 
 import reducer from './services/session/reducer';
 import { RacesState, fetchRaces, selectRace, RaceInfo, resetRace } from './services/session/races';
