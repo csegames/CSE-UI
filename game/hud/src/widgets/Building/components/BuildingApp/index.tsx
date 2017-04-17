@@ -6,14 +6,14 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-30 12:05:06
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-06 11:09:21
+ * @Last Modified time: 2017-04-17 18:19:10
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {events, buildUIMode} from 'camelot-unchained';
 
-import ActionBar from '../../widgets/ActionBar';
+import ActionBar from '../../widgets/Actionbar';
 import BuildingPanel from '../../widgets/BuildPanel';
 import SelectionView from '../../widgets/SelectionView';
 

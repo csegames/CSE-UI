@@ -1,7 +1,8 @@
 language: node_js
 node_js:
  - "6"
+sudo: required 
 before_install:
  - "cd game"
 script:
- - "npm start"
+ - "cd hud && npm install && npm start build && cd ../../library && npm install && npm start build && cd ../patcher && npm install && npm start build"

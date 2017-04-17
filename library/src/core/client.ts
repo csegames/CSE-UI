@@ -19,7 +19,7 @@ interface WindowInterface extends Window {
 // declare window implements WindowInterface
 declare const window: WindowInterface;
 
-let client: clientInterface = null;
+let client: clientInterface = window.cuAPI;
 
 /**
  * Check if we have the client API object, this will be true when running within the CU game client, false otherwise. 
@@ -30,13 +30,18 @@ export function hasClientAPI() {
 
 if (window.opener && window.opener.cuAPI) {
    // bind the alias to parent (as this instance will only have basic cuAPI functions)
-  client = {...(devClientInterface as any), ...window.opener.cuAPI};
+  client = window.opener.cuAPI;
 } else if (window.cuAPI) {
-  client = { ...(devClientInterface as any), ...window.cuAPI}; // not a popout, so use existing cuAPI
+  Object.keys(devClientInterface).forEach((key) => {
+    if ((<any>window.cuAPI)[key]) return;
+    (<any>window.cuAPI)[key] = (<any>devClientInterface)[key];
+    return;
+  });
+  client = window.cuAPI;
+  // not a popout, so use existing cuAPI
 } else {
   // create a mock cuAPI to return
   client = devClientInterface;
-
 }
 
 if (!client.apiVersion) client.apiVersion = 1;

@@ -85,6 +85,7 @@
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
     "@types/classnames": "0.0.32",
+    "@types/isomorphic-fetch": "0.0.33",
     "@types/lodash": "^4.14.52",
     "@types/object-assign": "^4.0.30",
     "@types/react": "^15.0.10",
@@ -97,6 +98,7 @@
     "babel-core": "^6.5.2",
     "babel-preset-es2015": "^6.5.0",
     "browserify": "^13.0.0",
+    "browserify-casesensitiverequire": "^1.0.1",
     "copyfiles": "^1.0.0",
     "envify": "^4.0.0",
     "http-server": "^0.9.0",
@@ -107,7 +109,7 @@
     "tslint": "^5.0.0",
     "tslint-config-airbnb": "^1.1.1",
     "tslint-eslint-rules": "^4.0.0",
-    "typescript": "2.1.6",
+    "typescript": "^2.2.0",
     "typings": "^1.3.2",
     "watch-cli": "^0.2.1"
   }

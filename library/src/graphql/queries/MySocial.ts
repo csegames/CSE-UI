@@ -5,15 +5,15 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:43:16
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 11:53:36
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-18 11:38:56
  */
 
 import gql from 'graphql-tag';
 
-import FullCharacterFragment, { FullCharacter } from '../fragments/fullCharacter';
-import FullOrderFragment, { FullOrder } from '../fragments/fullOrder';
-import FullWarbandFragment, { FullWarband } from '../fragments/fullWarband';
+import FullCharacterFragment, { FullCharacter } from '../fragments/FullCharacter';
+import FullOrderFragment, { FullOrder } from '../fragments/FullOrder';
+import FullWarbandFragment, { FullWarband } from '../fragments/FullWarband';
 
 export default gql`
 query MySocial {

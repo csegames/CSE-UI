@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-01 11:35:54
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 15:27:06
+ * @Last Modified time: 2017-04-17 18:22:26
  */
 
 import * as React from 'react';
@@ -139,7 +139,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     window.addEventListener('mousedown', this.onMouseDown);
   }
 
-  private computeStyle = () => {
+  private computeStyle = (): React.CSSProperties => {
     switch (this.state.wndRegion) {
       case Quadrant.TopLeft:
         return {

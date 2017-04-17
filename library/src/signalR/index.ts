@@ -6,11 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:11
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 12:50:34
+ * @Last Modified time: 2017-04-18 10:58:49
  */
 
 import client from '../core/client';
-import { findIndexWhere } from '../util/arrayutils';
+import { findIndexWhere } from '../util/arrayUtils';
 export * from './SignalRHub';
 export * from './hubs/groupsHub';
 export * from './hubs/patcherHub';
