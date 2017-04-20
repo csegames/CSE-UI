@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 14:38:35
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-02 14:47:40
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-04-20 11:40:33
  */
 
 import {EventMap} from '../../util/eventMapper';
@@ -54,7 +54,7 @@ const patcherEventsMap: EventMap[] = [
 
 export const patcherHub = new SignalRHub('patcherHub', patcherEventsMap, {debug: client.debug});
 
-
+let reconnectTries = 0;
 
 ////////////////////////////////////
 // lifetime events
@@ -70,6 +70,8 @@ patcherHub.onConnectionSlow = function(hub: SignalRHub) {
 
 patcherHub.onConnected = function(hub: SignalRHub) {
   events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
+  
+  // if identify method fails then try to reconnect
   hub.invoke('identify', client.loginToken)
     .done((success: boolean) => {
       if (!success) {
@@ -81,6 +83,16 @@ patcherHub.onConnected = function(hub: SignalRHub) {
       // invalidate to force a resend of all data to this client
       hub.invoke('invalidate');
       events.fire(PATCHER_LIFETIME_EVENT_IDENTIFIED, hub);
+    })
+    .fail(() => {
+      setTimeout(() => {
+        if (reconnectTries === 5) {
+          reconnectTries = 0;
+          hub.onStarting(hub);
+        }
+        reconnectTries++;
+        hub.onConnected(hub);
+      }, 5000);
     });
 };
 
@@ -104,6 +116,5 @@ patcherHub.onStateChanged = function(hub: SignalRHub, state: {oldState: Connecti
 patcherHub.onDisconnected = function(hub: SignalRHub) {
   events.fire(PATCHER_LIFETIME_EVENT_DISCONNECTED, hub);
 };
-
 
 export default patcherHub;

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 16:17:30
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 12:50:16
+ * @Last Modified time: 2017-04-20 11:23:53
  */
 import events from '../events';
 import client from '../core/client';
@@ -29,6 +29,18 @@ export enum ConnectionState {
   Connected = 1,
   Reconnecting = 2,
   Disconnected = 4,
+}
+
+export interface DeferredObjectInfo {
+  done: (...params: any[]) => DeferredObjectInfo;
+  fail: (...params: any[]) => DeferredObjectInfo;
+  isRejected: (...params: any[]) => DeferredObjectInfo;
+  isResolved: (...params: any[]) => DeferredObjectInfo;
+  reject: (...params: any[]) => DeferredObjectInfo;
+  rejectWith: (...params: any[]) => DeferredObjectInfo;
+  resolve: (...params: any[]) => DeferredObjectInfo;
+  resolveWith: (...params: any[]) => DeferredObjectInfo;
+  then: (...params: any[]) => DeferredObjectInfo;
 }
 
 export class SignalRHub {
@@ -117,8 +129,8 @@ export class SignalRHub {
   public stop() {
     this.conn.stop();
   }
-
-  public invoke(method: string, ...params: any[]): {done: (...params: any[]) => void} {
+  
+  public invoke(method: string, ...params: any[]): DeferredObjectInfo {
     return this.hub.invoke(method, ...params);
   }
 
