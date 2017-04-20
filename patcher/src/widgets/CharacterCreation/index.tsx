@@ -408,7 +408,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(fetchRaces(this.props.apiHost, this.props.shard, this.props.apiVersion));
     this.props.dispatch(fetchPlayerClasses(this.props.apiHost, this.props.shard, this.props.apiVersion));
     this.props.dispatch(fetchAttributes(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchAttributeOffsets(this.props.apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchAttributeOffsets(this.props.shard));
     this.setState({page: pages.FACTION_SELECT});
   }
 
