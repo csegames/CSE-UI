@@ -6,7 +6,7 @@
 
 import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
-import { Race, Gender } from 'camelot-unchained';
+import { Race, Gender, webAPI } from 'camelot-unchained';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
@@ -43,22 +43,22 @@ export function fetchAttributeOffsetsSuccess(offsets: AttributeOffsetInfo[]) {
   };
 }
 
-export function fetchAttributeOffsetsFailed(error: ResponseError) {
+export function fetchAttributeOffsetsFailed(error: any) {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS_FAILED,
-    error: error.message,
+    error: error.Message,
   };
 }
 
-export function fetchAttributeOffsets(
-  apiUrl: string = 'https://api.camelotunchained.com/',
-  shard: number = 1,
-  apiVersion: number = 1) {
+export function fetchAttributeOffsets(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
-    return fetchJSON(`${apiUrl}gamedata/attributeoffsets/${shard}?api-version=${apiVersion}`)
-      .then((offsets: AttributeOffsetInfo[]) => dispatch(fetchAttributeOffsetsSuccess(offsets)))
-      .catch((error: ResponseError) => dispatch(fetchAttributeOffsetsFailed(error)));
+    return webAPI.GameDataAPI.getAttributeOffsetsV1(shard)
+      .then((value: any) => {
+        dispatch(value.ok
+                  ? fetchAttributeOffsetsSuccess(value.data)
+                  : fetchAttributeOffsetsFailed(value.error));
+      });
   };
 }
 

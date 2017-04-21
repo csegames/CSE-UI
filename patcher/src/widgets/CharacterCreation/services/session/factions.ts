@@ -9,6 +9,7 @@ import 'isomorphic-fetch';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
+import { webAPI } from 'camelot-unchained';
 
 export interface FactionInfo {
   id: number;
@@ -57,15 +58,13 @@ export function selectFaction(selected: FactionInfo) {
   };
 }
 
-export function fetchFactions(
-  apiUrl: string = 'https://api.camelotunchained.com/',
-  shard: number = 1,
-  apiVersion: number = 1) {
+export function fetchFactions(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestFactions());
-    return fetchJSON(`${apiUrl}gamedata/factions?api-version=${apiVersion}`)
-      .then((factions: FactionInfo[]) => dispatch(fetchFactionsSuccess(factions)))
-      .catch((error: ResponseError) => dispatch(fetchFactionsFailed(error)));
+    return webAPI.GameDataAPI.getFactionInfoV1()
+      .then((value: any) => {
+        dispatch(value.ok ? fetchFactionsSuccess(value.data) : fetchFactionsFailed(value.error));
+      });
   };
 }
 

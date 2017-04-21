@@ -6,7 +6,7 @@
 
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
-import {Race, Gender} from 'camelot-unchained';
+import {Race, Gender, webAPI} from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
@@ -80,20 +80,21 @@ export function fetchAttributesFailed(error: ResponseError) {
   };
 }
 
-export function fetchAttributes(
-  apiUrl: string = 'https://api.camelotunchained.com/',
-  shard: number = 1,
-  apiVersion: number = 1) {
+export function fetchAttributes(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributes());
-    return fetchJSON(`${apiUrl}gamedata/attributes/${shard}?api-version=${apiVersion}`)
-      .then((attributes: AttributeInfo[]) => attributes.map((a: AttributeInfo) => {
-        a.allocatedPoints = 0;
-        a.minValue = a.baseValue;
-        return a;
-      }))
-      .then((attributes: AttributeInfo[]) => dispatch(fetchAttributesSuccess(attributes)))
-      .catch((error: ResponseError) => dispatch(fetchAttributesFailed(error)));
+    return webAPI.GameDataAPI.getAttributeInfoV1(shard)
+      .then((value: any) => {
+        if (value.ok) {
+          value.data.map((a: any) => {
+            a.allocatedPoints = 0;
+            a.minValue = a.baseValue;
+          });
+          dispatch(fetchAttributesSuccess(value.data));
+        } else {
+          dispatch(fetchAttributesFailed(value.error));
+        }
+      });
   };
 }
 
