@@ -7,10 +7,9 @@
 import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 import { Race, Faction, webAPI } from 'camelot-unchained';
+type CSEError = webAPI.Errors.CSEError;
 
 import { fetchJSON } from '../../lib/fetchHelpers';
-import ResponseError from '../../lib/ResponseError';
-
 
 export interface RaceInfo {
   name: string;
@@ -40,7 +39,7 @@ export function fetchRacesSuccess(races: RaceInfo[]) {
   };
 }
 
-export function fetchRacesFailed(error: any) {
+export function fetchRacesFailed(error: CSEError) {
   return {
     type: FETCH_RACES_FAILED,
     error: error.Message,
@@ -65,7 +64,7 @@ export function fetchRaces(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestRaces());
     return webAPI.GameDataAPI.getRacesV1()
-      .then((value: any) => {
+      .then((value) => {
         dispatch(value.ok ? fetchRacesSuccess(value.data) : fetchRacesFailed(value.error));
       });
   };

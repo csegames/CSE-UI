@@ -7,9 +7,9 @@
 import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 import { Race, Gender, webAPI } from 'camelot-unchained';
+type CSEError = webAPI.Errors.CSEError;
 
 import { fetchJSON } from '../../lib/fetchHelpers';
-import ResponseError from '../../lib/ResponseError';
 
 export interface AttributeOffsetInfo {
   race: Race;
@@ -43,7 +43,7 @@ export function fetchAttributeOffsetsSuccess(offsets: AttributeOffsetInfo[]) {
   };
 }
 
-export function fetchAttributeOffsetsFailed(error: any) {
+export function fetchAttributeOffsetsFailed(error: CSEError) {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS_FAILED,
     error: error.Message,
@@ -54,7 +54,7 @@ export function fetchAttributeOffsets(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
     return webAPI.GameDataAPI.getAttributeOffsetsV1(shard)
-      .then((value: any) => {
+      .then((value) => {
         dispatch(value.ok
                   ? fetchAttributeOffsetsSuccess(value.data)
                   : fetchAttributeOffsetsFailed(value.error));
