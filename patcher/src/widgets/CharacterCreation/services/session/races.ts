@@ -6,7 +6,7 @@
 
 import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
-import { Race, Faction } from 'camelot-unchained';
+import { Race, Faction, webAPI } from 'camelot-unchained';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
@@ -40,10 +40,10 @@ export function fetchRacesSuccess(races: RaceInfo[]) {
   };
 }
 
-export function fetchRacesFailed(error: ResponseError) {
+export function fetchRacesFailed(error: any) {
   return {
     type: FETCH_RACES_FAILED,
-    error: error.message,
+    error: error.Message,
   };
 }
 
@@ -61,12 +61,13 @@ export function resetRace() {
 }
 
 
-export function fetchRaces(apiUrl: string = 'https://api.camelotunchained.com/', shard: number = 1, apiVersion: number = 1) {
+export function fetchRaces(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestRaces());
-    return fetchJSON(`${apiUrl}gamedata/races?api-version=${apiVersion}`)
-      .then((races: RaceInfo[]) => dispatch(fetchRacesSuccess(races)))
-      .catch((error: ResponseError) => dispatch(fetchRacesFailed(error)));
+    return webAPI.GameDataAPI.getRacesV1()
+      .then((value: any) => {
+        dispatch(value.ok ? fetchRacesSuccess(value.data) : fetchRacesFailed(value.error));
+      });
   };
 }
 
