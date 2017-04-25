@@ -8,8 +8,8 @@ import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
-import ResponseError from '../../lib/ResponseError';
 import { webAPI } from 'camelot-unchained';
+type CSEError = webAPI.Errors.CSEError;
 
 export interface FactionInfo {
   id: number;
@@ -44,10 +44,10 @@ export function fetchFactionsSuccess(factions: FactionInfo[]) {
   };
 }
 
-export function fetchFactionsFailed(error: ResponseError) {
+export function fetchFactionsFailed(error: CSEError) {
   return {
     type: FETCH_FACTIONS_FAILED,
-    error: error.message,
+    error: error.Message,
   };
 }
 
@@ -62,7 +62,7 @@ export function fetchFactions(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestFactions());
     return webAPI.GameDataAPI.getFactionInfoV1()
-      .then((value: any) => {
+      .then((value) => {
         dispatch(value.ok ? fetchFactionsSuccess(value.data) : fetchFactionsFailed(value.error));
       });
   };

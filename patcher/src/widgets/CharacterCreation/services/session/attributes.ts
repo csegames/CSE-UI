@@ -6,10 +6,10 @@
 
 import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
-import {Race, Gender, webAPI} from 'camelot-unchained';
+import {Race, Gender, webAPI } from 'camelot-unchained';
+type CSEError = webAPI.Errors.CSEError;
 
 import {fetchJSON} from '../../lib/fetchHelpers';
-import ResponseError from '../../lib/ResponseError';
 
 const totalPoints = 30;
 
@@ -73,10 +73,10 @@ export function fetchAttributesSuccess(attributes: AttributeInfo[]) {
   };
 }
 
-export function fetchAttributesFailed(error: ResponseError) {
+export function fetchAttributesFailed(error: CSEError) {
   return {
     type: FETCH_ATTRIBUTES_FAILED,
-    error: error.message,
+    error: error.Message,
   };
 }
 
@@ -84,7 +84,7 @@ export function fetchAttributes(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributes());
     return webAPI.GameDataAPI.getAttributeInfoV1(shard)
-      .then((value: any) => {
+      .then((value) => {
         if (value.ok) {
           value.data.map((a: any) => {
             a.allocatedPoints = 0;
