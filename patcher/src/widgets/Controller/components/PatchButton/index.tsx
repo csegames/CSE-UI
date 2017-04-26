@@ -56,6 +56,11 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (!selectedServer) {
       return null;
     }
+    let updateMessage;
+    if (selectedServer.channelStatus !== ChannelStatus.NotInstalled 
+    && (selectedServer.lastUpdated && selectedServer.lastUpdated > 0)) {
+      updateMessage = `Updated ${moment(selectedServer.lastUpdated).fromNow()}`;
+    }
     return (
       <div className='PatchButton'>
 
@@ -63,8 +68,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
           <div>
             {this.renderButton()}
             <label>
-              Updated {selectedServer.channelStatus !== ChannelStatus.NotInstalled && (selectedServer.lastUpdated &&
-              selectedServer.lastUpdated > 0 ) ? moment(selectedServer.lastUpdated).fromNow() : 'never'}.
+              {updateMessage}
             </label>
           </div>
           {this.renderProgressText()}
