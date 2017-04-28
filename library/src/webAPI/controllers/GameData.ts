@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
+/* tslint:disable */
 import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
@@ -11,40 +11,42 @@ import { Character } from '../definitions';
 import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
 
+
 export function getFactionInfoV1() {
-  return create(createOptions()).get('v1/gamedata/factionInfo', {
+  return create(createOptions()).get('v1/gamedata/factionInfo', { 
   });
 }
 
 export function getFactionsV1() {
-  return create(createOptions()).get('v1/gamedata/factions', {
+  return create(createOptions()).get('v1/gamedata/factions', { 
   });
 }
 
 export function getAttributeInfoV1(shard: number) {
-  return create(createOptions()).get('v1/gamedata/attributeInfo', {
-    shard,
+  return create(createOptions()).get('v1/gamedata/attributeInfo', { 
+    shard: shard
   });
 }
 
 export function getArchetypesV1() {
-  return create(createOptions()).get('v1/gamedata/archetypes', {
+  return create(createOptions()).get('v1/gamedata/archetypes', { 
   });
 }
 
 export function getRacesV1() {
-  return create(createOptions()).get('v1/gamedata/races', {
+  return create(createOptions()).get('v1/gamedata/races', { 
   });
 }
 
 export function getAttributeOffsetsV1(shard: number) {
-  return create(createOptions()).get('v1/gamedata/attributeOffsets', {
-    shard,
+  return create(createOptions()).get('v1/gamedata/attributeOffsets', { 
+    shard: shard
   });
 }
 
 export function getOrderPermissionsV1() {
-  return create(createOptions()).get('v1/gamedata/orderPermissions', {
+  return create(createOptions()).get('v1/gamedata/orderPermissions', { 
   });
 }
 
+ 

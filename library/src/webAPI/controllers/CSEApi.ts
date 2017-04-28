@@ -10,11 +10,6 @@ import createOptions from '../createOptions';
 import { Character } from '../definitions';
 import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
+
+
  
-
-export function getTraitsV1(shardID: number) {
-  return create(createOptions()).get('v1/traits', { 
-    shardID: shardID
-  });
-}
-

@@ -29,6 +29,8 @@ import InteractiveAlert, { Alert } from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import Social from '../../widgets/Social';
 
+import { ZoneName } from '../ZoneName';
+
 import { BodyParts } from '../../lib/PlayerStatus';
 
 // TEMP -- Disable this being movable/editable
@@ -79,6 +81,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {orderedWidgets.map(c => c)}
 
+        <ZoneName />
         <Console />
 
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>

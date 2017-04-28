@@ -1,4 +1,6 @@
- 
+
+/* tslint:disable */
+
 export interface ArchetypeInfo { 
   description: string;
   faction: Faction;
@@ -7,7 +9,9 @@ export interface ArchetypeInfo {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface BadRequestFieldCode {
@@ -27,7 +31,9 @@ export interface ModelError {
   paramName: string;
   typeName: string; 
 }
- 
+
+/* tslint:disable */
+
 
 export interface QueueStatusResponse {
   errorMessage: string; 
@@ -49,7 +55,9 @@ export interface QueuedBlueprintMessage {
   amtNeeded: number; 
 }
 
- 
+
+/* tslint:disable */
+
 export interface SimpleCharacter { 
   archetype: Archetype;
   faction: Faction;
@@ -78,7 +86,9 @@ export interface CharacterValidation {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface ControlGameState { 
   arthurianScore: number;
   controlPoints: ControlPoint[];
@@ -97,7 +107,9 @@ export interface ControlPoint {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface ExecutionErrorFieldCode {
@@ -127,7 +139,9 @@ export interface ResourceRequirement {
   required: any;
   available: any; 
 }
- 
+
+/* tslint:disable */
+
 export interface FactionInfo { 
   description: string;
   id: number;
@@ -136,7 +150,9 @@ export interface FactionInfo {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface GroupInvite { 
   created: string;
   groupType: GroupType;
@@ -147,12 +163,16 @@ export interface GroupInvite {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface FieldCodeHelper { 
 }
- 
+
+/* tslint:disable */
+
 export interface MessageOfTheDay { 
   id: string;
   message: string;
@@ -160,7 +180,9 @@ export interface MessageOfTheDay {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface NotAllowedFieldCode {
@@ -177,7 +199,9 @@ export interface RateLimitExceeded {
 
 export interface InternalAction { 
 }
- 
+
+/* tslint:disable */
+
 export interface Order { 
   created: string;
   createdBy: string;
@@ -191,7 +215,9 @@ export interface Order {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface OrderMember { 
   name: string;
   id: string;
@@ -202,7 +228,9 @@ export interface OrderMember {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface PatcherAlert { 
   id: string;
   message: string;
@@ -211,7 +239,9 @@ export interface PatcherAlert {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface PatcherHeroContent { 
   content: string;
   id: string;
@@ -221,14 +251,18 @@ export interface PatcherHeroContent {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface PermissionInfo { 
   description: string;
   name: string;
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface PlayerAttributeOffset { 
   race: Race;
   gender: Gender;
@@ -236,7 +270,9 @@ export interface PlayerAttributeOffset {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface PlayerStatAttribute { 
   baseValue: number;
   derivedFrom: string;
@@ -248,7 +284,9 @@ export interface PlayerStatAttribute {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface RaceInfo { 
   name: string;
   description: string;
@@ -257,7 +295,9 @@ export interface RaceInfo {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface RankInfo { 
   level: number;
   name: string;
@@ -265,7 +305,9 @@ export interface RankInfo {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface ServerModel { 
   accessLevel: AccessType;
   channelID: number;
@@ -279,14 +321,21 @@ export interface ServerModel {
 }
 
 
- 
-export interface ServerPresence {
+
+/* tslint:disable */
+
+export interface ServerPresence { 
   address: string;
-  zoneID: number; 
+  zoneID: number;
+  shardID: string;
+  zoneBoundsMax: {x:number,y:number};
+  zoneBoundsMin: {x:number,y:number};
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface ServerState { 
   controlGameState: ControlGameState;
   playerCounts: PlayerCounts;
@@ -307,7 +356,9 @@ export interface PlayerCounts {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface ServiceUnavailableFieldCode {
@@ -329,7 +380,18 @@ export interface GameServiceUnavailable {
 
 export interface PresenceServiceUnavailable { 
 }
- 
+
+/* tslint:disable */
+
+export interface StartingServer {
+  address: string;
+  zoneID: number; 
+}
+
+
+
+/* tslint:disable */
+
 export interface Trait { 
   id: string;
   name: string;
@@ -340,7 +402,9 @@ export interface Trait {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface OptionalAndRequiredTraits { 
   required: string[];
   optional: string[];
@@ -362,7 +426,9 @@ export interface TraitList {
 }
 
 
- 
+
+/* tslint:disable */
+
 
 
 export interface UnauthorizedFieldCode {
@@ -381,7 +447,9 @@ export interface LoginTokenAuthorizationFailed {
 
 export interface RealmRestricted { 
 }
- 
+
+/* tslint:disable */
+
 export interface Warband { 
   banner: string;
   created: string;
@@ -392,7 +460,9 @@ export interface Warband {
 }
 
 
- 
+
+/* tslint:disable */
+
 export interface WarbandMember { 
   additionalPermissions: string[];
   archetype: Archetype;
@@ -413,7 +483,7 @@ export interface WarbandMember {
 }
 
 
-
+/* tslint:disable */
 export interface CurrentMaxValue {
     current: number;
     maximum: number;
@@ -425,6 +495,8 @@ export interface Temperature {
     burndingThreshold: number;
 }
 
+
+/* tslint:disable */
   
 export enum AbilityActionStat { 
   None = 0,
@@ -581,15 +653,19 @@ export enum AbilityActionStat {
   VeilStealthTransition = 151,
   WallDuration = 152,
   WallHealth = 153,
-  OverallPower = 154,
+  OverallPower = 154
 }
  
+
+/* tslint:disable */
   
 export enum AbilityActionStatValueType { 
   Cost = 0,
-  Power = 1,
+  Power = 1
 }
  
+
+/* tslint:disable */
   
 export enum AbilityActionType { 
   None = 0,
@@ -615,14 +691,18 @@ export enum AbilityActionType {
   SphereAoE = 20,
   ConeAoE = 21,
   Stance = 22,
-  Blocking = 23,
+  Blocking = 23
 }
  
+
+/* tslint:disable */
   
 export enum AbilityComponentID { 
-  None = 0,
+  None = 0
 }
  
+
+/* tslint:disable */
   
 export enum AbilityComponentSubType { 
   None = 0,
@@ -663,24 +743,30 @@ export enum AbilityComponentSubType {
   MagicNoParts = 134217854,
   RuneSelfNoParts = 268435456,
   MagicSelfNoParts = 335544444,
-  Target = 536870912,
+  Target = 536870912
 }
  
+
+/* tslint:disable */
   
 export enum AbilityComponentType { 
   Primary = 0,
   Secondary = 1,
   OptionalModifier = 2,
   SpecialModal = 3,
-  IndependantModal = 4,
+  IndependantModal = 4
 }
  
+
+/* tslint:disable */
   
 export enum AbilityLifetimeEvent { 
   Begin = 0,
-  Hit = 1,
+  Hit = 1
 }
  
+
+/* tslint:disable */
   
 export enum AbilityTag { 
   SYSTEM = 0,
@@ -786,9 +872,11 @@ export enum AbilityTag {
   SelfShape = 100,
   RuneNoParts = 101,
   SelfRuneNoParts = 102,
-  COUNT = 103,
+  COUNT = 103
 }
  
+
+/* tslint:disable */
    
 export enum AccessType { 
   Invalid = -1,
@@ -798,20 +886,26 @@ export enum AccessType {
   Beta1 = 3,
   Alpha = 4,
   InternalTest = 5,
-  Employees = 6,
+  Employees = 6
 }
 
+
+/* tslint:disable */
   
 export enum AimingMode { 
   AutoTarget = 0,
-  AimedDirection = 1,
+  AimedDirection = 1
 }
  
+
+/* tslint:disable */
   
 export enum AnimSetID { 
-  Travel = 0,
+  Travel = 0
 }
  
+
+/* tslint:disable */
   
 export enum Archetype { 
   FireMage = 0,
@@ -831,14 +925,16 @@ export enum Archetype {
   Blackguard = 14,
   ForestStalker = 15,
   WintersShadow = 16,
-  Any = 17,
+  Any = 17
 }
  
+
+/* tslint:disable */
  
 export enum BackerLevel { 
   none = 0,
   builder = 10,
-  founder = 20,
+  founder = 20
 }
 
 export enum Permissions { 
@@ -850,26 +946,28 @@ export enum Permissions {
   TrustedTester = 5,
   ModSquad = 6,
   OldSchoolGaming = 7,
-  BuildersBrigade = 8,
+  BuildersBrigade = 8
 }
   
   
 export enum BoonBaneID { 
-  None = 0,
+  None = 0
 }
 
 export enum BoonBaneType { 
   Boon = 0,
-  Bane = 1,
+  Bane = 1
 }
 
 export enum BoonBaneCategory { 
   General = 0,
   Faction = 1,
   Race = 2,
-  Archetype = 3,
+  Archetype = 3
 }
  
+
+/* tslint:disable */
   
 export enum CASAbilityParams { 
   Invalid = 0,
@@ -906,9 +1004,11 @@ export enum CASAbilityParams {
   TargetRequired = 31,
   TargetingVolumeType = 32,
   TargetingRadius = 33,
-  TargetingConeAngle = 34,
+  TargetingConeAngle = 34
 }
  
+
+/* tslint:disable */
   
 export enum CASEffectsTrigger { 
   None = 0,
@@ -919,9 +1019,11 @@ export enum CASEffectsTrigger {
   TriggerTime = 5,
   TriggerHeld = 6,
   Canceled = 7,
-  Ended = 8,
+  Ended = 8
 }
  
+
+/* tslint:disable */
   
 export enum CASEffectsType { 
   None = 0,
@@ -931,24 +1033,30 @@ export enum CASEffectsType {
   Ability = 4,
   Geometry = 5,
   Model = 6,
-  Targeting = 7,
+  Targeting = 7
 }
  
+
+/* tslint:disable */
   
 export enum CASEntityType { 
   Standard = 0,
-  Projectile = 1,
+  Projectile = 1
 }
  
+
+/* tslint:disable */
   
 export enum CASParamDataType { 
   Invalid = 0,
   Int32 = 1,
   Int64 = 2,
   Float = 3,
-  Bool = 4,
+  Bool = 4
 }
  
+
+/* tslint:disable */
   
 export enum DamageType { 
   None = 0,
@@ -979,9 +1087,11 @@ export enum DamageType {
   Dark = 1966080,
   Other = 2097208,
   All = -1,
-  SYSTEM = -2147483648,
+  SYSTEM = -2147483648
 }
  
+
+/* tslint:disable */
   
 export enum DBVarType { 
   Int8 = 0,
@@ -996,16 +1106,20 @@ export enum DBVarType {
   Double = 9,
   Char = 10,
   String = 11,
-  Bool = 12,
+  Bool = 12
 }
  
+
+/* tslint:disable */
   
 export enum EntitySourceKind { 
   Command = 0,
   Placeable = 1,
-  Terrain = 2,
+  Terrain = 2
 }
  
+
+/* tslint:disable */
   
 export enum EquipmentModelSlots { 
   Tabard = 0,
@@ -1047,25 +1161,31 @@ export enum EquipmentModelSlots {
   Helmet = 36,
   Cape = 37,
   Horns = 38,
-  Collar = 39,
+  Collar = 39
 }
  
+
+/* tslint:disable */
   
 export enum EXETypes { 
   None = 0,
   X86 = 1,
-  X64 = 2,
+  X64 = 2
 }
  
+
+/* tslint:disable */
   
 export enum Faction { 
   Factionless = 0,
   TDD = 1,
   Viking = 2,
   Arthurian = 3,
-  COUNT = 4,
+  COUNT = 4
 }
  
+
+/* tslint:disable */
  
 export enum FieldCodes { 
   UnspecifiedAuthorizationDenied = 1000,
@@ -1086,7 +1206,7 @@ export enum FieldCodes {
   DatabaseUnavailable = 5001,
   GroupServiceUnavailable = 5002,
   GameServiceUnavailable = 5003,
-  PresenceServiceUnavailable = 5004,
+  PresenceServiceUnavailable = 5004
 }
   
   
@@ -1105,49 +1225,59 @@ export enum GearSlot {
   Tabard = 1024,
   Cape = 2048,
   NUMSLOTS = 12,
-  NUMVALUES = 4096,
+  NUMVALUES = 4096
 }
  
+
+/* tslint:disable */
   
 export enum Gender { 
   None = 0,
   Male = 1,
-  Female = 2,
+  Female = 2
 }
  
+
+/* tslint:disable */
   
 export enum GroupType { 
   Warband = 0,
   Order = 1,
   Alliance = 2,
-  Campaign = 3,
+  Campaign = 3
 }
  
+
+/* tslint:disable */
   
 export enum InviteStatus { 
   Active = 0,
   Accepted = 1,
   Declined = 2,
   Rescinded = 3,
-  Expired = 4,
+  Expired = 4
 }
  
   
 export enum ItemType { 
   None = 0,
   Equippable = 1,
-  Resource = 2,
+  Resource = 2
 }
  
+
+/* tslint:disable */
  
 export enum LanguageCode { 
   Unassigned = 0,
   en_US = 1,
   en_GB = 2,
   en_AU = 3,
-  de_DE = 4,
+  de_DE = 4
 }
   
+
+/* tslint:disable */
   
 export enum MemberActionType { 
   Created = 0,
@@ -1194,9 +1324,11 @@ export enum MemberActionType {
   AllianceAcceptedInvite = 29,
   InvitedWarband = 30,
   WarbandAcceptedInvite = 31,
-  CampaignCount = 32,
+  CampaignCount = 32
 }
  
+
+/* tslint:disable */
   
 export enum PatchPermissions { 
   Public = 0,
@@ -1206,9 +1338,11 @@ export enum PatchPermissions {
   Alpha = 8,
   Beta1 = 16,
   Beta2 = 32,
-  Beta3 = 64,
+  Beta3 = 64
 }
  
+
+/* tslint:disable */
   
 export enum PermissionRegionType { 
   None = 0,
@@ -1223,9 +1357,11 @@ export enum PermissionRegionType {
   Realm = 512,
   AllRealm = 1022,
   Public = 1024,
-  All = -1,
+  All = -1
 }
  
+
+/* tslint:disable */
  
 export enum Platforms { 
   Undefined = 0,
@@ -1234,15 +1370,17 @@ export enum Platforms {
   iPhone = 3,
   iPad = 4,
   Android = 5,
-  Web = 6,
+  Web = 6
 }
 
 export enum Subset { 
   None = 0,
   Paid = 1,
-  Free = 2,
+  Free = 2
 }
   
+
+/* tslint:disable */
   
 export enum PlayerStat { 
   Strength = 0,
@@ -1289,24 +1427,28 @@ export enum PlayerStat {
   BloodRegeneration = 41,
   EffectPowerBonus = 42,
   None = 43,
-  COUNT = 43,
+  COUNT = 43
 }
  
+
+/* tslint:disable */
   
 export enum PlayerStatType { 
   None = 0,
   Primary = 1,
   Secondary = 2,
   Derived = 3,
-  Hidden = 4,
+  Hidden = 4
 }
  
+
+/* tslint:disable */
   
 export enum PlotType { 
   Small = 0,
   Medium = 1,
   Large = 2,
-  Custom = 3,
+  Custom = 3
 }
 
 export enum BuildPermissions { 
@@ -1317,15 +1459,17 @@ export enum BuildPermissions {
   Guild = 4,
   Realm = 8,
   All = 16,
-  COUNT = 32,
+  COUNT = 32
 }
 
 export enum PlotSource { 
   Command = 0,
   Cog = 1,
-  COUNT = 2,
+  COUNT = 2
 }
  
+
+/* tslint:disable */
  
 export enum PrereleaseAccess { 
   none = 0,
@@ -1333,16 +1477,18 @@ export enum PrereleaseAccess {
   beta2 = 2,
   beta1 = 3,
   alpha = 4,
-  internalTesting = 5,
+  internalTesting = 5
 }
 
 export enum ForumAccess { 
   founderReadOnly = 0,
   founder = 1,
   internalTest = 2,
-  builder = 3,
+  builder = 3
 }
   
+
+/* tslint:disable */
   
 export enum ProjectileTrackingMode { 
   None = 0,
@@ -1350,9 +1496,11 @@ export enum ProjectileTrackingMode {
   Full = 2,
   Horizontal = 3,
   Attractor = 4,
-  Gravity = 5,
+  Gravity = 5
 }
  
+
+/* tslint:disable */
   
 export enum Race { 
   Tuatha = 0,
@@ -1374,9 +1522,11 @@ export enum Race {
   HumanMaleA = 16,
   HumanMaleT = 17,
   Pict = 18,
-  Any = 19,
+  Any = 19
 }
  
+
+/* tslint:disable */
  
 export enum RedeemError { 
   Success = 0,
@@ -1385,28 +1535,30 @@ export enum RedeemError {
   DuplicateTransactionID = 3,
   Invalidated = 4,
   BadState = 5,
-  NotRevealed = 6,
+  NotRevealed = 6
 }
   
   
 export enum RequirementApplicationType { 
   AbilityEffect = 0,
   Combatant = 1,
-  SubjectCaster = 2,
+  SubjectCaster = 2
 }
 
 export enum ComparisonType { 
   Equal = 0,
   LessThan = 1,
-  GreaterThan = 2,
+  GreaterThan = 2
 }
 
 export enum ListComparison { 
   Any = 0,
   One = 1,
-  All = 2,
+  All = 2
 }
  
+
+/* tslint:disable */
   
 export enum ResourceType { 
   Health = 0,
@@ -1434,36 +1586,46 @@ export enum ResourceType {
   HeavyWarArrow = 18,
   ArrowEnd = 19,
   ArrowCount = 14,
-  None = 15,
+  None = -1
 }
  
+
+/* tslint:disable */
   
 export enum ServerStatus { 
   Offline = 0,
   Starting = 1,
-  Online = 2,
+  Online = 2
 }
  
+
+/* tslint:disable */
  
 export enum ShapeType { 
   Box = 0,
   Capsule = 1,
   Sphere = 2,
-  Cone = 3,
+  Cone = 3
 }
   
+
+/* tslint:disable */
   
 export enum StanceID { 
-  Default = 0,
+  Default = 0
 }
  
+
+/* tslint:disable */
   
 export enum StatModificationOperatorType { 
   AddPercent = 0,
   AddValue = 1,
-  ReplaceValue = 2,
+  ReplaceValue = 2
 }
  
+
+/* tslint:disable */
   
 export enum StoneTypes { 
   Life = 0,
@@ -1471,16 +1633,20 @@ export enum StoneTypes {
   Shielding = 2,
   Rejuvenation = 3,
   Inversion = 4,
-  Deflection = 5,
+  Deflection = 5
 }
  
+
+/* tslint:disable */
   
 export enum TagConstraintType { 
   AllOf = 0,
   AnyOf = 1,
-  NoneOf = 2,
+  NoneOf = 2
 }
  
+
+/* tslint:disable */
   
 export enum TargetType { 
   None = 0,
@@ -1488,41 +1654,51 @@ export enum TargetType {
   Friend = 2,
   Any = 3,
   Self = 4,
-  FriendOrSelf = 5,
+  FriendOrSelf = 5
 }
  
+
+/* tslint:disable */
   
 export enum TestItemFlags { 
   None = 0,
   StormRider = 1,
   HumanMale = 2,
   Archery = 4,
-  FutureRelease = 8,
+  FutureRelease = 8
 }
  
+
+/* tslint:disable */
  
 export enum TransactionType { 
   Paypal = 1,
   Kickstarter = 2,
   Child = 3,
-  Stripe = 4,
+  Stripe = 4
 }
   
+
+/* tslint:disable */
   
 export enum TriggerBehaviorMode { 
   None = 0,
   AttachToTarget = 1,
   MoveTowardsTarget = 2,
-  COUNT = 3,
+  COUNT = 3
 }
  
+
+/* tslint:disable */
   
 export enum TriggerFilter { 
   Any = 0,
   Friend = 1,
-  Enemy = 2,
+  Enemy = 2
 }
  
+
+/* tslint:disable */
   
 export enum TriggerType { 
   None = 0,
@@ -1532,14 +1708,16 @@ export enum TriggerType {
   Healing = 4,
   Wound = 5,
   Death = 6,
-  Collision = 7,
+  Collision = 7
 }
  
+
+/* tslint:disable */
   
 export enum VoxJobStatus { 
   Configuring = 0,
   Running = 1,
-  Finished = 2,
+  Finished = 2
 }
  
   
@@ -1581,7 +1759,7 @@ export enum WeaponStat {
   Density = 34,
   StrengthRequirement = 35,
   DexterityRequirement = 36,
-  AgilityRequirement = 37,
+  AgilityRequirement = 37
 }
  
   
@@ -1605,28 +1783,30 @@ export enum WeaponType {
   Throwing = 32768,
   Focus = 65536,
   LongSword = 131072,
-  All = 262143,
+  All = 262143
 }
 
 export enum NetworkWeaponType { 
   Default = 0,
   Shield = 1,
-  Bow = 2,
+  Bow = 2
 }
 
 export enum NetworkWeaponSlot { 
   PrimaryHand = 0,
   SecondaryHand = 1,
-  TwoHands = 2,
+  TwoHands = 2
 }
  
+
+/* tslint:disable */
   
 export enum WireCompressionType { 
   None = 0,
-  LZMA = 1,
+  LZMA = 1
 }
 
 export enum ResourceCompressionType { 
-  None = 0,
+  None = 0
 }
  

@@ -255,6 +255,7 @@ interface clientInterface {
   /* Character */
 
   OnCharacterIDChanged(c: (id: string) => void): void;
+  OnCharacterZoneChanged(c: (id: string) => void): void;
   OnCharacterFactionChanged(c: (faction: Faction) => void): void;
   OnCharacterRaceChanged(c: (race: Race) => void): void;
   OnCharacterGenderChanged(c: (gender: Gender) => void): void;

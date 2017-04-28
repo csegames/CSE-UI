@@ -12,9 +12,3 @@ import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorize
 
  
 
-export function getTraitsV1(shardID: number) {
-  return create(createOptions()).get('v1/traits', { 
-    shardID: shardID
-  });
-}
-
