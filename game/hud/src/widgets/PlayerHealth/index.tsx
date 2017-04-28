@@ -71,7 +71,7 @@ class Container extends React.Component<ContainerProps,{}> {
   public render() {
     return (
       <Provider store={store}>
-        <PlayerComp {...this.props}/>
+        <PlayerComp {...(this.props as any)}/>
       </Provider>
     );
   }

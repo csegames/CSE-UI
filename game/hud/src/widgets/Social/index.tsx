@@ -41,7 +41,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
     return this.state.visible
       ? (
         <Provider store={store}>
-          <SocialMain ref={r => this.mainRef = r} {...this.props} />
+          <SocialMain ref={r => this.mainRef = r} {...(this.props as any)} />
         </Provider>
       )
       : null;

@@ -33,7 +33,7 @@ class WarbandContainer extends React.Component<WarbandContainerProps, WarbandCon
   public render() {
     return (
       <Provider store={store}>
-        <WarbandDisplay {...this.props} />
+        <WarbandDisplay {...(this.props as any)} />
       </Provider>
     );
   }
