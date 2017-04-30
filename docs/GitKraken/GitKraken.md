@@ -1,12 +1,12 @@
 # GitKraken Guide
 
-This guide if for using GitKraken with Camelot Unchained.  It is not a complete GitKraken tutorial nor trying to be.
+This guide is for using GitKraken with Camelot Unchained.  It is not a complete GitKraken tutorial nor trying to be.
 
 The workflow presented here is just one possible workflow.
 
 # Prerequisites
 
-* Have a git hub account
+* Have a Github account
 * Have forked http://github.com/CUModSquad/Camelot-Unchained/
 
 # Installing GitKraken
@@ -57,7 +57,7 @@ First locate ``CUModSquad/master`` in the **REMOTE** list and right click it, an
 
 ![Branch Name](./images/GitKraken-BranchName.png)
 
-Enter a name, something meaningful both to you and to and to CSE.  For instance, if working on a specific issue, then you could call it ``cu-issue-NNNN`` where NNNN is the issue number.  Or if its just something you are fixing, perhaps ``cu-fix-something`` where something is the thing you are fixing.  Or if its a new feature ``cu-feature-what`` etc.  There are no rigid rules, just be sensible.
+Enter a name, something meaningful both to you and to CSE.  For instance, if working on a specific issue, then you could call it ``cu-issue-NNNN`` where NNNN is the issue number.  Or if its just something you are fixing, perhaps ``cu-fix-something`` where something is the thing you are fixing.  Or if its a new feature ``cu-feature-what`` etc.  There are no rigid rules, just be sensible.
 
 ![Local Branch](./images/GitKraken-LocalBranch.png)
 
@@ -67,7 +67,7 @@ Having created your branch it should now appear under **LOCAL**.
 
 # Welcome back, your masterpiece is ready, time to commit.
 
-It is actually good to commit litle and often, as it means if you screw something up, you have something to go back to.  But for a small change you may feel you can make the whole change in one commit.
+It is actually good to commit little and often, as it means if you screw something up, you have something to go back to.  But for a small change you may feel you can make the whole change in one commit.
 
 Anyway, so its time to commit your work to your *local* repository.
 
@@ -88,7 +88,7 @@ It is possible to stage (select for committing) individual chunks (or Hunks as t
 
 ![Staging Changes](./images/GitKraken-StageAllChanges.png)
 
-In this guild, we will stage all changes using the **Stage All Changes** button at the top of the **Unstaged Files** section.  This will move all the files listed in **Unstaged Files** into the **Staged Files** section.
+In this guide, we will stage all changes using the **Stage All Changes** button at the top of the **Unstaged Files** section.  This will move all the files listed in **Unstaged Files** into the **Staged Files** section.
 
 Note: If you stage something by mistake, simply go to the **Staged Files** section and unstage it.
 
