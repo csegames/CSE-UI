@@ -21,6 +21,24 @@ module.exports = {
     },
     copies: 'nps copy.definitions && nps copy.thirdParty && nps copy.misc',
     build: 'nps clean -s && nps lint && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
-    docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/'
+    docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/',
+    test: {
+      default: {
+        script: 'nps test.jest'
+      },
+      watch: {
+        script: 'nps test.jest.watch'
+      },
+      jest: {
+        default: {
+          script: 'jest',
+          hiddenFromHelp: true,
+        },
+        watch: {
+          script: 'jest --watch',
+          hiddenFromHelp: true,
+        },
+      }
+    },
   }
 };

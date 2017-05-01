@@ -94,7 +94,24 @@ module.exports = {
         hiddenFromHelp: true
       },
     },
-
+    test: {
+      default: {
+        script: 'nps report.test && nps test.jest'
+      },
+      watch: {
+        script: 'nps report.test && nps test.jest.watch'
+      },
+      jest: {
+        default: {
+          script: 'jest',
+          hiddenFromHelp: true,
+        },
+        watch: {
+          script: 'jest --watch',
+          hiddenFromHelp: true,
+        },
+      }
+    },
     build: {
       sass: {
         script: 'node-sass src/index.scss -o build/css --importer node_modules/sass-importer-node/sass-importer-node.js --quiet && nps report.sass && nps copy.dist',
@@ -167,6 +184,10 @@ module.exports = {
       },
       success: {
         script: 'echo "Build completed successfully!"',
+        hiddenFromHelp: true,
+      },
+      test: {
+        script: 'echo "Testing started..."',
         hiddenFromHelp: true,
       },
     },

@@ -6,3 +6,5 @@ before_install:
  - "cd game"
 script:
  - "cd hud && npm install && npm start build && cd ../../library && npm install && npm start build && cd ../patcher && npm install && npm start build"
+ - "cd ../game/hud && npm start test"
+ - "cd ../../library && npm start test"
