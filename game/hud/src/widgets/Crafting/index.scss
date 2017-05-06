@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 18:48:24
+ * @Last Modified time: 2017-05-06 21:08:34
  */
 
 .crafting-ui {
-  background-color: white;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
   width: 100%;
   height: 100%;
-  padding: 1em;
   overflow: hidden;
   label.prompt {
     min-width: 200px;
@@ -21,17 +21,26 @@
   select, button, input {
     pointer-events: auto;
   }
+  select, input {
+    color: black;
+  }
 
   /* layout */
   display: flex;
   flex-direction: column;
   >.job-type {
     flex: 1;
+    margin: 1em;
+    margin-bottom: 0;
   }
   >.job-details {
     flex: 100;
+    margin: 1em;
     display: flex;
     flex-direction: column;
+    >hr {
+      width: 100%;
+    }
     >.job-properties {
       flex: 1;
     }
@@ -39,16 +48,29 @@
       flex: 100;
       display: flex;
       flex-direction: column;
-      >.add-ingredients {
-        flex: 1;
+      >.add-ingredient {
+        flex: 2em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        >select {
+          width: 230px;
+        }
+        >button.add {
+          width: 150px;
+        }
       }
       >.ingredients-title {
         flex: 1;
+        font-size: 130%;
+        margin-top: 0;
       }
       >.loaded-ingredients {
         flex: 100;
         overflow: auto;
+        overflow-x: hidden;
         pointer-events: auto;
+        margin-bottom: 0.5em;
       }
     }
     >.job-buttons {

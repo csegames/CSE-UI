@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 18:48:46
+ * @Last Modified time: 2017-05-06 21:05:58
  */
 
 import * as React from 'react';
@@ -68,11 +68,11 @@ export const Ingredients = (props: IngredientsProps) => {
   }
   return (
     <div className='job-ingredients'>
-      {add}
-      <h1>Ingredients...</h1>
+      <h1 className='ingredients-title'>Ingredients...</h1>
       <div className='loaded-ingredients'>
         {loaded}
       </div>
+      {add}
     </div>
   );
 };
