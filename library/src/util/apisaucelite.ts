@@ -127,14 +127,21 @@ export const create = (config: CreateOptions) => {
     const stack = error.stack;
     let err;
 
-    // try and json parse the response, if successful, assume its
-    // the newer response type
-    if (error.response.headers['content-type'] === 'text/json') {
-      err = error.response.data;
+    if (error.response) {
+      // try and json parse the response, if successful, assume its
+      // the newer response type
+      if (error.response.headers['content-type'] === 'text/json') {
+        err = error.response.data;
+      } else {
+        err = {
+          Code: error.code || error.response.status,
+          Message: error.response.data || error.message,
+        };
+      }
     } else {
       err = {
-        Code: error.code || error.response.status,
-        Message: error.response.data || error.message,
+        Code: error.code,
+        Message: error.message,
       };
     }
 
