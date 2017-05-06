@@ -1,0 +1,58 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Mehuge (mehuge@sorcerer.co.uk)
+ * @Date: 2017-05-03 20:46:48
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-05-06 18:48:24
+ */
+
+.crafting-ui {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+  overflow: hidden;
+  label.prompt {
+    min-width: 200px;
+  }
+  select, button, input {
+    pointer-events: auto;
+  }
+
+  /* layout */
+  display: flex;
+  flex-direction: column;
+  >.job-type {
+    flex: 1;
+  }
+  >.job-details {
+    flex: 100;
+    display: flex;
+    flex-direction: column;
+    >.job-properties {
+      flex: 1;
+    }
+    >.job-ingredients {
+      flex: 100;
+      display: flex;
+      flex-direction: column;
+      >.add-ingredients {
+        flex: 1;
+      }
+      >.ingredients-title {
+        flex: 1;
+      }
+      >.loaded-ingredients {
+        flex: 100;
+        overflow: auto;
+        pointer-events: auto;
+      }
+    }
+    >.job-buttons {
+      flex: 1;
+    }
+  }
+}

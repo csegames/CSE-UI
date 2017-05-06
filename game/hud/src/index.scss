@@ -36,12 +36,12 @@ body {
   @import './components/Inventory/index';
   @import './components/EquippedGear/index';
   @import './components/Welcome/index';
-  @import './components/Crafting/index';
   @import './components/ErrorMessages/index';
   @import './components/PlotControl/index';
   @import './components/Announcement/index';
   // widgets
   @import './widgets/Building/index';
+  @import './widgets/Crafting/index';
   @import './widgets/PlayerHealth/index';
   @import './widgets/TargetHealth/index';
   @import './widgets/Warband/index';

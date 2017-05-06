@@ -5,11 +5,11 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 14:48:27
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-05 14:25:18
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-05-04 22:31:03
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import Crafting from '../../../components/Crafting';
+import Crafting from '../../../widgets/Crafting';
 
 export default {
   position: {
@@ -19,7 +19,7 @@ export default {
     },
     y: {
       anchor: Edge.TOP,
-      offset: 40,
+      offset: 120,
     },
     size: {
       width: 650,
