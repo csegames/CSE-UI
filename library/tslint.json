@@ -68,7 +68,8 @@
       true,
       125
     ],
-    "no-increment-decrement": false
+    "no-increment-decrement": false,
+    "align": []
   },
   "jsRules": {
     /*
