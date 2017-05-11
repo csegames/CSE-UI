@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-08 17:15:29
+ * @Last Modified time: 2017-05-11 23:55:15
  */
 
 import * as React from 'react';
@@ -32,7 +32,7 @@ export const JobType = (props: JobTypeProps) => {
       {button('refine')}
       {button('grind')}
       {button('shape')}
-      {button('blocks')}
+      {button('block')}
       {button('make')}
     </div>
   );

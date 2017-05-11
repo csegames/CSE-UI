@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 21:47:35
+ * @Last Modified time: 2017-05-11 22:38:08
  */
 
 import * as React from 'react';
@@ -36,20 +36,6 @@ export interface JobDetailsProps {
   addIngredient: (item: InventoryItem, qty: number) => void;
 }
 
-/*
-const dropDownStyles = {
-  container: {
-      width: '200px',
-      height: '1.5em',
-      display: 'inline-flex',
-      backgroundColor: 'orange',
-      pointerEvents: 'auto',
-      color: 'black',
-      padding: '0.1em',
-  },
-};
-*/
-
 function makeSelect(label: string, data: Item[], set: (id: string) => void) {
   const changed = (item: Item) => {
     set(item.id);
@@ -62,21 +48,8 @@ function makeSelect(label: string, data: Item[], set: (id: string) => void) {
   return (
     <div>
       <Label>{ label }</Label>
-      <Select items={data} renderActiveItem={render} renderListItem={render} itemHeight={25}
-            onSelectedItemChanged={changed}>
-      </Select>
-      { /*
-      <DropDownSelect
-          styles={dropDownStyles}
-          items={data} renderListItem={render} renderSelectedItem={render} >
-        <span></span>
-      </DropDownSelect>
-      */}
-      { /*
-      <select onChange={changed}>
-        <option></option>
-        { data.map((item: Item) => <option key={item.id} value={item.id}>{item.name}</option>) }
-      </select> */ }
+      <Select items={data} renderActiveItem={render} renderListItem={render}
+            onSelectedItemChanged={changed}/>
     </div>
   );
 }

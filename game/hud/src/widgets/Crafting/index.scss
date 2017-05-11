@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 22:16:23
+ * @Last Modified time: 2017-05-11 22:55:20
  */
 
 .crafting-ui {
@@ -57,6 +57,7 @@
       flex: 0 1 auto;
       .Select {
         min-width: 200px;
+        max-height: 175px;
       }
     }
     >.job-ingredients {
@@ -66,10 +67,15 @@
       >.add-ingredient {
         flex: 0 1 auto;
         height: 35px;
-        >select {
-          width: 100px;
+        .Select {
+          min-width: 250px;
+          max-height: 175px;
+        }
+        >.times {
+          margin: 0 0.5em;
         }
         >button.add {
+          margin-left: 1em;
           width: 150px;
         }
       }

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-07 23:10:44
+ * @Last Modified time: 2017-05-12 00:22:14
  */
 
 import * as React from 'react';
@@ -17,8 +17,9 @@ import { gotRecipe } from '../../services/session/recipes';
 import { gotTemplate } from '../../services/session/templates';
 import { InventoryItem, Recipe, Template } from '../../services/types';
 import { startJob, collectJob, clearJob,
-        setQuality, setName, setRecipe, setTemplate,
-        getRecipeFor, getAllTemplates } from '../../services/session/job';
+        setQuality, setName, setRecipe, setTemplate } from '../../services/session/job';
+import { getRecipeFor } from '../../services/session/recipes';
+import { getAllTemplates } from '../../services/session/templates';
 
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';

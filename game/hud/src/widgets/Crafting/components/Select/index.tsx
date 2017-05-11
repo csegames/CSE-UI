@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 22:10:08
+ * @Last Modified time: 2017-05-11 22:29:16
  */
 
 import * as React from 'react';
@@ -16,7 +16,6 @@ export interface SelectProps {
   selectedItemIndex?: any;
   renderActiveItem: (item: any) => any;
   renderListItem: (item: any) => any;
-  itemHeight: number;
   onSelectedItemChanged: (item: any) => void;
   containerClass?: string;
   showActiveInList?: boolean;
@@ -73,8 +72,7 @@ class Select extends React.Component<SelectProps, SelectState> {
           this.showList(!this.state.showList);
           e.stopPropagation();
         }} ><i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i></div>
-        <div className={`Select__listView ${this.state.showList ? '' : 'Select__listView--hidden'}`}
-             style={this.props.items.length > ((420 / (this.props.itemHeight + 1)) | 0) ? {} : {overflow: 'hidden'}} >
+        <div className={`Select__listView ${this.state.showList ? '' : 'Select__listView--hidden'}`}>
           {this.props.items.map(this.buildListItem)}
         </div>
       </div>

@@ -6,11 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-07 19:19:07
+ * @Last Modified time: 2017-05-12 00:19:54
  */
 
 import { Module } from 'redux-typed-modules';
 import { Template } from '../types';
+import { listen, slash } from './recipes';
 
 export interface TemplatesState {
   updating: number;
@@ -75,5 +76,42 @@ export const gotTemplate = module.createAction({
     return s;
   },
 });
+
+// Templates
+
+export const templateTypes = [
+  'armour', 'weapons',
+  'substences', 'inventory', 'blocks',
+];
+
+// TESTING: Dummy Templates
+
+const dummyTemplates = {
+  armour: [
+    { id: 1, name: 'Silly Hat of Awesomness' },
+    { id: 2, name: 'Big Boots of Buffalo Hide' },
+  ],
+  weapons: [
+    { id: 1, name: 'Big Sword of Jobber' },
+    { id: 2, name: 'Small Kife of Sneakyness' },
+  ],
+};
+
+export function getTemplateFor(what: string, callback: (type: string, list: Template[]) => void) {
+  const listener = listen((prefix: string, recipes: any[]) => {
+    console.log('CRAFTING: templates ', what, prefix, recipes);
+    gotTemplate(what, recipes);
+    listener.cancel();
+  });
+  slash('cr list ' + what + 'templates');
+  // TODO how to capture response
+  callback(what, dummyTemplates[what]);
+}
+
+export function getAllTemplates(callback: (type: string, templates: Template[]) => void) {
+  const done = (type: string, list: Template[]) => callback(type, list);
+  templateTypes.forEach((type: string) => getTemplateFor(type, done));
+  return templateTypes.length;
+}
 
 export default module.createReducer();
