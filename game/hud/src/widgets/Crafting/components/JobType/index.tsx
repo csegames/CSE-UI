@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 18:14:35
+ * @Last Modified time: 2017-05-08 17:15:29
  */
 
 import * as React from 'react';
@@ -19,24 +19,21 @@ export interface JobTypeProps {
 }
 
 export const JobType = (props: JobTypeProps) => {
-  const selectType = (el: HTMLSelectElement) => {
-    const selected = el.selectedOptions[0].value;
-    console.log('CRAFTING: change type to ' + selected);
-    props.changeType(selected);
+  const button = (type: string) => {
+      return (
+        <button className={props.job === type ? 'selected' : ''} onClick={() => props.changeType(type)}>
+          {type[0].toUpperCase() + type.substr(1)}
+        </button>
+      );
   };
   return (
     <div className='job-type'>
-      <Label>Select Job Type</Label>
-      <select
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => selectType(e.target)}>
-        <option></option>
-        <option>purify</option>
-        <option>refine</option>
-        <option>grind</option>
-        <option>shape</option>
-        <option>block</option>
-        <option>make</option>
-      </select>
+      {button('purify')}
+      {button('refine')}
+      {button('grind')}
+      {button('shape')}
+      {button('blocks')}
+      {button('make')}
     </div>
   );
 };

@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 21:05:58
+ * @Last Modified time: 2017-05-07 23:30:02
  */
 
 import * as React from 'react';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { Ingredient } from '../../services/session/job';
+import { Ingredient } from '../../services/types';
 
 import Label from '../Label';
 
@@ -26,7 +26,7 @@ interface InventoryItems {
 export interface IngredientsProps extends InjectedGraphQLProps<InventoryItems> {
   job: string;
   ingredients: Ingredient[];
-  add: (item: InventoryItem) => void;
+  add: (item: InventoryItem, qty: number) => void;
 }
 
 export const Ingredients = (props: IngredientsProps) => {
@@ -40,11 +40,16 @@ export const Ingredients = (props: IngredientsProps) => {
     });
     selected = { id, itemType, name };
   };
+  // ingredient qty
+  let qty: number = 1;
+  const count = (el: HTMLInputElement) => {
+    qty = ((el.value as any) | 0) || 1;
+  };
   // show already loaded ingredients
   const loaded = props.ingredients.map((i: Ingredient) => {
     ingredients[i.id] = i;
     return (
-      <div key={i.id}><span>{i.itemType}</span>: <span>{i.name}</span></div>
+      <div key={i.id}>{i.qty} x {i.itemType}: {i.name}</div>
     );
   });
 
@@ -62,7 +67,8 @@ export const Ingredients = (props: IngredientsProps) => {
         <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => select(e.target)}>
           {options}
         </select>
-        <button className='add' onClick={_ => props.add(selected)}>Add Ingredient</button>
+        x<input onChange={(e: React.ChangeEvent<HTMLInputElement>) => count(e.target)} size={2} />
+        <button className='add' onClick={_ => props.add(selected, qty)}>Add Ingredient</button>
       </div>
     );
   }

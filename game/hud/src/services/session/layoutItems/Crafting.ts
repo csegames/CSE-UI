@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 14:48:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 20:51:59
+ * @Last Modified time: 2017-05-08 17:42:27
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Crafting from '../../../widgets/Crafting';
@@ -22,7 +22,7 @@ export default {
       offset: 120,
     },
     size: {
-      width: 450,
+      width: 600,
       height: 450,
     },
     scale: 1,

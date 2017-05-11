@@ -6,19 +6,25 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 18:15:36
+ * @Last Modified time: 2017-05-11 21:47:35
  */
 
 import * as React from 'react';
-import { Ingredient } from '../../services/session/job';
-import { InventoryItem } from '../../services/types';
+import { DropDownSelect } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { Ingredient } from '../../services/types';
+import { Item, Template, Recipe, InventoryItem } from '../../services/types';
 import Ingredients from '../Ingredients';
 
 import Label from '../Label';
+import Select from '../Select';
+
+import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
 export interface JobDetailsProps {
-  job: string;
-  ingredients: Ingredient[];
+  job: JobState;
+  recipes: RecipesState;
+  templates: TemplatesState;
   set: () => void;
   start: () => void;
   collect: () => void;
@@ -27,66 +33,135 @@ export interface JobDetailsProps {
   setName: (name: string) => void;
   setRecipe: (id: string) => void;
   setTemplate: (id: string) => void;
-  addIngredient: (item: InventoryItem) => void;
+  addIngredient: (item: InventoryItem, qty: number) => void;
 }
 
-function makeSelect(label: string) {
+/*
+const dropDownStyles = {
+  container: {
+      width: '200px',
+      height: '1.5em',
+      display: 'inline-flex',
+      backgroundColor: 'orange',
+      pointerEvents: 'auto',
+      color: 'black',
+      padding: '0.1em',
+  },
+};
+*/
+
+function makeSelect(label: string, data: Item[], set: (id: string) => void) {
+  const changed = (item: Item) => {
+    set(item.id);
+  };
+  const render = (item: Item) => {
+    return (
+        <span key={item.id} value={item.id}>{item.name}</span>
+    );
+  };
   return (
     <div>
       <Label>{ label }</Label>
-      <select>
+      <Select items={data} renderActiveItem={render} renderListItem={render} itemHeight={25}
+            onSelectedItemChanged={changed}>
+      </Select>
+      { /*
+      <DropDownSelect
+          styles={dropDownStyles}
+          items={data} renderListItem={render} renderSelectedItem={render} >
+        <span></span>
+      </DropDownSelect>
+      */}
+      { /*
+      <select onChange={changed}>
         <option></option>
-        <option>dummy 1</option>
-        <option>dummy 2</option>
-        <option>dummy 3</option>
-        <option>dummy 4</option>
-        <option>dummy 5</option>
-      </select>
+        { data.map((item: Item) => <option key={item.id} value={item.id}>{item.name}</option>) }
+      </select> */ }
     </div>
   );
 }
 
-const recipe = (job: string) => {
+const recipe = (job: string, recipes: Recipe[], set: (id: string) => void) => {
   switch (job) {
     case 'purify':
     case 'grind':
     case 'refine':
     case 'shape':
     case 'block':
-      return makeSelect(job[0].toUpperCase() + job.substr(1) + ' Recipe');
+      return makeSelect(job[0].toUpperCase() + job.substr(1) + ' Recipe', recipes, set);
   }
 };
 
-const template = (job: string) =>
-  job === 'make'
-  && <div>{ makeSelect('Armour Template') }{ makeSelect('Weapon Template') }</div>;
-
-const quality = () =>
+const template = (
+  job: string,
+  armour: Template[],
+  weapons: Template[],
+  setArmor: (id: string) => void,
+  setWeapon: (id: string) => void,
+) => {
+  if (job !== 'make') return;
+  return (
     <div>
-      <Label>Quality</Label>
-      <input type='text' size={3}/>%
+      { makeSelect('Armour Template', armour, setArmor) }
+      { makeSelect('Weapon Template', weapons, setWeapon) }
     </div>
-  ;
+  );
+};
+
+const quality = (set: (quality: number) => void) => {
+    const changed = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = ((e.target.value as any) | 0);
+      if (value < 0) {
+        e.target.value = '';
+      } else if (value > 100) {
+        e.target.value = '100';
+      } else {
+        set(value);
+      }
+    };
+    return (
+      <div>
+        <Label>Quality</Label>
+        <input type='text' size={3} onChange={changed}/>%
+      </div>
+    );
+};
+
+const name = (type: string, set: (name: string) => void) => {
+    if (type !== 'make') return;
+    const changed = (e: React.ChangeEvent<HTMLInputElement>) => {
+      set(e.target.value);
+    };
+    return (
+      <div>
+        <Label>Name</Label>
+        <input type='text' size={32} onChange={changed}/>
+      </div>
+    );
+};
 
 export const JobDetails = (props: JobDetailsProps) => {
-  if (!props.job) return null;
+  const job = props.job;
+  const type = job.type;
+  if (!type) return <div className='job-details'>AAA</div>;
+  const ready = type && job.quality > 0
+                && (type === 'make' ? job.name && job.template : job.recipe);
   return (
     <div className='job-details'>
       <div className='job-properties'>
-        {quality()}
-        {recipe(props.job)}
-        {template(props.job)}
+        {quality(props.setQuality)}
+        {name(type, props.setName)}
+        {recipe(type, props.recipes[type], props.setRecipe)}
+        {template(type, props.templates.armour, props.templates.weapons, props.setTemplate, props.setTemplate)}
       </div>
-      <hr/>
       <Ingredients
-        job={props.job}
-        ingredients={props.ingredients}
-        add={(item: InventoryItem) => props.addIngredient(item)}
+        job={type}
+        ingredients={props.job.ingredients}
+        add={props.addIngredient}
         />
-      <hr/>
       <div className='job-buttons'>
-        <button onClick={() => props.set()}>Set</button>
-        <button onClick={() => props.start()}>Start</button>
+        <button disabled={!props.job} onClick={() => props.set()}>Set</button>
+        <button disabled={!ready} onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>
       </div>

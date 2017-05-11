@@ -6,30 +6,39 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 17:53:55
+ * @Last Modified time: 2017-05-07 23:10:44
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
 import { JobState, selectJobType, addIngredient } from '../../services/session/job';
-import { InventoryItem } from '../../services/types';
-import { setJob, startJob, collectJob, clearJob,
-        setQuality, setName, setRecipe, setTemplate } from '../../services/crafting';
+import { gotRecipe } from '../../services/session/recipes';
+import { gotTemplate } from '../../services/session/templates';
+import { InventoryItem, Recipe, Template } from '../../services/types';
+import { startJob, collectJob, clearJob,
+        setQuality, setName, setRecipe, setTemplate,
+        getRecipeFor, getAllTemplates } from '../../services/session/job';
 
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 
-const select = (state: any): any => {
+import { TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
+
+const select = (state: GlobalState): AppProps => {
   console.log('CRAFTING: select ui from state: ', state);
   return {
     job: state.job,
+    recipes: state.recipes,
+    templates: state.templates,
   };
 };
 
 interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
+  recipes: RecipesState;
+  templates: TemplatesState;
 }
 
 class App extends React.Component<AppProps,{}> {
@@ -40,7 +49,9 @@ class App extends React.Component<AppProps,{}> {
     return (
       <div className='crafting-ui'>
         <JobType job={type} changeType={this.selectType}/>
-        <JobDetails job={type} ingredients={props.job.ingredients}
+        <JobDetails job={props.job}
+          recipes={props.recipes}
+          templates={props.templates}
           set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
           setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
           setTemplate={this.setTemplate}
@@ -50,10 +61,23 @@ class App extends React.Component<AppProps,{}> {
     );
   }
 
-  private selectType = (type: string) => this.props.dispatch(selectJobType(type));
+  private selectType = (type: string) => {
+    this.props.dispatch(selectJobType(type));
+    switch (type) {
+      case 'make':
+        getAllTemplates((type: string, templates: Template[]) => {
+          this.props.dispatch(gotTemplate(type, templates));
+        });
+        break;
+      default:
+        getRecipeFor(type, (type: string, recipes: Recipe[]) => {
+          this.props.dispatch(gotRecipe(type, recipes));
+        });
+    }
+  }
 
   // Crafting job modes
-  private setJob = () => this.props.dispatch(setJob());
+  private setJob = () => { /* done when selecting type */ };
   private startJob = () => this.props.dispatch(startJob());
   private collectJob = () => this.props.dispatch(collectJob());
   private clearJob = () => this.props.dispatch(clearJob());
@@ -65,7 +89,9 @@ class App extends React.Component<AppProps,{}> {
   private setTemplate = (id: string) => this.props.dispatch(setTemplate(id));
 
   // Ingredients
-  private addIngredient = (item: InventoryItem) => this.props.dispatch(addIngredient(item));
+  private addIngredient = (item: InventoryItem, qty: number) => {
+    this.props.dispatch(addIngredient(item, qty));
+  }
 }
 
 export default connect(select)(App);

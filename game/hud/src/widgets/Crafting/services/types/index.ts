@@ -6,12 +6,22 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-06 17:48:41
+ * @Last Modified time: 2017-05-07 23:08:03
  */
 
-export interface InventoryItem {
-  itemType: string;
-  name: string;
+
+export interface Item {
   id: string;
+  name: string;
 }
 
+export interface InventoryItem extends Item {
+  itemType: string;
+}
+
+export interface Ingredient extends InventoryItem {
+  qty: number;
+}
+
+export interface Recipe extends Item {}
+export interface Template extends Item {}
