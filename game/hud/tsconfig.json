@@ -11,7 +11,10 @@
         "alwaysStrict": false,
         "skipLibCheck": true,
         "suppressImplicitAnyIndexErrors": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "plugins": [
+            { "name": "tslint-language-service"}
+        ]
     },
     "formatCodeOptions": {
         "indentSize": 2,

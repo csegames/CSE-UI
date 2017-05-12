@@ -33,12 +33,12 @@ export const defaultConsoleStyle: ConsoleStyle = {
     left: '0px',
     right: '0px',
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
 
   input: {
     flex: '0 0 auto',
-    border: '1px solid rgba(255, 255, 255, 0.5)',
+    borderTop: '1px solid rgba(255, 255, 255, 0.7)',
   },
 
   consoleMessages: {
@@ -70,7 +70,7 @@ class CircularArray<T> {
   private data: T[] = [];
   private _length: number = 0;
 
-  public constructor(private maxLength: number = 50) {
+  public constructor(private maxLength: number = 250) {
   }
 
   public get length(): number {
@@ -80,7 +80,7 @@ class CircularArray<T> {
   public get(index: number): T {
     if (index < 0 || index > this.maxLength) return undefined;
     return this._length <= this.maxLength ?
-      this.data[index] : this.data[((this._length % this.maxLength) + 1 + index) % this.maxLength];
+      this.data[index] : this.data[((this._length % this.maxLength) + index) % this.maxLength];
   }
 
   public push(item: T) {
@@ -98,7 +98,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     this.state = {
       historyIndex: 0,
       commandHistory: new CircularArray<string>(50),
-      textLines: new CircularArray<string>(200),
+      textLines: new CircularArray<string>(250),
       show: false,
     };
   }
@@ -116,6 +116,12 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
         </div>
         <div className={css(ss.input, custom.input)}>
           <Input type='text'
+                 styles={{
+                   input: {
+                     border: '1px solid rgba(255, 255, 255, 0.8)',
+                     color: '#00cccc',
+                   },
+                 }}
                  inputRef={r => this.inputRef = r}
                  onFocus={() => client.RequestInputOwnership()}
                  onBlue={() => client.ReleaseInputOwnership()}
@@ -157,7 +163,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === jsKeyCodes.ENTER) {
       // submit command 
-      const text = this.inputRef.value;
+      const text = this.inputRef.value.replace('/', '');
       if (!parseMessageForSlashCommand(text)) {
         client.SendSlashCommand(text);
       }
