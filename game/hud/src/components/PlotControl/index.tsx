@@ -5,8 +5,8 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-29 15:36:53
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-30 10:41:55
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-05-12 10:38:08
  */
 
 import * as React from 'react';
@@ -34,6 +34,17 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   
   constructor(props: PlotControlUIProps) {
     super(props);
+    this.state = {
+      plotOwned: false,
+      currentPermissions: 0,
+      charID: '',
+      entityID: '',
+      viewingQueue: false,
+      queue: [],
+      queueState: '',
+      numContributors: 0,
+      visible: false,
+    };
   }
 
   // Render the unit frame using character data-perm
@@ -55,7 +66,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
           <div className='cu-window-header'>
             <div className='cu-window-title'>Your Plot</div>
             <div className='cu-window-actions'>
-              <a onMouseDown={this.closeWindow} className='cu-window-close'></a>
+              <a onClick={this.closeWindow} className='cu-window-close'></a>
             </div>
           </div>
           {body}
@@ -68,12 +79,8 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     events.fire('hudnav--navigate', 'plotcontrol');
   }
 
-  private onPlotStatus = (eventData: any) => {
+  private onPlotStatus = (plotOwned: boolean, currentPermissions: number, charID: string, entityID: string) => {
     this.setState((state, props) => {
-      const plotOwned = eventData.plotOwned;
-      const currentPermissions = eventData.permissions;
-      const charID = eventData.charID;
-      const entityID = eventData.entityID;
       return {
         ...state,
         plotOwned,
@@ -86,18 +93,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   private componentWillMount() {
-    hasClientAPI() && events.on(events.clientEventTopics.handlesPlot, this.onPlotStatus);
-    this.setState((state, props) => ({
-      plotOwned: false,
-      currentPermissions: 0,
-      charID: '',
-      entityID: '',
-      viewingQueue: false,
-      queue: [],
-      queueState: '',
-      numContributors: 0,
-      visible: false,
-    }));
+    client.OnPlotStatus(this.onPlotStatus);
     setInterval(() => {if (this.state.plotOwned) this.getQueueStatus();}, 2000); 
   }
 
@@ -111,10 +107,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         }
       }
     });
-  }
-
-  private componentWillUnmount() {
-    hasClientAPI() && events.off(events.clientEventTopics.handlesPlot);
   }
 
   private changePermissions = (perm: plotPermissions) => {
@@ -208,27 +200,27 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       <div className='cu-window-content'>
         <ul className='list'>
           <li>{permString}</li>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Self)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Self)}>
             Self Only
           </button>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Group)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Group)}>
             Group
           </button>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Friends)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Friends)}>
             Friends
           </button>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Guild)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Guild)}>
             Guild
           </button>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.Realm)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Realm)}>
             Realm
           </button>
-          <button className='plotButton' onMouseDown={this.changePermissions.bind(this, plotPermissions.All)}>
+          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.All)}>
             All
           </button>
         </ul>
-        <button className='plotButton' onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
-        <button className='plotButton' onMouseDown={this.toggleQueue.bind(this)}>View Queue</button>
+        <button className='plotButton' onClick={this.releasePlot.bind(this)}>Release Plot</button>
+        <button className='plotButton' onClick={this.toggleQueue.bind(this)}>View Queue</button>
       </div>
     );
   }
@@ -260,14 +252,14 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
           let upArrow: JSX.Element;
           if (i !== 0) {
             upArrow = (
-              <a onMouseDown={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>  
+              <a onClick={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>  
             );
           }
 
           let downArrow: JSX.Element;
           if (i !== this.state.queue.length - 1) {
             downArrow = (
-              <a onMouseDown={() => this.reorderBuildQueue(i, i + 1)} className='plotMoveDown'>↓</a>
+              <a onClick={() => this.reorderBuildQueue(i, i + 1)} className='plotMoveDown'>↓</a>
             );
           }
           
@@ -279,7 +271,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
+                <a onClick={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
               </li>
             );
           } else {
@@ -290,7 +282,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onMouseDown={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
+                <a onClick={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
                 <div>
                   {blueprint.amtNeeded} {blueprint.subName} needed to complete.
                 </div>
@@ -314,8 +306,8 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     return (
       <div className='cu-window-content'>
         {renderedQueue}
-        <button className='plotButton' onMouseDown={this.releasePlot.bind(this)}>Release Plot</button>
-        <button className='plotButton' onMouseDown={this.toggleQueue.bind(this)}>Permissions</button>
+        <button className='plotButton' onClick={this.releasePlot.bind(this)}>Release Plot</button>
+        <button className='plotButton' onClick={this.toggleQueue.bind(this)}>Permissions</button>
       </div>  
     );
   }
