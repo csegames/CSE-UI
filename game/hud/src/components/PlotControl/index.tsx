@@ -6,7 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-29 15:36:53
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-05-12 10:38:08
+ * @Last Modified time: 2017-05-12 14:06:50
  */
 
 import * as React from 'react';
@@ -150,13 +150,15 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
   
   private getQueueStatus = () => {
-    const resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp: any) => 
+    const resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp) => {
+      if (!resp.ok) return;
       this.setState((state, props) => ({
         ...state,
         queue: resp.data.blueprints,
         queueState: resp.data.status,
         numContributors: Math.min(resp.data.numContributors, resp.data.maxContributors),
-      })),
+      }));
+    },
     (err: any) => console.log(err));
   }
   
