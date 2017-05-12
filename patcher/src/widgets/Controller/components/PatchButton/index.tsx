@@ -161,21 +161,26 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
       
       if (!launchString.includes('servershardid') && 
-          (!launchString.includes('server =') || !launchString.includes('server='))) {
+          !launchString.includes('server =') && 
+          !launchString.includes('server=')) {
         launchString += ` servershardid=${selectedServer.shardID}`;
       }
       
-      if (!launchString.includes('masterserverhostname=') || !launchString.includes('masterserverhostname =')) {
+      if (!launchString.includes('masterserverhostname=') && !launchString.includes('masterserverhostname =')) {
         launchString += ` masterserverhostname=${selectedServer.apiHost.replace('https://', '')}`;
       }
       
       if (!launchString.includes('character=') &&
-        !launchString.includes('character =')) launchString += ` character=${selectedCharacter.id}`;
+          !launchString.includes('character =')) {
+        launchString += ` character=${selectedCharacter.id}`;
+      }
       
       const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
       
       if (!launchString.includes('webapihost=') &&
-        !launchString.includes('webapihost =')) launchString += ` webapihost=${apiHost}`;
+          !launchString.includes('webapihost =')) {
+        launchString += ` webapihost=${apiHost}`;
+      }
       
       launchString += ' autoconnect=1';
     }
