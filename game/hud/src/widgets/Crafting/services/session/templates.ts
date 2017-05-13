@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-12 00:19:54
+ * @Last Modified time: 2017-05-13 22:32:33
  */
 
 import { Module } from 'redux-typed-modules';
 import { Template } from '../types';
-import { listen, slash } from './recipes';
+import { slash } from '../game/slash';
 
 export interface TemplatesState {
   updating: number;
@@ -98,12 +98,11 @@ const dummyTemplates = {
 };
 
 export function getTemplateFor(what: string, callback: (type: string, list: Template[]) => void) {
-  const listener = listen((prefix: string, recipes: any[]) => {
-    console.log('CRAFTING: templates ', what, prefix, recipes);
-    gotTemplate(what, recipes);
-    listener.cancel();
+  slash('cr list ' + what + 'templates', (response: any) => {
+    console.log('CRAFTING: templates ', what, response.type, response.list);
+    gotTemplate(what, response.list);
+    return false;
   });
-  slash('cr list ' + what + 'templates');
   // TODO how to capture response
   callback(what, dummyTemplates[what]);
 }

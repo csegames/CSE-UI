@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-05 20:53:01
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-05 20:57:27
+ * @Last Modified time: 2017-05-13 19:54:19
  */
 
 import * as React from 'react';
@@ -17,7 +17,7 @@ interface LabelProps {
 
 const Label = (props: LabelProps) => {
   return (
-    <label className='prompt'>{props.children}:</label>
+    <span className='prompt'>{props.children}:</span>
   );
 };
 

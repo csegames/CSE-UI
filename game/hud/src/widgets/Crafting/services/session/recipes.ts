@@ -6,72 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-12 00:45:51
+ * @Last Modified time: 2017-05-13 22:34:43
  */
 
-import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
-
 import { Recipe, Template } from '../types';
-
-/////////////////////////////////////////////////////////////////////////////
-
-export function slash(command: string) {
-  if (hasClientAPI()) {
-    console.log('CRAFTING: command: ' + command);
-    client.SendSlashCommand(command);
-  } else {
-    console.log('CRAFTING: would have sent ' + command + ' to server');
-  }
-}
-
-let listening = 0;
-const callbacks = {};
-
-export function listen(cb: any) {
-  if (hasClientAPI()) {
-    callbacks[++listening] = cb;
-    function cancel() {
-      callbacks[this.id] = null;
-    }
-    const res = {
-      id: listening,
-      cancel,
-    };
-    if (listening > 1) return res;
-    client.OnConsoleText((text: string) => {
-      const lines = text.split(/[\r\n]/g);
-      const what = lines[0];
-      switch (what) {
-        case 'Purify Recipies:':
-        case 'Refine Recipies:':
-        case 'Grind Recipies:':
-        case 'Shape Recipies:':
-        case 'Blocks Recipies:':
-          lines.shift();
-          const list = [];
-          for (let i = 0; i < lines.length; i++) {
-            const args = lines[i].split(' - ');
-            if (args.length === 2) {
-              list.push({ id: args[0], name: args[1] });
-            } else {
-              // probably an error message
-              console.warn(args[0]);
-            }
-          }
-          for (const key in callbacks) {
-            if (callbacks[key]) {
-              callbacks[key](what, list);
-            }
-          }
-          break;
-      }
-    });
-    return res;
-  }
-}
-
-/////////////////////////////////////////////////////////////////////////////
+import { slash, isClient } from '../game/slash';
 
 export interface RecipesState {
   updating: number;
@@ -183,17 +123,23 @@ const dummyRecipies = {
 };
 
 export function getRecipeFor(what: string, callback: (type: string, list: Recipe[]) => void) {
-  const listener = listen((prefix: string, recipes: any[]) => {
-    callback(what, recipes);
-    listener.cancel();
-  });
-  slash('cr list ' + what + 'recipes');
-}
-
-export function getAllRecipes(callback: (type: string, recipes: Recipe[]) => void) {
-  const done = (type: string, list: Recipe[]) => callback(type, list);
-  recipeTypes.forEach((type: string) => getRecipeFor(type, done));
-  return recipeTypes.length;
+  if (!isClient()) {
+    callback(what, dummyRecipies[what]);    // no cuAPI, simulation
+  } else {
+    debugger;
+    slash('cr list ' + what + 'recipes', (response: any) => {
+      switch (response.type) {
+        case what:
+          callback(what, response.list);
+          return false;
+        case 'error':
+          break;
+        case 'complete':
+          // actually, it arrives before the list
+          break;
+      }
+    });
+  }
 }
 
 export default module.createReducer();

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 22:29:16
+ * @Last Modified time: 2017-05-13 20:10:33
  */
 
 import * as React from 'react';
@@ -53,27 +53,29 @@ class Select extends React.Component<SelectProps, SelectState> {
     const selectedIndex = this.props.selectedItemIndex !== undefined ? this.props.selectedItemIndex :
       this.state.selectedIndex;
     return(
-      <div
-        className={`Select ${this.props.containerClass || ''}`}
-        style={this.state.showList ? { zIndex: '1000' } : {}}>
+      <div className={['Select', this.props.containerClass ].join(' ')}>
         <div
-          className={`Select__outside ${this.state.showList ? '' : 'Select__outside--hidden'}`}
-          onClick={(e) => {
-            this.showList(false);
+          className='Select__impl'
+          style={this.state.showList ? { zIndex: '1000' } : {}}>
+          <div
+            className={`Select__outside ${this.state.showList ? '' : 'Select__outside--hidden'}`}
+            onClick={(e) => {
+              this.showList(false);
+              e.stopPropagation();
+            }} />
+          <div className='Select__activeView' onClick={(e) => {
+            this.showList(!this.state.showList);
             e.stopPropagation();
-          }} />
-        <div className='Select__activeView' onClick={(e) => {
-          this.showList(!this.state.showList);
-          e.stopPropagation();
-        }}>
-          {this.props.renderActiveItem(this.props.items[selectedIndex])}
-        </div>
-        <div className='Select__arrow' onClick={(e) => {
-          this.showList(!this.state.showList);
-          e.stopPropagation();
-        }} ><i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i></div>
-        <div className={`Select__listView ${this.state.showList ? '' : 'Select__listView--hidden'}`}>
-          {this.props.items.map(this.buildListItem)}
+          }}>
+            {this.props.renderActiveItem(this.props.items[selectedIndex])}
+          </div>
+          <div className='Select__arrow' onClick={(e) => {
+            this.showList(!this.state.showList);
+            e.stopPropagation();
+          }} ><i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i></div>
+          <div className={`Select__listView ${this.state.showList ? '' : 'Select__listView--hidden'}`}>
+            {this.props.items.map(this.buildListItem)}
+          </div>
         </div>
       </div>
     );

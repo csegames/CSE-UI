@@ -6,21 +6,22 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-12 00:07:16
+ * @Last Modified time: 2017-05-13 22:09:41
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
-import { slash } from './recipes';
-import { Ingredient, InventoryItem } from '../types';
+import { slash } from '../game/slash';
+import { Ingredient, InventoryItem, Recipe, Template } from '../types';
 
 export interface JobState {
   type: string;
-  recipe: string;
-  template: string;
+  recipe: Recipe;
+  template: Template;
   quality: number;
   ingredients: Ingredient[];
   name: string;
+  message: string;          // last message from crafting system
 }
 
 const initialState = () : JobState => {
@@ -32,6 +33,7 @@ const initialState = () : JobState => {
     quality: 0,
     ingredients: [],
     name: null,
+    message: null,
   };
 };
 
@@ -44,10 +46,9 @@ const module = new Module({
   },
 });
 
-export const selectJobType = module.createAction({
-  type: 'crafting/job/setType',
+export const setJobType = module.createAction({
+  type: 'crafting/job/set-job',
   action: (jobType: string) => {
-    slash('cr vox setjob ' + jobType);
     return { jobType };
   },
   reducer: (s, a) => {
@@ -56,7 +57,7 @@ export const selectJobType = module.createAction({
 });
 
 export const addIngredient = module.createAction({
-  type: 'crafting/job/addIngredient',
+  type: 'crafting/job/add-ingredient',
   action: (item: InventoryItem, qty: number) => {
     return { item, qty };
   },
@@ -70,7 +71,7 @@ export const addIngredient = module.createAction({
 export const startJob = module.createAction({
   type: 'crafting/job/start',
   action: () => {
-    slash('cr vox startjob');
+    // slash('cr vox startjob');
     return { };
   },
   reducer: (s, a) => {
@@ -81,7 +82,7 @@ export const startJob = module.createAction({
 export const clearJob = module.createAction({
   type: 'crafting/job/clear',
   action: () => {
-    slash('cr vox clearjob');
+    // slash('cr vox clearjob');
     return { };
   },
   reducer: (s, a) => {
@@ -92,7 +93,7 @@ export const clearJob = module.createAction({
 export const collectJob = module.createAction({
   type: 'crafting/job/collect',
   action: () => {
-    slash('cr vox collect');
+    // slash('cr vox collect');
     return { };
   },
   reducer: (s, a) => {
@@ -102,19 +103,19 @@ export const collectJob = module.createAction({
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
-  action: (id: string) => {
-    slash('cr vox setrecipe ' + id);
-    return { id };
+  action: (recipe: Recipe) => {
+    // slash('cr vox setrecipe ' + recipe.id);
+    return { recipe };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { recipe: a.id });
+    return Object.assign(s, { recipe: a.recipe });
   },
 });
 
 export const setQuality = module.createAction({
   type: 'crafting/job/set-quality',
   action: (quality: number) => {
-    slash('cr vox setquality ' + quality);
+    // slash('cr vox setquality ' + quality);
     return { quality };
   },
   reducer: (s, a) => {
@@ -125,7 +126,7 @@ export const setQuality = module.createAction({
 export const setName = module.createAction({
   type: 'crafting/job/set-name',
   action: (name: string) => {
-    slash('cr vox setname ' + name);
+    // slash('cr vox setname ' + name);
     return { name };
   },
   reducer: (s, a) => {
@@ -133,14 +134,24 @@ export const setName = module.createAction({
   },
 });
 
-export const setTemplate = module.createAction({
-  type: 'crafting/job/set-template',
-  action: (id: string) => {
-    slash('cr vox settemplate ' + id);
-    return { id };
+export const setMessage = module.createAction({
+  type: 'crafting/job/set-message',
+  action: (message: string) => {
+    return { message };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { template: a.id });
+    return Object.assign(s, { message: a.message });
+  },
+});
+
+export const setTemplate = module.createAction({
+  type: 'crafting/job/set-template',
+  action: (template: Template) => {
+    slash('cr vox settemplate ' + template.id);
+    return { template };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { template: a.template });
   },
 });
 

@@ -6,13 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-12 00:22:14
+ * @Last Modified time: 2017-05-13 23:11:02
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import { JobState, selectJobType, addIngredient } from '../../services/session/job';
+import { slash } from '../../services/game/slash';
+import { JobState, setJobType, addIngredient, setMessage } from '../../services/session/job';
 import { gotRecipe } from '../../services/session/recipes';
 import { gotTemplate } from '../../services/session/templates';
 import { InventoryItem, Recipe, Template } from '../../services/types';
@@ -30,16 +31,12 @@ const select = (state: GlobalState): AppProps => {
   console.log('CRAFTING: select ui from state: ', state);
   return {
     job: state.job,
-    recipes: state.recipes,
-    templates: state.templates,
   };
 };
 
 interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
-  recipes: RecipesState;
-  templates: TemplatesState;
 }
 
 class App extends React.Component<AppProps,{}> {
@@ -51,8 +48,6 @@ class App extends React.Component<AppProps,{}> {
       <div className='crafting-ui'>
         <JobType job={type} changeType={this.selectType}/>
         <JobDetails job={props.job}
-          recipes={props.recipes}
-          templates={props.templates}
           set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
           setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
           setTemplate={this.setTemplate}
@@ -63,17 +58,37 @@ class App extends React.Component<AppProps,{}> {
   }
 
   private selectType = (type: string) => {
-    this.props.dispatch(selectJobType(type));
-    switch (type) {
-      case 'make':
-        getAllTemplates((type: string, templates: Template[]) => {
-          this.props.dispatch(gotTemplate(type, templates));
-        });
-        break;
-      default:
-        getRecipeFor(type, (type: string, recipes: Recipe[]) => {
-          this.props.dispatch(gotRecipe(type, recipes));
-        });
+    let error: string;
+    const props = this.props;
+    props.dispatch(setMessage(''));
+    slash('cr vox setjob ' + type, (response: any) : boolean => {
+      console.log('CRAFTING: cr vox setjob: ' + JSON.stringify(response));
+      if (response.type === 'error') {
+        error = response.text;
+      }
+      if (response.type === 'complete') {
+        if (error) {
+          console.log('CRAFTING: send error message: ' + error);
+          props.dispatch(setMessage(error));
+        } else {
+          props.dispatch(setJobType(type));
+          loadLists();
+        }
+        return false;
+      }
+    });
+    function loadLists() {
+      switch (type) {
+        case 'make':
+          getAllTemplates((type: string, templates: Template[]) => {
+            props.dispatch(gotTemplate(type, templates));
+          });
+          break;
+        default:
+          getRecipeFor(type, (type: string, recipes: Recipe[]) => {
+            props.dispatch(gotRecipe(type, recipes));
+          });
+      }
     }
   }
 
@@ -86,8 +101,8 @@ class App extends React.Component<AppProps,{}> {
   // Job properties
   private setQuality = (quality: number) => this.props.dispatch(setQuality(quality));
   private setName = (name: string) => this.props.dispatch(setName(name));
-  private setRecipe = (id: string) => this.props.dispatch(setRecipe(id));
-  private setTemplate = (id: string) => this.props.dispatch(setTemplate(id));
+  private setRecipe = (recipe: Recipe) => this.props.dispatch(setRecipe(recipe));
+  private setTemplate = (template: Template) => this.props.dispatch(setTemplate(template));
 
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
