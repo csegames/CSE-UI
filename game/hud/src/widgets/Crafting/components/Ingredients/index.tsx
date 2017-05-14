@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 23:01:47
+ * @Last Modified time: 2017-05-14 18:26:10
  */
 
 import * as React from 'react';
@@ -15,16 +15,13 @@ import gql from 'graphql-tag';
 
 import { Ingredient } from '../../services/types';
 
+import InventoryItems from '../InventoryItems';
 import Select from '../Select';
 import Label from '../Label';
 
 import { InventoryItem } from '../../services/types';
 
-interface InventoryItems {
-  myInventoryItems: InventoryItem[];
-}
-
-export interface IngredientsProps extends InjectedGraphQLProps<InventoryItems> {
+export interface IngredientsProps {
   job: string;
   ingredients: Ingredient[];
   add: (item: InventoryItem, qty: number) => void;
@@ -57,24 +54,15 @@ export const Ingredients = (props: IngredientsProps) => {
     );
   });
 
-  let add;
-  if (props.data && props.data.myInventoryItems && props.data.myInventoryItems.length) {
-    const { id, itemType, name } = props.data.myInventoryItems[0];
-    selected = { id, itemType, name };
-    add = (
+  return (
+    <div className='job-ingredients'>
+      <h1 className='ingredients-title'>Ingredients...</h1>
       <div className='add-ingredient'>
-        <Select items={props.data.myInventoryItems}
-          onSelectedItemChanged={select} renderActiveItem={render} renderListItem={render}/>
+        <InventoryItems select={select}/>
         <span className='times'>x</span>
         <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => count(e.target)} size={2} value={1} />
         <button className='add' onClick={_ => props.add(selected, qty)}>Add Ingredient</button>
       </div>
-    );
-  }
-  return (
-    <div className='job-ingredients'>
-      <h1 className='ingredients-title'>Ingredients...</h1>
-      {add}
       <div className='loaded-ingredients'>
         {loaded}
       </div>
@@ -82,23 +70,4 @@ export const Ingredients = (props: IngredientsProps) => {
   );
 };
 
-const query = gql`
-  query InventoryItems {
-    myInventoryItems {
-      itemType
-      name
-      id
-    }
-  }
-`;
-
-const options = (props: IngredientsProps) => {
-  const opts = {
-    variables: {
-    },
-  };
-  return opts;
-};
-
-const IngredientsWithQL = graphql(query, { options })(Ingredients);
-export default IngredientsWithQL;
+export default Ingredients;
