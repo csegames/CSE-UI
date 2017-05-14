@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 19:07:58
+ * @Last Modified time: 2017-05-14 21:33:09
  */
 
 import * as React from 'react';
@@ -33,11 +33,11 @@ const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps
 };
 
 const NameInput = (props: NameInputProps) => {
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => props.onChange(e.target.value);
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => props.onChange((e.target as HTMLInputElement).value);
   return (
     <div className={['name-input'].join(' ')}>
       <Label>Name</Label>
-      <input type='text' size={32} onChange={onChange}/>
+      <input type='text' size={32} onBlur={onBlur}/>
     </div>
   );
 };

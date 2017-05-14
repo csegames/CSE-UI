@@ -6,13 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 22:09:41
+ * @Last Modified time: 2017-05-14 19:54:06
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
 import { slash } from '../game/slash';
-import { Ingredient, InventoryItem, Recipe, Template } from '../types';
+import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
 
 export interface JobState {
   type: string;
@@ -21,7 +21,7 @@ export interface JobState {
   quality: number;
   ingredients: Ingredient[];
   name: string;
-  message: string;          // last message from crafting system
+  message: Message;
 }
 
 const initialState = () : JobState => {
@@ -82,11 +82,10 @@ export const startJob = module.createAction({
 export const clearJob = module.createAction({
   type: 'crafting/job/clear',
   action: () => {
-    // slash('cr vox clearjob');
     return { };
   },
   reducer: (s, a) => {
-    return s;
+    return Object.assign(s, { type: null });
   },
 });
 
@@ -136,7 +135,7 @@ export const setName = module.createAction({
 
 export const setMessage = module.createAction({
   type: 'crafting/job/set-message',
-  action: (message: string) => {
+  action: (message: Message) => {
     return { message };
   },
   reducer: (s, a) => {

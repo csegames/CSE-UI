@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 23:13:20
+ * @Last Modified time: 2017-05-14 22:49:43
  */
 
 import * as React from 'react';
@@ -22,7 +22,6 @@ import RecipeSelect from '../RecipeSelect';
 import TemplateSelect from '../TemplateSelect';
 import NameInput from '../NameInput';
 import QualityInput from '../QualityInput';
-import VoxMessage from '../VoxMessage';
 
 import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
@@ -47,12 +46,11 @@ export const JobDetails = (props: JobDetailsProps) => {
   if (!type) return (
     <div className='job-details'>
       <div>Select a Job Type!</div>
-      <VoxMessage/>
     </div>
   );
 
-  const ready = type && job.quality > 0
-                && (type === 'make' ? job.name && job.template : job.recipe);
+  const ready = true; /* TODO type && job.quality > 0
+                && (type === 'make' ? job.name && job.template : job.recipe); */
   return (
     <div className='job-details'>
       <div className='job-properties'>
@@ -61,7 +59,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
         {type === 'make' && (
           <div>
-            <TemplateSelect type='armour' onSelect={props.setTemplate}/>
+            <TemplateSelect type='armor' onSelect={props.setTemplate}/>
             <TemplateSelect type='weapons' onSelect={props.setTemplate}/>
           </div>
         )}
@@ -76,7 +74,6 @@ export const JobDetails = (props: JobDetailsProps) => {
         <button disabled={!ready} onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>
-        <VoxMessage/>
       </div>
     </div>
   );

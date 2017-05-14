@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-11 23:55:15
+ * @Last Modified time: 2017-05-14 19:52:12
  */
 
 import * as React from 'react';
@@ -16,6 +16,7 @@ import Label from '../Label';
 export interface JobTypeProps {
   job: string;
   changeType: (type: string) => void;
+  clearJob: () => void;
 }
 
 export const JobType = (props: JobTypeProps) => {
@@ -34,6 +35,7 @@ export const JobType = (props: JobTypeProps) => {
       {button('shape')}
       {button('block')}
       {button('make')}
+      <button className='clear' onClick={props.clearJob}>Clear</button>
     </div>
   );
 };

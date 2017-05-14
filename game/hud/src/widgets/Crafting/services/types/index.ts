@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-07 23:08:03
+ * @Last Modified time: 2017-05-14 19:38:55
  */
 
 
@@ -25,3 +25,8 @@ export interface Ingredient extends InventoryItem {
 
 export interface Recipe extends Item {}
 export interface Template extends Item {}
+
+export interface Message {
+  type: string;
+  message: string;
+}

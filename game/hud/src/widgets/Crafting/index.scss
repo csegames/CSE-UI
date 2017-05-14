@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 23:14:56
+ * @Last Modified time: 2017-05-14 20:07:04
  */
 
 .crafting-ui {
@@ -46,6 +46,19 @@
     button.selected {
       font-weight: bold;
       color: green;
+    }
+  }
+  .vox-message {
+    padding: 0px 10px;
+    height: 20px;
+    flex: 0 1 auto;
+    font-size: 14px;
+    overflow: hidden;
+    &.success {
+      color: lime;
+    }
+    &.error {
+      color: red;
     }
   }
   >.job-details {
@@ -107,9 +120,6 @@
     >.job-buttons {
       flex: 0 1 auto;
       height: 35px;
-    }
-    .vox-message {
-      color: red;
     }
   }
 }

@@ -6,13 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 19:25:43
+ * @Last Modified time: 2017-05-14 21:52:18
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Select from '../Select';
 import Label from '../Label';
+import Input from '../Input';
 import { GlobalState } from '../../services/session/reducer';
 
 export interface QualityInputReduxProps {
@@ -33,17 +33,13 @@ const select = (state: GlobalState, props: QualityInputProps) : QualityInputRedu
 };
 
 const QualityInput = (props: QualityInputProps) => {
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.match(/^[0-9]*$/)) {
-      props.onChange((e.target.value as any) | 0);
-    } else {
-      e.target.value = '';
-    }
+  const onChange = (value: string) => {
+    props.onChange(value as any);
   };
   return (
     <div className={['quality-input'].join(' ')}>
       <Label>Quality</Label>
-      <input type='text' size={3} onChange={onChange}/>
+      <Input size={3} onChange={onChange}/>
     </div>
   );
 };

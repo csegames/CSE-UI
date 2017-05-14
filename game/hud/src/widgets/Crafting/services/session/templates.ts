@@ -6,16 +6,16 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 22:32:33
+ * @Last Modified time: 2017-05-14 22:43:09
  */
 
 import { Module } from 'redux-typed-modules';
 import { Template } from '../types';
-import { slash } from '../game/slash';
+import { slash, isClient } from '../game/slash';
 
 export interface TemplatesState {
   updating: number;
-  armour: Template[];
+  armor: Template[];
   weapons: Template[];
 }
 
@@ -23,7 +23,7 @@ const initialState = () : TemplatesState => {
   console.log('CRAFTING: generate initialTemplateState');
   return {
     updating: 0,
-    armour: [],
+    armor: [],
     weapons: [],
   };
 };
@@ -67,7 +67,7 @@ export const gotTemplate = module.createAction({
   reducer: (s, a) => {
     const type = a.templateType;
     switch (type) {
-      case 'armour':
+      case 'armor':
       case 'weapons':
       console.log('CRAFTING: ' + type, a.templates);
       return Object.assign(s, { [type]: [...a.templates] });
@@ -80,7 +80,7 @@ export const gotTemplate = module.createAction({
 // Templates
 
 export const templateTypes = [
-  'armour', 'weapons',
+  'armor', 'weapons',
   'substences', 'inventory', 'blocks',
 ];
 
@@ -98,19 +98,33 @@ const dummyTemplates = {
 };
 
 export function getTemplateFor(what: string, callback: (type: string, list: Template[]) => void) {
-  slash('cr list ' + what + 'templates', (response: any) => {
-    console.log('CRAFTING: templates ', what, response.type, response.list);
-    gotTemplate(what, response.list);
-    return false;
-  });
-  // TODO how to capture response
-  callback(what, dummyTemplates[what]);
+  if (!isClient()) {
+    callback(what, dummyTemplates[what]);    // no cuAPI, simulation
+  } else {
+    slash('cr list ' + what, (response: any) => {
+      console.log('CRAFTING: GOT ' + what + ' TEMPLATES: ' + JSON.stringify(response));
+      switch (response.type) {
+        case 'templates':
+          const list: Template[] = response.templates.map((id: string) => { return { id, name: id }; });
+          callback(what, list);
+          break;
+      }
+    });
+  }
 }
 
 export function getAllTemplates(callback: (type: string, templates: Template[]) => void) {
-  const done = (type: string, list: Template[]) => callback(type, list);
-  templateTypes.forEach((type: string) => getTemplateFor(type, done));
-  return templateTypes.length;
+  const queue = [ 'armor', 'weapons' ];
+  function nom() {
+    const what = queue.shift();
+    if (what) {
+      getTemplateFor(what, (type: string, templates: Template[]) => {
+        callback(type, templates);
+        nom();
+      });
+    }
+  }
+  nom();
 }
 
 export default module.createReducer();

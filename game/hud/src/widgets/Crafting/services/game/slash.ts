@@ -6,24 +6,18 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 22:53:36
+ * @Last Modified time: 2017-05-14 22:52:00
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 
-export function slash(command: string, callback?: (response: any) => boolean) {
+export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {
     console.log('CRAFTING: command: ' + command);
 
-    // If the / command includes a callback, then send any responses
-    // back to the caller until the return false;
-    if (callback) {
-      const listener = listen((response: any) => {
-        if (callback(response) === false) {
-          listener.cancel();
-        }
-      });
-    }
+    // If the / command includes a callback, then send the response
+    // back to the caller
+    if (callback) listen(callback);
 
     client.SendSlashCommand(command);
   } else {
@@ -33,21 +27,31 @@ export function slash(command: string, callback?: (response: any) => boolean) {
 
 let listening = 0;
 const callbacks = {};
+let response: any = {};
+
+// send response back to listeners
+function delaySend() {
+  if (response.timer) clearTimeout(response.timer);
+  response.timer = setTimeout(() => {
+    // Assume end of this
+    delete response.timer;
+    for (const key in callbacks) {
+      if (callbacks[key]) {
+        console.log('CRAFTING: LISTENER: SEND: ' + JSON.stringify(response));
+        callbacks[key](response);
+        delete callbacks[key];
+      }
+    }
+    response = {};
+  }, 50);
+}
 
 export function listen(cb: any) {
   if (hasClientAPI()) {
     callbacks[++listening] = cb;
     function cancel() {
       console.log('CRAFTING: LISTENER: CENCEL: ' + this.id);
-      callbacks[this.id] = null;
-    }
-    function send(response: any) {
-      for (const key in callbacks) {
-        if (callbacks[key]) {
-          console.log('CRAFTING: LISTENER: CALLBACK: ' + response.type);
-          callbacks[key](response);
-        }
-      }
+      delete callbacks[this.id];
     }
     const res = {
       id: listening,
@@ -57,6 +61,7 @@ export function listen(cb: any) {
     client.OnConsoleText((text: string) => {
       const lines = text.split(/[\r\n]/g);
       const what = lines[0];
+      console.log('CRAFTING: OCT: ' + text);
       switch (what) {
         case 'Purify Recipies:':
         case 'Refine Recipies:':
@@ -75,18 +80,35 @@ export function listen(cb: any) {
             }
           }
           const type = what.split(' ')[0].toLowerCase();
-          send({ type, list });
+          response.type = type;
+          response.list = list;
           break;
       default:
-        if (text.match(/^No vox /) || text.match(/^Tried /)) {
-          send({ type: 'error', text });
+        if (text.match(/^Template: /)) {
+          response.type = 'templates';
+          (response.templates = response.templates || []).push(text.substr(10));
+          delaySend();
           return;
         }
+
+        if (text.match(/^No vox /)
+            || text.match(/^Tried /)
+            || text.match(/^No ingredients /)
+            || text.match(/^Quality configuration not supported/)
+            || text.match(/^Failed /)
+        ) {
+          response.type = 'error';
+          (response.errors = response.errors || []).push(text);
+          console.log('ADD ERROR ' + JSON.stringify(response.errors));
+          return;
+        }
+
         if (text.match(/^Running cr /)) {
-          send({ type: 'complete', text });
+          response.complete = text;
+          delaySend();
           return;
         }
-        send({ type: 'unkown', text });
+        (response.unknown = response.unknown || []).push(text);
       }
     });
     return res;

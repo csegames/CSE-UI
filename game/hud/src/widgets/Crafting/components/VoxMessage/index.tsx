@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 20:53:38
+ * @Last Modified time: 2017-05-14 19:34:40
  */
 
 import * as React from 'react';
@@ -14,10 +14,11 @@ import { connect } from 'react-redux';
 import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
+import { Message } from '../../services/types';
 
 export interface VoxMessageReduxProps {
   dispatch?: (action: any) => void;
-  message?: string;
+  message?: Message;
 }
 
 export interface VoxMessageProps extends VoxMessageReduxProps {}
@@ -30,9 +31,10 @@ const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxPro
 };
 
 const VoxMessage = (props: VoxMessageProps) => {
+  if (!props.message) return null;
   return (
-    <span className={['vox-message'].join(' ')}>
-      {props.message}
+    <span className={['vox-message', props.message.type].join(' ')}>
+      {props.message.message}
     </span>
   );
 };

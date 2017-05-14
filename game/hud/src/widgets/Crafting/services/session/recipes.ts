@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 22:34:43
+ * @Last Modified time: 2017-05-14 21:35:01
  */
 
 import { Module } from 'redux-typed-modules';
@@ -126,16 +126,10 @@ export function getRecipeFor(what: string, callback: (type: string, list: Recipe
   if (!isClient()) {
     callback(what, dummyRecipies[what]);    // no cuAPI, simulation
   } else {
-    debugger;
     slash('cr list ' + what + 'recipes', (response: any) => {
       switch (response.type) {
         case what:
           callback(what, response.list);
-          return false;
-        case 'error':
-          break;
-        case 'complete':
-          // actually, it arrives before the list
           break;
       }
     });
