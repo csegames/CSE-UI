@@ -6,16 +6,19 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 16:23:18
+ * @Last Modified time: 2017-05-15 21:56:15
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
-import { slash } from '../game/slash';
-import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
+import { slash, isClient } from '../game/slash';
+import { Ingredient, InventoryItem, Recipe, Template, Message, VoxStatus } from '../types';
 
 export interface JobState {
   loading: boolean;
+  vox: string;
+  status: string;
+  ready: boolean;
   type: string;
   recipe: Recipe;
   template: Template;
@@ -29,6 +32,9 @@ export interface JobState {
 const initialState = () : JobState => {
   console.log('CRAFTING: generate initialJobState');
   return {
+    vox: null,
+    status: 'unknown',
+    ready: false,
     loading: false,
     type: null,
     recipe: null,
@@ -56,6 +62,7 @@ export const setJobType = module.createAction({
     return { jobType };
   },
   reducer: (s, a) => {
+    console.log('CRAFTING SET JOB: ' + a.jobType);
     return Object.assign(s, { type: a.jobType });
   },
 });
@@ -122,10 +129,19 @@ export const clearJob = module.createAction({
   },
 });
 
+export const cancelJob = module.createAction({
+  type: 'crafting/job/cancel',
+  action: () => {
+    return { };
+  },
+  reducer: (s, a) => {
+    return s;
+  },
+});
+
 export const collectJob = module.createAction({
   type: 'crafting/job/collect',
   action: () => {
-    // slash('cr vox collect');
     return { };
   },
   reducer: (s, a) => {
@@ -136,7 +152,6 @@ export const collectJob = module.createAction({
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
   action: (recipe: Recipe) => {
-    // slash('cr vox setrecipe ' + recipe.id);
     return { recipe };
   },
   reducer: (s, a) => {
@@ -147,7 +162,6 @@ export const setRecipe = module.createAction({
 export const setQuality = module.createAction({
   type: 'crafting/job/set-quality',
   action: (quality: number) => {
-    // slash('cr vox setquality ' + quality);
     return { quality };
   },
   reducer: (s, a) => {
@@ -158,7 +172,6 @@ export const setQuality = module.createAction({
 export const setName = module.createAction({
   type: 'crafting/job/set-name',
   action: (name: string) => {
-    // slash('cr vox setname ' + name);
     return { name };
   },
   reducer: (s, a) => {
@@ -179,11 +192,46 @@ export const setMessage = module.createAction({
 export const setTemplate = module.createAction({
   type: 'crafting/job/set-template',
   action: (template: Template) => {
-    slash('cr vox settemplate ' + template.id);
     return { template };
   },
   reducer: (s, a) => {
     return Object.assign(s, { template: a.template });
+  },
+});
+
+export function getStatus(callback: (response: any) => void) {
+  if (!isClient()) {
+    callback({ status: {
+      vox: '000000003f21c895',
+      type: 'purify',
+      status: 'Configuring',
+      recipe: null,
+      template: null,
+      ingredients: [],
+     }});    // no cuAPI, simulation
+  } else {
+    slash('cr vox status', (response: any) => {
+      console.log('CRAFTING: GOT STATUS: ' + JSON.stringify(response));
+      callback(response);
+    });
+  }
+}
+export const gotStatus = module.createAction({
+  type: 'crafting/job/got-status',
+  action: (status: VoxStatus) => {
+    return { status };
+  },
+  reducer: (s, a) => {
+    console.log('CRAFTING GOT STATUS: ' + a.status.type);
+    return Object.assign(s, {
+      vox: a.status.vox,
+      status: a.status.status,
+      ready: a.status.ready,
+      type: a.status.type,
+      recipe: { id: a.status.recipe, name: 'unknown' },
+      template: null,
+      ingredients: [...a.status.ingredients],
+    });
   },
 });
 

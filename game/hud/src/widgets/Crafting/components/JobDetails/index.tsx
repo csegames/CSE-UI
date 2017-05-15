@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:03:34
+ * @Last Modified time: 2017-05-15 21:58:49
  */
 
 import * as React from 'react';
@@ -32,6 +32,7 @@ export interface JobDetailsProps {
   start: () => void;
   collect: () => void;
   cancel: () => void;
+  refresh: () => void;
   setQuality: (quality: number) => void;
   setCount: (count: number) => void;
   setName: (name: string) => void;
@@ -46,11 +47,14 @@ export const JobDetails = (props: JobDetailsProps) => {
   const type = job.type;
 
   // If no vox type set yet...
-  if (!type) return (
-    <div className='job-details'>
-      <div>Select a Job Type!</div>
-    </div>
-  );
+  if (!type) {
+    console.log('CRAFTING: JOB DETAILS: NO JOB TYPE SET IN PROPS');
+    return (
+      <div className='job-details'>
+        <div>Select a Job Type!</div>
+      </div>
+    );
+  }
 
   return (
     <div className='job-details'>
@@ -72,6 +76,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         <button onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>
+        <button onClick={() => props.refresh()}>Refresh</button>
       </div>
     </div>
   );

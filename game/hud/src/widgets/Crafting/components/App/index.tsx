@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:19:53
+ * @Last Modified time: 2017-05-15 20:47:43
  */
 
 import * as React from 'react';
@@ -17,10 +17,9 @@ import { JobState, setLoading, setJobType, addIngredient, removeIngredient, setM
 import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { getIngredients, gotIngredients } from '../../services/session/ingredients';
-import { InventoryItem, Recipe, Template } from '../../services/types';
-import { startJob, collectJob, clearJob,
-        setQuality, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
-
+import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types';
+import { startJob, collectJob, clearJob, cancelJob,
+        setQuality, setCount, setName, setRecipe, setTemplate, getStatus, gotStatus } from '../../services/session/job';
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 import VoxMessage from '../VoxMessage';
@@ -40,6 +39,11 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps,{}> {
+
+  public componentDidMount() {
+    this.refresh();
+  }
+
   public render() {
     const props = this.props;
     console.log('CRAFTING: render App: props=', props);
@@ -49,9 +53,10 @@ class App extends React.Component<AppProps,{}> {
         <JobType job={type} changeType={this.selectType} clearJob={this.clearJob}/>
         <VoxMessage/>
         { this.props.job.loading
-          ? <div className='loading'>Priming Vox Engine ...</div>
+          ? <div className='loading'>Preparing for your performance ...</div>
           : <JobDetails job={props.job}
-              set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
+              set={this.setJob} start={this.startJob}
+              collect={this.collectJob} cancel={this.cancelJob} refresh={this.refresh}
               setQuality={this.setQuality}
               setCount={this.setCount}
               setName={this.setName} setRecipe={this.setRecipe}
@@ -62,6 +67,21 @@ class App extends React.Component<AppProps,{}> {
         }
       </div>
     );
+  }
+
+  private refresh = () => {
+    const props = this.props;
+    getStatus((response: any) => {
+      if (response.errors) {
+        const errors = response.errors.join('\n');
+        props.dispatch(setMessage({ type: 'error', message: errors }));
+      } else if (response.status) {
+        props.dispatch(gotStatus(response.status));
+        if (response.status.type) {
+          this.loadLists(response.status.type);
+        }
+      }
+    });
   }
 
   private selectType = (type: string) => {
@@ -78,27 +98,29 @@ class App extends React.Component<AppProps,{}> {
       } else {
         props.dispatch(setJobType(type));
         props.dispatch(setMessage({ type: 'success', message: 'Job type selected' }));
-        loadLists(type);
+        this.loadLists(type);
       }
     });
-    function loadLists(job: string) {
-      getIngredients((type: string, list: InventoryItem[]) => {
-        props.dispatch(gotIngredients(list));
-        switch (job) {
-          case 'make':
-            getAllTemplates((type: string, templates: Template[]) => {
-              props.dispatch(gotTemplate(type, templates));
-              props.dispatch(setLoading(false));
-            });
-            break;
-          default:
-            getRecipeFor(job, (type: string, recipes: Recipe[]) => {
-              props.dispatch(gotRecipe(type, recipes));
-              props.dispatch(setLoading(false));
-            });
-        }
-      });
-    }
+  }
+
+  private loadLists = (job: string) => {
+    const props = this.props;
+    getIngredients((type: string, list: InventoryItem[]) => {
+      props.dispatch(gotIngredients(list));
+      switch (job) {
+        case 'make':
+          getAllTemplates((type: string, templates: Template[]) => {
+            props.dispatch(gotTemplate(type, templates));
+            props.dispatch(setLoading(false));
+          });
+          break;
+        default:
+          getRecipeFor(job, (type: string, recipes: Recipe[]) => {
+            props.dispatch(gotRecipe(type, recipes));
+            props.dispatch(setLoading(false));
+          });
+      }
+    });
   }
 
   // Generic, issue a / command, deal with response
@@ -131,6 +153,11 @@ class App extends React.Component<AppProps,{}> {
   // Clear current crafting job
   private clearJob = () => {
     this.slash('cr vox clearjob', 'Job Cleared', () => clearJob());
+  }
+
+  // Clear current crafting job
+  private cancelJob = () => {
+    this.slash('cr vox cancel', 'Job Cancelled', () => cancelJob());
   }
 
   // Job properties

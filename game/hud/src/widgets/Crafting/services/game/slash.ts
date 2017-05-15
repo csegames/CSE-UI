@@ -6,10 +6,19 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 15:47:10
+ * @Last Modified time: 2017-05-15 22:12:21
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
+
+const VoxType = {
+  'World.VoxJobPurify': 'purify',
+  'World.VoxJobRefine': 'refine',
+  'World.VoxJobGrind': 'grind',
+  'World.VoxJobShape': 'shape',
+  'World.VoxJobBlock': 'block',
+  'World.VoxJobMake': 'make',
+};
 
 export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {
@@ -64,7 +73,7 @@ export function listen(cb: any) {
       const what = lines[0];
       let type;
       let list;
-      // console.log('CRAFTING: OCT: ' + text);
+      console.log('CRAFTING: OCT: ' + text);
       switch (what) {
         case 'Purify Recipies:':
         case 'Refine Recipies:':
@@ -111,6 +120,11 @@ export function listen(cb: any) {
 
           if (text.match(/^No vox /)
               || text.match(/^Tried /)
+              || text.match(/^Nearby vox is not yours/)
+              || text.match(/^Only one/)
+              || text.match(/^New Substance quality must /)
+              || text.match(/^A higher amount of /)
+              || text.match(/^Recipe .* requires /)
               || text.match(/^No ingredients /)
               || text.match(/^Make job /)
               || text.match(/^Quality configuration not supported/)
@@ -127,6 +141,47 @@ export function listen(cb: any) {
             delaySend();
             return;
           }
+
+          if (text.match(/^\*\*READY TO RUN\*\*/)) {
+            response.status.ready = true;
+          }
+
+          if (text.match(/^Found vox with /)) {
+            console.log('VOX STATUS');
+            response.status = {
+              vox: what.split(' ')[5],
+            };
+            if (lines[1] === 'No current Job') {
+              response.status = Object.assign(response.status, {
+                type: null,
+                status: lines[1],
+                recipe: null,
+                template: null,
+                ingredients: [],
+              });
+            } else {
+              console.log('JOB DETAILS ' + JSON.stringify(lines));
+              response.status = Object.assign(response.status, {
+                type: VoxType[lines[1].split(' ')[1]],
+                status: lines[2].split(' ')[1].toLowerCase(),
+                recipe: lines[3].split(' ')[1],
+                template: null,
+                ingredients: [],
+              });
+              console.log('VOX STATUS PARSE INGREDS');
+              for (let i = 5; i < lines.length - 1; i++) {
+                if (lines[i] === 'Output:') {
+                  response.status.output = lines[i + 1];
+                  break;
+                }
+                const ingredient = lines[i].split(/\.[ ]*/);
+                response.status.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+              }
+            }
+            console.log('VOX STATUS IS ' + JSON.stringify(response));
+            return;
+          }
+
           (response.unknown = response.unknown || []).push(text);
           break;
       }

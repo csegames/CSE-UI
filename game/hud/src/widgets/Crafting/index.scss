@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 18:32:03
+ * @Last Modified time: 2017-05-15 22:44:14
  */
 
 .crafting-ui {
@@ -14,11 +14,9 @@
 
   background-color: rgba(0,0,0,0.7);
   background-image: url('../images/crafting/crafting-bg.png');
-  background-blend-mode: darken;
-  background-size: 100%;
   color: white;
-  width: 100%;
-  height: 100%;
+  width: 600px;
+  height: 450px;
   overflow: hidden;
   span.prompt {
     display: inline-block;
@@ -41,7 +39,7 @@
     padding: 0 5px;
     border: 0;
     color: white;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(40,40,40,0.5);
   }
 
   /* layout */
@@ -99,7 +97,7 @@
           min-width: 200px;
           height: 24px;
           .Select__impl {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(40,40,40,0.5);
           }
           .Select__listView {
             max-height: 175px;
@@ -115,6 +113,7 @@
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
+        margin-top: 5px;
         >.ingredient {
           flex: 0 1 auto;
           display: flex;
@@ -148,7 +147,7 @@
           min-width: 250px;
           height: 24px;
           .Select__impl {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(40,40,40,0.5);
           }
           .Select__listView {
             max-height: 175px;
@@ -165,8 +164,8 @@
       }
       >.ingredients-title {
         flex: 0 1 auto;
-        font-size: 130%;
-        margin-top: 0;
+        font-size: 100%;
+        margin-top: 5px;
       }
       >.loaded-ingredients {
         flex: 1 1 auto;
