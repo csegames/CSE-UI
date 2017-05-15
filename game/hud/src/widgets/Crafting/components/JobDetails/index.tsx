@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:37:10
+ * @Last Modified time: 2017-05-15 15:40:11
  */
 
 import * as React from 'react';
@@ -50,20 +50,14 @@ export const JobDetails = (props: JobDetailsProps) => {
     </div>
   );
 
-  const ready = true; /* TODO type && job.quality > 0
-                && (type === 'make' ? job.name && job.template : job.recipe); */
   return (
     <div className='job-details'>
       <div className='job-properties'>
         {<QualityInput onChange={props.setQuality}/>}
         {type === 'make' && <NameInput onChange={props.setName}/>}
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
-        {type === 'make' && (
-          <div>
-            <TemplateSelect type='armor' onSelect={props.setTemplate}/>
-            <TemplateSelect type='weapons' onSelect={props.setTemplate}/>
-          </div>
-        )}
+        {type === 'make' && <TemplateSelect type='armor' onSelect={props.setTemplate}/>}
+        {type === 'make' && <TemplateSelect type='weapons' onSelect={props.setTemplate}/>}
       </div>
       <Ingredients
         job={type}
@@ -72,8 +66,8 @@ export const JobDetails = (props: JobDetailsProps) => {
         remove={props.removeIngredient}
         />
       <div className='job-buttons'>
-        <button disabled={!props.job} onClick={() => props.set()}>Set</button>
-        <button disabled={!ready} onClick={() => props.start()}>Start</button>
+        { /* <button disabled={!props.job} onClick={() => props.set()}>Set</button> */ }
+        <button onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>
       </div>

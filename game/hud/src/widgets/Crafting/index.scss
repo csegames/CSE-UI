@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:43:26
+ * @Last Modified time: 2017-05-15 16:10:45
  */
 
 .crafting-ui {
@@ -20,18 +20,23 @@
   span.prompt {
     min-width: 160px;
     display: inline-block;
+    flex: 0 0 auto;
   }
   button, input {
     pointer-events: auto;
   }
+  button {
+    font-size: 12px;
+    min-width: 48px;
+  }
 
   input {
     width: auto;    /* TODO: WTF IS THE GAME CLIENT PLAYING AT */
-    height: 1.5em;
+    height: 24px;
     margin: 0;
-    padding: 0;
+    padding: 0 5px;
     border: 0;
-    color: black;
+    color: white;
     background-color: #4a4a4a;
   }
 
@@ -49,7 +54,6 @@
     }
   }
   >.vox-message {
-    background-color: rgba(255,255,255,0.1);
     margin: 0px 10px;
     height: 20px;
     flex: 0 1 auto;
@@ -75,16 +79,19 @@
     >.job-properties {
       display: block;
       flex: 0 1 auto;
-      >.quality-input, >.select-recipe, >.select-template {
+      >.quality-input, >.name-input, >.select-recipe, >.select-template {
         height: 24px;
         margin-bottom: 1px;
-      }
-      .Select {
-        min-width: 200px;
-        height: 24px;
-      }
-      .Select__listView {
-        max-height: 175px;
+        display: flex;
+        flex-direction: row;
+        .Select {
+          flex: 0 0 auto;
+          min-width: 200px;
+          height: 24px;
+          .Select__listView {
+            max-height: 175px;
+          }
+        }
       }
     }
     >.job-ingredients {
@@ -115,20 +122,22 @@
       }
       >.add-ingredient {
         flex: 0 1 auto;
-        height: 35px;
-        .Select {
+        display: flex;
+        >.Select {
+          flex: 1 1 auto;
           min-width: 250px;
           height: 24px;
-        }
-        .Select__listView {
-          max-height: 175px;
+          .Select__listView {
+            max-height: 175px;
+          }
         }
         >.times {
+          flex: 0 1 auto;
           margin: 0 0.5em;
         }
         >button.add {
-          margin-left: 1em;
-          width: 150px;
+          flex: 0 1 150px;
+          margin: 0 0 0 1em;
         }
       }
       >.ingredients-title {
@@ -147,6 +156,9 @@
     >.job-buttons {
       flex: 0 1 auto;
       height: 35px;
+      .clear {
+        float: right;
+      }
     }
   }
 }

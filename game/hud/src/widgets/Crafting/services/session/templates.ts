@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 06:24:58
+ * @Last Modified time: 2017-05-15 13:37:05
  */
 
 import { Module } from 'redux-typed-modules';
@@ -87,7 +87,7 @@ export const templateTypes = [
 // TESTING: Dummy Templates
 
 const dummyTemplates = {
-  armour: [
+  armor: [
     { id: 1, name: 'Silly Hat of Awesomness' },
     { id: 2, name: 'Big Boots of Buffalo Hide' },
   ],

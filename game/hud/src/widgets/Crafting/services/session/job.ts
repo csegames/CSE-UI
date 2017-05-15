@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 07:41:01
+ * @Last Modified time: 2017-05-15 13:29:38
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -93,7 +93,6 @@ export const removeIngredient = module.createAction({
 export const startJob = module.createAction({
   type: 'crafting/job/start',
   action: () => {
-    // slash('cr vox startjob');
     return { };
   },
   reducer: (s, a) => {

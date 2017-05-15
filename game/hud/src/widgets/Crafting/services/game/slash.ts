@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 07:01:16
+ * @Last Modified time: 2017-05-15 15:47:10
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -22,6 +22,7 @@ export function slash(command: string, callback?: (response: any) => void) {
     client.SendSlashCommand(command);
   } else {
     console.log('CRAFTING: would have sent ' + command + ' to server');
+    if (callback) callback({ type: 'complete', complete: 'Simulated completion' });
   }
 }
 
