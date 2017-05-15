@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 22:49:43
+ * @Last Modified time: 2017-05-15 08:37:10
  */
 
 import * as React from 'react';
@@ -36,6 +36,7 @@ export interface JobDetailsProps {
   setRecipe: (recipe: Recipe) => void;
   setTemplate: (template: Template) => void;
   addIngredient: (item: InventoryItem, qty: number) => void;
+  removeIngredient: (item: InventoryItem) => void;
 }
 
 export const JobDetails = (props: JobDetailsProps) => {
@@ -68,6 +69,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         job={type}
         ingredients={props.job.ingredients}
         add={props.addIngredient}
+        remove={props.removeIngredient}
         />
       <div className='job-buttons'>
         <button disabled={!props.job} onClick={() => props.set()}>Set</button>

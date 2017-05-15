@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 07:01:47
+ * @Last Modified time: 2017-05-15 08:43:26
  */
 
 .crafting-ui {
@@ -91,6 +91,28 @@
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
+      >.ingredient {
+        flex: 0 1 auto;
+        display: flex;
+        flex-direction: row;
+        >* {
+          display: 'inline-block';
+        }
+        >.qty {
+          flex: 0 0 auto;
+          width: 30px;
+          text-align: right;
+        }
+        >.times {
+          margin: 0 0.5em;
+        }
+        >.name {
+          min-width: 120px;
+        }
+        >.remove {
+          margin: 0 0.5em;
+        }
+      }
       >.add-ingredient {
         flex: 0 1 auto;
         height: 35px;
@@ -111,7 +133,6 @@
       }
       >.ingredients-title {
         flex: 0 1 auto;
-        height: 30px;
         font-size: 130%;
         margin-top: 0;
       }

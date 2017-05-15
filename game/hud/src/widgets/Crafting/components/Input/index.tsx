@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 22:02:36
+ * @Last Modified time: 2017-05-15 08:00:37
  */
 
 import * as React from 'react';
@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 
 interface InputProps {
   size?: number;
+  value?: string;
   onChange: (value: any) => void;
 }
 
@@ -25,7 +26,11 @@ interface InputState {
 class Input extends React.Component<InputProps, InputState> {
   constructor(props: InputProps) {
     super(props);
-    this.state = { changed: false, value: '' };
+    this.state = { changed: false, value: props.value };
+  }
+
+  public componentWillReceiveProps(props: InputProps) {
+    this.setState({ changed: false, value: props.value });
   }
 
   public render() {

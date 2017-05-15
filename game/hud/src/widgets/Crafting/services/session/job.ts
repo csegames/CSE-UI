@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 06:14:39
+ * @Last Modified time: 2017-05-15 07:41:01
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -77,6 +77,16 @@ export const addIngredient = module.createAction({
     const ingredient: Ingredient = { ...a.item, qty: a.qty};
     const ingredients = [ ...s.ingredients, ingredient ];
     return Object.assign(s, { ingredients });
+  },
+});
+
+export const removeIngredient = module.createAction({
+  type: 'crafting/job/remove-ingredient',
+  action: (item: InventoryItem) => {
+    return { item };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { ingredients: s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id) });
   },
 });
 

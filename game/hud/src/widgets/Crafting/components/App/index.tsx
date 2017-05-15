@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 06:52:07
+ * @Last Modified time: 2017-05-15 08:20:02
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
 import { slash } from '../../services/game/slash';
-import { JobState, setLoading, setJobType, addIngredient, setMessage } from '../../services/session/job';
+import { JobState, setLoading, setJobType, addIngredient, removeIngredient, setMessage } from '../../services/session/job';
 import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { getIngredients, gotIngredients } from '../../services/session/ingredients';
@@ -55,6 +55,7 @@ class App extends React.Component<AppProps,{}> {
               setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
               setTemplate={this.setTemplate}
               addIngredient={this.addIngredient}
+              removeIngredient={this.removeIngredient}
             />
         }
       </div>
@@ -151,10 +152,18 @@ class App extends React.Component<AppProps,{}> {
   private addIngredient = (item: InventoryItem, qty: number) => {
     this.slash(
       'cr vox addingredient ' + item.id + ' ' + qty,
-      'Add ingredient: ' + qty + ' x ' + item.name,
+      'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );
   }
+  private removeIngredient = (item: InventoryItem) => {
+    this.slash(
+      'cr vox removeingredient',
+      'Ingredient: ' + item.name + ' removed',
+      () => removeIngredient(item),
+      );
+  }
+
 }
 
 export default connect(select)(App);
