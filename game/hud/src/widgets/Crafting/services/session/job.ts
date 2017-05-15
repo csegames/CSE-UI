@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 13:29:38
+ * @Last Modified time: 2017-05-15 16:23:18
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -23,6 +23,7 @@ export interface JobState {
   ingredients: Ingredient[];
   name: string;
   message: Message;
+  count: number;
 }
 
 const initialState = () : JobState => {
@@ -36,6 +37,7 @@ const initialState = () : JobState => {
     ingredients: [],
     name: null,
     message: null,
+    count: 1,
   };
 };
 
@@ -55,6 +57,16 @@ export const setJobType = module.createAction({
   },
   reducer: (s, a) => {
     return Object.assign(s, { type: a.jobType });
+  },
+});
+
+export const setCount = module.createAction({
+  type: 'crafting/job/set-count',
+  action: (count: number) => {
+    return { count };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { count: a.count });
   },
 });
 

@@ -6,24 +6,28 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 16:10:45
+ * @Last Modified time: 2017-05-15 18:32:03
  */
 
 .crafting-ui {
   @import './components/Select/index';
 
   background-color: rgba(0,0,0,0.7);
+  background-image: url('../images/crafting/crafting-bg.png');
+  background-blend-mode: darken;
+  background-size: 100%;
   color: white;
   width: 100%;
   height: 100%;
   overflow: hidden;
   span.prompt {
-    min-width: 160px;
     display: inline-block;
     flex: 0 0 auto;
+    margin-right: 5px;
   }
   button, input {
     pointer-events: auto;
+    margin-right: 5px;
   }
   button {
     font-size: 12px;
@@ -37,7 +41,7 @@
     padding: 0 5px;
     border: 0;
     color: white;
-    background-color: #4a4a4a;
+    background-color: rgba(0,0,0,0.5);
   }
 
   /* layout */
@@ -51,6 +55,9 @@
     button.selected {
       font-weight: bold;
       color: green;
+    }
+    .clear {
+      float: right;
     }
   }
   >.vox-message {
@@ -79,15 +86,21 @@
     >.job-properties {
       display: block;
       flex: 0 1 auto;
-      >.quality-input, >.name-input, >.select-recipe, >.select-template {
+      >.name-input, >.select-recipe, >.select-template {
         height: 24px;
         margin-bottom: 1px;
         display: flex;
         flex-direction: row;
+        span.prompt {
+          min-width: 160px;
+        }
         .Select {
           flex: 0 0 auto;
           min-width: 200px;
           height: 24px;
+          .Select__impl {
+            background-color: rgba(0,0,0,0.5);
+          }
           .Select__listView {
             max-height: 175px;
           }
@@ -98,26 +111,33 @@
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
-      >.ingredient {
-        flex: 0 1 auto;
+      >.loaded-ingredients {
+        flex: 1 1 auto;
         display: flex;
-        flex-direction: row;
-        >* {
-          display: 'inline-block';
+        flex-direction: column;
+        >.ingredient {
+          flex: 0 1 auto;
+          display: flex;
+          flex-direction: row;
+          >* {
+            display: 'inline-block';
+          }
+          >.qty {
+            flex: 0 0 auto;
+            width: 30px;
+            text-align: right;
+          }
+          >.times {
+            margin: 0 0.5em;
+          }
+          >.name {
+            min-width: 120px;
+          }
         }
-        >.qty {
-          flex: 0 0 auto;
-          width: 30px;
-          text-align: right;
-        }
-        >.times {
-          margin: 0 0.5em;
-        }
-        >.name {
-          min-width: 120px;
-        }
-        >.remove {
-          margin: 0 0.5em;
+        >button {
+          flex: 0 1 auto;
+          font-size: 10px;
+          color: deepskyblue;
         }
       }
       >.add-ingredient {
@@ -127,6 +147,9 @@
           flex: 1 1 auto;
           min-width: 250px;
           height: 24px;
+          .Select__impl {
+            background-color: rgba(0,0,0,0.5);
+          }
           .Select__listView {
             max-height: 175px;
           }
@@ -155,9 +178,18 @@
     }
     >.job-buttons {
       flex: 0 1 auto;
-      height: 35px;
-      .clear {
-        float: right;
+      display: flex;
+      flex-direction: row;
+      >.quality-input, >.count-input {
+        height: 24px;
+        flex: 0 0 auto;
+        margin-right: 10px;
+      }
+      button {
+        flex: 0 0 auto;
+        margin: 0 0 0 5px;
+        padding: 0 1em;
+        height: 24px;
       }
     }
   }

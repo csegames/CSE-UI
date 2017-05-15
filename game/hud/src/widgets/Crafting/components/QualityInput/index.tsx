@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 21:52:18
+ * @Last Modified time: 2017-05-15 17:47:12
  */
 
 import * as React from 'react';
@@ -40,6 +40,7 @@ const QualityInput = (props: QualityInputProps) => {
     <div className={['quality-input'].join(' ')}>
       <Label>Quality</Label>
       <Input size={3} onChange={onChange}/>
+      <span>%</span>
     </div>
   );
 };

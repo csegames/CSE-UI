@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 15:40:11
+ * @Last Modified time: 2017-05-15 17:03:34
  */
 
 import * as React from 'react';
@@ -22,6 +22,7 @@ import RecipeSelect from '../RecipeSelect';
 import TemplateSelect from '../TemplateSelect';
 import NameInput from '../NameInput';
 import QualityInput from '../QualityInput';
+import QuantityInput from '../QuantityInput';
 
 import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
@@ -32,6 +33,7 @@ export interface JobDetailsProps {
   collect: () => void;
   cancel: () => void;
   setQuality: (quality: number) => void;
+  setCount: (count: number) => void;
   setName: (name: string) => void;
   setRecipe: (recipe: Recipe) => void;
   setTemplate: (template: Template) => void;
@@ -53,7 +55,6 @@ export const JobDetails = (props: JobDetailsProps) => {
   return (
     <div className='job-details'>
       <div className='job-properties'>
-        {<QualityInput onChange={props.setQuality}/>}
         {type === 'make' && <NameInput onChange={props.setName}/>}
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
         {type === 'make' && <TemplateSelect type='armor' onSelect={props.setTemplate}/>}
@@ -66,7 +67,8 @@ export const JobDetails = (props: JobDetailsProps) => {
         remove={props.removeIngredient}
         />
       <div className='job-buttons'>
-        { /* <button disabled={!props.job} onClick={() => props.set()}>Set</button> */ }
+        <QualityInput onChange={props.setQuality}/>
+        <QuantityInput onChange={props.setCount}/>
         <button onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>

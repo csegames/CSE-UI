@@ -6,11 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:00:37
+ * @Last Modified time: 2017-05-15 17:54:13
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { client } from 'camelot-unchained';
 
 interface InputProps {
   size?: number;
@@ -39,6 +40,7 @@ class Input extends React.Component<InputProps, InputState> {
         size={this.props.size}
         onChange={this.onChange}
         onBlur={this.onBlur}
+        onFocus={this.onFocus}
         value={this.state.value}
         />
     );
@@ -49,7 +51,14 @@ class Input extends React.Component<InputProps, InputState> {
     this.setState({ changed: true, value: e.target.value });
   }
 
+  private onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    console.log('CRAFTING: REQUEST INPUT OWNERSHIP - ALL YOUR INPUTZ BELONGZ TO US!!!');
+    client.RequestInputOwnership();
+  }
+
   private onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    console.log('CRAFTING: RELEASE INPUT OWNERSHIP :(');
+    client.ReleaseInputOwnership();
     if (this.state.changed) {
       const el = e.target as HTMLInputElement;
       this.props.onChange((el.value as any) | 0);

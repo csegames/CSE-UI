@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:20:02
+ * @Last Modified time: 2017-05-15 17:19:53
  */
 
 import * as React from 'react';
@@ -19,7 +19,7 @@ import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { getIngredients, gotIngredients } from '../../services/session/ingredients';
 import { InventoryItem, Recipe, Template } from '../../services/types';
 import { startJob, collectJob, clearJob,
-        setQuality, setName, setRecipe, setTemplate } from '../../services/session/job';
+        setQuality, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
 
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
@@ -52,7 +52,9 @@ class App extends React.Component<AppProps,{}> {
           ? <div className='loading'>Priming Vox Engine ...</div>
           : <JobDetails job={props.job}
               set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
-              setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
+              setQuality={this.setQuality}
+              setCount={this.setCount}
+              setName={this.setName} setRecipe={this.setRecipe}
               setTemplate={this.setTemplate}
               addIngredient={this.addIngredient}
               removeIngredient={this.removeIngredient}
@@ -134,6 +136,10 @@ class App extends React.Component<AppProps,{}> {
   // Job properties
   private setQuality = (quality: number) => {
     this.slash('cr vox setquality ' + quality, 'Quality set to: ' + quality, () => setQuality(quality));
+  }
+
+  private setCount = (count: number) => {
+    this.slash('cr vox setitemcount ' + count, 'Item Count set to: ' + count, () => setCount(count));
   }
 
   private setName = (name: string) => {

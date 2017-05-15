@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:44:11
+ * @Last Modified time: 2017-05-15 17:36:34
  */
 
 import * as React from 'react';
@@ -41,9 +41,7 @@ export const Ingredients = (props: IngredientsProps) => {
 
   // ingredient qty
   let qty: number = 1;
-  const count = (el: HTMLInputElement) => {
-    qty = ((el.value as any) | 0) || 1;
-  };
+  const onChange = (value: string) => qty = ((value as any) | 0) || 1;
 
   // show already loaded ingredients
   const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
@@ -63,7 +61,7 @@ export const Ingredients = (props: IngredientsProps) => {
       <div className='add-ingredient'>
         <PossibleIngredients onSelect={select}/>
         <span className='times'>x</span>
-        <Input onChange={(e: React.ChangeEvent<HTMLInputElement>) => count(e.target)} size={2} value={'1'} />
+        <Input onChange={onChange} size={2} value={'1'} />
         <button className='add' onClick={_ => selected && props.add(selected, qty)}>Add Ingredient</button>
       </div>
       <div className='loaded-ingredients'>
