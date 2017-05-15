@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 19:34:40
+ * @Last Modified time: 2017-05-15 06:54:18
  */
 
 import * as React from 'react';
@@ -31,11 +31,10 @@ const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxPro
 };
 
 const VoxMessage = (props: VoxMessageProps) => {
-  if (!props.message) return null;
   return (
-    <span className={['vox-message', props.message.type].join(' ')}>
-      {props.message.message}
-    </span>
+    <div className={['vox-message', props.message ? props.message.type : 'none'].join(' ')}>
+      {props.message && props.message.message}
+    </div>
   );
 };
 

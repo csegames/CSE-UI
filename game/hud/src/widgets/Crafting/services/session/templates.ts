@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 22:43:09
+ * @Last Modified time: 2017-05-15 06:24:58
  */
 
 import { Module } from 'redux-typed-modules';
@@ -69,7 +69,7 @@ export const gotTemplate = module.createAction({
     switch (type) {
       case 'armor':
       case 'weapons':
-      console.log('CRAFTING: ' + type, a.templates);
+      console.log('CRAFTING: ' + type + ' ' + JSON.stringify(a.templates));
       return Object.assign(s, { [type]: [...a.templates] });
     }
     console.error('CRAFTING: illegal template type ' + type);

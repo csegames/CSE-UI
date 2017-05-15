@@ -6,21 +6,20 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 22:53:47
+ * @Last Modified time: 2017-05-15 06:52:07
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
 import { slash } from '../../services/game/slash';
-import { JobState, setJobType, addIngredient, setMessage } from '../../services/session/job';
-import { gotRecipe } from '../../services/session/recipes';
-import { gotTemplate } from '../../services/session/templates';
+import { JobState, setLoading, setJobType, addIngredient, setMessage } from '../../services/session/job';
+import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
+import { getAllTemplates, gotTemplate } from '../../services/session/templates';
+import { getIngredients, gotIngredients } from '../../services/session/ingredients';
 import { InventoryItem, Recipe, Template } from '../../services/types';
 import { startJob, collectJob, clearJob,
         setQuality, setName, setRecipe, setTemplate } from '../../services/session/job';
-import { getRecipeFor } from '../../services/session/recipes';
-import { getAllTemplates } from '../../services/session/templates';
 
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
@@ -29,7 +28,7 @@ import VoxMessage from '../VoxMessage';
 import { TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
 const select = (state: GlobalState): AppProps => {
-  console.log('CRAFTING: select ui from state: ', state);
+  console.log('CRAFTING: select job from state: ' + JSON.stringify(state.job));
   return {
     job: state.job,
   };
@@ -49,18 +48,22 @@ class App extends React.Component<AppProps,{}> {
       <div className='crafting-ui'>
         <JobType job={type} changeType={this.selectType} clearJob={this.clearJob}/>
         <VoxMessage/>
-        <JobDetails job={props.job}
-          set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
-          setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
-          setTemplate={this.setTemplate}
-          addIngredient={this.addIngredient}
-          />
+        { this.props.job.loading
+          ? <div className='loading'>Priming Vox Engine ...</div>
+          : <JobDetails job={props.job}
+              set={this.setJob} start={this.startJob} collect={this.collectJob} cancel={this.clearJob}
+              setQuality={this.setQuality} setName={this.setName} setRecipe={this.setRecipe}
+              setTemplate={this.setTemplate}
+              addIngredient={this.addIngredient}
+            />
+        }
       </div>
     );
   }
 
   private selectType = (type: string) => {
     const props = this.props;
+    props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
     slash('cr vox setjob ' + type, (response: any) => {
       console.log('CRAFTING: cr vox setjob: ' + JSON.stringify(response));
@@ -68,24 +71,30 @@ class App extends React.Component<AppProps,{}> {
         const errors = response.errors.join('\n');
         console.log('CRAFTING: send error message: ' + errors);
         props.dispatch(setMessage({ type: 'error', message: errors }));
+        props.dispatch(setLoading(false));
       } else {
         props.dispatch(setJobType(type));
         props.dispatch(setMessage({ type: 'success', message: 'Job type selected' }));
-        loadLists();
+        loadLists(type);
       }
     });
-    function loadLists() {
-      switch (type) {
-        case 'make':
-          getAllTemplates((type: string, templates: Template[]) => {
-            props.dispatch(gotTemplate(type, templates));
-          });
-          break;
-        default:
-          getRecipeFor(type, (type: string, recipes: Recipe[]) => {
-            props.dispatch(gotRecipe(type, recipes));
-          });
-      }
+    function loadLists(job: string) {
+      getIngredients((type: string, list: InventoryItem[]) => {
+        props.dispatch(gotIngredients(list));
+        switch (job) {
+          case 'make':
+            getAllTemplates((type: string, templates: Template[]) => {
+              props.dispatch(gotTemplate(type, templates));
+              props.dispatch(setLoading(false));
+            });
+            break;
+          default:
+            getRecipeFor(job, (type: string, recipes: Recipe[]) => {
+              props.dispatch(gotRecipe(type, recipes));
+              props.dispatch(setLoading(false));
+            });
+        }
+      });
     }
   }
 
@@ -141,7 +150,7 @@ class App extends React.Component<AppProps,{}> {
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
     this.slash(
-      'cr vox addingredient ' + item.id + ' #' + qty,
+      'cr vox addingredient ' + item.id + ' ' + qty,
       'Add ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );

@@ -6,16 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 18:26:10
+ * @Last Modified time: 2017-05-15 07:07:52
  */
 
 import * as React from 'react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
-import gql from 'graphql-tag';
-
 import { Ingredient } from '../../services/types';
-
-import InventoryItems from '../InventoryItems';
+import PossibleIngredients from '../PossibleIngredients';
 import Select from '../Select';
 import Label from '../Label';
 
@@ -58,10 +54,10 @@ export const Ingredients = (props: IngredientsProps) => {
     <div className='job-ingredients'>
       <h1 className='ingredients-title'>Ingredients...</h1>
       <div className='add-ingredient'>
-        <InventoryItems select={select}/>
+        <PossibleIngredients onSelect={select}/>
         <span className='times'>x</span>
         <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => count(e.target)} size={2} value={1} />
-        <button className='add' onClick={_ => props.add(selected, qty)}>Add Ingredient</button>
+        <button className='add' onClick={_ => selected && props.add(selected, qty)}>Add Ingredient</button>
       </div>
       <div className='loaded-ingredients'>
         {loaded}

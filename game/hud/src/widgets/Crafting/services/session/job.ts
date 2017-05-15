@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 19:54:06
+ * @Last Modified time: 2017-05-15 06:14:39
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -15,6 +15,7 @@ import { slash } from '../game/slash';
 import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
 
 export interface JobState {
+  loading: boolean;
   type: string;
   recipe: Recipe;
   template: Template;
@@ -27,6 +28,7 @@ export interface JobState {
 const initialState = () : JobState => {
   console.log('CRAFTING: generate initialJobState');
   return {
+    loading: false,
     type: null,
     recipe: null,
     template: null,
@@ -53,6 +55,16 @@ export const setJobType = module.createAction({
   },
   reducer: (s, a) => {
     return Object.assign(s, { type: a.jobType });
+  },
+});
+
+export const setLoading = module.createAction({
+  type: 'crafting/job/set-loading',
+  action: (loading: boolean) => {
+    return { loading };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { loading: a.loading });
   },
 });
 

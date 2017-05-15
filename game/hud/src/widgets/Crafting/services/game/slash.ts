@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 22:52:00
+ * @Last Modified time: 2017-05-15 07:01:16
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -61,7 +61,9 @@ export function listen(cb: any) {
     client.OnConsoleText((text: string) => {
       const lines = text.split(/[\r\n]/g);
       const what = lines[0];
-      console.log('CRAFTING: OCT: ' + text);
+      let type;
+      let list;
+      // console.log('CRAFTING: OCT: ' + text);
       switch (what) {
         case 'Purify Recipies:':
         case 'Refine Recipies:':
@@ -69,7 +71,7 @@ export function listen(cb: any) {
         case 'Shape Recipies:':
         case 'Blocks Recipies:':
           lines.shift();
-          const list = [];
+          list = [];
           for (let i = 0; i < lines.length; i++) {
             const args = lines[i].split(' - ');
             if (args.length === 2) {
@@ -79,36 +81,53 @@ export function listen(cb: any) {
               console.warn(args[0]);
             }
           }
-          const type = what.split(' ')[0].toLowerCase();
+          type = what.split(' ')[0].toLowerCase();
           response.type = type;
           response.list = list;
           break;
-      default:
-        if (text.match(/^Template: /)) {
-          response.type = 'templates';
-          (response.templates = response.templates || []).push(text.substr(10));
-          delaySend();
-          return;
-        }
+        case 'Items:':
+          lines.shift();
+          list = [];
+          for (let i = 0; i < lines.length; i++) {
+            const args = lines[i].split('. ');
+            if (args.length === 2) {
+              list.push({ id: args[0], name: args[1] });
+            } else {
+              // probably an error message
+              console.warn(args[0]);
+            }
+          }
+          response.type = 'ingredients';
+          response.list = list;
+          break;
+        default:
+          if (text.match(/^Template: /)) {
+            response.type = 'templates';
+            (response.templates = response.templates || []).push(text.substr(10));
+            delaySend();
+            return;
+          }
 
-        if (text.match(/^No vox /)
-            || text.match(/^Tried /)
-            || text.match(/^No ingredients /)
-            || text.match(/^Quality configuration not supported/)
-            || text.match(/^Failed /)
-        ) {
-          response.type = 'error';
-          (response.errors = response.errors || []).push(text);
-          console.log('ADD ERROR ' + JSON.stringify(response.errors));
-          return;
-        }
+          if (text.match(/^No vox /)
+              || text.match(/^Tried /)
+              || text.match(/^No ingredients /)
+              || text.match(/^Make job /)
+              || text.match(/^Quality configuration not supported/)
+              || text.match(/^Failed /)
+          ) {
+            response.type = 'error';
+            (response.errors = response.errors || []).push(text);
+            console.log('ADD ERROR ' + JSON.stringify(response.errors));
+            return;
+          }
 
-        if (text.match(/^Running cr /)) {
-          response.complete = text;
-          delaySend();
-          return;
-        }
-        (response.unknown = response.unknown || []).push(text);
+          if (text.match(/^Running cr /)) {
+            response.complete = text;
+            delaySend();
+            return;
+          }
+          (response.unknown = response.unknown || []).push(text);
+          break;
       }
     });
     return res;
