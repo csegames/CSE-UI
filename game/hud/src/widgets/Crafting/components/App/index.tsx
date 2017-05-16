@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:44:31
+ * @Last Modified time: 2017-05-16 23:34:48
  */
 
 import * as React from 'react';
@@ -169,7 +169,7 @@ class App extends React.Component<AppProps,{}> {
   }
 
   private setName = (name: string) => {
-    this.slash('cr vox setname ' + name, 'Name set to: ' + name, () => setName(name));
+    this.slash('cr vox setname "' + name + '"', 'Name set to: ' + name, () => setName(name));
   }
 
   private setRecipe = (recipe: Recipe) => {

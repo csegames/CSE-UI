@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 21:54:44
+ * @Last Modified time: 2017-05-17 00:40:23
  */
 
 
@@ -41,6 +41,7 @@ export interface VoxStatus {
   status: string;
   ready: boolean;
   recipe: Recipe;
+  name: string;
   template: Template;
   ingredients: Ingredient[];
 }

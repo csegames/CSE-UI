@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:42:41
+ * @Last Modified time: 2017-05-17 00:40:31
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -201,17 +201,22 @@ export const setTemplate = module.createAction({
 
 export function getStatus(callback: (response: any) => void) {
   if (!isClient()) {
-    callback({ status: {
-      vox: '000000003f21c895',
-      type: 'make',
-      status: 'Configuring',
-      recipe: { id: 3, name: '' },
-      template: null,
-      ingredients: [
-        { id: 1, name: 'Mushy Peas', qty: 1 },
-        { id: 3, name: 'Gravy', qty: 14 },
-      ],
-     }});    // no cuAPI, simulation
+    debugger;
+    callback({
+      status: {
+        vox: '000000003fb7c1f4',
+        type: 'make',
+        status: 'configuring',
+        recipe: null,
+        template: { id: 'item_Arthurian_ArmorMediumForearm01', name: '' },
+        ingredients: [
+          { id: '1', name: 'Sub Iron x20 - 20kg @ 50%', qty: 1 },
+          { id: '2', name: 'Basic Arrow', qty: 1 },
+        ],
+        name: 'La La Land',
+      },
+      complete: 'Running cr on aaac with params [ vox status] ... done.',
+    });
   } else {
     slash('cr vox status', (response: any) => {
       console.log('CRAFTING: GOT STATUS: ' + JSON.stringify(response));
@@ -232,7 +237,8 @@ export const gotStatus = module.createAction({
       ready: a.status.ready,
       type: a.status.type,
       recipe: a.status.recipe,
-      template: null,
+      name: a.status.name,
+      template: a.status.template,
       ingredients: [...a.status.ingredients],
     });
   },

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:38:43
+ * @Last Modified time: 2017-05-17 00:17:42
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -118,19 +118,24 @@ export function listen(cb: any) {
             return;
           }
 
-          if (text.match(/^ERROR:/)
-              || text.match(/^No vox /)
-              || text.match(/^Tried /)
-              || text.match(/^Nearby vox is not yours/)
-              || text.match(/^Ingredient id not found/)
-              || text.match(/^Only one/)
-              || text.match(/^New Substance quality must /)
-              || text.match(/^A higher amount of /)
-              || text.match(/^Recipe .* requires /)
-              || text.match(/^No ingredients /)
-              || text.match(/^Make job /)
-              || text.match(/^Quality configuration not supported/)
-              || text.match(/^Failed /)
+          if (text.match(/^ERROR: /)) {
+            response.type = 'error';
+            (response.errors = response.errors || []).push(text.substr(7));
+            console.log('ADD ERROR ' + JSON.stringify(response.errors));
+            return;
+          }
+          if (text.match(/^No vox /)
+            || text.match(/^Tried /)
+            || text.match(/^Nearby vox is not yours/)
+            || text.match(/^Ingredient id not found/)
+            || text.match(/^Only one/)
+            || text.match(/^New Substance quality must /)
+            || text.match(/^A higher amount of /)
+            || text.match(/^Recipe .* requires /)
+            || text.match(/^No ingredients /)
+            || text.match(/^Make job /)
+            || text.match(/^Quality configuration not supported/)
+            || text.match(/^Failed /)
           ) {
             response.type = 'error';
             (response.errors = response.errors || []).push(text);
@@ -152,44 +157,58 @@ export function listen(cb: any) {
             console.log('VOX STATUS');
             response.status = {
               vox: what.split(' ')[5],
+              type: null,
+              status: 'idle',
+              recipe: null,
+              template: null,
+              ingredients: [],
             };
-            if (lines[1] === 'No current Job') {
-              response.status = Object.assign(response.status, {
-                type: null,
-                status: lines[1],
-                recipe: null,
-                template: null,
-                ingredients: [],
-              });
-            } else {
-              console.log('JOB DETAILS ' + JSON.stringify(lines));
-              response.status = Object.assign(response.status, {
-                type: VoxType[lines[1].split(' ')[1]],
-                status: lines[2].split(' ')[1].toLowerCase(),
-                recipe: { id: lines[3].split(' ')[1], name: '' },
-                template: null,
-                ingredients: [],
-              });
-              console.log('VOX STATUS PARSE INGREDS');
-              for (let i = 5; i < lines.length - 1; i++) {
-                if (lines[i] === 'Output:') {
-                  response.status.output = lines[i + 1];
-                  break;
-                }
-                const ingredient = lines[i].split(/\.[ ]*/);
-                if (ingredient.length > 1) {
+            let line;
+            let id;
+            const vox = response.status;
+            console.log('VOX LINES: ' + JSON.stringify(lines));
+            while ((line = lines.shift()) || line === '') {
+              console.log('VOX STATUS LINE: ' + line);
+              if (line === 'No current Job') {
+                vox.status = 'idle';
+              } else if (line.match(/^Type: /)) {
+                vox.type = VoxType[line.split(' ')[1]];
+              } else if (line.match(/^Status: /)) {
+                vox.status = line.split(' ')[1].toLowerCase();
+              } else if (line.match(/^Recipe: /)) {
+                id = line.split(' ')[1];
+                vox.recipe = id ? { id, name: '' } : null;
+              } else if (line.match(/^Template: /)) {
+                id = line.split(' ')[1];
+                vox.template = id ? { id, name: '' } : null;
+              } else if (line.match(/^Custom Name: /)) {
+                vox.name = line.substr(13);
+              } else if (line.match(/^Ingredients:/)) {
+                // Consume ingredients
+                while ((line = lines.shift()) || line === '') {
+                  console.log('VOX INGREDIENT LINE: ' + line);
+                  const ingredient = line.split(/\.[ ]*/);
+                  if (ingredient.length < 2) {
+                    lines.unshift(line);
+                    break;
+                  }
+
                   let material = ingredient[1].split(/ -/)[0];
+                  console.log('MATERIAL ' + material);
                   const x = material.lastIndexOf('x');
                   let qty = 1;
                   if (x > -1 && material.substr(x + 1).match(/[0-9]+/)) {
                     qty = parseInt(material.substr(x + 1),10);
                     material = material.substr(0,x);
                   }
-                  response.status.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+                  vox.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
                 }
+              } else if (line.match(/^Output:/)) {
+                vox.output = lines.shift();
               }
             }
-            console.log('VOX STATUS IS ' + JSON.stringify(response));
+
+            console.log('PARSED VOX STATUS IS ' + JSON.stringify(response));
             return;
           }
 
