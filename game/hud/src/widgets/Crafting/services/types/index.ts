@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 21:04:12
+ * @Last Modified time: 2017-05-16 21:54:44
  */
 
 
@@ -17,6 +17,10 @@ export interface Item {
 
 export interface InventoryItem extends Item {
   itemType: string;
+  stats: {
+    quality: number;
+    unitCount: number;
+  };
 }
 
 export interface Ingredient extends InventoryItem {

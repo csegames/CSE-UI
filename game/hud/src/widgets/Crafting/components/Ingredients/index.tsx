@@ -6,13 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:36:34
+ * @Last Modified time: 2017-05-16 22:07:03
  */
 
 import * as React from 'react';
 import { Ingredient } from '../../services/types';
-import PossibleIngredients from '../PossibleIngredients';
 import IngredientItem from '../IngredientItem';
+import InventoryItems from '../InventoryItems';
 import Select from '../Select';
 import Input from '../Input';
 import Label from '../Label';
@@ -26,52 +26,74 @@ export interface IngredientsProps {
   remove: (item: InventoryItem) => void;
 }
 
-export const Ingredients = (props: IngredientsProps) => {
-  if (!props.job) return null;
-  let selected: InventoryItem;
-  const ingredients = {};
+export interface IngredientsState {
+  selectedIngredient: InventoryItem;
+  qty: number;
+}
 
-  // Select inventory item
-  const select = (item: InventoryItem) => {
-    selected = item;
-  };
+class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
+  constructor(props: IngredientsProps) {
+    super(props);
+    this.state = { selectedIngredient: null, qty: 1 };
+  }
 
-  // Render inventory item
-  const render = (item: InventoryItem) => <div>{item.name}</div>;
+  public render() {
+    const props = this.props;
 
-  // ingredient qty
-  let qty: number = 1;
-  const onChange = (value: string) => qty = ((value as any) | 0) || 1;
+    if (!props.job) return null;
+    const ingredients = {};
 
-  // show already loaded ingredients
-  const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
-    ingredients[ingredient.id] = ingredient;
+    // Select inventory item
+    const select = (item: InventoryItem) => {
+      this.setState({ selectedIngredient: item });
+    };
+
+    // Render inventory item
+    const render = (item: InventoryItem) => <div>{item.name}</div>;
+
+    // ingredient qty
+    const onChange = (value: string) => {
+      this.setState({ qty: ((value as any) | 0) || 1 });
+    };
+
+    // show already loaded ingredients
+    const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
+      ingredients[ingredient.id] = ingredient;
+      return (
+        <IngredientItem
+          key={ingredient.id}
+          ingredient={ingredient}
+          />
+      );
+    });
+    const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
+    const ready = this.state.selectedIngredient && this.state.qty > 0;
+    const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 1;
+
     return (
-      <IngredientItem
-        key={ingredient.id}
-        ingredient={ingredient}
-        />
+      <div className='job-ingredients'>
+        <h1 className='ingredients-title'>Ingredients...</h1>
+        <div className='add-ingredient'>
+          <InventoryItems selectedItem={this.state.selectedIngredient} onSelect={select}/>
+          <span className='times'>x</span>
+          <Input disabled={!qtyok} onChange={onChange} size={2} value={this.state.qty.toString()} />
+          <button disabled={!ready} className='add' onClick={this.addIngredient}>Add Ingredient</button>
+        </div>
+        <div className='loaded-ingredients'>
+          {loaded}
+          { last
+            ? <button onClick={() => props.remove(last)}><i className='remove fa fa-times'></i> Remove Last</button>
+            : undefined }
+        </div>
+      </div>
     );
-  });
-  const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
+  }
 
-  return (
-    <div className='job-ingredients'>
-      <h1 className='ingredients-title'>Ingredients...</h1>
-      <div className='add-ingredient'>
-        <PossibleIngredients onSelect={select}/>
-        <span className='times'>x</span>
-        <Input onChange={onChange} size={2} value={'1'} />
-        <button className='add' onClick={_ => selected && props.add(selected, qty)}>Add Ingredient</button>
-      </div>
-      <div className='loaded-ingredients'>
-        {loaded}
-        { last
-          ? <button onClick={() => props.remove(last)}><i className='remove fa fa-times'></i> Remove Last</button>
-          : undefined }
-      </div>
-    </div>
-  );
-};
+  private addIngredient = () => {
+    const { selectedIngredient, qty } = this.state;
+    this.props.add(selectedIngredient, qty);
+    this.setState({ selectedIngredient: null, qty: 1 });
+  }
+}
 
 export default Ingredients;

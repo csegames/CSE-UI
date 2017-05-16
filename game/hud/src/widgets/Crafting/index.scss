@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 22:44:14
+ * @Last Modified time: 2017-05-16 22:36:56
  */
 
 .crafting-ui {
@@ -29,7 +29,7 @@
   }
   button {
     font-size: 12px;
-    min-width: 48px;
+    min-width: 40px;
   }
 
   input {
@@ -54,8 +54,11 @@
       font-weight: bold;
       color: green;
     }
-    .clear {
+    .clear, .refresh {
       float: right;
+    }
+    .refresh {
+      min-width: 20px;
     }
   }
   >.vox-message {
@@ -122,14 +125,16 @@
             display: 'inline-block';
           }
           >.qty {
-            flex: 0 0 auto;
+            flex: 0 0 30px;
             width: 30px;
             text-align: right;
           }
           >.times {
+            flex: 0 0 auto;
             margin: 0 0.5em;
           }
           >.name {
+            flex: 1 1 auto;
             min-width: 120px;
           }
         }
@@ -161,6 +166,26 @@
           flex: 0 1 150px;
           margin: 0 0 0 1em;
         }
+        .inventory-item {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          >span {
+            display: inline-block;
+            overflow: hidden;
+          }
+          >.name {
+            flex: 1 1 60%;
+          }
+          >.quantity {
+            flex: 1 1 20%;
+            text-align: right;
+          }
+          >.quality {
+            flex: 1 1 20%;
+            text-align: right;
+          }
+        }
       }
       >.ingredients-title {
         flex: 0 1 auto;
@@ -190,6 +215,17 @@
         padding: 0 1em;
         height: 24px;
       }
+    }
+  }
+  .vox-info {
+    font-size: 8px;
+    color: silver;
+    margin: 0 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    >span {
+      margin-right: 1em;
     }
   }
 }

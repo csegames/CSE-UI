@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 13:37:05
+ * @Last Modified time: 2017-05-16 22:42:34
  */
 
 import { Module } from 'redux-typed-modules';
@@ -92,8 +92,8 @@ const dummyTemplates = {
     { id: 2, name: 'Big Boots of Buffalo Hide' },
   ],
   weapons: [
-    { id: 1, name: 'Big Sword of Jobber' },
-    { id: 2, name: 'Small Kife of Sneakyness' },
+    { id: 3, name: 'Big Sword of Jobber' },
+    { id: 4, name: 'Small Kife of Sneakyness' },
   ],
 };
 

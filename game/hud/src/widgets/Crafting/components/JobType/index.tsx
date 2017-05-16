@@ -17,6 +17,7 @@ export interface JobTypeProps {
   job: string;
   changeType: (type: string) => void;
   clearJob: () => void;
+  refresh: () => void;
 }
 
 export const JobType = (props: JobTypeProps) => {
@@ -36,6 +37,7 @@ export const JobType = (props: JobTypeProps) => {
       {button('block')}
       {button('make')}
       <button className='clear' onClick={props.clearJob}>Clear</button>
+      <button className='refresh' onClick={() => props.refresh()}><i className='fa fa-refresh'></i></button>
     </div>
   );
 };

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:54:13
+ * @Last Modified time: 2017-05-16 21:58:39
  */
 
 import * as React from 'react';
@@ -16,6 +16,7 @@ import { client } from 'camelot-unchained';
 interface InputProps {
   size?: number;
   value?: string;
+  disabled?: boolean;
   onChange: (value: any) => void;
 }
 
@@ -38,6 +39,7 @@ class Input extends React.Component<InputProps, InputState> {
     return (
       <input type='text'
         size={this.props.size}
+        disabled={this.props.disabled}
         onChange={this.onChange}
         onBlur={this.onBlur}
         onFocus={this.onFocus}

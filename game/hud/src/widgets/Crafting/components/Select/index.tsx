@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 20:10:33
+ * @Last Modified time: 2017-05-16 19:48:11
  */
 
 import * as React from 'react';
 
 export interface SelectProps {
   items: any[];
-  selectedItemIndex?: any;
+  selectedItem?: any;
   renderActiveItem: (item: any) => any;
   renderListItem: (item: any) => any;
   onSelectedItemChanged: (item: any) => void;
@@ -33,7 +33,7 @@ class Select extends React.Component<SelectProps, SelectState> {
   constructor(props: SelectProps) {
     super(props);
     this.state = {
-      selectedIndex: 0,
+      selectedIndex: -1,
       showList: false,
     };
   }
@@ -50,8 +50,8 @@ class Select extends React.Component<SelectProps, SelectState> {
         </div>
       );
     }
-    const selectedIndex = this.props.selectedItemIndex !== undefined ? this.props.selectedItemIndex :
-      this.state.selectedIndex;
+    // if selectedItem is undefined or null, we get -1 which is exactly what we want
+    const selectedIndex = this.props.items.indexOf(this.props.selectedItem);
     return(
       <div className={['Select', this.props.containerClass ].join(' ')}>
         <div

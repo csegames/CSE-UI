@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:10:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-13 20:37:40
+ * @Last Modified time: 2017-05-16 21:04:34
  */
 
 import * as React from 'react';
@@ -42,7 +42,8 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
     super(props);
   }
   public render() {
-    const selectedItemIndex = this.props.items.indexOf(this.props.selected);
+    const i = this.props.selected ? this.props.items.findIndex((i: Template) => this.props.selected.id === i.id) : -1;
+    const selectedItem = i > -1 ? this.props.items[i] : null;
     const type = this.props.type;
     return (
       <div className={['select-template', type].join(' ')}>
@@ -52,7 +53,7 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}
           onSelectedItemChanged={this.onSelect}
-          selectedItemIndex={selectedItemIndex}
+          selectedItem={selectedItem}
           />
       </div>
     );

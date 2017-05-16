@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 18:15:30
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 18:41:03
+ * @Last Modified time: 2017-05-16 22:19:15
  */
 
 import * as React from 'react';
@@ -20,16 +20,26 @@ interface InventoryItems {
 }
 
 export interface InventoryItemsProps extends InjectedGraphQLProps<InventoryItems> {
-  select: (item: InventoryItem) => void;
+  selectedItem: InventoryItem;
+  onSelect: (item: InventoryItem) => void;
 }
 
 export const InventoryItems = (props: InventoryItemsProps) => {
-  debugger;
   const items = (props.data && props.data.myInventoryItems) || [];
-  const render = (item: InventoryItem) => item && <div>{item.name}</div>;
+  const render = (item: InventoryItem) => item && (
+    <div className='inventory-item'>
+      <span className='name'>{item.name}</span>
+      <span className='quantity'>x{item.stats.unitCount}</span>
+      <span className='quality'>@ {(item.stats.quality * 100) | 0}%</span>
+    </div>
+  );
   return (
     <Select items={items}
-      onSelectedItemChanged={props.select} renderActiveItem={render} renderListItem={render}/>
+      onSelectedItemChanged={props.onSelect}
+      renderActiveItem={render}
+      renderListItem={render}
+      selectedItem={props.selectedItem}
+      />
   );
 };
 
@@ -39,12 +49,15 @@ const query = gql`
       itemType
       name
       id
+      stats {
+        quality,
+        unitCount
+      }
     }
   }
 `;
 
 const options = (props: InventoryItemsProps) => {
-  debugger;
   const opts = {
     variables: {
     },

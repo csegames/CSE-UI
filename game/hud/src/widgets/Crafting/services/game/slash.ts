@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 22:12:21
+ * @Last Modified time: 2017-05-16 22:38:43
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -118,9 +118,11 @@ export function listen(cb: any) {
             return;
           }
 
-          if (text.match(/^No vox /)
+          if (text.match(/^ERROR:/)
+              || text.match(/^No vox /)
               || text.match(/^Tried /)
               || text.match(/^Nearby vox is not yours/)
+              || text.match(/^Ingredient id not found/)
               || text.match(/^Only one/)
               || text.match(/^New Substance quality must /)
               || text.match(/^A higher amount of /)
@@ -164,7 +166,7 @@ export function listen(cb: any) {
               response.status = Object.assign(response.status, {
                 type: VoxType[lines[1].split(' ')[1]],
                 status: lines[2].split(' ')[1].toLowerCase(),
-                recipe: lines[3].split(' ')[1],
+                recipe: { id: lines[3].split(' ')[1], name: '' },
                 template: null,
                 ingredients: [],
               });
@@ -175,7 +177,16 @@ export function listen(cb: any) {
                   break;
                 }
                 const ingredient = lines[i].split(/\.[ ]*/);
-                response.status.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+                if (ingredient.length > 1) {
+                  let material = ingredient[1].split(/ -/)[0];
+                  const x = material.lastIndexOf('x');
+                  let qty = 1;
+                  if (x > -1 && material.substr(x + 1).match(/[0-9]+/)) {
+                    qty = parseInt(material.substr(x + 1),10);
+                    material = material.substr(0,x);
+                  }
+                  response.status.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+                }
               }
             }
             console.log('VOX STATUS IS ' + JSON.stringify(response));

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 21:56:15
+ * @Last Modified time: 2017-05-16 22:42:41
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -203,11 +203,14 @@ export function getStatus(callback: (response: any) => void) {
   if (!isClient()) {
     callback({ status: {
       vox: '000000003f21c895',
-      type: 'purify',
+      type: 'make',
       status: 'Configuring',
-      recipe: null,
+      recipe: { id: 3, name: '' },
       template: null,
-      ingredients: [],
+      ingredients: [
+        { id: 1, name: 'Mushy Peas', qty: 1 },
+        { id: 3, name: 'Gravy', qty: 14 },
+      ],
      }});    // no cuAPI, simulation
   } else {
     slash('cr vox status', (response: any) => {
@@ -228,7 +231,7 @@ export const gotStatus = module.createAction({
       status: a.status.status,
       ready: a.status.ready,
       type: a.status.type,
-      recipe: { id: a.status.recipe, name: 'unknown' },
+      recipe: a.status.recipe,
       template: null,
       ingredients: [...a.status.ingredients],
     });

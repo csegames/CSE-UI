@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 20:47:43
+ * @Last Modified time: 2017-05-16 22:44:31
  */
 
 import * as React from 'react';
@@ -16,13 +16,13 @@ import { slash } from '../../services/game/slash';
 import { JobState, setLoading, setJobType, addIngredient, removeIngredient, setMessage } from '../../services/session/job';
 import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
-import { getIngredients, gotIngredients } from '../../services/session/ingredients';
 import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types';
 import { startJob, collectJob, clearJob, cancelJob,
         setQuality, setCount, setName, setRecipe, setTemplate, getStatus, gotStatus } from '../../services/session/job';
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 import VoxMessage from '../VoxMessage';
+import VoxInfo from '../VoxInfo';
 
 import { TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
@@ -50,13 +50,15 @@ class App extends React.Component<AppProps,{}> {
     const type = props.job && props.job.type;
     return (
       <div className='crafting-ui'>
-        <JobType job={type} changeType={this.selectType} clearJob={this.clearJob}/>
+        <VoxInfo/>
+        <JobType job={type} changeType={this.selectType} clearJob={this.clearJob} refresh={this.refresh} />
         <VoxMessage/>
         { this.props.job.loading
           ? <div className='loading'>Preparing for your performance ...</div>
           : <JobDetails job={props.job}
               set={this.setJob} start={this.startJob}
-              collect={this.collectJob} cancel={this.cancelJob} refresh={this.refresh}
+              collect={this.collectJob}
+              cancel={this.cancelJob}
               setQuality={this.setQuality}
               setCount={this.setCount}
               setName={this.setName} setRecipe={this.setRecipe}
@@ -105,22 +107,19 @@ class App extends React.Component<AppProps,{}> {
 
   private loadLists = (job: string) => {
     const props = this.props;
-    getIngredients((type: string, list: InventoryItem[]) => {
-      props.dispatch(gotIngredients(list));
-      switch (job) {
-        case 'make':
-          getAllTemplates((type: string, templates: Template[]) => {
-            props.dispatch(gotTemplate(type, templates));
-            props.dispatch(setLoading(false));
-          });
-          break;
-        default:
-          getRecipeFor(job, (type: string, recipes: Recipe[]) => {
-            props.dispatch(gotRecipe(type, recipes));
-            props.dispatch(setLoading(false));
-          });
-      }
-    });
+    switch (job) {
+      case 'make':
+        getAllTemplates((type: string, templates: Template[]) => {
+          props.dispatch(gotTemplate(type, templates));
+          props.dispatch(setLoading(false));
+        });
+        break;
+      default:
+        getRecipeFor(job, (type: string, recipes: Recipe[]) => {
+          props.dispatch(gotRecipe(type, recipes));
+          props.dispatch(setLoading(false));
+        });
+    }
   }
 
   // Generic, issue a / command, deal with response
@@ -184,7 +183,7 @@ class App extends React.Component<AppProps,{}> {
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
     this.slash(
-      'cr vox addingredient ' + item.id + ' ' + qty,
+      'cr vox addingredientbyid ' + item.id + ' ' + qty,
       'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );

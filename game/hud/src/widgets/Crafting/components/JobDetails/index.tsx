@@ -32,7 +32,6 @@ export interface JobDetailsProps {
   start: () => void;
   collect: () => void;
   cancel: () => void;
-  refresh: () => void;
   setQuality: (quality: number) => void;
   setCount: (count: number) => void;
   setName: (name: string) => void;
@@ -76,7 +75,6 @@ export const JobDetails = (props: JobDetailsProps) => {
         <button onClick={() => props.start()}>Start</button>
         <button onClick={() => props.collect()}>Collect</button>
         <button onClick={() => props.cancel()}>Cancel</button>
-        <button onClick={() => props.refresh()}>Refresh</button>
       </div>
     </div>
   );
