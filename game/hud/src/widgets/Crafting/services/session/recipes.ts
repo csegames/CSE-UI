@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 21:35:01
+ * @Last Modified time: 2017-05-17 20:01:02
  */
 
 import { Module } from 'redux-typed-modules';
@@ -109,11 +109,6 @@ const dummyRecipies = {
     { id: 2, name: 'Grind Flour' },
     { id: 3, name: 'Grind Stone' },
   ],
-  shape: [
-    { id: 1, name: 'Mold Clay' },
-    { id: 2, name: 'Chisel Wood' },
-    { id: 3, name: 'Hammer Metal' },
-  ],
   block: [
     { id: 1, name: 'Stone Block' },
     { id: 2, name: 'Wood Block' },
@@ -124,7 +119,7 @@ const dummyRecipies = {
 
 export function getRecipeFor(what: string, callback: (type: string, list: Recipe[]) => void) {
   if (!isClient()) {
-    callback(what, dummyRecipies[what]);    // no cuAPI, simulation
+    callback(what, dummyRecipies[what] || []);    // no cuAPI, simulation
   } else {
     slash('cr list ' + what + 'recipes', (response: any) => {
       switch (response.type) {

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 21:58:49
+ * @Last Modified time: 2017-05-17 19:43:35
  */
 
 import * as React from 'react';
@@ -28,7 +28,6 @@ import { JobState, RecipesState, TemplatesState } from '../../services/session/r
 
 export interface JobDetailsProps {
   job: JobState;
-  set: () => void;
   start: () => void;
   collect: () => void;
   cancel: () => void;

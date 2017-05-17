@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-16 18:52:22
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 19:00:07
+ * @Last Modified time: 2017-05-17 23:04:41
  */
 
 
@@ -33,16 +33,16 @@ const select = (state: GlobalState, props: VoxInfoProps) : VoxInfoReduxProps => 
 const VoxInfo = (props: VoxInfoProps) => {
   return (
     <div className='vox-info'>
-      <span>vox: {props.job.vox}</span>
-      <span>status: {props.job.status}</span>
-      <span>type: {props.job.type}</span>
-      <span>loading: {props.job.loading}</span>
-      <span>ready: {props.job.ready}</span>
-      <span>recipe: {props.job.recipe && props.job.recipe.id}</span>
-      <span>template: {props.job.template && props.job.template.id}</span>
-      <span>quality: {props.job.quality}</span>
-      <span>name: {props.job.name}</span>
-      <span>count: {props.job.count}</span>
+      <span>{props.job.vox}</span>
+      <span>{props.job.status}</span>
+      <span>{props.job.type}</span>
+      <span>{props.job.started}</span>
+      <span>{props.job.endin}</span>
+      <span>{props.job.recipe && props.job.recipe.id}</span>
+      <span>{props.job.template && props.job.template.id}</span>
+      <span>{props.job.name}</span>
+      <span>{props.job.quality}</span>
+      <span>{props.job.count}</span>
     </div>
   );
 };

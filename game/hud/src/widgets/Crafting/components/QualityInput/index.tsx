@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:47:12
+ * @Last Modified time: 2017-05-17 19:29:11
  */
 
 import * as React from 'react';
@@ -33,13 +33,14 @@ const select = (state: GlobalState, props: QualityInputProps) : QualityInputRedu
 };
 
 const QualityInput = (props: QualityInputProps) => {
-  const onChange = (value: string) => {
-    props.onChange(value as any);
-  };
   return (
     <div className={['quality-input'].join(' ')}>
       <Label>Quality</Label>
-      <Input size={3} onChange={onChange}/>
+      <Input
+        size={3}
+        onChange={(value: string) => props.onChange((value as any) | 0)}
+        value={props.quality && props.quality.toString()}
+        />
       <span>%</span>
     </div>
   );

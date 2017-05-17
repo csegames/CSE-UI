@@ -6,13 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 21:33:09
+ * @Last Modified time: 2017-05-17 19:13:54
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import Select from '../Select';
 import Label from '../Label';
+import Input from '../Input';
 import { GlobalState } from '../../services/session/reducer';
 
 export interface NameInputReduxProps {
@@ -33,11 +34,10 @@ const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps
 };
 
 const NameInput = (props: NameInputProps) => {
-  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => props.onChange((e.target as HTMLInputElement).value);
   return (
     <div className={['name-input'].join(' ')}>
       <Label>Name</Label>
-      <input type='text' size={32} onBlur={onBlur}/>
+      <Input size={32} onChange={props.onChange} value={props.name}/>
     </div>
   );
 };

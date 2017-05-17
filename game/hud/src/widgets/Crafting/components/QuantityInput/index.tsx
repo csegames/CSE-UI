@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 16:21:40
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 17:03:10
+ * @Last Modified time: 2017-05-17 19:29:23
  */
 
 
@@ -14,6 +14,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import Select from '../Select';
 import Label from '../Label';
+import Input from '../Input';
 import { GlobalState } from '../../services/session/reducer';
 
 export interface QuantityInputReduxProps {
@@ -34,12 +35,14 @@ const select = (state: GlobalState, props: QuantityInputProps) : QuantityInputRe
 };
 
 const QuantityInput = (props: QuantityInputProps) => {
-  const onBlur = (e: React.FocusEvent<HTMLInputElement>) =>
-    props.onChange(((e.target as HTMLInputElement).value as any) | 0);
   return (
     <div className={['quality-input'].join(' ')}>
       <Label>Quantity</Label>
-      <input type='text' size={3} onBlur={onBlur}/>
+      <Input
+        size={3}
+        onChange={(value: string) => props.onChange((value as any) | 0)}
+        value={props.count && props.count.toString()}
+        />
     </div>
   );
 };

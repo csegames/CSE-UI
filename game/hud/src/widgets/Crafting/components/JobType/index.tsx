@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-14 19:52:12
+ * @Last Modified time: 2017-05-17 21:16:51
  */
 
 import * as React from 'react';
@@ -14,10 +14,12 @@ import * as React from 'react';
 import Label from '../Label';
 
 export interface JobTypeProps {
+  mode: string;
   job: string;
   changeType: (type: string) => void;
   clearJob: () => void;
   refresh: () => void;
+  toggle: () => void;
 }
 
 export const JobType = (props: JobTypeProps) => {
@@ -28,16 +30,26 @@ export const JobType = (props: JobTypeProps) => {
         </button>
       );
   };
+  let craftingButtons;
+  switch (props.mode) {
+    case 'crafting':
+      craftingButtons = (
+        <div className='job-buttons'>
+          {button('purify')}
+          {button('refine')}
+          {button('grind')}
+          {button('shape')}
+          {button('block')}
+          {button('make')}
+          <button className='refresh' onClick={() => props.refresh()}><i className='fa fa-refresh'></i></button>
+          <button className='clear' onClick={props.clearJob}>Clear</button>
+        </div>
+      );
+  }
   return (
     <div className='job-type'>
-      {button('purify')}
-      {button('refine')}
-      {button('grind')}
-      {button('shape')}
-      {button('block')}
-      {button('make')}
-      <button className='clear' onClick={props.clearJob}>Clear</button>
-      <button className='refresh' onClick={() => props.refresh()}><i className='fa fa-refresh'></i></button>
+      {craftingButtons}
+      <button className='tools' onClick={props.toggle}>{props.mode === 'crafting' ? 'Tools' : 'Crafting'}</button>
     </div>
   );
 };

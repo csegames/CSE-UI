@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:40:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 18:16:22
+ * @Last Modified time: 2017-05-17 20:13:22
  */
 
 .Select {
@@ -42,6 +42,7 @@
 }
 
 .Select__activeView {
+  width: 100%;
   flex: 1 1 auto;
   color: #ececec;
   overflow: hidden;

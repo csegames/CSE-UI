@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 21:58:39
+ * @Last Modified time: 2017-05-17 19:17:09
  */
 
 import * as React from 'react';
@@ -17,7 +17,7 @@ interface InputProps {
   size?: number;
   value?: string;
   disabled?: boolean;
-  onChange: (value: any) => void;
+  onChange: (value: string) => void;
 }
 
 interface InputState {
@@ -63,7 +63,7 @@ class Input extends React.Component<InputProps, InputState> {
     client.ReleaseInputOwnership();
     if (this.state.changed) {
       const el = e.target as HTMLInputElement;
-      this.props.onChange((el.value as any) | 0);
+      this.props.onChange(el.value);
     }
   }
 }

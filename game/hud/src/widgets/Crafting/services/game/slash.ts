@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 00:17:42
+ * @Last Modified time: 2017-05-17 23:32:31
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -19,6 +19,66 @@ const VoxType = {
   'World.VoxJobBlock': 'block',
   'World.VoxJobMake': 'make',
 };
+
+function parseVoxStatus(response: any, lines: string[]) {
+  console.log('VOX STATUS');
+  const vox: any = response.status = {
+    type: null,
+    status: 'idle',
+    recipe: null,
+    template: null,
+    ingredients: [],
+  };
+  let line;
+  let id;
+  console.log('VOX LINES: ' + JSON.stringify(lines));
+  while ((line = lines.shift()) || line === '') {
+    console.log('VOX STATUS LINE: ' + line);
+    if (line.match(/^Found vox with /)) {
+      vox.vox = line.split(' ')[5];
+    } else if (line === 'No current Job') {
+      vox.status = 'idle';
+    } else if (line.match(/^Started At: /)) {
+      vox.started = line.substr(12);
+    } else if (line.match(/^Ends In: /)) {
+      vox.endin = line.substr(10);
+    } else if (line.match(/^Type: /)) {
+      vox.type = VoxType[line.split(' ')[1].split('+')[0]];
+    } else if (line.match(/^Status: /)) {
+      vox.status = line.split(' ')[1].toLowerCase();
+    } else if (line.match(/^Recipe: /)) {
+      id = line.split(' ')[1];
+      vox.recipe = id ? { id, name: '' } : null;
+    } else if (line.match(/^Template: /)) {
+      id = line.split(' ')[1];
+      vox.template = id ? { id, name: '' } : null;
+    } else if (line.match(/^Custom Name: /)) {
+      vox.name = line.substr(13);
+    } else if (line.match(/^Ingredients:/)) {
+      // Consume ingredients
+      while ((line = lines.shift()) || line === '') {
+        console.log('VOX INGREDIENT LINE: ' + line);
+        const ingredient = line.split(/\.[ ]*/);
+        if (ingredient.length < 2) {
+          lines.unshift(line);
+          break;
+        }
+
+        let material = ingredient[1].split(/ -/)[0];
+        console.log('MATERIAL ' + material);
+        const x = material.lastIndexOf('x');
+        let qty = 1;
+        if (x > -1 && material.substr(x + 1).match(/[0-9]+/)) {
+          qty = parseInt(material.substr(x + 1),10);
+          material = material.substr(0,x);
+        }
+        vox.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+      }
+    } else if (line.match(/^Output:/)) {
+      vox.output = lines.shift();
+    }
+  }
+}
 
 export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {
@@ -79,7 +139,7 @@ export function listen(cb: any) {
         case 'Refine Recipies:':
         case 'Grind Recipies:':
         case 'Shape Recipies:':
-        case 'Blocks Recipies:':
+        case 'Block Recipies:':
           lines.shift();
           list = [];
           for (let i = 0; i < lines.length; i++) {
@@ -118,14 +178,25 @@ export function listen(cb: any) {
             return;
           }
 
+          // ERROR: prefixed errors
           if (text.match(/^ERROR: /)) {
             response.type = 'error';
-            (response.errors = response.errors || []).push(text.substr(7));
+            const errors = text.substr(7).split('\n');
+            response.errors = (response.errors || []).concat(errors);
             console.log('ADD ERROR ' + JSON.stringify(response.errors));
             return;
           }
-          if (text.match(/^No vox /)
-            || text.match(/^Tried /)
+
+          // Errors which are still not ERROR: prefixed
+          if (text.match(/^No vox /)) {
+            response.type = 'error';
+            (response.errors = response.errors || []).push(text);
+            console.log('ADD ERROR ' + JSON.stringify(response.errors));
+            return;
+          }
+
+          // Errors possibly
+          if (text.match(/^Tried /)
             || text.match(/^Nearby vox is not yours/)
             || text.match(/^Ingredient id not found/)
             || text.match(/^Only one/)
@@ -138,7 +209,7 @@ export function listen(cb: any) {
             || text.match(/^Failed /)
           ) {
             response.type = 'error';
-            (response.errors = response.errors || []).push(text);
+            (response.errors = response.errors || []).push('STILL USED? ' + text);
             console.log('ADD ERROR ' + JSON.stringify(response.errors));
             return;
           }
@@ -154,62 +225,15 @@ export function listen(cb: any) {
           }
 
           if (text.match(/^Found vox with /)) {
-            console.log('VOX STATUS');
-            response.status = {
-              vox: what.split(' ')[5],
-              type: null,
-              status: 'idle',
-              recipe: null,
-              template: null,
-              ingredients: [],
-            };
-            let line;
-            let id;
-            const vox = response.status;
-            console.log('VOX LINES: ' + JSON.stringify(lines));
-            while ((line = lines.shift()) || line === '') {
-              console.log('VOX STATUS LINE: ' + line);
-              if (line === 'No current Job') {
-                vox.status = 'idle';
-              } else if (line.match(/^Type: /)) {
-                vox.type = VoxType[line.split(' ')[1]];
-              } else if (line.match(/^Status: /)) {
-                vox.status = line.split(' ')[1].toLowerCase();
-              } else if (line.match(/^Recipe: /)) {
-                id = line.split(' ')[1];
-                vox.recipe = id ? { id, name: '' } : null;
-              } else if (line.match(/^Template: /)) {
-                id = line.split(' ')[1];
-                vox.template = id ? { id, name: '' } : null;
-              } else if (line.match(/^Custom Name: /)) {
-                vox.name = line.substr(13);
-              } else if (line.match(/^Ingredients:/)) {
-                // Consume ingredients
-                while ((line = lines.shift()) || line === '') {
-                  console.log('VOX INGREDIENT LINE: ' + line);
-                  const ingredient = line.split(/\.[ ]*/);
-                  if (ingredient.length < 2) {
-                    lines.unshift(line);
-                    break;
-                  }
-
-                  let material = ingredient[1].split(/ -/)[0];
-                  console.log('MATERIAL ' + material);
-                  const x = material.lastIndexOf('x');
-                  let qty = 1;
-                  if (x > -1 && material.substr(x + 1).match(/[0-9]+/)) {
-                    qty = parseInt(material.substr(x + 1),10);
-                    material = material.substr(0,x);
-                  }
-                  vox.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
-                }
-              } else if (line.match(/^Output:/)) {
-                vox.output = lines.shift();
-              }
-            }
-
+            parseVoxStatus(response, lines);
             console.log('PARSED VOX STATUS IS ' + JSON.stringify(response));
             return;
+          }
+
+          // Partial VOX status
+          if (text.match(/^Type: World/)) {
+            parseVoxStatus(response, lines);
+            console.log('PARSED VOX STATUS IS ' + JSON.stringify(response));
           }
 
           (response.unknown = response.unknown || []).push(text);

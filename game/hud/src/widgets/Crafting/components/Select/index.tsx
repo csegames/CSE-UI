@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 19:48:11
+ * @Last Modified time: 2017-05-17 20:19:56
  */
 
 import * as React from 'react';
@@ -43,10 +43,14 @@ class Select extends React.Component<SelectProps, SelectState> {
       // No items to display
       return (
         <div className={`Select ${this.props.containerClass || ''}`}>
-          <div className='Select__activeView'>
-            {this.props.renderActiveItem(null)}
+          <div className='Select__impl'>
+            <div className='Select__activeView'>
+              {this.props.renderActiveItem(null)}
+            </div>
+            <div className='Select__arrow' style={{ opacity: 0.5 }}>
+              <i className='fa fa-chevron-down' aria-hidden='true'></i>
+            </div>
           </div>
-          <div className='Select__arrow'><i className='fa fa-chevron-up' aria-hidden='true'></i></div>
         </div>
       );
     }

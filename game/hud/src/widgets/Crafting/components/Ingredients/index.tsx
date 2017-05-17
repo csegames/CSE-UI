@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:07:03
+ * @Last Modified time: 2017-05-17 22:09:01
  */
 
 import * as React from 'react';
@@ -59,12 +59,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     // show already loaded ingredients
     const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
       ingredients[ingredient.id] = ingredient;
-      return (
-        <IngredientItem
-          key={ingredient.id}
-          ingredient={ingredient}
-          />
-      );
+      return <IngredientItem key={i} ingredient={ingredient} />;
     });
     const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
     const ready = this.state.selectedIngredient && this.state.qty > 0;
@@ -76,7 +71,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         <div className='add-ingredient'>
           <InventoryItems selectedItem={this.state.selectedIngredient} onSelect={select}/>
           <span className='times'>x</span>
-          <Input disabled={!qtyok} onChange={onChange} size={2} value={this.state.qty.toString()} />
+          <Input disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
           <button disabled={!ready} className='add' onClick={this.addIngredient}>Add Ingredient</button>
         </div>
         <div className='loaded-ingredients'>

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 00:40:31
+ * @Last Modified time: 2017-05-17 23:26:01
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -20,6 +20,8 @@ export interface JobState {
   status: string;
   ready: boolean;
   type: string;
+  started: string;
+  endin: string;
   recipe: Recipe;
   template: Template;
   quality: number;
@@ -37,13 +39,15 @@ const initialState = () : JobState => {
     ready: false,
     loading: false,
     type: null,
+    started: null,
+    endin: null,
     recipe: null,
     template: null,
-    quality: 0,
+    quality: undefined,
     ingredients: [],
     name: null,
     message: null,
-    count: 1,
+    count: undefined,
   };
 };
 
@@ -95,7 +99,8 @@ export const addIngredient = module.createAction({
   reducer: (s, a) => {
     const ingredient: Ingredient = { ...a.item, qty: a.qty};
     const ingredients = [ ...s.ingredients, ingredient ];
-    return Object.assign(s, { ingredients });
+    s = Object.assign(s, { ingredients });
+    return s;
   },
 });
 
@@ -145,7 +150,9 @@ export const collectJob = module.createAction({
     return { };
   },
   reducer: (s, a) => {
-    return s;
+    // collecting a job, if successful, also clears it
+    const vox = s.vox;
+    return Object.assign(s, initialState(), { vox, status: 'idle' });
   },
 });
 
@@ -201,7 +208,6 @@ export const setTemplate = module.createAction({
 
 export function getStatus(callback: (response: any) => void) {
   if (!isClient()) {
-    debugger;
     callback({
       status: {
         vox: '000000003fb7c1f4',
@@ -224,18 +230,43 @@ export function getStatus(callback: (response: any) => void) {
     });
   }
 }
+
 export const gotStatus = module.createAction({
   type: 'crafting/job/got-status',
   action: (status: VoxStatus) => {
     return { status };
   },
   reducer: (s, a) => {
-    console.log('CRAFTING GOT STATUS: ' + a.status.type);
+    console.log('CRAFTING GOT VOX STATUS: ' + JSON.stringify(a.status));
     return Object.assign(s, {
       vox: a.status.vox,
       status: a.status.status,
       ready: a.status.ready,
       type: a.status.type,
+      started: a.status.started,
+      endin: a.status.endin,
+      recipe: a.status.recipe,
+      name: a.status.name,
+      template: a.status.template,
+      ingredients: [...a.status.ingredients],
+    });
+  },
+});
+
+// Like gotStatus but without vox: ID
+export const updateStatus = module.createAction({
+  type: 'crafting/job/update-status',
+  action: (status: VoxStatus) => {
+    return { status };
+  },
+  reducer: (s, a) => {
+    console.log('CRAFTING UPDATE VOX STATUS: ' + JSON.stringify(a.status));
+    return Object.assign(s, {
+      status: a.status.status,
+      ready: a.status.ready,
+      type: a.status.type,
+      started: a.status.started,
+      endin: a.status.endin,
       recipe: a.status.recipe,
       name: a.status.name,
       template: a.status.template,

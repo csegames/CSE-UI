@@ -6,29 +6,32 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 23:34:48
+ * @Last Modified time: 2017-05-17 22:52:51
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
 import { slash } from '../../services/game/slash';
-import { JobState, setLoading, setJobType, addIngredient, removeIngredient, setMessage } from '../../services/session/job';
+import { setLoading, setJobType, addIngredient, removeIngredient, setMessage } from '../../services/session/job';
 import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types';
 import { startJob, collectJob, clearJob, cancelJob,
-        setQuality, setCount, setName, setRecipe, setTemplate, getStatus, gotStatus } from '../../services/session/job';
+        setQuality, setCount, setName, setRecipe, setTemplate,
+        getStatus, gotStatus, updateStatus } from '../../services/session/job';
+import { setUIMode } from '../../services/session/ui';
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 import VoxMessage from '../VoxMessage';
 import VoxInfo from '../VoxInfo';
 
-import { TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
+import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
 const select = (state: GlobalState): AppProps => {
   console.log('CRAFTING: select job from state: ' + JSON.stringify(state.job));
   return {
+    ui: state.ui,
     job: state.job,
   };
 };
@@ -36,6 +39,7 @@ const select = (state: GlobalState): AppProps => {
 interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
+  ui: UIState;
 }
 
 class App extends React.Component<AppProps,{}> {
@@ -48,15 +52,16 @@ class App extends React.Component<AppProps,{}> {
     const props = this.props;
     console.log('CRAFTING: render App: props=', props);
     const type = props.job && props.job.type;
-    return (
-      <div className='crafting-ui'>
-        <VoxInfo/>
-        <JobType job={type} changeType={this.selectType} clearJob={this.clearJob} refresh={this.refresh} />
-        <VoxMessage/>
-        { this.props.job.loading
+
+    let jobUI;
+    let toolsUI;
+
+    switch (this.props.ui.mode) {
+      case 'crafting':
+        jobUI = this.props.job.loading
           ? <div className='loading'>Preparing for your performance ...</div>
           : <JobDetails job={props.job}
-              set={this.setJob} start={this.startJob}
+              start={this.startJob}
               collect={this.collectJob}
               cancel={this.cancelJob}
               setQuality={this.setQuality}
@@ -65,8 +70,36 @@ class App extends React.Component<AppProps,{}> {
               setTemplate={this.setTemplate}
               addIngredient={this.addIngredient}
               removeIngredient={this.removeIngredient}
-            />
-        }
+            />;
+        break;
+      case 'tools':
+        toolsUI = (
+          <div className='crafting-tools'>
+            <div className='coming-soon'>Coming Soon</div>
+            <h1>Resources</h1>
+            <div><button>/harvest</button> Harvest nearby resources</div>
+            <div><button>/harvestinfo</button> List details about nearby resources</div>
+            <h1>Split</h1>
+            <div><button>Split</button> (select item here)</div>
+          </div>
+        );
+        break;
+    }
+
+    return (
+      <div className='crafting-ui'>
+        <VoxInfo/>
+        <JobType
+          mode={this.props.ui.mode}
+          job={type}
+          changeType={this.selectType}
+          clearJob={this.clearJob}
+          refresh={this.refresh}
+          toggle={this.toggle}
+        />
+        <VoxMessage/>
+        {jobUI}
+        {toolsUI}
       </div>
     );
   }
@@ -79,11 +112,17 @@ class App extends React.Component<AppProps,{}> {
         props.dispatch(setMessage({ type: 'error', message: errors }));
       } else if (response.status) {
         props.dispatch(gotStatus(response.status));
+        props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + response.status.status }));
         if (response.status.type) {
           this.loadLists(response.status.type);
         }
       }
     });
+  }
+
+  private toggle = () => {
+    this.props.dispatch(setUIMode(this.props.ui.mode === 'tools' ? 'crafting' : 'tools'));
+    this.props.dispatch(setMessage({ type: 'success', message: '' }));
   }
 
   private selectType = (type: string) => {
@@ -99,6 +138,7 @@ class App extends React.Component<AppProps,{}> {
         props.dispatch(setLoading(false));
       } else {
         props.dispatch(setJobType(type));
+        if (response.status) props.dispatch(updateStatus(response.status));
         props.dispatch(setMessage({ type: 'success', message: 'Job type selected' }));
         this.loadLists(type);
       }
@@ -123,24 +163,21 @@ class App extends React.Component<AppProps,{}> {
   }
 
   // Generic, issue a / command, deal with response
-  private slash(command: string, success: string, getAction?: () => any) {
+  private slash(command: string, success: string, getAction?: () => any, errorAction?: () => any) {
     const props = this.props;
     slash(command, (response: any) => {
       if (response.errors) {
-        const errors = response.errors.join('\n');
-        props.dispatch(setMessage({ type: 'error', message: errors }));
+        if (errorAction) props.dispatch(errorAction());
+        props.dispatch(setMessage({ type: 'error', message: response.errors[0] }));
       } else {
         if (getAction) props.dispatch(getAction());
+        if (response.status) props.dispatch(updateStatus(response.status));
         props.dispatch(setMessage({ type: 'success', message: success }));
       }
     });
   }
 
   // Crafting job modes
-  private setJob = () => {
-    this.props.dispatch(setMessage({ type: 'error', message: 'TODO: Dont think we need this!' }));
-  }
-
   private startJob = () => {
     this.slash('cr vox startjob', 'Job Started', () => startJob());
   }
@@ -161,23 +198,38 @@ class App extends React.Component<AppProps,{}> {
 
   // Job properties
   private setQuality = (quality: number) => {
-    this.slash('cr vox setquality ' + quality, 'Quality set to: ' + quality, () => setQuality(quality));
+    this.slash('cr vox setquality ' + quality, 'Quality set to: ' + quality,
+      () => setQuality(quality),
+      () => setQuality(undefined),
+    );
   }
 
   private setCount = (count: number) => {
-    this.slash('cr vox setitemcount ' + count, 'Item Count set to: ' + count, () => setCount(count));
+    this.slash('cr vox setitemcount ' + count, 'Item Count set to: ' + count,
+      () => setCount(count),
+      () => setCount(undefined),
+    );
   }
 
   private setName = (name: string) => {
-    this.slash('cr vox setname "' + name + '"', 'Name set to: ' + name, () => setName(name));
+    this.slash('cr vox setname "' + name + '"', 'Name set to: ' + name,
+      () => setName(name),
+      () => setName(undefined),
+    );
   }
 
   private setRecipe = (recipe: Recipe) => {
-    this.slash('cr vox setrecipe ' + recipe.id, 'Recipe set to: ' + recipe.name, () => setRecipe(recipe));
+    this.slash('cr vox setrecipe ' + recipe.id, 'Recipe set to: ' + recipe.name,
+      () => setRecipe(recipe),
+      () => setRecipe(undefined),
+    );
   }
 
   private setTemplate = (template: Template) => {
-    this.slash('cr vox settemplate ' + template.id, 'Template set to: ' + template.name, () => setTemplate(template));
+    this.slash('cr vox settemplate ' + template.id, 'Template set to: ' + template.name,
+      () => setTemplate(template),
+      () => setTemplate(undefined),
+    );
   }
 
   // Ingredients

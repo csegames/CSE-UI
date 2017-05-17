@@ -6,29 +6,33 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:41:32
+ * @Last Modified time: 2017-05-17 20:48:46
  */
 
 
 import { combineReducers } from 'redux';
 
+import ui, { UIState } from './ui';
 import job, { JobState } from './job';
 import recipes, { RecipesState } from './recipes';
 import templates, { TemplatesState } from './templates';
 
 export {
+  UIState,
+  JobState,
   RecipesState,
   TemplatesState,
-  JobState,
 };
 
 export default combineReducers({
+  ui,
   job,
   recipes,
   templates,
 });
 
 export interface GlobalState {
+  ui: UIState;
   job: JobState;
   recipes: RecipesState;
   templates: TemplatesState;
