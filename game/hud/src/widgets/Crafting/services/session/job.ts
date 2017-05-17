@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 23:26:01
+ * @Last Modified time: 2017-05-18 00:03:21
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -130,7 +130,9 @@ export const clearJob = module.createAction({
     return { };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { type: null });
+    // Clearing a job effectively resets the vox back to idle
+    const vox = s.vox;
+    return Object.assign(s, initialState(), { vox, status: 'idle' });
   },
 });
 
