@@ -23,17 +23,15 @@ export class ZoneName extends React.Component<{}, { id: string, name: string }> 
   }
 
   public componentDidMount() {
-    console.log('zonename mounted');
     client.OnCharacterZoneChanged((id: string) => {
       console.log(`zone changed ${id}`);
+      const _id = id;
+      this.setState({id, name: ''});
       webAPI.ServerListHelperAPI.getAvailableZones(client.shardID)
         .then((result) => {
-          console.log('api zones');
           if (result.ok === false) return;
-          console.log('got zones');
-          console.log(JSON.stringify(result.data));
           result.data.forEach((zone: any) => {
-            if (zone.ID === id) {
+            if (zone.ID === _id) {
               this.setState({
                 id: zone.ID,
                 name: zone.Name,
@@ -45,6 +43,9 @@ export class ZoneName extends React.Component<{}, { id: string, name: string }> 
   }
 
   public render() {
-    return <h1 style={{marginTop:'30px'}}>ZONE: {this.state.name}</h1>;
+    return <div style={{marginTop: '30px'}}>
+      <h1>ZONE: {this.state.name}</h1>
+      <h1>ID: {this.state.id}</h1>
+      </div>;
   }
 }

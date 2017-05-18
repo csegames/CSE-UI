@@ -150,6 +150,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
   
   private getQueueStatus = () => {
+    if (this.state.plotOwned === false) return;
     const resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp) => {
       if (!resp.ok) return;
       this.setState((state, props) => ({
