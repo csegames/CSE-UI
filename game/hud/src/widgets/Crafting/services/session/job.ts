@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-18 00:03:21
+ * @Last Modified time: 2017-05-20 16:04:12
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -15,20 +15,21 @@ import { slash, isClient } from '../game/slash';
 import { Ingredient, InventoryItem, Recipe, Template, Message, VoxStatus } from '../types';
 
 export interface JobState {
-  loading: boolean;
-  vox: string;
-  status: string;
-  ready: boolean;
-  type: string;
-  started: string;
-  endin: string;
-  recipe: Recipe;
-  template: Template;
-  quality: number;
-  ingredients: Ingredient[];
-  name: string;
-  message: Message;
-  count: number;
+  loading: boolean;                   // Are we starting up?
+  vox: string;                        // Vox ID (if known)
+  status: string;                     // Vox status (if known)
+  ready: boolean;                     // Crafting complete? (Item Ready)  -- TODO Do we need this?
+  type: string;                       // What type of crafting are we doing?
+  started: string;                    // When last job started
+  endin: string;                      // How long until it ends
+  recipe: Recipe;                     // Selected Recipe
+  template: Template;                 // Selected Template (make job)
+  quality: number;                    // Desired quality
+  possibleIngredients: Ingredient[];  // ingredients that can go in the vox
+  ingredients: Ingredient[];          // ingredients in the vox
+  name: string;                       // Item Name (make)
+  message: Message;                   // Last message from vox
+  count: number;                      // Number of items to make
 }
 
 const initialState = () : JobState => {
@@ -44,6 +45,7 @@ const initialState = () : JobState => {
     recipe: null,
     template: null,
     quality: undefined,
+    possibleIngredients: [],
     ingredients: [],
     name: null,
     message: null,
@@ -205,6 +207,16 @@ export const setTemplate = module.createAction({
   },
   reducer: (s, a) => {
     return Object.assign(s, { template: a.template });
+  },
+});
+
+export const setPossibleIngredients = module.createAction({
+  type: 'crafting/job/set-possible-ingredients',
+  action: (possible: Ingredient[]) => {
+    return { possible };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { possibleIngredients: a.possible });
   },
 });
 

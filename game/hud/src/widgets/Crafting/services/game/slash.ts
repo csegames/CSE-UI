@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 23:32:31
+ * @Last Modified time: 2017-05-20 18:19:53
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -159,12 +159,18 @@ export function listen(cb: any) {
           lines.shift();
           list = [];
           for (let i = 0; i < lines.length; i++) {
-            const args = lines[i].split('. ');
-            if (args.length === 2) {
-              list.push({ id: args[0], name: args[1] });
-            } else {
-              // probably an error message
-              console.warn(args[0]);
+            const parsed = lines[i].match(/^([0-9]+)\.[ ]+(?:Sub )(.*) x([0-9]+) - ([0-9.]+)kg @ ([0-9]+)%$/);
+            if (parsed) {
+              if (parsed.length > 2) {
+                console.log('INGREDIENT: ' + JSON.stringify(parsed));
+                list.push({
+                  id: parsed[1], name: parsed[2],
+                  stats: { unitCount: (parsed[3] as any) | 0, weight: +(parsed[4]), quality: +(parsed[4]) },
+                });
+              } else {
+                // probably an error message
+                console.warn(parsed);
+              }
             }
           }
           response.type = 'ingredients';

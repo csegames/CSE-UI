@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 23:01:11
+ * @Last Modified time: 2017-05-20 18:32:58
  */
 
 .crafting-ui {
@@ -133,25 +133,27 @@
         display: flex;
         flex-direction: column;
         margin-top: 5px;
-        >.ingredient {
-          flex: 0 1 auto;
-          display: flex;
-          flex-direction: row;
-          >* {
-            display: 'inline-block';
-          }
-          >.qty {
-            flex: 0 0 30px;
-            width: 30px;
-            text-align: right;
-          }
-          >.times {
-            flex: 0 0 auto;
-            margin: 0 0.5em;
-          }
-          >.name {
-            flex: 1 1 auto;
-            min-width: 120px;
+        >div {
+          >.ingredient {
+            flex: 0 1 auto;
+            display: flex;
+            flex-direction: row;
+            >* {
+              display: 'inline-block';
+            }
+            >.qty {
+              flex: 0 0 30px;
+              width: 30px;
+              text-align: right;
+            }
+            >.times {
+              flex: 0 0 auto;
+              margin: 0 0.5em;
+            }
+            >.name {
+              flex: 1 1 auto;
+              min-width: 120px;
+            }
           }
         }
         >button {

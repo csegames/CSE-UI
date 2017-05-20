@@ -6,14 +6,15 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 22:52:51
+ * @Last Modified time: 2017-05-20 16:22:10
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
 import { slash } from '../../services/game/slash';
-import { setLoading, setJobType, addIngredient, removeIngredient, setMessage } from '../../services/session/job';
+import { setLoading, setJobType, setMessage,
+         setPossibleIngredients, addIngredient, removeIngredient } from '../../services/session/job';
 import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types';
@@ -147,19 +148,31 @@ class App extends React.Component<AppProps,{}> {
 
   private loadLists = (job: string) => {
     const props = this.props;
-    switch (job) {
-      case 'make':
-        getAllTemplates((type: string, templates: Template[]) => {
-          props.dispatch(gotTemplate(type, templates));
-          props.dispatch(setLoading(false));
-        });
-        break;
-      default:
-        getRecipeFor(job, (type: string, recipes: Recipe[]) => {
-          props.dispatch(gotRecipe(type, recipes));
-          props.dispatch(setLoading(false));
-        });
-    }
+    slash('cr vox listpossibleingredients', (response: any) => {
+      if (response.errors) {
+        const errors = response.errors.join('\n');
+        console.log('CRAFTING: send error message: ' + errors);
+        props.dispatch(setMessage({ type: 'error', message: errors }));
+      } else {
+        if (response.type === 'ingredients') {
+          console.log('POSSIBLE INGREDIENTS:- ' + JSON.stringify(response.list));
+          props.dispatch(setPossibleIngredients(response.list));
+        }
+      }
+      switch (job) {
+        case 'make':
+          getAllTemplates((type: string, templates: Template[]) => {
+            props.dispatch(gotTemplate(type, templates));
+            props.dispatch(setLoading(false));
+          });
+          break;
+        default:
+          getRecipeFor(job, (type: string, recipes: Recipe[]) => {
+            props.dispatch(gotRecipe(type, recipes));
+            props.dispatch(setLoading(false));
+          });
+      }
+    });
   }
 
   // Generic, issue a / command, deal with response

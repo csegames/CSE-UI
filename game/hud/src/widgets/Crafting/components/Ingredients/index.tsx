@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 22:09:01
+ * @Last Modified time: 2017-05-20 18:29:07
  */
 
 import * as React from 'react';
@@ -75,7 +75,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
           <button disabled={!ready} className='add' onClick={this.addIngredient}>Add Ingredient</button>
         </div>
         <div className='loaded-ingredients'>
-          {loaded}
+          <div>{loaded}</div>
           { last
             ? <button onClick={() => props.remove(last)}><i className='remove fa fa-times'></i> Remove Last</button>
             : undefined }
