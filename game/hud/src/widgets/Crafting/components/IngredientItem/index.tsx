@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 07:29:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 08:32:50
+ * @Last Modified time: 2017-05-20 23:08:48
  */
 
 import * as React from 'react';
@@ -17,12 +17,12 @@ export interface IngredientProps {
 }
 
 export const IngredientItem = (props: IngredientProps) => {
-  const { id, qty, name } = props.ingredient;
+  const { id, name, stats } = props.ingredient;
   return (
     <div className='ingredient'>
-      <span className='qty'>{qty}</span>
+      <span className='qty'>{stats.unitCount}</span>
       <span className='times'>x</span>
-      <span className='name'>{name}</span>
+      <span className='name'>{name} @ {(stats.quality * 100) | 0}%</span>
     </div>
   );
 };

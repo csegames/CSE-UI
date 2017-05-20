@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 19:43:35
+ * @Last Modified time: 2017-05-20 23:41:34
  */
 
 import * as React from 'react';
@@ -46,7 +46,6 @@ export const JobDetails = (props: JobDetailsProps) => {
 
   // If no vox type set yet...
   if (!type) {
-    console.log('CRAFTING: JOB DETAILS: NO JOB TYPE SET IN PROPS');
     return (
       <div className='job-details'>
         <div>Select a Job Type!</div>

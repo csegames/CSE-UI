@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-15 19:35:23
+ * @Last Modified time: 2017-05-20 23:43:49
  */
 
 import * as React from 'react';
@@ -20,8 +20,6 @@ import reducer from './services/session/reducer';
 import App from './components/App';
 
 const store = createStore(reducer, applyMiddleware(thunk));
-
-console.log('CRAFTING: store created');
 
 export const Crafting = () =>
   <Provider store={store}>

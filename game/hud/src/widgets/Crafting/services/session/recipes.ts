@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 20:01:02
+ * @Last Modified time: 2017-05-20 23:44:19
  */
 
 import { Module } from 'redux-typed-modules';
@@ -23,7 +23,6 @@ export interface RecipesState {
 }
 
 const initialState = () : RecipesState => {
-  console.log('CRAFTING: generate initialRecipeState');
   return {
     updating: 0,
     purify: [],
@@ -43,28 +42,6 @@ const module = new Module({
   },
 });
 
-export const updatingRecipes = module.createAction({
-  type: 'crafting/recipes/updating',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    console.log('CRAFTING: updating ' + Date.now());
-    return Object.assign(s, { updating: Date.now() });
-  },
-});
-
-export const updatedRecipes = module.createAction({
-  type: 'crafting/recipes/updated',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    console.log('CRAFTING: finished updating');
-    return Object.assign(s, { updating: 0 });
-  },
-});
-
 export const gotRecipe = module.createAction({
   type: 'crafting/recipes/got-recipes',
   action: (recipeType: string, recipes: Recipe[]) => {
@@ -78,7 +55,6 @@ export const gotRecipe = module.createAction({
       case 'grind':
       case 'shape':
       case 'block':
-      console.log('CRAFTING: ' + type, a.recipes);
       return Object.assign(s, { [type]: [...a.recipes] });
     }
     console.error('CRAFTING: illegal recipe type ' + type);

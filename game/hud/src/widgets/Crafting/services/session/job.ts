@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 16:04:12
+ * @Last Modified time: 2017-05-20 23:47:18
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -25,7 +25,7 @@ export interface JobState {
   recipe: Recipe;                     // Selected Recipe
   template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
-  possibleIngredients: Ingredient[];  // ingredients that can go in the vox
+  possibleIngredients: InventoryItem[];  // ingredients that can go in the vox
   ingredients: Ingredient[];          // ingredients in the vox
   name: string;                       // Item Name (make)
   message: Message;                   // Last message from vox
@@ -33,7 +33,6 @@ export interface JobState {
 }
 
 const initialState = () : JobState => {
-  console.log('CRAFTING: generate initialJobState');
   return {
     vox: null,
     status: 'unknown',
@@ -68,7 +67,6 @@ export const setJobType = module.createAction({
     return { jobType };
   },
   reducer: (s, a) => {
-    console.log('CRAFTING SET JOB: ' + a.jobType);
     return Object.assign(s, { type: a.jobType });
   },
 });
@@ -239,7 +237,6 @@ export function getStatus(callback: (response: any) => void) {
     });
   } else {
     slash('cr vox status', (response: any) => {
-      console.log('CRAFTING: GOT STATUS: ' + JSON.stringify(response));
       callback(response);
     });
   }
@@ -251,7 +248,6 @@ export const gotStatus = module.createAction({
     return { status };
   },
   reducer: (s, a) => {
-    console.log('CRAFTING GOT VOX STATUS: ' + JSON.stringify(a.status));
     return Object.assign(s, {
       vox: a.status.vox,
       status: a.status.status,
@@ -274,7 +270,6 @@ export const updateStatus = module.createAction({
     return { status };
   },
   reducer: (s, a) => {
-    console.log('CRAFTING UPDATE VOX STATUS: ' + JSON.stringify(a.status));
     return Object.assign(s, {
       status: a.status.status,
       ready: a.status.ready,

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 16:22:10
+ * @Last Modified time: 2017-05-20 23:45:41
  */
 
 import * as React from 'react';
@@ -21,18 +21,18 @@ import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types
 import { startJob, collectJob, clearJob, cancelJob,
         setQuality, setCount, setName, setRecipe, setTemplate,
         getStatus, gotStatus, updateStatus } from '../../services/session/job';
-import { setUIMode } from '../../services/session/ui';
+import { setUIMode, setCountdown } from '../../services/session/ui';
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 import VoxMessage from '../VoxMessage';
 import VoxInfo from '../VoxInfo';
+import Tools from '../Tools';
 
 import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
 const select = (state: GlobalState): AppProps => {
-  console.log('CRAFTING: select job from state: ' + JSON.stringify(state.job));
   return {
-    ui: state.ui,
+    uiMode: state.ui.mode,
     job: state.job,
   };
 };
@@ -40,7 +40,7 @@ const select = (state: GlobalState): AppProps => {
 interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
-  ui: UIState;
+  uiMode: string;
 }
 
 class App extends React.Component<AppProps,{}> {
@@ -51,13 +51,12 @@ class App extends React.Component<AppProps,{}> {
 
   public render() {
     const props = this.props;
-    console.log('CRAFTING: render App: props=', props);
     const type = props.job && props.job.type;
 
     let jobUI;
     let toolsUI;
 
-    switch (this.props.ui.mode) {
+    switch (this.props.uiMode) {
       case 'crafting':
         jobUI = this.props.job.loading
           ? <div className='loading'>Preparing for your performance ...</div>
@@ -75,14 +74,7 @@ class App extends React.Component<AppProps,{}> {
         break;
       case 'tools':
         toolsUI = (
-          <div className='crafting-tools'>
-            <div className='coming-soon'>Coming Soon</div>
-            <h1>Resources</h1>
-            <div><button>/harvest</button> Harvest nearby resources</div>
-            <div><button>/harvestinfo</button> List details about nearby resources</div>
-            <h1>Split</h1>
-            <div><button>Split</button> (select item here)</div>
-          </div>
+          <Tools harvest={this.harvest} harvestInfo={this.harvestInfo} nearby={this.nearby}/>
         );
         break;
     }
@@ -91,7 +83,7 @@ class App extends React.Component<AppProps,{}> {
       <div className='crafting-ui'>
         <VoxInfo/>
         <JobType
-          mode={this.props.ui.mode}
+          mode={this.props.uiMode}
           job={type}
           changeType={this.selectType}
           clearJob={this.clearJob}
@@ -122,7 +114,7 @@ class App extends React.Component<AppProps,{}> {
   }
 
   private toggle = () => {
-    this.props.dispatch(setUIMode(this.props.ui.mode === 'tools' ? 'crafting' : 'tools'));
+    this.props.dispatch(setUIMode(this.props.uiMode === 'tools' ? 'crafting' : 'tools'));
     this.props.dispatch(setMessage({ type: 'success', message: '' }));
   }
 
@@ -131,10 +123,8 @@ class App extends React.Component<AppProps,{}> {
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
     slash('cr vox setjob ' + type, (response: any) => {
-      console.log('CRAFTING: cr vox setjob: ' + JSON.stringify(response));
       if (response.errors) {
         const errors = response.errors.join('\n');
-        console.log('CRAFTING: send error message: ' + errors);
         props.dispatch(setMessage({ type: 'error', message: errors }));
         props.dispatch(setLoading(false));
       } else {
@@ -151,11 +141,9 @@ class App extends React.Component<AppProps,{}> {
     slash('cr vox listpossibleingredients', (response: any) => {
       if (response.errors) {
         const errors = response.errors.join('\n');
-        console.log('CRAFTING: send error message: ' + errors);
         props.dispatch(setMessage({ type: 'error', message: errors }));
       } else {
         if (response.type === 'ingredients') {
-          console.log('POSSIBLE INGREDIENTS:- ' + JSON.stringify(response.list));
           props.dispatch(setPossibleIngredients(response.list));
         }
       }
@@ -192,7 +180,9 @@ class App extends React.Component<AppProps,{}> {
 
   // Crafting job modes
   private startJob = () => {
-    this.slash('cr vox startjob', 'Job Started', () => startJob());
+    setTimeout(() => {
+      this.slash('cr vox startjob', 'Job Started', () => startJob());
+    }, 500);
   }
 
   private collectJob = () => {
@@ -248,7 +238,7 @@ class App extends React.Component<AppProps,{}> {
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
     this.slash(
-      'cr vox addingredientbyid ' + item.id + ' ' + qty,
+      'cr vox addingredient ' + item.id + ' ' + qty,
       'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );
@@ -261,6 +251,24 @@ class App extends React.Component<AppProps,{}> {
       );
   }
 
+  private nearby = (range: number) => {
+    this.slash('cr nearby ' + range, 'Check the System Tab!');
+  }
+
+  private harvest = () => {
+    this.slash('harvest', 'Check your Inventory!');
+    let countdown = 10;
+    const tick = () => {
+      this.props.dispatch(setCountdown(countdown));
+      if (countdown > 0) {
+        setTimeout(() => { countdown--; tick(); }, 1000);
+      }
+    };
+    tick();
+  }
+  private harvestInfo = () => {
+    this.slash('harvestdetails', 'Check the System Tab!');
+  }
 }
 
 export default connect(select)(App);

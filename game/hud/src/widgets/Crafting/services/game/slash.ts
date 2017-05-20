@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 18:19:53
+ * @Last Modified time: 2017-05-20 22:09:41
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -19,6 +19,22 @@ const VoxType = {
   'World.VoxJobBlock': 'block',
   'World.VoxJobMake': 'make',
 };
+
+function parseIngredient(line: string) {
+  const parsed = line.match(/^([0-9]+)\.[ ]+(?:Sub )(.*) x([0-9]+) - ([0-9.]+)kg @ ([0-9]+)%$/);
+  if (parsed) {
+    if (parsed.length > 2) {
+      console.log('INGREDIENT: ' + JSON.stringify(parsed));
+      return {
+        id: parsed[1], name: parsed[2],
+        stats: { unitCount: (parsed[3] as any) | 0, weight: +(parsed[4]), quality: +(parsed[5]) / 100 },
+      };
+    } else {
+      // probably an error message
+      console.warn(parsed);
+    }
+  }
+}
 
 function parseVoxStatus(response: any, lines: string[]) {
   console.log('VOX STATUS');
@@ -58,21 +74,12 @@ function parseVoxStatus(response: any, lines: string[]) {
       // Consume ingredients
       while ((line = lines.shift()) || line === '') {
         console.log('VOX INGREDIENT LINE: ' + line);
-        const ingredient = line.split(/\.[ ]*/);
-        if (ingredient.length < 2) {
+        const ingredient = parseIngredient(line);
+        if (!ingredient) {
           lines.unshift(line);
           break;
         }
-
-        let material = ingredient[1].split(/ -/)[0];
-        console.log('MATERIAL ' + material);
-        const x = material.lastIndexOf('x');
-        let qty = 1;
-        if (x > -1 && material.substr(x + 1).match(/[0-9]+/)) {
-          qty = parseInt(material.substr(x + 1),10);
-          material = material.substr(0,x);
-        }
-        vox.ingredients.push({ id: ingredient[0], name: ingredient[1], qty: 1 });
+        vox.ingredients.push(ingredient);
       }
     } else if (line.match(/^Output:/)) {
       vox.output = lines.shift();
@@ -108,7 +115,8 @@ function delaySend() {
     for (const key in callbacks) {
       if (callbacks[key]) {
         console.log('CRAFTING: LISTENER: SEND: ' + JSON.stringify(response));
-        callbacks[key](response);
+        callbacks[key](Object.assign({}, response));
+        response = {};
         delete callbacks[key];
       }
     }
@@ -159,18 +167,9 @@ export function listen(cb: any) {
           lines.shift();
           list = [];
           for (let i = 0; i < lines.length; i++) {
-            const parsed = lines[i].match(/^([0-9]+)\.[ ]+(?:Sub )(.*) x([0-9]+) - ([0-9.]+)kg @ ([0-9]+)%$/);
-            if (parsed) {
-              if (parsed.length > 2) {
-                console.log('INGREDIENT: ' + JSON.stringify(parsed));
-                list.push({
-                  id: parsed[1], name: parsed[2],
-                  stats: { unitCount: (parsed[3] as any) | 0, weight: +(parsed[4]), quality: +(parsed[4]) },
-                });
-              } else {
-                // probably an error message
-                console.warn(parsed);
-              }
+            const ingredient = parseIngredient(lines[i]);
+            if (ingredient) {
+              list.push(ingredient);
             }
           }
           response.type = 'ingredients';
@@ -203,6 +202,7 @@ export function listen(cb: any) {
 
           // Errors possibly
           if (text.match(/^Tried /)
+            || text.match(/^No nearby /)
             || text.match(/^Nearby vox is not yours/)
             || text.match(/^Ingredient id not found/)
             || text.match(/^Only one/)
@@ -220,7 +220,7 @@ export function listen(cb: any) {
             return;
           }
 
-          if (text.match(/^Running cr /)) {
+          if (text.match(/^Running /)) {
             response.complete = text;
             delaySend();
             return;

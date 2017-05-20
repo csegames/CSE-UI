@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 22:42:34
+ * @Last Modified time: 2017-05-20 23:43:46
  */
 
 import { Module } from 'redux-typed-modules';
@@ -20,7 +20,6 @@ export interface TemplatesState {
 }
 
 const initialState = () : TemplatesState => {
-  console.log('CRAFTING: generate initialTemplateState');
   return {
     updating: 0,
     armor: [],
@@ -37,28 +36,6 @@ const module = new Module({
   },
 });
 
-export const updatingTemplates = module.createAction({
-  type: 'crafting/templates/updating',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    console.log('CRAFTING: updating ' + Date.now());
-    return Object.assign(s, { updating: Date.now() });
-  },
-});
-
-export const updatedTemplates = module.createAction({
-  type: 'crafting/templates/updated',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    console.log('CRAFTING: finished updating');
-    return Object.assign(s, { updating: 0 });
-  },
-});
-
 export const gotTemplate = module.createAction({
   type: 'crafting/templates/got-templates',
   action: (templateType: string, templates: Template[]) => {
@@ -69,7 +46,6 @@ export const gotTemplate = module.createAction({
     switch (type) {
       case 'armor':
       case 'weapons':
-      console.log('CRAFTING: ' + type + ' ' + JSON.stringify(a.templates));
       return Object.assign(s, { [type]: [...a.templates] });
     }
     console.error('CRAFTING: illegal template type ' + type);
@@ -102,7 +78,6 @@ export function getTemplateFor(what: string, callback: (type: string, list: Temp
     callback(what, dummyTemplates[what]);    // no cuAPI, simulation
   } else {
     slash('cr list ' + what, (response: any) => {
-      console.log('CRAFTING: GOT ' + what + ' TEMPLATES: ' + JSON.stringify(response));
       switch (response.type) {
         case 'templates':
           const list: Template[] = response.templates.map((id: string) => { return { id, name: id }; });

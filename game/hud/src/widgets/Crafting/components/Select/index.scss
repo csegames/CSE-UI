@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:40:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 20:13:22
+ * @Last Modified time: 2017-05-20 20:57:22
  */
 
 .Select {
@@ -59,7 +59,7 @@
   top: 100%;
   margin-top: 1px;
   color: #ececec;
-  background-color: #4a4a4a;
+  background-color: #3a3a3a;
   cursor: pointer;
   overflow-y: auto;
   overflow-x: hidden;
@@ -75,7 +75,7 @@
   color: #ececec;
   border-bottom: 1px solid #0a0a0a;
   &:hover {
-    background-color: lighten(#4a4a4a, 10%);
+    background-color: lighten(#3a3a3a, 10%);
   }
 }
 

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 21:16:51
+ * @Last Modified time: 2017-05-20 22:16:45
  */
 
 import * as React from 'react';
@@ -49,7 +49,10 @@ export const JobType = (props: JobTypeProps) => {
   return (
     <div className='job-type'>
       {craftingButtons}
-      <button className='tools' onClick={props.toggle}>{props.mode === 'crafting' ? 'Tools' : 'Crafting'}</button>
+      { props.mode === 'crafting'
+        ? <button className='tools' onClick={props.toggle}>Tools &gt;</button>
+        : <button className='crafting' onClick={props.toggle}>&lt; Crafting</button>
+      }
     </div>
   );
 };

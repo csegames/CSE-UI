@@ -6,13 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 18:29:07
+ * @Last Modified time: 2017-05-20 20:45:03
  */
 
 import * as React from 'react';
 import { Ingredient } from '../../services/types';
 import IngredientItem from '../IngredientItem';
-import InventoryItems from '../InventoryItems';
+import PossibleIngredients from '../PossibleIngredients';
 import Select from '../Select';
 import Input from '../Input';
 import Label from '../Label';
@@ -69,7 +69,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       <div className='job-ingredients'>
         <h1 className='ingredients-title'>Ingredients...</h1>
         <div className='add-ingredient'>
-          <InventoryItems selectedItem={this.state.selectedIngredient} onSelect={select}/>
+          <PossibleIngredients selectedItem={this.state.selectedIngredient} onSelect={select}/>
           <span className='times'>x</span>
           <Input disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
           <button disabled={!ready} className='add' onClick={this.addIngredient}>Add Ingredient</button>

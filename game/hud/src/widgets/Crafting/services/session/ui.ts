@@ -6,18 +6,20 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-17 20:46:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 21:00:30
+ * @Last Modified time: 2017-05-20 22:42:30
  */
 
 import { Module } from 'redux-typed-modules';
 
 export interface UIState {
   mode: string;
+  countdown: number;
 }
 
 const initialState = () : UIState => {
   return {
     mode: 'crafting',
+    countdown: 0,
   };
 };
 
@@ -37,6 +39,16 @@ export const setUIMode = module.createAction({
   },
   reducer: (s, a) => {
     return Object.assign(s, { mode: a.mode });
+  },
+});
+
+export const setCountdown = module.createAction({
+  type: 'crafting/ui/countdown',
+  action: (countdown: number) => {
+    return { countdown };
+  },
+  reducer: (s, a) => {
+    return Object.assign(s, { countdown: a.countdown });
   },
 });
 
