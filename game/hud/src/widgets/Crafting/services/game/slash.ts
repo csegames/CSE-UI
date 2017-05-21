@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 22:09:41
+ * @Last Modified time: 2017-05-20 23:59:26
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -141,7 +141,6 @@ export function listen(cb: any) {
       const what = lines[0];
       let type;
       let list;
-      console.log('CRAFTING: OCT: ' + text);
       switch (what) {
         case 'Purify Recipies:':
         case 'Refine Recipies:':
@@ -188,7 +187,6 @@ export function listen(cb: any) {
             response.type = 'error';
             const errors = text.substr(7).split('\n');
             response.errors = (response.errors || []).concat(errors);
-            console.log('ADD ERROR ' + JSON.stringify(response.errors));
             return;
           }
 
@@ -196,7 +194,6 @@ export function listen(cb: any) {
           if (text.match(/^No vox /)) {
             response.type = 'error';
             (response.errors = response.errors || []).push(text);
-            console.log('ADD ERROR ' + JSON.stringify(response.errors));
             return;
           }
 
@@ -216,7 +213,6 @@ export function listen(cb: any) {
           ) {
             response.type = 'error';
             (response.errors = response.errors || []).push('STILL USED? ' + text);
-            console.log('ADD ERROR ' + JSON.stringify(response.errors));
             return;
           }
 
@@ -232,14 +228,12 @@ export function listen(cb: any) {
 
           if (text.match(/^Found vox with /)) {
             parseVoxStatus(response, lines);
-            console.log('PARSED VOX STATUS IS ' + JSON.stringify(response));
             return;
           }
 
           // Partial VOX status
           if (text.match(/^Type: World/)) {
             parseVoxStatus(response, lines);
-            console.log('PARSED VOX STATUS IS ' + JSON.stringify(response));
           }
 
           (response.unknown = response.unknown || []).push(text);
