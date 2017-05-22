@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:48:15
+ * @Last Modified time: 2017-05-22 21:14:00
  */
 
 import * as React from 'react';
@@ -53,15 +53,11 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
           <div>
             <button onClick={this.props.harvestInfo}>/harvestinfo</button> List details about nearby resources.</div>
           <div>
-            <button onClick={this.props.harvest}>
+            <button disabled={this.props.countdown > 0} onClick={this.props.harvest}>
               /harvest{ this.props.countdown ? ' [' + this.props.countdown + ']' : '' }
             </button>
             Harvest nearby resources.
           </div>
-        </div>
-        <div className='tools-section'>
-          <h1>Split (Coming Soon)</h1>
-          <div><button>Split</button> (select item here)</div>
         </div>
       </div>
     );

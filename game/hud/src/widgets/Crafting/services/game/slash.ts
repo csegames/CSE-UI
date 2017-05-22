@@ -6,10 +6,11 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:59:26
+ * @Last Modified time: 2017-05-22 21:42:12
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
+import { Ingredient } from '../types';
 
 const VoxType = {
   'World.VoxJobPurify': 'purify',
@@ -74,11 +75,17 @@ function parseVoxStatus(response: any, lines: string[]) {
       // Consume ingredients
       while ((line = lines.shift()) || line === '') {
         console.log('VOX INGREDIENT LINE: ' + line);
-        const ingredient = parseIngredient(line);
-        if (!ingredient) {
+        const item = parseIngredient(line);
+        if (!item) {
           lines.unshift(line);
           break;
         }
+        // for an ingredient from the vox, the qty is
+        // the qty loaded into the vox, not the unit
+        // count, we don't actually know the unitCount
+        // from this.
+        const ingredient: Ingredient = Object.assign({}, item, { qty: item.stats.unitCount }) as Ingredient;
+        ingredient.stats.unitCount = undefined;
         vox.ingredients.push(ingredient);
       }
     } else if (line.match(/^Output:/)) {

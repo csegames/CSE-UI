@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:48
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 22:19:37
+ * @Last Modified time: 2017-05-22 21:12:19
  */
 
 .crafting-ui {
@@ -87,8 +87,9 @@
     line-height: 100%;
     padding: 0 1em;
     .tools-section {
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
       h1 {
+        margin-top: 0.5em;
         font-size: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.2);
       }
