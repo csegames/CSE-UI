@@ -166,8 +166,8 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
         launchString += ` servershardid=${selectedServer.shardID}`;
       }
       
-      if (!launchString.includes('masterserverhostname=') && !launchString.includes('masterserverhostname =')) {
-        launchString += ` masterserverhostname=${selectedServer.apiHost.replace('https://', '')}`;
+      if (!launchString.includes('masterserver=') && !launchString.includes('masterserver =')) {
+        launchString += ` masterserver=${selectedServer.apiHost.replace('https://', '')}`;
       }
       
       if (!launchString.includes('character=') &&
