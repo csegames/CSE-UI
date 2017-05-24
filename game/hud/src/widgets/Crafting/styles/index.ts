@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:19:05
+ * @Last Modified time: 2017-05-24 22:10:47
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -77,7 +77,7 @@ export interface CraftingStyles {
 
 export const craftingStyles: CraftingStyles = {
   container: {              // main UI window (App)
-    backgroundImage: 'url(../images/crafting/crafting-bg.png)',
+    backgroundImage: 'url(images/crafting/crafting-bg.png)',
     color: 'white',
     width: opts.ui.WIDTH,
     height: opts.ui.HEIGHT,
