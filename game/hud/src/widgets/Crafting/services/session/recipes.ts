@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:44:19
+ * @Last Modified time: 2017-05-24 22:24:03
  */
 
 import { Module } from 'redux-typed-modules';
@@ -55,10 +55,10 @@ export const gotRecipe = module.createAction({
       case 'grind':
       case 'shape':
       case 'block':
-      return Object.assign(s, { [type]: [...a.recipes] });
+      return { [type]: [...a.recipes] };
     }
     console.error('CRAFTING: illegal recipe type ' + type);
-    return s;
+    return {};
   },
 });
 

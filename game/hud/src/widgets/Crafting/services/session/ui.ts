@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-17 20:46:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 22:42:30
+ * @Last Modified time: 2017-05-24 22:23:58
  */
 
 import { Module } from 'redux-typed-modules';
@@ -38,7 +38,7 @@ export const setUIMode = module.createAction({
     return { mode };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { mode: a.mode });
+    return { mode: a.mode };
   },
 });
 
@@ -48,7 +48,7 @@ export const setCountdown = module.createAction({
     return { countdown };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { countdown: a.countdown });
+    return { countdown: a.countdown };
   },
 });
 

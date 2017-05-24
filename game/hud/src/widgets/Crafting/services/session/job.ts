@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:47:18
+ * @Last Modified time: 2017-05-24 22:23:03
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -67,7 +67,7 @@ export const setJobType = module.createAction({
     return { jobType };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { type: a.jobType });
+    return { type: a.jobType };
   },
 });
 
@@ -77,7 +77,7 @@ export const setCount = module.createAction({
     return { count };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { count: a.count });
+    return { count: a.count };
   },
 });
 
@@ -87,7 +87,7 @@ export const setLoading = module.createAction({
     return { loading };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { loading: a.loading });
+    return { loading: a.loading };
   },
 });
 
@@ -99,8 +99,7 @@ export const addIngredient = module.createAction({
   reducer: (s, a) => {
     const ingredient: Ingredient = { ...a.item, qty: a.qty};
     const ingredients = [ ...s.ingredients, ingredient ];
-    s = Object.assign(s, { ingredients });
-    return s;
+    return { ingredients };
   },
 });
 
@@ -110,7 +109,7 @@ export const removeIngredient = module.createAction({
     return { item };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { ingredients: s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id) });
+    return { ingredients: s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id) };
   },
 });
 
@@ -120,19 +119,19 @@ export const startJob = module.createAction({
     return { };
   },
   reducer: (s, a) => {
-    return s;
+    return {};
   },
 });
 
 export const clearJob = module.createAction({
   type: 'crafting/job/clear',
   action: () => {
-    return { };
+    return {};
   },
   reducer: (s, a) => {
     // Clearing a job effectively resets the vox back to idle
     const vox = s.vox;
-    return Object.assign(s, initialState(), { vox, status: 'idle' });
+    return Object.assign({}, initialState(), { vox, status: 'idle' });
   },
 });
 
@@ -142,7 +141,7 @@ export const cancelJob = module.createAction({
     return { };
   },
   reducer: (s, a) => {
-    return s;
+    return {};
   },
 });
 
@@ -154,7 +153,7 @@ export const collectJob = module.createAction({
   reducer: (s, a) => {
     // collecting a job, if successful, also clears it
     const vox = s.vox;
-    return Object.assign(s, initialState(), { vox, status: 'idle' });
+    return Object.assign({}, initialState(), { vox, status: 'idle' });
   },
 });
 
@@ -164,7 +163,7 @@ export const setRecipe = module.createAction({
     return { recipe };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { recipe: a.recipe });
+    return { recipe: a.recipe };
   },
 });
 
@@ -174,7 +173,7 @@ export const setQuality = module.createAction({
     return { quality };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { quality: a.quality });
+    return { quality: a.quality };
   },
 });
 
@@ -184,7 +183,7 @@ export const setName = module.createAction({
     return { name };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { name: a.name });
+    return { name: a.name };
   },
 });
 
@@ -194,7 +193,7 @@ export const setMessage = module.createAction({
     return { message };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { message: a.message });
+    return { message: a.message };
   },
 });
 
@@ -204,7 +203,7 @@ export const setTemplate = module.createAction({
     return { template };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { template: a.template });
+    return { template: a.template };
   },
 });
 
@@ -214,7 +213,7 @@ export const setPossibleIngredients = module.createAction({
     return { possible };
   },
   reducer: (s, a) => {
-    return Object.assign(s, { possibleIngredients: a.possible });
+    return { possibleIngredients: a.possible };
   },
 });
 
@@ -248,7 +247,7 @@ export const gotStatus = module.createAction({
     return { status };
   },
   reducer: (s, a) => {
-    return Object.assign(s, {
+    return {
       vox: a.status.vox,
       status: a.status.status,
       ready: a.status.ready,
@@ -259,7 +258,7 @@ export const gotStatus = module.createAction({
       name: a.status.name,
       template: a.status.template,
       ingredients: [...a.status.ingredients],
-    });
+    };
   },
 });
 
@@ -270,7 +269,7 @@ export const updateStatus = module.createAction({
     return { status };
   },
   reducer: (s, a) => {
-    return Object.assign(s, {
+    return {
       status: a.status.status,
       ready: a.status.ready,
       type: a.status.type,
@@ -280,7 +279,7 @@ export const updateStatus = module.createAction({
       name: a.status.name,
       template: a.status.template,
       ingredients: [...a.status.ingredients],
-    });
+    };
   },
 });
 
