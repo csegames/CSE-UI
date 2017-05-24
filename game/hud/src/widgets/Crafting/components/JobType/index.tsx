@@ -6,12 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 22:16:45
+ * @Last Modified time: 2017-05-24 19:17:28
  */
 
 import * as React from 'react';
+import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../../styles';
 
 import Label from '../Label';
+import Button from '../Button';
 
 export interface JobTypeProps {
   mode: string;
@@ -20,38 +22,43 @@ export interface JobTypeProps {
   clearJob: () => void;
   refresh: () => void;
   toggle: () => void;
+  style?: Partial<JobTypeStyles>;
 }
 
 export const JobType = (props: JobTypeProps) => {
+  const ss = StyleSheet.create(merge({}, jobType, props.style));
   const button = (type: string) => {
       return (
-        <button className={props.job === type ? 'selected' : ''} onClick={() => props.changeType(type)}>
+        <Button style={props.job === type ? {container:jobType.buttonSelected} : {}}
+          onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
-        </button>
+        </Button>
       );
   };
   let craftingButtons;
   switch (props.mode) {
     case 'crafting':
       craftingButtons = (
-        <div className='job-buttons'>
+        <div className={css(ss.jobButtons)}>
           {button('purify')}
           {button('refine')}
           {button('grind')}
           {button('shape')}
           {button('block')}
           {button('make')}
-          <button className='refresh' onClick={() => props.refresh()}><i className='fa fa-refresh'></i></button>
-          <button className='clear' onClick={props.clearJob}>Clear</button>
+          <Button style={{container: jobType.refresh}} onClick={() => props.refresh()}>
+            <i className='fa fa-refresh'></i>
+          </Button>
+          <Button onClick={props.clearJob}>Clear</Button>
         </div>
       );
   }
   return (
-    <div className='job-type'>
+    <div className={css(ss.container)}>
       {craftingButtons}
       { props.mode === 'crafting'
-        ? <button className='tools' onClick={props.toggle}>Tools &gt;</button>
-        : <button className='crafting' onClick={props.toggle}>&lt; Crafting</button>
+        ? <Button style={{container: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>
+        : <Button onClick={props.toggle}>&lt; Crafting</Button>
       }
     </div>
   );

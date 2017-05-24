@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 16:11:24
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 21:04:25
+ * @Last Modified time: 2017-05-24 20:43:23
  */
 
 import * as React from 'react';
@@ -15,12 +15,14 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { Recipe } from '../../services/types';
+import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../../styles';
 
 export interface RecipeSelectReduxProps {
   dispatch?: (action: any) => void;
   type?: string;
   items?: Recipe[];
   selected?: Recipe;
+  style?: Partial<RecipeSelectStyles>;
 }
 
 export interface RecipeSelectProps extends RecipeSelectReduxProps {
@@ -42,14 +44,16 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
     super(props);
   }
   public render() {
+    const ss = StyleSheet.create(merge({}, recipeSelect, this.props.style));
     if (!this.props.items) return null;    // no items, don't render
     const i = this.props.selected ? this.props.items.findIndex((i: Recipe) => this.props.selected.id === i.id) : -1;
     const selectedItem = i > -1 ? this.props.items[i] : null;
     const type = this.props.type;
     return (
-      <div className={['select-recipe', type].join(' ')}>
-        <Label>{type[0].toUpperCase() + type.substr(1)} Recipe</Label>
+      <div className={css(ss.container)}>
+        <Label style={{container: recipeSelect.label}}>{type[0].toUpperCase() + type.substr(1)} Recipe</Label>
         <Select
+          style={{container: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

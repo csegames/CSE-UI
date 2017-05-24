@@ -6,15 +6,17 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-22 21:14:00
+ * @Last Modified time: 2017-05-24 19:18:02
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
+import { StyleSheet, css, merge, tools, ToolsStyles } from '../../styles';
 
 import Label from '../Label';
 import Input from '../Input';
+import Button from '../Button';
 
 export interface ToolsPropsRedux {
   dispatch?: (action: any) => void;
@@ -29,6 +31,7 @@ export interface ToolsProps extends ToolsPropsRedux {
   harvest: () => void;
   harvestInfo: () => void;
   nearby: (range: number) => void;
+  style?: Partial<ToolsStyles>;
 }
 
 interface ToolsStatus {
@@ -41,21 +44,22 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
     this.state = { range: 1000 };
   }
   public render() {
+    const ss = StyleSheet.create(merge({}, tools, this.props.style));
     return (
-      <div className='crafting-tools'>
-        <div className='tools-section'>
-          <h1>Resources</h1>
+      <div className={css(ss.container)}>
+        <div className={css(ss.section)}>
+          <h1 className={css(ss.sectionHeading)}>Resources</h1>
           <div>
-            <button onClick={() => this.props.nearby(this.state.range)}>/cr nearby</button>
+            <Button onClick={() => this.props.nearby(this.state.range)}>/cr nearby</Button>
             <Input size={4} onChange={this.setRange} value={this.state.range.toString()}
               /> List nearby crafting resources.
           </div>
           <div>
-            <button onClick={this.props.harvestInfo}>/harvestinfo</button> List details about nearby resources.</div>
+            <Button onClick={this.props.harvestInfo}>/harvestinfo</Button> List details about nearby resources.</div>
           <div>
-            <button disabled={this.props.countdown > 0} onClick={this.props.harvest}>
+            <Button disabled={this.props.countdown > 0} onClick={this.props.harvest}>
               /harvest{ this.props.countdown ? ' [' + this.props.countdown + ']' : '' }
-            </button>
+            </Button>
             Harvest nearby resources.
           </div>
         </div>

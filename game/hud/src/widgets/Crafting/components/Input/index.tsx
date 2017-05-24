@@ -6,18 +6,20 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 19:17:09
+ * @Last Modified time: 2017-05-24 20:23:50
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { client } from 'camelot-unchained';
+import { StyleSheet, css, merge, input, InputStyles } from '../../styles';
 
 interface InputProps {
   size?: number;
   value?: string;
   disabled?: boolean;
   onChange: (value: string) => void;
+  style?: Partial<InputStyles>;
 }
 
 interface InputState {
@@ -36,8 +38,10 @@ class Input extends React.Component<InputProps, InputState> {
   }
 
   public render() {
+    const ss = StyleSheet.create(merge({}, input, this.props.style));
     return (
       <input type='text'
+        className={css(ss.container)}
         size={this.props.size}
         disabled={this.props.disabled}
         onChange={this.onChange}

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-22 21:35:12
+ * @Last Modified time: 2017-05-24 21:14:22
  */
 
 import * as React from 'react';
@@ -16,6 +16,8 @@ import PossibleIngredients from '../PossibleIngredients';
 import Select from '../Select';
 import Input from '../Input';
 import Label from '../Label';
+import Button from '../Button';
+import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles} from '../../styles';
 
 import { InventoryItem } from '../../services/types';
 
@@ -24,6 +26,7 @@ export interface IngredientsProps {
   ingredients: Ingredient[];
   add: (item: InventoryItem, qty: number) => void;
   remove: (item: InventoryItem) => void;
+  style?: Partial<IngredientsStyles>;
 }
 
 export interface IngredientsState {
@@ -38,6 +41,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
   }
 
   public render() {
+    const ss = StyleSheet.create(merge({}, ingredientsStyles, this.props.style));
     const props = this.props;
 
     if (!props.job) return null;
@@ -66,18 +70,22 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 1;
 
     return (
-      <div className='job-ingredients'>
-        <h1 className='ingredients-title'>Ingredients...</h1>
-        <div className='add-ingredient'>
+      <div className={css(ss.container)}>
+        <h1 className={css(ss.title)}>Ingredients...</h1>
+        <div className={css(ss.addIngredient)}>
           <PossibleIngredients selectedItem={this.state.selectedIngredient} onSelect={select}/>
-          <span className='times'>x</span>
-          <Input disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
-          <button disabled={!ready} className='add' onClick={this.addIngredient}>Add Ingredient</button>
+          <span className={css(ss.times)}>x</span>
+          <Input style={{container: ingredientsStyles.quantity}}
+            disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
+          <Button disabled={!ready} style={{container: ingredientsStyles.add}}
+            onClick={this.addIngredient}>Add Ingredient</Button>
         </div>
-        <div className='loaded-ingredients'>
+        <div className={css(ss.loadedIngredients)}>
           <div>{loaded}</div>
           { last
-            ? <button onClick={() => props.remove(last)}><i className='remove fa fa-times'></i> Remove Last</button>
+            ? <Button style={{container: ingredientsStyles.remove}} onClick={() => props.remove(last)}>
+                <i className='remove fa fa-times'></i> Remove Last
+              </Button>
             : undefined }
         </div>
       </div>

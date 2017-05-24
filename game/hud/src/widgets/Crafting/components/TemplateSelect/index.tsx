@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:10:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-16 21:04:34
+ * @Last Modified time: 2017-05-24 20:43:21
  */
 
 import * as React from 'react';
@@ -15,6 +15,7 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { Template } from '../../services/types';
+import { StyleSheet, css, merge, templateSelect, TemplateSelectStyles } from '../../styles';
 
 export interface TemplateSelectReduxProps {
   dispatch?: (action: any) => void;
@@ -25,6 +26,7 @@ export interface TemplateSelectReduxProps {
 export interface TemplateSelectProps extends TemplateSelectReduxProps {
   onSelect: (template: Template) => void;
   type: string;
+  style?: Partial<TemplateSelectStyles>;
 }
 
 interface TemplateSelectState {}
@@ -42,13 +44,15 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
     super(props);
   }
   public render() {
+    const ss = StyleSheet.create(merge({}, templateSelect, this.props.style));
     const i = this.props.selected ? this.props.items.findIndex((i: Template) => this.props.selected.id === i.id) : -1;
     const selectedItem = i > -1 ? this.props.items[i] : null;
     const type = this.props.type;
     return (
-      <div className={['select-template', type].join(' ')}>
-        <Label>{type[0].toUpperCase() + type.substr(1)} Template</Label>
+      <div className={css(ss.container)}>
+        <Label style={{container: templateSelect.label}}>{type[0].toUpperCase() + type.substr(1)} Template</Label>
         <Select
+          style={{container: templateSelect.select, impl: templateSelect.select_impl, list: templateSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

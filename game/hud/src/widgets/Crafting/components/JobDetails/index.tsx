@@ -6,17 +6,18 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:41:34
+ * @Last Modified time: 2017-05-24 21:21:43
  */
 
 import * as React from 'react';
 import { DropDownSelect } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { Ingredient } from '../../services/types';
 import { Item, Template, Recipe, InventoryItem } from '../../services/types';
+import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../../styles';
 import Ingredients from '../Ingredients';
 
 import Label from '../Label';
+import Button from '../Button';
 import Select from '../Select';
 import RecipeSelect from '../RecipeSelect';
 import TemplateSelect from '../TemplateSelect';
@@ -38,24 +39,26 @@ export interface JobDetailsProps {
   setTemplate: (template: Template) => void;
   addIngredient: (item: InventoryItem, qty: number) => void;
   removeIngredient: (item: InventoryItem) => void;
+  style?: Partial<JobDetailsStyles>;
 }
 
 export const JobDetails = (props: JobDetailsProps) => {
+  const ss = StyleSheet.create(merge({}, jobDetails, props.style));
   const job = props.job;
   const type = job.type;
 
   // If no vox type set yet...
   if (!type) {
     return (
-      <div className='job-details'>
+      <div className={css(ss.container)}>
         <div>Select a Job Type!</div>
       </div>
     );
   }
 
   return (
-    <div className='job-details'>
-      <div className='job-properties'>
+    <div className={css(ss.container)}>
+      <div className={css(ss.properties)}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
         {type === 'make' && <TemplateSelect type='armor' onSelect={props.setTemplate}/>}
@@ -67,12 +70,12 @@ export const JobDetails = (props: JobDetailsProps) => {
         add={props.addIngredient}
         remove={props.removeIngredient}
         />
-      <div className='job-buttons'>
+      <div className={css(ss.buttons)}>
         <QualityInput onChange={props.setQuality}/>
         <QuantityInput onChange={props.setCount}/>
-        <button onClick={() => props.start()}>Start</button>
-        <button onClick={() => props.collect()}>Collect</button>
-        <button onClick={() => props.cancel()}>Cancel</button>
+        <Button style={{container: jobDetails.button}} onClick={() => props.start()}>Start</Button>
+        <Button style={{container: jobDetails.button}} onClick={() => props.collect()}>Collect</Button>
+        <Button style={{container: jobDetails.button}} onClick={() => props.cancel()}>Cancel</Button>
       </div>
     </div>
   );

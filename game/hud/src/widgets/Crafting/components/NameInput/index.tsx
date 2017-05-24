@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 19:13:54
+ * @Last Modified time: 2017-05-24 19:55:40
  */
 
 import * as React from 'react';
@@ -15,10 +15,12 @@ import Select from '../Select';
 import Label from '../Label';
 import Input from '../Input';
 import { GlobalState } from '../../services/session/reducer';
+import { StyleSheet, css, merge, nameInput, NameInputStyles } from '../../styles';
 
 export interface NameInputReduxProps {
   dispatch?: (action: any) => void;
   name?: string;
+  style?: Partial<NameInputStyles>;
 }
 
 export interface NameInputProps extends NameInputReduxProps {
@@ -34,9 +36,10 @@ const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps
 };
 
 const NameInput = (props: NameInputProps) => {
+  const ss = StyleSheet.create(merge({}, nameInput, props.style));
   return (
-    <div className={['name-input'].join(' ')}>
-      <Label>Name</Label>
+    <div className={css(ss.container)}>
+      <Label style={{container: nameInput.label}}>Name</Label>
       <Input size={32} onChange={props.onChange} value={props.name}/>
     </div>
   );

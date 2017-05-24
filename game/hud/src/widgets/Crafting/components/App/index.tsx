@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 23:45:41
+ * @Last Modified time: 2017-05-24 20:59:25
  */
 
 import * as React from 'react';
@@ -28,6 +28,8 @@ import VoxMessage from '../VoxMessage';
 import VoxInfo from '../VoxInfo';
 import Tools from '../Tools';
 
+import { StyleSheet, css, merge, craftingStyles, CraftingStyles } from '../../styles';
+
 import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
 const select = (state: GlobalState): AppProps => {
@@ -41,6 +43,7 @@ interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
   uiMode: string;
+  style?: Partial<CraftingStyles>;
 }
 
 class App extends React.Component<AppProps,{}> {
@@ -50,6 +53,7 @@ class App extends React.Component<AppProps,{}> {
   }
 
   public render() {
+    const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
     const props = this.props;
     const type = props.job && props.job.type;
 
@@ -59,7 +63,7 @@ class App extends React.Component<AppProps,{}> {
     switch (this.props.uiMode) {
       case 'crafting':
         jobUI = this.props.job.loading
-          ? <div className='loading'>Preparing for your performance ...</div>
+          ? <div className={css(ss.loading)}>Preparing for your performance ...</div>
           : <JobDetails job={props.job}
               start={this.startJob}
               collect={this.collectJob}
@@ -80,7 +84,7 @@ class App extends React.Component<AppProps,{}> {
     }
 
     return (
-      <div className='crafting-ui'>
+      <div className={css(ss.container)}>
         <VoxInfo/>
         <JobType
           mode={this.props.uiMode}

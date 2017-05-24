@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-16 18:52:22
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-17 23:04:41
+ * @Last Modified time: 2017-05-24 19:18:07
  */
 
 
@@ -16,9 +16,12 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState, JobState } from '../../services/session/reducer';
 
+import { StyleSheet, css, merge, voxInfo, VoxInfoStyles } from '../../styles';
+
 export interface VoxInfoReduxProps {
   dispatch?: (action: any) => void;
   job?: JobState;
+  style?: Partial<VoxInfoStyles>;
 }
 
 export interface VoxInfoProps extends VoxInfoReduxProps {}
@@ -31,18 +34,19 @@ const select = (state: GlobalState, props: VoxInfoProps) : VoxInfoReduxProps => 
 };
 
 const VoxInfo = (props: VoxInfoProps) => {
+  const ss = StyleSheet.create(merge({}, voxInfo, props.style));
   return (
-    <div className='vox-info'>
-      <span>{props.job.vox}</span>
-      <span>{props.job.status}</span>
-      <span>{props.job.type}</span>
-      <span>{props.job.started}</span>
-      <span>{props.job.endin}</span>
-      <span>{props.job.recipe && props.job.recipe.id}</span>
-      <span>{props.job.template && props.job.template.id}</span>
-      <span>{props.job.name}</span>
-      <span>{props.job.quality}</span>
-      <span>{props.job.count}</span>
+    <div className={css(ss.container)}>
+      <span className={css(ss.span)}>{props.job.vox}</span>
+      <span className={css(ss.span)}>{props.job.status}</span>
+      <span className={css(ss.span)}>{props.job.type}</span>
+      <span className={css(ss.span)}>{props.job.started}</span>
+      <span className={css(ss.span)}>{props.job.endin}</span>
+      <span className={css(ss.span)}>{props.job.recipe && props.job.recipe.id}</span>
+      <span className={css(ss.span)}>{props.job.template && props.job.template.id}</span>
+      <span className={css(ss.span)}>{props.job.name}</span>
+      <span className={css(ss.span)}>{props.job.quality}</span>
+      <span className={css(ss.span)}>{props.job.count}</span>
     </div>
   );
 };

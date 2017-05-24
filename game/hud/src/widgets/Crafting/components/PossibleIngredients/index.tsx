@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-20 21:49:30
+ * @Last Modified time: 2017-05-24 21:07:45
  */
 
 import * as React from 'react';
@@ -14,10 +14,12 @@ import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
 import Select from '../Select';
 import { Ingredient, InventoryItem } from '../../services/types';
+import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../../styles';
 
 interface PossibleIngredientsReduxProps {
   dispatch?: (action: any) => void;
   possibleIngredients?: InventoryItem[];
+  style?: Partial<PossibleIngredientsStyles>;
 }
 
 const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIngredientsReduxProps => {
@@ -34,15 +36,18 @@ export interface PossibleIngredientsState {}
 
 export class PossibleIngredients extends React.Component<PossibleIngredientsProps, PossibleIngredientsState> {
   public render() {
+    const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
     const render = (item: InventoryItem) => item && (
-      <div className='inventory-item'>
-        <span className='name'>{item.name}</span>
-        <span className='quantity'>x{item.stats.unitCount}</span>
-        <span className='quality'>@ {(item.stats.quality * 100) | 0}%</span>
+      <div className={css(ss.container)}>
+        <span className={css(ss.span, ss.name)}>{item.name}</span>
+        <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span>
+        <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span>
       </div>
     );
     return (
-      <Select items={this.props.possibleIngredients}
+      <Select
+        style={{container: possibleIngredients.select}}
+        items={this.props.possibleIngredients}
         onSelectedItemChanged={this.props.onSelect}
         renderActiveItem={render}
         renderListItem={render}
@@ -53,4 +58,3 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
 }
 
 export default connect(select)(PossibleIngredients);
-
