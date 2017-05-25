@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:24:03
+ * @Last Modified time: 2017-05-24 22:52:07
  */
 
 import { Module } from 'redux-typed-modules';
@@ -22,7 +22,7 @@ export interface RecipesState {
   block: Recipe[];
 }
 
-const initialState = () : RecipesState => {
+export const initialState = () : RecipesState => {
   return {
     updating: 0,
     purify: [],
@@ -55,7 +55,7 @@ export const gotRecipe = module.createAction({
       case 'grind':
       case 'shape':
       case 'block':
-      return { [type]: [...a.recipes] };
+      return { [type]: a.recipes };
     }
     console.error('CRAFTING: illegal recipe type ' + type);
     return {};

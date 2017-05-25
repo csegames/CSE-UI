@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:10:47
+ * @Last Modified time: 2017-05-25 01:03:59
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -48,6 +48,21 @@ export const button = {
   */
 };
 
+export interface CloseStyles {
+  container: React.CSSProperties;
+}
+
+export const close = {
+  container: {
+    pointerEvents: 'auto',
+    position: 'absolute',
+    top: '-2px',
+    right: '5px',
+    zIndex: 1,
+    cursor: 'pointer',
+  },
+};
+
 export interface InputStyles {
   container: React.CSSProperties;
 }
@@ -84,6 +99,7 @@ export const craftingStyles: CraftingStyles = {
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    position: 'relative',
   },
   loading: {
     flex: '1 1 auto',
@@ -113,9 +129,9 @@ export const voxInfo: VoxInfoStyles = {
   container: {
     fontSize: '8px',
     color: 'silver',
-    margin: '0 10px',
+    margin: '0 ' + opts.ui.PADDING,
     position: 'absolute',
-    top: '0',
+    top: '2px',
     left: '0',
   },
   span: {
@@ -135,7 +151,7 @@ export const jobType: JobTypeStyles = {
   container: {
     flex: '0 1 auto',
     height: '35px',
-    margin: '10px',
+    margin: opts.ui.PADDING,
     marginBottom: '0',
   },
   jobButtons: {
@@ -162,7 +178,7 @@ export interface VoxMessageStyles {
 
 export const voxMessage: VoxMessageStyles = {
   container: {
-    margin: '0px 10px',
+    margin: '0px ' + opts.ui.PADDING,
     height: '20px',
     flex: '0 1 auto',
     fontSize: '14px',
@@ -345,7 +361,7 @@ export interface JobDetailsStyles {
 export const jobDetails: JobDetailsStyles = {
   container: {
     flex: '1 1 auto',
-    margin: '10px',
+    margin: opts.ui.PADDING,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -379,7 +395,7 @@ export interface QualityInputStyles {
 
 export const qualityInput: QualityInputStyles = {
   container: {
-    height: '24px',
+    height: opts.input.HEIGHT,
     flex: '0 0 auto',
     marginRight: '10px',
   },
@@ -395,7 +411,7 @@ export interface QuantityInputStyles {
 
 export const quantityInput: QuantityInputStyles = {
   container: {
-    height: '24px',
+    height: opts.input.HEIGHT,
     flex: '0 0 auto',
     marginRight: '10px',
   },
@@ -439,8 +455,8 @@ export const recipeSelect: RecipeSelectStyles = {
   },
   select: {
     flex: '0 0 auto',
-    minWidth: '200px',
-    height: '24px',
+    minWidth: opts.properties.FIELD_WIDTH,
+    height: opts.input.HEIGHT,
   },
   select_impl: {
     backgroundColor: opts.input.BACKGROUND,
@@ -469,8 +485,8 @@ export const templateSelect: TemplateSelectStyles = {
   },
   select: {
     flex: '0 0 auto',
-    minWidth: '200px',
-    height: '24px',
+    minWidth: opts.properties.FIELD_WIDTH,
+    height: opts.input.HEIGHT,
   },
   select_impl: {
     backgroundColor: opts.input.BACKGROUND,

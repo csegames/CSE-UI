@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:24:01
+ * @Last Modified time: 2017-05-24 22:52:00
  */
 
 import { Module } from 'redux-typed-modules';
@@ -19,7 +19,7 @@ export interface TemplatesState {
   weapons: Template[];
 }
 
-const initialState = () : TemplatesState => {
+export const initialState = () : TemplatesState => {
   return {
     updating: 0,
     armor: [],
@@ -46,7 +46,7 @@ export const gotTemplate = module.createAction({
     switch (type) {
       case 'armor':
       case 'weapons':
-      return { [type]: [...a.templates] };
+      return { [type]: a.templates };
     }
     console.error('CRAFTING: illegal template type ' + type);
     return {};

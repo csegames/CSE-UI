@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:57:54
+ * @Last Modified time: 2017-05-25 01:01:56
  */
 
 /*
@@ -21,12 +21,14 @@ export const opts = {
   ui: {
     WIDTH: '600px',
     HEIGHT: '450px',
+    PADDING: '12px',
   },
   job: {
     HIGHLIGHT: 'green',
   },
   properties: {
     LABEL_WIDTH: '200px',
+    FIELD_WIDTH: '250px',
     LINE_SPACING: '1px',
   },
   ingredients: {

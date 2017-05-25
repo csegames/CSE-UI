@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:23:03
+ * @Last Modified time: 2017-05-24 22:54:31
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -32,7 +32,7 @@ export interface JobState {
   count: number;                      // Number of items to make
 }
 
-const initialState = () : JobState => {
+export const initialState = () : JobState => {
   return {
     vox: null,
     status: 'unknown',
@@ -257,7 +257,7 @@ export const gotStatus = module.createAction({
       recipe: a.status.recipe,
       name: a.status.name,
       template: a.status.template,
-      ingredients: [...a.status.ingredients],
+      ingredients: a.status.ingredients,
     };
   },
 });
@@ -278,7 +278,7 @@ export const updateStatus = module.createAction({
       recipe: a.status.recipe,
       name: a.status.name,
       template: a.status.template,
-      ingredients: [...a.status.ingredients],
+      ingredients: a.status.ingredients,
     };
   },
 });

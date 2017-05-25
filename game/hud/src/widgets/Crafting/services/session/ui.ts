@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-17 20:46:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:23:58
+ * @Last Modified time: 2017-05-24 22:41:20
  */
 
 import { Module } from 'redux-typed-modules';
@@ -16,7 +16,7 @@ export interface UIState {
   countdown: number;
 }
 
-const initialState = () : UIState => {
+export const initialState = () : UIState => {
   return {
     mode: 'crafting',
     countdown: 0,
