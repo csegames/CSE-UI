@@ -142,6 +142,12 @@ class News extends React.Component<NewsProps, NewsState> {
     );
   }
 
+  public componentDidMount() {
+    if (this.state.posts.length === 0) {
+      this.fetchNextPage();
+    }
+  }
+
   private fetchNextPage = () => {
     if (this.state.isFetching) return;
     this.fetchPage(this.state.nextPage);
@@ -153,12 +159,6 @@ class News extends React.Component<NewsProps, NewsState> {
         <NewsItem post={post} />
       </li>
     );
-  }
-
-  private componentDidMount() {
-    if (this.state.posts.length === 0) {
-      this.fetchNextPage();
-    }
   }
 
   private fetchPage = (page: number) => {

@@ -164,11 +164,11 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
     );
   }
   
-  private componentDidMount() {
+  public componentDidMount() {
     this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }

@@ -71,14 +71,14 @@ class Crafting extends React.Component<CraftingProps, CraftingState> {
     );
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     this.setState({
       commandList: this.getCommands(),
       activeCommand: '',
     });
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     client.ReleaseInputOwnership();
   }
 

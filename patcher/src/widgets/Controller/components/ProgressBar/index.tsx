@@ -65,7 +65,7 @@ class ProgressBar extends React.Component<ProgressBarProps, ProgressBarState> {
     );
   }
 
-  private componentWillReceiveProps(nextProps: ProgressBarProps) {
+  public componentWillReceiveProps(nextProps: ProgressBarProps) {
     for (const key in nextProps.servers) {
       const s = nextProps.servers[key];
       if (s.channelStatus === ChannelStatus.Updating) {

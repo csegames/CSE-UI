@@ -76,7 +76,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('view-content', (v: view, props: any) => {
       if (v === this.state.currentView) return;
 
@@ -101,10 +101,9 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     });
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off('view-content');
   }
-
 
   private renderView = (current: boolean): JSX.Element => {
     const v = current ? this.state.currentView : this.state.previousView;

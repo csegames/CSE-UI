@@ -196,17 +196,17 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
                         onSelectedItemChanged={this.selectCharacter} />;
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('character-created', (name: string) => {
       this.setState({ createdName: name } as any);
     });
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off('character-created');
   }
 
-  private componentWillReceiveProps(nextProps: CharacterSelectProps) {
+  public componentWillReceiveProps(nextProps: CharacterSelectProps) {
     if (!this.state.selectedCharacter || !this.props.selectedServer) return;
     if (this.props.selectedServer.shardID !== nextProps.selectedServer.shardID) {
       this.selectCharacter(nextProps.characters[0]);

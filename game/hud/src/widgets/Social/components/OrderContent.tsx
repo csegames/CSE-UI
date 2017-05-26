@@ -79,7 +79,7 @@ export class OrderContent extends React.Component<OrderContentProps, OrderConten
     }
   }
 
-  private componentWillReceiveProps(nextProps: OrderContentProps) {
+  public componentWillReceiveProps(nextProps: OrderContentProps) {
     this.handleJoinLeaveNavUpdate(nextProps);
   }
 

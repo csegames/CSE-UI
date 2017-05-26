@@ -108,7 +108,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     // Initialize all Banes & Boons
     const { banesAndBoons, dispatch, playerClass, race, faction } = this.props;
     if (banesAndBoons.initial) {

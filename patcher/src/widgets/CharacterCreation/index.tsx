@@ -240,6 +240,26 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     );
   }
 
+  public componentWillReceiveProps(nextProps: CharacterCreationProps) {
+    if (this.props && nextProps && this.props.shard !== nextProps.shard) this.resetAndInit();
+    if (this.props.factionsState !== nextProps.factionsState ||
+        this.props.playerClassesState !== nextProps.playerClassesState ||
+        this.props.racesState !== nextProps.racesState) {
+      this.props.dispatch(resetBanesAndBoons());
+    }
+  }
+
+  public componentDidMount() {
+    this.resetAndInit();
+  }
+
+  public componentDidUpdate() {
+    if (this.props.characterState.success) {
+      this.props.created(this.props.characterState.created);
+      this.resetAndInit();
+    }
+  }
+
   private create = () => {
     events.fire('play-sound', 'create-character');
     // validate name
@@ -410,27 +430,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(fetchAttributes(this.props.shard));
     this.props.dispatch(fetchAttributeOffsets(this.props.shard));
     this.setState({page: pages.FACTION_SELECT});
-  }
-
-  private componentWillReceiveProps(nextProps: CharacterCreationProps) {
-    if (this.props && nextProps && this.props.shard !== nextProps.shard) this.resetAndInit();
-    if (this.props.factionsState !== nextProps.factionsState ||
-        this.props.playerClassesState !== nextProps.playerClassesState ||
-        this.props.racesState !== nextProps.racesState) {
-      this.props.dispatch(resetBanesAndBoons());
-    }
-  }
-
-
-  private componentDidMount() {
-    this.resetAndInit();
-  }
-
-  private componentDidUpdate() {
-    if (this.props.characterState.success) {
-      this.props.created(this.props.characterState.created);
-      this.resetAndInit();
-    }
   }
 }
 

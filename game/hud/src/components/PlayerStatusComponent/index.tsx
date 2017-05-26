@@ -299,12 +299,31 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     );
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     client.OnCombatLogEvent(this.parseCombatLogEvent);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
 
+  }
+
+  public componentWillReceiveProps(props: PlayerStatusComponentProps) {
+    if (props.mirror) this.shakeAnimationName = 'shakeit-mirrored';
+  }
+
+  // Transitions
+  private flyTextWillLeave = (): any => {
+    return {
+      opacity: spring(0, {
+        stiffness: 50,
+        damping: 15,
+        precision: 0.01,
+      }), top: spring(-120, {
+        stiffness: 75,
+        damping: 15,
+        precision: 1,
+      }),
+    };
   }
 
   private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
@@ -362,25 +381,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
         });
       }
     }
-  }
-
-  private componentWillReceiveProps(props: PlayerStatusComponentProps) {
-    if (props.mirror) this.shakeAnimationName = 'shakeit-mirrored';
-  }
-
-  // Transitions
-  private flyTextWillLeave = (): any => {
-    return {
-      opacity: spring(0, {
-        stiffness: 50,
-        damping: 15,
-        precision: 0.01,
-      }), top: spring(-120, {
-        stiffness: 75,
-        damping: 15,
-        precision: 1,
-      }),
-    };
   }
 
   private flyTextWillEnter = (): any => {

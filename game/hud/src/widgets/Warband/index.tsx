@@ -38,7 +38,7 @@ class WarbandContainer extends React.Component<WarbandContainerProps, WarbandCon
     );
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     if (!this.initialized) {
       initialize();
       this.initialized = true;

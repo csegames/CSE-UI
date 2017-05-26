@@ -79,6 +79,15 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     );
   }
 
+  public componentDidMount() {
+    events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
+  }
+
+  public componentWillUnmount() {
+    events.removeListener(this.blockSelectionListener);
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+  }
+
   private blockSelectionListener = (info: { material: BuildingMaterial, block: BuildingBlock }) => {
     this.onBlockSelect(info.material, info.block);
   }
@@ -120,15 +129,6 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     const requestedBlock: BuildingBlock = mat.getBlockForShape(currentBlock.shapeId);
     blockRequester.changeBlockSelection(requestedBlock);
     this.setState((state, props) => ({ showMatSelect: false } as any));
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
-  }
-
-  private componentDidMount() {
-    events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
-  }
-
-  private componentWillUnmount() {
-    events.removeListener(this.blockSelectionListener);
     events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }

@@ -147,7 +147,7 @@ class Login extends React.Component<LoginProps, LoginState> {
     );
   }
 
-  private componentDidMount() : void {
+  public componentDidMount() : void {
     // without this timeout, the label doesn't animate up above the input box
     if (this.emailRef.value.length === 0) {
       this.emailRef.focus();

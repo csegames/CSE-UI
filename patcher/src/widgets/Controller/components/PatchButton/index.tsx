@@ -85,7 +85,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     );
   }
 
-  private componentWillReceiveProps(nextProps: PatchButtonProps) {
+  public componentWillReceiveProps(nextProps: PatchButtonProps) {
     for (const key in nextProps.servers) {
       const s = nextProps.servers[key];
       if (s.channelStatus === ChannelStatus.Updating) {

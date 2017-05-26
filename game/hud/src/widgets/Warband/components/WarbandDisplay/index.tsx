@@ -47,6 +47,10 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
     );
   }
 
+  public componentDidMount() {
+    setTimeout(() => this.props.dispatch(warbandInit()), 1000);
+  }
+
   private renderMember = (member: WarbandMember): any => {
     return <WarbandMemberDisplay key={member.characterID} member={member} />;
   }
@@ -54,12 +58,6 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
   private initSignalRHub = () => {
     this.props.dispatch(warbandInit());
   }
-
-  private componentDidMount() {
-    setTimeout(() => this.props.dispatch(warbandInit()), 1000);
-  }
-
-  // END TESTING
 }
 
 export default connect(select)(WarbandDisplay);

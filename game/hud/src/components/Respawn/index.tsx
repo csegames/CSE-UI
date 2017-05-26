@@ -48,7 +48,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
 
     if (!hasClientAPI()) return;
 

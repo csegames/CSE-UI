@@ -59,6 +59,16 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
     );
   }
 
+  public componentDidMount() {
+    events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
+    events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
+  }
+
+  public componentWillUnmount() {
+    events.removeListener(this.materialSelectorActivated);
+    events.removeListener(this.materialSelectorDeactivated);
+  }
+
   private onMinMax() {
     this.setState((state, props) => ({ minimized: !state.minimized } as BuildPanelState));
   }
@@ -69,16 +79,6 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
 
   private materialSelectorDeactivated = () => {
     this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
-  }
-
-  private componentDidMount() {
-    events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
-    events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
-  }
-
-  private componentWillUnmount() {
-    events.removeListener(this.materialSelectorActivated);
-    events.removeListener(this.materialSelectorDeactivated);
   }
 }
 

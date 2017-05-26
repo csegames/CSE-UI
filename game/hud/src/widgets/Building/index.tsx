@@ -62,7 +62,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {

@@ -62,13 +62,13 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     }
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     client.SubscribeInventory(true);
     client.OnInventoryAdded(this.addItem);
     client.OnInventoryRemoved(this.removeItem);
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'inventory') {
         if (this.state.visible) {
@@ -80,7 +80,7 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     });
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off('hudnav--navigate');
     client.ReleaseInputOwnership();
   }

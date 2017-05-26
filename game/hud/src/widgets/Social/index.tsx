@@ -47,7 +47,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
       : null;
   }
   
-  private componentDidMount() {
+  public componentDidMount() {
     if (!this.initialized) {
       this.initialized = true;
     }
@@ -66,7 +66,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
     window.addEventListener('keydown', this.onKeyDown);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off('hudnav--navigate');
     window.removeEventListener('keydown', this.onKeyDown);
   }

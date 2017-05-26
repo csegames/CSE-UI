@@ -768,7 +768,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     const { totalPoints } = this.props;
     const shouldAffectBoonBar = totalPoints * -1 < 0;
     const shouldAffectBaneBar = totalPoints * -1 > 0;
@@ -784,7 +784,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     }
   }
 
-  private componentWillUpdate(nextProps: BanesAndBoonsProps) {
+  public componentWillUpdate(nextProps: BanesAndBoonsProps) {
     if (nextProps.totalPoints !== this.props.totalPoints) {
       const shouldAffectBoonBar = nextProps.totalPoints * -1 < 0;
       const shouldAffectBaneBar = nextProps.totalPoints * -1 > 0;

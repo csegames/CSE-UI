@@ -171,11 +171,11 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
     );
   }
   
-  private componentDidMount() {
+  public componentDidMount() {
     this.editModeListenerID = events.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }

@@ -101,6 +101,12 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     );
   }
 
+  public componentDidMount() {
+  }
+
+  public componentWillUnmount() {
+  }
+
   private playSound = (sound: string) => {
     events.fire('play-sound', sound);
   }
@@ -134,12 +140,6 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     const {selectedServer} = this.state;
     patcher.installChannel(selectedServer.channelID | 0);
     this.playSound('select');
-  }
-
-  private componentDidMount() {
-  }
-
-  private componentWillUnmount() {
   }
 
   private queueStateChange = (obj: any) => {

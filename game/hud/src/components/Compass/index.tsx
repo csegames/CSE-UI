@@ -57,6 +57,20 @@ class Compass extends React.Component<CompassProps, CompassState> {
     );
   }
 
+  public componentWillMount() {
+    this.updateFacingFromClient();
+  }
+
+  public componentDidMount() {
+    this.updateFacingFromClient();
+    clearInterval(this.intervalId);
+    this.intervalId = setInterval(() => this.updateFacingFromClient(), this.updateSpeed);
+  }
+
+  public componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
   private angleToPercentage = (facing: number, angle: number): number => {
     let diff: number = angle - (facing % 360);
     const fit = 0.75;
@@ -75,20 +89,6 @@ class Compass extends React.Component<CompassProps, CompassState> {
     if (this.state.facing !== facing) {
       this.setState({ facing } as any);
     }
-  }
-
-  private componentWillMount() {
-    this.updateFacingFromClient();
-  }
-
-  private componentDidMount() {
-    this.updateFacingFromClient();
-    clearInterval(this.intervalId);
-    this.intervalId = setInterval(() => this.updateFacingFromClient(), this.updateSpeed);
-  }
-
-  private componentWillUnmount() {
-    clearInterval(this.intervalId);
   }
 
   private position(facing: number, angle: number) {

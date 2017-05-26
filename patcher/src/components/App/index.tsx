@@ -97,6 +97,33 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     );
   }
 
+  public componentDidMount() {
+    // fetch initial hero content and then every 30 minutes validate & fetch hero content.
+    if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
+    this.heroContentInterval = setInterval(() => {
+      this.props.dispatch(validateHeroContent());
+      if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
+    }, 60000 * 30);
+
+    events.on('view-content', (v: view) => {
+      if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
+        this.props.dispatch(changeRoute(Routes.HERO));
+      }
+    });
+
+    events.on('logged-in', () => {
+      this.setState({} as any);
+    });
+  }
+
+  public componentWillUnmount() {
+    // unregister intervals
+    clearInterval(this.heroContentInterval);
+  }
+
+  public componentDidUpdate() {
+  }
+
   private onRouteChanged = (route: Routes) => {
     if (route === Routes.HERO) {
       events.fire('view-content', view.NONE, null);
@@ -138,32 +165,6 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     setTimeout(() => this.setState({}), 500);
   }
 
-  private componentDidUpdate() {
-  }
-
-  private componentDidMount() {
-    // fetch initial hero content and then every 30 minutes validate & fetch hero content.
-    if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
-    this.heroContentInterval = setInterval(() => {
-      this.props.dispatch(validateHeroContent());
-      if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
-    }, 60000 * 30);
-
-    events.on('view-content', (v: view) => {
-      if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
-        this.props.dispatch(changeRoute(Routes.HERO));
-      }
-    });
-
-    events.on('logged-in', () => {
-      this.setState({} as any);
-    });
-  }
-
-  private componentWillUnmount() {
-    // unregister intervals
-    clearInterval(this.heroContentInterval);
-  }
 }
 
 export default connect(select)(PatcherApp);

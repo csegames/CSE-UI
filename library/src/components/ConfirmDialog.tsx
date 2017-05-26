@@ -162,7 +162,7 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
     this.mouseOver = false;
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('mousedown', this.windowMouseDown);
   }
 

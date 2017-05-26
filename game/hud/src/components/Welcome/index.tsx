@@ -52,6 +52,16 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     );
   }
 
+  public componentWillMount() {
+    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
+      if (response.ok) {
+        this.onMessage(response.data);
+        return;
+      }
+      this.onMessageFailed(response.problem);
+    });
+  }
+
   private onMessage = (data: WelcomeData) => {
     if (data.message === '') return;
     const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{__html: data.message}} />;
@@ -71,16 +81,6 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     this.hide();
     const hideDelayStart: Date = new Date();
     localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
-  }
-
-  private componentWillMount() {
-    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
-      if (response.ok) {
-        this.onMessage(response.data);
-        return;
-      }
-      this.onMessageFailed(response.problem);
-    });
   }
 }
 

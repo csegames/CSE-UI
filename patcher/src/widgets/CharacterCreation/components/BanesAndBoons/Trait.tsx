@@ -328,7 +328,7 @@ class Trait extends React.Component<TraitProps, {}> {
     );
   }
 
-  private componentWillUpdate(nextProps: TraitProps) {
+  public componentWillUpdate(nextProps: TraitProps) {
     // This gets rid of a selected trait after one of its prerequisites have been unselected.
     const { trait, allPrerequisites, addedTraits, onCancelTrait } = nextProps;
 

@@ -205,7 +205,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
     }
   }
 
-  private componentWillReceiveProps(nextProps: SliderProps) {
+  public componentWillReceiveProps(nextProps: SliderProps) {
     const single = !Array.isArray(this.props.children);
     if (single) {
       this.setState({

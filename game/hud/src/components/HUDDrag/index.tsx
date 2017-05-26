@@ -194,7 +194,17 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     );
   }
 
-  private componentWillReceiveProps(props: HUDDragProps) {
+  public componentDidMount() {
+    window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('mousemove', this.onMouseMove);
+  }
+
+  public componentDidUnMount() {
+    window.removeEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('mousemove', this.onMouseMove);
+  }
+
+  public componentWillReceiveProps(props: HUDDragProps) {
 
     if (this.state.mode === EditMode.NONE) {
       this.setState({
@@ -405,16 +415,6 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private setVisible = (v: boolean) => {
     this.setState({visible: v} as any);
     this.didUpdate = true;
-  }
-
-  private componentDidMount() {
-    window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousemove', this.onMouseMove);
-  }
-
-  private componentDidUnMount() {
-    window.removeEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousemove', this.onMouseMove);
   }
 
   private startScaleHold = (up: boolean) => {

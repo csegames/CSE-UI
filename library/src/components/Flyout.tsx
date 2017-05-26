@@ -105,7 +105,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     } as any);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     // unreg window handlers
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('mousedown', this.onMouseDown);

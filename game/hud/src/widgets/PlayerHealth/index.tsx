@@ -60,7 +60,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     this.props.dispatch(initializePlayerSession());
   }
 }

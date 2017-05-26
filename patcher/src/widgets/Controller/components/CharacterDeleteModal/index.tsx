@@ -83,7 +83,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     (this.refs['name'] as HTMLInputElement).focus();
   }
 

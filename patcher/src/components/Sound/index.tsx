@@ -62,6 +62,32 @@ export class Sound extends React.Component<SoundProps, SoundState> {
     );
   }
 
+  public componentDidUpdate() {
+    if (this.bgRef) {
+      const paused = this.state.paused || !this.props.soundsState.playMusic;
+      if (paused && !this.bgRef.paused) {
+        this.pause(true);
+      } else if (!paused && this.bgRef.paused) {
+        this.pause(false);
+      }
+    }
+  }
+
+  public componentDidMount() {
+    if (this.bgRef) {
+      if (this.props.soundsState.playMusic) {
+        this.bgRef.play();
+        this.bgRef.volume = 0.5;
+      }
+    }
+    this.evhs.push(events.on('play-sound', (name: string) => this.playSound(name)));
+    this.evhs.push(events.on('pause-music', (paused: boolean) => this.pauseMusic(paused)));
+  }
+
+  public componentWillUnmount() {
+    this.evhs.map((h: any) => events.off(h));
+  }
+
   private setStateAsync = (sparseState: any) => {
     setTimeout(() => { this.setState(sparseState); },0);
   }
@@ -181,32 +207,6 @@ export class Sound extends React.Component<SoundProps, SoundState> {
       fade(0.0, 0.5, 0.05);
       this.bgRef.play();
     }
-  }
-
-  private componentDidUpdate() {
-    if (this.bgRef) {
-      const paused = this.state.paused || !this.props.soundsState.playMusic;
-      if (paused && !this.bgRef.paused) {
-        this.pause(true);
-      } else if (!paused && this.bgRef.paused) {
-        this.pause(false);
-      }
-    }
-  }
-
-  private componentDidMount() {
-    if (this.bgRef) {
-      if (this.props.soundsState.playMusic) {
-        this.bgRef.play();
-        this.bgRef.volume = 0.5;
-      }
-    }
-    this.evhs.push(events.on('play-sound', (name: string) => this.playSound(name)));
-    this.evhs.push(events.on('pause-music', (paused: boolean) => this.pauseMusic(paused)));
-  }
-
-  private componentWillUnMount() {
-    this.evhs.map((h: any) => events.off(h));
   }
 
   private renderAudioElements = () => {

@@ -96,7 +96,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     );
   }
 
-  private componentWillReceiveProps(props: HUDProps) {
+  public componentWillReceiveProps(props: HUDProps) {
     if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
       
         events.fire('chat-leave-room', this.state.orderName);
@@ -113,7 +113,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     }
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     this.props.dispatch(initialize());
 
     if (client && client.OnCharacterHealthChanged) {

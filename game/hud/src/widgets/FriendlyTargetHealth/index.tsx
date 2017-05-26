@@ -73,7 +73,7 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     this.props.dispatch(initializePlayerSession());
   }
 }

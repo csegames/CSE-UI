@@ -60,7 +60,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('pause-videos', this.pause);
     events.on('resume-videos', this.resume);
   }

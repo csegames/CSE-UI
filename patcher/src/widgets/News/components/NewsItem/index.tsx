@@ -89,6 +89,17 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
     );
   }
   
+  public componentDidUpdate(prevProps: NewsItemProps, prevState: NewsItemState) {
+    const root: HTMLDivElement = (this.refs as any).newsContent;
+    if (root) {
+      const as: NodeListOf<HTMLAnchorElement> = root.getElementsByTagName('a');
+      for (let i = 0; i < as.length; i++) {
+        const a: HTMLAnchorElement = as[i];
+        a.target = '_blank';
+      }
+    }
+  }
+  
   private showFullArticle = () => {
     this.setState({
       showFullArticle: true,
@@ -99,17 +110,6 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
     this.setState({
       showFullArticle: false,
     });
-  }
-  
-  private componentDidUpdate(prevProps: NewsItemProps, prevState: NewsItemState) {
-    const root: HTMLDivElement = (this.refs as any).newsContent;
-    if (root) {
-      const as: NodeListOf<HTMLAnchorElement> = root.getElementsByTagName('a');
-      for (let i = 0; i < as.length; i++) {
-        const a: HTMLAnchorElement = as[i];
-        a.target = '_blank';
-      }
-    }
   }
 }
 

@@ -136,7 +136,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     );
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     events.on('system_message', this.onConsoleText);
     events.on('hudnav--navigate', this.handleHUDNavNavigate);
   }

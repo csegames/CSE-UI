@@ -160,7 +160,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     );
   }
 
-  private componentWillReceiveProps(props: SocialMainProps) {
+  public componentWillReceiveProps(props: SocialMainProps) {
     if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
       
         events.fire('chat-leave-room', this.state.orderName);
@@ -177,7 +177,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     }
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     this.props.data.refetch();
   }
 

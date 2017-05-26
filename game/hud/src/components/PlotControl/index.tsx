@@ -75,6 +75,23 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     } else return null;
   }
 
+  public componentWillMount() {
+    client.OnPlotStatus(this.onPlotStatus);
+    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus();}, 2000); 
+  }
+
+  public componentDidMount() {
+    events.on('hudnav--navigate', (name: string) => {
+      if (name === 'plotcontrol') {
+        if (!this.state.visible) {
+          this.setState((state, props) => ({ visible: true }));
+        } else {
+          this.setState((state, props) => ({ visible: false }));
+        }
+      }
+    });
+  }
+
   private closeWindow = () => {
     events.fire('hudnav--navigate', 'plotcontrol');
   }
@@ -90,23 +107,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       };
     });
     this.getQueueStatus();
-  }
-
-  private componentWillMount() {
-    client.OnPlotStatus(this.onPlotStatus);
-    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus();}, 2000); 
-  }
-
-  private componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
-      if (name === 'plotcontrol') {
-        if (!this.state.visible) {
-          this.setState((state, props) => ({ visible: true }));
-        } else {
-          this.setState((state, props) => ({ visible: false }));
-        }
-      }
-    });
   }
 
   private changePermissions = (perm: plotPermissions) => {

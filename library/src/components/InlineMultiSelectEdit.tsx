@@ -185,11 +185,11 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
     );
   }
   
-  private componentDidMount() {
+  public componentDidMount() {
     this.editModeListenerID = events.on(InlineMultiSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }

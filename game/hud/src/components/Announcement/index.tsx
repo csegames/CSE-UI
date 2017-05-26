@@ -45,6 +45,11 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
     );
   }
   
+  public componentWillMount() {
+    events.on('handlesAnnouncements', this.onMessage);
+    this.setState({message: ''});
+  }
+
   private onMessage = (eventData: any) => {
     const announcement = eventData as core.Announcement;
     if (announcement.type !== core.announcementType.POPUP) return;
@@ -52,11 +57,6 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
     setTimeout(() => {
       this.setState({message: ''});
     }, 20000);
-  }
-  
-  private componentWillMount() {
-    events.on('handlesAnnouncements', this.onMessage);
-    this.setState({message: ''});
   }
 }
 

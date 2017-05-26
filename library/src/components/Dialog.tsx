@@ -122,7 +122,7 @@ export class Dialog<ContentProps> extends React.Component<DialogProps<ContentPro
     this.mouseOver = false;
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('mousedown', this.windowMouseDown);
   }
 

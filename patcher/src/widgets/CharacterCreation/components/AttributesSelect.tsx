@@ -81,11 +81,11 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
     );
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
 
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
 
   }
 

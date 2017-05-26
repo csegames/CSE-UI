@@ -57,7 +57,7 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     
   }
 

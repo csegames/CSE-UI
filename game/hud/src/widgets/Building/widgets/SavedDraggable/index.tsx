@@ -102,6 +102,15 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
     );
   }
 
+  public componentWillUnmount() {
+    window.removeEventListener('resize', this.handleWindowResize);
+    this.stopDrag();
+  }
+
+  public componentDidMount() {
+    window.addEventListener('resize', this.handleWindowResize);
+  }
+
   private getScreenSize(): Size {
     return { width: window.innerWidth, height: window.innerHeight };
   }
@@ -252,15 +261,6 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
 
   private stopDrag = () => {
     window.document.body.style.backgroundColor = null;
-  }
-
-  private componentWillUnmount() {
-    window.removeEventListener('resize', this.handleWindowResize);
-    this.stopDrag();
-  }
-
-  private componentDidMount() {
-    window.addEventListener('resize', this.handleWindowResize);
   }
 }
 

@@ -92,6 +92,10 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
     );
   }
 
+  public componentWillUnmount() {
+    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+  }
+
   private showMaterialsFrom = (show: boolean) => {
     if (show) {
       events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: this.props.from, onSelect: this.selectFrom });
@@ -134,10 +138,6 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
     if (w.cuAPI != null) {
       w.cuAPI.ReplaceSubstance(this.props.from.id, this.props.to.id);
     }
-  }
-
-  private componentWillUnmount() {
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }
 

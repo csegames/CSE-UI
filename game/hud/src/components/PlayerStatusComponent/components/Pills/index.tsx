@@ -184,11 +184,11 @@ class Pills extends React.Component<PillsProps, PillsState> {
     );
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     this.mounted = true;
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     this.mounted = false;
   }
 

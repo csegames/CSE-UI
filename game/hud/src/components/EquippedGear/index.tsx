@@ -82,11 +82,11 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
     } else { return null; }
   }
 
-  private componentWillMount() {
+  public componentWillMount() {
     this.addCallbacks();
   }
 
-  private componentDidMount() {
+  public componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'equippedgear') {
         if (!this.state.visible) {
@@ -99,7 +99,7 @@ export class EquippedGearWindow extends React.Component<EquippedGearWindowProps,
     window.addEventListener('keydown', e => this.onKeyDown(e));
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     events.off('hudnav--navigate');
     window.removeEventListener('keydown', this.onKeyDown);
   }
