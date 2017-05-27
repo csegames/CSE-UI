@@ -1,10 +1,11 @@
 language: node_js
 node_js:
- - "6"
-sudo: required 
+ - "7"
 before_install:
- - "cd game"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && npm install"
+ - "cd $TRAVIS_BUILD_DIR/library && npm install"
+ - "cd $TRAVIS_BUILD_DIR/patcher && npm install"
 script:
- - "cd hud && npm install && npm start build && cd ../../library && npm install && npm start build && cd ../patcher && npm install && npm start build"
- - "cd ../game/hud && npm start test"
- - "cd ../../library && npm start test"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && npm start build && npm start test"
+ - "cd $TRAVIS_BUILD_DIR/library && npm start build && npm start test"
+ - "cd $TRAVIS_BUILD_DIR/patcher && npm start build"
