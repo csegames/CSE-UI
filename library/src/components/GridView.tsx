@@ -219,7 +219,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
     } as S);
   }
 
-  public componentWillReceiveProps (nextProps: P) {
+  public componentWillReceiveProps(nextProps: P) {
     const items = cloneDeep(nextProps.items);
     this.setState({
       items,
