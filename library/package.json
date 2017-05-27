@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "rimraf typings && typings install"
+    "postinstall": "cwd-in-node-modules || rimraf typings && typings install"
   },
   "dependencies": {
     "aphrodite": "^1.1.0",
@@ -65,7 +65,8 @@
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^0.14.6",
     "react-dom": "^15.4.2",
-    "redux-typed-modules": "^2.2.1"
+    "redux-typed-modules": "^2.2.1",
+    "cwd-in-node-modules": "^1.0.1"
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
