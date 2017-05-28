@@ -25,11 +25,11 @@ class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomListState>
     super(props);
   }
 
-  componentDidMount = () : void => {
+  public componentDidMount() : void {
     document.addEventListener("mousedown", this.onmousedown, true);
   }
 
-  componentWillUnmount = () : void => {
+  public componentWillUnmount() : void {
     document.removeEventListener("mousedown", this.onmousedown, true);
   }
 
