@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "cwd-in-node-modules || rimraf typings && typings install"
+    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install)"
   },
   "dependencies": {
     "aphrodite": "^1.1.0",
@@ -85,6 +85,7 @@
     "npm-watch": "^0.1.4",
     "nps": "^5.0.5",
     "react-test-renderer": "^15.5.4",
+    "rimraf": "^2.6.1",
     "ts-jest": "^19.0.14",
     "tslint": "^5.0.0",
     "tslint-config-airbnb": "^1.1.1",

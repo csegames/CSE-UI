@@ -19,7 +19,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "postinstall": "cwd-in-node-modules || rimraf typings && typings install",
+    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install)",
     "clean": "rimraf tmp && rimraf lib",
     "babel": "babel tmp -d lib",
     "sass": "node-sass src/ -o lib/ --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
@@ -52,6 +52,7 @@
     "http-server": "^0.9.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.4.2",
+    "rimraf": "^2.6.1",
     "typescript": "^1.8.10",
     "typings": "^1.3.2"
   }
