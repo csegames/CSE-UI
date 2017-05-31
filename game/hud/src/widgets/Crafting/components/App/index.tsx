@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-25 00:39:03
+ * @Last Modified time: 2017-05-26 00:27:19
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {events, jsKeyCodes} from 'camelot-unchained';
+import {events, client, jsKeyCodes} from 'camelot-unchained';
 
 import { slash } from '../../services/game/slash';
 import { setLoading, setJobType, setMessage,
@@ -49,22 +49,18 @@ interface AppProps {
 }
 
 interface AppState {
-  visible: boolean;
+  open: boolean;
 }
-
-const NAVIGATE_EVENT = 'hudnav--navigate';
 
 class App extends React.Component<AppProps,AppState> {
 
-  private navigateEvent: any;
-
   constructor(props: AppProps) {
     super(props);
-    this.state = { visible: true };
+    this.state = { open: true };
   }
 
   public render() {
-    if (!this.state.visible) return null;
+    if (!this.state.open) return null;
     const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
     const props = this.props;
     const type = props.job && props.job.type;
@@ -96,8 +92,8 @@ class App extends React.Component<AppProps,AppState> {
     }
 
     return (
-      <div className={css(ss.container)}>
-        <Close onClose={() => this.hide()}/>
+      <div ref='crafting' className={css(ss.container)}>
+        <Close onClose={this.close}/>
         <VoxInfo/>
         <JobType
           mode={this.props.uiMode}
@@ -115,43 +111,37 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   public componentDidMount() {
-    this.listenForEvents();
-    this.handleKeyboardEvents();
+    window.addEventListener('keydown', this.onKeyDown);
+    const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
+    div.addEventListener('mouseenter', this.capture);
+    div.addEventListener('mouseleave', this.release);
   }
 
   private componentWillUnmount() {
-    events.off(this.navigateEvent);
     window.removeEventListener('keydown', this.onKeyDown);
+    const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
+    div.removeEventListener('mouseenter', this.capture);
+    div.removeEventListener('mouseleave', this.release);
   }
 
-  private hide() {
-    this.setState({ visible: false });
-  }
-  private show() {
-    this.refresh();
-    this.setState({ visible: true });
-  }
-
-  private listenForEvents() {
-    this.navigateEvent = events.on(NAVIGATE_EVENT, (name : string) => {
-      if (name === 'crafting') {
-        if (this.state.visible) {
-          this.hide();
-        } else {
-          this.show();
-        }
-      }
-    });
+  private close() {
+    events.fire('hudnav--navigate', 'crafting');
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
-    if (e.which === jsKeyCodes.ESC && this.state.visible) {
-      this.hide();
+    if (e.which === jsKeyCodes.ESC) {
+      this.close();
     }
   }
 
-  private handleKeyboardEvents() {
-    window.addEventListener('keydown', this.onKeyDown);
+  private capture = (e: MouseEvent) => {
+    console.log('CRAFTING: request input ownership');
+    client.RequestInputOwnership();
+  }
+
+  private release = (e: MouseEvent) => {
+    console.log('CRAFTING: release input ownership');
+    client.ReleaseInputOwnership();
   }
 
   private refresh = () => {
