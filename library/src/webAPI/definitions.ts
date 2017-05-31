@@ -1202,6 +1202,7 @@ export enum FieldCodes {
   DoesNotExist = 4002,
   UserStateConflict = 4003,
   InsufficientResource = 4004,
+  VoxJobError = 4005,
   UnspecifiedServiceUnavailable = 5000,
   DatabaseUnavailable = 5001,
   GroupServiceUnavailable = 5002,
