@@ -8,6 +8,7 @@
  * @Last Modified by: JB (jb@codecorsair.com)
  * @Last Modified time: 2017-03-13 18:37:47
  */
+import { ModifyVoxJobResultCode } from '../../definitions';
 
 export interface UnspecifiedExecutionError {
   Code: 4000;
@@ -37,5 +38,16 @@ export interface InsufficientResource {
     Name: string;
     Required: string | number;
     Available: string | number;
+  }[];
+}
+
+export interface ModifyVoxJobError {
+  Code: 4005;
+  Message: string;
+  VoxJobResult: {
+    Code: ModifyVoxJobResultCode;
+    IsSuccess: boolean;
+    Details: string;
+    DiscoveredRecipeIDs: string[];
   }[];
 }

@@ -51,7 +51,8 @@ export interface ExecutionError {
           FieldCodes.UnhandledExecutionException |
           FieldCodes.DoesNotExist |
           FieldCodes.UserStateConflict |
-          FieldCodes.InsufficientResource
+          FieldCodes.InsufficientResource |
+          FieldCodes.ModifyVoxJobError
         ];
 }
 

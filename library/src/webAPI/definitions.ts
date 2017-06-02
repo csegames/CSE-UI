@@ -1331,6 +1331,33 @@ export enum MemberActionType {
 
 /* tslint:disable */
   
+export enum ModifyVoxJobResultCode { 
+  InvalidRequest = -1,
+  Success = 0,
+  JobAlreadyExists = 1,
+  InvalidJob = 2,
+  NoCurrentJob = 3,
+  ItemsInVox = 4,
+  IncorrectJobState = 5,
+  DBError = 6,
+  NotSupported = 7,
+  InvalidRecipe = 8,
+  TooManyIngredients = 9,
+  NotEnoughIngredients = 10,
+  IncorrectIngredient = 11,
+  InvalidIngredient = 12,
+  InvalidQuality = 13,
+  InventoryFull = 14,
+  NotEnoughRepairPoints = 15,
+  InvalidUnitCount = 16,
+  ParameterError = 17,
+  VoxNotFound = 18,
+  RecipeAlreadyDiscovered = 19
+}
+ 
+
+/* tslint:disable */
+  
 export enum PatchPermissions { 
   Public = 0,
   AllBackers = 1,
