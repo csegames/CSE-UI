@@ -6,17 +6,18 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:19:58
+ * @Last Modified time: 2017-06-04 22:57:04
  */
 
 
 export interface Item {
   id: string;
   name: string;
+  icon?: string;
+  description?: string;
 }
 
 export interface InventoryItem extends Item {
-  itemType: string;
   stats: {
     quality: number;
     unitCount: number;
@@ -36,8 +37,7 @@ export interface Message {
   message: string;
 }
 
-export interface VoxStatus {
-  vox: string;
+export interface SlashVoxStatus {
   type: string;
   status: string;
   ready: boolean;

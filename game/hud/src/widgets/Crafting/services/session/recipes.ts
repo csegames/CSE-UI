@@ -6,12 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:52:07
+ * @Last Modified time: 2017-06-04 22:54:58
  */
 
 import { Module } from 'redux-typed-modules';
 import { Recipe, Template } from '../types';
 import { slash, isClient } from '../game/slash';
+import { VoxRecipe } from '../game/crafting';
 
 export interface RecipesState {
   updating: number;
@@ -42,6 +43,39 @@ const module = new Module({
   },
 });
 
+function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
+  return voxRecipes.map((r: VoxRecipe) => {
+    return {
+      id: r.id,
+      name: r.outputItem.name,
+      icon: r.outputItem.iconUrl,
+      description: r.outputItem.description,
+    };
+  });
+}
+
+export const gotVoxRecipes = module.createAction({
+  type: 'crafting/recipes/got-recipes',
+  action: (recipeType: string, recipes: VoxRecipe[]) => {
+    return { recipeType, recipes: mapVoxRecipesToRecipes(recipes) };
+  },
+  reducer: (s, a) => {
+    const type = a.recipeType;
+    switch (type) {
+      case 'purify':
+      case 'refine':
+      case 'grind':
+      case 'shape':
+      case 'block':
+      return { [type]: a.recipes };
+    }
+    console.error('CRAFTING: illegal recipe type ' + type);
+    return {};
+  },
+});
+
+// {depricated}
+/*
 export const gotRecipe = module.createAction({
   type: 'crafting/recipes/got-recipes',
   action: (recipeType: string, recipes: Recipe[]) => {
@@ -61,15 +95,18 @@ export const gotRecipe = module.createAction({
     return {};
   },
 });
+*/
 
 // Recipes
 
+// {depricated}
 export const recipeTypes = [
   'purify', 'refine', 'grind', 'shape', 'block',
 ];
 
 // TESTING: Dummy Recipies
 
+// {depricated}
 const dummyRecipies = {
   purify: [
     { id: 1, name: 'Distill Water' },
@@ -93,6 +130,8 @@ const dummyRecipies = {
   ],
 };
 
+// {depricated}
+/*
 export function getRecipeFor(what: string, callback: (type: string, list: Recipe[]) => void) {
   if (!isClient()) {
     callback(what, dummyRecipies[what] || []);    // no cuAPI, simulation
@@ -106,5 +145,6 @@ export function getRecipeFor(what: string, callback: (type: string, list: Recipe
     });
   }
 }
+*/
 
 export default module.createReducer();

@@ -6,12 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:52:00
+ * @Last Modified time: 2017-06-04 22:34:39
  */
 
 import { Module } from 'redux-typed-modules';
 import { Template } from '../types';
 import { slash, isClient } from '../game/slash';
+import { VoxTemplate } from '../game/crafting';
 
 export interface TemplatesState {
   updating: number;
@@ -36,6 +37,20 @@ const module = new Module({
   },
 });
 
+export const gotVoxTemplates = module.createAction({
+  type: 'crafting/job/got-vox-template',
+  action: (templates: VoxTemplate[]) => {
+    return { templates };
+  },
+  reducer: (s, a) => {
+    const armour = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Armor'));
+    const weapons = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Weapon'));
+    return { armour, weapons };
+  },
+});
+
+
+// {depricated}
 export const gotTemplate = module.createAction({
   type: 'crafting/templates/got-templates',
   action: (templateType: string, templates: Template[]) => {
@@ -55,6 +70,7 @@ export const gotTemplate = module.createAction({
 
 // Templates
 
+// {depricated}
 export const templateTypes = [
   'armor', 'weapons',
   'substences', 'inventory', 'blocks',
@@ -62,6 +78,7 @@ export const templateTypes = [
 
 // TESTING: Dummy Templates
 
+// {depricated}
 const dummyTemplates = {
   armor: [
     { id: 1, name: 'Silly Hat of Awesomness' },
@@ -73,6 +90,7 @@ const dummyTemplates = {
   ],
 };
 
+// {depricated}
 export function getTemplateFor(what: string, callback: (type: string, list: Template[]) => void) {
   if (!isClient()) {
     callback(what, dummyTemplates[what]);    // no cuAPI, simulation
@@ -88,6 +106,7 @@ export function getTemplateFor(what: string, callback: (type: string, list: Temp
   }
 }
 
+// {depricated}
 export function getAllTemplates(callback: (type: string, templates: Template[]) => void) {
   const queue = [ 'armor', 'weapons' ];
   function nom() {

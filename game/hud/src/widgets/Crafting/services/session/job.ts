@@ -6,17 +6,17 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:54:31
+ * @Last Modified time: 2017-06-04 23:09:53
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
 import { slash, isClient } from '../game/slash';
-import { Ingredient, InventoryItem, Recipe, Template, Message, VoxStatus } from '../types';
+import { Ingredient, InventoryItem, Recipe, Template, Message, SlashVoxStatus } from '../types';
+import { VoxStatus, VoxIngredient } from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
-  vox: string;                        // Vox ID (if known)
   status: string;                     // Vox status (if known)
   ready: boolean;                     // Crafting complete? (Item Ready)  -- TODO Do we need this?
   type: string;                       // What type of crafting are we doing?
@@ -34,7 +34,6 @@ export interface JobState {
 
 export const initialState = () : JobState => {
   return {
-    vox: null,
     status: 'unknown',
     ready: false,
     loading: false,
@@ -130,8 +129,7 @@ export const clearJob = module.createAction({
   },
   reducer: (s, a) => {
     // Clearing a job effectively resets the vox back to idle
-    const vox = s.vox;
-    return Object.assign({}, initialState(), { vox, status: 'idle' });
+    return Object.assign({}, initialState(), { status: 'idle' });
   },
 });
 
@@ -152,8 +150,7 @@ export const collectJob = module.createAction({
   },
   reducer: (s, a) => {
     // collecting a job, if successful, also clears it
-    const vox = s.vox;
-    return Object.assign({}, initialState(), { vox, status: 'idle' });
+    return Object.assign({}, initialState(), { status: 'idle' });
   },
 });
 
@@ -207,65 +204,66 @@ export const setTemplate = module.createAction({
   },
 });
 
-export const setPossibleIngredients = module.createAction({
-  type: 'crafting/job/set-possible-ingredients',
-  action: (possible: Ingredient[]) => {
+export const gotVoxPossibleIngredients = module.createAction({
+  type: 'crafting/job/got-vox-possible-ingredients',
+  action: (possible: VoxIngredient[]) => {
     return { possible };
   },
   reducer: (s, a) => {
-    return { possibleIngredients: a.possible };
+    return { possibleIngredients: mapVoxIngredientsToIngredients(a.possible) };
   },
 });
 
-export function getStatus(callback: (response: any) => void) {
-  if (!isClient()) {
-    callback({
-      status: {
-        vox: '000000003fb7c1f4',
-        type: 'make',
-        status: 'configuring',
-        recipe: null,
-        template: { id: 'item_Arthurian_ArmorMediumForearm01', name: '' },
-        ingredients: [
-          { id: '1', name: 'Sub Iron x20 - 20kg @ 50%', qty: 1 },
-          { id: '2', name: 'Basic Arrow', qty: 1 },
-        ],
-        name: 'La La Land',
+function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
+  const ingredients: Ingredient[] = [];
+  for (let i = 0; i < vis.length; i++) {
+    const item = vis[i].stats.item;
+    ingredients.push({
+      id: vis[i].id,
+      name: vis[i].givenName || vis[i].staticDefinition.name,
+      qty: item.unitCount,
+      stats: {
+        quality: item.quality,
+        unitCount: item.unitCount,
+        weight: item.mass,
       },
-      complete: 'Running cr on aaac with params [ vox status] ... done.',
-    });
-  } else {
-    slash('cr vox status', (response: any) => {
-      callback(response);
+      icon: vis[i].staticDefinition.iconUrl,
+      description: vis[i].staticDefinition.description,
     });
   }
+  return ingredients;
 }
 
-export const gotStatus = module.createAction({
-  type: 'crafting/job/got-status',
+export const gotVoxStatus = module.createAction({
+  type: 'crafting/job/got-vox-status',
   action: (status: VoxStatus) => {
     return { status };
   },
   reducer: (s, a) => {
+    const status = a.status;
+    const startTime = new Date(status.startTime);
+    const endTime = new Date(startTime.valueOf() + (status.totalCraftingTime * 1000));
+    const ingredients: Ingredient[] = mapVoxIngredientsToIngredients(a.status.ingredients);
     return {
-      vox: a.status.vox,
-      status: a.status.status,
-      ready: a.status.ready,
-      type: a.status.type,
-      started: a.status.started,
-      endin: a.status.endin,
-      recipe: a.status.recipe,
-      name: a.status.name,
-      template: a.status.template,
-      ingredients: a.status.ingredients,
+      status: a.status.jobState,
+      ready: undefined,
+      type: a.status.jobType,
+      started: startTime.toISOString(),
+      endin: ((endTime.valueOf() - startTime.valueOf()) / 1000).toString(),
+      recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
+      name: a.status.givenName,
+      template: status.template && { id: status.template.id, name: '' },
+      ingredients,
     };
   },
 });
 
 // Like gotStatus but without vox: ID
+// Called after selecting job type
+// {soon to be depricated}
 export const updateStatus = module.createAction({
   type: 'crafting/job/update-status',
-  action: (status: VoxStatus) => {
+  action: (status: SlashVoxStatus) => {
     return { status };
   },
   reducer: (s, a) => {

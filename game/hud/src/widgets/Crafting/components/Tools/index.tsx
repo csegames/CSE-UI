@@ -6,13 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:18:02
+ * @Last Modified time: 2017-06-02 20:55:13
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
 import { StyleSheet, css, merge, tools, ToolsStyles } from '../../styles';
+import { voxGetStatus } from '../../services/game/crafting';
 
 import Label from '../Label';
 import Input from '../Input';
@@ -36,12 +37,13 @@ export interface ToolsProps extends ToolsPropsRedux {
 
 interface ToolsStatus {
   range: number;
+  voxStatus: string;
 }
 
 class Tools extends React.Component<ToolsProps, ToolsStatus> {
   constructor(props: ToolsProps) {
     super(props);
-    this.state = { range: 1000 };
+    this.state = { range: 1000, voxStatus: undefined };
   }
   public render() {
     const ss = StyleSheet.create(merge({}, tools, this.props.style));
@@ -63,11 +65,25 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
             Harvest nearby resources.
           </div>
         </div>
+        <div className={css(ss.section)}>
+          <div>
+            <Button onClick={this.voxStatusTest}>get vox status</Button>
+            (Experiment).
+            <div>{this.state.voxStatus}</div>
+          </div>
+        </div>
       </div>
     );
   }
   private setRange = (value: string) => {
     this.setState({ range: (value as any) | 0 });
+  }
+  private voxStatusTest = () => {
+    voxGetStatus().then((voxStatus: any) => {
+      this.setState({ voxStatus: JSON.stringify(voxStatus) });
+    }).catch(() => {
+      this.setState({ voxStatus: 'error fetching status' });
+    });
   }
 }
 

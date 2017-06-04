@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-26 00:27:19
+ * @Last Modified time: 2017-06-04 23:13:28
  */
 
 import * as React from 'react';
@@ -15,14 +15,23 @@ import {events, client, jsKeyCodes} from 'camelot-unchained';
 
 import { slash } from '../../services/game/slash';
 import { setLoading, setJobType, setMessage,
-         setPossibleIngredients, addIngredient, removeIngredient } from '../../services/session/job';
-import { getRecipeFor, gotRecipe } from '../../services/session/recipes';
+         addIngredient, removeIngredient } from '../../services/session/job';
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
-import { InventoryItem, Recipe, Template, VoxStatus } from '../../services/types';
+import { InventoryItem, Recipe, Template, SlashVoxStatus } from '../../services/types';
 import { startJob, collectJob, clearJob, cancelJob,
-        setQuality, setCount, setName, setRecipe, setTemplate,
-        getStatus, gotStatus, updateStatus } from '../../services/session/job';
+        setQuality, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
 import { setUIMode, setCountdown } from '../../services/session/ui';
+
+// To Be Phasing out / Obsolete - remove eventually
+import { updateStatus } from '../../services/session/job';
+
+// Updated Game API - Using GraphQL and WebAPI
+import { voxGetStatus, voxGetPossibleIngredients, VoxIngredient,
+        voxGetTemplates, VoxTemplate, voxGetRecipesFor, VoxRecipe } from '../../services/game/crafting';
+import { gotVoxStatus, gotVoxPossibleIngredients } from '../../services/session/job';
+import { gotVoxTemplates } from '../../services/session/templates';
+import { gotVoxRecipes } from '../../services/session/recipes';
+
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
 import VoxMessage from '../VoxMessage';
@@ -60,7 +69,10 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   public render() {
-    if (!this.state.open) return null;
+    if (!this.state.open) {
+      console.warn('Crafting UI not open, render null');
+      return null;
+    }
     const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
     const props = this.props;
     const type = props.job && props.job.type;
@@ -112,20 +124,25 @@ class App extends React.Component<AppProps,AppState> {
 
   public componentDidMount() {
     window.addEventListener('keydown', this.onKeyDown);
-    const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
-    div.addEventListener('mouseenter', this.capture);
-    div.addEventListener('mouseleave', this.release);
+    // Captureing input on mouseover gives a terrible user interface,
+    // its bloody annoying
+    // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
+    // div.addEventListener('mouseenter', this.capture);
+    // div.addEventListener('mouseleave', this.release);
   }
 
   private componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
-    const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
-    div.removeEventListener('mouseenter', this.capture);
-    div.removeEventListener('mouseleave', this.release);
+    // Captureing input on mouseover gives a terrible user interface,
+    // its bloody annoying
+    // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
+    // div.removeEventListener('mouseenter', this.capture);
+    // div.removeEventListener('mouseleave', this.release);
   }
 
-  private close() {
+  private close = () => {
     events.fire('hudnav--navigate', 'crafting');
+    this.release();
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
@@ -134,29 +151,28 @@ class App extends React.Component<AppProps,AppState> {
     }
   }
 
-  private capture = (e: MouseEvent) => {
-    console.log('CRAFTING: request input ownership');
-    client.RequestInputOwnership();
+  private capture = () => {
+    // console.log('CRAFTING: request input ownership');
+    // client.RequestInputOwnership();
   }
 
-  private release = (e: MouseEvent) => {
-    console.log('CRAFTING: release input ownership');
-    client.ReleaseInputOwnership();
+  private release = () => {
+    // console.log('CRAFTING: release input ownership');
+    // client.ReleaseInputOwnership();
   }
 
   private refresh = () => {
     const props = this.props;
-    getStatus((response: any) => {
-      if (response.errors) {
-        const errors = response.errors.join('\n');
-        props.dispatch(setMessage({ type: 'error', message: errors }));
-      } else if (response.status) {
-        props.dispatch(gotStatus(response.status));
-        props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + response.status.status }));
-        if (response.status.type) {
-          this.loadLists(response.status.type);
-        }
+
+    // GraphQL: get vox status
+    voxGetStatus().then((status: any) => {
+      props.dispatch(gotVoxStatus(status));
+      props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
+      if (status.jobType) {
+        this.loadLists(status.jobType);
       }
+    }).catch((message: string) => {
+        props.dispatch(setMessage({ type: 'error', message }));
     });
   }
 
@@ -185,29 +201,41 @@ class App extends React.Component<AppProps,AppState> {
 
   private loadLists = (job: string) => {
     const props = this.props;
-    slash('cr vox listpossibleingredients', (response: any) => {
-      if (response.errors) {
-        const errors = response.errors.join('\n');
-        props.dispatch(setMessage({ type: 'error', message: errors }));
-      } else {
-        if (response.type === 'ingredients') {
-          props.dispatch(setPossibleIngredients(response.list));
-        }
-      }
+
+    function getRecipes() {
       switch (job) {
         case 'make':
-          getAllTemplates((type: string, templates: Template[]) => {
-            props.dispatch(gotTemplate(type, templates));
-            props.dispatch(setLoading(false));
-          });
+          voxGetTemplates()
+            .then((templates: VoxTemplate[]) => {
+              props.dispatch(gotVoxTemplates(templates));
+              props.dispatch(setLoading(false));
+            })
+            .catch(() => {
+              props.dispatch(setMessage({ type: 'error', message: 'Could not load templates' }));
+              props.dispatch(setLoading(false));
+            });
           break;
         default:
-          getRecipeFor(job, (type: string, recipes: Recipe[]) => {
-            props.dispatch(gotRecipe(type, recipes));
-            props.dispatch(setLoading(false));
-          });
+          voxGetRecipesFor(job)
+            .then((recipes: VoxRecipe[]) => {
+              props.dispatch(gotVoxRecipes(job, recipes));
+              props.dispatch(setLoading(false));
+            })
+            .catch(() => {
+              props.dispatch(setMessage({ type: 'error', message: `Could not load ${job} recipes` }));
+              props.dispatch(setLoading(false));
+            });
       }
-    });
+    }
+
+    voxGetPossibleIngredients()
+      .then((ingredients: VoxIngredient[]) => {
+        props.dispatch(gotVoxPossibleIngredients(ingredients));
+        getRecipes();
+      })
+      .catch(() => {
+        props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
+      });
   }
 
   // Generic, issue a / command, deal with response
@@ -285,7 +313,7 @@ class App extends React.Component<AppProps,AppState> {
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
     this.slash(
-      'cr vox addingredient ' + item.id + ' ' + qty,
+      'cr vox addingredientbyid ' + item.id + ' ' + qty,
       'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );

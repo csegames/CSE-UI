@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-16 18:52:22
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:18:07
+ * @Last Modified time: 2017-06-04 17:01:28
  */
 
 
@@ -37,7 +37,6 @@ const VoxInfo = (props: VoxInfoProps) => {
   const ss = StyleSheet.create(merge({}, voxInfo, props.style));
   return (
     <div className={css(ss.container)}>
-      <span className={css(ss.span)}>{props.job.vox}</span>
       <span className={css(ss.span)}>{props.job.status}</span>
       <span className={css(ss.span)}>{props.job.type}</span>
       <span className={css(ss.span)}>{props.job.started}</span>
