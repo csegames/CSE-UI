@@ -23,9 +23,9 @@ function select(state: GlobalState): MaterialReplacePaneStateToPropsInfo {
 }
 
 export interface MaterialReplacePaneStateToPropsInfo {
-  from: BuildingMaterial;
-  to: BuildingMaterial;
-  blocksSelected: boolean;
+  from?: BuildingMaterial;
+  to?: BuildingMaterial;
+  blocksSelected?: boolean;
 }
 
 export interface MaterialReplacePanePropsInfo {
