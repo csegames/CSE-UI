@@ -9,6 +9,7 @@ import { AxiosRequestConfig, Promise } from 'axios';
 import * as CharactersAPI from './controllers/Characters';
 import * as CraftingAPI from './controllers/Crafting';
 import * as ContentAPI from './controllers/Content';
+import * as CraftingAPI from './controllers/Crafting';
 import * as GameDataAPI from './controllers/GameData';
 import * as GroupsAPI from './controllers/Groups';
 import * as OrdersAPI from './controllers/Orders';
@@ -29,6 +30,7 @@ export {
   CharactersAPI,
   CraftingAPI,
   ContentAPI,
+  CraftingAPI,
   GameDataAPI,
   GroupsAPI,
   OrdersAPI,

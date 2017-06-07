@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 23:13:28
+ * @Last Modified time: 2017-06-07 23:00:24
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {events, client, jsKeyCodes} from 'camelot-unchained';
+import {events, client, jsKeyCodes, webAPI} from 'camelot-unchained';
 
 import { slash } from '../../services/game/slash';
 import { setLoading, setJobType, setMessage,
@@ -19,7 +19,7 @@ import { setLoading, setJobType, setMessage,
 import { getAllTemplates, gotTemplate } from '../../services/session/templates';
 import { InventoryItem, Recipe, Template, SlashVoxStatus } from '../../services/types';
 import { startJob, collectJob, clearJob, cancelJob,
-        setQuality, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
+        setQuality, setStatus, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
 import { setUIMode, setCountdown } from '../../services/session/ui';
 
 // To Be Phasing out / Obsolete - remove eventually
@@ -31,6 +31,9 @@ import { voxGetStatus, voxGetPossibleIngredients, VoxIngredient,
 import { gotVoxStatus, gotVoxPossibleIngredients } from '../../services/session/job';
 import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
+import { setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob } from '../../services/game/crafting';
+import { setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe, setVoxTemplate } from '../../services/game/crafting';
+import { addVoxIngredient, removeVoxIngredient } from '../../services/game/crafting';
 
 import JobType from '../../components/JobType';
 import JobDetails from '../../components/JobDetails';
@@ -185,6 +188,21 @@ class App extends React.Component<AppProps,AppState> {
     const props = this.props;
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
+
+    setVoxJob(type)
+      .then((resonse: any) => {
+        props.dispatch(setJobType(type));
+        props.dispatch(setStatus('Configuring'));
+        props.dispatch(setLoading(false));
+        this.loadLists(type);
+      })
+      .catch((error: any) => {
+        debugger;
+        props.dispatch(setMessage({ type: 'error', message: error }));
+        props.dispatch(setLoading(false));
+      });
+
+    /*
     slash('cr vox setjob ' + type, (response: any) => {
       if (response.errors) {
         const errors = response.errors.join('\n');
@@ -197,6 +215,7 @@ class App extends React.Component<AppProps,AppState> {
         this.loadLists(type);
       }
     });
+    */
   }
 
   private loadLists = (job: string) => {
@@ -253,77 +272,145 @@ class App extends React.Component<AppProps,AppState> {
     });
   }
 
+  private api = (request: () => any, success: string, getAction?: () => any, errorAction?: () => any) => {
+    const props = this.props;
+    request()
+      .then((response: any) => {
+        if (getAction) props.dispatch(getAction());
+        debugger;
+        props.dispatch(setMessage({ type: 'success', message: success }));
+      })
+      .catch((error: any) => {
+        debugger;
+        if (errorAction) props.dispatch(errorAction());
+        if (error.FieldCodes) {
+          props.dispatch(setMessage({
+            type: 'error',
+            message: error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message,
+          }));
+        } else {
+          props.dispatch(setMessage({ type: 'error', message: error.Code + ': ' + error.Message }));
+        }
+      });
+  }
+
   // Crafting job modes
   private startJob = () => {
-    setTimeout(() => {
-      this.slash('cr vox startjob', 'Job Started', () => startJob());
-    }, 500);
+      this.api(() => startVoxJob(), 'Job Started', () => startJob());
   }
 
   private collectJob = () => {
-    this.slash('cr vox collect', 'Job Collected', () => collectJob());
+    this.api(() => collectVoxJob(), 'Job Collected', () => collectJob());
   }
 
   // Clear current crafting job
   private clearJob = () => {
-    this.slash('cr vox clearjob', 'Job Cleared', () => clearJob());
+    this.api(() => clearVoxJob(), 'Job Clearaed', () => clearJob());
+    // this.slash('cr vox clearjob', 'Job Cleared', () => clearJob());
   }
 
   // Clear current crafting job
   private cancelJob = () => {
-    this.slash('cr vox cancel', 'Job Cancelled', () => cancelJob());
+    this.api(() => cancelVoxJob(), 'Job Cancelled', () => clearJob());
+    // this.slash('cr vox cancel', 'Job Cancelled', () => cancelJob());
   }
 
   // Job properties
   private setQuality = (quality: number) => {
+    this.api(() => setVoxQuality(quality), 'Quality set to: ' + quality,
+      () => setQuality(quality),
+      () => setQuality(undefined),
+    );
+/*
     this.slash('cr vox setquality ' + quality, 'Quality set to: ' + quality,
       () => setQuality(quality),
       () => setQuality(undefined),
     );
+*/
   }
 
   private setCount = (count: number) => {
+    this.api(() => setVoxItemCount(count), 'Item Count set to: ' + count,
+      () => setCount(count),
+      () => setCount(undefined),
+    );
+    /*
     this.slash('cr vox setitemcount ' + count, 'Item Count set to: ' + count,
       () => setCount(count),
       () => setCount(undefined),
     );
+    */
   }
 
   private setName = (name: string) => {
+    this.api(() => setVoxName(name), 'Name set to: ' + name,
+      () => setName(name),
+      () => setName(undefined),
+    );
+    /*
     this.slash('cr vox setname "' + name + '"', 'Name set to: ' + name,
       () => setName(name),
       () => setName(undefined),
     );
+    */
   }
 
   private setRecipe = (recipe: Recipe) => {
+    this.api(() => setVoxRecipe(recipe.id), 'Recipe set to: ' + recipe.name,
+      () => setRecipe(recipe),
+      () => setRecipe(undefined),
+    );
+    /*
     this.slash('cr vox setrecipe ' + recipe.id, 'Recipe set to: ' + recipe.name,
       () => setRecipe(recipe),
       () => setRecipe(undefined),
     );
+    */
   }
 
   private setTemplate = (template: Template) => {
+    this.api(() => setVoxTemplate(template.id), 'Recipe set to: ' + template.name,
+      () => setTemplate(template),
+      () => setTemplate(undefined),
+    );
+    /*
     this.slash('cr vox settemplate ' + template.id, 'Template set to: ' + template.name,
       () => setTemplate(template),
       () => setTemplate(undefined),
     );
+    */
   }
 
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
+    console.log('ADD VOX INGREDIENT ' + item.id + ' qty=' + qty);
+    this.api(() => addVoxIngredient(item.id, qty),
+      'Added ingredient: ' + qty + ' x ' + item.name,
+      () => addIngredient(item, qty),
+    );
+    /*
     this.slash(
       'cr vox addingredientbyid ' + item.id + ' ' + qty,
       'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
       );
+    */
   }
   private removeIngredient = (item: InventoryItem) => {
+    console.log('REMOVE VOX INGREDIENT ' + item.id);
+    console.dir(item);
+    debugger;
+    this.api(() => removeVoxIngredient(item.id, -1),
+      'Ingredient: ' + item.name + ' removed',
+      () => removeIngredient(item),
+    );
+    /*
     this.slash(
       'cr vox removeingredient',
       'Ingredient: ' + item.name + ' removed',
       () => removeIngredient(item),
       );
+    */
   }
 
   private nearby = (range: number) => {

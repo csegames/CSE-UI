@@ -6,8 +6,9 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:51:02
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 20:43:49
+ * @Last Modified time: 2017-06-05 20:20:38
  */
 
 export * from './queryTypes';
 export * from './queries';
+export * from './api';

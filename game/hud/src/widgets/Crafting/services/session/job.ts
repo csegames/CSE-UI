@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 23:09:53
+ * @Last Modified time: 2017-06-05 23:43:48
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -67,6 +67,16 @@ export const setJobType = module.createAction({
   },
   reducer: (s, a) => {
     return { type: a.jobType };
+  },
+});
+
+export const setStatus = module.createAction({
+  type: 'crafting/job/set-status',
+  action: (status: string) => {
+    return { status };
+  },
+  reducer: (s, a) => {
+    return { status: a.status };
   },
 });
 

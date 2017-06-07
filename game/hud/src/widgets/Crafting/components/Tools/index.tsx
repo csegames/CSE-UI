@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-02 20:55:13
+ * @Last Modified time: 2017-06-05 22:32:45
  */
 
 import * as React from 'react';
@@ -71,6 +71,13 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
             (Experiment).
             <div>{this.state.voxStatus}</div>
           </div>
+        </div>
+        <div className={css(ss.section)}>
+          <h1>Admin Commands</h1>
+          <div>/cr vox create</div>
+          <div>/cr specific item-id quality% unit-count</div>
+          <div>/cr resources unit-count</div>
+          <div>/cr vox forcefinish</div>
         </div>
       </div>
     );
