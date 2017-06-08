@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:20:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 22:54:44
+ * @Last Modified time: 2017-06-08 21:11:00
  */
 
 interface VoxItem {
@@ -38,6 +38,7 @@ interface VoxSelectedRecipe {
 interface VoxSelectedTemplate extends VoxSelectedRecipe {}
 
 interface VoxStatus {
+  VoxState: string;
   jobType: string;
   jobState: string;
   startTime: string;

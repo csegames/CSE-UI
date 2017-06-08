@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:17:28
+ * @Last Modified time: 2017-06-08 22:32:21
  */
 
 import * as React from 'react';
@@ -30,6 +30,7 @@ export const JobType = (props: JobTypeProps) => {
   const button = (type: string) => {
       return (
         <Button style={props.job === type ? {container:jobType.buttonSelected} : {}}
+          disabled={props.job && props.job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>

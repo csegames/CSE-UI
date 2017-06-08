@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 22:54:58
+ * @Last Modified time: 2017-06-08 20:25:55
  */
 
 import { Module } from 'redux-typed-modules';
@@ -45,11 +45,12 @@ const module = new Module({
 
 function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
   return voxRecipes.map((r: VoxRecipe) => {
+    const item: any = r.outputItem || { name: r.id };
     return {
       id: r.id,
-      name: r.outputItem.name,
-      icon: r.outputItem.iconUrl,
-      description: r.outputItem.description,
+      name: item.name,
+      icon: item.iconUrl,
+      description: item.description,
     };
   });
 }

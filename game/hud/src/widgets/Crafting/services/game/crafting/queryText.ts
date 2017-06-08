@@ -6,11 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:19:00
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 22:52:21
+ * @Last Modified time: 2017-06-08 21:12:45
  */
 
 const QUERY_VOX_STATUS = `
   voxStatus {
+    VoxState
     jobType
     jobState
     startTime

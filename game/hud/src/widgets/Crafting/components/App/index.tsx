@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-07 23:00:24
+ * @Last Modified time: 2017-06-08 21:47:57
  */
 
 import * as React from 'react';
@@ -197,25 +197,10 @@ class App extends React.Component<AppProps,AppState> {
         this.loadLists(type);
       })
       .catch((error: any) => {
-        debugger;
-        props.dispatch(setMessage({ type: 'error', message: error }));
+        const message = error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message;
+        this.handleError(error);
         props.dispatch(setLoading(false));
       });
-
-    /*
-    slash('cr vox setjob ' + type, (response: any) => {
-      if (response.errors) {
-        const errors = response.errors.join('\n');
-        props.dispatch(setMessage({ type: 'error', message: errors }));
-        props.dispatch(setLoading(false));
-      } else {
-        props.dispatch(setJobType(type));
-        if (response.status) props.dispatch(updateStatus(response.status));
-        props.dispatch(setMessage({ type: 'success', message: 'Job type selected' }));
-        this.loadLists(type);
-      }
-    });
-    */
   }
 
   private loadLists = (job: string) => {
@@ -258,6 +243,7 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   // Generic, issue a / command, deal with response
+  // being deprecated
   private slash(command: string, success: string, getAction?: () => any, errorAction?: () => any) {
     const props = this.props;
     slash(command, (response: any) => {
@@ -272,25 +258,29 @@ class App extends React.Component<AppProps,AppState> {
     });
   }
 
+  private handleError = (error: any) => {
+    const props = this.props;
+    console.log('ERROR ' + JSON.stringify(error));
+    if (error.FieldCodes) {
+      props.dispatch(setMessage({
+        type: 'error',
+        message: error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message,
+      }));
+    } else {
+      props.dispatch(setMessage({ type: 'error', message: error.Code + ': ' + error.Message }));
+    }
+  }
+
   private api = (request: () => any, success: string, getAction?: () => any, errorAction?: () => any) => {
     const props = this.props;
     request()
       .then((response: any) => {
         if (getAction) props.dispatch(getAction());
-        debugger;
         props.dispatch(setMessage({ type: 'success', message: success }));
       })
       .catch((error: any) => {
-        debugger;
         if (errorAction) props.dispatch(errorAction());
-        if (error.FieldCodes) {
-          props.dispatch(setMessage({
-            type: 'error',
-            message: error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message,
-          }));
-        } else {
-          props.dispatch(setMessage({ type: 'error', message: error.Code + ': ' + error.Message }));
-        }
+        this.handleError(error);
       });
   }
 
@@ -306,13 +296,11 @@ class App extends React.Component<AppProps,AppState> {
   // Clear current crafting job
   private clearJob = () => {
     this.api(() => clearVoxJob(), 'Job Clearaed', () => clearJob());
-    // this.slash('cr vox clearjob', 'Job Cleared', () => clearJob());
   }
 
   // Clear current crafting job
   private cancelJob = () => {
     this.api(() => cancelVoxJob(), 'Job Cancelled', () => clearJob());
-    // this.slash('cr vox cancel', 'Job Cancelled', () => cancelJob());
   }
 
   // Job properties
@@ -388,29 +376,14 @@ class App extends React.Component<AppProps,AppState> {
       'Added ingredient: ' + qty + ' x ' + item.name,
       () => addIngredient(item, qty),
     );
-    /*
-    this.slash(
-      'cr vox addingredientbyid ' + item.id + ' ' + qty,
-      'Added ingredient: ' + qty + ' x ' + item.name,
-      () => addIngredient(item, qty),
-      );
-    */
   }
   private removeIngredient = (item: InventoryItem) => {
     console.log('REMOVE VOX INGREDIENT ' + item.id);
     console.dir(item);
-    debugger;
     this.api(() => removeVoxIngredient(item.id, -1),
       'Ingredient: ' + item.name + ' removed',
       () => removeIngredient(item),
     );
-    /*
-    this.slash(
-      'cr vox removeingredient',
-      'Ingredient: ' + item.name + ' removed',
-      () => removeIngredient(item),
-      );
-    */
   }
 
   private nearby = (range: number) => {

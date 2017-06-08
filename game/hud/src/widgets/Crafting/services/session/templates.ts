@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 22:34:39
+ * @Last Modified time: 2017-06-08 21:54:13
  */
 
 import { Module } from 'redux-typed-modules';
@@ -43,9 +43,9 @@ export const gotVoxTemplates = module.createAction({
     return { templates };
   },
   reducer: (s, a) => {
-    const armour = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Armor'));
-    const weapons = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Weapon'));
-    return { armour, weapons };
+    const armor = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Armor') > -1);
+    const weapons = a.templates.filter((template: VoxTemplate) => template.id.indexOf('Weapon') > -1);
+    return { armor, weapons };
   },
 });
 
