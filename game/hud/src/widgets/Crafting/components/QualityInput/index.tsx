@@ -19,6 +19,7 @@ import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../../
 export interface QualityInputReduxProps {
   dispatch?: (action: any) => void;
   quality?: number;
+  disabled?: boolean;
   style?: Partial<QualityInputStyles>;
 }
 
@@ -37,10 +38,11 @@ const select = (state: GlobalState, props: QualityInputProps) : QualityInputRedu
 const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
-    <div className={css(ss.container)}>
+    <div className={css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label>Quality</Label>
       <Input
         style={{container: qualityInput.input}}
+        disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}
         value={props.quality && props.quality.toString()}

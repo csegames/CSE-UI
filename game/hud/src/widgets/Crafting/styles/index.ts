@@ -115,6 +115,7 @@ export interface LabelStyles {
 
 export const labelStyles: LabelStyles = { // A label (Label)
   container: {
+    cursor: 'default',
     display: 'inline-block',
     flex: '0 0 auto',
     marginRight: opts.SPACE_BETWEEN_FIELDS,

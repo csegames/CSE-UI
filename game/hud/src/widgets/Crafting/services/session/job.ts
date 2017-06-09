@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-05 23:43:48
+ * @Last Modified time: 2017-06-09 20:33:24
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -86,7 +86,7 @@ export const setCount = module.createAction({
     return { count };
   },
   reducer: (s, a) => {
-    return { count: a.count };
+    return { count: a.count || 0 };
   },
 });
 
@@ -102,13 +102,26 @@ export const setLoading = module.createAction({
 
 export const addIngredient = module.createAction({
   type: 'crafting/job/add-ingredient',
-  action: (item: InventoryItem, qty: number) => {
-    return { item, qty };
+  action: (item: InventoryItem, qty: number, movedTo: string) => {
+    return { item, qty, movedTo };
   },
   reducer: (s, a) => {
-    const ingredient: Ingredient = { ...a.item, qty: a.qty};
-    const ingredients = [ ...s.ingredients, ingredient ];
-    return { ingredients };
+    const ingredients = [ ...s.ingredients ];
+    if (a.movedTo) {
+      for (let i = 0; i < s.ingredients.length; i++) {
+        if (s.ingredients[i].id === a.movedTo) {
+          // Update existing ingredient qty
+          ingredients[i].qty += a.qty;
+          return { ingredients };
+        }
+      }
+      // add new ingredient
+      ingredients.push(Object.assign({}, a.item, { id: a.movedTo, qty: a.qty }));
+      return { ingredients };
+    }
+    console.error('job:addIngredient missing modedTo ID');
+    debugger;
+    return {};
   },
 });
 
@@ -180,7 +193,7 @@ export const setQuality = module.createAction({
     return { quality };
   },
   reducer: (s, a) => {
-    return { quality: a.quality };
+    return { quality: a.quality || 0 };
   },
 });
 
@@ -264,29 +277,6 @@ export const gotVoxStatus = module.createAction({
       name: a.status.givenName,
       template: status.template && { id: status.template.id, name: '' },
       ingredients,
-    };
-  },
-});
-
-// Like gotStatus but without vox: ID
-// Called after selecting job type
-// {soon to be depricated}
-export const updateStatus = module.createAction({
-  type: 'crafting/job/update-status',
-  action: (status: SlashVoxStatus) => {
-    return { status };
-  },
-  reducer: (s, a) => {
-    return {
-      status: a.status.status,
-      ready: a.status.ready,
-      type: a.status.type,
-      started: a.status.started,
-      endin: a.status.endin,
-      recipe: a.status.recipe,
-      name: a.status.name,
-      template: a.status.template,
-      ingredients: a.status.ingredients,
     };
   },
 });

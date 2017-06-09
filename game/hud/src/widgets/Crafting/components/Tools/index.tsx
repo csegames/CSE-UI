@@ -66,14 +66,7 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
           </div>
         </div>
         <div className={css(ss.section)}>
-          <div>
-            <Button onClick={this.voxStatusTest}>get vox status</Button>
-            (Experiment).
-            <div>{this.state.voxStatus}</div>
-          </div>
-        </div>
-        <div className={css(ss.section)}>
-          <h1>Admin Commands</h1>
+          <h1 className={css(ss.sectionHeading)}>Admin Commands</h1>
           <div>/cr vox create</div>
           <div>/cr specific item-id quality% unit-count</div>
           <div>/cr resources unit-count</div>

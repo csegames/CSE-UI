@@ -12,6 +12,14 @@
 import {client, webAPI} from 'camelot-unchained';
 import { Promise } from 'es6-promise';
 
+export interface VoxResponse {
+  Result: number;
+  IsSuccess: boolean;
+  Details: string;
+  MovedItemID: string;
+  DiscoveredRecipeIDs: string[];
+}
+
 // generic method to handle the promise, and deal with the reponse
 function run(startRequest: () => Promise<any>) {
   return new Promise((resolve, reject) => {

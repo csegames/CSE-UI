@@ -38,7 +38,7 @@ interface VoxSelectedRecipe {
 interface VoxSelectedTemplate extends VoxSelectedRecipe {}
 
 interface VoxStatus {
-  VoxState: string;
+  voxState: string;
   jobType: string;
   jobState: string;
   startTime: string;

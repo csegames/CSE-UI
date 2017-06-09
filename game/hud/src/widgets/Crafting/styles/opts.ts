@@ -38,7 +38,7 @@ export const opts = {
   },
   buttons: {
     FONT_SIZE: '12px',
-    MIN_WIDTH: '45px',
+    MIN_WIDTH: '50px',
   },
   input: {
     HEIGHT: '24px',

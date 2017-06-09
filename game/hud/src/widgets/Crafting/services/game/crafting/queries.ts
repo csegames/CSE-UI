@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-02 18:21:30
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 21:11:03
+ * @Last Modified time: 2017-06-09 20:51:06
  */
 
 import 'isomorphic-fetch';
@@ -24,7 +24,6 @@ function runQuery(query: string, key: string) {
   return new Promise((resolve, reject) => {
     gql({ query: makeCraftingQuery(query) }).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
-      console.dir(info);
       if (info) {
         resolve(info);
       } else {
@@ -33,6 +32,11 @@ function runQuery(query: string, key: string) {
     });
   });
 }
+
+const VOX_STATES = {
+  NotFound: 'No vox nearby',
+  NotOwnedByPlayer: 'This vox is not owned by you',
+};
 
 // Retrieves the status of a nearby vox for the current character.
 export function voxGetStatus() {
@@ -43,12 +47,14 @@ export function voxGetStatus() {
     }
     runQuery('QUERY_VOX_STATUS', 'voxStatus')
       .then((voxStatus: VoxStatus) => {
-        console.log('Vox State ' + voxStatus.VoxState);
-        console.log('Job State ' + voxStatus.jobState);
-        resolve(voxStatus);
+        if (voxStatus.voxState === 'Found') {
+          resolve(voxStatus);
+        } else {
+          reject(VOX_STATES[voxStatus.voxState] || voxStatus.voxState);
+        }
       })
       .catch(() => {
-        reject('No vox nearby');
+        reject(VOX_STATES['NotFound']);
       });
   });
 }

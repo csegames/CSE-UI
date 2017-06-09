@@ -71,8 +71,8 @@ export const JobDetails = (props: JobDetailsProps) => {
         remove={props.removeIngredient}
         />
       <div className={css(ss.buttons)}>
-        <QualityInput onChange={props.setQuality}/>
-        <QuantityInput onChange={props.setCount}/>
+        <QualityInput disabled={props.job.type !== 'refine'} onChange={props.setQuality}/>
+        <QuantityInput disabled={props.job.type !== 'make'} onChange={props.setCount}/>
         <Button style={{container: jobDetails.button}} onClick={() => props.start()}>Start</Button>
         <Button style={{container: jobDetails.button}} onClick={() => props.collect()}>Collect</Button>
         <Button style={{container: jobDetails.button}} onClick={() => props.cancel()}>Cancel</Button>

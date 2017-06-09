@@ -6,45 +6,49 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 21:47:57
+ * @Last Modified time: 2017-06-09 20:48:00
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {events, client, jsKeyCodes, webAPI} from 'camelot-unchained';
 
+// Types
+import { InventoryItem, Recipe, Template, SlashVoxStatus, Ingredient } from '../../services/types';
+import { VoxIngredient, VoxTemplate, VoxRecipe, VoxResponse } from '../../services/game/crafting';
+import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
+
+// Helpers
 import { slash } from '../../services/game/slash';
-import { setLoading, setJobType, setMessage,
-         addIngredient, removeIngredient } from '../../services/session/job';
-import { getAllTemplates, gotTemplate } from '../../services/session/templates';
-import { InventoryItem, Recipe, Template, SlashVoxStatus } from '../../services/types';
-import { startJob, collectJob, clearJob, cancelJob,
-        setQuality, setStatus, setCount, setName, setRecipe, setTemplate } from '../../services/session/job';
+
+// Actions
+import {
+  setLoading, setJobType, setMessage, addIngredient, removeIngredient,
+  startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
+  setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
+} from '../../services/session/job';
 import { setUIMode, setCountdown } from '../../services/session/ui';
-
-// To Be Phasing out / Obsolete - remove eventually
-import { updateStatus } from '../../services/session/job';
-
-// Updated Game API - Using GraphQL and WebAPI
-import { voxGetStatus, voxGetPossibleIngredients, VoxIngredient,
-        voxGetTemplates, VoxTemplate, voxGetRecipesFor, VoxRecipe } from '../../services/game/crafting';
-import { gotVoxStatus, gotVoxPossibleIngredients } from '../../services/session/job';
 import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
-import { setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob } from '../../services/game/crafting';
-import { setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe, setVoxTemplate } from '../../services/game/crafting';
-import { addVoxIngredient, removeVoxIngredient } from '../../services/game/crafting';
 
-import JobType from '../../components/JobType';
-import JobDetails from '../../components/JobDetails';
+// Updated Game API - Using GraphQL and WebAPI
+import {
+  voxGetStatus, voxGetPossibleIngredients, voxGetTemplates, voxGetRecipesFor,
+  setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
+  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe, setVoxTemplate,
+  addVoxIngredient, removeVoxIngredient,
+} from '../../services/game/crafting';
+
+// Components
+import JobType from '../JobType';
+import JobDetails from '../JobDetails';
 import VoxMessage from '../VoxMessage';
 import VoxInfo from '../VoxInfo';
 import Tools from '../Tools';
 import Close from '../Close';
 
+// Styles
 import { StyleSheet, css, merge, craftingStyles, CraftingStyles } from '../../styles';
-
-import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
 const select = (state: GlobalState): AppProps => {
   return {
@@ -127,17 +131,16 @@ class App extends React.Component<AppProps,AppState> {
 
   public componentDidMount() {
     window.addEventListener('keydown', this.onKeyDown);
-    // Captureing input on mouseover gives a terrible user interface,
-    // its bloody annoying
+    // Captureing input on mouseover gives a terrible user experience,
     // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
     // div.addEventListener('mouseenter', this.capture);
     // div.addEventListener('mouseleave', this.release);
+    this.refresh();
   }
 
   private componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
-    // Captureing input on mouseover gives a terrible user interface,
-    // its bloody annoying
+    // Captureing input on mouseover gives a terrible user experience,
     // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
     // div.removeEventListener('mouseenter', this.capture);
     // div.removeEventListener('mouseleave', this.release);
@@ -155,13 +158,11 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private capture = () => {
-    // console.log('CRAFTING: request input ownership');
-    // client.RequestInputOwnership();
+    client.RequestInputOwnership();
   }
 
   private release = () => {
-    // console.log('CRAFTING: release input ownership');
-    // client.ReleaseInputOwnership();
+    client.ReleaseInputOwnership();
   }
 
   private refresh = () => {
@@ -252,15 +253,14 @@ class App extends React.Component<AppProps,AppState> {
         props.dispatch(setMessage({ type: 'error', message: response.errors[0] }));
       } else {
         if (getAction) props.dispatch(getAction());
-        if (response.status) props.dispatch(updateStatus(response.status));
         props.dispatch(setMessage({ type: 'success', message: success }));
       }
     });
   }
 
+  // Handle webAPI error
   private handleError = (error: any) => {
     const props = this.props;
-    console.log('ERROR ' + JSON.stringify(error));
     if (error.FieldCodes) {
       props.dispatch(setMessage({
         type: 'error',
@@ -271,36 +271,42 @@ class App extends React.Component<AppProps,AppState> {
     }
   }
 
-  private api = (request: () => any, success: string, getAction?: () => any, errorAction?: () => any) => {
+  // Generic API boilerplate
+  private api = (
+    request: () => any,
+    success: string,
+    getAction?: (response: any) => any,
+    errorAction?: (error: any) => any,
+  ) => {
     const props = this.props;
     request()
       .then((response: any) => {
-        if (getAction) props.dispatch(getAction());
+        if (getAction) props.dispatch(getAction(response));
         props.dispatch(setMessage({ type: 'success', message: success }));
       })
       .catch((error: any) => {
-        if (errorAction) props.dispatch(errorAction());
+        if (errorAction) props.dispatch(errorAction(error));
         this.handleError(error);
       });
   }
 
   // Crafting job modes
   private startJob = () => {
-      this.api(() => startVoxJob(), 'Job Started', () => startJob());
+      this.api(startVoxJob, 'Job Started', () => startJob());
   }
 
   private collectJob = () => {
-    this.api(() => collectVoxJob(), 'Job Collected', () => collectJob());
+    this.api(collectVoxJob, 'Job Collected', () => collectJob());
   }
 
   // Clear current crafting job
   private clearJob = () => {
-    this.api(() => clearVoxJob(), 'Job Clearaed', () => clearJob());
+    this.api(clearVoxJob, 'Job Clearaed', () => clearJob());
   }
 
   // Clear current crafting job
   private cancelJob = () => {
-    this.api(() => cancelVoxJob(), 'Job Cancelled', () => clearJob());
+    this.api(cancelVoxJob, 'Job Cancelled', () => clearJob());
   }
 
   // Job properties
@@ -309,12 +315,6 @@ class App extends React.Component<AppProps,AppState> {
       () => setQuality(quality),
       () => setQuality(undefined),
     );
-/*
-    this.slash('cr vox setquality ' + quality, 'Quality set to: ' + quality,
-      () => setQuality(quality),
-      () => setQuality(undefined),
-    );
-*/
   }
 
   private setCount = (count: number) => {
@@ -322,12 +322,6 @@ class App extends React.Component<AppProps,AppState> {
       () => setCount(count),
       () => setCount(undefined),
     );
-    /*
-    this.slash('cr vox setitemcount ' + count, 'Item Count set to: ' + count,
-      () => setCount(count),
-      () => setCount(undefined),
-    );
-    */
   }
 
   private setName = (name: string) => {
@@ -335,12 +329,6 @@ class App extends React.Component<AppProps,AppState> {
       () => setName(name),
       () => setName(undefined),
     );
-    /*
-    this.slash('cr vox setname "' + name + '"', 'Name set to: ' + name,
-      () => setName(name),
-      () => setName(undefined),
-    );
-    */
   }
 
   private setRecipe = (recipe: Recipe) => {
@@ -348,12 +336,6 @@ class App extends React.Component<AppProps,AppState> {
       () => setRecipe(recipe),
       () => setRecipe(undefined),
     );
-    /*
-    this.slash('cr vox setrecipe ' + recipe.id, 'Recipe set to: ' + recipe.name,
-      () => setRecipe(recipe),
-      () => setRecipe(undefined),
-    );
-    */
   }
 
   private setTemplate = (template: Template) => {
@@ -361,25 +343,19 @@ class App extends React.Component<AppProps,AppState> {
       () => setTemplate(template),
       () => setTemplate(undefined),
     );
-    /*
-    this.slash('cr vox settemplate ' + template.id, 'Template set to: ' + template.name,
-      () => setTemplate(template),
-      () => setTemplate(undefined),
-    );
-    */
   }
 
   // Ingredients
   private addIngredient = (item: InventoryItem, qty: number) => {
-    console.log('ADD VOX INGREDIENT ' + item.id + ' qty=' + qty);
-    this.api(() => addVoxIngredient(item.id, qty),
+    this.api(
+      () => addVoxIngredient(item.id, qty),
       'Added ingredient: ' + qty + ' x ' + item.name,
-      () => addIngredient(item, qty),
+      (response: VoxResponse) => {
+        return addIngredient(item, qty, response.MovedItemID);
+      },
     );
   }
   private removeIngredient = (item: InventoryItem) => {
-    console.log('REMOVE VOX INGREDIENT ' + item.id);
-    console.dir(item);
     this.api(() => removeVoxIngredient(item.id, -1),
       'Ingredient: ' + item.name + ' removed',
       () => removeIngredient(item),

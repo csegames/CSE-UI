@@ -11,7 +11,7 @@
 
 const QUERY_VOX_STATUS = `
   voxStatus {
-    VoxState
+    voxState
     jobType
     jobState
     startTime

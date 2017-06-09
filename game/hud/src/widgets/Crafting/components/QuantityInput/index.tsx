@@ -21,6 +21,7 @@ import { StyleSheet, css, merge, quantityInput, QuantityInputStyles } from '../.
 export interface QuantityInputReduxProps {
   dispatch?: (action: any) => void;
   count?: number;
+  disabled?: boolean;
   style?: Partial<QuantityInputState>;
 }
 
@@ -39,10 +40,11 @@ const select = (state: GlobalState, props: QuantityInputProps) : QuantityInputRe
 const QuantityInput = (props: QuantityInputProps) => {
   const ss = StyleSheet.create(merge({}, quantityInput, props.style));
   return (
-    <div className={css(ss.container)}>
+    <div className={css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label>Quantity</Label>
       <Input
         style={{container: quantityInput.input}}
+        disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}
         value={props.count && props.count.toString()}
