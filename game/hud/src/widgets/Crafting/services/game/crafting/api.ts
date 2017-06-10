@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-05 20:16:52
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 21:38:33
+ * @Last Modified time: 2017-06-10 23:39:55
  */
 
 import {client, webAPI} from 'camelot-unchained';
@@ -58,7 +58,7 @@ export function cancelVoxJob() {
 }
 
 export function setVoxQuality(quality: number) {
-  return run(() => webAPI.CraftingAPI.setQuality(client.shardID, client.characterID, quality));
+  return run(() => webAPI.CraftingAPI.setQuality(client.shardID, client.characterID, (quality / 100)));
 }
 
 export function setVoxItemCount(count: number) {

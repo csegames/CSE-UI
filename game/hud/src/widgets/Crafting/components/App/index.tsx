@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 22:35:49
+ * @Last Modified time: 2017-06-10 23:35:49
  */
 
 import * as React from 'react';
@@ -172,7 +172,14 @@ class App extends React.Component<AppProps,AppState> {
     // GraphQL: get vox status
     voxGetStatus().then((status: any) => {
       props.dispatch(gotVoxStatus(status));
-      props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
+      switch (status.jobState) {
+        case 'Finished':
+          props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now' }));
+          break;
+        default:
+          props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
+          break;
+      }
       props.dispatch(gotOutputItems(status.outputItems));
       if (status.jobType) {
         this.loadLists(status.jobType);

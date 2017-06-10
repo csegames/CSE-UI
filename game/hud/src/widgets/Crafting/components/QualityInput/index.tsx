@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:24:07
+ * @Last Modified time: 2017-06-10 23:30:48
  */
 
 import * as React from 'react';
@@ -45,7 +45,7 @@ const QualityInput = (props: QualityInputProps) => {
         disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}
-        value={props.quality && props.quality.toString()}
+        value={props.quality ? props.quality.toString() : ''}
         />
       <span>%</span>
     </div>

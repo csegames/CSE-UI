@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 16:21:40
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:24:09
+ * @Last Modified time: 2017-06-10 23:31:05
  */
 
 
@@ -47,7 +47,7 @@ const QuantityInput = (props: QuantityInputProps) => {
         disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}
-        value={props.count && props.count.toString()}
+        value={props.count ? props.count.toString() : ''}
         />
     </div>
   );
