@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-05 20:16:52
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-07 22:47:00
+ * @Last Modified time: 2017-06-09 21:38:33
  */
 
 import {client, webAPI} from 'camelot-unchained';
@@ -25,7 +25,6 @@ function run(startRequest: () => Promise<any>) {
   return new Promise((resolve, reject) => {
     startRequest()
       .then((response: any) => {
-        console.dir(JSON.stringify(response));
         if (response.ok) {
           resolve(response.data);
         } else {

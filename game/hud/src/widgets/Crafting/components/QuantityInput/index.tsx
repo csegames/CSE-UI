@@ -40,7 +40,7 @@ const select = (state: GlobalState, props: QuantityInputProps) : QuantityInputRe
 const QuantityInput = (props: QuantityInputProps) => {
   const ss = StyleSheet.create(merge({}, quantityInput, props.style));
   return (
-    <div className={css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
+    <div className={'quantity-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label>Quantity</Label>
       <Input
         style={{container: quantityInput.input}}

@@ -23,7 +23,7 @@ export const IngredientItem = (props: IngredientProps) => {
   const ss = StyleSheet.create(merge({}, ingredientItem, props.style));
   const { id, name, stats } = props.ingredient;
   return (
-    <div className={css(ss.container)}>
+    <div className={'ingredient-item ' + css(ss.container)}>
       <span className={css(ss.qty)}>{props.qty}</span>
       <span className={css(ss.times)}>x</span>
       <span className={css(ss.name)}>{name} @ {stats ? (stats.quality * 100) | 0 : 0}%</span>

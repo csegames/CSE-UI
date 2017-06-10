@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-26 00:25:17
+ * @Last Modified time: 2017-06-09 22:42:09
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -180,11 +180,9 @@ export interface VoxMessageStyles {
 
 export const voxMessage: VoxMessageStyles = {
   container: {
-    margin: '0px ' + opts.ui.PADDING,
-    height: '20px',
+    margin: '0px',
     flex: '0 1 auto',
     fontSize: '14px',
-    overflow: 'hidden',
   },
   success: {
     color: 'lime',
@@ -380,6 +378,7 @@ export const jobDetails: JobDetailsStyles = {
     flex: '0 1 auto',
     display: 'flex',
     flexDirection: 'row',
+    marginTop: opts.SPACE_BETWEEN_FIELDS,
   },
   button: {
     flex: '0 0 auto',

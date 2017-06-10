@@ -55,7 +55,7 @@ export const JobType = (props: JobTypeProps) => {
       );
   }
   return (
-    <div className={css(ss.container)}>
+    <div className={'job-type ' + css(ss.container)}>
       {craftingButtons}
       { props.mode === 'crafting'
         ? <Button style={{container: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>

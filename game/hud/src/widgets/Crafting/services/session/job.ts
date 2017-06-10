@@ -107,31 +107,55 @@ export const addIngredient = module.createAction({
   },
   reducer: (s, a) => {
     const ingredients = [ ...s.ingredients ];
+    const possibleIngredients = [ ...s.possibleIngredients ];
+    let qty = a.qty;
     if (a.movedTo) {
-      for (let i = 0; i < s.ingredients.length; i++) {
-        if (s.ingredients[i].id === a.movedTo) {
-          // Update existing ingredient qty
-          ingredients[i].qty += a.qty;
-          return { ingredients };
+      // find and remove quantity used from possibleIngredients
+      possibleIngredients.forEach((ingredient: Ingredient) => {
+        if (ingredient.id === a.item.id) {
+          ingredient.stats.unitCount -= qty;
         }
+      });
+      // Upadte existing ingredient
+      ingredients.forEach((ingredient: Ingredient) => {
+        if (ingredient.id === a.movedTo) {
+          ingredient.qty += qty;
+          qty = 0;
+        }
+      });
+      // or add new ingredient
+      if (qty > 0) {
+        ingredients.push(Object.assign({}, a.item, { id: a.movedTo, qty: a.qty, removeId: a.item.id }));
       }
-      // add new ingredient
-      ingredients.push(Object.assign({}, a.item, { id: a.movedTo, qty: a.qty }));
-      return { ingredients };
+      return { ingredients, possibleIngredients };
     }
     console.error('job:addIngredient missing modedTo ID');
-    debugger;
     return {};
   },
 });
 
 export const removeIngredient = module.createAction({
   type: 'crafting/job/remove-ingredient',
-  action: (item: InventoryItem) => {
+  action: (item: Ingredient) => {
     return { item };
   },
   reducer: (s, a) => {
-    return { ingredients: s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id) };
+    console.log('REDUCER: crafting/job/remove-ingredient');
+    const ingredients = s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id);
+    const possibleIngredients = [ ...s.possibleIngredients ];
+    console.log('REMOVE INGREDIENT ' + JSON.stringify(a.item));
+    console.log('FROM POSSIBLE INGREDIENTS ' + JSON.stringify(s.possibleIngredients));
+    let qty = a.item.qty;  // the quantity of the item added to the vox
+    possibleIngredients.forEach((ingredient: Ingredient) => {
+      if (ingredient.id === a.item.removeId) {
+        ingredient.stats.unitCount += qty;
+        qty = 0;
+      }
+    });
+    if (qty > 0) {
+      possibleIngredients.push(a.item);
+    }
+    return { ingredients, possibleIngredients };
   },
 });
 
@@ -243,6 +267,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
     const item = vis[i].stats.item;
     ingredients.push({
       id: vis[i].id,
+      removeId: vis[i].id,
       name: vis[i].givenName || vis[i].staticDefinition.name,
       qty: item.unitCount,
       stats: {

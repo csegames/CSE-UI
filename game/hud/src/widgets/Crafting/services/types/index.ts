@@ -27,6 +27,7 @@ export interface InventoryItem extends Item {
 
 export interface Ingredient extends InventoryItem {
   qty: number;
+  removeId: string;       // Original Item ID from ingredient list, used when removing
 }
 
 export interface Recipe extends Item {}

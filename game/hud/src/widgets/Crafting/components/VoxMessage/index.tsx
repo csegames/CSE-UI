@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:18:12
+ * @Last Modified time: 2017-06-09 22:40:15
  */
 
 import * as React from 'react';
@@ -35,7 +35,10 @@ const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxPro
 const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
   return (
-    <div className={props.message ? css(ss.container, ss[props.message.type]) : css(ss.container)}>
+    <div className={
+        'vox-message '
+         + (props.message ? css(ss.container, ss[props.message.type]) : css(ss.container))
+         }>
       {props.message && props.message.message}
     </div>
   );

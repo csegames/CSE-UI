@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-05 22:32:45
+ * @Last Modified time: 2017-06-09 22:31:46
  */
 
 import * as React from 'react';
@@ -18,6 +18,7 @@ import { voxGetStatus } from '../../services/game/crafting';
 import Label from '../Label';
 import Input from '../Input';
 import Button from '../Button';
+import VoxMessage from '../VoxMessage';
 
 export interface ToolsPropsRedux {
   dispatch?: (action: any) => void;
@@ -48,7 +49,7 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
   public render() {
     const ss = StyleSheet.create(merge({}, tools, this.props.style));
     return (
-      <div className={css(ss.container)}>
+      <div className={'tools ' + css(ss.container)}>
         <div className={css(ss.section)}>
           <h1 className={css(ss.sectionHeading)}>Resources</h1>
           <div>
@@ -72,6 +73,7 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
           <div>/cr resources unit-count</div>
           <div>/cr vox forcefinish</div>
         </div>
+        <VoxMessage/>
       </div>
     );
   }

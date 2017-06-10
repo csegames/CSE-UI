@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:14:22
+ * @Last Modified time: 2017-06-09 22:12:17
  */
 
 import * as React from 'react';
@@ -24,13 +24,13 @@ import { InventoryItem } from '../../services/types';
 export interface IngredientsProps {
   job: string;
   ingredients: Ingredient[];
-  add: (item: InventoryItem, qty: number) => void;
-  remove: (item: InventoryItem) => void;
+  add: (ingredient: Ingredient, qty: number) => void;
+  remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
 }
 
 export interface IngredientsState {
-  selectedIngredient: InventoryItem;
+  selectedIngredient: Ingredient;
   qty: number;
 }
 
@@ -48,8 +48,8 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const ingredients = {};
 
     // Select inventory item
-    const select = (item: InventoryItem) => {
-      this.setState({ selectedIngredient: item });
+    const select = (ingredient: Ingredient) => {
+      this.setState({ selectedIngredient: ingredient });
     };
 
     // Render inventory item
@@ -66,11 +66,12 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       return <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} />;
     });
     const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
-    const ready = this.state.selectedIngredient && this.state.qty > 0;
-    const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 1;
+    const ready = this.state.selectedIngredient && this.state.qty > 0
+                  && this.state.qty <= this.state.selectedIngredient.stats.unitCount;
+    const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 0;
 
     return (
-      <div className={css(ss.container)}>
+      <div className={'ingredients ' + css(ss.container)}>
         <h1 className={css(ss.title)}>Ingredients...</h1>
         <div className={css(ss.addIngredient)}>
           <PossibleIngredients selectedItem={this.state.selectedIngredient} onSelect={select}/>

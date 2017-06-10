@@ -45,7 +45,7 @@ class Select extends React.Component<SelectProps, SelectState> {
     if (this.props.items.length === 0) {
       // No items to display
       return (
-        <div className={css(ss.container)}>
+        <div className={'select ' + css(ss.container)}>
           <div className={css(ss.impl)}>
             <div className={css(ss.active)}>
               {this.props.renderActiveItem(null)}

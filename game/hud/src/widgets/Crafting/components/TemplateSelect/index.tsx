@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:10:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:43:21
+ * @Last Modified time: 2017-06-09 21:40:44
  */
 
 import * as React from 'react';
@@ -25,14 +25,13 @@ export interface TemplateSelectReduxProps {
 
 export interface TemplateSelectProps extends TemplateSelectReduxProps {
   onSelect: (template: Template) => void;
-  type: string;
   style?: Partial<TemplateSelectStyles>;
 }
 
 interface TemplateSelectState {}
 
 const select = (state: GlobalState, props: TemplateSelectProps) : TemplateSelectReduxProps => {
-  const items = state.templates[props.type];
+  const items = state.templates.templates;
   return {
     items,
     selected: state.job.template,
@@ -47,10 +46,9 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
     const ss = StyleSheet.create(merge({}, templateSelect, this.props.style));
     const i = this.props.selected ? this.props.items.findIndex((i: Template) => this.props.selected.id === i.id) : -1;
     const selectedItem = i > -1 ? this.props.items[i] : null;
-    const type = this.props.type;
     return (
-      <div className={css(ss.container)}>
-        <Label style={{container: templateSelect.label}}>{type[0].toUpperCase() + type.substr(1)} Template</Label>
+      <div className={'template-select ' + css(ss.container)}>
+        <Label style={{container: templateSelect.label}}>Template</Label>
         <Select
           style={{container: templateSelect.select, impl: templateSelect.select_impl, list: templateSelect.select_list}}
           items={this.props.items}

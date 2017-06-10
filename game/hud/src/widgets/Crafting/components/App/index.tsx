@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 20:48:00
+ * @Last Modified time: 2017-06-09 22:24:03
  */
 
 import * as React from 'react';
@@ -42,7 +42,6 @@ import {
 // Components
 import JobType from '../JobType';
 import JobDetails from '../JobDetails';
-import VoxMessage from '../VoxMessage';
 import VoxInfo from '../VoxInfo';
 import Tools from '../Tools';
 import Close from '../Close';
@@ -111,7 +110,7 @@ class App extends React.Component<AppProps,AppState> {
     }
 
     return (
-      <div ref='crafting' className={css(ss.container)}>
+      <div ref='crafting' className={'app ' + css(ss.container)}>
         <Close onClose={this.close}/>
         <VoxInfo/>
         <JobType
@@ -122,7 +121,6 @@ class App extends React.Component<AppProps,AppState> {
           refresh={this.refresh}
           toggle={this.toggle}
         />
-        <VoxMessage/>
         {jobUI}
         {toolsUI}
       </div>
@@ -198,7 +196,6 @@ class App extends React.Component<AppProps,AppState> {
         this.loadLists(type);
       })
       .catch((error: any) => {
-        const message = error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message;
         this.handleError(error);
         props.dispatch(setLoading(false));
       });
@@ -339,7 +336,7 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private setTemplate = (template: Template) => {
-    this.api(() => setVoxTemplate(template.id), 'Recipe set to: ' + template.name,
+    this.api(() => setVoxTemplate(template.id), 'Template set to: ' + template.name,
       () => setTemplate(template),
       () => setTemplate(undefined),
     );
@@ -355,10 +352,10 @@ class App extends React.Component<AppProps,AppState> {
       },
     );
   }
-  private removeIngredient = (item: InventoryItem) => {
-    this.api(() => removeVoxIngredient(item.id, -1),
-      'Ingredient: ' + item.name + ' removed',
-      () => removeIngredient(item),
+  private removeIngredient = (ingredient: Ingredient) => {
+    this.api(() => removeVoxIngredient(ingredient.id, -1),
+      'Ingredient: ' + ingredient.name + ' removed',
+      () => removeIngredient(ingredient),
     );
   }
 

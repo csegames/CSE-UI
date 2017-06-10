@@ -38,7 +38,7 @@ const select = (state: GlobalState, props: QualityInputProps) : QualityInputRedu
 const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
-    <div className={css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
+    <div className={'quality-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label>Quality</Label>
       <Input
         style={{container: qualityInput.input}}

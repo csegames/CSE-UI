@@ -20,7 +20,7 @@ interface LabelProps {
 const Label = (props: LabelProps) => {
   const ss = StyleSheet.create(merge({}, labelStyles, props.style));
   return (
-    <span className={css(ss.container)}>{props.children}:</span>
+    <span className={'label ' + css(ss.container)}>{props.children}:</span>
   );
 };
 

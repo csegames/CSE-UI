@@ -38,7 +38,7 @@ const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps
 const NameInput = (props: NameInputProps) => {
   const ss = StyleSheet.create(merge({}, nameInput, props.style));
   return (
-    <div className={css(ss.container)}>
+    <div className={'name-input ' + css(ss.container)}>
       <Label style={{container: nameInput.label}}>Name</Label>
       <Input size={32} onChange={props.onChange} value={props.name}/>
     </div>

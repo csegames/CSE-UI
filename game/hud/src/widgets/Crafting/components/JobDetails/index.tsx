@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:21:43
+ * @Last Modified time: 2017-06-09 22:26:14
  */
 
 import * as React from 'react';
@@ -24,6 +24,7 @@ import TemplateSelect from '../TemplateSelect';
 import NameInput from '../NameInput';
 import QualityInput from '../QualityInput';
 import QuantityInput from '../QuantityInput';
+import VoxMessage from '../VoxMessage';
 
 import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
@@ -38,7 +39,7 @@ export interface JobDetailsProps {
   setRecipe: (recipe: Recipe) => void;
   setTemplate: (template: Template) => void;
   addIngredient: (item: InventoryItem, qty: number) => void;
-  removeIngredient: (item: InventoryItem) => void;
+  removeIngredient: (ingredient: Ingredient) => void;
   style?: Partial<JobDetailsStyles>;
 }
 
@@ -52,6 +53,7 @@ export const JobDetails = (props: JobDetailsProps) => {
     return (
       <div className={css(ss.container)}>
         <div>Select a Job Type!</div>
+        <VoxMessage/>
       </div>
     );
   }
@@ -61,8 +63,7 @@ export const JobDetails = (props: JobDetailsProps) => {
       <div className={css(ss.properties)}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
-        {type === 'make' && <TemplateSelect type='armor' onSelect={props.setTemplate}/>}
-        {type === 'make' && <TemplateSelect type='weapons' onSelect={props.setTemplate}/>}
+        {type === 'make' && <TemplateSelect onSelect={props.setTemplate}/>}
       </div>
       <Ingredients
         job={type}
@@ -70,7 +71,8 @@ export const JobDetails = (props: JobDetailsProps) => {
         add={props.addIngredient}
         remove={props.removeIngredient}
         />
-      <div className={css(ss.buttons)}>
+      <VoxMessage/>
+      <div className={'job-details ' + css(ss.buttons)}>
         <QualityInput disabled={props.job.type !== 'refine'} onChange={props.setQuality}/>
         <QuantityInput disabled={props.job.type !== 'make'} onChange={props.setCount}/>
         <Button style={{container: jobDetails.button}} onClick={() => props.start()}>Start</Button>
