@@ -24,6 +24,7 @@ export const IngredientItem = (props: IngredientProps) => {
   const { id, name, stats } = props.ingredient;
   return (
     <div className={'ingredient-item ' + css(ss.container)}>
+      <img className={css(ss.icon)} src={props.ingredient.static.icon}/>
       <span className={css(ss.qty)}>{props.qty}</span>
       <span className={css(ss.times)}>x</span>
       <span className={css(ss.name)}>{name} @ {stats ? (stats.quality * 100) | 0 : 0}%</span>

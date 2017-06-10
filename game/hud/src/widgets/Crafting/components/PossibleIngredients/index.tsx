@@ -38,7 +38,8 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
   public render() {
     const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
     const render = (item: InventoryItem) => item && (
-      <div className={'inventory-item ' + css(ss.container)}>
+      <div className={'possible-ingredient ' + css(ss.container)}>
+        <img className={css(ss.span, ss.icon)} src={item.static.icon}/>
         <span className={css(ss.span, ss.name)}>{item.name}</span>
         <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span>
         <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span>

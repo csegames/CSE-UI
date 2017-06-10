@@ -13,7 +13,7 @@ import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
 import { slash, isClient } from '../game/slash';
 import { Ingredient, InventoryItem, Recipe, Template, Message, SlashVoxStatus } from '../types';
-import { VoxStatus, VoxIngredient } from '../game/crafting';
+import { VoxStatus, VoxIngredient, VoxPossibleIngredient } from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -102,8 +102,8 @@ export const setLoading = module.createAction({
 
 export const addIngredient = module.createAction({
   type: 'crafting/job/add-ingredient',
-  action: (item: InventoryItem, qty: number, movedTo: string) => {
-    return { item, qty, movedTo };
+  action: (ingredient: Ingredient, qty: number, movedTo: string) => {
+    return { ingredient, qty, movedTo };
   },
   reducer: (s, a) => {
     const ingredients = [ ...s.ingredients ];
@@ -112,7 +112,7 @@ export const addIngredient = module.createAction({
     if (a.movedTo) {
       // find and remove quantity used from possibleIngredients
       possibleIngredients.forEach((ingredient: Ingredient) => {
-        if (ingredient.id === a.item.id) {
+        if (isSameIngredient(ingredient, a.ingredient)) {
           ingredient.stats.unitCount -= qty;
         }
       });
@@ -125,7 +125,10 @@ export const addIngredient = module.createAction({
       });
       // or add new ingredient
       if (qty > 0) {
-        ingredients.push(Object.assign({}, a.item, { id: a.movedTo, qty: a.qty, removeId: a.item.id }));
+        ingredients.push(Object.assign({}, a.ingredient, {
+          id: a.movedTo,
+          qty: a.qty,
+        }));
       }
       return { ingredients, possibleIngredients };
     }
@@ -133,6 +136,10 @@ export const addIngredient = module.createAction({
     return {};
   },
 });
+
+function isSameIngredient(a: Ingredient, b: Ingredient): boolean {
+  return a.static.id === b.static.id && a.stats.quality === b.stats.quality;
+}
 
 export const removeIngredient = module.createAction({
   type: 'crafting/job/remove-ingredient',
@@ -147,7 +154,7 @@ export const removeIngredient = module.createAction({
     console.log('FROM POSSIBLE INGREDIENTS ' + JSON.stringify(s.possibleIngredients));
     let qty = a.item.qty;  // the quantity of the item added to the vox
     possibleIngredients.forEach((ingredient: Ingredient) => {
-      if (ingredient.id === a.item.removeId) {
+      if (isSameIngredient(ingredient, a.item)) {
         ingredient.stats.unitCount += qty;
         qty = 0;
       }
@@ -253,7 +260,7 @@ export const setTemplate = module.createAction({
 
 export const gotVoxPossibleIngredients = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients',
-  action: (possible: VoxIngredient[]) => {
+  action: (possible: VoxPossibleIngredient[]) => {
     return { possible };
   },
   reducer: (s, a) => {
@@ -267,16 +274,18 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
     const item = vis[i].stats.item;
     ingredients.push({
       id: vis[i].id,
-      removeId: vis[i].id,
       name: vis[i].givenName || vis[i].staticDefinition.name,
       qty: item.unitCount,
+      static: {
+        id: vis[i].staticDefinition.id,
+        icon: vis[i].staticDefinition.iconUrl,
+        description: vis[i].staticDefinition.description,
+      },
       stats: {
         quality: item.quality,
         unitCount: item.unitCount,
         weight: item.mass,
       },
-      icon: vis[i].staticDefinition.iconUrl,
-      description: vis[i].staticDefinition.description,
     });
   }
   return ingredients;

@@ -73,7 +73,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     return (
       <div className={'ingredients ' + css(ss.container)}>
         <h1 className={css(ss.title)}>Ingredients...</h1>
-        <div className={css(ss.addIngredient)}>
+        <div className={'add-ingredient ' + css(ss.addIngredient)}>
           <PossibleIngredients selectedItem={this.state.selectedIngredient} onSelect={select}/>
           <span className={css(ss.times)}>x</span>
           <Input style={{container: ingredientsStyles.quantity}}
@@ -81,7 +81,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
           <Button disabled={!ready} style={{container: ingredientsStyles.add}}
             onClick={this.addIngredient}>Add Ingredient</Button>
         </div>
-        <div className={css(ss.loadedIngredients)}>
+        <div className={'loaded-ingredients ' + css(ss.loadedIngredients)}>
           <div>{loaded}</div>
           { last
             ? <Button style={{container: ingredientsStyles.remove}} onClick={() => props.remove(last)}>

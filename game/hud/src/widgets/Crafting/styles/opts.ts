@@ -32,6 +32,9 @@ export const opts = {
     LINE_SPACING: '1px',
   },
   ingredients: {
+    ICON_VERTICAL_SPACING: '3px',   /* 16px + 3px * 2 = 22px */
+    ICON_HORIZONTAL_SPACING: '5px',
+    ICON_WIDTH: '16px',
     NAME_WIDTH: '60%',
     QUANTITY_WIDTH: '20%',
     QUALITY_WIDTH: '20%',

@@ -69,6 +69,8 @@ interface AppState {
 
 class App extends React.Component<AppProps,AppState> {
 
+  private waitTimer: any;
+
   constructor(props: AppProps) {
     super(props);
     this.state = { open: true };
@@ -173,6 +175,16 @@ class App extends React.Component<AppProps,AppState> {
       if (status.jobType) {
         this.loadLists(status.jobType);
       }
+    }).catch((message: string) => {
+        props.dispatch(setMessage({ type: 'error', message }));
+    });
+  }
+
+  private updateStatus = (callback?: (status: any) => void) => {
+    const props = this.props;
+    voxGetStatus().then((status: any) => {
+      props.dispatch(gotVoxStatus(status));
+      if (callback) callback(status);
     }).catch((message: string) => {
         props.dispatch(setMessage({ type: 'error', message }));
     });
@@ -287,9 +299,58 @@ class App extends React.Component<AppProps,AppState> {
       });
   }
 
+  private checkJobStatus = (pretend: number = 0) => {
+    const props = this.props;
+    this.updateStatus((status: any) => {
+      if (pretend) {
+        status.jobState = 'Running';    // pretend
+        status.totalCraftingTime = pretend;  // pretend 60 seconds
+        status.startTime = (new Date()).toISOString();
+      }
+      switch (status.jobState) {
+        case 'Finished':
+          // Job finished immediately (often does)
+          props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now.' }));
+          break;
+        case 'Running':
+          // Job in progress, work out how long left
+          this.waitFinished(status);
+          break;
+      }
+    });
+  }
+
+  private waitFinished = (status: any) => {
+    const start = new Date(status.startTime);
+    const end = new Date(start.valueOf() + status.totalCraftingTime * 1000);
+    let seconds = ((end.valueOf() - start.valueOf()) / 1000);
+    const props = this.props;
+    const tick = () => {
+      if (seconds <= 0) {
+        this.checkJobStatus();      // allow to finish this time, no pretend (debug mode)
+        return;
+      }
+      props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + seconds + ' seconds.' }));
+      seconds --;
+      this.waitTimer = setTimeout(tick, 1000);
+    };
+    tick();
+  }
+
+  private stopWaiting = () => {
+    if (this.waitTimer) {
+      clearTimeout(this.waitTimer);
+      this.waitTimer = undefined;
+    }
+  }
+
   // Crafting job modes
   private startJob = () => {
-      this.api(startVoxJob, 'Job Started', () => startJob());
+    const props = this.props;
+    this.api(startVoxJob, 'Job Started', () => {
+      this.checkJobStatus(5);      // pretend will take 5 seconds (debug mode)
+      return startJob();
+    });
   }
 
   private collectJob = () => {
@@ -303,7 +364,8 @@ class App extends React.Component<AppProps,AppState> {
 
   // Clear current crafting job
   private cancelJob = () => {
-    this.api(cancelVoxJob, 'Job Cancelled', () => clearJob());
+    this.stopWaiting();
+    this.api(cancelVoxJob, 'Job Cancelled', () => clearJob() );
   }
 
   // Job properties
@@ -343,12 +405,12 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   // Ingredients
-  private addIngredient = (item: InventoryItem, qty: number) => {
+  private addIngredient = (ingredient: Ingredient, qty: number) => {
     this.api(
-      () => addVoxIngredient(item.id, qty),
-      'Added ingredient: ' + qty + ' x ' + item.name,
+      () => addVoxIngredient(ingredient.id, qty),
+      'Added ingredient: ' + qty + ' x ' + ingredient.name,
       (response: VoxResponse) => {
-        return addIngredient(item, qty, response.MovedItemID);
+        return addIngredient(ingredient, qty, response.MovedItemID);
       },
     );
   }

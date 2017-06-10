@@ -13,11 +13,14 @@
 export interface Item {
   id: string;
   name: string;
-  icon?: string;
-  description?: string;
 }
 
 export interface InventoryItem extends Item {
+  static: {
+    id: string;       // Static Item ID from static definition
+    icon?: string;
+    description?: string;
+  };
   stats: {
     quality: number;
     unitCount: number;
@@ -27,7 +30,6 @@ export interface InventoryItem extends Item {
 
 export interface Ingredient extends InventoryItem {
   qty: number;
-  removeId: string;       // Original Item ID from ingredient list, used when removing
 }
 
 export interface Recipe extends Item {}

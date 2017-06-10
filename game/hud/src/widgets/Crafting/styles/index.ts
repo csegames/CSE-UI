@@ -219,6 +219,7 @@ export const tools: ToolsStyles = {
 export interface PossibleIngredientsStyles {
   container: React.CSSProperties;
   span: React.CSSProperties;
+  icon: React.CSSProperties;
   name: React.CSSProperties;
   quantity: React.CSSProperties;
   quality: React.CSSProperties;
@@ -236,6 +237,13 @@ export const possibleIngredients: PossibleIngredientsStyles = {
   span: {
     display: 'inline-block',
     overflow: 'hidden',
+  },
+  icon: {
+    flex: '1 1 ' + opts.ingredients.ICON_WIDTH,
+    border: 0,
+    height: opts.ingredients.ICON_WIDTH,
+    marginTop: opts.ingredients.ICON_VERTICAL_SPACING,
+    marginRight: opts.ingredients.ICON_HORIZONTAL_SPACING,
   },
   name: {
     flex: '1 1 ' + opts.ingredients.NAME_WIDTH,
@@ -321,12 +329,13 @@ export const ingredients: IngredientsStyles = {
 export interface IngredientItemStyles {
   container: React.CSSProperties;
   inline: React.CSSProperties;
+  icon: React.CSSProperties;
   qty: React.CSSProperties;
   times: React.CSSProperties;
   name: React.CSSProperties;
 }
 
-export const ingredientItem = {
+export const ingredientItem: IngredientItemStyles = {
   container: {
     flex: '0 1 auto',
     display: 'flex',
@@ -334,6 +343,12 @@ export const ingredientItem = {
   },
   inline: {
     display: 'inline-block',
+  },
+  icon: {
+    flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
+    border: 0,
+    height: opts.ingredients.ICON_WIDTH,
+    margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
   },
   qty: {
     flex: '0 0 50px',

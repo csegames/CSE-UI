@@ -9,27 +9,35 @@
  * @Last Modified time: 2017-06-08 21:11:00
  */
 
+interface VoxStaticDefinition {
+  id: string;
+  name: string;
+  iconUrl: string;
+  description: string;
+}
+
+interface VoxStatsItem {
+  quality: number;
+  mass: number;
+  unitCount: number;
+}
+
+interface VoxItemStats {
+  item: VoxStatsItem;
+}
+
 interface VoxItem {
   id: string;
   shardID: number;
-  stats: {
-    item: {
-      quality: number;
-      mass: number;
-      unitCount: number;
-    };
-  };
-  staticDefinition: {
-    id: string;
-    name: string;
-    iconUrl: string;
-    description: string;
-  };
+  stats: VoxItemStats;
+  staticDefinition: VoxStaticDefinition;
 }
 
 interface VoxIngredient extends VoxItem {
   givenName: string;
 }
+
+interface VoxPossibleIngredient extends VoxIngredient {}
 
 interface VoxSelectedRecipe {
   id: string;
@@ -50,12 +58,7 @@ interface VoxStatus {
   usedRepairPoints: number;
   ingredients: VoxIngredient[];
   template: VoxSelectedTemplate;
-  possibleIngredients: VoxIngredient[];
-}
-
-interface VoxPossibleIngredient {
-  givenName: string;
-  id: string;
+  possibleIngredients: VoxPossibleIngredient[];
 }
 
 interface VoxRecipe {
