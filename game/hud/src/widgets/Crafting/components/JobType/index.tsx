@@ -47,6 +47,7 @@ export const JobType = (props: JobTypeProps) => {
           {button('shape')}
           {button('block')}
           {button('make')}
+          {button('repair')}
           <Button style={{container: jobType.refresh}} onClick={() => props.refresh()}>
             <i className='fa fa-refresh'></i>
           </Button>

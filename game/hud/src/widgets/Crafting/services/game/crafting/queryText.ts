@@ -9,6 +9,216 @@
  * @Last Modified time: 2017-06-08 21:12:45
  */
 
+const ITEM_STAT_SINGLE = `
+  {
+    quality
+    mass
+    encumbrance
+    agilityRequirement
+    dexterityRequirement
+    strengthRequirement
+    unitCount
+  }
+`;
+
+const ALLOY_STAT_SINGLE = `
+  {
+    hardness
+    impactToughness
+    fractureChance
+    malleability
+    massPCF
+    density
+    meltingPoint
+    thermConductivity
+    slashingResistance
+    piercingResistance
+    crushingResistance
+    acidResistance
+    poisonResistance
+    diseaseResistance
+    earthResistance
+    waterResistance
+    fireResistance
+    airResistance
+    lightningResistance
+    frostResistance
+    lifeResistance
+    mindResistance
+    spiritResistance
+    radiantResistance
+    deathResistance
+    shadowResistance
+    chaosResistance
+    voidResistance
+    arcaneResistance
+    magicalResistance
+    hardnessFactor
+    strengthFactor
+    fractureFactor
+    massFactor
+    damageResistance
+  }
+`;
+
+const SUBSTANCE_STAT_SINGLE = `
+  {
+    hardness
+    impactToughness
+    fractureChance
+    malleability
+    massPCF
+    density
+    meltingPoint
+    thermConductivity
+    slashingResistance
+    piercingResistance
+    crushingResistance
+    acidResistance
+    poisonResistance
+    diseaseResistance
+    earthResistance
+    waterResistance
+    fireResistance
+    airResistance
+    lightningResistance
+    frostResistance
+    lifeResistance
+    mindResistance
+    spiritResistance
+    radiantResistance
+    deathResistance
+    shadowResistance
+    chaosResistance
+    voidResistance
+    arcaneResistance
+    magicalResistance
+    hardnessFactor
+    strengthFactor
+    fractureFactor
+    massFactor
+  }
+`;
+
+const DURABILITY_STAT_SINGLE = `
+  {
+    maxRepairPoints
+    maxDurability
+    fractureThreshold
+    fractureChance
+    currentRepairPoints
+    currentDurability
+  }
+`;
+
+const WEAPON_STAT_SINGLE = `
+  {
+    piercingDamage
+    piercingBleed
+    piercingArmorPenetration
+    slashingDamage
+    slashingBleed
+    slashingArmorPenetration
+    crushingDamage
+    fallbackCrushingDamage
+    disruption
+    deflectionAmount
+    physicalProjectileSpeed
+    knockbackAmount
+    stability
+    falloffMinDistance
+    falloffMaxDistance
+    falloffReduction
+    deflectionRecovery
+    staminaCost
+    physicalPreparationTime
+    physicalRecoveryTime
+    range
+  }
+`;
+
+const BLOCK_STAT_SINGLE = `
+  {
+    compressiveStrength
+    shearStrength
+    tensileStrength
+    density
+    healthUnits
+    buildTimeUnits
+    unitMass
+  }
+`;
+
+const CONTAINER_STAT_SINGLE = `
+  {
+    maxItemCount
+    maxItemMass
+  }
+`;
+
+const SIEGE_ENGINE_STAT_SINGLE = `
+  {
+    health
+    yawSpeedDegPerSec
+    pitchSpeedDegPerSec
+  }
+`;
+
+const STATS = `
+  {
+    item ${ITEM_STAT_SINGLE}
+  }
+`;
+
+// makes the stats query too complex
+/*
+    alloy ${ALLOY_STAT_SINGLE}
+    substance ${SUBSTANCE_STAT_SINGLE}
+    durability ${DURABILITY_STAT_SINGLE}
+    weapon ${WEAPON_STAT_SINGLE}
+    block ${BLOCK_STAT_SINGLE}
+    container ${CONTAINER_STAT_SINGLE}
+    siegeEngine ${SIEGE_ENGINE_STAT_SINGLE}
+*/
+
+const GEAR_SLOT_SETS = `
+  {
+    gearSlots {
+      id
+      gearLayer {
+        id
+        armourStatCalculationType
+        gearLayerType
+      }
+    }
+  }
+`;
+
+const ITEM_DEF_REF = `
+  {
+    id
+    iconUrl
+    name
+    description
+    isVox
+    itemType
+  }
+`;
+//  gearSlotSets ${GEAR_SLOT_SETS}    // makes query too complex
+
+const TEMPLATE = `{ id }`;
+
+const ITEM = `
+  {
+    givenName
+    name
+    id
+    shardID
+    stats ${STATS}
+    staticDefinition ${ITEM_DEF_REF}
+  }
+`;
+
 const QUERY_VOX_STATUS = `
   voxStatus {
     voxState
@@ -21,103 +231,52 @@ const QUERY_VOX_STATUS = `
     recipeID
     endQuality
     usedRepairPoints
-    ingredients {
-      name
-      id
-      shardID
-      stats {
-        item {
-          quality
-          mass
-          unitCount
-        }
-      }
-      staticDefinition {
-        id
-        name
-        iconUrl
-        description
-      }
-    }
-    template {
-      id
-    }
+    template ${TEMPLATE}
+    ingredients ${ITEM}
+    outputItems ${ITEM}
   }
 `;
 
 const QUERY_POSSIBLE_INGREDIENTS = `
-  possibleIngredients {
-    givenName
-    id
-    shardID
-    staticDefinition {
-      id
-      name
-      iconUrl
-      description
-    }
-    stats {
-      item {
-        quality
-        mass
-        unitCount
-      }
-    }
-  }
+  possibleIngredients ${ITEM}
 `;
 
 const QUERY_PURIFY_RECIPES = `
   purifyRecipes {
     id
-    outputItem {
-      name
-      iconUrl
-      description
-    }
+    ingredientItem ${ITEM_DEF_REF}
+    outputItem ${ITEM_DEF_REF}
   }
 `;
 
 const QUERY_GRIND_RECIPES = `
   grindRecipes {
     id
-    outputItem {
-      name
-      iconUrl
-      description
-    }
+    ingredientItem ${ITEM_DEF_REF}
+    outputItem ${ITEM_DEF_REF}
   }
 `;
 
 const QUERY_REFINE_RECIPES = `
   refineRecipes {
     id
-    outputItem {
-      name
-      iconUrl
-      description
-    }
+    ingredientItem ${ITEM_DEF_REF}
   }
 `;
 
 const QUERY_SHAPE_RECIPES = `
   shapeRecipes {
     id
-    outputItem {
-      name
-      iconUrl
-      description
-    }
+    outputItem ${ITEM_DEF_REF}
+    ingredients ${ITEM_DEF_REF}
   }
 `;
 
 const QUERY_BLOCK_RECIPES = `
   blockRecipes {
     id
-    outputItem {
-      name
-      iconUrl
-      description
-    }
+    outputItem ${ITEM_DEF_REF}
+    ingredients ${ITEM_DEF_REF}
   }
 `;
 

@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 20:33:24
+ * @Last Modified time: 2017-06-10 23:14:58
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
 import { slash, isClient } from '../game/slash';
 import { Ingredient, InventoryItem, Recipe, Template, Message, SlashVoxStatus } from '../types';
-import { VoxStatus, VoxIngredient, VoxPossibleIngredient } from '../game/crafting';
+import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -21,12 +21,13 @@ export interface JobState {
   ready: boolean;                     // Crafting complete? (Item Ready)  -- TODO Do we need this?
   type: string;                       // What type of crafting are we doing?
   started: string;                    // When last job started
-  endin: string;                      // How long until it ends
+  endin: number;                      // How long until it ends
   recipe: Recipe;                     // Selected Recipe
   template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
-  possibleIngredients: InventoryItem[];  // ingredients that can go in the vox
+  possibleIngredients: Ingredient[];  // ingredients that can go in the vox
   ingredients: Ingredient[];          // ingredients in the vox
+  outputItems: InventoryItem[];       // Output items of the current vox job
   name: string;                       // Item Name (make)
   message: Message;                   // Last message from vox
   count: number;                      // Number of items to make
@@ -45,6 +46,7 @@ export const initialState = () : JobState => {
     quality: undefined,
     possibleIngredients: [],
     ingredients: [],
+    outputItems: [],
     name: null,
     message: null,
     count: undefined,
@@ -305,13 +307,46 @@ export const gotVoxStatus = module.createAction({
       status: a.status.jobState,
       ready: undefined,
       type: a.status.jobType,
+      quality: a.status.endQuality * 100,
       started: startTime.toISOString(),
-      endin: ((endTime.valueOf() - startTime.valueOf()) / 1000).toString(),
+      endin: ((endTime.valueOf() - startTime.valueOf()) / 1000),
       recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
       name: a.status.givenName,
       template: status.template && { id: status.template.id, name: '' },
       ingredients,
     };
+  },
+});
+
+function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
+  const items: InventoryItem[] = [];
+  for (let i = 0; i < vis.length; i++) {
+    const item = vis[i].stats.item;
+    items.push({
+      id: vis[i].id,
+      name: vis[i].staticDefinition.name,
+      static: {
+        id: vis[i].staticDefinition.id,
+        icon: vis[i].staticDefinition.iconUrl,
+        description: vis[i].staticDefinition.description,
+      },
+      stats: {
+        quality: item.quality,
+        unitCount: item.unitCount,
+        weight: item.mass,
+      },
+    });
+  }
+  return items;
+}
+
+export const gotOutputItems = module.createAction({
+  type: 'crafting/job/got-output-items',
+  action: (outputItems: VoxOutputItem[]) => {
+    return { outputItems };
+  },
+  reducer: (s, a) => {
+    return { outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) };
   },
 });
 

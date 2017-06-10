@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:24:03
+ * @Last Modified time: 2017-06-10 22:35:49
  */
 
 import * as React from 'react';
@@ -26,6 +26,7 @@ import {
   setLoading, setJobType, setMessage, addIngredient, removeIngredient,
   startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
   setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
+  gotOutputItems,
 } from '../../services/session/job';
 import { setUIMode, setCountdown } from '../../services/session/ui';
 import { gotVoxTemplates } from '../../services/session/templates';
@@ -172,6 +173,7 @@ class App extends React.Component<AppProps,AppState> {
     voxGetStatus().then((status: any) => {
       props.dispatch(gotVoxStatus(status));
       props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
+      props.dispatch(gotOutputItems(status.outputItems));
       if (status.jobType) {
         this.loadLists(status.jobType);
       }
@@ -307,6 +309,7 @@ class App extends React.Component<AppProps,AppState> {
         status.totalCraftingTime = pretend;  // pretend 60 seconds
         status.startTime = (new Date()).toISOString();
       }
+      props.dispatch(gotOutputItems(status.outputItems));
       switch (status.jobState) {
         case 'Finished':
           // Job finished immediately (often does)
@@ -354,52 +357,76 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private collectJob = () => {
-    this.api(collectVoxJob, 'Job Collected', () => collectJob());
+    this.api(collectVoxJob, 'Job Collected', () => {
+      this.checkJobStatus();
+      return collectJob();
+    });
   }
 
   // Clear current crafting job
   private clearJob = () => {
-    this.api(clearVoxJob, 'Job Clearaed', () => clearJob());
+    this.api(clearVoxJob, 'Job Clearaed', () => {
+      this.checkJobStatus();
+      return clearJob();
+    });
   }
 
   // Clear current crafting job
   private cancelJob = () => {
     this.stopWaiting();
-    this.api(cancelVoxJob, 'Job Cancelled', () => clearJob() );
+    this.api(cancelVoxJob, 'Job Cancelled', () => {
+      this.checkJobStatus();
+      return clearJob();
+    });
   }
 
   // Job properties
   private setQuality = (quality: number) => {
     this.api(() => setVoxQuality(quality), 'Quality set to: ' + quality,
-      () => setQuality(quality),
+      () => {
+        this.checkJobStatus();
+        return setQuality(quality);
+      },
       () => setQuality(undefined),
     );
   }
 
   private setCount = (count: number) => {
     this.api(() => setVoxItemCount(count), 'Item Count set to: ' + count,
-      () => setCount(count),
+      () => {
+        this.checkJobStatus();
+        return setCount(count);
+      },
       () => setCount(undefined),
     );
   }
 
   private setName = (name: string) => {
     this.api(() => setVoxName(name), 'Name set to: ' + name,
-      () => setName(name),
+      () => {
+        this.checkJobStatus();
+        return setName(name);
+      },
       () => setName(undefined),
     );
   }
 
   private setRecipe = (recipe: Recipe) => {
     this.api(() => setVoxRecipe(recipe.id), 'Recipe set to: ' + recipe.name,
-      () => setRecipe(recipe),
+      () => {
+        this.checkJobStatus();
+        return setRecipe(recipe);
+      },
       () => setRecipe(undefined),
     );
   }
 
   private setTemplate = (template: Template) => {
     this.api(() => setVoxTemplate(template.id), 'Template set to: ' + template.name,
-      () => setTemplate(template),
+      () => {
+        this.checkJobStatus();
+        return setTemplate(template);
+      },
       () => setTemplate(undefined),
     );
   }
@@ -410,6 +437,7 @@ class App extends React.Component<AppProps,AppState> {
       () => addVoxIngredient(ingredient.id, qty),
       'Added ingredient: ' + qty + ' x ' + ingredient.name,
       (response: VoxResponse) => {
+        this.checkJobStatus();
         return addIngredient(ingredient, qty, response.MovedItemID);
       },
     );
@@ -417,7 +445,10 @@ class App extends React.Component<AppProps,AppState> {
   private removeIngredient = (ingredient: Ingredient) => {
     this.api(() => removeVoxIngredient(ingredient.id, -1),
       'Ingredient: ' + ingredient.name + ' removed',
-      () => removeIngredient(ingredient),
+      () => {
+        this.checkJobStatus();
+        return removeIngredient(ingredient);
+      },
     );
   }
 

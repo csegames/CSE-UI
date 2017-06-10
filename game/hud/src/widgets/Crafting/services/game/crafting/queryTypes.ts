@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:20:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 21:11:00
+ * @Last Modified time: 2017-06-10 22:21:41
  */
 
 interface VoxStaticDefinition {
@@ -77,8 +77,11 @@ interface VoxTemplate {
   description: string;
 }
 
+interface VoxOutputItem extends VoxItem { }
+
 export {
   VoxItem,
+  VoxOutputItem,
   VoxIngredient,
   VoxSelectedRecipe,
   VoxSelectedTemplate,

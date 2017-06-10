@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:42:09
+ * @Last Modified time: 2017-06-10 23:20:39
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -266,6 +266,58 @@ export const possibleIngredients: PossibleIngredientsStyles = {
   },
   select_list: {
     maxHeight: '175px',
+  },
+};
+
+export interface OutputItemsStyles {
+  container: React.CSSProperties;
+  title: React.CSSProperties;
+  craftingTime: React.CSSProperties;
+  item: React.CSSProperties;
+  icon: React.CSSProperties;
+  qty: React.CSSProperties;
+  times: React.CSSProperties;
+  name: React.CSSProperties;
+}
+
+export const outputItems: OutputItemsStyles = {
+  container: {
+    flex: '0 1 auto',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    flex: '0 0 auto',
+    fontSize: '100%',
+    borderBottom: '1px solid rgba(255,255,255,0.2)',
+  },
+  craftingTime: {
+    float: 'right',
+    display: 'inline-block',
+  },
+  item: {
+    flex: '0 0 auto',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  icon: {
+    flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
+    border: 0,
+    height: opts.ingredients.ICON_WIDTH,
+    margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
+  },
+  qty: {
+    flex: '0 0 50px',
+    width: '50px',
+    textAlign: 'right',
+  },
+  times: {
+    flex: '0 0 auto',
+    margin: '0 0.5em',
+  },
+  name: {
+    flex: '1 1 auto',
+    minWidth: '120px',
   },
 };
 

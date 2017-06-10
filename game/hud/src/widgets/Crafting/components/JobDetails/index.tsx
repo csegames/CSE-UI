@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:26:14
+ * @Last Modified time: 2017-06-10 22:40:58
  */
 
 import * as React from 'react';
@@ -25,6 +25,7 @@ import NameInput from '../NameInput';
 import QualityInput from '../QualityInput';
 import QuantityInput from '../QuantityInput';
 import VoxMessage from '../VoxMessage';
+import OutputItems from '../OutputItems';
 
 import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
@@ -71,6 +72,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         add={props.addIngredient}
         remove={props.removeIngredient}
         />
+      <OutputItems/>
       <VoxMessage/>
       <div className={'job-details ' + css(ss.buttons)}>
         <QualityInput disabled={props.job.type !== 'refine'} onChange={props.setQuality}/>
