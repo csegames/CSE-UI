@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:40:17
+ * @Last Modified time: 2017-06-11 19:35:06
  */
 
 import * as React from 'react';
@@ -83,7 +83,8 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         <div className={'add-ingredient ' + css(ss.addIngredient)}>
           <PossibleIngredients disabled={!configuring} selectedItem={this.state.selectedIngredient} onSelect={select}/>
           <span className={css(ss.times)}>x</span>
-          <Input style={{container: ingredientsStyles.quantity}}
+          <Input style={{input: ingredientsStyles.quantity}}
+            numeric={true} min={1}
             disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
           <Button disabled={!ready} style={{container: ingredientsStyles.add}}
             onClick={this.addIngredient}>Add Ingredient</Button>

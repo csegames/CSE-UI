@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 16:21:40
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:31:05
+ * @Last Modified time: 2017-06-11 19:59:15
  */
 
 
@@ -41,11 +41,12 @@ const QuantityInput = (props: QuantityInputProps) => {
   const ss = StyleSheet.create(merge({}, quantityInput, props.style));
   return (
     <div className={'quantity-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
-      <Label>Quantity</Label>
+      <Label style={{ container: quantityInput.label }}>Quantity</Label>
       <Input
-        style={{container: quantityInput.input}}
+        style={{input: quantityInput.input}}
         disabled={props.disabled}
-        size={3}
+        numeric={true} min={1} max={20}
+        size={2}
         onChange={(value: string) => props.onChange((value as any) | 0)}
         value={props.count ? props.count.toString() : ''}
         />

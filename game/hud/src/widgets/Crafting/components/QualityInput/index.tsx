@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:30:48
+ * @Last Modified time: 2017-06-11 19:58:12
  */
 
 import * as React from 'react';
@@ -39,9 +39,10 @@ const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
     <div className={'quality-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
-      <Label>Quality</Label>
+      <Label style={{ container: qualityInput.label }}>Quality</Label>
       <Input
-        style={{container: qualityInput.input}}
+        numeric={true} min={1} max={100}
+        style={{input: qualityInput.input}}
         disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}

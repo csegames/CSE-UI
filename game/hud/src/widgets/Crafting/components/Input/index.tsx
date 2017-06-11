@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:23:50
+ * @Last Modified time: 2017-06-11 19:36:39
  */
 
 import * as React from 'react';
@@ -17,6 +17,9 @@ import { StyleSheet, css, merge, input, InputStyles } from '../../styles';
 interface InputProps {
   size?: number;
   value?: string;
+  numeric?: boolean;
+  min?: number;
+  max?: number;
   disabled?: boolean;
   onChange: (value: string) => void;
   style?: Partial<InputStyles>;
@@ -28,6 +31,9 @@ interface InputState {
 }
 
 class Input extends React.Component<InputProps, InputState> {
+
+  private changeTimer: any;
+
   constructor(props: InputProps) {
     super(props);
     this.state = { changed: false, value: props.value };
@@ -39,21 +45,75 @@ class Input extends React.Component<InputProps, InputState> {
 
   public render() {
     const ss = StyleSheet.create(merge({}, input, this.props.style));
+    let adjuster;
+    if (this.props.numeric) {
+      adjuster = (
+        <div className={css(ss.adjuster)}>
+          <div className={css(ss.button)} onClick={this.increment}>+</div>
+          <div className={css(ss.button)} onClick={this.decrement}>-</div>
+        </div>
+      );
+    }
     return (
-      <input type='text'
-        className={css(ss.container)}
-        size={this.props.size}
-        disabled={this.props.disabled}
-        onChange={this.onChange}
-        onBlur={this.onBlur}
-        onFocus={this.onFocus}
-        value={this.state.value}
-        />
+      <div className={'input ' + css(ss.container)}>
+        <input type='text'
+          ref='input'
+          className={css(ss.input)}
+          size={this.props.size}
+          disabled={this.props.disabled}
+          onChange={this.onChange}
+          onBlur={this.onBlur}
+          onFocus={this.onFocus}
+          value={this.state.value}
+          />
+        {adjuster}
+      </div>
     );
+  }
+
+  private delayedOnChange = (ms: number) => {
+    this.cancelOnChange();
+    this.changeTimer = setTimeout(() => {
+      this.changeTimer = null;
+      const el = this.refs['input'] as HTMLInputElement;
+      this.props.onChange(el.value);
+    }, ms);
+  }
+
+  private cancelOnChange = () => {
+    if (this.changeTimer) {
+      clearTimeout(this.changeTimer);
+      this.changeTimer = null;
+    }
+  }
+
+  private increment = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (this.props.disabled) return;
+    this.cancelOnChange();
+    const input = this.refs['input'] as HTMLInputElement;
+    let value = ((input.value as any) | 0) + 1;
+    const max = this.props.max;
+    if (max !== undefined && value > max) value = max;
+    input.value = value.toString();
+    this.setState({ changed: true, value: value.toString() });
+    this.delayedOnChange(500);
+  }
+
+  private decrement = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (this.props.disabled) return;
+    this.cancelOnChange();
+    const input = this.refs['input'] as HTMLInputElement;
+    let value = ((input.value as any) | 0) - 1;
+    const min = this.props.min;
+    if (min !== undefined && value < min) value = min;
+    input.value = value.toString();
+    this.setState({ changed: true, value: value.toString() });
+    this.delayedOnChange(200);
   }
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO extend to support validation
+    console.log('INPUT: onchange value is ' + e.target.value);
     this.setState({ changed: true, value: e.target.value });
   }
 
@@ -66,8 +126,7 @@ class Input extends React.Component<InputProps, InputState> {
     console.log('CRAFTING: RELEASE INPUT OWNERSHIP :(');
     client.ReleaseInputOwnership();
     if (this.state.changed) {
-      const el = e.target as HTMLInputElement;
-      this.props.onChange(el.value);
+      this.delayedOnChange(50);
     }
   }
 }

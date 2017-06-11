@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:20:27
+ * @Last Modified time: 2017-06-11 20:33:18
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -66,10 +66,16 @@ export const close = {
 
 export interface InputStyles {
   container: React.CSSProperties;
+  input: React.CSSProperties;
+  adjuster: React.CSSProperties;
+  button: React.CSSProperties;
 }
 
 export const input = {
   container: {
+    display: 'inline-flex',
+  },
+  input: {
     pointerEvents: 'auto',
     marginRight: opts.SPACE_BETWEEN_FIELDS,
     width: 'auto',    /* TODO: WTF IS THE GAME CLIENT PLAYING AT */
@@ -79,6 +85,20 @@ export const input = {
     border: '0',
     color: opts.input.COLOR,
     backgroundColor: opts.input.BACKGROUND,
+  },
+  adjuster: {
+    display: 'inline-block',
+    height: opts.input.HEIGHT,
+  },
+  button: {
+    cursor: 'pointer',
+    height: '12px',
+    fontSize: '10px',
+    width: '8px',
+    textAlign: 'center',
+    lineHeight: '10px',
+    border: '1px solid ' + opts.input.BACKGROUND,
+    boxSizing: 'border-box',
   },
 };
 
@@ -296,6 +316,7 @@ export const outputItems: OutputItemsStyles = {
     flex: '0 0 auto',
     fontSize: '100%',
     borderBottom: opts.ui.BOTTOM_BORDER,
+    marginTop: '0.5em',
   },
   craftingTime: {
     float: 'right',
@@ -352,6 +373,7 @@ export const ingredients: IngredientsStyles = {
     fontSize: '100%',
     borderBottom: opts.ui.BOTTOM_BORDER,
     fontWeight: 'normal',
+    marginTop: '0.5em',
   },
 
   loadedIngredients: {
@@ -476,32 +498,43 @@ export const jobDetails: JobDetailsStyles = {
 export interface QualityInputStyles {
   container: React.CSSProperties;
   input: React.CSSProperties;
+  label: React.CSSProperties;
 }
 
 export const qualityInput: QualityInputStyles = {
   container: {
     height: opts.input.HEIGHT,
+    display: 'flex',
+    flexDirection: 'row',
     flex: '0 0 auto',
     marginRight: '10px',
   },
   input: {
     textAlign: 'right',
+  },
+  label: {
   },
 };
 
 export interface QuantityInputStyles {
   container: React.CSSProperties;
   input: React.CSSProperties;
+  label: React.CSSProperties;
 }
 
 export const quantityInput: QuantityInputStyles = {
   container: {
     height: opts.input.HEIGHT,
+    display: 'flex',
+    flexDirection: 'row',
     flex: '0 0 auto',
     marginRight: '10px',
   },
   input: {
     textAlign: 'right',
+    flex: '0 0 auto',
+  },
+  label: {
   },
 };
 

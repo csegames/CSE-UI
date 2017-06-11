@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 16:47:16
+ * @Last Modified time: 2017-06-11 19:49:08
  */
 
 import * as React from 'react';
@@ -72,6 +72,7 @@ class App extends React.Component<AppProps,AppState> {
 
   private waitTimer: any;
   private navigationHandler: any;
+  private updating: boolean;
 
   constructor(props: AppProps) {
     super(props);
@@ -322,6 +323,7 @@ class App extends React.Component<AppProps,AppState> {
 
   private checkJobStatus = (pretend: number = 0) => {
     const props = this.props;
+    this.updating = true;
     this.updateStatus((status: any) => {
       if (pretend) {
         status.jobState = 'Running';    // pretend
@@ -339,6 +341,7 @@ class App extends React.Component<AppProps,AppState> {
           this.waitFinished(status);
           break;
       }
+      this.updating = false;
     });
   }
 
@@ -369,6 +372,7 @@ class App extends React.Component<AppProps,AppState> {
   // Crafting job modes
   private startJob = () => {
     const props = this.props;
+    if (this.updating) return;
     this.api(startVoxJob, 'Job Started', () => {
       this.checkJobStatus(5);      // pretend will take 5 seconds (debug mode)
       return startJob();
