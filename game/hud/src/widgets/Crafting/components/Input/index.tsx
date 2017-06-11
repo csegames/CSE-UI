@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 19:36:39
+ * @Last Modified time: 2017-06-11 21:14:42
  */
 
 import * as React from 'react';
@@ -62,6 +62,8 @@ class Input extends React.Component<InputProps, InputState> {
           size={this.props.size}
           disabled={this.props.disabled}
           onChange={this.onChange}
+          onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
           onBlur={this.onBlur}
           onFocus={this.onFocus}
           value={this.state.value}
@@ -108,7 +110,7 @@ class Input extends React.Component<InputProps, InputState> {
     if (min !== undefined && value < min) value = min;
     input.value = value.toString();
     this.setState({ changed: true, value: value.toString() });
-    this.delayedOnChange(200);
+    this.delayedOnChange(400);
   }
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +128,27 @@ class Input extends React.Component<InputProps, InputState> {
     console.log('CRAFTING: RELEASE INPUT OWNERSHIP :(');
     client.ReleaseInputOwnership();
     if (this.state.changed) {
-      this.delayedOnChange(50);
+      this.delayedOnChange(0);
+    }
+  }
+
+  private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    this.cancelOnChange();
+    if (this.props.numeric) {
+      if (e.keyCode > 47 && e.keyCode < 58) return;
+      if (e.keyCode === 8 || e.keyCode === 13) return;
+      e.preventDefault();
+    }
+  }
+
+  private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (this.state.changed) {
+      if (e.keyCode >= 32) {
+        this.delayedOnChange(500);
+      }
+      if (e.keyCode === 13) {
+        this.delayedOnChange(0);
+      }
     }
   }
 }
