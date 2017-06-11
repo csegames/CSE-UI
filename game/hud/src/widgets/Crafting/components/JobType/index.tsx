@@ -6,18 +6,25 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 12:57:25
+ * @Last Modified time: 2017-06-11 16:55:14
  */
 
 import * as React from 'react';
+import {connect} from 'react-redux';
 import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../../styles';
+import { GlobalState, JobState } from '../../services/session/reducer';
 
 import Label from '../Label';
 import Button from '../Button';
 
-export interface JobTypeProps {
+interface JobTypeReduxProps {
+  dispatch?: (action: any) => void;
+  jobType?: string;
+  hasIngredients?: boolean;
+}
+
+export interface JobTypeProps extends JobTypeReduxProps {
   mode: string;
-  job: string;
   changeType: (type: string) => void;
   clearJob: () => void;
   refresh: () => void;
@@ -25,12 +32,22 @@ export interface JobTypeProps {
   style?: Partial<JobTypeStyles>;
 }
 
+const select = (state: GlobalState, props: JobTypeProps): JobTypeReduxProps => {
+  const job = state.job;
+  const hasIngredients = !!(job.ingredients && job.ingredients.length);
+  return {
+    jobType: state.job.type,
+    hasIngredients,
+  };
+};
+
 export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
+  const job = props.jobType;
   const button = (type: string) => {
       return (
-        <Button style={props.job === type ? {container:jobType.buttonSelected} : {}}
-          disabled={props.job && props.job !== type}
+        <Button style={job === type ? {container:jobType.buttonSelected} : {}}
+          disabled={job && job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>
@@ -51,7 +68,7 @@ export const JobType = (props: JobTypeProps) => {
           <Button style={{container: jobType.refresh}} onClick={() => props.refresh()}>
             <i className='fa fa-refresh'></i>
           </Button>
-          <Button onClick={props.clearJob}>Clear</Button>
+          <Button onClick={props.clearJob} disabled={props.hasIngredients}>Clear</Button>
         </div>
       );
   }
@@ -66,4 +83,4 @@ export const JobType = (props: JobTypeProps) => {
   );
 };
 
-export default JobType;
+export default connect(select)(JobType);

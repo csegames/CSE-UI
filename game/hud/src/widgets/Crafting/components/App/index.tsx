@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:35:49
+ * @Last Modified time: 2017-06-11 16:47:16
  */
 
 import * as React from 'react';
@@ -65,23 +65,21 @@ interface AppProps {
 }
 
 interface AppState {
-  open: boolean;
+  visible: boolean;
 }
 
 class App extends React.Component<AppProps,AppState> {
 
   private waitTimer: any;
+  private navigationHandler: any;
 
   constructor(props: AppProps) {
     super(props);
-    this.state = { open: true };
+    this.state = { visible: false };
   }
 
   public render() {
-    if (!this.state.open) {
-      console.warn('Crafting UI not open, render null');
-      return null;
-    }
+    if (!this.state.visible) return null;
     const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
     const props = this.props;
     const type = props.job && props.job.type;
@@ -118,7 +116,6 @@ class App extends React.Component<AppProps,AppState> {
         <VoxInfo/>
         <JobType
           mode={this.props.uiMode}
-          job={type}
           changeType={this.selectType}
           clearJob={this.clearJob}
           refresh={this.refresh}
@@ -131,16 +128,31 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   public componentDidMount() {
+
+    // Handle keyboard events (for ESC)
     window.addEventListener('keydown', this.onKeyDown);
+
+    // Watch for navigation events (for open/close)
+    this.navigationHandler = events.on('hudnav--navigate', (name: string) => {
+      const visible = !this.state.visible;
+      if (name === 'crafting') {
+        this.setState(() => ({ visible }));
+        if (visible) this.refresh();
+      }
+    });
+
     // Captureing input on mouseover gives a terrible user experience,
     // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
     // div.addEventListener('mouseenter', this.capture);
     // div.addEventListener('mouseleave', this.release);
-    this.refresh();
   }
 
   private componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
+    if (this.navigationHandler) {
+      events.off(this.navigationHandler);
+      this.navigationHandler = null;
+    }
     // Captureing input on mouseover gives a terrible user experience,
     // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
     // div.removeEventListener('mouseenter', this.capture);

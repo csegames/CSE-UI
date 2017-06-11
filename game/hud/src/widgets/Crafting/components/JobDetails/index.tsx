@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 22:40:58
+ * @Last Modified time: 2017-06-11 16:29:38
  */
 
 import * as React from 'react';
@@ -46,8 +46,16 @@ export interface JobDetailsProps {
 
 export const JobDetails = (props: JobDetailsProps) => {
   const ss = StyleSheet.create(merge({}, jobDetails, props.style));
+  const buttonStyle = { container: jobDetails.button };
   const job = props.job;
   const type = job.type;
+
+  // enabled state of buttons
+  const canStart = job.outputItems && job.outputItems.length && job.status === 'Configuring';
+  const canCollect = job.status === 'Finished';
+  const canCancel = job.status === 'Running';     // TODO: What is the actual status?
+  const canQuality = job.type === 'refine';
+  const canQuantity = job.type === 'make';
 
   // If no vox type set yet...
   if (!type) {
@@ -75,11 +83,11 @@ export const JobDetails = (props: JobDetailsProps) => {
       <OutputItems/>
       <VoxMessage/>
       <div className={'job-details ' + css(ss.buttons)}>
-        <QualityInput disabled={props.job.type !== 'refine'} onChange={props.setQuality}/>
-        <QuantityInput disabled={props.job.type !== 'make'} onChange={props.setCount}/>
-        <Button style={{container: jobDetails.button}} onClick={() => props.start()}>Start</Button>
-        <Button style={{container: jobDetails.button}} onClick={() => props.collect()}>Collect</Button>
-        <Button style={{container: jobDetails.button}} onClick={() => props.cancel()}>Cancel</Button>
+        <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
+        <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
+        <Button style={buttonStyle} disabled={!canStart} onClick={() => props.start()}>Start</Button>
+        <Button style={buttonStyle} disabled={!canCollect} onClick={() => props.collect()}>Collect</Button>
+        <Button style={buttonStyle} disabled={!canCancel} onClick={() => props.cancel()}>Cancel</Button>
       </div>
     </div>
   );

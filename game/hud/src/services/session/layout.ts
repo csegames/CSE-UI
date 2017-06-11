@@ -317,7 +317,6 @@ export function initialize() {
     events.on('hudnav--navigate', (name: string) => {
       switch (name) {
         case 'chat':
-        case 'crafting':
           return dispatch(toggleVisibility(name));
         case 'ui': return dispatch(toggleHUDLock());
         case 'reset': return dispatch(resetHUD());

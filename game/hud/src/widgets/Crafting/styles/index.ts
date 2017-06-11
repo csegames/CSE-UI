@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 13:24:43
+ * @Last Modified time: 2017-06-11 16:19:23
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -372,7 +372,7 @@ export const ingredients: IngredientsStyles = {
   addIngredient: {
     flex: '0 1 auto',
     display: 'flex',
-    borderBottom: '1px solid rgba(255,255,255,0.2)',
+    borderBottom: opts.ui.BOTTOM_BORDER,
     paddingBottom: '0.5em',
   },
   times: {
