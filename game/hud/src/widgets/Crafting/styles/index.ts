@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 12:59:55
+ * @Last Modified time: 2017-06-11 13:12:24
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -457,8 +457,7 @@ export const jobDetails: JobDetailsStyles = {
   button: {
     flex: '0 0 auto',
     margin: '0 0 0 ' + opts.SPACE_BETWEEN_FIELDS,
-    padding: '0 1em',
-    height: opts.input.HEIGHT,
+    minWidth: '75px',
   },
 };
 
