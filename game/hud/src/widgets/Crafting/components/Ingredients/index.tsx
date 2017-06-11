@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:12:17
+ * @Last Modified time: 2017-06-11 17:05:40
  */
 
 import * as React from 'react';
@@ -60,10 +60,15 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       this.setState({ qty: ((value as any) | 0) || 1 });
     };
 
+    let totalQty = 0;
+    props.ingredients.forEach((ingredient: Ingredient) => {
+      totalQty += ingredient.qty;
+    });
+
     // show already loaded ingredients
     const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
       ingredients[ingredient.id] = ingredient;
-      return <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} />;
+      return <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} total={totalQty} />;
     });
     const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
     const ready = this.state.selectedIngredient && this.state.qty > 0

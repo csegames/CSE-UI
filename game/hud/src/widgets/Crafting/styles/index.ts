@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 16:19:23
+ * @Last Modified time: 2017-06-11 17:20:27
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -102,6 +102,7 @@ export const craftingStyles: CraftingStyles = {
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
+    userSelect: 'none',
   },
   loading: {
     flex: '1 1 auto',
@@ -394,6 +395,7 @@ export interface IngredientItemStyles {
   qty: React.CSSProperties;
   times: React.CSSProperties;
   name: React.CSSProperties;
+  pcnt: React.CSSProperties;
 }
 
 export const ingredientItem: IngredientItemStyles = {
@@ -424,6 +426,12 @@ export const ingredientItem: IngredientItemStyles = {
   name: {
     flex: '1 1 auto',
     minWidth: '120px',
+  },
+  pcnt: {
+    flex: '0 0 50px',
+    width: '50px',
+    margin: '0 0.5em 0 0.2em',
+    color: 'rgba(255,255,255,0.3)',
   },
 };
 
