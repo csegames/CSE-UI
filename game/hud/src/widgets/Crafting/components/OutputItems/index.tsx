@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-10 22:11:42
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:20:16
+ * @Last Modified time: 2017-06-11 12:39:34
  */
 
 import * as React from 'react';
@@ -15,6 +15,7 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { InventoryItem } from '../../services/types';
+import Icon from '../Icon';
 
 import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../../styles';
 
@@ -48,7 +49,7 @@ const OutputItems = (props: OutputItemsProps) => {
         props.outputItems.map((item: InventoryItem) => {
           return (
             <div key={item.id} className={'output-item ' + css(ss.item)}>
-              <img className={css(ss.icon)} src={item.static.icon}/>
+              <Icon className={css(ss.icon)} src={item.static.icon}/>
               <span className={css(ss.qty)}>{item.stats.unitCount}</span>
               <span className={css(ss.times)}>x</span>
               <span className={css(ss.name)}>{item.name} @ {(item.stats.quality * 100) | 0}%</span>

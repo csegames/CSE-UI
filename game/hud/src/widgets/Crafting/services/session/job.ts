@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:14:58
+ * @Last Modified time: 2017-06-11 11:56:30
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -272,23 +272,25 @@ export const gotVoxPossibleIngredients = module.createAction({
 
 function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
   const ingredients: Ingredient[] = [];
-  for (let i = 0; i < vis.length; i++) {
-    const item = vis[i].stats.item;
-    ingredients.push({
-      id: vis[i].id,
-      name: vis[i].givenName || vis[i].staticDefinition.name,
-      qty: item.unitCount,
-      static: {
-        id: vis[i].staticDefinition.id,
-        icon: vis[i].staticDefinition.iconUrl,
-        description: vis[i].staticDefinition.description,
-      },
-      stats: {
-        quality: item.quality,
-        unitCount: item.unitCount,
-        weight: item.mass,
-      },
-    });
+  if (vis) {
+    for (let i = 0; i < vis.length; i++) {
+      const item = vis[i].stats.item;
+      ingredients.push({
+        id: vis[i].id,
+        name: vis[i].givenName || vis[i].staticDefinition.name,
+        qty: item.unitCount,
+        static: {
+          id: vis[i].staticDefinition.id,
+          icon: vis[i].staticDefinition.iconUrl,
+          description: vis[i].staticDefinition.description,
+        },
+        stats: {
+          quality: item.quality,
+          unitCount: item.unitCount,
+          weight: item.mass,
+        },
+      });
+    }
   }
   return ingredients;
 }
@@ -320,22 +322,24 @@ export const gotVoxStatus = module.createAction({
 
 function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
   const items: InventoryItem[] = [];
-  for (let i = 0; i < vis.length; i++) {
-    const item = vis[i].stats.item;
-    items.push({
-      id: vis[i].id,
-      name: vis[i].staticDefinition.name,
-      static: {
-        id: vis[i].staticDefinition.id,
-        icon: vis[i].staticDefinition.iconUrl,
-        description: vis[i].staticDefinition.description,
-      },
-      stats: {
-        quality: item.quality,
-        unitCount: item.unitCount,
-        weight: item.mass,
-      },
-    });
+  if (vis) {
+    for (let i = 0; i < vis.length; i++) {
+      const item = vis[i].stats.item;
+      items.push({
+        id: vis[i].id,
+        name: vis[i].staticDefinition.name,
+        static: {
+          id: vis[i].staticDefinition.id,
+          icon: vis[i].staticDefinition.iconUrl,
+          description: vis[i].staticDefinition.description,
+        },
+        stats: {
+          quality: item.quality,
+          unitCount: item.unitCount,
+          weight: item.mass,
+        },
+      });
+    }
   }
   return items;
 }

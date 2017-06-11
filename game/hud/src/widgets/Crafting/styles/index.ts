@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:20:39
+ * @Last Modified time: 2017-06-11 12:59:55
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -28,6 +28,7 @@ export const button = {
     marginRight: opts.SPACE_BETWEEN_FIELDS,
     fontSize: opts.buttons.FONT_SIZE,
     minWidth: opts.buttons.MIN_WIDTH,
+    padding: 0,
   },
   /*
   inherited: {
@@ -147,14 +148,14 @@ export interface JobTypeStyles {
   buttonSelected: React.CSSProperties;
   refresh: React.CSSProperties;
   tools: React.CSSProperties;
+  crafting: React.CSSProperties;
 }
 
 export const jobType: JobTypeStyles = {
   container: {
     flex: '0 1 auto',
-    height: '35px',
     margin: opts.ui.PADDING,
-    marginBottom: '0',
+    marginBottom: 0,
   },
   jobButtons: {
     display: 'inline-block',
@@ -168,6 +169,10 @@ export const jobType: JobTypeStyles = {
   },
   tools: {
     float: 'right',
+    padding: '0 0.5em',
+  },
+  crafting: {
+    padding: '0 0.5em',
   },
 };
 
@@ -236,14 +241,14 @@ export const possibleIngredients: PossibleIngredientsStyles = {
   },
   span: {
     display: 'inline-block',
-    overflow: 'hidden',
   },
   icon: {
-    flex: '1 1 ' + opts.ingredients.ICON_WIDTH,
-    border: 0,
+    flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
+    border: opts.ingredients.ICON_BORDER,
     height: opts.ingredients.ICON_WIDTH,
-    marginTop: opts.ingredients.ICON_VERTICAL_SPACING,
-    marginRight: opts.ingredients.ICON_HORIZONTAL_SPACING,
+    width: opts.ingredients.ICON_WIDTH,
+    margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
+    marginLeft: 0,
   },
   name: {
     flex: '1 1 ' + opts.ingredients.NAME_WIDTH,
@@ -302,8 +307,9 @@ export const outputItems: OutputItemsStyles = {
   },
   icon: {
     flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
-    border: 0,
+    border: opts.ingredients.ICON_BORDER,
     height: opts.ingredients.ICON_WIDTH,
+    width: opts.ingredients.ICON_WIDTH,
     margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
   },
   qty: {
@@ -398,8 +404,9 @@ export const ingredientItem: IngredientItemStyles = {
   },
   icon: {
     flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
-    border: 0,
+    border: opts.ingredients.ICON_BORDER,
     height: opts.ingredients.ICON_WIDTH,
+    width: opts.ingredients.ICON_WIDTH,
     margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
   },
   qty: {

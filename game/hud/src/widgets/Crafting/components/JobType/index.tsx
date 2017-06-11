@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 22:32:21
+ * @Last Modified time: 2017-06-11 12:57:25
  */
 
 import * as React from 'react';
@@ -60,7 +60,7 @@ export const JobType = (props: JobTypeProps) => {
       {craftingButtons}
       { props.mode === 'crafting'
         ? <Button style={{container: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>
-        : <Button onClick={props.toggle}>&lt; Crafting</Button>
+        : <Button style={{container: jobType.crafting}} onClick={props.toggle}>&lt; Crafting</Button>
       }
     </div>
   );

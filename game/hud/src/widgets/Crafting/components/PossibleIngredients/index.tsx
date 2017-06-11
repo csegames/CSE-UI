@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 21:07:45
+ * @Last Modified time: 2017-06-11 12:40:03
  */
 
 import * as React from 'react';
@@ -15,6 +15,7 @@ import { GlobalState } from '../../services/session/reducer';
 import Select from '../Select';
 import { Ingredient, InventoryItem } from '../../services/types';
 import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../../styles';
+import Icon from '../Icon';
 
 interface PossibleIngredientsReduxProps {
   dispatch?: (action: any) => void;
@@ -39,7 +40,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
     const render = (item: InventoryItem) => item && (
       <div className={'possible-ingredient ' + css(ss.container)}>
-        <img className={css(ss.span, ss.icon)} src={item.static.icon}/>
+        <Icon className={css(ss.span, ss.icon)} src={item.static.icon}/>
         <span className={css(ss.span, ss.name)}>{item.name}</span>
         <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span>
         <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span>

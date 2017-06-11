@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-25 01:01:56
+ * @Last Modified time: 2017-06-11 12:29:01
  */
 
 /*
@@ -32,9 +32,10 @@ export const opts = {
     LINE_SPACING: '1px',
   },
   ingredients: {
-    ICON_VERTICAL_SPACING: '3px',   /* 16px + 3px * 2 = 22px */
-    ICON_HORIZONTAL_SPACING: '5px',
+    ICON_VERTICAL_SPACING: '3px',   /* 16px + 3px * 2 + border * 2 = 24px */
+    ICON_HORIZONTAL_SPACING: '3px',
     ICON_WIDTH: '16px',
+    ICON_BORDER: '1px solid rgba(0,0,0,0)',
     NAME_WIDTH: '60%',
     QUANTITY_WIDTH: '20%',
     QUALITY_WIDTH: '20%',
