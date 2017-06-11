@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:05:40
+ * @Last Modified time: 2017-06-11 17:40:17
  */
 
 import * as React from 'react';
@@ -24,6 +24,7 @@ import { InventoryItem } from '../../services/types';
 export interface IngredientsProps {
   job: string;
   ingredients: Ingredient[];
+  status: string;
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
@@ -74,12 +75,13 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const ready = this.state.selectedIngredient && this.state.qty > 0
                   && this.state.qty <= this.state.selectedIngredient.stats.unitCount;
     const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 0;
+    const configuring = this.props.status === 'Configuring';
 
     return (
       <div className={'ingredients ' + css(ss.container)}>
         <h1 className={css(ss.title)}>Ingredients...</h1>
         <div className={'add-ingredient ' + css(ss.addIngredient)}>
-          <PossibleIngredients selectedItem={this.state.selectedIngredient} onSelect={select}/>
+          <PossibleIngredients disabled={!configuring} selectedItem={this.state.selectedIngredient} onSelect={select}/>
           <span className={css(ss.times)}>x</span>
           <Input style={{container: ingredientsStyles.quantity}}
             disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
@@ -89,7 +91,8 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         <div className={'loaded-ingredients ' + css(ss.loadedIngredients)}>
           <div>{loaded}</div>
           { last
-            ? <Button style={{container: ingredientsStyles.remove}} onClick={() => props.remove(last)}>
+            ? <Button style={{container: ingredientsStyles.remove}}
+                disabled={!configuring} onClick={() => props.remove(last)}>
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>
             : undefined }

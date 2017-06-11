@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:35:48
+ * @Last Modified time: 2017-06-11 17:52:07
  */
 
 import * as React from 'react';
@@ -15,6 +15,7 @@ import { StyleSheet, css, merge, select, SelectStyles } from '../../styles';
 export interface SelectProps {
   items: any[];
   selectedItem?: any;
+  disabled?: boolean;
   renderActiveItem: (item: any) => any;
   renderListItem: (item: any) => any;
   onSelectedItemChanged: (item: any) => void;
@@ -64,26 +65,24 @@ class Select extends React.Component<SelectProps, SelectState> {
         <div className={css(ss.impl)} style={this.state.showList ? { zIndex: '1000' } : {}}>
           <div
             className={this.state.showList ? css(ss.outside) : css(ss.outside, ss.outsideHidden)}
-            onClick={(e) => {
-              this.showList(false);
-              e.stopPropagation();
-            }} />
-          <div className={css(ss.active)} onClick={(e) => {
-            this.showList(!this.state.showList);
-            e.stopPropagation();
-          }}>
+            onClick={(e) => { this.onClick(e, false); }} />
+          <div className={css(ss.active)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
             {this.props.renderActiveItem(this.props.items[selectedIndex])}
           </div>
-          <div className={css(ss.arrow)} onClick={(e) => {
-            this.showList(!this.state.showList);
-            e.stopPropagation();
-          }} ><i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i></div>
+          <div className={css(ss.arrow)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
+            <i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i>
+          </div>
           <div className={this.state.showList ? css(ss.list) : css(ss.list, ss.listHidden)}>
             {this.props.items.map(this.buildListItem)}
           </div>
         </div>
       </div>
     );
+  }
+
+  private onClick = (e: React.MouseEvent<HTMLDivElement>, showList: boolean) => {
+    if (!this.props.disabled) this.showList(showList);
+    e.stopPropagation();
   }
 
   private showList = (visible: boolean) => {

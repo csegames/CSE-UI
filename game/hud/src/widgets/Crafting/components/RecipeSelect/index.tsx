@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 16:11:24
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 20:43:23
+ * @Last Modified time: 2017-06-11 17:57:07
  */
 
 import * as React from 'react';
@@ -22,6 +22,7 @@ export interface RecipeSelectReduxProps {
   type?: string;
   items?: Recipe[];
   selected?: Recipe;
+  status?: string;
   style?: Partial<RecipeSelectStyles>;
 }
 
@@ -36,6 +37,7 @@ const select = (state: GlobalState, props: RecipeSelectProps) : RecipeSelectRedu
     type: state.job.type,
     items: state.recipes[state.job.type],
     selected: state.job.recipe,
+    status: state.job.status,
   };
 };
 
@@ -53,6 +55,7 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
       <div className={'recipe-select ' + css(ss.container)}>
         <Label style={{container: recipeSelect.label}}>{type[0].toUpperCase() + type.substr(1)} Recipe</Label>
         <Select
+          disabled={this.props.status !== 'Configuring'}
           style={{container: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}

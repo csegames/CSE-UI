@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:10:57
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 21:40:44
+ * @Last Modified time: 2017-06-11 17:55:01
  */
 
 import * as React from 'react';
@@ -21,6 +21,7 @@ export interface TemplateSelectReduxProps {
   dispatch?: (action: any) => void;
   items?: Template[];
   selected?: Template;
+  status?: string;
 }
 
 export interface TemplateSelectProps extends TemplateSelectReduxProps {
@@ -35,6 +36,7 @@ const select = (state: GlobalState, props: TemplateSelectProps) : TemplateSelect
   return {
     items,
     selected: state.job.template,
+    status: state.job.status,
   };
 };
 
@@ -50,6 +52,7 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
       <div className={'template-select ' + css(ss.container)}>
         <Label style={{container: templateSelect.label}}>Template</Label>
         <Select
+          disabled={this.props.status !== 'Configuring'}
           style={{container: templateSelect.select, impl: templateSelect.select_impl, list: templateSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}

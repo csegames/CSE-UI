@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 12:40:03
+ * @Last Modified time: 2017-06-11 17:43:11
  */
 
 import * as React from 'react';
@@ -30,6 +30,7 @@ const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIn
 
 export interface PossibleIngredientsProps extends PossibleIngredientsReduxProps {
   selectedItem: InventoryItem;
+  disabled?: boolean;
   onSelect: (item: InventoryItem) => void;
 }
 
@@ -48,6 +49,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     );
     return (
       <Select
+        disabled={this.props.disabled}
         style={{container: possibleIngredients.select}}
         items={this.props.possibleIngredients}
         onSelectedItemChanged={this.props.onSelect}

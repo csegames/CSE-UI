@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 16:29:38
+ * @Last Modified time: 2017-06-11 17:33:52
  */
 
 import * as React from 'react';
@@ -76,6 +76,7 @@ export const JobDetails = (props: JobDetailsProps) => {
       </div>
       <Ingredients
         job={type}
+        status={props.job.status}
         ingredients={props.job.ingredients}
         add={props.addIngredient}
         remove={props.removeIngredient}
