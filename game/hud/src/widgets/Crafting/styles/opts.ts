@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 12:29:01
+ * @Last Modified time: 2017-06-11 13:21:40
  */
 
 /*
@@ -22,6 +22,7 @@ export const opts = {
     WIDTH: '600px',
     HEIGHT: '450px',
     PADDING: '12px',
+    BOTTOM_BORDER: '1px solid rgba(255,255,255,0.2)',
   },
   job: {
     HIGHLIGHT: 'green',

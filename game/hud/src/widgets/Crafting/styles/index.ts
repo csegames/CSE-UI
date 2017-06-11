@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 13:12:24
+ * @Last Modified time: 2017-06-11 13:24:43
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -217,7 +217,7 @@ export const tools: ToolsStyles = {
   sectionHeading: {
     marginTop: '0.5em',
     fontSize: '100%',
-    borderBottom: '1px solid rgba(255,255,255,0.2)',
+    borderBottom: opts.ui.BOTTOM_BORDER,
   },
 };
 
@@ -294,7 +294,7 @@ export const outputItems: OutputItemsStyles = {
   title: {
     flex: '0 0 auto',
     fontSize: '100%',
-    borderBottom: '1px solid rgba(255,255,255,0.2)',
+    borderBottom: opts.ui.BOTTOM_BORDER,
   },
   craftingTime: {
     float: 'right',
@@ -349,7 +349,8 @@ export const ingredients: IngredientsStyles = {
   title: {
     flex: '0 1 auto',
     fontSize: '100%',
-    marginTop: '5px',
+    borderBottom: opts.ui.BOTTOM_BORDER,
+    fontWeight: 'normal',
   },
 
   loadedIngredients: {
@@ -371,6 +372,8 @@ export const ingredients: IngredientsStyles = {
   addIngredient: {
     flex: '0 1 auto',
     display: 'flex',
+    borderBottom: '1px solid rgba(255,255,255,0.2)',
+    paddingBottom: '0.5em',
   },
   times: {
     flex: '0 1 auto',
