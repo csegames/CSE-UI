@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 22:35:24
+ * @Last Modified time: 2017-06-12 23:41:05
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -406,20 +406,20 @@ export const ingredients: IngredientsStyles = {
     flex: '1 1 auto',
     display: 'flex',
     flexDirection: 'column',
-    marginTop: '5px',
     overflow: 'auto',
     overflowX: 'hidden',
     pointerEvents: 'auto',
-    marginBottom: '0.5em',
+    margin: 0,
   },
   remove: {
-    flex: '0 1 auto',
+    flex: '0 0 auto',
     fontSize: '10px',
     color: 'deepskyblue',
+    minHeight: '20px',
   },
 
   addIngredient: {
-    flex: '0 1 auto',
+    flex: '0 0 auto',
     display: 'flex',
     borderBottom: opts.ui.BOTTOM_BORDER,
     paddingBottom: '0.5em',
