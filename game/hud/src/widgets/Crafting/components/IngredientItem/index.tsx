@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 07:29:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:12:52
+ * @Last Modified time: 2017-06-12 21:20:59
  */
 
 import * as React from 'react';
@@ -31,7 +31,7 @@ export const IngredientItem = (props: IngredientProps) => {
       <span className={css(ss.qty)}>{props.qty}</span>
       <span className={css(ss.pcnt)}>({pcnt}%)</span>
       <span className={css(ss.times)}>x</span>
-      <span className={css(ss.name)}>{name} @ {stats ? (stats.quality * 100) | 0 : 0}%</span>
+      <span className={css(ss.name)}>{name} @ {stats ? (stats.quality * 100) | 0 : 0}% {stats.weight}KG</span>
     </div>
   );
 };

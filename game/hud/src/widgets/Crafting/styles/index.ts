@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 21:01:19
+ * @Last Modified time: 2017-06-12 22:35:24
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -258,6 +258,7 @@ export interface PossibleIngredientsStyles {
   name: React.CSSProperties;
   quantity: React.CSSProperties;
   quality: React.CSSProperties;
+  weight: React.CSSProperties;
   select: React.CSSProperties;
   select_impl: React.CSSProperties;
   select_list: React.CSSProperties;
@@ -268,7 +269,7 @@ export const possibleIngredients: PossibleIngredientsStyles = {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    height: '24px',
+    height: opts.input.HEIGHT,
   },
   span: {
     display: 'inline-block',
@@ -282,20 +283,33 @@ export const possibleIngredients: PossibleIngredientsStyles = {
     marginLeft: 0,
   },
   name: {
-    flex: '1 1 ' + opts.ingredients.NAME_WIDTH,
+    flex: '2 1 ' + opts.ingredients.NAME_WIDTH,
     overflow: 'hidden',
     height: '100%',
   },
   quantity: {
     flex: '1 1 ' + opts.ingredients.QUANTITY_WIDTH,
     textAlign: 'right',
+    fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
+    lineHeight: opts.input.HEIGHT,
+    marginLeft: opts.ingredients.STATS_COLUMN_SPACING,
   },
   quality: {
     flex: '1 1 ' + opts.ingredients.QUALITY_WIDTH,
     textAlign: 'right',
+    fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
+    lineHeight: opts.input.HEIGHT,
+    marginLeft: opts.ingredients.STATS_COLUMN_SPACING,
+  },
+  weight: {
+    flex: '1 1 ' + opts.ingredients.WEIGHT_WIDTH,
+    textAlign: 'right',
+    fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
+    lineHeight: opts.input.HEIGHT,
+    marginLeft: opts.ingredients.STATS_COLUMN_SPACING,
   },
   select: {
-    flex: '1 1 auto',
+    flex: '2 1 auto',
     minWidth: '250px',
     height: opts.input.HEIGHT,
   },

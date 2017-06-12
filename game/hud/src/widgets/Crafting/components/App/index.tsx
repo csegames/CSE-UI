@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 20:56:37
+ * @Last Modified time: 2017-06-12 21:12:15
  */
 
 import * as React from 'react';
@@ -276,6 +276,7 @@ class App extends React.Component<AppProps,AppState> {
 
     if (refresh || job !== props.job.possibleType) {
       // only re-load possible ingredients if job type has changed, or we are doing a refresh
+      props.dispatch(gotVoxPossibleIngredients([], 'loading'));
       voxGetPossibleIngredients()
         .then((ingredients: VoxIngredient[]) => {
           props.dispatch(gotVoxPossibleIngredients(ingredients, job));

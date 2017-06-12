@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 20:55:03
+ * @Last Modified time: 2017-06-12 22:33:05
  */
 
 /*
@@ -46,8 +46,11 @@ export const opts = {
     ICON_WIDTH: '16px',
     ICON_BORDER: '1px solid rgba(0,0,0,0)',
     NAME_WIDTH: '60%',
-    QUANTITY_WIDTH: '20%',
-    QUALITY_WIDTH: '20%',
+    QUANTITY_WIDTH: '15%',
+    QUALITY_WIDTH: '15%',
+    WEIGHT_WIDTH: '15%',
+    STATS_COLUMN_FONT_SIZE: '10px',
+    STATS_COLUMN_SPACING: '2px',
     DROPDOWN_HEIGHT: '270px',
   },
   input: {

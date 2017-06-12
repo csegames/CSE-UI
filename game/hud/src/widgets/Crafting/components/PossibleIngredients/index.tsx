@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 18:56:11
+ * @Last Modified time: 2017-06-12 22:19:22
  */
 
 import * as React from 'react';
@@ -50,6 +50,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
         <span className={css(ss.span, ss.name)}>{item.name}</span>
         <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span>
         <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span>
+        <span className={css(ss.span, ss.weight)}>{item.stats.weight}KG</span>
       </div>
     );
     return (

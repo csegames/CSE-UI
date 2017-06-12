@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 14:11:26
+ * @Last Modified time: 2017-06-12 22:13:51
  */
 
 import * as React from 'react';
@@ -78,6 +78,9 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
           <div>/cr specific item-id quality% unit-count</div>
           <div>/cr resources unit-count</div>
           <div>/cr vox forcefinish</div>
+          <div>/cr specific alloy-id</div>
+          <div>/setequiptmentrepairpoints points</div>
+          <div>/setequiptmentdurability durability</div>
         </div>
         <VoxMessage/>
       </div>
