@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 23:51:05
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 23:55:31
+ * @Last Modified time: 2017-06-12 14:05:36
  */
 
 import * as React from 'react';
@@ -20,7 +20,7 @@ interface CloseProps {
 const Close = (props: CloseProps) => {
   const ss = StyleSheet.create(merge({}, close, props.style));
   return (
-    <span className={'close ' + css(ss.container)} onClick={props.onClose}><i className='fa fa-times'/></span>
+    <span className={'close cu-window-close ' + css(ss.container)} onClick={props.onClose}></span>
   );
 };
 

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 20:33:18
+ * @Last Modified time: 2017-06-12 14:04:40
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -57,9 +57,7 @@ export const close = {
   container: {
     pointerEvents: 'auto',
     position: 'absolute',
-    top: '-2px',
-    right: '5px',
-    zIndex: 1,
+    right: '4px',
     cursor: 'pointer',
   },
 };
@@ -224,6 +222,7 @@ export interface ToolsStyles {
   container: React.CSSProperties;
   section: React.CSSProperties;
   sectionHeading: React.CSSProperties;
+  button: React.CSSProperties;
 }
 
 export const tools: ToolsStyles = {
@@ -239,6 +238,9 @@ export const tools: ToolsStyles = {
     marginTop: '0.5em',
     fontSize: '100%',
     borderBottom: opts.ui.BOTTOM_BORDER,
+  },
+  button: {
+    padding: '2px 0.5em',
   },
 };
 

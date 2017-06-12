@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:31:46
+ * @Last Modified time: 2017-06-12 14:11:26
  */
 
 import * as React from 'react';
@@ -53,14 +53,20 @@ class Tools extends React.Component<ToolsProps, ToolsStatus> {
         <div className={css(ss.section)}>
           <h1 className={css(ss.sectionHeading)}>Resources</h1>
           <div>
-            <Button onClick={() => this.props.nearby(this.state.range)}>/cr nearby</Button>
+            <Button style={{ container: tools.button }} onClick={() => this.props.nearby(this.state.range)}>
+              /cr nearby
+            </Button>
             <Input size={4} onChange={this.setRange} value={this.state.range.toString()}
               /> List nearby crafting resources.
           </div>
           <div>
-            <Button onClick={this.props.harvestInfo}>/harvestinfo</Button> List details about nearby resources.</div>
+            <Button style={{ container: tools.button }} onClick={this.props.harvestInfo}>
+              /harvestinfo
+              </Button>
+              List details about nearby resources.
+          </div>
           <div>
-            <Button disabled={this.props.countdown > 0} onClick={this.props.harvest}>
+            <Button style={{ container: tools.button }} disabled={this.props.countdown > 0} onClick={this.props.harvest}>
               /harvest{ this.props.countdown ? ' [' + this.props.countdown + ']' : '' }
             </Button>
             Harvest nearby resources.

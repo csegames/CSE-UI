@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 13:50:06
+ * @Last Modified time: 2017-06-12 14:02:34
  */
 
 import * as React from 'react';
@@ -112,7 +112,7 @@ class App extends React.Component<AppProps,AppState> {
     }
 
     return (
-      <div ref='crafting' className={'app ' + css(ss.container)}>
+      <div ref='crafting' className={'app cu-window ' + css(ss.container)}>
         <Close onClose={this.close}/>
         <VoxInfo/>
         <JobType
