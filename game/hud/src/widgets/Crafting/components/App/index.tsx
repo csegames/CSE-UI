@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 19:49:08
+ * @Last Modified time: 2017-06-12 13:50:06
  */
 
 import * as React from 'react';
@@ -148,7 +148,7 @@ class App extends React.Component<AppProps,AppState> {
     // div.addEventListener('mouseleave', this.release);
   }
 
-  private componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
     if (this.navigationHandler) {
       events.off(this.navigationHandler);
