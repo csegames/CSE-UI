@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 16:55:14
+ * @Last Modified time: 2017-06-12 18:02:12
  */
 
 import * as React from 'react';
@@ -45,8 +45,9 @@ export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
   const job = props.jobType;
   const button = (type: string) => {
+      const style = { container: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
       return (
-        <Button style={job === type ? {container:jobType.buttonSelected} : {}}
+        <Button style={style}
           disabled={job && job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
@@ -65,6 +66,7 @@ export const JobType = (props: JobTypeProps) => {
           {button('block')}
           {button('make')}
           {button('repair')}
+          {button('salvage')}
           <Button style={{container: jobType.refresh}} onClick={() => props.refresh()}>
             <i className='fa fa-refresh'></i>
           </Button>

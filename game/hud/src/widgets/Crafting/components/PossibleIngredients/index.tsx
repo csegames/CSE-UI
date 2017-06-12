@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:43:11
+ * @Last Modified time: 2017-06-12 18:56:11
  */
 
 import * as React from 'react';
@@ -24,7 +24,12 @@ interface PossibleIngredientsReduxProps {
 }
 
 const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIngredientsReduxProps => {
-  const possibleIngredients = [...state.job.possibleIngredients];
+  const possibleIngredients: Ingredient[] = [];
+  state.job.possibleIngredients.forEach((ingredient: Ingredient) => {
+    if (ingredient.stats.unitCount > 0) {
+      possibleIngredients.push(ingredient);
+    }
+  });
   return { possibleIngredients };
 };
 

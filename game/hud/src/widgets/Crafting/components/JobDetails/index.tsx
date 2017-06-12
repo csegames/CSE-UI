@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:33:52
+ * @Last Modified time: 2017-06-12 18:26:39
  */
 
 import * as React from 'react';
@@ -75,9 +75,6 @@ export const JobDetails = (props: JobDetailsProps) => {
         {type === 'make' && <TemplateSelect onSelect={props.setTemplate}/>}
       </div>
       <Ingredients
-        job={type}
-        status={props.job.status}
-        ingredients={props.job.ingredients}
         add={props.addIngredient}
         remove={props.removeIngredient}
         />

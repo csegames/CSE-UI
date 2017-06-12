@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 14:02:34
+ * @Last Modified time: 2017-06-12 20:56:37
  */
 
 import * as React from 'react';
@@ -195,7 +195,7 @@ class App extends React.Component<AppProps,AppState> {
       }
       props.dispatch(gotOutputItems(status.outputItems));
       if (status.jobType) {
-        this.loadLists(status.jobType);
+        this.loadLists(status.jobType, true);
       }
     }).catch((message: string) => {
         props.dispatch(setMessage({ type: 'error', message }));
@@ -219,6 +219,11 @@ class App extends React.Component<AppProps,AppState> {
 
   private selectType = (type: string) => {
     const props = this.props;
+
+    // No-op?
+    if (props.job.type === type) return;
+
+    // Changing job types...
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
 
@@ -235,7 +240,7 @@ class App extends React.Component<AppProps,AppState> {
       });
   }
 
-  private loadLists = (job: string) => {
+  private loadLists = (job: string, refresh?: boolean) => {
     const props = this.props;
 
     function getRecipes() {
@@ -251,6 +256,11 @@ class App extends React.Component<AppProps,AppState> {
               props.dispatch(setLoading(false));
             });
           break;
+        case 'repair':
+        case 'salvage':
+          // no recipes to load
+          props.dispatch(setLoading(false));
+          break;
         default:
           voxGetRecipesFor(job)
             .then((recipes: VoxRecipe[]) => {
@@ -264,14 +274,20 @@ class App extends React.Component<AppProps,AppState> {
       }
     }
 
-    voxGetPossibleIngredients()
-      .then((ingredients: VoxIngredient[]) => {
-        props.dispatch(gotVoxPossibleIngredients(ingredients));
-        getRecipes();
-      })
-      .catch(() => {
-        props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
-      });
+    if (refresh || job !== props.job.possibleType) {
+      // only re-load possible ingredients if job type has changed, or we are doing a refresh
+      voxGetPossibleIngredients()
+        .then((ingredients: VoxIngredient[]) => {
+          props.dispatch(gotVoxPossibleIngredients(ingredients, job));
+          getRecipes();
+        })
+        .catch(() => {
+          props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
+        });
+    } else {
+      // otherwise just get recipes
+      getRecipes();
+    }
   }
 
   // Generic, issue a / command, deal with response
@@ -321,15 +337,10 @@ class App extends React.Component<AppProps,AppState> {
       });
   }
 
-  private checkJobStatus = (pretend: number = 0) => {
+  private checkJobStatus = () => {
     const props = this.props;
     this.updating = true;
     this.updateStatus((status: any) => {
-      if (pretend) {
-        status.jobState = 'Running';    // pretend
-        status.totalCraftingTime = pretend;  // pretend 60 seconds
-        status.startTime = (new Date()).toISOString();
-      }
       props.dispatch(gotOutputItems(status.outputItems));
       switch (status.jobState) {
         case 'Finished':
@@ -352,7 +363,7 @@ class App extends React.Component<AppProps,AppState> {
     const props = this.props;
     const tick = () => {
       if (seconds <= 0) {
-        this.checkJobStatus();      // allow to finish this time, no pretend (debug mode)
+        this.checkJobStatus();      // allow to finish this time
         return;
       }
       props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + seconds + ' seconds.' }));
@@ -374,7 +385,7 @@ class App extends React.Component<AppProps,AppState> {
     const props = this.props;
     if (this.updating) return;
     this.api(startVoxJob, 'Job Started', () => {
-      this.checkJobStatus(5);      // pretend will take 5 seconds (debug mode)
+      this.checkJobStatus();      // pretend will take 5 seconds (debug mode)
       return startJob();
     });
   }

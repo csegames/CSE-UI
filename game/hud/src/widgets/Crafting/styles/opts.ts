@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 16:16:44
+ * @Last Modified time: 2017-06-12 20:55:03
  */
 
 /*
@@ -24,8 +24,16 @@ export const opts = {
     PADDING: '12px',
     BOTTOM_BORDER: '1px solid rgba(255,255,255,0.1)',
   },
+  buttons: {
+    FONT_SIZE: '12px',
+    MIN_WIDTH: '50px',
+  },
   job: {
     HIGHLIGHT: 'green',
+    BUTTON_WIDTH: '45px',
+    BUTTON_FONT_SIZE: '12px',
+    BUTTON_LETTER_SPACING: '-1px',
+    BUTTON_SPACING: '5px',
   },
   properties: {
     LABEL_WIDTH: '200px',
@@ -40,10 +48,7 @@ export const opts = {
     NAME_WIDTH: '60%',
     QUANTITY_WIDTH: '20%',
     QUALITY_WIDTH: '20%',
-  },
-  buttons: {
-    FONT_SIZE: '12px',
-    MIN_WIDTH: '50px',
+    DROPDOWN_HEIGHT: '270px',
   },
   input: {
     HEIGHT: '24px',

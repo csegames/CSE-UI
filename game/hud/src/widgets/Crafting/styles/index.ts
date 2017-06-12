@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 14:04:40
+ * @Last Modified time: 2017-06-12 21:01:19
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -164,6 +164,7 @@ export const voxInfo: VoxInfoStyles = {
 export interface JobTypeStyles {
   container: React.CSSProperties;
   jobButtons: React.CSSProperties;
+  button: React.CSSProperties;
   buttonSelected: React.CSSProperties;
   refresh: React.CSSProperties;
   tools: React.CSSProperties;
@@ -178,6 +179,12 @@ export const jobType: JobTypeStyles = {
   },
   jobButtons: {
     display: 'inline-block',
+  },
+  button: {
+    fontSize: opts.job.BUTTON_FONT_SIZE,
+    minWidth: opts.job.BUTTON_WIDTH,
+    letterSpacing: opts.job.BUTTON_LETTER_SPACING,
+    marginRight: opts.job.BUTTON_SPACING,
   },
   buttonSelected: {
     fontWeight: 'bold',
@@ -261,6 +268,7 @@ export const possibleIngredients: PossibleIngredientsStyles = {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
+    height: '24px',
   },
   span: {
     display: 'inline-block',
@@ -275,6 +283,8 @@ export const possibleIngredients: PossibleIngredientsStyles = {
   },
   name: {
     flex: '1 1 ' + opts.ingredients.NAME_WIDTH,
+    overflow: 'hidden',
+    height: '100%',
   },
   quantity: {
     flex: '1 1 ' + opts.ingredients.QUANTITY_WIDTH,
@@ -534,7 +544,6 @@ export const quantityInput: QuantityInputStyles = {
   },
   input: {
     textAlign: 'right',
-    flex: '0 0 auto',
   },
   label: {
   },
@@ -676,7 +685,7 @@ export const select: SelectStyles = {
     cursor: 'pointer',
     overflow: 'auto',
     overflowX: 'hidden',
-    maxHeight: '420px',
+    maxHeight: opts.ingredients.DROPDOWN_HEIGHT,
     transition: 'max-height .1s ease-out',
   },
   listItem: {

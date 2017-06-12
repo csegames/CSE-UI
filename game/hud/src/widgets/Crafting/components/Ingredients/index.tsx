@@ -6,10 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 19:35:06
+ * @Last Modified time: 2017-06-12 19:40:59
  */
 
 import * as React from 'react';
+import {connect} from 'react-redux';
+import { GlobalState } from '../../services/session/reducer';
 import { Ingredient } from '../../services/types';
 import IngredientItem from '../IngredientItem';
 import PossibleIngredients from '../PossibleIngredients';
@@ -21,14 +23,32 @@ import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsSt
 
 import { InventoryItem } from '../../services/types';
 
-export interface IngredientsProps {
-  job: string;
-  ingredients: Ingredient[];
-  status: string;
+export interface IngredientsPropsRedux {
+  dispatch?: any;
+  ingredients?: Ingredient[];
+  havePossibleIngredients?: boolean;
+  status?: string;
+  job?: string;
+  loading?: boolean;
+}
+
+export interface IngredientsProps extends IngredientsPropsRedux{
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
 }
+
+const select = (state: GlobalState, props: IngredientsProps): IngredientsPropsRedux => {
+  const job = state.job;
+  const possibleIngredients = job.possibleIngredients;
+  return {
+    job: job.type,
+    status: job.status,
+    ingredients: job.ingredients,
+    havePossibleIngredients: !!(possibleIngredients && possibleIngredients.length),
+    loading: state.job.loading,
+  };
+};
 
 export interface IngredientsState {
   selectedIngredient: Ingredient;
@@ -77,18 +97,33 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 0;
     const configuring = this.props.status === 'Configuring';
 
+    let addIngredients;
+    if (props.loading) {
+      addIngredients = (
+        <div className={'add-ingredient ' + css(ss.addIngredient)}>
+          ... loading
+        </div>
+      );
+    } else {
+      if (props.havePossibleIngredients) {
+        addIngredients = (
+          <div className={'add-ingredient ' + css(ss.addIngredient)}>
+            <PossibleIngredients disabled={!configuring} selectedItem={this.state.selectedIngredient} onSelect={select}/>
+            <span className={css(ss.times)}>x</span>
+            <Input style={{input: ingredientsStyles.quantity}}
+              numeric={true} min={1}
+              disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
+            <Button disabled={!ready} style={{container: ingredientsStyles.add}}
+              onClick={this.addIngredient}>Add Ingredient</Button>
+          </div>
+        );
+      }
+    }
+
     return (
       <div className={'ingredients ' + css(ss.container)}>
         <h1 className={css(ss.title)}>Ingredients...</h1>
-        <div className={'add-ingredient ' + css(ss.addIngredient)}>
-          <PossibleIngredients disabled={!configuring} selectedItem={this.state.selectedIngredient} onSelect={select}/>
-          <span className={css(ss.times)}>x</span>
-          <Input style={{input: ingredientsStyles.quantity}}
-            numeric={true} min={1}
-            disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
-          <Button disabled={!ready} style={{container: ingredientsStyles.add}}
-            onClick={this.addIngredient}>Add Ingredient</Button>
-        </div>
+        {addIngredients}
         <div className={'loaded-ingredients ' + css(ss.loadedIngredients)}>
           <div>{loaded}</div>
           { last
@@ -109,4 +144,4 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
   }
 }
 
-export default Ingredients;
+export default connect(select)(Ingredients);

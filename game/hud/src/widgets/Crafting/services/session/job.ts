@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 20:30:05
+ * @Last Modified time: 2017-06-12 20:31:49
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -26,6 +26,7 @@ export interface JobState {
   template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
   possibleIngredients: Ingredient[];  // ingredients that can go in the vox
+  possibleType: string;               // job type of possible ingredients
   ingredients: Ingredient[];          // ingredients in the vox
   outputItems: InventoryItem[];       // Output items of the current vox job
   name: string;                       // Item Name (make)
@@ -45,6 +46,7 @@ export const initialState = () : JobState => {
     template: null,
     quality: undefined,
     possibleIngredients: [],
+    possibleType: undefined,
     ingredients: [],
     outputItems: [],
     name: null,
@@ -110,23 +112,27 @@ export const addIngredient = module.createAction({
   reducer: (s, a) => {
     const ingredients = [ ...s.ingredients ];
     const possibleIngredients = [ ...s.possibleIngredients ];
-    let qty = a.qty;
+    const qty = a.qty;
     if (a.movedTo) {
+      let i;
       // find and remove quantity used from possibleIngredients
-      possibleIngredients.forEach((ingredient: Ingredient) => {
+      for (i = 0; i < possibleIngredients.length; i++) {
+        const ingredient = possibleIngredients[i];
         if (isSameIngredient(ingredient, a.ingredient)) {
           ingredient.stats.unitCount -= qty;
+          break;
         }
-      });
+      }
       // Upadte existing ingredient
-      ingredients.forEach((ingredient: Ingredient) => {
+      for (i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
         if (ingredient.id === a.movedTo) {
           ingredient.qty += qty;
-          qty = 0;
+          break;
         }
-      });
-      // or add new ingredient
-      if (qty > 0) {
+      }
+      if (i === ingredients.length) {
+        // or add new one
         ingredients.push(Object.assign({}, a.ingredient, {
           id: a.movedTo,
           qty: a.qty,
@@ -149,19 +155,20 @@ export const removeIngredient = module.createAction({
     return { item };
   },
   reducer: (s, a) => {
-    console.log('REDUCER: crafting/job/remove-ingredient');
     const ingredients = s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id);
     const possibleIngredients = [ ...s.possibleIngredients ];
-    console.log('REMOVE INGREDIENT ' + JSON.stringify(a.item));
-    console.log('FROM POSSIBLE INGREDIENTS ' + JSON.stringify(s.possibleIngredients));
-    let qty = a.item.qty;  // the quantity of the item added to the vox
-    possibleIngredients.forEach((ingredient: Ingredient) => {
+    const qty = a.item.qty;  // the quantity of the item added to the vox
+    let i;
+    // add back to possible ingredients
+    for (i = 0; i < possibleIngredients.length; i++) {
+      const ingredient = possibleIngredients[i];
       if (isSameIngredient(ingredient, a.item)) {
         ingredient.stats.unitCount += qty;
-        qty = 0;
+        break;
       }
-    });
-    if (qty > 0) {
+    }
+    if (i === possibleIngredients.length) {
+      // or add new possible ingredient
       possibleIngredients.push(a.item);
     }
     return { ingredients, possibleIngredients };
@@ -185,7 +192,12 @@ export const clearJob = module.createAction({
   },
   reducer: (s, a) => {
     // Clearing a job effectively resets the vox back to idle
-    return Object.assign({}, initialState(), { status: 'idle' });
+    // but keep possible ingredients incase we use them again
+    return Object.assign({}, initialState(), {
+      status: 'idle',
+      possibleIngredients: s.possibleIngredients,
+      possibleType: s.possibleType,
+    });
   },
 });
 
@@ -206,7 +218,11 @@ export const collectJob = module.createAction({
   },
   reducer: (s, a) => {
     // collecting a job, if successful, also clears it
-    return Object.assign({}, initialState(), { status: 'idle' });
+    return Object.assign({}, initialState(), {
+      status: 'idle',
+      possibleIngredients: s.possibleIngredients,
+      possibleType: s.possibleType,
+    });
   },
 });
 
@@ -262,11 +278,14 @@ export const setTemplate = module.createAction({
 
 export const gotVoxPossibleIngredients = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients',
-  action: (possible: VoxPossibleIngredient[]) => {
-    return { possible };
+  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => {
+    return { ingredients, ingredientsType };
   },
   reducer: (s, a) => {
-    return { possibleIngredients: mapVoxIngredientsToIngredients(a.possible) };
+    return {
+      possibleIngredients: mapVoxIngredientsToIngredients(a.ingredients),
+      possibleType: a.ingredientsType,
+    };
   },
 });
 
