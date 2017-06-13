@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 20:31:49
+ * @Last Modified time: 2017-06-13 20:39:32
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -329,6 +329,7 @@ export const gotVoxStatus = module.createAction({
       ready: undefined,
       type: a.status.jobType,
       quality: ((a.status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
+      quantity: (a.status.itemCount | 0),
       started: startTime.toISOString(),
       endin: ((endTime.valueOf() - startTime.valueOf()) / 1000),
       recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },

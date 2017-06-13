@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 23:41:05
+ * @Last Modified time: 2017-06-13 20:37:51
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -248,6 +248,7 @@ export const tools: ToolsStyles = {
   },
   button: {
     padding: '2px 0.5em',
+    height: opts.input.HEIGHT,
   },
 };
 
@@ -337,12 +338,13 @@ export const outputItems: OutputItemsStyles = {
     flex: '0 1 auto',
     display: 'flex',
     flexDirection: 'column',
+    maxHeight: opts.output.HEIGHT,
+    overflow: 'auto',
   },
   title: {
     flex: '0 0 auto',
     fontSize: '100%',
     borderBottom: opts.ui.BOTTOM_BORDER,
-    marginTop: '0.5em',
   },
   craftingTime: {
     float: 'right',

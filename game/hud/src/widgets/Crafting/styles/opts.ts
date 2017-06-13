@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 22:33:05
+ * @Last Modified time: 2017-06-13 20:35:18
  */
 
 /*
@@ -52,6 +52,9 @@ export const opts = {
     STATS_COLUMN_FONT_SIZE: '10px',
     STATS_COLUMN_SPACING: '2px',
     DROPDOWN_HEIGHT: '270px',
+  },
+  output: {
+    HEIGHT: '105px',
   },
   input: {
     HEIGHT: '24px',

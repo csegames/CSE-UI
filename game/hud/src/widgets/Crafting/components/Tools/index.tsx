@@ -6,14 +6,19 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 22:13:51
+ * @Last Modified time: 2017-06-13 20:14:35
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
 import { StyleSheet, css, merge, tools, ToolsStyles } from '../../styles';
-import { voxGetStatus } from '../../services/game/crafting';
+
+// Helpers
+import { slash } from '../../services/game/slash';
+
+import { setMessage } from '../../services/session/job';
+import { setCountdown } from '../../services/session/ui';
 
 import Label from '../Label';
 import Input from '../Input';
@@ -30,71 +35,187 @@ const select = (state: GlobalState, props: ToolsProps) : ToolsPropsRedux => {
 };
 
 export interface ToolsProps extends ToolsPropsRedux {
-  harvest: () => void;
-  harvestInfo: () => void;
-  nearby: (range: number) => void;
   style?: Partial<ToolsStyles>;
 }
 
-interface ToolsStatus {
+interface ToolsState {
   range: number;
   voxStatus: string;
+  durability: number;
+  points: number;
+  resources: number;
+  alloyId: string;
 }
 
-class Tools extends React.Component<ToolsProps, ToolsStatus> {
+interface MakeButton {
+  label: string;
+  click: () => void;
+  disabled?: boolean;
+}
+
+interface MakeInput {
+  get: () => string;
+  change: (value: string) => void;
+  size: number;
+  numeric?: boolean;
+  min?: number;
+  max?: number;
+}
+
+class Tools extends React.Component<ToolsProps, ToolsState> {
   constructor(props: ToolsProps) {
     super(props);
-    this.state = { range: 1000, voxStatus: undefined };
+    this.state = {
+      range: 1000,
+      voxStatus: undefined,
+      durability: 50,
+      points: 100,
+      resources: 1,
+      alloyId: undefined,
+    };
   }
   public render() {
     const ss = StyleSheet.create(merge({}, tools, this.props.style));
+
+    const makeButton = (args: MakeButton) => {
+      return (
+        <Button disabled={args.disabled} style={{ container: tools.button }} onClick={args.click}>
+          {args.label}
+        </Button>
+      );
+    };
+
+    const makeInput = (args: MakeInput) => {
+      return (
+        <Input size={args.size} numeric={args.numeric} min={args.min} max={args.max}
+          onChange={args.change} value={args.get()}/>
+      );
+    };
+
     return (
       <div className={'tools ' + css(ss.container)}>
         <div className={css(ss.section)}>
           <h1 className={css(ss.sectionHeading)}>Resources</h1>
+
           <div>
-            <Button style={{ container: tools.button }} onClick={() => this.props.nearby(this.state.range)}>
-              /cr nearby
-            </Button>
-            <Input size={4} onChange={this.setRange} value={this.state.range.toString()}
-              /> List nearby crafting resources.
+            { makeButton({
+              label: '/cr nearby',
+              click: () => this.slash('cr nearby ' + this.state.range, 'Check the System Tab!'),
+            })}
+            { makeInput({
+              get: () => this.state.range.toString(),
+              change: (value: string) => this.setState({ range: (value as any) | 0 }),
+              size: 4, numeric: true, min: 0, max: 1000,
+            })}
           </div>
+
           <div>
-            <Button style={{ container: tools.button }} onClick={this.props.harvestInfo}>
-              /harvestinfo
-              </Button>
-              List details about nearby resources.
+            { makeButton({
+              label: '/harvestinfo',
+              click: () => this.slash('harvestinfo', 'Check the System Tab!'),
+            })}
           </div>
+
           <div>
-            <Button style={{ container: tools.button }} disabled={this.props.countdown > 0} onClick={this.props.harvest}>
-              /harvest{ this.props.countdown ? ' [' + this.props.countdown + ']' : '' }
-            </Button>
+            { makeButton({
+              label: '/harvest' + (this.props.countdown ? ' [' + this.props.countdown + ']' : ''),
+              click: () => this.harvest,
+              disabled: this.props.countdown > 0,
+            })}
             Harvest nearby resources.
           </div>
         </div>
+
         <div className={css(ss.section)}>
           <h1 className={css(ss.sectionHeading)}>Admin Commands</h1>
-          <div>/cr vox create</div>
-          <div>/cr specific item-id quality% unit-count</div>
-          <div>/cr resources unit-count</div>
-          <div>/cr vox forcefinish</div>
-          <div>/cr specific alloy-id</div>
-          <div>/setequiptmentrepairpoints points</div>
-          <div>/setequiptmentdurability durability</div>
+
+          <div>
+            { makeButton({
+              label: '/cr vox create',
+              click: () => this.slash('cr vox create', 'Vox created'),
+            })}
+            { makeButton({
+              label: '/cr vox forcefinish',
+              click: () => this.slash('cr vox forcefinish', 'Forced vox to finish'),
+            })}
+          </div>
+
+          <div>
+            { makeButton({
+              label: '/cr resources',
+              click: () => this.slash('cr resources ' + this.state.resources, 'Check your inventory'),
+            })}
+            { makeInput({
+              get: () => this.state.resources.toString(),
+              change: (value: string) => this.setState({ resources: (value as any) | 0 }),
+              size: 2, numeric: true, min: 1, max: 20,
+            })}
+          </div>
+
+          <div>
+            { makeButton({
+              label: '/cr specific',
+              click: () => this.slash('cr specific ' + this.state.alloyId, 'Check your inventory'),
+            })}
+            { makeInput({
+              get: () => this.state.alloyId,
+              change: (value: string) => this.setState({ alloyId: value }),
+              size: 20,
+            })}
+          </div>
+
+          <div>
+            { makeButton({
+              label: '/setequipmentrepairpoints',
+              click: () => this.slash('setequipmentrepairpoints ' + this.state.points, 'Points set'),
+            })}
+            { makeInput({
+              get: () => this.state.points.toString(),
+              change: (value: string) => this.setState({ points: (value as any) | 0 }),
+              size: 4, numeric: true, min: 0, max: 100,
+            })}
+          </div>
+
+          <div>
+            { makeButton({
+              label: '/setequipmentdurability',
+              click: () => this.slash('setequipmentdurability ' + this.state.durability, 'Durability set'),
+            })}
+            { makeInput({
+              get: () => this.state.durability.toString(),
+              change: (value: string) => this.setState({ durability: (value as any) | 0 }),
+              size: 5, numeric: true, min: 0, max: 100,
+            })}
+          </div>
         </div>
         <VoxMessage/>
       </div>
     );
   }
-  private setRange = (value: string) => {
-    this.setState({ range: (value as any) | 0 });
-  }
-  private voxStatusTest = () => {
-    voxGetStatus().then((voxStatus: any) => {
-      this.setState({ voxStatus: JSON.stringify(voxStatus) });
-    }).catch(() => {
-      this.setState({ voxStatus: 'error fetching status' });
+
+  private slash(command: string, success: string, getAction?: () => any, errorAction?: () => any) {
+    const props = this.props;
+    slash(command, (response: any) => {
+      if (response.errors) {
+        if (errorAction) props.dispatch(errorAction());
+        props.dispatch(setMessage({ type: 'error', message: response.errors[0] }));
+      } else {
+        if (getAction) props.dispatch(getAction());
+        props.dispatch(setMessage({ type: 'success', message: success }));
+      }
     });
+  }
+
+  private harvest = () => {
+    this.slash('harvest', 'Check your Inventory!');
+    let countdown = 10;
+    const tick = () => {
+      this.props.dispatch(setCountdown(countdown));
+      if (countdown > 0) {
+        setTimeout(() => { countdown--; tick(); }, 1000);
+      }
+    };
+    tick();
   }
 }
 

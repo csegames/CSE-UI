@@ -6,20 +6,17 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 21:12:15
+ * @Last Modified time: 2017-06-13 21:31:03
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {events, client, jsKeyCodes, webAPI} from 'camelot-unchained';
+import {events, client, jsKeyCodes, webAPI, hasClientAPI } from 'camelot-unchained';
 
 // Types
 import { InventoryItem, Recipe, Template, SlashVoxStatus, Ingredient } from '../../services/types';
 import { VoxIngredient, VoxTemplate, VoxRecipe, VoxResponse } from '../../services/game/crafting';
 import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
-
-// Helpers
-import { slash } from '../../services/game/slash';
 
 // Actions
 import {
@@ -28,7 +25,7 @@ import {
   setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
 } from '../../services/session/job';
-import { setUIMode, setCountdown } from '../../services/session/ui';
+import { setUIMode } from '../../services/session/ui';
 import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
 
@@ -106,7 +103,7 @@ class App extends React.Component<AppProps,AppState> {
         break;
       case 'tools':
         toolsUI = (
-          <Tools harvest={this.harvest} harvestInfo={this.harvestInfo} nearby={this.nearby}/>
+          <Tools/>
         );
         break;
     }
@@ -188,6 +185,10 @@ class App extends React.Component<AppProps,AppState> {
       switch (status.jobState) {
         case 'Finished':
           props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now' }));
+          break;
+        case 'Running':
+          // Job in progress, work out how long left
+          this.waitFinished(status);
           break;
         default:
           props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
@@ -274,7 +275,10 @@ class App extends React.Component<AppProps,AppState> {
       }
     }
 
-    if (refresh || job !== props.job.possibleType) {
+    // Don't reload salvage list (which is huge) unless we really have to
+    // but other possible ingredients lists we should reload to make sure
+    // they are up to date [e.g. pick up output items]
+    if (refresh || job !== 'salvage' || job !== props.job.possibleType) {
       // only re-load possible ingredients if job type has changed, or we are doing a refresh
       props.dispatch(gotVoxPossibleIngredients([], 'loading'));
       voxGetPossibleIngredients()
@@ -289,21 +293,6 @@ class App extends React.Component<AppProps,AppState> {
       // otherwise just get recipes
       getRecipes();
     }
-  }
-
-  // Generic, issue a / command, deal with response
-  // being deprecated
-  private slash(command: string, success: string, getAction?: () => any, errorAction?: () => any) {
-    const props = this.props;
-    slash(command, (response: any) => {
-      if (response.errors) {
-        if (errorAction) props.dispatch(errorAction());
-        props.dispatch(setMessage({ type: 'error', message: response.errors[0] }));
-      } else {
-        if (getAction) props.dispatch(getAction());
-        props.dispatch(setMessage({ type: 'success', message: success }));
-      }
-    });
   }
 
   // Handle webAPI error
@@ -360,14 +349,21 @@ class App extends React.Component<AppProps,AppState> {
   private waitFinished = (status: any) => {
     const start = new Date(status.startTime);
     const end = new Date(start.valueOf() + status.totalCraftingTime * 1000);
-    let seconds = ((end.valueOf() - start.valueOf()) / 1000);
+    let seconds = (end.valueOf() - Date.now()) / 1000;
+    if (hasClientAPI()) {
+      const server = client.serverTime;
+      console.log('CLIENT TIME ' + Date.now());
+      console.log('SERVER TIME ' + Date.now());
+    }
     const props = this.props;
+    if (this.waitTimer) clearTimeout(this.waitTimer);
+    this.waitTimer = null;
     const tick = () => {
       if (seconds <= 0) {
         this.checkJobStatus();      // allow to finish this time
         return;
       }
-      props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + seconds + ' seconds.' }));
+      props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + (seconds | 0) + ' seconds.' }));
       seconds --;
       this.waitTimer = setTimeout(tick, 1000);
     };
@@ -485,25 +481,6 @@ class App extends React.Component<AppProps,AppState> {
         return removeIngredient(ingredient);
       },
     );
-  }
-
-  private nearby = (range: number) => {
-    this.slash('cr nearby ' + range, 'Check the System Tab!');
-  }
-
-  private harvest = () => {
-    this.slash('harvest', 'Check your Inventory!');
-    let countdown = 10;
-    const tick = () => {
-      this.props.dispatch(setCountdown(countdown));
-      if (countdown > 0) {
-        setTimeout(() => { countdown--; tick(); }, 1000);
-      }
-    };
-    tick();
-  }
-  private harvestInfo = () => {
-    this.slash('harvestdetails', 'Check the System Tab!');
   }
 }
 
