@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-02 18:21:30
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 12:02:49
+ * @Last Modified time: 2017-06-15 17:29:41
  */
 
 import 'isomorphic-fetch';
@@ -17,46 +17,58 @@ import { gql } from './gql';
 import { QUERIES } from './queryText';
 import { VoxIngredient, VoxPossibleIngredient, VoxTemplate, VoxStatus, VoxRecipe } from './queryTypes';
 
-const makeCraftingQuery = (name: string) => `query ${name} { crafting { ${QUERIES[name]} } }`;
+const ERRORS = {
+  NotFound: 'No vox nearby',
+  NotOwnedByPlayer: 'This vox is not owned by you',
+  UnrecognisedResponse: 'Unexpected response from the api server',
+  UnknownError: 'An unknown error occurred.  Check debug.log for details.',
+  IsNull: (key: string) => 'API server returned null for ' + key,
+  NotLoggedIn: 'Character not logged into game',
+};
 
 function runQuery(query: string, key: string) {
   return new Promise((resolve, reject) => {
-    gql({ query: makeCraftingQuery(query) }).then((data: any) => {
+    gql({ query }).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
       if (info) {
         resolve(info);
       } else {
-        reject();
+        if (data.crafting) {
+          reject({ reason: ERRORS.NotLoggedIn, data });
+        } else {
+          // No crafting key, at least we expected that!
+          reject({ reason: ERRORS.UnrecognisedResponse, data });
+        }
       }
+    })
+    .catch((error: any) => {
+      console.dir(error);
+      reject({ reason: ERRORS.UnknownError, error });
     });
   });
 }
 
-const VOX_STATES = {
-  NotFound: 'No vox nearby',
-  NotOwnedByPlayer: 'This vox is not owned by you',
-};
-
 // Retrieves the status of a nearby vox for the current character.
 export function voxGetStatus() {
   return new Promise((resolve, reject) => {
-    runQuery('QUERY_VOX_STATUS', 'voxStatus')
+    runQuery(QUERIES.QUERY_VOX_STATUS, 'voxStatus')
       .then((voxStatus: VoxStatus) => {
         if (voxStatus.voxState === 'Found') {
           resolve(voxStatus);
         } else {
-          reject(VOX_STATES[voxStatus.voxState] || voxStatus.voxState);
+          reject(ERRORS[voxStatus.voxState] || voxStatus.voxState);
         }
       })
-      .catch(() => {
-        reject(VOX_STATES['NotFound']);
+      .catch((error) => {
+        console.dir(error);
+        reject(error.reason);
       });
   });
 }
 
 export function voxGetPossibleIngredients() {
   return new Promise((resolve, reject) => {
-    runQuery('QUERY_POSSIBLE_INGREDIENTS', 'possibleIngredients')
+    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients')
       .then((possibleIngredients: VoxPossibleIngredient[]) => {
         resolve(possibleIngredients);
       })
@@ -68,7 +80,7 @@ export function voxGetPossibleIngredients() {
 
 export function voxGetTemplates() {
   return new Promise((resolve, reject) => {
-    runQuery('QUERY_TEMPLATES', 'templates')
+    runQuery(QUERIES.QUERY_TEMPLATES, 'templates')
       .then((templates: VoxTemplate[]) => {
         resolve(templates);
       })
@@ -81,7 +93,7 @@ export function voxGetTemplates() {
 export function voxGetRecipesFor(type: string) {
   const uType = type.toUpperCase();
   return new Promise((resolve, reject) => {
-    runQuery(`QUERY_${uType}_RECIPES`, type + 'Recipes')
+    runQuery(QUERIES[`QUERY_${uType}_RECIPES`], type + 'Recipes')
       .then((recipes: VoxRecipe[]) => {
         resolve(recipes);
       })

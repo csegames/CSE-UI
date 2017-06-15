@@ -6,288 +6,131 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:19:00
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 21:12:45
+ * @Last Modified time: 2017-06-15 13:04:06
  */
 
-const ITEM_STAT_SINGLE = `
-  {
-    quality
-    mass
-    encumbrance
-    agilityRequirement
-    dexterityRequirement
-    strengthRequirement
-    unitCount
-  }
-`;
+const FIELD_LISTS = {
+  ITEM: [
+    'givenName', 'name', 'id', 'shardID',
+  ],
+  RECIPE: [ 'id' ],
+  ITEM_DEF_REF: [
+    'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
+  ],
+  STATIC: [
+    'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
+  ],
+  STATS_ITEM: [
+    'quality', 'mass', 'encumbrance', 'unitCount',
+    'agilityRequirement', 'dexterityRequirement', 'strengthRequirement',
+  ],
+  STATS_DURABILITY: [
+    'maxRepairPoints', 'maxDurability', 'fractureThreshold', 'fractureChance',
+    'currentRepairPoints', 'currentDurability',
+  ],
+  VOX_STATUS: [
+    'voxState', 'jobType', 'jobState', 'startTime', 'totalCraftingTime', 'timeRemaining',
+    'givenName', 'itemCount', 'recipeID', 'endQuality', 'usedRepairPoints',
+  ],
+};
 
-const ALLOY_STAT_SINGLE = `
-  {
-    hardness
-    impactToughness
-    fractureChance
-    malleability
-    massPCF
-    density
-    meltingPoint
-    thermConductivity
-    slashingResistance
-    piercingResistance
-    crushingResistance
-    acidResistance
-    poisonResistance
-    diseaseResistance
-    earthResistance
-    waterResistance
-    fireResistance
-    airResistance
-    lightningResistance
-    frostResistance
-    lifeResistance
-    mindResistance
-    spiritResistance
-    radiantResistance
-    deathResistance
-    shadowResistance
-    chaosResistance
-    voidResistance
-    arcaneResistance
-    magicalResistance
-    hardnessFactor
-    strengthFactor
-    fractureFactor
-    massFactor
-    damageResistance
-  }
-`;
+const TYPES: any = {
+  possibleIngredients: FIELD_LISTS.ITEM,
+  staticDefinition: FIELD_LISTS.STATIC,
+  'stats.item': FIELD_LISTS.STATS_ITEM,
+  'stats.durability': FIELD_LISTS.STATS_DURABILITY,
+  ingredientItem: FIELD_LISTS.ITEM_DEF_REF,
+  'voxStatus.ingredients': FIELD_LISTS.ITEM,
+  ingredients: FIELD_LISTS.ITEM_DEF_REF,
+  template: FIELD_LISTS.ITEM_DEF_REF,
+  templates: FIELD_LISTS.ITEM_DEF_REF,
+  outputItem: FIELD_LISTS.ITEM_DEF_REF,
+  'voxStatus.outputItems': FIELD_LISTS.ITEM,
+  blockRecipes: FIELD_LISTS.RECIPE,
+  shapeRecipes: FIELD_LISTS.RECIPE,
+  refineRecipes: FIELD_LISTS.RECIPE,
+  grindRecipes: FIELD_LISTS.RECIPE,
+  purifyRecipes: FIELD_LISTS.RECIPE,
+  voxStatus: FIELD_LISTS.VOX_STATUS,
+};
 
-const SUBSTANCE_STAT_SINGLE = `
-  {
-    hardness
-    impactToughness
-    fractureChance
-    malleability
-    massPCF
-    density
-    meltingPoint
-    thermConductivity
-    slashingResistance
-    piercingResistance
-    crushingResistance
-    acidResistance
-    poisonResistance
-    diseaseResistance
-    earthResistance
-    waterResistance
-    fireResistance
-    airResistance
-    lightningResistance
-    frostResistance
-    lifeResistance
-    mindResistance
-    spiritResistance
-    radiantResistance
-    deathResistance
-    shadowResistance
-    chaosResistance
-    voidResistance
-    arcaneResistance
-    magicalResistance
-    hardnessFactor
-    strengthFactor
-    fractureFactor
-    massFactor
-  }
-`;
-
-const DURABILITY_STAT_SINGLE = `
-  {
-    maxRepairPoints
-    maxDurability
-    fractureThreshold
-    fractureChance
-    currentRepairPoints
-    currentDurability
-  }
-`;
-
-const WEAPON_STAT_SINGLE = `
-  {
-    piercingDamage
-    piercingBleed
-    piercingArmorPenetration
-    slashingDamage
-    slashingBleed
-    slashingArmorPenetration
-    crushingDamage
-    fallbackCrushingDamage
-    disruption
-    deflectionAmount
-    physicalProjectileSpeed
-    knockbackAmount
-    stability
-    falloffMinDistance
-    falloffMaxDistance
-    falloffReduction
-    deflectionRecovery
-    staminaCost
-    physicalPreparationTime
-    physicalRecoveryTime
-    range
-  }
-`;
-
-const BLOCK_STAT_SINGLE = `
-  {
-    compressiveStrength
-    shearStrength
-    tensileStrength
-    density
-    healthUnits
-    buildTimeUnits
-    unitMass
-  }
-`;
-
-const CONTAINER_STAT_SINGLE = `
-  {
-    maxItemCount
-    maxItemMass
-  }
-`;
-
-const SIEGE_ENGINE_STAT_SINGLE = `
-  {
-    health
-    yawSpeedDegPerSec
-    pitchSpeedDegPerSec
-  }
-`;
-
-const STATS = `
-  {
-    item ${ITEM_STAT_SINGLE}
-  }
-`;
-
-// makes the stats query too complex
-/*
-    alloy ${ALLOY_STAT_SINGLE}
-    substance ${SUBSTANCE_STAT_SINGLE}
-    durability ${DURABILITY_STAT_SINGLE}
-    weapon ${WEAPON_STAT_SINGLE}
-    block ${BLOCK_STAT_SINGLE}
-    container ${CONTAINER_STAT_SINGLE}
-    siegeEngine ${SIEGE_ENGINE_STAT_SINGLE}
-*/
-
-const GEAR_SLOT_SETS = `
-  {
-    gearSlots {
-      id
-      gearLayer {
-        id
-        armourStatCalculationType
-        gearLayerType
-      }
+const GetQueryPart = (name: string, def: any, parent: string, indent: string) => {
+  const query : string[] = [];
+  query.push(indent + name + ' {');
+  const isArray = Array.isArray(def);
+  const fields = typeof def === 'string' ? TYPES[def] : (
+    isArray ? def : ((parent && TYPES[parent + '.' + name]) || TYPES[name])
+  );
+  if (fields) fields.forEach((field: string) => query.push(indent + '  ' + field));
+  if (typeof def === 'object' && !isArray) {
+    for (const key in def) {
+      query.push(GetQueryPart(key, def[key], name, indent + '  '));
     }
   }
-`;
+  query.push(indent + '}');
+  return query.join('\n');
+};
 
-const ITEM_DEF_REF = `
-  {
-    id
-    iconUrl
-    name
-    description
-    isVox
-    itemType
+const GetQueryText = (name: string, def: any, indent: string = '') => {
+  const query : string[] = [];
+  query.push('query ' + name + ' {');
+  for (const key in def) {
+    const s = key as string;
+    query.push(GetQueryPart(key, def[key], null, indent + '  '));
   }
-`;
-//  gearSlotSets ${GEAR_SLOT_SETS}    // makes query too complex
+  query.push('}');
+  return query.join('\n');
+};
 
-const TEMPLATE = `{ id }`;
+const QUERY_VOX_STATUS = GetQueryText('VoxStatus', {
+  crafting: {
+    voxStatus: {
+      template: true,
+      ingredients: {
+        staticDefinition: true,
+        stats: { item: true, durability: true },
+      },
+      outputItems: {
+        staticDefinition: true,
+        stats: { item: true, durability: true },
+      },
+    },
+  },
+});
 
-const ITEM = `
-  {
-    givenName
-    name
-    id
-    shardID
-    stats ${STATS}
-    staticDefinition ${ITEM_DEF_REF}
-  }
-`;
+const QUERY_POSSIBLE_INGREDIENTS = GetQueryText('PossibleIngredients', {
+  crafting: {
+    possibleIngredients: {
+      staticDefinition: true,
+      stats: {
+        item: true,
+        durability: true,
+      },
+    },
+  },
+});
 
-const QUERY_VOX_STATUS = `
-  voxStatus {
-    voxState
-    jobType
-    jobState
-    startTime
-    totalCraftingTime
-    givenName
-    itemCount
-    recipeID
-    endQuality
-    usedRepairPoints
-    template ${TEMPLATE}
-    ingredients ${ITEM}
-    outputItems ${ITEM}
-  }
-`;
+const QUERY_PURIFY_RECIPES = GetQueryText('PurifyRecipes', {
+  crafting: { purifyRecipes: { outputItem: true, ingredientItem: true } },
+});
 
-const QUERY_POSSIBLE_INGREDIENTS = `
-  possibleIngredients ${ITEM}
-`;
+const QUERY_GRIND_RECIPES = GetQueryText('GrindRecipes', {
+  crafting: { grindRecipes: { outputItem: true, ingredientItem: true } },
+});
 
-const QUERY_PURIFY_RECIPES = `
-  purifyRecipes {
-    id
-    ingredientItem ${ITEM_DEF_REF}
-    outputItem ${ITEM_DEF_REF}
-  }
-`;
+const QUERY_REFINE_RECIPES = GetQueryText('RefineRecipes', {
+  crafting: { refineRecipes: { ingredientItem: true } },
+});
 
-const QUERY_GRIND_RECIPES = `
-  grindRecipes {
-    id
-    ingredientItem ${ITEM_DEF_REF}
-    outputItem ${ITEM_DEF_REF}
-  }
-`;
+const QUERY_SHAPE_RECIPES = GetQueryText('ShapeRecipes', {
+  crafting: { shapeRecipes: { outputItem: true, ingredients: true } },
+});
 
-const QUERY_REFINE_RECIPES = `
-  refineRecipes {
-    id
-    ingredientItem ${ITEM_DEF_REF}
-  }
-`;
+const QUERY_BLOCK_RECIPES = GetQueryText('BlockRecipes', {
+  crafting: { blockRecipes: { outputItem: true, ingredients: true } },
+});
 
-const QUERY_SHAPE_RECIPES = `
-  shapeRecipes {
-    id
-    outputItem ${ITEM_DEF_REF}
-    ingredients ${ITEM_DEF_REF}
-  }
-`;
-
-const QUERY_BLOCK_RECIPES = `
-  blockRecipes {
-    id
-    outputItem ${ITEM_DEF_REF}
-    ingredients ${ITEM_DEF_REF}
-  }
-`;
-
-const QUERY_TEMPLATES = `
-  templates {
-    id
-    name
-    iconUrl
-    description
-  }
-`;
+const QUERY_TEMPLATES = GetQueryText('Templates', { crafting: { templates: true } });
 
 export const QUERIES = {
   QUERY_VOX_STATUS,
