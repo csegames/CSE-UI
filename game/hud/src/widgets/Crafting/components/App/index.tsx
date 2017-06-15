@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-13 21:31:03
+ * @Last Modified time: 2017-06-15 13:56:46
  */
 
 import * as React from 'react';
@@ -347,9 +347,7 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private waitFinished = (status: any) => {
-    const start = new Date(status.startTime);
-    const end = new Date(start.valueOf() + status.totalCraftingTime * 1000);
-    let seconds = (end.valueOf() - Date.now()) / 1000;
+    let seconds = status.timeRemaining;
     if (hasClientAPI()) {
       const server = client.serverTime;
       console.log('CLIENT TIME ' + Date.now());
