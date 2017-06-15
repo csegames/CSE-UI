@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 07:29:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 21:20:59
+ * @Last Modified time: 2017-06-15 21:47:21
  */
 
 import * as React from 'react';
@@ -14,14 +14,14 @@ import { Ingredient, InventoryItem } from '../../services/types';
 import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../../styles';
 import Icon from '../Icon';
 
-export interface IngredientProps {
+export interface IngredientItemProps {
   ingredient: Ingredient;
   qty: number;
   total: number;
   style?: Partial<IngredientItemStyles>;
 }
 
-export const IngredientItem = (props: IngredientProps) => {
+export const IngredientItem = (props: IngredientItemProps) => {
   const ss = StyleSheet.create(merge({}, ingredientItem, props.style));
   const { id, name, stats } = props.ingredient;
   const pcnt = props.total && (props.qty / props.total * 100).toFixed(1);

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-13 20:37:51
+ * @Last Modified time: 2017-06-15 21:42:50
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -260,6 +260,8 @@ export interface PossibleIngredientsStyles {
   quantity: React.CSSProperties;
   quality: React.CSSProperties;
   weight: React.CSSProperties;
+  durability: React.CSSProperties;
+  points: React.CSSProperties;
   select: React.CSSProperties;
   select_impl: React.CSSProperties;
   select_list: React.CSSProperties;
@@ -304,6 +306,20 @@ export const possibleIngredients: PossibleIngredientsStyles = {
   },
   weight: {
     flex: '1 1 ' + opts.ingredients.WEIGHT_WIDTH,
+    textAlign: 'right',
+    fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
+    lineHeight: opts.input.HEIGHT,
+    marginLeft: opts.ingredients.STATS_COLUMN_SPACING,
+  },
+  durability: {
+    flex: '1 1 ' + opts.ingredients.DURABILITY_WIDTH,
+    textAlign: 'right',
+    fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
+    lineHeight: opts.input.HEIGHT,
+    marginLeft: opts.ingredients.STATS_COLUMN_SPACING,
+  },
+  points: {
+    flex: '1 1 ' + opts.ingredients.POINTS_WIDTH,
     textAlign: 'right',
     fontSize: opts.ingredients.STATS_COLUMN_FONT_SIZE,
     lineHeight: opts.input.HEIGHT,
@@ -484,6 +500,44 @@ export const ingredientItem: IngredientItemStyles = {
     color: 'rgba(255,255,255,0.3)',
   },
 };
+
+export interface RepairItemStyles {
+  container: React.CSSProperties;
+  inline: React.CSSProperties;
+  icon: React.CSSProperties;
+  name: React.CSSProperties;
+  durability: React.CSSProperties;
+  points: React.CSSProperties;
+}
+
+export const repairItem: RepairItemStyles = {
+  container: {
+    flex: '0 1 auto',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  inline: {
+    display: 'inline-block',
+  },
+  icon: {
+    flex: '0 0 ' + opts.ingredients.ICON_WIDTH,
+    border: opts.ingredients.ICON_BORDER,
+    height: opts.ingredients.ICON_WIDTH,
+    width: opts.ingredients.ICON_WIDTH,
+    margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
+  },
+  name: {
+    flex: '1 1 auto',
+    minWidth: '120px',
+  },
+  durability: {
+    flex: '1 1 auto',
+  },
+  points: {
+    flex: '1 1 auto',
+  },
+};
+
 
 export interface JobDetailsStyles {
   container: React.CSSProperties;

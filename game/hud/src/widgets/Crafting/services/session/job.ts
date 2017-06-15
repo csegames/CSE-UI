@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-13 20:39:32
+ * @Last Modified time: 2017-06-15 21:25:09
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -22,6 +22,7 @@ export interface JobState {
   type: string;                       // What type of crafting are we doing?
   started: string;                    // When last job started
   endin: number;                      // How long until it ends
+  timeRemaining: number;              // For running job, how long left
   recipe: Recipe;                     // Selected Recipe
   template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
@@ -42,6 +43,7 @@ export const initialState = () : JobState => {
     type: null,
     started: null,
     endin: null,
+    timeRemaining: 0,
     recipe: null,
     template: null,
     quality: undefined,
@@ -307,6 +309,10 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
           quality: item.quality,
           unitCount: item.unitCount,
           weight: item.mass,
+          durability: {
+            current: vis[i].stats.durability.currentDurability,
+            currentPoints: vis[i].stats.durability.currentRepairPoints,
+          },
         },
       });
     }
@@ -332,6 +338,7 @@ export const gotVoxStatus = module.createAction({
       quantity: (a.status.itemCount | 0),
       started: startTime.toISOString(),
       endin: ((endTime.valueOf() - startTime.valueOf()) / 1000),
+      timeRemaining: a.status.timeRemaining,
       recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
       name: a.status.givenName,
       template: status.template && { id: status.template.id, name: '' },
@@ -357,6 +364,10 @@ function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
           quality: item.quality,
           unitCount: item.unitCount,
           weight: item.mass,
+          durability: {
+            current: vis[i].stats.durability.currentDurability,
+            currentPoints: vis[i].stats.durability.currentRepairPoints,
+          },
         },
       });
     }

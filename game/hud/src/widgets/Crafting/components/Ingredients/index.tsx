@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 22:23:54
+ * @Last Modified time: 2017-06-15 21:48:51
  */
 
 import * as React from 'react';
@@ -14,6 +14,7 @@ import {connect} from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
 import { Ingredient } from '../../services/types';
 import IngredientItem from '../IngredientItem';
+import RepairItem from '../RepairItem';
 import PossibleIngredients from '../PossibleIngredients';
 import Select from '../Select';
 import Input from '../Input';
@@ -67,6 +68,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
     if (!props.job) return null;
     const ingredients = {};
+    const isRepair = this.props.job === 'repair';
 
     // Select inventory item
     const select = (ingredient: Ingredient) => {
@@ -89,7 +91,9 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     // show already loaded ingredients
     const loaded = props.ingredients.map((ingredient: Ingredient, i: number) => {
       ingredients[ingredient.id] = ingredient;
-      return <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} total={totalQty} />;
+      return isRepair
+        ? <RepairItem key={i} ingredient={ingredient} />
+        : <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} total={totalQty} />;
     });
     const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
     const ready = this.state.selectedIngredient && this.state.qty > 0

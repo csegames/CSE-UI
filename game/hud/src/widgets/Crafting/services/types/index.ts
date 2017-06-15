@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-04 22:57:04
+ * @Last Modified time: 2017-06-15 21:15:14
  */
 
 
@@ -25,6 +25,10 @@ export interface InventoryItem extends Item {
     quality: number;
     unitCount: number;
     weight: number;
+    durability: {
+      current: number;
+      currentPoints: number;
+    };
   };
 }
 

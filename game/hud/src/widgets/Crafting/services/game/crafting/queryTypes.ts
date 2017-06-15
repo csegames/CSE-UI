@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:20:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 22:21:41
+ * @Last Modified time: 2017-06-15 21:18:03
  */
 
 interface VoxStaticDefinition {
@@ -22,8 +22,18 @@ interface VoxStatsItem {
   unitCount: number;
 }
 
+interface VoxStatsDurability {
+  maxRepairPoints: number;
+  maxDurability: number;
+  fractureThreshold: number;
+  fractureChance: number;
+  currentRepairPoints: number;
+  currentDurability: number;
+}
+
 interface VoxItemStats {
   item: VoxStatsItem;
+  durability: VoxStatsDurability;
 }
 
 interface VoxItem {
@@ -51,6 +61,7 @@ interface VoxStatus {
   jobState: string;
   startTime: string;
   totalCraftingTime: number;
+  timeRemaining: number;
   givenName: string;
   itemCount: number;
   recipeID: string;

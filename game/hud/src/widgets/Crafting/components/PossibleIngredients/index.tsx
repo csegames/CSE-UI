@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 22:19:22
+ * @Last Modified time: 2017-06-15 21:54:38
  */
 
 import * as React from 'react';
@@ -20,6 +20,7 @@ import Icon from '../Icon';
 interface PossibleIngredientsReduxProps {
   dispatch?: (action: any) => void;
   possibleIngredients?: InventoryItem[];
+  jobType?: string;
   style?: Partial<PossibleIngredientsStyles>;
 }
 
@@ -30,7 +31,7 @@ const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIn
       possibleIngredients.push(ingredient);
     }
   });
-  return { possibleIngredients };
+  return { possibleIngredients, jobType: state.job.type };
 };
 
 export interface PossibleIngredientsProps extends PossibleIngredientsReduxProps {
@@ -44,13 +45,16 @@ export interface PossibleIngredientsState {}
 export class PossibleIngredients extends React.Component<PossibleIngredientsProps, PossibleIngredientsState> {
   public render() {
     const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
+    const isRepair = this.props.jobType === 'repair';
     const render = (item: InventoryItem) => item && (
       <div className={'possible-ingredient ' + css(ss.container)}>
         <Icon className={css(ss.span, ss.icon)} src={item.static.icon}/>
         <span className={css(ss.span, ss.name)}>{item.name}</span>
-        <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span>
-        <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span>
-        <span className={css(ss.span, ss.weight)}>{item.stats.weight}KG</span>
+        { isRepair || <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span> }
+        { isRepair || <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span> }
+        { isRepair || <span className={css(ss.span, ss.weight)}>{item.stats.weight}KG</span> }
+        { isRepair && <span className={css(ss.span, ss.durability)}>{item.stats.durability.current} dur</span> }
+        { isRepair && <span className={css(ss.span, ss.points)}>{item.stats.durability.currentPoints} pts</span> }
       </div>
     );
     return (
