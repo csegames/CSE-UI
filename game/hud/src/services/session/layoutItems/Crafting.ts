@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 14:48:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-14 21:03:07
+ * @Last Modified time: 2017-06-17 20:06:20
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Crafting from '../../../widgets/Crafting';
@@ -28,7 +28,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 8,
+    zOrder: 99,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

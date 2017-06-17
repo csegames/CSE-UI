@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 18:53:58
+ * @Last Modified time: 2017-06-17 20:17:19
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -157,9 +157,11 @@ export const craftingStyles: CraftingStyles = {
     userSelect: 'none',
   },
   minimized: {
+    width: '65%',
+    left: '35%',
     height: opts.ui.MINIMIZED_HEIGHT,
     marginTop: opts.ui.MINIMIZED_POSITION,
-    background: 'rgba(0,0,0,0.5)',
+    background: 'rgba(0,0,0,0.7)',
   },
   minimizedIcons: {
     position: 'absolute',
@@ -177,6 +179,7 @@ export const craftingStyles: CraftingStyles = {
     height: '16px',
     position: 'absolute',
     right: '40px',
+    top: 0,
   },
   loading: {
     flex: '1 1 auto',
@@ -859,7 +862,7 @@ export const progressBar: ProgressBarStyles = {
     height: '21px',
     position: 'absolute',
     bottom: 0,
-    opacity: 0.2,
+    opacity: 0.4,
     transition: 'all 1s linear',
   },
 };
