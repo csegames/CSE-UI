@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 11:25:31
+ * @Last Modified time: 2017-06-17 12:58:39
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -211,7 +211,7 @@ export const cancelJob = module.createAction({
     return { };
   },
   reducer: (s, a) => {
-    return {};
+    return { status: 'Configuring' };
   },
 });
 

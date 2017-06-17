@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:49:11
+ * @Last Modified time: 2017-06-17 13:01:48
  */
 
 import * as React from 'react';
@@ -407,7 +407,7 @@ class App extends React.Component<AppProps,AppState> {
     this.stopWaiting();
     this.api(cancelVoxJob, 'Job Cancelled', () => {
       this.checkJobStatus();
-      return clearJob();
+      return cancelJob();
     });
   }
 
