@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:49:16
+ * @Last Modified time: 2017-06-17 13:53:53
  */
 
 import * as React from 'react';
@@ -42,7 +42,6 @@ const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxPro
 const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
   const { message, total, remaining, status } = props;
-  console.log('status: ' + status + ' total: ' + total + ' current: ' + remaining);
   return (
     <div className={
         'vox-message '

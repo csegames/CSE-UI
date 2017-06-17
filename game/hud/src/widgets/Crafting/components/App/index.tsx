@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:47:33
+ * @Last Modified time: 2017-06-17 13:53:36
  */
 
 import * as React from 'react';
@@ -350,11 +350,6 @@ class App extends React.Component<AppProps,AppState> {
 
   private waitFinished = (status: any) => {
     let seconds = status.timeRemaining;
-    if (hasClientAPI()) {
-      const server = client.serverTime;
-      console.log('CLIENT TIME ' + Date.now());
-      console.log('SERVER TIME ' + Date.now());
-    }
     const props = this.props;
     if (this.waitTimer) clearTimeout(this.waitTimer);
     this.waitTimer = null;
