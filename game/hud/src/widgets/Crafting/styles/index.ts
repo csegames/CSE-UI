@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:42:50
+ * @Last Modified time: 2017-06-17 12:39:08
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -214,6 +214,7 @@ export const voxMessage: VoxMessageStyles = {
     margin: '0px',
     flex: '0 1 auto',
     fontSize: '14px',
+    position: 'relative',
   },
   success: {
     color: 'lime',
@@ -789,5 +790,20 @@ export const select: SelectStyles = {
     ':hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
+  },
+};
+
+export interface ProgressBarStyles {
+  container: React.CSSProperties;
+}
+
+export const progressBar: ProgressBarStyles = {
+  container: {
+    backgroundColor: 'lime',
+    height: '20px',
+    position: 'absolute',
+    bottom: 0,
+    opacity: 0.2,
+    transition: 'all 1s linear',
   },
 };

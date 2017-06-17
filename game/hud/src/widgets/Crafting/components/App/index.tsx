@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 13:56:46
+ * @Last Modified time: 2017-06-17 12:00:29
  */
 
 import * as React from 'react';
@@ -25,7 +25,7 @@ import {
   setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
 } from '../../services/session/job';
-import { setUIMode } from '../../services/session/ui';
+import { setUIMode, setRemaining } from '../../services/session/ui';
 import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
 
@@ -89,7 +89,7 @@ class App extends React.Component<AppProps,AppState> {
       case 'crafting':
         jobUI = this.props.job.loading
           ? <div className={css(ss.loading)}>Preparing for your performance ...</div>
-          : <JobDetails job={props.job}
+          : <JobDetails
               start={this.startJob}
               collect={this.collectJob}
               cancel={this.cancelJob}
@@ -362,6 +362,7 @@ class App extends React.Component<AppProps,AppState> {
         return;
       }
       props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + (seconds | 0) + ' seconds.' }));
+      props.dispatch(setRemaining(seconds));
       seconds --;
       this.waitTimer = setTimeout(tick, 1000);
     };

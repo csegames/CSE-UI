@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:25:09
+ * @Last Modified time: 2017-06-17 11:25:31
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -23,6 +23,7 @@ export interface JobState {
   started: string;                    // When last job started
   endin: number;                      // How long until it ends
   timeRemaining: number;              // For running job, how long left
+  totalCraftingTime: number;          // For running job, how long left
   recipe: Recipe;                     // Selected Recipe
   template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
@@ -44,6 +45,7 @@ export const initialState = () : JobState => {
     started: null,
     endin: null,
     timeRemaining: 0,
+    totalCraftingTime: 0,
     recipe: null,
     template: null,
     quality: undefined,
@@ -339,6 +341,7 @@ export const gotVoxStatus = module.createAction({
       started: startTime.toISOString(),
       endin: ((endTime.valueOf() - startTime.valueOf()) / 1000),
       timeRemaining: a.status.timeRemaining,
+      totalCraftingTime: a.status.totalCraftingTime,
       recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
       name: a.status.givenName,
       template: status.template && { id: status.template.id, name: '' },

@@ -6,10 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 18:26:39
+ * @Last Modified time: 2017-06-17 12:12:14
  */
 
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { GlobalState } from '../../services/session/reducer';
 import { DropDownSelect } from 'camelot-unchained';
 import { Ingredient } from '../../services/types';
 import { Item, Template, Recipe, InventoryItem } from '../../services/types';
@@ -29,8 +31,26 @@ import OutputItems from '../OutputItems';
 
 import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
-export interface JobDetailsProps {
-  job: JobState;
+interface JobDetailsReduxProps {
+  totalCraftingTime?: number;
+  remaining?: number;
+  outputItems?: InventoryItem[];
+  status?: string;
+  type?: string;
+}
+
+const select = (state: GlobalState, props: JobDetailsProps) : JobDetailsReduxProps => {
+  const job = state.job;
+  return {
+    remaining: state.ui.remaining,
+    totalCraftingTime: job.totalCraftingTime,
+    outputItems: job.outputItems,
+    status: job.status,
+    type: job.type,
+  };
+};
+
+export interface JobDetailsProps extends JobDetailsReduxProps {
   start: () => void;
   collect: () => void;
   cancel: () => void;
@@ -47,15 +67,14 @@ export interface JobDetailsProps {
 export const JobDetails = (props: JobDetailsProps) => {
   const ss = StyleSheet.create(merge({}, jobDetails, props.style));
   const buttonStyle = { container: jobDetails.button };
-  const job = props.job;
-  const type = job.type;
+  const { type, status, outputItems, totalCraftingTime, remaining } = props;
 
   // enabled state of buttons
-  const canStart = job.outputItems && job.outputItems.length && job.status === 'Configuring';
-  const canCollect = job.status === 'Finished';
-  const canCancel = job.status === 'Running';     // TODO: What is the actual status?
-  const canQuality = job.type === 'refine';
-  const canQuantity = job.type === 'make';
+  const canStart = outputItems && outputItems.length && status === 'Configuring';
+  const canCollect = status === 'Finished';
+  const canCancel = status === 'Running';     // TODO: What is the actual status?
+  const canQuality = type === 'refine';
+  const canQuantity = type === 'make';
 
   // If no vox type set yet...
   if (!type) {
@@ -91,4 +110,4 @@ export const JobDetails = (props: JobDetailsProps) => {
   );
 };
 
-export default JobDetails;
+export default connect(select)(JobDetails);

@@ -6,20 +6,22 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-17 20:46:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 22:41:20
+ * @Last Modified time: 2017-06-17 11:49:02
  */
 
 import { Module } from 'redux-typed-modules';
 
 export interface UIState {
   mode: string;
-  countdown: number;
+  countdown: number;      // harvest countdown
+  remaining: number;  // crafting timer
 }
 
 export const initialState = () : UIState => {
   return {
     mode: 'crafting',
     countdown: 0,
+    remaining: 0,
   };
 };
 
@@ -49,6 +51,16 @@ export const setCountdown = module.createAction({
   },
   reducer: (s, a) => {
     return { countdown: a.countdown };
+  },
+});
+
+export const setRemaining = module.createAction({
+  type: 'crafting/ui/craftingProgress',
+  action: (remaining: number) => {
+    return { remaining };
+  },
+  reducer: (s, a) => {
+    return { remaining: a.remaining };
   },
 });
 

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 22:40:15
+ * @Last Modified time: 2017-06-17 12:30:19
  */
 
 import * as React from 'react';
@@ -16,10 +16,14 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { Message } from '../../services/types';
+import ProgressBar from '../ProgressBar';
 
 export interface VoxMessageReduxProps {
   dispatch?: (action: any) => void;
   message?: Message;
+  total?: number;
+  remaining?: number;
+  status?: string;
   style?: Partial<VoxMessageStyles>;
 }
 
@@ -29,17 +33,29 @@ interface VoxMessageState {}
 const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxProps => {
   return {
     message: state.job.message,
+    status: state.job.status,
+    total: state.job.totalCraftingTime,
+    remaining: state.ui.remaining,
   };
 };
 
 const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
+  const { message, total, remaining, status } = props;
+  console.log('status: ' + status + ' total: ' + total + ' current: ' + remaining);
   return (
     <div className={
         'vox-message '
-         + (props.message ? css(ss.container, ss[props.message.type]) : css(ss.container))
+         + (message ? css(ss.container, ss[message.type]) : css(ss.container))
          }>
-      {props.message && props.message.message}
+      <div>{message && message.message}</div>
+      { status === 'Running' && remaining > 0
+        && <ProgressBar
+            total={total}
+            current={remaining}
+            color='lime'
+            />
+      }
     </div>
   );
 };
