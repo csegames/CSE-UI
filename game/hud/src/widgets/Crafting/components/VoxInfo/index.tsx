@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-16 18:52:22
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 22:56:23
+ * @Last Modified time: 2017-06-17 13:45:57
  */
 
 
@@ -40,7 +40,7 @@ const VoxInfo = (props: VoxInfoProps) => {
       <span className={css(ss.span)}>{props.job.status}</span>
       <span className={css(ss.span)}>{props.job.type}</span>
       <span className={css(ss.span)}>{props.job.started}</span>
-      <span className={css(ss.span)}>{props.job.endin}</span>
+      <span className={css(ss.span)}>{props.job.totalCraftingTime}</span>
       <span className={css(ss.span)}>{props.job.recipe && props.job.recipe.id}</span>
       <span className={css(ss.span)}>{props.job.template && props.job.template.id}</span>
       <span className={css(ss.span)}>{props.job.name}</span>

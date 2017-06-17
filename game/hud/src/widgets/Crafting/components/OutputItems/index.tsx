@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-10 22:11:42
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-13 20:20:42
+ * @Last Modified time: 2017-06-17 13:46:33
  */
 
 import * as React from 'react';
@@ -15,13 +15,14 @@ import Select from '../Select';
 import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { InventoryItem } from '../../services/types';
+import { craftingTimeToString } from '../../services/util';
 import Icon from '../Icon';
 
 import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../../styles';
 
 export interface OutputItemsReduxProps {
   dispatch?: (action: any) => void;
-  endin?: number;
+  totalCraftingTime?: number;
   outputItems?: InventoryItem[];
   style?: Partial<OutputItemsStyles>;
 }
@@ -31,7 +32,7 @@ interface OutputItemsState {}
 
 const select = (state: GlobalState, props: OutputItemsProps) : OutputItemsReduxProps => {
   return {
-    endin: state.job.endin,
+    totalCraftingTime: state.job.totalCraftingTime,
     outputItems: state.job.outputItems,
   };
 };
@@ -43,7 +44,9 @@ const OutputItems = (props: OutputItemsProps) => {
     <div className={'output-items ' + css(ss.container)}>
       <div className={'output-title ' + css(ss.title)}>
         <span>Output Info:-</span>
-        <span className={css(ss.craftingTime)}>Crafting Time: {props.endin} seconds</span>
+        <span className={css(ss.craftingTime)}>
+          Crafting Time: {craftingTimeToString(props.totalCraftingTime | 0, true)}
+        </span>
       </div>
       {
         props.outputItems.map((item: InventoryItem) => {
@@ -52,7 +55,9 @@ const OutputItems = (props: OutputItemsProps) => {
               <Icon className={css(ss.icon)} src={item.static.icon}/>
               <span className={css(ss.qty)}>{item.stats.unitCount}</span>
               <span className={css(ss.times)}>x</span>
-              <span className={css(ss.name)}>{item.name} @ {(item.stats.quality * 100) | 0}% {item.stats.weight}KG</span>
+              <span className={css(ss.name)}>
+                {item.name} @ {(item.stats.quality * 100) | 0}% {item.stats.weight}KG
+              </span>
             </div>
           );
         })

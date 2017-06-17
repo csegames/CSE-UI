@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 17:48:41
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:15:14
+ * @Last Modified time: 2017-06-17 13:47:41
  */
 
 
@@ -42,16 +42,4 @@ export interface Template extends Item {}
 export interface Message {
   type: string;
   message: string;
-}
-
-export interface SlashVoxStatus {
-  type: string;
-  status: string;
-  ready: boolean;
-  recipe: Recipe;
-  name: string;
-  started: string;
-  endin: string;
-  template: Template;
-  ingredients: Ingredient[];
 }

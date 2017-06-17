@@ -6,15 +6,16 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:01:48
+ * @Last Modified time: 2017-06-17 13:47:33
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {events, client, jsKeyCodes, webAPI, hasClientAPI } from 'camelot-unchained';
+import {craftingTimeToString} from '../../services/util';
 
 // Types
-import { InventoryItem, Recipe, Template, SlashVoxStatus, Ingredient } from '../../services/types';
+import { InventoryItem, Recipe, Template, Ingredient } from '../../services/types';
 import { VoxIngredient, VoxTemplate, VoxRecipe, VoxResponse } from '../../services/game/crafting';
 import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
 
@@ -362,7 +363,10 @@ class App extends React.Component<AppProps,AppState> {
         this.checkJobStatus();      // allow to finish this time
         return;
       }
-      props.dispatch(setMessage({ type: 'success', message: 'Job will finish in ' + (seconds | 0) + ' seconds.' }));
+      props.dispatch(setMessage({
+        type: 'success',
+        message: 'Job will finish in ' + craftingTimeToString(seconds | 0) + '.',
+      }));
       props.dispatch(setRemaining(seconds));
       seconds --;
       this.waitTimer = setTimeout(tick, 1000);

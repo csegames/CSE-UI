@@ -6,13 +6,13 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:58:39
+ * @Last Modified time: 2017-06-17 13:48:59
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
 import { slash, isClient } from '../game/slash';
-import { Ingredient, InventoryItem, Recipe, Template, Message, SlashVoxStatus } from '../types';
+import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
 import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
 
 export interface JobState {
@@ -21,7 +21,6 @@ export interface JobState {
   ready: boolean;                     // Crafting complete? (Item Ready)  -- TODO Do we need this?
   type: string;                       // What type of crafting are we doing?
   started: string;                    // When last job started
-  endin: number;                      // How long until it ends
   timeRemaining: number;              // For running job, how long left
   totalCraftingTime: number;          // For running job, how long left
   recipe: Recipe;                     // Selected Recipe
@@ -43,7 +42,6 @@ export const initialState = () : JobState => {
     loading: false,
     type: null,
     started: null,
-    endin: null,
     timeRemaining: 0,
     totalCraftingTime: 0,
     recipe: null,
@@ -339,7 +337,6 @@ export const gotVoxStatus = module.createAction({
       quality: ((a.status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
       quantity: (a.status.itemCount | 0),
       started: startTime.toISOString(),
-      endin: ((endTime.valueOf() - startTime.valueOf()) / 1000),
       timeRemaining: a.status.timeRemaining,
       totalCraftingTime: a.status.totalCraftingTime,
       recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
