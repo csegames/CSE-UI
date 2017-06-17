@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:39:08
+ * @Last Modified time: 2017-06-17 18:53:58
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -53,12 +53,43 @@ export interface CloseStyles {
   container: React.CSSProperties;
 }
 
-export const close = {
+export const close: CloseStyles = {
   container: {
     pointerEvents: 'auto',
     position: 'absolute',
+    top: 0,
     right: '4px',
     cursor: 'pointer',
+    height: '16px',
+    lineHeight: '11px',
+    fontSize: '22px',
+  },
+};
+
+export interface MinimizeStyles {
+  container: React.CSSProperties;
+  minimize: React.CSSProperties;
+  maximize: React.CSSProperties;
+}
+
+export const minimize: MinimizeStyles = {
+  container: {
+    pointerEvents: 'auto',
+    position: 'absolute',
+    top: 0,
+    right: '16px',
+    width: '16px',
+    height: '16px',
+    cursor: 'pointer',
+    opacity: 0.7,
+    backgroundPosition: 'center',
+    backgroundSize: '100%',
+  },
+  minimize: {
+    backgroundImage: 'url(images/crafting/minimize.png)',
+  },
+  maximize: {
+    backgroundImage: 'url(images/crafting/maximize.png)',
   },
 };
 
@@ -107,6 +138,9 @@ export const input = {
 export interface CraftingStyles {
   container: React.CSSProperties;
   loading: React.CSSProperties;
+  minimized: React.CSSProperties;
+  minimizedButton: React.CSSProperties;
+  minimizedIcons: React.CSSProperties;
 }
 
 export const craftingStyles: CraftingStyles = {
@@ -121,6 +155,28 @@ export const craftingStyles: CraftingStyles = {
     flexDirection: 'column',
     position: 'relative',
     userSelect: 'none',
+  },
+  minimized: {
+    height: opts.ui.MINIMIZED_HEIGHT,
+    marginTop: opts.ui.MINIMIZED_POSITION,
+    background: 'rgba(0,0,0,0.5)',
+  },
+  minimizedIcons: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '40px',
+    height: '17px',
+    margin: '2px',
+  },
+  minimizedButton: {
+    fontSize: '10px',
+    width: '30px',
+    display: 'inline-block',
+    margin: '2px',
+    height: '16px',
+    position: 'absolute',
+    right: '40px',
   },
   loading: {
     flex: '1 1 auto',
@@ -800,7 +856,7 @@ export interface ProgressBarStyles {
 export const progressBar: ProgressBarStyles = {
   container: {
     backgroundColor: 'lime',
-    height: '20px',
+    height: '21px',
     position: 'absolute',
     bottom: 0,
     opacity: 0.2,

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:53:36
+ * @Last Modified time: 2017-06-17 18:58:58
  */
 
 import * as React from 'react';
@@ -26,7 +26,7 @@ import {
   setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
 } from '../../services/session/job';
-import { setUIMode, setRemaining } from '../../services/session/ui';
+import { setUIMode, setRemaining, setMinimized } from '../../services/session/ui';
 import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
 
@@ -44,6 +44,9 @@ import JobDetails from '../JobDetails';
 import VoxInfo from '../VoxInfo';
 import Tools from '../Tools';
 import Close from '../Close';
+import VoxMessage from '../VoxMessage';
+import Minimize from '../Minimize';
+import Button from '../Button';
 
 // Styles
 import { StyleSheet, css, merge, craftingStyles, CraftingStyles } from '../../styles';
@@ -52,6 +55,7 @@ const select = (state: GlobalState): AppProps => {
   return {
     uiMode: state.ui.mode,
     job: state.job,
+    minimized: state.ui.minimized,
   };
 };
 
@@ -59,6 +63,7 @@ interface AppProps {
   dispatch?: (action: any) => void;
   job: JobState;
   uiMode: string;
+  minimized: boolean;
   style?: Partial<CraftingStyles>;
 }
 
@@ -79,9 +84,43 @@ class App extends React.Component<AppProps,AppState> {
 
   public render() {
     if (!this.state.visible) return null;
-    const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
     const props = this.props;
     const type = props.job && props.job.type;
+    const status = props.job && props.job.status;
+
+    const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
+    if (this.props.minimized) {
+      return (
+        <div ref='crafting' className={'app cu-window ' + css(ss.container, ss.minimized)}>
+          <VoxMessage/>
+          <div className={css(ss.minimizedIcons)}>
+            <Close onClose={this.close}/>
+            <Minimize onMinimize={this.minimize} minimized={this.props.minimized}/>
+          </div>
+          { props.job.status === 'Configuring' && props.job.outputItems && props.job.outputItems.length
+            && <Button
+                style={{ container: craftingStyles.minimizedButton }}
+                onClick={this.startJob}>
+                  Start
+                </Button>
+          }
+          { props.job.status === 'Running'
+            && <Button
+                style={{ container: craftingStyles.minimizedButton }}
+                onClick={this.cancelJob}>
+                  Cancel
+                </Button>
+          }
+          { props.job.status === 'Finished'
+            && <Button
+                style={{ container: craftingStyles.minimizedButton }}
+                onClick={this.collectJob}>
+                  Collect
+                </Button>
+          }
+        </div>
+      );
+    }
 
     let jobUI;
     let toolsUI;
@@ -111,7 +150,10 @@ class App extends React.Component<AppProps,AppState> {
 
     return (
       <div ref='crafting' className={'app cu-window ' + css(ss.container)}>
-        <Close onClose={this.close}/>
+        <div className={css(ss.minimizedIcons)}>
+          <Close onClose={this.close}/>
+          <Minimize onMinimize={this.minimize} minimized={this.props.minimized}/>
+        </div>
         <VoxInfo/>
         <JobType
           mode={this.props.uiMode}
@@ -161,6 +203,10 @@ class App extends React.Component<AppProps,AppState> {
   private close = () => {
     events.fire('hudnav--navigate', 'crafting');
     this.release();
+  }
+
+  private minimize = () => {
+    this.props.dispatch(setMinimized(!this.props.minimized));
   }
 
   private onKeyDown = (e: KeyboardEvent) => {

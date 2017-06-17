@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 20:16:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:21:53
+ * @Last Modified time: 2017-06-17 15:20:48
  */
 
 /*
@@ -21,6 +21,8 @@ export const opts = {
   ui: {
     WIDTH: '600px',
     HEIGHT: '450px',
+    MINIMIZED_HEIGHT: '21px',
+    MINIMIZED_POSITION: '0px',
     PADDING: '12px',
     BOTTOM_BORDER: '1px solid rgba(255,255,255,0.1)',
   },
