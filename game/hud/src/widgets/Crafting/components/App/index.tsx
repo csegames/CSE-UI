@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:00:29
+ * @Last Modified time: 2017-06-17 12:49:11
  */
 
 import * as React from 'react';
@@ -336,6 +336,7 @@ class App extends React.Component<AppProps,AppState> {
         case 'Finished':
           // Job finished immediately (often does)
           props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now.' }));
+          props.dispatch(setRemaining(0));
           break;
         case 'Running':
           // Job in progress, work out how long left
