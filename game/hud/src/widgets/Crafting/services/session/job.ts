@@ -261,19 +261,18 @@ export const gotVoxStatus = module.createAction({
   reducer: (s, a) => {
     const status = a.status;
     const startTime = new Date(status.startTime);
-    const endTime = new Date(startTime.valueOf() + (status.totalCraftingTime * 1000));
-    const ingredients: Ingredient[] = mapVoxIngredientsToIngredients(a.status.ingredients);
+    const ingredients: Ingredient[] = mapVoxIngredientsToIngredients(status.ingredients);
     return {
-      status: a.status.jobState,
+      status: status.jobState,
       ready: undefined,
-      type: a.status.jobType,
-      quality: ((a.status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
-      quantity: (a.status.itemCount | 0),
+      type: status.jobType,
+      quality: ((status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
+      quantity: (status.itemCount | 0),
       started: startTime.toISOString(),
-      timeRemaining: a.status.timeRemaining,
-      totalCraftingTime: a.status.totalCraftingTime,
-      recipe: a.status.recipeID && { id: a.status.recipeID, name: '' },
-      name: a.status.givenName,
+      timeRemaining: status.timeRemaining,
+      totalCraftingTime: status.totalCraftingTime,
+      recipe: status.recipeID && { id: status.recipeID, name: '' },
+      name: status.givenName,
       template: status.template && { id: status.template.id, name: '' },
       ingredients,
     };
