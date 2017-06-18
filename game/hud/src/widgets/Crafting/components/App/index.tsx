@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 12:53:23
+ * @Last Modified time: 2017-06-18 13:10:40
  */
 
 import * as React from 'react';
@@ -428,6 +428,7 @@ class App extends React.Component<AppProps,AppState> {
   private startJob = () => {
     const props = this.props;
     if (this.updating) return;
+    props.dispatch(setRemaining(this.props.job.totalCraftingTime));
     this.api(startVoxJob, 'Job Started', () => {
       this.checkJobStatus();      // pretend will take 5 seconds (debug mode)
       return startJob();
