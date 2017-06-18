@@ -100,9 +100,17 @@ export const addIngredient = module.createAction({
       // find and remove quantity used from possibleIngredients
       for (i = 0; i < possibleIngredients.length; i++) {
         const ingredient = possibleIngredients[i];
-        if (isSameIngredient(ingredient, a.ingredient)) {
+        if (ingredient.stats.unitCount >= qty && ingredient.id === a.ingredient.id) {
           ingredient.stats.unitCount -= qty;
+          console.log('CRAFTING: remove quantity from existing ingredient id=' + a.ingredient.id);
           break;
+        }
+      }
+      if (i === possibleIngredients.length) {
+        const ingredient = possibleIngredients[i];
+        if (ingredient.stats.unitCount >= qty && isSameIngredient(ingredient, a.ingredient)) {
+          ingredient.stats.unitCount -= qty;
+          console.log('CRAFTING: remove quantity from same ingredient id=' + a.ingredient.id);
         }
       }
       // Upadte existing ingredient
@@ -120,7 +128,10 @@ export const addIngredient = module.createAction({
           qty: a.qty,
         }));
       }
-      return { ingredients, possibleIngredients };
+      return {
+        ingredients: ingredients.sort((a, b) => a.name.localeCompare(b.name)),
+        possibleIngredients,
+      };
     }
     console.error('job:addIngredient missing modedTo ID');
     return {};
@@ -142,16 +153,23 @@ export const removeIngredient = module.createAction({
     // add back to possible ingredients
     for (i = 0; i < possibleIngredients.length; i++) {
       const ingredient = possibleIngredients[i];
-      if (isSameIngredient(ingredient, a.item)) {
+      if (a.item.id === ingredient.id) {
+        // Found the actual item being removed
+        // add back it's quantity
         ingredient.stats.unitCount += qty;
+        console.log('CRAFTING: Added removed ingredient quantity back to original item');
         break;
       }
     }
     if (i === possibleIngredients.length) {
       // or add new possible ingredient
       possibleIngredients.push(a.item);
+      console.log('CRAFTING: Added a new ingredient id=' + a.item.id);
     }
-    return { ingredients, possibleIngredients };
+    return {
+      ingredients,
+      possibleIngredients: possibleIngredients.sort((a, b) => a.name.localeCompare(b.name)),
+    };
   },
 });
 
