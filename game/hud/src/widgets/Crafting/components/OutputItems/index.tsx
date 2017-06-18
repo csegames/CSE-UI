@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-10 22:11:42
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:46:33
+ * @Last Modified time: 2017-06-18 12:10:47
  */
 
 import * as React from 'react';
@@ -45,7 +45,7 @@ const OutputItems = (props: OutputItemsProps) => {
       <div className={'output-title ' + css(ss.title)}>
         <span>Output Info:-</span>
         <span className={css(ss.craftingTime)}>
-          Crafting Time: {craftingTimeToString(props.totalCraftingTime | 0, true)}
+          Crafting Time: {craftingTimeToString(props.totalCraftingTime, true)}
         </span>
       </div>
       {

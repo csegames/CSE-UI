@@ -6,10 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-17 13:27:56
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:35:15
+ * @Last Modified time: 2017-06-18 12:11:23
  */
 
 export function craftingTimeToString(sec: number, short: boolean = false) {
+  if (sec <= 0) return 'instant';
+  if (sec < 1) return 'less than a second';
   let r = '';
   const hrs = (sec / 3600) | 0;
   sec -= hrs * 3600;
