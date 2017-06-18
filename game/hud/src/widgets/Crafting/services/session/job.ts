@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:48:59
+ * @Last Modified time: 2017-06-18 11:46:04
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -280,15 +280,11 @@ export const setTemplate = module.createAction({
 
 export const gotVoxPossibleIngredients = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients',
-  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => {
-    return { ingredients, ingredientsType };
-  },
-  reducer: (s, a) => {
-    return {
-      possibleIngredients: mapVoxIngredientsToIngredients(a.ingredients),
-      possibleType: a.ingredientsType,
-    };
-  },
+  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => ({ ingredients, ingredientsType }),
+  reducer: (s, a) => ({
+    possibleIngredients: mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
+    possibleType: a.ingredientsType,
+  }),
 });
 
 function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {

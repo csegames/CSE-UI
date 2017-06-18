@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-08 20:25:55
+ * @Last Modified time: 2017-06-18 11:38:16
  */
 
 import { Module } from 'redux-typed-modules';
@@ -36,11 +36,7 @@ export const initialState = () : RecipesState => {
 
 const module = new Module({
   initialState: initialState(),
-  actionExtraData: () => {
-    return {
-      when: new Date(),
-    };
-  },
+  actionExtraData: () => ({ when: new Date() }),
 });
 
 function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
@@ -57,9 +53,10 @@ function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
 
 export const gotVoxRecipes = module.createAction({
   type: 'crafting/recipes/got-recipes',
-  action: (recipeType: string, recipes: VoxRecipe[]) => {
-    return { recipeType, recipes: mapVoxRecipesToRecipes(recipes) };
-  },
+  action: (recipeType: string, recipes: VoxRecipe[]) => ({
+    recipeType,
+    recipes: mapVoxRecipesToRecipes(recipes),
+  }),
   reducer: (s, a) => {
     const type = a.recipeType;
     switch (type) {
@@ -68,84 +65,11 @@ export const gotVoxRecipes = module.createAction({
       case 'grind':
       case 'shape':
       case 'block':
-      return { [type]: a.recipes };
+        return { [type]: a.recipes.sort((a, b) => a.name.localeCompare(b.name)) };
     }
     console.error('CRAFTING: illegal recipe type ' + type);
     return {};
   },
 });
-
-// {depricated}
-/*
-export const gotRecipe = module.createAction({
-  type: 'crafting/recipes/got-recipes',
-  action: (recipeType: string, recipes: Recipe[]) => {
-    return { recipeType, recipes };
-  },
-  reducer: (s, a) => {
-    const type = a.recipeType;
-    switch (type) {
-      case 'purify':
-      case 'refine':
-      case 'grind':
-      case 'shape':
-      case 'block':
-      return { [type]: a.recipes };
-    }
-    console.error('CRAFTING: illegal recipe type ' + type);
-    return {};
-  },
-});
-*/
-
-// Recipes
-
-// {depricated}
-export const recipeTypes = [
-  'purify', 'refine', 'grind', 'shape', 'block',
-];
-
-// TESTING: Dummy Recipies
-
-// {depricated}
-const dummyRecipies = {
-  purify: [
-    { id: 1, name: 'Distill Water' },
-    { id: 2, name: 'Boil Water' },
-    { id: 3, name: 'Smelt Gold' },
-  ],
-  refine: [
-    { id: 1, name: 'Sieve Water' },
-    { id: 2, name: 'Sleuse Gold' },
-  ],
-  grind: [
-    { id: 1, name: 'Grind Salt' },
-    { id: 2, name: 'Grind Flour' },
-    { id: 3, name: 'Grind Stone' },
-  ],
-  block: [
-    { id: 1, name: 'Stone Block' },
-    { id: 2, name: 'Wood Block' },
-    { id: 3, name: 'Granite Block' },
-    { id: 4, name: 'Hardwood Block' },
-  ],
-};
-
-// {depricated}
-/*
-export function getRecipeFor(what: string, callback: (type: string, list: Recipe[]) => void) {
-  if (!isClient()) {
-    callback(what, dummyRecipies[what] || []);    // no cuAPI, simulation
-  } else {
-    slash('cr list ' + what + 'recipes', (response: any) => {
-      switch (response.type) {
-        case what:
-          callback(what, response.list);
-          break;
-      }
-    });
-  }
-}
-*/
 
 export default module.createReducer();

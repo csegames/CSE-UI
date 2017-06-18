@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 21:38:22
+ * @Last Modified time: 2017-06-18 11:33:00
  */
 
 import { Module } from 'redux-typed-modules';
@@ -28,21 +28,18 @@ export const initialState = () : TemplatesState => {
 
 const module = new Module({
   initialState: initialState(),
-  actionExtraData: () => {
-    return {
-      when: new Date(),
-    };
-  },
+  actionExtraData: () => ({ when: new Date() }),
 });
 
 export const gotVoxTemplates = module.createAction({
   type: 'crafting/job/got-vox-template',
-  action: (templates: VoxTemplate[]) => {
-    return { templates };
-  },
-  reducer: (s, a) => {
-    return { templates: a.templates };
-  },
+  action: (templates: VoxTemplate[]) => ({ templates }),
+  reducer: (s, a) => ({
+    templates: a.templates.map((template: VoxTemplate): Template => ({
+      id: template.id,
+      name: template.name,
+    })).sort((a, b) => a.name.localeCompare(b.name)),
+  }),
 });
 
 export default module.createReducer();
