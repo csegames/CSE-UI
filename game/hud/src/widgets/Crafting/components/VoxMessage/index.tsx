@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 13:53:53
+ * @Last Modified time: 2017-06-18 13:00:10
  */
 
 import * as React from 'react';
@@ -48,7 +48,7 @@ const VoxMessage = (props: VoxMessageProps) => {
          + (message ? css(ss.container, ss[message.type]) : css(ss.container))
          }>
       <div>{message && message.message}</div>
-      { status === 'Running' && remaining > 0
+      { status === 'Running'
         && <ProgressBar
             total={total}
             current={remaining}

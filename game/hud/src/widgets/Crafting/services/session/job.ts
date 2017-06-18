@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 11:46:04
+ * @Last Modified time: 2017-06-18 12:44:37
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
@@ -59,51 +59,31 @@ export const initialState = () : JobState => {
 
 const module = new Module({
   initialState: initialState(),
-  actionExtraData: () => {
-    return {
-      when: new Date(),
-    };
-  },
+  actionExtraData: () => ({ when: new Date() }),
 });
 
 export const setJobType = module.createAction({
   type: 'crafting/job/set-job',
-  action: (jobType: string) => {
-    return { jobType };
-  },
-  reducer: (s, a) => {
-    return { type: a.jobType };
-  },
+  action: (jobType: string) => ({ jobType }),
+  reducer: (s, a) => ({ type: a.jobType }),
 });
 
 export const setStatus = module.createAction({
   type: 'crafting/job/set-status',
-  action: (status: string) => {
-    return { status };
-  },
-  reducer: (s, a) => {
-    return { status: a.status };
-  },
+  action: (status: string) => ({ status }),
+  reducer: (s, a) => ({ status: a.status }),
 });
 
 export const setCount = module.createAction({
   type: 'crafting/job/set-count',
-  action: (count: number) => {
-    return { count };
-  },
-  reducer: (s, a) => {
-    return { count: a.count || 0 };
-  },
+  action: (count: number) => ({ count }),
+  reducer: (s, a) => ({ count: a.count || 0 }),
 });
 
 export const setLoading = module.createAction({
   type: 'crafting/job/set-loading',
-  action: (loading: boolean) => {
-    return { loading };
-  },
-  reducer: (s, a) => {
-    return { loading: a.loading };
-  },
+  action: (loading: boolean) => ({ loading }),
+  reducer: (s, a) => ({ loading: a.loading }),
 });
 
 export const addIngredient = module.createAction({
@@ -153,9 +133,7 @@ function isSameIngredient(a: Ingredient, b: Ingredient): boolean {
 
 export const removeIngredient = module.createAction({
   type: 'crafting/job/remove-ingredient',
-  action: (item: Ingredient) => {
-    return { item };
-  },
+  action: (item: Ingredient) => ({ item }),
   reducer: (s, a) => {
     const ingredients = s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id);
     const possibleIngredients = [ ...s.possibleIngredients ];
@@ -179,19 +157,13 @@ export const removeIngredient = module.createAction({
 
 export const startJob = module.createAction({
   type: 'crafting/job/start',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    return {};
-  },
+  action: () => ({}),
+  reducer: (s, a) => ({}),
 });
 
 export const clearJob = module.createAction({
   type: 'crafting/job/clear',
-  action: () => {
-    return {};
-  },
+  action: () => ({}),
   reducer: (s, a) => {
     // Clearing a job effectively resets the vox back to idle
     // but keep possible ingredients incase we use them again
@@ -205,77 +177,44 @@ export const clearJob = module.createAction({
 
 export const cancelJob = module.createAction({
   type: 'crafting/job/cancel',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    return { status: 'Configuring' };
-  },
+  action: () => ({}),
+  reducer: (s, a) => ({ status: 'Configuring' }),
 });
 
 export const collectJob = module.createAction({
   type: 'crafting/job/collect',
-  action: () => {
-    return { };
-  },
-  reducer: (s, a) => {
-    // collecting a job, if successful, also clears it
-    return Object.assign({}, initialState(), {
-      status: 'idle',
-      possibleIngredients: s.possibleIngredients,
-      possibleType: s.possibleType,
-    });
-  },
+  action: () => ({}),
+  reducer: (s, a) => ({}),
 });
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
-  action: (recipe: Recipe) => {
-    return { recipe };
-  },
-  reducer: (s, a) => {
-    return { recipe: a.recipe };
-  },
+  action: (recipe: Recipe) => ({ recipe }),
+  reducer: (s, a) => ({ recipe: a.recipe }),
 });
 
 export const setQuality = module.createAction({
   type: 'crafting/job/set-quality',
-  action: (quality: number) => {
-    return { quality };
-  },
-  reducer: (s, a) => {
-    return { quality: a.quality || 0 };
-  },
+  action: (quality: number) => ({ quality }),
+  reducer: (s, a) => ({ quality: a.quality || 0 }),
 });
 
 export const setName = module.createAction({
   type: 'crafting/job/set-name',
-  action: (name: string) => {
-    return { name };
-  },
-  reducer: (s, a) => {
-    return { name: a.name };
-  },
+  action: (name: string) => ({ name }),
+  reducer: (s, a) => ({ name: a.name }),
 });
 
 export const setMessage = module.createAction({
   type: 'crafting/job/set-message',
-  action: (message: Message) => {
-    return { message };
-  },
-  reducer: (s, a) => {
-    return { message: a.message };
-  },
+  action: (message: Message) => ({ message }),
+  reducer: (s, a) => ({ message: a.message }),
 });
 
 export const setTemplate = module.createAction({
   type: 'crafting/job/set-template',
-  action: (template: Template) => {
-    return { template };
-  },
-  reducer: (s, a) => {
-    return { template: a.template };
-  },
+  action: (template: Template) => ({ template }),
+  reducer: (s, a) => ({ template: a.template }),
 });
 
 export const gotVoxPossibleIngredients = module.createAction({
@@ -318,9 +257,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
 
 export const gotVoxStatus = module.createAction({
   type: 'crafting/job/got-vox-status',
-  action: (status: VoxStatus) => {
-    return { status };
-  },
+  action: (status: VoxStatus) => ({ status }),
   reducer: (s, a) => {
     const status = a.status;
     const startTime = new Date(status.startTime);
@@ -373,12 +310,8 @@ function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
 
 export const gotOutputItems = module.createAction({
   type: 'crafting/job/got-output-items',
-  action: (outputItems: VoxOutputItem[]) => {
-    return { outputItems };
-  },
-  reducer: (s, a) => {
-    return { outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) };
-  },
+  action: (outputItems: VoxOutputItem[]) => ({ outputItems }),
+  reducer: (s, a) => ({ outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) }),
 });
 
 export default module.createReducer();

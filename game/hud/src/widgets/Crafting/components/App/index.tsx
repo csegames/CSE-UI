@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 11:01:05
+ * @Last Modified time: 2017-06-18 12:53:23
  */
 
 import * as React from 'react';
@@ -402,7 +402,8 @@ class App extends React.Component<AppProps,AppState> {
     const tick = () => {
       if (seconds < 1) {
         props.dispatch(setMessage({ type: 'success', message: 'Just finishing up...' }));
-        setTimeout(this.checkJobStatus, seconds * 1000);
+        props.dispatch(setRemaining(0));
+        setTimeout(this.checkJobStatus, 1000);  // allow time for progress bar to animate (1s)
         return;
       }
       props.dispatch(setMessage({
@@ -434,8 +435,17 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private collectJob = () => {
+    const props = this.props;
+    const type = props.job.type;
     this.api(collectVoxJob, 'Job Collected', () => {
-      this.checkJobStatus();
+      // automatally start same job type
+      setVoxJob(type)
+        .then(() => {
+          props.dispatch(setJobType(type));
+          props.dispatch(setStatus('Configuring'));
+          props.dispatch(setLoading(false));
+          this.checkJobStatus();
+        });
       return collectJob();
     });
   }
