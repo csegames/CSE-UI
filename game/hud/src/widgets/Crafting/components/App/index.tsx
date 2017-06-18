@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 18:58:58
+ * @Last Modified time: 2017-06-18 11:01:05
  */
 
 import * as React from 'react';
@@ -400,8 +400,9 @@ class App extends React.Component<AppProps,AppState> {
     if (this.waitTimer) clearTimeout(this.waitTimer);
     this.waitTimer = null;
     const tick = () => {
-      if (seconds <= 0) {
-        this.checkJobStatus();      // allow to finish this time
+      if (seconds < 1) {
+        props.dispatch(setMessage({ type: 'success', message: 'Just finishing up...' }));
+        setTimeout(this.checkJobStatus, seconds * 1000);
         return;
       }
       props.dispatch(setMessage({
