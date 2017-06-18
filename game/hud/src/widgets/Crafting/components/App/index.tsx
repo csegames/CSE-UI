@@ -231,6 +231,7 @@ class App extends React.Component<AppProps,AppState> {
       props.dispatch(gotVoxStatus(status));
       switch (status.jobState) {
         case 'Finished':
+          this.stopWaiting();
           props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now' }));
           break;
         case 'Running':
@@ -238,6 +239,7 @@ class App extends React.Component<AppProps,AppState> {
           this.waitFinished(status);
           break;
         default:
+          this.stopWaiting();
           props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
           break;
       }
@@ -382,12 +384,17 @@ class App extends React.Component<AppProps,AppState> {
       switch (status.jobState) {
         case 'Finished':
           // Job finished immediately (often does)
+          this.stopWaiting();
           props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now.' }));
           props.dispatch(setRemaining(0));
           break;
         case 'Running':
           // Job in progress, work out how long left
           this.waitFinished(status);
+          break;
+        default:
+          // all other statuses, stop any running crafting timer
+          this.stopWaiting();
           break;
       }
       this.updating = false;
