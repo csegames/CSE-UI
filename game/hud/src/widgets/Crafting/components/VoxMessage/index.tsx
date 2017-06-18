@@ -49,11 +49,12 @@ const VoxMessage = (props: VoxMessageProps) => {
          }>
       <div>{message && message.message}</div>
       { status === 'Running'
-        && <ProgressBar
+        ? <ProgressBar
             total={total}
             current={remaining}
             color='lime'
             />
+        : undefined
       }
     </div>
   );

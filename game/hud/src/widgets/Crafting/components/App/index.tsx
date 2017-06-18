@@ -98,25 +98,28 @@ class App extends React.Component<AppProps,AppState> {
             <Minimize onMinimize={this.minimize} minimized={this.props.minimized}/>
           </div>
           { props.job.status === 'Configuring' && props.job.outputItems && props.job.outputItems.length
-            && <Button
+            ? <Button
                 style={{ container: craftingStyles.minimizedButton }}
                 onClick={this.startJob}>
                   Start
                 </Button>
+            : undefined
           }
           { props.job.status === 'Running'
-            && <Button
+            ? <Button
                 style={{ container: craftingStyles.minimizedButton }}
                 onClick={this.cancelJob}>
                   Cancel
                 </Button>
+            : undefined
           }
           { props.job.status === 'Finished'
-            && <Button
+            ? <Button
                 style={{ container: craftingStyles.minimizedButton }}
                 onClick={this.collectJob}>
                   Collect
                 </Button>
+            : undefined
           }
         </div>
       );
@@ -290,6 +293,19 @@ class App extends React.Component<AppProps,AppState> {
       });
   }
 
+  private loadPossibleIngredients = (job: string) => {
+    // only re-load possible ingredients if job type has changed, or we are doing a refresh
+    const props = this.props;
+    props.dispatch(gotVoxPossibleIngredients([], 'loading'));
+    voxGetPossibleIngredients()
+      .then((ingredients: VoxIngredient[]) => {
+        props.dispatch(gotVoxPossibleIngredients(ingredients, job));
+      })
+      .catch(() => {
+        props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
+      });
+  }
+
   private loadLists = (job: string, refresh?: boolean) => {
     const props = this.props;
 
@@ -329,19 +345,11 @@ class App extends React.Component<AppProps,AppState> {
     // they are up to date [e.g. pick up output items]
     if (refresh || job !== 'salvage' || job !== props.job.possibleType) {
       // only re-load possible ingredients if job type has changed, or we are doing a refresh
-      props.dispatch(gotVoxPossibleIngredients([], 'loading'));
-      voxGetPossibleIngredients()
-        .then((ingredients: VoxIngredient[]) => {
-          props.dispatch(gotVoxPossibleIngredients(ingredients, job));
-          getRecipes();
-        })
-        .catch(() => {
-          props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
-        });
-    } else {
-      // otherwise just get recipes
-      getRecipes();
+      this.loadPossibleIngredients(job);
     }
+
+    // and load recipes
+    getRecipes();
   }
 
   // Handle webAPI error
@@ -451,7 +459,7 @@ class App extends React.Component<AppProps,AppState> {
         .then(() => {
           props.dispatch(setJobType(type));
           props.dispatch(setStatus('Configuring'));
-          props.dispatch(setLoading(false));
+          this.loadPossibleIngredients(props.job.type);
           this.checkJobStatus();
         });
       return collectJob();
