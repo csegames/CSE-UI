@@ -102,9 +102,9 @@ export const JobDetails = (props: JobDetailsProps) => {
       <div className={'job-details ' + css(ss.buttons)}>
         <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
         <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
-        <Button style={buttonStyle} disabled={!canStart} onClick={() => props.start()}>Start</Button>
-        <Button style={buttonStyle} disabled={!canCollect} onClick={() => props.collect()}>Collect</Button>
-        <Button style={buttonStyle} disabled={!canCancel} onClick={() => props.cancel()}>Cancel</Button>
+        <Button style={buttonStyle} disabled={!canStart} onClick={props.start}>Start</Button>
+        <Button style={buttonStyle} disabled={!canCollect} onClick={props.collect}>Collect</Button>
+        <Button style={buttonStyle} disabled={!canCancel} onClick={props.cancel}>Cancel</Button>
       </div>
     </div>
   );

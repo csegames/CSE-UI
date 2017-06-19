@@ -82,95 +82,6 @@ class App extends React.Component<AppProps,AppState> {
     this.state = { visible: false };
   }
 
-  public render() {
-    if (!this.state.visible) return null;
-    const props = this.props;
-    const type = props.job && props.job.type;
-    const status = props.job && props.job.status;
-
-    const ss = StyleSheet.create(merge({}, craftingStyles, this.props.style));
-    if (this.props.minimized) {
-      return (
-        <div ref='crafting' className={'app cu-window ' + css(ss.container, ss.minimized)}>
-          <VoxMessage/>
-          <div className={css(ss.minimizedIcons)}>
-            <Close onClose={this.close}/>
-            <Minimize onMinimize={this.minimize} minimized={this.props.minimized}/>
-          </div>
-          { props.job.status === 'Configuring' && props.job.outputItems && props.job.outputItems.length
-            ? <Button
-                style={{ container: craftingStyles.minimizedButton }}
-                onClick={this.startJob}>
-                  Start
-                </Button>
-            : undefined
-          }
-          { props.job.status === 'Running'
-            ? <Button
-                style={{ container: craftingStyles.minimizedButton }}
-                onClick={this.cancelJob}>
-                  Cancel
-                </Button>
-            : undefined
-          }
-          { props.job.status === 'Finished'
-            ? <Button
-                style={{ container: craftingStyles.minimizedButton }}
-                onClick={this.collectJob}>
-                  Collect
-                </Button>
-            : undefined
-          }
-        </div>
-      );
-    }
-
-    let jobUI;
-    let toolsUI;
-
-    switch (this.props.uiMode) {
-      case 'crafting':
-        jobUI = this.props.job.loading
-          ? <div className={css(ss.loading)}>Preparing for your performance ...</div>
-          : <JobDetails
-              start={this.startJob}
-              collect={this.collectJob}
-              cancel={this.cancelJob}
-              setQuality={this.setQuality}
-              setCount={this.setCount}
-              setName={this.setName} setRecipe={this.setRecipe}
-              setTemplate={this.setTemplate}
-              addIngredient={this.addIngredient}
-              removeIngredient={this.removeIngredient}
-            />;
-        break;
-      case 'tools':
-        toolsUI = (
-          <Tools/>
-        );
-        break;
-    }
-
-    return (
-      <div ref='crafting' className={'app cu-window ' + css(ss.container)}>
-        <div className={css(ss.minimizedIcons)}>
-          <Close onClose={this.close}/>
-          <Minimize onMinimize={this.minimize} minimized={this.props.minimized}/>
-        </div>
-        <VoxInfo/>
-        <JobType
-          mode={this.props.uiMode}
-          changeType={this.selectType}
-          clearJob={this.clearJob}
-          refresh={this.refresh}
-          toggle={this.toggle}
-        />
-        {jobUI}
-        {toolsUI}
-      </div>
-    );
-  }
-
   public componentDidMount() {
 
     // Handle keyboard events (for ESC)
@@ -201,6 +112,99 @@ class App extends React.Component<AppProps,AppState> {
     // const div: HTMLDivElement = this.refs['crafting'] as HTMLDivElement;
     // div.removeEventListener('mouseenter', this.capture);
     // div.removeEventListener('mouseleave', this.release);
+  }
+
+  public render() {
+    if (!this.state.visible) return null;
+    const props = this.props;
+
+    const ss = StyleSheet.create(merge({}, craftingStyles, props.style));
+
+    if (props.minimized) {
+      return this.renderMinimizedUI(ss);
+    }
+
+    return (
+      <div ref='crafting' className={'app cu-window ' + css(ss.container)}>
+        <div className={css(ss.minimizedIcons)}>
+          <Close onClose={this.close}/>
+          <Minimize onMinimize={this.minimize} minimized={false}/>
+        </div>
+        <VoxInfo/>
+        <JobType
+          mode={props.uiMode}
+          changeType={this.selectType}
+          clearJob={this.clearJob}
+          refresh={this.refresh}
+          toggle={this.toggle}
+        />
+        {this.renderMainUI(ss)}
+      </div>
+    );
+  }
+
+  private renderMainUI = (ss: CraftingStyles) => {
+    const props = this.props;
+    switch (props.uiMode) {
+      case 'crafting':
+        if (props.job.loading) {
+          return <div className={css(ss.loading)}>Preparing for your performance ...</div>;
+        }
+        return (
+          <JobDetails
+            start={this.startJob}
+            collect={this.collectJob}
+            cancel={this.cancelJob}
+            setQuality={this.setQuality}
+            setCount={this.setCount}
+            setRecipe={this.setRecipe}
+            setName={this.setName} setTemplate={this.setTemplate}
+            addIngredient={this.addIngredient}
+            removeIngredient={this.removeIngredient}
+          />
+        );
+      case 'tools':
+        return <Tools/>;
+    }
+  }
+
+  private renderMinimizedUI = (ss: CraftingStyles) => {
+    const props = this.props;
+    // const type = props.job && props.job.type;
+    const { status, outputItems } = props.job;
+    return (
+      <div ref='crafting' className={'app cu-window ' + css(ss.container, ss.minimized)}>
+        <VoxMessage/>
+        <div className={css(ss.minimizedIcons)}>
+          <Close onClose={this.close}/>
+          <Minimize onMinimize={this.minimize} minimized={true}/>
+        </div>
+        { status === 'Configuring' && outputItems && outputItems.length
+          ? <Button
+              style={{ container: craftingStyles.minimizedButton }}
+              onClick={this.startJob}>
+                Start
+              </Button>
+          : undefined
+        }
+        { status === 'Running'
+          ? <Button
+              style={{ container: craftingStyles.minimizedButton }}
+              onClick={this.cancelJob}>
+                Cancel
+              </Button>
+          : undefined
+        }
+        { status === 'Finished'
+          ? <Button
+              style={{ container: craftingStyles.minimizedButton }}
+              onClick={this.collectJob}>
+                Collect
+              </Button>
+          : undefined
+        }
+      </div>
+    );
   }
 
   private close = () => {

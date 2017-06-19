@@ -25,7 +25,7 @@ import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsSt
 import { InventoryItem } from '../../services/types';
 
 export interface IngredientsPropsRedux {
-  dispatch?: any;
+  dispatch?: (action: any) => void;
   ingredients?: Ingredient[];
   havePossibleIngredients?: boolean;
   status?: string;
@@ -70,19 +70,6 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const ingredients = {};
     const isRepair = this.props.job === 'repair';
 
-    // Select inventory item
-    const select = (ingredient: Ingredient) => {
-      this.setState({ selectedIngredient: ingredient });
-    };
-
-    // Render inventory item
-    const render = (item: InventoryItem) => <div>{item.name}</div>;
-
-    // ingredient qty
-    const onChange = (value: string) => {
-      this.setState({ qty: ((value as any) | 0) || 1 });
-    };
-
     let totalQty = 0;
     props.ingredients.forEach((ingredient: Ingredient) => {
       totalQty += ingredient.qty;
@@ -95,10 +82,12 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         ? <RepairItem key={i} ingredient={ingredient} />
         : <IngredientItem key={i} ingredient={ingredient} qty={ingredient.qty} total={totalQty} />;
     });
+
     const last = props.ingredients.length && props.ingredients[props.ingredients.length - 1];
-    const ready = this.state.selectedIngredient && this.state.qty > 0
-                  && this.state.qty <= this.state.selectedIngredient.stats.unitCount;
-    const qtyok = this.state.selectedIngredient && this.state.selectedIngredient.stats.unitCount > 0;
+
+    const { selectedIngredient, qty } = this.state;
+    const ready = selectedIngredient && qty > 0 && qty <= selectedIngredient.stats.unitCount;
+    const qtyok = selectedIngredient && selectedIngredient.stats.unitCount > 0;
     const configuring = this.props.status === 'Configuring';
 
     let addIngredients;
@@ -112,11 +101,15 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       if (props.havePossibleIngredients) {
         addIngredients = (
           <div className={'add-ingredient ' + css(ss.addIngredient)}>
-            <PossibleIngredients disabled={!configuring} selectedItem={this.state.selectedIngredient} onSelect={select}/>
+            <PossibleIngredients
+              disabled={!configuring}
+              selectedItem={selectedIngredient}
+              onSelect={this.select}
+              />
             <span className={css(ss.times)}>x</span>
             <Input style={{input: ingredientsStyles.quantity}}
               numeric={true} min={1}
-              disabled={!qtyok} onChange={onChange} size={3} value={this.state.qty.toString()} />
+              disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
             <Button disabled={!ready} style={{container: ingredientsStyles.add}}
               onClick={this.addIngredient}>Add</Button>
           </div>
@@ -145,6 +138,16 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const { selectedIngredient, qty } = this.state;
     this.props.add(selectedIngredient, qty);
     this.setState({ selectedIngredient: null, qty: 1 });
+  }
+
+  private select = (ingredient: Ingredient) => {
+    // Select inventory item
+    this.setState({ selectedIngredient: ingredient });
+  }
+
+  private onChange = (value: string) => {
+    // ingredient qty
+    this.setState({ qty: ((value as any) | 0) || 1 });
   }
 }
 
