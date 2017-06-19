@@ -32,7 +32,7 @@ export interface JobState {
   outputItems: InventoryItem[];       // Output items of the current vox job
   name: string;                       // Item Name (make)
   message: Message;                   // Last message from vox
-  count: number;                      // Number of items to make
+  itemCount: number;                      // Number of items to make
 }
 
 export const initialState = () : JobState => {
@@ -53,7 +53,7 @@ export const initialState = () : JobState => {
     outputItems: [],
     name: null,
     message: null,
-    count: undefined,
+    itemCount: undefined,
   };
 };
 
@@ -102,7 +102,6 @@ export const addIngredient = module.createAction({
         const ingredient = possibleIngredients[i];
         if (ingredient.stats.unitCount >= qty && ingredient.id === a.ingredient.id) {
           ingredient.stats.unitCount -= qty;
-          console.log('CRAFTING: remove quantity from existing ingredient id=' + a.ingredient.id);
           break;
         }
       }
@@ -110,7 +109,6 @@ export const addIngredient = module.createAction({
         const ingredient = possibleIngredients[i];
         if (ingredient.stats.unitCount >= qty && isSameIngredient(ingredient, a.ingredient)) {
           ingredient.stats.unitCount -= qty;
-          console.log('CRAFTING: remove quantity from same ingredient id=' + a.ingredient.id);
         }
       }
       // Upadte existing ingredient
@@ -157,14 +155,12 @@ export const removeIngredient = module.createAction({
         // Found the actual item being removed
         // add back it's quantity
         ingredient.stats.unitCount += qty;
-        console.log('CRAFTING: Added removed ingredient quantity back to original item');
         break;
       }
     }
     if (i === possibleIngredients.length) {
       // or add new possible ingredient
       possibleIngredients.push(a.item);
-      console.log('CRAFTING: Added a new ingredient id=' + a.item.id);
     }
     return {
       ingredients,
@@ -285,7 +281,7 @@ export const gotVoxStatus = module.createAction({
       ready: undefined,
       type: status.jobType,
       quality: ((status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
-      quantity: (status.itemCount | 0),
+      itemCount: (status.itemCount | 0),
       started: startTime.toISOString(),
       timeRemaining: status.timeRemaining,
       totalCraftingTime: status.totalCraftingTime,

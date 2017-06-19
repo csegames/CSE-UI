@@ -45,7 +45,7 @@ const VoxInfo = (props: VoxInfoProps) => {
       <span className={css(ss.span)}>{props.job.template && props.job.template.id}</span>
       <span className={css(ss.span)}>{props.job.name}</span>
       <span className={css(ss.span)}>{props.job.quality}</span>
-      <span className={css(ss.span)}>{props.job.count}</span>
+      <span className={css(ss.span)}>{props.job.itemCount}</span>
     </div>
   );
 };

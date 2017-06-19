@@ -107,7 +107,8 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
               onSelect={this.select}
               />
             <span className={css(ss.times)}>x</span>
-            <Input style={{input: ingredientsStyles.quantity}}
+            <Input name='add-qty'
+              style={{input: ingredientsStyles.quantity}}
               numeric={true} min={1}
               disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
             <Button disabled={!ready} style={{container: ingredientsStyles.add}}

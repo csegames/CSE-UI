@@ -33,7 +33,7 @@ interface QuantityInputState {}
 
 const select = (state: GlobalState, props: QuantityInputProps) : QuantityInputReduxProps => {
   return {
-    count: state.job.count,
+    count: state.job.itemCount,
   };
 };
 
@@ -43,6 +43,7 @@ const QuantityInput = (props: QuantityInputProps) => {
     <div className={'quantity-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label style={{ container: quantityInput.label }}>Quantity</Label>
       <Input
+        name='quantity'
         style={{input: quantityInput.input}}
         disabled={props.disabled}
         numeric={true} min={1} max={20}

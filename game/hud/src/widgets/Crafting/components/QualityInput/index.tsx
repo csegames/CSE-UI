@@ -41,6 +41,7 @@ const QualityInput = (props: QualityInputProps) => {
     <div className={'quality-input ' + css(ss.container)} style={ props.disabled ? { opacity: 0.1 } : {} }>
       <Label style={{ container: qualityInput.label }}>Quality</Label>
       <Input
+        name='quality'
         numeric={true} min={1} max={100}
         style={{input: qualityInput.input}}
         disabled={props.disabled}

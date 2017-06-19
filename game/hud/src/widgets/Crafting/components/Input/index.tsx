@@ -15,6 +15,7 @@ import { client } from 'camelot-unchained';
 import { StyleSheet, css, merge, input, InputStyles } from '../../styles';
 
 interface InputProps {
+  name?: string;      // temp for debugging
   size?: number;
   value?: string;
   numeric?: boolean;
@@ -115,7 +116,6 @@ class Input extends React.Component<InputProps, InputState> {
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO extend to support validation
-    console.log('INPUT: onchange value is ' + e.target.value);
     this.setState({ changed: true, value: e.target.value });
   }
 
