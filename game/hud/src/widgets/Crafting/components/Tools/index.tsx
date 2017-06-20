@@ -79,7 +79,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
 
     const makeButton = (args: MakeButton) => {
       return (
-        <Button disabled={args.disabled} style={{ container: tools.button }} onClick={args.click}>
+        <Button disabled={args.disabled} style={{ button: tools.button }} onClick={args.click}>
           {args.label}
         </Button>
       );
@@ -93,7 +93,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     };
 
     return (
-      <div className={'tools ' + css(ss.container)}>
+      <div className={css(ss.tools)}>
         <div className={css(ss.section)}>
           <h1 className={css(ss.sectionHeading)}>Resources</h1>
 

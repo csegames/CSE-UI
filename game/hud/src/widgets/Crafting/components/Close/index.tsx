@@ -20,7 +20,7 @@ interface CloseProps {
 const Close = (props: CloseProps) => {
   const ss = StyleSheet.create(merge({}, close, props.style));
   return (
-    <span className={'close cu-window-close ' + css(ss.container)} onClick={props.onClose}></span>
+    <span className={'cu-window-close ' + css(ss.close)} onClick={props.onClose}></span>
   );
 };
 

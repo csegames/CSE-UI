@@ -46,7 +46,7 @@ class Select extends React.Component<SelectProps, SelectState> {
     if (this.props.items.length === 0) {
       // No items to display
       return (
-        <div className={'select ' + css(ss.container)}>
+        <div className={css(ss.select)}>
           <div className={css(ss.impl)}>
             <div className={css(ss.active)}>
               {this.props.renderActiveItem(null)}
@@ -61,7 +61,7 @@ class Select extends React.Component<SelectProps, SelectState> {
     // if selectedItem is undefined or null, we get -1 which is exactly what we want
     const selectedIndex = this.props.items.indexOf(this.props.selectedItem);
     return(
-      <div className={css(ss.container)}>
+      <div className={css(ss.select)}>
         <div className={css(ss.impl)} style={this.state.showList ? { zIndex: '1000' } : {}}>
           <div
             className={this.state.showList ? css(ss.outside) : css(ss.outside, ss.outsideHidden)}

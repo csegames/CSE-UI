@@ -18,43 +18,25 @@ import opts from './opts';
  */
 
 export interface ButtonStyles {
-  container: React.CSSProperties;
-  inherited: React.CSSProperties;
+  button: React.CSSProperties;
 }
 
-export const button = {
-  container: {
+export const button: ButtonStyles = {
+  button: {
     pointerEvents: 'auto',
     marginRight: opts.SPACE_BETWEEN_FIELDS,
     fontSize: opts.buttons.FONT_SIZE,
     minWidth: opts.buttons.MIN_WIDTH,
     padding: 0,
   },
-  /*
-  inherited: {
-    // don't actually use these atm, they are inherited from #hud button CSS styles
-    // just added them here for future reference.
-    display: 'inline-block',
-    margin: '5px 5px 0px 0px',
-    border: '1px solid #4b4642',
-    color: '#756c67',
-    background: 'linear-gradient(to top, black, #2C2C2C)',
-    boxShadow: 'inset black 0px 0px 20px',
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    position: 'relative',
-    '-webkit-filter': 'brightness(0.8)',
-    transition: 'all 0.2s ease-in-out',
-  },
-  */
 };
 
 export interface CloseStyles {
-  container: React.CSSProperties;
+  close: React.CSSProperties;
 }
 
 export const close: CloseStyles = {
-  container: {
+  close: {
     pointerEvents: 'auto',
     position: 'absolute',
     top: 0,
@@ -67,13 +49,13 @@ export const close: CloseStyles = {
 };
 
 export interface MinimizeStyles {
-  container: React.CSSProperties;
   minimize: React.CSSProperties;
-  maximize: React.CSSProperties;
+  minimized: React.CSSProperties;
+  maximized: React.CSSProperties;
 }
 
 export const minimize: MinimizeStyles = {
-  container: {
+  minimize: {
     pointerEvents: 'auto',
     position: 'absolute',
     top: 0,
@@ -85,26 +67,26 @@ export const minimize: MinimizeStyles = {
     backgroundPosition: 'center',
     backgroundSize: '100%',
   },
-  minimize: {
+  minimized: {
     backgroundImage: 'url(images/crafting/minimize.png)',
   },
-  maximize: {
+  maximized: {
     backgroundImage: 'url(images/crafting/maximize.png)',
   },
 };
 
 export interface InputStyles {
-  container: React.CSSProperties;
   input: React.CSSProperties;
+  field: React.CSSProperties;
   adjuster: React.CSSProperties;
   button: React.CSSProperties;
 }
 
-export const input = {
-  container: {
+export const input: InputStyles = {
+  input: {
     display: 'inline-flex',
   },
-  input: {
+  field: {
     pointerEvents: 'auto',
     marginRight: opts.SPACE_BETWEEN_FIELDS,
     width: 'auto',    /* TODO: WTF IS THE GAME CLIENT PLAYING AT */
@@ -135,16 +117,16 @@ export const input = {
  * Component Styles: Styles for specific components
  */
 
-export interface CraftingStyles {
-  container: React.CSSProperties;
+export interface AppStyles {
+  app: React.CSSProperties;
   loading: React.CSSProperties;
   minimized: React.CSSProperties;
   minimizedButton: React.CSSProperties;
   minimizedIcons: React.CSSProperties;
 }
 
-export const craftingStyles: CraftingStyles = {
-  container: {              // main UI window (App)
+export const app: AppStyles = {
+  app: {              // main UI window (App)
     pointerEvents: 'auto',
     backgroundImage: 'url(images/crafting/crafting-bg.png)',
     color: 'white',
@@ -189,11 +171,11 @@ export const craftingStyles: CraftingStyles = {
 };
 
 export interface LabelStyles {
-  container: React.CSSProperties;
+  label: React.CSSProperties;
 }
 
 export const labelStyles: LabelStyles = { // A label (Label)
-  container: {
+  label: {
     cursor: 'default',
     display: 'inline-block',
     flex: '0 0 auto',
@@ -202,12 +184,12 @@ export const labelStyles: LabelStyles = { // A label (Label)
 };
 
 export interface VoxInfoStyles {
-  container: React.CSSProperties;
+  voxInfo: React.CSSProperties;
   span: React.CSSProperties;
 }
 
 export const voxInfo: VoxInfoStyles = {
-  container: {
+  voxInfo: {
     fontSize: '8px',
     color: 'silver',
     margin: '0 ' + opts.ui.PADDING,
@@ -221,7 +203,7 @@ export const voxInfo: VoxInfoStyles = {
 };
 
 export interface JobTypeStyles {
-  container: React.CSSProperties;
+  jobType: React.CSSProperties;
   jobButtons: React.CSSProperties;
   button: React.CSSProperties;
   buttonSelected: React.CSSProperties;
@@ -231,7 +213,7 @@ export interface JobTypeStyles {
 }
 
 export const jobType: JobTypeStyles = {
-  container: {
+  jobType: {
     flex: '0 1 auto',
     margin: opts.ui.PADDING,
     marginBottom: 0,
@@ -262,14 +244,14 @@ export const jobType: JobTypeStyles = {
 };
 
 export interface VoxMessageStyles {
-  container: React.CSSProperties;
+  voxMessage: React.CSSProperties;
   success: React.CSSProperties;
   error: React.CSSProperties;
   none: React.CSSProperties;
 }
 
 export const voxMessage: VoxMessageStyles = {
-  container: {
+  voxMessage: {
     margin: '0px',
     flex: '0 1 auto',
     fontSize: '14px',
@@ -286,14 +268,14 @@ export const voxMessage: VoxMessageStyles = {
 };
 
 export interface ToolsStyles {
-  container: React.CSSProperties;
+  tools: React.CSSProperties;
   section: React.CSSProperties;
   sectionHeading: React.CSSProperties;
   button: React.CSSProperties;
 }
 
 export const tools: ToolsStyles = {
-  container: {
+  tools: {
     flex: '1 1 auto',
     lineHeight: '100%',
     padding: '0 1em',
@@ -313,7 +295,7 @@ export const tools: ToolsStyles = {
 };
 
 export interface PossibleIngredientsStyles {
-  container: React.CSSProperties;
+  possibleIngredients: React.CSSProperties;
   span: React.CSSProperties;
   icon: React.CSSProperties;
   name: React.CSSProperties;
@@ -328,7 +310,7 @@ export interface PossibleIngredientsStyles {
 }
 
 export const possibleIngredients: PossibleIngredientsStyles = {
-  container: {
+  possibleIngredients: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -399,7 +381,7 @@ export const possibleIngredients: PossibleIngredientsStyles = {
 };
 
 export interface OutputItemsStyles {
-  container: React.CSSProperties;
+  outputItems: React.CSSProperties;
   title: React.CSSProperties;
   craftingTime: React.CSSProperties;
   item: React.CSSProperties;
@@ -410,7 +392,7 @@ export interface OutputItemsStyles {
 }
 
 export const outputItems: OutputItemsStyles = {
-  container: {
+  outputItems: {
     flex: '0 1 auto',
     display: 'flex',
     flexDirection: 'column',
@@ -454,7 +436,7 @@ export const outputItems: OutputItemsStyles = {
 };
 
 export interface IngredientsStyles {
-  container: React.CSSProperties;
+  ingredients: React.CSSProperties;
   title: React.CSSProperties;
 
   loadedIngredients: React.CSSProperties;
@@ -467,7 +449,7 @@ export interface IngredientsStyles {
 }
 
 export const ingredients: IngredientsStyles = {
-  container: {
+  ingredients: {
     flex: '1 1 auto',
     display: 'flex',
     flexDirection: 'column',
@@ -515,7 +497,7 @@ export const ingredients: IngredientsStyles = {
 };
 
 export interface IngredientItemStyles {
-  container: React.CSSProperties;
+  ingredientItem: React.CSSProperties;
   inline: React.CSSProperties;
   icon: React.CSSProperties;
   qty: React.CSSProperties;
@@ -525,7 +507,7 @@ export interface IngredientItemStyles {
 }
 
 export const ingredientItem: IngredientItemStyles = {
-  container: {
+  ingredientItem: {
     flex: '0 1 auto',
     display: 'flex',
     flexDirection: 'row',
@@ -562,7 +544,7 @@ export const ingredientItem: IngredientItemStyles = {
 };
 
 export interface RepairItemStyles {
-  container: React.CSSProperties;
+  repairItem: React.CSSProperties;
   inline: React.CSSProperties;
   icon: React.CSSProperties;
   name: React.CSSProperties;
@@ -571,7 +553,7 @@ export interface RepairItemStyles {
 }
 
 export const repairItem: RepairItemStyles = {
-  container: {
+  repairItem: {
     flex: '0 1 auto',
     display: 'flex',
     flexDirection: 'row',
@@ -600,7 +582,7 @@ export const repairItem: RepairItemStyles = {
 
 
 export interface JobDetailsStyles {
-  container: React.CSSProperties;
+  jobDetails: React.CSSProperties;
   properties: React.CSSProperties;
   input: React.CSSProperties;
   buttons: React.CSSProperties;
@@ -608,7 +590,7 @@ export interface JobDetailsStyles {
 }
 
 export const jobDetails: JobDetailsStyles = {
-  container: {
+  jobDetails: {
     flex: '1 1 auto',
     margin: opts.ui.PADDING,
     display: 'flex',
@@ -638,13 +620,13 @@ export const jobDetails: JobDetailsStyles = {
 
 
 export interface QualityInputStyles {
-  container: React.CSSProperties;
+  qualityInput: React.CSSProperties;
   input: React.CSSProperties;
   label: React.CSSProperties;
 }
 
 export const qualityInput: QualityInputStyles = {
-  container: {
+  qualityInput: {
     height: opts.input.HEIGHT,
     display: 'flex',
     flexDirection: 'row',
@@ -659,13 +641,13 @@ export const qualityInput: QualityInputStyles = {
 };
 
 export interface QuantityInputStyles {
-  container: React.CSSProperties;
+  quantityInput: React.CSSProperties;
   input: React.CSSProperties;
   label: React.CSSProperties;
 }
 
 export const quantityInput: QuantityInputStyles = {
-  container: {
+  quantityInput: {
     height: opts.input.HEIGHT,
     display: 'flex',
     flexDirection: 'row',
@@ -680,12 +662,12 @@ export const quantityInput: QuantityInputStyles = {
 };
 
 export interface NameInputStyles {
-  container: React.CSSProperties;
+  nameInput: React.CSSProperties;
   label: React.CSSProperties;
 }
 
 export const nameInput: NameInputStyles = {
-  container: {
+  nameInput: {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: opts.properties.LINE_SPACING,
@@ -696,7 +678,7 @@ export const nameInput: NameInputStyles = {
 };
 
 export interface RecipeSelectStyles {
-  container: React.CSSProperties;
+  recipeSelect: React.CSSProperties;
   label: React.CSSProperties;
   select: React.CSSProperties;
   select_impl: React.CSSProperties;
@@ -704,7 +686,7 @@ export interface RecipeSelectStyles {
 }
 
 export const recipeSelect: RecipeSelectStyles = {
-  container: {
+  recipeSelect: {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: opts.properties.LINE_SPACING,
@@ -726,7 +708,7 @@ export const recipeSelect: RecipeSelectStyles = {
 };
 
 export interface TemplateSelectStyles {
-  container: React.CSSProperties;
+  templateSelect: React.CSSProperties;
   label: React.CSSProperties;
   select: React.CSSProperties;
   select_impl: React.CSSProperties;
@@ -734,7 +716,7 @@ export interface TemplateSelectStyles {
 }
 
 export const templateSelect: TemplateSelectStyles = {
-  container: {
+  templateSelect: {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: opts.properties.LINE_SPACING,
@@ -756,7 +738,7 @@ export const templateSelect: TemplateSelectStyles = {
 };
 
 export interface SelectStyles {
-  container: React.CSSProperties;
+  select: React.CSSProperties;
   impl: React.CSSProperties;
   outside: React.CSSProperties;
   outsideHidden: React.CSSProperties;
@@ -769,7 +751,7 @@ export interface SelectStyles {
 }
 
 export const select: SelectStyles = {
-  container: {
+  select: {
     display: 'inline-block',
     minWidth: '200px',
   },
@@ -853,11 +835,11 @@ export const select: SelectStyles = {
 };
 
 export interface ProgressBarStyles {
-  container: React.CSSProperties;
+  progressBar: React.CSSProperties;
 }
 
 export const progressBar: ProgressBarStyles = {
-  container: {
+  progressBar: {
     backgroundColor: 'lime',
     height: '21px',
     position: 'absolute',

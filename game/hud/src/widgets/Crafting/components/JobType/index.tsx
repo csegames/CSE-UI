@@ -45,7 +45,7 @@ export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
   const job = props.jobType;
   const button = (type: string) => {
-      const style = { container: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
+      const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
       return (
         <Button style={style}
           disabled={job && job !== type}
@@ -67,7 +67,7 @@ export const JobType = (props: JobTypeProps) => {
           {button('make')}
           {button('repair')}
           {button('salvage')}
-          <Button style={{container: jobType.refresh}} onClick={() => props.refresh()}>
+          <Button style={{button: jobType.refresh}} onClick={() => props.refresh()}>
             <i className='fa fa-refresh'></i>
           </Button>
           <Button onClick={props.clearJob} disabled={props.hasIngredients}>Clear</Button>
@@ -75,11 +75,11 @@ export const JobType = (props: JobTypeProps) => {
       );
   }
   return (
-    <div className={'job-type ' + css(ss.container)}>
+    <div className={css(ss.jobType)}>
       {craftingButtons}
       { props.mode === 'crafting'
-        ? <Button style={{container: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>
-        : <Button style={{container: jobType.crafting}} onClick={props.toggle}>&lt; Crafting</Button>
+        ? <Button style={{button: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>
+        : <Button style={{button: jobType.crafting}} onClick={props.toggle}>&lt; Crafting</Button>
       }
     </div>
   );

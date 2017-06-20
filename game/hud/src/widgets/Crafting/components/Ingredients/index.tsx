@@ -93,14 +93,14 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     let addIngredients;
     if (props.loading) {
       addIngredients = (
-        <div className={'add-ingredient ' + css(ss.addIngredient)}>
+        <div className={css(ss.addIngredient)}>
           ... loading
         </div>
       );
     } else {
       if (props.havePossibleIngredients) {
         addIngredients = (
-          <div className={'add-ingredient ' + css(ss.addIngredient)}>
+          <div className={css(ss.addIngredient)}>
             <PossibleIngredients
               disabled={!configuring}
               selectedItem={selectedIngredient}
@@ -111,7 +111,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
               style={{input: ingredientsStyles.quantity}}
               numeric={true} min={1}
               disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
-            <Button disabled={!ready} style={{container: ingredientsStyles.add}}
+            <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
               onClick={this.addIngredient}>Add</Button>
           </div>
         );
@@ -119,13 +119,13 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     }
 
     return (
-      <div className={'ingredients ' + css(ss.container)}>
+      <div className={css(ss.ingredients)}>
         <h1 className={css(ss.title)}>Ingredients...</h1>
         {addIngredients}
-        <div className={'loaded-ingredients ' + css(ss.loadedIngredients)}>
+        <div className={css(ss.loadedIngredients)}>
           <div>{loaded}</div>
           { last
-            ? <Button style={{container: ingredientsStyles.remove}}
+            ? <Button style={{ button: ingredientsStyles.remove }}
                 disabled={!configuring} onClick={() => props.remove(last)}>
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>

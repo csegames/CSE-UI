@@ -56,10 +56,10 @@ class Input extends React.Component<InputProps, InputState> {
       );
     }
     return (
-      <div className={'input ' + css(ss.container)}>
+      <div className={css(ss.input)}>
         <input type='text'
           ref='input'
-          className={css(ss.input)}
+          className={css(ss.field)}
           size={this.props.size}
           disabled={this.props.disabled}
           onChange={this.onChange}

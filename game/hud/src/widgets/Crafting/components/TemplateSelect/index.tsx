@@ -49,11 +49,11 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
     const i = this.props.selected ? this.props.items.findIndex((i: Template) => this.props.selected.id === i.id) : -1;
     const selectedItem = i > -1 ? this.props.items[i] : null;
     return (
-      <div className={'template-select ' + css(ss.container)}>
-        <Label style={{container: templateSelect.label}}>Template</Label>
+      <div className={css(ss.templateSelect)}>
+        <Label style={{ label: templateSelect.label }}>Template</Label>
         <Select
           disabled={this.props.status !== 'Configuring'}
-          style={{container: templateSelect.select, impl: templateSelect.select_impl, list: templateSelect.select_list}}
+          style={{select: templateSelect.select, impl: templateSelect.select_impl, list: templateSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

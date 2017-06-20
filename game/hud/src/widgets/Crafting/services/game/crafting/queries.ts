@@ -42,8 +42,7 @@ function runQuery(query: string, key: string) {
       }
     })
     .catch((error: any) => {
-      console.dir(error);
-      reject({ reason: ERRORS.UnknownError, error });
+      reject({ reason: error.reason });
     });
   });
 }
@@ -60,7 +59,6 @@ export function voxGetStatus() {
         }
       })
       .catch((error) => {
-        console.dir(error);
         reject(error.reason);
       });
   });

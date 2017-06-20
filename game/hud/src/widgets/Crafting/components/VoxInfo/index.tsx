@@ -36,7 +36,7 @@ const select = (state: GlobalState, props: VoxInfoProps) : VoxInfoReduxProps => 
 const VoxInfo = (props: VoxInfoProps) => {
   const ss = StyleSheet.create(merge({}, voxInfo, props.style));
   return (
-    <div className={'vox-info ' + css(ss.container)}>
+    <div className={css(ss.voxInfo)}>
       <span className={css(ss.span)}>{props.job.status}</span>
       <span className={css(ss.span)}>{props.job.type}</span>
       <span className={css(ss.span)}>{props.job.started}</span>

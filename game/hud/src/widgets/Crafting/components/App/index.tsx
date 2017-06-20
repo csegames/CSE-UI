@@ -49,7 +49,7 @@ import Minimize from '../Minimize';
 import Button from '../Button';
 
 // Styles
-import { StyleSheet, css, merge, craftingStyles, CraftingStyles } from '../../styles';
+import { StyleSheet, css, merge, app, AppStyles } from '../../styles';
 
 const select = (state: GlobalState): AppProps => {
   return {
@@ -64,7 +64,7 @@ interface AppProps {
   job: JobState;
   uiMode: string;
   minimized: boolean;
-  style?: Partial<CraftingStyles>;
+  style?: Partial<AppStyles>;
 }
 
 interface AppState {
@@ -118,14 +118,14 @@ class App extends React.Component<AppProps,AppState> {
     if (!this.state.visible) return null;
     const props = this.props;
 
-    const ss = StyleSheet.create(merge({}, craftingStyles, props.style));
+    const ss = StyleSheet.create(merge({}, app, props.style));
 
     if (props.minimized) {
       return this.renderMinimizedUI(ss);
     }
 
     return (
-      <div ref='crafting' className={'app cu-window ' + css(ss.container)}>
+      <div ref='crafting' className={'cu-window ' + css(ss.app)}>
         <div className={css(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
           <Minimize onMinimize={this.minimize} minimized={false}/>
@@ -143,7 +143,7 @@ class App extends React.Component<AppProps,AppState> {
     );
   }
 
-  private renderMainUI = (ss: CraftingStyles) => {
+  private renderMainUI = (ss: AppStyles) => {
     const props = this.props;
     switch (props.uiMode) {
       case 'crafting':
@@ -168,12 +168,12 @@ class App extends React.Component<AppProps,AppState> {
     }
   }
 
-  private renderMinimizedUI = (ss: CraftingStyles) => {
+  private renderMinimizedUI = (ss: AppStyles) => {
     const props = this.props;
     // const type = props.job && props.job.type;
     const { status, outputItems } = props.job;
     return (
-      <div ref='crafting' className={'app cu-window ' + css(ss.container, ss.minimized)}>
+      <div ref='crafting' className={'cu-window ' + css(ss.app, ss.minimized)}>
         <VoxMessage/>
         <div className={css(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
@@ -181,7 +181,7 @@ class App extends React.Component<AppProps,AppState> {
         </div>
         { status === 'Configuring' && outputItems && outputItems.length
           ? <Button
-              style={{ container: craftingStyles.minimizedButton }}
+              style={{ button: app.minimizedButton }}
               onClick={this.startJob}>
                 Start
               </Button>
@@ -189,7 +189,7 @@ class App extends React.Component<AppProps,AppState> {
         }
         { status === 'Running'
           ? <Button
-              style={{ container: craftingStyles.minimizedButton }}
+              style={{ button: app.minimizedButton }}
               onClick={this.cancelJob}>
                 Cancel
               </Button>
@@ -197,7 +197,7 @@ class App extends React.Component<AppProps,AppState> {
         }
         { status === 'Finished'
           ? <Button
-              style={{ container: craftingStyles.minimizedButton }}
+              style={{ button: app.minimizedButton }}
               onClick={this.collectJob}>
                 Collect
               </Button>

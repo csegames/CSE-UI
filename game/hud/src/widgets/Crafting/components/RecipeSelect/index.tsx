@@ -52,11 +52,13 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
     const selectedItem = i > -1 ? this.props.items[i] : null;
     const type = this.props.type;
     return (
-      <div className={'recipe-select ' + css(ss.container)}>
-        <Label style={{container: recipeSelect.label}}>{type[0].toUpperCase() + type.substr(1)} Recipe</Label>
+      <div className={css(ss.recipeSelect)}>
+        <Label style={{ label: recipeSelect.label }}>
+          {type[0].toUpperCase() + type.substr(1)} Recipe
+        </Label>
         <Select
           disabled={this.props.status !== 'Configuring'}
-          style={{container: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
+          style={{select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

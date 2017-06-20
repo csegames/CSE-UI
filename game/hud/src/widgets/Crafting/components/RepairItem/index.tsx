@@ -23,7 +23,7 @@ export const RepairItem = (props: RepairItemProps) => {
   const ss = StyleSheet.create(merge({}, repairItem, props.style));
   const { id, name, stats } = props.ingredient;
   return (
-    <div className={'ingredient-item ' + css(ss.container)}>
+    <div className={css(ss.repairItem)}>
       <Icon className={css(ss.icon)} src={props.ingredient.static.icon}/>
       <span className={css(ss.name)}>{name}</span>
       <span className={css(ss.durability)}>Durability: {stats.durability.current}</span>

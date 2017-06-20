@@ -43,10 +43,7 @@ const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
   const { message, total, remaining, status } = props;
   return (
-    <div className={
-        'vox-message '
-         + (message ? css(ss.container, ss[message.type]) : css(ss.container))
-         }>
+    <div className={(message ? css(ss.voxMessage, ss[message.type]) : css(ss.voxMessage))}>
       <div>{message && message.message}</div>
       { status === 'Running'
         ? <ProgressBar

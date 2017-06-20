@@ -25,7 +25,7 @@ interface ButtonState {}
 export const Button = (props: ButtonProps) => {
   const ss = StyleSheet.create(merge({}, button, props.style));
   return (
-    <button disabled={props.disabled} className={css(ss.container)} onClick={props.onClick}>
+    <button disabled={props.disabled} className={css(ss.button)} onClick={props.onClick}>
       {props.children}
     </button>
   );

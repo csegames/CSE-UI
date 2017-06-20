@@ -23,10 +23,7 @@ const Minimize = (props: MinimizeProps) => {
   const ss = StyleSheet.create(merge({}, minimize, props.style));
   return (
     <span
-      className={
-        'minimize '
-        + css(ss.container, props.minimized ? ss.maximize : ss.minimize)
-      }
+      className={css(ss.minimize, props.minimized ? ss.maximized : ss.minimized)}
       onClick={props.onMinimize}/>
   );
 };

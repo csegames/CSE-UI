@@ -41,8 +41,8 @@ const OutputItems = (props: OutputItemsProps) => {
   if (!props.outputItems || !props.outputItems.length) return null;
   const ss = StyleSheet.create(merge({}, outputItems, props.style));
   return (
-    <div className={'output-items ' + css(ss.container)}>
-      <div className={'output-title ' + css(ss.title)}>
+    <div className={css(ss.outputItems)}>
+      <div className={css(ss.title)}>
         <span>Output Info:-</span>
         <span className={css(ss.craftingTime)}>
           Crafting Time: {craftingTimeToString(props.totalCraftingTime, true)}
@@ -51,7 +51,7 @@ const OutputItems = (props: OutputItemsProps) => {
       {
         props.outputItems.map((item: InventoryItem) => {
           return (
-            <div key={item.id} className={'output-item ' + css(ss.item)}>
+            <div key={item.id} className={css(ss.item)}>
               <Icon className={css(ss.icon)} src={item.static.icon}/>
               <span className={css(ss.qty)}>{item.stats.unitCount}</span>
               <span className={css(ss.times)}>x</span>

@@ -26,7 +26,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
   const { id, name, stats } = props.ingredient;
   const pcnt = props.total && (props.qty / props.total * 100).toFixed(1);
   return (
-    <div className={'ingredient-item ' + css(ss.container)}>
+    <div className={css(ss.ingredientItem)}>
       <Icon className={css(ss.icon)} src={props.ingredient.static.icon}/>
       <span className={css(ss.qty)}>{props.qty}</span>
       <span className={css(ss.pcnt)}>({pcnt}%)</span>

@@ -47,7 +47,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
     const isRepair = this.props.jobType === 'repair';
     const render = (item: InventoryItem) => item && (
-      <div className={'possible-ingredient ' + css(ss.container)}>
+      <div className={css(ss.possibleIngredients)}>
         <Icon className={css(ss.span, ss.icon)} src={item.static.icon}/>
         <span className={css(ss.span, ss.name)}>{item.name}</span>
         { isRepair || <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span> }
@@ -60,7 +60,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     return (
       <Select
         disabled={this.props.disabled}
-        style={{container: possibleIngredients.select}}
+        style={{select: possibleIngredients.select}}
         items={this.props.possibleIngredients}
         onSelectedItemChanged={this.props.onSelect}
         renderActiveItem={render}

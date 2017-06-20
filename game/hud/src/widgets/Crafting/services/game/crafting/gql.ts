@@ -31,6 +31,10 @@ export function gql({ query, variables } : { query: string, variables?: any }) {
         }
         reject({ status: response.status, data });
       });
+    })
+    .catch((reason: any) => {
+      console.error(reason.message);
+      reject({ reason: 'crafting server unavailable' });
     });
   });
 }

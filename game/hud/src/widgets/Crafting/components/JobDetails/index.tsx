@@ -79,7 +79,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   // If no vox type set yet...
   if (!type) {
     return (
-      <div className={css(ss.container)}>
+      <div className={css(ss.jobDetails)}>
         <div>Select a Job Type!</div>
         <VoxMessage/>
       </div>
@@ -87,7 +87,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   }
 
   return (
-    <div className={css(ss.container)}>
+    <div className={css(ss.jobDetails)}>
       <div className={css(ss.properties)}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
         {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
@@ -99,7 +99,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         />
       <OutputItems/>
       <VoxMessage/>
-      <div className={'job-details ' + css(ss.buttons)}>
+      <div className={css(ss.buttons)}>
         <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
         <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
         <Button style={buttonStyle} disabled={!canStart} onClick={props.start}>Start</Button>

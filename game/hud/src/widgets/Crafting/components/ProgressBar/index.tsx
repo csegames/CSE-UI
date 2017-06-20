@@ -22,7 +22,7 @@ interface ProgressBarProps {
 
 const ProgressBar = (props: ProgressBarProps) => {
   const ss = StyleSheet.create(merge({}, progressBar, props.style));
-  return <div className={css(ss.container)} style={{
+  return <div className={css(ss.progressBar)} style={{
     width: (100 - (props.current / props.total * 100)).toFixed(2) + '%',
     backgroundColor: props.color,
   }}/>;
