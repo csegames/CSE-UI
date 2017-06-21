@@ -313,37 +313,6 @@ class App extends React.Component<AppProps,AppState> {
   private loadLists = (job: string, refresh?: boolean) => {
     const props = this.props;
 
-    function getRecipes() {
-      switch (job) {
-        case 'make':
-          voxGetTemplates()
-            .then((templates: VoxTemplate[]) => {
-              props.dispatch(gotVoxTemplates(templates));
-              props.dispatch(setLoading(false));
-            })
-            .catch(() => {
-              props.dispatch(setMessage({ type: 'error', message: 'Could not load templates' }));
-              props.dispatch(setLoading(false));
-            });
-          break;
-        case 'repair':
-        case 'salvage':
-          // no recipes to load
-          props.dispatch(setLoading(false));
-          break;
-        default:
-          voxGetRecipesFor(job)
-            .then((recipes: VoxRecipe[]) => {
-              props.dispatch(gotVoxRecipes(job, recipes));
-              props.dispatch(setLoading(false));
-            })
-            .catch(() => {
-              props.dispatch(setMessage({ type: 'error', message: `Could not load ${job} recipes` }));
-              props.dispatch(setLoading(false));
-            });
-      }
-    }
-
     // Don't reload salvage list (which is huge) unless we really have to
     // but other possible ingredients lists we should reload to make sure
     // they are up to date [e.g. pick up output items]
@@ -353,7 +322,30 @@ class App extends React.Component<AppProps,AppState> {
     }
 
     // and load recipes
-    getRecipes();
+    switch (job) {
+      case 'make':
+        voxGetTemplates()
+          .then((templates: VoxTemplate[]) => {
+            props.dispatch(gotVoxTemplates(templates));
+          })
+          .catch(() => {
+            props.dispatch(setMessage({ type: 'error', message: 'Could not load templates' }));
+          });
+        break;
+      case 'repair':
+      case 'salvage':
+        // no recipes to load
+        break;
+      default:
+        voxGetRecipesFor(job)
+          .then((recipes: VoxRecipe[]) => {
+            props.dispatch(gotVoxRecipes(job, recipes));
+          })
+          .catch(() => {
+            props.dispatch(setMessage({ type: 'error', message: `Could not load ${job} recipes` }));
+          });
+        break;
+    }
   }
 
   // Handle webAPI error
