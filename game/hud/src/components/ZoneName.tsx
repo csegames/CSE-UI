@@ -5,35 +5,39 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-04-28 17:00:11
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-04-28 17:30:20
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-21 16:15:09
  */
 
 import * as React from 'react';
 import { client, webAPI } from 'camelot-unchained';
 
-export class ZoneName extends React.Component<{}, { id: string, name: string }> {
+export interface ZoneNameState {
+  name: string;
+}
+
+export class ZoneName extends React.Component<{}, ZoneNameState> {
 
   constructor(props: {}) {
     super(props);
     this.state = {
-      id: '',
       name: '',
     };
   }
 
   public componentDidMount() {
+    // initializing shardID when component mounts because client.shardID gives me random number onCharacterZoneChanged
+    const { shardID } = client;
     client.OnCharacterZoneChanged((id: string) => {
       console.log(`zone changed ${id}`);
       const _id = id;
-      this.setState({id, name: ''});
-      webAPI.ServerListHelperAPI.getAvailableZones(client.shardID)
+      this.setState({ name: '' });
+      webAPI.ServerListHelperAPI.getAvailableZones(shardID)
         .then((result) => {
           if (result.ok === false) return;
           result.data.forEach((zone: any) => {
             if (zone.ID === _id) {
               this.setState({
-                id: zone.ID,
                 name: zone.Name,
               });
             }
@@ -45,7 +49,6 @@ export class ZoneName extends React.Component<{}, { id: string, name: string }> 
   public render() {
     return <div style={{marginTop: '30px'}}>
       <h1>ZONE: {this.state.name}</h1>
-      <h1>ID: {this.state.id}</h1>
-      </div>;
+    </div>;
   }
 }
