@@ -5,6 +5,7 @@
  */
 
 import { Promise } from 'es6-promise';
+import { client } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
@@ -61,12 +62,12 @@ export function resetClass() {
 }
 
 export function fetchPlayerClasses(
-  apiUrl: string = 'https://api.camelotunchained.com/',
+  apiUrl: string = client.apiHost,
   shard: number = 1,
   apiVersion: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestPlayerClasses());
-    return fetchJSON(`${apiUrl}gamedata/archetypes?api-version=${apiVersion}`)
+    return fetchJSON(`${apiUrl}/gamedata/archetypes?api-version=${apiVersion}`)
       .then((playerClasses: PlayerClassInfo[]) => dispatch(fetchPlayerClassesSuccess(playerClasses)))
       .catch((error: ResponseError) => dispatch(fetchPlayerClassesFailed(error)));
   };

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Race, Archetype, Faction, utils, webAPI } from 'camelot-unchained';
+import { client, Race, Archetype, Faction, utils, webAPI } from 'camelot-unchained';
 import { CharacterCreationModel } from '../../../CharacterCreation';
 
 import Login from '../Login';
@@ -125,7 +125,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
 
   private showCharacterCreation = () => {
     events.fire('view-content', view.CHARACTERCREATION, {
-      apiHost: 'https://api.camelotunchained.com/',
+      apiHost: client.apiHost,
       apiVersion: 1,
       shard: this.state.selectedServer.shardID,
       apiKey: patcher.getLoginToken(),

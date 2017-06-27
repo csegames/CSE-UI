@@ -5,6 +5,7 @@
  */
 
 import { Promise } from 'es6-promise';
+import { client } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
 import { checkStatus, parseJSON } from '../../lib/fetchHelpers';
@@ -48,12 +49,12 @@ export function resetCharacter() {
 
 export function createCharacter(model: CharacterCreationModel,
                                 apiKey: string,
-                                apiUrl: string = 'https://api.camelotunchained.com/',
+                                apiUrl: string = client.apiHost,
                                 shard: number = 1,
                                 apiVersion: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(createCharacterStarted());
-    return fetch(`${apiUrl}characters/${shard}`,
+    return fetch(`${apiUrl}/characters/${shard}`,
       {
         method: 'post',
         body: JSON.stringify(model),
