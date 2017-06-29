@@ -103,7 +103,7 @@
     "@types/jest": "19.2.2",
     "@types/lodash": "^4.14.66",
     "@types/object-assign": "4.0.30",
-    "@types/react": "^15.0.10",
+    "@types/react": "15.0.26",
     "@types/react-addons-css-transition-group": "15.0.1",
     "@types/react-dom": "0.14.23",
     "@types/react-redux": "4.4.36",
