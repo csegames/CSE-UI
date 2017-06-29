@@ -223,7 +223,8 @@ const devClientInterface: clientInterface = {
   OnCharacterInjuriesChanged: (c: (part: number, health: number, maxHealth: number, wounds: number) => void): void => {},
   OnCharacterAliveOrDead: (c: (alive: boolean) => void): void => {},
   OnCharacterPositionChanged: (c: (x: number, y: number, z: number) => void): void => {},
-  
+  OnCharacterCanReleaseControlChanged: (c: (canRelease: boolean) => void): void => {},
+
   /* EMOTE */
 
   Emote: (emote: number): void => {},
