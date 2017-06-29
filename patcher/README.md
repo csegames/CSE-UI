@@ -5,13 +5,17 @@
       ```sh
       cd patcher
       ```
-
-2. Install npm packages
-      ```sh
-      npm i
+2. Install yarn
+      ```
+      npm i -g yarn
       ```
 
-3. Build
+3. Install npm packages
+      ```sh
+      yarn
+      ```
+
+4. Build
       ```sh
       npm start build
       ```

@@ -11,11 +11,11 @@ import {AudioSetting} from './AudioSetting';
 class AudioConfigVar extends ConfigVar  {
   public _value: AudioSetting;
   
-  public get value ():AudioSetting {
+  public get value():AudioSetting {
     return this._value;
   }
   
-  public set value (v: AudioSetting) {
+  public set value(v: AudioSetting) {
     this._value = v;
   }
   

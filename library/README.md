@@ -14,6 +14,7 @@ npm install camelot-unchained
 ```sh
 git clone https://github.com/csegames/Camelot-Unchained.git
 cd Camelot-Unchained/library
-npm install
+npm i -g yarn
+yarn
 npm start build
 ```

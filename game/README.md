@@ -26,10 +26,10 @@ Setup
 
 ```sh
 #install required global npm packages
-npm i -g babel-cli babel-core babel-preset-es2015 node-sass browserify typescript@1.8.0 typings mkdirp http-server
+npm i -g yarn
 
 # install development packages
-npm install
+yarn
 ```
 
 Install & Build UI Modules

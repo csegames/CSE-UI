@@ -11,11 +11,11 @@ import KeyBind from './KeyBind';
 class KeyBindConfigVar extends ConfigVar  {
   public _value: KeyBind;
   
-  public get value ():KeyBind {
+  public get value():KeyBind {
     return this._value;
   }
   
-  public set value (v: KeyBind) {
+  public set value(v: KeyBind) {
     this._value = v;
   }
   
