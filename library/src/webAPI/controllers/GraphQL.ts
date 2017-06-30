@@ -12,4 +12,9 @@ import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorize
 
 
 
+export function post() {
+  return create(createOptions()).call('graphql', { 
+  });
+}
+
   

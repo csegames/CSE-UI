@@ -18,3 +18,4 @@ export function getTraitsV1(shardID: number) {
   });
 }
 
+ 

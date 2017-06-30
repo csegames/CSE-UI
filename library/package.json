@@ -1,6 +1,6 @@
 {
   "name": "camelot-unchained",
-  "version": "0.8.17",
+  "version": "0.8.19",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -56,6 +56,7 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "axios": "^0.15.3",
+    "cwd-in-node-modules": "^1.0.1",
     "es6-promise": "^3.0.2",
     "graphql-tag": "^1.2.4",
     "isomorphic-fetch": "^2.2.1",
@@ -65,8 +66,7 @@
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^0.14.6",
     "react-dom": "^15.4.2",
-    "redux-typed-modules": "^2.2.1",
-    "cwd-in-node-modules": "^1.0.1"
+    "redux-typed-modules": "^2.2.1"
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
@@ -81,7 +81,7 @@
     "browserify": "^13.0.0",
     "copyfiles": "^1.2.0",
     "jest": "^19.0.2",
-    "node-sass": "^3.8.0",
+    "node-sass": "^4.5.3",
     "npm-watch": "^0.1.4",
     "nps": "^5.0.5",
     "react-test-renderer": "^15.5.4",
