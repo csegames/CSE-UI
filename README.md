@@ -1,5 +1,7 @@
 # Camelot-Unchained
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/CUModSquad/Camelot-Unchained.svg)](https://greenkeeper.io/)
+
 UI repository for [Camelot Unchained](http://camelotunchained.com/v3/).
 
 ## Requires
