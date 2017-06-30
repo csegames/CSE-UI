@@ -9,3 +9,6 @@ script:
  - "cd $TRAVIS_BUILD_DIR/game/hud && npm start build && npm start test"
  - "cd $TRAVIS_BUILD_DIR/library && npm start build && npm start test"
  - "cd $TRAVIS_BUILD_DIR/patcher && npm start build"
+notifications:
+  email:
+    - code@citystateentertainment.com
