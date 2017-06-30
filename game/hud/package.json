@@ -64,10 +64,11 @@
     "aphrodite": "^1.1.0",
     "apisauce": "0.3.1",
     "apollo-client": "^0.8.4",
-    "camelot-unchained": "^0.8.11",
+    "camelot-unchained": "^0.8.21",
     "classnames": "^2.2.5",
     "color-ops": "^2.0.0",
     "cu-xmpp-chat": "^0.3.0",
+    "cwd-in-node-modules": "^1.0.1",
     "es6-promise": "^3.2.1",
     "graphql-tag": "^1.2.4",
     "immutable": "^3.8.1",
@@ -92,8 +93,7 @@
     "redux-typed-modules": "^2.2.1",
     "sass-importer-node": "^1.0.1",
     "whatwg-fetch": "^2.0.2",
-    "yargs-parser": "^2.4.1",
-    "cwd-in-node-modules": "^1.0.1"
+    "yargs-parser": "^2.4.1"
   },
   "devDependencies": {
     "@types/aphrodite": "0.5.5",
@@ -123,7 +123,7 @@
     "jest": "^19.0.2",
     "livereload": "^0.4.1",
     "mkdirp": "^0.5.1",
-    "node-sass": "^3.8.0",
+    "node-sass": "^4.5.3",
     "p-s": "^3.1.0",
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
