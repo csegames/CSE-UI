@@ -17,14 +17,14 @@ import {WarbandSessionState, WarbandState} from '../../services/session';
 import {initialize as warbandInit} from '../../services/session/warband';
 import WarbandMemberDisplay from '../WarbandMemberDisplay';
 
-function select(state: WarbandSessionState): WarbandDisplayProps {
+function select(state: WarbandSessionState) {
   return {
     warband: state.warband,
   };
 }
 
 export interface WarbandDisplayProps {
-  dispatch?: (action: any) => void;
+  dispatch: (action: any) => void;
   warband: WarbandState;
   containerClass?: string;
   isMini?: boolean;
@@ -53,10 +53,6 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
 
   private renderMember = (member: WarbandMember): any => {
     return <WarbandMemberDisplay key={member.characterID} member={member} />;
-  }
-
-  private initSignalRHub = () => {
-    this.props.dispatch(warbandInit());
   }
 }
 

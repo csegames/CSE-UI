@@ -6,32 +6,25 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Draggable } from 'react-draggable';
-import { client, GroupInvite, groupType, hasClientAPI, Tooltip, ql, events } from 'camelot-unchained';
-import Chat from 'cu-xmpp-chat';
+import { client, ql, events } from 'camelot-unchained';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import {
   LayoutState,
-  lockHUD,
-  unlockHUD,
   setPosition,
   initialize,
-  resetHUD,
   setVisibility,
   Widget,
 } from '../../services/session/layout';
-import { SessionState } from '../../services/session/reducer';
 import { InvitesState } from '../../services/session/invites';
+import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 
-import InteractiveAlert, { Alert } from '../InteractiveAlert';
+import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
-import Social from '../../widgets/Social';
+import HUDFullScreen from '../HUDFullScreen';
 
 import { ZoneName } from '../ZoneName';
-
-import { BodyParts } from '../../lib/PlayerStatus';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
@@ -40,9 +33,9 @@ import Console from '../Console';
 
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
-  dispatch?: (action: any) => void;
-  layout?: LayoutState;
-  invites?: InvitesState;
+  dispatch: (action: any) => void;
+  layout: LayoutState;
+  invites: InvitesState;
 }
 
 export interface HUDState {
@@ -53,8 +46,6 @@ export interface HUDState {
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
-  private healthX: number;
-  private healthY: number;
 
   constructor(props: HUDProps) {
     super(props);
@@ -73,8 +64,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     const orderedWidgets: JSX.Element[] = [];
     widgets.forEach((widget, key) => {
-      orderedWidgets[widget.position.zOrder] =
-        this.draggable(key, widget, widget.component, widget.dragOptions, widget.props);
+      orderedWidgets[widget.position.zOrder] = 
+      this.draggable(key, widget, widget.component, widget.dragOptions, widget.props);
     });
 
     return (
@@ -90,7 +81,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />
-        <Social />
+        <HUDFullScreen />
         <Watermark />
       </div>
     );
@@ -186,17 +177,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
       }}
       {...options} />;
   }
-
-  private onToggleClick = (e: any) => {
-    if (e.altKey) {
-      this.props.dispatch(resetHUD());
-      return;
-    }
-    return this.props.dispatch(this.props.layout.locked ? unlockHUD() : lockHUD());
-  }
 }
 
-
-
 const HUDWithQL = graphql(ql.queries.MySocial)(HUD);
-export default connect(s => s)(HUDWithQL);
+
+function select(state: SessionState) {
+  return {
+    layout: state.layout,
+    invites: state.invites,
+  };
+}
+
+export default connect(select)(HUDWithQL);

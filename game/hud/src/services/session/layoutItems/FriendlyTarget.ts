@@ -8,7 +8,7 @@
  * @Last Modified by: JB (jb@codecorsair.com)
  * @Last Modified time: 2017-01-23 17:42:11
  */
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 import FriendlyTargetHealth from '../../../widgets/FriendlyTargetHealth';
 
 export default {

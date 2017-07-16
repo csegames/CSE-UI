@@ -75,10 +75,6 @@ const initialState: BlueprintsState = {
   pastable: false,
 };
 
-function remove(blueprints: BuildingBlueprint[], blueprint: BuildingBlueprint) {
-  return blueprints.filter((bp: BuildingBlueprint) => { return bp.name !== blueprint.name; });
-}
-
 export default function reducer(state: BlueprintsState = initialState, action: any = {}) {
   switch (action.type) {
     case UPDATE_BLUEPRINTS:

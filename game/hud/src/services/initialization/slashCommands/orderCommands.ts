@@ -8,13 +8,10 @@ import yargs from 'yargs-parser';
 import {
   client,
   registerSlashCommand,
-  hasClientAPI,
-  SlashCommand,
-  getSlashCommands,
   webAPI,
   utils,
 } from 'camelot-unchained';
-import { parseArgs, systemMessage } from './utils';
+import { systemMessage } from './utils';
 
 export default () => {
 

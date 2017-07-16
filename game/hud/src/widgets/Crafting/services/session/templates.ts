@@ -5,13 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 17:23:14
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 11:33:00
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:52:33
  */
 
 import { Module } from 'redux-typed-modules';
 import { Template } from '../types';
-import { slash, isClient } from '../game/slash';
 import { VoxTemplate } from '../game/crafting';
 
 export interface TemplatesState {

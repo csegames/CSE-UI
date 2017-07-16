@@ -6,18 +6,12 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider} from 'react-redux';
-import cu, {client} from 'camelot-unchained';
-
-import {thunkMiddleware, crashReporterMiddleware} from './lib/reduxUtils';
+import {client} from 'camelot-unchained';
 
 import initialize from './services/initialization';
 import HUD from './components/HUD';
-import reducer, {apollo, store} from './services/session/reducer';
+import {apollo, store} from './services/session/reducer';
 import {ApolloProvider} from 'react-apollo';
-
-const s = createStore(reducer);
 
 const root = document.getElementById('hud');
 

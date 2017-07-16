@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-01-23 17:37:03
  */
 import Respawn from '../../../components/Respawn';
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 
 export default {
   position: {

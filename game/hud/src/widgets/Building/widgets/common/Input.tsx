@@ -5,9 +5,7 @@
  */
 
 import * as React from 'react';
-import * as ReactDOM from 'react';
 import inputOwnership from './InputOwnership';
-import { client } from 'camelot-unchained';
 
 export interface NameInputProps {
   type: string;

@@ -6,13 +6,12 @@
 
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+// import {Provider} from 'react-redux';
 import {loadBlueprints} from './services/session/blueprints';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
-import BlueprintsPane from './components/BlueprintsPane';
-import {BuildingItem} from '../../../../lib/BuildingItem';
+// import BlueprintsPane from './components/BlueprintsPane';
 import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 import {Anchor} from '../../../SavedDraggable';
@@ -37,20 +36,19 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     }
 
     return (
-      <Provider store={store}>
         <TabbedPane name='blueprints'
           tabs={['Blueprints']}
           defaultX={[0, Anchor.TO_END]} 
           defaultY={[300, Anchor.TO_START]} 
           defaultSize={[200, 300]} 
         >
-          <BlueprintsPane
-            minimized={this.props.minimized}
-            handlePreviewIcon={(icon: string) => this.setState({ previewIcon: icon})}
-          />
+          {/* <Provider store={store}>
+            <BlueprintsPane minimized={this.props.minimized}
+              handlePreviewIcon={(icon: string) => this.setState({ previewIcon: icon})}
+            />
+          </Provider> */}
           {preview} 
         </TabbedPane>
-      </Provider>
     );
   }
 }

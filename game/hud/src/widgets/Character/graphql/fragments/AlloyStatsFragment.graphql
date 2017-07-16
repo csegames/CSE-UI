@@ -1,0 +1,37 @@
+fragment AlloyStats on AlloyStat_Single {
+  hardness
+  impactToughness
+  fractureChance
+  malleability
+  massPCF
+  density
+  meltingPoint
+  thermConductivity
+  slashingResistance
+  piercingResistance
+  crushingResistance
+  acidResistance
+  poisonResistance
+  diseaseResistance
+  earthResistance
+  waterResistance
+  fireResistance
+  airResistance
+  lightningResistance
+  frostResistance
+  lifeResistance
+  mindResistance
+  spiritResistance
+  radiantResistance
+  deathResistance
+  shadowResistance
+  chaosResistance
+  voidResistance
+  arcaneResistance
+  magicalResistance
+  hardnessFactor
+  strengthFactor
+  fractureFactor
+  massFactor
+  damageResistance
+}

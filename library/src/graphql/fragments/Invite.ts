@@ -5,13 +5,14 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 10:23:06
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 18:01:01
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:24:40
  */
 
 import gql from 'graphql-tag';
 
 import FullCharacterFragment, { FullCharacter } from './FullCharacter';
+import { Invite } from '../schema';
 
 export default gql`
 fragment Invite on InviteInterface {
@@ -28,14 +29,3 @@ fragment Invite on InviteInterface {
 }
 ${FullCharacterFragment}
 `;
-
-export interface Invite {
-  id: string;
-  inviteCode: string;
-  groupID: string;
-  groupType: string;
-  memberID: string;
-  member: FullCharacter;
-  inviteID: string;
-  status: string;
-}

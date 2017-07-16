@@ -11,14 +11,11 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { utils, ql } from 'camelot-unchained';
-import { LinkAddress,
-         SocialCategory,
-         CategoryNav,
-         NavSection,
-         CategoryAddress,
-         categoryAddressEquals,
-         linkAddressEquals,
-         PrimaryLinkAddress } from './navTypes';
+import {
+  LinkAddress,
+  SocialCategory,
+  CategoryNav,
+} from './navTypes';
 
 export default function() {
   return {

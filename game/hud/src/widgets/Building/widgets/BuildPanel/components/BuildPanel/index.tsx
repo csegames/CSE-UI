@@ -8,15 +8,12 @@ import * as React from 'react';
 
 import {events} from 'camelot-unchained';
 
-import TabbedPane from '../TabbedPane';
-
 import Blocks from '../../widgets/Blocks';
 import RecentSelections from '../../widgets/RecentSelections';
 import DropLight from '../../widgets/DropLight';
 import Blueprints from '../../widgets/Blueprints';
 import MaterialSelector from '../../widgets/MaterialSelector';
 
-import {BuildingItem} from '../../../../lib/BuildingItem';
 import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
 
 export interface BuildPanelProps {
@@ -30,13 +27,8 @@ export interface BuildPanelState {
 
 class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
 
-  private cols = 20;
-  private itemWidth = 3;
-  private gridHeight = 50;
-
   constructor(props: BuildPanelProps) {
     super(props);
-    const yPos = 0;
     this.state = {
       minimized: false,
       showMaterialSelector: false,
@@ -67,10 +59,6 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
   public componentWillUnmount() {
     events.removeListener(this.materialSelectorActivated);
     events.removeListener(this.materialSelectorDeactivated);
-  }
-
-  private onMinMax() {
-    this.setState((state, props) => ({ minimized: !state.minimized } as BuildPanelState));
   }
 
   private materialSelectorActivated = () => {

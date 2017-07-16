@@ -15,9 +15,11 @@ export * from './eventMapper';
 export * from './reduxUtils';
 export * from './layoutLib';
 export * from './compare';
+export * from './colorManipulation';
+
+import * as KeyCodes from './keyCodes';
 
 import stringContains from './stringContains';
-import * as KeyCodes from './keyCodes';
 export {
   KeyCodes,
   stringContains,

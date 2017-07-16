@@ -5,12 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 16:58:45
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 19:27:55
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 10:36:28
  */
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import client from '../core/client';
 
 export interface InputStyle extends StyleDeclaration {
   inputWrapper: React.CSSProperties;
@@ -33,7 +34,10 @@ export const defaultInputStyle: InputStyle = {
     color: '#8f8f8f',
     fontSize: '1.1em',
     boxShadow: 'inset 0px 0px 2px 0px rgba(200,200,200,.1)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
+    transition:
+      `border 0.3s cubic-bezier(.25,.8,.25,1),
+      boxShadow 0.3s cubic-bezier(.25,.8,.25,1),
+      outline 0.3s cubic-bezier(.25,.8,.25,1)`,
     ':focus': {
       outline: '0',
       border: 'solid .5px #3fd0b0',
@@ -56,11 +60,17 @@ export interface InputProps {
 
 export const Input = (props: Partial<InputProps>) => {
   const ss = StyleSheet.create(defaultInputStyle);
-  const custom = StyleSheet.create(props.styles || {});
+  const { styles, ...inputProps } = props;
+  const custom = StyleSheet.create(styles || {});
   return (
     <div className={css(ss.inputWrapper, custom.inputWrapper)}>
       {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null }
-      <input ref={r => props.inputRef ? props.inputRef(r) : null} className={css(ss.input, custom.input)} {...props} />
+      <input
+        ref={r => props.inputRef ? props.inputRef(r) : null}
+        onFocus={() => client.RequestInputOwnership()}
+        onBlur={() => client.ReleaseInputOwnership()}
+        className={css(ss.input, custom.input)}
+        {...inputProps} />
     </div>
   );
 };

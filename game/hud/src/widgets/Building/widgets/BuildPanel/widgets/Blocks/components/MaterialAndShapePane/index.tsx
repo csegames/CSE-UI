@@ -33,7 +33,7 @@ export interface MaterialAndShapePaneStateToPropsInfo {
 
 export interface MaterialAndShapePanePropsInfo {
   minimized?: boolean;
-  dispatch?: (action: any) => void;
+  dispatch: (action: any) => void;
 }
 
 export type MaterialAndShapePaneProps = MaterialAndShapePaneStateToPropsInfo & MaterialAndShapePanePropsInfo;
@@ -133,5 +133,4 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   }
 }
 
-export default
-connect<MaterialAndShapePaneStateToPropsInfo, {}, MaterialAndShapePanePropsInfo>(select)(MaterialAndShapePane);
+export default connect(select)(MaterialAndShapePane);

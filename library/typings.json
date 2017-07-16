@@ -2,14 +2,10 @@
   "name": "camelot-unchained",
   "main": "definitions/index.d.ts",
   "dependencies": {
-    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7",
-    "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",
-    "redux": "github:andrew-w-ross/typings-redux#2e0b57e18c6240d17fde045573d74e649762437b",
-    "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
+    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7"
   },
   "globalDependencies": {
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
-    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
-    "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046"
+    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524"
   }
 }

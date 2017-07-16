@@ -7,7 +7,7 @@
 import { combineReducers } from 'redux';
 
 import playerReducer, { TargetState } from './target';
-const player = playerReducer;
+const player = playerReducer as any;
 
 export default combineReducers({
   player,

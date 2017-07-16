@@ -5,22 +5,19 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:12:14
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:47:35
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
-import { DropDownSelect } from 'camelot-unchained';
 import { Ingredient } from '../../services/types';
-import { Item, Template, Recipe, InventoryItem } from '../../services/types';
+import { Template, Recipe, InventoryItem } from '../../services/types';
 import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../../styles';
 import Ingredients from '../Ingredients';
 
-import Label from '../Label';
 import Button from '../Button';
-import Select from '../Select';
 import RecipeSelect from '../RecipeSelect';
 import TemplateSelect from '../TemplateSelect';
 import NameInput from '../NameInput';
@@ -28,8 +25,6 @@ import QualityInput from '../QualityInput';
 import QuantityInput from '../QuantityInput';
 import VoxMessage from '../VoxMessage';
 import OutputItems from '../OutputItems';
-
-import { JobState, RecipesState, TemplatesState } from '../../services/session/reducer';
 
 interface JobDetailsReduxProps {
   totalCraftingTime?: number;
@@ -66,8 +61,8 @@ export interface JobDetailsProps extends JobDetailsReduxProps {
 
 export const JobDetails = (props: JobDetailsProps) => {
   const ss = StyleSheet.create(merge({}, jobDetails, props.style));
-  const buttonStyle = { container: jobDetails.button };
-  const { type, status, outputItems, totalCraftingTime, remaining } = props;
+  const buttonStyle = { button: jobDetails.button };
+  const { type, status, outputItems } = props;
 
   // enabled state of buttons
   const canStart = outputItems && outputItems.length && status === 'Configuring';
@@ -90,12 +85,13 @@ export const JobDetails = (props: JobDetailsProps) => {
     <div className={css(ss.jobDetails)}>
       <div className={css(ss.properties)}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
-        {type !== 'make' && <RecipeSelect onSelect={props.setRecipe}/>}
-        {type === 'make' && <TemplateSelect onSelect={props.setTemplate}/>}
+        {type !== 'make' && <RecipeSelect dispatch={this.props.dispatch} onSelect={props.setRecipe}/>}
+        {type === 'make' && <TemplateSelect dispatch={this.props.dispatch} onSelect={props.setTemplate}/>}
       </div>
       <Ingredients
         add={props.addIngredient}
         remove={props.removeIngredient}
+        dispatch={this.props.dispatch}
         />
       <OutputItems/>
       <VoxMessage/>

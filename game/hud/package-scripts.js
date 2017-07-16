@@ -1,7 +1,7 @@
 module.exports = {
   scripts: {
     lint: {
-      script: 'tslint src/**/*.ts{,x}',
+      script: '',//'tslint src/**/*.ts{,x}',
       description: 'Run TS-Lint"',
       hiddenFromHelp: true,
       fix: {
@@ -9,6 +9,18 @@ module.exports = {
         description: 'Fix TS-Lint errors',
         hiddenFromHelp: true,
       }
+    },
+    gql: {
+      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+    },
+    gqlLocal: {
+      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
     },
     dev: {
       default: {
@@ -28,12 +40,16 @@ module.exports = {
       },
       watch: {
         default: {
-          script: 'start nps -p dev.watch.ts,dev.watch.sass,dev.watch.misc',
+          script: 'start nps -p dev.watch.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
           description: 'Runs watch scripts in parallel to build whenever a file change is detected.',
           hiddenFromHelp: true,
         },
         ts: {
           script: 'watch -p "src/**/*.ts" -p "src/**/*.tsx" -c "nps build.dev"',
+          hiddenFromHelp: true,
+        },
+        graphql: {
+          script: 'watch -p "src/**/*.graphql -c "nps build.dev"',
           hiddenFromHelp: true,
         },
         sass: {
@@ -61,6 +77,10 @@ module.exports = {
       },
       wyrmling: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      fledgling: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       cube: {
@@ -97,6 +117,10 @@ module.exports = {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      fledgling: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       cube: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/27/INTERFACE/hu\"d',
         hiddenFromHelp: true
@@ -105,6 +129,9 @@ module.exports = {
     test: {
       default: {
         script: 'nps report.test && nps test.jest'
+      },
+      update: {
+        script: 'nps report.test && nps test.jest.update'
       },
       watch: {
         script: 'nps report.test && nps test.jest.watch'
@@ -118,6 +145,9 @@ module.exports = {
           script: 'jest --watch',
           hiddenFromHelp: true,
         },
+        update: {
+          script: 'jest --updateSnapshot'
+        }
       }
     },
     build: {
@@ -127,7 +157,7 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-uedux -u react-select -u redux -u redux-thunk -t [ envify --NODE_ENV production ]',
+          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -t [ envify --NODE_ENV production ]',
           hiddenFromHelp: true,
         },
         lib: {
@@ -140,11 +170,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && nps lint && nps report.lint && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && nps lint && nps report.lint && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
-        script: 'nps report.start && nps lint && nps report.lint && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
+        script: 'nps report.start && nps lint && nps report.lint && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
@@ -159,6 +189,10 @@ module.exports = {
       wyrmling: {
         script: 'nps build,clean.wyrmling,copy.wyrmling',
         description: 'Builds the module and copies to the Wyrmling (10) UI override directory',
+      },
+      fledgling: {
+        script: 'nps build,clean.fledgling,copy.fledgling',
+        description: 'Builds the module and copies to the Fledgling (30) UI override directory',
       },
       cube: {
         script: 'nps build,clean.cube,copy.cube',
@@ -202,6 +236,10 @@ module.exports = {
         script: 'echo "Testing started..."',
         hiddenFromHelp: true,
       },
+      gql: {
+        script: 'echo "Generating GraphQL Documents and Typings...',
+        hiddenFromHelp: true,
+      }
     },
     deploy: {
       script: 'nps clean,build.browserify.lib,build && rimraf ../../../CamelotUnchained/MMO/Client/Assets/interface/hud && copyup build/**/* ../../../CamelotUnchained/MMO/Client/Assets/interface/hud',

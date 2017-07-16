@@ -10,18 +10,13 @@
  */
 
 import * as React from 'react';
-import { merge } from 'lodash';
 import * as moment from 'moment';
-import * as className from 'classnames';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { ql,
          Tooltip,
-         Flyout,
          GridView,
          ColumnDefinition,
          Race,
-         Faction,
-         Gender,
          Archetype,
          client,
          webAPI,

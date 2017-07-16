@@ -104,15 +104,19 @@ export const defaultGridViewStyle: GridViewStyle = {
   },
 };
 
+export interface SortFunc<T> {
+  (a: T, b: T): number;
+}
+
 export interface ColumnDefinition {
-  key: <T>(a: T) => any;
+  key: (item: any) => any;
   title: string;
   style?: React.CSSProperties;
   sortable?: boolean;
   viewPermission?: string;
   editPermission?: string;
-  sortFunction?: <T>(a: T, b: T) => number;
-  renderItem?: <T>(item: T, renderData?: { [id: string]: any }) => JSX.Element;
+  sortFunction?: SortFunc<any>;
+  renderItem?: (item: any, renderData?: { [id: string]: any }) => JSX.Element;
 }
 
 
@@ -127,13 +131,17 @@ export interface SortInfo {
   sorted: GridViewSort;
 }
 
+export interface RowMenuFunc<T extends {}> {
+  (item: T, closeMenu: () => void): JSX.Element;
+}
+
 export interface GridViewProps {
   items: any[];
   columnDefinitions: ColumnDefinition[];
   userPermissions?: ql.PermissionInfo[];
   itemsPerPage?: number;
   styles?: Partial<GridViewStyle>;
-  rowMenu?: <T>(item: T, closeMenu: () => void) => JSX.Element;
+  rowMenu?: RowMenuFunc<any>;
   rowMenuStyle?: React.CSSProperties;
   renderData?: {
     [id: string]: any,

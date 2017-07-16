@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-15 18:01:41
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 11:30:07
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:23:37
  */
 
 import gql from 'graphql-tag';
+import { MemberAction } from '../schema';
 
 export default gql`
 query OrderActions($id: String!, $shard: Int!) {
@@ -26,15 +27,6 @@ query OrderActions($id: String!, $shard: Int!) {
   }
 }
 `;
-
-export interface MemberAction {
-  id: string;
-  memberID: string;
-  type: string;
-  groupID: string;
-  when: string; // Date
-  message: string;
-}
 
 export interface OrderActionsQuery {
   order: {

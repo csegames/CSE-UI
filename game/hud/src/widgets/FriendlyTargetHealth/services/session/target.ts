@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events, Race, Faction, hasClientAPI, Player, Gender } from 'camelot-unchained';
-import { PlayerStatus, BodyParts } from '../../../../lib/PlayerStatus';
+import { client, events, Race, hasClientAPI, Player, Gender } from 'camelot-unchained';
+import { PlayerStatus } from '../../../../lib/PlayerStatus';
 import {
   fakePlayer,
   fakeHealthEvents,
@@ -20,7 +20,7 @@ import {
   targetPositionChanged,
   healtEmulationTest,
 } from '../../../../lib/reduxHealth';
-import {merge, clone, defaultAction} from '../../../../lib/reduxUtils';
+import {merge, defaultAction} from '../../../../lib/reduxUtils';
 import * as _ from 'lodash';
 
 const DO_THING = 'testthing';
@@ -31,7 +31,6 @@ const HEALTH_UPDATED = 'playerhealth/player/HEALTH_UPDATED';
 
 const RACE_CHANGED = 'playerhealth/player/RACE_CHANGED';
 const NAME_CHANGED = 'playerhealth/player/NAME_CHANGED';
-const FACTION_CHANGED = 'playerhealth/player/FACTION_CHANGED';
 const AVATAR_CHANGED = 'playerhealth/player/AVATAR_CHANGED';
 const CHARACTER_POSITION_CHANGED = 'playerhealth/player/CHARACTER_POSITION_CHANGED';
 const TARGET_POSITION_CHANGED = 'playerhealth/player/TARGET_POSITION_CHANGED';
@@ -81,49 +80,6 @@ function init(): TargetAction {
   return {
     type: INIT,
     when: new Date(),
-  };
-}
-
-function onStaminaChanged(current: number, max: number): TargetAction {
-  return {
-    type: STAMINA_UPDATED,
-    when: new Date(),
-    current,
-    max,
-  };
-}
-
-function onHealthChanged(current: number, max: number, part: BodyParts): TargetAction {
-  return {
-    type: HEALTH_UPDATED,
-    when: new Date(),
-    current,
-    max,
-    part,
-  };
-}
-
-function onNameChanged(name: string): TargetAction {
-  return {
-    type: NAME_CHANGED,
-    when: new Date(),
-    text: name,
-  };
-}
-
-function onRaceChanged(race: Race): TargetAction {
-  return {
-    type: RACE_CHANGED,
-    when: new Date(),
-    race,
-  };
-}
-
-function onFactionChanged(faction: Faction): TargetAction {
-  return {
-    type: FACTION_CHANGED,
-    when: new Date(),
-    faction,
   };
 }
 

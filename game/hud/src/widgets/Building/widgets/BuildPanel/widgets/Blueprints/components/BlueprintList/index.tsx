@@ -48,16 +48,6 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
         >{bp.name}</li>
     );
   }
-  private generateBlueprintList(category: string, blueprints: BuildingBlueprint[]) {
-    return (
-      <div>
-        <div className='category'>{category}</div>
-        <ul>
-          {blueprints.map(this.generateBlueprintItem) }
-        </ul>
-      </div>
-    );
-  }
 /*
   generateCategories(categorizedBlueprints: { [key: string]: BuildingBlueprint[] }): JSX.Element[] {
     const elements: JSX.Element[] = [];

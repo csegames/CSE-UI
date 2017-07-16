@@ -6,10 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-03-08
  */
-
-import * as React from 'react';
-import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition, SortInfo } from 'camelot-unchained';
-import { clone } from 'lodash';
+import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition } from 'camelot-unchained';
 
 export interface GridViewPagerProps extends GridViewProps {
   total: number;

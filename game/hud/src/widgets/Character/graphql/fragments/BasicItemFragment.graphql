@@ -1,0 +1,8 @@
+fragment BasicItem on ItemStat_Single {
+  quality
+  encumbrance
+  agilityRequirement
+  dexterityRequirement
+  strengthRequirement
+  unitCount
+}

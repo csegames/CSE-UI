@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {client, Archetype, Race, Gender, SVGSprite, ClassIcon} from 'camelot-unchained';
+import {Archetype, Race, Gender, SVGSprite, ClassIcon} from 'camelot-unchained';
 
 import Pills, {Orientation} from './components/Pills';
 import PlayerPhoto from './components/PlayerPhoto';

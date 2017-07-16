@@ -18,14 +18,9 @@ import {GlobalState} from '../../services/session/reducer';
 import ActionButton from './components/ActionButton';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
-function select(state: GlobalState): any {
-  return {
-    buildingMode: state.building.mode,
-  };
-}
-
 export interface ActionBarProps {
-  buildingMode: number;
+  buildingMode: buildUIMode;
+  dispatch: (action: any) => void;
 }
 
 export interface ActionBarState {
@@ -136,14 +131,6 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
     );
   }
 
-  private modeListener: { (buildingMode: number):void } = (buildingMode: number) => {
-    this.setState((state, props) => ({ buldingMode: buildingMode } as any));
-  }
-
-  private onMinMax() {
-    this.setState((state, props) => ({ minimized: !state.minimized }));
-  }
-
   private onSelect() {
     if (this.props.buildingMode !== buildUIMode.SELECTINGBLOCK) {
       buildingActions.changeMode(buildUIMode.SELECTINGBLOCK);
@@ -189,5 +176,11 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
   }
 }
 
-export default connect<ActionBarProps, {}, ActionBarProps>(select)(ActionBar);
+function select(state: GlobalState) {
+  return {
+    buildingMode: state.building.mode,
+  };
+}
+
+export default connect(select)(ActionBar);
 

@@ -10,8 +10,7 @@
  */
 
 import * as React from 'react';
-import { Map } from 'immutable';
-import { events, Tooltip, utils } from 'camelot-unchained';
+import { Tooltip, utils } from 'camelot-unchained';
 import * as className from 'classnames';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';
@@ -78,7 +77,6 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
 
   public render() {
     const ss = StyleSheet.create(merge(defaultStyles, this.props.style || {}));
-    const containerClass = this.props.containerClass || 'HUDNav';
     return (
       <ul className={css(ss.list)}>
 

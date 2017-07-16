@@ -1,0 +1,28 @@
+fragment InventoryItem on Item {
+  id
+  stackHash
+  location {
+    inventory {
+      position
+    }
+  }
+  stats {
+    item {
+      quality
+      totalMass
+      unitCount
+    }
+  }
+  staticDefinition {
+    id
+    description
+    name
+    iconUrl
+    itemType
+    gearSlotSets {
+      gearSlots {
+        id
+      }
+    }
+  }
+}

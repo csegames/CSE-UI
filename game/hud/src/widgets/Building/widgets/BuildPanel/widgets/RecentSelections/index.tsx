@@ -13,7 +13,6 @@ import reducer from './services/session/reducer';
 import {initializeRecents} from './services/session/recents';
 
 import {BuildPaneProps} from '../../lib/BuildPane';
-import {BuildingItem} from '../../../../lib/BuildingItem';
 import TabbedPane from '../../components/TabbedPane';
 import RecentSelections from './components/RecentSelections';
 import {Anchor} from '../../../SavedDraggable';

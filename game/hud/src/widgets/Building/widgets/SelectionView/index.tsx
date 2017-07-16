@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
+import {BuildingItem} from '../../lib/BuildingItem';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
 export interface SelectionViewProps {

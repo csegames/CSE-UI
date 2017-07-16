@@ -8,6 +8,7 @@
         "jsx": "react",
         "module": "commonjs",
         "noImplicitUseStrict": true,
+        "noUnusedLocals": true,
         "alwaysStrict": false,
         "skipLibCheck": true,
         "suppressImplicitAnyIndexErrors": true,

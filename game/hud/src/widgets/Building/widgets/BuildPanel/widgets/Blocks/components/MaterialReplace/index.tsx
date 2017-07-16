@@ -29,7 +29,7 @@ export interface MaterialReplacePaneStateToPropsInfo {
 }
 
 export interface MaterialReplacePanePropsInfo {
-  dispatch?: (action: any) => void;
+  dispatch: (action: any) => void;
   minimized?: boolean;
 }
 
@@ -141,4 +141,4 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
   }
 }
 
-export default connect<MaterialReplacePaneStateToPropsInfo, {}, MaterialReplacePanePropsInfo>(select)(MaterialReplacePane);
+export default connect(select)(MaterialReplacePane);

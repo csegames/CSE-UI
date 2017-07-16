@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import { Resizable, ResizableBox } from 'react-resizable';
+import { Resizable } from 'react-resizable';
 
 /* tslint:disable-next-line */
 const Draggable = require('react-draggable');
@@ -72,7 +71,6 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
   }
 
   public render() {
-    const screen: Size = this.getScreenSize();
     const grid: [number, number] = [10, 10];
 
     let resizeable: any = this.props.children;
@@ -226,7 +224,6 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
   }
 
   private saveResize = (event: Event, resize: { element: any, size: Size }) => {
-    const styleSize = resize.size;
     const position: AbsolutePosition = {
       x: this.state.absolutePosition.x,
       y: this.state.absolutePosition.y,

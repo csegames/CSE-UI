@@ -1,6 +1,6 @@
 {
   "name": "cu-xmpp-chat",
-  "version": "0.3.5",
+  "version": "0.3.4",
   "description": "Camelot Unchained XMPP Chat",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -19,29 +19,32 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "nps",
-    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install)"
+    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install)",
+    "clean": "rimraf tmp && rimraf lib",
+    "babel": "babel tmp -d lib",
+    "sass": "node-sass src/ -o lib/ --importer node_modules/camelot-unchained/lib/third-party/sass-importer/sass-npm-importer.js",
+    "copy:misc": "copyup src/third-party/**/* src/images/**/* src/font/**/* src/**/*.scss lib",
+    "copy:tmp": "copyfiles tmp/**/* -u 1 lib",
+    "copies": "npm run copy:tmp && npm run copy:misc",
+    "prebuild": "npm run clean -s",
+    "build": "tsc && npm run sass && npm run copies && npm run babel",
+    "postbuild": "rimraf tmp"
   },
   "dependencies": {
-    "@types/react-redux": "^4.4.46",
-    "@types/redux-thunk": "^2.1.0",
-    "camelot-unchained": "^0.8.21",
-    "cwd-in-node-modules": "^1.0.1",
+    "camelot-unchained": "^0.8.13",
     "es6-promise": "^3.1.2",
     "isomorphic-fetch": "^2.2.1",
-    "jstransform": "^11.0.3",
     "node-xmpp-client": "^2.1.0",
     "normalizr": "^2.0.0",
-    "nps": "^5.4.0",
     "randomstring": "^1.1.5",
-    "react": "^15.6.1",
+    "react": "^15.4.2",
     "react-addons-css-transition-group": "^0.14.7",
     "react-animate.css": "0.0.4",
     "react-dom": "^15.4.2",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
-    "sass-importer-node": "^1.0.1"
+    "cwd-in-node-modules": "^1.0.1"
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
@@ -55,9 +58,9 @@
     "copyfiles": "^1.0.0",
     "http-server": "^0.9.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "^4.5.3",
+    "node-sass": "^3.8.0",
     "rimraf": "^2.6.1",
-    "typescript": "^2.4.1",
+    "typescript": "^2.1.6",
     "typings": "^1.3.2"
   }
 }

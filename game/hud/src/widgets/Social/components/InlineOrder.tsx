@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {StyleDeclaration} from 'aphrodite';
 import gql from 'graphql-tag';
-import {ql, client, Card, Spinner, TitleCard, RaisedButton} from 'camelot-unchained';
+import {Spinner} from 'camelot-unchained';
 import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 export interface InlineOrderStyle extends StyleDeclaration {
@@ -60,4 +60,4 @@ export default graphql(gql`
       shard: props.shard,
     },
   }),
-})(inlineOrder);
+})(inlineOrder as any);

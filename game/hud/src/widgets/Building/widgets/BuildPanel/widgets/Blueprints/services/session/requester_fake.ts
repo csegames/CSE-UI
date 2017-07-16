@@ -3,12 +3,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { Promise } from 'es6-promise';
-import { events, BuildingBlueprint, buildUIMode } from 'camelot-unchained';
+import { events, BuildingBlueprint } from 'camelot-unchained';
 
 class BlueprintRequests {
 
-  private mode: boolean = false;
   private icons: { [key: string]: string } = {};
 
   public requestBlueprints() {

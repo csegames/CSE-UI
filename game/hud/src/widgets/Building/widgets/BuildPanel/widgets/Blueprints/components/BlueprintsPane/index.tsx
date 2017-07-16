@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import * as ReactSelect from 'react-select';
 
 import {BuildingBlueprint} from 'camelot-unchained';
 
@@ -20,23 +19,18 @@ import BlueprintSaveView from '../BlueprintSaveView';
 import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
 import {fireBuildingItemSelected} from '../../../../../../services/events';
 
-function select(state: GlobalState): BlueprintsPaneProps {
+function select(state: GlobalState) {
   return {
     blueprintsState: state.blueprints,
   };
 }
 
-export interface BlueprintsPaneStateToPropsInfo {
-  blueprintsState?: BlueprintsState;
+export interface BlueprintsPaneProps {
+  dispatch: (action: any) => void;
+  blueprintsState: BlueprintsState;
+  minimized: boolean;
+  handlePreviewIcon: (icon: string) => void;
 }
-
-export interface BlueprintsPanePropsInfo {
-  dispatch?: (action: any) => void;
-  minimized?: boolean;
-  handlePreviewIcon?: (icon: string) => void;
-}
-
-export type BlueprintsPaneProps = BlueprintsPaneStateToPropsInfo & BlueprintsPanePropsInfo;
 
 export interface BlueprintsPaneState {
   filter: string;
@@ -91,12 +85,6 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
     } as BuildingItem;
 
     fireBuildingItemSelected(item);
-  }
-
-
-  private onFilterChanged = (val: any) => {
-    // adding the ',' so we can find the last item in the filter
-    this.setState((state, props) => ({ filter: val + ',' } as any));
   }
 
   private toggleSaveBlueprint = () => {
@@ -213,4 +201,4 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 }
 
-export default connect<BlueprintsPaneStateToPropsInfo, {}, BlueprintsPanePropsInfo>(select)(BlueprintsPane);
+export default connect(select)(BlueprintsPane);

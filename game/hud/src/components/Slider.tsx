@@ -25,7 +25,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import { spring, presets, TransitionMotion } from 'react-motion';
+import { spring, TransitionMotion } from 'react-motion';
 import { merge } from 'lodash';
 import * as className from 'classnames';
 

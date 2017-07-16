@@ -5,18 +5,21 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:21:38
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-16 12:10:52
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:29:14
  */
 
 // Types are accumulated and exported from fragments, queries, or types
 export * from './fragments';
 export * from './queries';
+export * from './schema';
 
 import fragments from './fragments';
 import queries from './queries';
+import * as schema from './schema';
 
 export {
   fragments,
   queries,
+  schema,
 };

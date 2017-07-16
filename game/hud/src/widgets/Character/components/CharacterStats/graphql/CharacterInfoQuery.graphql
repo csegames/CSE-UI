@@ -1,0 +1,10 @@
+query CharacterInfo {
+  myCharacter {
+    name
+    id
+    faction
+    race
+    gender
+    archetype
+  }
+}

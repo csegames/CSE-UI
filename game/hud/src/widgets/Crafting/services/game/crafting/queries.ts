@@ -5,17 +5,15 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-02 18:21:30
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 17:29:41
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:51:14
  */
 
 import 'isomorphic-fetch';
 import { Promise } from 'es6-promise';
-import { client } from 'camelot-unchained';
-import { isClient } from '../slash';
 import { gql } from './gql';
 import { QUERIES } from './queryText';
-import { VoxIngredient, VoxPossibleIngredient, VoxTemplate, VoxStatus, VoxRecipe } from './queryTypes';
+import { VoxPossibleIngredient, VoxTemplate, VoxStatus, VoxRecipe } from './queryTypes';
 
 const ERRORS = {
   NotFound: 'No vox nearby',

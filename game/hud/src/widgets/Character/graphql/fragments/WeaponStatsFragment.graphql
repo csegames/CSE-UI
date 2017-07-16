@@ -1,0 +1,23 @@
+fragment WeaponStats on WeaponStat_Single {
+  piercingDamage
+  piercingBleed
+  piercingArmorPenetration
+  slashingDamage
+  slashingBleed
+  slashingArmorPenetration
+  crushingDamage
+  fallbackCrushingDamage
+  disruption
+  deflectionAmount
+  physicalProjectileSpeed
+  knockbackAmount
+  stability
+  falloffMinDistance
+  falloffMaxDistance
+  falloffReduction
+  deflectionRecovery
+  staminaCost
+  physicalPreparationTime
+  physicalRecoveryTime
+  range
+}

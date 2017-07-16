@@ -12,7 +12,6 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
-  Spinner,
   RaisedButton,
   Tooltip,
 } from 'camelot-unchained';

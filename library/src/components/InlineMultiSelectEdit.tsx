@@ -71,13 +71,17 @@ export const defaultInlineMultiSelectEditStyle: InlineMultiSelectEditStyle = {
   },
 };
 
+export interface comparisonFunction<T> {
+  (a: T, b: T): boolean;
+}
+
 export interface InlineMultiSelectEditProps {
   items: any[];
   value: any[];
   filter: (text: string, item: any) => boolean;
   renderListItem: (item: any, renderData: any) => JSX.Element;
   renderSelectedItem: (item: any, renderData: any) => JSX.Element;
-  itemComparison: <T>(a: T, b: T) => boolean;
+  itemComparison: comparisonFunction<any>;
   renderData?: any;
   onSave: (prev: any, selected: any) => Promise<{ok: boolean, error?: string}>;
   styles?: Partial<InlineMultiSelectEditStyle>;

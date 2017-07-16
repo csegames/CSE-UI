@@ -11,7 +11,6 @@
 
 import {client, events} from 'camelot-unchained';
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
 
 interface ErrorMessageAppProps { }
 

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, BuildingBlock, BuildingMaterial } from 'camelot-unchained';
+import { events, BuildingMaterial } from 'camelot-unchained';
 
 import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 import MaterialsByType from '../../lib/MaterialsByType';
@@ -14,9 +14,6 @@ const SET_MATERIALS_BY_TYPE = 'buildpanel/panes/SET_MATERIALS_BY_TYPE';
 const UPDATE_MATERIAL_SELECTOR = 'buildpanel/panes/UPDATE_MATERIAL_SELECTOR';
 const SET_MATERIAL_SELECTION = 'buildpanel/panes/SET_MATERIAL_SELECTION';
 const SET_MATERIAL_HOVER = 'buildpanel/panes/SET_MATERIAL_HOVER';
-
-
-const DEFAULT_MATERIAL = new BuildingMaterial({} as BuildingMaterial);
 
 export function initialize(dispatch: any) {
 

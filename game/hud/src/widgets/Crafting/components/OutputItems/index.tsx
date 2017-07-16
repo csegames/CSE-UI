@@ -5,14 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-10 22:11:42
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 12:10:47
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:48:20
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Select from '../Select';
-import Label from '../Label';
 import { GlobalState } from '../../services/session/reducer';
 import { InventoryItem } from '../../services/types';
 import { craftingTimeToString } from '../../services/util';
@@ -28,7 +26,6 @@ export interface OutputItemsReduxProps {
 }
 
 export interface OutputItemsProps extends OutputItemsReduxProps {}
-interface OutputItemsState {}
 
 const select = (state: GlobalState, props: OutputItemsProps) : OutputItemsReduxProps => {
   return {

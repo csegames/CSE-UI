@@ -27,8 +27,6 @@ export interface QualityInputProps extends QualityInputReduxProps {
   onChange: (quality: number) => void;
 }
 
-interface QualityInputState {}
-
 const select = (state: GlobalState, props: QualityInputProps) : QualityInputReduxProps => {
   return {
     quality: state.job.quality,

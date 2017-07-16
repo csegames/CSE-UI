@@ -11,7 +11,6 @@
 
 import { client, Item, events, jsKeyCodes, hasClientAPI } from 'camelot-unchained';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 export interface EquippedGearWindowProps {
 }

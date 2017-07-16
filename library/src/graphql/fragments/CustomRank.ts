@@ -5,18 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 12:04:43
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 16:30:35
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:21:05
  */
 
 import gql from 'graphql-tag';
-import PermissionInfoFragment, {PermissionInfo} from './PermissionInfo';
-
-export interface CustomRank {
-  name: string;
-  level: number;
-  permissions: PermissionInfo[];
-}
+import PermissionInfoFragment from './PermissionInfo';
+import { PermissionInfo } from '../schema';
 
 export default gql`
 fragment CustomRank on CustomRank {

@@ -9,12 +9,10 @@
 
 import * as React from 'react';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
-import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { Spinner, ColumnDefinition } from 'camelot-unchained';
 import GridViewPager from './GridViewPager';
-import GroupTitle from './GroupTitle';
 
 export interface OrdersGridStyle extends StyleDeclaration {
   container : React.CSSProperties;
@@ -90,7 +88,6 @@ export const defaultOrdersGridColumnDefinitions: OrdersListColumn[] = [
 const OrdersGrid = (props : OrdersGridProps) => {
 
   const ss = StyleSheet.create(defaultOrdersGridStyle);
-  const custom = StyleSheet.create(props.styles || {});
   const columnDefs: OrdersListColumn[] = props.columnDefinitions || defaultOrdersGridColumnDefinitions;
 
   return (
@@ -148,5 +145,5 @@ const options = (props: OrdersGridProps) => {
   return opts;
 };
 
-const OrdersGridWithQL = graphql(query, { options })(OrdersGrid);
+const OrdersGridWithQL = graphql(query, { options })(OrdersGrid as any);
 export default OrdersGridWithQL;

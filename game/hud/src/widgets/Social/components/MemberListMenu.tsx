@@ -10,8 +10,6 @@
  */
 
 import * as React from 'react';
-import * as className from 'classnames';
-import { merge } from 'lodash';
 import {
   ql,
   ConfirmDialog,
@@ -44,15 +42,6 @@ export interface MemberListMenuStyle extends StyleDeclaration {
   list: React.CSSProperties;
   item: React.CSSProperties;
 }
-
-const confirmPromoteDialog = (props: {}) => {
-  return (
-    <div>
-      
-    </div>
-  );
-};
-
 
 function kickMember(m: {id: string}, groupId: string, onSuccess: () => void) {
   webAPI.GroupsAPI.kickV1(client.shardID, client.characterID, groupId, m.id)

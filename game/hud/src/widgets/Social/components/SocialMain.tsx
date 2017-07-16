@@ -5,18 +5,16 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-19 15:16:21
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-06 15:23:58
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 19:25:16
  */
 
 import * as React from 'react';
-import { ApolloClient } from 'apollo-client';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 import { connect } from 'react-redux';
-import { client, events, ql, FloatSpinner } from 'camelot-unchained';
+import { events, ql, FloatSpinner } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import { SessionState } from '../services/session/reducer';
 import { NavigationState, selectLink, toggleCollapsedCategory} from '../services/session/navigation';
 import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';
 
@@ -36,9 +34,6 @@ export interface SocialMainStyle extends StyleDeclaration {
 
 export const defaultSocialMainStyle: SocialMainStyle = {
   container: {
-    position: 'fixed',
-    left: '0',
-    top: '0',
     width: '100%',
     height: '100%',
     overflowX: 'hidden',
@@ -139,23 +134,19 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     return (
       <div className={css(ss.container, custom.container)}>
 
-        <SocialNav navigation={this.props.navigation}
-                   dispatch={this.props.dispatch}
-                   refresh={this.refresh}
-                   mySocial={this.props.data} />
+        <SocialNav
+          navigation={this.props.navigation}
+          dispatch={this.props.dispatch}
+          refresh={this.refresh}
+          mySocial={this.props.data}
+        />
 
 
         <div className={css(ss.content, custom.content)}>
           {content}
         </div>
 
-        <div className={css(ss.closeButton, custom.closeButton)}>
-          <i className='fa fa-times click-effect' onClick={() => events.fire('hudnav--navigate', 'social')}></i>
-        </div>
-
-        {
-          this.props.data.loading ? <FloatSpinner /> : null
-        }
+        {this.props.data.loading ? <FloatSpinner /> : null}
       </div>
     );
   }

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 10:40:00
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-24 10:52:37
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-20 17:10:17
  */
 
 import * as React from 'react';
@@ -20,6 +20,7 @@ const defaultStyles: WatermarkStyle = {
     lineHeight: '20px',
     position: 'fixed',
     left: '50%',
+    top: '15px',
     transform: 'translateX(-50%)',
     color: '#fff',
     fontSize: '13px',

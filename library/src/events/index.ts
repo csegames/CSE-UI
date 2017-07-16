@@ -131,6 +131,15 @@ export function removeListener(listener: any): void {
   off(listener);
 }
 
+export interface ListenerInfo {
+  callback: (...params: any[]) => any;
+  id: number;
+  fired: number;
+  last: number;
+  once: boolean;
+  topic: string;
+}
+
 export default {
   clientEventTopics,
   buildingEventTopics,

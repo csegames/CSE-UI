@@ -8,8 +8,7 @@
         "jsx": "react",
         "module": "commonjs",
         "declaration": true,
-        "newLine": "LF",
-        "forceConsistentCasingInFileNames": true
+        "newLine": "LF"
     },
     "formatCodeOptions": {
         "indentSize": 2,

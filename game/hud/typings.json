@@ -10,7 +10,7 @@
     "react-draggable": "github:cumodsquad/Typings/react-draggable/react-draggable.d.ts",
     "react-resizable": "github:cumodsquad/Typings/react-resizable/react-resizable.d.ts",
     "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts",
-    "enzyme-to-json": "github:saddieeiddas/enzyme-to-json-ts-definition/enzyme-to-json.d.ts"
+    "enzyme-to-json": "github:saddieeiddas/enzyme-to-json-ts-definition/enzyme-to-json.d.ts"    
   },
   "dependencies": {
     "index": "github:gaearon/redux-thunk/index.d.ts"

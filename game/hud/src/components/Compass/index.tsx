@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events } from 'camelot-unchained';
+import { client } from 'camelot-unchained';
 import * as React from 'react';
 
 export interface CompassProps {
@@ -14,8 +14,6 @@ export interface CompassProps {
 export interface CompassState {
   facing: number;
 }
-
-declare const cuAPI: any;
 
 class Compass extends React.Component<CompassProps, CompassState> {
   public name: string = 'Compass';
@@ -31,7 +29,6 @@ class Compass extends React.Component<CompassProps, CompassState> {
   }
 
   public render() {
-    const key: number = 0;
     const facing: number = this.state.facing;
     return (
       <div className='Compass'>

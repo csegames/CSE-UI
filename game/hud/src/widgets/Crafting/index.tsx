@@ -10,7 +10,6 @@
  */
 
 import * as React from 'react';
-import {client, events} from 'camelot-unchained';
 
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';

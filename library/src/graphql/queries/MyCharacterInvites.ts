@@ -5,13 +5,14 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 14:43:08
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 14:51:57
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:25:25
  */
 
 import gql from 'graphql-tag';
 
-import InviteFragment, { Invite } from '../fragments/Invite';
+import InviteFragment from '../fragments/Invite';
+import { Invite } from '../schema';
 
 export default gql`
 query MyCharacterInvites {

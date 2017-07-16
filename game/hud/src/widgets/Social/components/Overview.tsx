@@ -11,9 +11,7 @@
 
 import * as React from 'react';
 import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {merge} from 'lodash';
-import gql from 'graphql-tag';
-import {ql, client, Card, Spinner, TitleCard, RaisedButton} from 'camelot-unchained';
+import {ql, client, Card, Spinner, TitleCard} from 'camelot-unchained';
 import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 import GroupTitle from './GroupTitle';

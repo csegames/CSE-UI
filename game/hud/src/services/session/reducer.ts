@@ -7,14 +7,15 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import layout, { LayoutState } from './layout';
 import invites, { InvitesState } from './invites';
-import ApolloClient, { createNetworkInterface, toIdValue } from 'apollo-client';
+import ApolloClient, { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
 import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
 import { client } from 'camelot-unchained';
 // Apollo Setup
 
 // define network address
-const networkInterface = createNetworkInterface({
+const networkInterface = createBatchingNetworkInterface({
   uri: `${client.apiHost}/graphql`,
+  batchInterval: 100,
 });
 
 // middleware to send variables as string - required for graphql-dotnet for now (should be changed in future)
@@ -61,6 +62,7 @@ const customResolvers = {
     myWarbands: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Warband', id: args['id'] })),
     warbandMember: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'WarbandMember', id: args['id'] })),
     character: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Character', id: args['id'] })),
+    item: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Item', id: args['id'] })),
   },
 };
 
@@ -76,7 +78,7 @@ export const apollo = new ApolloClient({
 const reducer =  combineReducers({
   apollo: apollo.reducer() as any,
   layout,
-  invites,
+  invites: invites as any,
 });
 export default reducer;
 

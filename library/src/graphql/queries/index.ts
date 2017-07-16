@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:27:05
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 14:47:37
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-05-24 16:10:51
  */
 
 import MyCharacter from './MyCharacter';

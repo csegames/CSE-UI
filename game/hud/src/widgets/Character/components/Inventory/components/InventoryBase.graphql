@@ -1,0 +1,10 @@
+query InventoryBase {
+  myInventory {
+    items {
+      ...InventoryItem
+    }
+    itemCount
+    totalMass
+    currency
+  }
+}

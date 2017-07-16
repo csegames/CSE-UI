@@ -69,10 +69,6 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
       }, 500);
     }
   }
-
-  private getValue = (): string => {
-    return (this.refs['node'] as Input).getValue();
-  }
 }
 
 export default NameInput;

@@ -5,17 +5,24 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:25:29
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-23 11:58:12
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-20 16:58:35
  */
 
 import * as React from 'react';
-import { Map } from 'immutable';
 import { events, client, utils, soundEvents } from 'camelot-unchained';
-import HUDNav, { HUDNavItem } from '../../../components/HUDNav';
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import HUDNav from '../../../components/HUDNav';
+import { LayoutMode } from '../../../components/HUDDrag';
 
 const { Orientation } = utils;
+
+const hideClientControlledUI = () => {
+  client.HideUI('spellbook');
+  client.HideUI('ability-builder');
+  client.HideUI('inventory');
+  client.HideUI('equippedgear');
+  client.HideUI('plotcontrol');
+};
 
 export default {
   position: {
@@ -61,6 +68,22 @@ export default {
         },
       },
       {
+        name: 'character',
+        tooltip: 'Character',
+        iconClass: 'fa-user',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'character');
+          hideClientControlledUI();
+        },
+      },
+      {
         name: 'social',
         tooltip: 'Social',
         iconClass: 'fa-users',
@@ -73,11 +96,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'social');
-          client.HideUI('spellbook');
-          client.HideUI('ability-builder');
-          client.HideUI('inventory');
-          client.HideUI('equippedgear');
-          client.HideUI('plotcontrol');
+          hideClientControlledUI();
         },
       },
       {

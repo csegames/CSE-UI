@@ -1,0 +1,34 @@
+query ItemInfo($shard: Int!, $id: String!) {
+  item(shard: $shard, id: $id) {
+    ...InventoryItem
+    stats {
+      item {
+        ...BasicItem
+      }
+      alloy {
+        ...AlloyStats
+      }
+      substance {
+        ...SubstanceStats
+      }
+      durability {
+        ...DurabilityStats
+      }
+      block {
+        ...BlockStats
+      }
+      container {
+        ...ContainerStats
+      }
+      siegeEngine {
+        ...SiegeEngineStats
+      }
+      weapon {
+        ...WeaponStats
+      }
+      armor {
+        ...ArmorParts
+      }
+    }
+  }
+}

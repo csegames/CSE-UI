@@ -17,6 +17,7 @@ import * as PresenceAPI from './controllers/Presence';
 import * as ServerListHelperAPI from './controllers/ServerListHelper';
 import * as TraitsAPI from './controllers/Traits';
 import * as WarbandsAPI from './controllers/Warbands';
+import * as ItemAPI from './controllers/Item';
 
 
 // directly export definitions and helpers
@@ -29,7 +30,6 @@ export {
   CharactersAPI,
   CraftingAPI,
   ContentAPI,
-  CraftingAPI,
   GameDataAPI,
   GroupsAPI,
   OrdersAPI,
@@ -38,5 +38,6 @@ export {
   ServerListHelperAPI,
   TraitsAPI,
   WarbandsAPI,
+  ItemAPI,
   Errors,
 };

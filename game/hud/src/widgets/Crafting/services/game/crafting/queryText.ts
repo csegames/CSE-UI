@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:19:00
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 13:04:06
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:51:25
  */
 
 const FIELD_LISTS = {
@@ -75,7 +75,6 @@ const GetQueryText = (name: string, def: any, indent: string = '') => {
   const query : string[] = [];
   query.push('query ' + name + ' {');
   for (const key in def) {
-    const s = key as string;
     query.push(GetQueryPart(key, def[key], null, indent + '  '));
   }
   query.push('}');

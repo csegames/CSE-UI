@@ -5,13 +5,14 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:32:59
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:13:29
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:22:04
  */
 import gql from 'graphql-tag';
 import {Faction, Race, Gender, Archetype} from '../..';
-import PermissionInfoFragment, {PermissionInfo} from './PermissionInfo';
-import CustomRankFragment, {CustomRank} from './CustomRank';
+import PermissionInfoFragment from './PermissionInfo';
+import CustomRankFragment from './CustomRank';
+import { PermissionInfo, CustomRank } from '../schema';
 
 export default gql`
 fragment FullOrderMember on OrderMember {

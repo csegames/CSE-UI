@@ -70,12 +70,6 @@ const PRESETS: Light[] = [
   } as Light,
 ];
 
-const DEFAULT_LIGHT: Light = {
-  color: { red: 255, green: 147, blue: 14 } as Color,
-  radius: 5,
-  intensity: 10,
-} as Light;
-
 export function getLightAsString(light: Light): string {
   return '{ "index": ' + light.index +
     ', "color": ' + getColorAsString(light.color) +

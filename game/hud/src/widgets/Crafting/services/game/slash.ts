@@ -5,21 +5,11 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 21:57:23
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-09 20:23:37
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:51:42
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';
-import { Ingredient } from '../types';
-
-const VoxType = {
-  'World.VoxJobPurify': 'purify',
-  'World.VoxJobRefine': 'refine',
-  'World.VoxJobGrind': 'grind',
-  'World.VoxJobShape': 'shape',
-  'World.VoxJobBlock': 'block',
-  'World.VoxJobMake': 'make',
-};
 
 export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {

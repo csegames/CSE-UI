@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 17:22:21
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 10:54:38
+ * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-05-08 10:31:00
  */
 
 import FullOrder from './FullOrder';
@@ -32,7 +32,6 @@ export * from './FullCharacter';
 
 import Invite from './Invite';
 export * from './Invite';
-
 
 export default {
   FullOrder,

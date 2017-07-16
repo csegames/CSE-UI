@@ -9,7 +9,6 @@
  * @Last Modified time: 2017-02-21 18:55:04
  */
 
-import { client } from 'camelot-unchained';
 import { crashReporterMiddleware, thunkMiddleware } from '../../../../lib/reduxUtils';
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import navigation, { NavigationState } from './navigation';

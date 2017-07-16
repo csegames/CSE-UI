@@ -10,8 +10,7 @@
  */
 
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import {client, events, plotPermissions, webAPI, hasClientAPI} from 'camelot-unchained';
+import {client, events, plotPermissions, webAPI} from 'camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;
@@ -28,9 +27,6 @@ interface PlotControlUIState {
 interface PlotControlUIProps {}
 
 class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUIState> {
-
-  private source: Node;
-  private sourceIndex: number;
   
   constructor(props: PlotControlUIProps) {
     super(props);
@@ -151,7 +147,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   
   private getQueueStatus = () => {
     if (this.state.plotOwned === false) return;
-    const resp = webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp) => {
+    webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp) => {
       if (!resp.ok) return;
       this.setState((state, props) => ({
         ...state,

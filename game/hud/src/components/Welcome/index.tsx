@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, webAPI, legacyAPI} from 'camelot-unchained';
+import {webAPI} from 'camelot-unchained';
 import * as React from 'react';
 
 export interface WelcomeProps {
@@ -20,8 +20,6 @@ export interface WelcomeData {
   message: string;
   duration: number;
 }
-
-declare const cuAPI: any;
 
 class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   public name: string = 'Welcome';
@@ -52,7 +50,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     );
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
       if (response.ok) {
         this.onMessage(response.data);

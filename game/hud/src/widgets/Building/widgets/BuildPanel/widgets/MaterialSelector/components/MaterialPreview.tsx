@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import {BuildingMaterial} from 'camelot-unchained';
 import {GlobalState} from '../services/session/reducer';
 
-function select(state: GlobalState): MaterialPreviewProps {
+function select(state: GlobalState) {
   const mat = state.materialSelector.hoverMaterial;
   return {
     material: mat,
@@ -19,9 +19,9 @@ function select(state: GlobalState): MaterialPreviewProps {
 }
 
 export interface MaterialPreviewProps {
-  dispatch?: any;
-  material?: BuildingMaterial;
-  show?: boolean;
+  dispatch: any;
+  material: BuildingMaterial;
+  show: boolean;
 }
 
 export interface MaterialPreviewState {

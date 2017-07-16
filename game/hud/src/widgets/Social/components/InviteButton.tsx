@@ -13,7 +13,6 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   webAPI,
-  ql,
   Spinner,
   RaisedButton,
   Input,

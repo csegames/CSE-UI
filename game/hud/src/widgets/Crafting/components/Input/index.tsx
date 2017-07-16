@@ -10,7 +10,6 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { client } from 'camelot-unchained';
 import { StyleSheet, css, merge, input, InputStyles } from '../../styles';
 

@@ -7,17 +7,13 @@
 import * as React from 'react';
 import {
   client,
-  events,
-  SVGSprite,
-  ClassIcon,
   CombatLog,
   damageTypes,
 } from 'camelot-unchained';
-import { spring, presets, TransitionMotion } from 'react-motion';
+import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
 
 import Pills, {Orientation} from './components/Pills';
-import ActiveEffectIcon from '../../components/ActiveEffectIcon';
 
 import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
 
@@ -81,7 +77,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
   public render() {
     // if (!this.validPlayer()) return null;
-    const {playerStatus} = this.props;
     const now = Date.now();
     // did we recently take damage?
     for (let i = this.state.events.length - 1; i >= 0; --i) {
@@ -123,7 +118,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
               : null
           }
 
-
           <Pills orientation={Orientation.CircleTop}
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
@@ -133,8 +127,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BLOOD_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'red'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
-
-
+          
           <Pills orientation={Orientation.CircleBottom}
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
@@ -354,7 +347,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
       if (e.heals) {
         let value = 0;
         let max = 0;
-        const type = damageTypes.NONE;
         e.heals.forEach((d) => {
           if (d.recieved > max) {
             max = d.recieved | 0;
@@ -405,22 +397,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     if (Date.now() < this.endTime) return;
     if (!this.componentRef || this.componentRef.className.indexOf(this.shakeAnimationName) === -1) return;
     this.componentRef.className = this.componentRef.className.replace(` ${this.shakeAnimationName}`, '').trim();
-  }
-
-  private validPlayer = () => {
-    const {playerStatus} = this.props;
-    if (!playerStatus.name) return false;
-    if (!playerStatus.avatar) return false;
-    if (!playerStatus.race) return false;
-    if (!playerStatus.gender) return false;
-    if (!playerStatus.archetype) return false;
-    // if (!playerStatus.characterID) return false;
-    if (!playerStatus.health || playerStatus.health.length !== 6) return false;
-    if (!playerStatus.wounds || playerStatus.wounds.length !== 6) return false;
-    if (!playerStatus.stamina || !playerStatus.stamina.current || !playerStatus.stamina.maximum) return false;
-    if (!playerStatus.blood || !playerStatus.blood.current || !playerStatus.blood.maximum) return false;
-    // if (!playerStatus.panic || !playerStatus.panic.current || !playerStatus.panic.maximum) return false;
-    return true;
   }
 }
 

@@ -6,13 +6,11 @@
 
 import * as React from 'react';
 import {Color} from '../../lib/Color';
-import * as assign from 'object-assign';
 
 // tslint:disable
 const colorOps = require('color-ops');
 
 export interface ColorSelectProps {
-  dispatch?: (action: any) => void;
   colorChanged: (color: Color) => void;
   color: Color;
 }

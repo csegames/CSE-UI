@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {StyleDeclaration} from 'aphrodite';
 import gql from 'graphql-tag';
-import {ql, client, Card, Spinner, TitleCard, RaisedButton} from 'camelot-unchained';
+import {Spinner} from 'camelot-unchained';
 import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 export interface InlineCharacterStyle extends StyleDeclaration {
@@ -23,10 +23,6 @@ interface InlineCharacterProps extends InjectedGraphQLProps <{
   character: {
     id: string;
     name: string;
-    race: string;
-    realm: string;
-    gender: string;
-    class: string;
   },
 } > {
   id: string;
@@ -55,10 +51,6 @@ export default graphql(gql`
         character(id: $id, shard: $shard) {
           id
           name
-          race
-          realm
-          gender
-          class
         }
       }
     `, {
@@ -68,4 +60,4 @@ export default graphql(gql`
       shard: props.shard,
     },
   }),
-})(inlineCharacter);
+})(inlineCharacter as any);

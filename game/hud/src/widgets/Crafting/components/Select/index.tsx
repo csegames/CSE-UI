@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:52:07
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:49:15
  */
 
 import * as React from 'react';
@@ -29,8 +29,6 @@ export interface SelectState {
 }
 
 class Select extends React.Component<SelectProps, SelectState> {
-  private static idCounter: number = 0;
-  private uniqueId: string = 'Select-' + Select.idCounter++;
   private ss: any;
 
   constructor(props: SelectProps) {

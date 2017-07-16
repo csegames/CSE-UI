@@ -7,14 +7,13 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import cu, { client, events, DEBUG_ASSERT, RUNTIME_ASSERT } from 'camelot-unchained';
+import { client, events, RUNTIME_ASSERT } from 'camelot-unchained';
 
 import { cloneDeep } from 'lodash';
-import { HUDDragOptions, LayoutMode, Edge } from '../../components/HUDDrag';
+import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';
-import HUDNav from './layoutItems/HUDNav';
 import Welcome from './layoutItems/Welcome';
 import Warband from './layoutItems/Warband';
 import Respawn from './layoutItems/Respawn';
@@ -23,8 +22,6 @@ import Crafting from './layoutItems/Crafting';
 import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
-import EquippedGear from './layoutItems/EquippedGear';
-import Inventory from './layoutItems/Inventory';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
 import RefillAmmo from './layoutItems/RefillAmmo';
@@ -84,44 +81,6 @@ export interface LayoutState {
   widgets: Map<string, Widget<any>>;
 }
 
-/////////////////////////////////
-// Helper Methods
-/////////////////////////////////
-
-function axis2anchor(anchor: AxisAnchorRelativeTo, position: number, range: number): AnchoredAxis {
-  switch (anchor) {
-    case AxisAnchorRelativeTo.START:
-      return { anchor, offset: position };
-    case AxisAnchorRelativeTo.END:
-      return { anchor, offset: range - position };
-  }
-  return { anchor, offset: position - (range * 0.5) };
-}
-
-function anchor2axis(anchored: AnchoredAxis, range: number): number {
-  switch (anchored.anchor) {
-    case AxisAnchorRelativeTo.CENTER: // relative to center
-      return (range * 0.5) + anchored.offset;
-    case AxisAnchorRelativeTo.START: // relative to start
-      return anchored.offset;
-    case AxisAnchorRelativeTo.END:
-      return range - anchored.offset;
-  }
-}
-
-function adjustAxis(anchor: number, position: number, prevRange: number, range: number): number {
-  if (anchor === AxisAnchorRelativeTo.END) return position + (range - prevRange);
-  if (anchor === AxisAnchorRelativeTo.CENTER) return (range / 2) - ((prevRange / 2) - position);
-  return position;
-}
-
-function chooseAnchorForAxis(pos: number, extent: number, range: number): AxisAnchorRelativeTo {
-  if (pos < range * 0.25) return AxisAnchorRelativeTo.START;
-  if (pos + extent >= range * 0.75) return AxisAnchorRelativeTo.END;
-  return AxisAnchorRelativeTo.CENTER;
-}
-
-
 function forceOnScreen(current: Readonly<Position>, screen: Readonly<Size>): Position {
   // If the UI is scaled, it is being scaled around the center, so for example, a widget that
   // is 200 pixels wide, scaled to 0.5 and positioned at the edge of the screen, the x position
@@ -173,12 +132,6 @@ function initialState(): LayoutState {
     ],
     [
       'friendlyTarget', cloneDeep(FriendlyTarget),
-    ],
-    [
-      'equippedgear', cloneDeep(EquippedGear),
-    ],
-    [
-      'inventory', cloneDeep(Inventory),
     ],
     [
       'errorMessages', cloneDeep(ErrorMessages),
@@ -270,7 +223,6 @@ function saveState(state: LayoutState, widget: Widget<any>, name: string) {
     widgets: widgets.set(name, widget),
   };
   localStorage.setItem(localStorageKey, JSON.stringify(stateClone));
-  console.log(localStorage.getItem(localStorageKey));
 }
 
 

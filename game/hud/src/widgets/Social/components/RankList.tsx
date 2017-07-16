@@ -13,10 +13,8 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { ql,
          utils,
-         Flyout,
          Tooltip,
          RaisedButton,
-         DualListSelect,
          Dialog,
          GridView,
          ColumnDefinition,
@@ -284,7 +282,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
                                         </Tooltip>
                                       );
                                     }}
-                                    itemComparison={(a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
+                                    itemComparison={ (a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
                                     filter={(text: string, p: ql.PermissionInfo) => stringContains(p.name, text)}
                                     onSave={(existing: ql.PermissionInfo[], permissions: ql.PermissionInfo[]): any  => {
                                       console.log(permissions.map(p => p.tag).join());
@@ -293,7 +291,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
                                         client.characterID,
                                         renderData.groupId,
                                         item.name,
-                                        permissions.map(p => p.tag)).then((result) => {
+                                        permissions.map(p => p.tag)).then(result => {
                                           if (result.ok) {
                                             renderData.refetch();
                                             return {

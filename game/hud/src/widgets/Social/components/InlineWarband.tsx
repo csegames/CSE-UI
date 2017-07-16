@@ -10,9 +10,8 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import gql from 'graphql-tag';
-import {ql, client, Card, Spinner, TitleCard, RaisedButton} from 'camelot-unchained';
+import {StyleDeclaration} from 'aphrodite';
+import {ql, Spinner} from 'camelot-unchained';
 import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 export interface InlineWarbandStyle extends StyleDeclaration {
@@ -48,4 +47,4 @@ export default graphql(ql.queries.InlineWarband, {
       shard: props.shard,
     },
   }),
-})(inlineWarband);
+})(inlineWarband as any);

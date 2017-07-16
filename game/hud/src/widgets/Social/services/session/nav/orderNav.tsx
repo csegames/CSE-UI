@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { client, utils, ql } from 'camelot-unchained';
-import { SocialCategory, OrderCategory, defaultCategoryNav } from './navTypes';
+import { utils, ql } from 'camelot-unchained';
+import { SocialCategory, defaultCategoryNav } from './navTypes';
 
 export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, previousNav = defaultCategoryNav()) {
 

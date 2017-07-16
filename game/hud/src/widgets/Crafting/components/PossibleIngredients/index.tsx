@@ -18,7 +18,6 @@ import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles 
 import Icon from '../Icon';
 
 interface PossibleIngredientsReduxProps {
-  dispatch?: (action: any) => void;
   possibleIngredients?: InventoryItem[];
   jobType?: string;
   style?: Partial<PossibleIngredientsStyles>;
@@ -38,6 +37,7 @@ export interface PossibleIngredientsProps extends PossibleIngredientsReduxProps 
   selectedItem: InventoryItem;
   disabled?: boolean;
   onSelect: (item: InventoryItem) => void;
+  dispatch: (action: any) => void;
 }
 
 export interface PossibleIngredientsState {}

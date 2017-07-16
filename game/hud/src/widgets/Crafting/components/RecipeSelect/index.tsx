@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 16:11:24
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 17:57:07
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:48:42
  */
 
 import * as React from 'react';
@@ -18,7 +18,6 @@ import { Recipe } from '../../services/types';
 import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../../styles';
 
 export interface RecipeSelectReduxProps {
-  dispatch?: (action: any) => void;
   type?: string;
   items?: Recipe[];
   selected?: Recipe;
@@ -28,6 +27,7 @@ export interface RecipeSelectReduxProps {
 
 export interface RecipeSelectProps extends RecipeSelectReduxProps {
   onSelect: (recipe: Recipe) => void;
+  dispatch: (action: any) => void;
 }
 
 interface RecipeSelectState {}
@@ -68,8 +68,8 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
       </div>
     );
   }
-  private renderActive = (item: Recipe) => item && <span key={item.id} value={item.id}>{item.name}</span>;
-  private renderItem = (item: Recipe) => item && <span key={item.id} value={item.id}>{item.name}</span>;
+  private renderActive = (item: Recipe) => item && <span key={item.id}>{item.name}</span>;
+  private renderItem = (item: Recipe) => item && <span key={item.id}>{item.name}</span>;
   private onSelect = (item: Recipe) => this.props.onSelect(item);
 }
 

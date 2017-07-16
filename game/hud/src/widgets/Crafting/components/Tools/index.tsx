@@ -20,7 +20,6 @@ import { slash } from '../../services/game/slash';
 import { setMessage } from '../../services/session/job';
 import { setCountdown } from '../../services/session/ui';
 
-import Label from '../Label';
 import Input from '../Input';
 import Button from '../Button';
 import VoxMessage from '../VoxMessage';
@@ -36,6 +35,7 @@ const select = (state: GlobalState, props: ToolsProps) : ToolsPropsRedux => {
 
 export interface ToolsProps extends ToolsPropsRedux {
   style?: Partial<ToolsStyles>;
+  dispatch: (action: any) => void;
 }
 
 interface ToolsState {

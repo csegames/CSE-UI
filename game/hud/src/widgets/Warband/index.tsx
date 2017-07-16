@@ -7,9 +7,8 @@
 import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
-import {client} from 'camelot-unchained';
 
-import {loggingMiddleware, crashReporterMiddleware, thunkMiddleware} from '../../lib/reduxUtils';
+import {crashReporterMiddleware, thunkMiddleware} from '../../lib/reduxUtils';
 import initialize from './services/initialization';
 import reducer from './services/session';
 import WarbandDisplay from './components/WarbandDisplay';
@@ -29,11 +28,12 @@ export interface WarbandContainerState {
 class WarbandContainer extends React.Component<WarbandContainerProps, WarbandContainerState> {
 
   private initialized = false;
-
   public render() {
+    // temporary hack until react-redux supports ts 2.4 properly
+    const props: any = this.props;
     return (
       <Provider store={store}>
-        <WarbandDisplay {...(this.props as any)} />
+        <WarbandDisplay {...props} />
       </Provider>
     );
   }

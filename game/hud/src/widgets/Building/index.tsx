@@ -10,7 +10,6 @@
  */
 
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
@@ -21,7 +20,6 @@ import {initializeSelections} from './services/session/selection';
 import App from './components/BuildingApp';
 
 const store = createStore(reducer, applyMiddleware(thunk));
-const root = document.getElementById('cse-ui-building');
 
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib

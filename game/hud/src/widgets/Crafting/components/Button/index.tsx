@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 21:18:49
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:16:55
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:46:04
  */
 
 
@@ -19,8 +19,6 @@ interface ButtonProps {
   style?: Partial<ButtonStyles>;
   children?: any;
 }
-
-interface ButtonState {}
 
 export const Button = (props: ButtonProps) => {
   const ss = StyleSheet.create(merge({}, button, props.style));

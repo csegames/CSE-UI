@@ -11,7 +11,6 @@
 
 import {events, core} from 'camelot-unchained';
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class AnnouncementState {
@@ -44,7 +43,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
       </ReactCSSTransitionGroup>
     );
   }
-  
+
   public componentWillMount() {
     events.on('handlesAnnouncements', this.onMessage);
     this.setState({message: ''});

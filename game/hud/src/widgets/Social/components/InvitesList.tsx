@@ -15,11 +15,7 @@ import {
   ql,
   webAPI,
   GridView,
-  FlatButton,
-  ConfirmDialog,
   Spinner,
-  GroupType,
-  InviteStatus,
   client,
 } from 'camelot-unchained';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
@@ -138,5 +134,5 @@ function PreQLInvitesList(props: InvitesListProps) {
   );
 }
 
-export const InvitesList = graphql(ql.queries.MyCharacterInvites)(PreQLInvitesList);
+export const InvitesList = graphql(ql.queries.MyCharacterInvites)(PreQLInvitesList as any);
 export default InvitesList;

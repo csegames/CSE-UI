@@ -5,19 +5,19 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 13:10:40
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:45:56
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {events, client, jsKeyCodes, webAPI, hasClientAPI } from 'camelot-unchained';
+import {events, client, jsKeyCodes } from 'camelot-unchained';
 import {craftingTimeToString} from '../../services/util';
 
 // Types
-import { InventoryItem, Recipe, Template, Ingredient } from '../../services/types';
+import { Recipe, Template, Ingredient } from '../../services/types';
 import { VoxIngredient, VoxTemplate, VoxRecipe, VoxResponse } from '../../services/game/crafting';
-import { UIState, JobState, TemplatesState, RecipesState, GlobalState } from '../../services/session/reducer';
+import { JobState, GlobalState } from '../../services/session/reducer';
 
 // Actions
 import {
@@ -51,7 +51,7 @@ import Button from '../Button';
 // Styles
 import { StyleSheet, css, merge, app, AppStyles } from '../../styles';
 
-const select = (state: GlobalState): AppProps => {
+const select = (state: GlobalState) => {
   return {
     uiMode: state.ui.mode,
     job: state.job,
@@ -60,7 +60,7 @@ const select = (state: GlobalState): AppProps => {
 };
 
 interface AppProps {
-  dispatch?: (action: any) => void;
+  dispatch: (action: any) => void;
   job: JobState;
   uiMode: string;
   minimized: boolean;
@@ -164,7 +164,7 @@ class App extends React.Component<AppProps,AppState> {
           />
         );
       case 'tools':
-        return <Tools/>;
+        return <Tools dispatch={this.props.dispatch} />;
     }
   }
 
@@ -220,10 +220,6 @@ class App extends React.Component<AppProps,AppState> {
     if (e.which === jsKeyCodes.ESC) {
       this.close();
     }
-  }
-
-  private capture = () => {
-    client.RequestInputOwnership();
   }
 
   private release = () => {

@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com) 
  * @Date: 2017-03-01 20:19:26 
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-03-01 20:22:06
+ * @Last Modified time: 2017-07-15 09:42:57
  */
 import * as React from 'react';
 import {
@@ -127,7 +127,6 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
                  onBlue={() => client.ReleaseInputOwnership()}
                  onMouseEnter={() => client.RequestInputOwnership()}
                  onMouseLeave={() => {
-                   console.log('release input ownership');
                    client.ReleaseInputOwnership();
                  }}
                  onKeyDown={this.onKeyDown} />

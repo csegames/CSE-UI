@@ -57,7 +57,6 @@ class KOSApp extends React.Component<any, KOSAppState> {
   }
 
   parseChatMessage(chatObject: any) {
-    console.log(JSON.stringify(chatObject));
 
     if ((chatObject.from as string).indexOf('_combat') === -1) return;
 

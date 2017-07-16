@@ -12,11 +12,10 @@ import {fireBuildingItemSelected} from '../../../../../../services/events';
 
 import {GlobalState} from '../../services/session/reducer';
 import * as lightService from '../../services/session/lights';
-import {LightsState} from '../../services/session/lights';
 import {Light} from '../../lib/Light';
 import LightPreview from '../LightPreview';
 
-function select(state: GlobalState): LightSelectorProps {
+function select(state: GlobalState) {
   return {
     lights: state.lights.lights,
     selected: state.lights.lights[state.lights.selectedIndex],
@@ -25,10 +24,10 @@ function select(state: GlobalState): LightSelectorProps {
 }
 
 export interface LightSelectorProps {
-  dispatch?: any;
-  lights?: Light[];
-  selected?: Light;
-  show?: boolean;
+  dispatch: any;
+  lights: Light[];
+  selected: Light;
+  show: boolean;
 }
 
 export interface LightSelectorState {

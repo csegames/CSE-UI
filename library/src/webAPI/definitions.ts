@@ -10,6 +10,7 @@ export interface ArchetypeInfo {
 
 
 
+
 /* tslint:disable */
 
 
@@ -31,6 +32,7 @@ export interface ModelError {
   paramName: string;
   typeName: string; 
 }
+
 
 /* tslint:disable */
 
@@ -54,6 +56,7 @@ export interface QueuedBlueprintMessage {
   subName: string;
   amtNeeded: number; 
 }
+
 
 
 /* tslint:disable */
@@ -87,6 +90,7 @@ export interface CharacterValidation {
 
 
 
+
 /* tslint:disable */
 
 export interface ControlGameState { 
@@ -105,6 +109,7 @@ export interface ControlPoint {
   x: number;
   y: number;
 }
+
 
 
 
@@ -140,6 +145,7 @@ export interface ResourceRequirement {
   available: any; 
 }
 
+
 /* tslint:disable */
 
 export interface FactionInfo { 
@@ -148,6 +154,7 @@ export interface FactionInfo {
   name: string;
   shortName: string;
 }
+
 
 
 
@@ -164,12 +171,14 @@ export interface GroupInvite {
 
 
 
+
 /* tslint:disable */
 
 
 
 export interface FieldCodeHelper { 
 }
+
 
 /* tslint:disable */
 
@@ -180,6 +189,45 @@ export interface MessageOfTheDay {
 }
 
 
+
+
+/* tslint:disable */
+
+
+
+
+export interface MoveItemRequest {
+  moveItemID: string;
+  stackHash: string;
+  unitCount: number;
+  to: MoveItemRequestLocation;
+  from: MoveItemRequestLocation; 
+}
+
+export interface MoveItemRequestLocation {
+  entityID: string;
+  position: number;
+  containerID: string;
+  gearSlotIDs: string[];
+  location: MoveItemRequestLocationType; 
+}
+
+export interface RequestConverter { 
+}
+
+export interface NoTypeConverterJsonConverter { 
+}
+
+/* tslint:disable */
+
+
+
+
+export interface MoveItemResult {
+  code: MoveItemResultCode;
+  movedItemIDs: string[];
+  message: string; 
+}
 
 /* tslint:disable */
 
@@ -200,6 +248,7 @@ export interface RateLimitExceeded {
 export interface InternalAction { 
 }
 
+
 /* tslint:disable */
 
 export interface Order { 
@@ -216,6 +265,7 @@ export interface Order {
 
 
 
+
 /* tslint:disable */
 
 export interface OrderMember { 
@@ -229,6 +279,7 @@ export interface OrderMember {
 
 
 
+
 /* tslint:disable */
 
 export interface PatcherAlert { 
@@ -237,6 +288,7 @@ export interface PatcherAlert {
   utcDateEnd: string;
   utcDateStart: string;
 }
+
 
 
 
@@ -252,12 +304,14 @@ export interface PatcherHeroContent {
 
 
 
+
 /* tslint:disable */
 
 export interface PermissionInfo { 
   description: string;
   name: string;
 }
+
 
 
 
@@ -268,6 +322,7 @@ export interface PlayerAttributeOffset {
   gender: Gender;
   attributeOffsets: { [key: string]: number; };
 }
+
 
 
 
@@ -285,6 +340,7 @@ export interface PlayerStatAttribute {
 
 
 
+
 /* tslint:disable */
 
 export interface RaceInfo { 
@@ -296,6 +352,7 @@ export interface RaceInfo {
 
 
 
+
 /* tslint:disable */
 
 export interface RankInfo { 
@@ -303,6 +360,7 @@ export interface RankInfo {
   name: string;
   permissions: string[];
 }
+
 
 
 
@@ -322,6 +380,7 @@ export interface ServerModel {
 
 
 
+
 /* tslint:disable */
 
 export interface ServerPresence { 
@@ -331,6 +390,7 @@ export interface ServerPresence {
   zoneBoundsMax: {x:number,y:number};
   zoneBoundsMin: {x:number,y:number};
 }
+
 
 
 
@@ -354,6 +414,7 @@ export interface PlayerCounts {
   tuatha: number;
   viking: number;
 }
+
 
 
 
@@ -381,12 +442,14 @@ export interface GameServiceUnavailable {
 export interface PresenceServiceUnavailable { 
 }
 
+
 /* tslint:disable */
 
 export interface StartingServer {
   address: string;
   zoneID: number; 
 }
+
 
 
 
@@ -400,6 +463,7 @@ export interface Trait {
   points: number;
   prerequisites: string[];
 }
+
 
 
 
@@ -427,6 +491,7 @@ export interface TraitList {
 
 
 
+
 /* tslint:disable */
 
 
@@ -448,6 +513,7 @@ export interface LoginTokenAuthorizationFailed {
 export interface RealmRestricted { 
 }
 
+
 /* tslint:disable */
 
 export interface Warband { 
@@ -458,6 +524,7 @@ export interface Warband {
   name: string;
   shardID: string;
 }
+
 
 
 
@@ -481,6 +548,7 @@ export interface WarbandMember {
   temperature: Temperature;
   wounds: number[];
 }
+
 
 
 /* tslint:disable */
@@ -1353,6 +1421,46 @@ export enum ModifyVoxJobResultCode {
   ParameterError = 17,
   VoxNotFound = 18,
   RecipeAlreadyDiscovered = 19
+}
+ 
+
+/* tslint:disable */
+  
+export enum MoveItemRequestLocationType { 
+  Invalid = 0,
+  Container = 1,
+  Equipment = 2,
+  Ground = 3,
+  Inventory = 4,
+  Vox = 5
+}
+ 
+
+/* tslint:disable */
+  
+export enum MoveItemResultCode { 
+  Success = 0,
+  None = 1,
+  Timeout = 2,
+  PlayerNotFound = 3,
+  EntityNotFound = 4,
+  ItemNotFound = 5,
+  ItemNotValid = 6,
+  MixedError = 7,
+  TooManyItems = 8,
+  InventoryNotFound = 9,
+  EquipmentNotFound = 10,
+  DefinitionNotFound = 11,
+  InvalidParameter = 12,
+  SpatialNotFound = 13,
+  ItemFeatureTurnedOff = 14,
+  BrokenItem = 15,
+  ItemRequirementNotMet = 16,
+  EntityNotValid = 17,
+  NotSupported = 18,
+  ItemsDoNotStack = 19,
+  TooFarAway = 20,
+  PermissionDenied = 21
 }
  
 

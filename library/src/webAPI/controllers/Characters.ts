@@ -7,7 +7,7 @@
 import { AxiosRequestConfig, Promise } from 'axios';
 import { create } from '../../util/apisaucelite';
 import createOptions from '../createOptions';
-import { Character } from '../definitions';
+import { Character, MoveItemRequest } from '../definitions';
 import { BadRequest, ExecutionError, NotAllowed, ServiceUnavailable, Unauthorized } from '../apierrors';
 
  

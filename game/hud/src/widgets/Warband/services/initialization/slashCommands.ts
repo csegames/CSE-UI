@@ -10,11 +10,6 @@ import {
   events,
   registerSlashCommand,
   hasClientAPI,
-  SlashCommand,
-  getSlashCommands,
-  warbandRoles,
-  warbandRanks,
-  warbandPermissions,
   webAPI,
 } from 'camelot-unchained';
 
@@ -196,17 +191,6 @@ export default () => {
   /**
    * Permissions, Rank, and Role management.
    */
-
-  function setRank(targetName: string, rank: string) {
-    webAPI.WarbandsAPI.setRankByNameV1(client.shardID, client.characterID, targetName, rank)
-      .then((response: any) => {
-        if (!response.ok) {
-          // something went wrong
-          console.error(response);
-          return;
-        }
-      });
-  }
 
   registerSlashCommand(
     'makeleader', 'Make your friendly target the leader of your warband or if you provide a name, that character named.',

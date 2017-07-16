@@ -8,7 +8,6 @@ import * as React from 'react';
 import {WarbandMember} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../../../components/PlayerStatusComponent';
-import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
 
 export interface WarbandMemberDisplayProps {
   key: string | number;
@@ -39,9 +38,6 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
         />
       </div>
     );
-  }
-
-  private renderMembers = () => {
   }
 }
 

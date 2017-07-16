@@ -8,27 +8,23 @@
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-04-06 15:18:40
  */
-import * as React from 'react';
 import { Module } from 'redux-typed-modules';
 import { Map } from 'immutable';
-import { utils, ql } from 'camelot-unchained';
 import { ApolloClient } from 'apollo-client';
-import gql from 'graphql-tag';
 
-import { LinkAddress,
-         SocialCategory,
-         CategoryNav,
-         NavSection,
-         CategoryAddress,
-         categoryAddressEquals,
-         linkAddressEquals } from './nav/navTypes';
+import {
+  LinkAddress,
+  SocialCategory,
+  CategoryNav,
+  CategoryAddress,
+} from './nav/navTypes';
 
 import testNav from './nav/testNav';
 
 
 /*
- * STATE
- */
+* STATE
+*/
 export interface NavigationState {
   currentView: LinkAddress;
   categories: Map<SocialCategory, CategoryNav>;
@@ -68,8 +64,8 @@ function toggleCollapsed(state: Readonly<NavigationState>, address: CategoryAddr
 }
 
 /*
- * MODULE ACTIONS
- */
+* MODULE ACTIONS
+*/
 const module = new Module({
   initialState: initialState(),
   actionExtraData: () => {

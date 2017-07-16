@@ -4,28 +4,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, client, GroupInvite, groupType, hasClientAPI, signalr, events } from 'camelot-unchained';
+import { webAPI, client, GroupInvite, signalr, events } from 'camelot-unchained';
 import {
-  Dictionary,
-  clone,
   merge,
   BaseAction,
   AsyncAction,
-  defaultAction,
   removeWhere,
   createReducer,
   ActionDefinitions,
   addOrUpdate,
-  remove,
 } from '../../lib/reduxUtils';
-
-const localStorageKey = 'cse_hud_invites-state';
 
 const INITIALIZE_SIGNALR = 'hud/invites/INITIALIZE_SIGNALR';
 const INITIALIZE_SIGNALR_SUCCESS = 'hud/invites/INITIALIZE_SIGNALR_SUCCESS';
 const INITIALIZE_SIGNALR_FAILED = 'hud/invites/INITIALIZE_SIGNALR_FAILED';
 
-const FETCH_INVITES = 'hud/invites/FETCH_INVITES';
 const FETCH_INVITES_SUCCESS = 'hud/invites/FETCH_INVITES_SUCCESS';
 const FETCH_INVITES_FAILED = 'hud/invites/FETCH_INVITES_FAILED';
 const REQUEST_INVITES = 'hud/invites/REQUEST_INVITES';

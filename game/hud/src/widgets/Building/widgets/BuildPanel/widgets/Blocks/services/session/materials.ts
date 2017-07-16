@@ -7,7 +7,6 @@
 import { events, BuildingBlock, BuildingMaterial, buildUIMode } from 'camelot-unchained';
 
 import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
-import requester from '../../../../../../services/session/requester';
 import * as assign from 'object-assign';
 
 const SELECT_MATERIAL = 'buildpanel/panes/SELECT_MATERIAL';
@@ -47,13 +46,6 @@ function selectBlock(block: BuildingBlock) {
   return {
     type: SELECT_BLOCK,
     selectedBlock: block,
-  };
-}
-
-function selectMaterial(material: BuildingMaterial) {
-  return {
-    type: SELECT_MATERIAL,
-    selectedMaterial: material,
   };
 }
 

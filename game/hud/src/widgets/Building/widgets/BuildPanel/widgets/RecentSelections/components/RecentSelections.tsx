@@ -12,7 +12,7 @@ import {GlobalState} from '../services/session/reducer';
 import {BuildingItem} from '../../../../../lib/BuildingItem';
 
 
-function select(state: GlobalState): any {
+function select(state: GlobalState) {
   return {
     item: state.recents.selectedItem,
     items: state.recents.recentSelections,
@@ -20,9 +20,9 @@ function select(state: GlobalState): any {
 }
 
 interface RecentSelectionsProps {
-  dispatch?: any;
-  item?: BuildingItem;
-  items?: BuildingItem[];
+  dispatch: any;
+  item: BuildingItem;
+  items: BuildingItem[];
   minimized?: boolean;
 }
 

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {merge, clone, Dictionary} from '../../lib/reduxUtils';
+import { clone } from '../../lib/reduxUtils';
 
 export enum LayoutMode {
   FLOAT,

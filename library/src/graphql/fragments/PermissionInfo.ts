@@ -5,19 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 11:30:36
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 16:31:13
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:18:09
  */
 
 import gql from 'graphql-tag';
 import {utils} from '../..';
-
-export interface PermissionInfo {
-  tag: string;
-  name: string;
-  description: string;
-  enables: string[];
-}
+import { PermissionInfo } from '../schema';
 
 export default gql`
   fragment PermissionInfo on PermissionInfo {

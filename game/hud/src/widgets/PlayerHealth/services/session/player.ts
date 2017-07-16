@@ -19,7 +19,7 @@ import {
   healtEmulationTest,
   avatarChanged,
 } from '../../../../lib/reduxHealth';
-import { merge, clone, defaultAction } from '../../../../lib/reduxUtils';
+import { merge, defaultAction } from '../../../../lib/reduxUtils';
 const DO_THING = 'testthing';
 
 const INIT = 'playerhealth/player/INIT';

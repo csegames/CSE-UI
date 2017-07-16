@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, Item, jsKeyCodes} from 'camelot-unchained';
+import {events, client, Item} from 'camelot-unchained';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 
 export interface InventoryWindowProps {
@@ -157,7 +156,6 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
 
   private renderItems = () => {
     const toRender: JSX.Element[] = [];
-    const sortByGroup: {[id: string]: { name: string, elements:  JSX.Element[]}} = {};
 
     Object.keys(this.state.stacks).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).forEach((key: string) => {
       const stack = this.state.stacks[key];

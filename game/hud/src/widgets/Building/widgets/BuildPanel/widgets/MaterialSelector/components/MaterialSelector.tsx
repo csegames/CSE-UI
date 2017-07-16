@@ -12,7 +12,7 @@ import {setSelectedMaterial, setHoverMaterial} from '../services/session/materia
 
 import MaterialsByType from '../lib/MaterialsByType';
 
-function select(state: GlobalState): MaterialSelectorProps {
+function select(state: GlobalState) {
   return {
     materialsByType: state.materialSelector.materialsByType,
     selectMaterial: state.materialSelector.onMaterialSelected,
@@ -21,10 +21,10 @@ function select(state: GlobalState): MaterialSelectorProps {
 }
 
 export interface MaterialSelectorProps {
-  dispatch?: (action: any) => void;
-  materialsByType?: MaterialsByType;
-  selectMaterial?: (mat: BuildingMaterial) => void;
-  selected?: BuildingMaterial;
+  dispatch: (action: any) => void;
+  materialsByType: MaterialsByType;
+  selectMaterial: (mat: BuildingMaterial) => void;
+  selected: BuildingMaterial;
 }
 
 export interface MaterialSelectorState {

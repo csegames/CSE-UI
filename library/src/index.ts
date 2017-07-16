@@ -51,7 +51,7 @@ export * from './groups';
 
 export * from './building';
 
-import events from './events';
+import events, { ListenerInfo } from './events';
 import * as eventExports from './events';
 
 import * as signalr from './signalR';
@@ -159,6 +159,7 @@ export {
   // libraries
   core,
   events,
+  ListenerInfo,
 
   // Legacy RestAPI
   legacyAPI,

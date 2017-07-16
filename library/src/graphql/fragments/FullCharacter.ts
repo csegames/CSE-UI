@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-24 10:18:35
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-24 14:46:40
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-29 15:50:17
  */
 
 import gql from 'graphql-tag';
@@ -26,7 +26,7 @@ fragment FullCharacter on Character {
   lastLogin 
   deleted 
   order {
-    ...FullOrder 
+    ...FullOrder
   }
 }
 ${FullOrderFragment}

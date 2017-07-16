@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-04-28 17:00:11
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-06-21 16:15:09
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-07-15 09:43:32
  */
 
 import * as React from 'react';
@@ -29,7 +29,6 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
     // initializing shardID when component mounts because client.shardID gives me random number onCharacterZoneChanged
     const { shardID } = client;
     client.OnCharacterZoneChanged((id: string) => {
-      console.log(`zone changed ${id}`);
       const _id = id;
       this.setState({ name: '' });
       webAPI.ServerListHelperAPI.getAvailableZones(shardID)

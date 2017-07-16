@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-01-23 17:38:49
  */
 import PlayerHealth from '../../../widgets/PlayerHealth';
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 
 export default {
   position: {

@@ -5,13 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 11:38:16
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:52:27
  */
 
 import { Module } from 'redux-typed-modules';
-import { Recipe, Template } from '../types';
-import { slash, isClient } from '../game/slash';
+import { Recipe } from '../types';
 import { VoxRecipe } from '../game/crafting';
 
 export interface RecipesState {

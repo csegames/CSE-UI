@@ -5,16 +5,15 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 18:02:12
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:47:53
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../../styles';
-import { GlobalState, JobState } from '../../services/session/reducer';
+import { GlobalState } from '../../services/session/reducer';
 
-import Label from '../Label';
 import Button from '../Button';
 
 interface JobTypeReduxProps {

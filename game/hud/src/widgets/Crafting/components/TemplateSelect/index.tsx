@@ -18,7 +18,6 @@ import { Template } from '../../services/types';
 import { StyleSheet, css, merge, templateSelect, TemplateSelectStyles } from '../../styles';
 
 export interface TemplateSelectReduxProps {
-  dispatch?: (action: any) => void;
   items?: Template[];
   selected?: Template;
   status?: string;
@@ -27,6 +26,7 @@ export interface TemplateSelectReduxProps {
 export interface TemplateSelectProps extends TemplateSelectReduxProps {
   onSelect: (template: Template) => void;
   style?: Partial<TemplateSelectStyles>;
+  dispatch: (action: any) => void;
 }
 
 interface TemplateSelectState {}
@@ -63,8 +63,8 @@ class TemplateSelect extends React.Component<TemplateSelectProps, TemplateSelect
       </div>
     );
   }
-  private renderActive = (item: Template) => item && <span key={item.id} value={item.id}>{item.name}</span>;
-  private renderItem = (item: Template) => item && <span key={item.id} value={item.id}>{item.name}</span>;
+  private renderActive = (item: Template) => item && <span key={item.id}>{item.name}</span>;
+  private renderItem = (item: Template) => item && <span key={item.id}>{item.name}</span>;
   private onSelect = (item: Template) => this.props.onSelect(item);
 }
 

@@ -5,14 +5,15 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-13 16:27:49
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-20 17:13:34
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-06-22 15:22:21
  */
 import gql from 'graphql-tag';
 
 import {Faction, Race, Gender, Archetype} from '../../';
 import FullWarbandMemberFragment, { FullWarbandMember}  from './FullWarbandMember';
-import CustomRankFragment, {CustomRank} from './CustomRank';
+import CustomRankFragment from './CustomRank';
+import { CustomRank } from '../schema';
 
 export default gql`
 fragment FullWarband on Warband {

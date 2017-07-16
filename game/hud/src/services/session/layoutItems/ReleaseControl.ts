@@ -5,7 +5,7 @@
  */
 
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 import ReleaseControl from '../../../components/ReleaseControl';
 
 export default {

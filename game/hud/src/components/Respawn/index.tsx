@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, Faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
+import {client, Faction, legacyAPI, hasClientAPI} from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
 
@@ -31,7 +31,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     if (!hasClientAPI()) return null;
         
     const buttons: JSX.Element[] = [];
-    const key: number = 0;
     if (this.state.nearest) {
       this.state.nearest.forEach((spawn: RespawnLocation): void => {
         buttons.push(this.renderButton(spawn, 'Control Point'));
@@ -72,7 +71,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
   private getSpawnPoints = (loaded: (spawns: RespawnLocation[]) => void): void => {
     if (!hasClientAPI()) return;
-    console.log('getting spawn points');
     const spawns: RespawnLocation[] = [];
 
 

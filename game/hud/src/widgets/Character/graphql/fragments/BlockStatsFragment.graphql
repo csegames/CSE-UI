@@ -1,0 +1,9 @@
+fragment BlockStats on BuildingBlockStat_Single {
+  compressiveStrength
+  shearStrength
+  tensileStrength
+  density
+  healthUnits
+  buildTimeUnits
+  unitMass
+}

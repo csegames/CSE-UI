@@ -5,13 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-05-24 19:55:40
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:48:09
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Select from '../Select';
 import Label from '../Label';
 import Input from '../Input';
 import { GlobalState } from '../../services/session/reducer';
@@ -26,8 +25,6 @@ export interface NameInputReduxProps {
 export interface NameInputProps extends NameInputReduxProps {
   onChange: (name: String) => void;
 }
-
-interface NameInputState {}
 
 const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps => {
   return {

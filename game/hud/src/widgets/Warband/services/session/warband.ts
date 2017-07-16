@@ -9,18 +9,14 @@
  * @Last Modified time: 2016-09-27 18:45:37
  */
 
-import cu, { client, events, GroupInvite, groupType, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
+import { client, events, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
 import {
   addOrUpdate,
   BaseAction,
-  clone,
-  defaultAction,
   merge,
-  remove,
   ActionDefinitions,
   AsyncAction,
   createReducer,
-  Dictionary,
   removeWhere,
 } from '../../../../lib/reduxUtils';
 
@@ -147,18 +143,6 @@ function warbandJoined(warbandID: string, warbandName: string = ''): WarbandActi
     id: warbandID,
     name: warbandName,
     type: WARBAND_JOINED,
-    when: new Date(),
-  };
-}
-
-function warbandUpdate(warbandID: string, warbandName: string = ''): WarbandAction {
-  systemMessage(`Your warband has been made ${warbandName && warbandName.length > 0 ?
-                                              `permanent and is now named ${warbandName}.` :
-                                              'temporary.'}`);
-  return {
-    id: warbandID,
-    name: warbandName,
-    type: WARBAND_UPDATE,
     when: new Date(),
   };
 }

@@ -1,0 +1,14 @@
+query StatInfo {
+  myEquippedItems {
+    item {
+      stats {
+        weapon {
+          ...WeaponStats
+        }
+        armor {
+          ...ArmorParts
+        }
+      }
+    }
+  }
+}

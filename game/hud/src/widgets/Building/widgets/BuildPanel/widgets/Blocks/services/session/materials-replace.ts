@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { BuildingBlock, BuildingMaterial } from 'camelot-unchained';
-import requester from '../../../../../../services/session/requester';
+import { BuildingMaterial } from 'camelot-unchained';
 import * as assign from 'object-assign';
 
 const BLOCKS_SELECTED = 'buildpanel/panes/BLOCKS_SELECTED';

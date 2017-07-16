@@ -29,7 +29,6 @@ export default () => {
   client.OnConsoleText((text: string) => events.fire('system_message', text));
 
   client.OnToggleHUDItem((name: string) => {
-    console.log(name);
     events.fire('hudnav--navigate', name);
   });
 

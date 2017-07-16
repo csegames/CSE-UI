@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:48:51
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:50:57
  */
 
 import * as React from 'react';
@@ -16,13 +16,9 @@ import { Ingredient } from '../../services/types';
 import IngredientItem from '../IngredientItem';
 import RepairItem from '../RepairItem';
 import PossibleIngredients from '../PossibleIngredients';
-import Select from '../Select';
 import Input from '../Input';
-import Label from '../Label';
 import Button from '../Button';
 import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles} from '../../styles';
-
-import { InventoryItem } from '../../services/types';
 
 export interface IngredientsPropsRedux {
   dispatch?: (action: any) => void;
@@ -37,6 +33,7 @@ export interface IngredientsProps extends IngredientsPropsRedux{
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
+  dispatch: (action: any) => void;
 }
 
 const select = (state: GlobalState, props: IngredientsProps): IngredientsPropsRedux => {
@@ -102,10 +99,11 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         addIngredients = (
           <div className={css(ss.addIngredient)}>
             <PossibleIngredients
+              dispatch={this.props.dispatch}
               disabled={!configuring}
               selectedItem={selectedIngredient}
               onSelect={this.select}
-              />
+            />
             <span className={css(ss.times)}>x</span>
             <Input name='add-qty'
               style={{input: ingredientsStyles.quantity}}

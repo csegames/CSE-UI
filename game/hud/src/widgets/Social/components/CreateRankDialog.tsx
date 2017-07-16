@@ -181,18 +181,6 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
                 }}
                 onClick={this.createRank}>Create</FlatButton>;
   }
-
-  private onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      name: e.target.value,
-    });
-  }
-
-  private onLevelChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      level: Number.parseInt(e.target.value),
-    });
-  }
 }
 
 export default CreateRankDialog;

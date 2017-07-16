@@ -8,7 +8,7 @@ import { combineReducers } from 'redux';
 
 import warbandReducer, { WarbandState } from './warband';
 export * from './warband';
-const warband = warbandReducer;
+const warband = warbandReducer as any;
 
 export default combineReducers({
   warband,

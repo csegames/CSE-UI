@@ -43,8 +43,8 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           defaultY={[0, Anchor.TO_START]} 
           defaultSize={[200, 200]} 
         >
-          <MaterialAndShapePane minimized={this.props.minimized}/>
-          <MaterialReplace minimized={this.props.minimized}/>
+          <MaterialAndShapePane {...this.props}/>
+          <MaterialReplace {...this.props}/>
         </TabbedPane>
 
       </Provider>

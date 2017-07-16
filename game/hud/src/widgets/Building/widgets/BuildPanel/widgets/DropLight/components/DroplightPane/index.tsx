@@ -17,11 +17,10 @@ import {LightsState} from '../../services/session/lights';
 
 import LightPreview from '../LightPreview';
 import ColorSelect from '../ColorSelect';
-import LightSelector from '../LightSelector';
 import {Color} from '../../lib/Color';
 import {Light} from '../../lib/Light';
 
-function select(state: GlobalState): DropLightPaneProps {
+function select(state: GlobalState) {
   return {
     lightsState: state.lights,
     showSelector: state.lights.showLightSelector,
@@ -34,7 +33,9 @@ export interface DropLightPaneStateToPropsInfo {
 }
 
 export interface DropLightPanePropsInfo {
-  dispatch?: (action: any) => void;
+  dispatch: (action: any) => void;
+  lightsState: LightsState;
+  showSelector: boolean;
   minimized?: boolean;
 }
 
@@ -159,4 +160,4 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 }
 
-export default connect<DropLightPaneStateToPropsInfo, {}, DropLightPanePropsInfo>(select)(DropLightPane);
+export default connect(select)(DropLightPane);

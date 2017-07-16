@@ -11,26 +11,18 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {events, buildUIMode} from 'camelot-unchained';
+import {buildUIMode} from 'camelot-unchained';
 
 import ActionBar from '../../widgets/Actionbar';
 import BuildingPanel from '../../widgets/BuildPanel';
 import SelectionView from '../../widgets/SelectionView';
 
-import requester from '../../services/session/requester';
-import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
-
-function select(state: any): any {
-  return {
-    selectedItem: state.selection.selectedItem,
-    buildingMode: state.building.mode,
-  };
-}
+import {BuildingItem} from '../../lib/BuildingItem';
 
 export interface BuildingAppProps {
-  dispatch?: (action: any) => void;
-  buildingMode?: buildUIMode;
-  selectedItem?: BuildingItem;
+  dispatch: (action: any) => void;
+  buildingMode: buildUIMode;
+  selectedItem: BuildingItem;
 }
 
 export interface BuildingAppState {
@@ -47,7 +39,6 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
 
   public render() {
     const active: boolean = this.props.buildingMode > 0;
-    const triggerMode: buildUIMode = active ? buildUIMode.NOTBUILDING : buildUIMode.PLACINGPHANTOM;
     return (
       <div className='building'>
         {this.createActionButton(active)}
@@ -63,13 +54,9 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
 
   private createActionButton(active: boolean): JSX.Element {
     if (active) {
-      return (<ActionBar buildingMode={this.props.buildingMode}/>);
+      return (<ActionBar />);
     }
     return null;
-  }
-
-  private selectedItem = (item: BuildingItem) => {
-    this.setState((state, props) => ({ selectedItem: item }));
   }
 
   private createBuildingPanel(active: boolean): JSX.Element {
@@ -85,6 +72,13 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     }
     return null;
   }
+}
+
+function select(state: any): any {
+  return {
+    selectedItem: state.selection.selectedItem,
+    buildingMode: state.building.mode,
+  };
 }
 
 export default connect(select)(BuildingApp);

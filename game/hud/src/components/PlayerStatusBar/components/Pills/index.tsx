@@ -71,7 +71,6 @@ class Pills extends React.Component<PillsProps, PillsState> {
   }
 
   private verticalPills = (): any[] => {
-    const wounds = this.props.displayWounds || true;
     const pills: any[] = [];
     let displayedHealth = 0;
     for (let i = 0; i < this.numPills; ++i) {

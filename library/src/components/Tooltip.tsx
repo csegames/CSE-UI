@@ -5,10 +5,9 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 11:47:41
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 14:55:15
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-12 11:04:24
  */
-
 /*
  * Usage:
  * 
@@ -24,16 +23,15 @@
  * </Tooltip>
  * 
  */
-
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+
 import {Quadrant, windowQuadrant} from '../util';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 export const defaultToolTipStyle: ToolTipStyle = {
-  container: {
+  Tooltip: {
     display: 'inline-block',
   },
-
   tooltip: {
     position: 'fixed',
     backgroundColor: '#444',
@@ -45,12 +43,10 @@ export const defaultToolTipStyle: ToolTipStyle = {
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
   },
 };
-
 export interface ToolTipStyle extends StyleDeclaration {
-  container: React.CSSProperties;
+  Tooltip: React.CSSProperties;
   tooltip: React.CSSProperties;
 }
-
 export interface TooltipProps {
   content: string | ((props?: any) => JSX.Element);
   contentProps?: any;
@@ -60,8 +56,10 @@ export interface TooltipProps {
   offsetTop?: number;
   offsetBottom?: number;
   styles?: Partial<ToolTipStyle>;
+  show?: boolean;
+  onTooltipShow?: () => void;
+  onTooltipHide?: () => void;
 }
-
 export interface TooltipState {
   x: number;
   y: number;
@@ -73,7 +71,6 @@ export interface TooltipState {
   offsetTop: number;
   offsetBottom: number;
 }
-
 export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   constructor(props: TooltipProps) {
     super(props);
@@ -81,7 +78,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       x: -99999,
       y: -99999,
       wndRegion: Quadrant.TopLeft,
-      show: false,
+      show: this.props.show || false,
       ttClassName: this.props.tooltipClassName || 'Tooltip',
       offsetLeft: this.props.offsetLeft || 10,
       offsetTop: this.props.offsetTop || 10,
@@ -89,20 +86,18 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       offsetBottom: this.props.offsetBottom || 5,
     };
   }
-
   public render() {
-
     const ss = StyleSheet.create(defaultToolTipStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-
+    const showTooltip = typeof this.props.show !== 'undefined' ? this.props.show : this.state.show;
     return (
-      <div className={css(ss.container, custom.container)}
-           onMouseEnter={this.onMouseEnter}
-           onMouseLeave={this.onMouseleave}
-           onMouseMove={this.onMouseMove}>
+      <div className={css(ss.Tooltip, custom.Tooltip)}
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseleave}
+          onMouseMove={this.onMouseMove}>
         {this.props.children}
         {
-          this.state.show ?
+          showTooltip ?
           <div className={css(ss.tooltip, custom.tooltip)} style={this.computeStyle()}>
             {typeof this.props.content === 'string' ? this.props.content : 
               <this.props.content {...this.props.contentProps} />}
@@ -111,7 +106,6 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       </div>
     );
   }
-
   private onMouseMove = (e: any) => {
     if (this.state.show === false) return;
     this.setState({
@@ -119,18 +113,17 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       y: e.clientY,
     } as any);
   }
-
   private onMouseEnter = (e: any) => {
+    if (this.props.onTooltipShow) this.props.onTooltipShow();
     this.setState({
       show: true,
       wndRegion: windowQuadrant(e.clientX, e.clientY),
     } as any);
   }
-
   private onMouseleave = () => {
-    this.setState({show: false} as any);
+    if (this.props.onTooltipHide) this.props.onTooltipHide();
+    this.setState({ show: false } as any);
   }
-
   private computeStyle = () => {
     switch (this.state.wndRegion) {
       case Quadrant.TopLeft:
@@ -156,5 +149,4 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
   }
 }
-
 export default Tooltip;

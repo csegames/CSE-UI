@@ -8,12 +8,12 @@ import * as React from 'react';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
 import thunk from 'redux-thunk';
-import {WarbandMember, hasClientAPI, client, Gender, Race} from 'camelot-unchained';
+import {hasClientAPI} from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer, {SessionState} from './services/session';
 import {TargetState, doThing, initializePlayerSession} from './services/session/target';
-import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
+import {BodyParts} from '../../lib/PlayerStatus';
 
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -25,14 +25,14 @@ export interface ContainerProps {
 }
 
 export interface TargetHealthProps extends ContainerProps {
-  dispatch?: (action: any) => any;
-  player?: TargetState;
+  dispatch: (action: any) => any;
+  player: TargetState;
 }
 
 export interface TargetHealthState {
 }
 
-function select(state: SessionState): TargetHealthProps {
+function select(state: SessionState) {
   return {
     player: state.player,
   };

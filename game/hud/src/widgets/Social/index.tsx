@@ -5,16 +5,15 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 12:55:46
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-06 11:01:03
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-07-15 09:44:45
  */
 
 import * as React from 'react';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider} from 'react-redux';
-import { client, events, hasClientAPI, jsKeyCodes } from 'camelot-unchained';
+import { Provider } from 'react-redux';
+import { client, events, jsKeyCodes, ListenerInfo } from 'camelot-unchained';
 import SocialMain from './components/SocialMain';
-import reducer, { store } from './services/session/reducer';
+import { store } from './services/session/reducer';
 
 
 export interface SocialContainerProps {
@@ -22,11 +21,11 @@ export interface SocialContainerProps {
 }
 
 export interface SocialContainerState {
-  visible : boolean;
+  visible: boolean;
 }
 
 class SocialContainer extends React.Component<SocialContainerProps, SocialContainerState> {
-
+  private hudNavListener: ListenerInfo;
   private initialized = false;
   private mainRef: any = null;
 
@@ -38,41 +37,45 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   }
 
   public render() {
-    return this.state.visible
-      ? (
-        <Provider store={store}>
-          <SocialMain ref={r => this.mainRef = r} {...(this.props as any)} />
-        </Provider>
-      )
-      : null;
+    return this.state.visible && (
+      <Provider store={store}>
+        <SocialMain ref={r => this.mainRef = r} {...(this.props as any)} />
+      </Provider>
+    );
   }
   
   public componentDidMount() {
-    if (!this.initialized) {
-      this.initialized = true;
-    }
-
-    events.on('hudnav--navigate', (name : string) => {
-      if (name === 'social') {
-        if (this.state.visible) {
-          this.hide();
-        } else {
-          this.show();
-          if (this.mainRef !== null) this.mainRef.refresh();
+    this.hudNavListener = events.on('hudnav--navigate', (name: string) => {
+      const { visible } = this.state;
+      switch (name) {
+        case 'social': {
+          if (visible) {
+            this.hide();
+          } else {
+            this.show();
+          }
+          break;
+        }
+        default: {
+          if (visible) this.hide();
+          break;
         }
       }
     });
-
+    if (!this.initialized) {
+      this.initialized = true;
+    }
     window.addEventListener('keydown', this.onKeyDown);
   }
 
   public componentWillUnmount() {
-    events.off('hudnav--navigate');
+    events.off(this.hudNavListener);
     window.removeEventListener('keydown', this.onKeyDown);
   }
 
   private onKeyDown = (e : KeyboardEvent) => {
-    if (e.which === jsKeyCodes.ESC && this.state.visible) {
+    const { visible } = this.state;
+    if (e.which === jsKeyCodes.ESC && visible) {
       client.ReleaseInputOwnership();
       this.hide();
     }
@@ -81,13 +84,13 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   private show = () => {
     if (typeof client.RequestInputOwnership === 'function') 
       client.RequestInputOwnership();
-    this.setState({visible: true});
+    this.setState({ visible: true });
   }
 
   private hide = () => {
     if (typeof client.ReleaseInputOwnership === 'function') 
       client.ReleaseInputOwnership();
-    this.setState({visible: false});
+    this.setState({ visible: false });
   }
 }
 

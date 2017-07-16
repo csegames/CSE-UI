@@ -5,13 +5,11 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-18 12:44:37
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-18 12:52:17
  */
 
-import { client, hasClientAPI } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
-import { slash, isClient } from '../game/slash';
 import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
 import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
 
@@ -33,6 +31,7 @@ export interface JobState {
   name: string;                       // Item Name (make)
   message: Message;                   // Last message from vox
   itemCount: number;                      // Number of items to make
+  count: number;
 }
 
 export const initialState = () : JobState => {
@@ -54,6 +53,7 @@ export const initialState = () : JobState => {
     name: null,
     message: null,
     itemCount: undefined,
+    count: 0,
   };
 };
 

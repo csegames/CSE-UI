@@ -10,9 +10,6 @@ import * as assign from 'object-assign';
 
 const CHANGE_MODE = 'building/mode/CHANGE_MODE';
 
-const win: any = window;
-const fake: boolean = (win.cuAPI == null);
-
 function setMode(mode: buildUIMode) {
   return {
     type: CHANGE_MODE,

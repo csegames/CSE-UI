@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-04-04 18:40:43
  */
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 import Announcement from '../../../components/Announcement';
 
 export default {

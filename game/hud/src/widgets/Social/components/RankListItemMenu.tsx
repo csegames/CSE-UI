@@ -47,7 +47,7 @@ export interface RankListItemMenuState {
   deleteError: string;
 }
 
-class RankListItemMenu<T> extends React.Component<RankListItemMenuProps, RankListItemMenuState> {
+class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListItemMenuState> {
   constructor(props: RankListItemMenuProps) {
     super(props);
     this.state = {
