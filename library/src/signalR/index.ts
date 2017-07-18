@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:11
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-18 10:58:49
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-07-18 16:25:25
  */
 
 import client from '../core/client';
@@ -36,6 +36,7 @@ let initialized = false;
 export const initializeSignalR = () => {
   if (initialized) return;
   initialized = true;
+  if (client.debug) console.log('initializeSignalR called');
   $(() => {
     ($ as any).connection(client.signalRHost);
     ($ as any).connection.hub.url = client.signalRHost;
@@ -49,6 +50,7 @@ export const reinitializeSignalR = () => {
 };
 
 export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
+  if (client.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {
       const hub = hubs[i];
@@ -61,6 +63,7 @@ export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCall
 };
 
 export const unregisterSignalRHubs = (...hubNames: string[]) => {
+  if (client.debug) console.log(`unregisterSignalRHubs called on hubs ${hubNames.join(',')}`);
   for (let i = 0; i < hubNames.length; ++i) {
     const index = findIndexWhere(initializedHubs, name => name === hubNames[i]);
     if (index !== -1) {

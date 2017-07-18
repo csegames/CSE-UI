@@ -1,5 +1,9 @@
 module.exports = {
   scripts: {
+    custom: {
+      script: 'node ./build.js',
+      description: 'Custom build script to make my life easier - JB',
+    },
     lint: {
       script: '',//'tslint src/**/*.ts{,x}',
       description: 'Run TS-Lint"',

@@ -16,7 +16,7 @@ import {
   setVisibility,
   Widget,
 } from '../../services/session/layout';
-import { InvitesState } from '../../services/session/invites';
+import { InvitesState, initializeInvites } from '../../services/session/invites';
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 
@@ -55,6 +55,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       controlledPosition: { x: 100, y: 100 },
       orderName: '',
     };
+
   }
 
   public render() {
@@ -106,6 +107,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   public componentDidMount() {
     this.props.dispatch(initialize());
+    this.props.dispatch(initializeInvites());
 
     if (client && client.OnCharacterHealthChanged) {
 

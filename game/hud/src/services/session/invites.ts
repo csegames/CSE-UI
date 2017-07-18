@@ -108,6 +108,7 @@ export function initializeInvites() : AsyncAction<InvitesAction> {
     dispatch(initSignalR());
 
     try {
+      if (client.debug) console.log('initializeInvites called');
       signalr.groupsHub.start(() => {
         dispatch(initSignalRSuccess());
         registerInviteEvents(dispatch);

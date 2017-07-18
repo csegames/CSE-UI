@@ -7,7 +7,6 @@
 import {
   events,
   client,
-  hasClientAPI,
   signalr,
   CombatLog,
   Faction,
@@ -24,7 +23,6 @@ export default () => {
 
   signalr.initializeSignalR();
 
-  if (!hasClientAPI()) return;
   // hook up for console messages to system messages
   client.OnConsoleText((text: string) => events.fire('system_message', text));
 

@@ -6,6 +6,10 @@
 
 import slashCommands from './slashCommands';
 
-export default () => {
+let initialized = false;
+export default function() {
+  if (initialized) return;
+  initialized = true;
+  console.log('initialize warband');
   slashCommands();
 };

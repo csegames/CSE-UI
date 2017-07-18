@@ -27,7 +27,13 @@ export interface WarbandContainerState {
 
 class WarbandContainer extends React.Component<WarbandContainerProps, WarbandContainerState> {
 
-  private initialized = false;
+  constructor(props: WarbandContainerProps) {
+    super(props);
+    this.state = {};
+
+    initialize();    
+  }
+
   public render() {
     // temporary hack until react-redux supports ts 2.4 properly
     const props: any = this.props;
@@ -36,13 +42,6 @@ class WarbandContainer extends React.Component<WarbandContainerProps, WarbandCon
         <WarbandDisplay {...props} />
       </Provider>
     );
-  }
-
-  public componentWillMount() {
-    if (!this.initialized) {
-      initialize();
-      this.initialized = true;
-    }
   }
 }
 

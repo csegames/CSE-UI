@@ -9,7 +9,6 @@ import {
   client,
   events,
   registerSlashCommand,
-  hasClientAPI,
   webAPI,
 } from 'camelot-unchained';
 
@@ -17,7 +16,6 @@ export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string): void => events.fire('system_message', message);
 
 export default () => {
-  if (!hasClientAPI()) return;
 
   /**
    * Create a new Warband
@@ -34,7 +32,8 @@ export default () => {
   registerSlashCommand(
     'createWarband', 'Create a Warband. Optionally, accepts a name if you wish to make this a permanent Warband.',
     (name: string = '') => {
-      if (name === '' || name.length === 0) {
+      if (name === '') {
+
         webAPI.WarbandsAPI.createV1(client.shardID, client.characterID)
           .then((response: any) => {
             if (!response.ok) {
@@ -46,7 +45,9 @@ export default () => {
 
             systemMessage('Warband successfully created!');
           });
+
       } else {
+
         webAPI.WarbandsAPI.createWithNameV1(client.shardID, client.characterID, name)
           .then((response: any) => {
             if (!response.ok) {
@@ -60,6 +61,7 @@ export default () => {
             // success
             systemMessage(`Warband ${name} successfully created!`);
           });
+
       }
     });
 
