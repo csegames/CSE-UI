@@ -6,17 +6,18 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-12 10:29:33
+ * @Last Modified time: 2017-07-18 18:15:11
  */
 
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, ql } from 'camelot-unchained';
+import { ContentItem, TabItem, TabPanel, ql, events, ListenerInfo } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import { gearSlots } from '../../../lib/constants';
+import eventNames, { EquipItemCallback, UnequipItemCallback } from '../../../lib/eventNames';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -167,16 +168,20 @@ export interface EquipmentSlotsAndInfo {
 
 export interface EquipmentSlotsState {
   showUnder: boolean;
+  equippedItems: ql.schema.EquippedItem[];
 }
 
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
   private style: EquipmentSlotsStyles;
   private customStyle: Partial<EquipmentSlotsStyles>;
+  private equipItemListener: ListenerInfo;
+  private onUnequipItemListener: ListenerInfo;
 
   constructor(props: EquipmentSlotsProps) {
     super(props);
     this.state = {
       showUnder: false,
+      equippedItems: props.equippedItems,
     };
   }
   public render() {
@@ -235,14 +240,60 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           styles={{
             tabs: defaultEquipmentSlotsStyle.toggleContainer,
           }}
+          alwaysRenderContent={true}
         />
         {this.renderWeaponSlots(weaponSlots)}
       </div>
     );
   }
 
+  public componentDidMount() {
+    this.equipItemListener = events.on(eventNames.onEquipItem, this.onEquipItem);
+    this.onUnequipItemListener = events.on(eventNames.onUnequipItem, this.onUnequipItem);
+  }
+
+  public componentWillUnmount() {
+    events.off(this.equipItemListener);
+    events.off(this.onUnequipItemListener);
+  }
+
+  private onUnequipItem = (payload: UnequipItemCallback) => {
+    // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
+    const { gearSlots } = payload;
+    const equippedItems = this.state.equippedItems;
+    const filteredItems = _.filter(equippedItems, ((equippedItem) => {
+      return !_.find(equippedItem.gearSlots, (gearSlot) => {
+        return _.find(gearSlots, slot => gearSlot.id === slot.id);
+      });
+    }));
+    this.setState((state) => ({
+      ...state,
+      equippedItems: filteredItems,
+    }));
+  }
+
+  private onEquipItem = (payload: EquipItemCallback) => {
+    const { inventoryItem, willEquipTo } = payload;
+    const equippedItems = this.state.equippedItems;
+
+    const filteredItems = _.filter(equippedItems, ((equippedItem) => {
+      return !_.find(equippedItem.gearSlots, (gearSlot) => {
+        return _.find(willEquipTo, slot => gearSlot.id === slot.id);
+      });
+    }));
+    const newItem = {
+      item: inventoryItem,
+      gearSlots: willEquipTo,
+    };
+    
+    this.setState((state) => ({
+      ...state,
+      equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
+    }));
+  }
+
   private renderEquipmentSlotsection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
-    const { equippedItems } = this.props;
+    const { equippedItems } = this.state;
     const style = this.style;
     const customStyle = this.customStyle;
     return (
@@ -272,7 +323,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     return (
       <div className={css(style.equippedWeaponSlots, customStyle.equippedWeaponSlots)}>
         {weaponSlots.map((slot) => {
-          const equippedWeapon = _.find(this.props.equippedItems, (eItem) => {
+          const equippedWeapon = _.find(this.state.equippedItems, (eItem) => {
             return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
           });
           return (
@@ -287,7 +338,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         })}
       </div>
     );
-  };
+  }
 
   private renderInnerSlots = () => {
     const ss = this.style;

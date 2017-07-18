@@ -6,14 +6,14 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-16 12:04:10
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-16 12:47:25
+ * @Last Modified time: 2017-07-18 17:00:11
  */
 
 // IMPORTANT: This component is the shared code between the EditFilterButtonMenu and FilterButtonList components.
 
 import * as _ from 'lodash';
 import { client } from 'camelot-unchained';
-import { inventoryEditFilterButtons, InventoryFilterButton } from '../../../lib/constants';
+import { defaultFilterButtonIcons, InventoryFilterButton } from '../../../lib/constants';
 
 const inventoryFilterButtonLocalStorageKey =  `inventoryFilterButton${client.characterID}`;
 
@@ -23,9 +23,9 @@ export interface FilterButtonState {
 
 export function getInitialFilterButtonState(): FilterButtonState {
   return {
-    filterButtons: inventoryEditFilterButtons,
+    filterButtons: defaultFilterButtonIcons,
   };
-};
+}
 
 export function getFilterButtons(): InventoryFilterButton[] {
   return JSON.parse(localStorage.getItem(inventoryFilterButtonLocalStorageKey));
@@ -36,12 +36,13 @@ export function setFilterButtons(filterButtons: InventoryFilterButton[]) {
 }
 
 export function initializeFilterButtons(state: FilterButtonState) {
+  localStorage.clear();
   const inventoryFilterButtons: InventoryFilterButton[] = getFilterButtons();
   if (!inventoryFilterButtons) {
-    setFilterButtons(inventoryEditFilterButtons);
+    setFilterButtons(defaultFilterButtonIcons);
     return {
       ...state,
-      filterButtons: inventoryEditFilterButtons,
+      filterButtons: defaultFilterButtonIcons,
     };
   }
   return {
@@ -56,7 +57,7 @@ export function addFilterButton(filterButton: InventoryFilterButton, state: Filt
   return {
     ...state,
     filterButtons,
-  }
+  };
 }
 
 export function removeFilterButton(filterButton: InventoryFilterButton, state: FilterButtonState) {
@@ -65,5 +66,5 @@ export function removeFilterButton(filterButton: InventoryFilterButton, state: F
   return {
     ...state,
     filterButtons,
-  }
+  };
 }

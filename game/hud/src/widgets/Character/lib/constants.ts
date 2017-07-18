@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-22 15:44:33
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-17 17:26:22
+ * @Last Modified time: 2017-07-18 18:29:00
  */
 
 import * as React from 'react';
@@ -152,13 +152,13 @@ export const defaultSlotIcons = {
   Cloak: 'icon-slot-cloak',
   Back: 'icon-slot-back',
   Waist: 'icon-slot-waist',
-  ForearmLeft: 'icon-slot-forearm',
-  ForearmRight: 'icon-slot-forearm',
+  ForearmLeft: 'icon-slot-forearmleft',
+  ForearmRight: 'icon-slot-forearmleft',
   ShoulderLeft: 'icon-slot-shoulder',
   ShoulderRight: 'icon-slot-shoulder',
   HandLeft: 'icon-slot-hand',
   HandRight: 'icon-slot-hand',
-  Shins: 'icon-slot-shins',
+  Shins: 'icon-slot-shin',
   Thighs: 'icon-slot-thighs',
   Feet: 'icon-slot-feet',
   SkullUnder: 'icon-slot-skull',
@@ -174,11 +174,11 @@ export const defaultSlotIcons = {
   ShoulderRightUnder: 'icon-slot-shoulder',
   HandLeftUnder: 'icon-slot-hand',
   HandRightUnder: 'icon-slot-hand',
-  ShinsUnder: 'icon-slot-shins',
+  ShinsUnder: 'icon-slot-shin',
   ThighsUnder: 'icon-slot-thighs',
   FeetUnder: 'icon-slot-feet',
-  PrimaryHandWeapon: '',
-  SecondaryHandWeapon: '',
+  PrimaryHandWeapon: 'icon-filter-weapons',
+  SecondaryHandWeapon: 'icon-filter-weapons',
 };
 
 export const footerInfoIcons = {
@@ -207,11 +207,9 @@ export enum ArmorType {
   Medium,
   Light,
 }
-
 export interface InventoryFilterButton {
   // The css class for the icon to use
   icon: string;
-
   // Unique name for this filter (** MUST BE UNIQUE **)
   name: string;
   // Any additional styling to add to the icon displayed
@@ -220,7 +218,6 @@ export interface InventoryFilterButton {
   // Filter method returns true if the given item should
   // be displayed when this filter is active
   filter: (item: InventoryItemFragment) => boolean;
-
   // Used to distinguish difference between Heavy, Medium, and Light armor
   armorType?: ArmorType;
 }
@@ -233,327 +230,580 @@ function filterForGearSlot(item: InventoryItemFragment, filter: { icon: string, 
         _.includes(item.staticDefinition.description.toLowerCase(), filter.armorType.toString().toLowerCase()) : true);
 }
 
+function filterForDescription(item: InventoryItemFragment, filter: { icon: string, name: string }) {
+  return item &&
+    _.includes(item.staticDefinition.description.toLowerCase(), filter.name.toLowerCase());
+}
+
+function filterForItemType(item: InventoryItemFragment, filter: { icon: string, name: string }) {
+  return item &&
+    _.includes(item.staticDefinition.itemType.toLowerCase(), filter.name.toLowerCase());
+}
+
+function filterForLayer(item: InventoryItemFragment, layer: 'outer' | 'under') {
+  if (layer === 'under') {
+    return item &&
+      _.findIndex(item.staticDefinition.gearSlotSets, set =>
+        _.find(set.gearSlots, (slot) => _.includes(slot.id, layer))) > -1;
+  } else {
+    return item && item.staticDefinition.gearSlotSets.length > 0 && item.staticDefinition.itemType === 'Armor';
+  }
+}
+
+const filterIconPrefix = 'icon-filter-';
+
 export const inventoryFilterButtonInfo: {[id: string]: { icon: string, name: string, armorType?: ArmorType }} = {
-  // Light armor
+  // Armor
+  Armor: {
+    icon: `${filterIconPrefix}armor`,
+    name: 'Armor',
+  },
+  UnderLayer: {
+    icon: `${filterIconPrefix}underlayer`,
+    name: 'UnderLayer',
+  },
+  OuterLayer: {
+    icon: `${filterIconPrefix}outerlayer`,
+    name: 'OuterLayer',
+  },
+
+  // Light Armor
   SkullLight: {
-    icon: 'icon-filter-light-skull',
+    icon: `${filterIconPrefix}light-skull`,
     name: 'SkullLight',
     armorType: ArmorType.Light,
   },
   FaceLight: {
-    icon: 'icon-filter-light-face',
+    icon: `${filterIconPrefix}light-face`,
     name: 'FaceLight',
     armorType: ArmorType.Light,
   },
   NeckLight: {
-    icon: 'icon-filter-light-neck',
+    icon: `${filterIconPrefix}light-neck`,
     name: 'NeckLight',
     armorType: ArmorType.Light,
   },
   ChestLight: {
-    icon: 'icon-filter-light-chest',
+    icon: `${filterIconPrefix}light-chest`,
     name: 'ChestLight',
     armorType: ArmorType.Light,
   },
   CloakLight: {
-    icon: 'icon-filter-light-cloak',
+    icon: `${filterIconPrefix}light-cloak`,
     name: 'CloakLight',
     armorType: ArmorType.Light,
   },
   BackLight: {
-    icon: 'icon-filter-light-back',
+    icon: `${filterIconPrefix}light-back`,
     name: 'BackLight',
     armorType: ArmorType.Light,
   },
   WaistLight: {
-    icon: 'icon-filter-light-waist',
+    icon: `${filterIconPrefix}light-waist`,
     name: 'WaistLight',
     armorType: ArmorType.Light,
   },
   ForearmLeftLight: {
-    icon: 'icon-filter-light-forearm',
+    icon: `${filterIconPrefix}light-forearm`,
     name: 'ForearmLeftLight',
     armorType: ArmorType.Light,
   },
   ForearmRightLight: {
-    icon: 'icon-filter-light-forearm',
+    icon: `${filterIconPrefix}light-forearm`,
     name: 'ForearmRightLight',
     armorType: ArmorType.Light,
   },
   ShoulderLeftLight: {
-    icon: 'icon-filter-light-shoulder',
+    icon: `${filterIconPrefix}light-shoulder`,
     name: 'ShoulderLeftLight',
     armorType: ArmorType.Light,
   },
   ShoulderRightLight: {
-    icon: 'icon-filter-light-shoulder',
+    icon: `${filterIconPrefix}light-shoulder`,
     name: 'ShoulderRightLight',
     armorType: ArmorType.Light,
   },
   HandLeftLight: {
-    icon: 'icon-filter-light-hand',
+    icon: `${filterIconPrefix}light-hand`,
     name: 'HandLeftLight',
     armorType: ArmorType.Light,
   },
   HandRightLight: {
-    icon: 'icon-filter-light-hand',
+    icon: `${filterIconPrefix}light-hand`,
     name: 'HandRightLight',
     armorType: ArmorType.Light,
   },
   ShinsLight: {
-    icon: 'icon-filter-light-shins',
+    icon: `${filterIconPrefix}light-shins`,
     name: 'ShinsLight',
     armorType: ArmorType.Light,
   },
   ThighsLight: {
-    icon: 'icon-filter-light-thighs',
+    icon: `${filterIconPrefix}light-thighs`,
     name: 'ThighsLight',
     armorType: ArmorType.Light,
   },
   FeetLight: {
-    icon: 'icon-filter-light-feet',
+    icon: `${filterIconPrefix}light-feet`,
     name: 'FeetLight',
     armorType: ArmorType.Light,
   },
 
   // Medium armor
   SkullMedium: {
-    icon: 'icon-filter-medium-skull',
+    icon: `${filterIconPrefix}medium-skull`,
     name: 'SkullMedium',
     armorType: ArmorType.Medium,
   },
   FaceMedium: {
-    icon: 'icon-filter-medium-face',
+    icon: `${filterIconPrefix}medium-face`,
     name: 'FaceMedium',
     armorType: ArmorType.Medium,
   },
   NeckMedium: {
-    icon: 'icon-filter-medium-neck',
+    icon: `${filterIconPrefix}medium-neck`,
     name: 'NeckMedium',
     armorType: ArmorType.Medium,
   },
   ChestMedium: {
-    icon: 'icon-filter-medium-chest',
+    icon: `${filterIconPrefix}medium-chest`,
     name: 'ChestMedium',
     armorType: ArmorType.Medium,
   },
   CloakMedium: {
-    icon: 'icon-filter-medium-cloak',
+    icon: `${filterIconPrefix}medium-cloak`,
     name: 'CloakMedium',
     armorType: ArmorType.Medium,
   },
   BackMedium: {
-    icon: 'icon-filter-medium-back',
+    icon: `${filterIconPrefix}medium-back`,
     name: 'BackMedium',
     armorType: ArmorType.Medium,
   },
   WaistMedium: {
-    icon: 'icon-filter-medium-waist',
+    icon: `${filterIconPrefix}medium-waist`,
     name: 'WaistMedium',
     armorType: ArmorType.Medium,
   },
   ForearmLeftMedium: {
-    icon: 'icon-filter-medium-forearm',
+    icon: `${filterIconPrefix}medium-forearm`,
     name: 'ForearmLeftMedium',
     armorType: ArmorType.Medium,
   },
   ForearmRightMedium: {
-    icon: 'icon-filter-medium-forearm',
+    icon: `${filterIconPrefix}medium-forearm`,
     name: 'ForearmRightMedium',
     armorType: ArmorType.Medium,
   },
   ShoulderLeftMedium: {
-    icon: 'icon-filter-medium-shoulder',
+    icon: `${filterIconPrefix}medium-shoulder`,
     name: 'ShoulderLeftMedium',
     armorType: ArmorType.Medium,
   },
   ShoulderRightMedium: {
-    icon: 'icon-filter-medium-shoulder',
+    icon: `${filterIconPrefix}medium-shoulder`,
     name: 'ShoulderRightMedium',
     armorType: ArmorType.Medium,
   },
   HandLeftMedium: {
-    icon: 'icon-filter-medium-hand',
+    icon: `${filterIconPrefix}medium-hand`,
     name: 'HandLeftMedium',
     armorType: ArmorType.Medium,
   },
   HandRightMedium: {
-    icon: 'icon-filter-medium-hand',
+    icon: `${filterIconPrefix}medium-hand`,
     name: 'HandRightMedium',
     armorType: ArmorType.Medium,
   },
   ShinsMedium: {
-    icon: 'icon-filter-medium-shins',
+    icon: `${filterIconPrefix}medium-shins`,
     name: 'ShinsMedium',
     armorType: ArmorType.Medium,
   },
   ThighsMedium: {
-    icon: 'icon-filter-medium-thighs',
+    icon: `${filterIconPrefix}medium-thighs`,
     name: 'ThighsMedium',
     armorType: ArmorType.Medium,
   },
   FeetMedium: {
-    icon: 'icon-filter-medium-feet',
+    icon: `${filterIconPrefix}medium-feet`,
     name: 'FeetMedium',
     armorType: ArmorType.Medium,
   },
 
   // Heavy armor
   SkullHeavy: {
-    icon: 'icon-filter-heavy-skull',
+    icon: `${filterIconPrefix}heavy-skull`,
     name: 'SkullHeavy',
     armorType: ArmorType.Heavy,
   },
   FaceHeavy: {
-    icon: 'icon-filter-heavy-face',
+    icon: `${filterIconPrefix}heavy-face`,
     name: 'FaceHeavy',
     armorType: ArmorType.Heavy,
   },
   NeckHeavy: {
-    icon: 'icon-filter-heavy-neck',
+    icon: `${filterIconPrefix}heavy-neck`,
     name: 'NeckHeavy',
     armorType: ArmorType.Heavy,
   },
   ChestHeavy: {
-    icon: 'icon-filter-heavy-chest',
+    icon: `${filterIconPrefix}heavy-chest`,
     name: 'ChestHeavy',
     armorType: ArmorType.Heavy,
   },
   CloakHeavy: {
-    icon: 'icon-filter-heavy-cloak',
+    icon: `${filterIconPrefix}heavy-cloak`,
     name: 'CloakHeavy',
     armorType: ArmorType.Heavy,
   },
   BackHeavy: {
-    icon: 'icon-filter-heavy-back',
+    icon: `${filterIconPrefix}heavy-back`,
     name: 'BackHeavy',
     armorType: ArmorType.Heavy,
   },
   WaistHeavy: {
-    icon: 'icon-filter-heavy-waist',
+    icon: `${filterIconPrefix}heavy-waist`,
     name: 'WaistHeavy',
     armorType: ArmorType.Heavy,
   },
   ForearmLeftHeavy: {
-    icon: 'icon-filter-heavy-forearm',
+    icon: `${filterIconPrefix}heavy-forearm`,
     name: 'ForearmLeftHeavy',
     armorType: ArmorType.Heavy,
   },
   ForearmRightHeavy: {
-    icon: 'icon-filter-heavy-forearm',
+    icon: `${filterIconPrefix}heavy-forearm`,
     name: 'ForearmRightHeavy',
     armorType: ArmorType.Heavy,
   },
   ShoulderLeftHeavy: {
-    icon: 'icon-filter-heavy-shoulder',
+    icon: `${filterIconPrefix}heavy-shoulder`,
     name: 'ShoulderLeftHeavy',
     armorType: ArmorType.Heavy,
   },
   ShoulderRightHeavy: {
-    icon: 'icon-filter-heavy-shoulder',
+    icon: `${filterIconPrefix}heavy-shoulder`,
     name: 'ShoulderRightHeavy',
     armorType: ArmorType.Heavy,
   },
   HandLeftHeavy: {
-    icon: 'icon-filter-heavy-hand',
+    icon: `${filterIconPrefix}heavy-hand`,
     name: 'HandLeftHeavy',
     armorType: ArmorType.Heavy,
   },
   HandRightHeavy: {
-    icon: 'icon-filter-heavy-hand',
+    icon: `${filterIconPrefix}heavy-hand`,
     name: 'HandRightHeavy',
     armorType: ArmorType.Heavy,
   },
   ShinsHeavy: {
-    icon: 'icon-filter-heavy-shins',
+    icon: `${filterIconPrefix}heavy-shins`,
     name: 'ShinsHeavy',
     armorType: ArmorType.Heavy,
   },
   ThighsHeavy: {
-    icon: 'icon-filter-heavy-thighs',
+    icon: `${filterIconPrefix}heavy-thighs`,
     name: 'ThighsHeavy',
     armorType: ArmorType.Heavy,
   },
   FeetHeavy: {
-    icon: 'icon-filter-heavy-feet',
+    icon: `${filterIconPrefix}heavy-feet`,
     name: 'FeetHeavy',
     armorType: ArmorType.Heavy,
   },
 
-  // Weapons
-  Weapons: {
-    icon: 'icon-filter-weapons',
-    name: 'Weapons',
+  // Weapon
+  Weapon: {
+    icon: `${filterIconPrefix}weapons`,
+    name: 'Weapon',
   },
   Axe: {
-    icon: 'icon-filter-axe',
+    icon: `${filterIconPrefix}axe`,
     name: 'Axe',
   },
   Bow: {
-    icon: 'icon-filter-bow',
+    icon: `${filterIconPrefix}bow`,
     name: 'Bow',
   },
   Dagger: {
-    icon: 'icon-filter-dagger',
+    icon: `${filterIconPrefix}dagger`,
     name: 'Dagger',
   },
   GreatAxe: {
-    icon: 'icon-filter-great-axe',
+    icon: `${filterIconPrefix}great-axe`,
     name: 'GreatAxe',
   },
   GreatHammer: {
-    icon: 'icon-filter-great-hammer',
+    icon: `${filterIconPrefix}great-hammer`,
     name: 'GreatHammer',
   },
   GreatMace: {
-    icon: 'icon-filter-great-mace',
+    icon: `${filterIconPrefix}great-mace`,
     name: 'GreatMace',
   },
   GreatSword: {
-    icon: 'icon-filter-great-sword',
+    icon: `${filterIconPrefix}great-sword`,
     name: 'GreatSword',
   },
   Hammer: {
-    icon: 'icon-filter-hammer',
+    icon: `${filterIconPrefix}hammer`,
     name: 'Hammer',
   },
   LongSword: {
-    icon: 'icon-filter-long-sword',
+    icon: `${filterIconPrefix}long-sword`,
     name: 'LongSword',
   },
   Mace: {
-    icon: 'icon-filter-mace',
+    icon: `${filterIconPrefix}mace`,
     name: 'Mace',
   },
   Polearm: {
-    icon: 'icon-filter-polearm',
+    icon: `${filterIconPrefix}polearm`,
     name: 'Polearm',
   },
   Shield: {
-    icon: 'icon-filter-shield',
+    icon: `${filterIconPrefix}shield`,
     name: 'Shield',
   },
   Spear: {
-    icon: 'icon-filter-spear',
+    icon: `${filterIconPrefix}spear`,
     name: 'Spear',
   },
   Staff: {
-    icon: 'icon-filter-staff',
+    icon: `${filterIconPrefix}staff`,
     name: 'Staff',
   },
   Sword: {
-    icon: 'icon-filter-sword',
+    icon: `${filterIconPrefix}sword`,
     name: 'Sword',
   },
   Torch: {
-    icon: 'icon-filter-torch',
+    icon: `${filterIconPrefix}torch`,
     name: 'Torch',
+  },
+
+  // Crafting
+  Alloys: {
+    icon: `${filterIconPrefix}alloys`,
+    name: 'Alloys',
+  },
+  Substances: {
+    icon: `${filterIconPrefix}substances`,
+    name: 'Substances',
+  },
+  BlackLog: {
+    icon: `${filterIconPrefix}black-log`,
+    name: 'BlackLog',
+  },
+  CherryBoard: {
+    icon: `${filterIconPrefix}cherry-board`,
+    name: 'CherryBoard',
+  },
+  CherryLog: {
+    icon: `${filterIconPrefix}cherry-log`,
+    name: 'CherryLog',
+  },
+  Cloths: {
+    icon: `${filterIconPrefix}cloths`,
+    name: 'Cloths',
+  },
+  RawCloths: {
+    icon: `${filterIconPrefix}cloths-raw`,
+    name: 'RawCloths',
+  },
+  DarkLog: {
+    icon: `${filterIconPrefix}dark-log`,
+    name: 'DarkLog',
+  },
+  IgneousOre: {
+    icon: `${filterIconPrefix}igneous-ore`,
+    name: 'IgneousOre',
+  },
+  Leathers: {
+    icon: `${filterIconPrefix}leathers`,
+    name: 'Leathers',
+  },
+  RawLeathers: {
+    icon: `${filterIconPrefix}leathers-raw`,
+    name: 'RawLeathers',
+  },
+  LightLog: {
+    icon: `${filterIconPrefix}light-log`,
+    name: 'LightLog',
+  },
+  MetalBar: {
+    icon: `${filterIconPrefix}metal-bar`,
+    name: 'MetalBar',
+  },
+  Metals: {
+    icon: `${filterIconPrefix}metals`,
+    name: 'Metals',
+  },
+  RawMetals: {
+    icon: `${filterIconPrefix}metals-raw`,
+    name: 'RawMetals',
+  },
+  MetamorphicOre: {
+    icon: `${filterIconPrefix}metamorphic-ore`,
+    name: 'MetamorphicOre',
+  },
+  SedimentaryOre: {
+    icon: `${filterIconPrefix}sedimentary-ore`,
+    name: 'SedimentaryOre',
+  },
+  SoftMetalBar: {
+    icon: `${filterIconPrefix}softmetal-bar`,
+    name: 'SoftMetalBar',
+  },
+  Stones: {
+    icon: `${filterIconPrefix}stones`,
+    name: 'Stones',
+  },
+  RawStones: {
+    icon: `${filterIconPrefix}stones-raw`,
+    name: 'RawStones',
+  },
+  Woods: {
+    icon: `${filterIconPrefix}woods`,
+    name: 'Woods',
+  },
+  RawWoods: {
+    icon: `${filterIconPrefix}woods-raw`,
+    name: 'RawWoods',
+  },
+
+  // Misc
+  Ammo: {
+    icon: `${filterIconPrefix}munitions`,
+    name: 'Ammo',
+  },
+  Bandages: {
+    icon: `${filterIconPrefix}bandages`,
+    name: 'Bandages',
+  },
+  Arrow: {
+    icon: `${filterIconPrefix}arrow`,
+    name: 'Arrow',
+  },
+  BasaltSlab: {
+    icon: `${filterIconPrefix}basalt-slab`,
+    name: 'BasaltSlab',
+  },
+  BlackBoard: {
+    icon: `${filterIconPrefix}black-board`,
+    name: 'BlackBoard',
+  },
+  Blocks: {
+    icon: `${filterIconPrefix}blocks`,
+    name: 'Blocks',
+  },
+  Bolt: {
+    icon: `${filterIconPrefix}bolt`,
+    name: 'Bolt',
+  },
+  Building: {
+    icon: `${filterIconPrefix}building`,
+    name: 'Building',
+  },
+  Consumables: {
+    icon: `${filterIconPrefix}consumables`,
+    name: 'Consumables',
+  },
+  DarkBoard: {
+    icon: `${filterIconPrefix}dark-board`,
+    name: 'DarkBoard',
+  },
+  Decor: {
+    icon: `${filterIconPrefix}decor`,
+    name: 'Decor',
+  },
+  Deployables: {
+    icon: `${filterIconPrefix}deployables`,
+    name: 'Deployables',
+  },
+  Focus: {
+    icon: `${filterIconPrefix}focus`,
+    name: 'Focus',
+  },
+  GneissSlab: {
+    icon: `${filterIconPrefix}gneiss-slab`,
+    name: 'GneissSlab',
+  },
+  GraniteSlab: {
+    icon: `${filterIconPrefix}granite-slab`,
+    name: 'GraniteSlab',
+  },
+  HardMetalBar: {
+    icon: `${filterIconPrefix}hardmetal-bar`,
+    name: 'HardMetalBar',
+  },
+  Interactive: {
+    icon: `${filterIconPrefix}interactive`,
+    name: 'Interactive',
+  },
+  LightBoard: {
+    icon: `${filterIconPrefix}light-board`,
+    name: 'LightBoard',
+  },
+  MarbleSlab: {
+    icon: `${filterIconPrefix}marble-slab`,
+    name: 'MarbleSlab',
+  },
+  Potion: {
+    icon: `${filterIconPrefix}potion`,
+    name: 'Potion',
+  },
+  QuartziteSlab: {
+    icon: `${filterIconPrefix}quartzite-slab`,
+    name: 'QuartziteSlab',
+  },
+  Reagents: {
+    icon: `${filterIconPrefix}reagents`,
+    name: 'Reagents',
+  },
+  SandstoneSlab: {
+    icon: `${filterIconPrefix}sandstone-slab`,
+    name: 'SandstoneSlab',
+  },
+  Siege: {
+    icon: `${filterIconPrefix}siege`,
+    name: 'Siege',
+  },
+  SlateSlab: {
+    icon: `${filterIconPrefix}slate-slab`,
+    name: 'SlateSlab',
+  },
+  Thrown: {
+    icon: `${filterIconPrefix}thrown`,
+    name: 'Thrown',
+  },
+  Trap: {
+    icon: `${filterIconPrefix}trap`,
+    name: 'Trap',
+  },
+  Vial: {
+    icon: `${filterIconPrefix}vial`,
+    name: 'Vial',
   },
 };
 
 export const inventoryFilterButtons: {
   [key: string]: InventoryFilterButton,
   } = {
+  // Armor
+  Armor: {
+    ...inventoryFilterButtonInfo.Armor,
+    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Armor),
+  },
+  UnderLayer: {
+    ...inventoryFilterButtonInfo.UnderLayer,
+    filter: (item: InventoryItemFragment) => filterForLayer(item, 'under'),
+  },
+  OuterLayer: {
+    ...inventoryFilterButtonInfo.OuterLayer,
+    filter: (item: InventoryItemFragment) => filterForLayer(item, 'outer'),
+  },
   // Light armor
   SkullLight: {
     ...inventoryFilterButtonInfo.SkullLight,
@@ -631,7 +881,6 @@ export const inventoryFilterButtons: {
     ...inventoryFilterButtonInfo.FeetLight,
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetLight),
   },
-
   // Medium armor
   SkullMedium: {
     ...inventoryFilterButtonInfo.SkullMedium,
@@ -709,7 +958,6 @@ export const inventoryFilterButtons: {
     ...inventoryFilterButtonInfo.FeetMedium,
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetMedium),
   },
-
   // Heavy armor
   SkullHeavy: {
     ...inventoryFilterButtonInfo.SkullHeavy,
@@ -787,38 +1035,288 @@ export const inventoryFilterButtons: {
     ...inventoryFilterButtonInfo.FeetHeavy,
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetHeavy),
   },
-
-  Weapons: {
-    icon: 'icon-filter-weapons',
-    name: 'Weapons',
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.PrimaryHandWeapon) ||
-      filterForGearSlot(item, inventoryFilterButtonInfo.SecondaryHandWeapon),
+  Weapon: {
+    ...inventoryFilterButtonInfo.Weapon,
+    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Weapon),
+  },
+  Axe: {
+    ...inventoryFilterButtonInfo.Axe,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Axe),
+  },
+  Bow: {
+    ...inventoryFilterButtonInfo.Bow,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bow),
+  },
+  Dagger: {
+    ...inventoryFilterButtonInfo.Dagger,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Dagger),
+  },
+  GreatAxe: {
+    ...inventoryFilterButtonInfo.GreatAxe,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatAxe),
+  },
+  GreatHammer: {
+    ...inventoryFilterButtonInfo.GreatHammer,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatHammer),
+  },
+  GreatMace: {
+    ...inventoryFilterButtonInfo.GreatMace,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatMace),
+  },
+  GreatSword: {
+    ...inventoryFilterButtonInfo.GreatSword,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatSword),
+  },
+  Hammer: {
+    ...inventoryFilterButtonInfo.Hammer,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Hammer),
+  },
+  LongSword: {
+    ...inventoryFilterButtonInfo.LongSword,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LongSword),
+  },
+  Mace: {
+    ...inventoryFilterButtonInfo.Mace,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Mace),
+  },
+  Polearm: {
+    ...inventoryFilterButtonInfo.Polearm,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Polearm),
+  },
+  Shield: {
+    ...inventoryFilterButtonInfo.Shield,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Shield),
+  },
+  Spear: {
+    ...inventoryFilterButtonInfo.Spear,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Spear),
+  },
+  Staff: {
+    ...inventoryFilterButtonInfo.Staff,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Staff),
+  },
+  Sword: {
+    ...inventoryFilterButtonInfo.Sword,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Sword),
+  },
+  Torch: {
+    ...inventoryFilterButtonInfo.Torch,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Torch),
+  },
+  Alloys: {
+    ...inventoryFilterButtonInfo.Alloys,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Alloys),
+  },
+  Substances: {
+    ...inventoryFilterButtonInfo.Substances,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Substances),
+  },
+  BlackLog: {
+    ...inventoryFilterButtonInfo.BlackLog,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackLog),
+  },
+  CherryBoard: {
+    ...inventoryFilterButtonInfo.CherryBoard,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryBoard),
+  },
+  CherryLog: {
+    ...inventoryFilterButtonInfo.CherryLog,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryLog),
+  },
+  Cloths: {
+    ...inventoryFilterButtonInfo.Cloths,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Cloths),
+  },
+  RawCloths: {
+    ...inventoryFilterButtonInfo.RawCloths,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawCloths),
+  },
+  DarkLog: {
+    ...inventoryFilterButtonInfo.DarkLog,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkLog),
+  },
+  IgneousOre: {
+    ...inventoryFilterButtonInfo.IgneousOre,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.IgneousOre),
+  },
+  Leathers: {
+    ...inventoryFilterButtonInfo.Leathers,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Leathers),
+  },
+  RawLeathers: {
+    ...inventoryFilterButtonInfo.RawLeathers,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawLeathers),
+  },
+  LightLog: {
+    ...inventoryFilterButtonInfo.LightLog,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LightLog),
+  },
+  MetalBar: {
+    ...inventoryFilterButtonInfo.MetalBar,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MetalBar),
+  },
+  Metals: {
+    ...inventoryFilterButtonInfo.Metals,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Metals),
+  },
+  RawMetals: {
+    ...inventoryFilterButtonInfo.RawMetals,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawMetals),
+  },
+  MetamorphicOre: {
+    ...inventoryFilterButtonInfo.MetamorphicOre,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MetamorphicOre),
+  },
+  SedimentaryOre: {
+    ...inventoryFilterButtonInfo.SedimentaryOre,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SedimentaryOre),
+  },
+  SoftMetalBar: {
+    ...inventoryFilterButtonInfo.SoftMetalBar,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SoftMetalBar),
+  },
+  Stones: {
+    ...inventoryFilterButtonInfo.Stones,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Stones),
+  },
+  RawStones: {
+    ...inventoryFilterButtonInfo.RawStones,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawStones),
+  },
+  Woods: {
+    ...inventoryFilterButtonInfo.Woods,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Woods),
+  },
+  RawWoods: {
+    ...inventoryFilterButtonInfo.RawWoods,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawWoods),
+  },
+  Ammo: {
+      ...inventoryFilterButtonInfo.Ammo,
+    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Ammo),
+  },
+  Bandages: {
+    ...inventoryFilterButtonInfo.Bandages,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bandages),
+  },
+  Arrow: {
+    ...inventoryFilterButtonInfo.Arrow,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Arrow),
+  },
+  BasaltSlab: {
+    ...inventoryFilterButtonInfo.BasaltSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BasaltSlab),
+  },
+  BlackBoard: {
+    ...inventoryFilterButtonInfo.BlackBoard,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackBoard),
+  },
+  Blocks: {
+    ...inventoryFilterButtonInfo.Blocks,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Blocks),
+  },
+  Bolt: {
+    ...inventoryFilterButtonInfo.Bolt,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bolt),
+  },
+  Building: {
+    ...inventoryFilterButtonInfo.Building,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Building),
+  },
+  Consumables: {
+    ...inventoryFilterButtonInfo.Consumables,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Consumables),
+  },
+  DarkBoard: {
+    ...inventoryFilterButtonInfo.DarkBoard,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkBoard),
+  },
+  Decor: {
+    ...inventoryFilterButtonInfo.Decor,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Decor),
+  },
+  Deployables: {
+    ...inventoryFilterButtonInfo.Deployables,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Deployables),
+  },
+  Focus: {
+    ...inventoryFilterButtonInfo.Focus,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Focus),
+  },
+  GneissSlab: {
+    ...inventoryFilterButtonInfo.GneissSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GneissSlab),
+  },
+  GraniteSlab: {
+    ...inventoryFilterButtonInfo.GraniteSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GraniteSlab),
+  },
+  HardMetalBar: {
+    ...inventoryFilterButtonInfo.HardMetalBar,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.HardMetalBar),
+  },
+  Interactive: {
+    ...inventoryFilterButtonInfo.Interactive,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Interactive),
+  },
+  LightBoard: {
+    ...inventoryFilterButtonInfo.LightBoard,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LightBoard),
+  },
+  MarbleSlab: {
+    ...inventoryFilterButtonInfo.MarbleSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MarbleSlab),
+  },
+  Potion: {
+    ...inventoryFilterButtonInfo.Potion,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Potion),
+  },
+  QuartziteSlab: {
+    ...inventoryFilterButtonInfo.QuartziteSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.QuartziteSlab),
+  },
+  Reagents: {
+    ...inventoryFilterButtonInfo.Reagents,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Reagents),
+  },
+  SandstoneSlab: {
+    ...inventoryFilterButtonInfo.SandstoneSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SandstoneSlab),
+  },
+  Siege: {
+    ...inventoryFilterButtonInfo.Siege,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Siege),
+  },
+  SlateSlab: {
+    ...inventoryFilterButtonInfo.SlateSlab,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SlateSlab),
+  },
+  Thrown: {
+    ...inventoryFilterButtonInfo.Thrown,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Thrown),
+  },
+  Trap: {
+    ...inventoryFilterButtonInfo.Trap,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Trap),
+  },
+  Vial: {
+    ...inventoryFilterButtonInfo.Vial,
+    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Vial),
   },
 };
 
 export const defaultFilterButtonIcons = [
-  inventoryFilterButtons.SkullLight,
-  inventoryFilterButtons.FaceLight,
-  inventoryFilterButtons.NeckLight,
-  inventoryFilterButtons.ChestLight,
-  inventoryFilterButtons.CloakLight,
-  inventoryFilterButtons.BackLight,
-  inventoryFilterButtons.WaistLight,
-  inventoryFilterButtons.ForearmLeftLight,
-  inventoryFilterButtons.ForearmRightLight,
-  inventoryFilterButtons.ShoulderLeftLight,
-  inventoryFilterButtons.ShoulderRightLight,
-  inventoryFilterButtons.HandLeftLight,
-  inventoryFilterButtons.HandRightLight,
-  inventoryFilterButtons.ShinsLight,
-  inventoryFilterButtons.ThighsLight,
-  inventoryFilterButtons.FeetLight,
-  inventoryFilterButtons.Weapons,
+  inventoryFilterButtons.Armor,
+  inventoryFilterButtons.OuterLayer,
+  inventoryFilterButtons.UnderLayer,
+  inventoryFilterButtons.Weapon,
+  inventoryFilterButtons.Cloths,
+  inventoryFilterButtons.Woods,
+  inventoryFilterButtons.Metals,
+  inventoryFilterButtons.Ammo,
 ];
 
 export const inventoryEditFilterButtons: InventoryFilterButton[] = [
-  inventoryFilterButtons.Weapons,
-
   // Light armor
   inventoryFilterButtons.SkullLight,
   inventoryFilterButtons.FaceLight,
@@ -872,4 +1370,76 @@ export const inventoryEditFilterButtons: InventoryFilterButton[] = [
   inventoryFilterButtons.ShinsHeavy,
   inventoryFilterButtons.ThighsHeavy,
   inventoryFilterButtons.FeetHeavy,
+
+  // Weapon
+  inventoryFilterButtons.Axe,
+  inventoryFilterButtons.Bow,
+  inventoryFilterButtons.Dagger,
+  inventoryFilterButtons.GreatAxe,
+  inventoryFilterButtons.GreatHammer,
+  inventoryFilterButtons.GreatMace,
+  inventoryFilterButtons.GreatSword,
+  inventoryFilterButtons.Hammer,
+  inventoryFilterButtons.LongSword,
+  inventoryFilterButtons.Mace,
+  inventoryFilterButtons.Polearm,
+  inventoryFilterButtons.Shield,
+  inventoryFilterButtons.Spear,
+  inventoryFilterButtons.Staff,
+  inventoryFilterButtons.Sword,
+  inventoryFilterButtons.Torch,
+
+  // Crafting
+  inventoryFilterButtons.Alloys,
+  inventoryFilterButtons.Substances,
+  inventoryFilterButtons.BlackLog,
+  inventoryFilterButtons.CherryBoard,
+  inventoryFilterButtons.CherryLog,
+  inventoryFilterButtons.Cloths,
+  inventoryFilterButtons.RawCloths,
+  inventoryFilterButtons.DarkLog,
+  inventoryFilterButtons.IgneousOre,
+  inventoryFilterButtons.Leathers,
+  inventoryFilterButtons.RawLeathers,
+  inventoryFilterButtons.LightLog,
+  inventoryFilterButtons.MetalBar,
+  inventoryFilterButtons.Metals,
+  inventoryFilterButtons.RawMetals,
+  inventoryFilterButtons.MetamorphicOre,
+  inventoryFilterButtons.SedimentaryOre,
+  inventoryFilterButtons.SoftMetalBar,
+  inventoryFilterButtons.Stones,
+  inventoryFilterButtons.RawStones,
+  inventoryFilterButtons.Woods,
+  inventoryFilterButtons.RawWoods,
+
+  // Misc
+  inventoryFilterButtons.Ammo,
+  inventoryFilterButtons.Bandages,
+  inventoryFilterButtons.Arrow,
+  inventoryFilterButtons.BasaltSlab,
+  inventoryFilterButtons.BlackBoard,
+  inventoryFilterButtons.Blocks,
+  inventoryFilterButtons.Bolt,
+  inventoryFilterButtons.Building,
+  inventoryFilterButtons.Consumables,
+  inventoryFilterButtons.DarkBoard,
+  inventoryFilterButtons.Decor,
+  inventoryFilterButtons.Deployables,
+  inventoryFilterButtons.Focus,
+  inventoryFilterButtons.GneissSlab,
+  inventoryFilterButtons.GraniteSlab,
+  inventoryFilterButtons.HardMetalBar,
+  inventoryFilterButtons.Interactive,
+  inventoryFilterButtons.LightBoard,
+  inventoryFilterButtons.MarbleSlab,
+  inventoryFilterButtons.Potion,
+  inventoryFilterButtons.QuartziteSlab,
+  inventoryFilterButtons.Reagents,
+  inventoryFilterButtons.SandstoneSlab,
+  inventoryFilterButtons.Siege,
+  inventoryFilterButtons.SlateSlab,
+  inventoryFilterButtons.Thrown,
+  inventoryFilterButtons.Trap,
+  inventoryFilterButtons.Vial,
 ];

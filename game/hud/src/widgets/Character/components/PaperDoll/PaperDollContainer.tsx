@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:49:46
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-17 17:37:08
+ * @Last Modified time: 2017-07-18 14:57:04
  */
 
 import * as React from 'react';
@@ -57,6 +57,7 @@ export const defaultPaperDollStyle: PaperDollStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    flex: '0 0 auto',
   },
 
   itemSlotContainer: {

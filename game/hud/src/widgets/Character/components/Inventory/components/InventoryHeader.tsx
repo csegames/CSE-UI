@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:55:49
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 10:15:47
+ * @Last Modified time: 2017-07-18 18:04:29
  */
 
 import * as React from 'react';
@@ -65,7 +65,6 @@ export const defaultInventoryHeaderStyle: InventoryHeaderStyle = {
   filterButtons: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     margin: '5px 0px',
   },
 };
@@ -99,7 +98,6 @@ export class InventoryHeader extends React.Component<InventoryHeaderProps, Inven
   public render() {
     const ss = StyleSheet.create(defaultInventoryHeaderStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    
     return (
       <div className={css(ss.InventoryHeader, custom.InventoryHeader)}>
         <div className={css(ss.inputAndFilterMenuContainer, custom.inputAndFilterMenuContainer)}>

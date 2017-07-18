@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 17:42:12
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:06:27
+ * @Last Modified time: 2017-07-18 18:33:14
  */
 
 import * as React from 'react';
@@ -40,9 +40,10 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     height: '70px',
     border: '1px solid #AAACB1',
     cursor: 'pointer',
-    fontSize: '65px',
-    lineHeight: '65px',
+    fontSize: '55px',
+    lineHeight: '55px',
     backgroundColor: 'rgba(255,255,255,0.3)',
+    textAlign: 'center',
   },
   popupMiniInventoryVisible: {
     border: '1px solid yellow',
@@ -62,8 +63,9 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     left: 0,
   },
   defaultSlotIcon: {
-    width: '65px',
-    height: '65px',
+    opacity: 0.3,
+    width: '100%',
+    height: '100%',
   },
 };
 
@@ -77,7 +79,6 @@ export interface EquippedItemSlotProps {
 export interface EquippedItemSlotState {
   itemMenuVisible: boolean;
   highlightSlot: boolean;
-  equippedItem: ql.schema.EquippedItem;
   showTooltip: boolean;
 }
 
@@ -94,7 +95,6 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     this.state = {
       itemMenuVisible: false,
       highlightSlot: false,
-      equippedItem: null,
       showTooltip: false,
     };
   }
@@ -102,7 +102,8 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
   public render() {
     const style = StyleSheet.create(defaultEquippedItemSlotStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
-    const { equippedItem, highlightSlot, showTooltip } = this.state;
+    const equippedItem = this.props.providedEquippedItem;
+    const { highlightSlot, showTooltip } = this.state;
     const { openingSide, slotName } = this.props;
     // const { equippedItemSlot, popupMiniInventoryVisible } = defaultEquippedItemSlotStyle;
 
@@ -137,7 +138,9 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
                 src={iconUrl || placeholderIcon}
                 className={css(style.equippedItemSlot, customStyle.equippedItemSlot)}
               /> :
-                <div className={`${css(style.equippedItemSlot, customStyle.equippedItemSlot)} ${iconUrl}`} />}
+                <div className={css(style.equippedItemSlot, customStyle.equippedItemSlot)}>
+                  <div className={`${iconUrl}`} />
+                </div>}
             {highlightSlot && <div className={css(style.highlightSlotOverlay, customStyle.highlightSlotOverlay)} />}
           </div>
         </Tooltip>
@@ -151,13 +154,6 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     this.onEquipListener = events.on(eventNames.onEquipItem, this.onEquipItem);
     this.onHighlightListener = events.on(eventNames.onHighlightSlots, this.onHighlightSlots);
     this.onDehighlightListener = events.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
-    this.setEquippedItemSlot(this.props.providedEquippedItem);
-  }
-
-  public componentWillReceiveProps(nextProps: EquippedItemSlotProps) {
-    if (!_.isEqual(nextProps.providedEquippedItem, this.state.equippedItem)) {
-      this.setEquippedItemSlot(nextProps.providedEquippedItem);
-    }
   }
 
   public componentWillUnmount() {
@@ -168,33 +164,29 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     events.off(this.onDehighlightListener);
   }
 
-  private setEquippedItemSlot = (equippedItem: ql.schema.EquippedItem) => {
-    this.setState({ equippedItem });
-  }
-
   private onDoubleClick = () => {
     // Fires off onUnequipItem event
-    const { equippedItem } = this.state;
+    const equippedItem = this.props.providedEquippedItem;
     const payload: UnequipItemCallback = equippedItem;
     client.UnequipItem(equippedItem.item.id);
     events.fire(eventNames.onUnequipItem, payload);
   }
 
-  private onUnequipItem = (equippedItem: UnequipItemCallback) => {
+  private onUnequipItem = (payload: UnequipItemCallback) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
     const { slotName } = this.props;
-    if (_.isEqual(this.state.equippedItem, equippedItem)) {
+    const { item } = payload;
+    const equippedItem = this.props.providedEquippedItem;
+    if (equippedItem && equippedItem.item.id === item.id) {
       if (_.find(equippedItem.gearSlots, gearSlot => slotName === gearSlot.id)) {
         const payload: any = { equippedItem };
         events.fire(eventNames.updateInventoryItems, payload);
-        
-        this.setState({ equippedItem: null });
       }
     }
   }
 
   private onEquipItem = (payload: EquipItemCallback) => {
-    const { equippedItem } = this.state;
+    const equippedItem = this.props.providedEquippedItem;
     const { slotName } = this.props;
     const { inventoryItem, willEquipTo } = payload;
     const shouldUpdate = _.find(willEquipTo, (gearSlot) => {
@@ -216,20 +208,6 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
         inventoryItem: inventoryItem as any,
       };
       events.fire(eventNames.updateInventoryItems, payload);
-      
-
-      // Return itemId and iconUrl, can be empty if the inventoryItem doesn't fill up slots current equippedItem did.
-      if (equippedItem) {
-        equippedItem.gearSlots.forEach((gearSlot) => {
-          if (gearSlot.id === this.props.slotName) {
-            this.setState({ equippedItem: newItem });
-            return;
-          }
-        });
-      } else {
-        this.setState({ equippedItem: newItem });
-        return;
-      }
     }
   }
 

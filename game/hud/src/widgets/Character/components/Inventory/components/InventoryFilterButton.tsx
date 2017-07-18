@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-26 22:51:23
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 10:23:07
+ * @Last Modified time: 2017-07-18 16:36:46
  */
 
 import * as React from 'react';
@@ -100,7 +100,6 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
   public render() {
     const style = StyleSheet.create(defaultInventoryFilterButtonStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
-
     return (
       <Tooltip content={() => <div>{prettifySlotName(this.props.filterButton.name)}</div>}>
         <div className={css(style.inventoryFilterButton, customStyle.inventoryFilterButton)}>
