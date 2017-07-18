@@ -98,15 +98,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   public componentWillReceiveProps(props: HUDProps) {
     if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
-      
+
         events.fire('chat-leave-room', this.state.orderName);
-      
+
       // we either are just loading up, or we've changed order.
       if (props.data.myOrder.id) {
         // we left our order, leave chat room
         events.fire('chat-show-room', props.data.myOrder.name);
       }
-      
+
       this.setState({
         orderName: props.data.myOrder.name,
       });

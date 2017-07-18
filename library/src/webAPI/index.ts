@@ -29,6 +29,7 @@ export {
   CharactersAPI,
   CraftingAPI,
   ContentAPI,
+  CraftingAPI,
   GameDataAPI,
   GroupsAPI,
   OrdersAPI,

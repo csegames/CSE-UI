@@ -51,6 +51,10 @@ module.exports = {
         script: 'nps clean.temps && rimraf build && rimraf dist',
         hiddenFromHelp: true,
       },
+      fledgling: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       hatchery: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -79,6 +83,10 @@ module.exports = {
       },
       dev: {
         script: 'nps copy && copyup src/**/*.config.js src/index.html dist',
+        hiddenFromHelp: true,
+      },
+      fledgling: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       hatchery: {
@@ -139,6 +147,10 @@ module.exports = {
         script: 'nps report.start && nps lint && nps report.lint && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
+      },
+      fledgling: {
+        script: 'nps build,clean.fledgling,copy.fledgling',
+        description: 'Builds the module and copies to the Fledling (30) UI override directory.',
       },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
