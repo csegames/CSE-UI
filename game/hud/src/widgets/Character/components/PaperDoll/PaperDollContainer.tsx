@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:49:46
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 14:57:04
+ * @Last Modified time: 2017-07-19 17:04:14
  */
 
 import * as React from 'react';
@@ -27,6 +27,8 @@ export interface PaperDollStyle extends StyleDeclaration {
   paperdollContainer: React.CSSProperties;
   characterInfoContainer: React.CSSProperties;
   itemSlotContainer: React.CSSProperties;
+  backgroundImg: React.CSSProperties;
+  manIcon: React.CSSProperties;
 }
 
 export const defaultPaperDollStyle: PaperDollStyle = {
@@ -36,9 +38,6 @@ export const defaultPaperDollStyle: PaperDollStyle = {
     alignItems: 'stretch',
     width: '100%',
     height: '100%',
-    background: 'url(images/paperdollbg.png) no-repeat center center',
-    webkitBackgroundSize: 'cover',
-    backgroundSize: 'cover',
   },
 
   paperdollContainer: {
@@ -46,9 +45,6 @@ export const defaultPaperDollStyle: PaperDollStyle = {
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    background: 'url(images/paperdoll-man.png) no-repeat center center',
-    webkitBackgroundSize: '300px 650px',
-    backgroundSize: '300px 650px',
     width: '100%',
     height: '100%',
   },
@@ -64,6 +60,29 @@ export const defaultPaperDollStyle: PaperDollStyle = {
     display: 'flex',
     margin: '5px',
     cursor: 'pointer',
+  },
+  
+  backgroundImg: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    zIndex: 0,
+  },
+
+  manIcon: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 'auto',
+    width: '300px',
+    height: '650px',
   },
 };
 
@@ -95,10 +114,12 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     
     return (
       <div className={css(ss.paperDoll)}>
+        <img src={'images/paperdollbg.png'} className={css(ss.backgroundImg)} />
         {this.props.data.loading && !myEquippedItems ?
           <LoadingContainer /> :
         
           <div className={css(ss.paperdollContainer)}>
+            <img src={'images/paperdoll-man.png'} className={css(ss.manIcon)} />
             <div className={css(ss.characterInfoContainer)}>
               <CharacterAndOrderName
                 characterName={myCharacter && myCharacter.name}

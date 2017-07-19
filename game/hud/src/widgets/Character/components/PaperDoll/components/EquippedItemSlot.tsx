@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 17:42:12
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 18:33:14
+ * @Last Modified time: 2017-07-19 18:04:48
  */
 
 import * as React from 'react';
@@ -45,15 +45,19 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     backgroundColor: 'rgba(255,255,255,0.3)',
     textAlign: 'center',
   },
+
   popupMiniInventoryVisible: {
     border: '1px solid yellow',
   },
+
   itemContainer: {
     position: 'relative',
   },
+
   highlightSlotContainer: {
     border: '1px solid yellow',
   },
+
   highlightSlotOverlay: {
     position: 'absolute',
     width: '100%',
@@ -62,7 +66,11 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     top: 0,
     left: 0,
   },
+
   defaultSlotIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     opacity: 0.3,
     width: '100%',
     height: '100%',

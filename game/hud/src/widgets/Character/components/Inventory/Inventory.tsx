@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-30 16:45:59
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-14 18:54:35
+ * @Last Modified time: 2017-07-19 15:45:38
  */
 
 import * as React from 'react';
@@ -41,6 +41,7 @@ export const defaultInventoryStyle: InventoryStyle = {
     alignItems: 'stretch',
     padding: '10px 5px 15px 5px',
     backgroundColor: colors.filterBackgroundColor,
+    zIndex: 1,
   },
 
   searchInput: {
@@ -90,6 +91,10 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
                         activeFilters={this.state.activeFilters} />
       </div>
     );
+  }
+  
+  public componentDidUpdate() {
+    console.log('Inventory componentDidUpdate');
   }
 
   private onFilterTextChanged = (filterText: string) => {

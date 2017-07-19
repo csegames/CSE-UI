@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-17 17:08:12
+ * @Last Modified time: 2017-07-19 15:12:07
  */
 
 import * as React from 'react';
@@ -53,7 +53,6 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
   },
   tabPanelContainer: {
     borderLeft: '1px solid #444',
-    background: 'url(images/inventorybg.png)',
   },
   tabsContainer: {
     backgroundColor: colors.primaryTabPanelColor,

@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-08 11:00:27
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-14 16:57:09
+ * @Last Modified time: 2017-07-19 17:24:55
  */
 
 import * as React from 'react';
@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import { InventoryState } from '../../../services/session/inventoryState';
-import ItemsMenuBox from './ItemsMenuBox';
+// import ItemsMenuBox from './ItemsMenuBox';
 import { ql } from 'camelot-unchained';
 
 export interface ItemsMenuStyles extends StyleDeclaration {
@@ -125,8 +125,8 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
   public render() {
     const ss = this.ss = StyleSheet.create({...defaultItemsMenuStyle, ...this.props.styles});
     
-    const { visible, slotName, equippedItem, onMouseEnter, onMouseLeave } = this.props;
-    const { top, left, validItems } = this.state;
+    const { onMouseEnter, onMouseLeave } = this.props;
+    // const { top, left, validItems } = this.state;
 
     return (
       <div
@@ -134,14 +134,14 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
         onMouseLeave={onMouseLeave}
         className={css(ss.itemsMenu)}>
         {this.renderItemSlotContainer()}
-        <ItemsMenuBox
+        {/* <ItemsMenuBox
           top={top}
           left={left}
           visible={visible}
           slotName={slotName}
           validItems={validItems}
           equippedItem={equippedItem}
-        />
+        /> */}
       </div>
     );
   }

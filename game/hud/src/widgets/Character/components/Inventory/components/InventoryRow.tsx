@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-10 14:56:32
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-13 17:09:06
+ * @Last Modified time: 2017-07-19 16:14:20
  */
 
 import * as React from 'react';
@@ -36,7 +36,7 @@ export const defaultInventoryRowStyle: InventoryRowStyle = {
   },
 
   row: {
-
+    
   },
 };
 

@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:45:13
+ * @Last Modified time: 2017-07-19 14:54:47
  */
 
 import * as React from 'react';
@@ -425,7 +425,7 @@ export function distributeItemsNoFilter(slotsData: {
     itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
   });
   
-  // webAPI.ItemAPI.matchMoveItems(client.shardID, client.characterID, [moveRequests[0], moveRequests[1]]).then((res) => {
+  // webAPI.ItemAPI.matchMoveItems(client.shardID, client.characterID, moveRequests).then((res) => {
   //   if (res.error) console.log(res.error);
   // });
   return {

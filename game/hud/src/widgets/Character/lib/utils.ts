@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:28:15
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:43:08
+ * @Last Modified time: 2017-07-19 14:27:37
  */
 
 import * as _ from 'lodash';
@@ -55,17 +55,18 @@ export function getDimensionsOfElement(div: HTMLElement) {
 }
 
 export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment, 
-    position: number): webAPI.MoveItemRequest {
+    position: number): any {
     return {
       moveItemID: item.id,
       stackHash: emptyStackHash,
-      unitCount: item.stats ? item.stats.item.unitCount : 0,
+      unitCount: -1,
       to: {
         entityID: emptyStackHash,
         position,
         containerID: emptyStackHash,
         gearSlotIDs: [],
         location: webAPI.MoveItemRequestLocationType.Inventory,
+        voxSlotField: 'Invalid',
       },
       from: {
         entityID: emptyStackHash,
@@ -73,6 +74,7 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
         containerID: emptyStackHash,
         gearSlotIDs: [],
         location: webAPI.MoveItemRequestLocationType.Inventory,
+        voxSlotField: 'Invalid',
       },
     };
   }

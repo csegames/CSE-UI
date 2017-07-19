@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 11:10:13
+ * @Last Modified time: 2017-07-19 17:26:46
  */
 import * as React from 'react';
 import * as _ from 'lodash';
@@ -27,6 +27,7 @@ export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBody: React.CSSProperties;
   inventoryBodyInnerContainer: React.CSSProperties;
   inventoryContent: React.CSSProperties;
+  backgroundImg: React.CSSProperties;
 }
 
 export const defaultInventoryBodyStyles: InventoryBodyStyles = {
@@ -38,20 +39,32 @@ export const defaultInventoryBodyStyles: InventoryBodyStyles = {
 
   inventoryBodyInnerContainer: {
     flex: '1 1 auto',
-    background: 'url(images/inventorybg.png)',
-    position: 'relative',
+    webkitBackfaceVisibility: 'hidden',
     overflow: 'auto',
     '::-webkit-scrollbar': {
       width: '15px',
     },
+    position: 'relative',
   },
   
   inventoryContent: {
     display: 'flex',
     flexDirection: 'column',
     flexWrap: 'wrap',
-    background: 'url(images/inventorybg.png)',
+    webkitBackfaceVisibility: 'hidden',
     alignItems: 'center',
+    position: 'relative',
+  },
+  backgroundImg: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    zIndex: 0,
   },
 };
 
@@ -93,6 +106,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
     return (
       <div className={css(ss.inventoryBody, custom.inventoryBody)}>
+        <img src={'images/inventorybg.png'} className={css(ss.backgroundImg, custom.backgroundImg)} />
         <div ref={(r) => this.bodyRef = r}
             className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
           <div className={css(ss.inventoryContent, custom.inventoryContent)}>

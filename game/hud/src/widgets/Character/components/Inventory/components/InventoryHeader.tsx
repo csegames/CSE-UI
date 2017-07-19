@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:55:49
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 18:04:29
+ * @Last Modified time: 2017-07-19 16:06:31
  */
 
 import * as React from 'react';
@@ -37,6 +37,7 @@ export const defaultInventoryHeaderStyle: InventoryHeaderStyle = {
     alignItems: 'stretch',
     padding: '10px 5px 5px 5px',
     backgroundColor: colors.filterBackgroundColor,
+    zIndex: 1,
   },
 
   inputAndFilterMenuContainer: {
