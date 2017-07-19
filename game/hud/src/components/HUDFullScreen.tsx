@@ -84,6 +84,7 @@ export interface FullScreenNavProps {
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: ListenerInfo;
   private tabPanelRef: TabPanel;
+  private fullScreenRef: HTMLDivElement;
 
   constructor(props: any) {
     super(props);
@@ -134,7 +135,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       },
     ];
     return (
-      <div style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
+      <div
+        tabIndex={1}
+        ref={ref => this.fullScreenRef = ref}
+        style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
         <TabPanel
           ref={(ref) => this.tabPanelRef = ref}
           tabs={tabs}
@@ -206,8 +210,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   private setVisibleComponent = (name: string) => {
     if (this.state.visibleComponent !== name) {
       this.setState({ visibleComponent: name });
+      client.RequestInputOwnership();
     } else {
       this.setState({ visibleComponent: '' });
+      client.ReleaseInputOwnership();
     }
   }
 
@@ -216,11 +222,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onKeyDown = (e : KeyboardEvent) => {
-    if (e.which === jsKeyCodes.ESC) {
-      if (this.state.visibleComponent !== '') {
-        this.setState({ visibleComponent: '' });
-        client.ReleaseInputOwnership();
-      }
+    if ((e.which === jsKeyCodes.ESC || e.which === jsKeyCodes.C || e.which === jsKeyCodes.I)
+        && this.state.visibleComponent !== '') {
+      this.onCloseFullScreen();
+      setTimeout(() => client.ReleaseInputOwnership(), 100);
     }
   }
 }
