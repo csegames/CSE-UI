@@ -21,10 +21,9 @@ export function moveItems(shardID: number, characterID: string, request: MoveIte
 }
 
 export function matchMoveItems(shardID: number, characterID: string, requests: MoveItemRequest[]) {
-  return create(createOptions()).call('v1/items/batchmoveitems', { 
-    shardID: shardID, 
-    characterID: characterID, 
-    requests: requests
+  return create(createOptions()).post('v1/items/batchmoveitems', requests, {
+    shardID: shardID,
+    characterID: characterID,
   });
 }
 

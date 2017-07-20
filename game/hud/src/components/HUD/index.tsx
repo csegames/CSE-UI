@@ -47,7 +47,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   public render() {
-
     const widgets = this.props.layout.widgets;
     const locked = this.props.layout.locked;
 

@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-22 15:44:33
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 18:29:00
+ * @Last Modified time: 2017-08-01 15:16:28
  */
 
 import * as React from 'react';
@@ -15,6 +15,8 @@ import * as _ from 'lodash';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export const emptyStackHash = '00000000000000000000000000000000';
+// nullVal and emptyStackHash are two different things. nullVal is shorter in length.
+export const nullVal = '0000000000000000000000';
 
 export const colors = {
   filterOn: '#c0f6d4',
@@ -31,6 +33,21 @@ export const colors = {
   weightIcon: '#d4d2d1',
   inventoryContainerBackgroundColor: 'rgba(255, 0, 0, 0.3)',
   inventoryContainerBorderColor: '#ececec',
+};
+
+export const paperDollIcons = {
+  MaleHumanMaleA: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-art.png',
+  FemaleHumanMaleA: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-art.png',
+  MaleHumanMaleV: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-vik.png',
+  FemaleHumanMaleV: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-vik.png',
+  MaleHumanMaleT: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-tdd.png',
+  FemaleHumanMaleT: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png',
+  MaleLuchorpan: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-m.png',
+  FemaleLuchorpan: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-f.png',
+  MaleValkyrie: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-m.png',
+  FemaleValkyrie: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png',
+  MalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png',
+  FemalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png',
 };
 
 export const gearSlots = {
@@ -71,42 +88,42 @@ export const gearSlots = {
   SecondaryHandWeapon: 'SecondaryHandWeapon',
 };
 
-export const displayNames = {
+export const displaySlotNames = {
   Invalid: 'Invalid',
-  Skull: 'Skull',
-  Face: 'Face',
-  Neck: 'Neck',
-  Chest: 'Chest',
-  Cloak: 'Cloak',
-  CloakUnder: 'Cloak',
-  Back: 'Back',
-  Waist: 'Waist',
-  ForearmLeft: 'L Forearm',
-  ForearmRight: 'R Forearm',
-  ShoulderLeft: 'L Shoulder',
-  ShoulderRight: 'R Shoulder',
-  HandLeft: 'L Hand',
-  HandRight: 'R Hand',
-  Shins: 'Shins',
-  Thighs: 'Thighs',
-  Feet: 'Feet',
-  SkullUnder: 'Skull',
-  FaceUnder: 'Face',
-  NeckUnder: 'Neck',
-  ChestUnder: 'Chest',
-  BackUnder: 'Back',
-  WaistUnder: 'Waist',
-  ForearmLeftUnder: 'L Forearm',
-  ForearmRightUnder: 'R Forearm',
-  ShoulderLeftUnder: 'L Shoulder',
-  ShoulderRightUnder: 'R Shoulder',
-  HandLeftUnder: 'L Hand',
-  HandRightUnder: 'R Hand',
-  ShinsUnder: 'Shins',
-  ThighsUnder: 'Thighs',
-  FeetUnder: 'Feet',
-  PrimaryHandWeapon: 'P Weapon',
-  SecondaryHandWeapon: 'S Weapon',
+  Skull: 'SKULL',
+  Face: 'FACE',
+  Neck: 'NECK',
+  Chest: 'CHEST',
+  Cloak: 'CLOAK',
+  CloakUnder: 'CLOAK',
+  Back: 'BACK',
+  Waist: 'WAIST',
+  ForearmLeft: 'L FOREARM',
+  ForearmRight: 'R FOREARM',
+  ShoulderLeft: 'L SHOULDER',
+  ShoulderRight: 'R SHOULDER',
+  HandLeft: 'L HAND',
+  HandRight: 'R HAND',
+  Shins: 'SHINS',
+  Thighs: 'THIGHS',
+  Feet: 'FEET',
+  SkullUnder: 'SKULL',
+  FaceUnder: 'FACE',
+  NeckUnder: 'NECK',
+  ChestUnder: 'CHEST',
+  BackUnder: 'BACK',
+  WaistUnder: 'WAIST',
+  ForearmLeftUnder: 'L FOREARM',
+  ForearmRightUnder: 'R FOREARM',
+  ShoulderLeftUnder: 'L SHOULDER',
+  ShoulderRightUnder: 'R SHOULDER',
+  HandLeftUnder: 'L HAND',
+  HandRightUnder: 'R HAND',
+  ShinsUnder: 'SHINS',
+  ThighsUnder: 'THIGHS',
+  FeetUnder: 'FEET',
+  PrimaryHandWeapon: 'P WEAPON',
+  SecondaryHandWeapon: 'S WEAPON',
 };
 
 export const armorCategories = {
@@ -168,8 +185,8 @@ export const defaultSlotIcons = {
   CloakUnder: 'icon-slot-cloak',
   BackUnder: 'icon-slot-back',
   WaistUnder: 'icon-slot-waist',
-  ForearmLeftUnder: 'icon-slot-forearm',
-  ForearmRightUnder: 'icon-slot-forearm',
+  ForearmLeftUnder: 'icon-slot-forearmleft',
+  ForearmRightUnder: 'icon-slot-forearmleft',
   ShoulderLeftUnder: 'icon-slot-shoulder',
   ShoulderRightUnder: 'icon-slot-shoulder',
   HandLeftUnder: 'icon-slot-hand',
@@ -241,13 +258,9 @@ function filterForItemType(item: InventoryItemFragment, filter: { icon: string, 
 }
 
 function filterForLayer(item: InventoryItemFragment, layer: 'outer' | 'under') {
-  if (layer === 'under') {
-    return item &&
-      _.findIndex(item.staticDefinition.gearSlotSets, set =>
-        _.find(set.gearSlots, (slot) => _.includes(slot.id, layer))) > -1;
-  } else {
-    return item && item.staticDefinition.gearSlotSets.length > 0 && item.staticDefinition.itemType === 'Armor';
-  }
+  return item &&
+    _.findIndex(item.staticDefinition.gearSlotSets, set =>
+      _.find(set.gearSlots, (slot) => _.includes(slot.id.toLowerCase(), layer))) > -1;
 }
 
 const filterIconPrefix = 'icon-filter-';

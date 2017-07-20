@@ -20,15 +20,18 @@ const networkInterface = createBatchingNetworkInterface({
 
 // middleware to send variables as string - required for graphql-dotnet for now (should be changed in future)
 const stringifyVariables = {
-  applyMiddleware(req: any, next: any) {
-    req.request.variables = JSON.stringify(req.request.variables);
+  applyBatchMiddleware(req: any, next: any) {
+    req.requests.variables = JSON.stringify(req.requests.variables);
+    req.requests = req.requests.forEach((request: any, i: number) => {
+      req.requests[i].variables = JSON.stringify(req.requests[i].variables);
+    });
     next();
   },
 };
 
 // middleware to pass auth info
 const authHeaders = {
-  applyMiddleware(req: any, next: any) {
+  applyBatchMiddleware(req: any, next: any) {
     if (!req.options.headers) {
       req.options.headers = {};
     }

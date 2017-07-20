@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 11:42:35
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-02-17 17:37:43
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-25 17:25:49
  */
 
 export enum Orientation {
@@ -22,8 +22,10 @@ export enum Quadrant {
 }
 
 export function windowQuadrant(mouseX: number, mouseY: number) {
-  const halfHeight = window.window.innerHeight * .5;
-  if (mouseX <= window.window.innerWidth * .5) {
+  const innerHeight = window.window.innerHeight;
+  const innerWidth = window.window.innerWidth;
+  const halfHeight = innerHeight * .5;
+  if (mouseX <= innerWidth * .5) {
     return mouseY <= halfHeight ? Quadrant.TopLeft : Quadrant.BottomLeft;
   }
   return mouseY <= halfHeight ? Quadrant.TopRight : Quadrant.BottomRight;

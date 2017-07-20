@@ -6,20 +6,21 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 17:26:46
+ * @Last Modified time: 2017-08-09 14:42:22
  */
+
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import  { graphql } from 'react-apollo';
-import { slotDimensions } from './InventorySlot';
-import { ListenerInfo, events } from 'camelot-unchained';
+import { ApolloClient } from 'apollo-client';
+import  { graphql, withApollo } from 'react-apollo';
+import { ListenerInfo, events, client } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
-import { InventorySlotItemDef } from './InventorySlot';
-import eventNames, { UpdateInventoryItemsOnEquipCallback } from '../../../lib/eventNames';
+import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
+import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
 import queries from '../../../../../gqlDocuments';
 import { calcRowAndSlots, getDimensionsOfElement } from '../../../lib/utils';
 
@@ -55,6 +56,7 @@ export const defaultInventoryBodyStyles: InventoryBodyStyles = {
     alignItems: 'center',
     position: 'relative',
   },
+
   backgroundImg: {
     position: 'absolute',
     pointerEvents: 'none',
@@ -70,16 +72,19 @@ export const defaultInventoryBodyStyles: InventoryBodyStyles = {
 
 export interface InventoryBodyProps extends base.InventoryBaseProps {
   styles?: Partial<InventoryBodyStyles>;
+  visibleComponent: string;
+  client?: ApolloClient;
 }
 
 export interface InventoryBodyState extends base.InventoryBaseState {
 }
 
+@withApollo
 class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodyState> {
-  // private fetchInterval: any;
-  // private visible: boolean;
-  private navEventHandler: ListenerInfo;
+  private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
+  private inventoryItemsAdded: any[] = [];
   private updateInventoryItemsHandler: ListenerInfo;
+  private dropItemHandler: ListenerInfo;
   private bodyRef: HTMLDivElement;
   private heightOfBody: number;
 
@@ -92,18 +97,17 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   constructor(props: InventoryBodyProps) {
     super(props);
     this.state = {
-      ...base.defaultInventoryBaseState(), 
+      ...base.defaultInventoryBaseState(),
     };
   }
   public render() {
     const ss = StyleSheet.create(defaultInventoryBodyStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-
+    
     const { rows, rowData } = base.createRowElements(this.state, this.props.data.myInventory);
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
-
     return (
       <div className={css(ss.inventoryBody, custom.inventoryBody)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg, custom.backgroundImg)} />
@@ -130,38 +134,56 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
   public componentDidMount() {
     this.initializeInventory();
-    this.navEventHandler = events.on('hudnav--navigate', this.refetchInventoryData);
     this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
+    this.dropItemHandler = events.on(eventNames.onDropItem, payload => base.dropItemRequest(payload.inventoryItem));
     window.addEventListener('resize', this.initializeInventory);
+    client.SubscribeInventory(true);
+    client.OnInventoryAdded((item) => {
+      if (this.props.visibleComponent === '' && !this.isFetching) {
+        this.inventoryItemsAdded.push(item);
+        if (this.inventoryItemsAdded.length > 2) {
+          this.props.data.refetch().then((res) => {
+            this.props.onChangeInventoryItems(res.data.myInventory.items);
+            this.inventoryItemsAdded = [];
+          });
+        } else {
+          this.props.client.query({
+            query: queries.ItemAdded as any,
+            variables: {
+              id: item.id,
+              shard: client.shardID,
+            },
+          }).then((res: any) => {
+            this.props.onChangeInventoryItems([...this.props.inventoryItems, res.data.item]);
+            this.inventoryItemsAdded = [];
+          });
+        }
+      }
+    });
+    client.OnInventoryRemoved((item) => {
+      if (this.props.visibleComponent === '' && !this.isFetching) {
+        this.props.onChangeInventoryItems(_.filter(
+          this.props.inventoryItems, inventoryItem => inventoryItem.id !== item,
+        ));
+      }
+    });
   }
 
   public componentWillReceiveProps(nextProps: InventoryBodyProps) {
-    const onMyInventoryChange = !_.isEqual(nextProps.data.myInventory, this.props.data.myInventory);
+    const graphqlDataChange = !_.isEqual(nextProps.data.myInventory, this.props.data.myInventory);
+    const onInventoryItemsChange = !_.isEqual(nextProps.inventoryItems, this.props.inventoryItems);
     const onSearchValueChange = nextProps.searchValue !== this.props.searchValue;
     const onActiveFiltersChange = !_.isEqual(nextProps.activeFilters, this.props.activeFilters);
-
-    if (onMyInventoryChange || onSearchValueChange || onActiveFiltersChange) {
+    
+    if (graphqlDataChange || onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
       this.initializeInventory();
     }
   }
 
   public componentWillUnmount() {
-    events.off(this.navEventHandler);
     events.off(this.updateInventoryItemsHandler);
+    events.off(this.dropItemHandler);
     window.removeEventListener('resize', this.initializeInventory);
-  }
-
-  private refetchInventoryData = (name: string) => {
-    if (name === 'inventory' || name === 'equippedgear' || name === 'character') {
-      this.props.data.refetch();
-      // if (this.visible) {
-      //   this.visible = false;
-      //   clearInterval(this.fetchInterval);
-      // } else {
-      //   this.visible = true;
-      //   this.fetchInterval = setInterval(() => this.props.data.refetch(), 5000);
-      // }
-    }
   }
 
   // set up rows from scratch / works as a re-initialize as well
@@ -190,8 +212,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     this.setState((state, props) => base.pruneRowsOfSlots(state, rowData, this.heightOfBody));
   }
 
-  private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsOnEquipCallback) => {
-    this.setState((state, props) => base.onUpdateInventoryItemsHandler(state, payload));
+  private onUpdateInventoryOnEquip = (payload: UpdateInventoryItems) => {
+    this.setState((state, props) => base.onUpdateInventoryItemsHandler(state, props, payload));
   }
 }
 

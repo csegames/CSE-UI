@@ -6,17 +6,13 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-05-18 11:11:09
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-06-27 00:53:35
+ * @Last Modified time: 2017-08-09 12:39:22
  */
 
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
-import queries from '../../../../gqlDocuments';
-import { CharacterInfoQuery } from '../../../../gqlInterfaces';
-
-export interface CharacterStatsProps extends InjectedGraphQLProps<CharacterInfoQuery> {
+export interface CharacterStatsProps {
   styles?: Partial<CharacterStatsStyle>;
 }
 
@@ -86,15 +82,8 @@ class CharacterStats extends React.Component<CharacterStatsProps, {}> {
       <div className={css(ss.characterStats)}>
         <p className={css(ss.comingSoonText)}>Coming soon!</p>
       </div>
-    )
+    );
   }
-
-  // private humanEquality = (raceName: string) => {
-  //   if (raceName.indexOf('Human') !== -1) return 'Human';
-  //   return raceName;
-  // }
 }
 
-const CharacterStatsWithQL = graphql(queries.CharacterInfoQuery as any)(CharacterStats);
-
-export default CharacterStatsWithQL;
+export default CharacterStats;

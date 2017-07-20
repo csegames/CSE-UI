@@ -5,35 +5,41 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-08 11:10:29
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-06 14:30:50
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-04 18:00:32
  */
 
 import * as React from 'react';
 import { ql, client, events, Tooltip } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 import Item from '../../Item';
+import EmptyItem from '../../EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
-export interface PopupMiniInventorySlotStyles {
+export const itemDimensions = {
+  height: 70,
+  width: 70,
+};
+
+export interface PopupMiniInventorySlotStyles extends StyleDeclaration {
   PopupMiniInventorySlot: React.CSSProperties;
 }
 
 const defaultPopupMiniInventorySlotStyles: PopupMiniInventorySlotStyles = {
   PopupMiniInventorySlot: {
-    width: '65px',
-    height: '65px',
+    width: `${itemDimensions.width}px`,
+    height: `${itemDimensions.height}px`,
     border: '1px solid white',
-    marginBottom: '10px',
   },
 };
 
 export interface PopupMiniInventorySlotProps {
   styles?: Partial<PopupMiniInventorySlotStyles>;
-  item: ql.schema.Item;
+  item: InventoryItemFragment;
   gearSlots: ql.schema.GearSlotDefRef[];
-  equippedItem: ql.schema.EquippedItem;
 }
 
 export interface PopupMiniInventorySlotState {
@@ -48,10 +54,12 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   }
 
   public render() {
+    const ss = StyleSheet.create(defaultPopupMiniInventorySlotStyles);
+    const custom = StyleSheet.create(this.props.styles || {});
     const { item } = this.props;
-    return (
+    return item ? (
       <Tooltip styles={defaultTooltipStyle} content={() =>
-        <TooltipContent itemId={item.id} instructions='Left click to equip' />
+        <TooltipContent item={item} instructions='Left click to equip' />
       }>
         <div
           onClick={this.onEquipItem}
@@ -66,15 +74,14 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
           />
         </div>
       </Tooltip>
-    );
+    ) : <div className={css(ss.PopupMiniInventorySlot, custom.PopupMiniInventorySlot)}><EmptyItem /></div>;
   }
 
   private onEquipItem = () => {
-    const { item, gearSlots, equippedItem } = this.props;
+    const { item } = this.props;
     const payload: EquipItemCallback = {
       inventoryItem: item,
-      willEquipTo: gearSlots,
-      prevEquippedItem: equippedItem,
+      willEquipTo: this.props.gearSlots,
     };
     client.EquipItem(item.id);
     events.fire(eventNames.onDehighlightSlots);

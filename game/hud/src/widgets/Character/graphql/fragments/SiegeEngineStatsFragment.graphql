@@ -1,5 +1,0 @@
-fragment SiegeEngineStats on SiegeEngineStat_Single {
-  health
-  yawSpeedDegPerSec
-  pitchSpeedDegPerSec
-}

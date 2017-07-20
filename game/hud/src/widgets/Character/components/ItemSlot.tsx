@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 16:50:30
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-05 18:21:05
+ * @Last Modified time: 2017-07-20 17:34:10
  */
 
 import * as React from 'react';
@@ -14,6 +14,7 @@ import { ql, Tooltip } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from './TooltipContent';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export interface ItemStyles extends StyleDeclaration {
   ItemSlot: React.CSSProperties;
@@ -73,14 +74,14 @@ export interface ItemSlotProps {
   tooltipInstructions?: string;
   showTooltip?: boolean;
   useFontIcon?: boolean;
-  itemId: string;
+  item: InventoryItemFragment;
   iconUrl: string;
 }
 
 const ItemSlot = (props: ItemSlotProps) => {
   const ss = StyleSheet.create({ ...defaultItemStyles, ...props.styles });
   const {
-    itemId,
+    item,
     iconUrl,
     slotName,
     gearSlots,
@@ -93,13 +94,13 @@ const ItemSlot = (props: ItemSlotProps) => {
     useFontIcon,
   } = props;
   const placeholderIcon = 'http://camelot-unchained.s3.amazonaws.com/icons/components/120/stone-wall.jpg';
-  return itemId ? (
+  return item ? (
     <Tooltip
       show={showTooltip}
       styles={defaultTooltipStyle}
       content={() =>
         <TooltipContent
-          itemId={itemId}
+          item={item}
           slotName={slotName && slotName}
           gearSlots={gearSlots && gearSlots}
           instructions={tooltipInstructions}

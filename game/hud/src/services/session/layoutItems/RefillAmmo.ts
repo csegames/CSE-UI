@@ -5,13 +5,14 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-04-12 20:01:27
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-04-13 16:24:33
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:12:07
  */
 
 
 import { LayoutMode } from '../../../components/HUDDrag';
 import RefillAmmo from '../../../components/RefillAmmo';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -30,7 +31,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 98,
+    zOrder: HUDZOrder.RefillAmmo,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

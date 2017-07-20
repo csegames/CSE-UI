@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:42:47
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:43:31
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:08:51
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Compass from '../../../components/Compass';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 7,
+    zOrder: HUDZOrder.Compass,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

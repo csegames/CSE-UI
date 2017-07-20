@@ -5,12 +5,13 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-28 17:04:17
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 18:55:34
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:09:42
  */
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import ErrorMessages from '../../../components/ErrorMessages';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +30,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 16,
+    zOrder: HUDZOrder.ErrorMessages,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

@@ -1,5 +1,0 @@
-query ContextMenuContent($id: String!, $shard: Int!) {
-  item(id: $id, shard: $shard) {
-    ...InventoryItem
-  }
-}

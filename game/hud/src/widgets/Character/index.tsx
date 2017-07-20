@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:22:45
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-11 12:15:56
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 18:10:19
  */
 
 import * as React from 'react';
@@ -33,13 +33,13 @@ export const defaultCharacterContainerStyles: CharacterContainerStyles = {
 
 export interface CharacterContainerProps {
   styles?: Partial<CharacterContainerStyles>;
+  visibleComponent: string;
 }
 const CharacterContainer = (props: CharacterContainerProps) => {
   const ss = StyleSheet.create({ ...defaultCharacterContainerStyles, ...props.styles });
-
   return (
     <div className={css(ss.characterContainer)}>
-      <CharacterMain />
+      <CharacterMain visibleComponent={props.visibleComponent} />
     </div>
   );
 };

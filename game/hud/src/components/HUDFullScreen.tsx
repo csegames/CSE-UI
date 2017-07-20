@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { events, client, jsKeyCodes, ListenerInfo, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { events, client, ListenerInfo, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import Social from '../widgets/Social';
@@ -22,6 +22,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
     bottom: 0,
     right: 0,
     userSelect: 'none',
+    webkitUserSelect: 'none',
   },
   navigationContainer: {
     display: 'flex',
@@ -76,6 +77,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
 
 export interface FullScreenNavState {
   visibleComponent: string;
+  initial: boolean;
 }
 
 export interface FullScreenNavProps {
@@ -85,12 +87,12 @@ export interface FullScreenNavProps {
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: ListenerInfo;
   private tabPanelRef: TabPanel;
-  private fullScreenRef: HTMLDivElement;
 
   constructor(props: any) {
     super(props);
     this.state = {
       visibleComponent: '',
+      initial: true,
     };
   }
 
@@ -135,11 +137,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         },
       },
     ];
-    return (
-      <div
-        tabIndex={1}
-        ref={ref => this.fullScreenRef = ref}
-        style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
+    
+    return !this.state.initial && (
+      <div style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
         <TabPanel
           ref={(ref) => this.tabPanelRef = ref}
           tabs={tabs}
@@ -150,11 +150,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
             tab: defaultHUDFullScreenStyle.navTab,
             activeTab: defaultHUDFullScreenStyle.activeNavTab,
             content: defaultHUDFullScreenStyle.contentContainer,
-          }}          
-          onActiveTabChanged={this.onActiveTabChanged}
+          }}
           alwaysRenderContent={true}
+          onActiveTabChanged={this.onActiveTabChanged}
         />
-        <div className={css(ss.close, custom.close)} onClick={this.onCloseFullScreen}>
+        <div className={css(ss.close, custom.close)} onClick={() => this.onCloseFullScreen()}>
           <i className='fa fa-times click-effect'></i>
         </div>
       </div>
@@ -163,41 +163,48 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public componentDidMount() {
     this.navigateListener = events.on('hudnav--navigate', this.handleNavigation);
-    window.addEventListener('keydown', this.onKeyDown);
+    client.OnOpenUI((name: string) => {
+      // a hacky way to close widget with ESC because focus() doesn't work
+      // and window doesn't pick up keydown events unless window is focused
+      // will need to change this one day
+      if (name === 'gamemenu' && this.state.visibleComponent !== '') {
+        client.CloseUI('gamemenu');
+        this.onCloseFullScreen();
+      }
+    });
   }
 
   public componentWillUnmount() {
     events.off(this.navigateListener);
-    window.removeEventListener('keydown', this.onKeyDown);
   }
 
   private renderCharacter = (prop: { active: boolean }) => {
-    return <Character />;
+    return <Character visibleComponent={this.state.visibleComponent} />;
   }
 
   private renderSocial = (prop: { active: boolean }) => {
-    return <Social />;
+    return <Social visibleComponent={this.state.visibleComponent} />;
   }
 
   private handleNavigation = (name: string) => {
     switch (name) {
       case 'character': {
-        this.tabPanelRef.activeTabIndex = 0;
+        this.setActiveTabIndex(1);
         this.setVisibleComponent(name);
         break;
       }
       case 'inventory': {
-        this.tabPanelRef.activeTabIndex = 1;
+        this.setActiveTabIndex(1);
         this.setVisibleComponent(name);
         break;
       }
       case 'equippedgear': {
-        this.tabPanelRef.activeTabIndex = 1;
+        this.setActiveTabIndex(1);
         this.setVisibleComponent(name);
         break;
       }
       case 'social': {
-        this.tabPanelRef.activeTabIndex = 2;
+        this.setActiveTabIndex(2);
         this.setVisibleComponent(name);
         break;
       }
@@ -209,25 +216,27 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private setVisibleComponent = (name: string) => {
+    if (this.state.initial) {
+      this.setState({ initial: false });
+    }
     if (this.state.visibleComponent !== name) {
       this.setState({ visibleComponent: name });
-      client.RequestInputOwnership();
     } else {
       this.setState({ visibleComponent: '' });
-      client.ReleaseInputOwnership();
-    }
-  }
-
-  private onCloseFullScreen = () => {
-    events.fire('hudnav--navigate', this.state.visibleComponent);
-  }
-
-  private onKeyDown = (e : KeyboardEvent) => {
-    if ((e.which === jsKeyCodes.ESC || e.which === jsKeyCodes.C || e.which === jsKeyCodes.I)
-        && this.state.visibleComponent !== '') {
-      this.onCloseFullScreen();
       setTimeout(() => client.ReleaseInputOwnership(), 100);
     }
+  }
+
+  private setActiveTabIndex = (tabIndex: number) => {
+    if (this.state.initial) {
+      setTimeout(() => this.tabPanelRef.activeTabIndex = tabIndex, 10);
+    } else {
+      this.tabPanelRef.activeTabIndex = tabIndex;
+    }
+  }
+
+  private onCloseFullScreen = (visibleComp?: string) => {
+    events.fire('hudnav--navigate', visibleComp || this.state.visibleComponent);
   }
 }
 

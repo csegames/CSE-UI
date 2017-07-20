@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 16:58:45
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 10:36:28
+ * @Last Modified time: 2017-07-28 18:08:07
  */
 
 import * as React from 'react';
@@ -33,16 +33,8 @@ export const defaultInputStyle: InputStyle = {
     border: 'solid 1px rgba(255, 255, 255, 0.2)',
     color: '#8f8f8f',
     fontSize: '1.1em',
+    lineHeight: '1em',
     boxShadow: 'inset 0px 0px 2px 0px rgba(200,200,200,.1)',
-    transition:
-      `border 0.3s cubic-bezier(.25,.8,.25,1),
-      boxShadow 0.3s cubic-bezier(.25,.8,.25,1),
-      outline 0.3s cubic-bezier(.25,.8,.25,1)`,
-    ':focus': {
-      outline: '0',
-      border: 'solid .5px #3fd0b0',
-      boxShadow: 'none',
-    },
   },
 
   label: {

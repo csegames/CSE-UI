@@ -5,12 +5,13 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-28 15:14:45
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-05 14:21:49
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:11:08
  */
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Inventory from '../../../components/Inventory';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +30,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 13,
+    zOrder: HUDZOrder.Inventory,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

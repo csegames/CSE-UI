@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:13:18
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-06-27 10:19:13
+ * @Last Modified time: 2017-07-26 12:54:30
  */
 
 import * as React from 'react';
@@ -19,11 +19,17 @@ export interface LoadingContainerStyles extends StyleDeclaration {
 
 export const defaultLoadingContainerStyle: LoadingContainerStyles = {
   loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     width: '100%',
+    zIndex: 10,
   },
 };
 

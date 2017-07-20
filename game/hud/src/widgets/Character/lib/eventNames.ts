@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-05 15:23:37
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-05 16:19:55
+ * @Last Modified time: 2017-08-04 17:22:43
  */
 
 import { ql } from 'camelot-unchained';
@@ -17,11 +17,11 @@ import { InventoryItemFragment } from '../../../gqlInterfaces';
   there is a lot of data that goes into items which slows down certain actions. These events can get confusing
   but it was necessary to make the widget feel reactive.
 
-  onEquipItem: Called when user equips item. This then fires off resetInventoryItems.
+  onEquipItem: Called when user equips item.
     fire: ContextMenuContent, ItemsMenuSlot
     listeners: EquippedItemSlot, ItemsMenu
 
-  onUnequipItem: Called when user unequips item. This then fires off resetInventoryItems.
+  onUnequipItem: Called when user unequips item.
     fire: EquippedItemSlot
     listeners: EquippedItemSlot, ItemsMenu
 
@@ -37,17 +37,9 @@ import { InventoryItemFragment } from '../../../gqlInterfaces';
     fire: ContextMenuContent, ItemsMenuSlot
     listeners: EquippedItemSlot
 
-  resetInventorySlots: Called when inventory data is refetched from graphql.
-    fire: Inventory
-    listeners: InventoryItemSlot
-
   updateInventoryItems: Update ItemSlots state in InventoryBodyComponent.
     fire: EquippedItemSlot
     listeners: InventoryBody
-
-  updateInventoryItemSlot: Update InventoryItemSlot savedItemSlot state.
-    fire: InventoryBody
-    listeners: InventoryItemSlot
 */
 
 const eventPrefix = 'charactersheet__';
@@ -57,34 +49,33 @@ const eventNames = {
   onDropItem: `${eventPrefix}onDropItem`,
   onHighlightSlots: `${eventPrefix}onHighlightSlots`,
   onDehighlightSlots: `${eventPrefix}onDehighlightSlots`, // Called to get rid of highlight on equipment slots.
-  resetInventorySlots: `${eventPrefix}resetInventorySlots`, // Called when inventory data is refetched
   updateInventoryItems: `${eventPrefix}updateInventoryItemOnEquip`, // Update ItemSlot state in InventoryBody component.
-  updateInventoryItemSlot: `${eventPrefix}setInventoryItemSlot`, // Update InventoryItemSlot savedItem state.
 };
 
 export interface OnHighlightSlots {
   gearSlots: Partial<ql.schema.GearSlotDefRef>[];
 }
 
-export interface UpdateInventoryItemsOnEquipCallback {
-  equippedItem?: Partial<ql.schema.EquippedItem>;
+export interface UpdateInventoryItems {
+  equippedItem?: Partial<ql.schema.EquippedItem> & Partial<ql.schema.EquippedItem>[];
   inventoryItem?: InventoryItemFragment;
+  willEquipTo?: Partial<ql.schema.GearSlotDefRef>[];
+  type: 'Equip' | 'Unequip' | 'Drop';
 }
 
 export interface EquipItemCallback {
-  inventoryItem: Partial<ql.schema.Item>;
+  inventoryItem: InventoryItemFragment;
   willEquipTo: Partial<ql.schema.GearSlotDefRef>[];
   prevEquippedItem?: Partial<ql.schema.EquippedItem>;
 }
 
 export interface UnequipItemCallback {
-  item: Partial<ql.schema.Item>;
+  item: InventoryItemFragment;
   gearSlots: Partial<ql.schema.GearSlotDefRef>[];
 }
 
 export interface DropItemCallback {
-  itemId: string;
-  gearSlotSets: Partial<ql.schema.GearSlotSet>[];
+  inventoryItem: InventoryItemFragment;
 }
 
 export default eventNames;

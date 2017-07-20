@@ -6,12 +6,12 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:28:15
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 14:27:37
+ * @Last Modified time: 2017-08-03 11:56:44
  */
 
 import * as _ from 'lodash';
-import { webAPI } from 'camelot-unchained';
-import { emptyStackHash, inventoryFilterButtons } from './constants';
+import { client } from 'camelot-unchained';
+import { emptyStackHash, inventoryFilterButtons, nullVal } from './constants';
 import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
@@ -54,27 +54,29 @@ export function getDimensionsOfElement(div: HTMLElement) {
   return div.getBoundingClientRect();
 }
 
-export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment, 
+export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment,
     position: number): any {
     return {
       moveItemID: item.id,
-      stackHash: emptyStackHash,
+      stackHash: item.stackHash,
       unitCount: -1,
       to: {
-        entityID: emptyStackHash,
+        entityID: nullVal,
+        characterID: client.characterID,
         position,
-        containerID: emptyStackHash,
+        containerID: nullVal,
         gearSlotIDs: [],
-        location: webAPI.MoveItemRequestLocationType.Inventory,
-        voxSlotField: 'Invalid',
+        location: 'Inventory',
+        voxSlot: 'Invalid',
       },
       from: {
-        entityID: emptyStackHash,
+        entityID: nullVal,
+        characterID: client.characterID,
         position: getItemInventoryPosition(item),
-        containerID: emptyStackHash,
+        containerID: nullVal,
         gearSlotIDs: [],
-        location: webAPI.MoveItemRequestLocationType.Inventory,
-        voxSlotField: 'Invalid',
+        location: 'Inventory',
+        voxSlot: 'Invalid',
       },
     };
   }
@@ -112,7 +114,11 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
   }
 
   export function getItemInventoryPosition(item: InventoryItemFragment) {
-    return item.location.inventory.position;
+    if (item.location && item.location.inventory && item.location.inventory) {
+      return item.location.inventory.position;
+    } else {
+      return -1;
+    }
   }
 
   export function getItemDefinitionId(item: InventoryItemFragment) {

@@ -6,13 +6,14 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:25:29
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-06-20 16:58:35
+ * @Last Modified time: 2017-07-26 12:10:26
  */
 
 import * as React from 'react';
 import { events, client, utils, soundEvents } from 'camelot-unchained';
 import HUDNav from '../../../components/HUDNav';
 import { LayoutMode } from '../../../components/HUDDrag';
+import HUDZOrder from '../HUDZOrder';
 
 const { Orientation } = utils;
 
@@ -41,7 +42,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 9,
+    zOrder: HUDZOrder.HUDNav,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

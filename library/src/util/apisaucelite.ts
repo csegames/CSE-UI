@@ -82,6 +82,9 @@ export const create = (config: CreateOptions) => {
 
   // convenience for setting new request headers
   const setHeader = (name: string, value: string) => {
+    console.log('setHeader');
+    console.log(name);
+    console.log(value);
     headers[name] = value;
     return instance;
   };
@@ -104,8 +107,12 @@ export const create = (config: CreateOptions) => {
   /**
     Make the request for POST, PUT, PATCH
    */
-  const doRequestWithBody = (method: string, url: string, data: any = null, axiosConfig: AxiosRequestConfig = {}) => {
-    return doRequest(Object.assign({}, { url, method, data }, axiosConfig));
+  const doRequestWithBody = (method: string,
+                              url: string,
+                              data: any = null,
+                              params: any = {},
+                              axiosConfig: AxiosRequestConfig = {}) => {
+    return doRequest(Object.assign({}, { url, params, method, data }, axiosConfig));
   };
 
   /**
@@ -227,8 +234,8 @@ export const create = (config: CreateOptions) => {
     headers,
     get: (url: string, params: QueryStringParams = {}, axiosConfig: AxiosRequestConfig = {}) =>
      doRequestWithoutBody('get', url, params, axiosConfig),
-    post: (method: string, url: string, data: any = null, axiosConfig: AxiosRequestConfig = {}) =>
-     doRequestWithBody('post', url, data, axiosConfig),
+    post: (url: string, data: any = null, params: any = {}, axiosConfig: AxiosRequestConfig = {}) =>
+     doRequestWithBody('post', url, data, params, axiosConfig),
     call: (url: string, params: QueryStringParams = {}, axiosConfig: AxiosRequestConfig = {}) =>
      doRequestWithoutBody('post', url, params, axiosConfig),
   };

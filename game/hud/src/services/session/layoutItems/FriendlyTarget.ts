@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:41:13
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:42:11
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:10:00
  */
 import { LayoutMode } from '../../../components/HUDDrag';
 import FriendlyTargetHealth from '../../../widgets/FriendlyTargetHealth';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 0.6,
     opacity: 1,
     visibility: true,
-    zOrder: 4,
+    zOrder: HUDZOrder.FriendlyTarget,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

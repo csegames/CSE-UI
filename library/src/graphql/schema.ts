@@ -10,15 +10,15 @@ export interface CUQuery {
   traits: Array<Trait> | null;
   skillComponents: Array<SkillComponent> | null;
   skillNetworks: Array<SkillNetwork> | null;
-  gearSlots: Array<GearSlotDefRef> | null;
-  item: Item | null;
-  entityItems: EntityItemResult | null;
-  crafting: CraftingRecipes | null;
   myCharacter: CUCharacter | null;
   character: CUCharacter | null;
+  gearSlots: Array<GearSlotDefRef> | null;
+  item: Item | null;
   myEquippedItems: Array<EquippedItem> | null;
   substances: Array<SubstanceDef> | null;
   myInventory: MyInventory | null;
+  entityItems: EntityItemResult | null;
+  crafting: CraftingRecipes | null;
 }
 
 export interface OrdersCUQueryArgs {
@@ -45,6 +45,11 @@ export interface WarbandCUQueryArgs {
   shard: number | null;
 }
 
+export interface CharacterCUQueryArgs {
+  id: string | null;
+  shard: number | null;
+}
+
 export interface ItemCUQueryArgs {
   shard: number | null;
   id: string | null;
@@ -52,11 +57,6 @@ export interface ItemCUQueryArgs {
 
 export interface EntityItemsCUQueryArgs {
   id: string | null;
-}
-
-export interface CharacterCUQueryArgs {
-  id: string | null;
-  shard: number | null;
 }
 
 export interface PagedOrders {
@@ -102,7 +102,7 @@ export interface OrderMember {
   permissions: Array<PermissionInfo> | null;
   race: Race | null;
   gender: Gender | null;
-  class: Archetype | null;
+  class: Class | null;
   lastLogin: Date | null;
   kills: number | null;
 }
@@ -124,7 +124,7 @@ export type Race = "TUATHA" | "HAMADRYAD" | "LUCHORPAN" | "FIRBOG" | "VALKYRIE" 
 
 export type Gender = "NONE" | "MALE" | "FEMALE" | "None" | "Male" | "Female";
 
-export type Archetype = "FIRE_MAGE" | "EARTH_MAGE" | "WATER_MAGE" | "FIGHTER" | "HEALER" | "ARCHER" | "MELEE_COMBAT_TEST" | "ARCHER_TEST" | "BLACK_KNIGHT" | "FIANNA" | "MJOLNIR" | "PHYSICIAN" | "EMPATH" | "STONEHEALER" | "BLACKGUARD" | "FOREST_STALKER" | "WINTERS_SHADOW" | "ANY" | "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+export type Class = "FIRE_MAGE" | "EARTH_MAGE" | "WATER_MAGE" | "FIGHTER" | "HEALER" | "ARCHER" | "MELEE_COMBAT_TEST" | "ARCHER_TEST" | "BLACK_KNIGHT" | "FIANNA" | "MJOLNIR" | "PHYSICIAN" | "EMPATH" | "STONEHEALER" | "BLACKGUARD" | "FOREST_STALKER" | "WINTERS_SHADOW" | "ANY" | "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
 
 export interface MemberAction {
   id: string | null;
@@ -171,7 +171,7 @@ export interface Character {
   race: Race | null;
   gender: Gender | null;
   realm: Faction | null;
-  class: Archetype | null;
+  class: Class | null;
   lastLogin: Date | null;
   deleted: boolean | null;
   order: Order | null;
@@ -214,7 +214,7 @@ export interface WarbandMember {
   extraPermissions: Array<string> | null;
   race: Race | null;
   gender: Gender | null;
-  class: Archetype | null;
+  class: Class | null;
   lastLogin: Date | null;
   kills: number | null;
 }
@@ -256,6 +256,22 @@ export interface SkillNetworkConnection {
   key: AbilityComponentSubType | null;
   values: Array<AbilityComponentSubType> | null;
 }
+
+export interface CUCharacter {
+  name: string | null;
+  id: CharacterID | null;
+  faction: Faction | null;
+  race: Race | null;
+  gender: Gender | null;
+  archetype: Archetype | null;
+  order: GroupID | null;
+}
+
+export type CharacterID = any;
+
+export type Archetype = "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+
+export type GroupID = any;
 
 export interface GearSlotDefRef {
   id: string | null;
@@ -370,6 +386,7 @@ export interface AlloyStat_Single {
   fractureFactor: number | null;
   massFactor: number | null;
   damageResistance: number | null;
+  unitHealth: number | null;
 }
 
 export interface SubstanceStat_Single {
@@ -407,15 +424,17 @@ export interface SubstanceStat_Single {
   strengthFactor: number | null;
   fractureFactor: number | null;
   massFactor: number | null;
+  unitHealth: number | null;
 }
 
 export interface DurabilityStat_Single {
   maxRepairPoints: number | null;
-  maxDurability: number | null;
+  maxHealth: number | null;
   fractureThreshold: number | null;
   fractureChance: number | null;
   currentRepairPoints: number | null;
-  currentDurability: number | null;
+  currentHealth: number | null;
+  healthLossPerUse: number | null;
 }
 
 export interface WeaponStat_Single {
@@ -552,8 +571,6 @@ export interface EquippedLocation {
   gearSlots: Array<GearSlotDefRef> | null;
 }
 
-export type CharacterID = any;
-
 export interface InContainerLocation {
   containerInstanceID: ItemInstanceID | null;
   position: number | null;
@@ -573,6 +590,22 @@ export interface InventoryLocation {
 
 export interface OnGroundLocation {
   groupID: ItemInstanceID | null;
+}
+
+export interface EquippedItem {
+  gearSlots: Array<GearSlotDefRef> | null;
+  item: Item | null;
+}
+
+export interface SubstanceDef {
+  id: string | null;
+}
+
+export interface MyInventory {
+  items: Array<Item> | null;
+  itemCount: number | null;
+  totalMass: number | null;
+  currency: number | null;
 }
 
 export interface EntityItemResult {
@@ -600,6 +633,7 @@ export interface VoxStatus {
   voxState: VoxState | null;
   jobType: VoxJobType | null;
   jobState: VoxJobState | null;
+  voxHealthCost: number | null;
   ingredients: Array<Item> | null;
   outputItems: Array<Item> | null;
   totalCraftingTime: number | null;
@@ -678,34 +712,6 @@ export interface MakeIngredientDef {
   minQuality: number | null;
   maxQuality: number | null;
   unitCount: number | null;
-}
-
-export interface CUCharacter {
-  name: string | null;
-  id: CharacterID | null;
-  faction: Faction | null;
-  race: Race | null;
-  gender: Gender | null;
-  archetype: Archetype | null;
-  order: GroupID | null;
-}
-
-export type GroupID = any;
-
-export interface EquippedItem {
-  gearSlots: Array<GearSlotDefRef> | null;
-  item: Item | null;
-}
-
-export interface SubstanceDef {
-  id: string | null;
-}
-
-export interface MyInventory {
-  items: Array<Item> | null;
-  itemCount: number | null;
-  totalMass: number | null;
-  currency: number | null;
 }
 
 export interface BlockStatsDef {

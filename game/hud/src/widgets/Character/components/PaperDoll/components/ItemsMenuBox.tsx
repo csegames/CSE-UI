@@ -5,8 +5,8 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 17:20:58
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-06 14:32:57
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-04 18:01:42
  */
 
 import * as React from 'react';
@@ -15,7 +15,7 @@ import { ql, Input, client } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
-import { displayNames } from '../../../lib/constants';
+import { displaySlotNames } from '../../../lib/constants';
 
 const containerDimensions = {
   width: 305,
@@ -158,7 +158,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
         style={{ position: 'fixed', top, left }}>
         <div className={css(ss.itemsMenuHeaderContainer)}>
           <div className={css(ss.itemsMenuTitleContainer)}>
-            <p className={css(ss.slotNameText)}>{displayNames[slotName]}</p>
+            <p className={css(ss.slotNameText)}>{displaySlotNames[slotName]}</p>
             <Input
               onChange={(e: any) => this.onSearchChange(e, pageLength)}
               placeholder={'Filter'}
@@ -191,7 +191,6 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
 
   private renderValidItems = (validItems: Partial<ql.schema.Item>[]) => {
     const ss = this.ss;
-    const { equippedItem } = this.props;
     const { currentPage } = this.state;
     const emptySlots = [];
     let gearSlots: any = [];
@@ -220,7 +219,6 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
                 key={itemIndex}
                 item={inventoryItem as any}
                 gearSlots={gearSlots}
-                equippedItem={equippedItem}
               />
             );
           }

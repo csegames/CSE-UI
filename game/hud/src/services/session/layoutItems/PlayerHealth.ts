@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:37:57
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:38:49
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:11:30
  */
 import PlayerHealth from '../../../widgets/PlayerHealth';
 import { LayoutMode } from '../../../components/HUDDrag';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 0.6,
     opacity: 1,
     visibility: true,
-    zOrder: 2,
+    zOrder: HUDZOrder.PlayerHealth,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

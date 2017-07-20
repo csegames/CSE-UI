@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 18:15:11
+ * @Last Modified time: 2017-08-09 11:31:00
  */
 
 import * as React from 'react';
@@ -16,8 +16,15 @@ import { ContentItem, TabItem, TabPanel, ql, events, ListenerInfo } from 'camelo
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
+import { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
-import eventNames, { EquipItemCallback, UnequipItemCallback } from '../../../lib/eventNames';
+import eventNames, {
+  EquipItemCallback,
+  UnequipItemCallback,
+  UpdateInventoryItems,
+} from '../../../lib/eventNames';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import PopupMiniInventory from './PopupMiniInventory';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -104,71 +111,64 @@ export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
   },
 };
 
-const openingSides = {
-  armorRT: 'armor-rt',
-  armorRB: 'armor-rb',
-  armorLT: 'armor-lt',
-  armorLB: 'armor-lb',
-  weaponTR: 'weapon-tr',
-  weaponTL: 'weapon-tl',
-};
-
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.Skull, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.Face, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.Neck, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.ShoulderLeft, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.ShoulderRight, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.Chest, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.Back, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.Waist, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.Cloak, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.ForearmLeft, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.ForearmRight, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.HandLeft, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.HandRight, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.Thighs, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.Shins, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.Feet, openingSide: openingSides.armorLB },
+  { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.Face, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.Neck, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.ShoulderLeft, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.ShoulderRight, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.Chest, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.Back, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.Waist, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.Cloak, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.ForearmLeft, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.ForearmRight, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.HandLeft, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.HandRight, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.Thighs, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.Shins, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.Feet, openingSide: Alignment.ABottomLeft },
 ];
 
 const innerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.SkullUnder, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.FaceUnder, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.NeckUnder, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.ShoulderLeftUnder, openingSide: openingSides.armorRT },
-  { slotName: gearSlots.ShoulderRightUnder, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.ChestUnder, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.BackUnder, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.WaistUnder, openingSide: openingSides.armorRB },
-  { slotName: gearSlots.CloakUnder, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.ForearmLeftUnder, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.ForearmRightUnder, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.HandLeftUnder, openingSide: openingSides.armorLT },
-  { slotName: gearSlots.HandRightUnder, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.ThighsUnder, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.ShinsUnder, openingSide: openingSides.armorLB },
-  { slotName: gearSlots.FeetUnder, openingSide: openingSides.armorLB },
+  { slotName: gearSlots.SkullUnder, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.FaceUnder, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.NeckUnder, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight },
+  { slotName: gearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.ChestUnder, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.BackUnder, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.WaistUnder, openingSide: Alignment.ABottomRight },
+  { slotName: gearSlots.CloakUnder, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft },
+  { slotName: gearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: gearSlots.FeetUnder, openingSide: Alignment.ABottomLeft },
 ];
 
 const weaponSlots: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.PrimaryHandWeapon, openingSide: openingSides.weaponTR },
-  { slotName: gearSlots.SecondaryHandWeapon, openingSide: openingSides.weaponTL },
+  { slotName: gearSlots.PrimaryHandWeapon, openingSide: Alignment.WTopRight },
+  { slotName: gearSlots.SecondaryHandWeapon, openingSide: Alignment.WTopLeft },
 ];
 
 export interface EquipmentSlotsProps {
   styles?: Partial<EquipmentSlotsStyles>;
   equippedItems: ql.schema.EquippedItem[];
+  inventoryItems: InventoryItemFragment[];
 }
 
 export interface EquipmentSlotsAndInfo {
   slotName: string;
-  openingSide: string;
+  openingSide: Alignment;
 }
 
 export interface EquipmentSlotsState {
   showUnder: boolean;
   equippedItems: ql.schema.EquippedItem[];
+  slotNameItemMenuVisible: string;
 }
 
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
@@ -182,6 +182,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     this.state = {
       showUnder: false,
       equippedItems: props.equippedItems,
+      slotNameItemMenuVisible: '',
     };
   }
   public render() {
@@ -235,6 +236,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     return (
       <div className={css(style.equipmentSlots, customStyle.equipmentSlots)}>
         <TabPanel
+          defaultTabIndex={0}
           tabs={tabs}
           content={content}
           styles={{
@@ -242,7 +244,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           }}
           alwaysRenderContent={true}
         />
-        {this.renderWeaponSlots(weaponSlots)}
+        <div className={css(style.equippedWeaponSlots, customStyle.equippedweaponSlots)}>
+          {this.renderEquipmentSlotSection(weaponSlots)}
+        </div>
       </div>
     );
   }
@@ -259,7 +263,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
   private onUnequipItem = (payload: UnequipItemCallback) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
-    const { gearSlots } = payload;
+    const { gearSlots, item } = payload;
     const equippedItems = this.state.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
@@ -270,73 +274,74 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       ...state,
       equippedItems: filteredItems,
     }));
+
+    const updateInventoryItemsPayload: UpdateInventoryItems = {
+      type: 'Unequip',
+      equippedItem: {
+        item,
+        gearSlots,
+      } as any,
+    };
+    events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
   }
 
   private onEquipItem = (payload: EquipItemCallback) => {
     const { inventoryItem, willEquipTo } = payload;
     const equippedItems = this.state.equippedItems;
-
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
-    const newItem = {
-      item: inventoryItem,
-      gearSlots: willEquipTo,
-    };
+    const newItem = { item: inventoryItem, gearSlots: willEquipTo };
     
     this.setState((state) => ({
       ...state,
       equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
     }));
+
+    const prevEquippedItem = _.filter(equippedItems, equippedItem =>
+      _.findIndex(equippedItem.gearSlots, gearSlot => _.find(willEquipTo, slot => slot.id === gearSlot.id)) > -1);
+    const updateInventoryItemsPayload: UpdateInventoryItems = {
+      type: 'Equip',
+      inventoryItem,
+      willEquipTo,
+      equippedItem: prevEquippedItem.length > 0 ? prevEquippedItem : null,
+    };
+
+    events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
   }
 
-  private renderEquipmentSlotsection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
+  private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
     const { equippedItems } = this.state;
     const style = this.style;
     const customStyle = this.customStyle;
     return (
-      <div>
-        {equipmentSlots.map((slot) => {
-          const equippedItem = _.find(equippedItems, (eItem) => {
-            return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
-          });
-          return (
-            <div key={slot.slotName} className={css(style.itemSlotSpacing, customStyle.itemSlotSpacing)}>
-              <EquippedItemSlot
-                providedEquippedItem={equippedItem}
-                slotName={slot.slotName}
-                openingSide={slot.openingSide}
-              />
+      equipmentSlots.map((slot) => {
+        const equippedItem = _.find(equippedItems, (eItem) => {
+          return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
+        });
+        const isWeapon = _.includes(slot.slotName, 'Weapon');
+        return (
+          <PopupMiniInventory
+            key={slot.slotName}
+            align={slot.openingSide}
+            inventoryItems={this.props.inventoryItems}
+            slotName={slot.slotName}
+            visible={slot.slotName === this.state.slotNameItemMenuVisible}
+            onVisibilityChange={this.onToggleItemMenuVisibility}>
+            <div
+              className={css(
+                !isWeapon && style.itemSlotSpacing,
+                !isWeapon && customStyle.itemSlotSpacing,
+                isWeapon && style.weaponSpacing,
+                isWeapon && customStyle.weaponSpacing,
+              )}>
+              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
             </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  private renderWeaponSlots = (weaponSlots: EquipmentSlotsAndInfo[]) => {
-    const style = this.style;
-    const customStyle = this.customStyle;
-
-    return (
-      <div className={css(style.equippedWeaponSlots, customStyle.equippedWeaponSlots)}>
-        {weaponSlots.map((slot) => {
-          const equippedWeapon = _.find(this.state.equippedItems, (eItem) => {
-            return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
-          });
-          return (
-            <div key={slot.slotName} className={css(style.weaponSpacing, customStyle.weaponSpacing)}>
-              <EquippedItemSlot
-                providedEquippedItem={equippedWeapon}
-                slotName={slot.slotName}
-                openingSide={slot.openingSide}
-              />
-            </div>
-          );
-        })}
-      </div>
+          </PopupMiniInventory> 
+        );
+      })
     );
   }
 
@@ -345,8 +350,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const customStyle = this.customStyle;
     return (
     <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
-      {this.renderEquipmentSlotsection(innerEquipmentSlotsAndInfo.slice(0, 8))}
-      {this.renderEquipmentSlotsection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}
+      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
+      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
     </div>
     );
   }
@@ -356,10 +361,18 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const customStyle = this.customStyle;
     return (
       <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
-        {this.renderEquipmentSlotsection(outerEquipmentSlotsAndInfo.slice(0, 8))}
-        {this.renderEquipmentSlotsection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}
+        <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(0, 8))}</div>
+        <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}</div>
       </div>
     );
+  }
+
+  private onToggleItemMenuVisibility = (slotName: string) => {
+    if (slotName === this.state.slotNameItemMenuVisible) {
+      this.setState({ slotNameItemMenuVisible: '' });
+    } else {
+      this.setState({ slotNameItemMenuVisible: slotName });
+    }
   }
 
   private toggleOuter = () => {

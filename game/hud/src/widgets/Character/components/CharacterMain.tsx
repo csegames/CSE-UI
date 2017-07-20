@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 15:12:07
+ * @Last Modified time: 2017-08-04 17:47:39
  */
 
 import * as React from 'react';
@@ -17,6 +17,7 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import CharacterStats from './CharacterStats';
 import Inventory from './Inventory/Inventory';
 import PaperDoll from './PaperDoll/PaperDollContainer';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export interface CharacterMainStyle extends StyleDeclaration {
   characterMain: React.CSSProperties;
@@ -98,9 +99,11 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
 export interface CharacterMainProps {
   styles?: Partial<CharacterMainStyle>;
   visibilityState?: VisibilityState;
+  visibleComponent: string;
 }
 
 export interface CharacterMainState {
+  inventoryItems: InventoryItemFragment[];
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
@@ -110,6 +113,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
   constructor(props: CharacterMainProps) {
     super(props);
     this.state = {
+      inventoryItems: [],
     };
   }
 
@@ -148,11 +152,12 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     return (
       <div className={css(style.characterMain, customStyle.characterMain)}>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
-          <PaperDoll />
+          <PaperDoll inventoryItems={this.state.inventoryItems} visibleComponent={this.props.visibleComponent} />
         </div>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
+            defaultTabIndex={1}
             tabs={tabs}
             content={content}
             styles={{
@@ -182,7 +187,12 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
   }
 
   private renderInventory = () => {
-    return <Inventory />;
+    return (
+      <Inventory
+        inventoryItems={this.state.inventoryItems}
+        onChangeInventoryItems={this.onChangeInventoryItems}
+        visibleComponent={this.props.visibleComponent} />
+    );
   }
 
   private onHudNavigate = (name: string) => {
@@ -207,6 +217,10 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
 
   private selectTab = (index: number, name: string) => {
     events.fire('hudnav--navigate', name);
+  }
+
+  private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
+    this.setState({ inventoryItems });
   }
 }
 

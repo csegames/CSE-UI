@@ -5,4 +5,5 @@ fragment BasicItem on ItemStat_Single {
   dexterityRequirement
   strengthRequirement
   unitCount
+  totalMass
 }

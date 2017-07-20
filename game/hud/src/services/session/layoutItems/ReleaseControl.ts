@@ -7,6 +7,7 @@
 
 import { LayoutMode } from '../../../components/HUDDrag';
 import ReleaseControl from '../../../components/ReleaseControl';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -25,7 +26,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 99,
+    zOrder: HUDZOrder,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

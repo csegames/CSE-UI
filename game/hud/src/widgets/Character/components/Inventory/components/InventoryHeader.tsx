@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:55:49
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 16:06:31
+ * @Last Modified time: 2017-07-26 16:28:28
  */
 
 import * as React from 'react';
@@ -14,7 +14,7 @@ import * as FilterButtonAPI from './FilterButtonAPI';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { merge } from 'lodash';
-import { Input } from 'camelot-unchained';
+import { Input, client } from 'camelot-unchained';
 
 import InventoryFilterButton from './InventoryFilterButton';
 import FilterSelectMenu from './FilterSelectMenu';
@@ -109,6 +109,8 @@ export class InventoryHeader extends React.Component<InventoryHeaderProps, Inven
               inputWrapper: merge(defaultInventoryHeaderStyle.filterInputWrapper,
                     this.props.styles ? this.props.styles.filterInputWrapper : {}),
             }}
+            onFocus={() => client.RequestInputOwnership()}
+            onBlur={() => client.ReleaseInputOwnership()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onFilterChanged(e.target.value)}
             value={this.props.filterText}
             placeholder={'Filter'}

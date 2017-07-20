@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-10 20:25:01
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-11 12:17:22
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 17:01:48
  */
 
 import * as React from 'react';
@@ -23,7 +23,8 @@ export const defaultEmptyItemStyle: EmptyItemStyle = {
     height: '100%',
     cursor: 'pointer',
   },
-}
+};
+
 export const EmptyItem = (props: {styles?: Partial<EmptyItemStyle>}) => {
   const ss = StyleSheet.create(defaultEmptyItemStyle);
   const custom = StyleSheet.create(props.styles || {});

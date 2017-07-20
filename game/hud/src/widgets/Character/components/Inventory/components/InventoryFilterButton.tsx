@@ -37,11 +37,14 @@ export const defaultInventoryFilterButtonStyle: InventoryFilterButtonStyles = {
     },
     ':active': {
       color: '#b1fff1',
+      textShadow: '1px 1px 2px #ccffcc',
+      boxShadow: 'inset 0px 0px 3px rgba(0,0,0,0.4)',
     },
   },
   
   activeFilterIcon: {
     color: '#b1fff1',
+    textShadow: '1px 1px 2px #ccffcc',
     ':hover': {
       color: '#ccfffc',
     },
@@ -123,6 +126,11 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
 
   public componentDidMount() {
     this.didMount = true;
+  }
+
+  public shouldComponentUpdate(nextProps: InventoryFilterButtonProps, nextState: InventoryFilterButtonState) {
+    return nextProps.filterButton !== this.props.filterButton ||
+    nextState.activated !== this.state.activated;
   }
 
   public componentWillUnmount() {

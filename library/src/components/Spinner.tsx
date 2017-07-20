@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 10:39:21
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-06-09 17:27:08
+ * @Last Modified time: 2017-07-28 10:59:33
  */
 
 import * as React from 'react';
@@ -24,10 +24,6 @@ export const defaultSpinnerStyle: SpinnerStyle = {
     height: '1em',
     border: '.25rem solid rgba(255, 255, 255, 0.2)',
     borderTopColor: '#ececec',
-    transition: 'all .3s',
-    animation: 'spin 1s infinite linear',
-    webkitAnimation: 'spin 1s infinite linear',
-    webkitBackfaceVisibility: 'hidden',
     ':hover': {
       borderTopColor: '#3fd0b0',
     },

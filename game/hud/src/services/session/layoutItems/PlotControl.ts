@@ -5,12 +5,13 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-29 15:38:08
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-03-29 15:40:22
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:11:49
  */
 
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import PlotControl from '../../../components/PlotControl';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +30,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 14,
+    zOrder: HUDZOrder.PlotControl,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

@@ -41,21 +41,26 @@ const defaultItemsMenuStyle: ItemsMenuStyles = {
     webkitUserSelect: 'none',
     userSelect: 'none',
   },
+
   armorValidItemsWrapper: {
     display: 'flex',
     flexDirection: 'column',
   },
+
   weaponValidItemsWrapper: {
     display: 'flex',
     alignItems: 'flex-end',
   },
+
   armorSlotContainer: {
     display: 'flex',
   },
+
   weaponSlotContainer: {
     display: 'flex',
     flexDirection: 'column',
   },
+
   miniValidItemsContainer: {
     display: 'flex',
     flex: '1 1 auto',
@@ -64,6 +69,7 @@ const defaultItemsMenuStyle: ItemsMenuStyles = {
     maxHeight: '25px',
     minHeight: '25px',
   },
+
   rightMiniValidItemsContainer: {
     display: 'flex',
     flex: '1 1 auto',
@@ -73,12 +79,14 @@ const defaultItemsMenuStyle: ItemsMenuStyles = {
     maxHeight: '25px',
     minHeight: '25px',
   },
+
   miniValidItems: {
     width: '10px',
     height: '10px',
     backgroundColor: 'rgba(73, 86, 94, 0.9)',
     margin: '0 1px 1px 1px',
   },
+
   validItemsLengthText: {
     fontSize: '14px',
     fontWeight: 'bold',
@@ -86,6 +94,7 @@ const defaultItemsMenuStyle: ItemsMenuStyles = {
     margin: '0 2px',
     padding: 0,
   },
+  
   childContainer: {
     width: '72px',
     height: '72px',

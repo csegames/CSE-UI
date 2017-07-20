@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 17:42:12
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 18:04:48
+ * @Last Modified time: 2017-08-04 18:26:46
  */
 
 import * as React from 'react';
@@ -14,15 +14,10 @@ import * as _ from 'lodash';
 
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 
-import { ListenerInfo, Tooltip, client, events, ql } from 'camelot-unchained';
+import { ListenerInfo, Tooltip, events, ql } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import eventNames, {
-  EquipItemCallback,
-  UnequipItemCallback,
-  UpdateInventoryItemsOnEquipCallback,
-} from '../../../lib/eventNames';
-
-import ItemsMenu from './ItemsMenu';
+import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
+import { Alignment } from './PopupMiniInventory';
 import { defaultSlotIcons } from '../../../lib/constants';
 
 export interface EquippedItemSlotStyle extends StyleDeclaration {
@@ -32,6 +27,7 @@ export interface EquippedItemSlotStyle extends StyleDeclaration {
   highlightSlotContainer: React.CSSProperties;
   highlightSlotOverlay: React.CSSProperties;
   defaultSlotIcon: React.CSSProperties;
+  slotOverlay: React.CSSProperties;
 }
 
 export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
@@ -54,17 +50,27 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     position: 'relative',
   },
 
+  slotOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    cursor: 'pointer',
+    ':hover': {
+      boxShadow: 'inset 0 0 15px rgba(255,255,255,0.3)',
+    },
+    ':active': {
+      boxShadow: 'inset 0 0 15px rgba(0,0,0,0.4)',
+    },
+  },
+
   highlightSlotContainer: {
     border: '1px solid yellow',
   },
 
   highlightSlotOverlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
     boxShadow: 'inset 0 0 15px 5px yellow',
-    top: 0,
-    left: 0,
   },
 
   defaultSlotIcon: {
@@ -79,9 +85,8 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
 
 export interface EquippedItemSlotProps {
   styles?: Partial<EquippedItemSlotStyle>;
-  openingSide: string;
-  slotName: string;
   providedEquippedItem: ql.schema.EquippedItem;
+  slot: { slotName: string, openingSide: Alignment };
 }
 
 export interface EquippedItemSlotState {
@@ -92,9 +97,6 @@ export interface EquippedItemSlotState {
 
 export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
 
-  private mouseOverElement: boolean;
-  private onEquipListener: ListenerInfo;
-  private onUnequipListener: ListenerInfo;
   private onHighlightListener: ListenerInfo;
   private onDehighlightListener: ListenerInfo;
 
@@ -112,115 +114,77 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
     const { highlightSlot, showTooltip } = this.state;
-    const { openingSide, slotName } = this.props;
-    // const { equippedItemSlot, popupMiniInventoryVisible } = defaultEquippedItemSlotStyle;
+    const { slot } = this.props;
+    const slotName = slot.slotName;
 
     const itemId = equippedItem && equippedItem.item.id;
     const iconUrl = equippedItem &&
       equippedItem.item.staticDefinition.iconUrl || `${defaultSlotIcons[slotName]} \
       ${css(style.defaultSlotIcon, customStyle.defaultSlotIcon)}`;
     const placeholderIcon = 'images/unknown-item.jpg';
+    const isRightSlot = _.includes(slotName.toLowerCase(), 'right');
     return (
-      <ItemsMenu
-        inventoryState={null}
-        visible={this.state.itemMenuVisible}
-        slotName={slotName}
-        openingSide={openingSide}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
-        equippedItem={equippedItem}
-      >
         <Tooltip show={itemId ? showTooltip : false} styles={defaultTooltipStyle} content={() =>
           <TooltipContent
-            itemId={itemId}
+            item={equippedItem.item}
             slotName={slotName && slotName}
-            instructions='Double click to unequip'
+            instructions='Right click to unequip'
           />
         }>
           <div
+            style={isRightSlot ? { transform: 'scaleX(-1)', webkitTransform: 'scaleX(-1)' } : {}}
             className={css(style.itemContainer, customStyle.itemContainer)}
-            onClick={this.showItemMenuVisibility}
-            onDoubleClick={this.onDoubleClick}>
+            onMouseOver={this.onMouseOverItemSlot}
+            onMouseLeave={this.onMouseLeave}
+            onContextMenu={this.unequipItem}>
             {equippedItem ?
               <img
                 src={iconUrl || placeholderIcon}
-                className={css(style.equippedItemSlot, customStyle.equippedItemSlot)}
+                className={css(
+                  style.equippedItemSlot,
+                  customStyle.equippedItemSlot,
+                  this.state.itemMenuVisible && style.highlightSlotContainer,
+                  this.state.itemMenuVisible && customStyle.highlightSlotContainer,
+                )}
               /> :
-                <div className={css(style.equippedItemSlot, customStyle.equippedItemSlot)}>
+                <div className={css(
+                  style.equippedItemSlot,
+                  customStyle.equippedItemSlot,
+                  this.state.itemMenuVisible && style.highlightSlotContainer,
+                  this.state.itemMenuVisible && customStyle.highlightSlotContainer,
+                )}>
                   <div className={`${iconUrl}`} />
                 </div>}
-            {highlightSlot && <div className={css(style.highlightSlotOverlay, customStyle.highlightSlotOverlay)} />}
+            <div className={css(
+              style.slotOverlay,
+              customStyle.slotOverlay,
+              highlightSlot && style.highlightSlotOverlay,
+              highlightSlot && customStyle.highlightSlotOverlay,
+            )} />
           </div>
         </Tooltip>
-      </ItemsMenu>
     );
   }
 
   public componentDidMount() {
-    window.addEventListener('mousedown', this.onMouseDownOutsideComp);
-    this.onUnequipListener = events.on(eventNames.onUnequipItem, this.onUnequipItem);
-    this.onEquipListener = events.on(eventNames.onEquipItem, this.onEquipItem);
     this.onHighlightListener = events.on(eventNames.onHighlightSlots, this.onHighlightSlots);
     this.onDehighlightListener = events.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
   }
 
   public componentWillUnmount() {
-    window.removeEventListener('mousedown', this.onMouseDownOutsideComp);
-    events.off(this.onUnequipListener);
-    events.off(this.onEquipListener);
     events.off(this.onHighlightListener);
     events.off(this.onDehighlightListener);
   }
 
-  private onDoubleClick = () => {
+  private unequipItem = () => {
     // Fires off onUnequipItem event
     const equippedItem = this.props.providedEquippedItem;
     const payload: UnequipItemCallback = equippedItem;
-    client.UnequipItem(equippedItem.item.id);
     events.fire(eventNames.onUnequipItem, payload);
   }
 
-  private onUnequipItem = (payload: UnequipItemCallback) => {
-    // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
-    const { slotName } = this.props;
-    const { item } = payload;
-    const equippedItem = this.props.providedEquippedItem;
-    if (equippedItem && equippedItem.item.id === item.id) {
-      if (_.find(equippedItem.gearSlots, gearSlot => slotName === gearSlot.id)) {
-        const payload: any = { equippedItem };
-        events.fire(eventNames.updateInventoryItems, payload);
-      }
-    }
-  }
-
-  private onEquipItem = (payload: EquipItemCallback) => {
-    const equippedItem = this.props.providedEquippedItem;
-    const { slotName } = this.props;
-    const { inventoryItem, willEquipTo } = payload;
-    const shouldUpdate = _.find(willEquipTo, (gearSlot) => {
-      return slotName === gearSlot.id ||
-      equippedItem && _.find(equippedItem.gearSlots, equippedSlot => equippedSlot.id === gearSlot.id);
-    });
-    let newItem: any = null;
-    if (shouldUpdate) {
-      // Should equip to slots
-      willEquipTo.forEach((gearSlot: ql.schema.GearSlotDefRef) => {
-        if (gearSlot.id === this.props.slotName) {
-          newItem = { item: inventoryItem, gearSlots: willEquipTo };
-        }
-      });
-
-      // Update inventory item once if there is an equipped item
-      const payload: UpdateInventoryItemsOnEquipCallback = {
-        equippedItem,
-        inventoryItem: inventoryItem as any,
-      };
-      events.fire(eventNames.updateInventoryItems, payload);
-    }
-  }
-
   private onHighlightSlots = (gearSlots: ql.schema.GearSlotDefRef[]) => {
-    if (_.find(gearSlots, (gearSlot: ql.schema.GearSlotDefRef) => this.props.slotName === gearSlot.id)) {
+    if (_.find(gearSlots, (gearSlot: ql.schema.GearSlotDefRef) => this.props.slot.slotName === gearSlot.id)) {
       this.setState({ highlightSlot: true });
     }
   }
@@ -229,29 +193,14 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     if (this.state.highlightSlot) this.setState({ highlightSlot: false });
   }
 
-  private showItemMenuVisibility = () => {
-    this.setState({ itemMenuVisible: !this.state.itemMenuVisible, showTooltip: this.state.itemMenuVisible });
-  }
-
-  private onMouseEnter = () => {
-    const { itemMenuVisible } = this.state;
-    if (itemMenuVisible) {
-      this.setState({ showTooltip: false });
-    } else {
+  private onMouseOverItemSlot = () => {
+    if (!this.state.itemMenuVisible) {
       this.setState({ showTooltip: true });
     }
-    this.mouseOverElement = true;
   }
 
   private onMouseLeave = () => {
     this.setState({ showTooltip: false });
-    this.mouseOverElement = false;
-  }
-
-  private onMouseDownOutsideComp = () => {
-    if (!this.mouseOverElement && this.state.itemMenuVisible) {
-      this.setState({ itemMenuVisible: false, showTooltip: false });
-    }
   }
 }
 

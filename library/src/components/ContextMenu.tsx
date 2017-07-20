@@ -5,11 +5,12 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-05-05 12:37:28
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-05-05 12:42:23
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 18:46:49
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
 import { Quadrant, windowQuadrant } from '../util';
 import { StyleSheet, css } from 'aphrodite';
@@ -91,6 +92,10 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
         }
       </div>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: ContextMenuProps, nextState: ContextMenuState) {
+    return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
   }
 
   public hide = () => {

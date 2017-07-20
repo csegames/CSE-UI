@@ -5,12 +5,13 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:43:58
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:44:41
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:08:32
  */
 import Chat from 'cu-xmpp-chat';
 import { client } from 'camelot-unchained';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +30,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 1,
+    zOrder: HUDZOrder.Chat,
     layoutMode: LayoutMode.EDGESNAP,
   },
   dragOptions: {},

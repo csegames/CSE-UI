@@ -6,13 +6,13 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-14 11:49:30
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-17 18:04:37
+ * @Last Modified time: 2017-07-28 18:02:52
  */
 
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Input, IconButton, utils } from 'camelot-unchained';
+import { Input, IconButton, utils, events } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import FilterSelectListItem from './FilterSelectListItem';
@@ -141,6 +141,8 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
             <div className={css(ss.headerContainer, custom.headerContainer)}>
               <header className={css(ss.headerText, custom.headerText)}>Edit Filters</header>
               <Input
+                onFocus={this.onInputFocus}
+                onBlur={this.onInputBlur}
                 onChange={this.onSearchChange}
                 placeholder={'Search'}
                 value={this.state.searchValue}
@@ -171,6 +173,11 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
     window.addEventListener('mousedown', this.onMouseDownListener);
   }
 
+  public shouldComponentUpdate(nextProps: FilterSelectMenuProps, nextState: FilterSelectMenuState) {
+    return !_.isEqual(nextProps.selectedFilterButtons, this.props.selectedFilterButtons) ||
+    !_.isEqual(nextState, this.state);
+  }
+
   public componentWillUnmount() {
     window.removeEventListener('mousedown', this.onMouseDownListener);
   }
@@ -193,6 +200,14 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
 
   private onMouseLeave = () => {
     this.mouseOver = false;
+  }
+
+  private onInputFocus = () => {
+    events.fire('hudfullscreen--inputaction', 'focus');
+  }
+
+  private onInputBlur = () => {
+    events.fire('hudfullscreen--inputaction', 'blur');
   }
 }
 

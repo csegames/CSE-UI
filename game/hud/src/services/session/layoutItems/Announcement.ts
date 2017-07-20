@@ -5,12 +5,13 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-30 11:15:24
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-04 18:40:43
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:08:08
  */
 
 import { LayoutMode } from '../../../components/HUDDrag';
 import Announcement from '../../../components/Announcement';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +30,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 17,
+    zOrder: HUDZOrder.Announcement,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

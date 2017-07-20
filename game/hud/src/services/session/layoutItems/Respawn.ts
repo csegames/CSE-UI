@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:36:27
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-01-23 17:37:03
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:12:43
  */
 import Respawn from '../../../components/Respawn';
 import { LayoutMode } from '../../../components/HUDDrag';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: false,
-    zOrder: 10,
+    zOrder: HUDZOrder.Respawn,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {},

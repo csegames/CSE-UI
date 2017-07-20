@@ -208,8 +208,10 @@ class App extends React.Component<AppProps,AppState> {
   }
 
   private close = () => {
-    events.fire('hudnav--navigate', 'crafting');
-    this.release();
+    if (this.state.visible) {
+      events.fire('hudnav--navigate', 'crafting');
+      this.release();
+    }
   }
 
   private minimize = () => {

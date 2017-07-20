@@ -6,17 +6,18 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-22 16:05:30
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-14 14:57:31
+ * @Last Modified time: 2017-07-20 18:28:52
  */
 
 import * as React from 'react';
 
-import { Tooltip, utils } from 'camelot-unchained';
+import { Tooltip, utils, ListenerInfo, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';
 import InventoryRowActionButton from './InventoryRowActionButton';
-import { colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
+import { emptyStackHash, colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
+import eventNames, { DropItemCallback } from '../../../lib/eventNames';
 
 export interface InventoryFooterStyles extends StyleDeclaration {
   InventoryFooter: React.CSSProperties;
@@ -38,7 +39,7 @@ export const defaultInventoryFooterStyles: InventoryFooterStyles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: colors.filterBackgroundColor,
-    zIndex: 10,
+    zIndex: 1,
   },
 
   insetDiv: {
@@ -101,65 +102,119 @@ export interface InventoryFooterProps {
   totalMass: number;
 }
 
-export const InventoryFooter = (props: InventoryFooterProps) => {
-  const style = StyleSheet.create(defaultInventoryFooterStyles);
-  const customStyle = StyleSheet.create(props.styles || {});
+export interface InventoryFooterState {
+  currency: number;
+  itemCount: number;
+  totalMass: number;
+}
 
-  return (
-    <div className={css(style.InventoryFooter, customStyle.InventoryFooter)}>
-      <div className={css(style.addRemoveRowButtonContainer, customStyle.addRemoveRowButtonContainer)}>
-        <InventoryRowActionButton
-          tooltipContent={'Add Empty Row'}
-          iconClass={rowActionIcons.addRow}
-          onClick={props.onAddRowClick}
-          disabled={props.addRowButtonDisabled}
-        />
-        <InventoryRowActionButton
-          tooltipContent={'Remove Empty Row'}
-          iconClass={rowActionIcons.removeRow}
-          onClick={props.onRemoveRowClick}
-          disabled={props.removeRowButtonDisabled}
-        />
-        <InventoryRowActionButton
-          tooltipContent={'Prune Empty Rows'}
-          iconClass={rowActionIcons.pruneRows}
-          onClick={props.onPruneRowsClick}
-          disabled={props.pruneRowsButtonDisabled}
-        />
-      </div>
-      <div>
-        <Tooltip content={`Currency: ${props.currency.toLocaleString()}`}>
-          <div className={css(style.insetDiv, customStyle.insetDiv)}>
-            <span className={
-              `${footerInfoIcons.gold} ${css(style.infoIcon, customStyle.infoIcon, style.goldIcon, customStyle.goldIcon)}`}
-            />
-            <CurrencyValue value={props.currency} />
-          </div>
-        </Tooltip>
+class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
+  private onDropItemListener: ListenerInfo;
 
-        <Tooltip content={'Item Count'}>
-          <div className={css(style.insetDiv, customStyle.insetDiv)}>
-            <span className={
-              `${footerInfoIcons.itemCount} ${css(
+  constructor(props: InventoryFooterProps) {
+    super(props);
+    this.state = {
+      currency: 0,
+      itemCount: 0,
+      totalMass: 0,
+    };
+  }
+
+  public render() {
+    const style = StyleSheet.create(defaultInventoryFooterStyles);
+    const customStyle = StyleSheet.create(this.props.styles || {});
+
+    return (
+      <div className={css(style.InventoryFooter, customStyle.InventoryFooter)}>
+        <div className={css(style.addRemoveRowButtonContainer, customStyle.addRemoveRowButtonContainer)}>
+          <InventoryRowActionButton
+            tooltipContent={'Add Empty Row'}
+            iconClass={rowActionIcons.addRow}
+            onClick={this.props.onAddRowClick}
+            disabled={this.props.addRowButtonDisabled}
+          />
+          <InventoryRowActionButton
+            tooltipContent={'Remove Empty Row'}
+            iconClass={rowActionIcons.removeRow}
+            onClick={this.props.onRemoveRowClick}
+            disabled={this.props.removeRowButtonDisabled}
+          />
+          <InventoryRowActionButton
+            tooltipContent={'Prune Empty Rows'}
+            iconClass={rowActionIcons.pruneRows}
+            onClick={this.props.onPruneRowsClick}
+            disabled={this.props.pruneRowsButtonDisabled}
+          />
+        </div>
+        <div>
+          <Tooltip content={`Currency: ${this.state.currency.toLocaleString()}`}>
+            <div className={css(style.insetDiv, customStyle.insetDiv)}>
+              <span className={
+                `${footerInfoIcons.gold} ${css(style.infoIcon, customStyle.infoIcon, style.goldIcon, customStyle.goldIcon)}`}
+              />
+              <CurrencyValue value={this.state.currency} />
+            </div>
+          </Tooltip>
+
+          <Tooltip content={'Item Count'}>
+            <div className={css(style.insetDiv, customStyle.insetDiv)}>
+              <span className={
+                `${footerInfoIcons.itemCount} ${css(
+                  style.infoIcon, customStyle.infoIcon,
+                  style.itemCountIcon, customStyle.itemCountIcon,
+                )}`} />
+              {this.state.itemCount.toString()}
+            </div>
+          </Tooltip>
+          
+          <Tooltip content={`Weight: ${this.state.totalMass.toString()}kg`}>
+            <div className={css(style.insetDiv, customStyle.insetDiv)}>
+              <span className={`${footerInfoIcons.weight} ${css(
                 style.infoIcon, customStyle.infoIcon,
-                style.itemCountIcon, customStyle.itemCountIcon,
+                style.weightIcon, customStyle.weightIcon,
               )}`} />
-            {props.itemCount.toString()}
-          </div>
-        </Tooltip>
-        
-        <Tooltip content={`Weight: ${props.totalMass.toString()}kg`}>
-          <div className={css(style.insetDiv, customStyle.insetDiv)}>
-            <span className={`${footerInfoIcons.weight} ${css(
-              style.infoIcon, customStyle.infoIcon,
-              style.weightIcon, customStyle.weightIcon,
-            )}`} />
-            {`${props.totalMass.toFixed(1)}kg`}
-          </div>
-        </Tooltip>
+              {`${this.state.totalMass.toFixed(1)}kg`}
+            </div>
+          </Tooltip>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+
+  public componentDidMount() {
+    this.onDropItemListener = events.on(eventNames.onDropItem, this.onDropItem);
+  }
+
+  public componentWillReceiveProps(nextProps: InventoryFooterProps) {
+    if (this.props.currency !== nextProps.currency ||
+        this.props.itemCount !== nextProps.itemCount ||
+        this.props.totalMass !== nextProps.totalMass) {
+
+      this.setState((state, props) => {
+        return {
+          currency: props.currency,
+          itemCount: props.itemCount,
+          totalMass: props.totalMass,
+        };
+      });
+    }
+  }
+
+  public componentWillUnmount() {
+    events.off(this.onDropItemListener);
+  }
+
+  private onDropItem = (payload: DropItemCallback) => {
+    const item = payload.inventoryItem;
+    this.setState((state, props) => {
+      return {
+        ...state,
+        totalMass: state.totalMass - item.stats.item.totalMass,
+        itemCount: item.staticDefinition.itemType === 'Ammo' || item.stackHash !== emptyStackHash ?
+          state.itemCount : state.itemCount - 1,
+      };
+    });
+  }
+}
 
 export default InventoryFooter;

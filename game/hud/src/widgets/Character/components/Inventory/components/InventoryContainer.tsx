@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { utils, events } from 'camelot-unchained';
+import { utils } from 'camelot-unchained';
 
 import { InventorySlotItemDef, slotDimensions, SlotType } from './InventorySlot';
 import InventoryRowActionButton from './InventoryRowActionButton';
@@ -88,7 +88,7 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
   constructor(props: InventoryContainerProps) {
     super(props);
     this.state = {
-     ...base.defaultInventoryBaseState(),
+      ...base.defaultInventoryBaseState(),
     };
   }
 
@@ -152,7 +152,6 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
 
   public componentDidMount() {
     this.initialize();
-    events.on('cse-inventory--filter-enable', () => {});
   }
 
   // set up rows from scratch / works as a re-initialize as well

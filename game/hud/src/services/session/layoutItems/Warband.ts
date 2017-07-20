@@ -10,7 +10,7 @@
  */
 import Warband from '../../../widgets/Warband';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
-
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -29,7 +29,7 @@ export default {
     scale: 0.6,
     opacity: 1,
     visibility: true,
-    zOrder: 5,
+    zOrder: HUDZOrder.Warband,
     layoutMode: LayoutMode.EDGESNAP,
   },
   dragOptions: {

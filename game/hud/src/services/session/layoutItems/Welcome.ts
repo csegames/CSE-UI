@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:31:27
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-05 14:25:10
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:13:14
  */
 import Welcome from '../../../components/Welcome';
 import { LayoutMode } from '../../../components/HUDDrag';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 6,
+    zOrder: HUDZOrder.Welcome,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

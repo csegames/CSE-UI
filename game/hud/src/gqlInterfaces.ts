@@ -129,16 +129,6 @@ export interface CharacterInfoQuery {
   } | null;
 }
 
-export interface ContextMenuContentQueryVariables {
-  id: string;
-  shard: number;
-}
-
-export interface ContextMenuContentQuery {
-  // retrieve information about an item
-  item: InventoryItemFragment;
-}
-
 export interface InventoryBaseQuery {
   // Retrieve data about the character's inventory
   myInventory: {
@@ -147,6 +137,16 @@ export interface InventoryBaseQuery {
     totalMass: number | null,
     currency: number | null,
   } | null;
+}
+
+export interface ItemAddedQueryVariables {
+  id: string;
+  shard: number;
+}
+
+export interface ItemAddedQuery {
+  // retrieve information about an item
+  item: InventoryItemFragment;
 }
 
 export interface PaperDollContainerQuery {
@@ -164,6 +164,8 @@ export interface PaperDollContainerQuery {
   myCharacter: {
     id: string | null,
     name: string | null,
+    gender: Gender | null,
+    race: Race | null,
   } | null;
   // Gets the session users order.
   myOrder: {
@@ -171,37 +173,6 @@ export interface PaperDollContainerQuery {
     id: string | null,
     // The name of the Order.
     name: string | null,
-  } | null;
-}
-
-export interface ItemInfoQueryVariables {
-  shard: number;
-  id: string;
-}
-
-export interface ItemInfoQuery {
-  // retrieve information about an item
-  item: InventoryItemFragment & {
-    // stats of this item
-    stats: {
-      // Stats shared by all types of items
-      item: BasicItemFragment,
-      // Alloy specific stats
-      alloy: AlloyStatsFragment,
-      // Substance specific stats
-      substance: SubstanceStatsFragment,
-      // Durability specific stats
-      durability: DurabilityStatsFragment,
-      // Block specific stats
-      block: BlockStatsFragment,
-      // Container specific stats
-      container: ContainerStatsFragment,
-      // Siege engine specific stats
-      siegeEngine: SiegeEngineStatsFragment,
-      // Weapon specific stats
-      weapon: WeaponStatsFragment,
-      armor: ArmorPartsFragment,
-    } | null,
   } | null;
 }
 
@@ -384,30 +355,8 @@ export interface BasicItemFragment {
   strengthRequirement: number | null;
   // The stack count on this item.  For items which do not stack, this value will always be 1.
   unitCount: number | null;
-}
-
-export interface BlockStatsFragment {
-  // CompressiveStrength
-  compressiveStrength: number | null;
-  // ShearStrength
-  shearStrength: number | null;
-  // TensileStrength
-  tensileStrength: number | null;
-  // Density
-  density: number | null;
-  // HealthUnits
-  healthUnits: number | null;
-  // BuildTimeUnits
-  buildTimeUnits: number | null;
-  // UnitMass
-  unitMass: number | null;
-}
-
-export interface ContainerStatsFragment {
-  // The max item count that can be placed into a container, only used if the value is greater then 1.  Stacks of substances/blocks count as 1 item per stack.
-  maxItemCount: number | null;
-  // The max item mass of all contained items that can be placed into a container, only used if the value is greater then 1
-  maxItemMass: number | null;
+  // The mass of the item and anything inside of it
+  totalMass: number | null;
 }
 
 export interface DamageTypeValuesFragment {
@@ -463,21 +412,6 @@ export interface DamageTypeValuesFragment {
   arcane: number | null;
 }
 
-export interface DurabilityStatsFragment {
-  // The number of repair points this item was created at
-  maxRepairPoints: number | null;
-  // The amount of health this item was created at and will be restored to each time it is repaired
-  maxHealth: number | null;
-  // FractureThreshold
-  fractureThreshold: number | null;
-  // FractureChance
-  fractureChance: number | null;
-  // The current number of repair points remaining on this item. This value will be reduced when the item is repaired
-  currentRepairPoints: number | null;
-  // The current health on this item. This value is reduced when the item is used or attacked.
-  currentHealth: number | null;
-}
-
 export interface InventoryItemFragment {
   // Unique instance ID for item.
   id: string | null;
@@ -494,14 +428,14 @@ export interface InventoryItemFragment {
   // stats of this item
   stats: {
     // Stats shared by all types of items
-    item: {
-      // The quality of the item, this will be a value between 0-1
-      quality: number | null,
-      // The mass of the item and anything inside of it
-      totalMass: number | null,
-      // The stack count on this item.  For items which do not stack, this value will always be 1.
-      unitCount: number | null,
-    } | null,
+    item: BasicItemFragment,
+    // Alloy specific stats
+    alloy: AlloyStatsFragment,
+    // Substance specific stats
+    substance: SubstanceStatsFragment,
+    // Weapon specific stats
+    weapon: WeaponStatsFragment,
+    armor: ArmorPartsFragment,
   } | null;
   // The definition for the item.
   staticDefinition: {
@@ -524,15 +458,6 @@ export interface InventoryItemFragment {
       } > | null,
     } > | null,
   } | null;
-}
-
-export interface SiegeEngineStatsFragment {
-  // Health
-  health: number | null;
-  // YawSpeedDegPerSec
-  yawSpeedDegPerSec: number | null;
-  // PitchSpeedDegPerSec
-  pitchSpeedDegPerSec: number | null;
 }
 
 export interface SubstanceStatsFragment {

@@ -6,15 +6,16 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-10 18:06:20
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 16:14:20
+ * @Last Modified time: 2017-08-01 15:50:09
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
-import { ContextMenu, Tooltip, client, events } from 'camelot-unchained';
+import { ContextMenu, Tooltip, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 
+import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 import ContextMenuContent from './ContextMenuContent';
 import EmptyItem from '../../EmptyItem';
 import ItemStack from '../../ItemStack';
@@ -27,6 +28,7 @@ export interface InventorySlotStyle extends StyleDeclaration {
   InventorySlot: React.CSSProperties;
   itemContainer: React.CSSProperties;
   itemIcon: React.CSSProperties;
+  slotOverlay: React.CSSProperties;
 }
 
 export const slotDimensions = 60;
@@ -37,6 +39,7 @@ export const defaultInventorySlotStyle: InventorySlotStyle = {
   },
 
   itemContainer: {
+    position: 'relative',
     width: `${slotDimensions}px`,
     height: `${slotDimensions}px`,
     margin: '2.5px',
@@ -53,6 +56,21 @@ export const defaultInventorySlotStyle: InventorySlotStyle = {
     position: 'relative',
     overflow: 'hidden',
     cursor: 'pointer',
+  },
+
+  slotOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    cursor: 'pointer',
+    ':hover': {
+      boxShadow: 'inset 0 0 10px rgba(255,255,255,0.2)',
+    },
+    ':active': {
+      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.4)',
+    },
   },
 };
 
@@ -87,6 +105,7 @@ export interface CraftingSlotItemDef {
   icon: string;
   quality?: number;
   itemCount?: number;
+  item?: InventoryItemFragment;
 }
 
 export interface InventorySlotProps {
@@ -103,7 +122,7 @@ export interface InventorySlotState {
 
 export class InventorySlot extends React.Component<InventorySlotProps, InventorySlotState> {
   private mouseOver: boolean;
-  
+
   constructor(props: InventorySlotProps) {
     super(props);
     this.state = {
@@ -111,7 +130,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       contextMenuVisible: false,
     };
   }
-
+  
   public render() {
     const { item } = this.props;
     const ss = StyleSheet.create(defaultInventorySlotStyle);
@@ -148,16 +167,13 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const id = item.stackedItems ? item.stackedItems[0].id : item.itemID;
     
     return id ? (
-      <div
-        className={css(ss.InventorySlot, custom.InventorySlot)}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}>
+      <div className={css(ss.InventorySlot, custom.InventorySlot)}>
         <Tooltip
           show={this.state.showTooltip}
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
-              itemId={id}
+              item={item.item || item.stackedItems[0]}
               shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
               instructions={this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
@@ -166,13 +182,16 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           <ContextMenu
             onContextMenuContentShow={this.onContextMenuContentShow}
             onContextMenuContentHide={this.onContextMenuContentHide}
-            content={(props) => <ContextMenuContent itemId={id} contextMenuProps={props} />}
+            content={(props) => <ContextMenuContent item={item.item || item.stackedItems[0]} contextMenuProps={props} />}
           >
             <div
               className={css(ss.itemContainer, custom.itemContainer)}
               onClick={usesContainer ? this.onToggleContainer : null}
+              onMouseEnter={this.onMouseEnter}
+              onMouseLeave={this.onMouseLeave}
               onDoubleClick={this.onEquipItem}>
                 {itemComponent}
+                <div className={css(ss.slotOverlay, custom.slotOverlay)} />
             </div>
           </ContextMenu>
         </Tooltip>
@@ -181,6 +200,13 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     <div className={css(ss.itemContainer, custom.itemContainer)}>
       <EmptyItem />
     </div>;
+  }
+
+  public shouldComponentUpdate(nextProps: InventorySlotProps, nextState: InventorySlotState) {
+    return nextProps.item.itemID !== this.props.item.itemID ||
+      nextProps.item.groupStackHashID !== this.props.item.groupStackHashID ||
+      nextProps.itemIndex !== this.props.itemIndex ||
+      !_.isEqual(nextState, this.state);
   }
 
   private onToggleContainer = () => {
@@ -221,7 +247,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         inventoryItem: this.props.item.item as any,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,
       };
-      client.EquipItem(this.props.item.itemID);
       events.fire(eventNames.onEquipItem, payload);
       events.fire(eventNames.onDehighlightSlots);
       this.setState({ showTooltip: false });

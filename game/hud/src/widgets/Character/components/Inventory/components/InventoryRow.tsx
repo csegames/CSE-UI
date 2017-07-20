@@ -6,10 +6,11 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-10 14:56:32
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 16:14:20
+ * @Last Modified time: 2017-07-28 15:27:48
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
 import { InventorySlot, InventorySlotItemDef } from './InventorySlot';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
@@ -91,6 +92,10 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
         </div>
       </div>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {    
+    return !_.isEqual(nextProps.items, this.props.items) || !_.isEqual(nextState, this.state);
   }
 
   public componentWillReceiveProps(nextProps: InventoryRowProps, nextState: InventoryRowState) {

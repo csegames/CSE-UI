@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-30 16:45:59
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-19 15:45:38
+ * @Last Modified time: 2017-08-04 10:47:02
  */
 
 import * as React from 'react';
@@ -16,6 +16,7 @@ import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { colors, InventoryFilterButton } from '../../lib/constants';
+import { InventoryItemFragment } from '../../../../gqlInterfaces';
 // import reducer from '../../services/session/reducer';
 
 export interface InventoryStyle extends StyleDeclaration {
@@ -59,6 +60,9 @@ export const defaultInventoryStyle: InventoryStyle = {
 
 export interface InventoryProps {
   styles?: Partial<InventoryStyle>;
+  visibleComponent: string;
+  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
+  inventoryItems: InventoryItemFragment[];
 }
 
 export interface ActiveFilters {
@@ -87,14 +91,13 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
                           onFilterChanged={this.onFilterTextChanged}
                           onFilterButtonActivated={this.onFilterButtonActivated}
                           onFilterButtonDeactivated={this.onFilterButtonDeactivated} />
-        <InventoryBody searchValue={this.state.filterText}
-                        activeFilters={this.state.activeFilters} />
+        <InventoryBody  inventoryItems={this.props.inventoryItems}
+                        onChangeInventoryItems={this.props.onChangeInventoryItems}
+                        searchValue={this.state.filterText}
+                        activeFilters={this.state.activeFilters}
+                        visibleComponent={this.props.visibleComponent} />
       </div>
     );
-  }
-  
-  public componentDidUpdate() {
-    console.log('Inventory componentDidUpdate');
   }
 
   private onFilterTextChanged = (filterText: string) => {

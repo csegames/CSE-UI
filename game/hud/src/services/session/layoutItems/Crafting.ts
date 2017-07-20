@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-24 14:48:27
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 20:06:20
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:08:51
  */
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Crafting from '../../../widgets/Crafting';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 99,
+    zOrder: HUDZOrder.Crafting,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

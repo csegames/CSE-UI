@@ -13,6 +13,22 @@ import HUD from './components/HUD';
 import {apollo, store} from './services/session/reducer';
 import {ApolloProvider} from 'react-apollo';
 
+// Uncomment if you want super easy perf gainzzz https://github.com/garbles/why-did-you-update
+
+// if (client.debug) {
+//   // tslint:disable
+//   {
+//       let createClass = React.createClass;
+//       Object.defineProperty(React, 'createClass', {
+//         set: (nextCreateClass) => {
+//           createClass = nextCreateClass;
+//         }
+//       });
+//   }
+//   const {whyDidYouUpdate} = require('why-did-you-update');
+//   whyDidYouUpdate(React);
+// }
+
 const root = document.getElementById('hud');
 
 interface WindowInterface extends Window {

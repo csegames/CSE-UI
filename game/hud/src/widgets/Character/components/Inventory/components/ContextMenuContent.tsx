@@ -6,19 +6,17 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-05 15:22:27
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-17 16:12:11
+ * @Last Modified time: 2017-08-01 15:50:00
  */
 
 import * as React from 'react';
 
-import { ContextMenuContentProps, RaisedButton, client, events, ql } from 'camelot-unchained';
-import { InjectedGraphQLProps, graphql } from 'react-apollo';
+import { ContextMenuContentProps, RaisedButton, events, ql } from 'camelot-unchained';
 
-import { ContextMenuContentQuery } from '../../../../../gqlInterfaces';
 import { StyleDeclaration } from 'aphrodite';
 import eventNames from '../../../lib/eventNames';
 import { prettifySlotName } from '../../../lib/utils';
-import queries from '../../../../../gqlDocuments';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 export interface ContextMenuContentStyle extends StyleDeclaration {
   contextMenuButton: React.CSSProperties;
@@ -31,9 +29,9 @@ export const defaultContextMenuContentStyle: ContextMenuContentStyle = {
   },
 };
 
-export interface ContextMenuContentCompProps extends InjectedGraphQLProps<ContextMenuContentQuery> {
+export interface ContextMenuContentCompProps {
   styles?: Partial<ContextMenuContentStyle>;
-  itemId?: string;
+  item: InventoryItemFragment;
   contextMenuProps: ContextMenuContentProps;
 }
 
@@ -51,7 +49,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private renderGearSlotButtons = () => {
-    const { gearSlotSets } = this.props.data.item && this.props.data.item.staticDefinition;
+    const { gearSlotSets } = this.props.item && this.props.item.staticDefinition;
     const { contextMenuButton } = defaultContextMenuContentStyle;
     return gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
       return (
@@ -75,24 +73,23 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private onEquipItem = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
-    const { data, contextMenuProps } = this.props;
+    const { item, contextMenuProps } = this.props;
     const payload: any = {
-      inventoryItem: data.item,
+      inventoryItem: item,
       willEquipTo: gearSlots,
     };
     events.fire(eventNames.onEquipItem, payload);
     events.fire(eventNames.onDehighlightSlots);
-    client.EquipItem(data.item.id);
     contextMenuProps.close();
   }
 
   private onDropItem = () => {
-    const { data, contextMenuProps } = this.props;
+    const { item, contextMenuProps } = this.props;
     const payload = {
-      inventoryItem: data.item,
+      inventoryItem: item,
     };
     events.fire(eventNames.updateInventoryItems, payload);
-    client.DropItem(data.item.id);
+    events.fire(eventNames.onDropItem, payload);
     contextMenuProps.close();
   }
 
@@ -105,14 +102,4 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 }
 
-const ContextMenuContentWithQL = graphql(queries.ContextMenuContent as any, {
-  skip: (props: ContextMenuContentCompProps) => !props.itemId,
-  options: (props: ContextMenuContentCompProps) => ({
-    variables: {
-      id: props.itemId,
-      shard: client.shardID,
-    },
-  }),
-})(ContextMenuContent);
-
-export default ContextMenuContentWithQL;
+export default ContextMenuContent;

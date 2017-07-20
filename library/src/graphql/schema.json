@@ -917,6 +917,739 @@
         },
         {
           "kind": "OBJECT",
+          "name": "PermissionInfo",
+          "description": null,
+          "fields": [
+            {
+              "name": "tag",
+              "description": "The tag of the permission, used for assigning the permission.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "The display name.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "The display description.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enables",
+              "description": "Other permissions that are also assigned when this permission is assigned.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CustomRank",
+          "description": null,
+          "fields": [
+            {
+              "name": "name",
+              "description": "The name of the rank.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "level",
+              "description": "The level value of the rank.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "permissions",
+              "description": "Permissions given to all members who hold this rank.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PermissionInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "GroupID",
+          "description": "GroupID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CUCharacter",
+          "description": "CUCharacter",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "CharacterID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "faction",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Faction",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "race",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Race",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gender",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Gender",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "archetype",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Archetype",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "order",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "GroupID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "CharacterID",
+          "description": "CharacterID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Faction",
+          "description": "One of the three realms in Camelot Unchained.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FACTIONLESS",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TDD",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VIKING",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARTHURIAN",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COUNT",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Factionless",
+              "description": "No Faction or All Factions (NPC Only)",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TDD",
+              "description": "The Tuatha Dé Danann",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Viking",
+              "description": "The Vikings",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Arthurian",
+              "description": "The Arthurians",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COUNT",
+              "description": "COUNT",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Race",
+          "description": "One of the races in Camelot Unchained.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "TUATHA",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HAMADRYAD",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LUCHORPAN",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIRBOG",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VALKYRIE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HELBOUND",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FROST_GIANT",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DVERGR",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STRM",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CAIT_SITH",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GOLEM",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GARGOYLE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STORM_RIDER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STORM_RIDER_T",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STORM_RIDER_V",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HUMAN_MALE_V",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HUMAN_MALE_A",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HUMAN_MALE_T",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PICT",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Tuatha",
+              "description": "Mage (Earth)",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Hamadryad",
+              "description": "Fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Luchorpan",
+              "description": "Healer",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Firbog",
+              "description": "Mage (Earth)",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Valkyrie",
+              "description": "Mage (Water)",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Helbound",
+              "description": "Healer",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FrostGiant",
+              "description": "Fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Dvergr",
+              "description": "Fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Strm",
+              "description": "Mage (Fire)",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CaitSith",
+              "description": "Fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Golem",
+              "description": "Healer",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Gargoyle",
+              "description": "Fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "StormRider",
+              "description": "MeleeCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "StormRiderT",
+              "description": "MeleeCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "StormRiderV",
+              "description": "ArcherCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HumanMaleV",
+              "description": "MeleeCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HumanMaleA",
+              "description": "MeleeCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HumanMaleT",
+              "description": "MeleeCombatTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Pict",
+              "description": "Pictish?",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Any",
+              "description": "Any",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Gender",
+          "description": "A gender.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NONE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MALE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FEMALE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "None",
+              "description": "None",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Male",
+              "description": "Male",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Female",
+              "description": "Female",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Archetype",
+          "description": "Archetype",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FireMage",
+              "description": "A firey mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EarthMage",
+              "description": "An earthy mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WaterMage",
+              "description": "A watery mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Fighter",
+              "description": "A melee fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Healer",
+              "description": "Some might call this a medic",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Archer",
+              "description": "Pew Pew Pew",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MeleeCombatTest",
+              "description": "A test melee archetype",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ArcherTest",
+              "description": "A test archer archetype",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BlackKnight",
+              "description": "The Dark Knight",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Fianna",
+              "description": "Some tree thing",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Mjolnir",
+              "description": "THORR!!!",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Physician",
+              "description": "What's up Doc?",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Empath",
+              "description": "An emo healer",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Stonehealer",
+              "description": "Me heal with rock!",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Blackguard",
+              "description": "Stronk guard",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ForestStalker",
+              "description": "He be stalking yo trees",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WintersShadow",
+              "description": "Sounds cold",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Any",
+              "description": "Any",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "GearLayerDefRef",
           "description": "GearLayerDefRef",
           "fields": [
@@ -2035,6 +2768,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "unitHealth",
+              "description": "UnitHealth",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -2454,6 +3199,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "unitHealth",
+              "description": "UnitHealth",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -2479,8 +3236,8 @@
               "deprecationReason": null
             },
             {
-              "name": "maxDurability",
-              "description": "The amount of durability this item was created at and will be restored to each time it is repaired",
+              "name": "maxHealth",
+              "description": "The amount of health this item was created at and will be restored to each time it is repaired",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -2527,8 +3284,20 @@
               "deprecationReason": null
             },
             {
-              "name": "currentDurability",
-              "description": "The current durability on this item. This value is reduced when the item is used.",
+              "name": "currentHealth",
+              "description": "The current health on this item. This value is reduced when the item is used or attacked.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "healthLossPerUse",
+              "description": "Factor used to decide how much health the item will lose each time it is used.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -4076,16 +4845,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "SCALAR",
-          "name": "CharacterID",
-          "description": "CharacterID",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
           "name": "InContainerLocation",
           "description": "InContainerLocation",
@@ -4268,33 +5027,6 @@
                 "kind": "SCALAR",
                 "name": "ItemInstanceID",
                 "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "EntityItemResult",
-          "description": "EntityItemResult",
-          "fields": [
-            {
-              "name": "items",
-              "description": "List of items contained within this item.  This includes wrapped items, inventory, and equipment items",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Item",
-                  "ofType": null
-                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -4807,6 +5539,18 @@
               "deprecationReason": null
             },
             {
+              "name": "voxHealthCost",
+              "description": "How much damage the vox will take from performing this job.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ingredients",
               "description": "A list of all ingredients that are currently stored in the vox.  These are destroyed at the end of the job",
               "args": [],
@@ -5135,1015 +5879,6 @@
             {
               "name": "Finished",
               "description": "The recipe has ran sucessfully and is ready to be collected",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CraftingRecipes",
-          "description": "CraftingRecipes",
-          "fields": [
-            {
-              "name": "voxStatus",
-              "description": "The status of the nearest vox belonging to your player",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "VoxStatus",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "recipesMatchingIngredients",
-              "description": "ID's of recipes which match the current ingredient list in the vox",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "possibleIngredients",
-              "description": "List of inventory items compatible with the current vox job",
-              "args": [
-                {
-                  "name": "slot",
-                  "description": "The slot to get ingredients for. (required)",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "SubItemSlot",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Item",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "possibleItemSlots",
-              "description": "List of sub item slots this vox job uses",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "SubItemSlot",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "blockRecipes",
-              "description": "List of recipes for the Block vox job",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "BlockRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "purifyRecipes",
-              "description": "List of recipes for the Purify vox job",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PurifyRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "grindRecipes",
-              "description": "List of recipes for the Grind vox job",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GrindRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "refineRecipes",
-              "description": "List of recipes for the Refine vox job",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "RefineRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shapeRecipes",
-              "description": "List of recipes for the Shape vox job which have been discovered by the player.  Shape recipes are discovered when the right combination of materials are added to a vox during a shape job.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ShapeRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "makeRecipes",
-              "description": "List of recipes for the Make vox job",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "MakeRecipeDefRef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PermissionInfo",
-          "description": null,
-          "fields": [
-            {
-              "name": "tag",
-              "description": "The tag of the permission, used for assigning the permission.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "The display name.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "The display description.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "enables",
-              "description": "Other permissions that are also assigned when this permission is assigned.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CustomRank",
-          "description": null,
-          "fields": [
-            {
-              "name": "name",
-              "description": "The name of the rank.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "level",
-              "description": "The level value of the rank.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "permissions",
-              "description": "Permissions given to all members who hold this rank.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PermissionInfo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "GroupID",
-          "description": "GroupID",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CUCharacter",
-          "description": "CUCharacter",
-          "fields": [
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "CharacterID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "faction",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "Faction",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "race",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "Race",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "gender",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "Gender",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "archetype",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "Archetype",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "order",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "GroupID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "Faction",
-          "description": "One of the three realms in Camelot Unchained.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "FACTIONLESS",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TDD",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "VIKING",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ARTHURIAN",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COUNT",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Factionless",
-              "description": "No Faction or All Factions (NPC Only)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "TDD",
-              "description": "The Tuatha Dé Danann",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Viking",
-              "description": "The Vikings",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Arthurian",
-              "description": "The Arthurians",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COUNT",
-              "description": "COUNT",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "Race",
-          "description": "One of the races in Camelot Unchained.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "TUATHA",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HAMADRYAD",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "LUCHORPAN",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FIRBOG",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "VALKYRIE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HELBOUND",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FROST_GIANT",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "DVERGR",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STRM",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CAIT_SITH",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GOLEM",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GARGOYLE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STORM_RIDER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STORM_RIDER_T",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STORM_RIDER_V",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HUMAN_MALE_V",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HUMAN_MALE_A",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HUMAN_MALE_T",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PICT",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ANY",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Tuatha",
-              "description": "Mage (Earth)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Hamadryad",
-              "description": "Fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Luchorpan",
-              "description": "Healer",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Firbog",
-              "description": "Mage (Earth)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Valkyrie",
-              "description": "Mage (Water)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Helbound",
-              "description": "Healer",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FrostGiant",
-              "description": "Fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Dvergr",
-              "description": "Fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Strm",
-              "description": "Mage (Fire)",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CaitSith",
-              "description": "Fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Golem",
-              "description": "Healer",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Gargoyle",
-              "description": "Fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "StormRider",
-              "description": "MeleeCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "StormRiderT",
-              "description": "MeleeCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "StormRiderV",
-              "description": "ArcherCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HumanMaleV",
-              "description": "MeleeCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HumanMaleA",
-              "description": "MeleeCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HumanMaleT",
-              "description": "MeleeCombatTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Pict",
-              "description": "Pictish?",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Any",
-              "description": "Any",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "Gender",
-          "description": "A gender.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "NONE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MALE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FEMALE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "None",
-              "description": "None",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Male",
-              "description": "Male",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Female",
-              "description": "Female",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "Archetype",
-          "description": "One of the Archetypes in Camelot Unchained.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "FIRE_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EARTH_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WATER_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FIGHTER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HEALER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ARCHER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MELEE_COMBAT_TEST",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ARCHER_TEST",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BLACK_KNIGHT",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FIANNA",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MJOLNIR",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PHYSICIAN",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EMPATH",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STONEHEALER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BLACKGUARD",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FOREST_STALKER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WINTERS_SHADOW",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ANY",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FireMage",
-              "description": "A firey mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EarthMage",
-              "description": "An earthy mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WaterMage",
-              "description": "A watery mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Fighter",
-              "description": "A melee fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Healer",
-              "description": "Some might call this a medic",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Archer",
-              "description": "Pew Pew Pew",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MeleeCombatTest",
-              "description": "A test melee archetype",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ArcherTest",
-              "description": "A test archer archetype",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BlackKnight",
-              "description": "The Dark Knight",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Fianna",
-              "description": "Some tree thing",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Mjolnir",
-              "description": "THORR!!!",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Physician",
-              "description": "What's up Doc?",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Empath",
-              "description": "An emo healer",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Stonehealer",
-              "description": "Me heal with rock!",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Blackguard",
-              "description": "Stronk guard",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ForestStalker",
-              "description": "He be stalking yo trees",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WintersShadow",
-              "description": "Sounds cold",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Any",
-              "description": "Any",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -6775,6 +6510,211 @@
         },
         {
           "kind": "OBJECT",
+          "name": "EntityItemResult",
+          "description": "EntityItemResult",
+          "fields": [
+            {
+              "name": "items",
+              "description": "List of items contained within this item.  This includes wrapped items, inventory, and equipment items",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Item",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CraftingRecipes",
+          "description": "CraftingRecipes",
+          "fields": [
+            {
+              "name": "voxStatus",
+              "description": "The status of the nearest vox belonging to your player",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "VoxStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "recipesMatchingIngredients",
+              "description": "ID's of recipes which match the current ingredient list in the vox",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "possibleIngredients",
+              "description": "List of inventory items compatible with the current vox job",
+              "args": [
+                {
+                  "name": "slot",
+                  "description": "The slot to get ingredients for. (required)",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "SubItemSlot",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Item",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "possibleItemSlots",
+              "description": "List of sub item slots this vox job uses",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SubItemSlot",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "blockRecipes",
+              "description": "List of recipes for the Block vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "BlockRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "purifyRecipes",
+              "description": "List of recipes for the Purify vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PurifyRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "grindRecipes",
+              "description": "List of recipes for the Grind vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GrindRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "refineRecipes",
+              "description": "List of recipes for the Refine vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RefineRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shapeRecipes",
+              "description": "List of recipes for the Shape vox job which have been discovered by the player.  Shape recipes are discovered when the right combination of materials are added to a vox during a shape job.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ShapeRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "makeRecipes",
+              "description": "List of recipes for the Make vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MakeRecipeDefRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "CUQuery",
           "description": "The root query object.",
           "fields": [
@@ -7031,6 +6971,51 @@
               "deprecationReason": null
             },
             {
+              "name": "myCharacter",
+              "description": "Get the character of the currently logged in user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CUCharacter",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "character",
+              "description": "Get a character by id and shard.",
+              "args": [
+                {
+                  "name": "id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "shard",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CUCharacter",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "gearSlots",
               "description": "gearSlots",
               "args": [],
@@ -7080,86 +7065,6 @@
               "deprecationReason": null
             },
             {
-              "name": "entityItems",
-              "description": "retrieve information about an item that is stored in an entity currently loaded on the server",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "Entity ID. (required)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "EntityItemResult",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "crafting",
-              "description": "Information about crafting recipes, nearby vox status, and potential interactions with the current vox job.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CraftingRecipes",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "myCharacter",
-              "description": "Get the character of the currently logged in user.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CUCharacter",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "character",
-              "description": "Get a character by id and shard.",
-              "args": [
-                {
-                  "name": "id",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "shard",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CUCharacter",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "myEquippedItems",
               "description": "retrieve all the session users equipped items",
               "args": [],
@@ -7198,6 +7103,41 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "MyInventory",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "entityItems",
+              "description": "retrieve information about an item that is stored in an entity currently loaded on the server",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Entity ID. (required)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EntityItemResult",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "crafting",
+              "description": "Information about crafting recipes, nearby vox status, and potential interactions with the current vox job.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CraftingRecipes",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7639,7 +7579,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Archetype",
+                "name": "Class",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7673,6 +7613,233 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Class",
+          "description": "One of the classes in Camelot Unchained.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FIRE_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EARTH_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WATER_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIGHTER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HEALER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARCHER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MELEE_COMBAT_TEST",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARCHER_TEST",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLACK_KNIGHT",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIANNA",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MJOLNIR",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PHYSICIAN",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EMPATH",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STONEHEALER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLACKGUARD",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FOREST_STALKER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WINTERS_SHADOW",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FireMage",
+              "description": "A firey mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EarthMage",
+              "description": "An earthy mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WaterMage",
+              "description": "A watery mage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Fighter",
+              "description": "A melee fighter",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Healer",
+              "description": "Some might call this a medic",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Archer",
+              "description": "Pew Pew Pew",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MeleeCombatTest",
+              "description": "A test melee archetype",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ArcherTest",
+              "description": "A test archer archetype",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BlackKnight",
+              "description": "The Dark Knight",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Fianna",
+              "description": "Some tree thing",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Mjolnir",
+              "description": "THORR!!!",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Physician",
+              "description": "What's up Doc?",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Empath",
+              "description": "An emo healer",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Stonehealer",
+              "description": "Me heal with rock!",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Blackguard",
+              "description": "Stronk guard",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ForestStalker",
+              "description": "He be stalking yo trees",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WintersShadow",
+              "description": "Sounds cold",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Any",
+              "description": "Any",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -8597,7 +8764,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Archetype",
+                "name": "Class",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -9245,7 +9412,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Archetype",
+                "name": "Class",
                 "ofType": null
               },
               "isDeprecated": false,

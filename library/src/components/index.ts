@@ -20,6 +20,7 @@ export * from './FloatSpinner';
 export * from './Flyout';
 export * from './GridView';
 export * from './Input';
+export * from './PageController';
 export * from './RaisedButton';
 export * from './Spinner';
 export * from './SVGSprite';

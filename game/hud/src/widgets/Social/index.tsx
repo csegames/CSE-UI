@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-16 12:55:46
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-15 09:44:45
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-07-26 12:49:55
  */
 
 import * as React from 'react';
@@ -18,6 +18,7 @@ import { store } from './services/session/reducer';
 
 export interface SocialContainerProps {
   containerClass?: string;
+  visibleComponent: string;
 }
 
 export interface SocialContainerState {
@@ -37,7 +38,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   }
 
   public render() {
-    return this.state.visible && (
+    return this.props.visibleComponent === 'social' && (
       <Provider store={store}>
         <SocialMain ref={r => this.mainRef = r} {...(this.props as any)} />
       </Provider>
