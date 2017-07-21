@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {createStore, applyMiddleware} from 'redux';
-// import {Provider} from 'react-redux';
+import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
@@ -14,7 +14,7 @@ import {loadLights} from './services/session/lights';
 import {BuildPaneProps} from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 
-// import DroplightPane from './components/DroplightPane';
+import DroplightPane from './components/DroplightPane';
 import LightSelector from './components/LightSelector';
 import {Anchor} from '../../../SavedDraggable';
 
@@ -32,16 +32,16 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
 
   public render() {
     return (
+      <Provider store={store}>
         <TabbedPane name='droplights' className='drop-light' tabs={[this.props.minimized ? 'Light' : 'Drop Light']}
           defaultX={[0, Anchor.TO_END]}
           defaultY={[600, Anchor.TO_START]}
           defaultSize={[200, 200]}
           >
-      {/* <Provider store={store}>
-          <DroplightPane minimized={this.props.minimized} />
-      </Provider> */}
+          <DroplightPane />
           <LightSelector />
         </TabbedPane>
+      </Provider>
     );
   }
 }
