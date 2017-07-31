@@ -6,10 +6,10 @@
  * @Author: JB (jb@codecorsair.com {})
  * @Date: 2017-01-26 17:40:13
  * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-04-28 17:01:37
+ * @Last Modified time: 2017-07-31 15:44:54
  */
 
-import clientInterface from './clientInterface';
+import clientInterface, { CharacterState } from './clientInterface';
 import configGroup from './config/configGroup';
 import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
@@ -208,6 +208,12 @@ const devClientInterface: clientInterface = {
   /* Plot */
 
   OnPlotStatus: (c: (plotOwned: boolean, permissions: number, charID: string, entityID: string) => void): void => {},
+
+  /* Character State Changes */
+  OnCharacterStateChanged: (c: (state: CharacterState) => void): void => {},
+  OnEnemyTargetStateChanged: (c: (state: CharacterState) => void): void => {},
+  OnFriendlyTargetStateChanged: (c: (state: CharacterState) => void): void => {},
+
 
   /* Character */
 

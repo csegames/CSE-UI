@@ -28,6 +28,9 @@ import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
 import ReleaseControl from './layoutItems/ReleaseControl';
+import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
+import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
+import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.7.0'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -151,6 +154,15 @@ function initialState(): LayoutState {
     [
       'releaseControl', cloneDeep(ReleaseControl),
     ],
+    [
+      'playerSiegeHealth', cloneDeep(PlayerSiegeHealth),
+    ],
+    [
+      'enemySiegeHealth', cloneDeep(EnemyTargetSiegeHealth),
+    ],
+    [
+      'friendlySiegeHealth', cloneDeep(FriendlyTargetSiegeHealth),
+    ]
   ]);
 
   return {

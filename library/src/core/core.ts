@@ -6,6 +6,7 @@
 
 import CoreSettings from './CoreSettings';
 import clientInterface from './clientInterface';
+export * from './clientInterface';
 import client from './client';
 export * from './client';
 

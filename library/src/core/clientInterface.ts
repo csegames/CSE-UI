@@ -8,6 +8,59 @@ import configGroup from './config/configGroup';
 import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
 
+export interface EntityState {
+  faction: Faction;
+  id: string;
+  name: string;
+  alive: boolean;
+
+  // position of this entity, or null if we're not sending position
+  position?: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  // effects by id -- not used, may not want it this way, but we had
+  // a callback for this already. null if none
+  effects?: string[];
+}
+
+export type AnyEntityState = CharacterState | SiegeState | null;
+
+export interface CharacterState extends EntityState {
+  type: 'character';
+  characterID: string;
+  race: Race;
+  gender: Gender;
+  // health per body part, ordered according to the bodyParts enum found
+  // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
+  // through webAPI definitions.ts file
+  health: {
+    current: number;
+    max: number;
+    wounds: number;
+  }[];
+  stamina: {
+    current: number;
+    max: number;
+  };
+  blood: {
+    current: number;
+    max: number;
+  };
+  // An EntityState object for the entity this Character is in control of, ie
+  // a siege engine, a vehicle, a creature, ect..
+  controllingEntityState?: AnyEntityState;
+}
+
+export interface SiegeState extends EntityState {
+  type: 'siege';
+  health: {
+    current: number;
+    max: number;
+  };
+}
+
 interface clientInterface {
   // These are the only things that are guaranteed to exist from the time
   // the page is created. Everything else will be constructed over the course
@@ -252,6 +305,13 @@ interface clientInterface {
 
   Emote(emote: number): void;
 
+
+  /* Character State Changes */
+  OnCharacterStateChanged(c: (state: CharacterState) => void): void;
+  OnEnemyTargetStateChanged(c: (state: AnyEntityState) => void): void;
+  OnFriendlyTargetStateChanged(c: (state: AnyEntityState) => void): void;
+
+
   /* Character */
 
   OnCharacterIDChanged(c: (id: string) => void): void;
@@ -280,6 +340,7 @@ interface clientInterface {
   OnEnemyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
   OnEnemyTargetAliveOrDead(c: (alive: boolean) => void): void;
   OnEnemyTargetPositionChanged(c: (x: number, y: number, z: number) => void): void;
+
 
   /* Friendly Target */
 

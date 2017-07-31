@@ -31,7 +31,6 @@ import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 import Console from '../Console';
 
-
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch: (action: any) => void;
   layout: LayoutState;
@@ -39,23 +38,12 @@ export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
 }
 
 export interface HUDState {
-  activeDrags: number;
-  deltaPosition: { x: number, y: number };
-  controlledPosition: { x: number, y: number };
-  orderName: string;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
 
   constructor(props: HUDProps) {
     super(props);
-    this.state = {
-      activeDrags: 0,
-      deltaPosition: { x: 0, y: 0 },
-      controlledPosition: { x: 100, y: 100 },
-      orderName: '',
-    };
-
   }
 
   public render() {
@@ -63,15 +51,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const widgets = this.props.layout.widgets;
     const locked = this.props.layout.locked;
 
-    const orderedWidgets: JSX.Element[] = [];
-    widgets.forEach((widget, key) => {
-      orderedWidgets[widget.position.zOrder] = 
-      this.draggable(key, widget, widget.component, widget.dragOptions, widget.props);
-    });
-
+    const renderWidgets = widgets
+                    .sort((a, b) => a.position.zOrder - b.position.zOrder)
+                    .map((w, idx) => this.draggable(idx, w, w.component, w.dragOptions, w.props));
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-        {orderedWidgets.map(c => c)}
+        {renderWidgets}
 
         <ZoneName />
         <Console />
@@ -89,9 +74,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   public componentWillReceiveProps(props: HUDProps) {
-    if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
+    if (!this.props.data || (props.data && props.data.myOrder && props.data.myOrder.name !== this.props.data.myOrder.name)) {
 
-        events.fire('chat-leave-room', this.state.orderName);
+      if (this.props.data) events.fire('chat-leave-room', this.props.data.myOrder.name);
 
       // we either are just loading up, or we've changed order.
       if (props.data.myOrder.id) {
@@ -140,6 +125,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   private draggable = (type: string, widget: Widget<any>, Widget: any, options?: HUDDragOptions, widgetProps?: any) => {
+    let props = widgetProps;
+    if (typeof props === 'function') {
+      props = props();
+    }
     return <HUDDrag name={type}
       key={widget.position.zOrder}
       defaultHeight={widget.position.size.height}
@@ -174,7 +163,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         if (this.props.layout.locked && !widget.position.visibility) return null;
         return <Widget
           setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({ name: type, visibility: vis }))}
-          {...widgetProps}
+          {...props}
         />;
       }}
       {...options} />;

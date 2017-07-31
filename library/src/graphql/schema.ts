@@ -10,12 +10,12 @@ export interface CUQuery {
   traits: Array<Trait> | null;
   skillComponents: Array<SkillComponent> | null;
   skillNetworks: Array<SkillNetwork> | null;
-  myCharacter: CUCharacter | null;
-  character: CUCharacter | null;
   gearSlots: Array<GearSlotDefRef> | null;
   item: Item | null;
   entityItems: EntityItemResult | null;
   crafting: CraftingRecipes | null;
+  myCharacter: CUCharacter | null;
+  character: CUCharacter | null;
   myEquippedItems: Array<EquippedItem> | null;
   substances: Array<SubstanceDef> | null;
   myInventory: MyInventory | null;
@@ -45,11 +45,6 @@ export interface WarbandCUQueryArgs {
   shard: number | null;
 }
 
-export interface CharacterCUQueryArgs {
-  id: string | null;
-  shard: number | null;
-}
-
 export interface ItemCUQueryArgs {
   shard: number | null;
   id: string | null;
@@ -57,6 +52,11 @@ export interface ItemCUQueryArgs {
 
 export interface EntityItemsCUQueryArgs {
   id: string | null;
+}
+
+export interface CharacterCUQueryArgs {
+  id: string | null;
+  shard: number | null;
 }
 
 export interface PagedOrders {
@@ -256,22 +256,6 @@ export interface SkillNetworkConnection {
   key: AbilityComponentSubType | null;
   values: Array<AbilityComponentSubType> | null;
 }
-
-export interface CUCharacter {
-  name: string | null;
-  id: CharacterID | null;
-  faction: Faction | null;
-  race: Race | null;
-  gender: Gender | null;
-  archetype: Archetype | null;
-  order: GroupID | null;
-}
-
-export type CharacterID = any;
-
-export type Archetype = "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
-
-export type GroupID = any;
 
 export interface GearSlotDefRef {
   id: string | null;
@@ -568,6 +552,8 @@ export interface EquippedLocation {
   gearSlots: Array<GearSlotDefRef> | null;
 }
 
+export type CharacterID = any;
+
 export interface InContainerLocation {
   containerInstanceID: ItemInstanceID | null;
   position: number | null;
@@ -678,7 +664,7 @@ export interface ShapeRecipeDefRef {
 
 export interface MakeRecipeDefRef {
   id: string | null;
-  outputItemDef: ItemDefRef | null;
+  outputItem: ItemDefRef | null;
   ingredients: Array<MakeIngredientDef> | null;
 }
 
@@ -690,6 +676,20 @@ export interface MakeIngredientDef {
   maxQuality: number | null;
   unitCount: number | null;
 }
+
+export interface CUCharacter {
+  name: string | null;
+  id: CharacterID | null;
+  faction: Faction | null;
+  race: Race | null;
+  gender: Gender | null;
+  archetype: Archetype | null;
+  order: GroupID | null;
+}
+
+export type Archetype = "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+
+export type GroupID = any;
 
 export interface EquippedItem {
   gearSlots: Array<GearSlotDefRef> | null;
