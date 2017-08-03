@@ -23,7 +23,11 @@ class LayeredDiv extends React.Component<LayeredDivProps, {}> {
 
     return (
       <div className={`LayeredDiv ${className || ''}`} {...props} >
-        {renderLayers.map((layerRender, index) => <div key={index} className='LayeredDiv__Layer'>{layerRender()}</div>)}
+        {renderLayers.map((layerRender, index) => (
+          <div key={index} className='LayeredDiv__Layer'>
+            {() => layerRender()}
+          </div>
+        ))}
       </div>
     );
   }

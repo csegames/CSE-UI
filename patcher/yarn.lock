@@ -31,15 +31,26 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@15.0.26":
-  version "15.0.26"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.26.tgz#19d8969edcabb2aa6d10ccfba807e67a93a0a8f4"
+"@types/react-redux@^4.4.46":
+  version "4.4.47"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-4.4.47.tgz#12af1677116e08d413fe2620d0a85560c8a0536e"
+  dependencies:
+    "@types/react" "*"
+    redux "^3.6.0"
+
+"@types/react@*", "@types/react@^15.0.30":
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.6.1.tgz#497f7228762da4432e335957cb34fe9b40f150ae"
 
 "@types/redux-thunk@^2.1.0":
   version "2.1.32"
   resolved "https://registry.yarnpkg.com/@types/redux-thunk/-/redux-thunk-2.1.32.tgz#27fac368ced9ea170bf15e5fa4a21d9201f73102"
   dependencies:
     redux "^3.6.0"
+
+"@types/redux@^3.6.0":
+  version "3.6.31"
+  resolved "https://registry.yarnpkg.com/@types/redux/-/redux-3.6.31.tgz#40eafa7575db36b912ce0059b85de98c205b0708"
 
 JSONStream@^1.0.3:
   version "1.3.1"
@@ -4194,9 +4205,9 @@ typedarray@~0.0.5:
   version "0.0.6"
   resolved "http://registry.camelotunchained.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@2.2.1, typescript@^2.0.3:
-  version "2.2.1"
-  resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.2.1.tgz#4862b662b988a4c8ff691cc7969622d24db76ae9"
+typescript@^2.0.3, typescript@^2.4.1:
+  version "2.4.2"
+  resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.4.2.tgz#f8395f85d459276067c988aa41837a8f82870844"
 
 typings-core@^1.6.1:
   version "1.7.0"

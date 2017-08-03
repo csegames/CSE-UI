@@ -119,9 +119,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectFaction={this.factionSelect} />
         );
         next = (
-          <a className='cu-btn right'
+          <button className='cu-btn right'
             onClick={this.factionNext}
-            disabled={this.state.page === pages.ATTRIBUTES} >Next</a>
+            disabled={this.state.page === pages.ATTRIBUTES} >Next</button>
         );
         break;
       case pages.RACE_SELECT:
@@ -134,14 +134,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectedFaction={this.props.factionsState.selected} />
         );
         back = (
-          <a className='cu-btn left'
+          <button className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page === pages.FACTION_SELECT} >Back</a>
+            disabled={this.state.page === pages.FACTION_SELECT} >Back</button>
         );
         next = (
-          <a className='cu-btn right'
+          <button className='cu-btn right'
             onClick={this.raceNext}
-            disabled={this.state.page === pages.ATTRIBUTES} >Next</a>
+            disabled={this.state.page === pages.ATTRIBUTES} >Next</button>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -157,14 +157,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectedFaction={this.props.factionsState.selected} />
         );
         back = (
-          <a className='cu-btn left'
+          <button className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page === pages.FACTION_SELECT} >Back</a>
+            disabled={this.state.page === pages.FACTION_SELECT} >Back</button>
         );
         next = (
-          <a className='cu-btn right'
+          <button className='cu-btn right'
             onClick={this.classNext}
-            disabled={this.state.page === pages.BANES_AND_BOONS} >Next</a>
+            disabled={this.state.page === pages.BANES_AND_BOONS} >Next</button>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -182,14 +182,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             remainingPoints={this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated} />
         );
         back = (
-          <a className='cu-btn left'
+          <button className='cu-btn left'
             onClick={this.previousPage}
-            disabled={this.state.page === pages.CLASS_SELECT} >Back</a>
+            disabled={this.state.page === pages.CLASS_SELECT} >Back</button>
         );
         next = (
-           <a className='cu-btn right'
+           <button className='cu-btn right'
               onClick={this.attributesNext}
-              disabled={this.state.page === pages.BANES_AND_BOONS}>Next</a>
+              disabled={this.state.page === pages.BANES_AND_BOONS}>Next</button>
         );
         name = (
           <div className='cu-character-creation__name'>
@@ -213,12 +213,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
           />
         );
         back = (
-          <a className='cu-btn left'
+          <button className='cu-btn left'
               onClick={this.previousPage}
-              disabled={this.state.page === pages.ATTRIBUTES}>Back</a>
+              disabled={this.state.page === pages.ATTRIBUTES}>Back</button>
         );
         next = (
-          <a className={`cu-btn right`} disabled={this.props.characterState.isFetching} onClick={this.create} >Create</a>
+          <button className={`cu-btn right`} disabled={this.props.characterState.isFetching} onClick={this.create} >
+            Create
+          </button>
         );
         name = (
           <div className='cu-character-creation__name banes-and-boons-screen'>
