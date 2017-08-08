@@ -164,44 +164,32 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       entity: null,
     };
   }
-  private mounted = false;
   componentDidMount() {
-    this.mounted = true;
     switch (this.props.for) {
       case HealthFor.Self: 
       client.OnPlayerStateChanged(entity => {
-        if (this.mounted) {
-          try {
-            this.setState({entity})
-          } catch(e) {}
-        }
+        try {
+          this.setState({entity})
+        } catch(e) {}
       });
       break;
 
       case HealthFor.EnemyTarget:
       client.OnEnemyTargetStateChanged(entity => {
-        if (this.mounted) {
-          try {
+        try {
           this.setState({entity})
-          } catch(e) {}
-        }
+        } catch(e) {}
       });
       break;
 
       case HealthFor.FriendlyTarget:
       client.OnFriendlyTargetStateChanged(entity => {
-        if (this.mounted) {
-          try {
+        try {
           this.setState({entity})
-          } catch(e) {}
-        }
+        } catch(e) {}
       });
       break;
     }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
@@ -232,7 +220,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
         return false;
       }
       case 'siege': {
-        return isEqual(this.state.entity, nextState.entity) == false;
+        return isEqual(this.state.entity, nextState.entity) === false;
       }
     }
   }
