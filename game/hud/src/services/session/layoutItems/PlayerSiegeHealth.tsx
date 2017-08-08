@@ -19,7 +19,7 @@ export default {
     },
     y: {
       anchor: 7,
-      offset: -75,
+      offset: -100,
     },
     size: {
       width: 200,

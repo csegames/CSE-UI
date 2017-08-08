@@ -102,7 +102,7 @@ export interface OrderMember {
   permissions: Array<PermissionInfo> | null;
   race: Race | null;
   gender: Gender | null;
-  class: Class | null;
+  class: Archetype | null;
   lastLogin: Date | null;
   kills: number | null;
 }
@@ -124,7 +124,7 @@ export type Race = "TUATHA" | "HAMADRYAD" | "LUCHORPAN" | "FIRBOG" | "VALKYRIE" 
 
 export type Gender = "NONE" | "MALE" | "FEMALE" | "None" | "Male" | "Female";
 
-export type Class = "FIRE_MAGE" | "EARTH_MAGE" | "WATER_MAGE" | "FIGHTER" | "HEALER" | "ARCHER" | "MELEE_COMBAT_TEST" | "ARCHER_TEST" | "BLACK_KNIGHT" | "FIANNA" | "MJOLNIR" | "PHYSICIAN" | "EMPATH" | "STONEHEALER" | "BLACKGUARD" | "FOREST_STALKER" | "WINTERS_SHADOW" | "ANY" | "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+export type Archetype = "FIRE_MAGE" | "EARTH_MAGE" | "WATER_MAGE" | "FIGHTER" | "HEALER" | "ARCHER" | "MELEE_COMBAT_TEST" | "ARCHER_TEST" | "BLACK_KNIGHT" | "FIANNA" | "MJOLNIR" | "PHYSICIAN" | "EMPATH" | "STONEHEALER" | "BLACKGUARD" | "FOREST_STALKER" | "WINTERS_SHADOW" | "ANY" | "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
 
 export interface MemberAction {
   id: string | null;
@@ -171,7 +171,7 @@ export interface Character {
   race: Race | null;
   gender: Gender | null;
   realm: Faction | null;
-  class: Class | null;
+  class: Archetype | null;
   lastLogin: Date | null;
   deleted: boolean | null;
   order: Order | null;
@@ -214,7 +214,7 @@ export interface WarbandMember {
   extraPermissions: Array<string> | null;
   race: Race | null;
   gender: Gender | null;
-  class: Class | null;
+  class: Archetype | null;
   lastLogin: Date | null;
   kills: number | null;
 }
@@ -598,7 +598,7 @@ export interface PossibleIngredientsCraftingRecipesArgs {
 
 export interface VoxStatus {
   voxState: VoxState | null;
-  jobType: string | null;
+  jobType: VoxJobType | null;
   jobState: VoxJobState | null;
   ingredients: Array<Item> | null;
   outputItems: Array<Item> | null;
@@ -619,6 +619,8 @@ export interface VoxStatus {
 }
 
 export type VoxState = "NotFound" | "NotOwnedByPlayer" | "Found";
+
+export type VoxJobType = "Invalid" | "Block" | "Grind" | "Make" | "Purify" | "Refine" | "Repair" | "Salvage" | "Shape";
 
 export type VoxJobState = "None" | "Configuring" | "Running" | "Finished";
 
@@ -659,6 +661,7 @@ export interface RefineRecipeDefRef {
 export interface ShapeRecipeDefRef {
   id: string | null;
   outputItem: ItemDefRef | null;
+  lossPercent: number | null;
   ingredients: Array<RecipeIngredientDef> | null;
 }
 
@@ -687,8 +690,6 @@ export interface CUCharacter {
   order: GroupID | null;
 }
 
-export type Archetype = "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
-
 export type GroupID = any;
 
 export interface EquippedItem {
@@ -705,6 +706,14 @@ export interface MyInventory {
   itemCount: number | null;
   totalMass: number | null;
   currency: number | null;
+}
+
+export interface BlockStatsDef {
+  id: string | null;
+}
+
+export interface BlockDef {
+  id: string | null;
 }
 
 export interface SiegeEngineItemDef {

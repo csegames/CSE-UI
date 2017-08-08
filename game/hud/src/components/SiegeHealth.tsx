@@ -10,7 +10,8 @@
  */
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client, AnyEntityState, SiegeState } from 'camelot-unchained';
+import { client, AnyEntityState, SiegeState, PlayerState } from 'camelot-unchained';
+import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
   return (
@@ -70,6 +71,8 @@ const deaultSiegeButtonStyle: SiegeButtonStyle = {
      padding: '2px 8px',
      userSelect: 'none',
      '-webkit-user-select': 'none',
+     pointerEvents: 'all',
+     background: 'rgba(0, 0, 0, 0.5)',
   },
   buttonEnabled: {
     cursor: 'pointer',
@@ -102,7 +105,7 @@ const SiegeButton = (props: {
 
 const SiegeExitButton = (props: {}) => {
   return (
-    <SiegeButton enabled={true}>Exit</SiegeButton>
+    <SiegeButton enabled={true} onClick={() => client.SendSlashCommand('siege exit')}>Exit</SiegeButton>
   );
 }
 
@@ -110,7 +113,7 @@ const AlignRight = (props: {children: any}) => {
   return <div style={{display: 'flex', justifyContent: 'flex-end'}}>{props.children}</div>;
 }
 
-const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string | null, showExit: boolean}) => {
+export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string | null, showExit: boolean}) => {
   return (
     <div style={{
       width: '200px',
@@ -160,36 +163,97 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
     this.state = {
       entity: null,
     };
-    switch (props.for) {
+  }
+  private mounted = false;
+  componentDidMount() {
+    this.mounted = true;
+    switch (this.props.for) {
       case HealthFor.Self: 
-      client.OnCharacterStateChanged(entity => this.setState({entity}));
+      client.OnPlayerStateChanged(entity => {
+        if (this.mounted) {
+          try {
+            this.setState({entity})
+          } catch(e) {}
+        }
+      });
       break;
 
       case HealthFor.EnemyTarget:
-      client.OnEnemyTargetStateChanged(entity => this.setState({entity}));
+      client.OnEnemyTargetStateChanged(entity => {
+        if (this.mounted) {
+          try {
+          this.setState({entity})
+          } catch(e) {}
+        }
+      });
       break;
 
       case HealthFor.FriendlyTarget:
-      client.OnFriendlyTargetStateChanged(entity => this.setState({entity}));
+      client.OnFriendlyTargetStateChanged(entity => {
+        if (this.mounted) {
+          try {
+          this.setState({entity})
+          } catch(e) {}
+        }
+      });
       break;
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
+    if (!this.state.entity && nextState.entity) return true;
+    if (this.state.entity && !nextState.entity) return true;
+    if (!this.state.entity && !nextState.entity) return true;
+
+    if (this.state.entity.type !== nextState.entity.type) return true;
+
+    switch (this.state.entity.type) {
+      case 'player': {
+        const next = nextState.entity as PlayerState;
+
+        const thisControlled = this.state.entity.controllingEntityState;
+        const nextControlled = next.controllingEntityState;
+
+        if (!thisControlled && !nextControlled) return false;
+
+        if (!thisControlled && nextControlled) return true;
+        if (thisControlled && !nextControlled) return true;
+
+        if (thisControlled.type === 'siege' && nextControlled.type !== 'siege') return true;
+        if (thisControlled.type !== 'siege' && nextControlled.type === 'siege') return true;
+
+        if (thisControlled.type === 'siege' && nextControlled.type === 'siege') {
+          return isEqual(thisControlled, nextControlled) === false;
+        }
+        return false;
+      }
+      case 'siege': {
+        return isEqual(this.state.entity, nextState.entity) == false;
+      }
     }
   }
 
   public render() {
     if (this.state.entity === null) return null;
-    if (this.state.entity.type === 'character' && this.state.entity.controllingEntityState === null) return null;
+    if (this.state.entity.type === 'player' && this.state.entity.controllingEntityState === null) return null;
 
     switch (this.state.entity.type) {
-      case 'character': {
+      case 'player': {
         const controlled = this.state.entity.controllingEntityState;
-        if (controlled.type !== 'siege') return null;
-        return <SiegeHealthBar state={controlled}
+        if (!controlled || controlled.type !== 'siege') return null;
+        return <SiegeHealthBar state={(controlled || null) as any}
                                controlledBy={this.state.entity.name}
-                               showExit={this.state.entity.characterID === client.characterID} />
+                               showExit={this.props.for === HealthFor.Self} />;
       };
-      case 'siege': return <SiegeHealthBar state={this.state.entity}
+      case 'siege': {
+        return <SiegeHealthBar state={this.state.entity}
                                            controlledBy={null}
-                                           showExit={false}/>
+                                           showExit={false}/>;
+      }
     }
   }
 

@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-31 15:44:54
  */
 
-import clientInterface, { CharacterState } from './clientInterface';
+import clientInterface, { PlayerState, AnyEntityState } from './clientInterface';
 import configGroup from './config/configGroup';
 import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
@@ -210,9 +210,9 @@ const devClientInterface: clientInterface = {
   OnPlotStatus: (c: (plotOwned: boolean, permissions: number, charID: string, entityID: string) => void): void => {},
 
   /* Character State Changes */
-  OnCharacterStateChanged: (c: (state: CharacterState) => void): void => {},
-  OnEnemyTargetStateChanged: (c: (state: CharacterState) => void): void => {},
-  OnFriendlyTargetStateChanged: (c: (state: CharacterState) => void): void => {},
+  OnPlayerStateChanged: (c: (state: PlayerState) => void): void => {},
+  OnEnemyTargetStateChanged: (c: (state: AnyEntityState) => void): void => {},
+  OnFriendlyTargetStateChanged: (c: (state: AnyEntityState) => void): void => {},
 
 
   /* Character */

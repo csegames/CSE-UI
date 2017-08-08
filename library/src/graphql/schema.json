@@ -4598,6 +4598,18 @@
               "deprecationReason": null
             },
             {
+              "name": "lossPercent",
+              "description": "What percentage of the substances added to the crafting job will be lost in the crafting process",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ingredients",
               "description": "Input ingredients required for this recipe",
               "args": [],
@@ -4775,8 +4787,8 @@
               "description": "Which type of crafting job is currently being utilized",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "ENUM",
+                "name": "VoxJobType",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -5023,6 +5035,71 @@
             {
               "name": "Found",
               "description": "Owned vox found nearby",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "VoxJobType",
+          "description": "VoxJobType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "Invalid",
+              "description": "Invalid",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Block",
+              "description": "Block",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Grind",
+              "description": "Grind",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Make",
+              "description": "Make",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Purify",
+              "description": "Purify",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Refine",
+              "description": "Refine",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Repair",
+              "description": "Repair",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Salvage",
+              "description": "Salvage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Shape",
+              "description": "Shape",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -5849,11 +5926,119 @@
         {
           "kind": "ENUM",
           "name": "Archetype",
-          "description": "Archetype",
+          "description": "One of the Archetypes in Camelot Unchained.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
+            {
+              "name": "FIRE_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EARTH_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WATER_MAGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIGHTER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HEALER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARCHER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MELEE_COMBAT_TEST",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARCHER_TEST",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLACK_KNIGHT",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIANNA",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MJOLNIR",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PHYSICIAN",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EMPATH",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STONEHEALER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLACKGUARD",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FOREST_STALKER",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WINTERS_SHADOW",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "FireMage",
               "description": "A firey mage",
@@ -5993,6 +6178,52 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Item",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "BlockStatsDef",
+          "description": "BlockStatsDef",
+          "fields": [
+            {
+              "name": "id",
+              "description": "Unique recipe identifier",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "BlockDef",
+          "description": "BlockDef",
+          "fields": [
+            {
+              "name": "id",
+              "description": "Unique block identifier",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7408,7 +7639,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Class",
+                "name": "Archetype",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7442,233 +7673,6 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "Class",
-          "description": "One of the classes in Camelot Unchained.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "FIRE_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EARTH_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WATER_MAGE",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FIGHTER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "HEALER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ARCHER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MELEE_COMBAT_TEST",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ARCHER_TEST",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BLACK_KNIGHT",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FIANNA",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MJOLNIR",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PHYSICIAN",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EMPATH",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "STONEHEALER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BLACKGUARD",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FOREST_STALKER",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WINTERS_SHADOW",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ANY",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FireMage",
-              "description": "A firey mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EarthMage",
-              "description": "An earthy mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WaterMage",
-              "description": "A watery mage",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Fighter",
-              "description": "A melee fighter",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Healer",
-              "description": "Some might call this a medic",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Archer",
-              "description": "Pew Pew Pew",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MeleeCombatTest",
-              "description": "A test melee archetype",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ArcherTest",
-              "description": "A test archer archetype",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BlackKnight",
-              "description": "The Dark Knight",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Fianna",
-              "description": "Some tree thing",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Mjolnir",
-              "description": "THORR!!!",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Physician",
-              "description": "What's up Doc?",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Empath",
-              "description": "An emo healer",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Stonehealer",
-              "description": "Me heal with rock!",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Blackguard",
-              "description": "Stronk guard",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ForestStalker",
-              "description": "He be stalking yo trees",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WintersShadow",
-              "description": "Sounds cold",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Any",
-              "description": "Any",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -8593,7 +8597,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Class",
+                "name": "Archetype",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -9241,7 +9245,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "Class",
+                "name": "Archetype",
                 "ofType": null
               },
               "isDeprecated": false,

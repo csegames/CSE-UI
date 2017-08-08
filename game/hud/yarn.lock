@@ -1224,25 +1224,7 @@ camelcase@^4.0.0:
   version "4.1.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
-camelot-unchained@^0.8.13:
-  version "0.8.22"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.8.22.tgz#c365700189e90c363fafbe047189e7030b285699"
-  dependencies:
-    aphrodite "^1.1.0"
-    axios "^0.15.3"
-    cwd-in-node-modules "^1.0.1"
-    es6-promise "^3.0.2"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    react "^15.6.1"
-    react-addons-css-transition-group "^0.14.6"
-    react-dom "^15.4.2"
-    redux-typed-modules "^2.2.1"
-
-camelot-unchained@^0.8.24:
+camelot-unchained@^0.8.13, camelot-unchained@^0.8.24:
   version "0.8.24"
   resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.8.24.tgz#71259fb4d3f0426cc4582556d008c4bde8aa7dd3"
   dependencies:

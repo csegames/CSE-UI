@@ -15,11 +15,11 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: 50,
+      offset: 250,
     },
     y: {
       anchor: 6,
-      offset: 300,
+      offset: 150,
     },
     size: {
       width: 200,

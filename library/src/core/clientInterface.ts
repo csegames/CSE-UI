@@ -25,11 +25,10 @@ export interface EntityState {
   effects?: string[];
 }
 
-export type AnyEntityState = CharacterState | SiegeState | null;
+export type AnyEntityState = PlayerState | SiegeState | null;
 
-export interface CharacterState extends EntityState {
-  type: 'character';
-  characterID: string;
+export interface PlayerState extends EntityState {
+  type: 'player';
   race: Race;
   gender: Gender;
   // health per body part, ordered according to the bodyParts enum found
@@ -307,7 +306,7 @@ interface clientInterface {
 
 
   /* Character State Changes */
-  OnCharacterStateChanged(c: (state: CharacterState) => void): void;
+  OnPlayerStateChanged(c: (state: PlayerState) => void): void;
   OnEnemyTargetStateChanged(c: (state: AnyEntityState) => void): void;
   OnFriendlyTargetStateChanged(c: (state: AnyEntityState) => void): void;
 
