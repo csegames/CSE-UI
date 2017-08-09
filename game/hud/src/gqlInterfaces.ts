@@ -466,16 +466,16 @@ export interface DamageTypeValuesFragment {
 export interface DurabilityStatsFragment {
   // The number of repair points this item was created at
   maxRepairPoints: number | null;
-  // The amount of durability this item was created at and will be restored to each time it is repaired
-  maxDurability: number | null;
+  // The amount of health this item was created at and will be restored to each time it is repaired
+  maxHealth: number | null;
   // FractureThreshold
   fractureThreshold: number | null;
   // FractureChance
   fractureChance: number | null;
   // The current number of repair points remaining on this item. This value will be reduced when the item is repaired
   currentRepairPoints: number | null;
-  // The current durability on this item. This value is reduced when the item is used.
-  currentDurability: number | null;
+  // The current health on this item. This value is reduced when the item is used or attacked.
+  currentHealth: number | null;
 }
 
 export interface InventoryItemFragment {

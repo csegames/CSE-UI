@@ -1,8 +1,8 @@
 fragment DurabilityStats on DurabilityStat_Single {
   maxRepairPoints
-  maxDurability
+  maxHealth
   fractureThreshold
   fractureChance
   currentRepairPoints
-  currentDurability
+  currentHealth
 }
