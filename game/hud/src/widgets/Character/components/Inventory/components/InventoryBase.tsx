@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-09 12:40:27
+ * @Last Modified time: 2017-08-09 18:19:03
  */
 
 import * as React from 'react';
@@ -926,7 +926,12 @@ export function equipItemRequest(item: InventoryItemFragment,
         location: 'Inventory',
         voxSlot: 'Invalid',
       },
-    } as any);
+    } as any).then((res) => {
+      // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
+      if (res.error) {
+        client.EquipItem(item.id);
+      }
+    });
     if (equippedItem) {
       const equippedGearSlotIDs = equippedItem.gearSlots.map((gearSlot) => gearSlot.id);
       webAPI.ItemAPI.moveItems(client.shardID, client.characterID, {
@@ -981,7 +986,12 @@ export function equipItemRequest(item: InventoryItemFragment,
         location: 'Equipment',
         voxSlot: 'Invalid',
       },
-    } as any);
+    } as any).then((res) => {
+      // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
+      if (res.error) {
+        client.UnequipItem(item.id);
+      }
+    });
   }
 
   export function dropItemRequest(item: InventoryItemFragment) {
@@ -1006,5 +1016,10 @@ export function equipItemRequest(item: InventoryItemFragment,
         location: 'Inventory',
         voxSlot: 'Invalid',
       },
-    } as any);
+    } as any).then((res) => {
+      // TEMPORARY: If webAPI fails, then fall back to client command DropItem
+      if (res.error) {
+        client.DropItem(item.id);
+      }
+    });
   }
