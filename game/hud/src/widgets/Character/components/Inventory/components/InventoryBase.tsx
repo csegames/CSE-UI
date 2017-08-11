@@ -634,12 +634,25 @@ export function partitionItems(items: InventoryItemFragment[]) {
     if (foundOtherStack && itemHasPosition(foundOtherStack)) {
       const wantPosition = getItemInventoryPosition(item);
 
+      let stackGroupID = '';
+      
       let stackGroupIndex = -1;
-      if (stackHashToGroupIDMap[stackHash]) {
+      if (stackHashToGroupIDMap[stackHash])
+      {
         stackGroupIndex = _.findIndex(stackHashToGroupIDMap[stackHash], gm => gm.position === wantPosition);
       }
-    
-      const stackGroupID = stackHashToGroupIDMap[stackHash][stackGroupIndex].stackGroupID;
+
+      if (stackGroupIndex > -1) {
+        stackGroupID = stackHashToGroupIDMap[stackHash][stackGroupIndex].stackGroupID;
+      } else {
+        stackGroupID = generateStackGroupID(stackHash, stackGroupCounter);
+        stackGroupCounter++;
+        stackHashToGroupIDMap[stackHash] = [{
+          position: wantPosition,
+          stackGroupID,
+        }];
+      }
+
       if (stackedItemsWithPosition[stackGroupID]) {
         stackedItemsWithPosition[stackGroupID].push(item);
       } else {
