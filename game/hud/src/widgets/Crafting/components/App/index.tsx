@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:45:56
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 18:36:13
  */
 
 import * as React from 'react';
@@ -15,26 +15,25 @@ import {events, client, jsKeyCodes } from 'camelot-unchained';
 import {craftingTimeToString} from '../../services/util';
 
 // Types
-import { Recipe, Template, Ingredient } from '../../services/types';
-import { VoxIngredient, VoxTemplate, VoxRecipe, VoxResponse } from '../../services/game/crafting';
+import { Recipe, Ingredient } from '../../services/types';
+import { VoxIngredient, VoxRecipe, VoxResponse } from '../../services/game/crafting';
 import { JobState, GlobalState } from '../../services/session/reducer';
 
 // Actions
 import {
   setLoading, setJobType, setMessage, addIngredient, removeIngredient,
   startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
-  setName, setRecipe, setTemplate, gotVoxStatus, gotVoxPossibleIngredients,
+  setName, setRecipe, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
 } from '../../services/session/job';
 import { setUIMode, setRemaining, setMinimized } from '../../services/session/ui';
-import { gotVoxTemplates } from '../../services/session/templates';
 import { gotVoxRecipes } from '../../services/session/recipes';
 
 // Updated Game API - Using GraphQL and WebAPI
 import {
-  voxGetStatus, voxGetPossibleIngredients, voxGetTemplates, voxGetRecipesFor,
+  voxGetStatus, voxGetPossibleIngredients, voxGetRecipesFor,
   setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
-  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe, setVoxTemplate,
+  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
   addVoxIngredient, removeVoxIngredient,
 } from '../../services/game/crafting';
 
@@ -158,13 +157,13 @@ class App extends React.Component<AppProps,AppState> {
             setQuality={this.setQuality}
             setCount={this.setCount}
             setRecipe={this.setRecipe}
-            setName={this.setName} setTemplate={this.setTemplate}
+            setName={this.setName}
             addIngredient={this.addIngredient}
             removeIngredient={this.removeIngredient}
           />
         );
       case 'tools':
-        return <Tools dispatch={this.props.dispatch} />;
+        return <Tools dispatch={this.props.dispatch} refresh={this.refresh}/>;
     }
   }
 
@@ -249,8 +248,9 @@ class App extends React.Component<AppProps,AppState> {
           break;
       }
       props.dispatch(gotOutputItems(status.outputItems));
-      if (status.jobType) {
-        this.loadLists(status.jobType, true);
+      const type = status.jobType && status.jobType.toLowerCase();
+      if (type && type !== "invalid") {
+        this.loadLists(type, true);
       }
     }).catch((message: string) => {
         props.dispatch(setMessage({ type: 'error', message }));
@@ -321,20 +321,11 @@ class App extends React.Component<AppProps,AppState> {
 
     // and load recipes
     switch (job) {
-      case 'make':
-        voxGetTemplates()
-          .then((templates: VoxTemplate[]) => {
-            props.dispatch(gotVoxTemplates(templates));
-          })
-          .catch(() => {
-            props.dispatch(setMessage({ type: 'error', message: 'Could not load templates' }));
-          });
-        break;
       case 'repair':
       case 'salvage':
         // no recipes to load
         break;
-      default:
+      default:  // purify, refine, grind, shape, block, make
         voxGetRecipesFor(job)
           .then((recipes: VoxRecipe[]) => {
             props.dispatch(gotVoxRecipes(job, recipes));
@@ -355,7 +346,10 @@ class App extends React.Component<AppProps,AppState> {
         message: error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message,
       }));
     } else {
-      props.dispatch(setMessage({ type: 'error', message: error.Code + ': ' + error.Message }));
+      props.dispatch(setMessage({
+        type: 'error',
+        message: (error.Code ? error.Code + ': ' : '') + error.Message
+      }));
     }
   }
 
@@ -515,16 +509,6 @@ class App extends React.Component<AppProps,AppState> {
         return setRecipe(recipe);
       },
       () => setRecipe(undefined),
-    );
-  }
-
-  private setTemplate = (template: Template) => {
-    this.api(() => setVoxTemplate(template.id), 'Template set to: ' + template.name,
-      () => {
-        this.checkJobStatus();
-        return setTemplate(template);
-      },
-      () => setTemplate(undefined),
     );
   }
 

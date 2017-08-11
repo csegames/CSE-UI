@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-07 16:16:29
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:52:27
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-11 19:37:33
  */
 
 import { Module } from 'redux-typed-modules';
@@ -64,6 +64,7 @@ export const gotVoxRecipes = module.createAction({
       case 'grind':
       case 'shape':
       case 'block':
+      case 'make':
         return { [type]: a.recipes.sort((a, b) => a.name.localeCompare(b.name)) };
     }
     console.error('CRAFTING: illegal recipe type ' + type);

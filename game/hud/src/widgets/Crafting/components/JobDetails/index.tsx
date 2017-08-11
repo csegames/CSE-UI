@@ -5,21 +5,20 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:47:35
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-11 19:17:59
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../../services/session/reducer';
 import { Ingredient } from '../../services/types';
-import { Template, Recipe, InventoryItem } from '../../services/types';
+import { Recipe, InventoryItem } from '../../services/types';
 import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../../styles';
 import Ingredients from '../Ingredients';
 
 import Button from '../Button';
 import RecipeSelect from '../RecipeSelect';
-import TemplateSelect from '../TemplateSelect';
 import NameInput from '../NameInput';
 import QualityInput from '../QualityInput';
 import QuantityInput from '../QuantityInput';
@@ -32,6 +31,7 @@ interface JobDetailsReduxProps {
   outputItems?: InventoryItem[];
   status?: string;
   type?: string;
+  dispatch?: (action: any) => void;
 }
 
 const select = (state: GlobalState, props: JobDetailsProps) : JobDetailsReduxProps => {
@@ -53,7 +53,6 @@ export interface JobDetailsProps extends JobDetailsReduxProps {
   setCount: (count: number) => void;
   setName: (name: string) => void;
   setRecipe: (recipe: Recipe) => void;
-  setTemplate: (template: Template) => void;
   addIngredient: (item: InventoryItem, qty: number) => void;
   removeIngredient: (ingredient: Ingredient) => void;
   style?: Partial<JobDetailsStyles>;
@@ -72,7 +71,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   const canQuantity = type === 'make';
 
   // If no vox type set yet...
-  if (!type) {
+  if (!type || type === "invalid") {
     return (
       <div className={css(ss.jobDetails)}>
         <div>Select a Job Type!</div>
@@ -85,13 +84,12 @@ export const JobDetails = (props: JobDetailsProps) => {
     <div className={css(ss.jobDetails)}>
       <div className={css(ss.properties)}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
-        {type !== 'make' && <RecipeSelect dispatch={this.props.dispatch} onSelect={props.setRecipe}/>}
-        {type === 'make' && <TemplateSelect dispatch={this.props.dispatch} onSelect={props.setTemplate}/>}
+        <RecipeSelect dispatch={props.dispatch} onSelect={props.setRecipe}/>
       </div>
       <Ingredients
         add={props.addIngredient}
         remove={props.removeIngredient}
-        dispatch={this.props.dispatch}
+        dispatch={props.dispatch}
         />
       <OutputItems/>
       <VoxMessage/>

@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:50:57
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-11 18:30:32
  */
 
 import * as React from 'react';
@@ -111,6 +111,12 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
               disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
             <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
               onClick={this.addIngredient}>Add</Button>
+          </div>
+        );
+      } else {
+        addIngredients = (
+          <div className={css(ss.addIngredient)}>
+            No Suitable Ingredients
           </div>
         );
       }

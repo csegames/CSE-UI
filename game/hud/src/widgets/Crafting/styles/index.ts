@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 19:38:35
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 20:17:19
+ * @Last Modified time: 2017-08-11 17:06:47
  */
 
 export { StyleSheet, css } from 'aphrodite';
@@ -687,36 +687,6 @@ export interface RecipeSelectStyles {
 
 export const recipeSelect: RecipeSelectStyles = {
   recipeSelect: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: opts.properties.LINE_SPACING,
-  },
-  label: {
-    width: opts.properties.LABEL_WIDTH,
-  },
-  select: {
-    flex: '0 0 auto',
-    minWidth: opts.properties.FIELD_WIDTH,
-    height: opts.input.HEIGHT,
-  },
-  select_impl: {
-    backgroundColor: opts.input.BACKGROUND,
-  },
-  select_list: {
-    maxHeight: '175px',
-  },
-};
-
-export interface TemplateSelectStyles {
-  templateSelect: React.CSSProperties;
-  label: React.CSSProperties;
-  select: React.CSSProperties;
-  select_impl: React.CSSProperties;
-  select_list: React.CSSProperties;
-}
-
-export const templateSelect: TemplateSelectStyles = {
-  templateSelect: {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: opts.properties.LINE_SPACING,

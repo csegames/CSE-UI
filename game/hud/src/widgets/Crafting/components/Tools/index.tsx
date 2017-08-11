@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-13 20:14:35
+ * @Last Modified time: 2017-08-31 18:35:02
  */
 
 import * as React from 'react';
@@ -25,18 +25,20 @@ import Button from '../Button';
 import VoxMessage from '../VoxMessage';
 
 export interface ToolsPropsRedux {
-  dispatch?: (action: any) => void;
-  countdown?: number;
+  countdown: number;
 }
 
-const select = (state: GlobalState, props: ToolsProps) : ToolsPropsRedux => {
+export interface ToolsOwnProps {
+  style?: Partial<ToolsStyles>;
+  dispatch: (action: any) => void;
+  refresh: () => void;
+}
+
+const select = (state: GlobalState, props: ToolsOwnProps) : ToolsPropsRedux => {
   return { countdown: state.ui.countdown };
 };
 
-export interface ToolsProps extends ToolsPropsRedux {
-  style?: Partial<ToolsStyles>;
-  dispatch: (action: any) => void;
-}
+export type ToolsProps = ToolsPropsRedux & ToolsOwnProps;
 
 interface ToolsState {
   range: number;
@@ -60,6 +62,7 @@ interface MakeInput {
   numeric?: boolean;
   min?: number;
   max?: number;
+  defaultValue?: string;
 }
 
 class Tools extends React.Component<ToolsProps, ToolsState> {
@@ -88,7 +91,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     const makeInput = (args: MakeInput) => {
       return (
         <Input size={args.size} numeric={args.numeric} min={args.min} max={args.max}
-          onChange={args.change} value={args.get()}/>
+          onChange={args.change} value={args.get() || args.defaultValue}/>
       );
     };
 
@@ -111,15 +114,8 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
 
           <div>
             { makeButton({
-              label: '/harvestinfo',
-              click: () => this.slash('harvestinfo', 'Check the System Tab!'),
-            })}
-          </div>
-
-          <div>
-            { makeButton({
               label: '/harvest' + (this.props.countdown ? ' [' + this.props.countdown + ']' : ''),
-              click: () => this.harvest,
+              click: () => this.harvest(),
               disabled: this.props.countdown > 0,
             })}
             Harvest nearby resources.
@@ -136,7 +132,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeButton({
               label: '/cr vox forcefinish',
-              click: () => this.slash('cr vox forcefinish', 'Forced vox to finish'),
+              click: () => this.forceFinish(),
             })}
           </div>
 
@@ -160,7 +156,8 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             { makeInput({
               get: () => this.state.alloyId,
               change: (value: string) => this.setState({ alloyId: value }),
-              size: 20,
+              size: 40,
+              defaultValue: 'item_alloy_vikingsteel 100 1000',
             })}
           </div>
 
@@ -216,6 +213,13 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
       }
     };
     tick();
+  }
+
+  private forceFinish = () => {
+    this.slash('cr vox forcefinish', 'Forced vox to finish');
+    setTimeout(() => {
+      this.props.refresh();
+    },100);
   }
 }
 

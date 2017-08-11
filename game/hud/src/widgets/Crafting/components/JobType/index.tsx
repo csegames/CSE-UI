@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:47:53
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-11 19:30:42
  */
 
 import * as React from 'react';
@@ -47,7 +47,7 @@ export const JobType = (props: JobTypeProps) => {
       const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
       return (
         <Button style={style}
-          disabled={job && job !== type}
+          disabled={job && job !== "invalid" && job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>
