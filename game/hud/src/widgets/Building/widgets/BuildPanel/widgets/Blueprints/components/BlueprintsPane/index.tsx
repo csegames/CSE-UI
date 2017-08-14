@@ -19,13 +19,18 @@ import BlueprintSaveView from '../BlueprintSaveView';
 import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
 import {fireBuildingItemSelected} from '../../../../../../services/events';
 
-function select(state: GlobalState) {
+function select(state: GlobalState, ownProps: BlueprintsPaneOwnProps) {
   return {
     blueprintsState: state.blueprints,
   };
 }
 
-export interface BlueprintsPaneProps {
+export interface BlueprintsPaneOwnProps {
+  minimized: boolean;
+  handlePreviewIcon: (icon: string) => void;
+}
+
+export interface BlueprintsPaneProps extends BlueprintsPaneOwnProps {
   dispatch: (action: any) => void;
   blueprintsState: BlueprintsState;
   minimized: boolean;
