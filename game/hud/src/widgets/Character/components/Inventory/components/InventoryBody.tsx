@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-09 14:42:22
+ * @Last Modified time: 2017-08-14 15:41:49
  */
 
 import * as React from 'react';
@@ -110,7 +110,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
     return (
       <div className={css(ss.inventoryBody, custom.inventoryBody)}>
-        <img src={'images/inventorybg.png'} className={css(ss.backgroundImg, custom.backgroundImg)} />
         <div ref={(r) => this.bodyRef = r}
             className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
           <div className={css(ss.inventoryContent, custom.inventoryContent)}>

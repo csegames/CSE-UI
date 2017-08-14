@@ -1,3 +1,14 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * @Author: Andrew Jackson (jacksonal300@gmail.com)
+ * @Date: 2017-08-14 12:43:04
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-14 12:43:04
+ */
+
 import * as React from 'react';
 import { events, client, ListenerInfo, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
@@ -189,7 +200,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   private handleNavigation = (name: string) => {
     switch (name) {
       case 'character': {
-        this.setActiveTabIndex(1);
+        this.setActiveTabIndex(0);
         this.setVisibleComponent(name);
         break;
       }
@@ -199,7 +210,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         break;
       }
       case 'equippedgear': {
-        this.setActiveTabIndex(1);
+        this.setActiveTabIndex(0);
         this.setVisibleComponent(name);
         break;
       }

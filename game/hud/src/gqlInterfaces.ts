@@ -102,31 +102,11 @@ export type ItemType =
   "SiegeEngine"; // Controllable items used in siege combat
 
 
-export interface StatInfoQuery {
-  // retrieve all the session users equipped items
-  myEquippedItems: Array< {
-    // The item that is equipped
-    item: {
-      // stats of this item
-      stats: {
-        // Weapon specific stats
-        weapon: WeaponStatsFragment,
-        armor: ArmorPartsFragment,
-      } | null,
-    } | null,
-  } > | null;
-}
-
 export interface CharacterInfoQuery {
   // Get the character of the currently logged in user.
-  myCharacter: {
-    name: string | null,
-    id: string | null,
-    faction: Faction | null,
-    race: Race | null,
-    gender: Gender | null,
-    archetype: Archetype | null,
-  } | null;
+  myCharacter: MyCharacterFragment;
+  // Gets the session users order.
+  myOrder: MyOrderFragment;
 }
 
 export interface InventoryBaseQuery {
@@ -457,6 +437,38 @@ export interface InventoryItemFragment {
         id: string | null,
       } > | null,
     } > | null,
+  } | null;
+}
+
+export interface MyCharacterFragment {
+  id: string | null;
+  name: string | null;
+  faction: Faction | null;
+  race: Race | null;
+  gender: Gender | null;
+  archetype: Archetype | null;
+}
+
+export interface MyOrderFragment {
+  // The GroupID of the Order.
+  id: string | null;
+  // The realm to which the Order belongs.
+  realm: Faction | null;
+  // The name of the Order.
+  name: string | null;
+  // Gets the current session users OrderMember info if they are a member of this order.
+  myMemberInfo: {
+    // The character ID of the member.
+    id: string | null,
+    // The name of the member.
+    name: string | null,
+    // Kill count of the Order member.
+    kills: number | null,
+    // The current rank of the member.
+    rank: {
+      // The name of the rank.
+      name: string,
+    } | null,
   } | null;
 }
 

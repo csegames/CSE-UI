@@ -1,0 +1,8 @@
+query CharacterInfo {
+  myCharacter {
+    ...MyCharacter
+  }
+  myOrder {
+    ...MyOrder
+  }
+}

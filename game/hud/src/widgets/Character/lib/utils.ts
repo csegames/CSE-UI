@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:28:15
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-03 11:56:44
+ * @Last Modified time: 2017-08-17 15:27:41
  */
 
 import * as _ from 'lodash';
@@ -16,17 +16,23 @@ import { SlotNumberToItem } from '../components/Inventory/components/InventoryBa
 import { ActiveFilters } from '../components/Inventory/Inventory';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
 
-export const prettifySlotName = (slotName: string) => {
+// tslint:disable-next-line
+const fuzzySearch = require('fuzzysearch');
+
+export const prettifyText = (slotName: string) => {
   if (slotName) return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
 };
 
+export const doesSearchInclude = (name: string, searchValue: string) => {
+  return name && fuzzySearch(searchValue.toLowerCase(), name.toLowerCase());
+};
 
 export function calcRowAndSlots(div: HTMLElement, slotDimensions: number, minSlots: number, gutterSize: number = 65) {
   const slotsPerRow = calcSlotsPerRow(div, slotDimensions, gutterSize);
   const slotCountAndRows = calcRows(div, slotDimensions, minSlots, slotsPerRow);
   return {
     slotsPerRow,
-    ...slotCountAndRows, 
+    ...slotCountAndRows,
   };
 }
 
@@ -183,7 +189,7 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
     }) > -1;
 
     // Search text compared to itemName
-    const doesSearchValueIncludeItem = _.includes(itemName.toLowerCase(), searchValue.toLowerCase());
+    const doesSearchValueIncludeItem = doesSearchInclude(itemName, searchValue);
 
     // Do active filters and search include item?
     if (hasFilter && hasSearch) {

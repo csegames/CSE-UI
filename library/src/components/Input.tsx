@@ -33,7 +33,6 @@ export const defaultInputStyle: InputStyle = {
     border: 'solid 1px rgba(255, 255, 255, 0.2)',
     color: '#8f8f8f',
     fontSize: '1.1em',
-    lineHeight: '1em',
     boxShadow: 'inset 0px 0px 2px 0px rgba(200,200,200,.1)',
   },
 

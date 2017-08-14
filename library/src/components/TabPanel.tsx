@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:57:50
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-07 19:17:09
+ * @Last Modified time: 2017-08-14 12:52:49
  */
 
 import * as React from 'react';
@@ -41,6 +41,7 @@ export const defaultTabPanelStyle: TabPanelStyle = {
   tab: {
     flex: '0 0 auto',
     '-webkit-user-select': 'none',
+    cursor: 'pointer',
   },
 
   activeTab: {
@@ -130,7 +131,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
 
   public render() {
     const style = StyleSheet.create(defaultTabPanelStyle);
-    const customStyle = StyleSheet.create(this.props.styles);
+    const customStyle = StyleSheet.create(this.props.styles || {});
     
     return (
       <div className={css(style.tabPanel, customStyle.tabPanel)}>
@@ -159,7 +160,12 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
           const selected = index === this.activeTabIndex;
           return (
             <div
-              className={selected ? css(style.activeTab, customStyle.activeTab) : css(style.tab, customStyle.tab)}
+              className={css(
+                style.tab,
+                customStyle.tab,
+                selected && style.activeTab,
+                selected && customStyle.activeTab,
+              )}
               onClick={() => this.selectIndex(index, tabItem.name)}
               key={index}>
               <tabItem.tab.render active={selected} {...tabItem.tab.props} />

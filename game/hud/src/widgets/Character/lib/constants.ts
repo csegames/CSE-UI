@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-22 15:44:33
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-01 15:16:28
+ * @Last Modified time: 2017-08-17 10:36:22
  */
 
 import * as React from 'react';
@@ -33,6 +33,14 @@ export const colors = {
   weightIcon: '#d4d2d1',
   inventoryContainerBackgroundColor: 'rgba(255, 0, 0, 0.3)',
   inventoryContainerBorderColor: '#ececec',
+  primaryTabPanelColor: '#372F2D',
+  tabColorGray: '#464646',
+  tabColorRed: '#998677',
+  tabActiveBorder: '#EA6D54',
+  tabHoverColorGray: '#737271',
+  tabHoverColorRed: '#b09885',
+  tabClickColorGray: '#8c8987',
+  tabClickColorRed: '#c7a993',
 };
 
 export const paperDollIcons = {
@@ -48,6 +56,21 @@ export const paperDollIcons = {
   FemaleValkyrie: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png',
   MalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png',
   FemalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png',
+};
+
+export const characterAvatarIcon = {
+  MaleHumanMaleA: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png',
+  FemaleHumanMaleA: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
+  MaleHumanMaleV: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-vik.png',
+  FemaleHumanMaleV: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
+  MaleHumanMaleT: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
+  FemaleHumanMaleT: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
+  MaleLuchorpan: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png',
+  FemaleLuchorpan: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png',
+  MaleValkyrie: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  FemaleValkyrie: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-f.png',
+  MalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
+  FemalePict: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png',
 };
 
 export const gearSlots = {
@@ -210,7 +233,7 @@ export const rowActionIcons = {
   pruneRows: 'fa-compress',
 };
 
-export const characterHealthIcons = {
+export const characterBodyPartIcons = {
   head: 'icon-health-head',
   leftArm: 'icon-health-arm',
   rightArm: 'icon-health-arm',

@@ -13,7 +13,7 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { CUIcon, utils } from 'camelot-unchained';
 import { colors, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
-import { prettifySlotName } from '../../../lib/utils';
+import { prettifyText } from '../../../lib/utils';
 
 export interface FilterSelectListItemStyle extends StyleDeclaration {
   FilterSelectListItem: React.CSSProperties;
@@ -67,7 +67,7 @@ export class FilterSelectListItem extends React.Component<FilterSelectListItemPr
       <div onClick={this.onCheckChange} className={css(ss.FilterSelectListItem, custom.FilterSelectListItem)}>
         <div>
           <input type='checkbox' checked={this.props.active} onChange={() => {}} />
-          <label>{prettifySlotName(this.props.filterButton.name)}</label>
+          <label>{prettifyText(this.props.filterButton.name)}</label>
         </div>
         <CUIcon icon={this.props.filterButton.icon} iconStyle={{ position: 'relative' }} />
       </div>

@@ -15,7 +15,7 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import { Tooltip } from 'camelot-unchained';
 
 import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
-import { prettifySlotName } from '../../../lib/utils';
+import { prettifyText } from '../../../lib/utils';
 
 export interface InventoryFilterButtonStyles extends StyleDeclaration {
   inventoryFilterButton: React.CSSProperties;
@@ -104,7 +104,7 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
     const style = StyleSheet.create(defaultInventoryFilterButtonStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
     return (
-      <Tooltip content={() => <div>{prettifySlotName(this.props.filterButton.name)}</div>}>
+      <Tooltip content={() => <div>{prettifyText(this.props.filterButton.name)}</div>}>
         <div className={css(style.inventoryFilterButton, customStyle.inventoryFilterButton)}>
           <div style={this.props.filterButton.style || {}}>
             <div style={{

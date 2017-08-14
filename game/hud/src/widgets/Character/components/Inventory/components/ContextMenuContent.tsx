@@ -15,7 +15,7 @@ import { ContextMenuContentProps, RaisedButton, events, ql } from 'camelot-uncha
 
 import { StyleDeclaration } from 'aphrodite';
 import eventNames from '../../../lib/eventNames';
-import { prettifySlotName } from '../../../lib/utils';
+import { prettifyText } from '../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 export interface ContextMenuContentStyle extends StyleDeclaration {
@@ -62,9 +62,9 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
           Equip to&nbsp;
           {gearSlotSet.gearSlots.map((gearSlot, i) => {
             if (i !== gearSlotSet.gearSlots.length - 1) {
-              return prettifySlotName(gearSlot.id) + ', ';
+              return prettifyText(gearSlot.id) + ', ';
             } else {
-              return prettifySlotName(gearSlot.id);
+              return prettifyText(gearSlot.id);
             }
           })}
         </RaisedButton>

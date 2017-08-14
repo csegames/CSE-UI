@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import BodyPartHealth, { MaxHealthPartsInfo } from './components/BodyPartHealth';
+import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import { InjectedGraphQLProps, graphql } from 'react-apollo';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import { bodyParts, client } from 'camelot-unchained';

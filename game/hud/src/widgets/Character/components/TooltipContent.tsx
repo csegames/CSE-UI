@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import TooltipArmorInfo from './TooltipArmorInfo';
-import { prettifySlotName } from '../lib/utils';
+import { prettifyText } from '../lib/utils';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export const defaultTooltipStyle = {
@@ -160,16 +160,16 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
                 Object.keys(gearSlots).map((slot) => {
                   const slotName = gearSlots[slot].id;
                   if (itemInfo.gearSlotSets.indexOf(slotName) !== itemInfo.gearSlotSets.length - 1) {
-                    return `${prettifySlotName(slotName)}, `;
+                    return `${prettifyText(slotName)}, `;
                   }
-                  return prettifySlotName(slotName);
+                  return prettifyText(slotName);
                 });
               })}
             </p>
           }
           {!shouldOnlyShowPrimaryInfo && slotName &&
             <p id='item-slot-name' className={css(style.slotNameText, customStyle.slotNameText)}>
-              {prettifySlotName(slotName)}
+              {prettifyText(slotName)}
             </p>
           }
           <p className={css(style.regularText, customStyle.regularText)}>Resource ID: {item.id}</p>
@@ -177,7 +177,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
             if (!_.isObject(stats.item[statType]) && !_.includes(statType, 'typename')) {
               return (
                 <p key={i} id={statType} className={css(style.regularText, customStyle.regularText)}>
-                  {prettifySlotName(statType)}: {stats.item[statType]}
+                  {prettifyText(statType)}: {stats.item[statType]}
                 </p>
               );
             }
@@ -197,7 +197,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
                 return (
                   <div key={i} id={stat}>
                     <p className={css(style.statNumber, customStyle.statNumber)}>{stats['weapon'][stat]} </p>
-                    <p className={css(style.regularText, customStyle.regularText)}>{prettifySlotName(stat)}</p>
+                    <p className={css(style.regularText, customStyle.regularText)}>{prettifyText(stat)}</p>
                   </div>
                 );
               }
@@ -211,7 +211,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
                 <div key={index}>
                   <p className={css(style.slotNameText, customStyle.slotNameText)}>
                     {gearSlotSet.gearSlots.map((slot, i) =>
-                      i < gearSlotSet.gearSlots.length - 1 ? `${prettifySlotName(slot.id)}, ` : prettifySlotName(slot.id))}
+                      i < gearSlotSet.gearSlots.length - 1 ? `${prettifyText(slot.id)}, ` : prettifyText(slot.id))}
                   </p>
                   {item.staticDefinition.gearSlotSets.length - 1 > index &&
                     <p className={css(style.slotNameText, customStyle.slotNameText)}>OR</p>}

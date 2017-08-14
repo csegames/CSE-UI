@@ -20,6 +20,22 @@
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-0.0.32.tgz#449abcd9a826807811ef101e58df9f83cfc61713"
 
+"@types/color-convert@*":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-1.9.0.tgz#bfa8203e41e7c65471e9841d7e306a7cd8b5172d"
+  dependencies:
+    "@types/color-name" "*"
+
+"@types/color-name@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.0.tgz#926f76f7e66f49cc59ad880bb15b030abbf0b66d"
+
+"@types/color@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-2.0.0.tgz#73c5db00fcf15426d5a12f9af943eed03d7e0984"
+  dependencies:
+    "@types/color-convert" "*"
+
 "@types/enzyme@2.8.0":
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-2.8.0.tgz#84c6204cf89831223a89ab6dc3f490b1e0886352"
@@ -1433,19 +1449,33 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "http://registry.camelotunchained.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-color-convert@^1.0.0:
+color-convert@^1.0.0, color-convert@^1.8.2:
   version "1.9.0"
   resolved "http://registry.camelotunchained.com/color-convert/-/color-convert-1.9.0.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
   dependencies:
     color-name "^1.1.1"
 
-color-name@^1.1.1:
+color-name@^1.0.0, color-name@^1.1.1:
   version "1.1.2"
   resolved "http://registry.camelotunchained.com/color-name/-/color-name-1.1.2.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
 
 color-ops@^2.0.0:
   version "2.0.0"
   resolved "http://registry.camelotunchained.com/color-ops/-/color-ops-2.0.0.tgz#3a48a23234e9ab597d3aac4afa3ff7c53a56ddc4"
+
+color-string@^1.4.0:
+  version "1.5.2"
+  resolved "http://registry.camelotunchained.com/color-string/-/color-string-1.5.2.tgz#26e45814bc3c9a7cbd6751648a41434514a773a9"
+  dependencies:
+    color-name "^1.0.0"
+    simple-swizzle "^0.2.2"
+
+color@^2.0.0:
+  version "2.0.0"
+  resolved "http://registry.camelotunchained.com/color/-/color-2.0.0.tgz#e0c9972d1e969857004b101eaa55ceab5961d67d"
+  dependencies:
+    color-convert "^1.8.2"
+    color-string "^1.4.0"
 
 colors@1.0.3:
   version "1.0.3"
@@ -2399,6 +2429,10 @@ function.prototype.name@^1.0.0:
     function-bind "^1.1.0"
     is-callable "^1.1.2"
 
+fuzzysearch@^1.0.3:
+  version "1.0.3"
+  resolved "http://registry.camelotunchained.com/fuzzysearch/-/fuzzysearch-1.0.3.tgz#dffc80f6d6b04223f2226aa79dd194231096d008"
+
 gaia-filter@0.1.0:
   version "0.1.0"
   resolved "http://registry.camelotunchained.com/gaia-filter/-/gaia-filter-0.1.0.tgz#e029ab04aafaa0137885b8e161e78a48f4eeaf6c"
@@ -2959,6 +2993,10 @@ is-absolute@^0.2.3:
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "http://registry.camelotunchained.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
+
+is-arrayish@^0.3.1:
+  version "0.3.1"
+  resolved "http://registry.camelotunchained.com/is-arrayish/-/is-arrayish-0.3.1.tgz#c2dfc386abaa0c3e33c48db3fe87059e69065efd"
 
 is-binary-path@^1.0.0:
   version "1.0.1"
@@ -5541,6 +5579,12 @@ sigmund@~1.0.0:
 signal-exit@^3.0.0:
   version "3.0.2"
   resolved "http://registry.camelotunchained.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
+
+simple-swizzle@^0.2.2:
+  version "0.2.2"
+  resolved "http://registry.camelotunchained.com/simple-swizzle/-/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
+  dependencies:
+    is-arrayish "^0.3.1"
 
 sinon@^2.2.0:
   version "2.3.6"

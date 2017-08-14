@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-04 17:47:39
+ * @Last Modified time: 2017-08-14 15:56:05
  */
 
 import * as React from 'react';
@@ -14,10 +14,11 @@ import * as React from 'react';
 import { ListenerInfo, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import CharacterStats from './CharacterStats';
+import CharacterInfo from './CharacterInfo/CharacterInfo';
 import Inventory from './Inventory/Inventory';
 import PaperDoll from './PaperDoll/PaperDollContainer';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { colors } from '../lib/constants';
 
 export interface CharacterMainStyle extends StyleDeclaration {
   characterMain: React.CSSProperties;
@@ -27,18 +28,8 @@ export interface CharacterMainStyle extends StyleDeclaration {
   tabsContainer: React.CSSProperties;
   activeTab: React.CSSProperties;
   splitPanel: React.CSSProperties;
+  backgroundImg: React.CSSProperties;
 }
-
-const colors = {
-  primaryTabPanelColor: '#372F2D',
-  tabColorGray: '#464646',
-  tabColorRed: '#998677',
-  tabActiveBorder: '#EA6D54',
-  tabHoverColorGray: '#737271',
-  tabHoverColorRed: '#b09885',
-  tabClickColorGray: '#8c8987',
-  tabClickColorRed: '#c7a993',
-};
 
 export const defaultCharacterMainStyle: CharacterMainStyle = {
   characterMain: {
@@ -52,12 +43,16 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
     userSelect: 'none',
     '-webkit-user-select': 'none',
   },
+
   tabPanelContainer: {
     borderLeft: '1px solid #444',
   },
+
   tabsContainer: {
+    zIndex: 1,
     backgroundColor: colors.primaryTabPanelColor,
   },
+
   tab: {
     flex: 1,
     padding: '5px 15px',
@@ -71,6 +66,7 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
       backgroundColor: colors.tabClickColorGray,
     },
   },
+
   activeTab: {
     flex: 1,
     padding: '5px 15px',
@@ -84,6 +80,7 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
       backgroundColor: colors.tabClickColorRed,
     },
   },
+
   tabText: {
     fontSize: '24px',
     margin: 0,
@@ -91,8 +88,21 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
   },
 
   splitPanel: {
+    position: 'relative',
     width: '50%',
     height: '100%',
+  },
+  
+  backgroundImg: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    zIndex: 0,
   },
 };
 
@@ -141,7 +151,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     const content: ContentItem[] = [
       {
         name: 'Character',
-        content: { render: this.renderCharacterStats },
+        content: { render: this.renderCharacterInfo },
       },
       {
         name: 'Inventory',
@@ -155,6 +165,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
           <PaperDoll inventoryItems={this.state.inventoryItems} visibleComponent={this.props.visibleComponent} />
         </div>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
+          <img src={'images/inventorybg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
             defaultTabIndex={1}
@@ -182,8 +193,8 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     events.off(this.hudnavListener);
   }
   
-  private renderCharacterStats = () => {
-    return <CharacterStats />;
+  private renderCharacterInfo = () => {
+    return <CharacterInfo />;
   }
 
   private renderInventory = () => {
@@ -202,7 +213,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
         break;
       }
       case 'equippedgear': {
-        this.tabPanelRef.activeTabIndex = 1;
+        this.tabPanelRef.activeTabIndex = 0;
         break;
       }
       case 'character': {

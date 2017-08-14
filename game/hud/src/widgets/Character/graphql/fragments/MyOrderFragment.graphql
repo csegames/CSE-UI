@@ -1,0 +1,13 @@
+fragment MyOrder on Order {
+  id
+  realm
+  name
+  myMemberInfo {
+    id
+    name
+    kills
+    rank {
+      name
+    }
+  }
+}
