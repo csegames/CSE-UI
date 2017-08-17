@@ -10,9 +10,12 @@ import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { events, Gender, Archetype, Faction, Race, webAPI, client } from 'camelot-unchained';
 
+import { view } from '../../components/OverlayView';
+import { patcher } from '../../services/patcher';
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
@@ -96,6 +99,28 @@ export interface CharacterCreationProps {
   characterState?: CharacterState;
   banesAndBoonsState: BanesAndBoonsState;
 }
+
+export interface ContainerStyles extends StyleDeclaration {
+  closeButton: React.CSSProperties;
+}
+
+const defaultCharacterCreationStyle: ContainerStyles = {
+  closeButton: {
+    position: 'absolute',
+    fontSize: '20px',
+    top: 2,
+    right: 5,
+    color: 'white',
+    cursor: 'pointer',
+    zIndex: 10,
+    ':hover': {
+      textShadow: '0 0 3px white',
+    },
+    ':active': {
+      textShadow: '0 0 10px white',
+    },
+  },
+};
 
 declare const toastr: any;
 
@@ -229,10 +254,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         );
         break;
     }
-
+    const ss = StyleSheet.create(defaultCharacterCreationStyle);
     return (
       <div className='cu-character-creation'>
         <div className='cu-character-creation__content'>
+          <div className={css(ss.closeButton) + ' fa fa-times click-effect'} onClick={this.onCloseClick} />
           {content}
         </div>
         <div className='cu-character-creation__back'>{back}</div>
@@ -432,6 +458,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(fetchAttributes(this.props.shard));
     this.props.dispatch(fetchAttributeOffsets(this.props.shard));
     this.setState({page: pages.FACTION_SELECT});
+  }
+
+  private onCloseClick = () => {
+    events.fire('view-content', view.NONE);
+    this.resetAndInit();
   }
 }
 
