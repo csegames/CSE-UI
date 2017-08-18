@@ -54,6 +54,7 @@ import { selectGender, resetGender } from './services/session/genders';
 import {
   BanesAndBoonsState,
   resetBanesAndBoons,
+  fetchTraits,
 } from './services/session/banesAndBoons';
 
 export { CharacterCreationModel } from './services/session/character';
@@ -226,6 +227,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
         const { dispatch, racesState, factionsState, playerClassesState, banesAndBoonsState } = this.props;
         content = (
           <BanesAndBoonsContainer
+            apiHost={this.props.apiHost}
             race={racesState}
             faction={factionsState}
             playerClass={playerClassesState}
@@ -269,7 +271,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   }
 
   public componentWillReceiveProps(nextProps: CharacterCreationProps) {
-    if (this.props && nextProps && this.props.shard !== nextProps.shard) this.resetAndInit();
+    // if (this.props && nextProps && this.props.shard !== nextProps.shard) {
+    //   this.resetAndInit();
+    // }
     if (this.props.factionsState !== nextProps.factionsState ||
         this.props.playerClassesState !== nextProps.playerClassesState ||
         this.props.racesState !== nextProps.racesState) {
@@ -278,7 +282,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   }
 
   public componentDidMount() {
-    this.resetAndInit();
+    events.on('view-content', (View: any, props: any) => {
+      if (view.CHARACTERCREATION === View) {
+        this.resetAndInit(props.apiHost);
+      }
+    });
   }
 
   public componentDidUpdate() {
@@ -444,7 +452,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     events.fire('play-sound', 'select');
   }
 
-  private resetAndInit = () => {
+  private resetAndInit = (apiHost: string = this.props.apiHost) => {
     this.props.dispatch(resetFaction());
     this.props.dispatch(resetRace());
     this.props.dispatch(resetGender());
@@ -452,11 +460,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(resetAttributeOffsets());
     this.props.dispatch(resetAttributes());
     this.props.dispatch(resetCharacter());
-    this.props.dispatch(fetchFactions(this.props.shard));
-    this.props.dispatch(fetchRaces(this.props.shard));
-    this.props.dispatch(fetchPlayerClasses(this.props.apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchAttributes(this.props.shard));
-    this.props.dispatch(fetchAttributeOffsets(this.props.shard));
+    this.props.dispatch(fetchFactions(this.props.shard, apiHost));
+    this.props.dispatch(fetchRaces(this.props.shard, apiHost));
+    this.props.dispatch(fetchPlayerClasses(apiHost, this.props.shard, this.props.apiVersion));
+    this.props.dispatch(fetchAttributes(this.props.shard, apiHost));
+    this.props.dispatch(fetchAttributeOffsets(this.props.shard, apiHost));
     this.setState({page: pages.FACTION_SELECT});
   }
 

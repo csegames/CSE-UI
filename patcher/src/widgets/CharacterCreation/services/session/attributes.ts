@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import {Race, Gender, webAPI } from 'camelot-unchained';
+import { client, Race, Gender, webAPI } from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 
@@ -78,16 +78,16 @@ export function fetchAttributesFailed(error: any) {
   };
 }
 
-export function fetchAttributes(shard: number = 1) {
+export function fetchAttributes(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributes());
-    return getAttributeInfo(dispatch, shard);
+    return getAttributeInfo(dispatch, shard, apiHost);
   };
 }
 
-async function getAttributeInfo(dispatch: (action: any) => any, shard: number) {
+async function getAttributeInfo(dispatch: (action: any) => any, shard: number, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetAttributeInfoV1(webAPI.defaultConfig, shard);
+    const res = await webAPI.GameDataAPI.GetAttributeInfoV1({ url: `${apiHost}/` }, shard);
     const data = JSON.parse(res.data);
     if (res.ok) {
       data.map((a: any) => {

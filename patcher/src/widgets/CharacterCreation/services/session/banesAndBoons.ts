@@ -6,7 +6,11 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:19:58
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+<<<<<<< HEAD
  * @Last Modified time: 2017-09-07 10:32:18
+=======
+ * @Last Modified time: 2017-09-08 15:06:31
+>>>>>>> 894e85af... Make character creation point to shard specific webAPI
  */
 
 import { fetchJSON } from '../../../../lib/fetchHelpers';
@@ -62,15 +66,17 @@ export interface BanesAndBoonsState {
 
 declare const toastr: any;
 
-export interface TraitsPayload {
+
+export interface FetchTraitInterface {
+  apiHost: string;
   playerClass: string;
   race: string;
   faction: string;
   initType: 'boons' | 'banes' | 'both';
 }
 
-export const getTraits = async (dispatch: (action: any) => any, payload: TraitsPayload) => {
-  const res = await webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID);
+async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInterface) {
+  const res = await webAPI.TraitsAPI.GetTraitsV1({ url: `${payload.apiHost}/` }, client.shardID);
   if (res.ok) {
     const data = JSON.parse(res.data);
     dispatch(onInitializeTraits({
@@ -87,14 +93,9 @@ export const getTraits = async (dispatch: (action: any) => any, payload: TraitsP
       { timeOut: 5000 },
     );
   }
-};
+}
 
-export const fetchTraits = (payload: {
-  playerClass: string,
-  race: string,
-  faction: string,
-  initType: 'boons' | 'banes' | 'both',
-}) => {
+export const fetchTraits = (payload: FetchTraitInterface) => {
   return (dispatch: (action: any) => any) => {
     try {
       return getTraits(dispatch, payload);

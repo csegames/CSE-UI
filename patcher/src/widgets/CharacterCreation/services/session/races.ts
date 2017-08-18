@@ -57,9 +57,9 @@ export function resetRace() {
   };
 }
 
-async function getRaces(dispatch: (action: any) => any) {
+async function getRaces(dispatch: (action: any) => any, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetRacesV1(webAPI.defaultConfig);
+    const res = await webAPI.GameDataAPI.GetRacesV1({ url: `${apiHost}/` });
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchRacesSuccess(data) : fetchRacesFailed(data));
   } catch (err) {
@@ -67,11 +67,8 @@ async function getRaces(dispatch: (action: any) => any) {
   }
 }
 
-export function fetchRaces(shard: number = 1) {
-  return (dispatch: (action: any) => any) => {
-    dispatch(requestRaces());
-    return getRaces(dispatch);
-  };
+export function fetchRaces(shard: number = 1, apiHost: string) {
+  return (dispatch: (action: any) => any) => getRaces(dispatch, apiHost);
 }
 
 export interface RacesState {

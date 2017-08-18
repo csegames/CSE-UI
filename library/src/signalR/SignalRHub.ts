@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 16:17:30
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-20 11:23:53
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-25 14:48:41
  */
 import events from '../events';
 import client from '../core/client';
@@ -48,6 +48,7 @@ export class SignalRHub {
   private hubName: string;
   private eventMaps: EventMap[];
   private hub: any;
+  private signalRHost: string;
   private debug: boolean;
   private conn: any;
   public reconnectOnDisconnect: boolean = true;
@@ -87,9 +88,15 @@ export class SignalRHub {
 
   public onError: (hub: SignalRHub, error: string) => void;
 
-  constructor(hubName: string, eventMaps: EventMap[], options?: SignalRHubOptions) {
+  constructor(
+    hubName: string,
+    eventMaps: EventMap[],
+    options?: SignalRHubOptions,
+    signalRHost: string = client.signalRHost,
+  ) {
     this.hubName = hubName;
     this.eventMaps = eventMaps;
+    this.signalRHost = signalRHost;
 
     if (options) {
       this.debug = options.debug || false;
@@ -99,7 +106,7 @@ export class SignalRHub {
 
   public start(onStart?: (hub: SignalRHub) => void) {
     this.conn = ($ as any).hubConnection();
-    this.conn.url = client.signalRHost;
+    this.conn.url = this.signalRHost;
     this.hub = this.conn.createHubProxy(this.hubName);
     
 

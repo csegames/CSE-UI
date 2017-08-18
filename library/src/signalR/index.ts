@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-08-30 12:32:11
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-18 16:25:25
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-25 14:13:31
  */
 
 import client from '../core/client';
@@ -33,20 +33,20 @@ export interface InitCallback {
 const initializedHubs: string[] = [];
 
 let initialized = false;
-export const initializeSignalR = () => {
+export const initializeSignalR = (signalRHost: string = client.signalRHost) => {
   if (initialized) return;
   initialized = true;
   if (client.debug) console.log('initializeSignalR called');
   $(() => {
-    ($ as any).connection(client.signalRHost);
-    ($ as any).connection.hub.url = client.signalRHost;
+    ($ as any).connection(signalRHost);
+    ($ as any).connection.hub.url = signalRHost;
     ($ as any).connection.hub.start();
   });
 };
 
-export const reinitializeSignalR = () => {
+export const reinitializeSignalR = (signalRHost: string = client.signalRHost) => {
   initialized = false;
-  initializeSignalR();
+  initializeSignalR(signalRHost);
 };
 
 export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {

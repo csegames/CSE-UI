@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
-import { client } from 'camelot-unchained';
+import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
@@ -61,15 +60,23 @@ export function resetClass() {
   };
 }
 
+async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
+  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: `${apiHost}/` });
+  const data = JSON.parse(res.data);
+  if (res.ok) {
+    dispatch(fetchPlayerClassesSuccess(data));
+  } else {
+    dispatch(fetchPlayerClassesFailed(data));
+  }
+}
+
 export function fetchPlayerClasses(
   apiUrl: string = client.apiHost,
   shard: number = 1,
   apiVersion: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestPlayerClasses());
-    return fetchJSON(`${apiUrl}/gamedata/archetypes?api-version=${apiVersion}`)
-      .then((playerClasses: PlayerClassInfo[]) => dispatch(fetchPlayerClassesSuccess(playerClasses)))
-      .catch((error: ResponseError) => dispatch(fetchPlayerClassesFailed(error)));
+    return getArchetypes(dispatch, apiUrl);
   };
 }
 

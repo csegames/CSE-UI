@@ -56,9 +56,9 @@ export function selectFaction(selected: FactionInfo) {
   };
 }
 
-async function getFactions(dispatch: (action: any) => any) {
+async function getFactions(dispatch: (action: any) => any, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetFactionInfoV1(webAPI.defaultConfig);
+    const res = await webAPI.GameDataAPI.GetFactionInfoV1({ url: `${apiHost}/` });
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchFactionsSuccess(data) : fetchFactionsFailed(data));
   } catch (err) {
@@ -66,10 +66,10 @@ async function getFactions(dispatch: (action: any) => any) {
   }
 }
 
-export function fetchFactions(shard: number = 1) {
+export function fetchFactions(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestFactions());
-    return getFactions(dispatch);
+    return getFactions(dispatch, apiHost);
   };
 }
 
@@ -97,7 +97,6 @@ export default function reducer(state: FactionsState = initialState, action: any
         isFetching: true,
       });
     case FETCH_FACTIONS_SUCCESS:
-      console.log(action.factions);
       return Object.assign({}, state, {
         isFetching: false,
         lastUpdated: action.receivedAt,
