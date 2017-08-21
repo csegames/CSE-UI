@@ -3968,7 +3968,7 @@ lodash.templatesettings@^3.0.0:
 
 lodash@4.12.0:
   version "4.12.0"
-  resolved "http://registry.camelotunchained.com:4873/lodash/-/lodash-4.12.0.tgz#2bd6dc46a040f59e686c972ed21d93dc59053258"
+  resolved "http://registry.camelotunchained.com/lodash/-/lodash-4.12.0.tgz#2bd6dc46a040f59e686c972ed21d93dc59053258"
 
 lodash@4.17.4, lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.4:
   version "4.17.4"
@@ -6458,7 +6458,7 @@ which@1, which@^1.1.1, which@^1.2.12, which@^1.2.8, which@^1.2.9:
 
 why-did-you-update@0.0.8:
   version "0.0.8"
-  resolved "http://registry.camelotunchained.com:4873/why-did-you-update/-/why-did-you-update-0.0.8.tgz#389d97dd6c147e1edbc9f5d5470d44d985c8ae38"
+  resolved "http://registry.camelotunchained.com/why-did-you-update/-/why-did-you-update-0.0.8.tgz#389d97dd6c147e1edbc9f5d5470d44d985c8ae38"
   dependencies:
     lodash "4.12.0"
 
