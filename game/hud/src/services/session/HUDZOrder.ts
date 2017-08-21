@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-26 12:05:49
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-26 12:37:38
+ * @Last Modified time: 2017-08-21 18:00:42
  */
 
 const HUDZOrder = {
@@ -27,6 +27,10 @@ const HUDZOrder = {
   ReleaseControl: 14,
   Respawn: 15,  
   Welcome: 17,
+  Options: 18,
+  EnemyTargetSiegeHealth: 19,
+  FriendlyTargetSiegeHealth: 20,
+  PlayerSiegeHealth: 21,
 };
 
 export default HUDZOrder;

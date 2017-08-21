@@ -5,11 +5,12 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-01-23 17:43:58
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-31 16:10:43
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-21 17:59:12
  */
 import { LayoutMode } from '../../../components/HUDDrag';
 import SiegeHealth, { HealthFor } from '../../../components/SiegeHealth';
+import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
@@ -28,7 +29,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: 3,
+    zOrder: HUDZOrder.EnemyTargetSiegeHealth,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {},

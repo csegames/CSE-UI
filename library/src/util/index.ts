@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 23:59:34
- * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-03-08 23:44:03
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-22 11:55:22
  */
 
 export * from './arrayUtils';
@@ -16,6 +16,7 @@ export * from './reduxUtils';
 export * from './layoutLib';
 export * from './compare';
 export * from './colorManipulation';
+export * from './searchUtils';
 
 import * as KeyCodes from './keyCodes';
 

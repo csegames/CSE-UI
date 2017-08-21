@@ -57,6 +57,7 @@
     "aphrodite": "^1.2.3",
     "cwd-in-node-modules": "^1.0.1",
     "es6-promise": "^3.0.2",
+    "fuzzysearch": "^1.0.3",
     "graphql-tag": "^1.2.4",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.0.0",

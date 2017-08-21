@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-16 16:58:45
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-28 18:08:07
+ * @Last Modified time: 2017-08-23 12:06:36
  */
 
 import * as React from 'react';
@@ -32,8 +32,17 @@ export const defaultInputStyle: InputStyle = {
     background: 'rgba(0, 0, 0, 0.1)',
     border: 'solid 1px rgba(255, 255, 255, 0.2)',
     color: '#8f8f8f',
-    fontSize: '1.1em',
+    fontSize: '1em',
+    lineHeight: '1em',
     boxShadow: 'inset 0px 0px 2px 0px rgba(200,200,200,.1)',
+    '::-webkit-input-placeholder': {
+      fontSize: '1em',
+      lineHeight: '1em',
+    },
+    '::placeholder': {
+      fontSize: '1em',
+      lineHeight: '1em',
+    },
   },
 
   label: {

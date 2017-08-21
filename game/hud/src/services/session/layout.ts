@@ -31,6 +31,8 @@ import ReleaseControl from './layoutItems/ReleaseControl';
 import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
 import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
 import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
+import GameMenu from './layoutItems/GameMenu';
+import Options from './layoutItems/Options';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.7.1'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -162,7 +164,13 @@ function initialState(): LayoutState {
     ],
     [
       'friendlySiegeHealth', cloneDeep(FriendlyTargetSiegeHealth),
-    ]
+    ],
+    [
+      'gameMenu', cloneDeep(GameMenu),
+    ],
+    [
+      'options', cloneDeep(Options),
+    ],
   ]);
 
   return {

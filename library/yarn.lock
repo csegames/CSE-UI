@@ -2092,6 +2092,10 @@ function-bind@^1.0.2:
   version "1.1.0"
   resolved "http://registry.camelotunchained.com/function-bind/-/function-bind-1.1.0.tgz#16176714c801798e4e8f2cf7f7529467bb4a5771"
 
+fuzzysearch@^1.0.3:
+  version "1.0.3"
+  resolved "http://registry.camelotunchained.com/fuzzysearch/-/fuzzysearch-1.0.3.tgz#dffc80f6d6b04223f2226aa79dd194231096d008"
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "http://registry.camelotunchained.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"

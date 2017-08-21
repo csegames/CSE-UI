@@ -15,5 +15,7 @@
   "handlesAbilities": true,
   "handlesEquippedGear": true,
   "handlesInventory": true,
-  "handlesPlot": true
+  "handlesPlot": true,
+  "handlesConfig": true,
+  "handlesInput": true
 }
