@@ -47,6 +47,9 @@ module.exports = {
         },
       }
     },
+    definitions: {
+      default: 'download https://hatcheryapi.camelotunchained.com/codegen/definitions.ts > ./src/webAPI/definitions.ts',
+    },
     gql: {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/graphql/schema.json',
       typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',

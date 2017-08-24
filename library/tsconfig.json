@@ -8,7 +8,11 @@
         "jsx": "react",
         "module": "commonjs",
         "declaration": true,
-        "newLine": "LF"
+        "newLine": "LF",
+        "lib": [
+            "esnext",
+            "dom"
+        ]
     },
     "formatCodeOptions": {
         "indentSize": 2,

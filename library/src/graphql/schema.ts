@@ -18,6 +18,7 @@ export interface CUQuery {
   substances: Array<SubstanceDef> | null;
   myInventory: MyInventory | null;
   entityItems: EntityItemResult | null;
+  secureTrade: SecureTradeStatus | null;
   crafting: CraftingRecipes | null;
 }
 
@@ -243,7 +244,7 @@ export interface SkillComponent {
 
 export type AbilityComponentType = "PRIMARY" | "SECONDARY" | "OPTIONAL_MODIFIER" | "SPECIAL_MODAL" | "INDEPENDANT_MODAL" | "Primary" | "Secondary" | "OptionalModifier" | "SpecialModal" | "IndependantModal";
 
-export type AbilityComponentSubType = "NONE" | "RUNE" | "SHAPE" | "RANGE" | "SIZE" | "INFUSION" | "FOCUS" | "TRANSPOSITION" | "MAGICAL_TYPE" | "WEAPON" | "STYLE" | "SPEED" | "POTENTIAL" | "STANCE" | "PHYSICAL_TYPE" | "RANGED_WEAPON" | "LOAD" | "PREPARE" | "DRAW" | "AIM" | "RANGED_TYPE" | "VOICE" | "INSTRUMENT" | "SHOUT" | "SONG" | "INFLECTION" | "TECHNIQUE" | "SOUND_TYPE" | "STONE" | "DELIVERY" | "STONE_TYPE" | "RUNE_SELF" | "SHAPE_SELF" | "MAGIC_SELF" | "RUNE_NO_PARTS" | "MAGIC_NO_PARTS" | "RUNE_SELF_NO_PARTS" | "MAGIC_SELF_NO_PARTS" | "TARGET" | "SIEGE_WEAPON" | "SIEGE_LOAD" | "SIEGE_PREPARE" | "SIEGE_DRAW" | "SIEGE_AIM" | "None" | "Rune" | "Shape" | "Range" | "Size" | "Infusion" | "Focus" | "Transposition" | "MagicalType" | "Weapon" | "Style" | "Speed" | "Potential" | "Stance" | "PhysicalType" | "RangedWeapon" | "Load" | "Prepare" | "Draw" | "Aim" | "RangedType" | "Voice" | "Instrument" | "Shout" | "Song" | "Inflection" | "Technique" | "SoundType" | "Stone" | "Delivery" | "StoneType" | "RuneSelf" | "ShapeSelf" | "MagicSelf" | "RuneNoParts" | "MagicNoParts" | "RuneSelfNoParts" | "MagicSelfNoParts" | "Target" | "SiegeWeapon" | "SiegeLoad" | "SiegePrepare" | "SiegeDraw" | "SiegeAim";
+export type AbilityComponentSubType = "NONE" | "RUNE" | "SHAPE" | "RANGE" | "SIZE" | "INFUSION" | "FOCUS" | "TRANSPOSITION" | "MAGICAL_TYPE" | "WEAPON" | "STYLE" | "SPEED" | "POTENTIAL" | "STANCE" | "PHYSICAL_TYPE" | "RANGED_WEAPON" | "LOAD" | "PREPARE" | "DRAW" | "AIM" | "RANGED_TYPE" | "VOICE" | "INSTRUMENT" | "SHOUT" | "SONG" | "INFLECTION" | "TECHNIQUE" | "SOUND_TYPE" | "STONE" | "DELIVERY" | "STONE_TYPE" | "RUNE_SELF" | "SHAPE_SELF" | "MAGIC_SELF" | "RUNE_NO_PARTS" | "MAGIC_NO_PARTS" | "RUNE_SELF_NO_PARTS" | "MAGIC_SELF_NO_PARTS" | "TARGET" | "SIEGE_WEAPON" | "SIEGE_LOAD" | "SIEGE_PREPARE" | "SIEGE_DRAW" | "SIEGE_AIM" | "SIEGE_TYPES" | "None" | "Rune" | "Shape" | "Range" | "Size" | "Infusion" | "Focus" | "Transposition" | "MagicalType" | "Weapon" | "Style" | "Speed" | "Potential" | "Stance" | "PhysicalType" | "RangedWeapon" | "Load" | "Prepare" | "Draw" | "Aim" | "RangedType" | "Voice" | "Instrument" | "Shout" | "Song" | "Inflection" | "Technique" | "SoundType" | "Stone" | "Delivery" | "StoneType" | "RuneSelf" | "ShapeSelf" | "MagicSelf" | "RuneNoParts" | "MagicNoParts" | "RuneSelfNoParts" | "MagicSelfNoParts" | "Target" | "SiegeWeapon" | "SiegeLoad" | "SiegePrepare" | "SiegeDraw" | "SiegeAim" | "SiegeTypes";
 
 export interface SkillNetwork {
   name: string;
@@ -612,10 +613,23 @@ export interface EntityItemResult {
   items: Array<Item> | null;
 }
 
+export interface SecureTradeStatus {
+  myState: SecureTradeState | null;
+  myItems: Array<Item> | null;
+  theirEntityID: EntityID | null;
+  theirState: SecureTradeState | null;
+  theirItems: Array<Item> | null;
+}
+
+export type SecureTradeState = "None" | "Invited" | "ModifyingItems" | "Locked" | "Confirmed" | "Transferring";
+
+export type EntityID = any;
+
 export interface CraftingRecipes {
   voxStatus: VoxStatus | null;
   recipesMatchingIngredients: Array<string> | null;
   possibleIngredients: Array<Item> | null;
+  possibleIngredientsWithSlots: Array<PossibleVoxIngredient> | null;
   possibleItemSlots: Array<SubItemSlot> | null;
   blockRecipes: Array<BlockRecipeDefRef> | null;
   purifyRecipes: Array<PurifyRecipeDefRef> | null;
@@ -712,6 +726,15 @@ export interface MakeIngredientDef {
   minQuality: number | null;
   maxQuality: number | null;
   unitCount: number | null;
+}
+
+export interface PossibleVoxIngredient {
+  item: Item | null;
+  slots: Array<SubItemSlot> | null;
+}
+
+export interface SecureTradeLocation {
+  characterID: CharacterID | null;
 }
 
 export interface BlockStatsDef {

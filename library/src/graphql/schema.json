@@ -5039,6 +5039,45 @@
         },
         {
           "kind": "OBJECT",
+          "name": "PossibleVoxIngredient",
+          "description": "PossibleVoxIngredient",
+          "fields": [
+            {
+              "name": "item",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Item",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "slots",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SubItemSlot",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "GrindRecipeDefRef",
           "description": "GrindRecipeDefRef",
           "fields": [
@@ -5887,6 +5926,29 @@
         },
         {
           "kind": "OBJECT",
+          "name": "SecureTradeLocation",
+          "description": "SecureTradeLocation",
+          "fields": [
+            {
+              "name": "characterID",
+              "description": "The character that currently owns this item",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "CharacterID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "EquippedItem",
           "description": "EquippedItem",
           "fields": [
@@ -6537,6 +6599,142 @@
         },
         {
           "kind": "OBJECT",
+          "name": "SecureTradeStatus",
+          "description": "SecureTradeStatus",
+          "fields": [
+            {
+              "name": "myState",
+              "description": "The state of the trade, from your perspective",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecureTradeState",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "myItems",
+              "description": "The items you've added to the trade",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Item",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "theirEntityID",
+              "description": "The entity ID of who is being traded with",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "EntityID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "theirState",
+              "description": "The state of the trade, from the perspective of the entity you are trading with",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecureTradeState",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "theirItems",
+              "description": "The items you will get from this trade",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Item",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SecureTradeState",
+          "description": "SecureTradeState",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "None",
+              "description": "No trade is taking place",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Invited",
+              "description": "An invite has been sent to another entity to start a trade",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ModifyingItems",
+              "description": "Trade session has been accepted, items can now be added to the trade session",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Locked",
+              "description": "Trade items have been marked as locked.  In this state, items may not be added or removed from the trade session.  The trade cannot move on to the confirmed state unless both parties are in the locked (or confirmed) state",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Confirmed",
+              "description": "Mark the trade as confirmed.  In this state, items may not be added or removed from the trade session.  When the second party has confirmed the trade, the items will be swapped.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Transferring",
+              "description": "State while moving items",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "EntityID",
+          "description": "EntityID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "CraftingRecipes",
           "description": "CraftingRecipes",
           "fields": [
@@ -6589,6 +6787,22 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Item",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "possibleIngredientsWithSlots",
+              "description": "List of inventory items compatible with the current vox job",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PossibleVoxIngredient",
                   "ofType": null
                 }
               },
@@ -7126,6 +7340,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EntityItemResult",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secureTrade",
+              "description": "Information about current secure item trade the player is engaged in.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecureTradeStatus",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -10022,6 +10248,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SIEGE_TYPES",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "None",
               "description": "None",
               "isDeprecated": false,
@@ -10282,6 +10514,12 @@
             {
               "name": "SiegeAim",
               "description": "SiegeAim",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SiegeTypes",
+              "description": "SiegeTypes",
               "isDeprecated": false,
               "deprecationReason": null
             }

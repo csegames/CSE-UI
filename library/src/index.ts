@@ -51,11 +51,9 @@ export * from './groups';
 
 export * from './building';
 
-import events, { ListenerInfo } from './events';
-import * as eventExports from './events';
+import events from './events';
 
 import * as signalr from './signalR';
-import {DEBUG_ASSERT,RUNTIME_ASSERT} from './core/core';
 
 export * from './slashCommands';
 import * as slashCommandsExports from './slashCommands';
@@ -110,7 +108,6 @@ export default {
 
   components,
 
- ...eventExports,
  ...slashCommandsExports,
 
 };
@@ -159,15 +156,12 @@ export {
   // libraries
   core,
   events,
-  ListenerInfo,
 
   // Legacy RestAPI
   legacyAPI,
 
   // misc
   signalr,
-  DEBUG_ASSERT,
-  RUNTIME_ASSERT,
 
   ql,
 };
