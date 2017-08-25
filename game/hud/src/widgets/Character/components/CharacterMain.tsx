@@ -10,6 +10,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
 import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
@@ -158,7 +159,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
         content: { render: this.renderInventory },
       },
     ];
-    
+    const defaultTabIndex = _.findIndex(tabs, tab => tab.name === this.props.visibleComponent);
     return (
       <div className={css(style.characterMain, customStyle.characterMain)}>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
@@ -168,7 +169,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
           <img src={'images/inventorybg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
-            defaultTabIndex={1}
+            defaultTabIndex={defaultTabIndex >= 0 ? defaultTabIndex : 0}
             tabs={tabs}
             content={content}
             styles={{

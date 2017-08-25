@@ -9,9 +9,13 @@
  * @Last Modified time: 2017-08-22 15:01:40
  */
 
-// tslint:disable-next-line
 import * as fuzzySearch from 'fuzzysearch';
+import * as _ from 'lodash';
 
 export function doesSearchInclude(searchValue: string, itemName: string): boolean {
-  return fuzzySearch(searchValue.toLowerCase().replace(/\s/g, ''), itemName.toLowerCase());
+  if (itemName) {
+    return searchValue ? fuzzySearch(searchValue.toLowerCase().replace(/\s/g, ''), itemName.toLowerCase()) : true;
+  } else {
+    return searchValue && searchValue === '' ? true : false;
+  }
 }

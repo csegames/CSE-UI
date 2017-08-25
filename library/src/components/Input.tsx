@@ -71,7 +71,8 @@ export const Input = (props: Partial<InputProps>) => {
         onFocus={() => client.RequestInputOwnership()}
         onBlur={() => client.ReleaseInputOwnership()}
         className={css(ss.input, custom.input)}
-        {...inputProps} />
+        {...inputProps}
+      />
     </div>
   );
 };

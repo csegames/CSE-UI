@@ -15,8 +15,8 @@ import { utils, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import GeneralInfo from './components/GeneralInfo';
-import DefenseContainer from './components/Defense/DefenseContainer';
-import OffenseContainer from './components/Offense/OffenseContainer';
+import DefenseList from './components/Defense/DefenseList';
+import OffenseList from './components/Offense/OffenseList';
 import { colors } from '../../lib/constants';
 import queries from '../../../../gqlDocuments';
 import { CharacterInfoQuery } from '../../../../gqlInterfaces';
@@ -48,13 +48,11 @@ export const defaultCharacterInfoStyle: CharacterInfoStyle = {
   generalInfoContainer: {
     height: '150px',
     display: 'flex',
-    padding: '10px 10px 0 10px',
   },
 
   infoContent: {
     flex: 1,
     height: 'calc(100% - 180px)',
-    padding: '10px',
   },
 
   tabPanelContainer: {
@@ -148,6 +146,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
         content: { render: this.renderDefenseInfo },
       },
     ];
+    console.log(testCharacterStats);
     return myCharacter ? (
       <div className={css(ss.CharacterInfo, custom.CharacterInfo)}>
         <div className={css(ss.generalInfoContainer, custom.generalInfoContainer)}>
@@ -176,13 +175,13 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
 
   private renderOffenseInfo = () => {
     return (
-      <OffenseContainer offenseStats={testCharacterStats.stats.offense} />
+      <OffenseList offensiveStats={testCharacterStats.stats.offense} />
     );
   }
 
   private renderDefenseInfo = () => {
     return (
-      <DefenseContainer defenseStats={testCharacterStats.stats.defense} />
+      <DefenseList defensiveStats={testCharacterStats.stats.defense} />
     );
   }
 }

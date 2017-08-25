@@ -11,9 +11,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import StatListItem, { StatInterface } from './StatListItem';
-import { prettifyText } from '../../../lib/utils';
 
 export interface GridStatsStyles extends StyleDeclaration {
   statContainer: React.CSSProperties;
@@ -32,25 +31,28 @@ const defaultGridStatsStyle: GridStatsStyles = {
 
 export interface GridStatsProps {
   styles?: Partial<GridStatsStyles>;
-  statArray: StatInterface[];
-  howManyGrids: number;
-  searchValue: string;
   sectionTitle?: string;
+  howManyGrids: number;
+  searchValue: string;  
+  statArray: any[];
+  renderListItem: (item: any, index: number) => JSX.Element;
+  shouldRenderEmptyListItems?: boolean;
 }
 
 const GridStats = (props: GridStatsProps) => {
   const ss = StyleSheet.create(defaultGridStatsStyle);
   const custom = StyleSheet.create(props.styles || {});
 
-  const statArray = props.statArray.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-  const numberOfItemsInGrid = Math.ceil((props.statArray.length) / props.howManyGrids);
-  const emptyListItems: StatInterface[] =
-    _.fill(Array(numberOfItemsInGrid * props.howManyGrids - props.statArray.length), { name: '', value: null });
+  const statArray = props.statArray;
+  const numberOfItemsInGrid = Math.ceil((statArray.length) / props.howManyGrids);
+  const emptyListItems: any[] = props.shouldRenderEmptyListItems ?
+    _.fill(Array(numberOfItemsInGrid * props.howManyGrids - statArray.length), '') : [];
   
   let beginningArrayIndex = 0;
   const arrayOfGrids = _.fill(Array(props.howManyGrids), '').map((ignore, index) => {
+    const isLastGrid = (index + 1) === props.howManyGrids;
     let grids = [];
-    if ((index + 1) === props.howManyGrids) {
+    if (isLastGrid) {
       grids = statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1)).concat(emptyListItems);
     } else {
       grids =  statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1));
@@ -65,15 +67,7 @@ const GridStats = (props: GridStatsProps) => {
         return (
           <div key={index} className={css(ss.statListSection, custom.statListSection)}>
             {grid.map((item, i) => {
-              return (
-                <StatListItem
-                  key={i}
-                  stat={item}
-                  index={i}
-                  searchValue={props.searchValue}
-                  sectionTitle={props.sectionTitle && prettifyText(props.sectionTitle)}
-                />
-              );
+              return <div key={i}>{props.renderListItem(item, i)}</div>;
             })}
           </div>
         );

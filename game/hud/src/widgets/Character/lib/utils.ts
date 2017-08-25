@@ -10,21 +10,14 @@
  */
 
 import * as _ from 'lodash';
-import { client } from 'camelot-unchained';
+import { client, utils } from 'camelot-unchained';
 import { emptyStackHash, inventoryFilterButtons, nullVal } from './constants';
 import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
 
-// tslint:disable-next-line
-const fuzzySearch = require('fuzzysearch');
-
 export const prettifyText = (slotName: string) => {
   if (slotName) return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
-};
-
-export const doesSearchInclude = (name: string, searchValue: string) => {
-  return name && fuzzySearch(searchValue.toLowerCase(), name.toLowerCase());
 };
 
 export function calcRowAndSlots(div: HTMLElement, slotDimensions: number, minSlots: number, gutterSize: number = 65) {
@@ -34,6 +27,16 @@ export function calcRowAndSlots(div: HTMLElement, slotDimensions: number, minSlo
     slotsPerRow,
     ...slotCountAndRows,
   };
+}
+
+export function searchIncludesSection(searchValue: string, sectionTitle: string) {
+  if (sectionTitle) {
+    if (searchValue !== '') {
+      return _.includes(sectionTitle.toLowerCase().replace(/\s/g, ''), searchValue.toLowerCase().replace(/\s/g, '')) ||
+      _.includes(searchValue.toLowerCase().replace(/\s/g, ''), sectionTitle.toLowerCase().replace(/\s/g, ''));
+    } return true;
+  }
+  return false;
 }
 
 export function calcSlotsPerRow(div: HTMLElement, slotDimensions: number, gutterSize: number = 65) {
@@ -189,7 +192,7 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
     }) > -1;
 
     // Search text compared to itemName
-    const doesSearchValueIncludeItem = doesSearchInclude(itemName, searchValue);
+    const doesSearchValueIncludeItem = utils.doesSearchInclude(searchValue, itemName);
 
     // Do active filters and search include item?
     if (hasFilter && hasSearch) {

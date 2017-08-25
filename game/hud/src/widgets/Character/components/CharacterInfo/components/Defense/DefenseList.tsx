@@ -10,13 +10,15 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import { utils } from 'camelot-unchained';
 
-import BodyPartSection, { BodyPartStatInterface } from './BodyPartSection';
+import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
 import { colors } from '../../../../lib/constants';
+
+// Will need to change this with a fragment interface once we hook up graphql
+import { TestBodyPartStats } from '../../testCharacterStats';
 
 export interface DefenseListStyle extends StyleDeclaration {
   DefenseList: React.CSSProperties;
@@ -41,19 +43,14 @@ const defaultDefenseListStyle: DefenseListStyle = {
 
 // This is the highest order data structure. We use an array of StatInfoSection's
 // to break up the ArmorStats (resistances, mitigations) into sections.
-export interface DefenseStatInfoSection {
-  title: string;
-  bodyPartsStats: BodyPartStatInterface;
-}
 
 export interface DefenseListProps {
   styles?: Partial<DefenseListStyle>;
-  statSections: DefenseStatInfoSection[];
+  defensiveStats: TestBodyPartStats;
 }
 
 export interface DefenseListState {
   searchValue: string;
-  statSections: DefenseStatInfoSection[];
 }
 
 class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
@@ -64,14 +61,13 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
     super(props);
     this.state = {
       searchValue: '',
-      statSections: [],
     };
   }
 
   public render() {
     const ss = this.ss =  StyleSheet.create(defaultDefenseListStyle);
     const custom = this.custom = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(ss.DefenseList, custom.DefenseList)}>
         <StatListContainer
@@ -79,32 +75,20 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
           onSearchChange={this.onSearchChange}
           renderContent={() => (
           <div>
-            {this.state.statSections.map((statSection, i) => {
+            {Object.keys(this.props.defensiveStats).map((bodyPart, i) => {
               return (
-                <div key={i}>
-                  <header className={css(ss.statSectionTitle, custom.statSectionTitle)}>{statSection.title}</header>
-                  {Object.keys(statSection.bodyPartsStats).map((bodyPart) => {
-                    return (
-                      <BodyPartSection
-                        name={bodyPart}
-                        searchValue={this.state.searchValue}
-                        bodyPartStats={statSection.bodyPartsStats}
-                      />
-                    );
-                  })}
-                </div>
-              );
+                <BodyPartSection
+                  key={i}
+                  name={bodyPart}
+                  searchValue={this.state.searchValue}
+                  bodyPartStats={this.props.defensiveStats[bodyPart]}
+                />
+              );     
             })}
           </div>
         )} />
       </div>
     );
-  }
-
-  public componentWillReceiveProps(nextProps: DefenseListProps) {
-    if (!_.isEqual(nextProps.statSections, this.props.statSections)) {
-      this.setState({ statSections: nextProps.statSections });
-    }
   }
 
   private onSearchChange = (searchValue: string) => {

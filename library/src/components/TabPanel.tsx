@@ -183,12 +183,12 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
       const active = this.props.tabs[this.activeTabIndex].rendersContent === content.name;
       return (
         <div key={index}
-             className={css(
-               style.content,
-               customStyle.content,
-               !active && style.contentHidden,
-               !active && customStyle.contentHidden,
-             )}>
+            className={css(
+              style.content,
+              customStyle.content,
+              !active && style.contentHidden,
+              !active && customStyle.contentHidden,
+            )}>
           <content.content.render {...content.content.props} />
         </div>
       );
