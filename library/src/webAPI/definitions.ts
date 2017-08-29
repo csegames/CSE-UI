@@ -12,14 +12,14 @@ export interface RequestConfig {
   headers?: {[key:string]:string};
 }
 export const CharactersAPI = {
-  GetCharactersV1Async: function(config: RequestConfig, loginToken: string, ) {
+  GetCharactersV1: function(config: RequestConfig, loginToken: string, ) {
     return xhrRequest('post', config.url + 'v1/characters/getAll', {
     }, null, { headers: Object.assign({}, {
       'loginToken': loginToken,
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetCharactersOnShardV1Async: function(config: RequestConfig, loginToken: string, shardID: number) {
+  GetCharactersOnShardV1: function(config: RequestConfig, loginToken: string, shardID: number) {
     return xhrRequest('post', config.url + 'v1/characters/getAllOnShard', {
       shardID: shardID,
     }, null, { headers: Object.assign({}, {
@@ -27,7 +27,7 @@ export const CharactersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetCharacterV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  GetCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/characters/get', {
       shardID: shardID,
       characterID: characterID,
@@ -36,7 +36,7 @@ export const CharactersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  DeleteCharacterV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  DeleteCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/characters/delete', {
       shardID: shardID,
       characterID: characterID,
@@ -45,7 +45,7 @@ export const CharactersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  CreateCharacterV1Async: function(config: RequestConfig, loginToken: string, shardID: number, character: Character) {
+  CreateCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, character: Character) {
     return xhrRequest('post', config.url + 'v1/characters/create', {
       shardID: shardID,
     }, character, { headers: Object.assign({}, {
@@ -56,19 +56,19 @@ export const CharactersAPI = {
 }
 
 export const ContentAPI = {
-  MessageOfTheDayV1Async: function(config: RequestConfig, ) {
+  MessageOfTheDayV1: function(config: RequestConfig, ) {
     return xhrRequest('get', config.url + 'v1/messageoftheday', {
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  PatcherHeroContentV1Async: function(config: RequestConfig, ) {
+  PatcherHeroContentV1: function(config: RequestConfig, ) {
     return xhrRequest('get', config.url + 'v1/patcherherocontent', {
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  PatcherAlertsV1Async: function(config: RequestConfig, ) {
+  PatcherAlertsV1: function(config: RequestConfig, ) {
     return xhrRequest('get', config.url + 'v1/patcheralerts', {
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
@@ -201,7 +201,7 @@ export const GameDataAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetAttributeInfoV1Async: function(config: RequestConfig, shard: number) {
+  GetAttributeInfoV1: function(config: RequestConfig, shard: number) {
     return xhrRequest('get', config.url + 'v1/gamedata/attributeInfo', {
       shard: shard,
     }, null, { headers: Object.assign({}, {
@@ -220,7 +220,7 @@ export const GameDataAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetAttributeOffsetsV1Async: function(config: RequestConfig, shard: number) {
+  GetAttributeOffsetsV1: function(config: RequestConfig, shard: number) {
     return xhrRequest('get', config.url + 'v1/gamedata/attributeOffsets', {
       shard: shard,
     }, null, { headers: Object.assign({}, {
@@ -236,7 +236,7 @@ export const GameDataAPI = {
 }
 
 export const GraphQLAPI = {
-  PostAsync: function(config: RequestConfig, ) {
+  Post: function(config: RequestConfig, ) {
     return xhrRequest('post', config.url + 'graphql', {
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
@@ -245,7 +245,7 @@ export const GraphQLAPI = {
 }
 
 export const GroupsAPI = {
-  GetInvitesForCharacterV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  GetInvitesForCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/groups/getInvitesForCharacter', {
       shardID: shardID,
       characterID: characterID,
@@ -254,7 +254,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  CreateRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number, permissions: string[]) {
+  CreateRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/createRank', {
       shardID: shardID,
       characterID: characterID,
@@ -267,7 +267,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RemoveRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string) {
+  RemoveRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/groups/removeRank', {
       shardID: shardID,
       characterID: characterID,
@@ -278,7 +278,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RenameRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, newName: string) {
+  RenameRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, newName: string) {
     return xhrRequest('post', config.url + 'v1/groups/renameRank', {
       shardID: shardID,
       characterID: characterID,
@@ -290,7 +290,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AddRankPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+  AddRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/addRankPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -302,7 +302,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RemoveRankPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+  RemoveRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/removeRankPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -314,7 +314,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
+  SetRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/setRankPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -326,7 +326,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankLevelV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number) {
+  SetRankLevelV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number) {
     return xhrRequest('post', config.url + 'v1/groups/setRankLevel', {
       shardID: shardID,
       characterID: characterID,
@@ -338,7 +338,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AssignRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string, rankName: string) {
+  AssignRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string, rankName: string) {
     return xhrRequest('post', config.url + 'v1/groups/assignRank', {
       shardID: shardID,
       characterID: characterID,
@@ -350,7 +350,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KickV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
+  KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/groups/kick', {
       shardID: shardID,
       characterID: characterID,
@@ -361,7 +361,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
+  InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/groups/invite', {
       shardID: shardID,
       characterID: characterID,
@@ -372,7 +372,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetName: string) {
+  InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/groups/inviteByName', {
       shardID: shardID,
       characterID: characterID,
@@ -383,7 +383,7 @@ export const GroupsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AcceptInviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, inviteCode: string) {
+  AcceptInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/groups/acceptInvite', {
       shardID: shardID,
       characterID: characterID,
@@ -419,7 +419,7 @@ export const ItemAPI = {
 }
 
 export const OrdersAPI = {
-  CreateV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
+  CreateV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/orders/create', {
       shardID: shardID,
       characterID: characterID,
@@ -429,7 +429,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  CreateRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number, permissions: string[]) {
+  CreateRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/createRank', {
       shardID: shardID,
       characterID: characterID,
@@ -441,7 +441,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RemoveRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
+  RemoveRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/orders/removeRank', {
       shardID: shardID,
       characterID: characterID,
@@ -451,7 +451,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
+  InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/orders/inviteByID', {
       shardID: shardID,
       characterID: characterID,
@@ -461,7 +461,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
+  InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/orders/inviteByName', {
       shardID: shardID,
       characterID: characterID,
@@ -471,7 +471,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AcceptInviteAsync: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, orderID: string, inviteCode: string) {
+  AcceptInvite: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, orderID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/orders/acceptInvite', {
       shardID: shardID,
       characterID: characterID,
@@ -482,7 +482,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KickV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
+  KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/orders/kick', {
       shardID: shardID,
       characterID: characterID,
@@ -492,7 +492,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AbandonV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  AbandonV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/orders/abandon', {
       shardID: shardID,
       characterID: characterID,
@@ -501,7 +501,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  DisbandV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  DisbandV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/orders/disband', {
       shardID: shardID,
       characterID: characterID,
@@ -510,7 +510,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RenameRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, newName: string) {
+  RenameRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, newName: string) {
     return xhrRequest('post', config.url + 'v1/orders/renameRank', {
       shardID: shardID,
       characterID: characterID,
@@ -521,7 +521,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AddRankPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
+  AddRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/addRankPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -532,7 +532,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RemoveRankPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
+  RemoveRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/removeRankPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -543,7 +543,7 @@ export const OrdersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  ChangeRankLevelV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number) {
+  ChangeRankLevelV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number) {
     return xhrRequest('post', config.url + 'v1/orders/changeRankLevel', {
       shardID: shardID,
       characterID: characterID,
@@ -591,7 +591,7 @@ export const PresenceAPI = {
 }
 
 export const PlotsAPI = {
-  ReleasePlotV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string) {
+  ReleasePlotV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string) {
     return xhrRequest('post', config.url + 'v1/plot/releasePlot', {
       shardID: shardID,
       characterID: characterID,
@@ -601,7 +601,7 @@ export const PlotsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  ModifyPermissionsV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, newPermissions: number) {
+  ModifyPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, newPermissions: number) {
     return xhrRequest('post', config.url + 'v1/plot/modifyPermissions', {
       shardID: shardID,
       characterID: characterID,
@@ -612,7 +612,7 @@ export const PlotsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  RemoveQueuedBlueprintV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToRemove: number) {
+  RemoveQueuedBlueprintV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToRemove: number) {
     return xhrRequest('post', config.url + 'v1/plot/removeQueuedBlueprint', {
       shardID: shardID,
       characterID: characterID,
@@ -623,7 +623,7 @@ export const PlotsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  ReorderQueueV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToMove: number, destinationIndex: number) {
+  ReorderQueueV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToMove: number, destinationIndex: number) {
     return xhrRequest('post', config.url + 'v1/plot/reorderQueue', {
       shardID: shardID,
       characterID: characterID,
@@ -635,7 +635,7 @@ export const PlotsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetQueueStatusV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  GetQueueStatusV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/plot/getQueueStatus', {
       shardID: shardID,
       characterID: characterID,
@@ -687,7 +687,7 @@ export const SecureTradeAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AbortSecureTradeAsync: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  AbortSecureTrade: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/abort', {
       shardID: shardID,
       characterID: characterID,
@@ -759,6 +759,36 @@ export const ServersAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
+  GetServersForChannelV1: function(config: RequestConfig, channelId: number) {
+    return xhrRequest('post', config.url + 'v1/servers/getForChannel', {
+      channelId: channelId,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
+  },
+  GetHostsForServerV1: function(config: RequestConfig, channelId: number, name: string) {
+    return xhrRequest('post', config.url + 'v1/servers/getHosts', {
+      channelId: channelId,
+      name: name,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
+  },
+  GetAvailableZones: function(config: RequestConfig, shard: number) {
+    return xhrRequest('post', config.url + 'v1/availableZones', {
+      shard: shard,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
+  },
+  GetZoneInfo: function(config: RequestConfig, shard: number, zoneID: string) {
+    return xhrRequest('post', config.url + 'v1/getZoneInfo', {
+      shard: shard,
+      zoneID: zoneID,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
+  },
 }
 
 export const TraitsAPI = {
@@ -781,7 +811,7 @@ export const TypeGenAPI = {
 }
 
 export const WarbandsAPI = {
-  CreateV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  CreateV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/create', {
       shardID: shardID,
       characterID: characterID,
@@ -790,7 +820,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  CreateWithNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
+  CreateWithNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/warbands/createWithName', {
       shardID: shardID,
       characterID: characterID,
@@ -800,7 +830,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
+  InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/invite', {
       shardID: shardID,
       characterID: characterID,
@@ -810,7 +840,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteByIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
+  InviteByIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -821,7 +851,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
+  InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteByName', {
       shardID: shardID,
       characterID: characterID,
@@ -831,7 +861,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  InviteByNameWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
+  InviteByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteByNameWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -842,7 +872,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  JoinWithInviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string, inviteCode: string) {
+  JoinWithInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinWithInvite', {
       shardID: shardID,
       warbandID: warbandID,
@@ -853,7 +883,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  JoinV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string) {
+  JoinV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/join', {
       shardID: shardID,
       warbandID: warbandID,
@@ -863,7 +893,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  JoinByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string) {
+  JoinByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinByName', {
       shardID: shardID,
       warbandName: warbandName,
@@ -873,7 +903,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  JoinByNameWithInviteV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string, inviteCode: string) {
+  JoinByNameWithInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinByNameWithInvite', {
       shardID: shardID,
       warbandName: warbandName,
@@ -884,7 +914,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  QuitV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  QuitV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/quit', {
       shardID: shardID,
       characterID: characterID,
@@ -893,7 +923,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AbandonByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandName: string) {
+  AbandonByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandonByName', {
       shardID: shardID,
       characterID: characterID,
@@ -903,7 +933,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AbandonV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  AbandonV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandon', {
       shardID: shardID,
       characterID: characterID,
@@ -912,7 +942,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  AbandonByIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandID: string) {
+  AbandonByIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandonByID', {
       shardID: shardID,
       characterID: characterID,
@@ -922,7 +952,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string) {
+  SetRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRank', {
       shardID: shardID,
       characterID: characterID,
@@ -933,7 +963,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string, warbandID: string) {
+  SetRankWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -945,7 +975,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string) {
+  SetRankByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankByName', {
       shardID: shardID,
       characterID: characterID,
@@ -956,7 +986,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetRankByNameWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string, warbandID: string) {
+  SetRankByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankByNameWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -968,7 +998,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetLeaderV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
+  SetLeaderV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeader', {
       shardID: shardID,
       characterID: characterID,
@@ -978,7 +1008,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetLeaderWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
+  SetLeaderWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -989,7 +1019,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetLeaderByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
+  SetLeaderByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderByName', {
       shardID: shardID,
       characterID: characterID,
@@ -999,7 +1029,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetLeaderByNameWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
+  SetLeaderByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderByNameWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -1010,7 +1040,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetDisplayOrderV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number) {
+  SetDisplayOrderV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number) {
     return xhrRequest('post', config.url + 'v1/warbands/setDisplayOrder', {
       shardID: shardID,
       characterID: characterID,
@@ -1021,7 +1051,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  SetDisplayOrderWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number, warbandID: string) {
+  SetDisplayOrderWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setDisplayOrderWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -1033,7 +1063,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KickV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
+  KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kick', {
       shardID: shardID,
       characterID: characterID,
@@ -1043,7 +1073,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KicWithIDkV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
+  KicWithIDkV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -1054,7 +1084,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KickByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
+  KickByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickByName', {
       shardID: shardID,
       characterID: characterID,
@@ -1064,7 +1094,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  KickByNameWithIDV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
+  KickByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickByNameWithID', {
       shardID: shardID,
       characterID: characterID,
@@ -1075,7 +1105,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetInfoV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string) {
+  GetInfoV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/groups/getWarbandInfoByID', {
       shardID: shardID,
       warbandID: warbandID,
@@ -1084,7 +1114,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetInfoByNameV1Async: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string) {
+  GetInfoByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string) {
     return xhrRequest('post', config.url + 'v1/groups/getWarbandInfoByName', {
       shardID: shardID,
       warbandName: warbandName,
@@ -1093,7 +1123,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetActiveInfoV1Async: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
+  GetActiveInfoV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/groups/getMyActiveWarbandInfo', {
       shardID: shardID,
       characterID: characterID,
@@ -1102,7 +1132,7 @@ export const WarbandsAPI = {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
-  GetAllWarbandsOnShardV1Async: function(config: RequestConfig, loginToken: string, shardID: number) {
+  GetAllWarbandsOnShardV1: function(config: RequestConfig, loginToken: string, shardID: number) {
     return xhrRequest('post', config.url + 'v1/groups/getAllWarbands', {
       shardID: shardID,
     }, null, { headers: Object.assign({}, {
@@ -1341,9 +1371,8 @@ export enum ItemStat {
 }
 
 export enum SiegeEngineStat {
-  Health = 1,
-  YawSpeedDegPerSec = 2,
-  PitchSpeedDegPerSec = 3,
+  YawSpeedDegPerSec = 1,
+  PitchSpeedDegPerSec = 2,
 }
 
 export enum SubstanceStat {
@@ -2547,9 +2576,8 @@ export enum ArmorDefStat {
 }
 
 export enum SiegeEngineDefStat {
-  Health = 1,
-  YawSpeedDegPerSec = 2,
-  PitchSpeedDegPerSec = 3,
+  YawSpeedDegPerSec = 1,
+  PitchSpeedDegPerSec = 2,
 }
 
 export enum StatAggregation {
@@ -3473,6 +3501,13 @@ export interface PlayerCounts {
 export interface StartingServer {
   Address: string;
   ZoneID: number;
+}
+
+export interface ZoneInfo {
+  ID: string;
+  Name: string;
+  Address: string;
+  Bounds: string;
 }
 
 export interface Trait {

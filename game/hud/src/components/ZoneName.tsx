@@ -31,17 +31,20 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
     client.OnCharacterZoneChanged((id: string) => {
       const _id = id;
       this.setState({ name: '' });
-      webAPI.ServerListHelperAPI.getAvailableZones(shardID)
-        .then((result) => {
-          if (result.ok === false) return;
-          result.data.forEach((zone: any) => {
-            if (zone.ID === _id) {
-              this.setState({
-                name: zone.Name,
-              });
-            }
-          });
+
+      // CHANGE THIS TO USE GetZoneInfo
+      webAPI.ServersAPI.GetAvailableZones(
+        webAPI.defaultConfig,
+        shardID,
+      ).then((res) => {
+        if (!res.ok) return;
+        const data = JSON.parse(res.data);
+        data.forEach((zone: any) => {
+          if (zone.ID === _id) {
+            this.setState({ name: zone.Name });
+          }
         });
+      });
     });
   }
 

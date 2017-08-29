@@ -56,18 +56,9 @@ export default () => {
           systemMessage(`Usage: /order create <name>`);
           return;
         }
-
+    
         systemMessage(`Attempting to create Order ${name}...`);
-        webAPI.OrdersAPI.createV1(client.shardID, client.characterID, name)
-          .then((response: any) => {
-            if (!response.ok) {
-              systemMessage(`Failed to create Order.`);
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Order ${name} successfully created!`);
-          });
+        createOrder(name);
       },
     },
 
@@ -84,17 +75,7 @@ export default () => {
 
         const toInvite = name.length === 0 ? friendlyTargetName : name;
         systemMessage(`Attempting to invite ${toInvite}...`);
-        webAPI.OrdersAPI.inviteByNameV1(client.shardID, client.characterID, toInvite)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage(`Failed to invite ${toInvite} to your Order.`);
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`An Order invite has been sent to ${toInvite}.`);
-          });
+        invitePlayer(toInvite);
       },
     },
 
@@ -102,17 +83,7 @@ export default () => {
       description: 'Abandon your Order.',
       handler: () => {
         systemMessage('Attempting to abandon your Order...');
-
-        webAPI.OrdersAPI.abandonV1(client.shardID, client.characterID)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to abandon Order.');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data}`);
-              return;
-            }
-            systemMessage('You are no longer a member of an Order.');
-          });
+        abandonOrder();
       },
     },
 
@@ -127,17 +98,7 @@ export default () => {
       description: 'Disband your Order.',
       handler: () => {
         systemMessage('Attemping to disband your Order...');
-
-        webAPI.OrdersAPI.disbandV1(client.shardID, client.characterID)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to disband Order.');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-            systemMessage('Your Order has been disbanded.');
-          });
+        disbandOrder();
       },
     },
 
@@ -146,21 +107,23 @@ export default () => {
       handler: (params: string) => {
         systemMessage('Fetching permissions info...');
         // no args...
-        webAPI.GameDataAPI.getOrderPermissionsV1()
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to retrieve Order permissions from the Web API.');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
+        webAPI.GameDataAPI.GetOrderPermissionsV1(webAPI.defaultConfig).then((res) => {
+          const data = JSON.parse(res.data);
+          if (!res.ok) {
+            console.error(res);
+            systemMessage('Failed to retrieve Order permissions from the Web API');
+            if (data !== null) {
+              systemMessage(`ERROR : ${data.Message}`);
             }
+            return;
+          }
 
-            const permissions = <webAPI.PermissionInfo[]>response.data;
-            for (let i = 0; i < permissions.length; ++i) {
-              const p = permissions[i];
-              systemMessage(`${p.name} : ${p.description}`);
-            }
-          });
+          const permissions = <webAPI.PermissionInfo[]>data;
+          for (let i = 0; i < permissions.length; ++i) {
+            const p = permissions[i];
+            systemMessage(`${p.name} : ${p.description}`);
+          }
+        });
       },
     },
 
@@ -169,6 +132,9 @@ export default () => {
       description: 'Create a new custom rank for your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
+        const rankName = argv._[0];
+        const rankLevel = Number.parseInt(argv._[1], 10);
+        const permissions = argv._.slice(2);
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['createrank'].description}`);
@@ -178,19 +144,8 @@ export default () => {
           return;
         }
 
-        systemMessage(`Attempting to create rank ${argv._[0]}...`);
-        const permissions = argv._.slice(2);
-        webAPI.OrdersAPI.createRankV1(client.shardID, client.characterID, argv._[0], Number.parseInt(argv._[1]), permissions)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage(`Failed to create rank.`);
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Order rank ${argv._[0]} created!`);
-          });
+        systemMessage(`Attempting to create rank ${rankName}...`);
+        createRank(rankName, rankLevel, permissions);
       },
     },
 
@@ -198,25 +153,16 @@ export default () => {
       description: 'Remove a custom rank from your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
-
+        const rankName = argv._[0];
+        
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['removerank'].description}`);
           systemMessage('Usage: /order removeRank <name>');
           return;
         }
 
-        systemMessage(`Attemping to remove rank ${argv._[0]}...`);
-        webAPI.OrdersAPI.removeRankV1(client.shardID, client.characterID, argv._[0])
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage(`Failed to remove rank ${argv._[0]}`);
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Order rank ${argv._[0]} was removed.`);
-          });
+        systemMessage(`Attemping to remove rank ${rankName}...`);
+        removeRank(rankName);
       },
     },
 
@@ -224,6 +170,8 @@ export default () => {
       description: 'Rename a custom rank in your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
+        const currentName = argv._[0];
+        const newName = argv._[1];
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['renamerank'].description}`);
@@ -232,17 +180,7 @@ export default () => {
         }
 
         systemMessage(`Attempting to rename rank ${argv._[0]} to ${argv._[1]}...`);
-        webAPI.OrdersAPI.renameRankV1(client.shardID, client.characterID, argv._[0], argv._[1])
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to rename rank');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Successfully renamed rank ${argv._[0]} to ${argv._[1]}!`);
-          });
+        renameRank(currentName, newName);
       },
     },
 
@@ -276,7 +214,8 @@ export default () => {
       description: 'Add permissions to a rank in your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
-
+        const name = argv._[0];
+        const permissions = argv._.slice(1);
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['addrankpermissions'].description}`);
           systemMessage('Usage: /order addrankpermissions <rank name> <permissions>');
@@ -286,18 +225,7 @@ export default () => {
         }
 
         systemMessage(`Attempting to add permissions to rank ${argv._[0]}...`);
-        const permissions = argv._.slice(1);
-        webAPI.OrdersAPI.addRankPermissionsV1(client.shardID, client.characterID, argv._[0], permissions)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to add permissions ranks. :(');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Successfully added ${permissions.join(', ')} permisions to rank ${argv._[0]}`);
-          });
+        addRankPermissions(name, permissions);
       },
     },
 
@@ -305,7 +233,8 @@ export default () => {
       description: 'Remove permissions to a rank in your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
-
+        const name = argv._[0];
+        const permissions = argv._.slice(1);
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['removerankpermissions'].description}`);
           systemMessage('Usage: /order removerankpermissions <rank name> <permissions>');
@@ -315,18 +244,7 @@ export default () => {
         }
 
         systemMessage(`Attempting to remove permissions from rank ${argv._[0]}...`);
-        const permissions = argv._.slice(1);
-        webAPI.OrdersAPI.removeRankPermissionsV1(client.shardID, client.characterID, argv._[0], permissions)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to remove permissions ranks. :(');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Successfully removed ${permissions.join(', ')} permisions from rank ${argv._[0]}`);
-          });
+        removeRankPermissions(name, permissions);
       },
     },
 
@@ -334,6 +252,8 @@ export default () => {
       description: 'Change level of a rank in your Order.',
       handler: (params: string) => {
         const argv = argsWithHelp(params);
+        const name = argv._[0];
+        const level = argv._[1];
 
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['changeranklevel'].description}`);
@@ -341,18 +261,8 @@ export default () => {
           return;
         }
 
-        systemMessage(`Attemping to change level of rank ${argv._[0]} to ${argv._[1]}...`);
-        webAPI.OrdersAPI.changeRankLevelV1(client.shardID, client.characterID, argv._[0], argv._[1])
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to change rank level. :(');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
-            }
-
-            systemMessage(`Successfully changed level of rank ${argv._[0]} to ${argv._[1]}`);
-          });
+        systemMessage(`Attemping to change level of rank ${name} to ${level}...`);
+        changeRankLevel(name, level);
       },
     },
 
@@ -360,18 +270,25 @@ export default () => {
       description: 'View your rank!',
       handler: () => {
         systemMessage('Fetching your rank...');
-        webAPI.OrdersAPI.getMyRankV1(client.shardID, client.characterID)
-          .then((response: any) => {
-            if (!response.ok) {
-              console.error(response);
-              systemMessage('Failed to get your rank. :(');
-              if (response.data !== null) systemMessage(`ERROR : ${response.data.Message}`);
-              return;
+        webAPI.OrdersAPI.GetMyRankV1(
+          webAPI.defaultConfig,
+          client.loginToken,
+          client.shardID,
+          client.characterID,
+        ).then((res) => {
+          const data = JSON.parse(res.data);
+          if (!res.ok) {
+            console.error(res);
+            systemMessage('Failed to get your rank :(');
+            if (data !== null) {
+              systemMessage(`ERROR : ${data.Message}`);
             }
+            return;
+          }
 
-            const rank = <webAPI.RankInfo>response.data;
-            systemMessage(`${rank.name} ${rank.level} ${rank.permissions.join(', ')}`);
-          });
+          const rank = <webAPI.RankInfo>data;
+          systemMessage(`${rank.name} ${rank.level} ${rank.permissions.join(', ')}`);
+        });
       },
     },
 
@@ -388,3 +305,243 @@ export default () => {
     command.handler(splitParams.length > 1 ? splitParams[1] : '');
   });
 };
+
+async function createOrder(name: string) {
+  try {
+    const res = await webAPI.OrdersAPI.CreateV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      name,
+    );
+
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      systemMessage(`Failed to create Order`);
+      if (data !== null) {
+        systemMessage(`ERROR : ${res.data}`);
+      }
+      return;
+    }
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function invitePlayer(toInvite: string) {
+  try {
+    const res = await webAPI.OrdersAPI.InviteByNameV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      toInvite,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage(`Failed to invite ${toInvite} to your Order.`);
+      if (data !== null) {
+        systemMessage(`ERROR : ${data}`);
+      }
+      return;
+    }
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function abandonOrder() {
+  try {
+    const res = await webAPI.OrdersAPI.AbandonV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage('Failed to abandon Order.');
+      if (data !== null) {
+        systemMessage(`ERROR : ${data}`);
+      }
+    }
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function disbandOrder() {
+  try {
+    const res = await webAPI.OrdersAPI.DisbandV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage(`Failed to disband Order.`);
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+    }
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function createRank(rankName: string, rankLevel: number, permissions: any[]) {
+  try {
+    const res = await webAPI.OrdersAPI.CreateRankV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      rankName,
+      rankLevel,
+      permissions,
+    );
+    const data: any = JSON.parse(res.data);
+    if (!res.ok) {
+      console.error(res);
+      systemMessage(`Failed to create rank.`);
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+      return;
+    }
+
+    systemMessage(`Order rank ${rankName} created!`);
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function removeRank(rankName: string) {
+  try {
+    const res = await webAPI.OrdersAPI.RemoveRankV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      rankName,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage(`Failed to remove rank ${rankName}`);
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+      return;
+    }
+
+    systemMessage(`Order rank ${rankName} was removed.`);
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function renameRank(currentName: string, newName: string) {
+  try {
+    const res = await webAPI.OrdersAPI.RenameRankV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      currentName,
+      newName,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage('Failed to rename rank');
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+      return;
+    }
+
+    systemMessage(`Successfully renamed rank ${currentName} to ${newName}!`);
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function addRankPermissions(name: string, permissions: string[]) {
+  try {
+    const res = await webAPI.OrdersAPI.AddRankPermissionsV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      name,
+      permissions,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage('Failed to add permissions ranks. :(');
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+      return;
+    }
+
+    systemMessage(`Successfully added ${permissions.join(', ')} permissions to rank ${name}`);
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function removeRankPermissions(name: string, permissions: string[]) {
+  try {
+    const res = await webAPI.OrdersAPI.RemoveRankPermissionsV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      name,
+      permissions,
+    );
+    if (!res.ok) {
+      const data = JSON.parse(res.data);
+      console.error(res);
+      systemMessage('Failed to remove permissions ranks. :(');
+      if (data !== null) {
+        systemMessage(`ERROR : ${data.Message}`);
+      }
+      return;
+    }
+
+    systemMessage(`Successfully removed ${permissions.join(', ')} permission from rank ${name}`);
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
+
+async function changeRankLevel(name: string, level: number) {
+  const res = await webAPI.OrdersAPI.ChangeRankLevelV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    name,
+    level,
+  );
+  if (!res.ok) {
+    const data = JSON.parse(res.data);
+    console.error(res);
+    systemMessage(`Failed to change rank level :(`);
+    if (data !== null) {
+      systemMessage(`ERROR : ${data.Message}`);
+    }
+    return;
+  }
+
+  systemMessage(`Successfully changed level of rank ${name} to ${level}`);
+}

@@ -5,8 +5,8 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:19:58
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-10 12:33:09
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-09-07 10:32:18
  */
 
 import { fetchJSON } from '../../../../lib/fetchHelpers';
@@ -62,6 +62,33 @@ export interface BanesAndBoonsState {
 
 declare const toastr: any;
 
+export interface TraitsPayload {
+  playerClass: string;
+  race: string;
+  faction: string;
+  initType: 'boons' | 'banes' | 'both';
+}
+
+export const getTraits = async (dispatch: (action: any) => any, payload: TraitsPayload) => {
+  const res = await webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID);
+  if (res.ok) {
+    const data = JSON.parse(res.data);
+    dispatch(onInitializeTraits({
+      playerClass: payload.playerClass,
+      race: payload.race,
+      faction: payload.faction,
+      banesAndBoons: data,
+      initType: payload.initType,
+    }));
+  } else {
+    toastr.error(
+      'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
+      'Oh No!!',
+      { timeOut: 5000 },
+    );
+  }
+};
+
 export const fetchTraits = (payload: {
   playerClass: string,
   race: string,
@@ -69,24 +96,15 @@ export const fetchTraits = (payload: {
   initType: 'boons' | 'banes' | 'both',
 }) => {
   return (dispatch: (action: any) => any) => {
-    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
-      .then((result: any) => {
-        if (result.ok) {
-          dispatch(onInitializeTraits({
-            playerClass: payload.playerClass,
-            race: payload.race,
-            faction: payload.faction,
-            banesAndBoons: result.data,
-            initType: payload.initType,
-          }));
-        } else {
-          toastr.error(
-            'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
-            'Oh No!!',
-            { timeOut: 5000 },
-          );
-        }
-      });
+    try {
+      return getTraits(dispatch, payload);
+    } catch (err) {
+      toastr.error(
+        'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
+        'Oh No!!',
+        { timeOut: 5000 },
+      );
+    }  
   };
 };
 
@@ -97,33 +115,34 @@ export const resetBaneOrBoon = (payload: {
   initType: 'boons' | 'banes' | 'both',
 }) => {
   return (dispatch: (action: any) => any) => {
-    return webAPI.TraitsAPI.getTraitsV1(client.shardID)
-      .then((result: any) => {
+    return webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID)
+      .then((result) => {
+        const data = JSON.parse(result.data);
         if (result.ok) {
           if (payload.initType === 'boons') dispatch(onResetBoons({
             playerClass: payload.playerClass,
             race: payload.race,
             faction: payload.faction,
-            banesAndBoons: result.data,
+            banesAndBoons: data,
           }));
           if (payload.initType === 'banes') dispatch(onResetBanes({
             playerClass: payload.playerClass,
             race: payload.race,
             faction: payload.faction,
-            banesAndBoons: result.data,
+            banesAndBoons: data,
           }));
           if (payload.initType === 'both') {
             dispatch(onResetBoons({
               playerClass: payload.playerClass,
               race: payload.race,
               faction: payload.faction,
-              banesAndBoons: result.data,
+              banesAndBoons: data,
             }));
             dispatch(onResetBanes({
               playerClass: payload.playerClass,
               race: payload.race,
               faction: payload.faction,
-              banesAndBoons: result.data,
+              banesAndBoons: data,
             }));
           }
         }

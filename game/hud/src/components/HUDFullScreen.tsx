@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { events, client, ListenerInfo, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { events, client, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import Social from '../widgets/Social';
@@ -96,7 +96,7 @@ export interface FullScreenNavProps {
 }
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
-  private navigateListener: ListenerInfo;
+  private navigateListener: EventListener;
   private tabPanelRef: TabPanel;
 
   constructor(props: any) {

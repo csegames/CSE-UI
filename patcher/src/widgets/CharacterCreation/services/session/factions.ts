@@ -4,12 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 import { webAPI } from 'camelot-unchained';
-type CSEError = webAPI.Errors.CSEError;
 
 export interface FactionInfo {
   id: number;
@@ -44,7 +42,7 @@ export function fetchFactionsSuccess(factions: FactionInfo[]) {
   };
 }
 
-export function fetchFactionsFailed(error: CSEError) {
+export function fetchFactionsFailed(error: any) {
   return {
     type: FETCH_FACTIONS_FAILED,
     error: error.Message,
@@ -58,13 +56,20 @@ export function selectFaction(selected: FactionInfo) {
   };
 }
 
+async function getFactions(dispatch: (action: any) => any) {
+  try {
+    const res = await webAPI.GameDataAPI.GetFactionInfoV1(webAPI.defaultConfig);
+    const data = JSON.parse(res.data);
+    dispatch(res.ok ? fetchFactionsSuccess(data) : fetchFactionsFailed(data));
+  } catch (err) {
+    fetchFactionsFailed(err);
+  }
+}
+
 export function fetchFactions(shard: number = 1) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestFactions());
-    return webAPI.GameDataAPI.getFactionInfoV1()
-      .then((value) => {
-        dispatch(value.ok ? fetchFactionsSuccess(value.data) : fetchFactionsFailed(value.error));
-      });
+    return getFactions(dispatch);
   };
 }
 
@@ -92,6 +97,7 @@ export default function reducer(state: FactionsState = initialState, action: any
         isFetching: true,
       });
     case FETCH_FACTIONS_SUCCESS:
+      console.log(action.factions);
       return Object.assign({}, state, {
         isFetching: false,
         lastUpdated: action.receivedAt,

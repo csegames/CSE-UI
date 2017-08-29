@@ -11,12 +11,13 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { Input,
-         RaisedButton,
-         webAPI,
-         client,
-         Spinner,
-       } from 'camelot-unchained';
+import {
+  Input,
+  RaisedButton,
+  webAPI,
+  client,
+  Spinner,
+} from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 import { SocialCategory } from '../services/session/nav/navTypes';
@@ -100,8 +101,7 @@ export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupSt
           <div className={css(ss.create, custom.create)}>
             <div className={css(ss.error, custom.error)}>{this.state.error}</div>
             Enter a name:
-            <Input type='text'
-                   inputRef={r => this.inputRef = r} />
+            <Input type='text' inputRef={r => this.inputRef = r} />
             <RaisedButton onClick={this.create} disabled={this.state.creating}>
               { this.state.creating ? <Spinner /> :  <span>Create</span> }
             </RaisedButton>
@@ -111,36 +111,30 @@ export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupSt
     );
   }
 
-  private create = () => {
+  private create = async () => {
     if (this.inputRef == null) return;
-    const name = this.inputRef.value;
+    await this.setState({ creating: true, error: null });
 
-    webAPI.OrdersAPI.createV1(client.shardID, client.characterID, name)
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            creating: false,
-            error: null,
-          });
-          this.props.refetch();
-          this.props.dispatch(selectLink({
-                kind: 'Primary',
-                category: SocialCategory.Order,
-                id: 'overview',
-              }));
-          return;
-        }
-        this.setState({
-          creating: false,
-          error: result.data.FieldCodes.map((fc: any) => fc.Message),
-        });
-        
-      });
-    
-    this.setState({
-      creating: true,
-      error: null,
-    });
+    const name = this.inputRef.value;
+    const res = await webAPI.OrdersAPI.CreateV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      name,
+    );
+    const data = JSON.parse(res.data);
+    if (res.ok) {
+      this.setState({ creating: false, error: null });
+      this.props.refetch();
+      this.props.dispatch(selectLink({
+            kind: 'Primary',
+            category: SocialCategory.Order,
+            id: 'overview',
+          }));
+      return;
+    }
+    this.setState({ creating: false, error: data.FieldCodes.map((fc: any) => fc.Message) });
   }
 }
 

@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import { Tooltip, utils, ListenerInfo, events } from 'camelot-unchained';
+import { Tooltip, utils, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';
@@ -109,7 +109,7 @@ export interface InventoryFooterState {
 }
 
 class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
-  private onDropItemListener: ListenerInfo;
+  private onDropItemListener: EventListener;
 
   constructor(props: InventoryFooterProps) {
     super(props);

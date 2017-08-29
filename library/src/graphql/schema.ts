@@ -478,7 +478,6 @@ export interface ContainerStat_Single {
 }
 
 export interface SiegeEngineStat_Single {
-  health: number | null;
   yawSpeedDegPerSec: number | null;
   pitchSpeedDegPerSec: number | null;
 }

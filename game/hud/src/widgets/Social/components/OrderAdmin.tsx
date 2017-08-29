@@ -11,13 +11,14 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client,
-         ql,
-         webAPI,
-         RaisedButton,
-         Spinner,
-         ConfirmDialog,
-       } from 'camelot-unchained';
+import {
+  client,
+  ql,
+  webAPI,
+  RaisedButton,
+  Spinner,
+  ConfirmDialog,
+} from 'camelot-unchained';
 import GroupTitle from './GroupTitle';
 import { selectLink } from '../services/session/navigation';
 import { SocialCategory } from '../services/session/nav/navTypes';
@@ -112,18 +113,19 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
           </div>
           <div className={css(ss.sectionText, custom.sectionText)}>
             This action will abandon this order for this character.
-             You will no longer be a member of the order and will be able to join another or create a new one.
+            You will no longer be a member of the order and will be able to join another or create a new one.
           </div>
           <div className={css(ss.sectionActionErrors, custom.sectionActionErrors)}>
             {this.state.abandonError}
           </div>
           <div className={css(ss.sectionActions, custom.sectionActions)}>
-            <ConfirmDialog onConfirm={this.abandon}
-                           onCancel={() => null}
-                           content={() => <span>Are you sure you wish to abandon your Order?</span>}>
-            <RaisedButton>
-              { this.state.abandoning ? <Spinner /> : <span>Abandon</span> }
-            </RaisedButton>
+            <ConfirmDialog
+              onConfirm={this.abandon}
+              onCancel={() => null}
+              content={() => <span>Are you sure you wish to abandon your Order?</span>}>
+              <RaisedButton>
+                { this.state.abandoning ? <Spinner /> : <span>Abandon</span> }
+              </RaisedButton>
             </ConfirmDialog>
           </div>
         </div>
@@ -138,15 +140,16 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
               </div>
               <div className={css(ss.sectionText, custom.sectionText)}>
                 This action will disband the order.
-                 You will no longer be a member of the order and will be able to join another or create a new one.
+                You will no longer be a member of the order and will be able to join another or create a new one.
               </div>
               <div className={css(ss.sectionActionErrors, custom.sectionActionErrors)}>
                 {this.state.disbandError}
               </div>
               <div className={css(ss.sectionActions, custom.sectionActions)}>
-                <ConfirmDialog onConfirm={this.disband}
-                               onCancel={() => null}
-                               content={() => <span>Are you sure you wish to disband your Order?</span>}>
+                <ConfirmDialog
+                  onConfirm={this.disband}
+                  onCancel={() => null}
+                  content={() => <span>Are you sure you wish to disband your Order?</span>}>
                 <RaisedButton>
                   { this.state.disbanding ? <Spinner /> : <span>Disband</span> }
                 </RaisedButton>
@@ -160,50 +163,45 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
     );
   }
 
-  private abandon = () => {
-    webAPI.OrdersAPI.abandonV1(client.shardID, client.characterID)
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            abandoning: false,
-            abandonError: null,
-          });
-          this.props.dispatch(selectLink({
-            kind: 'Primary',
-            category: SocialCategory.Order,
-            id: 'create',
-          }));
-          this.props.refetch();
-          return;
-        }
-        this.setState({
-            abandoning: false,
-            abandonError: result.data,
-          });
-      });
+  private abandon = async () => {
+    const res = await webAPI.OrdersAPI.AbandonV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+    );
+      
+    if (res.ok) {
+      this.setState({ abandoning: false, abandonError: null });
+      this.props.dispatch(selectLink({
+        kind: 'Primary',
+        category: SocialCategory.Order,
+        id: 'create',
+      }));
+      this.props.refetch();
+      return;
+    }
+    this.setState({ abandoning: false, abandonError: res.data });
   }
 
-  private disband = () => {
-    webAPI.OrdersAPI.disbandV1(client.shardID, client.characterID)
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            disbanding: false,
-            disbandError: null,
-          });
-          this.props.dispatch(selectLink({
-            kind: 'Primary',
-            category: SocialCategory.Order,
-            id: 'create',
-          }));
-          this.props.refetch();
-          return;
-        }
-        this.setState({
-            disbanding: false,
-            disbandError: result.data,
-          });
-      });
+  private disband = async () => {
+    const res = await webAPI.OrdersAPI.DisbandV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+    );
+    if (res.ok) {
+      this.setState({ disbanding: false, disbandError: null });
+      this.props.dispatch(selectLink({
+        kind: 'Primary',
+        category: SocialCategory.Order,
+        id: 'create',
+      }));
+      this.props.refetch();
+      return;
+    }
+    this.setState({ disbanding: false, disbandError: res.data });
   }
 }
 

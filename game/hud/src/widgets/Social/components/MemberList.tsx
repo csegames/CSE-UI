@@ -12,16 +12,17 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql,
-         Tooltip,
-         GridView,
-         ColumnDefinition,
-         Race,
-         Archetype,
-         client,
-         webAPI,
-         InlineDropDownSelectEdit,
-       } from 'camelot-unchained';
+import {
+  ql,
+  Tooltip,
+  GridView,
+  ColumnDefinition,
+  Race,
+  Archetype,
+  client,
+  webAPI,
+  InlineDropDownSelectEdit,
+} from 'camelot-unchained';
 
 import MemberListMenu from './MemberListMenu';
 import GroupTitle from './GroupTitle';
@@ -126,6 +127,40 @@ export interface MemberListProps {
   columnDefinitions?: ColumnDefinition[];
 }
 
+export interface MemberInfo {
+  id: string;
+  rank: ql.CustomRank;
+}
+
+export interface RenderDataInfo {
+  ranks: ql.CustomRank[];
+  userPermissions: ql.PermissionInfo[];
+  groupId: string;
+  refetch: () => void;
+}
+
+async function onSavePress(member: MemberInfo, rank: ql.CustomRank, renderData: RenderDataInfo) {
+  const res = await webAPI.GroupsAPI.AssignRankV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    renderData.groupId,
+    member.id,
+    rank.name,
+  );
+  if (res.ok) {
+    renderData.refetch();
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: false,
+    error: res.data,
+  };
+}
+
 export const defaultMemberListColumnDefinitions = [
   {
     key: (m: {name: string}) => m.name,
@@ -142,44 +177,30 @@ export const defaultMemberListColumnDefinitions = [
       flex: '0 0 120px !important',
       width: '120px',
     },
-    renderItem: (m: {id: string, rank: ql.CustomRank}, renderData?: { ranks: ql.CustomRank[],
-      userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
+    renderItem: (m: MemberInfo, renderData?: RenderDataInfo) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'assign-ranks')) {
-        return <InlineDropDownSelectEdit value={m.rank}
-                                         items={renderData.ranks}
-                                         renderListItem={(p: ql.CustomRank) => {
-                                           return (
-                                             <div style={{padding: '5px'}}>
-                                               {p.name}<br/>
-                                             </div>
-                                           );
-                                         }}
-                                         renderSelectedItem={(p: ql.CustomRank) => {
-                                           return (
-                                             <div style={{padding: '5px'}}>
-                                               {p.name}<br/>
-                                             </div>
-                                           );
-                                         }}
-                                         onSave={(current: ql.CustomRank, r: ql.CustomRank): any  => {
-                                           return webAPI.GroupsAPI.assignRankV1(
-                                             client.shardID,
-                                             client.characterID,
-                                             renderData.groupId,
-                                             m.id,
-                                             r.name).then((result) => {
-                                               if (result.ok) {
-                                                 renderData.refetch();
-                                                 return {
-                                                   ok: true,
-                                                 };
-                                               }
-                                               return {
-                                                 ok: false,
-                                                 error: result.data,
-                                               };
-                                             });
-                                         }} />;
+        return (
+          <InlineDropDownSelectEdit
+            value={m.rank}
+            items={renderData.ranks}
+            renderListItem={(p: ql.CustomRank) => {
+              return (
+                <div style={{padding: '5px'}}>
+                  {p.name}<br/>
+                </div>
+              );
+            }}
+            renderSelectedItem={(p: ql.CustomRank) => {
+              return (
+                <div style={{padding: '5px'}}>
+                  {p.name}<br/>
+                </div>
+              );
+            }}
+            onSave={(current: ql.CustomRank, r: ql.CustomRank): any  =>
+            onSavePress(m, r, renderData)}
+          />
+        );
       } else {
         return <span>{m.rank.name}</span>;
       }
@@ -297,9 +318,9 @@ export default (props : MemberListProps) => {
                 }}
                 rowMenu={(item: ql.FullOrderMember, close: () => void) => {
                   return <MemberListMenu member={item}
-                                         close={close}
-                                         refetch={props.refetch}
-                                         groupId={props.group.id} />;
+                                          close={close}
+                                          refetch={props.refetch}
+                                          groupId={props.group.id} />;
                 }}
                 rowMenuStyle={{
                   backgroundColor: '#444',

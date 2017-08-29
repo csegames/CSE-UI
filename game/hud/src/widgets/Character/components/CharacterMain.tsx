@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import { ListenerInfo, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CharacterInfo from './CharacterInfo/CharacterInfo';
@@ -117,7 +117,7 @@ export interface CharacterMainState {
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
-  private hudnavListener: ListenerInfo;
+  private hudnavListener: EventListener;
   private tabPanelRef: TabPanel;
 
   constructor(props: CharacterMainProps) {

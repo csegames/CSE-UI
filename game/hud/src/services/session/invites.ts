@@ -121,7 +121,7 @@ export function initializeInvites() : AsyncAction<InvitesAction> {
 }
 
 export function acceptInvite(invite: GroupInvite) : InvitesAction {
-  webAPI.WarbandsAPI.joinWithInviteV1(client.shardID, invite.groupID, client.characterID, invite.inviteCode);
+  joinWithInvite(invite);
   return {
     type: ACCEPT_INVITE,
     when: new Date(),
@@ -140,13 +140,40 @@ export function declineInvite(invite: GroupInvite) : InvitesAction {
 export function fetchInvites() : AsyncAction<InvitesAction> {
   return (dispatch: (action: any) => any) => {
     dispatch(requestInvites());
-    webAPI.GroupsAPI.getInvitesForCharacterV1(client.shardID, client.characterID)
-      .then((data: any) => dispatch(fetchInvitesSuccess(data)))
+
+    getInvitesForCharacter()
+      .then((data: any) => dispatch(fetchInvitesSuccess(JSON.parse(data))))
       .catch((response: any) => dispatch(fetchInvitesFailed(response.problem)));
   };
 }
 
+async function joinWithInvite(invite: GroupInvite) {
+  try {
+    await webAPI.WarbandsAPI.JoinWithInviteV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      invite.groupID,
+      client.characterID,
+      invite.inviteCode,
+    );
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
 
+async function getInvitesForCharacter() {
+  try {
+    await webAPI.GroupsAPI.GetInvitesForCharacterV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+    );
+  } catch (err) {
+    webAPI.handleWebAPIError(err);
+  }
+}
 
 export interface InvitesState {
   isInitializing: boolean;

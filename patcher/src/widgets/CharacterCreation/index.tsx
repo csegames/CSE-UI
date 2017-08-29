@@ -321,7 +321,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
       errors.push(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
       You have only spent ${this.props.attributesState.pointsAllocated} points.`);
-    if (!webAPI.TraitsAPI.getTraitsV1(client.shardID).then(res => res.ok))
+    if (!webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID).then(res => res.ok))
       errors.push(
         'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
       );
