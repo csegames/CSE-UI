@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { utils, dxKeyCodes } from 'camelot-unchained';
+import { utils, client, dxKeyCodes } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { ConfigInfo } from '../../OptionsMain';
 
@@ -126,12 +126,17 @@ export class KeyBindWarningModal extends React.Component<KeyBindWarningModalProp
             className={css(ss.button, custom.button, ss.overrideButton, custom.overrideButton)}>
             Override
           </button>
-          <button onClick={this.props.onCancelPress} className={css(ss.button, custom.button)}>
+          <button onClick={this.onCancelPress} className={css(ss.button, custom.button)}>
             Cancel
           </button>
         </div>
       </div>
     ) : null;
+  }
+
+  private onCancelPress = () => {
+    this.props.onCancelPress();
+    client.ReleaseInputOwnership();
   }
 }
 

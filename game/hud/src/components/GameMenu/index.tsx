@@ -114,7 +114,9 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
             <button className={css(ss.menuButton, custom.menuButton)} onClick={this.onQuitGameClick}>QUIT GAME</button>
           </div>
           <div className={css(ss.gameMenuFooter, custom.gameMenuFooter)}>
-            <button className={css(ss.closeButton, custom.closeButton)} onClick={this.closeMenu}>CLOSE MENU</button>
+            <button className={css(ss.closeButton, custom.closeButton)} onClick={this.fireVisibilityEvent}>
+              CLOSE MENU
+            </button>
           </div>
         </div>
       </div>
@@ -136,11 +138,6 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
     client.Quit();
   }
 
-  private closeMenu = () => {
-    client.CloseUI('gamemenu');
-    events.fire('hudnav--navigate', 'gamemenu');
-  }
-
   private handleVisibilityEvent = (name: string) => {    
     if (name === 'gamemenu') {
       this.setState((state, props) => {
@@ -159,13 +156,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private fireVisibilityEvent = () => {
-    if (!this.state.visible) {
-      this.close();
-    }
-  }
-
-  private close = () => {
-    client.CloseUI('gamemenu'); // <-- get rid of need to do this
+    console.log('fire visibility event');
     events.fire('hudnav--navigate', 'gamemenu');
   }
 }

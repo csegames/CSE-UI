@@ -300,13 +300,16 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   }
 
   private handleVisibility = (name: string) => {
+    if (name === 'gamemenu' && this.state.visible) {
+      client.ReleaseInputOwnership();
+      this.setState({ visible: false });
+    }
     if (name === 'options') {
       this.setState({ visible: !this.state.visible });
     }
   }
 
   private close = () => {
-    client.CloseUI('gamemenu'); // <-- get rid of need to do this
     events.fire('hudnav--navigate', 'options');
   }
 
