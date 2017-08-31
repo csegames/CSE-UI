@@ -6,11 +6,11 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-31 20:52:48
+ * @Last Modified time: 2017-08-31 21:08:09
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, DispatchProp } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import { StyleSheet, css, merge, tools, ToolsStyles } from '../styles';
 
@@ -30,7 +30,6 @@ export interface ToolsPropsRedux {
 
 export interface ToolsOwnProps {
   style?: Partial<ToolsStyles>;
-  dispatch: (action: any) => void;
   refresh: () => void;
 }
 
@@ -38,7 +37,7 @@ const select = (state: GlobalState, props: ToolsOwnProps) : ToolsPropsRedux => {
   return { countdown: state.ui.countdown };
 };
 
-export type ToolsProps = ToolsPropsRedux & ToolsOwnProps;
+export type ToolsProps = ToolsPropsRedux & DispatchProp<any> & ToolsOwnProps;
 
 interface ToolsState {
   range: number;

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-31 20:49:48
+ * @Last Modified time: 2017-08-31 21:00:59
  */
 
 import * as React from 'react';
@@ -163,7 +163,7 @@ class App extends React.Component<AppProps,AppState> {
           />
         );
       case 'tools':
-        return <Tools dispatch={this.props.dispatch} refresh={this.refresh}/>;
+        return <Tools refresh={this.refresh}/>;
     }
   }
 
