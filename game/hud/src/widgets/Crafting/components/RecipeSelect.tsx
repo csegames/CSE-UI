@@ -5,17 +5,17 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 16:11:24
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:48:42
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:52:21
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Select from '../Select';
-import Label from '../Label';
-import { GlobalState } from '../../services/session/reducer';
-import { Recipe } from '../../services/types';
-import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../../styles';
+import Select from './Select';
+import Label from './Label';
+import { GlobalState } from '../services/session/reducer';
+import { Recipe } from '../services/types';
+import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../styles';
 
 export interface RecipeSelectReduxProps {
   type?: string;

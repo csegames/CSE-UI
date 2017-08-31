@@ -5,14 +5,14 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 07:29:27
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:46:18
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:50:11
  */
 
 import * as React from 'react';
-import { Ingredient } from '../../services/types';
-import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../../styles';
-import Icon from '../Icon';
+import { Ingredient } from '../services/types';
+import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../styles';
+import Icon from './Icon';
 
 export interface IngredientItemProps {
   ingredient: Ingredient;

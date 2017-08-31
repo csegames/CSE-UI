@@ -6,15 +6,15 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 18:19:58
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 19:58:12
+ * @Last Modified time: 2017-08-31 20:51:59
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Label from '../Label';
-import Input from '../Input';
-import { GlobalState } from '../../services/session/reducer';
-import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../../styles';
+import Label from './Label';
+import Input from './Input';
+import { GlobalState } from '../services/session/reducer';
+import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../styles';
 
 export interface QualityInputReduxProps {
   dispatch?: (action: any) => void;

@@ -5,17 +5,17 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-15 16:21:40
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:48:41
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:52:11
  */
 
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Label from '../Label';
-import Input from '../Input';
-import { GlobalState } from '../../services/session/reducer';
-import { StyleSheet, css, merge, quantityInput } from '../../styles';
+import Label from './Label';
+import Input from './Input';
+import { GlobalState } from '../services/session/reducer';
+import { StyleSheet, css, merge, quantityInput } from '../styles';
 
 export interface QuantityInputReduxProps {
   dispatch?: (action: any) => void;

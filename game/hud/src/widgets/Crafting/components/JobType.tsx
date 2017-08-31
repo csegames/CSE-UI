@@ -6,15 +6,15 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-11 19:30:42
+ * @Last Modified time: 2017-08-31 20:51:18
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../../styles';
-import { GlobalState } from '../../services/session/reducer';
+import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../styles';
+import { GlobalState } from '../services/session/reducer';
 
-import Button from '../Button';
+import Button from './Button';
 
 interface JobTypeReduxProps {
   dispatch?: (action: any) => void;

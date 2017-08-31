@@ -6,19 +6,19 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-06 16:09:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-11 18:30:32
+ * @Last Modified time: 2017-08-31 20:50:44
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { GlobalState } from '../../services/session/reducer';
-import { Ingredient } from '../../services/types';
-import IngredientItem from '../IngredientItem';
-import RepairItem from '../RepairItem';
-import PossibleIngredients from '../PossibleIngredients';
-import Input from '../Input';
-import Button from '../Button';
-import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles} from '../../styles';
+import { GlobalState } from '../services/session/reducer';
+import { Ingredient } from '../services/types';
+import IngredientItem from './IngredientItem';
+import RepairItem from './RepairItem';
+import PossibleIngredients from './PossibleIngredients';
+import Input from './Input';
+import Button from './Button';
+import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles} from '../styles';
 
 export interface IngredientsPropsRedux {
   dispatch?: (action: any) => void;

@@ -6,16 +6,16 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:54:38
+ * @Last Modified time: 2017-08-31 20:51:53
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GlobalState } from '../../services/session/reducer';
-import Select from '../Select';
-import { Ingredient, InventoryItem } from '../../services/types';
-import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../../styles';
-import Icon from '../Icon';
+import { GlobalState } from '../services/session/reducer';
+import Select from './Select';
+import { Ingredient, InventoryItem } from '../services/types';
+import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../styles';
+import Icon from './Icon';
 
 interface PossibleIngredientsReduxProps {
   possibleIngredients?: InventoryItem[];

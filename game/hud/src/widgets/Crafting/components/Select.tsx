@@ -5,12 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-11 21:38:34
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:49:15
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:52:32
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, select, SelectStyles } from '../../styles';
+import { StyleSheet, css, merge, select, SelectStyles } from '../styles';
 
 export interface SelectProps {
   items: any[];

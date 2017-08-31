@@ -6,18 +6,18 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 22:12:17
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-31 18:36:13
+ * @Last Modified time: 2017-08-31 20:49:48
  */
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {events, client, jsKeyCodes } from 'camelot-unchained';
-import {craftingTimeToString} from '../../services/util';
+import {craftingTimeToString} from '../services/util';
 
 // Types
-import { Recipe, Ingredient } from '../../services/types';
-import { VoxIngredient, VoxRecipe, VoxResponse } from '../../services/game/crafting';
-import { JobState, GlobalState } from '../../services/session/reducer';
+import { Recipe, Ingredient } from '../services/types';
+import { VoxIngredient, VoxRecipe, VoxResponse } from '../services/game/crafting';
+import { JobState, GlobalState } from '../services/session/reducer';
 
 // Actions
 import {
@@ -25,9 +25,9 @@ import {
   startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
   setName, setRecipe, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
-} from '../../services/session/job';
-import { setUIMode, setRemaining, setMinimized } from '../../services/session/ui';
-import { gotVoxRecipes } from '../../services/session/recipes';
+} from '../services/session/job';
+import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
+import { gotVoxRecipes } from '../services/session/recipes';
 
 // Updated Game API - Using GraphQL and WebAPI
 import {
@@ -35,20 +35,20 @@ import {
   setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
   setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
   addVoxIngredient, removeVoxIngredient,
-} from '../../services/game/crafting';
+} from '../services/game/crafting';
 
 // Components
-import JobType from '../JobType';
-import JobDetails from '../JobDetails';
-import VoxInfo from '../VoxInfo';
-import Tools from '../Tools';
-import Close from '../Close';
-import VoxMessage from '../VoxMessage';
-import Minimize from '../Minimize';
-import Button from '../Button';
+import JobType from './JobType';
+import JobDetails from './JobDetails';
+import VoxInfo from './VoxInfo';
+import Tools from './Tools';
+import Close from './Close';
+import VoxMessage from './VoxMessage';
+import Minimize from './Minimize';
+import Button from './Button';
 
 // Styles
-import { StyleSheet, css, merge, app, AppStyles } from '../../styles';
+import { StyleSheet, css, merge, app, AppStyles } from '../styles';
 
 const select = (state: GlobalState) => {
   return {

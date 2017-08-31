@@ -5,13 +5,13 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-23 21:18:49
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:46:04
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:49:56
  */
 
 
 import * as React from 'react';
-import { StyleSheet, css, merge, button, ButtonStyles } from '../../styles';
+import { StyleSheet, css, merge, button, ButtonStyles } from '../styles';
 
 interface ButtonProps {
   disabled?: boolean;

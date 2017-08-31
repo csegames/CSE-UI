@@ -6,15 +6,15 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-16 18:52:22
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-11 17:06:23
+ * @Last Modified time: 2017-08-31 20:52:53
  */
 
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GlobalState, JobState } from '../../services/session/reducer';
+import { GlobalState, JobState } from '../services/session/reducer';
 
-import { StyleSheet, css, merge, voxInfo, VoxInfoStyles } from '../../styles';
+import { StyleSheet, css, merge, voxInfo, VoxInfoStyles } from '../styles';
 
 export interface VoxInfoReduxProps {
   dispatch?: (action: any) => void;

@@ -6,11 +6,11 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-17 11:15:50
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 12:38:58
+ * @Last Modified time: 2017-08-31 20:51:58
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, progressBar, ProgressBarStyles } from '../../styles';
+import { StyleSheet, css, merge, progressBar, ProgressBarStyles } from '../styles';
 
 interface ProgressBarProps {
   total: number;

@@ -5,18 +5,18 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-10 22:11:42
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:48:20
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:51:44
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GlobalState } from '../../services/session/reducer';
-import { InventoryItem } from '../../services/types';
-import { craftingTimeToString } from '../../services/util';
-import Icon from '../Icon';
+import { GlobalState } from '../services/session/reducer';
+import { InventoryItem } from '../services/types';
+import { craftingTimeToString } from '../services/util';
+import Icon from './Icon';
 
-import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../../styles';
+import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../styles';
 
 export interface OutputItemsReduxProps {
   dispatch?: (action: any) => void;

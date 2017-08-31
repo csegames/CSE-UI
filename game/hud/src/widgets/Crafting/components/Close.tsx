@@ -6,11 +6,11 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-24 23:51:05
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-12 14:05:36
+ * @Last Modified time: 2017-08-31 20:50:01
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, close, CloseStyles } from '../../styles';
+import { StyleSheet, css, merge, close, CloseStyles } from '../styles';
 
 interface CloseProps {
   onClose: () => void;

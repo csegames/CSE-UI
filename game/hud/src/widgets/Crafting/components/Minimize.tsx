@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-17 14:16:42
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-17 17:37:00
+ * @Last Modified time: 2017-08-31 20:51:26
  */
 
 
 import * as React from 'react';
-import { StyleSheet, css, merge, minimize, MinimizeStyles } from '../../styles';
+import { StyleSheet, css, merge, minimize, MinimizeStyles } from '../styles';
 
 interface MinimizeProps {
   onMinimize: () => void;

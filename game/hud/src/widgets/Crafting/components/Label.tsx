@@ -6,11 +6,11 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-05 20:53:01
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 20:15:12
+ * @Last Modified time: 2017-08-31 20:51:23
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, labelStyles, LabelStyles } from '../../styles';
+import { StyleSheet, css, merge, labelStyles, LabelStyles } from '../styles';
 
 interface LabelProps {
   children?: any;

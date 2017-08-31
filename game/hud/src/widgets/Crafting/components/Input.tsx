@@ -6,12 +6,12 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-14 21:42:18
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-11 21:14:42
+ * @Last Modified time: 2017-08-31 20:50:50
  */
 
 import * as React from 'react';
 import { client } from 'camelot-unchained';
-import { StyleSheet, css, merge, input, InputStyles } from '../../styles';
+import { StyleSheet, css, merge, input, InputStyles } from '../styles';
 
 interface InputProps {
   name?: string;      // temp for debugging

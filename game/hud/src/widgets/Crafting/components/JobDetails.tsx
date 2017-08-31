@@ -6,24 +6,24 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-04 21:36:32
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-11 19:17:59
+ * @Last Modified time: 2017-08-31 20:51:08
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GlobalState } from '../../services/session/reducer';
-import { Ingredient } from '../../services/types';
-import { Recipe, InventoryItem } from '../../services/types';
-import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../../styles';
-import Ingredients from '../Ingredients';
+import { GlobalState } from '../services/session/reducer';
+import { Ingredient } from '../services/types';
+import { Recipe, InventoryItem } from '../services/types';
+import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../styles';
+import Ingredients from './Ingredients';
 
-import Button from '../Button';
-import RecipeSelect from '../RecipeSelect';
-import NameInput from '../NameInput';
-import QualityInput from '../QualityInput';
-import QuantityInput from '../QuantityInput';
-import VoxMessage from '../VoxMessage';
-import OutputItems from '../OutputItems';
+import Button from './Button';
+import RecipeSelect from './RecipeSelect';
+import NameInput from './NameInput';
+import QualityInput from './QualityInput';
+import QuantityInput from './QuantityInput';
+import VoxMessage from './VoxMessage';
+import OutputItems from './OutputItems';
 
 interface JobDetailsReduxProps {
   totalCraftingTime?: number;

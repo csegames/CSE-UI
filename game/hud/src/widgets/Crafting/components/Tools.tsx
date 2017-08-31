@@ -6,23 +6,23 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 18:42:59
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-08-31 18:35:02
+ * @Last Modified time: 2017-08-31 20:52:48
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GlobalState } from '../../services/session/reducer';
-import { StyleSheet, css, merge, tools, ToolsStyles } from '../../styles';
+import { GlobalState } from '../services/session/reducer';
+import { StyleSheet, css, merge, tools, ToolsStyles } from '../styles';
 
 // Helpers
-import { slash } from '../../services/game/slash';
+import { slash } from '../services/game/slash';
 
-import { setMessage } from '../../services/session/job';
-import { setCountdown } from '../../services/session/ui';
+import { setMessage } from '../services/session/job';
+import { setCountdown } from '../services/session/ui';
 
-import Input from '../Input';
-import Button from '../Button';
-import VoxMessage from '../VoxMessage';
+import Input from './Input';
+import Button from './Button';
+import VoxMessage from './VoxMessage';
 
 export interface ToolsPropsRedux {
   countdown: number;

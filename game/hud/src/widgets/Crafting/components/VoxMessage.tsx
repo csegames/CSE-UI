@@ -5,16 +5,16 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-13 20:52:19
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:49:38
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 20:53:01
  */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, css, merge, voxMessage, VoxMessageStyles } from '../../styles';
-import { GlobalState } from '../../services/session/reducer';
-import { Message } from '../../services/types';
-import ProgressBar from '../ProgressBar';
+import { StyleSheet, css, merge, voxMessage, VoxMessageStyles } from '../styles';
+import { GlobalState } from '../services/session/reducer';
+import { Message } from '../services/types';
+import ProgressBar from './ProgressBar';
 
 export interface VoxMessageReduxProps {
   dispatch?: (action: any) => void;
