@@ -9,7 +9,7 @@ module.exports = {
       }
     },
     copy: {
-      misc: 'copyup src/third-party/**/* src/sounds/**/* src/images/**/* src/font/**/* src/**/*.html src/videos/**/* dist/ui src/dev.config.js dist/ui',
+      misc: 'copyup src/assets/**/* src/third-party/**/* src/sounds/**/* src/images/**/* src/font/**/* src/**/*.html src/videos/**/* dist/ui src/dev.config.js dist/ui',
       patcher: 'copyup dist/ui/**/* PatchClient/cpui'
     },
     babel: 'babel tmp -d tmpp',

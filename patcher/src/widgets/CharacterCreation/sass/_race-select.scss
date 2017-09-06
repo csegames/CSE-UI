@@ -133,3 +133,279 @@
 .standing__HumanMaleT--Female {
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png');
 }
+
+.videobg {
+  margin-top: -20px;
+
+  .snow, .snow-close, .glowOrbs, .dust {
+    position: absolute;
+    height:100vh;
+    width: 100vw;
+    overflow:hidden;
+    z-index:3;
+    top: 0;
+  }
+  .snow{
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+  }
+  .snow-close{
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+  }
+  .glowOrbs {
+    -webkit-filter: blur(2px);
+    filter: blur(2px);
+  }
+
+  .parallax {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index:1;
+    left: 0;
+  }
+
+  .bgelement {
+    position: absolute;
+    z-index:1;
+    width: 100%;
+    height: 100%;
+    left:0;
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
+
+  .ray1 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-1.png);
+    background-position:1% top;
+    background-size:60%;
+    animation: rays 5s ease infinite;
+    &.viking {
+      -webkit-filter: grayscale(100%) brightness(150%);
+      filter: grayscale(100%) brightness(150%);
+    }
+    &.tdd {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-2.png);
+      background-position:100% top;
+      background-size:50%;
+      -webkit-filter:hue-rotate(130deg);
+      filter:hue-rotate(130deg);
+    }
+  }
+
+  .ray2 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-2.png);
+    background-position:50% top;
+    background-size:70%;  
+    animation: rays 3s ease infinite;
+    &.viking {
+      -webkit-filter: grayscale(100%) brightness(150%);
+      filter: grayscale(100%) brightness(150%);
+    }
+    &.tdd {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-2.png);
+      background-position:80% top;
+      background-size:100%;
+      -webkit-filter:hue-rotate(130deg);
+      filter:hue-rotate(130deg);
+    }
+  }
+
+  .ray3 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-3.png);
+    background-position:100% top;
+    background-size:80%;  
+    animation: rays 4s ease infinite;
+    &.viking {
+      -webkit-filter: grayscale(100%) brightness(150%);
+      filter: grayscale(100%) brightness(150%);
+    }
+    &.tdd {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/ray-2.png);
+      background-position:10% top;
+      background-size:50%;  
+      -webkit-filter:hue-rotate(130deg);
+      filter:hue-rotate(130deg);
+    }
+  }
+
+  .particle {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/particle.png);
+    &.viking {
+      -webkit-filter: invert(100%);
+      filter:invert(100%);
+    }
+    &.tdd {
+      -webkit-filter: invert(10%);
+      filter:invert(10%);
+    }
+  }
+
+  .char {
+    background-position:60% 30px;
+    background-size:contain;
+    max-height:80%;
+    bottom:0px;
+    left:0px;
+  }
+
+  .layer1 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/tdd4.png);
+    background-position: bottom;
+    background-size:cover;   
+    transform: scale(1.1);
+    &.arthurian {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/art-flag.png); 
+      max-height: 70%;
+      background-size:contain;
+      background-position: bottom left; 
+      bottom:0;
+      left:0;
+    }
+    &.viking {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/viking-left.png);
+    }
+  }
+
+  .layer2 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/tdd3.png);
+    background-position: bottom;
+    background-size:cover;   
+    transform: scale(1.1);
+    &.arthurian {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/art-grnd.png);
+      background-position: bottom right;
+    }
+    &.viking {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/viking-right.png);
+    }
+  }
+  
+  .layer3 {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/tdd2.png);
+    background-position: bottom;
+    background-size:cover;   
+    transform: scale(1.1);
+    &.arthurian {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/art-castle.png);
+      background-position: bottom right;
+    }
+    &.viking {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/viking-dragon.png);
+      background-position: center;
+    }
+  }
+
+  .bg {
+    background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/bg2.jpg); 
+    transform: scale(1.1);
+    background-position: bottom;
+    background-size:cover;
+    &.arthurian {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/art-bg.jpg);
+      background-position: top;
+    }
+    &.viking {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/viking-bg.jpg);
+    }
+    &.tdd {
+      background-image: url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/tdd1.png);       
+    }
+  }
+
+  .clouds {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    width:100%;
+    height:100%;
+    display:block;
+    background:transparent url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/smoke-close.png) repeat-x bottom center;
+    z-index:3;
+    animation:move-clouds-close 7s linear infinite;
+    &.arthurian {
+      animation:move-clouds-close 15s linear infinite;
+      transform: scaleY(-1);
+    }
+    &.viking {
+      animation:move-clouds-close 15s linear infinite;
+    }
+    &.tdd {
+      animation:move-clouds-close-left 15s linear infinite;
+      -webkit-filter: brightness(0);
+      filter: brightness(0);
+    }
+  }
+
+  .clouds::before {
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    width:100%;
+    height:100%;
+    display:block;
+    background:transparent url(https://s3.amazonaws.com/camelot-unchained/videos/UI/images/smoke.png) repeat-x bottom center;
+    background-size: 500px;
+    z-index:3;
+    opacity: .2;
+    animation:move-clouds-back 7s linear infinite;
+    &.arthurian {
+      animation:move-clouds-close 15s linear infinite;
+    }
+    &.viking {
+      z-index:1;
+      opacity: 1;
+      animation:move-clouds-back 15s linear infinite;
+    }
+    &.tdd {
+      animation:move-clouds-close-left 20s linear infinite;
+      opacity: 1;
+      -webkit-filter: brightness(0);
+      filter: brightness(0);
+    }
+  }
+}
+
+/*Moving clouds*/
+
+@keyframes move-clouds-back {
+  from {background-position:0 bottom;}
+  to {background-position:500px bottom;}
+}
+
+@keyframes move-clouds-close {
+  from {background-position:0 bottom;}
+  to {background-position:1578px bottom;}
+}
+
+@keyframes move-clouds-back-left {
+  from {background-position:500px bottom;}
+  to {background-position:0 bottom;}
+}
+
+@keyframes move-clouds-close-left {
+  from {background-position:1578px bottom;}
+
+  to {background-position:0 bottom;}
+}
+
+/* Move Rays */
+
+@keyframes rays {
+  0% {
+    opacity:.3;
+  }
+  50% {
+    opacity:1;
+  }
+  100% {
+    opacity:.3;
+  }
+}
