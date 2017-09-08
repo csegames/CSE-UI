@@ -42,6 +42,7 @@ export interface EquipmentSlotsStyles extends StyleDeclaration {
 
 export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
   equipmentSlots: {
+    overflowY: 'auto',
     flex: '1 1 auto',
     width: '100%',
     height: '100%',
@@ -185,6 +186,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       slotNameItemMenuVisible: '',
     };
   }
+
   public render() {
     const style = this.style = StyleSheet.create(defaultEquipmentSlotsStyle);
     const customStyle = this.customStyle = StyleSheet.create(this.props.styles || {});
@@ -232,7 +234,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         },
       },
     ];
-    
+
     return (
       <div className={css(style.equipmentSlots, customStyle.equipmentSlots)}>
         <TabPanel
@@ -294,7 +296,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       });
     }));
     const newItem = { item: inventoryItem, gearSlots: willEquipTo };
-    
+
     this.setState((state) => ({
       ...state,
       equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
@@ -337,9 +339,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
                 isWeapon && style.weaponSpacing,
                 isWeapon && customStyle.weaponSpacing,
               )}>
-              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
+              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem}/>
             </div>
-          </PopupMiniInventory> 
+          </PopupMiniInventory>
         );
       })
     );
@@ -349,10 +351,10 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const ss = this.style;
     const customStyle = this.customStyle;
     return (
-    <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
-      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
-      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
-    </div>
+      <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
+        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
+        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
+      </div>
     );
   }
 
