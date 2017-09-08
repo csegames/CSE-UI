@@ -5260,9 +5260,9 @@ tslint@^4.1.1:
     tsutils "^1.1.0"
     update-notifier "^2.0.0"
 
-tslint@^5.0.0:
-  version "5.6.0"
-  resolved "http://registry.camelotunchained.com/tslint/-/tslint-5.6.0.tgz#088aa6c6026623338650b2900828ab3edf59f6cf"
+tslint@^5.7.0:
+  version "5.7.0"
+  resolved "http://registry.camelotunchained.com/tslint/-/tslint-5.7.0.tgz#c25e0d0c92fa1201c2bc30e844e08e682b4f3552"
   dependencies:
     babel-code-frame "^6.22.0"
     colors "^1.1.2"
@@ -5273,15 +5273,15 @@ tslint@^5.0.0:
     resolve "^1.3.2"
     semver "^5.3.0"
     tslib "^1.7.1"
-    tsutils "^2.7.1"
+    tsutils "^2.8.1"
 
 tsutils@^1.1.0, tsutils@^1.4.0:
   version "1.9.1"
   resolved "http://registry.camelotunchained.com/tsutils/-/tsutils-1.9.1.tgz#b9f9ab44e55af9681831d5f28d0aeeaf5c750cb0"
 
-tsutils@^2.7.1:
-  version "2.8.0"
-  resolved "http://registry.camelotunchained.com/tsutils/-/tsutils-2.8.0.tgz#0160173729b3bf138628dd14a1537e00851d814a"
+tsutils@^2.8.1:
+  version "2.8.2"
+  resolved "http://registry.camelotunchained.com/tsutils/-/tsutils-2.8.2.tgz#2c1486ba431260845b0ac6f902afd9d708a8ea6a"
   dependencies:
     tslib "^1.7.1"
 

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 11:20:43
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 15:40:47
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-09-08 12:52:42
  */
 
 import * as React from 'react';
@@ -100,24 +100,26 @@ export const defaultDropDownSelectStyle: DropDownSelectStyle = {
   },
 };
 
-export interface DropDownSelectProps {
-  items: any[];
-  selectedItem?: any;
-  renderListItem: (item: any, renderData: any) => JSX.Element;
-  renderSelectedItem: (item: any, renderData: any) => JSX.Element;
-  renderData?: any;
+export interface DropDownSelectProps<ItemType, DataType extends {}> {
+  items: ItemType[];
+  selectedItem?: ItemType;
+  renderListItem: (item: ItemType, renderType: DataType) => JSX.Element;
+  renderSelectedItem: (item: ItemType, renderData: DataType) => JSX.Element;
+  renderData?: DataType;
   styles?: Partial<DropDownSelectStyle>;
+  onSelectedItemChaned?: (item: ItemType) => void;
 }
 
-export interface DropDownSelectState {
-  items: any[];
-  selectedItem: any;
+export interface DropDownSelectState<ItemType> {
+  items: ItemType[];
+  selectedItem: ItemType;
   keyboardIndex: number;
   dropDownOpen: boolean;
 }
 
-export class DropDownSelect extends React.Component<DropDownSelectProps, DropDownSelectState> {
-  constructor(props: DropDownSelectProps) {
+export class DropDownSelect<ItemType, DataType extends {} = {}> 
+  extends React.Component<DropDownSelectProps<ItemType, DataType>, DropDownSelectState<ItemType>> {
+  constructor(props: DropDownSelectProps<ItemType, DataType>) {
     super(props);
     const items = cloneDeep(this.props.items);
     this.state = {
@@ -203,12 +205,13 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
     }
   }
 
-  private selectItem = (item: any) => {
+  private selectItem = (item: ItemType) => {
     this.setState({
       keyboardIndex: -1,
       selectedItem: item,
       dropDownOpen: false,
     });
+    this.props.onSelectedItemChaned(item);
   }
 }
 

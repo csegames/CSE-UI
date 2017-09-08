@@ -1,6 +1,6 @@
 {
   "name": "camelot-unchained",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -94,7 +94,7 @@
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
     "ts-jest": "^19.0.14",
-    "tslint": "^5.0.0",
+    "tslint": "^5.7.0",
     "tslint-config-airbnb": "^1.1.1",
     "tslint-eslint-rules": "^4.0.0",
     "typescript": "^2.4.1",

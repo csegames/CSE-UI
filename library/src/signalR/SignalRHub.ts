@@ -2,15 +2,12 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2016-10-12 16:17:30
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-25 14:48:41
  */
 import events from '../events';
 import client from '../core/client';
 import { eventMapper, EventMap } from '../util/eventMapper';
+
+declare const $: any;
 
 function signalRToEvents(recieve: string, send: string, hub: any, hubName: string, debug: boolean) {
   if (!hub) return;
