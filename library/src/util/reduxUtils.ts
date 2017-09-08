@@ -12,7 +12,7 @@
 import {clone, merge, Dictionary} from './objectUtils';
 
 export interface AsyncAction<T> {
-    (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
+  (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
 }
 
 export interface BaseAction {
