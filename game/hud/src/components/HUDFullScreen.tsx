@@ -15,6 +15,7 @@ import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import Social from '../widgets/Social';
 import Character from '../widgets/Character';
+import Map from '../widgets/Map';
 
 export interface HUDFullScreenStyle extends StyleDeclaration {
   hudFullScreen: React.CSSProperties;
@@ -132,6 +133,13 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         },
         rendersContent: 'Social',
       },
+      {
+        name: 'map',
+        tab: {
+          render: () => <span>Map</span>,
+        },
+        rendersContent: 'Map',
+      },
     ];
 
     const content: ContentItem[] = [
@@ -147,8 +155,14 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           render: this.renderSocial,
         },
       },
+      {
+        name: 'Map',
+        content: {
+          render: this.renderMap,
+        },
+      },
     ];
-    
+
     return !this.state.initial && (
       <div style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
         <TabPanel
@@ -190,11 +204,15 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private renderCharacter = (prop: { active: boolean }) => {
-    return <Character visibleComponent={this.state.visibleComponent} />;
+    return <Character visibleComponent={this.state.visibleComponent}/>;
   }
 
   private renderSocial = (prop: { active: boolean }) => {
-    return <Social visibleComponent={this.state.visibleComponent} />;
+    return <Social visibleComponent={this.state.visibleComponent}/>;
+  }
+
+  private renderMap = (prop: { active: boolean }) => {
+    return <Map visibleComponent={this.state.visibleComponent}/>;
   }
 
   private handleNavigation = (name: string) => {
@@ -216,6 +234,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       }
       case 'social': {
         this.setActiveTabIndex(2);
+        this.setVisibleComponent(name);
+        break;
+      }
+      case 'map': {
+        this.setActiveTabIndex(3);
         this.setVisibleComponent(name);
         break;
       }
