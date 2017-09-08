@@ -136,7 +136,7 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
       <div className={css(ss.container, custom.container)}
            onKeyDown={this.onKeyDown}>
         <div className={css(ss.selected, custom.selected)}
-             onClick={() => this.setState({dropDownOpen: !this.state.dropDownOpen})}>
+             onClick={() => this.setState({ dropDownOpen: !this.state.dropDownOpen })}>
           <div className={css(ss.selectedItem, custom.selectedItem)}>
             {this.props.renderSelectedItem(this.state.selectedItem, this.props.renderData)}
           </div>
@@ -146,16 +146,16 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
         </div>
         <div className={css(ss.listWrapper, custom.listWrapper)}>
           <div className={this.state.dropDownOpen ?
-           css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
+            css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
             {
               this.state.items.map((item, index) => {
                 if (item === this.state.selectedItem) return null;
                 return (
-                  <div key={index} 
+                  <div key={index}
                        className={
-                       this.state.keyboardIndex === index ?
-                         css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                         css(ss.listItem, custom.listItem)
+                         this.state.keyboardIndex === index ?
+                           css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
+                           css(ss.listItem, custom.listItem)
                        }
                        onClick={() => this.selectItem(item)}>
                     {this.props.renderListItem(item, this.props.renderData)}

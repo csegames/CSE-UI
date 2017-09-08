@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 import * as RestClientLegacy from './../RestClientLegacy';
 
 // Control Game

@@ -7,9 +7,9 @@
 var path = require('path');
 var aliases = {};
 // Look for .scss|sass files inside the node_modules folder
-module.exports = function(url, file, done) {
-  if(aliases[url]) {
-    return done({ file:aliases[url] });
+module.exports = function (url, file, done) {
+  if (aliases[url]) {
+    return done({file: aliases[url]});
   }
   try {
     var newPath = path.relative('.', require.resolve(url));
@@ -21,9 +21,9 @@ module.exports = function(url, file, done) {
       newPath = module.includePaths[0] + '/' + url;
       aliases[url] = newPath;
     }
-    return done({ file:newPath });
-  } catch(e) {
+    return done({file: newPath});
+  } catch (e) {
     aliases[url] = url;
-    return done({ file:url });
+    return done({file: url});
   }
 }

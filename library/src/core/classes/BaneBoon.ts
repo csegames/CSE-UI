@@ -7,7 +7,7 @@
 import channelId from '../constants/channelId';
 import baneBoonCategory from '../constants/baneBoonCategory';
 
-class BaneBoon  {
+class BaneBoon {
 
   public id: string;
   public channelId: channelId;
@@ -28,7 +28,7 @@ class BaneBoon  {
     this.channelId = boonbane.channelId || channelId.NONE;
     this.name = boonbane.name || '';
     this.description = boonbane.description || '';
-    this.category = boonbane.category ||  baneBoonCategory.NONE;
+    this.category = boonbane.category || baneBoonCategory.NONE;
     this.categoryId = boonbane.categoryId || 0;
     this.icon = boonbane.icon || '';
     this.costPerRank = boonbane.costPerRank || 0;

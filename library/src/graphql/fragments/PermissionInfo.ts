@@ -10,7 +10,7 @@
  */
 
 import gql from 'graphql-tag';
-import {utils} from '../..';
+import { utils } from '../..';
 import { PermissionInfo } from '../schema';
 
 export default gql`

@@ -11,6 +11,7 @@
 
 import client from '../core/client';
 import { findIndexWhere } from '../util/arrayUtils';
+
 export * from './SignalRHub';
 export * from './hubs/groupsHub';
 export * from './hubs/patcherHub';
@@ -49,7 +50,7 @@ export const reinitializeSignalR = () => {
   initializeSignalR();
 };
 
-export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
+export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCallback }[]) => {
   if (client.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {

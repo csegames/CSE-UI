@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 import client from '../../core/client';
 import Inventory from '../../core/classes/Inventory';
 import Item from '../../core/classes/Item';
@@ -26,6 +26,7 @@ export default class InventoryListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesInventory;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

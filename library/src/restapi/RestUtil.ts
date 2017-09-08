@@ -29,8 +29,9 @@ export function makeQueryString(url: string, params: any = {}): string {
       qs.push(key + '=' + encodeURIComponent(params[key]));
     }
   }
+  let modifiedUrl = url;
   if (qs.length) {
-    url += '?' + qs.join('&');
+    modifiedUrl += '?' + qs.join('&');
   }
-  return url;
+  return modifiedUrl;
 }

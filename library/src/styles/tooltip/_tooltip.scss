@@ -11,7 +11,7 @@
   visibility: visible;
   line-height: $tooltip-line-height-base;
   font-size: $tooltip-font-size-base;
-  background-color:rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
   padding: $tooltip-shadow-width;
   opacity: $tooltip-opacity;
 
@@ -27,11 +27,11 @@
     background-color: $tooltip-bg;
     border-radius: $tooltip-border-radius-base;
     min-height: 34px;
-    border:$tooltip-border-width solid $tooltip-border-color;
+    border: $tooltip-border-width solid $tooltip-border-color;
   }
 
   .cu-tooltip-arrow,
-  .cu-tooltip-arrow-inner{
+  .cu-tooltip-arrow-inner {
     position: absolute;
     width: 0;
     height: 0;

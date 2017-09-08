@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
@@ -21,6 +21,7 @@ export default class AnnouncementsListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesAnnouncements;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

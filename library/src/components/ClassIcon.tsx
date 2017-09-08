@@ -34,12 +34,13 @@ export const ClassIcon = (props: {
   const ss = StyleSheet.create(merge(defaultStyle, props.style || {}));
   switch (this.props.playerClass) {
     case Archetype.Blackguard:
-      return <SVGSprite sprite='images/class-icons.svg#archer-class-icon' svgClass={css(ss.icon)} />;
+      return <SVGSprite sprite='images/class-icons.svg#archer-class-icon' svgClass={css(ss.icon)}/>;
     case Archetype.BlackKnight:
-      return <SVGSprite sprite='images/class-icons.svg#heavy-class-icon' svgClass={css(ss.icon)} />;
+      return <SVGSprite sprite='images/class-icons.svg#heavy-class-icon' svgClass={css(ss.icon)}/>;
     case Archetype.Empath:
-      return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={css(ss.icon)} />;
-    default: return <h1>Invalid Class</h1>;
+      return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={css(ss.icon)}/>;
+    default:
+      return <h1>Invalid Class</h1>;
   }
 };
 

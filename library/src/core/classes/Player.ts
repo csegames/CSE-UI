@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import Combatant from './Combatant';
-import {Race, Archetype} from '../..';
+import { Race, Archetype } from '../..';
 
 class Player extends Combatant {
 
@@ -20,7 +20,7 @@ class Player extends Combatant {
   public setRace(race: Race) {
     this.race = race;
   }
-    
+
   public setArchetype(archetype: Archetype) {
     this.archetype = archetype;
   }

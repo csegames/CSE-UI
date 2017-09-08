@@ -75,9 +75,11 @@ function run(emitter: EventEmitter, topic: string) {
 export default class UnitFrameListener {
   public listening: boolean = false;
   public topic: string;
+
   constructor(handlesTopic: string) {
     this.topic = handlesTopic;
   }
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

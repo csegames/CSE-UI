@@ -121,11 +121,87 @@ export interface PermissionInfo {
   enables: Array<string> | null;
 }
 
-export type Race = "TUATHA" | "HAMADRYAD" | "LUCHORPAN" | "FIRBOG" | "VALKYRIE" | "HELBOUND" | "FROST_GIANT" | "DVERGR" | "STRM" | "CAIT_SITH" | "GOLEM" | "GARGOYLE" | "STORM_RIDER" | "STORM_RIDER_T" | "STORM_RIDER_V" | "HUMAN_MALE_V" | "HUMAN_MALE_A" | "HUMAN_MALE_T" | "PICT" | "ANY" | "Tuatha" | "Hamadryad" | "Luchorpan" | "Firbog" | "Valkyrie" | "Helbound" | "FrostGiant" | "Dvergr" | "Strm" | "CaitSith" | "Golem" | "Gargoyle" | "StormRider" | "StormRiderT" | "StormRiderV" | "HumanMaleV" | "HumanMaleA" | "HumanMaleT" | "Pict" | "Any";
+export type Race =
+  "TUATHA"
+  | "HAMADRYAD"
+  | "LUCHORPAN"
+  | "FIRBOG"
+  | "VALKYRIE"
+  | "HELBOUND"
+  | "FROST_GIANT"
+  | "DVERGR"
+  | "STRM"
+  | "CAIT_SITH"
+  | "GOLEM"
+  | "GARGOYLE"
+  | "STORM_RIDER"
+  | "STORM_RIDER_T"
+  | "STORM_RIDER_V"
+  | "HUMAN_MALE_V"
+  | "HUMAN_MALE_A"
+  | "HUMAN_MALE_T"
+  | "PICT"
+  | "ANY"
+  | "Tuatha"
+  | "Hamadryad"
+  | "Luchorpan"
+  | "Firbog"
+  | "Valkyrie"
+  | "Helbound"
+  | "FrostGiant"
+  | "Dvergr"
+  | "Strm"
+  | "CaitSith"
+  | "Golem"
+  | "Gargoyle"
+  | "StormRider"
+  | "StormRiderT"
+  | "StormRiderV"
+  | "HumanMaleV"
+  | "HumanMaleA"
+  | "HumanMaleT"
+  | "Pict"
+  | "Any";
 
 export type Gender = "NONE" | "MALE" | "FEMALE" | "None" | "Male" | "Female";
 
-export type Class = "FIRE_MAGE" | "EARTH_MAGE" | "WATER_MAGE" | "FIGHTER" | "HEALER" | "ARCHER" | "MELEE_COMBAT_TEST" | "ARCHER_TEST" | "BLACK_KNIGHT" | "FIANNA" | "MJOLNIR" | "PHYSICIAN" | "EMPATH" | "STONEHEALER" | "BLACKGUARD" | "FOREST_STALKER" | "WINTERS_SHADOW" | "ANY" | "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+export type Class =
+  "FIRE_MAGE"
+  | "EARTH_MAGE"
+  | "WATER_MAGE"
+  | "FIGHTER"
+  | "HEALER"
+  | "ARCHER"
+  | "MELEE_COMBAT_TEST"
+  | "ARCHER_TEST"
+  | "BLACK_KNIGHT"
+  | "FIANNA"
+  | "MJOLNIR"
+  | "PHYSICIAN"
+  | "EMPATH"
+  | "STONEHEALER"
+  | "BLACKGUARD"
+  | "FOREST_STALKER"
+  | "WINTERS_SHADOW"
+  | "ANY"
+  | "FireMage"
+  | "EarthMage"
+  | "WaterMage"
+  | "Fighter"
+  | "Healer"
+  | "Archer"
+  | "MeleeCombatTest"
+  | "ArcherTest"
+  | "BlackKnight"
+  | "Fianna"
+  | "Mjolnir"
+  | "Physician"
+  | "Empath"
+  | "Stonehealer"
+  | "Blackguard"
+  | "ForestStalker"
+  | "WintersShadow"
+  | "Any";
 
 export interface MemberAction {
   id: string | null;
@@ -136,7 +212,85 @@ export interface MemberAction {
   message: string | null;
 }
 
-export type MemberActionType = "CREATED" | "DISBANDED" | "CHARACTER_JOINED" | "GROUP_JOINED" | "CHARACTER_QUIT" | "GROUP_QUIT" | "CHARACTER_KICKED" | "GROUP_KICKED" | "CHARACTER_INVITED" | "GROUP_INVITED" | "CHARACTER_ACCEPTED_INVITE" | "CHANGED_ROLE" | "ASSIGN_RANK" | "UPDATED_ROLE_PERMISSIONS" | "UPDATED_RANK_PERMISSIONS" | "CHANGED_NAME" | "CHARACTER_PERMISSIONS_CHANGED" | "GROUP_PERMISSIONS_CHANGED" | "CREATE_RANK" | "REMOVE_RANK" | "RENAME_RANK" | "ADD_RANK_PERMISSIONS" | "REMOVE_RANK_PERMISSIONS" | "SET_RANK_PERMISSIONS" | "CHANGE_RANK_LEVEL" | "TRANSFERED_OWNERSHIP" | "ABANDONDED" | "DEPOSITED_ITEM_IN_STASH" | "INVITED_ORDER" | "SHARED_COUNT" | "WITHDREW_ITEM_FROM_STASH" | "ORDER_ACCEPTED_INVITE" | "WARBAND_COUNT" | "DEPOSITED_CURRENCY_IN_STASH" | "ALLIANCE_COUNT" | "CHANGE_DISPLAY_ORDER" | "INVITED_ALLIANCE" | "ALLIANCE_SHARED_COUNT" | "WITHDREW_CURRENCY_FROM_STASH" | "ALLIANCE_ACCEPTED_INVITE" | "SET_LEADER" | "INVITED_WARBAND" | "ORDER_COUNT" | "WARBAND_ACCEPTED_INVITE" | "CAMPAIGN_COUNT" | "Created" | "Disbanded" | "CharacterJoined" | "GroupJoined" | "CharacterQuit" | "GroupQuit" | "CharacterKicked" | "GroupKicked" | "CharacterInvited" | "GroupInvited" | "CharacterAcceptedInvite" | "ChangedRole" | "AssignRank" | "UpdatedRolePermissions" | "UpdatedRankPermissions" | "ChangedName" | "CharacterPermissionsChanged" | "GroupPermissionsChanged" | "CreateRank" | "RemoveRank" | "RenameRank" | "AddRankPermissions" | "RemoveRankPermissions" | "SetRankPermissions" | "ChangeRankLevel" | "TransferedOwnership" | "DepositedItemInStash" | "WithdrewItemFromStash" | "DepositedCurrencyInStash" | "AllianceAcceptedInvite" | "OrderCount" | "WarbandAcceptedInvite" | "CampaignCount";
+export type MemberActionType =
+  "CREATED"
+  | "DISBANDED"
+  | "CHARACTER_JOINED"
+  | "GROUP_JOINED"
+  | "CHARACTER_QUIT"
+  | "GROUP_QUIT"
+  | "CHARACTER_KICKED"
+  | "GROUP_KICKED"
+  | "CHARACTER_INVITED"
+  | "GROUP_INVITED"
+  | "CHARACTER_ACCEPTED_INVITE"
+  | "CHANGED_ROLE"
+  | "ASSIGN_RANK"
+  | "UPDATED_ROLE_PERMISSIONS"
+  | "UPDATED_RANK_PERMISSIONS"
+  | "CHANGED_NAME"
+  | "CHARACTER_PERMISSIONS_CHANGED"
+  | "GROUP_PERMISSIONS_CHANGED"
+  | "CREATE_RANK"
+  | "REMOVE_RANK"
+  | "RENAME_RANK"
+  | "ADD_RANK_PERMISSIONS"
+  | "REMOVE_RANK_PERMISSIONS"
+  | "SET_RANK_PERMISSIONS"
+  | "CHANGE_RANK_LEVEL"
+  | "TRANSFERED_OWNERSHIP"
+  | "ABANDONDED"
+  | "DEPOSITED_ITEM_IN_STASH"
+  | "INVITED_ORDER"
+  | "SHARED_COUNT"
+  | "WITHDREW_ITEM_FROM_STASH"
+  | "ORDER_ACCEPTED_INVITE"
+  | "WARBAND_COUNT"
+  | "DEPOSITED_CURRENCY_IN_STASH"
+  | "ALLIANCE_COUNT"
+  | "CHANGE_DISPLAY_ORDER"
+  | "INVITED_ALLIANCE"
+  | "ALLIANCE_SHARED_COUNT"
+  | "WITHDREW_CURRENCY_FROM_STASH"
+  | "ALLIANCE_ACCEPTED_INVITE"
+  | "SET_LEADER"
+  | "INVITED_WARBAND"
+  | "ORDER_COUNT"
+  | "WARBAND_ACCEPTED_INVITE"
+  | "CAMPAIGN_COUNT"
+  | "Created"
+  | "Disbanded"
+  | "CharacterJoined"
+  | "GroupJoined"
+  | "CharacterQuit"
+  | "GroupQuit"
+  | "CharacterKicked"
+  | "GroupKicked"
+  | "CharacterInvited"
+  | "GroupInvited"
+  | "CharacterAcceptedInvite"
+  | "ChangedRole"
+  | "AssignRank"
+  | "UpdatedRolePermissions"
+  | "UpdatedRankPermissions"
+  | "ChangedName"
+  | "CharacterPermissionsChanged"
+  | "GroupPermissionsChanged"
+  | "CreateRank"
+  | "RemoveRank"
+  | "RenameRank"
+  | "AddRankPermissions"
+  | "RemoveRankPermissions"
+  | "SetRankPermissions"
+  | "ChangeRankLevel"
+  | "TransferedOwnership"
+  | "DepositedItemInStash"
+  | "WithdrewItemFromStash"
+  | "DepositedCurrencyInStash"
+  | "AllianceAcceptedInvite"
+  | "OrderCount"
+  | "WarbandAcceptedInvite"
+  | "CampaignCount";
 
 export type Invite = CharacterInvite | GroupInvite;
 
@@ -179,7 +333,17 @@ export interface Character {
   invites: Array<CharacterInvite> | null;
 }
 
-export type InviteStatus = "ACTIVE" | "ACCEPTED" | "DECLINED" | "RESCINDED" | "EXPIRED" | "Active" | "Accepted" | "Declined" | "Rescinded" | "Expired";
+export type InviteStatus =
+  "ACTIVE"
+  | "ACCEPTED"
+  | "DECLINED"
+  | "RESCINDED"
+  | "EXPIRED"
+  | "Active"
+  | "Accepted"
+  | "Declined"
+  | "Rescinded"
+  | "Expired";
 
 export interface GroupInvite extends InviteInterface {
   id: string | null;
@@ -242,9 +406,109 @@ export interface SkillComponent {
   track: number | null;
 }
 
-export type AbilityComponentType = "PRIMARY" | "SECONDARY" | "OPTIONAL_MODIFIER" | "SPECIAL_MODAL" | "INDEPENDANT_MODAL" | "Primary" | "Secondary" | "OptionalModifier" | "SpecialModal" | "IndependantModal";
+export type AbilityComponentType =
+  "PRIMARY"
+  | "SECONDARY"
+  | "OPTIONAL_MODIFIER"
+  | "SPECIAL_MODAL"
+  | "INDEPENDANT_MODAL"
+  | "Primary"
+  | "Secondary"
+  | "OptionalModifier"
+  | "SpecialModal"
+  | "IndependantModal";
 
-export type AbilityComponentSubType = "NONE" | "RUNE" | "SHAPE" | "RANGE" | "SIZE" | "INFUSION" | "FOCUS" | "TRANSPOSITION" | "MAGICAL_TYPE" | "WEAPON" | "STYLE" | "SPEED" | "POTENTIAL" | "STANCE" | "PHYSICAL_TYPE" | "RANGED_WEAPON" | "LOAD" | "PREPARE" | "DRAW" | "AIM" | "RANGED_TYPE" | "VOICE" | "INSTRUMENT" | "SHOUT" | "SONG" | "INFLECTION" | "TECHNIQUE" | "SOUND_TYPE" | "STONE" | "DELIVERY" | "STONE_TYPE" | "RUNE_SELF" | "SHAPE_SELF" | "MAGIC_SELF" | "RUNE_NO_PARTS" | "MAGIC_NO_PARTS" | "RUNE_SELF_NO_PARTS" | "MAGIC_SELF_NO_PARTS" | "TARGET" | "SIEGE_WEAPON" | "SIEGE_LOAD" | "SIEGE_PREPARE" | "SIEGE_DRAW" | "SIEGE_AIM" | "SIEGE_TYPES" | "None" | "Rune" | "Shape" | "Range" | "Size" | "Infusion" | "Focus" | "Transposition" | "MagicalType" | "Weapon" | "Style" | "Speed" | "Potential" | "Stance" | "PhysicalType" | "RangedWeapon" | "Load" | "Prepare" | "Draw" | "Aim" | "RangedType" | "Voice" | "Instrument" | "Shout" | "Song" | "Inflection" | "Technique" | "SoundType" | "Stone" | "Delivery" | "StoneType" | "RuneSelf" | "ShapeSelf" | "MagicSelf" | "RuneNoParts" | "MagicNoParts" | "RuneSelfNoParts" | "MagicSelfNoParts" | "Target" | "SiegeWeapon" | "SiegeLoad" | "SiegePrepare" | "SiegeDraw" | "SiegeAim" | "SiegeTypes";
+export type AbilityComponentSubType =
+  "NONE"
+  | "RUNE"
+  | "SHAPE"
+  | "RANGE"
+  | "SIZE"
+  | "INFUSION"
+  | "FOCUS"
+  | "TRANSPOSITION"
+  | "MAGICAL_TYPE"
+  | "WEAPON"
+  | "STYLE"
+  | "SPEED"
+  | "POTENTIAL"
+  | "STANCE"
+  | "PHYSICAL_TYPE"
+  | "RANGED_WEAPON"
+  | "LOAD"
+  | "PREPARE"
+  | "DRAW"
+  | "AIM"
+  | "RANGED_TYPE"
+  | "VOICE"
+  | "INSTRUMENT"
+  | "SHOUT"
+  | "SONG"
+  | "INFLECTION"
+  | "TECHNIQUE"
+  | "SOUND_TYPE"
+  | "STONE"
+  | "DELIVERY"
+  | "STONE_TYPE"
+  | "RUNE_SELF"
+  | "SHAPE_SELF"
+  | "MAGIC_SELF"
+  | "RUNE_NO_PARTS"
+  | "MAGIC_NO_PARTS"
+  | "RUNE_SELF_NO_PARTS"
+  | "MAGIC_SELF_NO_PARTS"
+  | "TARGET"
+  | "SIEGE_WEAPON"
+  | "SIEGE_LOAD"
+  | "SIEGE_PREPARE"
+  | "SIEGE_DRAW"
+  | "SIEGE_AIM"
+  | "SIEGE_TYPES"
+  | "None"
+  | "Rune"
+  | "Shape"
+  | "Range"
+  | "Size"
+  | "Infusion"
+  | "Focus"
+  | "Transposition"
+  | "MagicalType"
+  | "Weapon"
+  | "Style"
+  | "Speed"
+  | "Potential"
+  | "Stance"
+  | "PhysicalType"
+  | "RangedWeapon"
+  | "Load"
+  | "Prepare"
+  | "Draw"
+  | "Aim"
+  | "RangedType"
+  | "Voice"
+  | "Instrument"
+  | "Shout"
+  | "Song"
+  | "Inflection"
+  | "Technique"
+  | "SoundType"
+  | "Stone"
+  | "Delivery"
+  | "StoneType"
+  | "RuneSelf"
+  | "ShapeSelf"
+  | "MagicSelf"
+  | "RuneNoParts"
+  | "MagicNoParts"
+  | "RuneSelfNoParts"
+  | "MagicSelfNoParts"
+  | "Target"
+  | "SiegeWeapon"
+  | "SiegeLoad"
+  | "SiegePrepare"
+  | "SiegeDraw"
+  | "SiegeAim"
+  | "SiegeTypes";
 
 export interface SkillNetwork {
   name: string;
@@ -270,7 +534,25 @@ export interface CUCharacter {
 
 export type CharacterID = any;
 
-export type Archetype = "FireMage" | "EarthMage" | "WaterMage" | "Fighter" | "Healer" | "Archer" | "MeleeCombatTest" | "ArcherTest" | "BlackKnight" | "Fianna" | "Mjolnir" | "Physician" | "Empath" | "Stonehealer" | "Blackguard" | "ForestStalker" | "WintersShadow" | "Any";
+export type Archetype =
+  "FireMage"
+  | "EarthMage"
+  | "WaterMage"
+  | "Fighter"
+  | "Healer"
+  | "Archer"
+  | "MeleeCombatTest"
+  | "ArcherTest"
+  | "BlackKnight"
+  | "Fianna"
+  | "Mjolnir"
+  | "Physician"
+  | "Empath"
+  | "Stonehealer"
+  | "Blackguard"
+  | "ForestStalker"
+  | "WintersShadow"
+  | "Any";
 
 export type GroupID = any;
 
@@ -290,7 +572,21 @@ export type ArmorStatCalculationType = "None" | "Average" | "Add";
 
 export type GearLayerType = "Unknown" | "Weapon" | "Armor";
 
-export type SubpartId = "None" | "_BODY_PART_COUNT" | "Any" | "_BUILDING_VAL" | "_BODY_VAL" | "_BODY_BEGIN" | "Head" | "LeftArm" | "RightArm" | "LeftLeg" | "RightLeg" | "_BODY_END" | "_SINGULAR_VAL" | "_TYPE_MASK";
+export type SubpartId =
+  "None"
+  | "_BODY_PART_COUNT"
+  | "Any"
+  | "_BUILDING_VAL"
+  | "_BODY_VAL"
+  | "_BODY_BEGIN"
+  | "Head"
+  | "LeftArm"
+  | "RightArm"
+  | "LeftLeg"
+  | "RightLeg"
+  | "_BODY_END"
+  | "_SINGULAR_VAL"
+  | "_TYPE_MASK";
 
 export interface Item {
   givenName: string | null;
@@ -582,7 +878,16 @@ export interface InVoxJobLocation {
   itemSlot: SubItemSlot | null;
 }
 
-export type SubItemSlot = "INVALID" | "PRIMARY_SUBSTANCE" | "SECONDARY_SUBSTANCE_1" | "SECONDARY_SUBSTANCE_2" | "SECONDARY_SUBSTANCE_3" | "ALLOY" | "WEAPON_BLADE" | "WEAPON_HANDLE" | "NON_RECIPE";
+export type SubItemSlot =
+  "INVALID"
+  | "PRIMARY_SUBSTANCE"
+  | "SECONDARY_SUBSTANCE_1"
+  | "SECONDARY_SUBSTANCE_2"
+  | "SECONDARY_SUBSTANCE_3"
+  | "ALLOY"
+  | "WEAPON_BLADE"
+  | "WEAPON_HANDLE"
+  | "NON_RECIPE";
 
 export interface InventoryLocation {
   characterID: CharacterID | null;
@@ -756,6 +1061,62 @@ export interface WeaponConfigDef {
   ammoType: AmmoType | null;
 }
 
-export type WeaponType = "NONE" | "Arrow" | "Dagger" | "Sword" | "Hammer" | "Axe" | "Mace" | "GreatSword" | "GreatHammer" | "GreatAxe" | "GreatMace" | "Spear" | "Staff" | "Polearm" | "Shield" | "Bow" | "Throwing" | "Focus" | "LongSword" | "All";
+export type WeaponType =
+  "NONE"
+  | "Arrow"
+  | "Dagger"
+  | "Sword"
+  | "Hammer"
+  | "Axe"
+  | "Mace"
+  | "GreatSword"
+  | "GreatHammer"
+  | "GreatAxe"
+  | "GreatMace"
+  | "Spear"
+  | "Staff"
+  | "Polearm"
+  | "Shield"
+  | "Bow"
+  | "Throwing"
+  | "Focus"
+  | "LongSword"
+  | "All";
 
-export type AmmoType = "None" | "BasicArrow" | "BasicElixir" | "Bolt" | "Black" | "BlackArrow" | "Flight" | "FlightArrow" | "Blunt" | "BluntArrow" | "Broadhead" | "BroadheadArrow" | "Barbed" | "BarbedArrow" | "Leafblade" | "LeafbladeArrow" | "Serrated" | "SerratedArrow" | "Notched" | "NotchedArrow" | "Crescent" | "CrescentArrow" | "Light" | "LightArrow" | "DartPoint" | "DartPointArrow" | "Forked" | "ForkedArrow" | "Heavy" | "War" | "HeavyWarArrow" | "Siege" | "BasicSiegeBolt" | "BluntSiegeBolt" | "LightSiegeBolt" | "HeavySiegeBolt";
+export type AmmoType =
+  "None"
+  | "BasicArrow"
+  | "BasicElixir"
+  | "Bolt"
+  | "Black"
+  | "BlackArrow"
+  | "Flight"
+  | "FlightArrow"
+  | "Blunt"
+  | "BluntArrow"
+  | "Broadhead"
+  | "BroadheadArrow"
+  | "Barbed"
+  | "BarbedArrow"
+  | "Leafblade"
+  | "LeafbladeArrow"
+  | "Serrated"
+  | "SerratedArrow"
+  | "Notched"
+  | "NotchedArrow"
+  | "Crescent"
+  | "CrescentArrow"
+  | "Light"
+  | "LightArrow"
+  | "DartPoint"
+  | "DartPointArrow"
+  | "Forked"
+  | "ForkedArrow"
+  | "Heavy"
+  | "War"
+  | "HeavyWarArrow"
+  | "Siege"
+  | "BasicSiegeBolt"
+  | "BluntSiegeBolt"
+  | "LightSiegeBolt"
+  | "HeavySiegeBolt";

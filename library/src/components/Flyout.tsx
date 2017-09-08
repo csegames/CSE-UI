@@ -12,6 +12,7 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { Quadrant, windowQuadrant } from '../util';
+
 const defaultStyles = {
   flyout: {
     backgroundColor: '#4d573e',
@@ -20,9 +21,11 @@ const defaultStyles = {
     'z-index': '9998',
   },
 };
+
 export interface FlyoutContentProps {
   close: () => void;
 }
+
 export interface FlyoutProps {
   content: (props: FlyoutContentProps) => any;
   contentProps?: any;
@@ -32,6 +35,7 @@ export interface FlyoutProps {
   offsetBottom?: number;
   style?: React.CSSProperties;
 }
+
 export interface FlyoutState {
   x: number;
   y: number;
@@ -42,8 +46,10 @@ export interface FlyoutState {
   offsetTop: number;
   offsetBottom: number;
 }
+
 export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
   private mouseOverElement = false;
+
   constructor(props: FlyoutProps) {
     super(props);
     this.state = {
@@ -57,6 +63,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
       offsetBottom: this.props.offsetBottom || 5,
     };
   }
+
   public render() {
     const ss = StyleSheet.create({
       Flyout: {
@@ -67,7 +74,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     const contentProps = this.props.contentProps || {};
     return (
       <div onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
-        style={{ display: 'inline-block' }}>
+           style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :
@@ -78,6 +85,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
       </div>
     );
   }
+
   public hide = () => {
     this.setState({ hidden: true } as any);
     window.removeEventListener('keydown', this.onKeyDown);
@@ -97,6 +105,7 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('mousedown', this.onMouseDown);
   }
+
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.which === 27 && !this.state.hidden) {
       // escape, close this
@@ -149,4 +158,5 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
     }
   }
 }
+
 export default Flyout;

@@ -11,7 +11,7 @@ import EventEmitter from '../../events/EventEmitter';
 import client from '../../core/client';
 import buildUIMode from '../../core/constants/buildUIMode';
 
-import {getBlockForBlockId, getMaterialForBlockId} from '../../building/building';
+import { getBlockForBlockId, getMaterialForBlockId } from '../../building/building';
 
 function run(emitter: EventEmitter, topic: string) {
   if (client.OnBlockSelected) {
@@ -25,6 +25,7 @@ export default class BuildingModeListener {
   public listening: boolean = false;
   public ktype: string;
   public topic: string = BuildingEventTopics.handlesBuildingMode;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

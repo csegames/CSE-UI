@@ -22,17 +22,11 @@ export interface PageControllerStyle extends StyleDeclaration {
 }
 
 export const defaultPageControllerStyle: PageControllerStyle = {
-  PageController: {
-    
-  },
+  PageController: {},
 
-  controllerContainer: {
+  controllerContainer: {},
 
-  },
-
-  contentContainer: {
-
-  },
+  contentContainer: {},
 
   controllerButton: {
     display: 'inline-block',
@@ -42,10 +36,8 @@ export const defaultPageControllerStyle: PageControllerStyle = {
     },
   },
 
-  disabledControllerButton: {
+  disabledControllerButton: {},
 
-  },
-  
   pageNumberText: {
     margin: 0,
   },
@@ -117,7 +109,7 @@ export class PageController extends React.Component<PageControllerProps, PageCon
           !morePrev && ss.disabledControllerButton,
           !morePrev && custom.disabledControllerButton,
         )}
-        onClick={this.onPrevPage}>
+             onClick={this.onPrevPage}>
           {this.props.prevButtonText || '<Prev'}
         </div>
         <p className={css(ss.pageNumberText, custom.pageNumberText)}>
@@ -129,7 +121,7 @@ export class PageController extends React.Component<PageControllerProps, PageCon
           !moreNext && ss.disabledControllerButton,
           !moreNext && custom.disabledControllerButton,
         )}
-        onClick={this.onNextPage}>
+             onClick={this.onNextPage}>
           {this.props.nextButtonText || 'Next>'}
         </div>
       </div>

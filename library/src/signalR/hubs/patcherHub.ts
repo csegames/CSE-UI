@@ -9,9 +9,9 @@
  * @Last Modified time: 2017-04-20 11:40:33
  */
 
-import {EventMap} from '../../util/eventMapper';
-import {SignalRHub, ConnectionState} from '../SignalRHub';
-import {client, events} from '../..';
+import { EventMap } from '../../util/eventMapper';
+import { SignalRHub, ConnectionState } from '../SignalRHub';
+import { client, events } from '../..';
 
 export const PATCHER_EVENTS_SERVERUPDATED = 'patcher/serverUpdated';
 export const PATCHER_EVENTS_SERVERUNAVAILABLE = 'patcher/serverUnavailable';
@@ -52,7 +52,7 @@ const patcherEventsMap: EventMap[] = [
   },
 ];
 
-export const patcherHub = new SignalRHub('patcherHub', patcherEventsMap, {debug: client.debug});
+export const patcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug });
 
 let reconnectTries = 0;
 
@@ -70,7 +70,7 @@ patcherHub.onConnectionSlow = function(hub: SignalRHub) {
 
 patcherHub.onConnected = function(hub: SignalRHub) {
   events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
-  
+
   // if identify method fails then try to reconnect
   hub.invoke('identify', client.loginToken)
     .done((success: boolean) => {
@@ -104,7 +104,7 @@ patcherHub.onReconnected = function(hub: SignalRHub) {
   events.fire(PATCHER_LIFETIME_EVENT_RECONNECTED, hub);
 };
 
-patcherHub.onStateChanged = function(hub: SignalRHub, state: {oldState: ConnectionState, newState: ConnectionState}) {
+patcherHub.onStateChanged = function(hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) {
   events.fire(PATCHER_LIFETIME_EVENT_STATECHANGED, hub, state);
   switch (state.newState) {
     case ConnectionState.Connecting:

@@ -5,7 +5,7 @@
  */
 export interface RequestOptions {
   ignoreCache?: boolean;
-  headers?: {[key: string]:string};
+  headers?: { [key: string]: string };
   // 0 (or negative) to wait forever
   timeout?: number;
 }
@@ -30,8 +30,8 @@ export interface RequestResult {
 
 function queryParams(params: any = {}) {
   return Object.keys(params)
-      .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-      .join('&');
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
 }
 
 function withQuery(url: string, params: any = {}) {
@@ -62,11 +62,11 @@ function errorResponse(xhr: XMLHttpRequest, message: string | null = null): Requ
 }
 
 export function request(method: 'get' | 'post',
-  url: string,
-  queryParams: any = {},
-  body: any = null,
-  options: RequestOptions = DEFAULT_REQUEST_OPTIONS) {
-  
+                        url: string,
+                        queryParams: any = {},
+                        body: any = null,
+                        options: RequestOptions = DEFAULT_REQUEST_OPTIONS) {
+
   const ignoreCache = options.ignoreCache || DEFAULT_REQUEST_OPTIONS.ignoreCache;
   const headers = options.headers || DEFAULT_REQUEST_OPTIONS.headers;
   const timeout = options.timeout || DEFAULT_REQUEST_OPTIONS.timeout;
@@ -74,7 +74,7 @@ export function request(method: 'get' | 'post',
   return new Promise<RequestResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, withQuery(url, queryParams));
-  
+
     if (headers) {
       Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
     }
@@ -85,15 +85,15 @@ export function request(method: 'get' | 'post',
 
     xhr.timeout = timeout;
 
-    xhr.onload = evt => {
+    xhr.onload = (evt) => {
       resolve(parseXHRResult(xhr));
     };
 
-    xhr.onerror = evt => {
+    xhr.onerror = (evt) => {
       resolve(errorResponse(xhr, 'Failed to make request.'));
     };
 
-    xhr.ontimeout = evt => {
+    xhr.ontimeout = (evt) => {
       resolve(errorResponse(xhr, 'Request took longer than expected.'));
     };
 

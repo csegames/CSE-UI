@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import EventEmitter from '../EventEmitter';
-import {getControlGame, getAllPlayers} from '../../restapi/RestAPI';
-import {clientEventTopics} from '../defaultTopics';
+import { getControlGame, getAllPlayers } from '../../restapi/RestAPI';
+import { clientEventTopics } from '../defaultTopics';
 import ControlGame from '../../core/classes/ControlGame';
 import Population from '../../core/classes/Population';
 
@@ -61,12 +61,14 @@ function run(emitter: EventEmitter, topic: string) {
 export default class ControlGameScoreListener {
   public listening: boolean = false;
   public topic: string = clientEventTopics.handlesControlGameScore;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);
     }
   }
+
   public stop() {
     if (timer) {
       clearTimeout(timer);

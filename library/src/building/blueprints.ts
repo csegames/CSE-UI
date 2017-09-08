@@ -5,7 +5,7 @@
  */
 import BuildingBlueprint from './classes/BuildingBlueprint';
 import client from '../core/client';
-import events  from '../events';
+import events from '../events';
 import * as restApi from '../restapi/RestAPI';
 
 let blueprintsLoaded: boolean = false;
@@ -76,9 +76,9 @@ function requestBlueprintSelect(blueprint: BuildingBlueprint) {
 function requestBlueprintIcon(blueprint: BuildingBlueprint) {
   restApi.getBlueprintIcon(blueprint.index).then((icon: string): void => {
     blueprint.icon = icon;
-      fireHandleBlueprints();
+    fireHandleBlueprints();
   }, (): void => {
-      fireHandleBlueprints();
+    fireHandleBlueprints();
   });
 }
 
@@ -89,7 +89,7 @@ function requestBlueprints() {
   }
 
   if (blueprintsLoaded) {
-      fireHandleBlueprints();
+    fireHandleBlueprints();
   } else {
     // we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded 
     // we are only firing off the event periodically to avoid re-rendering the list possibly 100s of times on startup.
@@ -111,7 +111,7 @@ function waitForBlueprintsToLoad() {
 }
 
 export {
-requestBlueprints, requestBlueprintIcon, requestBlueprintSelect,
-requestBlueprintSave, requestBlueprintDelete,
-requestBlueprintCopy, requestBlueprintPaste,
+  requestBlueprints, requestBlueprintIcon, requestBlueprintSelect,
+  requestBlueprintSave, requestBlueprintDelete,
+  requestBlueprintCopy, requestBlueprintPaste,
 };

@@ -5,13 +5,13 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 import ConsoleMessage from '../../core/classes/ConsoleMessage';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
   client.OnConsoleText((text: string) => {
-    emitter.emit(topic, new ConsoleMessage({text}));
+    emitter.emit(topic, new ConsoleMessage({ text }));
   });
 }
 
@@ -19,6 +19,7 @@ export default class ConsoleListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesConsole;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

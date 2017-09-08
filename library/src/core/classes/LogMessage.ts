@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-class LogMessage  {
+class LogMessage {
   public category: string;
   public level: number;
   public time: string;
