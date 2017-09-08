@@ -50,6 +50,7 @@ export interface RaisedButtonProps {
   styles?: Partial<RaisedButtonStyle>;
   children?: React.ReactNode;
   disabled?: boolean;
+
   [id: string]: any;
 }
 

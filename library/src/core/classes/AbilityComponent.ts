@@ -12,23 +12,23 @@ import componentBranchState from '../constants/abilityConstants/componentBranchS
 import stats from './Stats';
 
 export class ComponentBranch {
-    public parts: any[];
-    public state: componentBranchState;
+  public parts: any[];
+  public state: componentBranchState;
 }
 
 export interface ComponentSlot {
-    type: componentType;
-    subType: componentSubType;
-    x: number;
-    y: number;
-    parents: ComponentSlot[];
-    children: ComponentSlot[];
-    branch: ComponentBranch;
-    component: AbilityComponent;
-    isDisabled: boolean;
-    tooltip: string;
-    originalSubType: componentSubType; 
-    queuedAnimation: string;
+  type: componentType;
+  subType: componentSubType;
+  x: number;
+  y: number;
+  parents: ComponentSlot[];
+  children: ComponentSlot[];
+  branch: ComponentBranch;
+  component: AbilityComponent;
+  isDisabled: boolean;
+  tooltip: string;
+  originalSubType: componentSubType;
+  queuedAnimation: string;
 }
 
 export class AbilityComponent {
@@ -51,8 +51,7 @@ export class AbilityComponent {
   public rank: number;
   public isTrained: boolean;
   public isHalted: boolean;
-    
-    
+
 
   constructor(abilityComponent = <AbilityComponent>{}) {
     this.id = abilityComponent.id || '';
@@ -62,7 +61,7 @@ export class AbilityComponent {
     this.name = abilityComponent.name || '';
     this.tooltip = abilityComponent.tooltip || '';
     this.abilityTags = abilityComponent.abilityTags || <abilityTags[]>[];
-      // ....
+    // ....
 
   }
 

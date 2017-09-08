@@ -13,7 +13,9 @@ export interface SlashCommand {
 
 const registry: SlashCommand[] = [];
 
-function prefix(command: string) : string { return `slash_${command}`;}
+function prefix(command: string): string {
+  return `slash_${command}`;
+}
 
 /**
  * Registers a method to be executed when a slash command is entered in the chat
@@ -28,7 +30,7 @@ export function registerSlashCommand(command: string, helpText: string, callback
       break;
     }
   }
-  if (!found) registry.push({command: cmd, helpText});  
+  if (!found) registry.push({ helpText, command: cmd });
   events.on(prefix(cmd), callback);
 }
 
@@ -53,14 +55,14 @@ export function unregisterSlashCommand(command: string) {
 
 /**
  * parseMessageForSlashCommand is meant to be run on every entered line of text
- * entered into the chat window. If the line of text was a registered slash 
+ * entered into the chat window. If the line of text was a registered slash
  * command then an event is fired for that command and the function returns true.
  * If no slash command is found, the function returns false and the chat system
  * should handle it however it would normally.
  */
 export function parseMessageForSlashCommand(command: string): boolean {
   const split = command.split(/ (.+)/);
-  const cmd = split[0].toLowerCase();  
+  const cmd = split[0].toLowerCase();
   let found = false;
   for (let i = 0; i < registry.length; ++i) {
     if (registry[i].command === cmd.toLowerCase()) {

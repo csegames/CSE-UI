@@ -6,7 +6,7 @@
 
 import clientInterface from './clientInterface';
 import devClientInterface from './devClientInterface';
-import {merge} from 'lodash';
+import { merge } from 'lodash';
 
 // interface for window cuAPI
 interface WindowInterface extends Window {
@@ -22,14 +22,14 @@ declare const window: WindowInterface;
 let client: clientInterface = window.cuAPI;
 
 /**
- * Check if we have the client API object, this will be true when running within the CU game client, false otherwise. 
+ * Check if we have the client API object, this will be true when running within the CU game client, false otherwise.
  */
 export function hasClientAPI() {
   return (window.opener && window.opener.cuAPI) || window.cuAPI;
 }
 
 if (window.opener && window.opener.cuAPI) {
-   // bind the alias to parent (as this instance will only have basic cuAPI functions)
+  // bind the alias to parent (as this instance will only have basic cuAPI functions)
   client = window.opener.cuAPI;
 } else if (window.cuAPI) {
   Object.keys(devClientInterface).forEach((key) => {

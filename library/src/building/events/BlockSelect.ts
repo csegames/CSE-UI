@@ -33,6 +33,7 @@ export default class BlockSelectListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlockSelect;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

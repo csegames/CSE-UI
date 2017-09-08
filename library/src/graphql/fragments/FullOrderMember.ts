@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-06-22 15:22:04
  */
 import gql from 'graphql-tag';
-import {Faction, Race, Gender, Archetype} from '../..';
+import { Faction, Race, Gender, Archetype } from '../..';
 import PermissionInfoFragment from './PermissionInfo';
 import CustomRankFragment from './CustomRank';
 import { PermissionInfo, CustomRank } from '../schema';
@@ -39,14 +39,14 @@ ${PermissionInfoFragment}
 `;
 
 export interface FullOrderMember {
-  id : string;
-  name : string;
-  rank : CustomRank;
-  race : Race;
-  gender : Gender;
-  class : Archetype;
-  joined : string;
-  lastLogin : string;
-  kills : number;
+  id: string;
+  name: string;
+  rank: CustomRank;
+  race: Race;
+  gender: Gender;
+  class: Archetype;
+  joined: string;
+  lastLogin: string;
+  kills: number;
   permissions: PermissionInfo[];
 }

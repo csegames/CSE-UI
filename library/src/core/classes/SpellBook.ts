@@ -5,11 +5,11 @@
  */
 import Ability from './Ability';
 
-class SpellBook  {
+class SpellBook {
   public abilities: Ability[];
 
   constructor(spellbook = <SpellBook>{}) {
-    spellbook.abilities = spellbook.abilities ||  <Ability[]>[];
+    spellbook.abilities = spellbook.abilities || <Ability[]>[];
   }
 
   public static create() {

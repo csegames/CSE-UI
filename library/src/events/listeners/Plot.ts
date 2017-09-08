@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 
 declare const cuAPI: any;
 
@@ -24,6 +24,7 @@ export default class PlotListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesPlot;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

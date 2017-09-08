@@ -11,7 +11,7 @@
 import gql from 'graphql-tag';
 
 import { Faction, Race, Gender, Archetype } from '../../';
-import FullOrderMemberFragment, { FullOrderMember }  from './FullOrderMember';
+import FullOrderMemberFragment, { FullOrderMember } from './FullOrderMember';
 import CustomRankFragment from './CustomRank';
 import PermissionInfoFragment from './PermissionInfo';
 import { CustomRank, PermissionInfo } from '../schema';
@@ -42,13 +42,13 @@ ${PermissionInfoFragment}
 `;
 
 export interface FullOrder {
-  id : string;
-  name : string;
-  realm : Faction;
-  creator : string;
-  created : string;
-  ranks : CustomRank[];
-  members : FullOrderMember[];
+  id: string;
+  name: string;
+  realm: Faction;
+  creator: string;
+  created: string;
+  ranks: CustomRank[];
+  members: FullOrderMember[];
   myMemberInfo: FullOrderMember;
   permissions: PermissionInfo[];
 }

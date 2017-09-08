@@ -9,7 +9,7 @@
  * @Last Modified time: 2016-10-13 00:08:26
  */
 
-import {clone} from './objectUtils';
+import { clone } from './objectUtils';
 
 export function cloneArray<T>(array: T[]): T[] {
   return array.slice();
@@ -41,11 +41,11 @@ export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean
   const copy = !arr ? [] : arr.slice();
   let index = -1;
   let i = copy.length;
-  
+
   while (--i >= 0) {
     if (equals(obj, copy[i])) {
-       index = i;
-       break;
+      index = i;
+      break;
     }
   }
 
@@ -60,18 +60,18 @@ export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean
 
 export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): T[] {
   if (!(arr && arr.length)) return arr;
-  
+
   const copy = arr.slice();
   let index = -1;
   let i = copy.length;
-  
+
   while (--i > -1) {
     if (equals(obj, copy[i])) {
       index = i;
       break;
     }
   }
-  
+
   if (index > -1) {
     copy.splice(index, 1);
   }
@@ -79,12 +79,12 @@ export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = de
   return copy;
 }
 
-export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result: T[], removed: T[]} {
+export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): { result: T[], removed: T[] } {
   const result: T[] = [];
   const removed: T[] = [];
 
-  if (!(arr && arr.length)) return {result, removed};
-  
+  if (!(arr && arr.length)) return { result, removed };
+
   let i = arr.length;
   while (--i > -1) {
     const o = Array.isArray(arr[i]) ? cloneArray(arr[i] as any) as any : clone(arr[i]);
@@ -94,6 +94,6 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
       result.unshift(o);
     }
   }
-  
-  return {result, removed};
+
+  return { result, removed };
 }

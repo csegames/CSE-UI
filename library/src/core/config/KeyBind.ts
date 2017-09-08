@@ -14,8 +14,8 @@ class KeyBind {
   public secondaryModifiers: keyboardModifier;
   public default: number;
   public defaultModifiers: keyboardModifier;
-  
-  
+
+
   public primaryToString = (): string => {
     let s = '';
     if (this.primaryModifiers & keyboardModifier.CTRL) s += 'CTRL + ';
@@ -23,7 +23,7 @@ class KeyBind {
     if (this.primaryModifiers & keyboardModifier.SHIFT) s += 'SHIFT + ';
     return s + dxKeyCodes[this.primaryKeyCode];
   }
-  
+
   public secondaryToString = (): string => {
     let s = '';
     if (this.secondaryModifiers & keyboardModifier.CTRL) s += 'CTRL + ';

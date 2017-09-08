@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 import * as RestClient from './../RestClient';
 import * as RestUtil from './../RestUtil';
 import channelId from '../../core/constants/channelId';
@@ -33,7 +33,7 @@ export function deleteCharacterOnShard(shardID: number, characterID: string) {
 // Create a Character
 export function createCharacter(shardID: number, channelId: channelId, data: CharacterCreateRequest) {
   return RestClient.postJSON(`/characters/${shardID}/${channelId}`, true, data)
-    // API is returing the full URL get getCharacterOnShard with the ID, we will strip out the ID and return it
+  // API is returing the full URL get getCharacterOnShard with the ID, we will strip out the ID and return it
     .then((path) => {
       return path.split('/').pop();
     });

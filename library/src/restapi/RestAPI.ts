@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 import * as RestClientLegacy from './RestClientLegacy';
 import * as RestClient from './RestClient';
 
@@ -40,19 +40,19 @@ export * from './resources/ControlGame';
 
 // TODO update this to use new Rest Client
 export function postReleasePlot(query: Object) {
-    return RestClientLegacy.postJSON('plot/releaseplot', true, false, query);
+  return RestClientLegacy.postJSON('plot/releaseplot', true, false, query);
 }
 
 export function postRemoveQueuedBlueprint(query: Object) {
-    return RestClientLegacy.postJSON('plot/removequeuedblueprint', true, false, query);
+  return RestClientLegacy.postJSON('plot/removequeuedblueprint', true, false, query);
 }
 
 export function postReorderBuildQueue(query: Object) {
-    return RestClientLegacy.postJSON('plot/reorderqueue', true, false, query);
+  return RestClientLegacy.postJSON('plot/reorderqueue', true, false, query);
 }
 
 export function postGetQueueStatus(query: Object) {
-    return RestClientLegacy.postJSON('plot/getqueuestatus', true, false, query);
+  return RestClientLegacy.postJSON('plot/getqueuestatus', true, false, query);
 }
 
 // Blueprints

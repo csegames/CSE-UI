@@ -32,7 +32,7 @@ export interface FloatSpinnerProps {
 }
 
 export const FloatSpinner = (props: FloatSpinnerProps) => {
-  return <Spinner styles={merge(defaultFloatSpinnerStyle, props.styles || {})} />;
+  return <Spinner styles={merge(defaultFloatSpinnerStyle, props.styles || {})}/>;
 };
 
 export default FloatSpinner;

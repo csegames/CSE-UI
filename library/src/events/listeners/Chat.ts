@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 import ChatMessage from '../../core/classes/ChatMessage';
 import client from '../../core/client';
 
@@ -25,6 +25,7 @@ export default class ChatListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesChat;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

@@ -65,8 +65,7 @@ export const defaultMultiSelectStyle: MultiSelectStyle = {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
 
-  selectedItem: {
-  },
+  selectedItem: {},
 
   selectedItemList: {
     display: 'flex',
@@ -121,11 +120,11 @@ export interface MultiSelectState {
   filteredItems: any[];
   selectedItems: any[];
   filterText: string;
-  keyboardIndex: number;  
+  keyboardIndex: number;
 }
 
 export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectState> {
-  
+
   private inputRef: HTMLInputElement = null;
 
   constructor(props: MultiSelectProps) {
@@ -154,23 +153,23 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
                onChange={this.onInputChanged}
                onKeyDown={this.onKeyDown}
                {...this.props.inputProps} />
-        <div style={{position: 'relative'}}>
-          <div style={{position: 'absolute', width: '100%', zIndex: 1}}>
+        <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', width: '100%', zIndex: 1 }}>
             <div className={css(ss.selectedItemList, custom.selectedItemList)}>
               {
-              this.state.selectedItems.map((i) => {
-                return (
-                  <div className={css(ss.selected, custom.selected)} onClick={() => this.unselectItem(i)}>
-                  <div className={css(ss.selectedItem, custom.selectedItem)}>
-                    {this.props.renderSelectedItem(i, this.props.renderData)}
-                  </div>
-                    <div className={css(ss.removeSelected, custom.removeSelected)}>
-                      <i className='fa fa-times'></i>
+                this.state.selectedItems.map((i) => {
+                  return (
+                    <div className={css(ss.selected, custom.selected)} onClick={() => this.unselectItem(i)}>
+                      <div className={css(ss.selectedItem, custom.selectedItem)}>
+                        {this.props.renderSelectedItem(i, this.props.renderData)}
+                      </div>
+                      <div className={css(ss.removeSelected, custom.removeSelected)}>
+                        <i className='fa fa-times'></i>
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-            }
+                  );
+                })
+              }
             </div>
             <div className={css(ss.list, custom.list)}>
               {
@@ -178,11 +177,11 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
                   if (utils.findIndexWhere(this.state.selectedItems, i => this.props.itemComparison(i, item)) > -1)
                     return null;
                   return (
-                    <div key={index} 
+                    <div key={index}
                          className={
-                         this.state.keyboardIndex === index ?
-                           css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                           css(ss.listItem, custom.listItem)
+                           this.state.keyboardIndex === index ?
+                             css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
+                             css(ss.listItem, custom.listItem)
                          }
                          onClick={() => this.selectItem(item)}>
                       {this.props.renderListItem(item, this.props.renderData)}
@@ -257,8 +256,8 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
     const selectedItems = cloneDeep(this.state.selectedItems);
     selectedItems.splice(index, 1);
     this.setState({
-      keyboardIndex: -1,
       selectedItems,
+      keyboardIndex: -1,
     });
   }
 }

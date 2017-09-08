@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-class ConsoleMessage  {
+class ConsoleMessage {
   public text: string;
 
   constructor(consoleMessage = <ConsoleMessage>{}) {

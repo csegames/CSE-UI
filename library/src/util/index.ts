@@ -21,6 +21,7 @@ export * from './searchUtils';
 import * as KeyCodes from './keyCodes';
 
 import stringContains from './stringContains';
+
 export {
   KeyCodes,
   stringContains,

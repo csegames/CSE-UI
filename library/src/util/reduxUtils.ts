@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-04-07 12:47:54
  */
 
-import {clone, merge, Dictionary} from './objectUtils';
+import { clone, merge, Dictionary } from './objectUtils';
 
 export interface AsyncAction<T> {
   (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
@@ -43,7 +43,7 @@ export const defaultFetchStatus: FetchStatus = {
 };
 
 export function loggingMiddleware(store: any) {
-  return (next: any) => (action:any) => {
+  return (next: any) => (action: any) => {
     console.group(`ACTION | ${action.type}`);
     console.log('dispatching', action);
     const result = next(action);
@@ -75,8 +75,8 @@ export interface Action<STATETYPE> {
   (state: STATETYPE, action: any): STATETYPE;
 }
 
-export function createReducer<STATETYPE>(defaultState: STATETYPE, actions: Dictionary<Action<STATETYPE>>):
- (state: STATETYPE, action: BaseAction) => STATETYPE {
+export function createReducer<STATETYPE>(defaultState: STATETYPE,
+                         actions: Dictionary<Action<STATETYPE>>): (state: STATETYPE, action: BaseAction) => STATETYPE {
   const actionDefs = clone(actions);
   return (state: STATETYPE = defaultState, action: BaseAction = defaultAction) => {
     const def = actionDefs[action.type];

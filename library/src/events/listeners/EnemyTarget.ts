@@ -5,7 +5,7 @@
  */
 
 import UnitFrameListener from './_UnitFrame';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 
 export default class EmenyTargetListener extends UnitFrameListener {
   constructor() {

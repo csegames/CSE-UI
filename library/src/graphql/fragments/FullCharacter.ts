@@ -12,7 +12,7 @@
 import gql from 'graphql-tag';
 
 import { Faction, Race, Gender, Archetype } from '../..';
-import FullOrderFragment, { FullOrder}  from './FullOrder';
+import FullOrderFragment, { FullOrder } from './FullOrder';
 
 export default gql`
 fragment FullCharacter on Character {
