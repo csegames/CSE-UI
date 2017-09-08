@@ -204,11 +204,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private renderCharacter = (prop: { active: boolean }) => {
-    return <Character visibleComponent={this.state.visibleComponent}/>;
+    return <Character visibleComponent={this.state.visibleComponent} />;
   }
 
   private renderSocial = (prop: { active: boolean }) => {
-    return <Social visibleComponent={this.state.visibleComponent}/>;
+    return <Social visibleComponent={this.state.visibleComponent} />;
   }
 
   private renderMap = (prop: { active: boolean }) => {
