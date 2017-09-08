@@ -1882,22 +1882,6 @@ export enum EXETypes {
   X64 = 2,
 }
 
-export enum DBVarType {
-  Int8 = 0,
-  Int16 = 1,
-  Int32 = 2,
-  Int64 = 3,
-  UInt8 = 4,
-  UInt16 = 5,
-  UInt32 = 6,
-  UInt64 = 7,
-  Float = 8,
-  Double = 9,
-  Char = 10,
-  String = 11,
-  Bool = 12,
-}
-
 export enum ClipSegmentTag {
   None = 0,
   Prepare = 1,
@@ -2678,6 +2662,24 @@ export enum SkillCooldownID {
   None = 0,
 }
 
+export enum LayerEnum {
+  InitiatorBase = 0,
+  InitiatorModifier = 1,
+  InitiatorEffects = 2,
+  InitiatorBounds = 3,
+  SubjectDeflectionRAM = 4,
+  SubjectPreArmorRAM = 5,
+  SubjectArmorRAM = 6,
+  SubjectPostArmorRAM = 7,
+  SubjectEffects = 8,
+  SubjectApplication = 10,
+  SubjectBounds = 11,
+  StatBounds = 11,
+  Admin = 12,
+  AdminBounds = 19,
+  SystemBounds = 2147483647,
+}
+
 export enum DBResult {
   Success = 0,
   PlayerNotFound = 1,
@@ -2711,7 +2713,7 @@ export enum UpdaterResult {
   DefinitionNotFound = 11,
   InvalidParameter = 12,
   SpatialNotFound = 13,
-  ItemFeatureTurnedOff = 14,
+  FeatureTurnedOff = 14,
   BrokenItem = 15,
   ItemRequirementNotMet = 16,
   EntityNotValid = 17,
@@ -2833,7 +2835,7 @@ export enum NetworkWeaponSlot {
   TwoHands = 2,
 }
 
-export enum CharacterLoadoutID {
+export enum CharacterLoadoutItemID {
   None = 0,
 }
 
@@ -3080,34 +3082,17 @@ export enum ItemComponentType {
   Durability = 5,
   Equippable = 6,
   ItemStat = 7,
-  Renderable = 8,
-  SiegeEngine = 9,
-  Substance = 10,
-  Vox = 11,
-  Weapon = 12,
+  Ownership = 8,
+  Renderable = 9,
+  SiegeEngine = 10,
+  Substance = 11,
+  Vox = 12,
+  Weapon = 13,
 }
 
 export enum KnockbackType {
   PointOfOrigin = 0,
   Directional = 1,
-}
-
-export enum LayerEnum {
-  InitiatorBase = 0,
-  InitiatorModifier = 1,
-  InitiatorEffects = 2,
-  InitiatorBounds = 3,
-  SubjectDeflectionRAM = 4,
-  SubjectPreArmorRAM = 5,
-  SubjectArmorRAM = 6,
-  SubjectPostArmorRAM = 7,
-  SbjectEffects = 8,
-  SubjectApplication = 10,
-  SubjectBounds = 11,
-  StatBounds = 11,
-  Admin = 12,
-  AdminBounds = 19,
-  SystemBounds = 2147483647,
 }
 
 export enum SlotDir {
@@ -3128,6 +3113,12 @@ export enum ProcessingStatus {
   Invalid = 0,
   Continue = 1,
   Finished = 2,
+}
+
+export enum ItemOwnershipType {
+  None = 0,
+  Character = 1,
+  Realm = 2,
 }
 
 export enum ServerStatus {

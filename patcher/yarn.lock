@@ -616,7 +616,7 @@ babel-plugin-transform-es2015-unicode-regex@^6.24.1:
     babel-runtime "^6.22.0"
     regexpu-core "^2.0.0"
 
-babel-plugin-transform-regenerator@^6.24.1, babel-plugin-transform-regenerator@^6.26.0:
+babel-plugin-transform-regenerator@^6.24.1:
   version "6.26.0"
   resolved "http://registry.camelotunchained.com/babel-plugin-transform-regenerator/-/babel-plugin-transform-regenerator-6.26.0.tgz#e0703696fbde27f0a3efcacf8b4dca2f7b3a8f2f"
   dependencies:
@@ -1011,13 +1011,14 @@ camelot-unchained@^0.8.13:
     react-dom "^15.4.2"
     redux-typed-modules "^2.2.1"
 
-camelot-unchained@^0.9.0:
-  version "0.9.0"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.0.tgz#9559769cab898c908b20a8360648640470a0bd2c"
+camelot-unchained@^0.9.1:
+  version "0.9.1"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.1.tgz#529ab7a9dbb5cfc52a3968858eda4e8c76b76db7"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
     es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
     graphql-tag "^1.2.4"
     isomorphic-fetch "^2.2.1"
     jquery "^3.0.0"
@@ -1817,6 +1818,10 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
 function-bind@^1.0.2:
   version "1.1.0"
   resolved "http://registry.camelotunchained.com/function-bind/-/function-bind-1.1.0.tgz#16176714c801798e4e8f2cf7f7529467bb4a5771"
+
+fuzzysearch@^1.0.3:
+  version "1.0.3"
+  resolved "http://registry.camelotunchained.com/fuzzysearch/-/fuzzysearch-1.0.3.tgz#dffc80f6d6b04223f2226aa79dd194231096d008"
 
 gauge@~2.7.3:
   version "2.7.4"
