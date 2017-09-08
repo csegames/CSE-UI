@@ -61,10 +61,6 @@ export interface MapMainProps {
 class MapMain extends React.Component<MapMainProps> {
   public render() {
     const ss = StyleSheet.create({ ...defaultMapStyle, ...this.props.styles });
-    const zoomProps = {
-      width: 500,
-      height: 500,
-    };
     return (
       <div className={css(ss.mapContainer)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg)}/>
