@@ -43,14 +43,18 @@ export interface MemberListMenuStyle extends StyleDeclaration {
   item: React.CSSProperties;
 }
 
-function kickMember(m: {id: string}, groupId: string, onSuccess: () => void) {
-  webAPI.GroupsAPI.kickV1(client.shardID, client.characterID, groupId, m.id)
-    .then((result) => {
-      if (result.ok) {
-        // ok
-        onSuccess();
-      }
-    });
+async function kickMember(m: {id: string}, groupId: string, onSuccess: () => void) {
+  const res = await webAPI.GroupsAPI.KickV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    groupId,
+    m.id,
+  );
+  if (res.ok) {
+    onSuccess();
+  }
 }
 
 

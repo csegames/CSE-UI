@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {webAPI, utils} from 'camelot-unchained';
+import {webAPI, utils, events, signalr} from 'camelot-unchained';
 
 import {patcher, ChannelStatus, PatchPermissions, canAccessChannel} from '../../../../services/patcher';
 import QuickSelect from '../../../../components/QuickSelect';
@@ -167,10 +167,15 @@ class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState>
                         activeViewComponentGenerator={s => <ActiveServerView server={s} />}
                         listViewComponentGenerator={s => <ServerListView server={s} />}
                         itemHeight={67}
-                        onSelectedItemChanged={this.selectServer} />;
+                        onSelectedItemChanged={this.onSelectedItemChanged} />;
+  }
+
+  private onSelectedItemChanged = (server: PatcherServer) => {
+    this.selectServer(server);
   }
 
   private selectServer = (server: PatcherServer) => {
+    events.fire('patcher--select-server', server);
     this.props.selectServer(server);
     this.setState({selectedServer: server} as any);
   }

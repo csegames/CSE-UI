@@ -599,6 +599,7 @@ export interface Item {
   containedItems: Array<Item> | null;
   voxItems: Array<Item> | null;
   location: ItemLocationDescription | null;
+  ownership: ItemOwnershipFieldInformation | null;
 }
 
 export type ItemInstanceID = any;
@@ -774,7 +775,6 @@ export interface ContainerStat_Single {
 }
 
 export interface SiegeEngineStat_Single {
-  health: number | null;
   yawSpeedDegPerSec: number | null;
   pitchSpeedDegPerSec: number | null;
 }
@@ -897,6 +897,15 @@ export interface InventoryLocation {
 export interface OnGroundLocation {
   groupID: ItemInstanceID | null;
 }
+
+export interface ItemOwnershipFieldInformation {
+  characterName: string | null;
+  faction: Faction | null;
+  permanent: boolean | null;
+  ownershipType: ItemOwnershipType | null;
+}
+
+export type ItemOwnershipType = "None" | "Character" | "Realm";
 
 export interface EquippedItem {
   gearSlots: Array<GearSlotDefRef> | null;

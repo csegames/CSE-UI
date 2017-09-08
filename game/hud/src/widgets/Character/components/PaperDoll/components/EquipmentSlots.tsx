@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, ql, events, ListenerInfo } from 'camelot-unchained';
+import { ContentItem, TabItem, TabPanel, ql, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
-import { Alignment } from './PopupMiniInventory';
+import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
 import eventNames, {
   EquipItemCallback,
@@ -24,7 +24,6 @@ import eventNames, {
   UpdateInventoryItems,
 } from '../../../lib/eventNames';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
-import PopupMiniInventory from './PopupMiniInventory';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -175,8 +174,8 @@ export interface EquipmentSlotsState {
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
   private style: EquipmentSlotsStyles;
   private customStyle: Partial<EquipmentSlotsStyles>;
-  private equipItemListener: ListenerInfo;
-  private onUnequipItemListener: ListenerInfo;
+  private equipItemListener: EventListener;
+  private onUnequipItemListener: EventListener;
 
   constructor(props: EquipmentSlotsProps) {
     super(props);

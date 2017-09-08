@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
-import { Race, Gender, webAPI } from 'camelot-unchained';
-type CSEError = webAPI.Errors.CSEError;
+import { client, Race, Gender, webAPI } from 'camelot-unchained';
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 
@@ -43,23 +41,28 @@ export function fetchAttributeOffsetsSuccess(offsets: AttributeOffsetInfo[]) {
   };
 }
 
-export function fetchAttributeOffsetsFailed(error: CSEError) {
+export function fetchAttributeOffsetsFailed(error: any) {
   return {
     type: FETCH_ATTRIBUTE_OFFSETS_FAILED,
     error: error.Message,
   };
 }
 
-export function fetchAttributeOffsets(shard: number = 1) {
+export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
-    return webAPI.GameDataAPI.getAttributeOffsetsV1(shard)
-      .then((value) => {
-        dispatch(value.ok
-                  ? fetchAttributeOffsetsSuccess(value.data)
-                  : fetchAttributeOffsetsFailed(value.error));
-      });
+    return getAttributeOffsets(dispatch, client.shardID, apiHost);
   };
+}
+
+async function getAttributeOffsets(dispatch: (action: any) => any, shard: number, apiHost: string) {
+  try {
+    const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1({ url: `${apiHost}/` }, shard);
+    const data = JSON.parse(res.data);
+    dispatch(res.ok ? fetchAttributeOffsetsSuccess(data) : fetchAttributeOffsetsFailed(data));
+  } catch (err) {
+    fetchAttributeOffsetsFailed(err);
+  }
 }
 
 export interface AttributeOffsetsState {

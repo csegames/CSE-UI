@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 import { Race, Faction, webAPI } from 'camelot-unchained';
-type CSEError = webAPI.Errors.CSEError;
 
 import { fetchJSON } from '../../lib/fetchHelpers';
 
@@ -39,7 +37,7 @@ export function fetchRacesSuccess(races: RaceInfo[]) {
   };
 }
 
-export function fetchRacesFailed(error: CSEError) {
+export function fetchRacesFailed(error: any) {
   return {
     type: FETCH_RACES_FAILED,
     error: error.Message,
@@ -59,15 +57,18 @@ export function resetRace() {
   };
 }
 
+async function getRaces(dispatch: (action: any) => any, apiHost: string) {
+  try {
+    const res = await webAPI.GameDataAPI.GetRacesV1({ url: `${apiHost}/` });
+    const data = JSON.parse(res.data);
+    dispatch(res.ok ? fetchRacesSuccess(data) : fetchRacesFailed(data));
+  } catch (err) {
+    dispatch(fetchRacesFailed(err));
+  }
+}
 
-export function fetchRaces(shard: number = 1) {
-  return (dispatch: (action: any) => any) => {
-    dispatch(requestRaces());
-    return webAPI.GameDataAPI.getRacesV1()
-      .then((value) => {
-        dispatch(value.ok ? fetchRacesSuccess(value.data) : fetchRacesFailed(value.error));
-      });
-  };
+export function fetchRaces(shard: number = 1, apiHost: string) {
+  return (dispatch: (action: any) => any) => getRaces(dispatch, apiHost);
 }
 
 export interface RacesState {

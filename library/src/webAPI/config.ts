@@ -4,14 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
- * @Date: 2017-08-22 11:28:48
+ * @Date: 2017-08-29 15:44:07
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-22 15:01:40
+ * @Last Modified time: 2017-08-30 11:50:47
  */
 
-// tslint:disable-next-line
-import * as fuzzySearch from 'fuzzysearch';
+import { RequestConfig } from './definitions';
+import client from '../core/client';
 
-export function doesSearchInclude(searchValue: string, itemName: string): boolean {
-  return fuzzySearch(searchValue.toLowerCase().replace(/\s/g, ''), itemName.toLowerCase());
-}
+export const defaultConfig: RequestConfig = {
+  url: client.apiHost + '/',
+};

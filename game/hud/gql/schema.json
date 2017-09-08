@@ -3712,18 +3712,6 @@
           "description": null,
           "fields": [
             {
-              "name": "health",
-              "description": "Health",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "yawSpeedDegPerSec",
               "description": "YawSpeedDegPerSec",
               "args": [],
@@ -4697,6 +4685,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ownership",
+              "description": "information about who owns this item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ItemOwnershipFieldInformation",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -5035,6 +5035,94 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ItemOwnershipFieldInformation",
+          "description": "ItemOwnershipFieldInformation",
+          "fields": [
+            {
+              "name": "characterName",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "faction",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Faction",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "permanent",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownershipType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ItemOwnershipType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ItemOwnershipType",
+          "description": "ItemOwnershipType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "None",
+              "description": "None",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Character",
+              "description": "Character",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Realm",
+              "description": "Realm",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

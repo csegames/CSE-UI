@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-12 14:38:35
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-20 11:40:33
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-25 14:55:27
  */
 
 import { EventMap } from '../../util/eventMapper';

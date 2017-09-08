@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { webAPI, events, utils } from 'camelot-unchained';
+import { webAPI, events, utils, client } from 'camelot-unchained';
 import QuickSelect from '../../../../components/QuickSelect';
 import { ServerType, PatcherServer } from '../../services/session/controller';
 import CharacterDeleteModal from '../CharacterDeleteModal';
@@ -92,7 +92,7 @@ class CharacterListView extends React.Component<CharacterListViewProps, Characte
 
   private deleteCharacter = () => {
     const {character} = this.props;
-    webAPI.CharactersAPI.deleteCharacterV1(Number(character.shardID), character.id);
+    webAPI.CharactersAPI.DeleteCharacterV1(webAPI.defaultConfig, client.loginToken, character.shardID, character.id);
     this.showDeleteConfirmation(false);
   }
 }

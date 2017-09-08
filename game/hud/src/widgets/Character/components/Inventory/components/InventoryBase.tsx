@@ -440,7 +440,7 @@ export function distributeItemsNoFilter(slotsData: {
   
   // batch move all items with no position
   if (moveRequests.length > 0) {
-    webAPI.ItemAPI.matchMoveItems(client.shardID, client.characterID, moveRequests);
+    webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
   }
   return {
     ...slotsData,
@@ -917,59 +917,71 @@ export function equipItemRequest(item: InventoryItemFragment,
                             equipToSlotNumber: number) {
     const gearSlotIDs = gearSlotDefs.map((gearSlot) => gearSlot.id);
     const inventoryItemPosition = getItemInventoryPosition(item);
-    webAPI.ItemAPI.moveItems(client.shardID, client.characterID, {
-      moveItemID: item.id,
-      stackHash: item.stackHash,
-      unitCount: -1,
-      to: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: -1,
-        containerID: nullVal,
-        gearSlotIDs,
-        location: 'Equipment',
-        voxSlot: 'Invalid',
-      },
-      from: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: inventoryItemPosition,
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Inventory',
-        voxSlot: 'Invalid',
-      },
-    } as any).then((res) => {
-      // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
-      if (res.error) {
-        client.EquipItem(item.id);
-      }
-    });
-    if (equippedItem) {
-      const equippedGearSlotIDs = equippedItem.gearSlots.map((gearSlot) => gearSlot.id);
-      webAPI.ItemAPI.moveItems(client.shardID, client.characterID, {
-        moveItemID: equippedItem.item.id,
+    webAPI.ItemAPI.MoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      {
+        moveItemID: item.id,
         stackHash: item.stackHash,
         unitCount: -1,
         to: {
           entityID: nullVal,
           characterID: client.characterID,
-          position: equipToSlotNumber,
+          position: -1,
           containerID: nullVal,
           gearSlotIDs,
-          location: 'Inventory',
+          location: 'Equipment',
           voxSlot: 'Invalid',
         },
         from: {
           entityID: nullVal,
           characterID: client.characterID,
-          position: -1,
+          position: inventoryItemPosition,
           containerID: nullVal,
-          gearSlotIDs: equippedGearSlotIDs,
-          location: 'Equipment',
+          gearSlotIDs: [],
+          location: 'Inventory',
           voxSlot: 'Invalid',
         },
-      } as any);
+      } as any).then((res) => {
+        // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
+        if (!res.ok) {
+          client.EquipItem(item.id);
+        }
+      });
+    
+    if (equippedItem) {
+      const equippedGearSlotIDs = equippedItem.gearSlots.map((gearSlot) => gearSlot.id);
+      webAPI.ItemAPI.MoveItems(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+        {
+          moveItemID: equippedItem.item.id,
+          stackHash: item.stackHash,
+          unitCount: -1,
+          to: {
+            entityID: nullVal,
+            characterID: client.characterID,
+            position: equipToSlotNumber,
+            containerID: nullVal,
+            gearSlotIDs,
+            location: 'Inventory',
+            voxSlot: 'Invalid',
+          },
+          from: {
+            entityID: nullVal,
+            characterID: client.characterID,
+            position: -1,
+            containerID: nullVal,
+            gearSlotIDs: equippedGearSlotIDs,
+            location: 'Equipment',
+            voxSlot: 'Invalid',
+          },
+        } as any,
+      );
     }
   }
 
@@ -977,62 +989,72 @@ export function equipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
                                 slotNumberToItem: SlotNumberToItem) {
     const gearSlotIDs = gearSlotDefs.map((gearSlot) => gearSlot.id);
-    webAPI.ItemAPI.moveItems(client.shardID, client.characterID, {
-      moveItemID: item.id,
-      stackHash: item.stackHash,
-      unitCount: -1,
-      to: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: firstAvailableSlot(0, slotNumberToItem),
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Inventory',
-        voxSlot: 'Invalid',
-      },
-      from: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: getItemInventoryPosition(item),
-        containerID: nullVal,
-        gearSlotIDs,
-        location: 'Equipment',
-        voxSlot: 'Invalid',
-      },
-    } as any).then((res) => {
-      // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
-      if (res.error) {
-        client.UnequipItem(item.id);
-      }
+    webAPI.ItemAPI.MoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      {
+        moveItemID: item.id,
+        stackHash: item.stackHash,
+        unitCount: -1,
+        to: {
+          entityID: nullVal,
+          characterID: client.characterID,
+          position: firstAvailableSlot(0, slotNumberToItem),
+          containerID: nullVal,
+          gearSlotIDs: [],
+          location: 'Inventory',
+          voxSlot: 'Invalid',
+        },
+        from: {
+          entityID: nullVal,
+          characterID: client.characterID,
+          position: getItemInventoryPosition(item),
+          containerID: nullVal,
+          gearSlotIDs,
+          location: 'Equipment',
+          voxSlot: 'Invalid',
+        },
+      } as any).then((res) => {
+        // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
+        if (!res.ok) {
+          client.UnequipItem(item.id);
+        }
     });
   }
 
   export function dropItemRequest(item: InventoryItemFragment) {
-    webAPI.ItemAPI.moveItems(client.shardID, client.characterID, {
-      moveItemID: item.id,
-      stackHash: item.stackHash,
-      unitCount: -1,
-      to: {
-        entityID: nullVal,
-        position: -1,
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Ground',
-        voxSlot: 'Invalid',
-      },
-      from: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: getItemInventoryPosition(item),
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Inventory',
-        voxSlot: 'Invalid',
-      },
-    } as any).then((res) => {
-      // TEMPORARY: If webAPI fails, then fall back to client command DropItem
-      if (res.error) {
-        client.DropItem(item.id);
-      }
+    webAPI.ItemAPI.MoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      {
+        moveItemID: item.id,
+        stackHash: item.stackHash,
+        unitCount: -1,
+        to: {
+          entityID: nullVal,
+          position: -1,
+          containerID: nullVal,
+          gearSlotIDs: [],
+          location: 'Ground',
+          voxSlot: 'Invalid',
+        },
+        from: {
+          entityID: nullVal,
+          characterID: client.characterID,
+          position: getItemInventoryPosition(item),
+          containerID: nullVal,
+          gearSlotIDs: [],
+          location: 'Inventory',
+          voxSlot: 'Invalid',
+        },
+      } as any).then((res) => {
+        // TEMPORARY: If webAPI fails, then fall back to client command DropItem
+        if (!res.ok) {
+          client.DropItem(item.id);
+        }
     });
   }

@@ -11,19 +11,20 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql,
-         utils,
-         Tooltip,
-         RaisedButton,
-         Dialog,
-         GridView,
-         ColumnDefinition,
-         webAPI,
-         client,
-         InlineTextInputEdit,
-         InlineNumberInputEdit,
-         InlineMultiSelectEdit,
-       } from 'camelot-unchained';
+import {
+  ql,
+  utils,
+  Tooltip,
+  RaisedButton,
+  Dialog,
+  GridView,
+  ColumnDefinition,
+  webAPI,
+  client,
+  InlineTextInputEdit,
+  InlineNumberInputEdit,
+  InlineMultiSelectEdit,
+} from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 import CreateRankDialog from './CreateRankDialog';
@@ -122,7 +123,7 @@ export interface RanksStyle extends StyleDeclaration {
   buttonBar: React.CSSProperties;
 }
 
-let createRankDialogRef: Dialog<any> = null; 
+let createRankDialogRef: Dialog<any> = null;
 function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<RanksStyle>) {
   return (
     <div className={css(ss.buttonBar, custom.buttonBar)}>
@@ -133,14 +134,17 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
             ? (
                 <Dialog ref={r => createRankDialogRef = r}
                         closeOnClickOutside={true}
-                        content={() => <CreateRankDialog dispatch={props.dispatch}
-                                                   groupId={props.group.id}
-                                                   permissions={props.group.permissions}
-                                                   onCancel={() => createRankDialogRef.hide()}
-                                                   onCreated={() => {
-                                                     createRankDialogRef.hide();
-                                                     props.refetch();
-                                                   }} />
+                        content={() =>
+                          <CreateRankDialog
+                            dispatch={props.dispatch}
+                            groupId={props.group.id}
+                            permissions={props.group.permissions}
+                            onCancel={() => createRankDialogRef.hide()}
+                            onCreated={() => {
+                              createRankDialogRef.hide();
+                              props.refetch();
+                            }}
+                          />
                                 }>
                   <RaisedButton styles={{
                       button: {
@@ -152,7 +156,7 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
               </Dialog>)
             : null
         }
-        
+
       </div>
   );
 }
@@ -171,6 +175,79 @@ export interface RanksProps {
   styles?: Partial < RanksStyle >;
 }
 
+export interface RenderDataInfo {
+  userPermissions: ql.PermissionInfo[];
+  groupId: string;
+  refetch: () => void;
+}
+
+async function renameRank(renderData: RenderDataInfo, currentName: string, newName: string) {
+  const res = await webAPI.GroupsAPI.RenameRankV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    renderData.groupId,
+    currentName,
+    newName,
+  );
+  if (res.ok) {
+    renderData.refetch();
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: false,
+    error: res.data,
+  };
+}
+
+async function setRankLevel(renderData: RenderDataInfo, r: ql.CustomRank, newLevel: number) {
+  const res = await webAPI.GroupsAPI.SetRankLevelV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    renderData.groupId,
+    r.name,
+    newLevel,
+  )
+  if (res.ok) {
+    renderData.refetch();
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: false,
+    error: res.data,
+  };
+}
+
+async function setRankPermissions(renderData: RenderDataInfo, item: ql.CustomRank, permissions: ql.PermissionInfo[]) {
+  const res = await webAPI.GroupsAPI.SetRankPermissionsV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    renderData.groupId,
+    item.name,
+    permissions.map(p => p.tag),
+  );
+    
+  if (res.ok) {
+    renderData.refetch();
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: false,
+    error: res.data,
+  };  
+}
+
 export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
   {
     key: (r: ql.CustomRank) => r.name,
@@ -183,27 +260,14 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     },
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => a.name < b.name ? 1 : -1,
     renderItem: (r: ql.CustomRank, renderData?:
-     { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
+    { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
-        return <InlineTextInputEdit value={r.name} onSave={(currentName: string, newName: string): any  => {
-            return webAPI.GroupsAPI.renameRankV1(
-              client.shardID,
-              client.characterID,
-              renderData.groupId,
-              currentName,
-              newName).then((result) => {
-                if (result.ok) {
-                  renderData.refetch();
-                  return {
-                    ok: true,
-                  };
-                }
-                return {
-                  ok: false,
-                  error: result.data,
-                };
-              });
-          }} />;
+        return (
+          <InlineTextInputEdit
+            value={r.name}
+            onSave={(currentName: string, newName: string): any  => renameRank(renderData, currentName, newName)}
+          />
+        );
       } else {
         return <span>{r.name}</span>;
       }
@@ -221,28 +285,14 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     renderItem: (r: ql.CustomRank, renderData?:
     { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
-        return <InlineNumberInputEdit value={r.level}
-                                      min={2}
-                                      max={1000}
-                                      onSave={(currentLevel: number, newLevel: string): any  => {
-            return webAPI.GroupsAPI.setRankLevelV1(
-              client.shardID,
-              client.characterID,
-              renderData.groupId,
-              r.name,
-              Number.parseInt(newLevel)).then((result) => {
-                if (result.ok) {
-                  renderData.refetch();
-                  return {
-                    ok: true,
-                  };
-                }
-                return {
-                  ok: false,
-                  error: result.data,
-                };
-              });
-          }} />;
+        return (
+          <InlineNumberInputEdit
+            value={r.level}
+            min={2}
+            max={1000}
+            onSave={(currentLevel: number, newLevel: string): any  => setRankLevel(renderData, r, parseInt(newLevel, 10))}
+          />
+        );
       } else {
         return <span>{r.level}</span>;
       }
@@ -258,52 +308,37 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     {
     userPermissions: ql.PermissionInfo[], groupPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
-
-      return <InlineMultiSelectEdit items={renderData.groupPermissions}
-                                    value={item.permissions}
-                                    styles={{
-                                      container: {
-                                        width: '600px',
-                                      },
-                                    }}
-                                    renderListItem={(p: ql.PermissionInfo) => {
-                                      return (
-                                        <div key={p.tag} style={{padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)'}}>
-                                          {p.name}<br/>
-                                          {p.description}<br/>
-                                          <i>enables {p.enables.join(', ')}</i>
-                                        </div>
-                                      );
-                                    }}
-                                    renderSelectedItem={(p: ql.PermissionInfo) => {
-                                      return (
-                                        <Tooltip key={p.tag} content={p.description}>
-                                          <span style={{paddingRight: '5px'}}>{p.name + ' '}</span>
-                                        </Tooltip>
-                                      );
-                                    }}
-                                    itemComparison={ (a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
-                                    filter={(text: string, p: ql.PermissionInfo) => stringContains(p.name, text)}
-                                    onSave={(existing: ql.PermissionInfo[], permissions: ql.PermissionInfo[]): any  => {
-                                      console.log(permissions.map(p => p.tag).join());
-                                      return webAPI.GroupsAPI.setRankPermissionsV1(
-                                        client.shardID,
-                                        client.characterID,
-                                        renderData.groupId,
-                                        item.name,
-                                        permissions.map(p => p.tag)).then(result => {
-                                          if (result.ok) {
-                                            renderData.refetch();
-                                            return {
-                                              ok: true,
-                                            };
-                                          }
-                                          return {
-                                            ok: false,
-                                            error: result.data,
-                                          };
-                                        });
-                                    }} />;
+        return (
+          <InlineMultiSelectEdit
+            items={renderData.groupPermissions}
+            value={item.permissions}
+            styles={{
+              container: {
+                width: '600px',
+              },
+            }}
+            renderListItem={(p: ql.PermissionInfo) => {
+              return (
+                <div key={p.tag} style={{padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)'}}>
+                  {p.name}<br/>
+                  {p.description}<br/>
+                  <i>enables {p.enables.join(', ')}</i>
+                </div>
+              );
+            }}
+            renderSelectedItem={(p: ql.PermissionInfo) => {
+              return (
+                <Tooltip key={p.tag} content={p.description}>
+                  <span style={{paddingRight: '5px'}}>{p.name + ' '}</span>
+                </Tooltip>
+              );
+            }}
+            itemComparison={ (a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
+            filter={(text: string, p: ql.PermissionInfo) => stringContains(p.name, text)}
+            onSave={(existing: ql.PermissionInfo[], permissions: ql.PermissionInfo[]): any  =>
+                                          setRankPermissions(renderData, item, permissions) }
+          />
+        );
       } else {
         return <span>{
           item.permissions
@@ -356,28 +391,34 @@ export default (props : RanksProps) => {
 
       {renderButtonBar(props, ss, custom)}
 
-      
 
-      <GridView items={props.group.ranks}
-                itemsPerPage={20}
-                columnDefinitions={colDefs}
-                userPermissions={props.userPermissions}
-                rowMenu={(item: ql.CustomRank, close: () => void) => {
-                  return <RankListItemMenu refetch={props.refetch}
-                                           groupId={props.group.id}
-                                           close={close}
-                                           rank={item} />;
-                }}
-                renderData={{
-                  userPermissions: props.userPermissions,
-                  groupId: props.group.id,
-                  refetch: props.refetch,
-                  groupPermissions: props.group.permissions,
-                }}
-                rowMenuStyle={{
-                  backgroundColor: '#444',
-                  border: '1px solid #4A4A4A',
-                }} />
+
+      <GridView
+        items={props.group.ranks}
+        itemsPerPage={20}
+        columnDefinitions={colDefs}
+        userPermissions={props.userPermissions}
+        rowMenu={(item: ql.CustomRank, close: () => void) => {
+          return (
+            <RankListItemMenu
+              refetch={props.refetch}
+              groupId={props.group.id}
+              close={close}
+              rank={item}
+            />
+          );
+        }}
+        renderData={{
+          userPermissions: props.userPermissions,
+          groupId: props.group.id,
+          refetch: props.refetch,
+          groupPermissions: props.group.permissions,
+        }}
+        rowMenuStyle={{
+          backgroundColor: '#444',
+          border: '1px solid #4A4A4A',
+        }}
+      />
     </div>
   );
 };

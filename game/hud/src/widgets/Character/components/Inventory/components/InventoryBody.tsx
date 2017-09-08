@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 
 import { ApolloClient } from 'apollo-client';
 import  { graphql, withApollo } from 'react-apollo';
-import { ListenerInfo, events, client } from 'camelot-unchained';
+import { events, client } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import * as base from './InventoryBase';
@@ -83,8 +83,8 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodyState> {
   private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
   private inventoryItemsAdded: any[] = [];
-  private updateInventoryItemsHandler: ListenerInfo;
-  private dropItemHandler: ListenerInfo;
+  private updateInventoryItemsHandler: EventListener;
+  private dropItemHandler: EventListener;
   private bodyRef: HTMLDivElement;
   private heightOfBody: number;
 

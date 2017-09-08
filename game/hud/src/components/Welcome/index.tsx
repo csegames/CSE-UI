@@ -51,24 +51,25 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 
   public componentDidMount() {
-    webAPI.ContentAPI.messageOfTheDayV1().then((response) => {
-      if (response.ok) {
-        this.onMessage(response.data);
-        return;
+    this.getMessageOfTheDay();
+  }
+
+  private async getMessageOfTheDay() {
+    try {
+      const res = await webAPI.ContentAPI.MessageOfTheDayV1(webAPI.defaultConfig);
+      if (res.ok) {
+        const data = JSON.parse(res.data);
+        this.onMessage(data);
       }
-      this.onMessageFailed(response.problem);
-    });
+    } catch (err) {
+      webAPI.handleWebAPIError(err);
+    }
   }
 
   private onMessage = (data: WelcomeData) => {
     if (data.message === '') return;
     const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{__html: data.message}} />;
     this.setState({ message: welcomeMessage } as any);
-  }
-
-  private onMessageFailed = (error: any) => {
-    // **TODO: Proper logging?
-    console.log(error);
   }
 
   private hide = (): void => {
