@@ -127,18 +127,18 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         rendersContent: 'Character',
       },
       {
-        name: 'social',
-        tab: {
-          render: () => <span>Social</span>,
-        },
-        rendersContent: 'Social',
-      },
-      {
         name: 'map',
         tab: {
           render: () => <span>Map</span>,
         },
         rendersContent: 'Map',
+      },
+      {
+        name: 'social',
+        tab: {
+          render: () => <span>Social</span>,
+        },
+        rendersContent: 'Social',
       },
     ];
 
@@ -150,15 +150,15 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         },
       },
       {
-        name: 'Social',
-        content: {
-          render: this.renderSocial,
-        },
-      },
-      {
         name: 'Map',
         content: {
           render: this.renderMap,
+        },
+      },
+      {
+        name: 'Social',
+        content: {
+          render: this.renderSocial,
         },
       },
     ];
@@ -232,12 +232,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         this.setVisibleComponent(name);
         break;
       }
-      case 'social': {
+      case 'map': {
         this.setActiveTabIndex(2);
         this.setVisibleComponent(name);
         break;
       }
-      case 'map': {
+      case 'social': {
         this.setActiveTabIndex(3);
         this.setVisibleComponent(name);
         break;
