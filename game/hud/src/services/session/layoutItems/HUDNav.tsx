@@ -81,7 +81,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'gamemenu'),
-          hideClientControlledUI();
+            hideClientControlledUI();
         },
       },
       {
@@ -223,6 +223,21 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'plotcontrol');
+        },
+      },
+      {
+        name: 'map',
+        tooltip: 'World Map',
+        iconClass: 'fa-map',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'map');
         },
       },
       // {
