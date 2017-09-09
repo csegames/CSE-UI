@@ -14,31 +14,45 @@ import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 
 export interface MapStyle extends StyleDeclaration {
-  mapContainer: React.CSSProperties;
+  mainMapContainer: React.CSSProperties;
   map: React.CSSProperties;
   mapKey: React.CSSProperties;
 }
 
 export const defaultMapStyle: MapStyle = {
-  mapContainer: {
+  mainMapContainer: {
+    display: '-webkit-inline-box',
     position: 'relative',
     height: '100%',
     width: '100%',
-    textAlign: 'center',
+  },
+
+  mapContainer: {
+    width: '75%',
+    height: '100%',
+    position: 'relative',
   },
 
   map: {
-    maxWidth: '100%',
-    height: 'auto',
-    maxHeight: '100%',
+    width: '100%',
+    height: '100%',
     position: 'relative',
+    borderRight: '2px #3b524a',
+    borderRightStyle: 'dashed',
+  },
+
+  keyContainer: {
+    position: 'relative',
+    width: '25%',
+    textAlign: 'center',
   },
 
   mapKey: {
     position: 'relative',
-    maxWidth: '25%',
-    paddingLeft: '5%',
-    bottom: '38%',
+    maxWidth: '50%',
+    marginTop: '60%',
+    border: '1px #ae945e',
+    borderStyle: 'dashed',
   },
 
   backgroundImg: {
@@ -62,10 +76,14 @@ class MapMain extends React.Component<MapMainProps> {
   public render() {
     const ss = StyleSheet.create({ ...defaultMapStyle, ...this.props.styles });
     return (
-      <div className={css(ss.mapContainer)}>
+      <div className={css(ss.mainMapContainer)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg)}/>
-        <img className={css(ss.map)} src={'images/world-map.jpg'}/>
-        <img className={css(ss.mapKey)} src={'images/map-key.jpg'}/>
+        <div className={css(ss.mapContainer)}>
+          <img className={css(ss.map)} src={'images/world-map.jpg'}/>
+        </div>
+        <div className={css(ss.keyContainer)}>
+          <img className={css(ss.mapKey)} src={'images/map-key.jpg'}/>
+        </div>
       </div>
     );
   }
