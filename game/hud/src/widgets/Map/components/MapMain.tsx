@@ -3,9 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * @Author: Justin Vick (jusitn.zezmin@gmail.com)
+ * @Author: Justin Vick (justin.zezmin@gmail.com)
  * @Date: 9/8/2017 16:48
- * @Last Modified by: Justin Vick (jusitn.zezmin@gmail.com)
+ * @Last Modified by: Justin Vick (justin.zezmin@gmail.com)
  * @Last Modified time: 9/8/2017 16:48
  */
 
