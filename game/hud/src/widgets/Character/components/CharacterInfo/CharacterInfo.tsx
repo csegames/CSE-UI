@@ -146,7 +146,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
         content: { render: this.renderDefenseInfo },
       },
     ];
-    console.log(testCharacterStats);
+    
     return myCharacter ? (
       <div className={css(ss.CharacterInfo, custom.CharacterInfo)}>
         <div className={css(ss.generalInfoContainer, custom.generalInfoContainer)}>
