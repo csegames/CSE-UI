@@ -44,8 +44,10 @@ class Combatant {
     this.injuries = <Injury[]>[];
   }
 
-  public setRace(race: Race) { } // override to support race
-  public setArchetype(archetype: Archetype)  { } /// override to support archetype
+  public setRace(race: Race) {
+  } // override to support race
+  public setArchetype(archetype: Archetype) {
+  } /// override to support archetype
 
   public setName(name: string) {
     this.name = name;

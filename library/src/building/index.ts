@@ -10,5 +10,7 @@ import BuildingMaterial from './classes/BuildingMaterial';
 import BuildingBlock from './classes/BuildingBlock';
 import BuildingBlueprint from './classes/BuildingBlueprint';
 
-export { building, BuildingMaterial, BuildingBlock,
-          BuildingBlueprint };
+export {
+  building, BuildingMaterial, BuildingBlock,
+  BuildingBlueprint,
+};

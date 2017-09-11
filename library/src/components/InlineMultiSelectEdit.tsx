@@ -11,11 +11,12 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { FloatSpinner,
-         Tooltip,
-         events,
-         utils,
-       } from '..';
+import {
+  FloatSpinner,
+  Tooltip,
+  events,
+  utils,
+} from '..';
 import { generateID } from 'redux-typed-modules';
 import MultiSelect, { MultiSelectStyle } from './MultiSelect';
 
@@ -61,9 +62,7 @@ export const defaultInlineMultiSelectEditStyle: InlineMultiSelectEditStyle = {
     fontSize: '0.7em',
   },
 
-  saveButton: {
-
-  },
+  saveButton: {},
 
   error: {
     color: 'darkred',
@@ -83,7 +82,7 @@ export interface InlineMultiSelectEditProps {
   renderSelectedItem: (item: any, renderData: any) => JSX.Element;
   itemComparison: comparisonFunction<any>;
   renderData?: any;
-  onSave: (prev: any, selected: any) => Promise<{ok: boolean, error?: string}>;
+  onSave: (prev: any, selected: any) => Promise<{ ok: boolean, error?: string }>;
   styles?: Partial<InlineMultiSelectEditStyle>;
   selectStyles?: Partial<MultiSelectStyle>;
 }
@@ -96,7 +95,7 @@ export interface InlineMultiSelectEditState {
 }
 
 export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEditProps, InlineMultiSelectEditState> {
-  
+
   private static editModeActiveEvent = 'input-edit-mode-active';
   private editModeListenerID: any = null;
   private id: string = '';
@@ -123,15 +122,15 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
              onKeyDown={this.onKeyDown}>
           {
             this.state.errors ?
-            (
-              <div className={css(ss.error, custom.error)}>
-                <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Save failed.
-                </Tooltip>
-              </div>
-            ) : null
+              (
+                <div className={css(ss.error, custom.error)}>
+                  <Tooltip content={() => <span>{this.state.errors}</span>}>
+                    <i className='fa fa-exclamation-circle'></i> Save failed.
+                  </Tooltip>
+                </div>
+              ) : null
           }
-          
+
           <MultiSelect items={this.props.items}
                        ref={r => this.selectRef = r}
                        filter={this.props.filter}
@@ -150,24 +149,24 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
                              padding: '1px 10px',
                            },
                          },
-                       }} />
-                 {
-                   this.state.saving ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null
-                 }
+                       }}/>
+          {
+            this.state.saving ? <FloatSpinner styles={{ spinner: { position: 'absolute' } }}/> : null
+          }
           <div className={css(ss.editModeButtons, custom.editModeButtons)}>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.deactivateEditMode} >cancel</a>
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.deactivateEditMode}>cancel</a>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.doSave}>save</a>
-            
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.doSave}>save</a>
+
           </div>
         </div>
       );
@@ -188,7 +187,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
       </div>
     );
   }
-  
+
   public componentDidMount() {
     this.editModeListenerID = events.on(InlineMultiSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
@@ -207,7 +206,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
 
   private onMouseleave = () => {
     if (this.state.showEditButton === false) return;
-    this.setState({showEditButton: false});
+    this.setState({ showEditButton: false });
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -225,7 +224,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
 
   private showEditButton = () => {
     if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
+    this.setState({ showEditButton: true });
   }
 
   private doSave = () => {
@@ -249,7 +248,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
         });
       });
 
-    this.setState({saving: true});
+    this.setState({ saving: true });
   }
 
   private activateEditMode = () => {
@@ -262,7 +261,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
 
   private deactivateEditMode = () => {
     this.selectRef = null;
-    this.setState({editMode: false});
+    this.setState({ editMode: false });
   }
 }
 

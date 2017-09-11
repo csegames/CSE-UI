@@ -5,11 +5,11 @@
  */
 
 import 'isomorphic-fetch';
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
-import client, {hasClientAPI} from '../core/client';
+import client, { hasClientAPI } from '../core/client';
 import events from '../events';
 import * as RestUtil from './RestUtil';
 
@@ -20,6 +20,7 @@ class Settings {
   public channelId: channelId;
   public apiToken: string;
   public timeout: number;
+
   constructor(channel: channelId) {
     this.core = new CoreSettings();
     this.timeout = 2000;
@@ -43,6 +44,7 @@ class Settings {
       });
     }
   }
+
   private determineApiDetails() {
     // TODO remove this when there are channel based API's
     this.url = this.core.publicApiUrl;
@@ -91,42 +93,40 @@ export function getJSON(endpoint: string, requireAuth: boolean = false, query: a
   addDefaultHeaders(headers, requireAuth, version);
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
-    method: 'get',
     headers,
+    method: 'get',
   } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);
 }
 
-export function deleteJSON(
-  endpoint: string,
-  requireAuth: boolean = false,
-  query: any = {},
-  version: number = 1): Promise<any> {
+export function deleteJSON(endpoint: string,
+                           requireAuth: boolean = false,
+                           query: any = {},
+                           version: number = 1): Promise<any> {
   const headers = {};
   addDefaultHeaders(headers, requireAuth, version);
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
-    method: 'delete',
     headers,
+    method: 'delete',
   } as any)
     .then(RestUtil.checkStatus);    // no response body for a DELETE
 }
 
-export function postJSON(
-  endpoint: string,
-  requireAuth: boolean = false,
-  data: any = {},
-  query: any = {},
-  version: number = 1): Promise<any> {
+export function postJSON(endpoint: string,
+                         requireAuth: boolean = false,
+                         data: any = {},
+                         query: any = {},
+                         version: number = 1): Promise<any> {
   const headers = {
     'Content-Type': 'application/json',
   };
   addDefaultHeaders(headers, requireAuth, version);
   addDefaultQueryParameters(query, requireAuth);
   return fetch(RestUtil.makeQueryString(makeAPIUrl(endpoint), query), {
-    method: 'post',
     headers,
+    method: 'post',
     body: JSON.stringify(data),
   } as any)
     .then(RestUtil.checkStatus)

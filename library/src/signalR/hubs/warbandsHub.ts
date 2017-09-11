@@ -10,7 +10,7 @@
  */
 
 import client from '../../core/client';
-import {SignalRHub} from '../SignalRHub';
+import { SignalRHub } from '../SignalRHub';
 
 // UI EVENT NAMES
 export const WARBAND_EVENTS_JOINED = 'warbands/joined';
@@ -57,7 +57,7 @@ const warbandEventsMap = [
   },
 ];
 
-export const warbandsHub = new SignalRHub('warbandsHub', warbandEventsMap, {debug: client.debug});
+export const warbandsHub = new SignalRHub('warbandsHub', warbandEventsMap, { debug: client.debug });
 
 warbandsHub.onConnected = (hub: SignalRHub) => {
   hub.invoke('identify', client.loginToken, client.shardID, client.characterID)

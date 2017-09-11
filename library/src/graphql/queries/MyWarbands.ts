@@ -11,7 +11,7 @@
 
 import gql from 'graphql-tag';
 
-import FullWarbandFragment, {FullWarband} from '../fragments/FullWarband';
+import FullWarbandFragment, { FullWarband } from '../fragments/FullWarband';
 
 export default gql`
 query MyWarbands {
@@ -23,5 +23,5 @@ ${FullWarbandFragment}
 `;
 
 export interface MyWarbandsQuery {
-  myWarbands : FullWarband[];
+  myWarbands: FullWarband[];
 }

@@ -10,9 +10,9 @@
  */
 
 export function stricmp(a: string, b: string) {
-  a = a.toLowerCase();
-  b = b.toLowerCase();
-  return a < b ? -1 : b > a ? 1 : 0;
+  const normalizedA = a.toLowerCase();
+  const normalizedB = b.toLowerCase();
+  return normalizedA < normalizedB ? -1 : normalizedB > normalizedA ? 1 : 0;
 }
 
 export function datecmp(a: string, b: string) {

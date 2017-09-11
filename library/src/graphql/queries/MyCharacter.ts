@@ -11,7 +11,7 @@
 
 import gql from 'graphql-tag';
 
-import FullCharacterFragment, {FullCharacter} from '../fragments/FullCharacter';
+import FullCharacterFragment, { FullCharacter } from '../fragments/FullCharacter';
 
 export default gql`
 query MyCharacter {
@@ -23,5 +23,5 @@ ${FullCharacterFragment}
 `;
 
 export interface MyCharacterQuery {
-  myCharacter : FullCharacter;
+  myCharacter: FullCharacter;
 }

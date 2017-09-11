@@ -5,13 +5,14 @@
  */
 import Player from './Player';
 import Character from './Character';
-class Group  {
+
+class Group {
   public self: Character;
   public members: Player[];
 
   constructor(group = <Group>{}) {
-    group.self = group.self ||  new Character();
-    group.members = group.members ||  <Player[]>[];
+    group.self = group.self || new Character();
+    group.members = group.members || <Player[]>[];
   }
 
   public static create() {

@@ -5,8 +5,8 @@
  */
 
 
-class Stats{
-    
+class Stats {
+
   public strength: number;
   public agility: number;
   public endurance: number;
@@ -17,16 +17,15 @@ class Stats{
   public attunement: number;
   public faith: number;
   public eyesight: number;
-    
-    
-    
+
+
   public hearing: number;
   public clarity: number;
   public mass: number;
   public presence: number;
   public affinity: number;
-    
-    
+
+
   public maxMoveSpeed: number;
   public vision: number;
   public detection: number;
@@ -35,9 +34,9 @@ class Stats{
   public panicDelay: number;
   public healthRegeneration: number;
   public staminaRegeneration: number;
-    
+
   constructor(stats = <Stats>{}) {
-        
+
     this.strength = stats.strength || 0;
     this.agility = stats.agility || 0;
     this.endurance = stats.endurance || 0;
@@ -64,11 +63,11 @@ class Stats{
     this.healthRegeneration = stats.healthRegeneration || 0;
     this.staminaRegeneration = stats.staminaRegeneration || 0;
   }
-    
+
   public static create() {
     const a = new Stats();
     return a;
   }
-} 
+}
 
 export default Stats;

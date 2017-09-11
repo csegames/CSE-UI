@@ -5,9 +5,10 @@
  */
 
 // import * as Rest from '../util/RestAPI';
-import {getCraftedAbilities} from '../../restapi/RestAPI';
+import { getCraftedAbilities } from '../../restapi/RestAPI';
 
 import AbilityComponent from './AbilityComponent';
+
 class Ability {
   public id: string;
   public icon: string;

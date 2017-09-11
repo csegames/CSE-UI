@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from '../EventEmitter';
-import {clientEventTopics} from '../defaultTopics';
+import { clientEventTopics } from '../defaultTopics';
 import LogMessage from '../../core/classes/LogMessage';
 import client from '../../core/client';
 
@@ -26,6 +26,7 @@ export default class LoggingListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = clientEventTopics.handlesLogging;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

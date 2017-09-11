@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { 
-         FloatSpinner,
-         Tooltip,
-         events,
-       } from '..';
+import {
+  FloatSpinner,
+  Tooltip,
+  events,
+} from '..';
 import { generateID } from 'redux-typed-modules';
 import DropDownSelect, { DropDownSelectStyle, DropDownSelectProps } from './DropDownSelect';
 
@@ -55,9 +55,7 @@ export const defaultInlineDropDownSelectEditStyle: InlineDropDownSelectEditStyle
     fontSize: '0.7em',
   },
 
-  saveButton: {
-
-  },
+  saveButton: {},
 
   error: {
     color: 'darkred',
@@ -116,13 +114,13 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
              onKeyDown={this.onKeyDown}>
           {
             this.state.errors ?
-            (
-              <div className={css(ss.error, custom.error)}>
-                <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Save failed.
-                </Tooltip>
-              </div>
-            ) : null
+              (
+                <div className={css(ss.error, custom.error)}>
+                  <Tooltip content={() => <span>{this.state.errors}</span>}>
+                    <i className='fa fa-exclamation-circle'></i> Save failed.
+                  </Tooltip>
+                </div>
+              ) : null
           }
           <DropDown items={this.props.items}
                           ref={r => this.dropDownRef = r}
@@ -130,24 +128,24 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
                           renderSelectedItem={this.props.renderSelectedItem}
                           renderListItem={this.props.renderListItem}
                           renderData={this.props.renderData}
-                          styles={this.props.dropDownStyles} />
-                 {
-                   this.state.saving ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null
-                 }
+                          styles={this.props.dropDownStyles}/>
+          {
+            this.state.saving ? <FloatSpinner styles={{ spinner: { position: 'absolute' } }}/> : null
+          }
           <div className={css(ss.editModeButtons, custom.editModeButtons)}>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.deactivateEditMode} >cancel</a>
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.deactivateEditMode}>cancel</a>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.doSave}>save</a>
-            
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.doSave}>save</a>
+
           </div>
         </div>
       );
@@ -168,7 +166,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
       </div>
     );
   }
-  
+
   public componentDidMount() {
     this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
@@ -187,7 +185,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
 
   private onMouseleave = () => {
     if (this.state.showEditButton === false) return;
-    this.setState({showEditButton: false});
+    this.setState({ showEditButton: false });
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -207,7 +205,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
 
   private showEditButton = () => {
     if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
+    this.setState({ showEditButton: true });
   }
 
   private doSave = () => {
@@ -231,7 +229,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
         });
       });
 
-    this.setState({saving: true});
+    this.setState({ saving: true });
   }
 
   private activateEditMode = () => {
@@ -244,7 +242,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
 
   private deactivateEditMode = () => {
     this.dropDownRef = null;
-    this.setState({editMode: false});
+    this.setState({ editMode: false });
   }
 }
 

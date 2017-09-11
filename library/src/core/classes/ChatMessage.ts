@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-class ChatMessage  {
+class ChatMessage {
   public type: number;
   public from: string;
   public body: string;

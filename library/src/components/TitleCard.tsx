@@ -10,13 +10,14 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css} from 'aphrodite';
+import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 
-import Card, {CardLevel, CardStyle, defaultCardStyle} from './Card';
-export {CardLevel} from './Card';
+import Card, { CardLevel, CardStyle, defaultCardStyle } from './Card';
 
-export const defaultTitleCardStyle : TitleCardStyle = {
+export { CardLevel } from './Card';
+
+export const defaultTitleCardStyle: TitleCardStyle = {
   ...defaultCardStyle,
 
   title: {
@@ -34,11 +35,11 @@ export const defaultTitleCardStyle : TitleCardStyle = {
 };
 
 export interface TitleCardStyle extends CardStyle {
-  title : React.CSSProperties;
-  date : React.CSSProperties;
+  title: React.CSSProperties;
+  date: React.CSSProperties;
 }
 
-export const TitleCard = (props : {
+export const TitleCard = (props: {
   title: string;
   date?: Date;
   styles?: Partial<TitleCardStyle>;
@@ -54,12 +55,12 @@ export const TitleCard = (props : {
       </div>
       {props.children}
       {
-          props.date ? (
-            <div className={css(ss.date, custom.date)}>
+        props.date ? (
+          <div className={css(ss.date, custom.date)}>
             {moment(props.date).fromNow()}
-            </div>
-          ) : null
-        }
+          </div>
+        ) : null
+      }
     </Card>
   );
 };

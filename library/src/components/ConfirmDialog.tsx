@@ -146,7 +146,7 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
       </div>
     );
   }
-  
+
   public show = () => {
     this.setState({
       hidden: false,

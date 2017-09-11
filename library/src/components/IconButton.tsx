@@ -20,7 +20,7 @@ export const defaultIconButtonStyle: IconButtonStyle = {
     textShadow: '1px 1px rgba(0, 0, 0, 0.7)',
   },
   disabled: {
-    cursor: 'not-allowed',    
+    cursor: 'not-allowed',
     textShadow: '0',
   },
 };
@@ -29,7 +29,7 @@ export interface IconButtonProps {
   styles?: Partial<IconButtonStyle>;
   tooltipContent?: string;
   disabled?: boolean;
-  active?: boolean;  
+  active?: boolean;
   color?: string;
   disabledColor?: string;
   activeColor?: string;
@@ -40,7 +40,7 @@ export interface IconButtonProps {
 export const IconButton = (props: IconButtonProps) => {
   const ss = StyleSheet.create(defaultIconButtonStyle);
   const custom = StyleSheet.create(props.styles || {});
-  
+
   const { tooltipContent, disabled, iconClass, onClick, color, disabledColor, active, activeColor } = props;
 
   return (
@@ -50,9 +50,9 @@ export const IconButton = (props: IconButtonProps) => {
           <span
             style={{
               color: !color ? 'white' :
-              disabled && disabledColor ? disabledColor :
-              active && activeColor ? activeColor :
-              color,
+                disabled && disabledColor ? disabledColor :
+                  active && activeColor ? activeColor :
+                    color,
             }}
             className={`fa ${iconClass} ${!disabled ? 'click-effect' : ''} \
               ${css(ss.buttonIcon, custom.buttonIcon, disabled && ss.disabled, disabled && custom.disabled)}`}
@@ -61,7 +61,7 @@ export const IconButton = (props: IconButtonProps) => {
         <span
           style={{ color }}
           className={`fa ${iconClass} ${!disabled ? 'click-effect' : ''} \
-            ${css(ss.buttonIcon, custom.buttonIcon, disabled && ss.disabled, disabled && custom.disabled)}`}          
+            ${css(ss.buttonIcon, custom.buttonIcon, disabled && ss.disabled, disabled && custom.disabled)}`}
         />}
     </div>
   );

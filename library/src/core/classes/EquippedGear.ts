@@ -8,7 +8,7 @@ import Item from './Item';
 /**
  * EquippedGear
  */
-class EquippedGear  {
+class EquippedGear {
 
   /**
    * The items currently in the equippedgear

@@ -294,25 +294,32 @@ export function initialize() {
       switch (name) {
         case 'chat':
           return dispatch(toggleVisibility(name));
-        case 'ui': return dispatch(toggleHUDLock());
+        case 'ui': return dispatch(toggleHUDLock(addEvent, removeEvent));
         case 'reset': return dispatch(resetHUD());
         default: return;
       }
     });
 
-    window.window.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.which === 27) {
-        dispatch(lockHUD());
-      }
-    });
+      const listener = (e: KeyboardEvent) => {
+          if (e.which === 27) {
+              dispatch(lockHUD(removeEvent));
+          }
+      };
+      const addEvent = () => window.window.addEventListener('keydown', listener);
+      const removeEvent = () => window.window.removeEventListener('keydown', listener);
   };
 }
 
 // Lock / Unlock HUD
 export const lockHUD = module.createAction({
   type: 'layout/LOCK_HUD',
-  action: () => null,
+  action: (removeFunc: any) => {
+    return {
+      removeEvent: removeFunc,
+    };
+  },
   reducer: (s, a) => {
+    a.removeEvent();
     if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     return {
       locked: true,
@@ -333,11 +340,18 @@ export const unlockHUD = module.createAction({
 
 export const toggleHUDLock = module.createAction({
   type: 'layout/TOGGLE_HUD_LOCK',
-  action: () => null,
+  action: (addFunc: any, removeFunc: any) => {
+    return {
+      addEvent: addFunc,
+      removeEvent: removeFunc,
+    };
+  },
   reducer: (s, a) => {
     if (s.locked) {
+      a.addEvent();
       if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     } else {
+      a.removeEvent();
       if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     }
     return {

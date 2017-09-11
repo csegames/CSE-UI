@@ -5,11 +5,11 @@
  */
 
 import 'isomorphic-fetch';
-import {Promise} from 'es6-promise';
+import { Promise } from 'es6-promise';
 
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
-import client, {hasClientAPI} from '../core/client';
+import client, { hasClientAPI } from '../core/client';
 import events from '../events';
 import * as RestUtil from './RestUtil';
 
@@ -27,6 +27,7 @@ class Settings {
   public apiKey: string;
   public channelId: channelId;
   public timeout: number;
+
   constructor(channel: channelId) {
     this.core = new CoreSettings();			// TODO: This class is a bit weird
     this.channelId = channel;
@@ -44,6 +45,7 @@ class Settings {
         break;
     }
   }
+
   public getApiKey() {
     if (!this.apiKey) {
       this.apiKey = client.loginToken;		// in fake API will prompt for token
@@ -74,12 +76,11 @@ export function getJSON(endpoint: string, useHttps: boolean = false, query: any 
 }
 
 // old API requires loginToken to be in the data object
-export function postJSON(
-  endpoint: string,
-  useHttps: boolean = false,
-  requireAuth: boolean = false,
-  data: any = {},
-  version: number = 1): Promise<any> {
+export function postJSON(endpoint: string,
+                         useHttps: boolean = false,
+                         requireAuth: boolean = false,
+                         data: any = {},
+                         version: number = 1): Promise<any> {
   return fetch(makeAPIUrl(endpoint, useHttps), {
     method: 'post',
     headers: {
