@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as _ from 'lodash';
 import { request as httpRequest, RequestOptions } from '../util/request';
 import { ObjectMap, withDefaults } from './utils';
 
@@ -23,6 +24,7 @@ export interface GraphQLQueryDefinition {
 export interface QueryOptions {
   url: string;
   requestOptions: RequestOptions;
+  stringifyVariables: boolean;
 }
 
 export const defaultQueryOpts: QueryOptions = {
@@ -32,6 +34,7 @@ export const defaultQueryOpts: QueryOptions = {
     ignoreCache: false,
     timeout: 5000,
   },
+  stringifyVariables: false,
 };
 
 export interface QuickQLQuery {
@@ -80,6 +83,7 @@ export async function query<T>(query: QuickQLQuery, options?: Partial<QueryOptio
       {
         ...q,
         query: parseQuery(q.query),
+        variables: opts.stringifyVariables ? JSON.stringify(q.variables) : q.variables,
       },
       {
         ...opts.requestOptions,

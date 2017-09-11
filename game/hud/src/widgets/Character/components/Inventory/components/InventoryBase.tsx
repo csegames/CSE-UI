@@ -13,7 +13,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import  { InjectedGraphQLProps } from 'react-apollo';
+import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 import { webAPI, client, ql } from 'camelot-unchained';
 
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions } from './InventorySlot';
@@ -61,7 +61,15 @@ export interface SlotNumberToItem {
   };
 }
 
-export interface InventoryBaseProps extends InjectedGraphQLProps<InventoryBaseQuery> {
+export interface InventoryBaseProps {
+  styles?: Partial<InventoryBaseStyle>;
+  searchValue: string;
+  activeFilters: {[id:string]:InventoryFilterButton};
+  onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
+  inventoryItems?: InventoryItemFragment[];
+}
+
+export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
   styles?: Partial<InventoryBaseStyle>;
   searchValue: string;
   activeFilters: {[id:string]:InventoryFilterButton};
@@ -206,7 +214,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
       <InventoryRow key={rowIndex} items={rowItems} />
     ));
     rowData.push(rowItems);
-  }
+  }  
   return {
     rows,
     rowData,
