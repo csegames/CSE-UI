@@ -9,7 +9,17 @@ type Content = string | ObjectMap<any>;
 
 export interface Button {
   title: string;
-  command: string;
+  
+  // if set, will call slash command using this string
+  command?: string;
+
+  // if set, will call a client function of this name
+  // ie.. if set to 'respawn' then 'client.respawn()' would
+  // be called.
+  call?: string;
+
+  // parameters to pass into the client function call, if any
+  params?: ObjectMap<any>;
 }
 
 export interface Page {
@@ -26,6 +36,7 @@ export interface RootPage extends Partial<Page> {
   y: number;
   visible: boolean;
   background?: string;
+  showCloseButton?: boolean;
 }
 
 
@@ -52,7 +63,21 @@ const DevUIButton = (props: Button) => {
   const style = StyleSheet.create(buttonStyle);
   return (
     <div className={css(style.Button)}
-         onClick={() => client.SendSlashCommand(props.command)} >
+         onClick={() => {
+           if (props.command) {
+             client.SendSlashCommand(props.command)
+           } else if (props.call) {
+             const fn = client[props.call];
+             if (props.params) {
+               const values: any[] = [];
+               Object.keys(props.params)
+                 .forEach(k => values.push(props.params[k]));
+               fn(...values);
+             } else {
+               fn();
+             }
+           }
+         }} >
       {props.title}
     </div>
   );
@@ -170,43 +195,64 @@ const DevUIPage = (props: Partial<Page>): JSX.Element => {
   );
 };
 
-class DevUI extends React.Component<{}, RootPage> {
+class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
 
   constructor(props: {}) {
     super(props);
 
-    this.state = {
-      width: 150,
-      height: 200,
-      x: 10,
-      y: 50,
-      visible: false,
-    };
+    this.state = null;
   }
 
   componentDidMount() {
-    client.OnUpdateDevUI((rootPage: any) => {
+    client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
         page = JSON.parse(page);
       }
-      this.setState(page);
+      this.setState({
+        [id]: page,
+      });
     });
   }
 
   render() {
+    if (!this.state) return null;
+    const keys = Object.keys(this.state);
     return (
-      <div style={{
-        width: `${this.state.width}px`,
-        height: `${this.state.height}px`,
-        left: `${this.state.x}px`,
-        top: `${this.state.y}px`,
-        position: 'fixed',
-        background: this.state.background && this.state.background || '#111',
-        visibility: this.state.visible ? 'visible' : 'hidden',
-        display: 'flex',
-      }}>
-        <DevUIPage {...this.state} />
+      <div>
+        {keys.map(k => {
+          const page = this.state[k];
+          if (!page) return null;
+          return (
+            <div key={k}
+                 style={{
+                   width: `${page.width}px`,
+                   height: `${page.height}px`,
+                   left: `${page.x}px`,
+                   top: `${page.y}px`,
+                   position: 'fixed',
+                   background: page.background && page.background || '#111',
+                   visibility: page.visible ? 'visible' : 'hidden',
+                   display: 'flex',
+                 }}>
+            { page.showCloseButton ?
+              <a href={'#'}
+                 style={{
+                    position: 'absolute',
+                    right: '0px',
+                    top: '0px',
+                    display: 'flex',
+                   }}
+                   onClick={() => this.setState({
+                                    [k]: {
+                                      ...page,
+                                      visible: false,
+                                    }
+                                  })}>X</a> : null }
+                <DevUIPage {...page} />
+            </div>
+          );
+        })}
       </div>
     );
   }
