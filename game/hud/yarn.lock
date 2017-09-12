@@ -1296,9 +1296,9 @@ camelot-unchained@^0.8.13:
     react-dom "^15.4.2"
     redux-typed-modules "^2.2.1"
 
-camelot-unchained@^0.9.3:
-  version "0.9.3"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.3.tgz#a29c04e37e724cc90f54f98b256677008d76011a"
+camelot-unchained@^0.9.5:
+  version "0.9.5"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.5.tgz#ac09febbcab2dee711e966e57b36bf8c84d33622"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
