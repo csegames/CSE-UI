@@ -160,6 +160,12 @@
   display: flex;
   flex-direction: column;
   pointer-events: all;
+
+  .PlayerStatusComponent__healthBars__bodyPart {
+    width: 100%;
+    -webkit-clip-path: polygon(0% 10%, 0% 90%, 32% 90%, 32% 10%, 34% 10%, 34% 90%, 66% 90%, 66% 10%, 68% 10%, 68% 90%, 100% 90%, 100% 10%);
+    clip-path: polygon(0% 10%, 0% 90%, 32% 90%, 32% 10%, 34% 10%, 34% 90%, 66% 90%, 66% 10%, 68% 10%, 68% 90%, 100% 90%, 100% 10%);
+  }
   
   ul:nth-child(2) {
     position: relative;

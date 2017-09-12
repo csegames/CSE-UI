@@ -5,8 +5,8 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-09 18:19:03
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-13 10:53:08
  */
 
 import * as React from 'react';
@@ -450,6 +450,13 @@ export function distributeItemsNoFilter(slotsData: {
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
   }
+  // const vox = _.find(itemData.items, item => item.staticDefinition.name === 'Torch');
+  // const voxIndex = _.findIndex(itemData.items, item => item.location.inventory.position ===
+  //   (vox && vox.location.inventory.position));
+  // console.log('Torch item');
+  // console.log(voxIndex);
+  // console.log(voxIndex && slotNumberToItem[voxIndex]);
+  // console.log(vox);
   return {
     ...slotsData,
     itemIdToInfo,

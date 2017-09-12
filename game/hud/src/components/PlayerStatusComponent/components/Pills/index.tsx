@@ -12,9 +12,6 @@ function P2DP(v: number, m: number) {
   return (((v / m) * 10000) | 0) / 100;
 }
 
-const PILL_DIVIDER_WIDTH = 2;     // % width of a pill separator
-const PILL_MARGIN = 10;            // % width of pill margin
-
 export enum Orientation {
   Horizontal,
   Vertical,
@@ -109,12 +106,12 @@ class Pills extends React.Component<PillsProps, PillsState> {
         ));
         currentDegrees += degPerPill;
         displayedHealth += pillHealth;
-      }
+      }      
 
       return (
         <ul
           className={`PlayerStatusComponent__pills ${this.props.containerClass ? this.props.containerClass : ''} 
-           ${orientation === Orientation.Vertical ? 'PlayerStatusComponent__pills--vertical' : ''}`}
+          ${orientation === Orientation.Vertical ? 'PlayerStatusComponent__pills--vertical' : ''}`}
             ref={(r: any) => this.componentRef = r}
             onMouseEnter={() => this.onEnter()}
             onMouseLeave={() => this.onLeave()}>
@@ -126,7 +123,6 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
     // Horizontal or Vertical pills, rendered as a bar with a mask to render them as pills
     const max = this.props.maxValue;
-    const pill = P2DP(this.props.valuePerPill, max);
     const filled = P2DP(this.props.currentValue, max);
     const wounds = this.props.wounds;
     const wmax = wounds ? 99 - (wounds * 33) : 100;     // 1=66%,2=33%,3=0%
@@ -139,8 +135,6 @@ class Pills extends React.Component<PillsProps, PillsState> {
         classes.push('PlayerStatusComponent__pills--vertical');
     }
 
-    // build clip path for pills
-    const clipPath: any = { WebkitClipPath: this.clipPathForPills(pill) };
 
     const dimension = orientation === Orientation.Horizontal ? 'width' : 'height';
 
@@ -152,7 +146,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
     const valueLayer = (
       <div className='PlayerStatusComponent__pills__layer'
-           style={{background: this.props.valueColor, [dimension]: filled + '%'}}>
+          style={{background: this.props.valueColor, [dimension]: filled + '%'}}>
       </div>
     );
 
@@ -160,11 +154,11 @@ class Pills extends React.Component<PillsProps, PillsState> {
     if (wounds) {
       woundsLayer = (
         <div className='PlayerStatusComponent__pills__layer PlayerStatusComponent__pills__layer--wounds'
-             style={{
-               background: this.props.woundColor,
-               [dimension]: (100 - wmax) + '%',
-               [dimension === 'width' ? 'right' : 'bottom']: '0',
-             }}>
+            style={{
+              background: this.props.woundColor,
+              [dimension]: (100 - wmax) + '%',
+              [dimension === 'width' ? 'right' : 'bottom']: '0',
+            }}>
         </div>
       );
     }
@@ -174,11 +168,9 @@ class Pills extends React.Component<PillsProps, PillsState> {
           ref={(r: any) => this.componentRef = r}
           onMouseEnter={() => this.onEnter()}
           onMouseLeave={() => this.onLeave()}>
-        <div style={clipPath}>
-          {bgLayer}
-          {valueLayer}
-          {woundsLayer}
-        </div>
+        {bgLayer}
+        {valueLayer}
+        {woundsLayer}
         {textValue}
       </ul>
     );
@@ -249,86 +241,35 @@ class Pills extends React.Component<PillsProps, PillsState> {
     const liHeight = 150 / numPills;
     if (fillPercent <= 0) 
       return <li key={key}
-                 style={{
-                   WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                   transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                   height: `${liHeight}px`,
-                 }}
-                 onMouseEnter={() => this.onEnter()}
-                 onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
+                style={{
+                  WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                  transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                  height: `${liHeight}px`,
+                }}
+                onMouseEnter={() => this.onEnter()}
+                onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
     if (fillPercent >= 100)
       return <li key={key}
-                 style={{
-                   WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                   transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                   height: `${liHeight}px`,
-                 }}
-                 onMouseEnter={() => this.onEnter()}
-                 onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
+                style={{
+                  WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                  transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                  height: `${liHeight}px`,
+                }}
+                onMouseEnter={() => this.onEnter()}
+                onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
 
     const remainder = 100 - fillPercent;
     const html = `<div style="background: linear-gradient(to bottom, ${fillColor} ${fillPercent.toFixed(2)}%,
      ${depletedColor} ${(fillPercent + 0.1).toFixed(2)}%, ${depletedColor} ${remainder.toFixed(2)}%);" />`;
     return <li key={key}
-               style={{
-                 WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                 transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
-                 height: `${liHeight}px`,
-               }}
-               dangerouslySetInnerHTML={{__html: html}}
-               onMouseEnter={() => this.onEnter()}
-               onMouseLeave={() => this.onLeave()} />;
-  }
-
-  private clipPathForPills = (pillSize: number) => {
-    try {
-      // generate a clip-path to represent the pills.  Work based on the following
-      //
-      // All values are in %
-      // pillSize is the size of a pill in % of total width (excluding any dividers)
-      // A divider starts off as 1% wide (for now)
-      // The number of pills is 100 / pill size
-      // The number of dividers is pills - 1
-      // The available width for pills is 100 minus dividers total width
-      // Pill size is re-calculated based on the number we need (calculated above)
-      //  and the available width
-      // Finally any remaining unused width is spread accross the dividers
-      let divider = PILL_DIVIDER_WIDTH;                         // divider start size
-      const count = (100 / pillSize) | 0;                         // how many pills we need
-      const sep = (count - 1) * divider;                        // total divider space
-      let size = ((((100 - sep) / count) * 100) | 0) / 100;     // pill size
-      const spare = 100 - (count * size + sep);                 // leftovers
-      divider += (((spare / (count - 1)) * 100) | 0) / 100;       // spread across dividers
-
-      divider = Math.max(PILL_DIVIDER_WIDTH, divider);
-      size = Math.max(20, size);
-      // Now build a polygon that will mask each pill
-      //
-      //  The aim is to produce a path that looks like this (repeated for each pill required)
-      //  The sequence is across, up, accorss, down repeated for each pill
-      //  When the path closes, it completes the last side of the pill, and becase the joining
-      //  lines are not closed and 0 width, they cannot be seen.
-      //
-      //   +-----+ +-----+ +-----+ +-----+
-      //   |     | |     | |     | |     |
-      //   |     | |     | |     | |     |
-      //   +-----+-+-----+-+-----+-+-----+
-      //
-      let path: string = '';
-      let pcnt = 0;
-      while (pcnt < 100) {
-        if (path !== '') path += ',';
-        path += `${pcnt}% ${PILL_MARGIN}%,${pcnt}% ${100 - PILL_MARGIN}%,`;        // Accross, Up
-        pcnt += size;
-        path += `${pcnt}% ${100 - PILL_MARGIN}%,${pcnt}% ${PILL_MARGIN}%`;         // Accross, Down
-        if (pcnt < 100) {
-          pcnt += divider;        // divider width
-        }
-      }
-      return `polygon(${path})`;
-    } catch (e) {
-      return '';
-    }
+              style={{
+                WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
+                height: `${liHeight}px`,
+              }}
+              dangerouslySetInnerHTML={{__html: html}}
+              onMouseEnter={() => this.onEnter()}
+              onMouseLeave={() => this.onLeave()} />;
   }
 }
 

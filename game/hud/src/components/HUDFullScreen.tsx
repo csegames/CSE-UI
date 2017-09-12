@@ -5,8 +5,8 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-08-14 12:43:04
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-14 12:43:04
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-12 16:52:52
  */
 
 import * as React from 'react';
@@ -179,7 +179,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       // and window doesn't pick up keydown events unless window is focused
       // will need to change this one day
       if (name === 'gamemenu' && this.state.visibleComponent !== '') {
-        client.CloseUI('gamemenu');
+        events.fire('hudnav--navigate', 'gamemenu');
         this.onCloseFullScreen();
       }
     });
