@@ -894,14 +894,7 @@ babel-register@^6.24.1:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0:
-  version "6.23.0"
-  resolved "http://registry.camelotunchained.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.10.0"
-
-babel-runtime@^6.26.0:
+babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "http://registry.camelotunchained.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -1285,24 +1278,6 @@ camelcase@^4.0.0:
   version "4.1.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
-camelot-unchained@0.9.1:
-  version "0.9.1"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.1.tgz#529ab7a9dbb5cfc52a3968858eda4e8c76b76db7"
-  dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    react "^15.6.1"
-    react-addons-css-transition-group "^0.14.6"
-    react-dom "^15.6.1"
-    redux-typed-modules "^2.2.1"
-
 camelot-unchained@^0.8.13:
   version "0.8.25"
   resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.8.25.tgz#5ca4a1faf2229808c1512ca2f2e939d799fe5ca4"
@@ -1319,6 +1294,24 @@ camelot-unchained@^0.8.13:
     react "^15.6.1"
     react-addons-css-transition-group "^0.14.6"
     react-dom "^15.4.2"
+    redux-typed-modules "^2.2.1"
+
+camelot-unchained@^0.9.5:
+  version "0.9.5"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.5.tgz#ac09febbcab2dee711e966e57b36bf8c84d33622"
+  dependencies:
+    aphrodite "^1.2.3"
+    cwd-in-node-modules "^1.0.1"
+    es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
+    graphql-tag "^1.2.4"
+    isomorphic-fetch "^2.2.1"
+    jquery "^3.0.0"
+    lodash "^4.17.4"
+    moment "^2.17.1"
+    react "^15.6.1"
+    react-addons-css-transition-group "^0.14.6"
+    react-dom "^15.6.1"
     redux-typed-modules "^2.2.1"
 
 can-use-dom@^0.1.0:
@@ -1339,10 +1332,6 @@ center-align@^0.1.1:
   dependencies:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
-
-centered-pan-zoom@2.0.0:
-  version "2.0.0"
-  resolved "http://registry.camelotunchained.com/centered-pan-zoom/-/centered-pan-zoom-2.0.0.tgz#45c27d137fcdd1bdf26054a824c75800b88be14d"
 
 chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -5078,12 +5067,6 @@ react-draggable@^2.2.3, react-draggable@^2.2.6:
   dependencies:
     classnames "^2.2.5"
 
-react-es6-component@*:
-  version "0.0.4"
-  resolved "http://registry.camelotunchained.com/react-es6-component/-/react-es6-component-0.0.4.tgz#1e5f8bea1decc43d961d0caf4a77f06fbb09e9e6"
-  dependencies:
-    underscore "1.8.3"
-
 react-infinite@^0.11.0:
   version "0.11.0"
   resolved "http://registry.camelotunchained.com/react-infinite/-/react-infinite-0.11.0.tgz#de7af4bce898a13c45b9c1a3fb5caf448618d522"
@@ -5123,13 +5106,6 @@ react-motion@^0.4.3, react-motion@^0.4.4:
     performance-now "^0.2.0"
     prop-types "^15.5.8"
     raf "^3.1.0"
-
-react-pan-zoom-element@^2.0.1:
-  version "2.0.1"
-  resolved "http://registry.camelotunchained.com/react-pan-zoom-element/-/react-pan-zoom-element-2.0.1.tgz#c140f60000f1428a44d5834de93e2d1ea64a5713"
-  dependencies:
-    centered-pan-zoom "2.0.0"
-    react-es6-component "*"
 
 react-redux@^4.4.5:
   version "4.4.8"
@@ -6332,10 +6308,6 @@ umd@^3.0.0:
 unc-path-regex@^0.1.0:
   version "0.1.2"
   resolved "http://registry.camelotunchained.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
-
-underscore@1.8.3:
-  version "1.8.3"
-  resolved "http://registry.camelotunchained.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 
 union@~0.4.3:
   version "0.4.6"

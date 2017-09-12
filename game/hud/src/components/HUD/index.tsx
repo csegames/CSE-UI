@@ -23,6 +23,7 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
+import DevUI from '../DevUI';
 
 import { ZoneName } from '../ZoneName';
 
@@ -63,6 +64,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
         </div>
+        
+        <DevUI />
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />

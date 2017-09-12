@@ -523,6 +523,10 @@ const devClientInterface: clientInterface = {
   OnCombatLogEvent: (c: (events: any) => void): void => {
   },
 
+  /* Dev UI */
+  OnUpdateDevUI: (c: (rootPage: any) => void): void => {
+  },
+
 
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',
