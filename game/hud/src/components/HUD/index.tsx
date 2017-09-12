@@ -31,6 +31,8 @@ import ScenarioPopup from '../ScenarioPopup';
 import ScenarioResults from '../ScenarioResults';
 import Settings from '../../widgets/Settings/SettingsMain';
 
+// import TestButtons from '../BattleGroups/components/TestButtons'
+
 import { ZoneName } from '../ZoneName';
 import HUDEditor from './HUDEditor';
 
@@ -114,9 +116,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           </ZoneNameContainer>
           <Console />
 
-        <HUDNavContainer id='hudnav'>
-          <HUDNav.component {...HUDNav.props} />
-        </HUDNavContainer>
+          <HUDNavContainer id='hudnav'>
+            <HUDNav.component {...HUDNav.props} />
+          </HUDNavContainer>
 
           <DevUI />
           <InteractiveAlertView />
@@ -124,21 +126,21 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
           <ScenarioResults />
 
-        <HUDFullScreen />
-        <AbilityBarContainer id='abilitybar'>
-          <AbilityBar />
-        </AbilityBarContainer>
-        <ContextMenu />
-        <TooltipView />
-        <PassiveAlert />
-        { locked ? null :
-          <HUDEditor
-            widgets={widgets}
-            selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
-            dispatch={this.props.dispatch}
-            setSelectedWidget={this.setSelectedWidget}
-          />
-        }
+          <HUDFullScreen />
+          <AbilityBarContainer id='abilitybar'>
+            <AbilityBar />
+          </AbilityBarContainer>
+          <ContextMenu />
+          <TooltipView />
+          <PassiveAlert />
+          { locked ? null :
+            <HUDEditor
+              widgets={widgets}
+              selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+              dispatch={this.props.dispatch}
+              setSelectedWidget={this.setSelectedWidget}
+            />
+          }
 
           <Settings />
           <Watermark />

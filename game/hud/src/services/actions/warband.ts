@@ -79,15 +79,15 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
 }
 
 export function kickFromWarbandByName(targetName: string, warbandID: string) {
-  return kickFromWarband(null, null, targetName, warbandID);
+  return kickFromWarband('', '', targetName, warbandID);
 }
 
 export function kickFromWarbandByCharacterID(characterID: string, warbandID: string) {
-  return kickFromWarband(null, characterID, null, warbandID);
+  return kickFromWarband('', characterID, '', warbandID);
 }
 
 export function kickFromWarbandByEntityID(entityID: string, warbandID: string) {
-  return kickFromWarband(entityID, null, null, warbandID);
+  return kickFromWarband(entityID, '', '', warbandID);
 }
 
 export async function quitWarband() {
@@ -133,6 +133,14 @@ export function hasActiveWarband() {
 
 export function getActiveWarbandID() {
   return getStateObject().id;
+}
+
+export function getWarbandMemberByCharacterID(characterID: string) {
+  return getStateObject().membersMap[characterID];
+}
+
+export function getWarbandMemberByEntityID(entityID: string) {
+  return getStateObject().membersEntityIDMap[entityID];
 }
 
 export function setActiveWarbandID(id: string) {

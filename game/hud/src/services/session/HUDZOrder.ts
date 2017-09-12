@@ -3,6 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+// The higher the widget in the enum, the more precedence it will take over the other widgets.
+// ErrorMessages should always be at the top.
 
 enum HUDZOrder {
   Building,
@@ -15,6 +17,8 @@ enum HUDZOrder {
   EnemyTarget,
   PlayerHealth,
   Warband,
+  BattleGroups,
+  BattleGroupWatchList,
   Chat,
   Compass,
   CompassTooltip,

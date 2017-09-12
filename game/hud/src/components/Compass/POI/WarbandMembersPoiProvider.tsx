@@ -19,7 +19,7 @@ import {
 import WarbandNotificationProvider from '../../WarbandDisplay/WarbandNotificationProvider';
 import { CompassTooltipData } from 'components/CompassTooltip';
 import { showCompassTooltip, hideCompassTooltip, updateCompassTooltip } from 'actions/compassTooltip';
-import { WarbandMemberStateFragment } from 'gql/fragments/WarbandMemberStateFragment';
+import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
   WarbandMembersPoiQuery,
   WarbandMembersPoiSubscription,
@@ -74,11 +74,11 @@ const query = gql`
         id
       }
       members {
-        ...WarbandMemberState
+        ...GroupMember
       }
     }
   }
-  ${WarbandMemberStateFragment}
+  ${GroupMemberFragment}
 `;
 
 const subscriptionQuery = gql`

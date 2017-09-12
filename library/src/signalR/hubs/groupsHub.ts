@@ -19,6 +19,14 @@ export const groupsHubEvents = {
   inviteReceived: 'warbands/inviteReceived',
 };
 
+export const GROUP_EVENTS_INVITE_RECEIVED = 'groups/inviteReceived';
+export const WARBAND_MEMBER_JOINED = 'groups/warbandMemberJoined';
+export const WARBAND_MEMBER_REMOVED = 'groups/warbandMemberRemoved';
+export const WARBAND_MEMBER_UPDATED = 'groups/warbandMemberUpdated';
+export const BATTLEGROUP_MEMBER_JOINED = 'groups/battlegroupMemberJoined';
+export const BATTLEGROUP_MEMBER_REMOVED = 'groups/battlegroupMemberRemoved';
+export const BATTLEGROUP_MEMBER_UPDATED = 'groups/battlegroupMemberUpdated';
+
 const groupsHubEventsMap: EventMap[] = [
   {
     receive: 'warbandJoined',
@@ -51,6 +59,30 @@ const groupsHubEventsMap: EventMap[] = [
   {
     receive: 'warbandInviteReceived',
     send: groupsHubEvents.inviteReceived,
+  },
+  {
+    receive: 'warbandMemberJoined',
+    send: WARBAND_MEMBER_JOINED,
+  },
+  {
+    receive: 'warbandMemberRemoved',
+    send: WARBAND_MEMBER_REMOVED,
+  },
+  {
+    receive: 'warbandMemberUpdated',
+    send: WARBAND_MEMBER_UPDATED,
+  },
+  {
+    receive: 'battlegroupMemberJoined',
+    send: BATTLEGROUP_MEMBER_JOINED,
+  },
+  {
+    receive: 'battlegroupMemberRemoved',
+    send: BATTLEGROUP_MEMBER_REMOVED,
+  },
+  {
+    receive: 'battlegroupMemberUpdated',
+    send: BATTLEGROUP_MEMBER_UPDATED,
   },
 ];
 

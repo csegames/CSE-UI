@@ -13,8 +13,17 @@ import {
   getActiveWarbandID,
   quitWarband,
   kickFromWarbandByEntityID,
+  getWarbandMemberByCharacterID,
 } from './warband';
 import { inviteToTrade } from './trade';
+import {
+  hasActiveBattlegroup,
+  isEntityIDInBattlegroup,
+  inviteToBattlegroupByName,
+  getActiveBattlegroupID,
+  getBattlegroupMemberByCharacterID,
+  kickFromBattlegroupByEntityID,
+} from './battlegroups';
 
 // BASIC MANAGEMENT
 
@@ -120,15 +129,17 @@ export function getFriendlyTargetMenuItems(
     { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
   ];
 
-  if (hasActiveWarband() && !isEntityIDInWarband(id)) {
+  const myWarbandInfo = getWarbandMemberByCharacterID(game.selfPlayerState.characterID);
+  const myBattlegroupInfo = getBattlegroupMemberByCharacterID(game.selfPlayerState.characterID);
+
+  if (hasActiveWarband() && !isEntityIDInWarband(id) && myWarbandInfo && myWarbandInfo.canInvite) {
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(state.name, getActiveWarbandID()),
     });
   }
 
-  if (hasActiveWarband() && isEntityIDInWarband(id)) {
-
+  if (hasActiveWarband() && isEntityIDInWarband(id) && myWarbandInfo && myWarbandInfo.canKick) {
     items.push({
       title: 'Kick from Warband',
       onSelected: () => kickFromWarbandByEntityID(id, getActiveWarbandID()),
@@ -141,7 +152,20 @@ export function getFriendlyTargetMenuItems(
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(state.name, ''),
     });
+  }
 
+  if (hasActiveBattlegroup() && !isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canInvite) {
+    items.push({
+      title: 'Invite to Battlegroup',
+      onSelected: () => inviteToBattlegroupByName(state.name, getActiveBattlegroupID()),
+    });
+  }
+
+  if (hasActiveBattlegroup() && isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canKick) {
+    items.push({
+      title: 'Kick from Battlegroup',
+      onSelected: () => kickFromBattlegroupByEntityID(id, getActiveBattlegroupID()),
+    });
   }
 
   return items;

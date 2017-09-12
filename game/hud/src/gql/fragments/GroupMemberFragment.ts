@@ -7,8 +7,8 @@
 
 import gql from 'graphql-tag';
 
-export const WarbandMemberStateFragment = gql`
-  fragment WarbandMemberState on GroupMemberState {
+export const GroupMemberFragment = gql`
+  fragment GroupMember on GroupMemberState {
     entityID
     type
     warbandID
