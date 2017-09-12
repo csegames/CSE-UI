@@ -10,6 +10,7 @@
  */
 
 import * as React from 'react';
+import { PanZoomElement } from 'react-pan-zoom-element';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 
@@ -79,7 +80,9 @@ class MapMain extends React.Component<MapMainProps> {
       <div className={css(ss.mainMapContainer)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg)}/>
         <div className={css(ss.mapContainer)}>
-          <img className={css(ss.map)} src={'images/world-map.jpg'}/>
+          <PanZoomElement height={800} width={800}>
+            <img className={css(ss.map)} src={'images/world-map.jpg'}/>
+          </PanZoomElement>
         </div>
         <div className={css(ss.keyContainer)}>
           <img className={css(ss.mapKey)} src={'images/map-key.jpg'}/>

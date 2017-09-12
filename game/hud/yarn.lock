@@ -1285,13 +1285,14 @@ camelcase@^4.0.0:
   version "4.1.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
-camelot-unchained@0.9.0:
-  version "0.9.0"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.0.tgz#9559769cab898c908b20a8360648640470a0bd2c"
+camelot-unchained@0.9.1:
+  version "0.9.1"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.1.tgz#529ab7a9dbb5cfc52a3968858eda4e8c76b76db7"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
     es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
     graphql-tag "^1.2.4"
     isomorphic-fetch "^2.2.1"
     jquery "^3.0.0"
@@ -1338,6 +1339,10 @@ center-align@^0.1.1:
   dependencies:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
+
+centered-pan-zoom@2.0.0:
+  version "2.0.0"
+  resolved "http://registry.camelotunchained.com/centered-pan-zoom/-/centered-pan-zoom-2.0.0.tgz#45c27d137fcdd1bdf26054a824c75800b88be14d"
 
 chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -5073,6 +5078,12 @@ react-draggable@^2.2.3, react-draggable@^2.2.6:
   dependencies:
     classnames "^2.2.5"
 
+react-es6-component@*:
+  version "0.0.4"
+  resolved "http://registry.camelotunchained.com/react-es6-component/-/react-es6-component-0.0.4.tgz#1e5f8bea1decc43d961d0caf4a77f06fbb09e9e6"
+  dependencies:
+    underscore "1.8.3"
+
 react-infinite@^0.11.0:
   version "0.11.0"
   resolved "http://registry.camelotunchained.com/react-infinite/-/react-infinite-0.11.0.tgz#de7af4bce898a13c45b9c1a3fb5caf448618d522"
@@ -5112,6 +5123,13 @@ react-motion@^0.4.3, react-motion@^0.4.4:
     performance-now "^0.2.0"
     prop-types "^15.5.8"
     raf "^3.1.0"
+
+react-pan-zoom-element@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.camelotunchained.com/react-pan-zoom-element/-/react-pan-zoom-element-2.0.1.tgz#c140f60000f1428a44d5834de93e2d1ea64a5713"
+  dependencies:
+    centered-pan-zoom "2.0.0"
+    react-es6-component "*"
 
 react-redux@^4.4.5:
   version "4.4.8"
@@ -6314,6 +6332,10 @@ umd@^3.0.0:
 unc-path-regex@^0.1.0:
   version "0.1.2"
   resolved "http://registry.camelotunchained.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
+
+underscore@1.8.3:
+  version "1.8.3"
+  resolved "http://registry.camelotunchained.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 
 union@~0.4.3:
   version "0.4.6"
