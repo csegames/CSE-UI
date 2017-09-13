@@ -10,12 +10,12 @@
  */
 
 import * as React from 'react';
-import {WarbandMember} from 'camelot-unchained';
 import {connect} from 'react-redux';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import {WarbandSessionState, WarbandState} from '../../services/session';
-import {initialize as warbandInit} from '../../services/session/warband';
-import WarbandMemberDisplay from '../WarbandMemberDisplay';
+import {WarbandSessionState, WarbandState} from '../services/session';
+import {initialize as warbandInit} from '../services/session/warband';
+import WarbandMemberDisplay from './WarbandMemberDisplay';
 
 function select(state: WarbandSessionState) {
   return {
@@ -23,10 +23,21 @@ function select(state: WarbandSessionState) {
   };
 }
 
+export interface Style extends StyleDeclaration {
+  WarbandDisplay: React.CSSProperties;
+}
+
+export const defaultStyle: Style = {
+  WarbandDisplay: {
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+  },
+}
+
 export interface WarbandDisplayProps {
   dispatch: (action: any) => void;
   warband: WarbandState;
-  containerClass?: string;
   isMini?: boolean;
 }
 
@@ -40,19 +51,17 @@ class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplay
   }
 
   public render() {
+    const style = StyleSheet.create(defaultStyle);
+    const members = this.props.warband && this.props.warband.activeMembers;
     return (
-      <div className={`WarbandDisplay ${this.props.containerClass}`}>
-        {this.props.warband.activeMembers ? this.props.warband.activeMembers.map(this.renderMember) : null}
+      <div className={css(style.WarbandDisplay)}>
+        {members ? members.map(m => <WarbandMemberDisplay key={m.characterID} member={m} />) : null}
       </div>
     );
   }
 
   public componentDidMount() {
-    setTimeout(() => this.props.dispatch(warbandInit()), 1000);
-  }
-
-  private renderMember = (member: WarbandMember): any => {
-    return <WarbandMemberDisplay key={member.characterID} member={member} />;
+    setTimeout(() => this.props.dispatch(warbandInit()), 2000);
   }
 }
 

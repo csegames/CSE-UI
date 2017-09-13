@@ -6,13 +6,25 @@
 
 import * as React from 'react';
 import {WarbandMember} from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import PlayerStatusComponent from '../../../../components/PlayerStatusComponent';
+import PlayerStatusComponent from '../../../components/PlayerStatusComponent';
+
+export interface Style extends StyleDeclaration {
+  WarbandMemberDisplay: React.CSSProperties;
+}
+
+export const defaultStyle: Style = {
+  WarbandMemberDisplay: {
+    width: '200px',
+    marginBottom: '10px',
+    pointerEvents: 'all',
+  },
+}
 
 export interface WarbandMemberDisplayProps {
   key: string | number;
   member: WarbandMember;
-  containerClass?: string;
   isMini?: boolean;
 }
 
@@ -26,11 +38,10 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   }
 
   public render() {
-    const mini = this.props.isMini || false;
+    const style = StyleSheet.create(defaultStyle);
     const leader = false;// this.props.member.rank == warbandRanks.LEADER;
-
     return (
-      <div key={this.props.key} className={`WarbandMemberDisplay ${mini ? 'mini' : ''} ${this.props.containerClass}`}>
+      <div className={css(style.WarbandMemberDisplay)}>
         <PlayerStatusComponent
           containerClass='WarbandMemberDisplay__Health'
           playerStatus={this.props.member as any}

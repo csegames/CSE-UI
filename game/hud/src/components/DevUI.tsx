@@ -19,7 +19,7 @@ export interface Button {
   call?: string;
 
   // parameters to pass into the client function call, if any
-  params?: ObjectMap<any>;
+  params?: any[];
 }
 
 export interface Page {
@@ -31,6 +31,7 @@ export interface Page {
 
 export interface RootPage extends Partial<Page> {
   width: number;
+  
   height: number;
   x: number;
   y: number;
@@ -69,10 +70,7 @@ const DevUIButton = (props: Button) => {
            } else if (props.call) {
              const fn = client[props.call];
              if (props.params) {
-               const values: any[] = [];
-               Object.keys(props.params)
-                 .forEach(k => values.push(props.params[k]));
-               fn(...values);
+               fn(...props.params);
              } else {
                fn();
              }
