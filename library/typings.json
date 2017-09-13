@@ -7,6 +7,7 @@
   "globalDependencies": {
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
-    "fuzzysearch": "github:cumodsquad/Typings/fuzzysearch/fuzzysearch.d.ts"
+    "fuzzysearch": "github:cumodsquad/Typings/fuzzysearch/fuzzysearch.d.ts",
+    "react-pan-zoom-element": "github:fayyne/Typings/react-pan-zoom-element/react-pan-zoom-element.d.ts"
   }
 }

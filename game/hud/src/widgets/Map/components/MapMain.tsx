@@ -10,9 +10,8 @@
  */
 
 import * as React from 'react';
-import { PanZoomElement } from 'react-pan-zoom-element';
+import ReactImageMagnify from 'react-image-magnify';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-
 
 export interface MapStyle extends StyleDeclaration {
   mainMapContainer: React.CSSProperties;
@@ -29,12 +28,24 @@ export const defaultMapStyle: MapStyle = {
   },
 
   mapContainer: {
-    width: '75%',
+    height: '100%',
+    position: 'relative',
+  },
+
+  zoomPanContainer: {
     height: '100%',
     position: 'relative',
   },
 
   map: {
+    maxHeight: '100%',
+    width: 'auto',
+    position: 'relative',
+    borderRight: '2px #3b524a',
+    borderRightStyle: 'dashed',
+  },
+
+  zoomPan: {
     width: '100%',
     height: '100%',
     position: 'relative',
@@ -43,17 +54,18 @@ export const defaultMapStyle: MapStyle = {
   },
 
   keyContainer: {
-    position: 'relative',
+    position: 'absolute',
     width: '25%',
-    textAlign: 'center',
+    top: '0px',
+    right: '0px',
   },
 
   mapKey: {
-    position: 'relative',
+    position: 'absolute',
     maxWidth: '50%',
-    marginTop: '60%',
     border: '1px #ae945e',
     borderStyle: 'dashed',
+    right: '0px',
   },
 
   backgroundImg: {
@@ -71,21 +83,31 @@ export const defaultMapStyle: MapStyle = {
 
 export interface MapMainProps {
   styles?: Partial<MapStyle>;
+  map: HTMLImageElement;
+  mapKey: string;
 }
 
 class MapMain extends React.Component<MapMainProps> {
   public render() {
+    const map = this.props.map;
+    const smallImage = {
+      isFluidWidth: true,
+      src: map.src,
+      sizes: '(min-width: 800px) 33.5vw, (min-width: 415px) 50vw, 100vw',
+    };
+    const largeImage = {
+      src: map.src,
+      width: map.width,
+      height: map.height,
+    };
     const ss = StyleSheet.create({ ...defaultMapStyle, ...this.props.styles });
     return (
       <div className={css(ss.mainMapContainer)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg)}/>
-        <div className={css(ss.mapContainer)}>
-          <PanZoomElement height={800} width={800}>
-            <img className={css(ss.map)} src={'images/world-map.jpg'}/>
-          </PanZoomElement>
-        </div>
+        <ReactImageMagnify className={css(ss.mapContainer)} imageClassName={css(ss.map)}
+                           largeImage={largeImage} smallImage={smallImage}/>
         <div className={css(ss.keyContainer)}>
-          <img className={css(ss.mapKey)} src={'images/map-key.jpg'}/>
+          <img className={css(ss.mapKey)} src={this.props.mapKey}/>
         </div>
       </div>
     );

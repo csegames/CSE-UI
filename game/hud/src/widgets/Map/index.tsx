@@ -19,19 +19,35 @@ export interface MapContainerProps {
 
 export interface MapContainerState {
   visible: boolean;
+  mapLoaded: boolean;
 }
+
+const map = new Image();
 
 class MapContainer extends React.Component<MapContainerProps, MapContainerState> {
   constructor(props: MapContainerProps) {
     super(props);
     this.state = {
       visible: false,
+      mapLoaded: false,
+    };
+  }
+
+  public componentWillMount() {
+    map.src = 'images/world-map.jpg';
+    map.onload = () => {
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          mapLoaded: true,
+        };
+      });
     };
   }
 
   public render() {
-    return this.props.visibleComponent === 'map' && (
-      <MapMain/>
+    return (this.props.visibleComponent === 'map' && this.state.mapLoaded) && (
+      <MapMain map={map} mapKey={'images/map-key.jpg'}/>
     );
   }
 }

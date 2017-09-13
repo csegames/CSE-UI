@@ -52,7 +52,7 @@ const DevUIButton = (props: Button) => {
   const style = StyleSheet.create(buttonStyle);
   return (
     <div className={css(style.Button)}
-         onClick={() => client.SendSlashCommand(props.command)} >
+         onClick={() => client.SendSlashCommand(props.command)}>
       {props.title}
     </div>
   );
@@ -68,29 +68,30 @@ const contentStyle: {
   },
 };
 
-const DevUIContent = (props: {content: Content}) => {
+const DevUIContent = (props: { content: Content }) => {
   const style = StyleSheet.create(contentStyle);
   return (
-    <div className={css(style.Content)} >
-      {typeof props.content === 'string' ? <DevUIStringContent content={props.content} /> : <DevUIObjectContent content={props.content} />}
+    <div className={css(style.Content)}>
+      {typeof props.content === 'string' ? <DevUIStringContent content={props.content}/> :
+        <DevUIObjectContent content={props.content}/>}
     </div>
   );
 };
 
-const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />
+const DevUIStringContent = (props: { content: string }) => <div dangerouslySetInnerHTML={{ __html: props.content }}/>
 
-const DevUIObjectContent = (props: {content: ObjectMap<any>}): JSX.Element => {
+const DevUIObjectContent = (props: { content: ObjectMap<any> }): JSX.Element => {
   const keys = Object.keys(props.content);
   return (
-    <table style={{border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%'}}>
+    <table style={{ border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%' }}>
       {
         keys.map(k => (
-          <tr style={{border: '1px solid #ececec', padding: '2px'}}>
-            <th style={{border: '1px solid #ececec', padding: '2px'}}>{k}</th>
-            <td style={{border: '1px solid #ececec', padding: '2px'}}>
-              {typeof props.content[k] !== 'object' 
-                ? <DevUIStringContent content={props.content[k]} /> 
-                : <DevUIObjectContent content={props.content[k]} />}
+          <tr style={{ border: '1px solid #ececec', padding: '2px' }}>
+            <th style={{ border: '1px solid #ececec', padding: '2px' }}>{k}</th>
+            <td style={{ border: '1px solid #ececec', padding: '2px' }}>
+              {typeof props.content[k] !== 'object'
+                ? <DevUIStringContent content={props.content[k]}/>
+                : <DevUIObjectContent content={props.content[k]}/>}
             </td>
           </tr>
         ))
@@ -129,42 +130,42 @@ const DevUIPage = (props: Partial<Page>): JSX.Element => {
   return (
     <div className={css(style.Page)}>
       {props.title && <div className={css(style.title)}>{props.title}</div>}
-      {props.content && <DevUIContent content={props.content} />}
+      {props.content && <DevUIContent content={props.content}/>}
       {props.buttons && <div>{props.buttons.map(b => <DevUIButton key={b.title} {...b} />)}</div>}
       {props.pages && (
         <div className={css(style.pages)}>
           <TabPanel styles={{
-                      tabPanel: {
-                        flex: '1 1 auto',
-                        width: 'initial',
-                        height: 'initial',
-                      },
-                      tab: {
-                        padding: '2px 10px',
-                        background: '#444',
-                        borderBottom: '1px solid transparent',
-                      },
-                      activeTab: {
-                        background: '#777',
-                        borderBottom: '1px solid orange',
-                      },
-                    }}
+            tabPanel: {
+              flex: '1 1 auto',
+              width: 'initial',
+              height: 'initial',
+            },
+            tab: {
+              padding: '2px 10px',
+              background: '#444',
+              borderBottom: '1px solid transparent',
+            },
+            activeTab: {
+              background: '#777',
+              borderBottom: '1px solid orange',
+            },
+          }}
                     tabs={props.pages.map(p => {
-                        return {
-                          tab: {
-                            render: () => <span>{p.title}</span>,
-                          },
-                          rendersContent: p.title || '',
-                        };
-                      })}                
-                      content={props.pages.map(p => {
-                        return {
-                          name: p.title || '',
-                          content: {
-                            render: () => <DevUIPage {...p} />
-                          },
-                        };
-                      })} />
+                      return {
+                        tab: {
+                          render: () => <span>{p.title}</span>,
+                        },
+                        rendersContent: p.title || '',
+                      };
+                    })}
+                    content={props.pages.map(p => {
+                      return {
+                        name: p.title || '',
+                        content: {
+                          render: () => <DevUIPage {...p} />
+                        },
+                      };
+                    })}/>
         </div>)}
     </div>
   );
@@ -194,6 +195,7 @@ class DevUI extends React.Component<{}, RootPage> {
     });
   }
 
+  //
   render() {
     return (
       <div style={{
