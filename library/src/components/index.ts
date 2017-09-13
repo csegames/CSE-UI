@@ -37,3 +37,4 @@ export * from './MultiSelect';
 export * from './TabPanel';
 export * from './IconButton';
 export * from './CUIcon';
+export * from './MOTD';

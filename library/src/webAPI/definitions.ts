@@ -647,7 +647,7 @@ export const PlotsAPI = {
 }
 
 export const ProgressionAPI = {
-  CollectCharacterDayProgression: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, logID: CharacterDaySummaryInstanceID) {
+  CollectCharacterDayProgression: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, logID: string) {
     return xhrRequest('post', config.url + 'v1/character/collectdayprogression', {
       shardID: shardID,
       characterID: characterID,
@@ -773,14 +773,14 @@ export const ServersAPI = {
     }, config.headers || {}) });
   },
   GetServersForChannelV1: function(config: RequestConfig, channelId: number) {
-    return xhrRequest('post', config.url + 'v1/servers/getForChannel', {
+    return xhrRequest('get', config.url + 'v1/servers/getForChannel', {
       channelId: channelId,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
   GetHostsForServerV1: function(config: RequestConfig, channelId: number, name: string) {
-    return xhrRequest('post', config.url + 'v1/servers/getHosts', {
+    return xhrRequest('get', config.url + 'v1/servers/getHosts', {
       channelId: channelId,
       name: name,
     }, null, { headers: Object.assign({}, {
@@ -788,14 +788,14 @@ export const ServersAPI = {
     }, config.headers || {}) });
   },
   GetAvailableZones: function(config: RequestConfig, shard: number) {
-    return xhrRequest('post', config.url + 'v1/availableZones', {
+    return xhrRequest('get', config.url + 'v1/availableZones', {
       shard: shard,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
   GetZoneInfo: function(config: RequestConfig, shard: number, zoneID: string) {
-    return xhrRequest('post', config.url + 'v1/getZoneInfo', {
+    return xhrRequest('get', config.url + 'v1/getZoneInfo', {
       shard: shard,
       zoneID: zoneID,
     }, null, { headers: Object.assign({}, {
@@ -1662,6 +1662,7 @@ export enum ProgressionResultCode {
   DailyLogNotFound = 3,
   DBError = 4,
   DailyLogNotPublished = 5,
+  NotNextDayLog = 6,
   InvalidRequest = -1,
 }
 
@@ -1957,23 +1958,16 @@ export enum ClipTag {
   Instant = 35,
   Load = 36,
   Aim = 37,
+  Emote = 38,
+  Sit = 39,
 }
 
 export enum AnimSetTag {
   Default = 0,
   R_Empty = 1,
   L_Empty = 2,
-  R_Axe = 3,
-  R_Torch = 3,
-  R_Sword = 3,
   R_Weapon = 3,
-  R_Hammer = 3,
-  R_Mace = 3,
-  L_Axe = 4,
   L_Weapon = 4,
-  L_Hammer = 4,
-  L_Mace = 4,
-  L_Sword = 4,
   R_Focus = 5,
   L_Focus = 6,
   R_Dagger = 7,
@@ -1988,21 +1982,33 @@ export enum AnimSetTag {
   RL_Archery = 16,
   RL_Hammer = 17,
   RL_Greataxe = 18,
-  Combat = 19,
-  Travel = 20,
-  Offensive = 21,
-  Defensive = 22,
-  Tuatha = 23,
-  Viking = 24,
-  Arthurian = 25,
-  Male = 26,
-  Female = 27,
-  Human = 28,
-  Luchorpan = 29,
-  Pict = 30,
-  Valkyrie = 31,
-  L_Torch = 32,
-  Scorpion = 33,
+  R_Mace = 19,
+  L_Mace = 20,
+  R_Sword = 21,
+  L_Sword = 22,
+  R_Axe = 23,
+  L_Axe = 24,
+  R_Hammer = 25,
+  L_Hammer = 26,
+  R_Torch = 27,
+  L_Torch = 28,
+  Combat = 29,
+  Travel = 30,
+  Offensive = 31,
+  Defensive = 32,
+  Tuatha = 33,
+  Viking = 34,
+  Arthurian = 35,
+  Male = 36,
+  Female = 37,
+  Human = 38,
+  Luchorpan = 39,
+  Pict = 40,
+  Valkyrie = 41,
+  Standard = 42,
+  Slow = 43,
+  Fast = 44,
+  Scorpion = 45,
 }
 
 export enum AbilityActionStat {
@@ -2986,7 +2992,8 @@ export enum ServerCommandType {
   SyncPosition = 4,
   TargetsChanged = 5,
   PlayLocalSound = 6,
-  NUMBER_OF_COMMANDS = 7,
+  ProgressionCollected = 7,
+  NUMBER_OF_COMMANDS = 8,
 }
 
 export enum ServerCommandIndex {
