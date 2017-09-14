@@ -535,7 +535,7 @@ interface clientInterface {
   OnCombatLogEvent(c: (events: any) => void): void;
 
   /* Dev UI */
-  OnUpdateDevUI(c: (rootPage: any) => void): void;
+  OnUpdateDevUI(c: (pageID: string, rootPage: any) => void): void;
 }
 
 export default clientInterface;

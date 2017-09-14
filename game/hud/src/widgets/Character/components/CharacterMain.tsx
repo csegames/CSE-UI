@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-14 15:56:05
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-13 11:28:39
  */
 
 import * as React from 'react';
@@ -231,6 +231,9 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
+    console.log('ON CHANGE INVENTORY ITEMS');
+    console.log(inventoryItems);
+    console.log(_.find(inventoryItems, item => item.staticDefinition.name === 'Torch'));
     this.setState({ inventoryItems });
   }
 }

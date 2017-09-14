@@ -5,15 +5,15 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-02 18:21:30
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:51:14
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-31 19:40:16
  */
 
 import 'isomorphic-fetch';
 import { Promise } from 'es6-promise';
 import { gql } from './gql';
 import { QUERIES } from './queryText';
-import { VoxPossibleIngredient, VoxTemplate, VoxStatus, VoxRecipe } from './queryTypes';
+import { VoxPossibleIngredient, VoxStatus, VoxRecipe } from './queryTypes';
 
 const ERRORS = {
   NotFound: 'No vox nearby',
@@ -40,7 +40,7 @@ function runQuery(query: string, key: string) {
       }
     })
     .catch((error: any) => {
-      reject({ reason: error.reason });
+      reject({ reason: error.message });
     });
   });
 }
@@ -74,22 +74,11 @@ export function voxGetPossibleIngredients() {
   });
 }
 
-export function voxGetTemplates() {
-  return new Promise((resolve, reject) => {
-    runQuery(QUERIES.QUERY_TEMPLATES, 'templates')
-      .then((templates: VoxTemplate[]) => {
-        resolve(templates);
-      })
-      .catch(() => {
-        reject('Could not get templates');
-      });
-  });
-}
-
 export function voxGetRecipesFor(type: string) {
   const uType = type.toUpperCase();
+  const lType = type.toLowerCase();
   return new Promise((resolve, reject) => {
-    runQuery(QUERIES[`QUERY_${uType}_RECIPES`], type + 'Recipes')
+    runQuery(QUERIES[`QUERY_${uType}_RECIPES`], lType + 'Recipes')
       .then((recipes: VoxRecipe[]) => {
         resolve(recipes);
       })

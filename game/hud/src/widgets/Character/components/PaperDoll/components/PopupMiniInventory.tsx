@@ -201,7 +201,9 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
       <div className={css(ss.PopupMiniInventory)}>
         <div
           id={this.props.slotName}
-          onClick={this.toggleVisibility}>
+          onClick={this.toggleVisibility}
+          onMouseOver={() => this.mouseOver = true}
+          onMouseLeave={() => this.mouseOver = false}>
           {this.props.children}
         </div>
         {this.props.visible &&

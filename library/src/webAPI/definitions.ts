@@ -9,9 +9,8 @@ import { request as xhrRequest, RequestResult } from '../util/request';
 
 export interface RequestConfig {
   url: string;
-  headers?: { [key: string]: string };
+  headers?: {[key:string]:string};
 }
-
 export const CharactersAPI = {
   GetCharactersV1: function(config: RequestConfig, loginToken: string, ) {
     return xhrRequest('post', config.url + 'v1/characters/getAll', {
@@ -23,44 +22,36 @@ export const CharactersAPI = {
   GetCharactersOnShardV1: function(config: RequestConfig, loginToken: string, shardID: number) {
     return xhrRequest('post', config.url + 'v1/characters/getAllOnShard', {
       shardID: shardID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/characters/get', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   DeleteCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/characters/delete', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CreateCharacterV1: function(config: RequestConfig, loginToken: string, shardID: number, character: Character) {
     return xhrRequest('post', config.url + 'v1/characters/create', {
       shardID: shardID,
-    }, character, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, character, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -91,59 +82,49 @@ export const CraftingAPI = {
       shardID: shardID,
       characterID: characterID,
       job: job,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   ClearVoxJob: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/crafting/clearvoxjob', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRecipeID: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, recipeID: string) {
     return xhrRequest('post', config.url + 'v1/crafting/setvoxrecipeid', {
       shardID: shardID,
       characterID: characterID,
       recipeID: recipeID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetQuality: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, quality: number) {
     return xhrRequest('post', config.url + 'v1/crafting/setvoxquality', {
       shardID: shardID,
       characterID: characterID,
       quality: quality,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetCustomItemName: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, itemName: string) {
     return xhrRequest('post', config.url + 'v1/crafting/setvoxcustomitemname', {
       shardID: shardID,
       characterID: characterID,
       itemName: itemName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AddIngredient: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, itemInstanceID: string, unitCount: number, slot: SubItemSlot) {
     return xhrRequest('post', config.url + 'v1/crafting/addvoxingredient', {
@@ -152,12 +133,10 @@ export const CraftingAPI = {
       itemInstanceID: itemInstanceID,
       unitCount: unitCount,
       slot: slot,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveVoxIngredient: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, itemInstanceID: string, unitCount: number) {
     return xhrRequest('post', config.url + 'v1/crafting/removevoxingredient', {
@@ -165,113 +144,94 @@ export const CraftingAPI = {
       characterID: characterID,
       itemInstanceID: itemInstanceID,
       unitCount: unitCount,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   StartVoxJob: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/crafting/startvoxjob', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CollectFinishedVoxJob: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/crafting/collectfinishedvoxjob', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CancelVoxJob: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/crafting/cancelvoxjob', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetVoxItemCount: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, count: number) {
     return xhrRequest('post', config.url + 'v1/crafting/setvoxitemcount', {
       shardID: shardID,
       characterID: characterID,
       count: count,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
 export const GameDataAPI = {
-  GetFactionInfoV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/gamedata/factionInfo', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetFactionInfoV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/gamedata/factionInfo', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
-  GetFactionsV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/gamedata/factions', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetFactionsV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/gamedata/factions', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetAttributeInfoV1: function(config: RequestConfig, shard: number) {
     return xhrRequest('get', config.url + 'v1/gamedata/attributeInfo', {
       shard: shard,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
-  GetArchetypesV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/gamedata/archetypes', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetArchetypesV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/gamedata/archetypes', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
-  GetRacesV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/gamedata/races', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetRacesV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/gamedata/races', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetAttributeOffsetsV1: function(config: RequestConfig, shard: number) {
     return xhrRequest('get', config.url + 'v1/gamedata/attributeOffsets', {
       shard: shard,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
-  GetOrderPermissionsV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/gamedata/orderPermissions', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetOrderPermissionsV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/gamedata/orderPermissions', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -289,12 +249,10 @@ export const GroupsAPI = {
     return xhrRequest('post', config.url + 'v1/groups/getInvitesForCharacter', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CreateRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/createRank', {
@@ -304,12 +262,10 @@ export const GroupsAPI = {
       name: name,
       level: level,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/groups/removeRank', {
@@ -317,12 +273,10 @@ export const GroupsAPI = {
       characterID: characterID,
       groupID: groupID,
       name: name,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RenameRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, newName: string) {
     return xhrRequest('post', config.url + 'v1/groups/renameRank', {
@@ -331,12 +285,10 @@ export const GroupsAPI = {
       groupID: groupID,
       name: name,
       newName: newName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AddRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/addRankPermissions', {
@@ -345,12 +297,10 @@ export const GroupsAPI = {
       groupID: groupID,
       name: name,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/removeRankPermissions', {
@@ -359,12 +309,10 @@ export const GroupsAPI = {
       groupID: groupID,
       name: name,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/groups/setRankPermissions', {
@@ -373,12 +321,10 @@ export const GroupsAPI = {
       groupID: groupID,
       name: name,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankLevelV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, name: string, level: number) {
     return xhrRequest('post', config.url + 'v1/groups/setRankLevel', {
@@ -387,12 +333,10 @@ export const GroupsAPI = {
       groupID: groupID,
       name: name,
       level: level,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AssignRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string, rankName: string) {
     return xhrRequest('post', config.url + 'v1/groups/assignRank', {
@@ -401,12 +345,10 @@ export const GroupsAPI = {
       groupID: groupID,
       targetID: targetID,
       rankName: rankName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/groups/kick', {
@@ -414,12 +356,10 @@ export const GroupsAPI = {
       characterID: characterID,
       groupID: groupID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/groups/invite', {
@@ -427,12 +367,10 @@ export const GroupsAPI = {
       characterID: characterID,
       groupID: groupID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/groups/inviteByName', {
@@ -440,12 +378,10 @@ export const GroupsAPI = {
       characterID: characterID,
       groupID: groupID,
       targetName: targetName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AcceptInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, groupID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/groups/acceptInvite', {
@@ -453,12 +389,10 @@ export const GroupsAPI = {
       characterID: characterID,
       groupID: groupID,
       inviteCode: inviteCode,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -468,23 +402,19 @@ export const ItemAPI = {
       shardID: shardID,
       characterID: characterID,
       request: request,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   BatchMoveItems: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, requests: MoveItemRequest[]) {
     return xhrRequest('post', config.url + 'v1/items/batchmoveitems', {
       shardID: shardID,
       characterID: characterID,
-    }, requests, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, requests, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -494,12 +424,10 @@ export const OrdersAPI = {
       shardID: shardID,
       characterID: characterID,
       name: name,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CreateRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/createRank', {
@@ -508,48 +436,40 @@ export const OrdersAPI = {
       name: name,
       level: level,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/orders/removeRank', {
       shardID: shardID,
       characterID: characterID,
       name: name,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/orders/inviteByID', {
       shardID: shardID,
       characterID: characterID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/orders/inviteByName', {
       shardID: shardID,
       characterID: characterID,
       targetName: targetName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AcceptInvite: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, orderID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/orders/acceptInvite', {
@@ -557,46 +477,38 @@ export const OrdersAPI = {
       characterID: characterID,
       orderID: orderID,
       inviteCode: inviteCode,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/orders/kick', {
       shardID: shardID,
       characterID: characterID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AbandonV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/orders/abandon', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   DisbandV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/orders/disband', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RenameRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, newName: string) {
     return xhrRequest('post', config.url + 'v1/orders/renameRank', {
@@ -604,12 +516,10 @@ export const OrdersAPI = {
       characterID: characterID,
       name: name,
       newName: newName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AddRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/addRankPermissions', {
@@ -617,12 +527,10 @@ export const OrdersAPI = {
       characterID: characterID,
       name: name,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveRankPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, permissions: string[]) {
     return xhrRequest('post', config.url + 'v1/orders/removeRankPermissions', {
@@ -630,12 +538,10 @@ export const OrdersAPI = {
       characterID: characterID,
       name: name,
       permissions: permissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   ChangeRankLevelV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string, level: number) {
     return xhrRequest('post', config.url + 'v1/orders/changeRankLevel', {
@@ -643,23 +549,19 @@ export const OrdersAPI = {
       characterID: characterID,
       name: name,
       level: level,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetMyRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/orders/getMyRank', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -668,29 +570,23 @@ export const PresenceAPI = {
     return xhrRequest('get', config.url + 'v1/presence/startingServer/{shardID}/{characterID}', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetServers: function(config: RequestConfig, shardID: number) {
     return xhrRequest('get', config.url + 'v1/presence/servers/{shardID}', {
       shardID: shardID,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetPlayers: function(config: RequestConfig, shardID: number) {
     return xhrRequest('get', config.url + 'v1/presence/players/{shardID}', {
       shardID: shardID,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -700,12 +596,10 @@ export const PlotsAPI = {
       shardID: shardID,
       characterID: characterID,
       entityID: entityID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   ModifyPermissionsV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, newPermissions: number) {
     return xhrRequest('post', config.url + 'v1/plot/modifyPermissions', {
@@ -713,12 +607,10 @@ export const PlotsAPI = {
       characterID: characterID,
       entityID: entityID,
       newPermissions: newPermissions,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveQueuedBlueprintV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToRemove: number) {
     return xhrRequest('post', config.url + 'v1/plot/removeQueuedBlueprint', {
@@ -726,12 +618,10 @@ export const PlotsAPI = {
       characterID: characterID,
       entityID: entityID,
       indexToRemove: indexToRemove,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   ReorderQueueV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, entityID: string, indexToMove: number, destinationIndex: number) {
     return xhrRequest('post', config.url + 'v1/plot/reorderQueue', {
@@ -740,23 +630,32 @@ export const PlotsAPI = {
       entityID: entityID,
       indexToMove: indexToMove,
       destinationIndex: destinationIndex,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetQueueStatusV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/plot/getQueueStatus', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
+  },
+}
+
+export const ProgressionAPI = {
+  CollectCharacterDayProgression: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, logID: string) {
+    return xhrRequest('post', config.url + 'v1/character/collectdayprogression', {
+      shardID: shardID,
+      characterID: characterID,
+      logID: logID,
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -766,145 +665,122 @@ export const SecureTradeAPI = {
       shardID: shardID,
       characterID: characterID,
       tradeTargetID: tradeTargetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RevokeInvite: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, inviteTargetID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/revokeinvite', {
       shardID: shardID,
       characterID: characterID,
       inviteTargetID: inviteTargetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AcceptInvite: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, inviterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/acceptinvite', {
       shardID: shardID,
       characterID: characterID,
       inviterID: inviterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RejectInvite: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, inviterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/rejectinvite', {
       shardID: shardID,
       characterID: characterID,
       inviterID: inviterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AbortSecureTrade: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/abort', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   Lock: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/lock', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   Unlock: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/unlock', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AddItems: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, items: SecureTradeItem[]) {
     return xhrRequest('post', config.url + 'v1/secureTrade/additems', {
       shardID: shardID,
       characterID: characterID,
-    }, items, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, items, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   RemoveItem: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, items: SecureTradeItem[]) {
     return xhrRequest('post', config.url + 'v1/secureTrade/removeItems', {
       shardID: shardID,
       characterID: characterID,
-    }, items, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, items, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   Confirm: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/confirm', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CancelTradeConfirmation: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/secureTrade/cancelconfirmation', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
 export const ServersAPI = {
-  GetServersV1: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/servers/getAll', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetServersV1: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/servers/getAll', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetServersForChannelV1: function(config: RequestConfig, channelId: number) {
-    return xhrRequest('post', config.url + 'v1/servers/getForChannel', {
+    return xhrRequest('get', config.url + 'v1/servers/getForChannel', {
       channelId: channelId,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
   GetHostsForServerV1: function(config: RequestConfig, channelId: number, name: string) {
-    return xhrRequest('post', config.url + 'v1/servers/getHosts', {
+    return xhrRequest('get', config.url + 'v1/servers/getHosts', {
       channelId: channelId,
       name: name,
     }, null, { headers: Object.assign({}, {
@@ -912,14 +788,14 @@ export const ServersAPI = {
     }, config.headers || {}) });
   },
   GetAvailableZones: function(config: RequestConfig, shard: number) {
-    return xhrRequest('post', config.url + 'v1/availableZones', {
+    return xhrRequest('get', config.url + 'v1/availableZones', {
       shard: shard,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, config.headers || {}) });
   },
   GetZoneInfo: function(config: RequestConfig, shard: number, zoneID: string) {
-    return xhrRequest('post', config.url + 'v1/getZoneInfo', {
+    return xhrRequest('get', config.url + 'v1/getZoneInfo', {
       shard: shard,
       zoneID: zoneID,
     }, null, { headers: Object.assign({}, {
@@ -932,21 +808,18 @@ export const TraitsAPI = {
   GetTraitsV1: function(config: RequestConfig, shardID: number) {
     return xhrRequest('get', config.url + 'v1/traits', {
       shardID: shardID,
-    }, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
 export const TypeGenAPI = {
-  GetDefinitions: function(config: RequestConfig,) {
-    return xhrRequest('get', config.url + 'v1/codegen/definitions.ts', {}, null, {
-      headers: Object.assign({}, {
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+  GetDefinitions: function(config: RequestConfig, ) {
+    return xhrRequest('get', config.url + 'v1/codegen/definitions.ts', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -955,36 +828,30 @@ export const WarbandsAPI = {
     return xhrRequest('post', config.url + 'v1/warbands/create', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   CreateWithNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, name: string) {
     return xhrRequest('post', config.url + 'v1/warbands/createWithName', {
       shardID: shardID,
       characterID: characterID,
       name: name,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/invite', {
       shardID: shardID,
       characterID: characterID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteByIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteWithID', {
@@ -992,24 +859,20 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetID: targetID,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteByName', {
       shardID: shardID,
       characterID: characterID,
       targetName: targetName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   InviteByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/inviteByNameWithID', {
@@ -1017,12 +880,10 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetName: targetName,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   JoinWithInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinWithInvite', {
@@ -1030,36 +891,30 @@ export const WarbandsAPI = {
       warbandID: warbandID,
       characterID: characterID,
       inviteCode: inviteCode,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   JoinV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/join', {
       shardID: shardID,
       warbandID: warbandID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   JoinByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinByName', {
       shardID: shardID,
       warbandName: warbandName,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   JoinByNameWithInviteV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string, characterID: string, inviteCode: string) {
     return xhrRequest('post', config.url + 'v1/warbands/joinByNameWithInvite', {
@@ -1067,58 +922,48 @@ export const WarbandsAPI = {
       warbandName: warbandName,
       characterID: characterID,
       inviteCode: inviteCode,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   QuitV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/quit', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AbandonByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandonByName', {
       shardID: shardID,
       characterID: characterID,
       warbandName: warbandName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AbandonV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandon', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   AbandonByIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/abandonByID', {
       shardID: shardID,
       characterID: characterID,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRank', {
@@ -1126,12 +971,10 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetID: targetID,
       rank: rank,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, rank: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankWithID', {
@@ -1140,12 +983,10 @@ export const WarbandsAPI = {
       targetID: targetID,
       rank: rank,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankByName', {
@@ -1153,12 +994,10 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetName: targetName,
       rank: rank,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetRankByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, rank: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setRankByNameWithID', {
@@ -1167,24 +1006,20 @@ export const WarbandsAPI = {
       targetName: targetName,
       rank: rank,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetLeaderV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeader', {
       shardID: shardID,
       characterID: characterID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetLeaderWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderWithID', {
@@ -1192,24 +1027,20 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetID: targetID,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetLeaderByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderByName', {
       shardID: shardID,
       characterID: characterID,
       targetName: targetName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetLeaderByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setLeaderByNameWithID', {
@@ -1217,12 +1048,10 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetName: targetName,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetDisplayOrderV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number) {
     return xhrRequest('post', config.url + 'v1/warbands/setDisplayOrder', {
@@ -1230,12 +1059,10 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetID: targetID,
       wantDisplayOrder: wantDisplayOrder,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   SetDisplayOrderWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, wantDisplayOrder: number, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/setDisplayOrderWithID', {
@@ -1244,24 +1071,20 @@ export const WarbandsAPI = {
       targetID: targetID,
       wantDisplayOrder: wantDisplayOrder,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KickV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kick', {
       shardID: shardID,
       characterID: characterID,
       targetID: targetID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KicWithIDkV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetID: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickWithID', {
@@ -1269,24 +1092,20 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetID: targetID,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KickByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickByName', {
       shardID: shardID,
       characterID: characterID,
       targetName: targetName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   KickByNameWithIDV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string, targetName: string, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/warbands/kickByNameWithID', {
@@ -1294,55 +1113,45 @@ export const WarbandsAPI = {
       characterID: characterID,
       targetName: targetName,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetInfoV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandID: string) {
     return xhrRequest('post', config.url + 'v1/groups/getWarbandInfoByID', {
       shardID: shardID,
       warbandID: warbandID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetInfoByNameV1: function(config: RequestConfig, loginToken: string, shardID: number, warbandName: string) {
     return xhrRequest('post', config.url + 'v1/groups/getWarbandInfoByName', {
       shardID: shardID,
       warbandName: warbandName,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetActiveInfoV1: function(config: RequestConfig, loginToken: string, shardID: number, characterID: string) {
     return xhrRequest('post', config.url + 'v1/groups/getMyActiveWarbandInfo', {
       shardID: shardID,
       characterID: characterID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
   GetAllWarbandsOnShardV1: function(config: RequestConfig, loginToken: string, shardID: number) {
     return xhrRequest('post', config.url + 'v1/groups/getAllWarbands', {
       shardID: shardID,
-    }, null, {
-      headers: Object.assign({}, {
-        'loginToken': loginToken,
-        'Accept': 'application/json',
-      }, config.headers || {})
-    });
+    }, null, { headers: Object.assign({}, {
+      'loginToken': loginToken,
+      'Accept': 'application/json',
+    }, config.headers || {}) });
   },
 }
 
@@ -1382,12 +1191,12 @@ export enum PlayerMovementState {
   None = 0,
   Falling = 1,
   Hovering = 2,
-  Sliding = 4,
-  Swimming = 8,
-  Walking = 16,
-  Dead = 32,
-  Ghost = 64,
-  Attached = 128,
+  Sliding = 3,
+  Swimming = 4,
+  Walking = 5,
+  Dead = 6,
+  Ghost = 7,
+  Attached = 8,
 }
 
 export enum EntityMoveKind {
@@ -1846,6 +1655,17 @@ export enum TestItemFlags {
   FutureRelease = 8,
 }
 
+export enum ProgressionResultCode {
+  Success = 0,
+  InProgress = 1,
+  PlayerNotFound = 2,
+  DailyLogNotFound = 3,
+  DBError = 4,
+  DailyLogNotPublished = 5,
+  NotNextDayLog = 6,
+  InvalidRequest = -1,
+}
+
 export enum PermissionRegionType {
   None = 0,
   Self = 2,
@@ -2138,23 +1958,16 @@ export enum ClipTag {
   Instant = 35,
   Load = 36,
   Aim = 37,
+  Emote = 38,
+  Sit = 39,
 }
 
 export enum AnimSetTag {
   Default = 0,
   R_Empty = 1,
   L_Empty = 2,
-  R_Axe = 3,
-  R_Torch = 3,
-  R_Sword = 3,
   R_Weapon = 3,
-  R_Hammer = 3,
-  R_Mace = 3,
-  L_Axe = 4,
   L_Weapon = 4,
-  L_Hammer = 4,
-  L_Mace = 4,
-  L_Sword = 4,
   R_Focus = 5,
   L_Focus = 6,
   R_Dagger = 7,
@@ -2169,21 +1982,33 @@ export enum AnimSetTag {
   RL_Archery = 16,
   RL_Hammer = 17,
   RL_Greataxe = 18,
-  Combat = 19,
-  Travel = 20,
-  Offensive = 21,
-  Defensive = 22,
-  Tuatha = 23,
-  Viking = 24,
-  Arthurian = 25,
-  Male = 26,
-  Female = 27,
-  Human = 28,
-  Luchorpan = 29,
-  Pict = 30,
-  Valkyrie = 31,
-  L_Torch = 32,
-  Scorpion = 33,
+  R_Mace = 19,
+  L_Mace = 20,
+  R_Sword = 21,
+  L_Sword = 22,
+  R_Axe = 23,
+  L_Axe = 24,
+  R_Hammer = 25,
+  L_Hammer = 26,
+  R_Torch = 27,
+  L_Torch = 28,
+  Combat = 29,
+  Travel = 30,
+  Offensive = 31,
+  Defensive = 32,
+  Tuatha = 33,
+  Viking = 34,
+  Arthurian = 35,
+  Male = 36,
+  Female = 37,
+  Human = 38,
+  Luchorpan = 39,
+  Pict = 40,
+  Valkyrie = 41,
+  Standard = 42,
+  Slow = 43,
+  Fast = 44,
+  Scorpion = 45,
 }
 
 export enum AbilityActionStat {
@@ -3167,7 +2992,8 @@ export enum ServerCommandType {
   SyncPosition = 4,
   TargetsChanged = 5,
   PlayLocalSound = 6,
-  NUMBER_OF_COMMANDS = 7,
+  ProgressionCollected = 7,
+  NUMBER_OF_COMMANDS = 8,
 }
 
 export enum ServerCommandIndex {
@@ -3242,6 +3068,8 @@ export enum EntityComponentType {
   BuildingPlot = 44,
   Projectile = 45,
   SecureTrade = 46,
+  Progression = 47,
+  NPC = 48,
   Null = -1,
 }
 
@@ -3429,6 +3257,7 @@ export enum FieldCodes {
   VoxJobError = 4005,
   MoveItemError = 4006,
   SecureTradeError = 4007,
+  ProgressionError = 4008,
   UnspecifiedServiceUnavailable = 5000,
   DatabaseUnavailable = 5001,
   GroupServiceUnavailable = 5002,
@@ -3475,10 +3304,11 @@ export enum PhysicsEventKind {
   Collision = 1,
   StartStop = 2,
   Movement = 4,
-  _COUNT = 7,
   Shock = 8,
+  _COUNT = 8,
   TerrainUpdate = 16,
   BuildingCellsDone = 32,
+  EntityAdded = 64,
 }
 
 export enum CollisionType {
@@ -3670,8 +3500,8 @@ export interface ServerPresence {
   address: string;
   zoneID: number;
   shardID: number;
-  zoneBoundsMax: { x: number, y: number };
-  zoneBoundsMin: { x: number, y: number };
+  zoneBoundsMax: {x:number,y:number};
+  zoneBoundsMin: {x:number,y:number};
 }
 
 export interface ServerState {
@@ -3959,12 +3789,12 @@ export interface RealmRestricted {
 }
 
 export interface CurrentMaxValue {
-  current: number;
-  maximum: number;
+    current: number;
+    maximum: number;
 }
 
 export interface Temperature {
-  current: number;
-  freezingThreshold: number;
-  burndingThreshold: number;
+    current: number;
+    freezingThreshold: number;
+    burndingThreshold: number;
 }

@@ -5,8 +5,8 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-09 11:31:00
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-12 15:58:18
  */
 
 import * as React from 'react';
@@ -369,6 +369,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private onToggleItemMenuVisibility = (slotName: string) => {
+    console.log(slotName);
+    console.log(this.state.slotNameItemMenuVisible);
     if (slotName === this.state.slotNameItemMenuVisible) {
       this.setState({ slotNameItemMenuVisible: '' });
     } else {

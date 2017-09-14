@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:20:27
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-15 21:18:03
+ * @Last Modified time: 2017-08-11 17:06:20
  */
 
 interface VoxStaticDefinition {
@@ -53,8 +53,6 @@ interface VoxSelectedRecipe {
   id: string;
 }
 
-interface VoxSelectedTemplate extends VoxSelectedRecipe {}
-
 interface VoxStatus {
   voxState: string;
   jobType: string;
@@ -68,7 +66,6 @@ interface VoxStatus {
   endQuality: number;
   usedRepairPoints: number;
   ingredients: VoxIngredient[];
-  template: VoxSelectedTemplate;
   possibleIngredients: VoxPossibleIngredient[];
 }
 
@@ -81,13 +78,6 @@ interface VoxRecipe {
   };
 }
 
-interface VoxTemplate {
-  id: string;
-  name: string;
-  iconUrl: string;
-  description: string;
-}
-
 interface VoxOutputItem extends VoxItem { }
 
 export {
@@ -95,8 +85,6 @@ export {
   VoxOutputItem,
   VoxIngredient,
   VoxSelectedRecipe,
-  VoxSelectedTemplate,
-  VoxTemplate,
   VoxRecipe,
   VoxStatus,
   VoxPossibleIngredient,

@@ -524,7 +524,7 @@ const devClientInterface: clientInterface = {
   },
 
   /* Dev UI */
-  OnUpdateDevUI: (c: (rootPage: any) => void): void => {
+  OnUpdateDevUI: (c: (pageID: string, rootPage: any) => void): void => {
   },
 
 

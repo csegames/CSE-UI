@@ -1678,7 +1678,7 @@
               "deprecationReason": null
             },
             {
-              "name": "usedOutOfCombatCount",
+              "name": "usedNonCombatCount",
               "description": "",
               "args": [],
               "type": {
@@ -1889,6 +1889,18 @@
           "description": "CharacterSummaryDBModel",
           "fields": [
             {
+              "name": "accountID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "AccountID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "shardID",
               "description": "",
               "args": [],
@@ -1963,6 +1975,16 @@
           ],
           "inputFields": null,
           "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "AccountID",
+          "description": "AccountID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -2072,6 +2094,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CharacterSummary",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalDaysProcessed",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
