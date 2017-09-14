@@ -5,12 +5,12 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-03 20:46:31
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:52:17
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-11 17:55:00
  */
 
 import { Module } from 'redux-typed-modules';
-import { Ingredient, InventoryItem, Recipe, Template, Message } from '../types';
+import { Ingredient, InventoryItem, Recipe, Message } from '../types';
 import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
 
 export interface JobState {
@@ -22,7 +22,6 @@ export interface JobState {
   timeRemaining: number;              // For running job, how long left
   totalCraftingTime: number;          // For running job, how long left
   recipe: Recipe;                     // Selected Recipe
-  template: Template;                 // Selected Template (make job)
   quality: number;                    // Desired quality
   possibleIngredients: Ingredient[];  // ingredients that can go in the vox
   possibleType: string;               // job type of possible ingredients
@@ -44,7 +43,6 @@ export const initialState = () : JobState => {
     timeRemaining: 0,
     totalCraftingTime: 0,
     recipe: null,
-    template: null,
     quality: undefined,
     possibleIngredients: [],
     possibleType: undefined,
@@ -225,12 +223,6 @@ export const setMessage = module.createAction({
   reducer: (s, a) => ({ message: a.message }),
 });
 
-export const setTemplate = module.createAction({
-  type: 'crafting/job/set-template',
-  action: (template: Template) => ({ template }),
-  reducer: (s, a) => ({ template: a.template }),
-});
-
 export const gotVoxPossibleIngredients = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients',
   action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => ({ ingredients, ingredientsType }),
@@ -279,7 +271,7 @@ export const gotVoxStatus = module.createAction({
     return {
       status: status.jobState,
       ready: undefined,
-      type: status.jobType,
+      type: status.jobType.toLowerCase(),
       quality: ((status.endQuality * 100) + 0.5) | 0,           // 0.57 * 100 = 56.9999999 in javascript!
       itemCount: (status.itemCount | 0),
       started: startTime.toISOString(),
@@ -287,7 +279,6 @@ export const gotVoxStatus = module.createAction({
       totalCraftingTime: status.totalCraftingTime,
       recipe: status.recipeID && { id: status.recipeID, name: '' },
       name: status.givenName,
-      template: status.template && { id: status.template.id, name: '' },
       ingredients,
     };
   },

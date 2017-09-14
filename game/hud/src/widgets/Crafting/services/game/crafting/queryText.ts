@@ -5,8 +5,8 @@
  *
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-04 19:19:00
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:51:25
+ * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
+ * @Last Modified time: 2017-08-13 19:11:36
  */
 
 const FIELD_LISTS = {
@@ -17,16 +17,22 @@ const FIELD_LISTS = {
   ITEM_DEF_REF: [
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
   ],
+  MAKE_RECIPE_INGREDIENT_DEF: [
+    'slot', 'requirementDescription', 'minQuality', 'maxQuality', 'unitCount'
+  ],
+  RECIPE_INGREDIENT_DEF: [
+    'requirementPath', 'minPercent', 'maxPercent', 'minQuality', 'maxQuality'
+  ],
   STATIC: [
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
   ],
   STATS_ITEM: [
-    'quality', 'mass', 'encumbrance', 'unitCount',
+    'quality', 'selfMass', 'encumbrance', 'unitCount',
     'agilityRequirement', 'dexterityRequirement', 'strengthRequirement',
   ],
   STATS_DURABILITY: [
-    'maxRepairPoints', 'maxDurability', 'fractureThreshold', 'fractureChance',
-    'currentRepairPoints', 'currentDurability',
+    'maxRepairPoints', 'maxHealth', 'fractureThreshold', 'fractureChance',
+    'currentRepairPoints', 'currentHealth',
   ],
   VOX_STATUS: [
     'voxState', 'jobType', 'jobState', 'startTime', 'totalCraftingTime', 'timeRemaining',
@@ -40,10 +46,10 @@ const TYPES: any = {
   'stats.item': FIELD_LISTS.STATS_ITEM,
   'stats.durability': FIELD_LISTS.STATS_DURABILITY,
   ingredientItem: FIELD_LISTS.ITEM_DEF_REF,
+  ingredientDef: FIELD_LISTS.ITEM_DEF_REF,
   'voxStatus.ingredients': FIELD_LISTS.ITEM,
-  ingredients: FIELD_LISTS.ITEM_DEF_REF,
-  template: FIELD_LISTS.ITEM_DEF_REF,
-  templates: FIELD_LISTS.ITEM_DEF_REF,
+  ingredients: FIELD_LISTS.RECIPE_INGREDIENT_DEF,
+  'makeRecipes.ingredients': FIELD_LISTS.MAKE_RECIPE_INGREDIENT_DEF,
   outputItem: FIELD_LISTS.ITEM_DEF_REF,
   'voxStatus.outputItems': FIELD_LISTS.ITEM,
   blockRecipes: FIELD_LISTS.RECIPE,
@@ -51,6 +57,7 @@ const TYPES: any = {
   refineRecipes: FIELD_LISTS.RECIPE,
   grindRecipes: FIELD_LISTS.RECIPE,
   purifyRecipes: FIELD_LISTS.RECIPE,
+  makeRecipes: FIELD_LISTS.RECIPE,
   voxStatus: FIELD_LISTS.VOX_STATUS,
 };
 
@@ -84,7 +91,6 @@ const GetQueryText = (name: string, def: any, indent: string = '') => {
 const QUERY_VOX_STATUS = GetQueryText('VoxStatus', {
   crafting: {
     voxStatus: {
-      template: true,
       ingredients: {
         staticDefinition: true,
         stats: { item: true, durability: true },
@@ -122,22 +128,24 @@ const QUERY_REFINE_RECIPES = GetQueryText('RefineRecipes', {
 });
 
 const QUERY_SHAPE_RECIPES = GetQueryText('ShapeRecipes', {
-  crafting: { shapeRecipes: { outputItem: true, ingredients: true } },
+  crafting: { shapeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
 });
 
 const QUERY_BLOCK_RECIPES = GetQueryText('BlockRecipes', {
-  crafting: { blockRecipes: { outputItem: true, ingredients: true } },
+  crafting: { blockRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
 });
 
-const QUERY_TEMPLATES = GetQueryText('Templates', { crafting: { templates: true } });
+const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
+  crafting: { makeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+});
 
 export const QUERIES = {
   QUERY_VOX_STATUS,
   QUERY_POSSIBLE_INGREDIENTS,
-  QUERY_TEMPLATES,
   QUERY_PURIFY_RECIPES,
   QUERY_GRIND_RECIPES,
   QUERY_REFINE_RECIPES,
   QUERY_SHAPE_RECIPES,
   QUERY_BLOCK_RECIPES,
+  QUERY_MAKE_RECIPES,
 };

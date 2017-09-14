@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-05 20:16:52
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:39:55
+ * @Last Modified time: 2017-08-11 17:06:20
  */
 
 import {client, webAPI} from 'camelot-unchained';
@@ -121,12 +121,6 @@ export function setVoxRecipe(id: string) {
     client.characterID,
     id,
   ));
-}
-
-export function setVoxTemplate(id: string) {
-  // There is no setTemplate controller on the api server.
-  console.log('There is no setTemplate controller on the api server');
-  // return run(() => webAPI.CraftingAPI.setTemplate(client.shardID, client.characterID, id));
 }
 
 export function addVoxIngredient(id: string, qty: number) {
