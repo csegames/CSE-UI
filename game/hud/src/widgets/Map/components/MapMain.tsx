@@ -32,22 +32,9 @@ export const defaultMapStyle: MapStyle = {
     position: 'relative',
   },
 
-  zoomPanContainer: {
-    height: '100%',
-    position: 'relative',
-  },
-
   map: {
     maxHeight: '100%',
     width: 'auto',
-    position: 'relative',
-    borderRight: '2px #3b524a',
-    borderRightStyle: 'dashed',
-  },
-
-  zoomPan: {
-    width: '100%',
-    height: '100%',
     position: 'relative',
     borderRight: '2px #3b524a',
     borderRightStyle: 'dashed',
@@ -93,7 +80,6 @@ class MapMain extends React.Component<MapMainProps> {
     const smallImage = {
       isFluidWidth: true,
       src: map.src,
-      sizes: '(min-width: 800px) 33.5vw, (min-width: 415px) 50vw, 100vw',
     };
     const largeImage = {
       src: map.src,
