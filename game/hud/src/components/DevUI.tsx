@@ -64,18 +64,18 @@ const DevUIButton = (props: Button) => {
   const style = StyleSheet.create(buttonStyle);
   return (
     <div className={css(style.Button)}
-         onClick={() => {
-           if (props.command) {
-             client.SendSlashCommand(props.command)
-           } else if (props.call) {
-             const fn = client[props.call];
-             if (props.params) {
-               fn(...props.params);
-             } else {
-               fn();
-             }
-           }
-         }} >
+        onClick={() => {
+          if (props.command) {
+            client.SendSlashCommand(props.command)
+          } else if (props.call) {
+            const fn = client[props.call];
+            if (props.params) {
+              fn(...props.params);
+            } else {
+              fn();
+            }
+          }
+        }}>
       {props.title}
     </div>
   );

@@ -645,6 +645,7 @@ export interface CharacterDaysProgressionDataArgs {
 export interface ShardSummaryDBModel {
   shardID: ShardID | null;
   characters: CharacterSummary | null;
+  totalDaysProcessed: number | null;
 }
 
 export interface CharacterSummary {
@@ -659,6 +660,7 @@ export interface ShardDaySummaryDBModel {
 }
 
 export interface CharacterSummaryDBModel {
+  accountID: AccountID | null;
   shardID: ShardID | null;
   lastDayLogProcessedID: CharacterDaySummaryInstanceID | null;
   lastDayProcessedStart: Date | null;
@@ -666,6 +668,8 @@ export interface CharacterSummaryDBModel {
   totalSecondsActive: number | null;
   totalDistanceMoved: number | null;
 }
+
+export type AccountID = any;
 
 export type CharacterDaySummaryInstanceID = any;
 
@@ -687,7 +691,7 @@ export type ShardDaySummaryInstanceID = any;
 export interface SkillPartUsed {
   skillID: string | null;
   usedInCombatCount: number | null;
-  usedOutOfCombatCount: number | null;
+  usedNonCombatCount: number | null;
 }
 
 export type States = "Initial" | "Handled";
