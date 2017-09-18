@@ -204,6 +204,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             attributeOffsets={this.props.attributeOffsetsState.offsets}
             selectedGender={this.props.gender}
             selectedRace={this.props.racesState.selected.id}
+            selectedClass={this.props.playerClassesState.selected.id}
             allocatePoint={(name: string, value: number) => this.props.dispatch(allocateAttributePoint(name, value)) }
             remainingPoints={this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated} />
         );

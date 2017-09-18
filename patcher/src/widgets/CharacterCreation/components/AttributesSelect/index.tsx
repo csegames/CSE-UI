@@ -5,10 +5,14 @@
  */
 
 import * as React from 'react';
-import {Race, Gender} from 'camelot-unchained';
-import {AttributeInfo, attributeType} from '../services/session/attributes';
-import {AttributeOffsetInfo} from '../services/session/attributeOffsets';
+import * as _ from 'lodash';
+
+import {Race, Gender, Archetype} from 'camelot-unchained';
+import {AttributeInfo, attributeType} from '../../services/session/attributes';
+import {AttributeOffsetInfo} from '../../services/session/attributeOffsets';
 import {events} from 'camelot-unchained';
+
+import AttributeRow from './AttributeRow';
 
 
 export interface AttributesSelectProps {
@@ -16,6 +20,7 @@ export interface AttributesSelectProps {
   attributeOffsets: AttributeOffsetInfo[];
   selectedRace: Race;
   selectedGender: Gender;
+  selectedClass: Archetype;
   remainingPoints: number;
   allocatePoint: (name: string, value: number) => void;
 }
@@ -24,7 +29,6 @@ export interface AttributesSelectState {
 }
 
 class AttributesSelect extends React.Component<AttributesSelectProps, AttributesSelectState> {
-
   private maxAllotments: any;
   private allotments: any;
 
@@ -41,16 +45,25 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
       o.race === this.props.selectedRace);
     if (typeof offset === 'undefined') offset = null;
 
-    const primaries = this.props.attributes.filter((a: AttributeInfo) => a.type === attributeType.PRIMARY);
-    const secondaries = this.props.attributes.filter((a: AttributeInfo) => a.type === attributeType.SECONDARY);
-    const derived = this.props.attributes.filter((a: AttributeInfo) => a.type === attributeType.DERIVED);
+    const sortedAttributes = this.props.attributes.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    const primaries = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.PRIMARY);
+    const secondaries = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.SECONDARY);
+    const derived = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.DERIVED);
 
     return (
       <div className='page'>
         <video src={`videos/paper-bg.webm`} poster={`videos/paper-bg.jpg`} autoPlay loop></video>
         <div className='selection-box'>
           <h6>Distribute attribute points  <span className='points'>(Remaining {this.props.remainingPoints})</span></h6>
-          {this.props.attributes.map((a: AttributeInfo) => this.generateAttributeContent(a, offset))}
+          {sortedAttributes.map((a: AttributeInfo) =>
+            <AttributeRow
+              attributeInfo={a}
+              offset={offset}
+              selectedClass={this.props.selectedClass}
+              allocatePoint={this.props.allocatePoint}
+              remainingPoints={this.props.remainingPoints}
+            />,
+          )}
         </div>
         <div className='view-content row attributes-view'>
           <div className='col s12'>
@@ -87,33 +100,6 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
 
   public componentWillUnmount() {
 
-  }
-
-  private increaseAttribute = (attributeName: string) => {
-    this.props.allocatePoint(attributeName, 1);
-    if (this.props.remainingPoints !== 0) events.fire('play-sound', 'select');
-  }
-
-  private decreaseAttribute = (attributeInfo: AttributeInfo) => {
-    this.props.allocatePoint(attributeInfo.name, -1);
-    if (attributeInfo.allocatedPoints !== 0) events.fire('play-sound', 'select');
-  }
-
-  private generateAttributeContent = (attributeInfo: AttributeInfo, offset: AttributeOffsetInfo) => {
-    if (attributeInfo.type !== attributeType.PRIMARY) return null;
-    const allocatedCount = 0; // this.props.allocations[attributeInfo.name]
-    const offsetValue = offset === null ? 0 : typeof offset.attributeOffsets[attributeInfo.name] === 'undefined' ? 0 :
-      offset.attributeOffsets[attributeInfo.name];
-    return (
-      <div key={attributeInfo.name} className='attribute-row'>
-        <span>{attributeInfo.name} </span>
-        <button className='rightarrow right' onClick={() => this.increaseAttribute(attributeInfo.name)} ></button>
-        <span className='attribute-points right'>
-          {attributeInfo.baseValue + attributeInfo.allocatedPoints + offsetValue}
-        </span>
-        <button className='leftarrow right' onClick={() => this.decreaseAttribute(attributeInfo)}></button>
-      </div>
-    );
   }
 
   private generateAttributeView = (info: AttributeInfo, value: number) => {
