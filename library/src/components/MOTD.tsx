@@ -28,6 +28,7 @@ export const defaultStyle: Style = {
     height: '450px',
     backgroundColor: 'rgba(0,0,0,0.8)',
     border: `1px solid ${utils.lightenColor('#202020', 30)}`,
+    position: 'relative',
   },
 
   header: {
@@ -44,6 +45,17 @@ export const defaultStyle: Style = {
     color: 'white',
     padding: '5px',
     overflow: 'auto',
+    '::-webkit-scrollbar-track': {
+      backgroundColor: 'transparent',
+    },
+    '::-webkit-scrollbar': {
+      width: '5px',
+      backgroundColor: '#111',
+    },
+    '::-webkit-scrollbar-thumb': {
+      backgroundColor: '#666',
+      borderRadius: '5px',
+    },
   },
 
   footer: {
@@ -58,7 +70,7 @@ export const defaultStyle: Style = {
   },
 
   close: {
-    position: 'fixed',
+    position: 'absolute',
     top: 2,
     right: 5,
     color: '#cdcdcd',
@@ -72,12 +84,14 @@ export const defaultStyle: Style = {
   },
 };
 
-export const MOTD = (props: {
+export interface Props {
   styles?: Partial<Style>;
-  content: () => JSX.Element;
   onClose?: () => void;
   onDismiss24?: () => void;
-}) => {
+  children?: React.ReactNode;
+}
+
+export const MOTD = (props: Props) => {
   const ss = StyleSheet.create(defaultStyle);
   const custom = StyleSheet.create(props.styles || {});
   return (
@@ -89,7 +103,7 @@ export const MOTD = (props: {
         </div>
       </div>
       <div className={css(ss.content, custom.content)}>
-        <props.content />
+        {props.children}
       </div>
       <div className={css(ss.footer, custom.footer)}>
         <a className={css(ss.dismiss, custom.dismiss)} onClick={props.onDismiss24}>Dismiss For 24h</a>

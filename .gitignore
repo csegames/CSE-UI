@@ -44,3 +44,6 @@ library/docs/
 *.config.js
 dev.config
 **__snapshots__
+**/schema.ts
+**/schema.json
+**/definitions.ts
