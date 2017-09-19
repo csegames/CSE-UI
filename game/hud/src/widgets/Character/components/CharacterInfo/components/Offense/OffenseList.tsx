@@ -5,16 +5,16 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-08-17 11:47:30
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-17 15:56:12
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-20 16:18:11
  */
 
 import * as React from 'react';
 
 import { utils } from 'camelot-unchained';
+import { GridStats } from 'camelot-unchained/lib/components';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import GridStats from '../GridStats';
 import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
 import { prettifyText, searchIncludesSection } from '../../../../lib/utils';

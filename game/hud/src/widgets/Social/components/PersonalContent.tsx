@@ -19,7 +19,7 @@ export interface PersonalContentProps {
   dispatch: (action: any) => any;
   address: LinkAddress;
   refetch: () => void;
-  myCharacter: ql.CUCharacter;
+  myCharacter: Partial<ql.CUCharacter>;
 }
 
 /* tslint:disable */

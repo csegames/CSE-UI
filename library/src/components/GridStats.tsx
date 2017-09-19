@@ -5,8 +5,8 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-08-17 12:38:55
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-17 15:55:32
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-21 15:49:03
  */
 
 import * as React from 'react';
@@ -17,6 +17,7 @@ import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 export interface GridStatsStyles extends StyleDeclaration {
   statContainer: React.CSSProperties;
   statListSection: React.CSSProperties;
+  listItemContainer: React.CSSProperties;
 }
 
 const defaultGridStatsStyle: GridStatsStyles = {
@@ -26,6 +27,10 @@ const defaultGridStatsStyle: GridStatsStyles = {
 
   statListSection: {
     flex: 1,
+  },
+
+  listItemContainer: {
+    
   },
 };
 
@@ -39,7 +44,7 @@ export interface GridStatsProps {
   shouldRenderEmptyListItems?: boolean;
 }
 
-const GridStats = (props: GridStatsProps) => {
+export const GridStats = (props: GridStatsProps) => {
   const ss = StyleSheet.create(defaultGridStatsStyle);
   const custom = StyleSheet.create(props.styles || {});
 
@@ -67,7 +72,13 @@ const GridStats = (props: GridStatsProps) => {
         return (
           <div key={index} className={css(ss.statListSection, custom.statListSection)}>
             {grid.map((item, i) => {
-              return <div key={i}>{props.renderListItem(item, i)}</div>;
+              return (
+                <div
+                  key={i}
+                  className={css(ss.listItemContainer, custom.listItemContainer)}>
+                    {props.renderListItem(item, i)}
+                </div>
+              );
             })}
           </div>
         );
@@ -75,5 +86,3 @@ const GridStats = (props: GridStatsProps) => {
     </div>
   );
 };
-
-export default GridStats;

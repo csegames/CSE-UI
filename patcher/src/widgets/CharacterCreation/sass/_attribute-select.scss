@@ -31,13 +31,38 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+@keyframes disabledInputAnim {
+  0% {
+    border-color: transparent;
+  };
+  25% {
+    border-color: #473B2A;
+  };
+  50% {
+    border-color: transparent;
+  };
+  75% {
+    border-color: #473B2A;
+  }
+  100% {
+    border-color: transparent;
+  }
+}
+
+.maxmin-points {
+  animation-name: disabledInputAnim;
+  animation-duration: 500ms;
+}
+
 .attribute-row {
   width: 100%;
   display: block;
   background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), transparent);
   padding-bottom: 10px;
+  letter-spacing: 0.3px;
   &.important {
-    background: linear-gradient(to bottom right, rgba(235, 205, 81, 0.1), transparent);
+    background: linear-gradient(to bottom right, #110D07, #1B160E);
+    color: #ffe1c2;
   }
   &:hover {
     filter: brightness(150%);
@@ -46,6 +71,7 @@
 }
 
 .selection-box {
+  color: #727272;
   .attribute-row {
     padding: 5px;
   }
@@ -75,15 +101,6 @@ span.points {
     background: linear-gradient(to bottom,transparent, rgba(255, 221, 188, 0.33), transparent);
     border:none;
     box-shadow: inset 0px 0px 20px rgba(84, 73, 58, 0.68);
-  }
-  &::before {
-    content: '';
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0,0,0,0.6));
-    display: block;
-    position: absolute;
-    height: 10%;
-    width: 100%;
-    bottom: 195px;
   }
   .attribute-row {
     max-width: calc(50% - 10px);

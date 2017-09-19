@@ -214,9 +214,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             disabled={this.state.page === pages.CLASS_SELECT} >Back</button>
         );
         next = (
-           <button className='cu-btn right'
-              onClick={this.attributesNext}
-              disabled={this.state.page === pages.BANES_AND_BOONS}>Next</button>
+          <button className='cu-btn right'
+            onClick={this.attributesNext}
+            disabled={this.state.page === pages.BANES_AND_BOONS}>Next</button>
         );
         name = (
           <div className='cu-character-creation__name'>
