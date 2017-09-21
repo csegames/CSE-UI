@@ -29,6 +29,8 @@ export interface AttributeViewStyle extends StyleDeclaration {
   statValue: React.CSSProperties;
   doesNotMatchSearch: React.CSSProperties;
   sectionTitleContainer: React.CSSProperties;
+  tooltip: React.CSSProperties;
+  tooltipContent: React.CSSProperties;
 }
 
 export const defaultAttributeViewStyle: AttributeViewStyle = {
@@ -116,6 +118,19 @@ export const defaultAttributeViewStyle: AttributeViewStyle = {
     backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
     borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
   },
+
+  tooltip: {
+    border: '1px solid #352A22',
+    boxShadow: 'inset 0 0 10px 2px rgba(40, 32, 20, 0.2)',
+    background: 'black',
+    maxWidth: '300px',
+    minWidth: '200px',
+  },
+
+  tooltipContent: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 };
 
 export interface AttributeObjectInfo {
@@ -163,8 +178,15 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                     Tooltip: {
                       width: '100%',
                     },
+                    
+                    tooltip: defaultAttributeViewStyle.tooltip,
                   }}
-                  content={() => a.attributeInfo && <span>{a.attributeInfo.description}</span>}>
+                  content={() => a.attributeInfo &&
+                    <div className={css(ss.tooltipContent)}>
+                      <div>{a.attributeInfo.name} {a.value}</div>
+                      <div>{a.attributeInfo.description}</div>
+                    </div>
+                  }>
                   <div className={css(
                     ss.statsListItem,
                     custom.statsListItem,

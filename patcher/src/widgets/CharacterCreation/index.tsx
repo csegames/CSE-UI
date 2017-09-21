@@ -21,6 +21,7 @@ import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
+import Navigation, { NavigationPageInfo } from './components/Navigation';
 
 // tslint:disable-next-line
 const Animate =  require('react-animate.css');
@@ -76,7 +77,7 @@ function select(state: any): any {
   };
 }
 
-export enum pages {
+export enum CharacterCreationPage {
   FACTION_SELECT,
   RACE_SELECT,
   CLASS_SELECT,
@@ -99,6 +100,10 @@ export interface CharacterCreationProps {
   gender?: Gender;
   characterState?: CharacterState;
   banesAndBoonsState: BanesAndBoonsState;
+}
+
+export interface CharacterCreationState {
+  page: CharacterCreationPage;
 }
 
 export interface ContainerStyles extends StyleDeclaration {
@@ -125,32 +130,29 @@ const defaultCharacterCreationStyle: ContainerStyles = {
 
 declare const toastr: any;
 
-class CharacterCreation extends React.Component<CharacterCreationProps, any> {
+class CharacterCreation extends React.Component<CharacterCreationProps, CharacterCreationState> {
+  private pagesVisited: CharacterCreationPage[] = [];
+  private pagesCompleted: CharacterCreationPage[] = [];
 
   constructor(props: any) {
     super(props);
-    this.state = { page: pages.FACTION_SELECT };
+    this.state = { page: CharacterCreationPage.FACTION_SELECT };
   }
 
   public render() {
     let content: any = null;
-    let next: any = null;
-    let back: any = null;
-    let name: any = null;
+
     switch (this.state.page) {
-      case pages.FACTION_SELECT:
+      case CharacterCreationPage.FACTION_SELECT:
+        this.pagesVisited.push(CharacterCreationPage.FACTION_SELECT);
         content = (
           <FactionSelect factions={this.props.factionsState.factions}
             selectedFaction={this.props.factionsState.selected}
             selectFaction={this.factionSelect} />
         );
-        next = (
-          <button className='cu-btn right'
-            onClick={this.factionNext}
-            disabled={this.state.page === pages.ATTRIBUTES} >Next</button>
-        );
         break;
-      case pages.RACE_SELECT:
+      case CharacterCreationPage.RACE_SELECT:
+        this.pagesVisited.push(CharacterCreationPage.RACE_SELECT);
         content = (
           <RaceSelect races={this.props.racesState.races}
             selectedRace={this.props.racesState.selected}
@@ -159,46 +161,23 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectGender={(selected: Gender) => this.props.dispatch(selectGender(selected)) }
             selectedFaction={this.props.factionsState.selected} />
         );
-        back = (
-          <button className='cu-btn left'
-            onClick={this.previousPage}
-            disabled={this.state.page === pages.FACTION_SELECT} >Back</button>
-        );
-        next = (
-          <button className='cu-btn right'
-            onClick={this.raceNext}
-            disabled={this.state.page === pages.ATTRIBUTES} >Next</button>
-        );
-        name = (
-          <div className='cu-character-creation__name'>
-            <input type='text' ref='name-input' placeholder='Enter A Name Here'/>
-          </div>
-        );
         break;
-      case pages.CLASS_SELECT:
+      case CharacterCreationPage.CLASS_SELECT:
+        this.pagesVisited.push(CharacterCreationPage.CLASS_SELECT);
         content = (
           <PlayerClassSelect classes={this.props.playerClassesState.playerClasses}
             selectedClass={this.props.playerClassesState.selected}
             selectClass={this.classSelect}
             selectedFaction={this.props.factionsState.selected} />
         );
-        back = (
-          <button className='cu-btn left'
-            onClick={this.previousPage}
-            disabled={this.state.page === pages.FACTION_SELECT} >Back</button>
-        );
-        next = (
-          <button className='cu-btn right'
-            onClick={this.classNext}
-            disabled={this.state.page === pages.BANES_AND_BOONS} >Next</button>
-        );
-        name = (
-          <div className='cu-character-creation__name'>
-            <input type='text' ref='name-input' placeholder='Character Name'/>
-          </div>
-        );
         break;
-      case pages.ATTRIBUTES:
+      case CharacterCreationPage.ATTRIBUTES:
+        const remainingPoints = this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated;
+        this.pagesVisited.push(CharacterCreationPage.ATTRIBUTES);
+        if (this.pagesCompleted.find((pageNumber) => pageNumber === CharacterCreationPage.ATTRIBUTES) &&
+          remainingPoints !== 0) {
+          this.pagesCompleted.filter((pageNumber) => pageNumber === CharacterCreationPage.ATTRIBUTES);
+        }
         content = (
           <AttributesSelect attributes={this.props.attributesState.attributes}
             attributeOffsets={this.props.attributeOffsetsState.offsets}
@@ -206,26 +185,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             selectedRace={this.props.racesState.selected.id}
             selectedClass={this.props.playerClassesState.selected.id}
             allocatePoint={(name: string, value: number) => this.props.dispatch(allocateAttributePoint(name, value)) }
-            remainingPoints={this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated} />
-        );
-        back = (
-          <button className='cu-btn left'
-            onClick={this.previousPage}
-            disabled={this.state.page === pages.CLASS_SELECT} >Back</button>
-        );
-        next = (
-          <button className='cu-btn right'
-            onClick={this.attributesNext}
-            disabled={this.state.page === pages.BANES_AND_BOONS}>Next</button>
-        );
-        name = (
-          <div className='cu-character-creation__name'>
-            <input type='text' ref='name-input' placeholder='Character Name'/>
-          </div>
+            remainingPoints={remainingPoints} />
         );
         break;
-      case pages.BANES_AND_BOONS:
+      case CharacterCreationPage.BANES_AND_BOONS:
         const { dispatch, racesState, factionsState, playerClassesState, banesAndBoonsState } = this.props;
+        this.pagesVisited.push(CharacterCreationPage.BANES_AND_BOONS);
         content = (
           <BanesAndBoonsContainer
             apiHost={this.props.apiHost}
@@ -240,33 +205,62 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
             traitSummaryStyles={{}}
           />
         );
-        back = (
-          <button className='cu-btn left'
-              onClick={this.previousPage}
-              disabled={this.state.page === pages.ATTRIBUTES}>Back</button>
-        );
-        next = (
-          <button className={`cu-btn right`} disabled={this.props.characterState.isFetching} onClick={this.create} >
-            Create
-          </button>
-        );
-        name = (
-          <div className='cu-character-creation__name banes-and-boons-screen'>
-            <input type='text' ref='name-input' placeholder='Character Name'/>
-          </div>
-        );
         break;
     }
     const ss = StyleSheet.create(defaultCharacterCreationStyle);
+    const pages: NavigationPageInfo[] = [
+      {
+        pageNumber: CharacterCreationPage.FACTION_SELECT,
+        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.FACTION_SELECT) !== -1,
+        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.FACTION_SELECT) !== -1,
+      },
+      {
+        pageNumber: CharacterCreationPage.RACE_SELECT,
+        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.RACE_SELECT) !== -1,
+        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.RACE_SELECT) !== -1,
+      },
+      {
+        pageNumber: CharacterCreationPage.CLASS_SELECT,
+        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.CLASS_SELECT) !== -1,
+        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.CLASS_SELECT) !== -1,
+      },
+      {
+        pageNumber: CharacterCreationPage.ATTRIBUTES,
+        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.ATTRIBUTES) !== -1,
+        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.ATTRIBUTES) !== -1,
+      },
+      {
+        pageNumber: CharacterCreationPage.BANES_AND_BOONS,
+        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.BANES_AND_BOONS) !== -1,
+        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+          pageNumber === CharacterCreationPage.BANES_AND_BOONS) !== -1,
+      },
+    ];
     return (
       <div className='cu-character-creation'>
+        <div className='cu-character-creation__header'>
+          
+        </div>
         <div className='cu-character-creation__content'>
-          <div className={css(ss.closeButton) + ' fa fa-times click-effect'} onClick={this.onCloseClick} />
           {content}
         </div>
-        <div className='cu-character-creation__back'>{back}</div>
-        {name}
-        <div className='cu-character-creation__next'>{next}</div>
+        <Navigation
+          onNextClick={this.nextPage}
+          onBackClick={this.state.page !== CharacterCreationPage.FACTION_SELECT ? this.previousPage : () => {}}
+          onHelpClick={() => {}}
+          onCancelClick={this.onCloseClick}
+          currentPage={this.state.page}
+          pages={pages}
+        />
       </div>
     );
   }
@@ -290,11 +284,28 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     });
   }
 
+  public componentWillUpdate(nextProps: CharacterCreationProps, nextState: CharacterCreationState) {
+    if (nextProps.factionsState.selected !== this.props.factionsState.selected ||
+      nextProps.racesState.selected !== this.props.racesState.selected ||
+      nextProps.playerClassesState.selected !== this.props.playerClassesState.selected) {
+        this.filterVisitedAndCompletedPages(nextState.page);
+        this.props.dispatch(resetAttributeOffsets());
+        this.props.dispatch(resetAttributes());
+        this.props.dispatch(fetchAttributes(this.props.shard, this.props.apiHost));
+        this.props.dispatch(fetchAttributeOffsets(this.props.shard, this.props.apiHost));
+    }
+  }
+
   public componentDidUpdate() {
     if (this.props.characterState.success) {
       this.props.created(this.props.characterState.created);
       this.resetAndInit();
     }
+  }
+
+  private filterVisitedAndCompletedPages = (page: CharacterCreationPage) => {
+    this.pagesCompleted = this.pagesCompleted.filter((pageNumber) => pageNumber < page);
+    this.pagesVisited = this.pagesVisited.filter((pageNumber) => pageNumber < page);
   }
 
   private create = () => {
@@ -374,6 +385,31 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     }
   }
 
+  private nextPage = () => {
+    switch (this.state.page) {
+      case CharacterCreationPage.FACTION_SELECT: {
+        this.factionNext();
+        break;
+      }
+      case CharacterCreationPage.RACE_SELECT: {
+        this.raceNext();
+        break;
+      }
+      case CharacterCreationPage.CLASS_SELECT: {
+        this.classNext();
+        break;
+      }
+      case CharacterCreationPage.ATTRIBUTES: {
+        this.attributesNext();
+        break;
+      }
+      case CharacterCreationPage.BANES_AND_BOONS: {
+        this.create();
+        break;
+      }
+    }
+  }
+
   private factionSelect = (selected: FactionInfo) => {
     this.props.dispatch(selectFaction(selected));
 
@@ -392,6 +428,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
   }
 
   private factionNext = () => {
+    this.pagesCompleted.push(CharacterCreationPage.FACTION_SELECT);
     if (this.props.factionsState.selected == null) {
       Materialize.toast('Choose a faction to continue.', 3000);
       return;
@@ -420,6 +457,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       Materialize.toast('Choose a gender to continue.', 3000);
       return;
     }
+    this.pagesCompleted.push(CharacterCreationPage.RACE_SELECT);
     this.setState({ page: this.state.page + 1 });
     events.fire('play-sound', 'select');
   }
@@ -434,6 +472,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       Materialize.toast('Choose a class to continue.', 3000);
       return;
     }
+    this.pagesCompleted.push(CharacterCreationPage.CLASS_SELECT);
     this.setState({ page: this.state.page + 1 });
     events.fire('play-sound', 'select');
   }
@@ -444,6 +483,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
       You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000});
       return;
     }
+    this.pagesCompleted.push(CharacterCreationPage.ATTRIBUTES);
     this.setState({page: this.state.page + 1});
     events.fire('play-sound', 'select');
   }
@@ -466,7 +506,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, any> {
     this.props.dispatch(fetchPlayerClasses(apiHost, this.props.shard, this.props.apiVersion));
     this.props.dispatch(fetchAttributes(this.props.shard, apiHost));
     this.props.dispatch(fetchAttributeOffsets(this.props.shard, apiHost));
-    this.setState({page: pages.FACTION_SELECT});
+    this.setState({page: CharacterCreationPage.FACTION_SELECT});
+    this.pagesCompleted = [];
+    this.pagesVisited = [];
   }
 
   private onCloseClick = () => {
@@ -497,6 +539,7 @@ class Container extends React.Component<ContainerProps, any> {
             created={this.props.created} />
         </Provider>
         <div className='preloader' ></div>
+        <div className='cu-character-creation__footer' />
       </div>
     );
   }

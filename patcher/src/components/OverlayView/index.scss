@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-10-27 11:50:56
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-28 12:33:54
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-21 16:06:25
  */
 
 .OverlayView {
@@ -22,6 +22,10 @@
 
 .OverlayView--hidden {
   visibility: hidden;
+}
+
+.OverlayView--wholescreen {
+  z-index: 999;
 }
 
 .View {

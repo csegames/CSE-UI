@@ -9,13 +9,9 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface AllocatePointButtonStyle extends StyleDeclaration {
-  disabled: React.CSSProperties;
 }
 
 export const defaultAllocatePointButtonStyle: AllocatePointButtonStyle = {
-  disabled: {
-    
-  },
 };
 
 export interface AllocatePointButtonProps {

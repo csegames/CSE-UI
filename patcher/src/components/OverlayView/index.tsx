@@ -57,7 +57,8 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     return (
       <div
         className={`OverlayView ${this.state.previousView === view.NONE && this.state.currentView === view.NONE ?
-          'OverlayView--hidden' : ''}`}>
+          'OverlayView--hidden' : ''} ${this.state.currentView === view.CHARACTERCREATION ?
+            'OverlayView--wholescreen' : ''}`}>
         {this.renderView(false)}
         {this.renderView(true)}
 

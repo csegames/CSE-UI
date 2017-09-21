@@ -6,11 +6,7 @@
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-03 16:19:58
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
-<<<<<<< HEAD
  * @Last Modified time: 2017-09-07 10:32:18
-=======
- * @Last Modified time: 2017-09-08 15:06:31
->>>>>>> 894e85af... Make character creation point to shard specific webAPI
  */
 
 import { fetchJSON } from '../../../../lib/fetchHelpers';

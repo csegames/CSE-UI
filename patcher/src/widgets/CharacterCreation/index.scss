@@ -6,7 +6,11 @@
 
 #cu-character-creation {
   @import './sass/constants';
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 100%;
   margin: 0;
   overflow: hidden;
@@ -62,21 +66,30 @@
   }
 
   .cu-character-creation__content {
-    height: 100%;
+    position: relative;
+    height: calc(100% - 70px);
+    margin-top: 20px;
+  }
+
+  .cu-character-creation__header {
+    background-color: #0D0D0D;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
   }
 
   .cu-btn {
-    background: $gradient2, rgba(31, 31, 31, 0.8);
-    border: solid $colorg2 1px;
+    background-color: transparent;
     color: #eaeaea;
     position: relative;
     line-height: 30px;
     font-weight: 700;
-    text-align: center;
     cursor: pointer;
     text-transform: uppercase;
-    padding: 10px 50px;
-    font-size: 1.5rem;
+    font-size: 1em;
     transition: all .2s ease-in-out;
     z-index: 10;
     &:hover {
@@ -84,7 +97,7 @@
       -webkit-filter: brightness(1.2);
     }
     &:active {
-      background-color: rgba(255, 200, 100, 0.15);
+      color: rgba(255, 200, 100, 0.15);
     }
     &:disabled {
       opacity: .5;
