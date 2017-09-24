@@ -1,41 +1,27 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "noImplicitAny": false,
-        "removeComments": false,
-        "outDir": "./tmp",
-        "sourceMap": false,
-        "jsx": "react",
-        "module": "commonjs",
-        "declaration": true,
-        "newLine": "LF",
-        "lib": [
-            "esnext",
-            "dom"
-        ]
-    },
-    "formatCodeOptions": {
-        "indentSize": 2,
-        "tabSize": 2,
-        "newLineCharacter": "\r\n",
-        "convertTabsToSpaces": true,
-        "insertSpaceAfterCommaDelimiter": true,
-        "insertSpaceAfterSemicolonInForStatements": true,
-        "insertSpaceBeforeAndAfterBinaryOperators": true,
-        "insertSpaceAfterKeywordsInControlFlowStatements": true,
-        "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-        "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-        "placeOpenBraceOnNewLineForFunctions": false,
-        "placeOpenBraceOnNewLineForControlBlocks": false
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "resolution": "typings",
-    "moduleResolution": "node",
-    "include": [
-        "src"
-    ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+  "compilerOptions": {
+    "target": "es5",
+    "noImplicitAny": false,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": false,
+    "jsx": "react",
+    "module": "commonjs",
+    "declaration": true,
+    "newLine": "LF",
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "resolution": "typings",
+  "moduleResolution": "node",
+  "include": [
+    "src"
+  ],
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }
