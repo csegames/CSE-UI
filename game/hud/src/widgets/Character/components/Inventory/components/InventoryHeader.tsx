@@ -138,11 +138,11 @@ export class InventoryHeader extends React.Component<InventoryHeaderProps, Inven
   }
 
   private onFilterButtonAdded = (filterButton: FilterButtonDefinition) => {
-    this.setState((state) => FilterButtonAPI.addFilterButton(filterButton, state));
+    this.setState(state => FilterButtonAPI.addFilterButton(filterButton, state));
   }
 
   private onFilterButtonRemoved = (filterButton: FilterButtonDefinition) => {
-    this.setState((state) => FilterButtonAPI.removeFilterButton(filterButton, state));
+    this.setState(state => FilterButtonAPI.removeFilterButton(filterButton, state));
   }
 }
 

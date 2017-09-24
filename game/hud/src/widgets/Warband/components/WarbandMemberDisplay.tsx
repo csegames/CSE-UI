@@ -20,7 +20,7 @@ export const defaultStyle: Style = {
     marginBottom: '10px',
     pointerEvents: 'all',
   },
-}
+};
 
 export interface WarbandMemberDisplayProps {
   key: string | number;

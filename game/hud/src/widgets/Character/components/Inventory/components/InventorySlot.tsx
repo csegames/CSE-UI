@@ -182,7 +182,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           <ContextMenu
             onContextMenuContentShow={this.onContextMenuContentShow}
             onContextMenuContentHide={this.onContextMenuContentHide}
-            content={(props) => <ContextMenuContent item={item.item || item.stackedItems[0]} contextMenuProps={props} />}
+            content={props => <ContextMenuContent item={item.item || item.stackedItems[0]} contextMenuProps={props} />}
           >
             <div
               className={css(ss.itemContainer, custom.itemContainer)}

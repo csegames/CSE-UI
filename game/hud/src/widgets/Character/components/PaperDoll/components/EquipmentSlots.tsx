@@ -271,7 +271,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         return _.find(gearSlots, slot => gearSlot.id === slot.id);
       });
     }));
-    this.setState((state) => ({
+    this.setState(state => ({
       ...state,
       equippedItems: filteredItems,
     }));
@@ -296,7 +296,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     }));
     const newItem = { item: inventoryItem, gearSlots: willEquipTo };
 
-    this.setState((state) => ({
+    this.setState(state => ({
       ...state,
       equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
     }));

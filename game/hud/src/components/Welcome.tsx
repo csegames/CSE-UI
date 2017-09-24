@@ -70,7 +70,7 @@ export const defaultWelcomeStyles: WelcomeStyles = {
       color: '#bbb',
     },
   },
-}
+};
 
 export interface WelcomeProps {
   styles?: Partial<WelcomeStyles>;

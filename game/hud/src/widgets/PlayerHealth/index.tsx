@@ -59,7 +59,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 }
 
-const PlayerComp = connect(state => {
+const PlayerComp = connect((state) => {
    return {
     player: state.player,
   };

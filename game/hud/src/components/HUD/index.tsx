@@ -40,10 +40,10 @@ useConfig({
       loginToken: client.loginToken,
       shardID: `${client.shardID}`,
       characterID: client.characterID,
-    }
+    },
   },
   stringifyVariables: true,
-})
+});
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch: (action: any) => void;

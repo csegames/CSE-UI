@@ -33,7 +33,7 @@ export const defaultStyle: Style = {
     height: '100%',
     pointerEvents: 'none',
   },
-}
+};
 
 export interface WarbandDisplayProps {
   dispatch: (action: any) => void;

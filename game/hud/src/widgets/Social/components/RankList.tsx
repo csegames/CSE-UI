@@ -212,7 +212,7 @@ async function setRankLevel(renderData: RenderDataInfo, r: ql.CustomRank, newLev
     renderData.groupId,
     r.name,
     newLevel,
-  )
+  );
   if (res.ok) {
     renderData.refetch();
     return {

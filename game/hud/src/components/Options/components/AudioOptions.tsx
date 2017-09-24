@@ -59,7 +59,7 @@ export class AudioOptions extends React.Component<AudioOptionsProps, AudioOption
                 value={config.value}
                 isOddItem={i % 2 !== 0}
                 sliderItemInfo={{
-                  onChange: (val) => this.onInputRangeChange(config, val),
+                  onChange: val => this.onInputRangeChange(config, val),
                 }}
               />
             );

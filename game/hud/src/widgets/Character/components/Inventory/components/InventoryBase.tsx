@@ -278,7 +278,7 @@ export function distributeItemsNoFilter(slotsData: {
   // such as stacks, crafting stuffs, and items with or without position
   const partitionedItems = partitionItems(itemData.items);
   // place normal items with a position into their slots positions.
-  partitionedItems.positionedItems.forEach(item => {
+  partitionedItems.positionedItems.forEach((item) => {
     const wantPosition = getItemInventoryPosition(item);
     const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
 
@@ -297,8 +297,8 @@ export function distributeItemsNoFilter(slotsData: {
   });
 
   // place stacked items with position into their slots positions.
-  _.values(partitionedItems.stackedItemsWithPosition).forEach(itemArr => {
-    itemArr.forEach(item => {
+  _.values(partitionedItems.stackedItemsWithPosition).forEach((itemArr) => {
+    itemArr.forEach((item) => {
       const wantPosition = getItemInventoryPosition(item);
       const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
 
@@ -318,8 +318,8 @@ export function distributeItemsNoFilter(slotsData: {
   });
 
   // place crafted items if they have a position into their spot.
-  _.values(partitionedItems.craftingItems).forEach(craftingItemArr => {
-    craftingItemArr.forEach(item => {
+  _.values(partitionedItems.craftingItems).forEach((craftingItemArr) => {
+    craftingItemArr.forEach((item) => {
       const wantPosition = getItemInventoryPosition(item);
       const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
 
@@ -355,7 +355,7 @@ export function distributeItemsNoFilter(slotsData: {
   // array of items without a position
   let noPositionArr = [...partitionedItems.noPositionItems];
 
-  _.values(partitionedItems.noPositionStackedItems).forEach(itemArr => {
+  _.values(partitionedItems.noPositionStackedItems).forEach((itemArr) => {
     noPositionArr = _.every(itemArr, item => _.find(noPositionArr, item)) ? noPositionArr : noPositionArr.concat(itemArr);
   });
 
@@ -365,7 +365,7 @@ export function distributeItemsNoFilter(slotsData: {
     const item = itemsWithPosition[key];
 
     const position = getItemInventoryPosition(item);
-    let id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+    const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
 
     // check if something is in this position already...
     if (slotNumberToItem[position] && slotNumberToItem[position] !== id) {
@@ -512,7 +512,7 @@ export function distributeFilteredItems(slotsData: {
     indexCounter++;
   }
 
-  for (var key in filteredItems) {
+  for (const key in filteredItems) {
     if (itemIdToInfo[key]) continue;
 
     const item = filteredItems[key];
@@ -566,7 +566,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
 
   const moveRequests: webAPI.MoveItemRequest[] = [];
 
-  items.forEach(item => {
+  items.forEach((item) => {
     itemIdToIcon[item.id] = item.staticDefinition.iconUrl;
     if (isCraftingItem(item)) {
       const name = getItemDefinitionId(item);
@@ -586,8 +586,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
         let stackGroupID = '';
 
         let stackGroupIndex = -1;
-        if (stackHashToGroupIDMap[stackHash])
-        {
+        if (stackHashToGroupIDMap[stackHash]) {
           stackGroupIndex = _.findIndex(stackHashToGroupIDMap[stackHash], gm => gm.position === wantPosition);
         }
 
@@ -612,8 +611,8 @@ export function partitionItems(items: InventoryItemFragment[]) {
       } else {
 
         let stackGroupID = '';
-        let mapEntries =  stackHashToGroupIDMap[stackHash];
-        let stackGroupIndex = mapEntries ? 0 : -1;
+        const mapEntries =  stackHashToGroupIDMap[stackHash];
+        const stackGroupIndex = mapEntries ? 0 : -1;
 
         if (stackGroupIndex > -1) {
           stackGroupID = mapEntries[0].stackGroupID;
@@ -642,8 +641,8 @@ export function partitionItems(items: InventoryItemFragment[]) {
       return;
     }
   });
-  temporaryNoPositionStackedItems.forEach(item => {
-    const foundOtherStack = _.find(items, (invItem) => item.stackHash === invItem.stackHash);
+  temporaryNoPositionStackedItems.forEach((item) => {
+    const foundOtherStack = _.find(items, invItem => item.stackHash === invItem.stackHash);
     const stackHash = isCraftingItem(item) ? getItemDefinitionId(item) : item.stackHash;
 
     if (foundOtherStack && itemHasPosition(foundOtherStack)) {
@@ -652,8 +651,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
       let stackGroupID = '';
       
       let stackGroupIndex = -1;
-      if (stackHashToGroupIDMap[stackHash])
-      {
+      if (stackHashToGroupIDMap[stackHash]) {
         stackGroupIndex = _.findIndex(stackHashToGroupIDMap[stackHash], gm => gm.position === wantPosition);
       }
 
@@ -864,7 +862,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
       // Dropping a stack item
       const stackGroupID = itemIDToStackGroupID[payload.inventoryItem.id];
       stackGroupIdToItemIDs[stackGroupID] = stackGroupIdToItemIDs[stackGroupID]
-        .filter((itemId) => itemId !== payload.inventoryItem.id);
+        .filter(itemId => itemId !== payload.inventoryItem.id);
       delete itemIDToStackGroupID[payload.inventoryItem.id];
 
       const itemIdArray = stackGroupIdToItemIDs[stackGroupID];
@@ -930,7 +928,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
                             gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
                             equippedItem: Partial<ql.schema.EquippedItem>,
                             equipToSlotNumber: number) {
-    const gearSlotIDs = gearSlotDefs.map((gearSlot) => gearSlot.id);
+    const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
     const inventoryItemPosition = getItemInventoryPosition(item);
     const request = JSON.stringify({
       moveItemID: item.id,
@@ -969,7 +967,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
     }
     
     if (equippedItem) {
-      const equippedGearSlotIDs = equippedItem.gearSlots.map((gearSlot) => gearSlot.id);
+      const equippedGearSlotIDs = equippedItem.gearSlots.map(gearSlot => gearSlot.id);
       const equippedItemReq = JSON.stringify({
         moveItemID: equippedItem.item.id,
         stackHash: item.stackHash,
@@ -992,7 +990,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
           location: 'Equipment',
           voxSlot: 'Invalid',
         },
-      })
+      });
       webAPI.ItemAPI.MoveItems(
         webAPI.defaultConfig,
         client.loginToken,
@@ -1006,7 +1004,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
   export async function unequipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
                                 slotNumberToItem: SlotNumberToItem) {
-    const gearSlotIDs = gearSlotDefs.map((gearSlot) => gearSlot.id);
+    const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
     const request = JSON.stringify({
       moveItemID: item.id,
       stackHash: item.stackHash,

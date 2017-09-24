@@ -24,7 +24,7 @@ const ProgressBar = (props: {current: number, max: number, foreground: string, b
       <div style={{
                 background: props.foreground,
                 height: '100%',
-                width: ((props.current/props.max) * 100).toFixed(2) + '%',
+                width: ((props.current / props.max) * 100).toFixed(2) + '%',
                }}></div>
     </div>
   );
@@ -48,7 +48,7 @@ const CenteredTextOverlay = (props: {text: string, textStyle: any, children: any
         alignItems: 'center',
       }}>
         <div style={{
-                  ...props.textStyle
+                  ...props.textStyle,
                  }}>
           {props.text}
         </div>
@@ -78,12 +78,12 @@ const deaultSiegeButtonStyle: SiegeButtonStyle = {
     cursor: 'pointer',
     ':hover': {
       background: 'red',
-    }
+    },
   },
   buttonDisabled: {
     cursor: 'default',
-  }
-}
+  },
+};
 
 const SiegeButton = (props: {
                               enabled: boolean,
@@ -101,17 +101,17 @@ const SiegeButton = (props: {
       {props.children}
     </div>
   );
-}
+};
 
 const SiegeExitButton = (props: {}) => {
   return (
     <SiegeButton enabled={true} onClick={() => client.SendSlashCommand('siege exit')}>Exit</SiegeButton>
   );
-}
+};
 
 const AlignRight = (props: {children: any}) => {
   return <div style={{display: 'flex', justifyContent: 'flex-end'}}>{props.children}</div>;
-}
+};
 
 export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string | null, showExit: boolean}) => {
   return (
@@ -136,7 +136,7 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
       </CenteredTextOverlay>
 
       {
-        props.showExit == false ? null :
+        props.showExit === false ? null :
         <AlignRight>
           <SiegeExitButton />
         </AlignRight>
@@ -164,35 +164,35 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       entity: null,
     };
   }
-  componentDidMount() {
+  public componentDidMount() {
     switch (this.props.for) {
       case HealthFor.Self: 
-      client.OnPlayerStateChanged(entity => {
+      client.OnPlayerStateChanged((entity) => {
         try {
-          this.setState({entity})
-        } catch(e) {}
+          this.setState({entity});
+        } catch (e) {}
       });
       break;
 
       case HealthFor.EnemyTarget:
-      client.OnEnemyTargetStateChanged(entity => {
+      client.OnEnemyTargetStateChanged((entity) => {
         try {
-          this.setState({entity})
-        } catch(e) {}
+          this.setState({entity});
+        } catch (e) {}
       });
       break;
 
       case HealthFor.FriendlyTarget:
-      client.OnFriendlyTargetStateChanged(entity => {
+      client.OnFriendlyTargetStateChanged((entity) => {
         try {
-          this.setState({entity})
-        } catch(e) {}
+          this.setState({entity});
+        } catch (e) {}
       });
       break;
     }
   }
 
-  shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
+  public shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
     if (!this.state.entity && nextState.entity) return true;
     if (this.state.entity && !nextState.entity) return true;
     if (!this.state.entity && !nextState.entity) return true;
@@ -236,7 +236,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
         return <SiegeHealthBar state={(controlled || null) as any}
                                controlledBy={this.state.entity.name}
                                showExit={this.props.for === HealthFor.Self} />;
-      };
+      }
       case 'siege': {
         return <SiegeHealthBar state={this.state.entity}
                                            controlledBy={null}

@@ -12,8 +12,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
-import { Ingredient } from '../services/types';
-import { Recipe, InventoryItem } from '../services/types';
+import { Ingredient, Recipe, InventoryItem } from '../services/types';
 import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../styles';
 import Ingredients from './Ingredients';
 
@@ -71,7 +70,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   const canQuantity = type === 'make';
 
   // If no vox type set yet...
-  if (!type || type === "invalid") {
+  if (!type || type === 'invalid') {
     return (
       <div className={css(ss.jobDetails)}>
         <div>Select a Job Type!</div>

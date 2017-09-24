@@ -66,7 +66,7 @@ const DevUIButton = (props: Button) => {
     <div className={css(style.Button)}
         onClick={() => {
           if (props.command) {
-            client.SendSlashCommand(props.command)
+            client.SendSlashCommand(props.command);
           } else if (props.call) {
             const fn = client[props.call];
             if (props.params) {
@@ -95,12 +95,13 @@ const DevUIContent = (props: {content: Content}) => {
   const style = StyleSheet.create(contentStyle);
   return (
     <div className={css(style.Content)} >
-      {typeof props.content === 'string' ? <DevUIStringContent content={props.content} /> : <DevUIObjectContent content={props.content} />}
+      {typeof props.content === 'string' ?
+      <DevUIStringContent content={props.content} /> : <DevUIObjectContent content={props.content} />}
     </div>
   );
 };
 
-const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />
+const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />;
 
 const DevUIObjectContent = (props: {content: ObjectMap<any>}): JSX.Element => {
   const keys = Object.keys(props.content);
@@ -172,7 +173,7 @@ const DevUIPage = (props: Partial<Page>): JSX.Element => {
                         borderBottom: '1px solid orange',
                       },
                     }}
-                    tabs={props.pages.map(p => {
+                    tabs={props.pages.map((p) => {
                         return {
                           tab: {
                             render: () => <span>{p.title}</span>,
@@ -180,11 +181,11 @@ const DevUIPage = (props: Partial<Page>): JSX.Element => {
                           rendersContent: p.title || '',
                         };
                       })}                
-                      content={props.pages.map(p => {
+                      content={props.pages.map((p) => {
                         return {
                           name: p.title || '',
                           content: {
-                            render: () => <DevUIPage {...p} />
+                            render: () => <DevUIPage {...p} />,
                           },
                         };
                       })} />
@@ -201,7 +202,7 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
     this.state = null;
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
@@ -213,12 +214,12 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
     });
   }
 
-  render() {
+  public render() {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
     return (
       <div>
-        {keys.map(k => {
+        {keys.map((k) => {
           const page = this.state[k];
           if (!page) return null;
           return (
@@ -245,7 +246,7 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
                                     [k]: {
                                       ...page,
                                       visible: false,
-                                    }
+                                    },
                                   })}>X</a> : null }
                 <DevUIPage {...page} />
             </div>

@@ -62,7 +62,7 @@ export class RenderingOptions extends React.Component<RenderingOptionsProps, {}>
                 name={config.name}
                 value={config.value}
                 sliderItemInfo={{
-                  onChange: (val) => this.onInputRangeChange(config, val),
+                  onChange: val => this.onInputRangeChange(config, val),
                   min: minMax.min,
                   max: minMax.max,
                 }}

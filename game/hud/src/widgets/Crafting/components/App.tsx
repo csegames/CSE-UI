@@ -16,7 +16,16 @@ import {craftingTimeToString} from '../services/util';
 
 // Types
 import { Recipe, Ingredient } from '../services/types';
-import { VoxIngredient, VoxRecipe, VoxResponse } from '../services/game/crafting';
+import {
+  VoxIngredient,
+  VoxRecipe,
+  VoxResponse,
+  // Updated Game API - Using GraphQL and WebAPI
+  voxGetStatus, voxGetPossibleIngredients, voxGetRecipesFor,
+  setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
+  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
+  addVoxIngredient, removeVoxIngredient,
+} from '../services/game/crafting';
 import { JobState, GlobalState } from '../services/session/reducer';
 
 // Actions
@@ -28,14 +37,6 @@ import {
 } from '../services/session/job';
 import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
 import { gotVoxRecipes } from '../services/session/recipes';
-
-// Updated Game API - Using GraphQL and WebAPI
-import {
-  voxGetStatus, voxGetPossibleIngredients, voxGetRecipesFor,
-  setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
-  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
-  addVoxIngredient, removeVoxIngredient,
-} from '../services/game/crafting';
 
 // Components
 import JobType from './JobType';
@@ -249,7 +250,7 @@ class App extends React.Component<AppProps,AppState> {
       }
       props.dispatch(gotOutputItems(status.outputItems));
       const type = status.jobType && status.jobType.toLowerCase();
-      if (type && type !== "invalid") {
+      if (type && type !== 'invalid') {
         this.loadLists(type, true);
       }
     }).catch((message: string) => {
@@ -348,7 +349,7 @@ class App extends React.Component<AppProps,AppState> {
     } else {
       props.dispatch(setMessage({
         type: 'error',
-        message: (error.Code ? error.Code + ': ' : '') + error.Message
+        message: (error.Code ? error.Code + ': ' : '') + error.Message,
       }));
     }
   }

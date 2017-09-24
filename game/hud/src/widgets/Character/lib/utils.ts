@@ -40,7 +40,11 @@ export function searchIncludesSection(searchValue: string, sectionTitle: string)
 }
 
 export function calcSlotsPerRow(div: HTMLElement, slotDimensions: number, gutterSize: number = 65) {
-  return Math.floor((div.getBoundingClientRect().width - gutterSize /* gutters & scroll bar */) / (slotDimensions + 4)  /* slot width / height */);
+  return Math.floor(
+    (div.getBoundingClientRect().width - gutterSize) /* gutters & scrollbar */
+    /
+    (slotDimensions + 4), /* slot width / height */
+  );
 }
 
 export function calcRows(div: HTMLElement, slotDimensions: number, minSlots: number, slotsPerRow: number) {

@@ -18,10 +18,10 @@ const FIELD_LISTS = {
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
   ],
   MAKE_RECIPE_INGREDIENT_DEF: [
-    'slot', 'requirementDescription', 'minQuality', 'maxQuality', 'unitCount'
+    'slot', 'requirementDescription', 'minQuality', 'maxQuality', 'unitCount',
   ],
   RECIPE_INGREDIENT_DEF: [
-    'requirementPath', 'minPercent', 'maxPercent', 'minQuality', 'maxQuality'
+    'requirementPath', 'minPercent', 'maxPercent', 'minQuality', 'maxQuality',
   ],
   STATIC: [
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',

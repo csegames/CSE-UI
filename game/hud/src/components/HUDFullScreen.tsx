@@ -152,7 +152,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return (
       <div style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
         <TabPanel
-          ref={(ref) => this.tabPanelRef = ref}
+          ref={ref => this.tabPanelRef = ref}
           tabs={tabs}
           content={content}
           styles={{

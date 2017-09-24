@@ -265,7 +265,7 @@ export interface InventoryFilterButton {
 function filterForGearSlot(item: InventoryItemFragment, filter: { icon: string, name: string, armorType?: ArmorType }) {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
-      _.find(set.gearSlots, (slot) => _.includes(filter.name.toLowerCase(), slot.id.toLowerCase()))) > -1 &&
+      _.find(set.gearSlots, slot => _.includes(filter.name.toLowerCase(), slot.id.toLowerCase()))) > -1 &&
       (filter.armorType ?
         _.includes(item.staticDefinition.description.toLowerCase(), filter.armorType.toString().toLowerCase()) : true);
 }
@@ -283,7 +283,7 @@ function filterForItemType(item: InventoryItemFragment, filter: { icon: string, 
 function filterForLayer(item: InventoryItemFragment, layer: 'outer' | 'under') {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
-      _.find(set.gearSlots, (slot) => _.includes(slot.id.toLowerCase(), layer))) > -1;
+      _.find(set.gearSlots, slot => _.includes(slot.id.toLowerCase(), layer))) > -1;
 }
 
 const filterIconPrefix = 'icon-filter-';

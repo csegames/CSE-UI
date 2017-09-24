@@ -78,6 +78,8 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 }
 
 class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodyState> {
+  private static minSlots = 200;
+  
   private timePrevItemAdded: number;
   private initial: boolean = true;
   private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
@@ -85,8 +87,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   private dropItemHandler: EventListener;
   private bodyRef: HTMLDivElement;
   private heightOfBody: number;
-
-  private static minSlots = 200;
 
   // a counter that is incremented each time a new
   // stack group id is generated that is used in
@@ -110,7 +110,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
       return (
         <div className={css(ss.inventoryBody, custom.inventoryBody)}>
-          <div ref={(r) => this.bodyRef = r}
+          <div ref={r => this.bodyRef = r}
               className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
             <div className={css(ss.inventoryContent, custom.inventoryContent)}>
               {rows}

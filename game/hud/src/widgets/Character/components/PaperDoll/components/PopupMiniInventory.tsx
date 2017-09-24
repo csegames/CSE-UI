@@ -158,7 +158,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     const ss = StyleSheet.create(defaultPopupMiniInventoryStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     
-    const miniInventoryItems = _.filter(this.state.miniInventoryItems, item => {
+    const miniInventoryItems = _.filter(this.state.miniInventoryItems, (item) => {
       return _.includes(getItemDefinitionName(item), this.state.searchValue);
     });
     const amountOfPages = Math.ceil(miniInventoryItems.length / 8) + (miniInventoryItems.length % 8 > 0 ? 1 : 0) || 1;

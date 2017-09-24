@@ -151,14 +151,14 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
             </div>
             <div className={css(ss.buttonsContainer, custom.buttonsContainer)}>
               {filteredFilterButtons.map((filterButton) => {
-                const active = _.findIndex(this.props.selectedFilterButtons, (activeButton) =>
+                const active = _.findIndex(this.props.selectedFilterButtons, activeButton =>
                   activeButton.name === filterButton.name) !== -1;
                 return (
                   <FilterSelectListItem
                     key={filterButton.name}
                     active={active}
                     filterButton={filterButton}
-                    onActivated={(filterButton) => this.props.onFilterButtonAdded(filterButton)}
+                    onActivated={filterButton => this.props.onFilterButtonAdded(filterButton)}
                     onDeactivated={filterButton => this.props.onFilterButtonRemoved(filterButton)} />
                 );
               })}

@@ -47,7 +47,7 @@ export const JobType = (props: JobTypeProps) => {
       const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
       return (
         <Button style={style}
-          disabled={job && job !== "invalid" && job !== type}
+          disabled={job && job !== 'invalid' && job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>

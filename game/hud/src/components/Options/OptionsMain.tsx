@@ -321,7 +321,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     return (
       <KeyBindings
         keyBindConfigs={this.state.keyBindConfigs}
-        onKeyBindingsChange={(keyBindConfigs) => this.setState({ keyBindConfigs })}
+        onKeyBindingsChange={keyBindConfigs => this.setState({ keyBindConfigs })}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -331,7 +331,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     return (
       <InputOptions
         inputConfigs={this.state.inputConfigs}
-        onInputConfigsChange={(inputConfigs) => this.setState({ inputConfigs })}
+        onInputConfigsChange={inputConfigs => this.setState({ inputConfigs })}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -341,7 +341,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     return (
       <AudioOptions
         audioConfigs={this.state.audioConfigs}
-        onAudioConfigsChange={(audioConfigs) => this.setState({ audioConfigs })}
+        onAudioConfigsChange={audioConfigs => this.setState({ audioConfigs })}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -352,7 +352,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
       <div className={css(this.ss.contentOverflowContainer, this.custom.contentOverflowContainer)}>
         <RenderingOptions
           renderingConfigs={this.state.renderConfigs}
-          onRenderConfigsChange={(renderConfigs) => this.setState({ renderConfigs })}
+          onRenderConfigsChange={renderConfigs => this.setState({ renderConfigs })}
           activeConfigIndex={this.state.activeConfigIndex}
         />
       </div>
