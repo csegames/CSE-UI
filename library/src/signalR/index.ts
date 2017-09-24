@@ -2,20 +2,17 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2016-08-30 12:32:11
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-07-18 16:25:25
  */
 
 import client from '../core/client';
 import { findIndexWhere } from '../util/arrayUtils';
+
 export * from './SignalRHub';
 export * from './hubs/groupsHub';
 export * from './hubs/patcherHub';
 export * from './hubs/warbandsHub';
 
+declare const $: any;
 
 const hubsDef: HubDef = {};
 
@@ -33,23 +30,23 @@ export interface InitCallback {
 const initializedHubs: string[] = [];
 
 let initialized = false;
-export const initializeSignalR = () => {
+export const initializeSignalR = (signalRHost: string = client.signalRHost) => {
   if (initialized) return;
   initialized = true;
   if (client.debug) console.log('initializeSignalR called');
   $(() => {
-    ($ as any).connection(client.signalRHost);
-    ($ as any).connection.hub.url = client.signalRHost;
+    ($ as any).connection(signalRHost);
+    ($ as any).connection.hub.url = signalRHost;
     ($ as any).connection.hub.start();
   });
 };
 
-export const reinitializeSignalR = () => {
+export const reinitializeSignalR = (signalRHost: string = client.signalRHost) => {
   initialized = false;
-  initializeSignalR();
+  initializeSignalR(signalRHost);
 };
 
-export const initializeSignalRHubs = (...hubs: {name: string, callback: InitCallback}[]) => {
+export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCallback }[]) => {
   if (client.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {

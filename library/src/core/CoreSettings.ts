@@ -40,7 +40,7 @@ class CoreSettings {
   public apiToken: string = defaults.apiToken;
   public channelId: channelId = defaults.channelId;
 
-  constructor(channel?:channelId, token?:string) {
+  constructor(channel?: channelId, token?: string) {
     this.channelId = channel || defaults.channelId;
     this.apiToken = token || defaults.apiToken;
   }

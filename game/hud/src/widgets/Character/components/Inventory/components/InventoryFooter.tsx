@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import { Tooltip, utils, ListenerInfo, events } from 'camelot-unchained';
+import { Tooltip, utils, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';
@@ -109,7 +109,7 @@ export interface InventoryFooterState {
 }
 
 class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
-  private onDropItemListener: ListenerInfo;
+  private onDropItemListener: EventListener;
 
   constructor(props: InventoryFooterProps) {
     super(props);
@@ -183,6 +183,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
 
   public componentDidMount() {
     this.onDropItemListener = events.on(eventNames.onDropItem, this.onDropItem);
+    this.setBottomInfo();
   }
 
   public componentWillReceiveProps(nextProps: InventoryFooterProps) {
@@ -190,18 +191,22 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
         this.props.itemCount !== nextProps.itemCount ||
         this.props.totalMass !== nextProps.totalMass) {
 
-      this.setState((state, props) => {
-        return {
-          currency: props.currency,
-          itemCount: props.itemCount,
-          totalMass: props.totalMass,
-        };
-      });
+      this.setBottomInfo();
     }
   }
 
   public componentWillUnmount() {
     events.off(this.onDropItemListener);
+  }
+
+  private setBottomInfo = () => {
+    this.setState((state, props) => {
+      return {
+        currency: props.currency,
+        itemCount: props.itemCount,
+        totalMass: props.totalMass,
+      };
+    });
   }
 
   private onDropItem = (payload: DropItemCallback) => {

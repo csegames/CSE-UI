@@ -5,13 +5,14 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-14 15:56:05
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-13 11:28:39
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
-import { ListenerInfo, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CharacterInfo from './CharacterInfo/CharacterInfo';
@@ -117,7 +118,7 @@ export interface CharacterMainState {
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
-  private hudnavListener: ListenerInfo;
+  private hudnavListener: EventListener;
   private tabPanelRef: TabPanel;
 
   constructor(props: CharacterMainProps) {
@@ -158,7 +159,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
         content: { render: this.renderInventory },
       },
     ];
-    
+    const defaultTabIndex = _.findIndex(tabs, tab => tab.name === this.props.visibleComponent);
     return (
       <div className={css(style.characterMain, customStyle.characterMain)}>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
@@ -168,7 +169,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
           <img src={'images/inventorybg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
-            defaultTabIndex={1}
+            defaultTabIndex={defaultTabIndex >= 0 ? defaultTabIndex : 0}
             tabs={tabs}
             content={content}
             styles={{
@@ -231,6 +232,9 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
+    console.log('ON CHANGE INVENTORY ITEMS');
+    console.log(inventoryItems);
+    console.log(_.find(inventoryItems, item => item.staticDefinition.name === 'Torch'));
     this.setState({ inventoryItems });
   }
 }

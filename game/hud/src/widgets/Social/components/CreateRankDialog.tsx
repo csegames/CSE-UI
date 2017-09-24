@@ -11,8 +11,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql, webAPI, client } from 'camelot-unchained';
-import { Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
+import { ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 
@@ -93,13 +92,14 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
           {
               this.state.errors ? <p>{this.state.errors}!</p> : null
           }
-          <Input label={'Name'} type='text'
-                 inputRef={r => this.nameInputRef = r}/>
-          <Input label={'Level (2-1000)'}
-                 inputRef={r => this.levelInputRef = r}
-                 type='number'
-                 min={2}
-                 max={1000} />
+          <Input label={'Name'} type='text' inputRef={r => this.nameInputRef = r}/>
+          <Input
+            label={'Level (2-1000)'}
+            inputRef={r => this.levelInputRef = r}
+            type='number'
+            min={2}
+            max={1000}
+          />
 
           <DualListSelect items={this.state.permissions}
             styles={{
@@ -127,31 +127,34 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
     );
   }
 
-  private createRank = () => {
+  private createRank = async () => {
     const name = this.nameInputRef.value;
     const level = Number.parseInt(this.levelInputRef.value);
     const permisisons = this.listSelectRef.getRightKeys();
 
-    this.setState({
-      requestActive: true,
-    });
+    await this.setState({ requestActive: true });
 
-    webAPI.GroupsAPI.createRankV1(client.shardID, client.characterID, this.props.groupId, name, level, permisisons)
-      .then((response) => {
-        if (response.ok) {
-          this.setState({
-            requestActive: false,
-            success: true,
-            errors: null,
-          });
-          setTimeout(() => this.props.onCreated(), 200);
-          return;
-        }
-        this.setState({
-          requestActive: false,
-          errors: response.problem,
-        });
+    const res = await webAPI.GroupsAPI.CreateRankV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      this.props.groupId,
+      name,
+      level,
+      permisisons,
+    );
+    if (res.ok) {
+      this.setState({
+        requestActive: false,
+        success: true,
+        errors: null,
       });
+      setTimeout(() => this.props.onCreated(), 200);
+      return;
+    }
+    this.setState({ requestActive: false, errors: res.data });
+      
   }
 
   private createButton = () => {

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, Race, Archetype, Faction, utils, webAPI } from 'camelot-unchained';
+import { events, client, Race, Archetype, Faction, utils, webAPI, signalr } from 'camelot-unchained';
 import { CharacterCreationModel } from '../../../CharacterCreation';
 
 import Login from '../Login';
@@ -19,7 +19,6 @@ import ServerSelect from '../ServerSelect';
 import GameSelect from '../GameSelect';
 import ProgressBar from '../ProgressBar';
 
-import { events } from 'camelot-unchained';
 import Animate from '../../../../lib/Animate';
 import QuickSelect from '../../../../lib/QuickSelect';
 import { patcher, Channel, ChannelStatus, PatchPermissions, permissionsString } from '../../../../services/patcher';
@@ -29,6 +28,7 @@ import { GlobalState } from '../../services/session';
 import { ControllerState, PatcherServer, ServerType, initialize, reset } from '../../services/session/controller';
 
 declare const $: any;
+declare const toastr: any;
 
 const lastPlay: any = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
 
@@ -52,6 +52,7 @@ export interface ControllerDisplayState {
   serverType: ServerType;
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
+  serverListHelper: {[shardId: string]: webAPI.ServerModel};
 }
 
 class ControllerDisplay extends React.Component<ControllerDisplayProps, ControllerDisplayState> {
@@ -63,6 +64,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
       serverType: ServerType.CUGAME,
       selectedServer: null,
       selectedCharacter: null,
+      serverListHelper: {},
     };
   }
 
@@ -102,9 +104,24 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   public componentDidMount() {
+    this.getServers();
   }
 
   public componentWillUnmount() {
+  }
+
+  private getServers = async () => {
+    try {
+      const res = await webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig);
+      const serverListHelper = {};
+      const data = JSON.parse(res.data);
+      data.forEach((server: webAPI.ServerModel) => {
+        serverListHelper[server.shardID] = server;
+      });
+      this.setState({ serverListHelper });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   private playSound = (sound: string) => {
@@ -124,16 +141,25 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   private showCharacterCreation = () => {
-    events.fire('view-content', view.CHARACTERCREATION, {
-      apiHost: client.apiHost,
-      apiVersion: 1,
-      shard: this.state.selectedServer.shardID,
-      apiKey: patcher.getLoginToken(),
-      created: (c: CharacterCreationModel) => {
-        events.fire('character-created', c.name);
-        events.fire('view-content', view.NONE);
-      },
-    });
+    if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
+        (!this.state.selectedServer.shardID || this.state.selectedServer.available)) {
+      events.fire('view-content', view.CHARACTERCREATION, {
+        apiHost: this.state.serverListHelper[this.state.selectedServer.shardID || 1].apiHost,
+        apiVersion: 1,
+        shard: this.state.selectedServer.shardID,
+        apiKey: patcher.getLoginToken(),
+        created: (c: CharacterCreationModel) => {
+          events.fire('character-created', c.name);
+          events.fire('view-content', view.NONE);
+        },
+      });
+    } else {
+      toastr.error(
+        'You will not be able to create a character while the server is offline',
+        'Server is offline',
+        {timeOut: 5000},
+      );
+    }
   }
 
   private installSelectedServer = () => {
@@ -199,7 +225,8 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
               <CharacterSelect selectCharacter={this.selectCharacter}
                                 selectedServer={selectedServer}
                                 characters={characters} />
-              <i>Select or</i><a href='#' onClick={this.showCharacterCreation}>create new character</a>&nbsp;
+              <i>Select or</i>
+              <a href='#' onClick={this.showCharacterCreation}>create new character</a>&nbsp;
             </div>
 
             <div className='ControllerDisplay__permissions'>

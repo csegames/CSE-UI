@@ -69,26 +69,23 @@ class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListIt
     );
   }
 
-  private doDelete = () => {
-    this.setState({
-      deleting: true,
-      deleteError: null,
-    });
+  private doDelete = async () => {
+    await this.setState({ deleting: true, deleteError: null });
 
-    webAPI.GroupsAPI.removeRankV1(client.shardID, client.characterID, this.props.groupId, this.props.rank.name)
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            deleting: false,
-          });
-          this.props.refetch();
-          this.props.close();
-        }
-        this.setState({
-          deleting: false,
-          deleteError: result.data,
-        });
-      });
+    const res = await webAPI.GroupsAPI.RemoveRankV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      this.props.groupId,
+      this.props.rank.name,
+    );
+    if (res.ok) {
+      this.setState({ deleting: false });
+      this.props.refetch();
+      this.props.close();
+    }
+    this.setState({ deleting: false, deleteError: res.data });
   }
 }
 

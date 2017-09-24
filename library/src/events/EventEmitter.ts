@@ -13,6 +13,7 @@ class Listener {
   public callback: (...params: any[]) => void;
   public fired: number = 0;
   public last: number = 0;
+
   constructor(topic: string, once: boolean, callback: (...params: any[]) => void) {
     this.topic = topic;
     this.once = once;
@@ -23,6 +24,7 @@ class Listener {
 
 class EventEmitter {
   public events: any;
+
   constructor() {
     this.events = {};
   }
@@ -110,12 +112,12 @@ class EventEmitter {
 
   /**
    * diagnostics() - dump data to console.log
-   */  
-  public diagnostics = () : void => {
+   */
+  public diagnostics = (): void => {
     for (const key in this.events) {
       if (this.events.hasOwnProperty(key)) {
-        const listeners : Listener[] = this.events[key];
-        listeners.forEach((listener: Listener, index: number) : void => {
+        const listeners: Listener[] = this.events[key];
+        listeners.forEach((listener: Listener, index: number): void => {
           if (listener) {
             console.log(
               'Event:'
@@ -132,7 +134,7 @@ class EventEmitter {
           }
         });
       }
-    } 
+    }
   }
 }
 

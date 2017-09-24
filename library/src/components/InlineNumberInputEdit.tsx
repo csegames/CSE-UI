@@ -10,21 +10,21 @@
  */
 
 import * as React from 'react';
-import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle  } from './InlineInputEdit';
+import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle } from './InlineInputEdit';
 
 export interface InlineNumberInputEditProps {
   value: number;
   min?: number;
   max?: number;
-  onSave: (prev: number, entered: string) => Promise<{ok: boolean, error?: string}>;
+  onSave: (prev: number, entered: string) => Promise<{ ok: boolean, error?: string }>;
   styles?: Partial<InlineInputEditStyle>;
 }
 
 export const InlineNumberInputEdit = (props: InlineNumberInputEditProps) => {
   return <InlineInputEdit
-            type='number'
-            inputProps={{min: props.min, max: props.max}}
-            value={props.value}
-            onSave={props.onSave}
-            styles={props.styles} />;
+    type='number'
+    inputProps={{ min: props.min, max: props.max }}
+    value={props.value}
+    onSave={props.onSave}
+    styles={props.styles}/>;
 };

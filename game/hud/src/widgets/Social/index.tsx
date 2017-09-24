@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { client, events, jsKeyCodes, ListenerInfo } from 'camelot-unchained';
+import { client, events, jsKeyCodes } from 'camelot-unchained';
 import SocialMain from './components/SocialMain';
 import { store } from './services/session/reducer';
 
@@ -26,7 +26,7 @@ export interface SocialContainerState {
 }
 
 class SocialContainer extends React.Component<SocialContainerProps, SocialContainerState> {
-  private hudNavListener: ListenerInfo;
+  private hudNavListener: EventListener;
   private initialized = false;
   private mainRef: any = null;
 

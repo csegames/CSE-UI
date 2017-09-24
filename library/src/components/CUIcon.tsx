@@ -27,8 +27,8 @@ const defaultStyle: React.CSSProperties = {
 export function renderCUIcon<T>(props: CUIconProps<T>) {
   const internalProps = props.props || {};
   return (
-    <span style={{position: 'relative', ...props.iconContainer}} className={props.className}>
-      <span className={props.icon} style={{...defaultStyle, ...props.iconStyle}} />
+    <span style={{ position: 'relative', ...props.iconContainer }} className={props.className}>
+      <span className={props.icon} style={{ ...defaultStyle, ...props.iconStyle }}/>
       <div style={props.iconContainer} {...internalProps} />
     </span>
   );

@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2016-09-06 16:47:55
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-10-25 17:07:29
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-18 10:46:55
  */
 
 import * as React from 'react';

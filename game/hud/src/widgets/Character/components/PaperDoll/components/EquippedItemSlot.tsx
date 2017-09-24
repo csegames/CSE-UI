@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 
-import { ListenerInfo, Tooltip, events, ql } from 'camelot-unchained';
+import { Tooltip, events, ql } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
 import { Alignment } from './PopupMiniInventory';
@@ -97,8 +97,8 @@ export interface EquippedItemSlotState {
 
 export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
 
-  private onHighlightListener: ListenerInfo;
-  private onDehighlightListener: ListenerInfo;
+  private onHighlightListener: EventListener;
+  private onDehighlightListener: EventListener;
 
   constructor(props: EquippedItemSlotProps) {
     super(props);

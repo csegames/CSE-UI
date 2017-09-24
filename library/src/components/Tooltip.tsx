@@ -26,7 +26,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {Quadrant, windowQuadrant} from '../util';
+import { Quadrant, windowQuadrant } from '../util';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 export const defaultToolTipStyle: ToolTipStyle = {
@@ -56,11 +56,13 @@ export const defaultToolTipStyle: ToolTipStyle = {
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
   },
 };
+
 export interface ToolTipStyle extends StyleDeclaration {
   Tooltip: React.CSSProperties;
   tooltip: React.CSSProperties;
   tooltipFixed: React.CSSProperties;
 }
+
 export interface TooltipProps {
   content: string | ((props?: any) => JSX.Element);
   contentProps?: any;
@@ -75,6 +77,7 @@ export interface TooltipProps {
   onTooltipHide?: () => void;
   fixedMode?: boolean;
 }
+
 export interface TooltipState {
   wndRegion: Quadrant;
   show: boolean;
@@ -85,6 +88,7 @@ export interface TooltipState {
   offsetBottom: number;
   tooltipDimensions: { width: number, height: number };
 }
+
 export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   private childRef: HTMLDivElement;
   private tooltipRef: HTMLDivElement;
@@ -102,11 +106,12 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       tooltipDimensions: null,
     };
   }
+
   public render() {
     const ss = StyleSheet.create(defaultToolTipStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     const showTooltip = typeof this.props.show !== 'undefined' ? this.props.show : this.state.show;
-    
+
     const fixed = this.props.fixedMode || false;
     return (
       <div className={css(ss.Tooltip, custom.Tooltip)}>
@@ -119,15 +124,15 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         </div>
         {
           showTooltip ?
-          <div
-            ref={ref => this.tooltipRef = ref}
-            className={css(!fixed && ss.tooltip,
-                              !fixed && custom.tooltip,
-                              fixed && ss.tooltipFixed,
-                              fixed && custom.tooltipFixed)}>
-            {typeof this.props.content === 'string' ? this.props.content : 
-              <this.props.content {...this.props.contentProps} />}
-          </div> : null
+            <div
+              ref={ref => this.tooltipRef = ref}
+              className={css(!fixed && ss.tooltip,
+                !fixed && custom.tooltip,
+                fixed && ss.tooltipFixed,
+                fixed && custom.tooltipFixed)}>
+              {typeof this.props.content === 'string' ? this.props.content :
+                <this.props.content {...this.props.contentProps} />}
+            </div> : null
         }
       </div>
     );
@@ -139,11 +144,11 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
     if (!this.props.fixedMode) {
       const computedStyle: any = this.computeStyle(e.clientX,
-                                                  e.clientY,
-                                                  this.state.offsetLeft,
-                                                  this.state.offsetTop,
-                                                  this.state.offsetRight,
-                                                  this.state.offsetBottom);
+        e.clientY,
+        this.state.offsetLeft,
+        this.state.offsetTop,
+        this.state.offsetRight,
+        this.state.offsetBottom);
       if (this.tooltipRef) {
         this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
         this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';
@@ -177,7 +182,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
                           offsetRight: number,
                           offsetBottom: number) => {
     const { top, left, width, height } = this.childRef.getBoundingClientRect();
-    if (this.props.fixedMode && this.state.tooltipDimensions) {      
+    if (this.props.fixedMode && this.state.tooltipDimensions) {
       switch (this.state.wndRegion) {
         case Quadrant.TopLeft:
           return {
@@ -199,7 +204,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
             left: left - this.state.tooltipDimensions.width + width,
             top: top - this.state.tooltipDimensions.height,
           };
-      } 
+      }
     } else {
       switch (this.state.wndRegion) {
         case Quadrant.TopLeft:
@@ -208,22 +213,23 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
             top: `${y + offsetTop}px`,
           };
         case Quadrant.TopRight:
-        return {
+          return {
             right: `${window.window.innerWidth - x + offsetRight}px`,
             top: `${y + offsetTop}px`,
           };
         case Quadrant.BottomLeft:
-        return {
+          return {
             left: `${x + offsetLeft}px`,
             bottom: `${window.window.innerHeight - y + offsetBottom}px`,
           };
         case Quadrant.BottomRight:
-        return {
+          return {
             right: `${window.window.innerWidth - x + offsetRight}px`,
             bottom: `${window.window.innerHeight - y + offsetBottom}px`,
           };
-        }
+      }
     }
   }
 }
+
 export default Tooltip;

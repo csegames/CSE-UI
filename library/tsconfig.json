@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "noImplicitAny": true,
+        "target": "es5",
+        "noImplicitAny": false,
         "removeComments": false,
         "outDir": "./tmp",
         "sourceMap": false,
@@ -32,16 +32,8 @@
     "buildOnSave": false,
     "resolution": "typings",
     "moduleResolution": "node",
-    "exclude": [
-      "typings/browser.d.ts",
-      "typings/browser",
-      "typings/main.d.ts",
-      "typings/main",
-      "tmp",
-      "tmpp",
-      "dist",
-      "publish",
-      "node_modules"
+    "include": [
+        "src"
     ],
     "atom": {
         "rewriteTsconfig": false

@@ -5,18 +5,18 @@
  *
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-09 11:31:00
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-12 15:58:18
  */
 
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, ql, events, ListenerInfo } from 'camelot-unchained';
+import { ContentItem, TabItem, TabPanel, ql, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
-import { Alignment } from './PopupMiniInventory';
+import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
 import eventNames, {
   EquipItemCallback,
@@ -24,7 +24,6 @@ import eventNames, {
   UpdateInventoryItems,
 } from '../../../lib/eventNames';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
-import PopupMiniInventory from './PopupMiniInventory';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -42,6 +41,7 @@ export interface EquipmentSlotsStyles extends StyleDeclaration {
 
 export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
   equipmentSlots: {
+    overflowY: 'auto',
     flex: '1 1 auto',
     width: '100%',
     height: '100%',
@@ -174,8 +174,8 @@ export interface EquipmentSlotsState {
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
   private style: EquipmentSlotsStyles;
   private customStyle: Partial<EquipmentSlotsStyles>;
-  private equipItemListener: ListenerInfo;
-  private onUnequipItemListener: ListenerInfo;
+  private equipItemListener: EventListener;
+  private onUnequipItemListener: EventListener;
 
   constructor(props: EquipmentSlotsProps) {
     super(props);
@@ -185,6 +185,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       slotNameItemMenuVisible: '',
     };
   }
+
   public render() {
     const style = this.style = StyleSheet.create(defaultEquipmentSlotsStyle);
     const customStyle = this.customStyle = StyleSheet.create(this.props.styles || {});
@@ -232,7 +233,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         },
       },
     ];
-    
+
     return (
       <div className={css(style.equipmentSlots, customStyle.equipmentSlots)}>
         <TabPanel
@@ -294,7 +295,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       });
     }));
     const newItem = { item: inventoryItem, gearSlots: willEquipTo };
-    
+
     this.setState((state) => ({
       ...state,
       equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
@@ -337,9 +338,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
                 isWeapon && style.weaponSpacing,
                 isWeapon && customStyle.weaponSpacing,
               )}>
-              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
+              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem}/>
             </div>
-          </PopupMiniInventory> 
+          </PopupMiniInventory>
         );
       })
     );
@@ -349,10 +350,10 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const ss = this.style;
     const customStyle = this.customStyle;
     return (
-    <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
-      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
-      <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
-    </div>
+      <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
+        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
+        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
+      </div>
     );
   }
 
@@ -368,6 +369,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private onToggleItemMenuVisibility = (slotName: string) => {
+    console.log(slotName);
+    console.log(this.state.slotNameItemMenuVisible);
     if (slotName === this.state.slotNameItemMenuVisible) {
       this.setState({ slotNameItemMenuVisible: '' });
     } else {

@@ -11,7 +11,7 @@
 
 import gql from 'graphql-tag';
 
-import FullOrderFragment, {FullOrder} from '../fragments/FullOrder';
+import FullOrderFragment, { FullOrder } from '../fragments/FullOrder';
 
 export default gql`
 query Order($id: String!, $shard: Int!) {
@@ -23,5 +23,5 @@ ${FullOrderFragment}
 `;
 
 export interface OrderQuery {
-  order : FullOrder;
+  order: FullOrder;
 }

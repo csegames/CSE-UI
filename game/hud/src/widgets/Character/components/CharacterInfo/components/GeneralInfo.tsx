@@ -116,7 +116,9 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
           </div>
           <div className={css(ss.otherInfoContainer, custom.otherInfoContainer)}>
             {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}
-            <p className={css(ss.otherInfoText, custom.otherInfoText)}>Content to be determined...</p>
+            <p className={css(ss.otherInfoText, custom.otherInfoText)}>
+              Content to be determined... The majority of this screen is test data
+            </p>
           </div>
         </div>
       </div>

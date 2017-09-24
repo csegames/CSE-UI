@@ -12,12 +12,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { utils } from 'camelot-unchained';
+import { ql, utils, Tooltip } from 'camelot-unchained';
 
 import GridStats from '../GridStats';
-import { StatInterface } from '../StatListItem';
+import StatListItem from '../StatListItem';
 import { colors, characterBodyPartIcons } from '../../../../lib/constants';
-import { prettifyText, doesSearchInclude } from '../../../../lib/utils';
+import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 
 export interface BodyPartSectionStyles extends StyleDeclaration {
   bodyPartSection: React.CSSProperties;
@@ -26,6 +26,11 @@ export interface BodyPartSectionStyles extends StyleDeclaration {
   statContainer: React.CSSProperties;
   statListSection: React.CSSProperties;
   doesNotMatchSearch: React.CSSProperties;
+
+  listHeader: React.CSSProperties;
+  statValueContainer: React.CSSProperties;
+  valueText: React.CSSProperties;
+  listHeaderText: React.CSSProperties;
 }
 
 const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
@@ -38,9 +43,8 @@ const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
     padding:'5px',
     fontSize: 18,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: colors.filterBackgroundColor,
+    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
     borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
   },
 
   bodyPartTitle: {
@@ -59,13 +63,51 @@ const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
     opacity: 0.2,
     backgroundColor: `rgba(0,0,0,0.2)`,
   },
+
+  listHeader: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    color: '#C57C30',
+    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 10),
+    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
+    borderRight: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
+    paddingRight: '5px',
+    cursor: 'default',
+    boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.5)',
+  },
+
+  statValueContainer: {
+    display: 'flex',
+    color: utils.lightenColor(colors.filterBackgroundColor, 150),
+    fontSize: 16,
+  },
+  
+  valueText: {
+    width: '40px',
+    borderLeft: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
+    marginLeft: '5px',
+    textAlign: 'right',
+  },
+
+  listHeaderText: {
+    width: '40px',
+    marginLeft: '5px',
+    textAlign: 'right',
+  },
 };
+
+export interface DefenseStatInterface {
+  name: string;
+  resistancesValue: number;
+  mitigationsValue: number;
+}
 
 // The BodyPartStatInterface is used so we can break up the ArmorStats sections into sub-sections of bodyParts.
 // So Head will have (slashing, arcane, poison, etc.) resistances and Torso will have it's own (slashing, arcane, etc.)
 // resistances. Same with mitigation.
 export interface BodyPartStatInterface {
-  [bodyPart: string]: StatInterface[];
+  resistances: Partial<ql.schema.DamageType_Single>;
+  mitigations: Partial<ql.schema.DamageType_Single>;
 }
 
 export interface BodyPartSectionProps {
@@ -78,19 +120,34 @@ export interface BodyPartSectionProps {
 const BodyPartSection = (props: BodyPartSectionProps) => {
   const ss = StyleSheet.create(defaultBodyPartSectionStyle);
   const custom = StyleSheet.create(props.styles || {});
-  const statArray = props.bodyPartStats[props.name];
 
   // Prettify name to match what is displayed to user
-  const searchIncludesSection = doesSearchInclude(prettifyText(props.name), props.searchValue) ||
-    doesSearchInclude(props.searchValue, prettifyText(props.name));
+  const searchIncludes = props.searchValue !== '' ? searchIncludesSection(props.searchValue, props.name) : true;
 
+  const statInfo: DefenseStatInterface = {} as any;
+  Object.keys(props.bodyPartStats).forEach((defenseType) => {
+    Object.keys(props.bodyPartStats[defenseType]).forEach((damageType) => {
+      statInfo[damageType] = {
+        ...statInfo[damageType] || {},
+        name: damageType,
+        [`${defenseType}Value`]: props.bodyPartStats[defenseType][damageType],
+      };
+    });
+  });
+  const headerListItem = { name: 'header', resistancesValue: 'R', mitigationsValue: 'M' };
+  const statsArray = [
+    headerListItem,
+    ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+  ];
+  
   return (
     <div className={css(ss.bodyPartSection, custom.bodyPartSection)}>
       <header className={css(
         ss.bodyPartSectionHeader,
         custom.bodyPartSectionHeader,
-        !searchIncludesSection && ss.doesNotMatchSearch,
-        !searchIncludesSection && custom.doesNotMatchSearch,
+        !searchIncludes && ss.doesNotMatchSearch,
+        !searchIncludes && custom.doesNotMatchSearch,
       )}>
         <div className={characterBodyPartIcons[props.name]} style={{
           transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
@@ -99,10 +156,46 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
         <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(props.name)}</span>
       </header>
       <GridStats
-        statArray={statArray}
+        statArray={statsArray}
         searchValue={props.searchValue}
         sectionTitle={props.name}
         howManyGrids={3}
+        shouldRenderEmptyListItems={true}
+        renderListItem={(item: DefenseStatInterface, index: number) => {
+          if (item.name === 'header') {
+            return (
+              <div className={css(
+                ss.listHeader,
+                custom.listHeader,
+                !searchIncludes && ss.doesNotMatchSearch,
+                !searchIncludes && custom.doesNotMatchSearch)}
+              >
+                <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+                  {item.resistancesValue}
+                </Tooltip>
+                <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+                  {item.mitigationsValue}
+                </Tooltip>
+              </div>
+            );
+          }
+          return (
+            <StatListItem
+              index={index}
+              searchValue={props.searchValue}
+              statName={item.name}
+              sectionTitle={props.name}
+              statValue={() => typeof item.mitigationsValue === 'number' && typeof item.resistancesValue === 'number' ?
+                <div className={css(ss.statValueContainer, custom.statValueContainer)}>
+                  <div>{Math.round(item.resistancesValue * 100)}%</div>
+                  <div className={css(ss.valueText, custom.valueText)}>
+                    {Math.round(item.mitigationsValue * 100)}%
+                  </div>
+                </div> : null
+              }
+            />
+          );
+        }}
       />
     </div>
   );

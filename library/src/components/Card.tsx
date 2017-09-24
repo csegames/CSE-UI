@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-export const defaultCardStyle : CardStyle = {
+export const defaultCardStyle: CardStyle = {
   card: {
     backgroundColor: '#3c3c3c',
     color: '#ececec',
@@ -48,7 +48,7 @@ export const defaultCardStyle : CardStyle = {
 };
 
 export interface CardStyle extends StyleDeclaration {
-  card : React.CSSProperties;
+  card: React.CSSProperties;
   levelOne: React.CSSProperties;
   levelTwo: React.CSSProperties;
   levelThree: React.CSSProperties;
@@ -64,7 +64,7 @@ export enum CardLevel {
   Five,
 }
 
-export const Card = (props : {
+export const Card = (props: {
   styles?: Partial<CardStyle>;
   level?: CardLevel;
   children?: React.ReactNode;
@@ -75,14 +75,14 @@ export const Card = (props : {
   let levelCSS = ss.levelOne;
   let customLevelCSS = custom.levelOne;
   switch (level) {
-    case CardLevel.Two: 
+    case CardLevel.Two:
       levelCSS = ss.levelTwo;
       customLevelCSS = custom.levelTwo;
       break;
     case CardLevel.Three:
-    levelCSS = ss.levelThree;
-    customLevelCSS = custom.levelThree;
-    break;
+      levelCSS = ss.levelThree;
+      customLevelCSS = custom.levelThree;
+      break;
     case CardLevel.Four:
       levelCSS = ss.levelFour;
       customLevelCSS = custom.levelFour;

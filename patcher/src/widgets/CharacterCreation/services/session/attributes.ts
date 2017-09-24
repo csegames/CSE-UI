@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
-import {Race, Gender, webAPI } from 'camelot-unchained';
-type CSEError = webAPI.Errors.CSEError;
+import { client, Race, Gender, webAPI } from 'camelot-unchained';
 
 import {fetchJSON} from '../../lib/fetchHelpers';
 
@@ -73,29 +71,36 @@ export function fetchAttributesSuccess(attributes: AttributeInfo[]) {
   };
 }
 
-export function fetchAttributesFailed(error: CSEError) {
+export function fetchAttributesFailed(error: any) {
   return {
     type: FETCH_ATTRIBUTES_FAILED,
     error: error.Message,
   };
 }
 
-export function fetchAttributes(shard: number = 1) {
+export function fetchAttributes(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributes());
-    return webAPI.GameDataAPI.getAttributeInfoV1(shard)
-      .then((value) => {
-        if (value.ok) {
-          value.data.map((a: any) => {
-            a.allocatedPoints = 0;
-            a.minValue = a.baseValue;
-          });
-          dispatch(fetchAttributesSuccess(value.data));
-        } else {
-          dispatch(fetchAttributesFailed(value.error));
-        }
-      });
+    return getAttributeInfo(dispatch, shard, apiHost);
   };
+}
+
+async function getAttributeInfo(dispatch: (action: any) => any, shard: number, apiHost: string) {
+  try {
+    const res = await webAPI.GameDataAPI.GetAttributeInfoV1({ url: `${apiHost}/` }, shard);
+    const data = JSON.parse(res.data);
+    if (res.ok) {
+      data.map((a: any) => {
+        a.allocatedPoints = 0;
+        a.minValue = a.baseValue;
+      });
+      dispatch(fetchAttributesSuccess(data));
+    } else {
+      dispatch(fetchAttributesFailed(data));
+    }
+  } catch (err) {
+    dispatch(fetchAttributesFailed(err));
+  }
 }
 
 export interface AttributesState {

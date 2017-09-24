@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-02-20 17:13:38
  */
 import gql from 'graphql-tag';
-import {Faction, Race, Gender, Archetype} from '../..';
+import { Faction, Race, Gender, Archetype } from '../..';
 
 export default gql`
 fragment FullWarbandMember on WarbandMember {
@@ -26,13 +26,13 @@ fragment FullWarbandMember on WarbandMember {
 `;
 
 export interface FullWarbandMember {
-  id : string;
-  name : string;
-  rank : string;
-  race : Race;
-  gender : Gender;
-  class : Archetype;
-  joined : string;
-  lastLogin : string;
-  kills : number;
+  id: string;
+  name: string;
+  rank: string;
+  race: Race;
+  gender: Gender;
+  class: Archetype;
+  joined: string;
+  lastLogin: string;
+  kills: number;
 }

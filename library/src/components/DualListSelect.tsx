@@ -53,7 +53,7 @@ export const defaultDualListSelectStyle: DualListSelectStyle = {
   listItem: {
     cursor: 'pointer',
     userSelect: 'none',
-    padding: '1px 15px',      
+    padding: '1px 15px',
   },
 
   selectedListItem: {
@@ -124,14 +124,14 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
 
     return (
       <div className={css(ss.container, custom.container)}>
-        
+
         <div className={css(ss.listSection, custom.listSection)}>
           <div className={css(ss.filter, custom.filter)}>
-          <Input type='text'
-                 label={this.props.labelLeft || ''}
-                 inputRef={(r: HTMLInputElement) => this.leftInputRef = r}
-                 placeholder={'Filter'}
-                 onChange={this.onLeftFilterTextChanged}></Input>
+            <Input type='text'
+                   label={this.props.labelLeft || ''}
+                   inputRef={(r: HTMLInputElement) => this.leftInputRef = r}
+                   placeholder={'Filter'}
+                   onChange={this.onLeftFilterTextChanged}></Input>
           </div>
           <div className={css(ss.listBox, custom.listBox)}>
             {this.renderLeftItems(ss, custom)}
@@ -140,44 +140,52 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
 
         <div className={css(ss.buttons, custom.buttons)}>
           <RaisedButton
-            styles={{button:
-              merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {})}}
+            styles={{
+              button:
+                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
+            }}
             onClick={this.selectAll}>
             <i className='fa fa-angle-double-right'></i>
           </RaisedButton>
           <RaisedButton
-            styles={{button: 
-              merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {})}}
+            styles={{
+              button:
+                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
+            }}
             onClick={() => this.selectItem()}>
             <i className='fa fa-angle-right'></i>
           </RaisedButton>
-          <RaisedButton 
-            styles={{button:
-              merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {})}}
+          <RaisedButton
+            styles={{
+              button:
+                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
+            }}
             onClick={() => this.removeItem()}>
             <i className='fa fa-angle-left'></i>
           </RaisedButton>
           <RaisedButton
-            styles={{button:
-              merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {})}}
+            styles={{
+              button:
+                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
+            }}
             onClick={this.removeAll}>
             <i className='fa fa-angle-double-left'></i>
           </RaisedButton>
-        </div>        
+        </div>
 
         <div className={css(ss.listSection, custom.listSection)}>
           <div className={css(ss.filter, custom.filter)}>
-          <Input type='text'
-                 label={this.props.labelRight || ''}
-                 inputRef={(r: HTMLInputElement) => this.rightInputRef = r}
-                 placeholder={'Filter'}
-                 onChange={this.onRightFilterTextChanged} ></Input>
+            <Input type='text'
+                   label={this.props.labelRight || ''}
+                   inputRef={(r: HTMLInputElement) => this.rightInputRef = r}
+                   placeholder={'Filter'}
+                   onChange={this.onRightFilterTextChanged}></Input>
           </div>
           <div className={css(ss.listBox, custom.listBox)}>
             {this.renderRightItems(ss, custom)}
           </div>
         </div>
-        
+
       </div>
     );
   }
@@ -220,7 +228,7 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
 
     const leftItems = clone(this.state.leftItems);
     const rightItems = clone(this.state.rightItems);
-    
+
     const item = clone(leftItems[key]);
     rightItems[key] = item;
     delete leftItems[key];
@@ -243,7 +251,7 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
 
     const leftItems = clone(this.state.leftItems);
     const rightItems = clone(this.state.rightItems);
-    
+
     const item = clone(rightItems[key]);
     leftItems[key] = item;
     delete rightItems[key];
@@ -285,8 +293,8 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
     }
 
     this.setState({
-      rightItems: {},
       leftItems,
+      rightItems: {},
       filteredRightItems: {},
       filteredLeftItems: leftItems,
       leftFilter: '',
@@ -344,9 +352,9 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
       items.push((
         <div key={key}
              className={key === this.state.leftSelectedItemKey ?
-              css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
-              css(ss.listItem, custom.listItem)}
-             onClick={() => this.setState({leftSelectedItemKey: key})}
+               css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
+               css(ss.listItem, custom.listItem)}
+             onClick={() => this.setState({ leftSelectedItemKey: key })}
              onDoubleClick={() => this.selectItem(key)}>
           {this.state.filteredLeftItems[key]}
         </div>
@@ -361,9 +369,9 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
       items.push((
         <div key={key}
              className={key === this.state.rightSelectedItemKey ?
-              css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
-              css(ss.listItem, custom.listItem)}
-             onClick={() => this.setState({rightSelectedItemKey: key})}
+               css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
+               css(ss.listItem, custom.listItem)}
+             onClick={() => this.setState({ rightSelectedItemKey: key })}
              onDoubleClick={() => this.removeItem(key)}>
           {this.state.filteredRightItems[key]}
         </div>

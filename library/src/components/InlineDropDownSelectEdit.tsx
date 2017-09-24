@@ -5,19 +5,19 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 14:57:24
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 15:24:50
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-09-08 12:38:40
  */
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { 
-         FloatSpinner,
-         Tooltip,
-         events,
-       } from '..';
+import {
+  FloatSpinner,
+  Tooltip,
+  events,
+} from '..';
 import { generateID } from 'redux-typed-modules';
-import DropDownSelect, { DropDownSelectStyle } from './DropDownSelect';
+import DropDownSelect, { DropDownSelectStyle, DropDownSelectProps } from './DropDownSelect';
 
 export interface InlineDropDownSelectEditStyle extends StyleDeclaration {
   defaultView: React.CSSProperties;
@@ -55,9 +55,7 @@ export const defaultInlineDropDownSelectEditStyle: InlineDropDownSelectEditStyle
     fontSize: '0.7em',
   },
 
-  saveButton: {
-
-  },
+  saveButton: {},
 
   error: {
     color: 'darkred',
@@ -65,13 +63,13 @@ export const defaultInlineDropDownSelectEditStyle: InlineDropDownSelectEditStyle
   },
 };
 
-export interface InlineDropDownSelectEditProps {
-  items: any[];
-  value: any;
-  renderListItem: (item: any, renderData: any) => JSX.Element;
-  renderSelectedItem: (item: any, renderData: any) => JSX.Element;
-  renderData?: any;
-  onSave: (prev: any, selected: any) => Promise<{ok: boolean, error?: string}>;
+export interface InlineDropDownSelectEditProps<ItemType, DataType extends {}> {
+  items: ItemType[];
+  value: ItemType;
+  renderListItem: (item: ItemType, renderData: DataType) => JSX.Element;
+  renderSelectedItem: (item: ItemType, renderData: DataType) => JSX.Element;
+  renderData?: DataType;
+  onSave: (prev: ItemType, selected: ItemType) => Promise<{ok: boolean, error?: string}>;
   styles?: Partial<InlineDropDownSelectEditStyle>;
   dropDownStyles?: Partial<DropDownSelectStyle>;
 }
@@ -83,14 +81,15 @@ export interface InlineDropDownSelectEditState {
   errors: string;
 }
 
-export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSelectEditProps, InlineDropDownSelectEditState> {
+export class InlineDropDownSelectEdit<ItemType, DataType extends {}> 
+  extends React.Component<InlineDropDownSelectEditProps<ItemType, DataType>, InlineDropDownSelectEditState> {
 
   private static editModeActiveEvent = 'input-edit-mode-active';
   private editModeListenerID: any = null;
   private id: string = '';
-  private dropDownRef: DropDownSelect = null;
+  private dropDownRef: DropDownSelect<ItemType, DataType> = null;
 
-  constructor(props: InlineDropDownSelectEditProps) {
+  constructor(props: InlineDropDownSelectEditProps<ItemType, DataType>) {
     super(props);
     this.id = generateID(7);
     this.state = {
@@ -105,44 +104,48 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
     const ss = StyleSheet.create(defaultInlineDropDownSelectEditStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
+    type DropDown = DropDownSelect<ItemType, DataType>;
+    type DropDownCtor = new (p: DropDownSelectProps<ItemType, DataType>) => DropDown;
+    const DropDown = DropDownSelect as DropDownCtor;
+
     if (this.state.editMode) {
       return (
         <div className={css(ss.editModeContainer, custom.editModeContainer)}
              onKeyDown={this.onKeyDown}>
           {
             this.state.errors ?
-            (
-              <div className={css(ss.error, custom.error)}>
-                <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Save failed.
-                </Tooltip>
-              </div>
-            ) : null
+              (
+                <div className={css(ss.error, custom.error)}>
+                  <Tooltip content={() => <span>{this.state.errors}</span>}>
+                    <i className='fa fa-exclamation-circle'></i> Save failed.
+                  </Tooltip>
+                </div>
+              ) : null
           }
-          <DropDownSelect items={this.props.items}
+          <DropDown items={this.props.items}
                           ref={r => this.dropDownRef = r}
                           selectedItem={this.props.value}
                           renderSelectedItem={this.props.renderSelectedItem}
                           renderListItem={this.props.renderListItem}
                           renderData={this.props.renderData}
-                          styles={this.props.dropDownStyles} />
-                 {
-                   this.state.saving ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null
-                 }
+                          styles={this.props.dropDownStyles}/>
+          {
+            this.state.saving ? <FloatSpinner styles={{ spinner: { position: 'absolute' } }}/> : null
+          }
           <div className={css(ss.editModeButtons, custom.editModeButtons)}>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.deactivateEditMode} >cancel</a>
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.deactivateEditMode}>cancel</a>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.doSave}>save</a>
-            
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.doSave}>save</a>
+
           </div>
         </div>
       );
@@ -163,7 +166,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
       </div>
     );
   }
-  
+
   public componentDidMount() {
     this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
@@ -182,7 +185,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
 
   private onMouseleave = () => {
     if (this.state.showEditButton === false) return;
-    this.setState({showEditButton: false});
+    this.setState({ showEditButton: false });
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -202,7 +205,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
 
   private showEditButton = () => {
     if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
+    this.setState({ showEditButton: true });
   }
 
   private doSave = () => {
@@ -226,7 +229,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
         });
       });
 
-    this.setState({saving: true});
+    this.setState({ saving: true });
   }
 
   private activateEditMode = () => {
@@ -239,7 +242,7 @@ export class InlineDropDownSelectEdit extends React.Component<InlineDropDownSele
 
   private deactivateEditMode = () => {
     this.dropDownRef = null;
-    this.setState({editMode: false});
+    this.setState({ editMode: false });
   }
 }
 

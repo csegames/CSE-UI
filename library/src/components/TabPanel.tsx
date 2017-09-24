@@ -112,6 +112,7 @@ export interface TabPanelState {
 
 export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
   private didMount: boolean;
+
   public get activeTabIndex(): number {
     return this.state.activeIndex;
   }
@@ -132,7 +133,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
   public render() {
     const style = StyleSheet.create(defaultTabPanelStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(style.tabPanel, customStyle.tabPanel)}>
         {this.renderTabs(style, customStyle)}
@@ -182,12 +183,12 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
       const active = this.props.tabs[this.activeTabIndex].rendersContent === content.name;
       return (
         <div key={index}
-          className={css(
-            style.content,
-            customStyle.content,
-            !active && style.contentHidden,
-            !active && customStyle.contentHidden,
-          )}>
+            className={css(
+              style.content,
+              customStyle.content,
+              !active && style.contentHidden,
+              !active && customStyle.contentHidden,
+            )}>
           <content.content.render {...content.content.props} />
         </div>
       );
@@ -211,4 +212,5 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     if (this.props.onActiveTabChanged) this.props.onActiveTabChanged(index, name);
   }
 }
+
 export default TabPanel;

@@ -6,8 +6,9 @@
 
 import announcementType from '../constants/announcementType';
 
-class Announcement  {
-  constructor(public message:string = '', public type:announcementType = 0) {}
+class Announcement {
+  constructor(public message: string = '', public type: announcementType = 0) {
+  }
 }
 
 export default Announcement;

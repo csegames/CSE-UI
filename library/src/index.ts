@@ -40,11 +40,13 @@ import ConsoleMessage from './core/classes/ConsoleMessage';
 
 // libraries
 import * as core from './core/core';
+
 export * from './core/core';
 
 import * as legacyAPI from './restapi/RestAPI';
 
 import * as webAPI from './webAPI';
+
 export * from './webAPI/definitions';
 
 export * from './groups';
@@ -67,6 +69,7 @@ import * as ql from './graphql';
 
 // components
 import * as components from './components';
+
 export * from './components';
 
 export default {
@@ -108,7 +111,7 @@ export default {
 
   components,
 
- ...slashCommandsExports,
+  ...slashCommandsExports,
 
 };
 

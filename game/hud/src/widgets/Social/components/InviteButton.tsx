@@ -118,10 +118,11 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
           }
 
         <div style={{display: 'flex'}}>
-        <Input inputRef={r => this.inputRef = r}
-               placeholder={'Enter name & hit enter'}
-               onKeyDown={this.onKeyDown}
-               />
+        <Input
+          inputRef={r => this.inputRef = r}
+          placeholder={'Enter name & hit enter'}
+          onKeyDown={this.onKeyDown}
+        />
           
           <RaisedButton onClick={this.toggleInputVisibilty}>
             {this.state.inviting ? <Spinner /> : this.state.showInput ?
@@ -139,32 +140,34 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
     });
   }
 
-  private doInvite = () => {
+  private doInvite = async () => {
     if (this.inputRef == null) return;
+    await this.setState({ inviting: true, error: null });
+
     const name = this.inputRef.value;
+    const res = await webAPI.GroupsAPI.InviteByNameV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      this.props.groupId,
+      name,
+    );
 
-    webAPI.GroupsAPI.inviteByNameV1(client.shardID, client.characterID, this.props.groupId, name)
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            inviting: false,
-            showInput: false,
-            error: null,
-            status: `${name} as been invited!`,
-          });
-          this.props.refetch();
-          return;
-        }
-
-        this.setState({
-          inviting: false,
-          error: result.data,
-        });
+    if (res.ok) {
+      this.setState({
+        inviting: false,
+        showInput: false,
+        error: null,
+        status: `${name} as been invited!`,
       });
+      this.props.refetch();
+      return;
+    }
 
     this.setState({
-      inviting: true,
-      error: null,
+      inviting: false,
+      error: res.data,
     });
   }
 

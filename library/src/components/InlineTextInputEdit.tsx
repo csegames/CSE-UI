@@ -10,14 +10,14 @@
  */
 
 import * as React from 'react';
-import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle  } from './InlineInputEdit';
+import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle } from './InlineInputEdit';
 
 export interface InlineTextInputEditProps {
   value: string;
-  onSave: (prev: string, entered: string) => Promise<{ok: boolean, error?: string}>;
+  onSave: (prev: string, entered: string) => Promise<{ ok: boolean, error?: string }>;
   styles?: Partial<InlineInputEditStyle>;
 }
 
 export const InlineTextInputEdit = (props: InlineTextInputEditProps) => {
-  return <InlineInputEdit type='text' value={props.value} onSave={props.onSave} styles={props.styles} />;
+  return <InlineInputEdit type='text' value={props.value} onSave={props.onSave} styles={props.styles}/>;
 };

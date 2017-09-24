@@ -34,4 +34,5 @@ class BuildingMaterial {
     return a;
   }
 }
+
 export default BuildingMaterial;

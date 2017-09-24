@@ -5,12 +5,12 @@
  *
  * @Author: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Date: 2017-03-29 15:36:53
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-05-12 14:06:50
+ * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
+ * @Last Modified time: 2017-08-31 11:42:39
  */
 
 import * as React from 'react';
-import {client, events, plotPermissions, webAPI} from 'camelot-unchained';
+import { client, events, plotPermissions, webAPI } from 'camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;
@@ -106,57 +106,79 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   private changePermissions = (perm: plotPermissions) => {
-    webAPI.PlotsAPI.modifyPermissionsV1(
+    webAPI.PlotsAPI.ModifyPermissionsV1(
+      webAPI.defaultConfig,
+      client.loginToken,
       client.shardID,
       client.characterID,
-      client.loginToken,
       this.state.entityID,
       perm,
     );
   }
   
   private releasePlot = () => {
-    webAPI.PlotsAPI.releasePlotV1(
+    webAPI.PlotsAPI.ReleasePlotV1(
+      webAPI.defaultConfig,
+      client.loginToken,
       client.shardID,
       client.characterID,
-      client.loginToken,
       this.state.entityID,
     );
   }
   
-  private removeQueuedBlueprint = (idx: number) => {
-    webAPI.PlotsAPI.removeQueuedBlueprintV1(
-      client.shardID,
-      client.characterID,
-      client.loginToken,
-      this.state.entityID,
-      idx,
-    ).then(this.getQueueStatus);
+  private removeQueuedBlueprint = async (idx: number) => {
+    try {
+      await webAPI.PlotsAPI.RemoveQueuedBlueprintV1(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+        this.state.entityID,
+        idx,
+      );
+      this.getQueueStatus();
+    } catch (err) {
+      webAPI.handleWebAPIError(err);
+    }
   }
   
-  private reorderBuildQueue = (indexSource: number, indexDestination: number) => {
-    webAPI.PlotsAPI.reorderQueueV1(
-      client.shardID,
-      client.characterID,
-      client.loginToken,
-      this.state.entityID,
-      indexSource,
-      indexDestination,
-    ).then(this.getQueueStatus);
+  private reorderBuildQueue = async (indexSource: number, indexDestination: number) => {
+    try {
+      await webAPI.PlotsAPI.ReorderQueueV1(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+        this.state.entityID,
+        indexSource,
+        indexDestination,
+      );
+      this.getQueueStatus();
+    } catch (err) {
+      webAPI.handleWebAPIError(err);
+    }
   }
   
-  private getQueueStatus = () => {
+  private getQueueStatus = async () => {
     if (this.state.plotOwned === false) return;
-    webAPI.PlotsAPI.getQueueStatusV1(client.shardID, client.characterID, client.loginToken).then((resp) => {
-      if (!resp.ok) return;
+    try {
+      const res = await webAPI.PlotsAPI.GetQueueStatusV1(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+      );
+      const data = JSON.parse(res.data);
+      if (!res.ok) return;
       this.setState((state, props) => ({
         ...state,
-        queue: resp.data.blueprints,
-        queueState: resp.data.status,
-        numContributors: Math.min(resp.data.numContributors, resp.data.maxContributors),
+        queue: data.blueprints,
+        queueState: data.status,
+        numContributors: Math.min(data.numContributors, data.maxContributors),
       }));
-    },
-    (err: any) => console.log(err));
+    } catch (err) {
+      webAPI.handleWebAPIError(err);
+    }
   }
   
   private toggleQueue = () => {

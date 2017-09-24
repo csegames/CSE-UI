@@ -2,19 +2,16 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2016-10-12 16:17:30
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-20 11:23:53
  */
 import events from '../events';
 import client from '../core/client';
-import {eventMapper, EventMap} from '../util/eventMapper';
+import { eventMapper, EventMap } from '../util/eventMapper';
+
+declare const $: any;
 
 function signalRToEvents(recieve: string, send: string, hub: any, hubName: string, debug: boolean) {
   if (!hub) return;
-  hub.on(recieve, (...params:any[]) => {
+  hub.on(recieve, (...params: any[]) => {
     events.fire(send, ...params);
   });
 }
@@ -44,16 +41,17 @@ export interface DeferredObjectInfo {
 }
 
 export class SignalRHub {
-  
+
   private hubName: string;
   private eventMaps: EventMap[];
   private hub: any;
+  private signalRHost: string;
   private debug: boolean;
   private conn: any;
   public reconnectOnDisconnect: boolean = true;
   private wantStop: boolean = false;
   private tryingToReconnect: boolean = false;
-  
+
   public connectionState: ConnectionState = ConnectionState.Disconnected;
 
   ////////////////////////////////////
@@ -65,7 +63,7 @@ export class SignalRHub {
 
   // Raised before any data is sent over the connection
   public onStarting: (hub: SignalRHub) => void;
-  
+
   // Raised when any data is received on the connection. Provides the received data
   public onReceived: (hub: SignalRHub, data: any) => void;
 
@@ -77,19 +75,25 @@ export class SignalRHub {
 
   // Raised when the underlying transport has reconnected
   public onReconnected: (hub: SignalRHub) => void;
-  
+
   // Raised when the connection state changes. Provides the old state and the new state 
   // (Connecting, Connected, Reconnecting, or Disconnect)
-  public onStateChanged: (hub: SignalRHub, state: {oldState: ConnectionState, newState: ConnectionState}) => void;
+  public onStateChanged: (hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void;
 
   // Raised when the connection has disconnected
   public onDisconnected: (hub: SignalRHub) => void;
 
   public onError: (hub: SignalRHub, error: string) => void;
 
-  constructor(hubName: string, eventMaps: EventMap[], options?: SignalRHubOptions) {
+  constructor(
+    hubName: string,
+    eventMaps: EventMap[],
+    options?: SignalRHubOptions,
+    signalRHost: string = client.signalRHost,
+  ) {
     this.hubName = hubName;
     this.eventMaps = eventMaps;
+    this.signalRHost = signalRHost;
 
     if (options) {
       this.debug = options.debug || false;
@@ -99,9 +103,9 @@ export class SignalRHub {
 
   public start(onStart?: (hub: SignalRHub) => void) {
     this.conn = ($ as any).hubConnection();
-    this.conn.url = client.signalRHost;
+    this.conn.url = this.signalRHost;
     this.hub = this.conn.createHubProxy(this.hubName);
-    
+
 
     // hook up lifetime events 
     this.conn.starting(this.internalOnStarting);
@@ -129,7 +133,7 @@ export class SignalRHub {
   public stop() {
     this.conn.stop();
   }
-  
+
   public invoke(method: string, ...params: any[]): DeferredObjectInfo {
     return this.hub.invoke(method, ...params);
   }
@@ -165,7 +169,7 @@ export class SignalRHub {
 
   // Raised when the connection state changes. Provides the old state and the new state
   // (Connecting, Connected, Reconnecting, or Disconnect)
-  private internalOnStateChanged = (state: {oldState: ConnectionState, newState: ConnectionState}) => {
+  private internalOnStateChanged = (state: { oldState: ConnectionState, newState: ConnectionState }) => {
     this.connectionState = state.newState;
     if (state.newState === ConnectionState.Connected) {
       if (this.onConnected) this.onConnected(this);

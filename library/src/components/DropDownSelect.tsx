@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-02-23 11:20:43
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-07 15:40:47
+ * @Last Modified by: JB (jb@codecorsair.com)
+ * @Last Modified time: 2017-09-08 12:52:42
  */
 
 import * as React from 'react';
@@ -100,24 +100,26 @@ export const defaultDropDownSelectStyle: DropDownSelectStyle = {
   },
 };
 
-export interface DropDownSelectProps {
-  items: any[];
-  selectedItem?: any;
-  renderListItem: (item: any, renderData: any) => JSX.Element;
-  renderSelectedItem: (item: any, renderData: any) => JSX.Element;
-  renderData?: any;
+export interface DropDownSelectProps<ItemType, DataType extends {}> {
+  items: ItemType[];
+  selectedItem?: ItemType;
+  renderListItem: (item: ItemType, renderType: DataType) => JSX.Element;
+  renderSelectedItem: (item: ItemType, renderData: DataType) => JSX.Element;
+  renderData?: DataType;
   styles?: Partial<DropDownSelectStyle>;
+  onSelectedItemChaned?: (item: ItemType) => void;
 }
 
-export interface DropDownSelectState {
-  items: any[];
-  selectedItem: any;
+export interface DropDownSelectState<ItemType> {
+  items: ItemType[];
+  selectedItem: ItemType;
   keyboardIndex: number;
   dropDownOpen: boolean;
 }
 
-export class DropDownSelect extends React.Component<DropDownSelectProps, DropDownSelectState> {
-  constructor(props: DropDownSelectProps) {
+export class DropDownSelect<ItemType, DataType extends {} = {}> 
+  extends React.Component<DropDownSelectProps<ItemType, DataType>, DropDownSelectState<ItemType>> {
+  constructor(props: DropDownSelectProps<ItemType, DataType>) {
     super(props);
     const items = cloneDeep(this.props.items);
     this.state = {
@@ -136,7 +138,7 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
       <div className={css(ss.container, custom.container)}
            onKeyDown={this.onKeyDown}>
         <div className={css(ss.selected, custom.selected)}
-             onClick={() => this.setState({dropDownOpen: !this.state.dropDownOpen})}>
+             onClick={() => this.setState({ dropDownOpen: !this.state.dropDownOpen })}>
           <div className={css(ss.selectedItem, custom.selectedItem)}>
             {this.props.renderSelectedItem(this.state.selectedItem, this.props.renderData)}
           </div>
@@ -146,16 +148,16 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
         </div>
         <div className={css(ss.listWrapper, custom.listWrapper)}>
           <div className={this.state.dropDownOpen ?
-           css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
+            css(ss.list, custom.list) : css(ss.list, custom.list, ss.listMinimized, custom.listMinimized)}>
             {
               this.state.items.map((item, index) => {
                 if (item === this.state.selectedItem) return null;
                 return (
-                  <div key={index} 
+                  <div key={index}
                        className={
-                       this.state.keyboardIndex === index ?
-                         css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                         css(ss.listItem, custom.listItem)
+                         this.state.keyboardIndex === index ?
+                           css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
+                           css(ss.listItem, custom.listItem)
                        }
                        onClick={() => this.selectItem(item)}>
                     {this.props.renderListItem(item, this.props.renderData)}
@@ -203,12 +205,13 @@ export class DropDownSelect extends React.Component<DropDownSelectProps, DropDow
     }
   }
 
-  private selectItem = (item: any) => {
+  private selectItem = (item: ItemType) => {
     this.setState({
       keyboardIndex: -1,
       selectedItem: item,
       dropDownOpen: false,
     });
+    this.props.onSelectedItemChaned(item);
   }
 }
 

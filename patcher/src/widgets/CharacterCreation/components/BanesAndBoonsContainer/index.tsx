@@ -34,6 +34,7 @@ import {
 } from '../../services/session/banesAndBoons';
 
 export interface BanesAndBoonsContainerProps {
+  apiHost: string;
   banesAndBoons: BanesAndBoonsState;
   race: RacesState;
   faction: FactionsState;
@@ -113,6 +114,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
     const { banesAndBoons, dispatch, playerClass, race, faction } = this.props;
     if (banesAndBoons.initial) {
       dispatch(fetchTraits({
+        apiHost: this.props.apiHost,
         playerClass: Archetype[playerClass.selected.id],
         race: Race[race.selected.id],
         faction: Faction[faction.selected.id],

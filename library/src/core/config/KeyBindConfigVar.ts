@@ -8,21 +8,21 @@ import ConfigVar from './ConfigVar';
 import configCategory from './configCategory';
 import KeyBind from './KeyBind';
 
-class KeyBindConfigVar extends ConfigVar  {
+class KeyBindConfigVar extends ConfigVar {
   public _value: KeyBind;
-  
-  public get value():KeyBind {
+
+  public get value(): KeyBind {
     return this._value;
   }
-  
+
   public set value(v: KeyBind) {
     this._value = v;
   }
-  
-  constructor(config:KeyBindConfigVar = <KeyBindConfigVar>{}) {
+
+  constructor(config: KeyBindConfigVar = <KeyBindConfigVar>{}) {
     super(<ConfigVar>config);
   }
-  
+
   public create() {
     const c = new KeyBindConfigVar();
     return c;

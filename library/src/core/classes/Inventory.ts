@@ -9,7 +9,7 @@ import Item from './Item';
 /**
  * Inventory
  */
-class Inventory  {
+class Inventory {
 
   /**
    * The items currently in the inventory

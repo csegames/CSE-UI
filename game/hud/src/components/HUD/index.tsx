@@ -7,6 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { client, ql, events } from 'camelot-unchained';
+import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import {
@@ -23,6 +24,7 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
+import DevUI from '../DevUI';
 
 import { ZoneName } from '../ZoneName';
 
@@ -30,6 +32,18 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 import Console from '../Console';
+
+useConfig({
+  url: `${client.apiHost}/graphql`,
+  requestOptions: {
+    headers: {
+      loginToken: client.loginToken,
+      shardID: `${client.shardID}`,
+      characterID: client.characterID,
+    }
+  },
+  stringifyVariables: true,
+})
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch: (action: any) => void;
@@ -63,6 +77,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
         </div>
+        
+        <DevUI />
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />

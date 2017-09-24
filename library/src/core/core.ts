@@ -6,8 +6,10 @@
 
 import CoreSettings from './CoreSettings';
 import clientInterface from './clientInterface';
+
 export * from './clientInterface';
 import client from './client';
+
 export * from './client';
 
 // constants
@@ -24,6 +26,7 @@ import attributeType from './constants/attributeType';
 import warbandRanks from './constants/warbandRanks';
 import warbandRoles from './constants/warbandRoles';
 import warbandPermissions from './constants/warbandPermissions';
+
 export * from './constants/bodyParts';
 export * from './constants/damageTypes';
 export * from './constants/resourceTypes';
@@ -48,10 +51,11 @@ import EquippedGear from './classes/EquippedGear';
 import LogMessage from './classes/LogMessage';
 import ChatMessage from './classes/ChatMessage';
 import ConsoleMessage from './classes/ConsoleMessage';
+
 export * from './classes/PlayerStatus';
 export * from './classes/CombatLog';
 
-import {DEBUG_ASSERT,RUNTIME_ASSERT} from './utils/assert';
+import { DEBUG_ASSERT, RUNTIME_ASSERT } from './utils/assert';
 
 export {
   // core

@@ -84,7 +84,7 @@ export interface FilterSelectState {
   filteredItems: any[];
   selectedItem: any;
   filterText: string;
-  keyboardIndex: number;  
+  keyboardIndex: number;
 }
 
 export class FilterSelect extends React.Component<FilterSelectProps, FilterSelectState> {
@@ -111,35 +111,35 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
       <div className={css(ss.container, custom.container)}>
         <Input inputRef={r => this.inputRef = r}
                onChange={this.onInputChanged}
-               onKeyDown={this.onKeyDown} />
+               onKeyDown={this.onKeyDown}/>
         <div>
           {
             this.state.selectedItem == null ? null :
-            (
-              <div className={css(ss.selectedItem, custom.selectedItem)}>
-                {this.props.renderItem(this.state.selectedItem, this.props.renderData)}
-              </div>
-            )
-          }
-        <div className={css(ss.list, custom.list)}>
-          
-          {
-            this.state.filteredItems.map((item, index) => {
-              if (item === this.state.selectedItem) return null;
-              return (
-                <div key={index} 
-                     className={
-                     this.state.keyboardIndex === index ?
-                       css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                       css(ss.listItem, custom.listItem)
-                     }
-                     onClick={() => this.selectItem(item)}>
-                  {this.props.renderItem(item, this.props.renderData)}
+              (
+                <div className={css(ss.selectedItem, custom.selectedItem)}>
+                  {this.props.renderItem(this.state.selectedItem, this.props.renderData)}
                 </div>
-              );
-            })
+              )
           }
-        </div>
+          <div className={css(ss.list, custom.list)}>
+
+            {
+              this.state.filteredItems.map((item, index) => {
+                if (item === this.state.selectedItem) return null;
+                return (
+                  <div key={index}
+                       className={
+                         this.state.keyboardIndex === index ?
+                           css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
+                           css(ss.listItem, custom.listItem)
+                       }
+                       onClick={() => this.selectItem(item)}>
+                    {this.props.renderItem(item, this.props.renderData)}
+                  </div>
+                );
+              })
+            }
+          </div>
         </div>
       </div>
     );

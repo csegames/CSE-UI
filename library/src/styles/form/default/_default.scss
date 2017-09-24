@@ -95,7 +95,7 @@
       input[type=range] {
         -webkit-appearance: none;
 
-        $color: if($light,  $color-gray-dark, $background-color);
+        $color: if($light, $color-gray-dark, $background-color);
 
         color: $text-color;
         width: 100%;
@@ -168,9 +168,9 @@
         input[type=search],
         input[type=url] {
           @if ($light) {
-            box-shadow: inset 0 0 5px 0 rgba(0,0,0, 0.7);
+            box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.7);
           } @else {
-            box-shadow: inset 0 0 5px 1px rgba(0,0,0, 0.75);
+            box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.75);
           }
           &::-webkit-input-placeholder {
             @if ($light) {
@@ -185,16 +185,16 @@
         }
         select {
           @if ($light) {
-            box-shadow: inset 0 0 5px 0 rgba(0,0,0, 0.7);
+            box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.7);
           } @else {
-            box-shadow: inset 0 0 5px 1px rgba(0,0,0, 0.75);
+            box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.75);
           }
         }
       }
       .cu-form-range {
         input[type=range] {
 
-          $color: if($light,  $color-gray-dark, $color-dark);
+          $color: if($light, $color-gray-dark, $color-dark);
 
           border-left: 3px solid $color;
           border-right: 3px solid $color;

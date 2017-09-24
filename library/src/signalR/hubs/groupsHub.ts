@@ -11,8 +11,8 @@
 
 import client from '../../core/client';
 import events from '../../events';
-import {SignalRHub} from '../SignalRHub';
-import {eventMapper, EventMap} from '../../util/eventMapper';
+import { SignalRHub } from '../SignalRHub';
+import { eventMapper, EventMap } from '../../util/eventMapper';
 
 // UI EVENT NAMES
 export const GROUP_EVENTS_INVITE_RECEIVED = 'groups/inviteReceived';
@@ -24,12 +24,12 @@ const groupsHubEventsMap: EventMap[] = [
   },
 ];
 
-export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, {debug: client.debug});
+export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: client.debug });
 
 groupsHub.onConnected = function(hub: SignalRHub) {
   if (client.debug) console.log('groupsHub onConnected');
   hub.invoke('identify', client.loginToken, client.shardID, client.characterID)
-    // hub.server.identify(client.loginToken, client.shardID, client.characterID)
+  // hub.server.identify(client.loginToken, client.shardID, client.characterID)
     .done((success: boolean) => {
       if (client.debug) console.log(`groupsHub identify success: ${success}`);
       if (!success) {

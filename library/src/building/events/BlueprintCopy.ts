@@ -21,6 +21,7 @@ export default class BlockSelectListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintCopy;
+
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;

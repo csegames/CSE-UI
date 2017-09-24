@@ -33,6 +33,7 @@ function run(emitter: EventEmitter) {
   function notify() {
     emitter.emit(EVENT_NAME, {});
   }
+
   if (initialised) {
     notify();
   } else {
@@ -45,9 +46,11 @@ function run(emitter: EventEmitter) {
 
 export default class InitListener {
   public once: boolean;
+
   constructor() {
     this.once = true;
   }
+
   public start(emitter: EventEmitter): void {
     // for the init listener, we always want to run it
     // because it may be called post-init, in which case

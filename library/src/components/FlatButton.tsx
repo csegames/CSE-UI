@@ -35,6 +35,7 @@ export const defaultFlatButtonStyle: FlatButtonStyle = {
 export interface FlatButtonProps {
   styles?: Partial<FlatButtonStyle>;
   children?: React.ReactNode;
+
   [id: string]: any;
 }
 

@@ -11,12 +11,12 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { 
-         FloatSpinner,
-         Tooltip,
-         Input,
-         events,
-       } from '..';
+import {
+  FloatSpinner,
+  Tooltip,
+  Input,
+  events,
+} from '..';
 import { generateID } from 'redux-typed-modules';
 
 export interface InlineInputEditStyle extends StyleDeclaration {
@@ -59,9 +59,7 @@ export const defaultInlineInputEditStyle: InlineInputEditStyle = {
     fontSize: '0.7em',
   },
 
-  saveButton: {
-
-  },
+  saveButton: {},
 
   error: {
     color: 'darkred',
@@ -73,7 +71,7 @@ export interface InlineInputEditProps {
   value: any;
   type: string;
   inputProps?: any;
-  onSave: (prev: any, entered: string) => Promise<{ok: boolean, error?: string}>;
+  onSave: (prev: any, entered: string) => Promise<{ ok: boolean, error?: string }>;
   styles?: Partial<InlineInputEditStyle>;
 }
 
@@ -82,7 +80,7 @@ export interface InlineInputEditState {
   showEditButton: boolean;
   saving: boolean;
   errors: string;
-  
+
 }
 
 export class InlineInputEdit extends React.Component<InlineInputEditProps, InlineInputEditState> {
@@ -112,13 +110,13 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
         <div className={css(ss.editModeInputContainer, custom.editModeInputContainer)}>
           {
             this.state.errors ?
-            (
-              <div className={css(ss.error, custom.error)}>
-                <Tooltip content={() => <span>{this.state.errors}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Save failed.
-                </Tooltip>
-              </div>
-            ) : null
+              (
+                <div className={css(ss.error, custom.error)}>
+                  <Tooltip content={() => <span>{this.state.errors}</span>}>
+                    <i className='fa fa-exclamation-circle'></i> Save failed.
+                  </Tooltip>
+                </div>
+              ) : null
           }
           <Input type={this.props.type}
                  defaultValue={this.props.value}
@@ -133,23 +131,23 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
                  }}
                  onKeyDown={this.onKeyDown}
                  {...this.props.inputProps} />
-                 {
-                   this.state.saving ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null
-                 }
+          {
+            this.state.saving ? <FloatSpinner styles={{ spinner: { position: 'absolute' } }}/> : null
+          }
           <div className={css(ss.editModeButtons, custom.editModeButtons)}>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.deactivateEditMode} >cancel</a>
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.deactivateEditMode}>cancel</a>
             <a style={{
-                    marginLeft: '4px',
-                    fontSize: '0.8em',
-                  }
-                }
-                onClick={this.doSave}>save</a>
-            
+              marginLeft: '4px',
+              fontSize: '0.8em',
+            }
+            }
+               onClick={this.doSave}>save</a>
+
           </div>
         </div>
       );
@@ -170,7 +168,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
       </div>
     );
   }
-  
+
   public componentDidMount() {
     this.editModeListenerID = events.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
@@ -189,7 +187,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
 
   private onMouseleave = () => {
     if (this.state.showEditButton === false) return;
-    this.setState({showEditButton: false});
+    this.setState({ showEditButton: false });
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -210,7 +208,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
 
   private showEditButton = () => {
     if (this.state.showEditButton) return;
-    this.setState({showEditButton: true});
+    this.setState({ showEditButton: true });
   }
 
   private doSave = () => {
@@ -234,7 +232,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
         });
       });
 
-    this.setState({saving: true});
+    this.setState({ saving: true });
   }
 
   private activateEditMode = () => {
@@ -250,7 +248,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
 
   private deactivateEditMode = () => {
     this.inputRef = null;
-    this.setState({editMode: false});
+    this.setState({ editMode: false });
   }
 }
 

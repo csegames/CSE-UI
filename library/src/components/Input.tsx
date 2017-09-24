@@ -55,6 +55,7 @@ export interface InputProps {
   label?: string;
   inputRef?: (r: HTMLInputElement) => void;
   type: string;
+
   [id: string]: any;
 }
 
@@ -64,13 +65,14 @@ export const Input = (props: Partial<InputProps>) => {
   const custom = StyleSheet.create(styles || {});
   return (
     <div className={css(ss.inputWrapper, custom.inputWrapper)}>
-      {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null }
+      {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null}
       <input
         ref={r => props.inputRef ? props.inputRef(r) : null}
         onFocus={() => client.RequestInputOwnership()}
         onBlur={() => client.ReleaseInputOwnership()}
         className={css(ss.input, custom.input)}
-        {...inputProps} />
+        {...inputProps}
+      />
     </div>
   );
 };

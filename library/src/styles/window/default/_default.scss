@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
 @import "mixins";
 
 .cu-window {
@@ -23,8 +22,8 @@
     &:after {
       bottom: -7px;
       background: url('#{$cu-styles-root}window/default/images/top-left-header.png') no-repeat top left,
-        url('#{$cu-styles-root}window/default/images/top-right-header.png') no-repeat top right,
-        url('#{$cu-styles-root}window/default/images/top-background.png') no-repeat top center / 100% 44px;
+      url('#{$cu-styles-root}window/default/images/top-right-header.png') no-repeat top right,
+      url('#{$cu-styles-root}window/default/images/top-background.png') no-repeat top center / 100% 44px;
     }
     &:before {
       margin-top: 2px;
@@ -94,14 +93,12 @@
   // Default Colours
 
   @include cu-window-header-bg(true) {
-    background:
-      linear-gradient(to bottom, #0e0e0e 0%, #373737 50%, #373737 50%, #272727 50%, #272727 50%, #0c0c0c 100%);
+    background: linear-gradient(to bottom, #0e0e0e 0%, #373737 50%, #373737 50%, #272727 50%, #272727 50%, #0c0c0c 100%);
   }
   @include cu-window-footer-bg(true) {
     background: $color-dark;
   }
   @include cu-window-content-bg(false, $main-background);
-
 
   // Red
 
@@ -114,79 +111,75 @@
     }
   }
   @include cu-window-content-bg(
-    cu-window-bg-red,
-    linear-gradient($color-red, $color-red)
+                  cu-window-bg-red,
+                  linear-gradient($color-red, $color-red)
   );
 
   // Green
 
   .cu-window-bg-green {
     @include cu-window-header-bg {
-      background:
-        linear-gradient(to bottom, $color-green-light 0%, $color-green 50%, $color-green-dark 50%, darken($color-green-dark, 5%) 100%)
+      background: linear-gradient(to bottom, $color-green-light 0%, $color-green 50%, $color-green-dark 50%, darken($color-green-dark, 5%) 100%)
     }
     @include cu-window-footer-bg {
       background: $color-green-dark;
     }
   }
   @include cu-window-content-bg(
-    cu-window-bg-green,
-    linear-gradient($color-green, $color-green)
+                  cu-window-bg-green,
+                  linear-gradient($color-green, $color-green)
   );
 
   // Blue
 
   .cu-window-bg-blue {
     @include cu-window-header-bg {
-      background:
-        linear-gradient(to bottom, lighten($color-blue-light, 10%) 0%, $color-blue-light 50%, $color-blue 50%, $color-blue-dark 100%)
+      background: linear-gradient(to bottom, lighten($color-blue-light, 10%) 0%, $color-blue-light 50%, $color-blue 50%, $color-blue-dark 100%)
     }
     @include cu-window-footer-bg {
       background: $color-blue-dark;
     }
   }
   @include cu-window-content-bg(
-    cu-window-bg-blue,
-    linear-gradient($color-blue, $color-blue)
+                  cu-window-bg-blue,
+                  linear-gradient($color-blue, $color-blue)
   );
 
   // Yellow
 
   .cu-window-bg-yellow {
     @include cu-window-header-bg {
-      background:
-        linear-gradient(to bottom, $color-yellow 0%, darken($color-yellow, 10%) 50%, darken($color-yellow-dark, 10%) 50%, darken($color-yellow-dark, 20%) 100%)
+      background: linear-gradient(to bottom, $color-yellow 0%, darken($color-yellow, 10%) 50%, darken($color-yellow-dark, 10%) 50%, darken($color-yellow-dark, 20%) 100%)
     }
     @include cu-window-footer-bg {
       background: $color-yellow-dark;
     }
   }
   @include cu-window-content-bg(
-    cu-window-bg-yellow,
-    linear-gradient($color-yellow, $color-yellow)
+                  cu-window-bg-yellow,
+                  linear-gradient($color-yellow, $color-yellow)
   );
 
   // Brown
 
   .cu-window-bg-brown {
     @include cu-window-header-bg {
-      background:
-        linear-gradient(to bottom, $color-brown-light 0%, $color-brown 50%, $color-brown-dark 50%, darken($color-brown-dark, 5%) 100%)
+      background: linear-gradient(to bottom, $color-brown-light 0%, $color-brown 50%, $color-brown-dark 50%, darken($color-brown-dark, 5%) 100%)
     }
     @include cu-window-footer-bg {
       background: $color-brown-dark;
     }
   }
   @include cu-window-content-bg(
-    cu-window-bg-brown,
-    linear-gradient($color-brown, $color-brown)
+                  cu-window-bg-brown,
+                  linear-gradient($color-brown, $color-brown)
   );
 
   // Canvas
 
   @include cu-window-content-bg(
-    cu-window-bg-canvas,
-    url('#{$cu-styles-root}window/images/canvas-effect.png')
+                  cu-window-bg-canvas,
+                  url('#{$cu-styles-root}window/images/canvas-effect.png')
   );
 
   // Title

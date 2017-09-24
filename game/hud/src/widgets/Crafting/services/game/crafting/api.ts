@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-06-05 20:16:52
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-06-10 23:39:55
+ * @Last Modified time: 2017-08-11 17:06:20
  */
 
 import {client, webAPI} from 'camelot-unchained';
@@ -21,7 +21,7 @@ export interface VoxResponse {
 }
 
 // generic method to handle the promise, and deal with the reponse
-function run(startRequest: () => Promise<any>) {
+function run(startRequest: () => any) {
   return new Promise((resolve, reject) => {
     startRequest()
       .then((response: any) => {
@@ -37,50 +37,111 @@ function run(startRequest: () => Promise<any>) {
   });
 }
 
-export function setVoxJob(type: string) {
-  return run(() => webAPI.CraftingAPI.setVoxJob(client.shardID, client.characterID, type));
+export function setVoxJob(type: any) {
+  return run(() => webAPI.CraftingAPI.SetVoxJob(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    type,
+  ));
 }
 
 export function startVoxJob() {
-  return run(() => webAPI.CraftingAPI.startVoxJob(client.shardID, client.characterID));
+  return run(() => webAPI.CraftingAPI.StartVoxJob(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+  ));
 }
 
 export function collectVoxJob() {
-  return run(() => webAPI.CraftingAPI.collectFinishedVoxJob(client.shardID, client.characterID));
+  return run(() => webAPI.CraftingAPI.CollectFinishedVoxJob(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+  ));
 }
 
 export function clearVoxJob() {
-  return run(() => webAPI.CraftingAPI.clearVoxJob(client.shardID, client.characterID));
+  return run(() => webAPI.CraftingAPI.ClearVoxJob(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+  ));
 }
 
 export function cancelVoxJob() {
-  return run(() => webAPI.CraftingAPI.cancelVoxJob(client.shardID, client.characterID));
+  return run(() => webAPI.CraftingAPI.CancelVoxJob(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+  ));
 }
 
 export function setVoxQuality(quality: number) {
-  return run(() => webAPI.CraftingAPI.setQuality(client.shardID, client.characterID, (quality / 100)));
+  return run(() => webAPI.CraftingAPI.SetQuality(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    (quality / 100),
+  ));
 }
 
 export function setVoxItemCount(count: number) {
-  return run(() => webAPI.CraftingAPI.setVoxItemCount(client.shardID, client.characterID, count));
+  return run(() => webAPI.CraftingAPI.SetVoxItemCount(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    count,
+  ));
 }
 
 export function setVoxName(name: string) {
-  return run(() => webAPI.CraftingAPI.setCustomItemName(client.shardID, client.characterID, name));
+  return run(() => webAPI.CraftingAPI.SetCustomItemName(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    name,
+  ));
 }
 
 export function setVoxRecipe(id: string) {
-  return run(() => webAPI.CraftingAPI.setRecipeID(client.shardID, client.characterID, id));
-}
-
-export function setVoxTemplate(id: string) {
-  return run(() => webAPI.CraftingAPI.setTemplate(client.shardID, client.characterID, id));
+  return run(() => webAPI.CraftingAPI.SetRecipeID(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    id,
+  ));
 }
 
 export function addVoxIngredient(id: string, qty: number) {
-  return run(() => webAPI.CraftingAPI.addIngredient(client.shardID, client.characterID, id, qty));
+  return run(() => webAPI.CraftingAPI.AddIngredient(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    id,
+    qty,
+    -1,
+  ));
 }
 
 export function removeVoxIngredient(id: string, qty: number) {
-  return run(() => webAPI.CraftingAPI.removeVoxIngredient(client.shardID, client.characterID, id, qty));
+  return run(() => webAPI.CraftingAPI.RemoveVoxIngredient(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    id,
+    qty,
+  ));
 }

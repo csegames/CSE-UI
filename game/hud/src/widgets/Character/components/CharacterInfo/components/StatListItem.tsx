@@ -10,10 +10,11 @@
  */
 
 import * as React from 'react';
+
 import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
 import { utils } from 'camelot-unchained';
 
-import { prettifyText, doesSearchInclude } from '../../../lib/utils';
+import { prettifyText, searchIncludesSection } from '../../../lib/utils';
 import { colors } from '../../../lib/constants';
 
 export interface StatListItemStyles extends StyleDeclaration {
@@ -65,16 +66,10 @@ const defaultStatListItemStyle: StatListItemStyles = {
   },
 };
 
-// The StatInterface is the interface for the actual DamageType and gives us the name and the value of the DamageType.
-// ex.) { name: 'poison', value: 0.3 }
-export interface StatInterface {
-  name: string;
-  value: number | string;
-}
-
 export interface StatListItemProps {
   styles?: Partial<StatListItemStyles>;
-  stat: StatInterface;
+  statName: string;
+  statValue: any;
   index: number;
   searchValue: string;
   sectionTitle?: string;
@@ -84,17 +79,15 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
   public render() {
     const ss = StyleSheet.create(defaultStatListItemStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const stat = this.props.stat;
     const lightItem = this.props.index % 2 === 0;
     const searchIncludes = this.searchIncludesListItem(
       this.props.sectionTitle,
       this.props.searchValue,
-      this.props.stat.name,
+      this.props.statName,
     );
-
+    
     return (
       <div
-        key={stat.name}
         className={css(
           ss.statsListItem,
           custom.statsListItem,
@@ -103,10 +96,13 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
           !searchIncludes && ss.doesNotMatchSearch,
           !searchIncludes && custom.doesNotMatchSearch,
         )}>
-        <p className={css(ss.statText, custom.statText)}>{prettifyText(stat.name)}</p>
-        <p className={css(ss.statText, custom.statText, ss.statValue, custom.statValue)}>
-          {stat.value}
-        </p>
+        <p className={css(ss.statText, custom.statText)}>{prettifyText(this.props.statName)}</p>
+        {typeof this.props.statValue === 'function' ?
+          this.props.statValue() :
+          typeof this.props.statValue === 'number' || typeof this.props.statValue === 'string' ?
+            <p className={css(ss.statText, custom.statText, ss.statValue, custom.statValue)}>{this.props.statValue}</p> :
+            null
+        }
       </div>
     );
   }
@@ -115,26 +111,27 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
     const nextPropsIncludeListItem = this.searchIncludesListItem(
       nextProps.sectionTitle,
       nextProps.searchValue,
-      nextProps.stat.name,
+      nextProps.statName,
     );
     const currentPropsIncludeListItem = this.searchIncludesListItem(
       this.props.sectionTitle,
       this.props.searchValue,
-      this.props.stat.name,
+      this.props.statName,
     );
     return nextPropsIncludeListItem !== currentPropsIncludeListItem;
   }
 
   private searchIncludesListItem = (sectionTitle: string, searchValue: string, statName: string) => {
-    const searchIncludesSection = sectionTitle ?
-    doesSearchInclude(sectionTitle, searchValue) ||
-    doesSearchInclude(searchValue, sectionTitle) : true;
-    const searchIncludes = searchValue !== '' ? sectionTitle ?
-      (searchIncludesSection &&
-        doesSearchInclude(`${sectionTitle} ${statName}`, searchValue) ||
-        doesSearchInclude(`${statName} ${sectionTitle}`, searchValue)) :
-        doesSearchInclude(prettifyText(statName), searchValue) : true;
-    return searchIncludes;
+    if (searchValue !== '') {
+      if (searchIncludesSection(searchValue, sectionTitle)) {
+        return statName ? utils.doesSearchInclude(
+          searchValue.toLowerCase().replace(/\s/g, '')
+          .replace(sectionTitle.replace(/\s/g, '').toLowerCase(), ''), statName.toLowerCase()) : false;
+      }
+      return utils.doesSearchInclude(searchValue, statName);
+    } else {
+      return true;
+    }
   }
 }
 

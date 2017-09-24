@@ -43,6 +43,21 @@ export interface InvitesListProps extends InjectedGraphQLProps<ql.MyCharacterInv
   styles?: Partial<InvitesListStyle>;
 }
 
+async function onAcceptInvitePress(invite: ql.Invite) {
+  const res = await webAPI.GroupsAPI.AcceptInviteV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    invite.groupID,
+    invite.inviteCode,
+  );
+  return {
+    ok: res.ok,
+    error: res.data,
+  };
+}
+
 function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom: Partial<InvitesListStyle>) {
   if (props.data.myCharacter && props.data.myCharacter.invites) {
     return <GridView items={props.data.myCharacter.invites}
@@ -82,24 +97,13 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                     renderItem: (i: ql.Invite) => {
                       if (i.status === 'Active') {
                         return <ActionButton preActionContent={() => <span>Accept</span>}
-                                             inActionContent={() => <Spinner />}
-                                             postActionContent={() => <span>Accepted</span>}
-                                             action={() => {
-                                               return webAPI.GroupsAPI.acceptInviteV1(
-                                                 client.shardID,
-                                                 client.characterID,
-                                                 i.groupID,
-                                                 i.inviteCode).then((result) => {
-                                                  return {
-                                                    ok: result.ok,
-                                                    error: JSON.stringify(result.data),
-                                                  };
-                                                }) as any;
-                                             }}
-                                             onActionSuccess={() => {
+                                              inActionContent={() => <Spinner />}
+                                              postActionContent={() => <span>Accepted</span>}
+                                              action={() => onAcceptInvitePress(i)}
+                                            onActionSuccess={() => {
                                                 props.refetch();
                                                 props.data.refetch();
-                                             }} />;
+                                            }} />;
                       }
                       return <span> - </span>;
                     },

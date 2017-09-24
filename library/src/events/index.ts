@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from './EventEmitter';
-import {clientEventTopics} from './defaultTopics';
+import { clientEventTopics } from './defaultTopics';
 import BuildingEventTopics from '../building/events/BuildingEventTopics';
 
 import InitListener from './listeners/Init';
@@ -115,11 +115,11 @@ export function off(listener: any): void {
  * @param data {any}      Data to be passed to registered handlers
  */
 
-export function fire(topic: string, ...params: any[]) : void {
+export function fire(topic: string, ...params: any[]): void {
   emitter.emit(topic, ...params);
 }
 
-function diagnostics() : void {
+function diagnostics(): void {
   emitter.diagnostics();
 }
 
@@ -129,15 +129,6 @@ export function addListener(topic: string, callback: (...params: any[]) => void)
 
 export function removeListener(listener: any): void {
   off(listener);
-}
-
-export interface ListenerInfo {
-  callback: (...params: any[]) => any;
-  id: number;
-  fired: number;
-  last: number;
-  once: boolean;
-  topic: string;
 }
 
 export default {

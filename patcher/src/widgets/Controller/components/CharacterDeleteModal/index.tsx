@@ -10,6 +10,7 @@ import {
   events,
   Spinner,
   Tooltip,
+  client,
 } from 'camelot-unchained';
 
 export interface CharacterDeleteModalProps {
@@ -58,7 +59,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
           this.state.success ?
             <div className='ChracterDeleteModal__success'>
               <Tooltip content={() => <span>{`${this.props.character.name} was deleted.`}</span>}
-                       styles={{tooltip: {maxWidth: '400px'}}}>
+                      styles={{tooltip: {maxWidth: '400px'}}}>
                   <i className='fa fa-info-circle'></i> Success!
                 </Tooltip>
             </div> :
@@ -92,38 +93,35 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     this.setState({ deleteEnabled: input.value === this.props.character.name });
   }
 
-  private deleteCharacter = (): void => {
-
-    events.fire('play-sound', 'select');
-    this.setState({
-      deleting: true,
-    });
+  private deleteCharacter = async () => {
+    await events.fire('play-sound', 'select');
+    await this.setState({ deleting: true });
 
     const character = this.props.character;
-    webAPI.CharactersAPI.deleteCharacterV1(Number.parseInt(character.shardID), character.id)
-      .then((result) => {
-        if (result.ok) {
-          // success
+    try {
+      const res = await webAPI.CharactersAPI.DeleteCharacterV1(
+        webAPI.defaultConfig,
+        client.loginToken,
+        character.shardID,
+        character.id,
+      );
+      const data = JSON.parse(res.data);
+      if (res.ok) {
+        // success
 
-          this.setState({
-            success: true,
-            error: null,
-            deleting: false,
-          });
+        this.setState({ success: true, error: null, deleting: false });
 
-          setTimeout(() => {
-            this.props.onSuccess();
-          }, 200);
-          return;
-        }
-
-        // failed 
-        this.setState({
-          deleting: false,
-          success: false,
-          error: result.data.Message,
-        });
-      });
+        setTimeout(() => {
+          this.props.onSuccess();
+        }, 200);
+        return;
+      }
+      // failed 
+      this.setState({ deleting: false, success: false, error: data.Message });
+    } catch (err) {
+      webAPI.handleWebAPIError(err);
+      this.setState({ deleting: false, success: false, error: err });
+    }
   }
 
   private cancelDelete = (): void => {
