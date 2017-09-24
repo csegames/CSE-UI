@@ -106,11 +106,11 @@ class Pills extends React.Component<PillsProps, PillsState> {
         ));
         currentDegrees += degPerPill;
         displayedHealth += pillHealth;
-      }      
+      }
 
       return (
         <ul
-          className={`PlayerStatusComponent__pills ${this.props.containerClass ? this.props.containerClass : ''} 
+          className={`PlayerStatusComponent__pills ${this.props.containerClass ? this.props.containerClass : ''}
           ${orientation === Orientation.Vertical ? 'PlayerStatusComponent__pills--vertical' : ''}`}
             ref={(r: any) => this.componentRef = r}
             onMouseEnter={() => this.onEnter()}
@@ -132,7 +132,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     classes.push('PlayerStatusComponent__pills');
     classes.push(this.props.containerClass);
     if (this.props.orientation === Orientation.Vertical) {
-        classes.push('PlayerStatusComponent__pills--vertical');
+      classes.push('PlayerStatusComponent__pills--vertical');
     }
 
 
@@ -196,7 +196,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     this.setState({showTextValues: false} as any);
   }
 
-  
+
   private startFlashRed = () => {
     if (this.componentRef) {
       if (this.componentRef.className.indexOf('PlayerStatusComponent__pills--flashred') !== -1) return;
@@ -239,7 +239,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
     key: number,
     offsetX: number = 60) => {
     const liHeight = 150 / numPills;
-    if (fillPercent <= 0) 
+    if (fillPercent <= 0) {
       return <li key={key}
                 style={{
                   WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
@@ -248,7 +248,8 @@ class Pills extends React.Component<PillsProps, PillsState> {
                 }}
                 onMouseEnter={() => this.onEnter()}
                 onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
-    if (fillPercent >= 100)
+    }
+    if (fillPercent >= 100) {
       return <li key={key}
                 style={{
                   WebkitTransform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
@@ -257,6 +258,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
                 }}
                 onMouseEnter={() => this.onEnter()}
                 onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
+    }
 
     const remainder = 100 - fillPercent;
     const html = `<div style="background: linear-gradient(to bottom, ${fillColor} ${fillPercent.toFixed(2)}%,

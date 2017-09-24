@@ -27,19 +27,21 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
 
   constructor(props: TabbedPaneProps) {
     super(props);
-    this.state = { selectedTabIndex: 0 };
+    this.state = {selectedTabIndex: 0};
   }
 
   public render() {
     let rootClass = '';
-    if (this.props.className)
+    if (this.props.className) {
       rootClass = this.props.className;
+    }
 
     const kids = React.Children.toArray(this.props.children);
     const tabContent = kids[this.state.selectedTabIndex];
     let extraContent: any = null;
-    if (kids.length > this.props.tabs.length)
+    if (kids.length > this.props.tabs.length) {
       extraContent = kids.slice(this.props.tabs.length);
+    }
 
     return (
       <SavedDraggable saveName={'building/' + this.props.name}
@@ -70,7 +72,7 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
   }
 
   private onTabSelect(index: number) {
-    this.setState((state, props) => ({ selectedTabIndex: index }));
+    this.setState((state, props) => ({selectedTabIndex: index}));
     this.props.onTabChange(index, this.props.tabs[index]);
   }
 }

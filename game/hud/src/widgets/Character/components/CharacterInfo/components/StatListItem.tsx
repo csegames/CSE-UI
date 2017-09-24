@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
-import { utils } from 'camelot-unchained';
+import {css, StyleDeclaration, StyleSheet} from 'aphrodite';
+import {utils} from 'camelot-unchained';
 
-import { prettifyText, searchIncludesSection } from '../../../lib/utils';
-import { colors } from '../../../lib/constants';
+import {prettifyText, searchIncludesSection} from '../../../lib/utils';
+import {colors} from '../../../lib/constants';
 
 export interface StatListItemStyles extends StyleDeclaration {
   statsListItem: React.CSSProperties;
@@ -57,7 +57,7 @@ const defaultStatListItemStyle: StatListItemStyles = {
   },
 
   statValue: {
-    
+
   },
 
   doesNotMatchSearch: {
@@ -85,7 +85,7 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
       this.props.searchValue,
       this.props.statName,
     );
-    
+
     return (
       <div
         className={css(

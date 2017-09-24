@@ -40,9 +40,8 @@ class LightSelector extends React.Component<LightSelectorProps, LightSelectorSta
   }
 
   public render() {
-    if (!this.props.show)
-      return null;
-      
+    if (!this.props.show) return null;
+
     const customLights: Light[] = this.props.lights.filter((light: Light) => !light.preset);
     const presetLights: Light[] = this.props.lights.filter((light: Light) => light.preset);
 

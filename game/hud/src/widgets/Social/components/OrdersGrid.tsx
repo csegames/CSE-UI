@@ -8,17 +8,17 @@
  */
 
 import * as React from 'react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import {graphql, InjectedGraphQLProps} from 'react-apollo';
 import gql from 'graphql-tag';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { Spinner, ColumnDefinition } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {Spinner, ColumnDefinition} from 'camelot-unchained';
 import GridViewPager from './GridViewPager';
 
 export interface OrdersGridStyle extends StyleDeclaration {
-  container : React.CSSProperties;
+  container: React.CSSProperties;
 }
 
-export const defaultOrdersGridStyle : OrdersGridStyle = {
+export const defaultOrdersGridStyle: OrdersGridStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
@@ -62,30 +62,30 @@ export const defaultOrdersGridColumnDefinitions: OrdersListColumn[] = [
     title: 'Name',
     sortable: true,
     sortField: 'name',
-    style: { width: '40%' },
+    style: {width: '40%'},
   },
   {
     key: (m: {realm: string}) => m.realm,
     title: 'Realm',
     sortable: true,
     sortField: 'realm',
-    style: { width: '15%' },
+    style: {width: '15%'},
   },
   {
     key: (m: {creator: string}) => m.creator,
     title: 'Creator',
     sortable: false, sortField: 'creator',    // not supported
-    style: { width: '35%' },
+    style: {width: '35%'},
   },
   {
     key: (m: {created: string}) => new Date(m.created).toLocaleDateString(),
     title: 'Created',
     sortable: false, sortField: 'created',    // not supported
-    style: { width: '10%' },
+    style: {width: '10%'},
   },
 ];
 
-const OrdersGrid = (props : OrdersGridProps) => {
+const OrdersGrid = (props: OrdersGridProps) => {
 
   const ss = StyleSheet.create(defaultOrdersGridStyle);
   const columnDefs: OrdersListColumn[] = props.columnDefinitions || defaultOrdersGridColumnDefinitions;
@@ -105,7 +105,7 @@ const OrdersGrid = (props : OrdersGridProps) => {
           itemsPerPage={props.itemsPerPage}
           items={props.data.orders.data}
           columnDefinitions={columnDefs}
-          renderData={{ refetch: props.data.refetch }}
+          renderData={{refetch: props.data.refetch}}
           />
       : <Spinner/>
       }
@@ -145,5 +145,5 @@ const options = (props: OrdersGridProps) => {
   return opts;
 };
 
-const OrdersGridWithQL = graphql(query, { options })(OrdersGrid as any);
+const OrdersGridWithQL = graphql(query, {options})(OrdersGrid as any);
 export default OrdersGridWithQL;

@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {utils} from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
-import { characterAvatarIcon, colors } from '../../../lib/constants';
-import { MyCharacterFragment, MyOrderFragment } from '../../../../../gqlInterfaces';
+import {characterAvatarIcon, colors} from '../../../lib/constants';
+import {MyCharacterFragment, MyOrderFragment} from '../../../../../gqlInterfaces';
 
 export interface GeneralInfoStyles extends StyleDeclaration {
   GeneralInfo: React.CSSProperties;
@@ -87,7 +87,7 @@ export interface GeneralInfoProps {
 }
 
 export interface GeneralInfoState {
-  
+
 }
 
 class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
@@ -101,8 +101,8 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
   public render() {
     const ss = StyleSheet.create(defaultGeneralInfoStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { myCharacter } = this.props;
-    
+    const {myCharacter} = this.props;
+
     return (
       <div className={css(ss.GeneralInfo, custom.GeneralInfo)}>
         <div className={css(ss.generalInfoHeader, custom.generalInfoHeader)}>

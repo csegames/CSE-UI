@@ -1,4 +1,4 @@
-import { ql } from 'camelot-unchained';
+import {ql} from 'camelot-unchained';
 
 export interface TestCharacterStats {
   stats: {

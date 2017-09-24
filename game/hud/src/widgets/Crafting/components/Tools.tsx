@@ -10,15 +10,15 @@
  */
 
 import * as React from 'react';
-import { connect, DispatchProp } from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
-import { StyleSheet, css, merge, tools, ToolsStyles } from '../styles';
+import {connect, DispatchProp} from 'react-redux';
+import {GlobalState} from '../services/session/reducer';
+import {StyleSheet, css, merge, tools, ToolsStyles} from '../styles';
 
 // Helpers
-import { slash } from '../services/game/slash';
+import {slash} from '../services/game/slash';
 
-import { setMessage } from '../services/session/job';
-import { setCountdown } from '../services/session/ui';
+import {setMessage} from '../services/session/job';
+import {setCountdown} from '../services/session/ui';
 
 import Input from './Input';
 import Button from './Button';
@@ -33,8 +33,8 @@ export interface ToolsOwnProps {
   refresh: () => void;
 }
 
-const select = (state: GlobalState, props: ToolsOwnProps) : ToolsPropsRedux => {
-  return { countdown: state.ui.countdown };
+const select = (state: GlobalState, props: ToolsOwnProps): ToolsPropsRedux => {
+  return {countdown: state.ui.countdown};
 };
 
 export type ToolsProps = ToolsPropsRedux & DispatchProp<any> & ToolsOwnProps;
@@ -81,7 +81,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
 
     const makeButton = (args: MakeButton) => {
       return (
-        <Button disabled={args.disabled} style={{ button: tools.button }} onClick={args.click}>
+        <Button disabled={args.disabled} style={{button: tools.button}} onClick={args.click}>
           {args.label}
         </Button>
       );
@@ -106,7 +106,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeInput({
               get: () => this.state.range.toString(),
-              change: (value: string) => this.setState({ range: (value as any) | 0 }),
+              change: (value: string) => this.setState({range: (value as any) | 0}),
               size: 4, numeric: true, min: 0, max: 1000,
             })}
           </div>
@@ -142,7 +142,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeInput({
               get: () => this.state.resources.toString(),
-              change: (value: string) => this.setState({ resources: (value as any) | 0 }),
+              change: (value: string) => this.setState({resources: (value as any) | 0}),
               size: 2, numeric: true, min: 1, max: 20,
             })}
           </div>
@@ -154,7 +154,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeInput({
               get: () => this.state.alloyId,
-              change: (value: string) => this.setState({ alloyId: value }),
+              change: (value: string) => this.setState({alloyId: value}),
               size: 40,
               defaultValue: 'item_alloy_vikingsteel 100 1000',
             })}
@@ -167,7 +167,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeInput({
               get: () => this.state.points.toString(),
-              change: (value: string) => this.setState({ points: (value as any) | 0 }),
+              change: (value: string) => this.setState({points: (value as any) | 0}),
               size: 4, numeric: true, min: 0, max: 100,
             })}
           </div>
@@ -179,7 +179,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
             })}
             { makeInput({
               get: () => this.state.durability.toString(),
-              change: (value: string) => this.setState({ durability: (value as any) | 0 }),
+              change: (value: string) => this.setState({durability: (value as any) | 0}),
               size: 5, numeric: true, min: 0, max: 100,
             })}
           </div>
@@ -194,10 +194,10 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     slash(command, (response: any) => {
       if (response.errors) {
         if (errorAction) props.dispatch(errorAction());
-        props.dispatch(setMessage({ type: 'error', message: response.errors[0] }));
+        props.dispatch(setMessage({type: 'error', message: response.errors[0]}));
       } else {
         if (getAction) props.dispatch(getAction());
-        props.dispatch(setMessage({ type: 'success', message: success }));
+        props.dispatch(setMessage({type: 'success', message: success}));
       }
     });
   }
@@ -218,7 +218,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     this.slash('cr vox forcefinish', 'Forced vox to finish');
     setTimeout(() => {
       this.props.refresh();
-    },100);
+    }, 100);
   }
 }
 

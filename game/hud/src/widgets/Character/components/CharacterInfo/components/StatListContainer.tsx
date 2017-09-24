@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { utils, Input } from 'camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {utils, Input} from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
-import { colors } from '../../../lib/constants';
+import {colors} from '../../../lib/constants';
 
 export interface StatListContainerStyles extends StyleDeclaration {
   StatListContainer: React.CSSProperties;

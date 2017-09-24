@@ -30,10 +30,10 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     return (
       <Provider store={store}>
         <TabbedPane name='recents'
-        tabs={[this.props.minimized ? 'Recent' : 'Recently Used']} 
-          defaultX={[0, Anchor.TO_END]} 
-          defaultY={[200, Anchor.TO_START]} 
-          defaultSize={[200, 100]} 
+        tabs={[this.props.minimized ? 'Recent' : 'Recently Used']}
+          defaultX={[0, Anchor.TO_END]}
+          defaultY={[200, Anchor.TO_START]}
+          defaultSize={[200, 100]}
         >
           <RecentSelections />
         </TabbedPane>

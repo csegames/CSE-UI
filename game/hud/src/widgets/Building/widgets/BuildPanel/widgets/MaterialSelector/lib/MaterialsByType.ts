@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { BuildingMaterial } from 'camelot-unchained';
+import {BuildingMaterial} from 'camelot-unchained';
 
 export default class MaterialsByType {
 
@@ -18,12 +18,13 @@ export default class MaterialsByType {
   private organizeMaterialByType(materials: BuildingMaterial[]) {
     materials.forEach((material: BuildingMaterial) => {
       const type: MaterialType = getTypeFromTags(material.tags);
-      if (type === MaterialType.STONE_BLOCK)
+      if (type === MaterialType.STONE_BLOCK) {
         this.stoneBlocks.push(material);
-      else if (type === MaterialType.STONE_TILE || type === MaterialType.STONE_SHEET)
+      } else if (type === MaterialType.STONE_TILE || type === MaterialType.STONE_SHEET) {
         this.stoneTilesAndSheets.push(material);
-      else
+      } else {
         this.woodAndOrganic.push(material);
+      }
     });
   }
 }
@@ -39,11 +40,9 @@ enum MaterialType {
 function getTypeFromTags(tags: string[]): MaterialType {
   if (hasType(tags, STONE)) {
 
-    if (hasType(tags, STONE_TILES))
-      return MaterialType.STONE_TILE;
+    if (hasType(tags, STONE_TILES)) return MaterialType.STONE_TILE;
 
-    if (hasType(tags, STONE_SHEETS))
-      return MaterialType.STONE_SHEET;
+    if (hasType(tags, STONE_SHEETS)) return MaterialType.STONE_SHEET;
 
     return MaterialType.STONE_BLOCK;
   } else if (hasType(tags, WOOD_AND_ORGANIC)) {
@@ -55,8 +54,7 @@ function getTypeFromTags(tags: string[]): MaterialType {
 function hasType(tags: string[], types: { [key: string]: boolean }): boolean {
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
-    if (types[tag])
-      return true;
+    if (types[tag]) return true;
   }
   return false;
 }
@@ -79,4 +77,4 @@ const STONE_SHEETS: { [key: string]: boolean } = {
   polished: true, // bad tag
 };
 
-const WOOD_AND_ORGANIC: { [key: string]: boolean } = { wood: true, grass: true, thatch: true };
+const WOOD_AND_ORGANIC: { [key: string]: boolean } = {wood: true, grass: true, thatch: true};

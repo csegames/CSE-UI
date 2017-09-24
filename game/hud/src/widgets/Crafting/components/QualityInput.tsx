@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Label from './Label';
 import Input from './Input';
-import { GlobalState } from '../services/session/reducer';
-import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../styles';
+import {GlobalState} from '../services/session/reducer';
+import {StyleSheet, css, merge, qualityInput, QualityInputStyles} from '../styles';
 
 export interface QualityInputReduxProps {
   dispatch?: (action: any) => void;
@@ -27,7 +27,7 @@ export interface QualityInputProps extends QualityInputReduxProps {
   onChange: (quality: number) => void;
 }
 
-const select = (state: GlobalState, props: QualityInputProps) : QualityInputReduxProps => {
+const select = (state: GlobalState, props: QualityInputProps): QualityInputReduxProps => {
   return {
     quality: state.job.quality,
   };
@@ -36,8 +36,8 @@ const select = (state: GlobalState, props: QualityInputProps) : QualityInputRedu
 const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
-    <div className={css(ss.qualityInput)} style={ props.disabled ? { opacity: 0.1 } : {} }>
-      <Label style={{ label: qualityInput.label }}>Quality</Label>
+    <div className={css(ss.qualityInput)} style={ props.disabled ? {opacity: 0.1} : {} }>
+      <Label style={{label: qualityInput.label}}>Quality</Label>
       <Input
         name='quality'
         numeric={true} min={1} max={100}

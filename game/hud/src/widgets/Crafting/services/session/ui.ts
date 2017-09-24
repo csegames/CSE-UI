@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-06-17 14:13:34
  */
 
-import { Module } from 'redux-typed-modules';
+import {Module} from 'redux-typed-modules';
 
 export interface UIState {
   mode: string;
@@ -18,7 +18,7 @@ export interface UIState {
   minimized: boolean;     // minimized?
 }
 
-export const initialState = () : UIState => {
+export const initialState = (): UIState => {
   return {
     mode: 'crafting',
     countdown: 0,
@@ -39,40 +39,40 @@ const module = new Module({
 export const setUIMode = module.createAction({
   type: 'crafting/ui/mode',
   action: (mode: string) => {
-    return { mode };
+    return {mode};
   },
   reducer: (s, a) => {
-    return { mode: a.mode };
+    return {mode: a.mode};
   },
 });
 
 export const setCountdown = module.createAction({
   type: 'crafting/ui/countdown',
   action: (countdown: number) => {
-    return { countdown };
+    return {countdown};
   },
   reducer: (s, a) => {
-    return { countdown: a.countdown };
+    return {countdown: a.countdown};
   },
 });
 
 export const setRemaining = module.createAction({
   type: 'crafting/ui/crafting-progress',
   action: (remaining: number) => {
-    return { remaining };
+    return {remaining};
   },
   reducer: (s, a) => {
-    return { remaining: a.remaining };
+    return {remaining: a.remaining};
   },
 });
 
 export const setMinimized = module.createAction({
   type: 'crafting/ui/minimized',
   action: (minimized: boolean) => {
-    return { minimized };
+    return {minimized};
   },
   reducer: (s, a) => {
-    return { minimized: a.minimized };
+    return {minimized: a.minimized};
   },
 });
 

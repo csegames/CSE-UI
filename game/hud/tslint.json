@@ -1,18 +1,47 @@
 {
-  /*
-   * Possible values:
-   * - the name of a built-in config
-   * - the name of an NPM module which has a "main" file that exports a config object
-   * - a relative path to a JSON file
-   */
   "extends": [
     "tslint-config-airbnb",
     "tslint-eslint-rules"
   ],
   "rules": {
-    /*
-     * Any rules specified here will override those from the base config we are extending.
-     */
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "ter-no-irregular-whitespace": [true],
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ],
+    "object-curly-spacing": [
+      true,
+      "never"
+    ],
     "quotemark": [
       true,
       "single",
@@ -31,7 +60,6 @@
         "constructor":"never"
       }
     ],
-    "object-curly-spacing": true,
     "interface-name": [
       true,
       "never-prefix"
@@ -70,18 +98,27 @@
     ],
     "no-increment-decrement": false,
     "align": [],
-    "ter-arrow-parens": [true, "as-needed", { "requireForBlockBody": true }]
+    "ter-arrow-parens": [
+      true,
+      "as-needed",
+      {
+        "requireForBlockBody": true
+      }
+    ],
+    "no-trailing-whitespace": true,
+    "object-shorthand-properties-first": false,
+    "ter-indent": [
+      true,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-param-reassign": false
   },
   "jsRules": {
-    /*
-     * Any rules specified here will override those from the base config we are extending.
-     */
     "curly": true
   },
   "rulesDirectory": [
-    /*
-     * A list of relative or absolute paths to directories that contain custom rules.
-     * See the Custom Rules documentation below for more details.
-     */
   ]
 }

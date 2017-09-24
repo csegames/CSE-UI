@@ -38,9 +38,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           name='blocks'
           tabs={['Blocks', 'Replace']}
           onTabChange={(index: number, name: string) => this.onTabChange}
-          defaultX={[0, Anchor.TO_END]} 
-          defaultY={[0, Anchor.TO_START]} 
-          defaultSize={[200, 200]} 
+          defaultX={[0, Anchor.TO_END]}
+          defaultY={[0, Anchor.TO_START]}
+          defaultSize={[200, 200]}
         >
           <MaterialAndShapePane {...this.props}/>
           <MaterialReplace {...this.props}/>

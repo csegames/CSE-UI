@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
-import { Ingredient, Recipe, InventoryItem } from '../services/types';
-import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../styles';
+import {connect} from 'react-redux';
+import {GlobalState} from '../services/session/reducer';
+import {Ingredient, Recipe, InventoryItem} from '../services/types';
+import {StyleSheet, css, merge, jobDetails, JobDetailsStyles} from '../styles';
 import Ingredients from './Ingredients';
 
 import Button from './Button';
@@ -33,7 +33,7 @@ interface JobDetailsReduxProps {
   dispatch?: (action: any) => void;
 }
 
-const select = (state: GlobalState, props: JobDetailsProps) : JobDetailsReduxProps => {
+const select = (state: GlobalState, props: JobDetailsProps): JobDetailsReduxProps => {
   const job = state.job;
   return {
     remaining: state.ui.remaining,
@@ -59,8 +59,8 @@ export interface JobDetailsProps extends JobDetailsReduxProps {
 
 export const JobDetails = (props: JobDetailsProps) => {
   const ss = StyleSheet.create(merge({}, jobDetails, props.style));
-  const buttonStyle = { button: jobDetails.button };
-  const { type, status, outputItems } = props;
+  const buttonStyle = {button: jobDetails.button};
+  const {type, status, outputItems} = props;
 
   // enabled state of buttons
   const canStart = outputItems && outputItems.length && status === 'Configuring';

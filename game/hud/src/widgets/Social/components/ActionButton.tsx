@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import {
   RaisedButton,
   Tooltip,
@@ -80,8 +80,8 @@ export class ActionButton extends React.Component<ActionButtonProps, ActionButto
           }
         <RaisedButton onClick={this.state.executed ? null : this.doExecute}>
           {
-            this.state.executing ? 
-              <span>{this.props.inActionContent(this.props.renderData)}</span> : 
+            this.state.executing ?
+              <span>{this.props.inActionContent(this.props.renderData)}</span> :
                 this.state.executed ?
                   <span>{this.props.postActionContent(this.props.renderData)}</span> :
                   <span>{this.props.preActionContent(this.props.renderData)}</span>

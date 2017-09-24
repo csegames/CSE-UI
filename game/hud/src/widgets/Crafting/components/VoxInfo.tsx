@@ -11,10 +11,10 @@
 
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { GlobalState, JobState } from '../services/session/reducer';
+import {connect} from 'react-redux';
+import {GlobalState, JobState} from '../services/session/reducer';
 
-import { StyleSheet, css, merge, voxInfo, VoxInfoStyles } from '../styles';
+import {StyleSheet, css, merge, voxInfo, VoxInfoStyles} from '../styles';
 
 export interface VoxInfoReduxProps {
   dispatch?: (action: any) => void;
@@ -24,7 +24,7 @@ export interface VoxInfoReduxProps {
 
 export interface VoxInfoProps extends VoxInfoReduxProps {}
 
-const select = (state: GlobalState, props: VoxInfoProps) : VoxInfoReduxProps => {
+const select = (state: GlobalState, props: VoxInfoProps): VoxInfoReduxProps => {
   return {
     job: state.job,
   };

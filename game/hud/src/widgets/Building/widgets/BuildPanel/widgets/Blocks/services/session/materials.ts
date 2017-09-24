@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, BuildingBlock, BuildingMaterial, buildUIMode } from 'camelot-unchained';
+import {events, BuildingBlock, BuildingMaterial, buildUIMode} from 'camelot-unchained';
 
-import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
+import {selectFromMaterial, selectToMaterial, setBlockMode} from './materials-replace';
 import * as assign from 'object-assign';
 
 const SELECT_MATERIAL = 'buildpanel/panes/SELECT_MATERIAL';
@@ -91,9 +91,10 @@ export default function reducer(state: MaterialsState = initialState, action: an
       });
     case SELECT_BLOCK:
       const block: BuildingBlock = action.selectedBlock;
-      const newState: MaterialsState = { selectedBlock: block } as MaterialsState;
-      if (state.selectedMaterial.id !== block.materialId)
+      const newState: MaterialsState = {selectedBlock: block} as MaterialsState;
+      if (state.selectedMaterial.id !== block.materialId) {
         newState.selectedMaterial = getMaterialById(block.materialId, state.materials);
+      }
       return assign({}, state, newState);
     default: return state;
   }

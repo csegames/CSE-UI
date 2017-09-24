@@ -9,23 +9,23 @@
  * @Last Modified time: 2017-07-31 14:04:03
  */
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client, AnyEntityState, SiegeState, PlayerState } from 'camelot-unchained';
-import { isEqual } from 'lodash';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {client, AnyEntityState, SiegeState, PlayerState} from 'camelot-unchained';
+import {isEqual} from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
   return (
     <div style={{
-                width: '100%',
-                height: '100%',
-                position: 'relative',
-                background: props.background,
-                }}>
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      background: props.background,
+    }}>
       <div style={{
-                background: props.foreground,
-                height: '100%',
-                width: ((props.current / props.max) * 100).toFixed(2) + '%',
-               }}></div>
+        background: props.foreground,
+        height: '100%',
+        width: ((props.current / props.max) * 100).toFixed(2) + '%',
+      }}></div>
     </div>
   );
 };
@@ -33,9 +33,9 @@ const ProgressBar = (props: {current: number, max: number, foreground: string, b
 const CenteredTextOverlay = (props: {text: string, textStyle: any, children: any}) => {
   return (
     <div style={{
-                position: 'relative',
-                display: 'inline-block',
-               }}>
+      position: 'relative',
+      display: 'inline-block',
+    }}>
       {props.children}
       <div style={{
         position: 'absolute',
@@ -48,8 +48,8 @@ const CenteredTextOverlay = (props: {text: string, textStyle: any, children: any
         alignItems: 'center',
       }}>
         <div style={{
-                  ...props.textStyle,
-                 }}>
+          ...props.textStyle,
+        }}>
           {props.text}
         </div>
       </div>
@@ -65,14 +65,14 @@ interface SiegeButtonStyle extends StyleDeclaration {
 
 const deaultSiegeButtonStyle: SiegeButtonStyle = {
   button: {
-     position: 'relative',
-     display: 'inline-block',
-     border: '1px solid rgba(220, 220, 220, 0.5)',
-     padding: '2px 8px',
-     userSelect: 'none',
-     '-webkit-user-select': 'none',
-     pointerEvents: 'all',
-     background: 'rgba(0, 0, 0, 0.5)',
+    position: 'relative',
+    display: 'inline-block',
+    border: '1px solid rgba(220, 220, 220, 0.5)',
+    padding: '2px 8px',
+    userSelect: 'none',
+    '-webkit-user-select': 'none',
+    pointerEvents: 'all',
+    background: 'rgba(0, 0, 0, 0.5)',
   },
   buttonEnabled: {
     cursor: 'pointer',
@@ -86,11 +86,11 @@ const deaultSiegeButtonStyle: SiegeButtonStyle = {
 };
 
 const SiegeButton = (props: {
-                              enabled: boolean,
-                              styles?: SiegeButtonStyle,
-                              onClick?: () => void;
-                              children: any,
-                            }) => {
+  enabled: boolean,
+  styles?: SiegeButtonStyle,
+  onClick?: () => void;
+  children: any,
+}) => {
   const ss = StyleSheet.create(deaultSiegeButtonStyle);
   const custom = StyleSheet.create((props.styles || {}) as SiegeButtonStyle);
   return (
@@ -120,16 +120,16 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
       margin: 'auto',
       color: '#ececec',
       userSelect: 'none',
-     '-webkit-user-select': 'none',
+      '-webkit-user-select': 'none',
     }}>
       <div>{props.controlledBy === null ? props.state.name : `${props.state.name} (${props.controlledBy})`}</div>
       <CenteredTextOverlay text={props.state.health.current + '/' + props.state.health.max}
                            textStyle={{color: '#ececec', fontWeight: '700'}}>
         <div style={{
-                     width: '200px',
-                     height: '20px',
-                     border: '2px solid rgba(220, 220, 220, 0.75)',
-                   }}>
+          width: '200px',
+          height: '20px',
+          border: '2px solid rgba(220, 220, 220, 0.75)',
+        }}>
           <ProgressBar current={props.state.health.current} max={props.state.health.max}
                        foreground={'red'} background={'#333'} />
         </div>
@@ -142,7 +142,7 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
         </AlignRight>
       }
     </div>
-  ); 
+  );
 };
 
 export enum HealthFor {
@@ -166,29 +166,29 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
   }
   public componentDidMount() {
     switch (this.props.for) {
-      case HealthFor.Self: 
-      client.OnPlayerStateChanged((entity) => {
-        try {
-          this.setState({entity});
-        } catch (e) {}
-      });
-      break;
+      case HealthFor.Self:
+        client.OnPlayerStateChanged((entity) => {
+          try {
+            this.setState({entity});
+          } catch (e) {}
+        });
+        break;
 
       case HealthFor.EnemyTarget:
-      client.OnEnemyTargetStateChanged((entity) => {
-        try {
-          this.setState({entity});
-        } catch (e) {}
-      });
-      break;
+        client.OnEnemyTargetStateChanged((entity) => {
+          try {
+            this.setState({entity});
+          } catch (e) {}
+        });
+        break;
 
       case HealthFor.FriendlyTarget:
-      client.OnFriendlyTargetStateChanged((entity) => {
-        try {
-          this.setState({entity});
-        } catch (e) {}
-      });
-      break;
+        client.OnFriendlyTargetStateChanged((entity) => {
+          try {
+            this.setState({entity});
+          } catch (e) {}
+        });
+        break;
     }
   }
 

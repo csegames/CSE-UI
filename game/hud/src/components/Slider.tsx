@@ -11,7 +11,7 @@
 
 /**
  * USAGE EXAMPLE
- * 
+ *
  * <Slider>
  *   {items.map((item: Item, index: number) => {
  *     return (
@@ -24,9 +24,9 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { spring, TransitionMotion } from 'react-motion';
-import { merge } from 'lodash';
+import {StyleSheet, css} from 'aphrodite';
+import {spring, TransitionMotion} from 'react-motion';
+import {merge} from 'lodash';
 import * as className from 'classnames';
 
 const defaultStyles: SliderStyle = {
@@ -142,7 +142,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
           styles={items.map((item: any) => ({
             key: this.keyGen++,
             data: item,
-            style: { opacity: spring(1, { stiffness: 50, damping: 15, precision: 0.01 }) },
+            style: {opacity: spring(1, {stiffness: 50, damping: 15, precision: 0.01})},
           }))}>
           {(interpolatedStyles: any) =>
             <div className={css(ss.items)}>
@@ -151,7 +151,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
                   <div
                     key={slide.key}
                     className={css(ss.item)}
-                    style={{ position: 'absolute', top: 0, opacity: slide.style.opacity }}>
+                    style={{position: 'absolute', top: 0, opacity: slide.style.opacity}}>
                     {slide.data}
                   </div>
                 );
@@ -165,7 +165,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
         <a className={className(
           css(ss.arrow),
           css(ss.arrowLeft),
-          { [css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 })}
+          {[css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0})}
           onClick={() => this.prev()}>
         </a>
         <a className={className(
@@ -184,7 +184,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
 
     let index = this.state.index + 1;
     if (index >= this.props.children.length) index = this.props.loop ? 0 : this.props.children.length - 1;
-    if (index !== this.state.index) this.setState({ index } as any);
+    if (index !== this.state.index) this.setState({index} as any);
   }
 
   public prev = () => {
@@ -192,7 +192,7 @@ class Slider extends React.Component<SliderProps, SliderState> {
 
     let index = this.state.index - 1;
     if (index < 0) index = this.props.loop ? this.props.children.length - 1 : 0;
-    if (index !== this.state.index) this.setState({ index } as any);
+    if (index !== this.state.index) this.setState({index} as any);
   }
 
   public selectSlide = (index: number) => {
@@ -221,11 +221,11 @@ class Slider extends React.Component<SliderProps, SliderState> {
   }
 
   private slideWillEnter = (): any => {
-    return { left: 0 };
+    return {left: 0};
   }
 
   private slideWillLeave = (): any => {
-    return { left: spring(0, { stiffness: 50, damping: 15, precision: 0.01 }) };
+    return {left: spring(0, {stiffness: 50, damping: 15, precision: 0.01})};
   }
 }
 

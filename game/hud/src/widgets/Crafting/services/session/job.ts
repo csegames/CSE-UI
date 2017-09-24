@@ -9,9 +9,9 @@
  * @Last Modified time: 2017-08-11 17:55:00
  */
 
-import { Module } from 'redux-typed-modules';
-import { Ingredient, InventoryItem, Recipe, Message } from '../types';
-import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
+import {Module} from 'redux-typed-modules';
+import {Ingredient, InventoryItem, Recipe, Message} from '../types';
+import {VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem} from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -33,7 +33,7 @@ export interface JobState {
   count: number;
 }
 
-export const initialState = () : JobState => {
+export const initialState = (): JobState => {
   return {
     status: 'unknown',
     ready: false,
@@ -57,41 +57,41 @@ export const initialState = () : JobState => {
 
 const module = new Module({
   initialState: initialState(),
-  actionExtraData: () => ({ when: new Date() }),
+  actionExtraData: () => ({when: new Date()}),
 });
 
 export const setJobType = module.createAction({
   type: 'crafting/job/set-job',
-  action: (jobType: string) => ({ jobType }),
-  reducer: (s, a) => ({ type: a.jobType }),
+  action: (jobType: string) => ({jobType}),
+  reducer: (s, a) => ({type: a.jobType}),
 });
 
 export const setStatus = module.createAction({
   type: 'crafting/job/set-status',
-  action: (status: string) => ({ status }),
-  reducer: (s, a) => ({ status: a.status }),
+  action: (status: string) => ({status}),
+  reducer: (s, a) => ({status: a.status}),
 });
 
 export const setCount = module.createAction({
   type: 'crafting/job/set-count',
-  action: (count: number) => ({ count }),
-  reducer: (s, a) => ({ count: a.count || 0 }),
+  action: (count: number) => ({count}),
+  reducer: (s, a) => ({count: a.count || 0}),
 });
 
 export const setLoading = module.createAction({
   type: 'crafting/job/set-loading',
-  action: (loading: boolean) => ({ loading }),
-  reducer: (s, a) => ({ loading: a.loading }),
+  action: (loading: boolean) => ({loading}),
+  reducer: (s, a) => ({loading: a.loading}),
 });
 
 export const addIngredient = module.createAction({
   type: 'crafting/job/add-ingredient',
   action: (ingredient: Ingredient, qty: number, movedTo: string) => {
-    return { ingredient, qty, movedTo };
+    return {ingredient, qty, movedTo};
   },
   reducer: (s, a) => {
-    const ingredients = [ ...s.ingredients ];
-    const possibleIngredients = [ ...s.possibleIngredients ];
+    const ingredients = [...s.ingredients];
+    const possibleIngredients = [...s.possibleIngredients];
     const qty = a.qty;
     if (a.movedTo) {
       let i;
@@ -140,10 +140,10 @@ function isSameIngredient(a: Ingredient, b: Ingredient): boolean {
 
 export const removeIngredient = module.createAction({
   type: 'crafting/job/remove-ingredient',
-  action: (item: Ingredient) => ({ item }),
+  action: (item: Ingredient) => ({item}),
   reducer: (s, a) => {
     const ingredients = s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id);
-    const possibleIngredients = [ ...s.possibleIngredients ];
+    const possibleIngredients = [...s.possibleIngredients];
     const qty = a.item.qty;  // the quantity of the item added to the vox
     let i;
     // add back to possible ingredients
@@ -190,7 +190,7 @@ export const clearJob = module.createAction({
 export const cancelJob = module.createAction({
   type: 'crafting/job/cancel',
   action: () => ({}),
-  reducer: (s, a) => ({ status: 'Configuring' }),
+  reducer: (s, a) => ({status: 'Configuring'}),
 });
 
 export const collectJob = module.createAction({
@@ -201,31 +201,31 @@ export const collectJob = module.createAction({
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
-  action: (recipe: Recipe) => ({ recipe }),
-  reducer: (s, a) => ({ recipe: a.recipe }),
+  action: (recipe: Recipe) => ({recipe}),
+  reducer: (s, a) => ({recipe: a.recipe}),
 });
 
 export const setQuality = module.createAction({
   type: 'crafting/job/set-quality',
-  action: (quality: number) => ({ quality }),
-  reducer: (s, a) => ({ quality: a.quality || 0 }),
+  action: (quality: number) => ({quality}),
+  reducer: (s, a) => ({quality: a.quality || 0}),
 });
 
 export const setName = module.createAction({
   type: 'crafting/job/set-name',
-  action: (name: string) => ({ name }),
-  reducer: (s, a) => ({ name: a.name }),
+  action: (name: string) => ({name}),
+  reducer: (s, a) => ({name: a.name}),
 });
 
 export const setMessage = module.createAction({
   type: 'crafting/job/set-message',
-  action: (message: Message) => ({ message }),
-  reducer: (s, a) => ({ message: a.message }),
+  action: (message: Message) => ({message}),
+  reducer: (s, a) => ({message: a.message}),
 });
 
 export const gotVoxPossibleIngredients = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients',
-  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => ({ ingredients, ingredientsType }),
+  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => ({ingredients, ingredientsType}),
   reducer: (s, a) => ({
     possibleIngredients: mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
     possibleType: a.ingredientsType,
@@ -263,7 +263,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
 
 export const gotVoxStatus = module.createAction({
   type: 'crafting/job/got-vox-status',
-  action: (status: VoxStatus) => ({ status }),
+  action: (status: VoxStatus) => ({status}),
   reducer: (s, a) => {
     const status = a.status;
     const startTime = new Date(status.startTime);
@@ -277,7 +277,7 @@ export const gotVoxStatus = module.createAction({
       started: startTime.toISOString(),
       timeRemaining: status.timeRemaining,
       totalCraftingTime: status.totalCraftingTime,
-      recipe: status.recipeID && { id: status.recipeID, name: '' },
+      recipe: status.recipeID && {id: status.recipeID, name: ''},
       name: status.givenName,
       ingredients,
     };
@@ -314,8 +314,8 @@ function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
 
 export const gotOutputItems = module.createAction({
   type: 'crafting/job/got-output-items',
-  action: (outputItems: VoxOutputItem[]) => ({ outputItems }),
-  reducer: (s, a) => ({ outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) }),
+  action: (outputItems: VoxOutputItem[]) => ({outputItems}),
+  reducer: (s, a) => ({outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems)}),
 });
 
 export default module.createReducer();

@@ -5,7 +5,7 @@
  */
 
 
-import { LayoutMode } from '../../../components/HUDDrag';
+import {LayoutMode} from '../../../components/HUDDrag';
 import ReleaseControl from '../../../components/ReleaseControl';
 import HUDZOrder from '../HUDZOrder';
 

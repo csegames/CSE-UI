@@ -178,13 +178,13 @@ export default () => {
 
   /**
    * Create a new Warband
-   * 
+   *
    * usage:
-   * 
+   *
    *   1. Create a temporary warband, this type of warband will go away after all members leave.
    *      This is the standard "Party".
    *    /createWarband
-   * 
+   *
    *   2. Create a permanent warband, this type of warband will live on until it is abandonded by all its members.
    *    /createWarband Friendship Warriors
    */
@@ -200,7 +200,7 @@ export default () => {
 
   /**
    * Invite a player to your warband you are invite
-   * 
+   *
    * usage:  /invite mehuge
   */
 

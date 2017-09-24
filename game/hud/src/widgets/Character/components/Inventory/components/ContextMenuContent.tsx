@@ -11,12 +11,12 @@
 
 import * as React from 'react';
 
-import { ContextMenuContentProps, RaisedButton, events, ql } from 'camelot-unchained';
+import {ContextMenuContentProps, RaisedButton, events, ql} from 'camelot-unchained';
 
-import { StyleDeclaration } from 'aphrodite';
+import {StyleDeclaration} from 'aphrodite';
 import eventNames from '../../../lib/eventNames';
-import { prettifyText } from '../../../lib/utils';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import {prettifyText} from '../../../lib/utils';
+import {InventoryItemFragment} from '../../../../../gqlInterfaces';
 
 export interface ContextMenuContentStyle extends StyleDeclaration {
   contextMenuButton: React.CSSProperties;
@@ -37,11 +37,11 @@ export interface ContextMenuContentCompProps {
 
 class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}> {
   public render() {
-    const { contextMenuButton } = defaultContextMenuContentStyle;
+    const {contextMenuButton} = defaultContextMenuContentStyle;
     return (
       <div>
         {this.renderGearSlotButtons()}
-        <RaisedButton styles={{ button: contextMenuButton }} onClick={this.onDropItem}>
+        <RaisedButton styles={{button: contextMenuButton}} onClick={this.onDropItem}>
           Drop item
         </RaisedButton>
       </div>
@@ -49,13 +49,13 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private renderGearSlotButtons = () => {
-    const { gearSlotSets } = this.props.item && this.props.item.staticDefinition;
-    const { contextMenuButton } = defaultContextMenuContentStyle;
+    const {gearSlotSets} = this.props.item && this.props.item.staticDefinition;
+    const {contextMenuButton} = defaultContextMenuContentStyle;
     return gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
       return (
         <RaisedButton
           key={i}
-          styles={{ button: contextMenuButton }}
+          styles={{button: contextMenuButton}}
           onClick={() => this.onEquipItem(gearSlotSet.gearSlots)}
           onMouseOver={() => this.onHighlightSlots(gearSlotSet.gearSlots)}
           onMouseLeave={this.onDehighlightSlots}>
@@ -73,7 +73,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private onEquipItem = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
-    const { item, contextMenuProps } = this.props;
+    const {item, contextMenuProps} = this.props;
     const payload: any = {
       inventoryItem: item,
       willEquipTo: gearSlots,
@@ -84,7 +84,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private onDropItem = () => {
-    const { item, contextMenuProps } = this.props;
+    const {item, contextMenuProps} = this.props;
     const payload = {
       inventoryItem: item,
     };

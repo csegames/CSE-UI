@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events, Race, hasClientAPI, Player, Gender } from 'camelot-unchained';
-import { PlayerStatus } from '../../../../lib/PlayerStatus';
+import {client, events, Race, hasClientAPI, Player, Gender} from 'camelot-unchained';
+import {PlayerStatus} from '../../../../lib/PlayerStatus';
 import {
   fakePlayer,
   fakeHealthEvents,
@@ -139,10 +139,10 @@ export function initializePlayerSession() {
     );
 
     client.OnCharacterPositionChanged(_.throttle((x: number, y: number) =>
-      dispatch(onCharacterPositionChanged({ x, y })), 250));
+      dispatch(onCharacterPositionChanged({x, y})), 250));
 
     client.OnFriendlyTargetPositionChanged(_.throttle((x: number, y: number) =>
-      dispatch(onTargetPositionChanged({ x, y })), 250));
+      dispatch(onTargetPositionChanged({x, y})), 250));
 
     // init handlers / events
     events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
@@ -168,7 +168,7 @@ function initialState() {
   };
 }
 
-export default function reducer(state: PlayerState = initialState(), action: TargetAction = defaultAction) : PlayerState {
+export default function reducer(state: PlayerState = initialState(), action: TargetAction = defaultAction): PlayerState {
   switch (action.type) {
     case INIT: return merge(state, {});
 
@@ -191,7 +191,7 @@ export default function reducer(state: PlayerState = initialState(), action: Tar
       {
         return merge(state, raceChanged(state.playerStatus, action));
       }
-    
+
     case AVATAR_CHANGED:
       {
         return merge(state, avatarChanged(state.playerStatus, action));
@@ -204,7 +204,7 @@ export default function reducer(state: PlayerState = initialState(), action: Tar
 
     case TARGET_POSITION_CHANGED:
       {
-        return merge(state, targetPositionChanged(state.playerStatus, action));  
+        return merge(state, targetPositionChanged(state.playerStatus, action));
       }
 
     case PLAYER_UPDATE:

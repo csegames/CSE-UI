@@ -10,10 +10,10 @@
  */
 
 import 'isomorphic-fetch';
-import { Promise } from 'es6-promise';
-import { gql } from './gql';
-import { QUERIES } from './queryText';
-import { VoxPossibleIngredient, VoxStatus, VoxRecipe } from './queryTypes';
+import {Promise} from 'es6-promise';
+import {gql} from './gql';
+import {QUERIES} from './queryText';
+import {VoxPossibleIngredient, VoxStatus, VoxRecipe} from './queryTypes';
 
 const ERRORS = {
   NotFound: 'No vox nearby',
@@ -26,21 +26,21 @@ const ERRORS = {
 
 function runQuery(query: string, key: string) {
   return new Promise((resolve, reject) => {
-    gql({ query }).then((data: any) => {
+    gql({query}).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
       if (info) {
         resolve(info);
       } else {
         if (data.crafting) {
-          reject({ reason: ERRORS.NotLoggedIn, data });
+          reject({reason: ERRORS.NotLoggedIn, data});
         } else {
           // No crafting key, at least we expected that!
-          reject({ reason: ERRORS.UnrecognisedResponse, data });
+          reject({reason: ERRORS.UnrecognisedResponse, data});
         }
       }
     })
     .catch((error: any) => {
-      reject({ reason: error.message });
+      reject({reason: error.message});
     });
   });
 }

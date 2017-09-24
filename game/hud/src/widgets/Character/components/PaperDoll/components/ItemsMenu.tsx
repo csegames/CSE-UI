@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
-import { InventoryState } from '../../../services/session/inventoryState';
+import {InventoryState} from '../../../services/session/inventoryState';
 // import ItemsMenuBox from './ItemsMenuBox';
-import { ql } from 'camelot-unchained';
+import {ql} from 'camelot-unchained';
 
 export interface ItemsMenuStyles extends StyleDeclaration {
   itemsMenu: React.CSSProperties;
@@ -94,7 +94,7 @@ const defaultItemsMenuStyle: ItemsMenuStyles = {
     margin: '0 2px',
     padding: 0,
   },
-  
+
   childContainer: {
     width: '72px',
     height: '72px',
@@ -133,8 +133,8 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
 
   public render() {
     const ss = this.ss = StyleSheet.create({...defaultItemsMenuStyle, ...this.props.styles});
-    
-    const { onMouseEnter, onMouseLeave } = this.props;
+
+    const {onMouseEnter, onMouseLeave} = this.props;
     // const { top, left, validItems } = this.state;
 
     return (
@@ -172,7 +172,7 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
   }
 
   private initializeValidItems = (itemSlots = this.props.inventoryState.itemSlots) => {
-    const { slotName } = this.props;
+    const {slotName} = this.props;
     const validItems: Partial<ql.schema.Item>[] = [];
     if (itemSlots) {
       itemSlots.forEach((inventoryItem) => {
@@ -188,20 +188,20 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
         }
       });
 
-      this.setState({ validItems });
+      this.setState({validItems});
     }
   }
 
   private renderItemSlotContainer = () => {
     const ss = this.ss;
-    const { slotName, openingSide } = this.props;
-    const { validItems } = this.state;
+    const {slotName, openingSide} = this.props;
+    const {validItems} = this.state;
 
     if (_.includes(openingSide, 'weapon')) {
       return (
         <div className={css(ss.weaponSlotContainer)}>
           <div className={css(ss.weaponValidItemsWrapper)}>
-            <div className={css(ss.miniValidItemsContainer)} style={{ marginBottom: '2px' }}>
+            <div className={css(ss.miniValidItemsContainer)} style={{marginBottom: '2px'}}>
               {validItems.map((validItem, i) => {
                 if (i < 8 && validItem !== null) {
                   return <div key={i} className={css(ss.miniValidItems)} />;
@@ -229,7 +229,7 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
               {this.props.children}
             </div>
             <div className={css(ss.armorValidItemsWrapper)}>
-              <div className={css(ss.miniValidItemsContainer)} style={{ marginLeft: '2px' }}>
+              <div className={css(ss.miniValidItemsContainer)} style={{marginLeft: '2px'}}>
                 {validItems.map((validItem, i) => {
                   if (i < 8 && validItem !== null) {
                     return <div key={i} className={css(ss.miniValidItems)} />;
@@ -248,7 +248,7 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
         return (
           <div className={css(ss.armorSlotContainer)}>
             <div className={css(ss.armorValidItemsWrapper)}>
-              <div className={css(ss.rightMiniValidItemsContainer)} style={{ marginRight: '2px' }}>
+              <div className={css(ss.rightMiniValidItemsContainer)} style={{marginRight: '2px'}}>
                 {validItems.map((validItem, i) => {
                   if (i < 8 && validItem !== null) {
                     return <div key={i} className={css(ss.miniValidItems)} />;
@@ -256,7 +256,7 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
                 })}
               </div>
               {validItems.length > 8 &&
-                <p className={css(ss.validItemsLengthText)} style={{ alignSelf: 'flex-end' }}>
+                <p className={css(ss.validItemsLengthText)} style={{alignSelf: 'flex-end'}}>
                   {validItems.length}
                 </p>
               }
@@ -271,11 +271,11 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
   }
 
   private setWindowPosition = () => {
-    const { slotName, openingSide } = this.props;
+    const {slotName, openingSide} = this.props;
     const offsets = document.getElementById(slotName).getBoundingClientRect();
-    const { top, left, height, width } = offsets;
+    const {top, left, height, width} = offsets;
     const margin = 15;
-    
+
     switch (openingSide) {
       case 'weapon-tr': {
         this.setState({

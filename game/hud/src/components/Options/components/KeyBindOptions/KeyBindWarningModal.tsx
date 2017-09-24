@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import { utils, client, dxKeyCodes } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ConfigInfo } from '../../OptionsMain';
+import {utils, client, dxKeyCodes} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {ConfigInfo} from '../../OptionsMain';
 
 export interface KeyBindWarningModalStyle extends StyleDeclaration {
   KeyBindWarningModal: React.CSSProperties;

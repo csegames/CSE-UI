@@ -11,8 +11,8 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../styles';
-import { GlobalState } from '../services/session/reducer';
+import {StyleSheet, css, merge, jobType, JobTypeStyles} from '../styles';
+import {GlobalState} from '../services/session/reducer';
 
 import Button from './Button';
 
@@ -44,14 +44,14 @@ export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
   const job = props.jobType;
   const button = (type: string) => {
-      const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
-      return (
+    const style = {button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined)};
+    return (
         <Button style={style}
           disabled={job && job !== 'invalid' && job !== type}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>
-      );
+    );
   };
   let craftingButtons;
   switch (props.mode) {

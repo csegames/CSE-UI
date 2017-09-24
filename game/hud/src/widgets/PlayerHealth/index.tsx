@@ -60,12 +60,12 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 }
 
 const PlayerComp = connect((state) => {
-   return {
+  return {
     player: state.player,
   };
 })(PlayerHealth);
 
-class Container extends React.Component<ContainerProps,{}> {
+class Container extends React.Component<ContainerProps, {}> {
   public render() {
     return (
       <Provider store={store}>

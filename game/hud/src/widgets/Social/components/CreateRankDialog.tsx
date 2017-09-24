@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton} from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 
@@ -39,7 +39,7 @@ export const defaultCreateRankStyle: CreateRankStyle = {
 };
 
 export interface CreateRankProps {
-  dispatch: (action : any) => any;
+  dispatch: (action: any) => any;
   groupId: string;
   permissions: ql.PermissionInfo[];
   onCancel: () => void;
@@ -85,7 +85,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
     const custom = StyleSheet.create(this.props.styles || {});
     return (
       <div className={css(ss.container, custom.container)}>
-        
+
         <GroupTitle refetch={() => 0}>Create Rank</GroupTitle>
 
         <div className={css(ss.contentWrapper, custom.contentWrapper)}>
@@ -132,7 +132,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
     const level = Number.parseInt(this.levelInputRef.value);
     const permisisons = this.listSelectRef.getRightKeys();
 
-    await this.setState({ requestActive: true });
+    await this.setState({requestActive: true});
 
     const res = await webAPI.GroupsAPI.CreateRankV1(
       webAPI.defaultConfig,
@@ -153,35 +153,35 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
       setTimeout(() => this.props.onCreated(), 200);
       return;
     }
-    this.setState({ requestActive: false, errors: res.data });
-      
+    this.setState({requestActive: false, errors: res.data});
+
   }
 
   private createButton = () => {
     if (this.state.requestActive) {
       return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  },
-                }}><Spinner /></FlatButton>;
+        button: {
+          margin: '10px',
+          fontSize: '1.5em',
+        },
+      }}><Spinner /></FlatButton>;
     }
 
     if (this.state.success) {
       return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  },
-                }}>Success!</FlatButton>;
+        button: {
+          margin: '10px',
+          fontSize: '1.5em',
+        },
+      }}>Success!</FlatButton>;
     }
 
     return <FlatButton styles={{
-                  button: {
-                    margin: '10px',
-                    fontSize: '1.5em',
-                  },
-                }}
+      button: {
+        margin: '10px',
+        fontSize: '1.5em',
+      },
+    }}
                 onClick={this.createRank}>Create</FlatButton>;
   }
 }

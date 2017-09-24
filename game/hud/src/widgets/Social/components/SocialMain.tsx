@@ -10,13 +10,13 @@
  */
 
 import * as React from 'react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
-import { connect } from 'react-redux';
-import { events, ql, FloatSpinner } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {graphql, InjectedGraphQLProps} from 'react-apollo';
+import {connect} from 'react-redux';
+import {events, ql, FloatSpinner} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
-import { NavigationState, selectLink, toggleCollapsedCategory} from '../services/session/navigation';
-import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';
+import {NavigationState, selectLink, toggleCollapsedCategory} from '../services/session/navigation';
+import {CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals} from '../services/session/nav/navTypes';
 
 import PersonalContent from './PersonalContent';
 import OrderContent from './OrderContent';
@@ -74,10 +74,10 @@ export interface SocialMainProps extends InjectedGraphQLProps<ql.MySocialQuery> 
 
 export interface SocialMainState {
   orderName: string;
- }
+}
 
 class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainState> {
-  
+
   private ready = false;
 
   constructor(props: SocialMainProps) {
@@ -106,29 +106,29 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
     } else {
       this.ready = true;
 
-    switch (this.props.navigation.currentView.category) {
-      case SocialCategory.Personal:
-        content = <PersonalContent dispatch={this.props.dispatch}
+      switch (this.props.navigation.currentView.category) {
+        case SocialCategory.Personal:
+          content = <PersonalContent dispatch={this.props.dispatch}
                                    address={this.props.navigation.currentView}
                                    refetch={this.refresh}
                                    myCharacter={this.props.data.myCharacter} />;
-        break;
-      case SocialCategory.Order:
-        content = <OrderContent dispatch={this.props.dispatch}
+          break;
+        case SocialCategory.Order:
+          content = <OrderContent dispatch={this.props.dispatch}
                                 address={this.props.navigation.currentView}
                                 order={this.props.data.myOrder}
                                 refetch={this.refresh} />;
-        break;
-      case SocialCategory.Alliance:
-        content = <AllianceContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
-        break;
-      case SocialCategory.Warbands:
-        content = <WarbandContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
-        break;
-      case SocialCategory.Campaigns:
-        content = <CampaignContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
-        break;
-    }
+          break;
+        case SocialCategory.Alliance:
+          content = <AllianceContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
+          break;
+        case SocialCategory.Warbands:
+          content = <WarbandContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
+          break;
+        case SocialCategory.Campaigns:
+          content = <CampaignContent dispatch={this.props.dispatch} address={this.props.navigation.currentView}/>;
+          break;
+      }
     }
 
     return (
@@ -153,15 +153,15 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
 
   public componentWillReceiveProps(props: SocialMainProps) {
     if (props.data && props.data.myOrder && props.data.myOrder.name !== this.state.orderName) {
-      
-        events.fire('chat-leave-room', this.state.orderName);
-      
+
+      events.fire('chat-leave-room', this.state.orderName);
+
       // we either are just loading up, or we've changed order.
       if (props.data.myOrder.id) {
         // we left our order, leave chat room
         events.fire('chat-show-room', props.data.myOrder.name);
       }
-      
+
       this.setState({
         orderName: props.data.myOrder.name,
       });

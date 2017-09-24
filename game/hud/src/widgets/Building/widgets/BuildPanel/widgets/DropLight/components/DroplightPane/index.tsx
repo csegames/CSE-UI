@@ -47,7 +47,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
 
   constructor(props: DropLightPaneProps) {
     super(props);
-    this.state = { preview: false };
+    this.state = {preview: false};
   }
 
   public render() {

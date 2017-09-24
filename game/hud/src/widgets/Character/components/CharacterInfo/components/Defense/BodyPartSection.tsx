@@ -11,13 +11,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { ql, utils, Tooltip } from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import {ql, utils, Tooltip} from 'camelot-unchained';
 
 import GridStats from '../GridStats';
 import StatListItem from '../StatListItem';
-import { colors, characterBodyPartIcons } from '../../../../lib/constants';
-import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
+import {colors, characterBodyPartIcons} from '../../../../lib/constants';
+import {prettifyText, searchIncludesSection} from '../../../../lib/utils';
 
 export interface BodyPartSectionStyles extends StyleDeclaration {
   bodyPartSection: React.CSSProperties;
@@ -40,7 +40,7 @@ const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
 
   bodyPartSectionHeader: {
     display: 'flex',
-    padding:'5px',
+    padding: '5px',
     fontSize: 18,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
     backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
@@ -81,7 +81,7 @@ const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
     fontSize: 16,
   },
-  
+
   valueText: {
     width: '40px',
     borderLeft: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
@@ -134,13 +134,13 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
       };
     });
   });
-  const headerListItem = { name: 'header', resistancesValue: 'R', mitigationsValue: 'M' };
+  const headerListItem = {name: 'header', resistancesValue: 'R', mitigationsValue: 'M'};
   const statsArray = [
     headerListItem,
     ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
       a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
   ];
-  
+
   return (
     <div className={css(ss.bodyPartSection, custom.bodyPartSection)}>
       <header className={css(
@@ -170,10 +170,10 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
                 !searchIncludes && ss.doesNotMatchSearch,
                 !searchIncludes && custom.doesNotMatchSearch)}
               >
-                <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+                <Tooltip content='Resistances' styles={{Tooltip: defaultBodyPartSectionStyle.listHeaderText}}>
                   {item.resistancesValue}
                 </Tooltip>
-                <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+                <Tooltip content='Mitigations' styles={{Tooltip: defaultBodyPartSectionStyle.listHeaderText}}>
                   {item.mitigationsValue}
                 </Tooltip>
               </div>

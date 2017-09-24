@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { client, utils, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {client, utils, events, TabPanel, TabItem, ContentItem} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 import ActionButtons from './components/ActionButtons';
 import KeyBindings from './components/KeyBindOptions/KeyBindings';
@@ -32,7 +32,7 @@ export interface OptionsStyle extends StyleDeclaration {
   contentPadding: React.CSSProperties;
   contentOverflowContainer: React.CSSProperties;
   close: React.CSSProperties;
-  loadSaveText:  React.CSSProperties;
+  loadSaveText: React.CSSProperties;
 }
 
 export const OptionDimensions = {
@@ -107,9 +107,9 @@ export const defaultOptionsStyle: OptionsStyle = {
   },
 
   tabPanelContent: {
-    
+
   },
-  
+
   tabText: {
     cursor: 'pointer',
   },
@@ -192,7 +192,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   public render() {
     const ss = this.ss = StyleSheet.create(defaultOptionsStyle);
     const custom = this.custom = StyleSheet.create(this.props.styles || {});
-    
+
     const tabs: TabItem[] = [
       {
         name: 'KEYBIND',
@@ -227,22 +227,22 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     const content: ContentItem[] = [
       {
         name: 'KeyBindings',
-        content: { render: this.renderKeyBindings },
+        content: {render: this.renderKeyBindings},
       },
       {
         name: 'Input',
-        content: { render: this.renderInput },
+        content: {render: this.renderInput},
       },
       {
         name: 'Audio',
-        content: { render: this.renderAudio },
+        content: {render: this.renderAudio},
       },
       {
         name: 'Graphics',
-        content: { render: this.renderGraphics },
+        content: {render: this.renderGraphics},
       },
     ];
-    
+
     return this.state.visible ? (
       <div className={css(ss.Options, custom.Options)}>
         <div className={css(ss.optionsHeader, custom.optionsHeader)}>
@@ -280,19 +280,19 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     client.OnReceiveConfigVars((configsString) => {
       switch (this.state.activeConfigIndex) {
         case ConfigIndex.AUDIO: {
-          this.setState({ audioConfigs: this.initConfigs(configsString) });
+          this.setState({audioConfigs: this.initConfigs(configsString)});
           break;
         }
         case ConfigIndex.KEYBIND: {
-          this.setState({ keyBindConfigs: this.initConfigs(configsString) });
+          this.setState({keyBindConfigs: this.initConfigs(configsString)});
           break;
         }
         case ConfigIndex.INPUT: {
-          this.setState({ inputConfigs: this.initConfigs(configsString) });
+          this.setState({inputConfigs: this.initConfigs(configsString)});
           break;
         }
         case ConfigIndex.RENDERING: {
-          this.setState({ renderConfigs: this.initConfigs(configsString) });
+          this.setState({renderConfigs: this.initConfigs(configsString)});
           break;
         }
       }
@@ -302,10 +302,10 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   private handleVisibility = (name: string) => {
     if (name === 'gamemenu' && this.state.visible) {
       client.ReleaseInputOwnership();
-      this.setState({ visible: false });
+      this.setState({visible: false});
     }
     if (name === 'options') {
-      this.setState({ visible: !this.state.visible });
+      this.setState({visible: !this.state.visible});
     }
   }
 
@@ -314,14 +314,14 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   }
 
   private onActiveTabChanged = (tabIndex: number, name: string) => {
-    this.setState({ activeConfigIndex: ConfigIndex[name] });
+    this.setState({activeConfigIndex: ConfigIndex[name]});
   }
 
   private renderKeyBindings = () => {
     return (
       <KeyBindings
         keyBindConfigs={this.state.keyBindConfigs}
-        onKeyBindingsChange={keyBindConfigs => this.setState({ keyBindConfigs })}
+        onKeyBindingsChange={keyBindConfigs => this.setState({keyBindConfigs})}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -331,7 +331,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     return (
       <InputOptions
         inputConfigs={this.state.inputConfigs}
-        onInputConfigsChange={inputConfigs => this.setState({ inputConfigs })}
+        onInputConfigsChange={inputConfigs => this.setState({inputConfigs})}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -341,7 +341,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     return (
       <AudioOptions
         audioConfigs={this.state.audioConfigs}
-        onAudioConfigsChange={audioConfigs => this.setState({ audioConfigs })}
+        onAudioConfigsChange={audioConfigs => this.setState({audioConfigs})}
         activeConfigIndex={this.state.activeConfigIndex}
       />
     );
@@ -352,7 +352,7 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
       <div className={css(this.ss.contentOverflowContainer, this.custom.contentOverflowContainer)}>
         <RenderingOptions
           renderingConfigs={this.state.renderConfigs}
-          onRenderConfigsChange={renderConfigs => this.setState({ renderConfigs })}
+          onRenderConfigsChange={renderConfigs => this.setState({renderConfigs})}
           activeConfigIndex={this.state.activeConfigIndex}
         />
       </div>
@@ -362,16 +362,16 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   private initConfigs = (configsString: string) => {
     const configs = JSON.parse(configsString);
     return Object.keys(configs).map((config) => {
-        return { name: config, value: configs[config] };
+      return {name: config, value: configs[config]};
     });
   }
 
   private onLoadDiskClick = () => {
-    this.setState({ loadSaveText: 'Bindings Loaded From Disk' });
+    this.setState({loadSaveText: 'Bindings Loaded From Disk'});
   }
 
   private onSaveDiskClick = () => {
-    this.setState({ loadSaveText: 'Bindings Saved To Disk' });
+    this.setState({loadSaveText: 'Bindings Saved To Disk'});
   }
 }
 

@@ -31,13 +31,13 @@ export const defaultInlineWarbandStyle: InlineWarbandStyle = {
 
 const inlineWarband = (props: InlineWarbandProps) => {
   if (props.data.loading) {
-      return <Spinner />;
-    }
-    return (
+    return <Spinner />;
+  }
+  return (
       <a href={`#warband/${props.data.warband.id}`}>
         {props.data.warband.name}
       </a>
-    );
+  );
 };
 
 export default graphql(ql.queries.InlineWarband, {

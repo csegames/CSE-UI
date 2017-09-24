@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, client, GroupInvite, signalr, events } from 'camelot-unchained';
+import {webAPI, client, GroupInvite, signalr, events} from 'camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -82,7 +82,7 @@ function fetchInvitesSuccess(invites: GroupInvite[]): InvitesAction {
   };
 }
 
-function fetchInvitesFailed(error?:string): InvitesAction {
+function fetchInvitesFailed(error?: string): InvitesAction {
   return {
     type: FETCH_INVITES_FAILED,
     when: new Date(),
@@ -102,7 +102,7 @@ function inviteReceived(invite: GroupInvite): InvitesAction {
  * EXTERNAL ACTIONS
  */
 
-export function initializeInvites() : AsyncAction<InvitesAction> {
+export function initializeInvites(): AsyncAction<InvitesAction> {
   return (dispatch: (action: InvitesAction | AsyncAction<InvitesAction>) => any) => {
     dispatch(fetchInvites());
     dispatch(initSignalR());
@@ -120,7 +120,7 @@ export function initializeInvites() : AsyncAction<InvitesAction> {
   };
 }
 
-export function acceptInvite(invite: GroupInvite) : InvitesAction {
+export function acceptInvite(invite: GroupInvite): InvitesAction {
   joinWithInvite(invite);
   return {
     type: ACCEPT_INVITE,
@@ -129,7 +129,7 @@ export function acceptInvite(invite: GroupInvite) : InvitesAction {
   };
 }
 
-export function declineInvite(invite: GroupInvite) : InvitesAction {
+export function declineInvite(invite: GroupInvite): InvitesAction {
   return {
     type: DECLINE_INVITE,
     when: new Date(),
@@ -137,7 +137,7 @@ export function declineInvite(invite: GroupInvite) : InvitesAction {
   };
 }
 
-export function fetchInvites() : AsyncAction<InvitesAction> {
+export function fetchInvites(): AsyncAction<InvitesAction> {
   return (dispatch: (action: any) => any) => {
     dispatch(requestInvites());
 
@@ -199,13 +199,13 @@ function inviteEquals(a: GroupInvite, b: GroupInvite): boolean {
 
 const actionDefs: ActionDefinitions<InvitesState> = {};
 
-actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, { isInitalizing: false });
+actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, {isInitalizing: false});
 
-actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, { isInitalizing: false, signalRInitialized: true });
+actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
 
-actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, { isInitalizing: false, signalRInitialized: true });
+actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
 
-actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => merge(state, { isFetching: true });
+actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => merge(state, {isFetching: true});
 
 actionDefs[ACCEPT_INVITE] = (state: InvitesState, action: InvitesAction) => {
   return merge(state, {
@@ -220,6 +220,6 @@ actionDefs[DECLINE_INVITE] = (state: InvitesState, action: InvitesAction) => {
 };
 
 actionDefs[INVITE_RECEIVED] = (state: InvitesState, action: InvitesAction) =>
-  merge(state, { invites: addOrUpdate(state.invites, action.invite, inviteEquals) });
+  merge(state, {invites: addOrUpdate(state.invites, action.invite, inviteEquals)});
 
 export default createReducer<InvitesState>(initialState(), actionDefs);

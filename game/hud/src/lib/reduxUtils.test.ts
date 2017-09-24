@@ -20,19 +20,19 @@ describe('reduxUtils', () => {
   describe('clone', () => {
 
     test('should return an object', () => {
-      const original: testObject = {foo: 'bar', bar: { baz: 'foo' }};
+      const original: testObject = {foo: 'bar', bar: {baz: 'foo'}};
       const cloned: testObject = reduxUtils.clone(original);
       expect(cloned).toBeInstanceOf(Object);
     });
 
     it('contains exact values of input object', () => {
-      const original: testObject = {foo: 'bar', bar: { baz: 'foo' }};
+      const original: testObject = {foo: 'bar', bar: {baz: 'foo'}};
       const cloned: testObject = reduxUtils.clone(original);
       expect(cloned).toEqual(original);
     });
 
     it('should not reference input object', () => {
-      const original: testObject = {foo: 'bar', bar: { baz: 'foo' }};
+      const original: testObject = {foo: 'bar', bar: {baz: 'foo'}};
       const originalReference: testObject = original;
       const cloned: testObject = reduxUtils.clone(original);
       expect(originalReference).toBe(original);

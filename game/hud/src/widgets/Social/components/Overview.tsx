@@ -18,7 +18,7 @@ import GroupTitle from './GroupTitle';
 import InlineCharacter from './InlineCharacter';
 import InlineOrder from './InlineOrder';
 
-const defaultStyle : OverviewStyle = {
+const defaultStyle: OverviewStyle = {
   containter: {
     flex: '1 1 auto',
     display: 'flex',
@@ -109,36 +109,36 @@ const defaultStyle : OverviewStyle = {
 };
 
 export interface OverviewStyle extends StyleDeclaration {
-  containter : React.CSSProperties;
-  title : React.CSSProperties;
-  content : React.CSSProperties;
-  contentTop : React.CSSProperties;
-  logo : React.CSSProperties;
-  logoIMG : React.CSSProperties;
-  summary : React.CSSProperties;
-  summaryItem : React.CSSProperties;
-  summaryHeader : React.CSSProperties;
-  row : React.CSSProperties;
-  recentActivity : React.CSSProperties;
-  recentActivityHeader : React.CSSProperties;
-  recentActivityItem : React.CSSProperties;
+  containter: React.CSSProperties;
+  title: React.CSSProperties;
+  content: React.CSSProperties;
+  contentTop: React.CSSProperties;
+  logo: React.CSSProperties;
+  logoIMG: React.CSSProperties;
+  summary: React.CSSProperties;
+  summaryItem: React.CSSProperties;
+  summaryHeader: React.CSSProperties;
+  row: React.CSSProperties;
+  recentActivity: React.CSSProperties;
+  recentActivityHeader: React.CSSProperties;
+  recentActivityItem: React.CSSProperties;
 }
 
 export interface OrderOverviewProps extends InjectedGraphQLProps<ql.OrderActionsQuery> {
-  dispatch: (action : any) => any;
+  dispatch: (action: any) => any;
   refetch: () => void;
   order: ql.FullOrder;
   styles?: Partial < OverviewStyle >;
 }
 
 interface InlineCardComponentDetails {
-  replace : string;
-  component : any; // #TODO: real types!
+  replace: string;
+  component: any; // #TODO: real types!
   componentProps?: any;
 }
 
 
-function parseFor(s : string, regex: RegExp, component: any, shard : number) : InlineCardComponentDetails[] {
+function parseFor(s: string, regex: RegExp, component: any, shard: number): InlineCardComponentDetails[] {
   const result = [];
   let match = regex.exec(s);
   while (match != null) {
@@ -156,15 +156,15 @@ function parseFor(s : string, regex: RegExp, component: any, shard : number) : I
   return result;
 }
 
-function parseForCharacter(s : string, shard : number) : InlineCardComponentDetails[] {
+function parseForCharacter(s: string, shard: number): InlineCardComponentDetails[] {
   return parseFor(s, new RegExp(/<CharacterID:(\w+)>/g), InlineCharacter, shard);
 }
 
-function parseForOrder(s : string, shard : number) : InlineCardComponentDetails[] {
+function parseForOrder(s: string, shard: number): InlineCardComponentDetails[] {
   return parseFor(s, new RegExp(/<GroupID:(\w+)>/g), InlineOrder, shard);
 }
 
-function generateMessage(s : string, currentIndex : number, elements : InlineCardComponentDetails[]) : JSX.Element {
+function generateMessage(s: string, currentIndex: number, elements: InlineCardComponentDetails[]): JSX.Element {
   if (s === '') return null;
 
   if (currentIndex >= elements.length) {
@@ -189,7 +189,7 @@ function unCamelize(s: string) {
 }
 
 class Overview extends React.Component<OrderOverviewProps, {}> {
-  
+
   public render() {
     const ss = StyleSheet.create(defaultStyle);
     const custom = StyleSheet.create(this.props.styles || {});
@@ -198,8 +198,8 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
     return (
       <div className={css(ss.containter, custom.containter)}>
           <GroupTitle styles={{
-                        title: ss.title,
-                      }}
+            title: ss.title,
+          }}
                       refetch={this.props.refetch}>
           {order.name}
           </GroupTitle>
@@ -251,7 +251,7 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
     );
   }
 
-  private renderActionCard = (action : ql.MemberAction, key: number, ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
+  private renderActionCard = (action: ql.MemberAction, key: number, ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
     const elements = parseForCharacter(action.message, client.shardID)
       .concat(parseForOrder(action.message, client.shardID));
     return (
@@ -265,7 +265,7 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
 }
 
 const OverviewQL = graphql(ql.queries.OrderActions, {
-  options: (props : OrderOverviewProps) => ({
+  options: (props: OrderOverviewProps) => ({
     variables: {
       id: props.order.id,
       shard: client.shardID,

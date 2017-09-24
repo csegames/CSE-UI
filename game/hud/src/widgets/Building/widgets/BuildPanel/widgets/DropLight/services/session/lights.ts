@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { Light } from '../../lib/Light';
-import { Color } from '../../lib/Color';
+import {Light} from '../../lib/Light';
+import {Color} from '../../lib/Color';
 import * as assign from 'object-assign';
 
 
@@ -20,49 +20,49 @@ const UPDATE_LIGHT_INTENSITY = 'buildpanel/droplight/UPDATE_INTENSITY';
 
 const PRESETS: Light[] = [
   {
-    color: { red: 255, green: 147, blue: 41 } as Color,
+    color: {red: 255, green: 147, blue: 41} as Color,
     radius: 5,
     intensity: 10,
     preset: true,
     presetName: 'Candle',
   } as Light,
   {
-    color: { red: 255, green: 147, blue: 41 } as Color,
+    color: {red: 255, green: 147, blue: 41} as Color,
     radius: 10,
     intensity: 15,
     preset: true,
     presetName: 'Torchlight',
   } as Light,
   {
-    color: { red: 255, green: 197, blue: 143 } as Color,
+    color: {red: 255, green: 197, blue: 143} as Color,
     radius: 10,
     intensity: 15,
     preset: true,
     presetName: 'Lamp',
   } as Light,
   {
-    color: { red: 255, green: 200, blue: 150 } as Color,
+    color: {red: 255, green: 200, blue: 150} as Color,
     radius: 1000,
     intensity: 1,
     preset: true,
     presetName: 'Dim Ambient',
   } as Light,
   {
-    color: { red: 255, green: 200, blue: 150 } as Color,
+    color: {red: 255, green: 200, blue: 150} as Color,
     radius: 1000,
     intensity: 8,
     preset: true,
     presetName: 'Bright Ambient',
   } as Light,
   {
-    color: { red: 255, green: 200, blue: 150 } as Color,
+    color: {red: 255, green: 200, blue: 150} as Color,
     radius: 1000,
     intensity: 20,
     preset: true,
     presetName: 'Sunny Day',
   } as Light,
   {
-    color: { red: 167, green: 0, blue: 255 } as Color,
+    color: {red: 167, green: 0, blue: 255} as Color,
     radius: 1000,
     intensity: 20,
     preset: true,
@@ -89,7 +89,7 @@ function isCustomLight(light: Light): boolean {
 
 function saveLights(lights: Light[]) {
   const lightStrings: string[] = lights.filter(isCustomLight).map(getLightAsString);
-  
+
   localStorage.setItem(LIGHT_STORAGE_KEY, '[' + lightStrings.join(', ') + ']');
 }
 
@@ -107,7 +107,7 @@ export function loadLights(dispatch: (action: any) => void) {
   } else {
     for (let i = 0; i < 10; i++) {
       const newLight = {
-        color: { red: 255, green: 147, blue: 14 } as Color,
+        color: {red: 255, green: 147, blue: 14} as Color,
         radius: 5,
         intensity: 10,
       } as Light;
@@ -183,29 +183,29 @@ function setSelectedLight(state: LightsState, light: Light) {
   state.lights[state.selectedIndex] = light;
 }
 
-export default function reducer(state: LightsState = initialState, action: any = {}) {  
+export default function reducer(state: LightsState = initialState, action: any = {}) {
   switch (action.type) {
     case SHOW_SELECTOR:
-      return assign({}, state, { showLightSelector: action.show });
+      return assign({}, state, {showLightSelector: action.show});
     case SELECT_LIGHT:
-      return assign({}, state, { selectedIndex: action.selectedLight.index });
+      return assign({}, state, {selectedIndex: action.selectedLight.index});
     case SET_LIGHTS:
       return assign({}, state, {
         lights: action.lights,
         selectedIndex: 0,
       });
     case UPDATE_LIGHT_COLOR:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { color: action.color }));
+      setSelectedLight(state, assign({}, getSelectedLight(state), {color: action.color}));
       saveLights(state.lights);
-      return assign({}, state, { list: [...state.lights] });
+      return assign({}, state, {list: [...state.lights]});
     case UPDATE_LIGHT_RADIUS:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { radius: action.radius }));
+      setSelectedLight(state, assign({}, getSelectedLight(state), {radius: action.radius}));
       saveLights(state.lights);
-      return assign({}, state, { list: [...state.lights] });
+      return assign({}, state, {list: [...state.lights]});
     case UPDATE_LIGHT_INTENSITY:
-      setSelectedLight(state, assign({}, getSelectedLight(state), { intensity: action.intensity }));
+      setSelectedLight(state, assign({}, getSelectedLight(state), {intensity: action.intensity}));
       saveLights(state.lights);
-      return assign({}, state, { list: [...state.lights] });
+      return assign({}, state, {list: [...state.lights]});
     default: return state;
   }
 }

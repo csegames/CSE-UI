@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {WarbandMember} from 'camelot-unchained';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import PlayerStatusComponent from '../../../components/PlayerStatusComponent';
 
@@ -39,7 +39,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
 
   public render() {
     const style = StyleSheet.create(defaultStyle);
-    const leader = false;// this.props.member.rank == warbandRanks.LEADER;
+    const leader = false; // this.props.member.rank == warbandRanks.LEADER;
     return (
       <div className={css(style.WarbandMemberDisplay)}>
         <PlayerStatusComponent

@@ -12,18 +12,18 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, ql, events } from 'camelot-unchained';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {ContentItem, TabItem, TabPanel, ql, events} from 'camelot-unchained';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
-import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
-import { gearSlots } from '../../../lib/constants';
+import PopupMiniInventory, {Alignment} from './PopupMiniInventory';
+import {gearSlots} from '../../../lib/constants';
 import eventNames, {
   EquipItemCallback,
   UnequipItemCallback,
   UpdateInventoryItems,
 } from '../../../lib/eventNames';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import {InventoryItemFragment} from '../../../../../gqlInterfaces';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -112,46 +112,46 @@ export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
 };
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.Face, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.Neck, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderLeft, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderRight, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Chest, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Back, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Waist, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Cloak, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmLeft, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmRight, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandLeft, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandRight, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Thighs, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Shins, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Feet, openingSide: Alignment.ABottomLeft },
+  {slotName: gearSlots.Skull, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.Face, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.Neck, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.ShoulderLeft, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.ShoulderRight, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.Chest, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.Back, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.Waist, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.Cloak, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.ForearmLeft, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.ForearmRight, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.HandLeft, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.HandRight, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.Thighs, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.Shins, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.Feet, openingSide: Alignment.ABottomLeft},
 ];
 
 const innerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.SkullUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.FaceUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.NeckUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.ChestUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.BackUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.WaistUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.CloakUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.FeetUnder, openingSide: Alignment.ABottomLeft },
+  {slotName: gearSlots.SkullUnder, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.FaceUnder, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.NeckUnder, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight},
+  {slotName: gearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.ChestUnder, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.BackUnder, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.WaistUnder, openingSide: Alignment.ABottomRight},
+  {slotName: gearSlots.CloakUnder, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft},
+  {slotName: gearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft},
+  {slotName: gearSlots.FeetUnder, openingSide: Alignment.ABottomLeft},
 ];
 
 const weaponSlots: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.PrimaryHandWeapon, openingSide: Alignment.WTopRight },
-  { slotName: gearSlots.SecondaryHandWeapon, openingSide: Alignment.WTopLeft },
+  {slotName: gearSlots.PrimaryHandWeapon, openingSide: Alignment.WTopRight},
+  {slotName: gearSlots.SecondaryHandWeapon, openingSide: Alignment.WTopLeft},
 ];
 
 export interface EquipmentSlotsProps {
@@ -189,7 +189,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   public render() {
     const style = this.style = StyleSheet.create(defaultEquipmentSlotsStyle);
     const customStyle = this.customStyle = StyleSheet.create(this.props.styles || {});
-    const { showUnder } = this.state;
+    const {showUnder} = this.state;
 
     const outerToggleClass = css(
       style.toggleText, customStyle.toggleText,
@@ -264,7 +264,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
   private onUnequipItem = (payload: UnequipItemCallback) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
-    const { gearSlots, item } = payload;
+    const {gearSlots, item} = payload;
     const equippedItems = this.state.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
@@ -287,14 +287,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private onEquipItem = (payload: EquipItemCallback) => {
-    const { inventoryItem, willEquipTo } = payload;
+    const {inventoryItem, willEquipTo} = payload;
     const equippedItems = this.state.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
-    const newItem = { item: inventoryItem, gearSlots: willEquipTo };
+    const newItem = {item: inventoryItem, gearSlots: willEquipTo};
 
     this.setState(state => ({
       ...state,
@@ -314,7 +314,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
-    const { equippedItems } = this.state;
+    const {equippedItems} = this.state;
     const style = this.style;
     const customStyle = this.customStyle;
     return (
@@ -372,18 +372,18 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     console.log(slotName);
     console.log(this.state.slotNameItemMenuVisible);
     if (slotName === this.state.slotNameItemMenuVisible) {
-      this.setState({ slotNameItemMenuVisible: '' });
+      this.setState({slotNameItemMenuVisible: ''});
     } else {
-      this.setState({ slotNameItemMenuVisible: slotName });
+      this.setState({slotNameItemMenuVisible: slotName});
     }
   }
 
   private toggleOuter = () => {
-    this.setState({ showUnder: false });
+    this.setState({showUnder: false});
   }
 
   private toggleUnder = () => {
-    this.setState({ showUnder: true });
+    this.setState({showUnder: true});
   }
 }
 

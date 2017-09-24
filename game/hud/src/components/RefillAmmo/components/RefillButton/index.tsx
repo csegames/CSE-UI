@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 interface RefillButtonStyle extends StyleDeclaration {
-  container : React.CSSProperties;
+  container: React.CSSProperties;
 }
 
 interface RefillButtonProps {
@@ -22,7 +22,7 @@ interface RefillButtonProps {
   refill: () => void;
 }
 
-export const defaultRefillButtonStyle : RefillButtonStyle = {
+export const defaultRefillButtonStyle: RefillButtonStyle = {
   container: {
     width: '120px',
     height: '35px',
@@ -46,7 +46,7 @@ export const defaultRefillButtonStyle : RefillButtonStyle = {
   },
 };
 
-const RefillButton = (props : RefillButtonProps) => {
+const RefillButton = (props: RefillButtonProps) => {
 
   const ss = StyleSheet.create(defaultRefillButtonStyle);
   const custom = StyleSheet.create(props.styles || {});

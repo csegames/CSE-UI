@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-03-08
  */
-import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition } from 'camelot-unchained';
+import {GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition} from 'camelot-unchained';
 
 export interface GridViewPagerProps extends GridViewProps {
   total: number;
@@ -19,7 +19,7 @@ export interface GridViewPagerState extends GridViewState {
 }
 
 export default class GridViewPager extends GridViewImpl<GridViewPagerProps, GridViewPagerState> {
-  public getItemCount = () : number => {
+  public getItemCount = (): number => {
     return this.props.total;
   }
   public getCurrentPage = () => {
@@ -30,7 +30,7 @@ export default class GridViewPager extends GridViewImpl<GridViewPagerProps, Grid
   }
   public setSort = (index: number, sortBy: GridViewSort) => {
     this.props.onSort(index, sortBy === GridViewSort.Up);
-    this.setState({ currentSort: { index, sorted: sortBy } });
+    this.setState({currentSort: {index, sorted: sortBy}});
   }
   public sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
     return input;

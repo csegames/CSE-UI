@@ -12,7 +12,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import {InventoryItemFragment} from '../../../gqlInterfaces';
 
 export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.
@@ -826,7 +826,7 @@ export const inventoryFilterButtonInfo: {[id: string]: { icon: string, name: str
 
 export const inventoryFilterButtons: {
   [key: string]: InventoryFilterButton,
-  } = {
+} = {
   // Armor
   Armor: {
     ...inventoryFilterButtonInfo.Armor,
@@ -1228,7 +1228,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawWoods),
   },
   Ammo: {
-      ...inventoryFilterButtonInfo.Ammo,
+    ...inventoryFilterButtonInfo.Ammo,
     filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Ammo),
   },
   Bandages: {

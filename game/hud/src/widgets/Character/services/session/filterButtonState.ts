@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-07-14 18:06:44
  */
 
-import { Module } from 'redux-typed-modules';
-import { defaultFilterButtonIcons, InventoryFilterButton } from '../../lib/constants';
+import {Module} from 'redux-typed-modules';
+import {defaultFilterButtonIcons, InventoryFilterButton} from '../../lib/constants';
 
 export const types = {
   SET_FILTER_BUTTONS: 'charactersheets-inventory-SET_FILTER_BUTTONS',

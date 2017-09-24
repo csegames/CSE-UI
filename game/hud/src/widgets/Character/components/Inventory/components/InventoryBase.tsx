@@ -12,16 +12,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
-import { webAPI, client, ql } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {GraphQLInjectedProps} from 'camelot-unchained/lib/graphql/react';
+import {webAPI, client, ql} from 'camelot-unchained';
 
-import { InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions } from './InventorySlot';
-import { InventoryRow } from './InventoryRow';
+import {InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions} from './InventorySlot';
+import {InventoryRow} from './InventoryRow';
 
-import { InventoryItemFragment, InventoryBaseQuery } from '../../../../../gqlInterfaces';
-import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/constants';
-import { UpdateInventoryItems } from '../../../lib/eventNames';
+import {InventoryItemFragment, InventoryBaseQuery} from '../../../../../gqlInterfaces';
+import {nullVal, InventoryFilterButton, emptyStackHash} from '../../../lib/constants';
+import {UpdateInventoryItems} from '../../../lib/eventNames';
 import {
   createMoveItemRequestToInventoryPosition,
   firstAvailableSlot,
@@ -48,7 +48,7 @@ export interface InventoryBaseStyle extends StyleDeclaration {
 
 export const defaultInventoryBaseStyle: InventoryBaseStyle = {
   InventoryBase: {
-    
+
   },
 };
 
@@ -64,7 +64,7 @@ export interface SlotNumberToItem {
 export interface InventoryBaseProps {
   styles?: Partial<InventoryBaseStyle>;
   searchValue: string;
-  activeFilters: {[id:string]:InventoryFilterButton};
+  activeFilters: {[id: string]: InventoryFilterButton};
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
   inventoryItems?: InventoryItemFragment[];
 }
@@ -72,7 +72,7 @@ export interface InventoryBaseProps {
 export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
   styles?: Partial<InventoryBaseStyle>;
   searchValue: string;
-  activeFilters: {[id:string]:InventoryFilterButton};
+  activeFilters: {[id: string]: InventoryFilterButton};
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
   inventoryItems?: InventoryItemFragment[];
 }
@@ -97,12 +97,12 @@ export interface InventoryBaseState {
   // a stack group id is a `${stackHash}:${number}`
   // the stack group is used to identify items that
   // share a stack hash but not the same slot in
-  // the inventory. The stack group id is used in 
+  // the inventory. The stack group id is used in
   // the itemIdToInfo & slotNumberToItemId maps
-  stackGroupIdToItemIDs: {[id:string]:string[]};
-  itemIDToStackGroupID: {[id:string]:string};
+  stackGroupIdToItemIDs: {[id: string]: string[]};
+  itemIDToStackGroupID: {[id: string]: string};
 
-  craftingNameToItemIDs: {[name:string]:string[]};
+  craftingNameToItemIDs: {[name: string]: string[]};
 }
 
 let stackGroupCounter = 0;
@@ -171,7 +171,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
   const rowData: InventorySlotItemDef[][] = [];
 
   const itemMap = itemData ? _.keyBy(itemData.items, i => i.id) : {};
-  
+
   let slotIndex = 0;
   for (let rowIndex = 0; rowIndex < state.rowCount; ++rowIndex) {
     const rowItems: InventorySlotItemDef[] = [];
@@ -181,7 +181,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
         rowItems.push({slotType: SlotType.Empty, icon: ' '});
         continue;
       }
-      
+
       if (itemDef.isCrafting) {
         rowItems.push({
           slotType: SlotType.CraftingContainer,
@@ -214,7 +214,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
       <InventoryRow key={rowIndex} items={rowItems} />
     ));
     rowData.push(rowItems);
-  }  
+  }
   return {
     rows,
     rowData,
@@ -222,10 +222,10 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
 }
 
 export function distributeItems(slotsData: {
-                                slotsPerRow: number,
-                                rowCount: number,
-                                slotCount: number,
-                              },
+  slotsPerRow: number,
+  rowCount: number,
+  slotCount: number,
+},
                               itemData: {
                                 items: InventoryItemFragment[],
                               },
@@ -252,16 +252,16 @@ export function distributeItems(slotsData: {
 
 // we are not filtering items here, put items based on slot position
 export function distributeItemsNoFilter(slotsData: {
-                                        slotsPerRow: number,
-                                        rowCount: number,
-                                        slotCount: number,
-                                      },
+  slotsPerRow: number,
+  rowCount: number,
+  slotCount: number,
+},
                                       itemData: {
                                         items: InventoryItemFragment[],
                                       },
                                       state: InventoryBaseState,
                                       props: InventoryBaseProps): InventoryBaseState {
-  const itemIdToInfo: {[id:string]:{slot:number,icon:string}} = {};
+  const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem = {};
   const stackGroupIdToItemIDs = {};
   const itemIDToStackGroupID = {};
@@ -286,14 +286,14 @@ export function distributeItemsNoFilter(slotsData: {
       partitionedItems.noPositionItems.push(item);
       return;
     }
-    
+
     slotNumberToItem[wantPosition] = {
       id,
       isCrafting: isCraftingItem(item),
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
+    itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
   });
 
   // place stacked items with position into their slots positions.
@@ -313,7 +313,7 @@ export function distributeItemsNoFilter(slotsData: {
         isStack: isStackedItem(item),
         item,
       };
-      itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
+      itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
     });
   });
 
@@ -327,14 +327,14 @@ export function distributeItemsNoFilter(slotsData: {
         partitionedItems.noPositionItems.push(item);
         return;
       }
-      
+
       slotNumberToItem[wantPosition] = {
         id,
         isCrafting: isCraftingItem(item),
         isStack: isStackedItem(item),
         item,
       };
-      itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
+      itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
       if (!stackGroupIdToItemIDs[id]) {
         stackGroupIdToItemIDs[id] = [item.id];
       } else {
@@ -382,9 +382,9 @@ export function distributeItemsNoFilter(slotsData: {
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
+    itemIdToInfo[id] = {slot: position, icon: getIcon(item)};
   });
-  
+
   // figure out next available position
 
   // now we sort out positions for every item that doesn't have a position.
@@ -396,18 +396,18 @@ export function distributeItemsNoFilter(slotsData: {
     const itemInstanceId = getItemInstanceID(item);
     const stackHash = isCraftingItem(item) ? getItemDefinitionId(item) : item.stackHash;
     // first check if there is a matching stack hash, then use that position
-    
+
     if (partitionedItems.stackHashToGroupIDMap[stackHash]) {
       const stackGroupID = partitionedItems.stackHashToGroupIDMap[stackHash][0].stackGroupID;
       const stackGroupPosition = itemIdToInfo[stackGroupID];
-      
+
       if (stackGroupPosition) {
         moveRequests.push(createMoveItemRequestToInventoryPosition(item, stackGroupPosition.slot));
-        
+
         if (!_.find(stackGroupIdToItemIDs[stackGroupID], itemId => itemInstanceId === itemId)) {
           stackGroupIdToItemIDs[stackGroupID] = !stackGroupIdToItemIDs[stackGroupID] ? [itemInstanceId] :
             stackGroupIdToItemIDs[stackGroupID].concat(itemInstanceId);
-        }        
+        }
 
         itemIDToStackGroupID[itemInstanceId] = stackGroupID;
 
@@ -430,8 +430,8 @@ export function distributeItemsNoFilter(slotsData: {
 
         itemIDToStackGroupID[itemInstanceId] = stackGroupID;
 
-        itemIdToInfo[id] = { slot: firstAvailSlot, icon: getIcon(item) };
-        itemIdToInfo[itemInstanceId] = { slot: firstAvailSlot, icon: getIcon(item) };
+        itemIdToInfo[id] = {slot: firstAvailSlot, icon: getIcon(item)};
+        itemIdToInfo[itemInstanceId] = {slot: firstAvailSlot, icon: getIcon(item)};
       }
     }
 
@@ -443,9 +443,9 @@ export function distributeItemsNoFilter(slotsData: {
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
+    itemIdToInfo[id] = {slot: position, icon: getIcon(item)};
   });
-  
+
   // batch move all items with no position
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
@@ -471,10 +471,10 @@ export function distributeItemsNoFilter(slotsData: {
 // we're filtering items here, put items into slots without regard to position
 // defined on the item
 export function distributeFilteredItems(slotsData: {
-                                        slotsPerRow: number,
-                                        rowCount: number,
-                                        slotCount: number,
-                                      },
+  slotsPerRow: number,
+  rowCount: number,
+  slotCount: number,
+},
                                       itemData: {
                                         items: InventoryItemFragment[],
                                       },
@@ -486,8 +486,8 @@ export function distributeFilteredItems(slotsData: {
   const itemIDToStackGroupID = Object.assign({}, state.itemIDToStackGroupID);
   const craftingNameToItemIDs = Object.assign({}, state.craftingNameToItemIDs);
 
-  const itemIdToInfo: {[id:string]:{slot:number,icon:string}} = {};
-  const slotNumberToItem: {[id:number]:{id:string; isStack:boolean; isCrafting:boolean;}} = {};
+  const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
+  const slotNumberToItem: {[id: number]: {id: string; isStack: boolean; isCrafting: boolean; }} = {};
   const filteredItems = _.keyBy(itemData.items.filter(i =>
     shouldShowItem(i, props.activeFilters, props.searchValue)), i => i.id);
 
@@ -506,8 +506,8 @@ export function distributeFilteredItems(slotsData: {
     }
 
     slotNumberToItem[indexCounter] = itemDef;
-    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
-    itemIdToInfo[itemID] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
+    itemIdToInfo[itemDef.id] = {slot: indexCounter, icon: oldItemIdToInfo[itemID].icon};
+    itemIdToInfo[itemID] = {slot: indexCounter, icon: oldItemIdToInfo[itemID].icon};
 
     indexCounter++;
   }
@@ -537,8 +537,8 @@ export function distributeFilteredItems(slotsData: {
 
     slotNumberToItem[indexCounter] = itemDef;
 
-    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: getIcon(item) };
-    itemIdToInfo[itemID] = { slot: indexCounter, icon: getIcon(item) };
+    itemIdToInfo[itemDef.id] = {slot: indexCounter, icon: getIcon(item)};
+    itemIdToInfo[itemID] = {slot: indexCounter, icon: getIcon(item)};
     indexCounter++;
   }
 
@@ -554,13 +554,13 @@ export function distributeFilteredItems(slotsData: {
 }
 
 export function partitionItems(items: InventoryItemFragment[]) {
-  const itemIdToIcon: {[id:string]:string} = {};
-  const craftingItems: {[name:string]: InventoryItemFragment[]} = {};
-  const stackedItemsWithPosition: {[stackGroupID:string]: InventoryItemFragment[]} = {};
-  const noPositionStackedItems: {[stackGroupID:string]: InventoryItemFragment[]} = {};
+  const itemIdToIcon: {[id: string]: string} = {};
+  const craftingItems: {[name: string]: InventoryItemFragment[]} = {};
+  const stackedItemsWithPosition: {[stackGroupID: string]: InventoryItemFragment[]} = {};
+  const noPositionStackedItems: {[stackGroupID: string]: InventoryItemFragment[]} = {};
   const positionedItems: InventoryItemFragment[] = [];
   const noPositionItems: InventoryItemFragment[] = [];
-  const stackHashToGroupIDMap: {[stackHash: string]: {position: number,stackGroupID:string}[]} = {};
+  const stackHashToGroupIDMap: {[stackHash: string]: {position: number, stackGroupID: string}[]} = {};
 
   const temporaryNoPositionStackedItems: InventoryItemFragment[] = [];
 
@@ -607,7 +607,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
           stackedItemsWithPosition[stackGroupID] = [item];
         }
         return;
-      
+
       } else {
 
         let stackGroupID = '';
@@ -617,10 +617,10 @@ export function partitionItems(items: InventoryItemFragment[]) {
         if (stackGroupIndex > -1) {
           stackGroupID = mapEntries[0].stackGroupID;
           stackedItemsWithPosition[stackGroupID].push(item);
-          
+
           // this item didn't have a position, so we need to queue it up to request
           // a move to this position on the server.
-          moveRequests.push(createMoveItemRequestToInventoryPosition(item, 
+          moveRequests.push(createMoveItemRequestToInventoryPosition(item,
             mapEntries[stackGroupIndex].position));
 
         } else {
@@ -649,7 +649,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
       const wantPosition = getItemInventoryPosition(item);
 
       let stackGroupID = '';
-      
+
       let stackGroupIndex = -1;
       if (stackHashToGroupIDMap[stackHash]) {
         stackGroupIndex = _.findIndex(stackHashToGroupIDMap[stackHash], gm => gm.position === wantPosition);
@@ -686,7 +686,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
           position: -1,
         }];
       }
-      
+
       if (noPositionStackedItems[stackGroupId]) {
         noPositionStackedItems[stackGroupId].push(item);
       } else {
@@ -832,7 +832,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
           inventory: {
             position: slot,
           },
-      }} as InventoryItemFragment];
+        }} as InventoryItemFragment];
 
       slotNumberToItem[slot] = {
         id: equippedItem.item.id,
@@ -849,7 +849,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
         equipItemRequest(payload.inventoryItem, payload.willEquipTo, equippedItem, slot);
       }
     });
-    
+
   } else if (payload.inventoryItem && itemIdToInfo[payload.inventoryItem.id]) {
     // If only inventory item provided by event. EQUIP or DROP
     const slotNumber = itemIdToInfo[payload.inventoryItem.id].slot;
@@ -868,7 +868,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
       const itemIdArray = stackGroupIdToItemIDs[stackGroupID];
       const nextInventoryItem = _.find(inventoryItems, item => itemIdArray[itemIdArray.length - 1] === item.id);
       inventoryItems = _.filter(inventoryItems, item => slotNumberToItem[slotNumber].item.id !== item.id);
-      
+
       slotNumberToItem[slotNumber] = {
         id: stackGroupID,
         isCrafting: isCraftingItem(nextInventoryItem),
@@ -886,7 +886,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
     if (payload.type === 'Equip') {
       equipItemRequest(payload.inventoryItem, payload.willEquipTo, null, slotNumber);
     }
-    
+
   } else if (payload.equippedItem && !itemIdToInfo[payload.equippedItem.item.id]) {
     // If only equipped item provided by event. UNEQUIP
     const slotNumber = firstAvailableSlot(0, slotNumberToItem);
@@ -928,31 +928,31 @@ export async function equipItemRequest(item: InventoryItemFragment,
                             gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
                             equippedItem: Partial<ql.schema.EquippedItem>,
                             equipToSlotNumber: number) {
-    const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
-    const inventoryItemPosition = getItemInventoryPosition(item);
-    const request = JSON.stringify({
-      moveItemID: item.id,
-      stackHash: item.stackHash,
-      unitCount: -1,
-      to: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: -1,
-        containerID: nullVal,
-        gearSlotIDs,
-        location: 'Equipment',
-        voxSlot: 'Invalid',
-      },
-      from: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: inventoryItemPosition,
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Inventory',
-        voxSlot: 'Invalid',
-      }});
-    const res = await webAPI.ItemAPI.MoveItems(
+  const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
+  const inventoryItemPosition = getItemInventoryPosition(item);
+  const request = JSON.stringify({
+    moveItemID: item.id,
+    stackHash: item.stackHash,
+    unitCount: -1,
+    to: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: -1,
+      containerID: nullVal,
+      gearSlotIDs,
+      location: 'Equipment',
+      voxSlot: 'Invalid',
+    },
+    from: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: inventoryItemPosition,
+      containerID: nullVal,
+      gearSlotIDs: [],
+      location: 'Inventory',
+      voxSlot: 'Invalid',
+    }});
+  const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
       client.loginToken,
       client.shardID,
@@ -961,74 +961,74 @@ export async function equipItemRequest(item: InventoryItemFragment,
     );
 
     // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
-    if (!res.ok) {
-      client.EquipItem(item.id);
-      return;
-    }
-    
-    if (equippedItem) {
-      const equippedGearSlotIDs = equippedItem.gearSlots.map(gearSlot => gearSlot.id);
-      const equippedItemReq = JSON.stringify({
-        moveItemID: equippedItem.item.id,
-        stackHash: item.stackHash,
-        unitCount: -1,
-        to: {
-          entityID: nullVal,
-          characterID: client.characterID,
-          position: equipToSlotNumber,
-          containerID: nullVal,
-          gearSlotIDs,
-          location: 'Inventory',
-          voxSlot: 'Invalid',
-        },
-        from: {
-          entityID: nullVal,
-          characterID: client.characterID,
-          position: -1,
-          containerID: nullVal,
-          gearSlotIDs: equippedGearSlotIDs,
-          location: 'Equipment',
-          voxSlot: 'Invalid',
-        },
-      });
-      webAPI.ItemAPI.MoveItems(
-        webAPI.defaultConfig,
-        client.loginToken,
-        client.shardID,
-        client.characterID,
-        equippedItemReq as any,
-      );
-    }
+  if (!res.ok) {
+    client.EquipItem(item.id);
+    return;
   }
 
-  export async function unequipItemRequest(item: InventoryItemFragment,
-                                gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                                slotNumberToItem: SlotNumberToItem) {
-    const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
-    const request = JSON.stringify({
-      moveItemID: item.id,
+  if (equippedItem) {
+    const equippedGearSlotIDs = equippedItem.gearSlots.map(gearSlot => gearSlot.id);
+    const equippedItemReq = JSON.stringify({
+      moveItemID: equippedItem.item.id,
       stackHash: item.stackHash,
       unitCount: -1,
       to: {
         entityID: nullVal,
         characterID: client.characterID,
-        position: firstAvailableSlot(0, slotNumberToItem),
+        position: equipToSlotNumber,
         containerID: nullVal,
-        gearSlotIDs: [],
+        gearSlotIDs,
         location: 'Inventory',
         voxSlot: 'Invalid',
       },
       from: {
         entityID: nullVal,
         characterID: client.characterID,
-        position: getItemInventoryPosition(item),
+        position: -1,
         containerID: nullVal,
-        gearSlotIDs,
+        gearSlotIDs: equippedGearSlotIDs,
         location: 'Equipment',
         voxSlot: 'Invalid',
       },
     });
-    const res = await webAPI.ItemAPI.MoveItems(
+    webAPI.ItemAPI.MoveItems(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+        equippedItemReq as any,
+      );
+  }
+}
+
+export async function unequipItemRequest(item: InventoryItemFragment,
+                                gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
+                                slotNumberToItem: SlotNumberToItem) {
+  const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
+  const request = JSON.stringify({
+    moveItemID: item.id,
+    stackHash: item.stackHash,
+    unitCount: -1,
+    to: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: firstAvailableSlot(0, slotNumberToItem),
+      containerID: nullVal,
+      gearSlotIDs: [],
+      location: 'Inventory',
+      voxSlot: 'Invalid',
+    },
+    from: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: getItemInventoryPosition(item),
+      containerID: nullVal,
+      gearSlotIDs,
+      location: 'Equipment',
+      voxSlot: 'Invalid',
+    },
+  });
+  const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
       client.loginToken,
       client.shardID,
@@ -1036,35 +1036,35 @@ export async function equipItemRequest(item: InventoryItemFragment,
       request as any,
     );
     // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
-    if (!res.ok) {
-      client.UnequipItem(item.id);
-    }
+  if (!res.ok) {
+    client.UnequipItem(item.id);
   }
+}
 
-  export async function dropItemRequest(item: InventoryItemFragment) {
-    const request = JSON.stringify({
-      moveItemID: item.id,
-      stackHash: item.stackHash,
-      unitCount: -1,
-      to: {
-        entityID: nullVal,
-        position: -1,
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Ground',
-        voxSlot: 'Invalid',
-      },
-      from: {
-        entityID: nullVal,
-        characterID: client.characterID,
-        position: getItemInventoryPosition(item),
-        containerID: nullVal,
-        gearSlotIDs: [],
-        location: 'Inventory',
-        voxSlot: 'Invalid',
-      },
-    });
-    const res = await webAPI.ItemAPI.MoveItems(
+export async function dropItemRequest(item: InventoryItemFragment) {
+  const request = JSON.stringify({
+    moveItemID: item.id,
+    stackHash: item.stackHash,
+    unitCount: -1,
+    to: {
+      entityID: nullVal,
+      position: -1,
+      containerID: nullVal,
+      gearSlotIDs: [],
+      location: 'Ground',
+      voxSlot: 'Invalid',
+    },
+    from: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: getItemInventoryPosition(item),
+      containerID: nullVal,
+      gearSlotIDs: [],
+      location: 'Inventory',
+      voxSlot: 'Invalid',
+    },
+  });
+  const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
       client.loginToken,
       client.shardID,
@@ -1072,7 +1072,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
       request as any,
     );
     // TEMPORARY: If webAPI fails, then fall back to client command DropItem
-    if (!res.ok) {
-      client.DropItem(item.id);
-    }
+  if (!res.ok) {
+    client.DropItem(item.id);
   }
+}

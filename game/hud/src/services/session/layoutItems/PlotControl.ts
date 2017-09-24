@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-26 12:11:49
  */
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import {LayoutMode, Edge} from '../../../components/HUDDrag';
 import PlotControl from '../../../components/PlotControl';
 import HUDZOrder from '../HUDZOrder';
 

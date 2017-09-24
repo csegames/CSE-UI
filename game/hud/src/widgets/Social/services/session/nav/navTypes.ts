@@ -8,8 +8,8 @@
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-04-06 11:02:04
  */
-import { utils, ql } from 'camelot-unchained';
-import { Map } from 'immutable';
+import {utils, ql} from 'camelot-unchained';
+import {Map} from 'immutable';
 
 export enum SocialCategory {
   Personal,
@@ -22,42 +22,42 @@ export enum SocialCategory {
 }
 
 export interface NavLink {
-  id : string;
-  displayName : string;
-  icon : JSX.Element | string;
-  address : LinkAddress;
-  enabled : boolean;
+  id: string;
+  displayName: string;
+  icon: JSX.Element | string;
+  address: LinkAddress;
+  enabled: boolean;
   display: (social: ql.MySocialQuery) => boolean;
 }
 
 export interface NavSection extends utils.FetchStatus {id: string;
   displayName: string;
   links: NavLink[];
-  collapsed: boolean;}
+  collapsed: boolean; }
 
 export interface PersonalCategory extends NavSection {
-  category : SocialCategory.Personal;
-  address : CategoryAddress;
+  category: SocialCategory.Personal;
+  address: CategoryAddress;
 }
 
 export interface OrderCategory extends NavSection {
-  category : SocialCategory.Order;
-  address : CategoryAddress;
+  category: SocialCategory.Order;
+  address: CategoryAddress;
 }
 
 export interface AllianceCategory extends NavSection {
-  category : SocialCategory.Alliance;
-  address : CategoryAddress;
+  category: SocialCategory.Alliance;
+  address: CategoryAddress;
 }
 
 export interface WarbandCategory extends NavSection {
-  category : SocialCategory.Warband;
-  address : CategoryAddress;
+  category: SocialCategory.Warband;
+  address: CategoryAddress;
 }
 
 export interface CampaignCategory extends NavSection {
-  category : SocialCategory.Campaign;
-  address : CategoryAddress;
+  category: SocialCategory.Campaign;
+  address: CategoryAddress;
 }
 
 export interface WarbandsCategory extends utils.FetchStatus {
@@ -70,7 +70,7 @@ export interface WarbandsCategory extends utils.FetchStatus {
 
 export interface CampaignsCategory extends utils.FetchStatus {
   category: SocialCategory.Campaigns;
-  campaigns: Map<string,CampaignCategory>;
+  campaigns: Map<string, CampaignCategory>;
   collapsed: boolean;
   address: CategoryAddress;
   displayName: string;
@@ -80,35 +80,35 @@ export type CategoryNav = PersonalCategory | OrderCategory | AllianceCategory | 
 WarbandsCategory | CampaignsCategory;
 
 export interface PrimaryLinkAddress {
-  kind : 'Primary';
-  category : SocialCategory;
-  id : string;
+  kind: 'Primary';
+  category: SocialCategory;
+  id: string;
 }
 
 export interface SubLinkAddress {
-  kind : 'Sub';
-  category : SocialCategory;
-  subKey : string;
-  id : string;
+  kind: 'Sub';
+  category: SocialCategory;
+  subKey: string;
+  id: string;
 }
 
 export type LinkAddress = PrimaryLinkAddress | SubLinkAddress;
 
 export interface PrimaryCategoryAddress {
-  kind : 'Primary';
-  category : SocialCategory;
+  kind: 'Primary';
+  category: SocialCategory;
 }
 
 export interface SubCategoryAddress {
-  kind : 'Sub';
-  category : SocialCategory;
-  subKey : string;
+  kind: 'Sub';
+  category: SocialCategory;
+  subKey: string;
 }
 
 export type CategoryAddress = PrimaryCategoryAddress | SubCategoryAddress;
 
 export function defaultCategoryNav() {
-  return { id: '', displayName: '', links: []as any, collapsed: false };
+  return {id: '', displayName: '', links: []as any, collapsed: false};
 }
 
 export function linkAddressEquals(a: LinkAddress, b: LinkAddress) {

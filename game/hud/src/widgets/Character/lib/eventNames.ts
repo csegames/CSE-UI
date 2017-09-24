@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-08-04 17:22:43
  */
 
-import { ql } from 'camelot-unchained';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import {ql} from 'camelot-unchained';
+import {InventoryItemFragment} from '../../../gqlInterfaces';
 
 /*
   These are the events used throughout the Character widget. We use these to have a more responsive UI because

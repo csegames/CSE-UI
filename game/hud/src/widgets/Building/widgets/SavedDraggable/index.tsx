@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Resizable } from 'react-resizable';
+import {Resizable} from 'react-resizable';
 
 /* tslint:disable-next-line */
 const Draggable = require('react-draggable');
@@ -77,7 +77,7 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
     if (this.state.resizable) {
       resizeable = (
         <Resizable width={this.state.absolutePosition.size.width} height={this.state.absolutePosition.size.height}
-          draggableOpts={{ grid }}
+          draggableOpts={{grid}}
           onResizeStart={this.startDrag}
           onResize={this.handleResize}
           onResizeStop={this.saveResize} >
@@ -110,20 +110,20 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
   }
 
   private getScreenSize(): Size {
-    return { width: window.innerWidth, height: window.innerHeight };
+    return {width: window.innerWidth, height: window.innerHeight};
   }
 
   private loadLayoutState(): SavedDraggableState {
     const screen: Size = this.getScreenSize();
     const pos: AnchoredPosition = {
-      x: {px: this.props.defaultX[0], anchor: this.props.defaultX[1] },
-      y: {px: this.props.defaultY[0], anchor: this.props.defaultY[1] },
+      x: {px: this.props.defaultX[0], anchor: this.props.defaultX[1]},
+      y: {px: this.props.defaultY[0], anchor: this.props.defaultY[1]},
       size: null,
     };
 
     let resizable = true;
     if (this.props.defaultSize == null) {
-      pos.size = { width: 0, height: 0 };
+      pos.size = {width: 0, height: 0};
       resizable = false;
     } else {
       pos.size = {
@@ -142,9 +142,9 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
 
 
   private axis2anchor(position: number, width: number, range: number): AnchoredAxis {
-    if (position < (range * 0.25)) return { anchor: Anchor.TO_START, px: position };
-    if ((position + width) > (range * 0.75)) return { anchor: Anchor.TO_END, px: range - position };
-    return { anchor: Anchor.TO_CENTER, px: position - (range * 0.5) };
+    if (position < (range * 0.25)) return {anchor: Anchor.TO_START, px: position};
+    if ((position + width) > (range * 0.75)) return {anchor: Anchor.TO_END, px: range - position};
+    return {anchor: Anchor.TO_CENTER, px: position - (range * 0.5)};
   }
 
   private position2anchor(current: AbsolutePosition, screen: Size): AnchoredPosition {
@@ -219,7 +219,7 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
       size: this.state.absolutePosition.size,
     };
     this.savePositionAndSize(position);
-    this.setState((state, props) => ({ absolutePosition: position } as SavedDraggableState));
+    this.setState((state, props) => ({absolutePosition: position} as SavedDraggableState));
     this.stopDrag();
   }
 
@@ -230,7 +230,7 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
       size: this.state.absolutePosition.size,
     };
     this.savePositionAndSize(position);
-    this.setState((state, props) => ({ absolutePosition: position } as SavedDraggableState));
+    this.setState((state, props) => ({absolutePosition: position} as SavedDraggableState));
     this.stopDrag();
   }
 
@@ -241,11 +241,11 @@ class SavedDraggable extends React.Component<SavedDraggableProps, SavedDraggable
       size: resize.size,
     };
 
-    this.setState((state, props) => ({ absolutePosition: position } as SavedDraggableState));
+    this.setState((state, props) => ({absolutePosition: position} as SavedDraggableState));
   }
 
   private handleWindowResize = (ev: UIEvent) => {
-    // minimizing the window sets the innerWidth/Height to zero. 
+    // minimizing the window sets the innerWidth/Height to zero.
     // this prevents that from messing with the calculations
     if (window.innerWidth >= 640 && window.innerHeight >= 480) {
       this.setState(this.loadLayoutState());

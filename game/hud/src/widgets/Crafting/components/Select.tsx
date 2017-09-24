@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, select, SelectStyles } from '../styles';
+import {StyleSheet, css, merge, select, SelectStyles} from '../styles';
 
 export interface SelectProps {
   items: any[];
@@ -49,7 +49,7 @@ class Select extends React.Component<SelectProps, SelectState> {
             <div className={css(ss.active)}>
               {this.props.renderActiveItem(null)}
             </div>
-            <div className={css(ss.arrow)} style={{ opacity: 0.5 }}>
+            <div className={css(ss.arrow)} style={{opacity: 0.5}}>
               <i className='fa fa-chevron-down' aria-hidden='true'></i>
             </div>
           </div>
@@ -60,7 +60,7 @@ class Select extends React.Component<SelectProps, SelectState> {
     const selectedIndex = this.props.items.indexOf(this.props.selectedItem);
     return(
       <div className={css(ss.select)}>
-        <div className={css(ss.impl)} style={this.state.showList ? { zIndex: '1000' } : {}}>
+        <div className={css(ss.impl)} style={this.state.showList ? {zIndex: '1000'} : {}}>
           <div
             className={this.state.showList ? css(ss.outside) : css(ss.outside, ss.outsideHidden)}
             onClick={(e) => { this.onClick(e, false); }} />

@@ -51,7 +51,7 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
 
       // add the new error to the top of the array
       const nextItems = [...newErrorMessage].concat(this.state.items);
-      this.setState({ items: nextItems });
+      this.setState({items: nextItems});
 
       setTimeout(this.removeMessage, 3000);
     });
@@ -66,7 +66,7 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
     const nextItems = this.state.items;
     const startIndex = nextItems.length - 1;
     nextItems.splice(startIndex, 1);
-    this.setState({ items: nextItems });
+    this.setState({items: nextItems});
   }
 
   private getMessageText(mId: number): string {
@@ -86,7 +86,7 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
   private getMessageNodes(message: string, index: number) {
     return (
       <li className='message' key={index}>{message}</li>
-      );
+    );
   }
 }
 

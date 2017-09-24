@@ -10,13 +10,13 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
-import { InventoryItem } from '../services/types';
-import { craftingTimeToString } from '../services/util';
+import {connect} from 'react-redux';
+import {GlobalState} from '../services/session/reducer';
+import {InventoryItem} from '../services/types';
+import {craftingTimeToString} from '../services/util';
 import Icon from './Icon';
 
-import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../styles';
+import {StyleSheet, css, merge, outputItems, OutputItemsStyles} from '../styles';
 
 export interface OutputItemsReduxProps {
   dispatch?: (action: any) => void;
@@ -27,7 +27,7 @@ export interface OutputItemsReduxProps {
 
 export interface OutputItemsProps extends OutputItemsReduxProps {}
 
-const select = (state: GlobalState, props: OutputItemsProps) : OutputItemsReduxProps => {
+const select = (state: GlobalState, props: OutputItemsProps): OutputItemsReduxProps => {
   return {
     totalCraftingTime: state.job.totalCraftingTime,
     outputItems: state.job.outputItems,

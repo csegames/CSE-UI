@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { Tooltip } from 'camelot-unchained';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import {Tooltip} from 'camelot-unchained';
 
-import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
-import { prettifyText } from '../../../lib/utils';
+import {InventoryFilterButton as FilterButtonDefinition} from '../../../lib/constants';
+import {prettifyText} from '../../../lib/utils';
 
 export interface InventoryFilterButtonStyles extends StyleDeclaration {
   inventoryFilterButton: React.CSSProperties;
@@ -41,7 +41,7 @@ export const defaultInventoryFilterButtonStyle: InventoryFilterButtonStyles = {
       boxShadow: 'inset 0px 0px 3px rgba(0,0,0,0.4)',
     },
   },
-  
+
   activeFilterIcon: {
     color: '#b1fff1',
     textShadow: '1px 1px 2px #ccffcc',
@@ -53,7 +53,7 @@ export const defaultInventoryFilterButtonStyle: InventoryFilterButtonStyles = {
 
 export interface InventoryFilterButtonProps {
   styles?: Partial<InventoryFilterButtonStyles>;
-  
+
   // The filter button defintiion object
   filterButton: FilterButtonDefinition;
 
@@ -81,15 +81,15 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
 
   public set isActivated(value: boolean) {
     if (!this.didMount) return;
-    
+
     if (value && this.props.onActivated) {
       this.props.onActivated(this.props.filterButton);
     }
-    
+
     if (value === false && this.props.onDeactivated) {
       this.props.onDeactivated(this.props.filterButton);
     }
-    
+
     this.setState({activated: value});
   }
 
@@ -108,10 +108,10 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
         <div className={css(style.inventoryFilterButton, customStyle.inventoryFilterButton)}>
           <div style={this.props.filterButton.style || {}}>
             <div style={{
-                      width: '35px',
-                      height: '35px',
-                      fontSize: '35px',
-                    }}
+              width: '35px',
+              height: '35px',
+              fontSize: '35px',
+            }}
                     onClick={this.onClicked}
                     className={`${this.props.filterButton.icon}
                     ${css(style.filterIcon,
@@ -145,8 +145,8 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
     if (this.state.activated === false && this.props.onActivated) {
       this.props.onActivated(this.props.filterButton);
     }
-    
-    this.setState({ activated: !this.state.activated });
+
+    this.setState({activated: !this.state.activated});
   }
 }
 

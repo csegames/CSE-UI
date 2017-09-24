@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-26 12:09:25
  */
 import EnemyTargetHealth from '../../../widgets/TargetHealth';
-import { LayoutMode } from '../../../components/HUDDrag';
+import {LayoutMode} from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

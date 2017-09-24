@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-import selectionReducer, { SelectionState } from './selection';
-import buildingReducer, { BuildingState } from './building';
+import selectionReducer, {SelectionState} from './selection';
+import buildingReducer, {BuildingState} from './building';
 
 const selection = selectionReducer;
 const building = buildingReducer;

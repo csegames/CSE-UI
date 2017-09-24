@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { LinkAddress } from '../../services/session/nav/navTypes';
+import {LinkAddress} from '../../services/session/nav/navTypes';
 
 export interface WarbandContentProps {
   dispatch: (action: any) => any;

@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import {
   ql,
   utils,
@@ -30,9 +30,9 @@ import GroupTitle from './GroupTitle';
 import CreateRankDialog from './CreateRankDialog';
 import RankListItemMenu from './RankListItemMenu';
 
-const { stringContains } = utils;
+const {stringContains} = utils;
 
-export const defaultRanksStyle : RanksStyle = {
+export const defaultRanksStyle: RanksStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
@@ -110,16 +110,16 @@ export const defaultRanksStyle : RanksStyle = {
 };
 
 export interface RanksStyle extends StyleDeclaration {
-  container : React.CSSProperties;
-  title : React.CSSProperties;
-  list : React.CSSProperties;
-  listHeader : React.CSSProperties;
-  listSection : React.CSSProperties;
-  item : React.CSSProperties;
-  name : React.CSSProperties;
-  level : React.CSSProperties;
-  permissions : React.CSSProperties;
-  options : React.CSSProperties;
+  container: React.CSSProperties;
+  title: React.CSSProperties;
+  list: React.CSSProperties;
+  listHeader: React.CSSProperties;
+  listSection: React.CSSProperties;
+  item: React.CSSProperties;
+  name: React.CSSProperties;
+  level: React.CSSProperties;
+  permissions: React.CSSProperties;
+  options: React.CSSProperties;
   buttonBar: React.CSSProperties;
 }
 
@@ -147,10 +147,10 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
                           />
                                 }>
                   <RaisedButton styles={{
-                      button: {
-                        flex: '0 0 auto',
-                      },
-                    }}>
+                    button: {
+                      flex: '0 0 auto',
+                    },
+                  }}>
                     Create Rank
                   </RaisedButton>
               </Dialog>)
@@ -162,7 +162,7 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
 }
 
 export interface RanksProps {
-  dispatch: (action : any) => any;
+  dispatch: (action: any) => any;
   refetch: () => void;
   group: {
     id: string;
@@ -235,7 +235,7 @@ async function setRankPermissions(renderData: RenderDataInfo, item: ql.CustomRan
     item.name,
     permissions.map(p => p.tag),
   );
-    
+
   if (res.ok) {
     renderData.refetch();
     return {
@@ -245,7 +245,7 @@ async function setRankPermissions(renderData: RenderDataInfo, item: ql.CustomRan
   return {
     ok: false,
     error: res.data,
-  };  
+  };
 }
 
 export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
@@ -306,7 +306,9 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     },
     renderItem: (item: ql.CustomRank, renderData?:
     {
-    userPermissions: ql.PermissionInfo[], groupPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
+      userPermissions: ql.PermissionInfo[],
+      groupPermissions: ql.PermissionInfo[],
+      groupId: string, refetch: () => void }) => {
       if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
         return (
           <InlineMultiSelectEdit
@@ -347,23 +349,23 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
                   <Tooltip
                     key={p.tag}
                     content={() => {
-                    return (
+                      return (
                       <div>
                         <div>{p.description}</div>
                         <i>id: {p.tag}</i>
                       </div>
-                    );
-                  }}
+                      );
+                    }}
                     styles={{
-                    container: {
-                      margin: '2px',
-                    },
-                    content: {
-                      backgroundColor: '#444',
-                      border: '1px solid #4A4A4A',
-                      maxWidth: '300px',
-                    },
-                  }}>
+                      container: {
+                        margin: '2px',
+                      },
+                      content: {
+                        backgroundColor: '#444',
+                        border: '1px solid #4A4A4A',
+                        maxWidth: '300px',
+                      },
+                    }}>
                     {p.name}
                   </Tooltip>
                 );
@@ -374,7 +376,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
 ];
 
 
-export default (props : RanksProps) => {
+export default (props: RanksProps) => {
 
   const ss = StyleSheet.create(defaultRanksStyle);
   const custom = StyleSheet.create(props.styles || {});
@@ -383,8 +385,8 @@ export default (props : RanksProps) => {
   return (
     <div className={css(ss.container, custom.container)}>
       <GroupTitle styles={{
-                    title: ss.title,
-                  }}
+        title: ss.title,
+      }}
                   refetch={props.refetch}>
         {props.group.name}
       </GroupTitle>

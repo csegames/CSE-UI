@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {utils} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 export interface SliderStyle extends StyleDeclaration {
   Slider: React.CSSProperties;
@@ -29,7 +29,7 @@ export const defaultSliderStyle: SliderStyle = {
   label: {
     color: 'white',
   },
-  
+
   input: {
     webkitAppearance: 'none',
     width: '100%',
@@ -100,7 +100,7 @@ export class Slider extends React.Component<SliderProps, SliderState> {
   public render() {
     const ss = StyleSheet.create(defaultSliderStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(ss.Slider, custom.Slider)}>
         {this.props.label && <label className={css(ss.label, custom.label)}>{this.props.label}</label>}

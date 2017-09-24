@@ -71,9 +71,9 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'inventory') {
         if (this.state.visible) {
-          this.setState((state, props) => ({ visible: false }));
+          this.setState((state, props) => ({visible: false}));
         } else {
-          this.setState((state, props) => ({ visible: true }));
+          this.setState((state, props) => ({visible: true}));
         }
       }
     });
@@ -144,8 +144,8 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     }
   }
 
-  private simDblClick(onDblClick: any, ...args : any[]) {
-    const now:number = Date.now();
+  private simDblClick(onDblClick: any, ...args: any[]) {
+    const now: number = Date.now();
     if (now - this.lastClicked < 500) {
       onDblClick(...args);
       this.lastClicked = 0;
@@ -163,7 +163,7 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
 
       toRender.push(
         (
-          <li className='inventory-item' 
+          <li className='inventory-item'
               key={key}
               onClick={() => this.simDblClick(this.useItem, key)}
               onContextMenu={() => this.dropItem(key)}>

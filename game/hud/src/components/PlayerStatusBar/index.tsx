@@ -87,14 +87,14 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
     }
   }
 
-  private bodyParts = (style: string = 'left') : any => {
+  private bodyParts = (style: string = 'left'): any => {
     const mini = style === 'mini' || style === 'mini-party';
     const health = this.props.playerStatus.health;
     return (
       <div className={`player-status-bar__body-parts ${style}`}>
-          
+
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom:'8%'}}>
+               style={mini ? {} : {marginBottom: '8%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}>LA</div>
             <Pills currentValue={health[BodyParts.LeftArm].current}
                    valuePerPill={100}
@@ -110,7 +110,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom:'2%', marginTop:'6%'}}>
+               style={mini ? {} : {marginBottom: '2%', marginTop: '6%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}>LL</div>
             <Pills currentValue={health[BodyParts.LeftLeg].current}
                    valuePerPill={100}
@@ -126,9 +126,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginTop:'13%'}}>
+               style={mini ? {} : {marginTop: '13%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}
-                 style={mini ? {fontWeight:'bold'} : {fontWeight:'bold',marginBottom:'0px'}}>H</div>
+                 style={mini ? {fontWeight: 'bold'} : {fontWeight: 'bold', marginBottom: '0px'}}>H</div>
             <Pills currentValue={health[BodyParts.Head].current}
                    valuePerPill={100}
                    maxValue={health[BodyParts.Head].maximum}
@@ -142,9 +142,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginTop:'13%'}}>
+               style={mini ? {} : {marginTop: '13%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}
-                 style={mini ? {fontWeight:'bold'} : {fontWeight:'bold',marginBottom:'0px'}}>T</div>
+                 style={mini ? {fontWeight: 'bold'} : {fontWeight: 'bold', marginBottom: '0px'}}>T</div>
             <Pills currentValue={health[BodyParts.Torso].current}
                    valuePerPill={100}
                    maxValue={health[BodyParts.Torso].maximum}
@@ -158,7 +158,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom:'2%',marginTop:'6%'}}>
+               style={mini ? {} : {marginBottom: '2%', marginTop: '6%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}>RL</div>
             <Pills currentValue={health[BodyParts.RightLeg].current}
                    valuePerPill={100}
@@ -174,7 +174,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom:'8%'}}>
+               style={mini ? {} : {marginBottom: '8%'}}>
             <div className={`player-status-bar__body-parts__label ${style}`}>RA</div>
             <Pills currentValue={health[BodyParts.RightArm].current}
                    valuePerPill={100}
@@ -261,7 +261,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
                  depletedColor={'grey'}
                  containerClass={'player-status-bar__stamina'}
                  size={10} />
-          
+
           <SlideIndicatorBar containerClass='player-status-bar__panic-bar'
                              indicatorClass='player-status-bar__indicator'
                              currentValue={this.props.playerStatus.panic.current}
@@ -295,7 +295,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
       <div className={`PlayerStatusBar__ActiveEffects ${style}`}>
         <ActiveEffectIcon containerClass={`PlayerStatusBar__ActiveEffects__Icon ${style}`}
                           icon='http://s3.amazonaws.com/camelot-unchained/icons/components/120/light-smash.jpg' />
-        <ActiveEffectIcon containerClass={`PlayerStatusBar__ActiveEffects__Icon ${style}`} 
+        <ActiveEffectIcon containerClass={`PlayerStatusBar__ActiveEffects__Icon ${style}`}
                           icon='http://s3.amazonaws.com/camelot-unchained/icons/components/120/light-smash.jpg' />
         <ActiveEffectIcon containerClass={`PlayerStatusBar__ActiveEffects__Icon ${style}`}
                           icon='http://s3.amazonaws.com/camelot-unchained/icons/components/120/light-smash.jpg' />
@@ -328,7 +328,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
   private fullTarget = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`} >
-        
+
         <SVGSprite sprite='images/player-status-bar.svg#target-bg'
                    svgClass='player-status-bar--background' />
 
@@ -338,7 +338,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
         {this.bloodAndStamFull('right')}
         {this.bodyParts('right')}
         {this.activeEffects('right')}
-      
+
       </div>
     );
   }
@@ -346,17 +346,17 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
   private fullParty = (): any => {
     return (
       <div className={`player-status-bar ${this.props.containerClass || ''}`} >
-        
+
         <SVGSprite sprite='images/player-status-bar.svg#bg-mini'
                    svgClass='player-status-bar--background' />
-        
+
         {this.name()}
         {this.classIcon()}
         {this.portrait('images/csejb.png')}
         {this.bloodAndStamParty()}
         {this.bodyParts()}
         {this.activeEffects('party')}
-      
+
       </div>
     );
   }

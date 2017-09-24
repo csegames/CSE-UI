@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { merge } from 'lodash';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {merge} from 'lodash';
 export interface ItemIconStyle extends StyleDeclaration {
   ItemIcon: React.CSSProperties;
   textContainer: React.CSSProperties;
@@ -100,7 +100,7 @@ const placeholderIcon = 'images/unknown-item.jpg';
 export const ItemIcon = (props: ItemIconProps) => {
   const ss = StyleSheet.create(defaultItemIconStyle);
   const custom = StyleSheet.create(merge({
-    ItemIcon: { background: !props.useFontIcon ? `url(${props.url || placeholderIcon})` : '' }},
+    ItemIcon: {background: !props.useFontIcon ? `url(${props.url || placeholderIcon})` : ''}},
     props.styles || {},
   ));
   return (

@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, Input, client } from 'camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {ql, Input, client} from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
-import { displaySlotNames } from '../../../lib/constants';
+import {displaySlotNames} from '../../../lib/constants';
 
 const containerDimensions = {
   width: 305,
@@ -144,9 +144,9 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
     };
   }
   public render() {
-    const ss = this.ss = StyleSheet.create({ ...defaultItemsMenuBoxStyle, ...this.props.styles });
-    const { visible, validItems, slotName, top, left } = this.props;
-    const { searchValue, currentPage } = this.state;
+    const ss = this.ss = StyleSheet.create({...defaultItemsMenuBoxStyle, ...this.props.styles});
+    const {visible, validItems, slotName, top, left} = this.props;
+    const {searchValue, currentPage} = this.state;
 
     const filteredValidItems = validItems.filter((item) => {
       return _.includes(item.staticDefinition.name.toLowerCase(), searchValue.toLowerCase());
@@ -155,7 +155,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
     return (
       visible && <div
         className={css(ss.itemsMenuContainer)}
-        style={{ position: 'fixed', top, left }}>
+        style={{position: 'fixed', top, left}}>
         <div className={css(ss.itemsMenuHeaderContainer)}>
           <div className={css(ss.itemsMenuTitleContainer)}>
             <p className={css(ss.slotNameText)}>{displaySlotNames[slotName]}</p>
@@ -165,7 +165,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
               value={searchValue}
               onFocus={() => client.RequestInputOwnership()}
               onBlur={() => client.ReleaseInputOwnership()}
-              styles={{ input: defaultItemsMenuBoxStyle.searchInput }}
+              styles={{input: defaultItemsMenuBoxStyle.searchInput}}
             />
           </div>
           <div className={css(ss.itemsMenuNavContainer)}>
@@ -177,7 +177,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
               <p className={css(ss.pageNumberText)}>
                 {currentPage} / {pageLength}
               </p>
-              <div className={css(ss.pageNavButton, currentPage < pageLength && ss.morePagesHighlight )}
+              <div className={css(ss.pageNavButton, currentPage < pageLength && ss.morePagesHighlight)}
               onClick={this.nextPage}>
                 {'Next >'}
               </div>
@@ -191,7 +191,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
 
   private renderValidItems = (validItems: Partial<ql.schema.Item>[]) => {
     const ss = this.ss;
-    const { currentPage } = this.state;
+    const {currentPage} = this.state;
     const emptySlots = [];
     let gearSlots: any = [];
 
@@ -201,7 +201,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
     for (let i = 0; i < difference; i++) {
       emptySlots.push(null);
     }
-    
+
     return (
       <div className={css(ss.slotContainer)}>
         {validItems.map((inventoryItem: Partial<ql.schema.Item>, itemIndex: number) => {
@@ -231,25 +231,25 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
   }
 
   private onSearchChange = (e: any, pageLength: number) => {
-    const { currentPage } = this.state;
+    const {currentPage} = this.state;
     if (currentPage !== 1) {
-      this.setState({ searchValue: e.target.value, currentPage: 1 });
+      this.setState({searchValue: e.target.value, currentPage: 1});
     } else {
-      this.setState({ searchValue: e.target.value });
+      this.setState({searchValue: e.target.value});
     }
   }
 
   private nextPage = () => {
-    const { currentPage } = this.state;
+    const {currentPage} = this.state;
     if (currentPage < this.props.validItems.length / 8) {
-      this.setState({ currentPage: currentPage + 1 });
+      this.setState({currentPage: currentPage + 1});
     }
   }
 
   private prevPage = () => {
-    const { currentPage } = this.state;
+    const {currentPage} = this.state;
     if (currentPage > 1) {
-      this.setState({ currentPage: currentPage - 1 });
+      this.setState({currentPage: currentPage - 1});
     }
   }
 }

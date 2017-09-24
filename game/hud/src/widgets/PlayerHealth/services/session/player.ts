@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events, Race, Faction, Gender, hasClientAPI, Player } from 'camelot-unchained';
-import { PlayerStatus, BodyParts } from '../../../../lib/PlayerStatus';
+import {client, events, Race, Faction, Gender, hasClientAPI, Player} from 'camelot-unchained';
+import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
 
 import {
   fakePlayer,
@@ -19,7 +19,7 @@ import {
   healtEmulationTest,
   avatarChanged,
 } from '../../../../lib/reduxHealth';
-import { merge, defaultAction } from '../../../../lib/reduxUtils';
+import {merge, defaultAction} from '../../../../lib/reduxUtils';
 const DO_THING = 'testthing';
 
 const INIT = 'playerhealth/player/INIT';
@@ -156,7 +156,7 @@ export function initializePlayerSession() {
     client.OnCharacterHealthChanged((current: number, max: number) =>
       dispatch(onHealthChanged(current, max, BodyParts.Torso)));
 
-    client.OnCharacterInjuriesChanged((part: number, health: number, maxHealth: number) => 
+    client.OnCharacterInjuriesChanged((part: number, health: number, maxHealth: number) =>
       dispatch(onHealthChanged(health, maxHealth, part)));
 
     client.OnCharacterNameChanged((name: string) => dispatch(onNameChanged(name)));
@@ -190,7 +190,7 @@ function initialState() {
   };
 }
 
-export default function reducer(state: PlayerState = initialState(), action: PlayerAction = defaultAction) : PlayerState {
+export default function reducer(state: PlayerState = initialState(), action: PlayerAction = defaultAction): PlayerState {
   switch (action.type) {
     case INIT: return merge(state, {});
 

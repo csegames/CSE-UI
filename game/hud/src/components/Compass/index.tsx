@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from 'camelot-unchained';
+import {client} from 'camelot-unchained';
 import * as React from 'react';
 
 export interface CompassProps {
@@ -84,12 +84,12 @@ class Compass extends React.Component<CompassProps, CompassState> {
   private updateFacingFromClient = () => {
     const facing: number = client.facing;
     if (this.state.facing !== facing) {
-      this.setState({ facing } as any);
+      this.setState({facing} as any);
     }
   }
 
   private position(facing: number, angle: number) {
-    return { left: this.angleToPercentage(facing, angle) + '%' };
+    return {left: this.angleToPercentage(facing, angle) + '%'};
   }
 }
 

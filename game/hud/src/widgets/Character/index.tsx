@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import {css, StyleDeclaration, StyleSheet} from 'aphrodite';
 
 import CharacterMain from './components/CharacterMain';
 
@@ -36,7 +36,7 @@ export interface CharacterContainerProps {
   visibleComponent: string;
 }
 const CharacterContainer = (props: CharacterContainerProps) => {
-  const ss = StyleSheet.create({ ...defaultCharacterContainerStyles, ...props.styles });
+  const ss = StyleSheet.create({...defaultCharacterContainerStyles, ...props.styles});
   return (
     <div className={css(ss.characterContainer)}>
       <CharacterMain visibleComponent={props.visibleComponent} />

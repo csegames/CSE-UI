@@ -11,16 +11,16 @@
 
 import * as React from 'react';
 
-import { utils } from 'camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {utils} from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 import GridStats from '../GridStats';
 import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
-import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
-import { colors } from '../../../../lib/constants';
+import {prettifyText, searchIncludesSection} from '../../../../lib/utils';
+import {colors} from '../../../../lib/constants';
 
-import { TestOffenseStatsInterface } from '../../testCharacterStats';
+import {TestOffenseStatsInterface} from '../../testCharacterStats';
 
 export interface OffenseListStyles extends StyleDeclaration {
   OffenseList: React.CSSProperties;
@@ -38,7 +38,7 @@ const defaultOffenseListStyle: OffenseListStyles = {
 
   sectionTitleContainer: {
     display: 'flex',
-    padding:'5px',
+    padding: '5px',
     fontSize: 18,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
     backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
@@ -67,7 +67,7 @@ export interface OffenseListProps {
 
 export interface OffenseListState {
   searchValue: string;
-  
+
 }
 
 class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
@@ -81,7 +81,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   public render() {
     const ss = StyleSheet.create(defaultOffenseListStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(ss.OffenseList, custom.OffenseList)}>
         <StatListContainer
@@ -135,7 +135,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   }
 
   private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
+    this.setState({searchValue});
   }
 }
 

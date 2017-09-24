@@ -20,7 +20,7 @@ class AnnouncementState {
 class AnnouncementProps {}
 
 class Announcement extends React.Component<AnnouncementProps, AnnouncementState> {
-  
+
   constructor(props: AnnouncementProps) {
     super(props);
   }

@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import {
   ql,
   webAPI,
@@ -18,7 +18,7 @@ import {
   Spinner,
   client,
 } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 import GroupTitle from './GroupTitle';
 import ActionButton from './ActionButton';
@@ -101,8 +101,8 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                                               postActionContent={() => <span>Accepted</span>}
                                               action={() => onAcceptInvitePress(i)}
                                             onActionSuccess={() => {
-                                                props.refetch();
-                                                props.data.refetch();
+                                              props.refetch();
+                                              props.data.refetch();
                                             }} />;
                       }
                       return <span> - </span>;

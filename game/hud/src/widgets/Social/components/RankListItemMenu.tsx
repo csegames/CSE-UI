@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { webAPI, client, ql, FloatSpinner } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {webAPI, client, ql, FloatSpinner} from 'camelot-unchained';
 
 export interface RankListItemMenuStyle extends StyleDeclaration {
   list: React.CSSProperties;
@@ -55,7 +55,7 @@ class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListIt
       deleteError: null,
     };
   }
-  
+
   public render() {
     const ss = StyleSheet.create(defaultRankListItemMenuStyle);
     const custom = StyleSheet.create(this.props.styles || {});
@@ -63,14 +63,14 @@ class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListIt
       <ul className={css(ss.list, custom.list)}>
         <li className={css(ss.listItem, custom.listItem)}
             onClick={this.doDelete}>
-            Delete {this.state.deleting ? <FloatSpinner styles={{spinner: { position: 'absolute' }}} /> : null}
+            Delete {this.state.deleting ? <FloatSpinner styles={{spinner: {position: 'absolute'}}} /> : null}
         </li>
       </ul>
     );
   }
 
   private doDelete = async () => {
-    await this.setState({ deleting: true, deleteError: null });
+    await this.setState({deleting: true, deleteError: null});
 
     const res = await webAPI.GroupsAPI.RemoveRankV1(
       webAPI.defaultConfig,
@@ -81,11 +81,11 @@ class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListIt
       this.props.rank.name,
     );
     if (res.ok) {
-      this.setState({ deleting: false });
+      this.setState({deleting: false});
       this.props.refetch();
       this.props.close();
     }
-    this.setState({ deleting: false, deleteError: res.data });
+    this.setState({deleting: false, deleteError: res.data});
   }
 }
 

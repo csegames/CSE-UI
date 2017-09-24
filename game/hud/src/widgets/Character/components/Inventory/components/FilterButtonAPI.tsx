@@ -12,8 +12,8 @@
 // IMPORTANT: This component is the shared code between the EditFilterButtonMenu and FilterButtonList components.
 
 import * as _ from 'lodash';
-import { client } from 'camelot-unchained';
-import { defaultFilterButtonIcons, InventoryFilterButton } from '../../../lib/constants';
+import {client} from 'camelot-unchained';
+import {defaultFilterButtonIcons, InventoryFilterButton} from '../../../lib/constants';
 
 const inventoryFilterButtonLocalStorageKey =  `inventoryFilterButton${client.characterID}`;
 

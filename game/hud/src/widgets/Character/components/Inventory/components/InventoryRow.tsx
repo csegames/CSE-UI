@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { InventorySlot, InventorySlotItemDef } from './InventorySlot';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {InventorySlot, InventorySlotItemDef} from './InventorySlot';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
-import { InventoryContainer } from './InventoryContainer';
-import { colors } from '../../../lib/constants';
+import {InventoryContainer} from './InventoryContainer';
+import {colors} from '../../../lib/constants';
 
 export interface InventoryRowStyle extends StyleDeclaration {
   InventoryRow: React.CSSProperties;
@@ -37,7 +37,7 @@ export const defaultInventoryRowStyle: InventoryRowStyle = {
   },
 
   row: {
-    
+
   },
 };
 
@@ -94,7 +94,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
     );
   }
 
-  public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {    
+  public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {
     return !_.isEqual(nextProps.items, this.props.items) || !_.isEqual(nextState, this.state);
   }
 

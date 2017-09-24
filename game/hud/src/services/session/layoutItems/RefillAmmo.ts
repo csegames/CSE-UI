@@ -10,7 +10,7 @@
  */
 
 
-import { LayoutMode } from '../../../components/HUDDrag';
+import {LayoutMode} from '../../../components/HUDDrag';
 import RefillAmmo from '../../../components/RefillAmmo';
 import HUDZOrder from '../HUDZOrder';
 
