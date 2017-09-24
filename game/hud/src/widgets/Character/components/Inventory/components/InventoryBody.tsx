@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-13 15:41:09
+ * @Last Modified time: 2017-09-18 18:34:07
  */
 
 import * as React from 'react';
@@ -78,6 +78,8 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 }
 
 class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodyState> {
+  private timePrevItemAdded: number;
+  private initial: boolean = true;
   private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
   private updateInventoryItemsHandler: EventListener;
   private dropItemHandler: EventListener;
@@ -105,6 +107,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
       const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
         base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
+
       return (
         <div className={css(ss.inventoryBody, custom.inventoryBody)}>
           <div ref={(r) => this.bodyRef = r}
@@ -127,6 +130,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
         </div>
       );
     }
+    
     return null;
   }
 
@@ -137,21 +141,27 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     window.addEventListener('resize', this.initializeInventory);
     client.SubscribeInventory(true);
     client.OnInventoryAdded((item) => {
-      if (this.props.visibleComponent === '' && !this.isFetching) {
+      const timeNextItemAdded = new Date().getTime();
+      if (this.props.visibleComponent === '' &&
+          !this.isFetching &&
+          this.timePrevItemAdded &&
+          timeNextItemAdded - this.timePrevItemAdded > 100
+        ) {
         this.isFetching = true;
-        this.refetch()
+        setTimeout(() => this.refetch(), 200);
       }
+      this.timePrevItemAdded = new Date().getTime();
     });
     client.OnInventoryRemoved((item) => {
-      if (this.props.visibleComponent !== '' && !this.isFetching) {
+      if (!this.isFetching) {
         this.isFetching = true;
-        setTimeout(() => this.refetch(), 500);
+        setTimeout(() => this.refetch(), 200);
       }
-      if (this.props.visibleComponent === '' && !this.isFetching) {
-        this.props.onChangeInventoryItems(_.filter(
-          this.props.inventoryItems, inventoryItem => inventoryItem.id !== item,
-        ));
-      }
+      // if (this.props.visibleComponent === '' && !this.isFetching) {
+      //   this.props.onChangeInventoryItems(_.filter(
+      //     this.props.inventoryItems, inventoryItem => inventoryItem.id !== item,
+      //   ));
+      // }
     });
   }
 
@@ -164,6 +174,11 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const onSearchValueChange = nextProps.searchValue !== this.props.searchValue;
     const onActiveFiltersChange = !_.isEqual(nextProps.activeFilters, this.props.activeFilters);
     
+    if (!this.props.graphql.data && nextProps.graphql.data) {
+      this.initial = false;
+      this.timePrevItemAdded = new Date().getTime();
+    }
+
     if (graphqlDataChange || onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
       this.setState(() => this.internalInit(nextState, nextProps));
     }
@@ -182,7 +197,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       namedQuery: 'myInventory',
       query: queries.InventoryBase,
       variables: null,
-    })
+    });
     this.props.onChangeInventoryItems(res.data.myInventory.items);
     this.isFetching = false;
   }

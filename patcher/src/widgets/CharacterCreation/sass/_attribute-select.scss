@@ -36,6 +36,9 @@
   display: block;
   background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), transparent);
   padding-bottom: 10px;
+  &.important {
+    background: linear-gradient(to bottom right, rgba(235, 205, 81, 0.1), transparent);
+  }
   &:hover {
     filter: brightness(150%);
     -webkit-filter: brightness(150%);
