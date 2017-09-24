@@ -1,14 +1,17 @@
 language: node_js
 node_js:
- - "7"
+ - "8"
+cache:
+  yarn: true
 install:
- - "cd $TRAVIS_BUILD_DIR/game/hud && npm install"
- - "cd $TRAVIS_BUILD_DIR/library && npm install"
- - "cd $TRAVIS_BUILD_DIR/patcher && npm install"
+ - "yarn"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && yarn"
+ - "cd $TRAVIS_BUILD_DIR/library && yarn"
+ - "cd $TRAVIS_BUILD_DIR/patcher && yarn"
 script:
- - "cd $TRAVIS_BUILD_DIR/game/hud && npm start build && npm start test"
- - "cd $TRAVIS_BUILD_DIR/library && npm start build && npm start test"
- - "cd $TRAVIS_BUILD_DIR/patcher && npm start build"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && yarn start build && yarn start test"
+ - "cd $TRAVIS_BUILD_DIR/library && yarn start build && yarn start test"
+ - "cd $TRAVIS_BUILD_DIR/patcher && yarn start build"
 notifications:
   email:
     - code@citystateentertainment.com

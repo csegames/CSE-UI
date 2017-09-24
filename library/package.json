@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install) && nps gql && nps definitions"
+    "postinstall": "cwd-in-node-modules || (rimraf typings && typings install && nps gql && nps definitions)"
   },
   "dependencies": {
     "aphrodite": "^1.2.3",
