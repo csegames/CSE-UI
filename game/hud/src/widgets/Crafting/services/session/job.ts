@@ -6,7 +6,7 @@
 
 import { Module } from 'redux-typed-modules';
 import { Ingredient, InventoryItem, Recipe, Message } from '../types';
-import { VoxStatus, VoxIngredient, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
+import { VoxStatus, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -17,9 +17,10 @@ export interface JobState {
   timeRemaining: number;              // For running job, how long left
   totalCraftingTime: number;          // For running job, how long left
   recipe: Recipe;                     // Selected Recipe
+  possibleItemSlots: string[];        // Possible recipe slots
   quality: number;                    // Desired quality
-  possibleIngredients: Ingredient[];  // ingredients that can go in the vox
-  possibleType: string;               // job type of possible ingredients
+  possibleIngredientsForSlot: Ingredient[];  // ingredients that can go in the vox
+  slot: string;                       // current slot type selected
   ingredients: Ingredient[];          // ingredients in the vox
   outputItems: InventoryItem[];       // Output items of the current vox job
   name: string;                       // Item Name (make)
@@ -38,9 +39,10 @@ export const initialState = (): JobState => {
     timeRemaining: 0,
     totalCraftingTime: 0,
     recipe: null,
+    possibleItemSlots: undefined,
     quality: undefined,
-    possibleIngredients: [],
-    possibleType: undefined,
+    possibleIngredientsForSlot: undefined,
+    slot: undefined,
     ingredients: [],
     outputItems: [],
     name: null,
@@ -85,25 +87,10 @@ export const addIngredient = module.createAction({
     return { ingredient, qty, movedTo };
   },
   reducer: (s, a) => {
-    const ingredients = [...s.ingredients];
-    const possibleIngredients = [...s.possibleIngredients];
+    const ingredients = [ ...s.ingredients ];
     const qty = a.qty;
     if (a.movedTo) {
       let i;
-      // find and remove quantity used from possibleIngredients
-      for (i = 0; i < possibleIngredients.length; i++) {
-        const ingredient = possibleIngredients[i];
-        if (ingredient.stats.unitCount >= qty && ingredient.id === a.ingredient.id) {
-          ingredient.stats.unitCount -= qty;
-          break;
-        }
-      }
-      if (i === possibleIngredients.length) {
-        const ingredient = possibleIngredients[i];
-        if (ingredient.stats.unitCount >= qty && isSameIngredient(ingredient, a.ingredient)) {
-          ingredient.stats.unitCount -= qty;
-        }
-      }
       // Upadte existing ingredient
       for (i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
@@ -121,7 +108,6 @@ export const addIngredient = module.createAction({
       }
       return {
         ingredients: ingredients.sort((a, b) => a.name.localeCompare(b.name)),
-        possibleIngredients,
       };
     }
     console.error('job:addIngredient missing modedTo ID');
@@ -129,35 +115,13 @@ export const addIngredient = module.createAction({
   },
 });
 
-function isSameIngredient(a: Ingredient, b: Ingredient): boolean {
-  return a.static.id === b.static.id && a.stats.quality === b.stats.quality;
-}
-
 export const removeIngredient = module.createAction({
   type: 'crafting/job/remove-ingredient',
   action: (item: Ingredient) => ({ item }),
   reducer: (s, a) => {
     const ingredients = s.ingredients.filter((item: InventoryItem) => item.id !== a.item.id);
-    const possibleIngredients = [...s.possibleIngredients];
-    const qty = a.item.qty;  // the quantity of the item added to the vox
-    let i;
-    // add back to possible ingredients
-    for (i = 0; i < possibleIngredients.length; i++) {
-      const ingredient = possibleIngredients[i];
-      if (a.item.id === ingredient.id) {
-        // Found the actual item being removed
-        // add back it's quantity
-        ingredient.stats.unitCount += qty;
-        break;
-      }
-    }
-    if (i === possibleIngredients.length) {
-      // or add new possible ingredient
-      possibleIngredients.push(a.item);
-    }
     return {
       ingredients,
-      possibleIngredients: possibleIngredients.sort((a, b) => a.name.localeCompare(b.name)),
     };
   },
 });
@@ -176,8 +140,9 @@ export const clearJob = module.createAction({
     // but keep possible ingredients incase we use them again
     return Object.assign({}, initialState(), {
       status: 'idle',
-      possibleIngredients: s.possibleIngredients,
-      possibleType: s.possibleType,
+      slot: undefined,
+      possibleItemSlots: undefined,
+      possibleIngredientsForSlot: undefined,
     });
   },
 });
@@ -191,13 +156,24 @@ export const cancelJob = module.createAction({
 export const collectJob = module.createAction({
   type: 'crafting/job/collect',
   action: () => ({}),
-  reducer: (s, a) => ({}),
+  reducer: (s, a) => ({
+    // collecting a job should clear some stuff
+    recipe: undefined,
+    possibleItemSlots: undefined,
+    slot: undefined,
+    possibleIngredientsForSlot: undefined,
+  }),
 });
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
   action: (recipe: Recipe) => ({ recipe }),
-  reducer: (s, a) => ({ recipe: a.recipe }),
+  reducer: (s, a) => ({
+    recipe: a.recipe,
+    possibleItemSlots: undefined,   // selecting a recipe clears the possible slots
+    slot: undefined,
+    possibleIngredientsForSlot: undefined,    // and possible ingredients for slot
+  }),
 });
 
 export const setQuality = module.createAction({
@@ -218,16 +194,19 @@ export const setMessage = module.createAction({
   reducer: (s, a) => ({ message: a.message }),
 });
 
-export const gotVoxPossibleIngredients = module.createAction({
-  type: 'crafting/job/got-vox-possible-ingredients',
-  action: (ingredients: VoxPossibleIngredient[], ingredientsType: string) => ({ ingredients, ingredientsType }),
+export const gotVoxPossibleIngredientsForSlot = module.createAction({
+  type: 'crafting/job/got-vox-possible-ingredients-with-slots',
+  action: (ingredients: VoxPossibleIngredient[], slot: string) => ({
+    ingredients,
+    slot,
+  }),
   reducer: (s, a) => ({
-    possibleIngredients: mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
-    possibleType: a.ingredientsType,
+    possibleIngredientsForSlot: a.ingredients && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
+    slot: a.slot,
   }),
 });
 
-function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
+function mapVoxIngredientsToIngredients(vis: VoxPossibleIngredient[]): Ingredient[] {
   const ingredients: Ingredient[] = [];
   if (vis) {
     for (let i = 0; i < vis.length; i++) {
@@ -250,6 +229,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
             currentPoints: vis[i].stats.durability.currentRepairPoints,
           },
         },
+        slots: [],
       });
     }
   }
@@ -311,6 +291,14 @@ export const gotOutputItems = module.createAction({
   type: 'crafting/job/got-output-items',
   action: (outputItems: VoxOutputItem[]) => ({ outputItems }),
   reducer: (s, a) => ({ outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) }),
+});
+
+export const gotPossibleItemSlots = module.createAction({
+  type: 'crafting/job/got-possible-slots',
+  action: (slots: string[] ) => ({ slots }),
+  reducer: (s, a) => ({
+    possibleItemSlots: a.slots.slice(0)
+  }),
 });
 
 export default module.createReducer();

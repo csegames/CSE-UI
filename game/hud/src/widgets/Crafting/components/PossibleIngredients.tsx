@@ -20,7 +20,7 @@ interface PossibleIngredientsReduxProps {
 
 const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIngredientsReduxProps => {
   const possibleIngredients: Ingredient[] = [];
-  state.job.possibleIngredients.forEach((ingredient: Ingredient) => {
+  state.job.possibleIngredientsForSlot.forEach((ingredient: Ingredient) => {
     if (ingredient.stats.unitCount > 0) {
       possibleIngredients.push(ingredient);
     }

@@ -19,8 +19,16 @@ const ERRORS = {
   NotLoggedIn: 'Character not logged into game',
 };
 
-function runQuery(query: string, key: string) {
+function runQuery(query: string, key: string, args: any = null) {
   return new Promise((resolve, reject) => {
+    if (args) {
+      let sargs = '(';
+      for (let key in args) {
+        sargs += key + ':' + args[key];
+      }
+      sargs += ')';
+      query = query.replace(key, key + sargs);
+    }
     gql({ query }).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
       if (info) {
@@ -57,13 +65,19 @@ export function voxGetStatus() {
   });
 }
 
-export function voxGetPossibleIngredients() {
+const SlotToSubItemSlot = {
+  Alloy: 'ALLOY',
+};
+
+export function voxGetPossibleIngredientsForSlot(slot: string) {
+  slot = SlotToSubItemSlot[slot] || slot.toUpperCase();
   return new Promise((resolve, reject) => {
-    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients')
+    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', { slot: slot})
       .then((possibleIngredients: VoxPossibleIngredient[]) => {
         resolve(possibleIngredients);
       })
       .catch(() => {
+        debugger;
         reject('No vox nearby');
       });
   });
@@ -80,5 +94,17 @@ export function voxGetRecipesFor(type: string) {
       .catch(() => {
         reject(`Could not get ${type} recipes`);
       });
+  });
+}
+
+export function voxGetPossibleItemSlots() {
+  return new Promise((resolve, reject) => {
+    runQuery(QUERIES['QUERY_POSSIBLE_ITEMSLOTS'], 'possibleItemSlots')
+      .then((stuff: any) => {
+        resolve(stuff);
+      })
+      .catch(() => {
+        reject('Could not get possible item slots');
+      })
   });
 }

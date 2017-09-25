@@ -145,7 +145,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
           <div>
             { makeButton({
               label: '/cr specific',
-              click: () => this.slash('cr specific ' + this.state.alloyId, 'Check your inventory'),
+              click: () => this.slash('cr specific ' + this.state.alloyId, 'Check the ground around you'),
             })}
             { makeInput({
               get: () => this.state.alloyId,

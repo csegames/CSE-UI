@@ -61,7 +61,6 @@ interface VoxStatus {
   endQuality: number;
   usedRepairPoints: number;
   ingredients: VoxIngredient[];
-  possibleIngredients: VoxPossibleIngredient[];
 }
 
 interface VoxRecipe {

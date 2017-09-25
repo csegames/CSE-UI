@@ -251,6 +251,7 @@ export const voxMessage: VoxMessageStyles = {
     flex: '0 1 auto',
     fontSize: '14px',
     position: 'relative',
+    height: '20px',
   },
   success: {
     color: 'lime',
@@ -286,6 +287,32 @@ export const tools: ToolsStyles = {
   button: {
     padding: '2px 0.5em',
     height: opts.input.HEIGHT,
+  },
+};
+
+export interface PossibleSlotsStyles {
+  possibleSlots: React.CSSProperties;
+  select: React.CSSProperties;
+  select_impl: React.CSSProperties;
+  select_list: React.CSSProperties;
+}
+
+export const possibleSlots: PossibleSlotsStyles = {
+  possibleSlots: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  select: {
+    flex: '0 1 auto',
+    minWidth: '75px',
+    height: opts.input.HEIGHT,
+  },
+  select_impl: {
+    backgroundColor: opts.input.BACKGROUND,
+  },
+  select_list: {
+    maxHeight: '175px',
   },
 };
 
@@ -388,10 +415,12 @@ export interface OutputItemsStyles {
 
 export const outputItems: OutputItemsStyles = {
   outputItems: {
-    flex: '0 1 auto',
+    flex: '0 1 120px',
     display: 'flex',
+    flexAlign: 'bottom',
     flexDirection: 'column',
-    maxHeight: opts.output.HEIGHT,
+    minHeight: opts.output.MIN_HEIGHT,
+    maxHeight: opts.output.MAX_HEIGHT,
     overflow: 'auto',
   },
   title: {
@@ -438,9 +467,11 @@ export interface IngredientsStyles {
   remove: React.CSSProperties;
 
   addIngredient: React.CSSProperties;
+  ingredient: React.CSSProperties;
   times: React.CSSProperties;
   add: React.CSSProperties;
   quantity: React.CSSProperties;
+  message: React.CSSProperties;
 }
 
 export const ingredients: IngredientsStyles = {
@@ -479,16 +510,24 @@ export const ingredients: IngredientsStyles = {
     borderBottom: opts.ui.BOTTOM_BORDER,
     paddingBottom: '0.5em',
   },
+  ingredient: {
+    display: 'flex',
+    flex: '1 1 auto',
+    marginLeft: '0.5em',
+  },
   times: {
     flex: '0 1 auto',
     margin: '0 0.5em',
   },
   add: {
-    flex: '0 1 150px',
+    flex: '0 1 50px',
     margin: '0 0 0 1em',
   },
   quantity: {
   },
+  message: {
+    paddingLeft: '1em',
+  }
 };
 
 export interface IngredientItemStyles {
@@ -579,6 +618,7 @@ export const repairItem: RepairItemStyles = {
 export interface JobDetailsStyles {
   jobDetails: React.CSSProperties;
   properties: React.CSSProperties;
+  ingredients: React.CSSProperties;
   input: React.CSSProperties;
   buttons: React.CSSProperties;
   button: React.CSSProperties;
@@ -593,7 +633,12 @@ export const jobDetails: JobDetailsStyles = {
   },
   properties: {
     display: 'block',
-    flex: '0 1 auto',
+    flex: '0 0 auto',
+  },
+  ingredients: {
+    display: 'flex',
+    flex: '0 0 290px',
+    flexDirection: 'column',
   },
   input: {
     height: opts.input.HEIGHT,

@@ -75,19 +75,21 @@ export const JobDetails = (props: JobDetailsProps) => {
   }
 
   return (
-    <div className={css(ss.jobDetails)}>
-      <div className={css(ss.properties)}>
+    <div className={css(ss.jobDetails) + ' job-details'}>
+      <div className={css(ss.properties) + ' job-details-properties'}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
         <RecipeSelect dispatch={props.dispatch} onSelect={props.setRecipe}/>
       </div>
-      <Ingredients
-        add={props.addIngredient}
-        remove={props.removeIngredient}
-        dispatch={props.dispatch}
-        />
-      <OutputItems/>
+      <div className={css(ss.ingredients) + ' job-details-ingredients'}>
+        <Ingredients
+          add={props.addIngredient}
+          remove={props.removeIngredient}
+          dispatch={props.dispatch}
+          />
+        <OutputItems/>
+      </div>
       <VoxMessage/>
-      <div className={css(ss.buttons)}>
+      <div className={css(ss.buttons) + ' job-details-footer'}>
         <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
         <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
         <Button style={buttonStyle} disabled={!canStart} onClick={props.start}>Start</Button>

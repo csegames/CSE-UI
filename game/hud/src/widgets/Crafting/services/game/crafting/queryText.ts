@@ -134,9 +134,14 @@ const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
   crafting: { makeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
 });
 
+const QUERY_POSSIBLE_ITEMSLOTS = GetQueryText('PossibleItemSlots', {
+  crafting: [ 'possibleItemSlots' ],
+});
+
 export const QUERIES = {
   QUERY_VOX_STATUS,
   QUERY_POSSIBLE_INGREDIENTS,
+  QUERY_POSSIBLE_ITEMSLOTS,
   QUERY_PURIFY_RECIPES,
   QUERY_GRIND_RECIPES,
   QUERY_REFINE_RECIPES,

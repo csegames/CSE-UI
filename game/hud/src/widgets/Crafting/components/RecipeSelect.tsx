@@ -16,6 +16,7 @@ export interface RecipeSelectReduxProps {
   type?: string;
   items?: Recipe[];
   selected?: Recipe;
+  enabled?: boolean;
   status?: string;
   style?: Partial<RecipeSelectStyles>;
 }
@@ -32,6 +33,7 @@ const select = (state: GlobalState, props: RecipeSelectProps): RecipeSelectRedux
     type: state.job.type,
     items: state.recipes[state.job.type],
     selected: state.job.recipe,
+    enabled: !(state.job.ingredients && state.job.ingredients.length > 0),
     status: state.job.status,
   };
 };
@@ -52,8 +54,8 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
           {type[0].toUpperCase() + type.substr(1)} Recipe
         </Label>
         <Select
-          disabled={this.props.status !== 'Configuring'}
-          style={{ select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list }}
+          disabled={!this.props.enabled || this.props.status !== 'Configuring'}
+          style={{select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}
