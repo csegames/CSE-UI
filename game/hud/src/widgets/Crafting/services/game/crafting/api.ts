@@ -10,7 +10,7 @@
  */
 
 import {client, webAPI} from 'camelot-unchained';
-import { Promise } from 'es6-promise';
+import {Promise} from 'es6-promise';
 
 export interface VoxResponse {
   Result: number;

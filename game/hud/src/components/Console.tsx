@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * @Author: JB (jb@codecorsair.com) 
- * @Date: 2017-03-01 20:19:26 
+ * @Author: JB (jb@codecorsair.com)
+ * @Date: 2017-03-01 20:19:26
  * @Last Modified by: JB (jb@codecorsair.com)
  * @Last Modified time: 2017-07-15 09:42:57
  */
@@ -16,7 +16,7 @@ import {
   parseMessageForSlashCommand,
   events,
 } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 export interface ConsoleStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -92,7 +92,7 @@ class CircularArray<T> {
 export class Console extends React.Component<ConsoleProps, ConsoleState> {
 
   private inputRef: HTMLInputElement = null;
-  
+
   constructor(props: ConsoleProps) {
     super(props);
     this.state = {
@@ -161,7 +161,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === jsKeyCodes.ENTER) {
-      // submit command 
+      // submit command
       const text = this.inputRef.value.replace('/', '');
       if (!parseMessageForSlashCommand(text)) {
         client.SendSlashCommand(text);

@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { css, StyleSheet } from 'aphrodite';
+import {css, StyleSheet} from 'aphrodite';
 
-import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
-import { client } from 'camelot-unchained';
-import { TabPanel } from 'camelot-unchained/lib/components';
+import {ObjectMap} from 'camelot-unchained/lib/graphql/utils';
+import {client} from 'camelot-unchained';
+import {TabPanel} from 'camelot-unchained/lib/components';
 
 type Content = string | ObjectMap<any>;
 
 export interface Button {
   title: string;
-  
+
   // if set, will call slash command using this string
   command?: string;
 
@@ -31,7 +31,7 @@ export interface Page {
 
 export interface RootPage extends Partial<Page> {
   width: number;
-  
+
   height: number;
   x: number;
   y: number;
@@ -66,7 +66,7 @@ const DevUIButton = (props: Button) => {
     <div className={css(style.Button)}
         onClick={() => {
           if (props.command) {
-            client.SendSlashCommand(props.command)
+            client.SendSlashCommand(props.command);
           } else if (props.call) {
             const fn = client[props.call];
             if (props.params) {
@@ -95,12 +95,13 @@ const DevUIContent = (props: {content: Content}) => {
   const style = StyleSheet.create(contentStyle);
   return (
     <div className={css(style.Content)} >
-      {typeof props.content === 'string' ? <DevUIStringContent content={props.content} /> : <DevUIObjectContent content={props.content} />}
+      {typeof props.content === 'string' ?
+      <DevUIStringContent content={props.content} /> : <DevUIObjectContent content={props.content} />}
     </div>
   );
 };
 
-const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />
+const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />;
 
 const DevUIObjectContent = (props: {content: ObjectMap<any>}): JSX.Element => {
   const keys = Object.keys(props.content);
@@ -111,8 +112,8 @@ const DevUIObjectContent = (props: {content: ObjectMap<any>}): JSX.Element => {
           <tr style={{border: '1px solid #ececec', padding: '2px'}}>
             <th style={{border: '1px solid #ececec', padding: '2px'}}>{k}</th>
             <td style={{border: '1px solid #ececec', padding: '2px'}}>
-              {typeof props.content[k] !== 'object' 
-                ? <DevUIStringContent content={props.content[k]} /> 
+              {typeof props.content[k] !== 'object'
+                ? <DevUIStringContent content={props.content[k]} />
                 : <DevUIObjectContent content={props.content[k]} />}
             </td>
           </tr>
@@ -157,34 +158,34 @@ const DevUIPage = (props: Partial<Page>): JSX.Element => {
       {props.pages && (
         <div className={css(style.pages)}>
           <TabPanel styles={{
-                      tabPanel: {
-                        flex: '1 1 auto',
-                        width: 'initial',
-                        height: 'initial',
-                      },
-                      tab: {
-                        padding: '2px 10px',
-                        background: '#444',
-                        borderBottom: '1px solid transparent',
-                      },
-                      activeTab: {
-                        background: '#777',
-                        borderBottom: '1px solid orange',
-                      },
-                    }}
-                    tabs={props.pages.map(p => {
-                        return {
-                          tab: {
-                            render: () => <span>{p.title}</span>,
-                          },
-                          rendersContent: p.title || '',
-                        };
-                      })}                
-                      content={props.pages.map(p => {
+            tabPanel: {
+              flex: '1 1 auto',
+              width: 'initial',
+              height: 'initial',
+            },
+            tab: {
+              padding: '2px 10px',
+              background: '#444',
+              borderBottom: '1px solid transparent',
+            },
+            activeTab: {
+              background: '#777',
+              borderBottom: '1px solid orange',
+            },
+          }}
+                    tabs={props.pages.map((p) => {
+                      return {
+                        tab: {
+                          render: () => <span>{p.title}</span>,
+                        },
+                        rendersContent: p.title || '',
+                      };
+                    })}
+                      content={props.pages.map((p) => {
                         return {
                           name: p.title || '',
                           content: {
-                            render: () => <DevUIPage {...p} />
+                            render: () => <DevUIPage {...p} />,
                           },
                         };
                       })} />
@@ -201,7 +202,7 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
     this.state = null;
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
@@ -213,12 +214,12 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
     });
   }
 
-  render() {
+  public render() {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
     return (
       <div>
-        {keys.map(k => {
+        {keys.map((k) => {
           const page = this.state[k];
           if (!page) return null;
           return (
@@ -236,17 +237,17 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
             { page.showCloseButton ?
               <a href={'#'}
                  style={{
-                    position: 'absolute',
-                    right: '0px',
-                    top: '0px',
-                    display: 'flex',
-                   }}
+                   position: 'absolute',
+                   right: '0px',
+                   top: '0px',
+                   display: 'flex',
+                 }}
                    onClick={() => this.setState({
-                                    [k]: {
-                                      ...page,
-                                      visible: false,
-                                    }
-                                  })}>X</a> : null }
+                     [k]: {
+                       ...page,
+                       visible: false,
+                     },
+                   })}>X</a> : null }
                 <DevUIPage {...page} />
             </div>
           );

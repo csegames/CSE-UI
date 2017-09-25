@@ -10,15 +10,15 @@
  */
 
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { utils } from 'camelot-unchained';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import {utils} from 'camelot-unchained';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
-import { colors } from '../../../../lib/constants';
+import {colors} from '../../../../lib/constants';
 
 // Will need to change this with a fragment interface once we hook up graphql
-import { TestBodyPartStats } from '../../testCharacterStats';
+import {TestBodyPartStats} from '../../testCharacterStats';
 
 export interface DefenseListStyle extends StyleDeclaration {
   DefenseList: React.CSSProperties;
@@ -28,13 +28,13 @@ export interface DefenseListStyle extends StyleDeclaration {
 const defaultDefenseListStyle: DefenseListStyle = {
   DefenseList: {
     flex: 1,
-    height: '100%',    
+    height: '100%',
     backgroundColor: 'rgba(75, 67, 65, 0.2)',
   },
 
   statSectionTitle: {
     textAlign: 'center',
-    padding:'5px',
+    padding: '5px',
     fontSize: 24,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
     backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
@@ -83,7 +83,7 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
                   searchValue={this.state.searchValue}
                   bodyPartStats={this.props.defensiveStats[bodyPart]}
                 />
-              );     
+              );
             })}
           </div>
         )} />
@@ -92,7 +92,7 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   }
 
   private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
+    this.setState({searchValue});
   }
 }
 

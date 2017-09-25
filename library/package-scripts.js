@@ -1,7 +1,7 @@
 module.exports = {
   scripts: {
     lint: {
-      script: 'tslint src/**/*.ts{,x}',
+      script: 'tslint -t stylish src/**/*.ts{,x}',
       description: 'Run TS-Lint"',
       fix: {
         script: 'tslint --fix src/**/*.ts{,x}',

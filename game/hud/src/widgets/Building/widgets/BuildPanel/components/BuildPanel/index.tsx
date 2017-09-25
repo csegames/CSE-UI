@@ -37,8 +37,9 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
 
   public render() {
     let matSelector: JSX.Element = null;
-    if (this.state.showMaterialSelector)
+    if (this.state.showMaterialSelector) {
       matSelector = (<MaterialSelector minimized={this.state.minimized} />);
+    }
 
     return (
       <div className={`build-panel ${this.state.minimized ? 'minimized' : ''}`} >
@@ -62,11 +63,11 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
   }
 
   private materialSelectorActivated = () => {
-    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
+    this.setState((state, props) => ({showMaterialSelector: true} as BuildPanelState));
   }
 
   private materialSelectorDeactivated = () => {
-    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
+    this.setState((state, props) => ({showMaterialSelector: true} as BuildPanelState));
   }
 }
 

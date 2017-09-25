@@ -46,7 +46,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
   constructor(props: BlueprintsPaneProps) {
     super(props);
-    this.state = { filter: '', saveMode: false };
+    this.state = {filter: '', saveMode: false};
   }
 
   public render() {
@@ -76,8 +76,9 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   private onBlueprintSelect = (blueprint: BuildingBlueprint) => {
-    if (blueprint != null && blueprint.icon == null)
+    if (blueprint != null && blueprint.icon == null) {
       blueprintService.loadIcon(blueprint);
+    }
 
     const item = {
       name: 'Blueprint',
@@ -93,16 +94,16 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   private toggleSaveBlueprint = () => {
-    this.setState((state, props) => ({ saveMode: !state.saveMode } as any));
+    this.setState((state, props) => ({saveMode: !state.saveMode} as any));
   }
 
   private triggerCancelSave = () => {
-    this.setState((state, props) => ({ saveMode: false } as any));
+    this.setState((state, props) => ({saveMode: false} as any));
   }
 
   private triggerSaveBlueprint = (name: string) => {
     blueprintService.save(name);
-    this.setState((state, props) => ({ saveMode: false } as any));
+    this.setState((state, props) => ({saveMode: false} as any));
   }
 
   private triggerDeleteBlueprint = () => {
@@ -123,10 +124,11 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   private hoverBlueprint = (blueprint: BuildingBlueprint) => {
-    if (blueprint != null && blueprint.icon == null)
+    if (blueprint != null && blueprint.icon == null) {
       blueprintService.loadIcon(blueprint);
+    }
 
-    this.props.handlePreviewIcon( blueprint ? blueprint.icon : null);
+    this.props.handlePreviewIcon(blueprint ? blueprint.icon : null);
   }
 
   private createSaveView(bpState: BlueprintsState) {
@@ -146,7 +148,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
       const options = categories.map((cat: string) => {
         return { value: cat, label: cat }
       });
-  
+
       return (
         <div className='BlueprintsPane__filter'>
           <div className='BlueprintsPane__filter__select'>
@@ -162,7 +164,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
         </div>
       );
     }
-  
+
     filterBlueprints(blueprints: BuildingBlueprint[]) {
       if (this.state.filter != '' && this.state.filter != null) {
         return blueprints.filter((blueprint: BuildingBlueprint): boolean => {
@@ -171,7 +173,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
       }
       return blueprints;
     }
-  
+
     getBlueprintCategories(blueprints: BuildingBlueprint[]): string[] {
       const categoryMap: { [key: string]: boolean } = {};
       const categories: string[] = [];

@@ -8,16 +8,16 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import GroupTitle from './GroupTitle';
 import OrdersGrid from './OrdersGrid';
-import { client, Input } from 'camelot-unchained';
+import {client, Input} from 'camelot-unchained';
 
 export interface OrdersListStyle extends StyleDeclaration {
-  container : React.CSSProperties;
-  filterBox : React.CSSProperties;
+  container: React.CSSProperties;
+  filterBox: React.CSSProperties;
 }
-export const defaultOrdersListStyle : OrdersListStyle = {
+export const defaultOrdersListStyle: OrdersListStyle = {
   container: {
     flex: '1 1 auto',
     display: 'flex',
@@ -77,7 +77,7 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
           filter={this.state.filter}
           itemsPerPage={this.state.itemsPerPage}
           gotoPage={(page: number) => {
-            this.setState({ page });
+            this.setState({page});
           }}
           sort={this.state.sort} reverse={this.state.reverse}
           orderBy={(name: string, asc: boolean) => {
@@ -93,7 +93,7 @@ class OrdersList extends React.Component<OrdersListProps, OrdersListState> {
   }
 
   private onFilterChanged = (e: any) => {
-    this.setState({ filter: this.searchRef.value.toLowerCase() });
+    this.setState({filter: this.searchRef.value.toLowerCase()});
   }
 }
 

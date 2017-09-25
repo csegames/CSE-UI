@@ -11,10 +11,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {client} from 'camelot-unchained';
 
-import { ConfigIndex, ConfigInfo } from '../OptionsMain';
+import {ConfigIndex, ConfigInfo} from '../OptionsMain';
 import ListItem from './ListItem';
 
 export interface AudioOptionsStyle extends StyleDeclaration {
@@ -23,7 +23,7 @@ export interface AudioOptionsStyle extends StyleDeclaration {
 
 export const defaultAudioOptionsStyle: AudioOptionsStyle = {
   AudioOptions: {
-    
+
   },
 };
 
@@ -40,7 +40,7 @@ export interface AudioOptionsState {
 export class AudioOptions extends React.Component<AudioOptionsProps, AudioOptionsState> {
   constructor(props: AudioOptionsProps) {
     super(props);
-    this.state = {      
+    this.state = {
     };
   }
 
@@ -59,7 +59,7 @@ export class AudioOptions extends React.Component<AudioOptionsProps, AudioOption
                 value={config.value}
                 isOddItem={i % 2 !== 0}
                 sliderItemInfo={{
-                  onChange: (val) => this.onInputRangeChange(config, val),
+                  onChange: val => this.onInputRangeChange(config, val),
                 }}
               />
             );

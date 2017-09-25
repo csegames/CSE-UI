@@ -64,8 +64,8 @@ class Building extends React.Component<BuildingProps, BuildingState> {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {
-          if (state.visible) return { visible: false };
-          if (!state.visible) return { visible: true };
+          if (state.visible) return {visible: false};
+          if (!state.visible) return {visible: true};
         });
       }
     });

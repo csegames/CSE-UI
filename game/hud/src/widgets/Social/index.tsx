@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { Provider } from 'react-redux';
-import { client, events, jsKeyCodes } from 'camelot-unchained';
+import {Provider} from 'react-redux';
+import {client, events, jsKeyCodes} from 'camelot-unchained';
 import SocialMain from './components/SocialMain';
-import { store } from './services/session/reducer';
+import {store} from './services/session/reducer';
 
 
 export interface SocialContainerProps {
@@ -30,7 +30,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   private initialized = false;
   private mainRef: any = null;
 
-  constructor(props : SocialContainerProps) {
+  constructor(props: SocialContainerProps) {
     super(props);
     this.state = {
       visible: false,
@@ -44,10 +44,10 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
       </Provider>
     );
   }
-  
+
   public componentDidMount() {
     this.hudNavListener = events.on('hudnav--navigate', (name: string) => {
-      const { visible } = this.state;
+      const {visible} = this.state;
       switch (name) {
         case 'social': {
           if (visible) {
@@ -74,8 +74,8 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
     window.removeEventListener('keydown', this.onKeyDown);
   }
 
-  private onKeyDown = (e : KeyboardEvent) => {
-    const { visible } = this.state;
+  private onKeyDown = (e: KeyboardEvent) => {
+    const {visible} = this.state;
     if (e.which === jsKeyCodes.ESC && visible) {
       client.ReleaseInputOwnership();
       this.hide();
@@ -83,15 +83,13 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   }
 
   private show = () => {
-    if (typeof client.RequestInputOwnership === 'function') 
-      client.RequestInputOwnership();
-    this.setState({ visible: true });
+    if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
+    this.setState({visible: true});
   }
 
   private hide = () => {
-    if (typeof client.ReleaseInputOwnership === 'function') 
-      client.ReleaseInputOwnership();
-    this.setState({ visible: false });
+    if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
+    this.setState({visible: false});
   }
 }
 

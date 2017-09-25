@@ -19,8 +19,8 @@ export default class RespawnLocation {
     cuAPI.Respawn(this.id);
   }
   public calcDistanceFromXY = (x: number, y: number): number => {
-    const Dx : number = x - this.x;
-    const Dy : number = y - this.y;
+    const Dx: number = x - this.x;
+    const Dy: number = y - this.y;
     return this.distance = Math.sqrt((Dx * Dx) + (Dy * Dy));
   }
 }

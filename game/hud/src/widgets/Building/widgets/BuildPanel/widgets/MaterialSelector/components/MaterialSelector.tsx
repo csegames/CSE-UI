@@ -73,7 +73,7 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
   }
 
   private onHover = (material: BuildingMaterial) => {
-      this.props.dispatch(setHoverMaterial(material));
+    this.props.dispatch(setHoverMaterial(material));
   }
 }
 

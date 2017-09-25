@@ -34,9 +34,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     return (
       <Provider store={store}>
         <TabbedPane name='materials' tabs={['Materials']} className='material-selector'
-          defaultX={[405, Anchor.TO_END]} 
-          defaultY={[20, Anchor.TO_START]} 
-          defaultSize={[200, 750]} 
+          defaultX={[405, Anchor.TO_END]}
+          defaultY={[20, Anchor.TO_START]}
+          defaultSize={[200, 750]}
         >
           <MaterialSelector />
           <MaterialPreview />

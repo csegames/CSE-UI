@@ -59,7 +59,7 @@ async function inviteByName(name: string) {
     client.shardID,
     client.characterID,
     name,
-  )
+  );
   if (!res.ok) {
     // something went wrong
     console.error(res);
@@ -75,7 +75,7 @@ async function joinByName(name: string) {
     client.shardID,
     name,
     client.characterID,
-  )
+  );
   if (!res.ok) {
     // something went wrong
     console.error(res);
@@ -109,7 +109,12 @@ async function quitWarband() {
 }
 
 async function abandonWarbandWithoutName() {
-  const res = await webAPI.WarbandsAPI.AbandonV1(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID)
+  const res = await webAPI.WarbandsAPI.AbandonV1(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+  );
   if (!res.ok) {
     // something went wrong
     console.error(res);
@@ -124,7 +129,7 @@ async function abandonWarbandWithName(name: string) {
     client.shardID,
     client.characterID,
     name,
-  )
+  );
   if (!res.ok) {
     // something went wrong
     console.error(res);
@@ -173,13 +178,13 @@ export default () => {
 
   /**
    * Create a new Warband
-   * 
+   *
    * usage:
-   * 
+   *
    *   1. Create a temporary warband, this type of warband will go away after all members leave.
    *      This is the standard "Party".
    *    /createWarband
-   * 
+   *
    *   2. Create a permanent warband, this type of warband will live on until it is abandonded by all its members.
    *    /createWarband Friendship Warriors
    */
@@ -195,7 +200,7 @@ export default () => {
 
   /**
    * Invite a player to your warband you are invite
-   * 
+   *
    * usage:  /invite mehuge
   */
 
@@ -248,7 +253,7 @@ export default () => {
     'Warband.',
     (name: string = '') => {
       if (name === '') {
-        abandonWarbandWithoutName()
+        abandonWarbandWithoutName();
       } else {
         abandonWarbandWithName(name);
       }

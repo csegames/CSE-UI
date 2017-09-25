@@ -12,12 +12,11 @@ import thunk from 'redux-thunk';
 import {events} from 'camelot-unchained';
 import reducer from './services/session/reducer';
 import {initialize} from './services/session/materials';
-import {BuildPaneProps} from '../../lib/BuildPane';
+import {BuildPaneProps, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
 
 import TabbedPane from '../../components/TabbedPane';
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 import MaterialReplace from './components/MaterialReplace';
-import {DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
 import {Anchor} from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -39,9 +38,9 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
           name='blocks'
           tabs={['Blocks', 'Replace']}
           onTabChange={(index: number, name: string) => this.onTabChange}
-          defaultX={[0, Anchor.TO_END]} 
-          defaultY={[0, Anchor.TO_START]} 
-          defaultSize={[200, 200]} 
+          defaultX={[0, Anchor.TO_END]}
+          defaultY={[0, Anchor.TO_START]}
+          defaultSize={[200, 200]}
         >
           <MaterialAndShapePane {...this.props}/>
           <MaterialReplace {...this.props}/>

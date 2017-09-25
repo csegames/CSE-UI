@@ -58,7 +58,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
       let html = '';
       if (fillPercent > 0) {
-        html = `<div class='${this.props.pillClass || ''}' style='background:linear-gradient(to right, 
+        html = `<div class='${this.props.pillClass || ''}' style='background:linear-gradient(to right,
          ${this.props.valueColor} ${fillPercent}%, ${this.props.depletedColor} ${100 - fillPercent}%);' />`;
       } else {
         html = `<div class='${this.props.pillClass || ''}' style='background-color: ${this.props.depletedColor};' />`;
@@ -83,7 +83,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
       let html = '';
       if (fillPercent > 0) {
-        html = `<div class='${this.props.pillClass || ''}' style='background:linear-gradient(to bottom, 
+        html = `<div class='${this.props.pillClass || ''}' style='background:linear-gradient(to bottom,
          ${this.props.valueColor} ${fillPercent}%, ${this.props.depletedColor} ${100 - fillPercent}%);' />`;
       } else if (isWound) {
         html = `<div class='${this.props.pillClass || ''}' style='background-color: ${this.props.woundColor};' />`;

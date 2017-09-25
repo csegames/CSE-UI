@@ -34,8 +34,7 @@ class MaterialPreview extends React.Component<MaterialPreviewProps, MaterialPrev
   }
 
   public render() {
-    if (!this.props.show)
-      return null;
+    if (!this.props.show) return null;
 
     const name = this.props.material.id + '. ' + this.props.material.tags.join(', ');
 

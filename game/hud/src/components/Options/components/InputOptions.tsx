@@ -11,10 +11,10 @@
 
 import * as React from 'react';
 
-import { client } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {client} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
-import { ConfigIndex, ConfigInfo } from '../OptionsMain';
+import {ConfigIndex, ConfigInfo} from '../OptionsMain';
 import ListItem from './ListItem';
 
 export interface InputOptionsStyle extends StyleDeclaration {
@@ -23,7 +23,7 @@ export interface InputOptionsStyle extends StyleDeclaration {
 
 export const defaultInputOptionsStyle: InputOptionsStyle = {
   InputOptions: {
-    
+
   },
 };
 
@@ -47,7 +47,7 @@ export class InputOptions extends React.Component<InputOptionsProps, InputOption
   public render() {
     const ss = StyleSheet.create(defaultInputOptionsStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(ss.InputOptions, custom.InputOptions)}>
         {this.props.inputConfigs.map((config, i) => {
@@ -84,7 +84,7 @@ export class InputOptions extends React.Component<InputOptionsProps, InputOption
       }
       return config;
     });
-    
+
     this.props.onInputConfigsChange(inputConfigs);
     client.ChangeConfigVar(inputConfig.name, `${oppositeValue}`);
     client.SaveConfigChanges();

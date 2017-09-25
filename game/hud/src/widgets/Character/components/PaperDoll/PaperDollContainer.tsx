@@ -11,17 +11,17 @@
 
 import * as React from 'react';
 
-import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
-import { InjectedGraphQLProps, graphql } from 'react-apollo';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { bodyParts, client } from 'camelot-unchained';
+import BodyPartHealth, {MaxHealthPartsInfo} from '../BodyPartHealth';
+import {InjectedGraphQLProps, graphql} from 'react-apollo';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import {bodyParts, client} from 'camelot-unchained';
 
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import LoadingContainer from '../LoadingContainer';
-import { PaperDollContainerQuery, InventoryItemFragment } from '../../../../gqlInterfaces';
+import {PaperDollContainerQuery, InventoryItemFragment} from '../../../../gqlInterfaces';
 import queries from '../../../../gqlDocuments';
-import { paperDollIcons } from '../../lib/constants';
+import {paperDollIcons} from '../../lib/constants';
 
 export interface PaperDollStyle extends StyleDeclaration {
   paperDoll: React.CSSProperties;
@@ -62,7 +62,7 @@ export const defaultPaperDollStyle: PaperDollStyle = {
     margin: '5px',
     cursor: 'pointer',
   },
-  
+
   backgroundImg: {
     position: 'absolute',
     pointerEvents: 'none',
@@ -110,15 +110,15 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     };
   }
   public render() {
-    const ss = StyleSheet.create({ ...defaultPaperDollStyle, ...this.props.styles });
-    const { myEquippedItems, myCharacter, myOrder } = this.props.data;
-    
+    const ss = StyleSheet.create({...defaultPaperDollStyle, ...this.props.styles});
+    const {myEquippedItems, myCharacter, myOrder} = this.props.data;
+
     return (
       <div className={css(ss.paperDoll)}>
         <img src={'images/paperdollbg.png'} className={css(ss.backgroundImg)} />
         {this.props.data.loading ?
           <LoadingContainer /> :
-        
+
           <div className={css(ss.paperdollContainer)}>
             <img src={paperDollIcons[`${myCharacter.gender}${myCharacter.race}`]} className={css(ss.manIcon)} />
             <div className={css(ss.characterInfoContainer)}>
@@ -144,7 +144,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     client.OnCharacterInjuriesChanged((part: number, health: number, maxHealth: number) => {
       maxHealthParts[bodyParts[part]] = maxHealth;
     });
-    this.setState({ maxHealthParts });
+    this.setState({maxHealthParts});
   }
 }
 

@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import {css, StyleDeclaration, StyleSheet} from 'aphrodite';
 
 export interface OrderNameStyles extends StyleDeclaration {
   characterAndOrderName: React.CSSProperties;
@@ -33,8 +33,8 @@ export interface CharacterNameProps {
 }
 
 const CharacterAndOrderName = (props: CharacterNameProps) => {
-  const ss = StyleSheet.create({ ...defaultOrderNameStyles, ...props.styles });
-  const { characterName, orderName } = props;
+  const ss = StyleSheet.create({...defaultOrderNameStyles, ...props.styles});
+  const {characterName, orderName} = props;
   return (
     <p className={css(ss.characterAndOrderName)}>{characterName} {orderName && `<${orderName}>`}</p>
   );

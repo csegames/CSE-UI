@@ -12,13 +12,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import TooltipContent, {defaultTooltipStyle} from '../../TooltipContent';
 
-import { Tooltip, events, ql } from 'camelot-unchained';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
-import { Alignment } from './PopupMiniInventory';
-import { defaultSlotIcons } from '../../../lib/constants';
+import {Tooltip, events, ql} from 'camelot-unchained';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import eventNames, {UnequipItemCallback} from '../../../lib/eventNames';
+import {Alignment} from './PopupMiniInventory';
+import {defaultSlotIcons} from '../../../lib/constants';
 
 export interface EquippedItemSlotStyle extends StyleDeclaration {
   equippedItemSlot: React.CSSProperties;
@@ -113,8 +113,8 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const style = StyleSheet.create(defaultEquippedItemSlotStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
-    const { highlightSlot, showTooltip } = this.state;
-    const { slot } = this.props;
+    const {highlightSlot, showTooltip} = this.state;
+    const {slot} = this.props;
     const slotName = slot.slotName;
 
     const itemId = equippedItem && equippedItem.item.id;
@@ -132,7 +132,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
           />
         }>
           <div
-            style={isRightSlot ? { transform: 'scaleX(-1)', webkitTransform: 'scaleX(-1)' } : {}}
+            style={isRightSlot ? {transform: 'scaleX(-1)', webkitTransform: 'scaleX(-1)'} : {}}
             className={css(style.itemContainer, customStyle.itemContainer)}
             onMouseOver={this.onMouseOverItemSlot}
             onMouseLeave={this.onMouseLeave}
@@ -185,22 +185,22 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
 
   private onHighlightSlots = (gearSlots: ql.schema.GearSlotDefRef[]) => {
     if (_.find(gearSlots, (gearSlot: ql.schema.GearSlotDefRef) => this.props.slot.slotName === gearSlot.id)) {
-      this.setState({ highlightSlot: true });
+      this.setState({highlightSlot: true});
     }
   }
 
   private onDehighlightSlots = () => {
-    if (this.state.highlightSlot) this.setState({ highlightSlot: false });
+    if (this.state.highlightSlot) this.setState({highlightSlot: false});
   }
 
   private onMouseOverItemSlot = () => {
     if (!this.state.itemMenuVisible) {
-      this.setState({ showTooltip: true });
+      this.setState({showTooltip: true});
     }
   }
 
   private onMouseLeave = () => {
-    this.setState({ showTooltip: false });
+    this.setState({showTooltip: false});
   }
 }
 

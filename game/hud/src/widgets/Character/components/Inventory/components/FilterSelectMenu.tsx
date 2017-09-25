@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Input, IconButton, utils, events } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {Input, IconButton, utils, events} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 import FilterSelectListItem from './FilterSelectListItem';
-import { colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
+import {colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo} from '../../../lib/constants';
 
 export interface FilterSelectMenuStyle extends StyleDeclaration {
   FilterSelectMenu: React.CSSProperties;
@@ -62,7 +62,7 @@ export const defaultFilterSelectMenuStyle: FilterSelectMenuStyle = {
 
   buttonsContainer: {
     display: 'flex',
-    flexDirection: 'column',    
+    flexDirection: 'column',
     alignItems: 'stretch',
     flex: '1 1 auto',
     overflow: 'auto',
@@ -146,19 +146,19 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
                 onChange={this.onSearchChange}
                 placeholder={'Search'}
                 value={this.state.searchValue}
-                styles={{ input: defaultFilterSelectMenuStyle.searchInput }}
+                styles={{input: defaultFilterSelectMenuStyle.searchInput}}
               />
             </div>
             <div className={css(ss.buttonsContainer, custom.buttonsContainer)}>
               {filteredFilterButtons.map((filterButton) => {
-                const active = _.findIndex(this.props.selectedFilterButtons, (activeButton) =>
+                const active = _.findIndex(this.props.selectedFilterButtons, activeButton =>
                   activeButton.name === filterButton.name) !== -1;
                 return (
                   <FilterSelectListItem
                     key={filterButton.name}
                     active={active}
                     filterButton={filterButton}
-                    onActivated={(filterButton) => this.props.onFilterButtonAdded(filterButton)}
+                    onActivated={filterButton => this.props.onFilterButtonAdded(filterButton)}
                     onDeactivated={filterButton => this.props.onFilterButtonRemoved(filterButton)} />
                 );
               })}
@@ -168,7 +168,7 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
       </div>
     );
   }
-  
+
   public componentDidMount() {
     window.addEventListener('mousedown', this.onMouseDownListener);
   }
@@ -183,11 +183,11 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
   }
 
   private onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchValue: e.target.value });
+    this.setState({searchValue: e.target.value});
   }
 
   private toggleMenuVisibility = () => {
-    this.setState((state, props) => ({ menuVisible: !state.menuVisible }));
+    this.setState((state, props) => ({menuVisible: !state.menuVisible}));
   }
 
   private onMouseDownListener = () => {

@@ -22,7 +22,7 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
 
   constructor(props: BlueprintListProps) {
     super(props);
-    this.state = { hoverIcon: null };
+    this.state = {hoverIcon: null};
   }
 
   public render() {

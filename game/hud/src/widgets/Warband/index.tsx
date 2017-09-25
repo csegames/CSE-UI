@@ -31,7 +31,7 @@ class WarbandContainer extends React.Component<WarbandContainerProps, WarbandCon
     super(props);
     this.state = {};
 
-    initialize();    
+    initialize();
   }
 
   public render() {

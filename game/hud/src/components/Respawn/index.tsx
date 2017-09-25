@@ -29,7 +29,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
   public render() {
     if (!hasClientAPI()) return null;
-        
+
     const buttons: JSX.Element[] = [];
     if (this.state.nearest) {
       this.state.nearest.forEach((spawn: RespawnLocation): void => {
@@ -60,7 +60,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
     });
 
     this.getSpawnPoints((spawns: RespawnLocation[]): void => {
-      this.setState({ nearest: spawns.slice(0,3)});
+      this.setState({nearest: spawns.slice(0, 3)});
     });
   }
 
@@ -75,9 +75,9 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
 
     // load control points
-    legacyAPI.getControlGame(true).then((data:any) => {
+    legacyAPI.getControlGame(true).then((data: any) => {
       if (!hasClientAPI()) return;
-      
+
       // data.controlPoints is an array of spawns, each member has
       // x, y, id and faction (which is a letter)
       const controlPoints: any[] = data.controlPoints;
@@ -90,7 +90,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
           }
         });
         spawns.forEach((spawn: RespawnLocation): void => {
-          spawn.calcDistanceFromXY(x,y);
+          spawn.calcDistanceFromXY(x, y);
         });
         spawns.sort((a: RespawnLocation, b: RespawnLocation): number => {
           return a.distance - b.distance;

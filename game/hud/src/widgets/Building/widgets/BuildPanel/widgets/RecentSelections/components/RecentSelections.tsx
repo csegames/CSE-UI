@@ -34,15 +34,14 @@ class RecentSelections extends React.Component<RecentSelectionsProps, RecentSele
   constructor(props: RecentSelectionsProps) {
     super(props);
   }
-  
+
   public render() {
     const selection = this.props.item;
 
     return (
       <div className={`recent-selections ${this.props.minimized ? 'minimized' : ''}`}>
         { this.props.items.map((item: BuildingItem, index: number) => {
-          if (item == null)
-            return (<span key={'empty' + index}  className='icon'></span>);
+          if (item == null) return (<span key={'empty' + index}  className='icon'></span>);
           return (<span key={item.id}  className={this.isSelectedItem(item, selection) ? 'active icon' : 'icon'}
             onClick={() => this.selectItem(item) } >{item.matElement ? item.matElement : item.element}</span>);
         })

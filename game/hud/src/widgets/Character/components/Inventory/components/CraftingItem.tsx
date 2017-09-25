@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import ItemIcon from '../../ItemIcon';
 
 export interface CraftingItemStyle extends StyleDeclaration {

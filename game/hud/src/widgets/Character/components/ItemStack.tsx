@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import ItemIcon from './ItemIcon';
 
@@ -47,7 +47,7 @@ export class ItemStack extends React.Component<ItemStackProps, ItemStackState> {
   public render() {
     const ss = StyleSheet.create(defaultItemStackStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    
+
     return (
       <div className={css(ss.ItemStack, custom.ItemStack)}>
         <ItemIcon url={this.props.icon} textBottom={this.props.count.toString()} />

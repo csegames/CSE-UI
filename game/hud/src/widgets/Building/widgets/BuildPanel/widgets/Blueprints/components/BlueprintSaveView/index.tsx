@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client } from 'camelot-unchained';
+import {client} from 'camelot-unchained';
 import NameInput from './NameInput';
 
 export interface BlueprintSaveViewProps {
@@ -23,7 +23,7 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
 
   constructor(props: BlueprintSaveViewProps) {
     super(props);
-    this.state = { saveable: false, name: '' };
+    this.state = {saveable: false, name: ''};
   }
 
   public render() {
@@ -47,7 +47,7 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
   private triggerCancel() {
     this.props.onCancel();
   }
-  
+
   private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const input: HTMLInputElement = e.target as HTMLInputElement;
     const compareValue: string = input.value.toLowerCase();

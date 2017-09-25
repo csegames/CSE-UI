@@ -11,13 +11,13 @@
 
 import * as React from 'react';
 
-import { Tooltip, utils, events } from 'camelot-unchained';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {Tooltip, utils, events} from 'camelot-unchained';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';
 import InventoryRowActionButton from './InventoryRowActionButton';
-import { emptyStackHash, colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
-import eventNames, { DropItemCallback } from '../../../lib/eventNames';
+import {emptyStackHash, colors, footerInfoIcons, rowActionIcons} from '../../../lib/constants';
+import eventNames, {DropItemCallback} from '../../../lib/eventNames';
 
 export interface InventoryFooterStyles extends StyleDeclaration {
   InventoryFooter: React.CSSProperties;
@@ -84,7 +84,7 @@ export const defaultInventoryFooterStyles: InventoryFooterStyles = {
   },
 
   addRemoveRowButtonContainer: {
-    
+
   },
 };
 
@@ -166,7 +166,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
               {this.state.itemCount.toString()}
             </div>
           </Tooltip>
-          
+
           <Tooltip content={`Weight: ${this.state.totalMass.toString()}kg`}>
             <div className={css(style.insetDiv, customStyle.insetDiv)}>
               <span className={`${footerInfoIcons.weight} ${css(

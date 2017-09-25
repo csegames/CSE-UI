@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { client, webAPI } from 'camelot-unchained';
+import {client, webAPI} from 'camelot-unchained';
 
 export interface ZoneNameState {
   name: string;
@@ -27,10 +27,10 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
 
   public componentDidMount() {
     // initializing shardID when component mounts because client.shardID gives me random number onCharacterZoneChanged
-    const { shardID } = client;
+    const {shardID} = client;
     client.OnCharacterZoneChanged((id: string) => {
       const _id = id;
-      this.setState({ name: '' });
+      this.setState({name: ''});
 
       // CHANGE THIS TO USE GetZoneInfo
       webAPI.ServersAPI.GetAvailableZones(
@@ -41,7 +41,7 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
         const data = JSON.parse(res.data);
         data.forEach((zone: any) => {
           if (zone.ID === _id) {
-            this.setState({ name: zone.Name });
+            this.setState({name: zone.Name});
           }
         });
       });

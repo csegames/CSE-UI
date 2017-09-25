@@ -1,4 +1,4 @@
-import { events, buildUIMode, BuildingBlock, BuildingMaterial } from 'camelot-unchained';
+import {events, buildUIMode, BuildingBlock, BuildingMaterial} from 'camelot-unchained';
 
 class BuildingRequests {
 
@@ -7,7 +7,7 @@ class BuildingRequests {
   public changeMode(mode: buildUIMode) {
     setTimeout(() => {
       console.log('changeMode to ' + mode);
-      events.fire(events.buildingEventTopics.handlesBuildingMode, { mode });
+      events.fire(events.buildingEventTopics.handlesBuildingMode, {mode});
     },         500);
   }
 
@@ -50,7 +50,7 @@ class BuildingRequests {
   public requestMaterials() {
     setTimeout(() => {
       this.materials = this.getFakeMaterials();
-      events.fire(events.buildingEventTopics.handlesBlocks, { materials: this.materials  });
+      events.fire(events.buildingEventTopics.handlesBlocks, {materials: this.materials});
     },         1000);
   }
 
@@ -58,7 +58,7 @@ class BuildingRequests {
     setTimeout(() => {
       this.invokeSelection(block);
     },         200);
-    
+
   }
 
   public invokeSelection(block: BuildingBlock) {
@@ -66,7 +66,7 @@ class BuildingRequests {
       return material.id === block.materialId;
     });
 
-    const info: any = { material, block };
+    const info: any = {material, block};
     events.fire(events.buildingEventTopics.handlesBlockSelect, info);
   }
 

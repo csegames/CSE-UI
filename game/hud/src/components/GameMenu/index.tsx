@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { client, events, utils } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {client, events, utils} from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 
 export interface GameMenuStyle extends StyleDeclaration {
   GameMenu: React.CSSProperties;
@@ -63,7 +63,7 @@ export const defaultGameMenuStyle: GameMenuStyle = {
     color: 'white',
     borderTop: `1px solid ${utils.lightenColor('#202020', 30)}`,
   },
-  
+
   menuButton: {
     margin: '0',
     height: '30px',
@@ -138,7 +138,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
     client.Quit();
   }
 
-  private handleVisibilityEvent = (name: string) => {    
+  private handleVisibilityEvent = (name: string) => {
     if (name === 'gamemenu') {
       this.setState((state, props) => {
         if (state.visible) {

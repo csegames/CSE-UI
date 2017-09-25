@@ -10,8 +10,8 @@
  */
 
 import GameMenu from '../../../components/GameMenu';
-import { GameMenuDimensions } from '../../../components/GameMenu/';
-import { LayoutMode } from '../../../components/HUDDrag';
+import {GameMenuDimensions} from '../../../components/GameMenu/';
+import {LayoutMode} from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

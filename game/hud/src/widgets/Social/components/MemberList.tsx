@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import * as moment from 'moment';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
 import {
   ql,
   Tooltip,
@@ -29,20 +29,20 @@ import GroupTitle from './GroupTitle';
 import InviteButton from './InviteButton';
 
 export interface MemberListStyle extends StyleDeclaration {
-  container : React.CSSProperties;
-  title : React.CSSProperties;
-  list : React.CSSProperties;
-  listHeader : React.CSSProperties;
-  listSection : React.CSSProperties;
-  item : React.CSSProperties;
-  name : React.CSSProperties;
-  rank : React.CSSProperties;
-  joined : React.CSSProperties;
-  more : React.CSSProperties;
+  container: React.CSSProperties;
+  title: React.CSSProperties;
+  list: React.CSSProperties;
+  listHeader: React.CSSProperties;
+  listSection: React.CSSProperties;
+  item: React.CSSProperties;
+  name: React.CSSProperties;
+  rank: React.CSSProperties;
+  joined: React.CSSProperties;
+  more: React.CSSProperties;
   buttonBar: React.CSSProperties;
 }
 
-export const defaultMemberListStyle : MemberListStyle = {
+export const defaultMemberListStyle: MemberListStyle = {
 
   container: {
     flex: '1 1 auto',
@@ -114,9 +114,9 @@ export const defaultMemberListStyle : MemberListStyle = {
 };
 
 export interface MemberListProps {
-  dispatch : (action : any) => any;
+  dispatch: (action: any) => any;
   refetch: () => void;
-  group : {
+  group: {
     id: string,
     name: string,
     members: any,
@@ -240,11 +240,11 @@ export const defaultMemberListColumnDefinitions = [
         <Tooltip
           content={new Date(m.joined).toLocaleString()}
           styles={{
-          tooltip: {
-            backgroundColor: '#444',
-            border: '1px solid #4A4A4A',
-          },
-        }}>
+            tooltip: {
+              backgroundColor: '#444',
+              border: '1px solid #4A4A4A',
+            },
+          }}>
           {moment(m.joined as any).fromNow()}
         </Tooltip>
       );
@@ -264,11 +264,11 @@ export const defaultMemberListColumnDefinitions = [
         <Tooltip
           content={new Date(m.joined).toLocaleString()}
           styles={{
-          tooltip: {
-            backgroundColor: '#444',
-            border: '1px solid #4A4A4A',
-          },
-        }}>
+            tooltip: {
+              backgroundColor: '#444',
+              border: '1px solid #4A4A4A',
+            },
+          }}>
           {moment(m.lastLogin as any).fromNow()}
         </Tooltip>
       );
@@ -288,12 +288,12 @@ function renderButtonBar(props: MemberListProps, ss: MemberListStyle, custom: Pa
                               groupId={props.group.id} />
             : null
         }
-        
+
       </div>
   );
 }
 
-export default (props : MemberListProps) => {
+export default (props: MemberListProps) => {
 
   const ss = StyleSheet.create(defaultMemberListStyle);
   const custom = StyleSheet.create(props.styles || {});

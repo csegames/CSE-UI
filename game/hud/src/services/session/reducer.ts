@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
-import layout, { LayoutState } from './layout';
-import invites, { InvitesState } from './invites';
-import ApolloClient, { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
-import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
-import { client } from 'camelot-unchained';
+import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
+import layout, {LayoutState} from './layout';
+import invites, {InvitesState} from './invites';
+import ApolloClient, {createBatchingNetworkInterface, toIdValue} from 'apollo-client';
+import {crashReporterMiddleware, thunkMiddleware} from '../../lib/reduxUtils';
+import {client} from 'camelot-unchained';
 // Apollo Setup
 
 // define network address
@@ -58,14 +58,14 @@ const dataIdFromObject = (result: any) => {
 // a different query
 const customResolvers = {
   Query: {
-    order: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Order', id: args['id'] })),
-    myOrder: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Order', id: args['id'] })),
-    orderMember: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'OrderMember', id: args['id'] })),
-    warband: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Warband', id: args['id'] })),
-    myWarbands: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Warband', id: args['id'] })),
-    warbandMember: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'WarbandMember', id: args['id'] })),
-    character: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Character', id: args['id'] })),
-    item: (_: any, args: any) => toIdValue(dataIdFromObject({ __typename: 'Item', id: args['id'] })),
+    order: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Order', id: args['id']})),
+    myOrder: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Order', id: args['id']})),
+    orderMember: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'OrderMember', id: args['id']})),
+    warband: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Warband', id: args['id']})),
+    myWarbands: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Warband', id: args['id']})),
+    warbandMember: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'WarbandMember', id: args['id']})),
+    character: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Character', id: args['id']})),
+    item: (_: any, args: any) => toIdValue(dataIdFromObject({__typename: 'Item', id: args['id']})),
   },
 };
 
@@ -86,7 +86,7 @@ const reducer =  combineReducers({
 export default reducer;
 
 export interface SessionState {
-  apollo : any;
+  apollo: any;
   layout: LayoutState;
   invites: InvitesState;
 }

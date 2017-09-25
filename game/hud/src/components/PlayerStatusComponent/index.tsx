@@ -10,8 +10,8 @@ import {
   CombatLog,
   damageTypes,
 } from 'camelot-unchained';
-import { spring, TransitionMotion } from 'react-motion';
-import { generateID } from 'redux-typed-modules';
+import {spring, TransitionMotion} from 'react-motion';
+import {generateID} from 'redux-typed-modules';
 
 import Pills, {Orientation} from './components/Pills';
 
@@ -90,7 +90,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
       }
     }
 
-    const dead = this.props.playerStatus.blood.current <= 0 || 
+    const dead = this.props.playerStatus.blood.current <= 0 ||
                  this.props.playerStatus.health[BodyParts.Torso].current <= 0 ||
                  this.props.playerStatus.health[BodyParts.Head].current <= 0;
 
@@ -98,8 +98,8 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
       <div className={
               `${this.props.containerClass ?
                 this.props.containerClass :
-                ''} PlayerStatusComponent ${this.props.mirror ? 
-                  'PlayerStatusComponent--mirrored' : 
+                ''} PlayerStatusComponent ${this.props.mirror ?
+                  'PlayerStatusComponent--mirrored' :
                   ''}`
            }
            ref={(r: any) => this.componentRef = r}>
@@ -111,9 +111,9 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
             <img src={this.props.playerStatus.avatar}
                  style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} />
           </div>
-          
+
           {
-            this.props.isLeader ? 
+            this.props.isLeader ?
               <div className='PlayerStatusComponent__circle__leader'><img src='images/warband-leader.png' /></div>
               : null
           }
@@ -127,7 +127,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                  flashThreshold={BLOOD_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'red'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
-          
+
           <Pills orientation={Orientation.CircleBottom}
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
@@ -321,7 +321,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
   private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
     const events: CombatEvent[] = [];
-    
+
     combatLogs.forEach((e) => {
       if (e.toName !== this.props.playerStatus.name) return;
       if (e.damages) {

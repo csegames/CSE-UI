@@ -69,7 +69,8 @@
       125
     ],
     "no-increment-decrement": false,
-    "align": []
+    "align": [],
+    "ter-arrow-parens": [true, "as-needed", { "requireForBlockBody": true }]
   },
   "jsRules": {
     /*

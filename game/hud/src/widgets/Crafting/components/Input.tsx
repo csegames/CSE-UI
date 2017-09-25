@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import { client } from 'camelot-unchained';
-import { StyleSheet, css, merge, input, InputStyles } from '../styles';
+import {client} from 'camelot-unchained';
+import {StyleSheet, css, merge, input, InputStyles} from '../styles';
 
 interface InputProps {
   name?: string;      // temp for debugging
@@ -36,11 +36,11 @@ class Input extends React.Component<InputProps, InputState> {
 
   constructor(props: InputProps) {
     super(props);
-    this.state = { changed: false, value: props.value };
+    this.state = {changed: false, value: props.value};
   }
 
   public componentWillReceiveProps(props: InputProps) {
-    this.setState({ changed: false, value: props.value });
+    this.setState({changed: false, value: props.value});
   }
 
   public render() {
@@ -97,7 +97,7 @@ class Input extends React.Component<InputProps, InputState> {
     const max = this.props.max;
     if (max !== undefined && value > max) value = max;
     input.value = value.toString();
-    this.setState({ changed: true, value: value.toString() });
+    this.setState({changed: true, value: value.toString()});
     this.delayedOnChange(500);
   }
 
@@ -109,13 +109,13 @@ class Input extends React.Component<InputProps, InputState> {
     const min = this.props.min;
     if (min !== undefined && value < min) value = min;
     input.value = value.toString();
-    this.setState({ changed: true, value: value.toString() });
+    this.setState({changed: true, value: value.toString()});
     this.delayedOnChange(400);
   }
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO extend to support validation
-    this.setState({ changed: true, value: e.target.value });
+    this.setState({changed: true, value: e.target.value});
   }
 
   private onFocus = (e: React.FocusEvent<HTMLInputElement>) => {

@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { StyleSheet, css, merge, voxMessage, VoxMessageStyles } from '../styles';
-import { GlobalState } from '../services/session/reducer';
-import { Message } from '../services/types';
+import {connect} from 'react-redux';
+import {StyleSheet, css, merge, voxMessage, VoxMessageStyles} from '../styles';
+import {GlobalState} from '../services/session/reducer';
+import {Message} from '../services/types';
 import ProgressBar from './ProgressBar';
 
 export interface VoxMessageReduxProps {
@@ -27,7 +27,7 @@ export interface VoxMessageReduxProps {
 
 export interface VoxMessageProps extends VoxMessageReduxProps {}
 
-const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxProps => {
+const select = (state: GlobalState, props: VoxMessageProps): VoxMessageReduxProps => {
   return {
     message: state.job.message,
     status: state.job.status,
@@ -38,7 +38,7 @@ const select = (state: GlobalState, props: VoxMessageProps) : VoxMessageReduxPro
 
 const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
-  const { message, total, remaining, status } = props;
+  const {message, total, remaining, status} = props;
   return (
     <div className={(message ? css(ss.voxMessage, ss[message.type]) : css(ss.voxMessage))}>
       <div>{message && message.message}</div>

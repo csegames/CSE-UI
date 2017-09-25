@@ -11,12 +11,12 @@
 
 import * as React from 'react';
 // import { utils } from 'camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
-import { colors, InventoryFilterButton } from '../../lib/constants';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import {colors, InventoryFilterButton} from '../../lib/constants';
+import {InventoryItemFragment} from '../../../../gqlInterfaces';
 // import reducer from '../../services/session/reducer';
 
 export interface InventoryStyle extends StyleDeclaration {
@@ -33,7 +33,7 @@ export const defaultInventoryStyle: InventoryStyle = {
     width: '100%',
     height: '100%',
   },
-  
+
   infoContainer: {
     display: 'flex',
     flex: '0 0 auto',
@@ -84,7 +84,7 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
   }
 
   public render() {
-    const ss = StyleSheet.create({ ...defaultInventoryStyle, ...this.props.styles });
+    const ss = StyleSheet.create({...defaultInventoryStyle, ...this.props.styles});
     return (
       <div className={css(ss.inventory)}>
         <InventoryHeader filterText={this.state.filterText}
@@ -101,7 +101,7 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
   }
 
   private onFilterTextChanged = (filterText: string) => {
-    this.setState({ filterText });
+    this.setState({filterText});
   }
 
   private onFilterButtonActivated = (filter: InventoryFilterButton) => {

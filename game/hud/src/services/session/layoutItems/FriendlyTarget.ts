@@ -8,7 +8,7 @@
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-07-26 12:10:00
  */
-import { LayoutMode } from '../../../components/HUDDrag';
+import {LayoutMode} from '../../../components/HUDDrag';
 import FriendlyTargetHealth from '../../../widgets/FriendlyTargetHealth';
 import HUDZOrder from '../HUDZOrder';
 

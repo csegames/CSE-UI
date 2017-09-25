@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import { Tooltip, utils } from 'camelot-unchained';
+import {Tooltip, utils} from 'camelot-unchained';
 import * as className from 'classnames';
-import { StyleSheet, css } from 'aphrodite';
-import { merge } from 'lodash';
+import {StyleSheet, css} from 'aphrodite';
+import {merge} from 'lodash';
 
 const defaultStyles: HUDNavStyle = {
   list: {
@@ -83,10 +83,10 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
         {
           this.state.collapsed ?
             (<Tooltip content='Show Quick Menu' styles={{
-                tooltip: {
-                  backgroundColor: '#4d573e',
-                },
-              }}>
+              tooltip: {
+                backgroundColor: '#4d573e',
+              },
+            }}>
               <li
                 className={className({[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}
                 onClick={this.show}>
@@ -103,10 +103,10 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                 {this.props.items.map(({name, tooltip, onClick, icon, iconClass}) => {
                   return (
                     <Tooltip key={name} content={tooltip} styles={{
-                        tooltip: {
-                          backgroundColor: '#4d573e',
-                        },
-                      }}>
+                      tooltip: {
+                        backgroundColor: '#4d573e',
+                      },
+                    }}>
                       <li
                         className={className(
                           {[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}
@@ -125,10 +125,10 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                 })}
 
                 <Tooltip content='Collapse Quick Menu' styles={{
-                    tooltip: {
-                      backgroundColor: '#4d573e',
-                    },
-                  }}>
+                  tooltip: {
+                    backgroundColor: '#4d573e',
+                  },
+                }}>
                   <li
                     className={className(
                       {[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}

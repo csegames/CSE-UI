@@ -39,7 +39,7 @@ export default () => {
     // {resources} (YELLOW) => recieved (sent - recieved) type
     // {heals} (GREEN) => recieved (sent - recieved) part
     // {cures} (BLUE) => HEAD(2) TORSO
-    // {impulse} (INDIGO) => recieved (sent - recieved) IMPULSE 
+    // {impulse} (INDIGO) => recieved (sent - recieved) IMPULSE
     // {activeEffects} (VIOLET) => activeEffects[0] activeEffects[1] ...
 
     let output = `${log.fromName}(${Faction[log.fromFaction]}) > ${log.toName}(${Faction[log.toFaction]}) | `;
@@ -51,7 +51,7 @@ export default () => {
         ${damageTypes[d.type]} | `;
       }
     }
-  
+
 
     if (log.disruption) {
       output += `::orange::${log.disruption.recieved.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.recieved)
@@ -73,7 +73,7 @@ export default () => {
         if (log.disruption.tracksInterupted & skillTracks.VOICE) {
           output += ` ${skillTracks[skillTracks.VOICE]} `;
         }
-        
+
         if (log.disruption.tracksInterupted & skillTracks.MIND) {
           output += ` ${skillTracks[skillTracks.MIND]} `;
         }
@@ -92,7 +92,7 @@ export default () => {
 
     if (log.cures) {
       output += `::blue::CURED `;
-      const curedParts = [0,0,0,0,0,0];
+      const curedParts = [0, 0, 0, 0, 0, 0];
       for (let i = 0; i < log.cures.length; ++i) {
         curedParts[log.cures[i]] += 1;
       }
@@ -103,7 +103,7 @@ export default () => {
         }
       }
 
-      output += '| ';      
+      output += '| ';
     }
 
     if (log.resources) {
@@ -126,7 +126,7 @@ export default () => {
       }
       output += '|';
     }
-      
+
     if (log.errors) {
       for (let i = 0; i < log.errors.length; ++i) {
         output += `:::red::${log.errors[i]} `;

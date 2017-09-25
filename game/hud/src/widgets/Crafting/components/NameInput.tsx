@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Label from './Label';
 import Input from './Input';
-import { GlobalState } from '../services/session/reducer';
-import { StyleSheet, css, merge, nameInput, NameInputStyles } from '../styles';
+import {GlobalState} from '../services/session/reducer';
+import {StyleSheet, css, merge, nameInput, NameInputStyles} from '../styles';
 
 export interface NameInputReduxProps {
   dispatch?: (action: any) => void;
@@ -26,7 +26,7 @@ export interface NameInputProps extends NameInputReduxProps {
   onChange: (name: String) => void;
 }
 
-const select = (state: GlobalState, props: NameInputProps) : NameInputReduxProps => {
+const select = (state: GlobalState, props: NameInputProps): NameInputReduxProps => {
   return {
     name: state.job.name,
   };
@@ -36,7 +36,7 @@ const NameInput = (props: NameInputProps) => {
   const ss = StyleSheet.create(merge({}, nameInput, props.style));
   return (
     <div className={css(ss.nameInput)}>
-      <Label style={{ label: nameInput.label }}>Name</Label>
+      <Label style={{label: nameInput.label}}>Name</Label>
       <Input size={32} onChange={props.onChange} value={props.name}/>
     </div>
   );

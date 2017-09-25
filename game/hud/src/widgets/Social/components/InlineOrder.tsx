@@ -20,7 +20,7 @@ export interface InlineOrderStyle extends StyleDeclaration {
 }
 
 interface InlineOrderProps extends InjectedGraphQLProps <{
-   order: {
+  order: {
     id: string;
     name: string;
   },
@@ -37,13 +37,13 @@ export const defaultInlineOrderStyle: InlineOrderStyle = {
 
 const inlineOrder = (props: InlineOrderProps) => {
   if (props.data.loading) {
-      return <Spinner />;
-    }
-    return (
+    return <Spinner />;
+  }
+  return (
       <a href={`#order/${props.data.order.id}`}>
         {props.data.order.name}
       </a>
-    );
+  );
 };
 
 export default graphql(gql`
@@ -54,10 +54,10 @@ export default graphql(gql`
         }
       }
       `, {
-  options: (props: InlineOrderProps) => ({
-    variables: {
-      id: props.id,
-      shard: props.shard,
-    },
-  }),
-})(inlineOrder as any);
+        options: (props: InlineOrderProps) => ({
+          variables: {
+            id: props.id,
+            shard: props.shard,
+          },
+        }),
+      })(inlineOrder as any);

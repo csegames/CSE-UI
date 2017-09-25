@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-04-06 11:05:20
  */
 import * as React from 'react';
-import { Map } from 'immutable';
-import { utils, ql } from 'camelot-unchained';
+import {Map} from 'immutable';
+import {utils, ql} from 'camelot-unchained';
 import {
   LinkAddress,
   SocialCategory,

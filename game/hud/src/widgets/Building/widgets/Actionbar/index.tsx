@@ -53,9 +53,9 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
     };
 
     return (
-     <SavedDraggable saveName='building/actionbar' 
-        defaultX={[0, Anchor.TO_START]} 
-        defaultY={[-200, Anchor.TO_CENTER]} 
+     <SavedDraggable saveName='building/actionbar'
+        defaultX={[0, Anchor.TO_START]}
+        defaultY={[-200, Anchor.TO_CENTER]}
  >
 
       <div className='action-bar'>

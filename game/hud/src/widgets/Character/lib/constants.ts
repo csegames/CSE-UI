@@ -12,7 +12,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import {InventoryItemFragment} from '../../../gqlInterfaces';
 
 export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.
@@ -265,7 +265,7 @@ export interface InventoryFilterButton {
 function filterForGearSlot(item: InventoryItemFragment, filter: { icon: string, name: string, armorType?: ArmorType }) {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
-      _.find(set.gearSlots, (slot) => _.includes(filter.name.toLowerCase(), slot.id.toLowerCase()))) > -1 &&
+      _.find(set.gearSlots, slot => _.includes(filter.name.toLowerCase(), slot.id.toLowerCase()))) > -1 &&
       (filter.armorType ?
         _.includes(item.staticDefinition.description.toLowerCase(), filter.armorType.toString().toLowerCase()) : true);
 }
@@ -283,7 +283,7 @@ function filterForItemType(item: InventoryItemFragment, filter: { icon: string, 
 function filterForLayer(item: InventoryItemFragment, layer: 'outer' | 'under') {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
-      _.find(set.gearSlots, (slot) => _.includes(slot.id.toLowerCase(), layer))) > -1;
+      _.find(set.gearSlots, slot => _.includes(slot.id.toLowerCase(), layer))) > -1;
 }
 
 const filterIconPrefix = 'icon-filter-';
@@ -826,7 +826,7 @@ export const inventoryFilterButtonInfo: {[id: string]: { icon: string, name: str
 
 export const inventoryFilterButtons: {
   [key: string]: InventoryFilterButton,
-  } = {
+} = {
   // Armor
   Armor: {
     ...inventoryFilterButtonInfo.Armor,
@@ -1228,7 +1228,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawWoods),
   },
   Ammo: {
-      ...inventoryFilterButtonInfo.Ammo,
+    ...inventoryFilterButtonInfo.Ammo,
     filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Ammo),
   },
   Bandages: {

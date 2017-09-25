@@ -10,33 +10,33 @@
  */
 
 import * as React from 'react';
-import { utils, ql } from 'camelot-unchained';
-import { SocialCategory, defaultCategoryNav } from './navTypes';
+import {utils, ql} from 'camelot-unchained';
+import {SocialCategory, defaultCategoryNav} from './navTypes';
 
-export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, previousNav = defaultCategoryNav()) {
+export function generateMenu(order: ql.FullOrder, member: ql.FullOrderMember, previousNav = defaultCategoryNav()) {
 
   const links = [
     {
+      id: 'overview',
+      displayName: 'Overview',
+      icon: <i className='fa fa-th'></i>,
+      enabled: true,
+      address: {
+        kind: 'Primary',
+        category: SocialCategory.Order,
         id: 'overview',
-        displayName: 'Overview',
-        icon: <i className='fa fa-th'></i>,
-        enabled: true,
-        address: {
-          kind: 'Primary',
-          category: SocialCategory.Order,
-          id: 'overview',
-        },
-      }, {
-        id: 'members',
-        displayName: 'Members',
-        icon: <i className='fa fa-users'></i>,
-        enabled: true,
-        address: {
-          kind: 'Primary',
-          category: SocialCategory.Order,
-          id: 'members',
-        },
       },
+    }, {
+      id: 'members',
+      displayName: 'Members',
+      icon: <i className='fa fa-users'></i>,
+      enabled: true,
+      address: {
+        kind: 'Primary',
+        category: SocialCategory.Order,
+        id: 'members',
+      },
+    },
       // {   id: 'assets',   displayName: 'Assets',   icon: <i className='fa
       // fa-bank'></i>,   enabled: true,   address: {     kind: 'Primary',
       // category: SocialCategory.Order,     id: 'assets',   } }, {   id: 'contracts',
@@ -52,16 +52,16 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
     const memberRank = order.ranks[memberRankIndex];
 
     links.push({
+      id: 'ranks',
+      displayName: 'Ranks',
+      icon: <i className='fa fa-star'></i>,
+      enabled: true,
+      address: {
+        kind: 'Primary',
+        category: SocialCategory.Order,
         id: 'ranks',
-        displayName: 'Ranks',
-        icon: <i className='fa fa-star'></i>,
-        enabled: true,
-        address: {
-          kind: 'Primary',
-          category: SocialCategory.Order,
-          id: 'ranks',
-        },
-      });
+      },
+    });
 
     if (memberRank.level > 1) {
       links.push({
@@ -79,28 +79,28 @@ export function generateMenu(order : ql.FullOrder, member : ql.FullOrderMember, 
 
   } else {
     links.push({
+      id: 'ranks',
+      displayName: 'Ranks',
+      icon: <i className='fa fa-star'></i>,
+      enabled: false,
+      address: {
+        kind: 'Primary',
+        category: SocialCategory.Order,
         id: 'ranks',
-        displayName: 'Ranks',
-        icon: <i className='fa fa-star'></i>,
-        enabled: false,
-        address: {
-          kind: 'Primary',
-          category: SocialCategory.Order,
-          id: 'ranks',
-        },
-      });
+      },
+    });
 
-      links.push({
+    links.push({
+      id: 'admin',
+      displayName: 'Administration',
+      icon: <i className='fa fa-cogs'></i>,
+      enabled: false,
+      address: {
+        kind: 'Primary',
+        category: SocialCategory.Order,
         id: 'admin',
-        displayName: 'Administration',
-        icon: <i className='fa fa-cogs'></i>,
-        enabled: false,
-        address: {
-          kind: 'Primary',
-          category: SocialCategory.Order,
-          id: 'admin',
-        },
-      });
+      },
+    });
   }
 
   return {

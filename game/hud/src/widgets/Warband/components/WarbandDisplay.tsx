@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import {WarbandSessionState, WarbandState} from '../services/session';
 import {initialize as warbandInit} from '../services/session/warband';
@@ -33,7 +33,7 @@ export const defaultStyle: Style = {
     height: '100%',
     pointerEvents: 'none',
   },
-}
+};
 
 export interface WarbandDisplayProps {
   dispatch: (action: any) => void;

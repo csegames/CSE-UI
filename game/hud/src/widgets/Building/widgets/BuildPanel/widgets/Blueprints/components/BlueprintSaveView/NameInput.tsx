@@ -25,7 +25,7 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
 
   constructor(props: NameInputProps) {
     super(props);
- 
+
     // letters
     for (let letter = 65; letter <= 90; letter++) {
       this.allowedKeys.push(letter);

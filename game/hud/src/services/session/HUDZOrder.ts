@@ -25,7 +25,7 @@ const HUDZOrder = {
   PlotControl: 12,
   RefillAmmo: 13,
   ReleaseControl: 14,
-  Respawn: 15,  
+  Respawn: 15,
   Welcome: 17,
   Options: 18,
   EnemyTargetSiegeHealth: 19,

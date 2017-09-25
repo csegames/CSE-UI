@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { clone } from '../../lib/reduxUtils';
+import {clone} from '../../lib/reduxUtils';
 
 export enum LayoutMode {
   FLOAT,
@@ -181,12 +181,12 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
             pointerEvents: 'none',
           }}>
           <div style={{
-                height: '100%',
-                width: '100%',
-                opacity: this.state.opacity,
-                visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
-                display: `${this.state.visible ? 'block' : 'none'}`,
-               }} >
+            height: '100%',
+            width: '100%',
+            opacity: this.state.opacity,
+            visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
+            display: `${this.state.visible ? 'block' : 'none'}`,
+          }} >
             {this.props.render(clone(this.state))}
           </div>
         {this.props.locked ? null : this.renderEditControls()}
@@ -231,7 +231,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
         layoutMode: props.defaultMode || LayoutMode.GRID,
       });
     }
-  
+
     if (this.state.layoutMode === LayoutMode.EDGESNAP) {
       const fixedPos = this.getPosition();
       const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x, fixedPos.y, this.state.height, this.state.width);
@@ -287,86 +287,86 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       default: return;
       case EditMode.NONE: return;
       case EditMode.MOVE:
-      {
-        const deltaX = this.props.lockX ? 0 : mouseMove.x;
-        const deltaY = this.props.lockY ? 0 : mouseMove.y;
-        const fixedPos = this.getPosition();
-        switch (this.state.layoutMode) {
-          case LayoutMode.GRID:
-          {
-            const pos = HUDDrag.fixedToGrid(fixedPos.x + deltaX, fixedPos.y + deltaY, this.props.gridDivisions);
-            this.setState(pos as any);
+        {
+          const deltaX = this.props.lockX ? 0 : mouseMove.x;
+          const deltaY = this.props.lockY ? 0 : mouseMove.y;
+          const fixedPos = this.getPosition();
+          switch (this.state.layoutMode) {
+            case LayoutMode.GRID:
+              {
+                const pos = HUDDrag.fixedToGrid(fixedPos.x + deltaX, fixedPos.y + deltaY, this.props.gridDivisions);
+                this.setState(pos as any);
+              }
+              break;
+            case LayoutMode.EDGESNAP:
+              {
+                const pos = HUDDrag.fixedToEdgeSnap(
+                fixedPos.x + deltaX, fixedPos.y + deltaY,
+                this.state.height,
+                this.state.width,
+              );
+                this.setState(pos as any);
+              }
+              break;
           }
-          break;
-          case LayoutMode.EDGESNAP:
-          {
-            const pos = HUDDrag.fixedToEdgeSnap(
-              fixedPos.x + deltaX, fixedPos.y + deltaY,
-              this.state.height,
-              this.state.width,
-            );
-            this.setState(pos as any);
-          }
-          break;
-        }
 
-        
-      }
-      break;
+
+        }
+        break;
       case EditMode.SIZEX:
-      {
-        const deltaX = mouseMove.x;
-        this.setState({
-          width: this.state.width + deltaX,
-        } as any);
-      }
-      break;
+        {
+          const deltaX = mouseMove.x;
+          this.setState({
+            width: this.state.width + deltaX,
+          } as any);
+        }
+        break;
       case EditMode.SIZEXLEFT:
-      {
-        const deltaX = mouseMove.x;
-        this.setState({
-          x: this.state.x + deltaX,
-          width: this.state.width - deltaX,
-        } as any);
-      }
-      break;
+        {
+          const deltaX = mouseMove.x;
+          this.setState({
+            x: this.state.x + deltaX,
+            width: this.state.width - deltaX,
+          } as any);
+        }
+        break;
       case EditMode.SIZEY:
-      {
-        const deltaY = mouseMove.y;
-        this.setState({
-          height: this.state.height + deltaY,
-        } as any);
-      }
-      break;
+        {
+          const deltaY = mouseMove.y;
+          this.setState({
+            height: this.state.height + deltaY,
+          } as any);
+        }
+        break;
       case EditMode.SIZEYUP:
-      {
-        const deltaY = mouseMove.y;
-        this.setState({
-          y: this.state.y + deltaY,
-          height: this.state.height - deltaY,
-        } as any);
-      }
-      break;
+        {
+          const deltaY = mouseMove.y;
+          this.setState({
+            y: this.state.y + deltaY,
+            height: this.state.height - deltaY,
+          } as any);
+        }
+        break;
       case EditMode.SIZEBOTH:
-      {
-        const deltaX = mouseMove.x;
-        const deltaY = mouseMove.y;
-        this.setState({
-          width: this.state.width + deltaX,
-          height: this.state.height + deltaY,
-        } as any);
-      }
-      break;
-      case EditMode.SCALE: 
-      {
-        this.setScale(this.state.scale + (mouseMove.y * this.state.scaleFactor));
-      }
-      break;
-      case EditMode.OPACITY: 
-      {
-        this.setOpacity(this.state.opacity + (mouseMove.y * 0.01));
-      }
-      break;
+        {
+          const deltaX = mouseMove.x;
+          const deltaY = mouseMove.y;
+          this.setState({
+            width: this.state.width + deltaX,
+            height: this.state.height + deltaY,
+          } as any);
+        }
+        break;
+      case EditMode.SCALE:
+        {
+          this.setScale(this.state.scale + (mouseMove.y * this.state.scaleFactor));
+        }
+        break;
+      case EditMode.OPACITY:
+        {
+          this.setOpacity(this.state.opacity + (mouseMove.y * 0.01));
+        }
+        break;
     }
     this.didUpdate = true;
   }
@@ -420,7 +420,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private startScaleHold = (up: boolean) => {
     if (this.mouseDownForScaleHold || this.state.mode !== EditMode.NONE) return;
     this.mouseDownForScaleHold = true;
-    
+
     this.mouseScaleHoldInitTimeout = setTimeout(() => {
       if (this.mouseDownForScaleHold) {
         this.setMode(EditMode.SCALEHOLD);
@@ -440,7 +440,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private startOpacityHold = (up: boolean) => {
     if (this.mouseDownForOpacityHold || this.state.mode !== EditMode.NONE) return;
     this.mouseDownForOpacityHold = true;
-    
+
     this.mouseScaleHoldInitTimeout = setTimeout(() => {
       if (this.mouseDownForOpacityHold) {
         this.setMode(EditMode.OPACITYHOLD);
@@ -460,7 +460,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private getPosition = () => {
     switch (this.state.layoutMode) {
       default: return null;
-      case LayoutMode.GRID: 
+      case LayoutMode.GRID:
         return HUDDrag.gridToFixed(
           this.state.x,
           this.state.y,
@@ -468,14 +468,13 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           this.state.yAnchor,
           this.props.gridDivisions,
         );
-      case LayoutMode.EDGESNAP:
-      {
-        const screen = { width: window.innerWidth, height: window.innerHeight };
+      case LayoutMode.EDGESNAP: {
+        const screen = {width: window.innerWidth, height: window.innerHeight};
         return {
           x: this.state.xAnchor === Edge.LEFT ?
-           this.state.x : screen.width - this.state.width * this.state.scale - this.state.x,
+          this.state.x : screen.width - this.state.width * this.state.scale - this.state.x,
           y: this.state.yAnchor === Edge.TOP ?
-           this.state.y : screen.height - this.state.height * this.state.scale - this.state.y,
+          this.state.y : screen.height - this.state.height * this.state.scale - this.state.y,
         };
       }
     }
@@ -511,7 +510,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private static fixedToEdgeSnap(x: number, y: number, h: number, w: number) {
-    const s = { w: window.innerWidth, h: window.innerHeight };
+    const s = {w: window.innerWidth, h: window.innerHeight};
 
     const left = y < (s.w - (y - w));
     const top = x < (s.h - (x - h));
@@ -552,7 +551,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           />}
         {this.props.lockWidth || this.props.lockHeight ? null :
           <div className='HUDDrag__controls__resizeXYHandle' onMouseDown={e => this.onMouseDown(e, EditMode.SIZEBOTH)}/>}
-        
+
         <div className='HUDDrag__controls__toolbar'>
 
           {
@@ -567,9 +566,9 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           }
 
           {
-            this.props.lockOpacity ? null : 
+            this.props.lockOpacity ? null :
               <div className='HUDDrag__controls__toolbar__scale'>
-                
+
                 <div className='HUDDrag__controls__toolbar__scale__controls'>
                   <a href='#'>
                     <div onClick={() => this.setOpacity(this.state.opacity - 0.01)}
@@ -593,7 +592,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           }
 
           {
-            this.props.lockScale ? null : 
+            this.props.lockScale ? null :
               <div className='HUDDrag__controls__toolbar__scale'>
                 <div className='HUDDrag__controls__toolbar__scale__controls'>
                   <div onClick={() => this.setScale(this.state.scale - this.state.scaleFactor)}
@@ -606,13 +605,13 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
                      onWheel={(e) => {
                        const deltaY = e.deltaY;
                        setTimeout(() => this.setScale(this.state.scale + (deltaY < 0 ? 0.01 : -0.01)));
-                      }}>
+                     }}>
                   <i className='fa fa-search-plus'></i>
                 </a>
                 <div className='HUDDrag__controls__scaleText'>{`${(this.state.scale * 100).toFixed(0)}%`}</div>
               </div>
           }
-          
+
         </div>
       </div>
     );

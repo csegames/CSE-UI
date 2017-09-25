@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import { StyleDeclaration } from 'aphrodite';
-import { utils, IconButton } from 'camelot-unchained';
-import { colors } from '../../../lib/constants';
+import {StyleDeclaration} from 'aphrodite';
+import {utils, IconButton} from 'camelot-unchained';
+import {colors} from '../../../lib/constants';
 
 export interface InventoryRowActionButtonStyle extends StyleDeclaration {
   InventoryRowActionButton: React.CSSProperties;
@@ -30,7 +30,7 @@ export const defaultInventoryRowActionButtonStyle: InventoryRowActionButtonStyle
     textShadow: '1px 1px rgba(0, 0, 0, 0.7)',
   },
   disabled: {
-    cursor: 'not-allowed',    
+    cursor: 'not-allowed',
     textShadow: '0',
     color: utils.lightenColor(colors.filterBackgroundColor, 30),
   },

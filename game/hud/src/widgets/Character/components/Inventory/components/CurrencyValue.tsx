@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import { colors } from '../../../lib/constants';
+import {colors} from '../../../lib/constants';
 
 enum CurrencyValueType {
   Small,

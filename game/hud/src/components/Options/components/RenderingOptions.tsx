@@ -12,10 +12,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client } from 'camelot-unchained';
+import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import {client} from 'camelot-unchained';
 import ListItem from './ListItem';
-import { ConfigIndex, ConfigInfo } from '../OptionsMain';
+import {ConfigIndex, ConfigInfo} from '../OptionsMain';
 
 export interface RenderingOptionsStyle extends StyleDeclaration {
   RenderingOptions: React.CSSProperties;
@@ -23,7 +23,7 @@ export interface RenderingOptionsStyle extends StyleDeclaration {
 
 export const defaultRenderingOptionsStyle: RenderingOptionsStyle = {
   RenderingOptions: {
-    
+
   },
 };
 
@@ -51,10 +51,10 @@ export class RenderingOptions extends React.Component<RenderingOptionsProps, {}>
         {this.props.renderingConfigs.map((config, index) => {
           const isOddItem = index % 2 !== 0;
           if (parseInt(config.value, 10) || config.value === '0') {
-            const minMax = config.name === 'Shadow Distance' ? { min: 0, max: 10000 } :
-              config.name === 'Shadow Quality' ? { min: 0, max: 4 } :
-              config.name === 'Render Draw Distance' ? { min: 100, max: 4000 } :
-              { min: 0, max: 2 };
+            const minMax = config.name === 'Shadow Distance' ? {min: 0, max: 10000} :
+              config.name === 'Shadow Quality' ? {min: 0, max: 4} :
+              config.name === 'Render Draw Distance' ? {min: 100, max: 4000} :
+              {min: 0, max: 2};
 
             return (
               <ListItem
@@ -62,7 +62,7 @@ export class RenderingOptions extends React.Component<RenderingOptionsProps, {}>
                 name={config.name}
                 value={config.value}
                 sliderItemInfo={{
-                  onChange: (val) => this.onInputRangeChange(config, val),
+                  onChange: val => this.onInputRangeChange(config, val),
                   min: minMax.min,
                   max: minMax.max,
                 }}

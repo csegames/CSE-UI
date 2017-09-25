@@ -37,13 +37,13 @@ export const defaultInlineCharacterStyle: InlineCharacterStyle = {
 
 const inlineCharacter = (props: InlineCharacterProps) => {
   if (props.data.loading) {
-      return <Spinner />;
-    }
-    return (
+    return <Spinner />;
+  }
+  return (
       <a href={`#character/${props.data.character.id}`}>
         {props.data.character.name}
       </a>
-    );
+  );
 };
 
 export default graphql(gql`
@@ -54,10 +54,10 @@ export default graphql(gql`
         }
       }
     `, {
-  options: (props: InlineCharacterProps) => ({
-    variables: {
-      id: props.id,
-      shard: props.shard,
-    },
-  }),
-})(inlineCharacter as any);
+      options: (props: InlineCharacterProps) => ({
+        variables: {
+          id: props.id,
+          shard: props.shard,
+        },
+      }),
+    })(inlineCharacter as any);

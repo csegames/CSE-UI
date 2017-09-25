@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, close, CloseStyles } from '../styles';
+import {StyleSheet, css, merge, close, CloseStyles} from '../styles';
 
 interface CloseProps {
   onClose: () => void;

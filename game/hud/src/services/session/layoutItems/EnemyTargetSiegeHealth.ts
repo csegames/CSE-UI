@@ -8,13 +8,13 @@
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-08-21 17:59:12
  */
-import { LayoutMode } from '../../../components/HUDDrag';
-import SiegeHealth, { HealthFor } from '../../../components/SiegeHealth';
+import {LayoutMode} from '../../../components/HUDDrag';
+import SiegeHealth, {HealthFor} from '../../../components/SiegeHealth';
 import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
-     x: {
+    x: {
       anchor: 5,
       offset: 250,
     },

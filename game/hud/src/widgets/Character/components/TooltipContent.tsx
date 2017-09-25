@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
 
 import TooltipArmorInfo from './TooltipArmorInfo';
-import { prettifyText } from '../lib/utils';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import {prettifyText} from '../lib/utils';
+import {InventoryItemFragment} from '../../../gqlInterfaces';
 
 export const defaultTooltipStyle = {
   tooltip: {
@@ -76,14 +76,14 @@ export const defaultTooltipContentStyle: TooltipContentStyle = {
     maxHeight: '50%',
     maxWidth: '100%',
   },
-  
+
   slotNameText: {
     fontSize: '14px',
     color: 'gray',
     margin: 0,
     padding: 0,
   },
-  
+
   statNumber: {
     display: 'inline',
     color: '#08d922',
@@ -91,7 +91,7 @@ export const defaultTooltipContentStyle: TooltipContentStyle = {
     margin: 0,
     padding: 0,
   },
-  
+
   regularText: {
     display: 'inline',
     fontSize: '14px',
@@ -99,7 +99,7 @@ export const defaultTooltipContentStyle: TooltipContentStyle = {
     margin: 0,
     padding: 0,
   },
-  
+
   instructionText: {
     display: 'inline',
     fontSize: '14px',
@@ -108,7 +108,7 @@ export const defaultTooltipContentStyle: TooltipContentStyle = {
     marginBottom: 0,
     padding: 0,
   },
-  
+
   itemTitle: {
     fontSize: '22px',
     color: 'orange',
@@ -142,7 +142,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
     const style = StyleSheet.create(defaultTooltipContentStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
 
-    const { slotName, instructions, gearSlots, shouldOnlyShowPrimaryInfo } = this.props;
+    const {slotName, instructions, gearSlots, shouldOnlyShowPrimaryInfo} = this.props;
 
     const item = this.state.item;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
@@ -190,7 +190,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
             gearSlots={gearSlots}
           />
         }
-        {!shouldOnlyShowPrimaryInfo && stats && stats.weapon && 
+        {!shouldOnlyShowPrimaryInfo && stats && stats.weapon &&
           <div className={css(style.weaponInfo, customStyle.weaponInfo)}>
             {Object.keys(stats['weapon']).sort((a, b) => a.localeCompare(b)).map((stat: string, i: number) => {
               if (stats['weapon'][stat] > 0) {

@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, labelStyles, LabelStyles } from '../styles';
+import {StyleSheet, css, merge, labelStyles, LabelStyles} from '../styles';
 
 interface LabelProps {
   children?: any;

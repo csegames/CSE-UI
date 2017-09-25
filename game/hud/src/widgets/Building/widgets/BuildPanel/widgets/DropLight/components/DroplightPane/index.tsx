@@ -13,7 +13,6 @@ import {fireBuildingItemSelected} from '../../../../../../services/events';
 
 import {GlobalState} from '../../services/session/reducer';
 import * as lightService from '../../services/session/lights';
-import {LightsState} from '../../services/session/lights';
 
 import LightPreview from '../LightPreview';
 import ColorSelect from '../ColorSelect';
@@ -28,13 +27,13 @@ function select(state: GlobalState) {
 }
 
 export interface DropLightPaneStateToPropsInfo {
-  lightsState?: LightsState;
+  lightsState?: lightService.LightsState;
   showSelector?: boolean;
 }
 
 export interface DropLightPanePropsInfo {
   dispatch: (action: any) => void;
-  lightsState: LightsState;
+  lightsState: lightService.LightsState;
   showSelector: boolean;
   minimized?: boolean;
 }
@@ -48,7 +47,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
 
   constructor(props: DropLightPaneProps) {
     super(props);
-    this.state = { preview: false };
+    this.state = {preview: false};
   }
 
   public render() {

@@ -44,8 +44,9 @@ class LightPreview extends React.Component<LightPreviewProps, LightPreviewState>
   }
 
   private selectLight = (light: Light) => {
-    if (this.props.selectLight !== undefined)
+    if (this.props.selectLight !== undefined) {
       this.props.selectLight(light);
+    }
   }
 }
 

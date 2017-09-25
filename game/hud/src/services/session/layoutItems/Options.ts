@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-08-25 10:46:20
  */
 
-import { LayoutMode } from '../../../components/HUDDrag';
-import Options, { OptionDimensions } from '../../../components/Options/OptionsMain';
+import {LayoutMode} from '../../../components/HUDDrag';
+import Options, {OptionDimensions} from '../../../components/Options/OptionsMain';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

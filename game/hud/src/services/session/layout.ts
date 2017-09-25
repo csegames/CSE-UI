@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import { Map } from 'immutable';
-import { Module } from 'redux-typed-modules';
-import { client, events, RUNTIME_ASSERT } from 'camelot-unchained';
+import {Map} from 'immutable';
+import {Module} from 'redux-typed-modules';
+import {client, events, RUNTIME_ASSERT} from 'camelot-unchained';
 
-import { cloneDeep } from 'lodash';
-import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
+import {cloneDeep} from 'lodash';
+import {HUDDragOptions, LayoutMode} from '../../components/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';
@@ -209,7 +209,7 @@ function loadState(state: LayoutState = loadStateFromStorage()): LayoutState {
     const reset = state.reset !== FORCE_RESET_CODE;
     if (!reset) {
       if ((state.version | 0) >= MIN_STATE_VERSION_ANCHORED) {
-        const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+        const screen: Size = {width: window.innerWidth, height: window.innerHeight};
         const defaultWidgets = initialState().widgets;
 
         const widgets = Map<string, Widget<any>>().asMutable();
@@ -253,14 +253,14 @@ function saveState(state: LayoutState, widget: Widget<any>, name: string) {
 const module = new Module({
   initialState: getInitialState(),
   actionExtraData: () => {
-    const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+    const screen: Size = {width: window.innerWidth, height: window.innerHeight};
     return {
       when: new Date(),
       screen,
     };
   },
   postReducer: (state) => {
-    const screen: Size = { width: window.innerWidth, height: window.innerHeight };
+    const screen: Size = {width: window.innerWidth, height: window.innerHeight};
     return {
       ...state,
       lastScreenSize: screen,
@@ -300,13 +300,13 @@ export function initialize() {
       }
     });
 
-      const listener = (e: KeyboardEvent) => {
-          if (e.which === 27) {
-              dispatch(lockHUD(removeEvent));
-          }
-      };
-      const addEvent = () => window.window.addEventListener('keydown', listener);
-      const removeEvent = () => window.window.removeEventListener('keydown', listener);
+    const listener = (e: KeyboardEvent) => {
+      if (e.which === 27) {
+        dispatch(lockHUD(removeEvent));
+      }
+    };
+    const addEvent = () => window.window.addEventListener('keydown', listener);
+    const removeEvent = () => window.window.removeEventListener('keydown', listener);
   };
 }
 
@@ -377,7 +377,7 @@ export const setPosition = module.createAction({
   action: (a: { name: string, widget: Widget<any>, position: Position }) => a,
   reducer: (s, a) => {
     // Save the position into local storage everytime position is changed
-    const widget = { ...a.widget, position: a.position };
+    const widget = {...a.widget, position: a.position};
     saveState(s, widget, a.name);
 
     return {

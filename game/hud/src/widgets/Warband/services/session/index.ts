@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-import warbandReducer, { WarbandState } from './warband';
+import warbandReducer, {WarbandState} from './warband';
 export * from './warband';
 const warband = warbandReducer as any;
 

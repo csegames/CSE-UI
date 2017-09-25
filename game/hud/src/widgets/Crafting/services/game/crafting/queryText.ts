@@ -13,15 +13,15 @@ const FIELD_LISTS = {
   ITEM: [
     'givenName', 'name', 'id', 'shardID',
   ],
-  RECIPE: [ 'id' ],
+  RECIPE: ['id'],
   ITEM_DEF_REF: [
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
   ],
   MAKE_RECIPE_INGREDIENT_DEF: [
-    'slot', 'requirementDescription', 'minQuality', 'maxQuality', 'unitCount'
+    'slot', 'requirementDescription', 'minQuality', 'maxQuality', 'unitCount',
   ],
   RECIPE_INGREDIENT_DEF: [
-    'requirementPath', 'minPercent', 'maxPercent', 'minQuality', 'maxQuality'
+    'requirementPath', 'minPercent', 'maxPercent', 'minQuality', 'maxQuality',
   ],
   STATIC: [
     'id', 'iconUrl', 'name', 'description', 'isVox', 'itemType',
@@ -62,7 +62,7 @@ const TYPES: any = {
 };
 
 const GetQueryPart = (name: string, def: any, parent: string, indent: string) => {
-  const query : string[] = [];
+  const query: string[] = [];
   query.push(indent + name + ' {');
   const isArray = Array.isArray(def);
   const fields = typeof def === 'string' ? TYPES[def] : (
@@ -79,7 +79,7 @@ const GetQueryPart = (name: string, def: any, parent: string, indent: string) =>
 };
 
 const GetQueryText = (name: string, def: any, indent: string = '') => {
-  const query : string[] = [];
+  const query: string[] = [];
   query.push('query ' + name + ' {');
   for (const key in def) {
     query.push(GetQueryPart(key, def[key], null, indent + '  '));
@@ -93,11 +93,11 @@ const QUERY_VOX_STATUS = GetQueryText('VoxStatus', {
     voxStatus: {
       ingredients: {
         staticDefinition: true,
-        stats: { item: true, durability: true },
+        stats: {item: true, durability: true},
       },
       outputItems: {
         staticDefinition: true,
-        stats: { item: true, durability: true },
+        stats: {item: true, durability: true},
       },
     },
   },
@@ -116,27 +116,27 @@ const QUERY_POSSIBLE_INGREDIENTS = GetQueryText('PossibleIngredients', {
 });
 
 const QUERY_PURIFY_RECIPES = GetQueryText('PurifyRecipes', {
-  crafting: { purifyRecipes: { outputItem: true, ingredientItem: true } },
+  crafting: {purifyRecipes: {outputItem: true, ingredientItem: true}},
 });
 
 const QUERY_GRIND_RECIPES = GetQueryText('GrindRecipes', {
-  crafting: { grindRecipes: { outputItem: true, ingredientItem: true } },
+  crafting: {grindRecipes: {outputItem: true, ingredientItem: true}},
 });
 
 const QUERY_REFINE_RECIPES = GetQueryText('RefineRecipes', {
-  crafting: { refineRecipes: { ingredientItem: true } },
+  crafting: {refineRecipes: {ingredientItem: true}},
 });
 
 const QUERY_SHAPE_RECIPES = GetQueryText('ShapeRecipes', {
-  crafting: { shapeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: {shapeRecipes: {outputItem: true, ingredients: {ingredientDef: true}}},
 });
 
 const QUERY_BLOCK_RECIPES = GetQueryText('BlockRecipes', {
-  crafting: { blockRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: {blockRecipes: {outputItem: true, ingredients: {ingredientDef: true}}},
 });
 
 const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
-  crafting: { makeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: {makeRecipes: {outputItem: true, ingredients: {ingredientDef: true}}},
 });
 
 export const QUERIES = {

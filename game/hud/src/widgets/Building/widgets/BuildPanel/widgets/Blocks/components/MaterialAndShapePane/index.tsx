@@ -46,7 +46,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
 
   constructor(props: MaterialAndShapePaneProps) {
     super(props);
-    this.state = { showMatSelect: false };
+    this.state = {showMatSelect: false};
   }
 
   public render() {
@@ -113,11 +113,11 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   private showMatSelector = (show: boolean) => {
     if (show) {
       const selected: BuildingMaterial = this.props.materialsState.selectedMaterial;
-      events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: selected, onSelect: this.selectMaterial });
+      events.fire(ACTIVATE_MATERIAL_SELECTOR, {selection: selected, onSelect: this.selectMaterial});
     } else {
       events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
     }
-    this.setState((state, props) => ({ showMatSelect: show } as MaterialAndShapePaneState));
+    this.setState((state, props) => ({showMatSelect: show} as MaterialAndShapePaneState));
   }
 
   private selectBlock(block: BuildingBlock) {
@@ -128,7 +128,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     const currentBlock = this.props.materialsState.selectedBlock;
     const requestedBlock: BuildingBlock = mat.getBlockForShape(currentBlock.shapeId);
     blockRequester.changeBlockSelection(requestedBlock);
-    this.setState((state, props) => ({ showMatSelect: false } as any));
+    this.setState((state, props) => ({showMatSelect: false} as any));
     events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }

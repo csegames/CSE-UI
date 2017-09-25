@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 import Slider from './Slider';
 
@@ -77,7 +77,7 @@ export interface ListItemProps {
 const ListItem = (props: ListItemProps) => {
   const ss = StyleSheet.create(defaultListItemStyle);
   const custom = StyleSheet.create(props.styles || {});
-  
+
   if (props.sliderItemInfo) {
     return (
       <div

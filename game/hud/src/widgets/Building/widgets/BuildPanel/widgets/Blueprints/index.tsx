@@ -30,13 +30,13 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
     return (
         <TabbedPane name='blueprints'
           tabs={['Blueprints']}
-          defaultX={[0, Anchor.TO_END]} 
-          defaultY={[300, Anchor.TO_START]} 
-          defaultSize={[200, 300]} 
+          defaultX={[0, Anchor.TO_END]}
+          defaultY={[300, Anchor.TO_START]}
+          defaultSize={[200, 300]}
         >
           <Provider store={store}>
             <BlueprintsPane minimized={this.props.minimized}
-              handlePreviewIcon={(icon: string) => this.setState({ previewIcon: icon})}
+              handlePreviewIcon={(icon: string) => this.setState({previewIcon: icon})}
             />
           </Provider>
         </TabbedPane>

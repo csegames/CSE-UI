@@ -11,7 +11,7 @@ import {
   webAPI,
   utils,
 } from 'camelot-unchained';
-import { systemMessage } from './utils';
+import {systemMessage} from './utils';
 
 export default () => {
 
@@ -27,7 +27,7 @@ export default () => {
 
   function argsWithHelp(params: string) {
     return yargs(params, {
-      alias: { help: 'h' },
+      alias: {help: 'h'},
       boolean: ['help'],
     });
   }
@@ -56,7 +56,7 @@ export default () => {
           systemMessage(`Usage: /order create <name>`);
           return;
         }
-    
+
         systemMessage(`Attempting to create Order ${name}...`);
         createOrder(name);
       },
@@ -118,7 +118,7 @@ export default () => {
             return;
           }
 
-          const permissions = <webAPI.PermissionInfo[]>data;
+          const permissions = <webAPI.PermissionInfo[]> data;
           for (let i = 0; i < permissions.length; ++i) {
             const p = permissions[i];
             systemMessage(`${p.name} : ${p.description}`);
@@ -154,7 +154,7 @@ export default () => {
       handler: (params: string) => {
         const argv = argsWithHelp(params);
         const rankName = argv._[0];
-        
+
         if (shouldShowHelp(argv, true)) {
           systemMessage(`${orderCommands['removerank'].description}`);
           systemMessage('Usage: /order removeRank <name>');
@@ -286,7 +286,7 @@ export default () => {
             return;
           }
 
-          const rank = <webAPI.RankInfo>data;
+          const rank = <webAPI.RankInfo> data;
           systemMessage(`${rank.name} ${rank.level} ${rank.permissions.join(', ')}`);
         });
       },

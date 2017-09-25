@@ -5,7 +5,7 @@ module.exports = {
       description: 'Custom build script to make my life easier - JB',
     },
     lint: {
-      script: '',//'tslint src/**/*.ts{,x}',
+      script: 'tslint -t stylish src/**/*.ts{,x}',
       description: 'Run TS-Lint"',
       hiddenFromHelp: true,
       fix: {

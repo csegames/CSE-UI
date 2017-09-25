@@ -10,14 +10,14 @@
  */
 
 import * as React from 'react';
-import { client, events, plotPermissions, webAPI } from 'camelot-unchained';
+import {client, events, plotPermissions, webAPI} from 'camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;
   currentPermissions: number;
   charID: string;
   entityID: string;
-  
+
   viewingQueue: boolean;
   queue: webAPI.QueuedBlueprintMessage[];
   queueState: string;
@@ -27,7 +27,7 @@ interface PlotControlUIState {
 interface PlotControlUIProps {}
 
 class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUIState> {
-  
+
   constructor(props: PlotControlUIProps) {
     super(props);
     this.state = {
@@ -73,16 +73,16 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
 
   public componentWillMount() {
     client.OnPlotStatus(this.onPlotStatus);
-    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus();}, 2000); 
+    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus(); }, 2000);
   }
 
   public componentDidMount() {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'plotcontrol') {
         if (!this.state.visible) {
-          this.setState((state, props) => ({ visible: true }));
+          this.setState((state, props) => ({visible: true}));
         } else {
-          this.setState((state, props) => ({ visible: false }));
+          this.setState((state, props) => ({visible: false}));
         }
       }
     });
@@ -115,7 +115,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       perm,
     );
   }
-  
+
   private releasePlot = () => {
     webAPI.PlotsAPI.ReleasePlotV1(
       webAPI.defaultConfig,
@@ -125,7 +125,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       this.state.entityID,
     );
   }
-  
+
   private removeQueuedBlueprint = async (idx: number) => {
     try {
       await webAPI.PlotsAPI.RemoveQueuedBlueprintV1(
@@ -141,7 +141,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       webAPI.handleWebAPIError(err);
     }
   }
-  
+
   private reorderBuildQueue = async (indexSource: number, indexDestination: number) => {
     try {
       await webAPI.PlotsAPI.ReorderQueueV1(
@@ -158,7 +158,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       webAPI.handleWebAPIError(err);
     }
   }
-  
+
   private getQueueStatus = async () => {
     if (this.state.plotOwned === false) return;
     try {
@@ -180,14 +180,14 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       webAPI.handleWebAPIError(err);
     }
   }
-  
+
   private toggleQueue = () => {
     this.setState((state, props) => ({
       ...state,
       viewingQueue: !state.viewingQueue,
     }));
   }
-  
+
   private renderPermissions() {
     let permString = 'Current Permissions: ';
     let prevPermission = false;
@@ -245,47 +245,47 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       </div>
     );
   }
-  
+
   private renderConstruction() {
     let renderedQueue: JSX.Element;
     if (this.state.queueState !== 'InCombat') {
       const blueprints: JSX.Element[] = [];
       for (let i = 0; i < this.state.queue.length; ++i) {
-          const blueprint = this.state.queue[i];
-          let renderedBlueprint: JSX.Element;
-        
-          let timeRemaining: JSX.Element;
-          let timeRemainingSeconds = Math.round(blueprint.estTimeRemaining);
-          if (timeRemainingSeconds !== -1) {
-            const timeRemainingHours = Math.floor(timeRemainingSeconds / 3600);
-            timeRemainingSeconds = timeRemainingSeconds % 3600;
-            const timeRemainingMinutes = Math.floor(timeRemainingSeconds / 60);
-            timeRemainingSeconds = timeRemainingSeconds % 60;
-            timeRemaining = (
-              <div>{timeRemainingHours + 'h ' + timeRemainingMinutes + 'm ' + timeRemainingSeconds + 's'}</div>  
-            );
-          } else {
-            timeRemaining = (
-              <div>"Inf"</div>  
-            );
-          }
-        
-          let upArrow: JSX.Element;
-          if (i !== 0) {
-            upArrow = (
-              <a onClick={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>  
-            );
-          }
+        const blueprint = this.state.queue[i];
+        let renderedBlueprint: JSX.Element;
 
-          let downArrow: JSX.Element;
-          if (i !== this.state.queue.length - 1) {
-            downArrow = (
+        let timeRemaining: JSX.Element;
+        let timeRemainingSeconds = Math.round(blueprint.estTimeRemaining);
+        if (timeRemainingSeconds !== -1) {
+          const timeRemainingHours = Math.floor(timeRemainingSeconds / 3600);
+          timeRemainingSeconds = timeRemainingSeconds % 3600;
+          const timeRemainingMinutes = Math.floor(timeRemainingSeconds / 60);
+          timeRemainingSeconds = timeRemainingSeconds % 60;
+          timeRemaining = (
+              <div>{timeRemainingHours + 'h ' + timeRemainingMinutes + 'm ' + timeRemainingSeconds + 's'}</div>
+            );
+        } else {
+          timeRemaining = (
+              <div>"Inf"</div>
+            );
+        }
+
+        let upArrow: JSX.Element;
+        if (i !== 0) {
+          upArrow = (
+              <a onClick={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>
+            );
+        }
+
+        let downArrow: JSX.Element;
+        if (i !== this.state.queue.length - 1) {
+          downArrow = (
               <a onClick={() => this.reorderBuildQueue(i, i + 1)} className='plotMoveDown'>↓</a>
             );
-          }
-          
-          if (blueprint.subName === '') {
-            renderedBlueprint = (
+        }
+
+        if (blueprint.subName === '') {
+          renderedBlueprint = (
               <li className='blueprint'>
                 {blueprint.name}
                 {timeRemaining}
@@ -295,8 +295,8 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 <a onClick={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
               </li>
             );
-          } else {
-            renderedBlueprint = (
+        } else {
+          renderedBlueprint = (
               <li className='matBlueprint'>
                 {blueprint.name}
                 {timeRemaining}
@@ -309,27 +309,27 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 </div>
               </li>
             );
-          }
-          blueprints.push(renderedBlueprint);
+        }
+        blueprints.push(renderedBlueprint);
       }
       renderedQueue = (
       <ul className='list'>
       Allies on Plot: {this.state.numContributors}
       {blueprints}
-      </ul>   
+      </ul>
       );
     } else {
       renderedQueue = (
         <div className='list'>Your plot is under attack!</div>
       );
     }
-      
+
     return (
       <div className='cu-window-content'>
         {renderedQueue}
         <button className='plotButton' onClick={this.releasePlot.bind(this)}>Release Plot</button>
         <button className='plotButton' onClick={this.toggleQueue.bind(this)}>Permissions</button>
-      </div>  
+      </div>
     );
   }
 }

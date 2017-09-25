@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { client, ql, events } from 'camelot-unchained';
-import { useConfig } from 'camelot-unchained/lib/graphql/react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import {connect} from 'react-redux';
+import {client, ql, events} from 'camelot-unchained';
+import {useConfig} from 'camelot-unchained/lib/graphql/react';
+import {graphql, InjectedGraphQLProps} from 'react-apollo';
 
 import {
   LayoutState,
@@ -17,16 +17,16 @@ import {
   setVisibility,
   Widget,
 } from '../../services/session/layout';
-import { InvitesState, initializeInvites } from '../../services/session/invites';
-import { SessionState } from '../../services/session/reducer';
-import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
+import {InvitesState, initializeInvites} from '../../services/session/invites';
+import {SessionState} from '../../services/session/reducer';
+import HUDDrag, {HUDDragState, HUDDragOptions} from '../HUDDrag';
 
 import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
 
-import { ZoneName } from '../ZoneName';
+import {ZoneName} from '../ZoneName';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
@@ -40,10 +40,10 @@ useConfig({
       loginToken: client.loginToken,
       shardID: `${client.shardID}`,
       characterID: client.characterID,
-    }
+    },
   },
   stringifyVariables: true,
-})
+});
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch: (action: any) => void;
@@ -68,16 +68,16 @@ class HUD extends React.Component<HUDProps, HUDState> {
                     .sort((a, b) => a.position.zOrder - b.position.zOrder)
                     .map((w, idx) => this.draggable(idx, w, w.component, w.dragOptions, w.props));
     return (
-      <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+      <div className='HUD' style={locked ? {} : {backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
         {renderWidgets}
 
         <ZoneName />
         <Console />
 
-        <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
+        <div style={{position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none'}}>
           <HUDNav.component {...HUDNav.props} />
         </div>
-        
+
         <DevUI />
 
         <InteractiveAlert dispatch={this.props.dispatch}
@@ -138,7 +138,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {
-    this.props.dispatch(setVisibility({ name: widgetName, visibility: vis }));
+    this.props.dispatch(setVisibility({name: widgetName, visibility: vis}));
   }
 
   private draggable = (type: string, widget: Widget<any>, Widget: any, options?: HUDDragOptions, widgetProps?: any) => {
@@ -165,9 +165,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           name: type,
           widget,
           position: {
-            x: { anchor: s.xAnchor, offset: s.x },
-            y: { anchor: s.yAnchor, offset: s.y },
-            size: { width: s.width, height: s.height },
+            x: {anchor: s.xAnchor, offset: s.x},
+            y: {anchor: s.yAnchor, offset: s.y},
+            size: {width: s.width, height: s.height},
             scale: s.scale,
             opacity: s.opacity,
             visibility: widget.position.visibility,
@@ -179,7 +179,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       render={() => {
         if (this.props.layout.locked && !widget.position.visibility) return null;
         return <Widget
-          setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({ name: type, visibility: vis }))}
+          setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({name: type, visibility: vis}))}
           {...props}
         />;
       }}

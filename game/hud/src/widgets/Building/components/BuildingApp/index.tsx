@@ -49,7 +49,7 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
   }
 
   public componentDidMount() {
-    
+
   }
 
   private createActionButton(active: boolean): JSX.Element {

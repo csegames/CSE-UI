@@ -11,7 +11,7 @@
 
 
 import * as React from 'react';
-import { StyleSheet, css, merge, button, ButtonStyles } from '../styles';
+import {StyleSheet, css, merge, button, ButtonStyles} from '../styles';
 
 interface ButtonProps {
   disabled?: boolean;

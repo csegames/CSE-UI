@@ -50,10 +50,10 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
   public render() {
     const hide = this.props.player.playerStatus.name === '';
 
-    const { position, targetPosition } = this.props.player.playerStatus;
+    const {position, targetPosition} = this.props.player.playerStatus;
     const a = position.x - targetPosition.x;
     const b = position.y - targetPosition.y;
-    const distance = Math.ceil(Math.sqrt( a * a + b * b ) * 100) / 100;
+    const distance = Math.ceil(Math.sqrt(a * a + b * b) * 100) / 100;
 
     if (hide) return null;
 
@@ -82,7 +82,7 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
 
 const TargetComp = connect(select)(TargetHealth);
 
-class Container extends React.Component<ContainerProps,{}> {
+class Container extends React.Component<ContainerProps, {}> {
   public render() {
     return (
       <Provider store={store}>

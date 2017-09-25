@@ -12,4 +12,4 @@ export default function() {
   initialized = true;
   console.log('initialize warband');
   slashCommands();
-};
+}

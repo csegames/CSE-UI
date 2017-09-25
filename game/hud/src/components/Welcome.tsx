@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, utils } from 'camelot-unchained';
+import {webAPI, utils} from 'camelot-unchained';
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 export interface WelcomeStyles extends StyleDeclaration {
   Welcome: React.CSSProperties;
@@ -70,7 +70,7 @@ export const defaultWelcomeStyles: WelcomeStyles = {
       color: '#bbb',
     },
   },
-}
+};
 
 export interface WelcomeProps {
   styles?: Partial<WelcomeStyles>;
@@ -139,7 +139,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   private onMessage = (data: WelcomeData) => {
     if (data.message === '') return;
     const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{__html: data.message}} />;
-    this.setState({ message: welcomeMessage } as any);
+    this.setState({message: welcomeMessage} as any);
   }
 
   private hide = (): void => {

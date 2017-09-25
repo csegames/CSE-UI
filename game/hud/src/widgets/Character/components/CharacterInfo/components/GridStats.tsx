@@ -12,7 +12,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
 
 export interface GridStatsStyles extends StyleDeclaration {
   statContainer: React.CSSProperties;
@@ -33,7 +33,7 @@ export interface GridStatsProps {
   styles?: Partial<GridStatsStyles>;
   sectionTitle?: string;
   howManyGrids: number;
-  searchValue: string;  
+  searchValue: string;
   statArray: any[];
   renderListItem: (item: any, index: number) => JSX.Element;
   shouldRenderEmptyListItems?: boolean;
@@ -47,7 +47,7 @@ const GridStats = (props: GridStatsProps) => {
   const numberOfItemsInGrid = Math.ceil((statArray.length) / props.howManyGrids);
   const emptyListItems: any[] = props.shouldRenderEmptyListItems ?
     _.fill(Array(numberOfItemsInGrid * props.howManyGrids - statArray.length), '') : [];
-  
+
   let beginningArrayIndex = 0;
   const arrayOfGrids = _.fill(Array(props.howManyGrids), '').map((ignore, index) => {
     const isLastGrid = (index + 1) === props.howManyGrids;
