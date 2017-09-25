@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 17:36:39
+ * @Last Modified time: 2017-09-25 17:38:38
  */
 
 import * as React from 'react';
@@ -41,8 +41,6 @@ import {
   itemHasPosition,
   shouldShowItem,
 } from '../../../lib/utils';
-
-declare const toastr: any;
 
 export interface InventoryBaseStyle extends StyleDeclaration {
   InventoryBase: React.CSSProperties;
