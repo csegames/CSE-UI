@@ -22,20 +22,18 @@ export interface MapContainerState {
   mapLoaded: boolean;
 }
 
-const map = new Image();
-
 class MapContainer extends React.Component<MapContainerProps, MapContainerState> {
+  private map: HTMLImageElement;
+
   constructor(props: MapContainerProps) {
     super(props);
     this.state = {
       visible: false,
       mapLoaded: false,
     };
-  }
-
-  public componentWillMount() {
-    map.src = 'images/world-map.jpg';
-    map.onload = () => {
+    this.map = new Image();
+    this.map.src = 'images/world-map.jpg';
+    this.map.onload = () => {
       this.setState((prevState) => {
         return {
           ...prevState,
@@ -47,7 +45,7 @@ class MapContainer extends React.Component<MapContainerProps, MapContainerState>
 
   public render() {
     return (this.props.visibleComponent === 'map' && this.state.mapLoaded) && (
-      <MapMain map={map} mapKey={'images/map-key.jpg'}/>
+      <MapMain map={this.map} mapKey={'images/map-key.jpg'} />
     );
   }
 }

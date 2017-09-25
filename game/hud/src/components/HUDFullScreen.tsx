@@ -212,7 +212,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private renderMap = (prop: { active: boolean }) => {
-    return <Map visibleComponent={this.state.visibleComponent}/>;
+    return <Map visibleComponent={this.state.visibleComponent} />;
   }
 
   private handleNavigation = (name: string) => {
