@@ -15,6 +15,7 @@ import {StyleDeclaration, css, StyleSheet} from 'aphrodite';
 
 import Social from '../widgets/Social';
 import Character from '../widgets/Character';
+import Map from '../widgets/Map';
 
 export interface HUDFullScreenStyle extends StyleDeclaration {
   hudFullScreen: React.CSSProperties;
@@ -126,6 +127,13 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         rendersContent: 'Character',
       },
       {
+        name: 'map',
+        tab: {
+          render: () => <span>Map</span>,
+        },
+        rendersContent: 'Map',
+      },
+      {
         name: 'social',
         tab: {
           render: () => <span>Social</span>,
@@ -139,6 +147,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         name: 'Character',
         content: {
           render: this.renderCharacter,
+        },
+      },
+      {
+        name: 'Map',
+        content: {
+          render: this.renderMap,
         },
       },
       {
@@ -197,6 +211,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return <Social visibleComponent={this.state.visibleComponent} />;
   }
 
+  private renderMap = (prop: { active: boolean }) => {
+    return <Map visibleComponent={this.state.visibleComponent} />;
+  }
+
   private handleNavigation = (name: string) => {
     switch (name) {
       case 'character': {
@@ -214,8 +232,13 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         this.setVisibleComponent(name);
         break;
       }
-      case 'social': {
+      case 'map': {
         this.setActiveTabIndex(2);
+        this.setVisibleComponent(name);
+        break;
+      }
+      case 'social': {
+        this.setActiveTabIndex(3);
         this.setVisibleComponent(name);
         break;
       }

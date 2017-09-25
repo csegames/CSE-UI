@@ -29,7 +29,7 @@ export interface FilterSelectMenuStyle extends StyleDeclaration {
 
 const containerDimensions = {
   width: 300,
-  height: 215,
+  height: 500,
 };
 
 export const defaultFilterSelectMenuStyle: FilterSelectMenuStyle = {

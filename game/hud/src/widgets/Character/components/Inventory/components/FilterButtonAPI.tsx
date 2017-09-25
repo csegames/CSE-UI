@@ -36,7 +36,6 @@ export function setFilterButtons(filterButtons: InventoryFilterButton[]) {
 }
 
 export function initializeFilterButtons(state: FilterButtonState) {
-  localStorage.clear();
   const inventoryFilterButtons: InventoryFilterButton[] = getFilterButtons();
   if (!inventoryFilterButtons) {
     setFilterButtons(defaultFilterButtonIcons);
