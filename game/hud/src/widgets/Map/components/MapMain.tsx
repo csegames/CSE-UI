@@ -29,11 +29,13 @@ export const defaultMapStyle: MapStyle = {
 
   mapContainer: {
     height: '100%',
+    maxWidth: '50%',
     position: 'relative',
   },
 
   map: {
     maxHeight: '100%',
+    maxWidth: '100%',
     width: 'auto',
     position: 'relative',
     borderRight: '2px #3b524a',
