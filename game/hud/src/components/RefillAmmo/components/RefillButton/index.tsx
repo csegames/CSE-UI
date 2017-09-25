@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 interface RefillButtonStyle extends StyleDeclaration {
   container: React.CSSProperties;

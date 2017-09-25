@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {BuildingMaterial} from 'camelot-unchained';
-import {GlobalState} from '../services/session/reducer';
-import {setSelectedMaterial, setHoverMaterial} from '../services/session/materials-by-type';
+import { connect } from 'react-redux';
+import { BuildingMaterial } from 'camelot-unchained';
+import { GlobalState } from '../services/session/reducer';
+import { setSelectedMaterial, setHoverMaterial } from '../services/session/materials-by-type';
 
 import MaterialsByType from '../lib/MaterialsByType';
 

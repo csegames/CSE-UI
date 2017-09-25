@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {GlobalState} from '../services/session/reducer';
+import { connect } from 'react-redux';
+import { GlobalState } from '../services/session/reducer';
 import Select from './Select';
-import {Ingredient, InventoryItem} from '../services/types';
-import {StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles} from '../styles';
+import { Ingredient, InventoryItem } from '../services/types';
+import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../styles';
 import Icon from './Icon';
 
 interface PossibleIngredientsReduxProps {
@@ -30,7 +30,7 @@ const select = (state: GlobalState, props: PossibleIngredientsProps): PossibleIn
       possibleIngredients.push(ingredient);
     }
   });
-  return {possibleIngredients, jobType: state.job.type};
+  return { possibleIngredients, jobType: state.job.type };
 };
 
 export interface PossibleIngredientsProps extends PossibleIngredientsReduxProps {
@@ -60,7 +60,7 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     return (
       <Select
         disabled={this.props.disabled}
-        style={{select: possibleIngredients.select}}
+        style={{ select: possibleIngredients.select }}
         items={this.props.possibleIngredients}
         onSelectedItemChanged={this.props.onSelect}
         renderActiveItem={render}

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client, events, Race, Faction, Gender, hasClientAPI, Player} from 'camelot-unchained';
-import {PlayerStatus, BodyParts} from '../../../../lib/PlayerStatus';
+import { client, events, Race, Faction, Gender, hasClientAPI, Player } from 'camelot-unchained';
+import { PlayerStatus, BodyParts } from '../../../../lib/PlayerStatus';
 
 import {
   fakePlayer,
@@ -19,7 +19,7 @@ import {
   healtEmulationTest,
   avatarChanged,
 } from '../../../../lib/reduxHealth';
-import {merge, defaultAction} from '../../../../lib/reduxUtils';
+import { merge, defaultAction } from '../../../../lib/reduxUtils';
 const DO_THING = 'testthing';
 
 const INIT = 'playerhealth/player/INIT';

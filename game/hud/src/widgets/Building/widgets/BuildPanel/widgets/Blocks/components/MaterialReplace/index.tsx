@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {events, BuildingMaterial} from 'camelot-unchained';
-import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../../../lib/BuildPane';
+import { connect } from 'react-redux';
+import { events, BuildingMaterial } from 'camelot-unchained';
+import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 
-import {GlobalState} from '../../services/session/reducer';
-import {selectFromMaterial, selectToMaterial} from '../../services/session/materials-replace';
+import { GlobalState } from '../../services/session/reducer';
+import { selectFromMaterial, selectToMaterial } from '../../services/session/materials-replace';
 
 import MaterialView from '../../components/MaterialView';
 
@@ -98,31 +98,31 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
 
   private showMaterialsFrom = (show: boolean) => {
     if (show) {
-      events.fire(ACTIVATE_MATERIAL_SELECTOR, {selection: this.props.from, onSelect: this.selectFrom});
+      events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: this.props.from, onSelect: this.selectFrom });
     } else {
       events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
     }
-    this.setState((state, props) => ({showFrom: show, showTo: false} as MaterialReplacePaneState));
+    this.setState((state, props) => ({ showFrom: show, showTo: false } as MaterialReplacePaneState));
   }
 
   private showMaterialsTo = (show: boolean) => {
     if (show) {
-      events.fire(ACTIVATE_MATERIAL_SELECTOR, {selection: this.props.to, onSelect: this.selectTo});
+      events.fire(ACTIVATE_MATERIAL_SELECTOR, { selection: this.props.to, onSelect: this.selectTo });
     } else {
       events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
     }
-    this.setState((state, props) => ({showFrom: false, showTo: show} as MaterialReplacePaneState));
+    this.setState((state, props) => ({ showFrom: false, showTo: show } as MaterialReplacePaneState));
   }
 
   private selectFrom = (mat: BuildingMaterial) => {
     this.props.dispatch(selectFromMaterial(mat));
-    this.setState((state, props) => ({showFrom: false, showTo: false} as MaterialReplacePaneState));
+    this.setState((state, props) => ({ showFrom: false, showTo: false } as MaterialReplacePaneState));
     events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 
   private selectTo = (mat: BuildingMaterial) => {
     this.props.dispatch(selectToMaterial(mat));
-    this.setState((state, props) => ({showFrom: false, showTo: false} as MaterialReplacePaneState));
+    this.setState((state, props) => ({ showFrom: false, showTo: false } as MaterialReplacePaneState));
     events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 

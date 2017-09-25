@@ -10,12 +10,12 @@ import {
   CombatLog,
   damageTypes,
 } from 'camelot-unchained';
-import {spring, TransitionMotion} from 'react-motion';
-import {generateID} from 'redux-typed-modules';
+import { spring, TransitionMotion } from 'react-motion';
+import { generateID } from 'redux-typed-modules';
 
-import Pills, {Orientation} from './components/Pills';
+import Pills, { Orientation } from './components/Pills';
 
-import {PlayerStatus, BodyParts} from '../../lib/PlayerStatus';
+import { PlayerStatus, BodyParts } from '../../lib/PlayerStatus';
 
 const VALUE_PER_BODY_PARTY_PILL = 3334;
 const VALUE_PER_BLOOD_PILL = 1000;
@@ -109,7 +109,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
           <div className='PlayerStatusComponent__circle__bg'></div>
           <div className='PlayerStatusComponent__circle__avatar'>
             <img src={this.props.playerStatus.avatar}
-                 style={dead ? {filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)'} : {}} />
+                 style={dead ? { filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)' } : {}} />
           </div>
 
           {
@@ -144,14 +144,14 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                             styles={this.state.events.map(e => ({
                               key: e.id,
                               data: e,
-                              style: {opacity: spring(0), r: Math.random() * 90 - 45},
+                              style: { opacity: spring(0), r: Math.random() * 90 - 45 },
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__eventIcon'>
                 {interpolatedStyles.map((config: any) => {
                   return <div className={`PlayerStatusComponent__circle__eventIcon--piercing`}
                               key={config.key}
-                              style={{opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)`}}/>;
+                              style={{ opacity: config.style.opacity, transform: `rotateZ(${config.style.r}deg)` }}/>;
                 })}
               </div>
             }
@@ -162,7 +162,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                             styles={this.state.events.map(e => ({
                               key: e.id,
                               data: e,
-                              style: {opacity: spring(0), top: spring(-140)},
+                              style: { opacity: spring(0), top: spring(-140) },
                             }))}>
             {(interpolatedStyles: any) =>
               <div className='PlayerStatusComponent__circle__flyText'>
@@ -174,7 +174,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
                             ''}`
                          }
                          key={config.key}
-                         style={{opacity: config.style.opacity, top: config.style.top}}>
+                         style={{ opacity: config.style.opacity, top: config.style.top }}>
                       {config.data.value}
                     </div>
                   );
@@ -193,7 +193,7 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
             <li className={`${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}>&nbsp;H</li>
             <li className={`${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`}>&nbsp;T</li>
             <li className={`inner ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >RL</li>
-            <li className={`outer ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} style={{left: '-7px'}}>
+            <li className={`outer ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} style={{ left: '-7px' }}>
               LL
             </li>
           </ul>
@@ -376,15 +376,15 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
   }
 
   private flyTextWillEnter = (): any => {
-    return {opacity: 7, top: 0};
+    return { opacity: 7, top: 0 };
   }
 
   private eventIconWillLeave = (): any => {
-    return {opacity: spring(0, {stiffness: 50, damping: 15, precision: 0.01})};
+    return { opacity: spring(0, { stiffness: 50, damping: 15, precision: 0.01 }) };
   }
 
   private eventIconWillEnter = (): any => {
-    return {opacity: 5};
+    return { opacity: 5 };
   }
 
   // animations

@@ -9,12 +9,12 @@
  * @Last Modified time: 2017-07-14 17:05:07
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import inventoryReducer, {InventoryState} from './inventoryState';
+import inventoryReducer, { InventoryState } from './inventoryState';
 const inventory = inventoryReducer;
 
-import filterButtonReducer, {FilterButtonState} from './filterButtonState';
+import filterButtonReducer, { FilterButtonState } from './filterButtonState';
 const filterButton = filterButtonReducer;
 
 export interface CharacterState {

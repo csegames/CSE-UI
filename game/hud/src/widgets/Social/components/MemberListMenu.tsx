@@ -16,7 +16,7 @@ import {
   webAPI,
   client,
 } from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export const defaultMemberListMenuStyle: MemberListMenuStyle = {
   list: {

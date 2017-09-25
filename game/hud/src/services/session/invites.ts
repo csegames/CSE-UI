@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {webAPI, client, GroupInvite, signalr, events} from 'camelot-unchained';
+import { webAPI, client, GroupInvite, signalr, events } from 'camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -199,13 +199,13 @@ function inviteEquals(a: GroupInvite, b: GroupInvite): boolean {
 
 const actionDefs: ActionDefinitions<InvitesState> = {};
 
-actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, {isInitalizing: false});
+actionDefs[INITIALIZE_SIGNALR] = (s, a) => merge(s, { isInitalizing: false });
 
-actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => merge(s, { isInitalizing: false, signalRInitialized: true });
 
-actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, {isInitalizing: false, signalRInitialized: true});
+actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => merge(s, { isInitalizing: false, signalRInitialized: true });
 
-actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => merge(state, {isFetching: true});
+actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => merge(state, { isFetching: true });
 
 actionDefs[ACCEPT_INVITE] = (state: InvitesState, action: InvitesAction) => {
   return merge(state, {
@@ -220,6 +220,6 @@ actionDefs[DECLINE_INVITE] = (state: InvitesState, action: InvitesAction) => {
 };
 
 actionDefs[INVITE_RECEIVED] = (state: InvitesState, action: InvitesAction) =>
-  merge(state, {invites: addOrUpdate(state.invites, action.invite, inviteEquals)});
+  merge(state, { invites: addOrUpdate(state.invites, action.invite, inviteEquals) });
 
 export default createReducer<InvitesState>(initialState(), actionDefs);

@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import {Color} from '../../lib/Color';
-import {Light} from '../../lib/Light';
+import { Color } from '../../lib/Color';
+import { Light } from '../../lib/Light';
 
 export interface LightPreviewProps {
   light: Light;

@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import {Archetype, Race, Gender, SVGSprite, ClassIcon} from 'camelot-unchained';
+import { Archetype, Race, Gender, SVGSprite, ClassIcon } from 'camelot-unchained';
 
-import Pills, {Orientation} from './components/Pills';
+import Pills, { Orientation } from './components/Pills';
 import PlayerPhoto from './components/PlayerPhoto';
 import SlideIndicatorBar from './components/SlideIndicatorBar';
 import ActiveEffectIcon from '../../components/ActiveEffectIcon';
@@ -94,7 +94,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
       <div className={`player-status-bar__body-parts ${style}`}>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom: '8%'}}>
+               style={mini ? {} : { marginBottom: '8%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}>LA</div>
             <Pills currentValue={health[BodyParts.LeftArm].current}
                    valuePerPill={100}
@@ -110,7 +110,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom: '2%', marginTop: '6%'}}>
+               style={mini ? {} : { marginBottom: '2%', marginTop: '6%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}>LL</div>
             <Pills currentValue={health[BodyParts.LeftLeg].current}
                    valuePerPill={100}
@@ -126,9 +126,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginTop: '13%'}}>
+               style={mini ? {} : { marginTop: '13%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}
-                 style={mini ? {fontWeight: 'bold'} : {fontWeight: 'bold', marginBottom: '0px'}}>H</div>
+                 style={mini ? { fontWeight: 'bold' } : { fontWeight: 'bold', marginBottom: '0px' }}>H</div>
             <Pills currentValue={health[BodyParts.Head].current}
                    valuePerPill={100}
                    maxValue={health[BodyParts.Head].maximum}
@@ -142,9 +142,9 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginTop: '13%'}}>
+               style={mini ? {} : { marginTop: '13%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}
-                 style={mini ? {fontWeight: 'bold'} : {fontWeight: 'bold', marginBottom: '0px'}}>T</div>
+                 style={mini ? { fontWeight: 'bold' } : { fontWeight: 'bold', marginBottom: '0px' }}>T</div>
             <Pills currentValue={health[BodyParts.Torso].current}
                    valuePerPill={100}
                    maxValue={health[BodyParts.Torso].maximum}
@@ -158,7 +158,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom: '2%', marginTop: '6%'}}>
+               style={mini ? {} : { marginBottom: '2%', marginTop: '6%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}>RL</div>
             <Pills currentValue={health[BodyParts.RightLeg].current}
                    valuePerPill={100}
@@ -174,7 +174,7 @@ class PlayerStatusBar extends React.Component<PlayerStatusBarProps, PlayerStatus
           </div>
 
           <div className='player-status-bar__body-parts__part'
-               style={mini ? {} : {marginBottom: '8%'}}>
+               style={mini ? {} : { marginBottom: '8%' }}>
             <div className={`player-status-bar__body-parts__label ${style}`}>RA</div>
             <Pills currentValue={health[BodyParts.RightArm].current}
                    valuePerPill={100}

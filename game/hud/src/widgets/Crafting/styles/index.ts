@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-08-11 17:06:47
  */
 
-export {StyleSheet, css} from 'aphrodite';
-export {merge} from 'lodash';
+export { StyleSheet, css } from 'aphrodite';
+export { merge } from 'lodash';
 import opts from './opts';
 
 /*

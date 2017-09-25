@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {StyleSheet, css, merge, jobType, JobTypeStyles} from '../styles';
-import {GlobalState} from '../services/session/reducer';
+import { connect } from 'react-redux';
+import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../styles';
+import { GlobalState } from '../services/session/reducer';
 
 import Button from './Button';
 
@@ -44,7 +44,7 @@ export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
   const job = props.jobType;
   const button = (type: string) => {
-    const style = {button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined)};
+    const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
     return (
         <Button style={style}
           disabled={job && job !== 'invalid' && job !== type}
@@ -66,7 +66,7 @@ export const JobType = (props: JobTypeProps) => {
           {button('make')}
           {button('repair')}
           {button('salvage')}
-          <Button style={{button: jobType.refresh}} onClick={() => props.refresh()}>
+          <Button style={{ button: jobType.refresh }} onClick={() => props.refresh()}>
             <i className='fa fa-refresh'></i>
           </Button>
           <Button onClick={props.clearJob} disabled={props.hasIngredients}>Clear</Button>
@@ -77,8 +77,8 @@ export const JobType = (props: JobTypeProps) => {
     <div className={css(ss.jobType)}>
       {craftingButtons}
       { props.mode === 'crafting'
-        ? <Button style={{button: jobType.tools}} onClick={props.toggle}>Tools &gt;</Button>
-        : <Button style={{button: jobType.crafting}} onClick={props.toggle}>&lt; Crafting</Button>
+        ? <Button style={{ button: jobType.tools }} onClick={props.toggle}>Tools &gt;</Button>
+        : <Button style={{ button: jobType.crafting }} onClick={props.toggle}>&lt; Crafting</Button>
       }
     </div>
   );

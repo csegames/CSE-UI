@@ -10,12 +10,12 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Select from './Select';
 import Label from './Label';
-import {GlobalState} from '../services/session/reducer';
-import {Recipe} from '../services/types';
-import {StyleSheet, css, merge, recipeSelect, RecipeSelectStyles} from '../styles';
+import { GlobalState } from '../services/session/reducer';
+import { Recipe } from '../services/types';
+import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../styles';
 
 export interface RecipeSelectReduxProps {
   type?: string;
@@ -53,12 +53,12 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
     const type = this.props.type;
     return (
       <div className={css(ss.recipeSelect)}>
-        <Label style={{label: recipeSelect.label}}>
+        <Label style={{ label: recipeSelect.label }}>
           {type[0].toUpperCase() + type.substr(1)} Recipe
         </Label>
         <Select
           disabled={this.props.status !== 'Configuring'}
-          style={{select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
+          style={{ select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list }}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

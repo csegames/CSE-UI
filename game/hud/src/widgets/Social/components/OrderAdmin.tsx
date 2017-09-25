@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   client,
   ql,
@@ -20,8 +20,8 @@ import {
   ConfirmDialog,
 } from 'camelot-unchained';
 import GroupTitle from './GroupTitle';
-import {selectLink} from '../services/session/navigation';
-import {SocialCategory} from '../services/session/nav/navTypes';
+import { selectLink } from '../services/session/navigation';
+import { SocialCategory } from '../services/session/nav/navTypes';
 
 export interface OrderAdminStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -172,7 +172,7 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
     );
 
     if (res.ok) {
-      this.setState({abandoning: false, abandonError: null});
+      this.setState({ abandoning: false, abandonError: null });
       this.props.dispatch(selectLink({
         kind: 'Primary',
         category: SocialCategory.Order,
@@ -181,7 +181,7 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
       this.props.refetch();
       return;
     }
-    this.setState({abandoning: false, abandonError: res.data});
+    this.setState({ abandoning: false, abandonError: res.data });
   }
 
   private disband = async () => {
@@ -192,7 +192,7 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
       client.characterID,
     );
     if (res.ok) {
-      this.setState({disbanding: false, disbandError: null});
+      this.setState({ disbanding: false, disbandError: null });
       this.props.dispatch(selectLink({
         kind: 'Primary',
         category: SocialCategory.Order,
@@ -201,7 +201,7 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
       this.props.refetch();
       return;
     }
-    this.setState({disbanding: false, disbandError: res.data});
+    this.setState({ disbanding: false, disbandError: res.data });
   }
 }
 

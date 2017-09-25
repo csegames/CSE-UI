@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import Slider from './Slider';
 

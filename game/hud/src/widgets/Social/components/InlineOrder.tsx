@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import {StyleDeclaration} from 'aphrodite';
+import { StyleDeclaration } from 'aphrodite';
 import gql from 'graphql-tag';
-import {Spinner} from 'camelot-unchained';
-import {graphql, InjectedGraphQLProps} from 'react-apollo';
+import { Spinner } from 'camelot-unchained';
+import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 export interface InlineOrderStyle extends StyleDeclaration {
   card: React.CSSProperties;

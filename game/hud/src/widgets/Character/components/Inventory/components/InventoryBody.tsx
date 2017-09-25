@@ -12,16 +12,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
-import {events, client} from 'camelot-unchained';
-import {withGraphQL} from 'camelot-unchained/lib/graphql/react';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import { events, client } from 'camelot-unchained';
+import { withGraphQL } from 'camelot-unchained/lib/graphql/react';
 
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
-import {InventorySlotItemDef, slotDimensions} from './InventorySlot';
-import eventNames, {UpdateInventoryItems} from '../../../lib/eventNames';
+import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
+import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
 import queries from '../../../../../gqlDocuments';
-import {calcRowAndSlots, getDimensionsOfElement} from '../../../lib/utils';
+import { calcRowAndSlots, getDimensionsOfElement } from '../../../lib/utils';
 
 export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBody: React.CSSProperties;
@@ -103,7 +103,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const custom = StyleSheet.create(this.props.styles || {});
 
     if (this.props.graphql.data && this.props.graphql.data.myInventory) {
-      const {rows, rowData} = base.createRowElements(this.state, {items: this.props.inventoryItems});
+      const { rows, rowData } = base.createRowElements(this.state, { items: this.props.inventoryItems });
       const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
       const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
         base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
@@ -233,6 +233,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 }
 
-const InventoryBodyWithQL = withGraphQL<InventoryBodyProps>({query: queries.InventoryBase})(InventoryBody);
+const InventoryBodyWithQL = withGraphQL<InventoryBodyProps>({ query: queries.InventoryBase })(InventoryBody);
 
 export default InventoryBodyWithQL;

@@ -10,15 +10,15 @@
  */
 
 import * as React from 'react';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
-import {utils} from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import { utils } from 'camelot-unchained';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
-import {colors} from '../../../../lib/constants';
+import { colors } from '../../../../lib/constants';
 
 // Will need to change this with a fragment interface once we hook up graphql
-import {TestBodyPartStats} from '../../testCharacterStats';
+import { TestBodyPartStats } from '../../testCharacterStats';
 
 export interface DefenseListStyle extends StyleDeclaration {
   DefenseList: React.CSSProperties;
@@ -92,7 +92,7 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   }
 
   private onSearchChange = (searchValue: string) => {
-    this.setState({searchValue});
+    this.setState({ searchValue });
   }
 }
 

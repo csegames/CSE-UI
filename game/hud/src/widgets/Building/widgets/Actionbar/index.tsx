@@ -10,13 +10,13 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {buildUIMode} from 'camelot-unchained';
+import { connect } from 'react-redux';
+import { buildUIMode } from 'camelot-unchained';
 
 import buildingActions from '../../services/session/requester';
-import {GlobalState} from '../../services/session/reducer';
+import { GlobalState } from '../../services/session/reducer';
 import ActionButton from './components/ActionButton';
-import SavedDraggable, {Anchor} from '../SavedDraggable';
+import SavedDraggable, { Anchor } from '../SavedDraggable';
 
 export interface ActionBarProps {
   buildingMode: buildUIMode;

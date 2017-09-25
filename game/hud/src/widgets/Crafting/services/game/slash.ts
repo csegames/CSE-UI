@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-18 12:51:42
  */
 
-import {client, hasClientAPI} from 'camelot-unchained';
+import { client, hasClientAPI } from 'camelot-unchained';
 
 export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {
@@ -19,7 +19,7 @@ export function slash(command: string, callback?: (response: any) => void) {
     client.SendSlashCommand(command);
   } else {
     console.log('CRAFTING: would have sent ' + command + ' to server');
-    if (callback) callback({type: 'complete', complete: 'Simulated completion'});
+    if (callback) callback({ type: 'complete', complete: 'Simulated completion' });
   }
 }
 

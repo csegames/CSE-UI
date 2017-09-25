@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import ReactImageMagnify from 'react-image-magnify';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 export interface MapStyle extends StyleDeclaration {
   mainMapContainer: React.CSSProperties;
@@ -88,7 +88,7 @@ class MapMain extends React.Component<MapMainProps> {
       width: map.width,
       height: map.height,
     };
-    const ss = StyleSheet.create({...defaultMapStyle, ...this.props.styles});
+    const ss = StyleSheet.create({ ...defaultMapStyle, ...this.props.styles });
     return (
       <div className={css(ss.mainMapContainer)}>
         <img src={'images/inventorybg.png'} className={css(ss.backgroundImg)}/>

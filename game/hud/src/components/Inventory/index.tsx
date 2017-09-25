@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, client, Item} from 'camelot-unchained';
+import { events, client, Item } from 'camelot-unchained';
 import * as React from 'react';
 
 
@@ -71,9 +71,9 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'inventory') {
         if (this.state.visible) {
-          this.setState((state, props) => ({visible: false}));
+          this.setState((state, props) => ({ visible: false }));
         } else {
-          this.setState((state, props) => ({visible: true}));
+          this.setState((state, props) => ({ visible: true }));
         }
       }
     });
@@ -86,12 +86,12 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
 
   private addItem = (item: Item) => {
     this.setState((state, props) => {
-      const items = {...state.items, [item.id]: item};
+      const items = { ...state.items, [item.id]: item };
       // should this stack??
       // stacking is determined by name and gear slot
       const stackId = item.name + item.gearSlot;
       const stack = state.stacks[stackId] ? state.stacks[stackId].concat(item.id) : [item.id];
-      const stacks = {...state.stacks, [stackId]: stack};
+      const stacks = { ...state.stacks, [stackId]: stack };
       return {
         items,
         stacks,
@@ -101,8 +101,8 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
 
   private removeItem = (id: string) => {
     this.setState((state, props) => {
-      const items = {...this.state.items};
-      const stacks = {...this.state.stacks};
+      const items = { ...this.state.items };
+      const stacks = { ...this.state.stacks };
       if (!items[id]) return;
 
       const stackId = items[id].name + items[id].gearSlot;

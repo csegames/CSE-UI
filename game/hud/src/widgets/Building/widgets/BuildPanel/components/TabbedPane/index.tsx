@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import SavedDraggable, {Anchor} from '../../../SavedDraggable';
+import SavedDraggable, { Anchor } from '../../../SavedDraggable';
 
 export interface TabbedPaneProps {
   name: string;
@@ -27,7 +27,7 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
 
   constructor(props: TabbedPaneProps) {
     super(props);
-    this.state = {selectedTabIndex: 0};
+    this.state = { selectedTabIndex: 0 };
   }
 
   public render() {
@@ -72,7 +72,7 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
   }
 
   private onTabSelect(index: number) {
-    this.setState((state, props) => ({selectedTabIndex: index}));
+    this.setState((state, props) => ({ selectedTabIndex: index }));
     this.props.onTabChange(index, this.props.tabs[index]);
   }
 }

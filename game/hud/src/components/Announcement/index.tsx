@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-03-30 11:13:15
  */
 
-import {events, core} from 'camelot-unchained';
+import { events, core } from 'camelot-unchained';
 import * as React from 'react';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -46,15 +46,15 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
 
   public componentWillMount() {
     events.on('handlesAnnouncements', this.onMessage);
-    this.setState({message: ''});
+    this.setState({ message: '' });
   }
 
   private onMessage = (eventData: any) => {
     const announcement = eventData as core.Announcement;
     if (announcement.type !== core.announcementType.POPUP) return;
-    this.setState({message: announcement.message});
+    this.setState({ message: announcement.message });
     setTimeout(() => {
-      this.setState({message: ''});
+      this.setState({ message: '' });
     }, 20000);
   }
 }

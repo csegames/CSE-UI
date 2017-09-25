@@ -6,12 +6,12 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {client} from 'camelot-unchained';
+import { client } from 'camelot-unchained';
 
 import initialize from './services/initialization';
 import HUD from './components/HUD';
-import {apollo, store} from './services/session/reducer';
-import {ApolloProvider} from 'react-apollo';
+import { apollo, store } from './services/session/reducer';
+import { ApolloProvider } from 'react-apollo';
 
 // Uncomment if you want super easy perf gainzzz https://github.com/garbles/why-did-you-update
 

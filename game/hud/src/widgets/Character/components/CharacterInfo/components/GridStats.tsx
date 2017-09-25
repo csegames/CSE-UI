@@ -12,7 +12,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 export interface GridStatsStyles extends StyleDeclaration {
   statContainer: React.CSSProperties;

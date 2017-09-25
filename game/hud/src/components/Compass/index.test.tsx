@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {client} from 'camelot-unchained';
+import { client } from 'camelot-unchained';
 import * as React from 'react';
-import {mount} from 'enzyme';
+import { mount } from 'enzyme';
 import enzymeToJson from 'enzyme-to-json';
 
 import Compass from './index';

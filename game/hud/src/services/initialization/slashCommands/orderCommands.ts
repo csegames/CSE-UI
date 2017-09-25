@@ -11,7 +11,7 @@ import {
   webAPI,
   utils,
 } from 'camelot-unchained';
-import {systemMessage} from './utils';
+import { systemMessage } from './utils';
 
 export default () => {
 
@@ -27,7 +27,7 @@ export default () => {
 
   function argsWithHelp(params: string) {
     return yargs(params, {
-      alias: {help: 'h'},
+      alias: { help: 'h' },
       boolean: ['help'],
     });
   }

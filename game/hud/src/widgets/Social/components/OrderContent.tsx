@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {ql, Spinner} from 'camelot-unchained';
-import {LinkAddress, SocialCategory} from '../services/session/nav/navTypes';
-import {selectLink} from '../services/session/navigation';
+import { ql, Spinner } from 'camelot-unchained';
+import { LinkAddress, SocialCategory } from '../services/session/nav/navTypes';
+import { selectLink } from '../services/session/navigation';
 
 import Overview from './Overview';
 import RankList from './RankList';

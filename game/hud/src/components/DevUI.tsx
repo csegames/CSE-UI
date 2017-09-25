@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {css, StyleSheet} from 'aphrodite';
+import { css, StyleSheet } from 'aphrodite';
 
-import {ObjectMap} from 'camelot-unchained/lib/graphql/utils';
-import {client} from 'camelot-unchained';
-import {TabPanel} from 'camelot-unchained/lib/components';
+import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
+import { client } from 'camelot-unchained';
+import { TabPanel } from 'camelot-unchained/lib/components';
 
 type Content = string | ObjectMap<any>;
 
@@ -101,17 +101,17 @@ const DevUIContent = (props: {content: Content}) => {
   );
 };
 
-const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{__html: props.content}} />;
+const DevUIStringContent = (props: {content: string}) => <div dangerouslySetInnerHTML={{ __html: props.content }} />;
 
 const DevUIObjectContent = (props: {content: ObjectMap<any>}): JSX.Element => {
   const keys = Object.keys(props.content);
   return (
-    <table style={{border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%'}}>
+    <table style={{ border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%' }}>
       {
         keys.map(k => (
-          <tr style={{border: '1px solid #ececec', padding: '2px'}}>
-            <th style={{border: '1px solid #ececec', padding: '2px'}}>{k}</th>
-            <td style={{border: '1px solid #ececec', padding: '2px'}}>
+          <tr style={{ border: '1px solid #ececec', padding: '2px' }}>
+            <th style={{ border: '1px solid #ececec', padding: '2px' }}>{k}</th>
+            <td style={{ border: '1px solid #ececec', padding: '2px' }}>
               {typeof props.content[k] !== 'object'
                 ? <DevUIStringContent content={props.content[k]} />
                 : <DevUIObjectContent content={props.content[k]} />}

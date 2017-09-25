@@ -5,15 +5,15 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider, connect} from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider, connect } from 'react-redux';
 import thunk from 'redux-thunk';
-import {hasClientAPI} from 'camelot-unchained';
+import { hasClientAPI } from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
 import reducer from './services/session';
-import {PlayerState, doThing, initializePlayerSession} from './services/session/player';
-import {BodyParts} from '../../lib/PlayerStatus';
+import { PlayerState, doThing, initializePlayerSession } from './services/session/player';
+import { BodyParts } from '../../lib/PlayerStatus';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));

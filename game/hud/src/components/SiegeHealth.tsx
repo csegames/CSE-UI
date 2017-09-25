@@ -9,9 +9,9 @@
  * @Last Modified time: 2017-07-31 14:04:03
  */
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {client, AnyEntityState, SiegeState, PlayerState} from 'camelot-unchained';
-import {isEqual} from 'lodash';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { client, AnyEntityState, SiegeState, PlayerState } from 'camelot-unchained';
+import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
   return (
@@ -110,7 +110,7 @@ const SiegeExitButton = (props: {}) => {
 };
 
 const AlignRight = (props: {children: any}) => {
-  return <div style={{display: 'flex', justifyContent: 'flex-end'}}>{props.children}</div>;
+  return <div style={{ display: 'flex', justifyContent: 'flex-end' }}>{props.children}</div>;
 };
 
 export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string | null, showExit: boolean}) => {
@@ -124,7 +124,7 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
     }}>
       <div>{props.controlledBy === null ? props.state.name : `${props.state.name} (${props.controlledBy})`}</div>
       <CenteredTextOverlay text={props.state.health.current + '/' + props.state.health.max}
-                           textStyle={{color: '#ececec', fontWeight: '700'}}>
+                           textStyle={{ color: '#ececec', fontWeight: '700' }}>
         <div style={{
           width: '200px',
           height: '20px',
@@ -169,7 +169,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       case HealthFor.Self:
         client.OnPlayerStateChanged((entity) => {
           try {
-            this.setState({entity});
+            this.setState({ entity });
           } catch (e) {}
         });
         break;
@@ -177,7 +177,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       case HealthFor.EnemyTarget:
         client.OnEnemyTargetStateChanged((entity) => {
           try {
-            this.setState({entity});
+            this.setState({ entity });
           } catch (e) {}
         });
         break;
@@ -185,7 +185,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       case HealthFor.FriendlyTarget:
         client.OnFriendlyTargetStateChanged((entity) => {
           try {
-            this.setState({entity});
+            this.setState({ entity });
           } catch (e) {}
         });
         break;

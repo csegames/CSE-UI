@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {events} from 'camelot-unchained';
+import { events } from 'camelot-unchained';
 
 import Blocks from '../../widgets/Blocks';
 import RecentSelections from '../../widgets/RecentSelections';
@@ -14,7 +14,7 @@ import DropLight from '../../widgets/DropLight';
 import Blueprints from '../../widgets/Blueprints';
 import MaterialSelector from '../../widgets/MaterialSelector';
 
-import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
+import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../lib/BuildPane';
 
 export interface BuildPanelProps {
 
@@ -63,11 +63,11 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
   }
 
   private materialSelectorActivated = () => {
-    this.setState((state, props) => ({showMaterialSelector: true} as BuildPanelState));
+    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
   }
 
   private materialSelectorDeactivated = () => {
-    this.setState((state, props) => ({showMaterialSelector: true} as BuildPanelState));
+    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
   }
 }
 

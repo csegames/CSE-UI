@@ -10,14 +10,14 @@
  */
 
 import * as React from 'react';
-import {ql, client, events, Tooltip} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { ql, client, events, Tooltip } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import eventNames, {EquipItemCallback} from '../../../lib/eventNames';
+import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 import Item from '../../Item';
 import EmptyItem from '../../EmptyItem';
-import TooltipContent, {defaultTooltipStyle} from '../../TooltipContent';
-import {InventoryItemFragment} from '../../../../../gqlInterfaces';
+import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 export const itemDimensions = {
   height: 70,
@@ -56,7 +56,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   public render() {
     const ss = StyleSheet.create(defaultPopupMiniInventorySlotStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-    const {item} = this.props;
+    const { item } = this.props;
     return item ? (
       <Tooltip styles={defaultTooltipStyle} content={() =>
         <TooltipContent item={item} instructions='Left click to equip' />
@@ -78,7 +78,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   }
 
   private onEquipItem = () => {
-    const {item} = this.props;
+    const { item } = this.props;
     const payload: EquipItemCallback = {
       inventoryItem: item,
       willEquipTo: this.props.gearSlots,

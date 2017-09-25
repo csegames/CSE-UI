@@ -11,13 +11,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
-import {ql, utils, Tooltip} from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import { ql, utils, Tooltip } from 'camelot-unchained';
 
 import GridStats from '../GridStats';
 import StatListItem from '../StatListItem';
-import {colors, characterBodyPartIcons} from '../../../../lib/constants';
-import {prettifyText, searchIncludesSection} from '../../../../lib/utils';
+import { colors, characterBodyPartIcons } from '../../../../lib/constants';
+import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 
 export interface BodyPartSectionStyles extends StyleDeclaration {
   bodyPartSection: React.CSSProperties;
@@ -134,7 +134,7 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
       };
     });
   });
-  const headerListItem = {name: 'header', resistancesValue: 'R', mitigationsValue: 'M'};
+  const headerListItem = { name: 'header', resistancesValue: 'R', mitigationsValue: 'M' };
   const statsArray = [
     headerListItem,
     ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
@@ -170,10 +170,10 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
                 !searchIncludes && ss.doesNotMatchSearch,
                 !searchIncludes && custom.doesNotMatchSearch)}
               >
-                <Tooltip content='Resistances' styles={{Tooltip: defaultBodyPartSectionStyle.listHeaderText}}>
+                <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
                   {item.resistancesValue}
                 </Tooltip>
-                <Tooltip content='Mitigations' styles={{Tooltip: defaultBodyPartSectionStyle.listHeaderText}}>
+                <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
                   {item.mitigationsValue}
                 </Tooltip>
               </div>

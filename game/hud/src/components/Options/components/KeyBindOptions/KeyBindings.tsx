@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import {client, utils, Input} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { client, utils, Input } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import {ConfigIndex, ConfigInfo} from '../../OptionsMain';
-import KeyBindWarningModal, {WarningModalInfo} from './KeyBindWarningModal';
+import { ConfigIndex, ConfigInfo } from '../../OptionsMain';
+import KeyBindWarningModal, { WarningModalInfo } from './KeyBindWarningModal';
 import KeyBindingsListItem from './KeyBindingsListItem';
 
 export interface KeyBindingsStyle extends StyleDeclaration {
@@ -114,13 +114,13 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
   public componentDidMount() {
     if (this.props.activeConfigIndex === ConfigIndex.KEYBIND) {
       client.GetConfigVars(ConfigIndex.KEYBIND);
-      this.setState({keyBindings: this.props.keyBindConfigs});
+      this.setState({ keyBindings: this.props.keyBindConfigs });
     }
   }
 
   public componentWillReceiveProps(nextProps: KeyBindingsProps) {
     if (!_.isEqual(nextProps.keyBindConfigs, this.props.keyBindConfigs)) {
-      this.setState({keyBindings: nextProps.keyBindConfigs});
+      this.setState({ keyBindings: nextProps.keyBindConfigs });
     }
   }
 
@@ -180,7 +180,7 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
         currentKeyBind: existingKeyBind,
         nextKeyBind,
       };
-      this.setState({warningModalInfo});
+      this.setState({ warningModalInfo });
     } else {
       const keyBindingIndex = _.findIndex(keyBindings, keyBind => keyBind.name === nextKeyBind.name);
       client.ChangeConfigVar(nextKeyBind.name, `${keyCode}`);
@@ -190,13 +190,13 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
         value: `${keyCode}`,
       };
       this.props.onKeyBindingsChange(keyBindings);
-      this.setState({whichConfigIsListening: '', keyBindings});
+      this.setState({ whichConfigIsListening: '', keyBindings });
     }
   }
 
   private onConfirmModalPress = (warningModalInfo: WarningModalInfo) => {
     const keyBindings = this.props.keyBindConfigs;
-    const {currentKeyBind, nextKeyBind} = warningModalInfo;
+    const { currentKeyBind, nextKeyBind } = warningModalInfo;
     const newKeyBindIndex = _.findIndex(keyBindings, keyBind => keyBind.name === nextKeyBind.name);
     const oldKeyBindIndex = _.findIndex(keyBindings, keyBind => keyBind.name === currentKeyBind.name);
 
@@ -216,17 +216,17 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
     };
 
     this.props.onKeyBindingsChange(keyBindings);
-    this.setState({warningModalInfo: null, whichConfigIsListening: '', keyBindings});
+    this.setState({ warningModalInfo: null, whichConfigIsListening: '', keyBindings });
   }
 
   private onCancelModalPress = () => {
-    this.setState({warningModalInfo: null, whichConfigIsListening: ''});
+    this.setState({ warningModalInfo: null, whichConfigIsListening: '' });
   }
 
   private onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Need to add a scroll to top
     setTimeout(() => this.listRef.scrollTop = 0, 200);
-    this.setState({searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
   }
 }
 

@@ -10,12 +10,12 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {ql} from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { ql } from 'camelot-unchained';
 import * as classNames from 'classnames';
 
-import {CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals} from '../services/session/nav/navTypes';
-import {NavigationState, selectLink, toggleCollapsedCategory} from '../services/session/navigation';
+import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';
+import { NavigationState, selectLink, toggleCollapsedCategory } from '../services/session/navigation';
 
 interface SocialNavStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -161,9 +161,9 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
       const isActive = linkAddressEquals(link.address, this.props.navigation.currentView);
       return (
         <li className={classNames(
-              {[css(ss.navGroupListItem, custom.navGroupListItem)]: link.enabled},
-              {[activeClass]: isActive},
-              {[disabledClass]: !link.enabled},
+              { [css(ss.navGroupListItem, custom.navGroupListItem)]: link.enabled },
+              { [activeClass]: isActive },
+              { [disabledClass]: !link.enabled },
             )}
             onClick={link.enabled ? () => this.props.dispatch(selectLink(link.address)) : null}
             key={link.id}>
@@ -200,8 +200,8 @@ export class SocialNav extends React.Component<SocialNavProps, SocialNavState> {
       <section key={category.displayName}
                className={classNames(
                  css(ss.navGroup, custom.navGroup),
-                 {[subGroupClass]: isSub},
-                 {[collapsedClass]: category.collapsed},
+                 { [subGroupClass]: isSub },
+                 { [collapsedClass]: category.collapsed },
                )}>
         <hgroup className={isSub ? css(ss.subGroupHeader, custom.subGroupHeader) :
           css(ss.navGroupHeader, custom.navGroupHeader)}

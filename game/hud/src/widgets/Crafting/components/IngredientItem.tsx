@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {Ingredient} from '../services/types';
-import {StyleSheet, css, merge, ingredientItem, IngredientItemStyles} from '../styles';
+import { Ingredient } from '../services/types';
+import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../styles';
 import Icon from './Icon';
 
 export interface IngredientItemProps {
@@ -23,7 +23,7 @@ export interface IngredientItemProps {
 
 export const IngredientItem = (props: IngredientItemProps) => {
   const ss = StyleSheet.create(merge({}, ingredientItem, props.style));
-  const {name, stats} = props.ingredient;
+  const { name, stats } = props.ingredient;
   const pcnt = props.total && (props.qty / props.total * 100).toFixed(1);
   return (
     <div className={css(ss.ingredientItem)}>

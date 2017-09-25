@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {client, events, plotPermissions, webAPI} from 'camelot-unchained';
+import { client, events, plotPermissions, webAPI } from 'camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;
@@ -80,9 +80,9 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'plotcontrol') {
         if (!this.state.visible) {
-          this.setState((state, props) => ({visible: true}));
+          this.setState((state, props) => ({ visible: true }));
         } else {
-          this.setState((state, props) => ({visible: false}));
+          this.setState((state, props) => ({ visible: false }));
         }
       }
     });

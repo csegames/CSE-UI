@@ -10,13 +10,13 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
-import {initializeBuilding} from './services/session/building';
-import {initializeSelections} from './services/session/selection';
+import { initializeBuilding } from './services/session/building';
+import { initializeSelections } from './services/session/selection';
 import App from './components/BuildingApp';
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -24,7 +24,7 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib
 // interface for window cuAPI
-import {events} from 'camelot-unchained';
+import { events } from 'camelot-unchained';
 interface WindowInterface extends Window {
   cuAPI: any;
   opener: WindowInterface;
@@ -64,8 +64,8 @@ class Building extends React.Component<BuildingProps, BuildingState> {
     events.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {
-          if (state.visible) return {visible: false};
-          if (!state.visible) return {visible: true};
+          if (state.visible) return { visible: false };
+          if (!state.visible) return { visible: true };
         });
       }
     });

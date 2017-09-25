@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import {client} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { client } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 interface ReleaseControlButtonStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -68,7 +68,7 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
 
   public componentDidMount() {
     client.OnCharacterCanReleaseControlChanged((canRelease: boolean) => {
-      this.setState((state, props) => { return {visible: canRelease}; });
+      this.setState((state, props) => { return { visible: canRelease }; });
     });
   }
 

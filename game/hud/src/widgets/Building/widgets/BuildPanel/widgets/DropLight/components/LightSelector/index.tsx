@@ -5,14 +5,14 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
-import {fireBuildingItemSelected} from '../../../../../../services/events';
+import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
+import { fireBuildingItemSelected } from '../../../../../../services/events';
 
-import {GlobalState} from '../../services/session/reducer';
+import { GlobalState } from '../../services/session/reducer';
 import * as lightService from '../../services/session/lights';
-import {Light} from '../../lib/Light';
+import { Light } from '../../lib/Light';
 import LightPreview from '../LightPreview';
 
 function select(state: GlobalState) {

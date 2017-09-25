@@ -11,10 +11,10 @@
 
 import * as React from 'react';
 
-import {client} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { client } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import {ConfigIndex, ConfigInfo} from '../OptionsMain';
+import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 import ListItem from './ListItem';
 
 export interface InputOptionsStyle extends StyleDeclaration {

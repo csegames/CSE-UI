@@ -11,7 +11,7 @@
 
 
 import * as React from 'react';
-import {StyleSheet, css, merge, minimize, MinimizeStyles} from '../styles';
+import { StyleSheet, css, merge, minimize, MinimizeStyles } from '../styles';
 
 interface MinimizeProps {
   onMinimize: () => void;

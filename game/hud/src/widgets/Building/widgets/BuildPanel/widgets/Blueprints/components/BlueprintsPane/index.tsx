@@ -5,19 +5,19 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {BuildingBlueprint} from 'camelot-unchained';
+import { BuildingBlueprint } from 'camelot-unchained';
 
-import {GlobalState} from '../../services/session/reducer';
+import { GlobalState } from '../../services/session/reducer';
 import blueprintService from '../../services/session/requester';
-import {BlueprintsState} from '../../services/session/blueprints';
+import { BlueprintsState } from '../../services/session/blueprints';
 
 import BlueprintList from '../BlueprintList';
 import BlueprintSaveView from '../BlueprintSaveView';
 
-import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
-import {fireBuildingItemSelected} from '../../../../../../services/events';
+import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
+import { fireBuildingItemSelected } from '../../../../../../services/events';
 
 function select(state: GlobalState, ownProps: BlueprintsPaneOwnProps) {
   return {
@@ -46,7 +46,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
   constructor(props: BlueprintsPaneProps) {
     super(props);
-    this.state = {filter: '', saveMode: false};
+    this.state = { filter: '', saveMode: false };
   }
 
   public render() {
@@ -94,16 +94,16 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
   }
 
   private toggleSaveBlueprint = () => {
-    this.setState((state, props) => ({saveMode: !state.saveMode} as any));
+    this.setState((state, props) => ({ saveMode: !state.saveMode } as any));
   }
 
   private triggerCancelSave = () => {
-    this.setState((state, props) => ({saveMode: false} as any));
+    this.setState((state, props) => ({ saveMode: false } as any));
   }
 
   private triggerSaveBlueprint = (name: string) => {
     blueprintService.save(name);
-    this.setState((state, props) => ({saveMode: false} as any));
+    this.setState((state, props) => ({ saveMode: false } as any));
   }
 
   private triggerDeleteBlueprint = () => {

@@ -12,17 +12,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {ContextMenu, Tooltip, events} from 'camelot-unchained';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { ContextMenu, Tooltip, events } from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import TooltipContent, {defaultTooltipStyle} from '../../TooltipContent';
+import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 import ContextMenuContent from './ContextMenuContent';
 import EmptyItem from '../../EmptyItem';
 import ItemStack from '../../ItemStack';
 import CraftingItem from './CraftingItem';
-import {InventoryItemFragment} from '../../../../../gqlInterfaces';
-import {getContainerHeaderInfo} from './InventoryBase';
-import eventNames, {EquipItemCallback} from '../../../lib/eventNames';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { getContainerHeaderInfo } from './InventoryBase';
+import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 
 export interface InventorySlotStyle extends StyleDeclaration {
   InventorySlot: React.CSSProperties;
@@ -132,7 +132,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   public render() {
-    const {item} = this.props;
+    const { item } = this.props;
     const ss = StyleSheet.create(defaultInventorySlotStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
@@ -214,21 +214,21 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   private onContextMenuContentShow = () => {
-    this.setState({showTooltip: false, contextMenuVisible: true});
+    this.setState({ showTooltip: false, contextMenuVisible: true });
   }
 
   private onContextMenuContentHide = () => {
     if (this.mouseOver) {
-      this.setState({showTooltip: true, contextMenuVisible: false});
+      this.setState({ showTooltip: true, contextMenuVisible: false });
     } else {
-      this.setState({contextMenuVisible: false});
+      this.setState({ contextMenuVisible: false });
     }
   }
 
   private onMouseEnter = () => {
     this.mouseOver = true;
     if (!this.state.contextMenuVisible) {
-      this.setState({showTooltip: true});
+      this.setState({ showTooltip: true });
     }
     if (this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0) {
       events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
@@ -237,7 +237,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
   private onMouseLeave = () => {
     this.mouseOver = false;
-    this.setState({showTooltip: false});
+    this.setState({ showTooltip: false });
     events.fire(eventNames.onDehighlightSlots);
   }
 
@@ -249,7 +249,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       };
       events.fire(eventNames.onEquipItem, payload);
       events.fire(eventNames.onDehighlightSlots);
-      this.setState({showTooltip: false});
+      this.setState({ showTooltip: false });
     }
   }
 }

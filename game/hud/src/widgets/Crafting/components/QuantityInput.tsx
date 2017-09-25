@@ -11,11 +11,11 @@
 
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Label from './Label';
 import Input from './Input';
-import {GlobalState} from '../services/session/reducer';
-import {StyleSheet, css, merge, quantityInput} from '../styles';
+import { GlobalState } from '../services/session/reducer';
+import { StyleSheet, css, merge, quantityInput } from '../styles';
 
 export interface QuantityInputReduxProps {
   dispatch?: (action: any) => void;
@@ -39,11 +39,11 @@ const select = (state: GlobalState, props: QuantityInputProps): QuantityInputRed
 const QuantityInput = (props: QuantityInputProps) => {
   const ss = StyleSheet.create(merge({}, quantityInput, props.style));
   return (
-    <div className={css(ss.quantityInput)} style={ props.disabled ? {opacity: 0.1} : {} }>
-      <Label style={{label: quantityInput.label}}>Quantity</Label>
+    <div className={css(ss.quantityInput)} style={ props.disabled ? { opacity: 0.1 } : {} }>
+      <Label style={{ label: quantityInput.label }}>Quantity</Label>
       <Input
         name='quantity'
-        style={{input: quantityInput.input}}
+        style={{ input: quantityInput.input }}
         disabled={props.disabled}
         numeric={true} min={1} max={20}
         size={2}

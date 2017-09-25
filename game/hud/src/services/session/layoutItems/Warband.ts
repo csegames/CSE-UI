@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-01-25 16:46:50
  */
 import Warband from '../../../widgets/Warband';
-import {LayoutMode, Edge} from '../../../components/HUDDrag';
+import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

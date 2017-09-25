@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import {WarbandMember} from 'camelot-unchained';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { WarbandMember } from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import PlayerStatusComponent from '../../../components/PlayerStatusComponent';
 

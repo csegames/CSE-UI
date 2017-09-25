@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {Input, IconButton, utils, events} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { Input, IconButton, utils, events } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import FilterSelectListItem from './FilterSelectListItem';
-import {colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo} from '../../../lib/constants';
+import { colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
 
 export interface FilterSelectMenuStyle extends StyleDeclaration {
   FilterSelectMenu: React.CSSProperties;
@@ -146,7 +146,7 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
                 onChange={this.onSearchChange}
                 placeholder={'Search'}
                 value={this.state.searchValue}
-                styles={{input: defaultFilterSelectMenuStyle.searchInput}}
+                styles={{ input: defaultFilterSelectMenuStyle.searchInput }}
               />
             </div>
             <div className={css(ss.buttonsContainer, custom.buttonsContainer)}>
@@ -183,11 +183,11 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
   }
 
   private onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
   }
 
   private toggleMenuVisibility = () => {
-    this.setState((state, props) => ({menuVisible: !state.menuVisible}));
+    this.setState((state, props) => ({ menuVisible: !state.menuVisible }));
   }
 
   private onMouseDownListener = () => {

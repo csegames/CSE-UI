@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
 
-import {crashReporterMiddleware, thunkMiddleware} from '../../lib/reduxUtils';
+import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
 import initialize from './services/initialization';
 import reducer from './services/session';
 import WarbandDisplay from './components/WarbandDisplay';

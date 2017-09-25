@@ -10,11 +10,11 @@
  */
 
 import * as _ from 'lodash';
-import {client, utils} from 'camelot-unchained';
-import {emptyStackHash, inventoryFilterButtons, nullVal} from './constants';
-import {SlotNumberToItem} from '../components/Inventory/components/InventoryBase';
-import {ActiveFilters} from '../components/Inventory/Inventory';
-import {InventoryItemFragment} from '../../../gqlInterfaces';
+import { client, utils } from 'camelot-unchained';
+import { emptyStackHash, inventoryFilterButtons, nullVal } from './constants';
+import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
+import { ActiveFilters } from '../components/Inventory/Inventory';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export const prettifyText = (slotName: string) => {
   if (slotName) return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
@@ -48,7 +48,7 @@ export function calcSlotsPerRow(div: HTMLElement, slotDimensions: number, gutter
 }
 
 export function calcRows(div: HTMLElement, slotDimensions: number, minSlots: number, slotsPerRow: number) {
-  const {height} = div.getBoundingClientRect();
+  const { height } = div.getBoundingClientRect();
   const minRows = Math.ceil(height / (slotDimensions + 4));
   // how many slots do we need to fit in rows
   const slotsToFit = Math.max(minSlots, minRows * slotsPerRow);

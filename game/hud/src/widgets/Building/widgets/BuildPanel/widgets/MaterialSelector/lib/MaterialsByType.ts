@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import {BuildingMaterial} from 'camelot-unchained';
+import { BuildingMaterial } from 'camelot-unchained';
 
 export default class MaterialsByType {
 
@@ -77,4 +77,4 @@ const STONE_SHEETS: { [key: string]: boolean } = {
   polished: true, // bad tag
 };
 
-const WOOD_AND_ORGANIC: { [key: string]: boolean } = {wood: true, grass: true, thatch: true};
+const WOOD_AND_ORGANIC: { [key: string]: boolean } = { wood: true, grass: true, thatch: true };

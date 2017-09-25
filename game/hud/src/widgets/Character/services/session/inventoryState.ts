@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-07-05 17:27:03
  */
 
-import {ql} from 'camelot-unchained';
-import {Module} from 'redux-typed-modules';
+import { ql } from 'camelot-unchained';
+import { Module } from 'redux-typed-modules';
 
 export const types = {
   SET_ITEM_SLOTS: 'charactersheets-inventory-SET_ITEM_SLOTS',
@@ -41,7 +41,7 @@ export const setItemSlots = module.createAction({
   type: types.SET_ITEM_SLOTS,
   action: (action: { itemSlots: ItemSlot[] }) => action,
   reducer: (state, action) => {
-    const {itemSlots} = action;
+    const { itemSlots } = action;
     return {
       itemSlots,
     };

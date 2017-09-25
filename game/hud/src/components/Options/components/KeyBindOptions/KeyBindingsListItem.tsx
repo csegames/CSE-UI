@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import {dxKeyCodes, jsToDXKeyCodeMap} from 'camelot-unchained';
+import { dxKeyCodes, jsToDXKeyCodeMap } from 'camelot-unchained';
 
 import ListItem from '../ListItem';
-import {ConfigInfo} from '../../OptionsMain';
+import { ConfigInfo } from '../../OptionsMain';
 
 export interface KeyBindingsListItemProps {
   keyBinding: ConfigInfo;

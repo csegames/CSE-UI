@@ -10,12 +10,12 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {events, client, jsKeyCodes} from 'camelot-unchained';
-import {craftingTimeToString} from '../services/util';
+import { connect } from 'react-redux';
+import { events, client, jsKeyCodes } from 'camelot-unchained';
+import { craftingTimeToString } from '../services/util';
 
 // Types
-import {Recipe, Ingredient} from '../services/types';
+import { Recipe, Ingredient } from '../services/types';
 import {
   VoxIngredient,
   VoxRecipe,
@@ -26,7 +26,7 @@ import {
   setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
   addVoxIngredient, removeVoxIngredient,
 } from '../services/game/crafting';
-import {JobState, GlobalState} from '../services/session/reducer';
+import { JobState, GlobalState } from '../services/session/reducer';
 
 // Actions
 import {
@@ -35,8 +35,8 @@ import {
   setName, setRecipe, gotVoxStatus, gotVoxPossibleIngredients,
   gotOutputItems,
 } from '../services/session/job';
-import {setUIMode, setRemaining, setMinimized} from '../services/session/ui';
-import {gotVoxRecipes} from '../services/session/recipes';
+import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
+import { gotVoxRecipes } from '../services/session/recipes';
 
 // Components
 import JobType from './JobType';
@@ -49,7 +49,7 @@ import Minimize from './Minimize';
 import Button from './Button';
 
 // Styles
-import {StyleSheet, css, merge, app, AppStyles} from '../styles';
+import { StyleSheet, css, merge, app, AppStyles } from '../styles';
 
 const select = (state: GlobalState) => {
   return {
@@ -79,7 +79,7 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-    this.state = {visible: false};
+    this.state = { visible: false };
   }
 
   public componentDidMount() {
@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
     this.navigationHandler = events.on('hudnav--navigate', (name: string) => {
       const visible = !this.state.visible;
       if (name === 'crafting') {
-        this.setState(() => ({visible}));
+        this.setState(() => ({ visible }));
         if (visible) this.refresh();
       }
     });
@@ -171,7 +171,7 @@ class App extends React.Component<AppProps, AppState> {
   private renderMinimizedUI = (ss: AppStyles) => {
     const props = this.props;
     // const type = props.job && props.job.type;
-    const {status, outputItems} = props.job;
+    const { status, outputItems } = props.job;
     return (
       <div ref='crafting' className={'cu-window ' + css(ss.app, ss.minimized)}>
         <VoxMessage/>
@@ -181,7 +181,7 @@ class App extends React.Component<AppProps, AppState> {
         </div>
         { status === 'Configuring' && outputItems && outputItems.length
           ? <Button
-              style={{button: app.minimizedButton}}
+              style={{ button: app.minimizedButton }}
               onClick={this.startJob}>
                 Start
               </Button>
@@ -189,7 +189,7 @@ class App extends React.Component<AppProps, AppState> {
         }
         { status === 'Running'
           ? <Button
-              style={{button: app.minimizedButton}}
+              style={{ button: app.minimizedButton }}
               onClick={this.cancelJob}>
                 Cancel
               </Button>
@@ -197,7 +197,7 @@ class App extends React.Component<AppProps, AppState> {
         }
         { status === 'Finished'
           ? <Button
-              style={{button: app.minimizedButton}}
+              style={{ button: app.minimizedButton }}
               onClick={this.collectJob}>
                 Collect
               </Button>
@@ -237,7 +237,7 @@ class App extends React.Component<AppProps, AppState> {
       switch (status.jobState) {
         case 'Finished':
           this.stopWaiting();
-          props.dispatch(setMessage({type: 'success', message: 'Job has finished, you can collect it now'}));
+          props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now' }));
           break;
         case 'Running':
           // Job in progress, work out how long left
@@ -245,7 +245,7 @@ class App extends React.Component<AppProps, AppState> {
           break;
         default:
           this.stopWaiting();
-          props.dispatch(setMessage({type: 'success', message: 'VOX Status: ' + status.jobState}));
+          props.dispatch(setMessage({ type: 'success', message: 'VOX Status: ' + status.jobState }));
           break;
       }
       props.dispatch(gotOutputItems(status.outputItems));
@@ -254,7 +254,7 @@ class App extends React.Component<AppProps, AppState> {
         this.loadLists(type, true);
       }
     }).catch((message: string) => {
-      props.dispatch(setMessage({type: 'error', message}));
+      props.dispatch(setMessage({ type: 'error', message }));
     });
   }
 
@@ -264,13 +264,13 @@ class App extends React.Component<AppProps, AppState> {
       props.dispatch(gotVoxStatus(status));
       if (callback) callback(status);
     }).catch((message: string) => {
-      props.dispatch(setMessage({type: 'error', message}));
+      props.dispatch(setMessage({ type: 'error', message }));
     });
   }
 
   private toggle = () => {
     this.props.dispatch(setUIMode(this.props.uiMode === 'tools' ? 'crafting' : 'tools'));
-    this.props.dispatch(setMessage({type: 'success', message: ''}));
+    this.props.dispatch(setMessage({ type: 'success', message: '' }));
   }
 
   private selectType = (type: string) => {
@@ -281,7 +281,7 @@ class App extends React.Component<AppProps, AppState> {
 
     // Changing job types...
     props.dispatch(setLoading(true));
-    props.dispatch(setMessage({type: '', message: ''}));
+    props.dispatch(setMessage({ type: '', message: '' }));
 
     setVoxJob(type)
       .then((resonse: any) => {
@@ -305,7 +305,7 @@ class App extends React.Component<AppProps, AppState> {
         props.dispatch(gotVoxPossibleIngredients(ingredients, job));
       })
       .catch(() => {
-        props.dispatch(setMessage({type: 'error', message: 'Failed to get vox ingredients'}));
+        props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
       });
   }
 
@@ -332,7 +332,7 @@ class App extends React.Component<AppProps, AppState> {
             props.dispatch(gotVoxRecipes(job, recipes));
           })
           .catch(() => {
-            props.dispatch(setMessage({type: 'error', message: `Could not load ${job} recipes`}));
+            props.dispatch(setMessage({ type: 'error', message: `Could not load ${job} recipes` }));
           });
         break;
     }
@@ -365,7 +365,7 @@ class App extends React.Component<AppProps, AppState> {
     request()
       .then((response: any) => {
         if (getAction) props.dispatch(getAction(response));
-        props.dispatch(setMessage({type: 'success', message: success}));
+        props.dispatch(setMessage({ type: 'success', message: success }));
       })
       .catch((error: any) => {
         if (errorAction) props.dispatch(errorAction(error));
@@ -382,7 +382,7 @@ class App extends React.Component<AppProps, AppState> {
         case 'Finished':
           // Job finished immediately (often does)
           this.stopWaiting();
-          props.dispatch(setMessage({type: 'success', message: 'Job has finished, you can collect it now.'}));
+          props.dispatch(setMessage({ type: 'success', message: 'Job has finished, you can collect it now.' }));
           props.dispatch(setRemaining(0));
           break;
         case 'Running':
@@ -405,7 +405,7 @@ class App extends React.Component<AppProps, AppState> {
     this.waitTimer = null;
     const tick = () => {
       if (seconds < 1) {
-        props.dispatch(setMessage({type: 'success', message: 'Just finishing up...'}));
+        props.dispatch(setMessage({ type: 'success', message: 'Just finishing up...' }));
         props.dispatch(setRemaining(0));
         setTimeout(this.checkJobStatus, 1000);  // allow time for progress bar to animate (1s)
         return;

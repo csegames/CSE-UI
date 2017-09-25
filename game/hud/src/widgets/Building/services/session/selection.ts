@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events} from 'camelot-unchained';
-import {BuildingItem} from '../../lib/BuildingItem';
+import { events } from 'camelot-unchained';
+import { BuildingItem } from '../../lib/BuildingItem';
 import * as assign from 'object-assign';
 
 const CHANGE_SELECTION = 'building/selection/CHANGE_SELECTION';
@@ -35,7 +35,7 @@ const initialState: SelectionState = {
 export default function reducer(state: SelectionState = initialState, action: any = {}) {
   switch (action.type) {
     case CHANGE_SELECTION:
-      return assign({}, state, {selectedItem: action.item});
+      return assign({}, state, { selectedItem: action.item });
     default: return state;
   }
 }
