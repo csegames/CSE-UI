@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:49:46
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-04 17:50:56
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-25 17:24:52
  */
 
 import * as React from 'react';
@@ -18,7 +18,6 @@ import { bodyParts, client } from 'camelot-unchained';
 
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import LoadingContainer from '../LoadingContainer';
 import { PaperDollContainerQuery, InventoryItemFragment } from '../../../../gqlInterfaces';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
@@ -116,21 +115,20 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     return (
       <div className={css(ss.paperDoll)}>
         <img src={'images/paperdollbg.png'} className={css(ss.backgroundImg)} />
-        {this.props.data.loading ?
-          <LoadingContainer /> :
-
-          <div className={css(ss.paperdollContainer)}>
-            <img src={paperDollIcons[`${myCharacter.gender}${myCharacter.race}`]} className={css(ss.manIcon)} />
-            <div className={css(ss.characterInfoContainer)}>
-              <CharacterAndOrderName
-                characterName={myCharacter && myCharacter.name}
-                orderName={myOrder ? myOrder.name : ''}
-              />
-              <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
-            </div>
-            <EquipmentSlots inventoryItems={this.props.inventoryItems} equippedItems={myEquippedItems as any} />
+        <div className={css(ss.paperdollContainer)}>
+          <img
+            className={css(ss.manIcon)}
+            src={myCharacter && paperDollIcons[`${myCharacter.gender}${myCharacter.race}`]}
+          />
+          <div className={css(ss.characterInfoContainer)}>
+            <CharacterAndOrderName
+              characterName={myCharacter && myCharacter.name}
+              orderName={myOrder ? myOrder.name : ''}
+            />
+            <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
           </div>
-        }
+          <EquipmentSlots inventoryItems={this.props.inventoryItems} equippedItems={myEquippedItems as any} />
+        </div>
       </div>
     );
   }

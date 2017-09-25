@@ -57,6 +57,34 @@ body {
       animation: glow .2s ease-in-out infinite alternate;
     }
   }
+
+  .loading-spin {
+    -webkit-animation: loading-spin 1s infinite;
+    animation: loading-spin 1s infinite;
+  }
+
+  @-webkit-keyframes loading-spin {
+    from {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes loading-spin {
+    from {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
   @-webkit-keyframes glow {
     from {
       text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff, 0 0 8px #f4d142, 0 0 14px #f4d142, 0 0 16px #f4d142;

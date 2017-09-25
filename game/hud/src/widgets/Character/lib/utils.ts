@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-06 14:28:15
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-17 15:27:41
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-25 16:01:10
  */
 
 import * as _ from 'lodash';
@@ -98,8 +98,8 @@ export function isCraftingItem(item: InventoryItemFragment) {
   switch (item.staticDefinition.itemType) {
     case 'Substance': return true;
     case 'Alloy': return true;
+    default: return false;
   }
-  return false;
 }
 
 export function getIcon(item: InventoryItemFragment) {

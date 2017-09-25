@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-12 15:58:18
+ * @Last Modified time: 2017-09-25 17:30:02
  */
 
 import * as React from 'react';
@@ -181,7 +181,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     super(props);
     this.state = {
       showUnder: false,
-      equippedItems: props.equippedItems,
+      equippedItems: [],
       slotNameItemMenuVisible: '',
     };
   }
@@ -257,6 +257,12 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     this.onUnequipItemListener = events.on(eventNames.onUnequipItem, this.onUnequipItem);
   }
 
+  public componentWillReceiveProps(nextProps: EquipmentSlotsProps) {
+    if (!this.props.equippedItems && nextProps.equippedItems) {
+      this.setState({ equippedItems: nextProps.equippedItems });
+    }
+  }
+
   public componentWillUnmount() {
     events.off(this.equipItemListener);
     events.off(this.onUnequipItemListener);
@@ -314,7 +320,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
-    const { equippedItems } = this.state;
+    const equippedItems = this.state.equippedItems;
     const style = this.style;
     const customStyle = this.customStyle;
     return (
@@ -369,8 +375,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private onToggleItemMenuVisibility = (slotName: string) => {
-    console.log(slotName);
-    console.log(this.state.slotNameItemMenuVisible);
     if (slotName === this.state.slotNameItemMenuVisible) {
       this.setState({ slotNameItemMenuVisible: '' });
     } else {

@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-18 18:34:07
+ * @Last Modified time: 2017-09-25 17:29:47
  */
 
 import * as React from 'react';
@@ -28,6 +28,9 @@ export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBodyInnerContainer: React.CSSProperties;
   inventoryContent: React.CSSProperties;
   backgroundImg: React.CSSProperties;
+  refreshContainer: React.CSSProperties;
+  refreshTitle: React.CSSProperties;
+  refreshButton: React.CSSProperties;
 }
 
 export const defaultInventoryBodyStyles: InventoryBodyStyles = {
@@ -67,6 +70,38 @@ export const defaultInventoryBodyStyles: InventoryBodyStyles = {
     right: 0,
     zIndex: 0,
   },
+
+  refreshContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'fixed',
+    pointerEvents: 'all',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 999,
+  },
+
+  refreshTitle: {
+    fontSize: '35px',
+  },
+
+  refreshButton: {
+    width: '50px',
+    height: '50px',
+    fontSize: '35px',
+    color: 'white',
+    cursor: 'pointer',
+    ':hover': {
+      color: 'rgba(255,255,255,0.7)',
+    },
+  },
 };
 
 export interface InventoryBodyProps extends base.InventoryBaseWithQLProps {
@@ -101,37 +136,44 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   public render() {
     const ss = StyleSheet.create(defaultInventoryBodyStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-
-    if (this.props.graphql.data && this.props.graphql.data.myInventory) {
-      const { rows, rowData } = base.createRowElements(this.state, { items: this.props.inventoryItems });
-      const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
-      const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
-        base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
-
-      return (
-        <div className={css(ss.inventoryBody, custom.inventoryBody)}>
-          <div ref={r => this.bodyRef = r}
-              className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
-            <div className={css(ss.inventoryContent, custom.inventoryContent)}>
-              {rows}
+    const { rows, rowData } = base.createRowElements(this.state, { items: this.props.inventoryItems });
+    const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
+    const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
+      base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
+    return (
+      <div className={css(ss.inventoryBody, custom.inventoryBody)}>
+        {!this.props.graphql.data &&
+          <div className={css(ss.refreshContainer, custom.refreshContainer)}>
+            {!this.props.graphql.loading && <div className={css(ss.refreshTitle, custom.refreshTitle)}>
+              Could not retrieve items. Click to try again.
+            </div>}
+            <div
+              className={css(ss.refreshButton, custom.refreshButton)}
+              onClick={this.refetch}>
+                {this.props.graphql.loading ?
+                  <i className='fa fa-circle-o-notch loading-spin' /> : <i className='fa fa-refresh' />}
             </div>
           </div>
-          <InventoryFooter
-            onAddRowClick={this.addRowOfSlots}
-            onRemoveRowClick={() => this.removeRowOfSlots(rowData)}
-            onPruneRowsClick={() => this.pruneRowsOfSlots(rowData)}
-            addRowButtonDisabled={buttonDisabled}
-            removeRowButtonDisabled={removeAndPruneDisabled}
-            pruneRowsButtonDisabled={removeAndPruneDisabled}
-            currency={this.props.graphql.data.myInventory.currency}
-            itemCount={this.props.graphql.data.myInventory.itemCount}
-            totalMass={this.props.graphql.data.myInventory.totalMass}
-          />
+        }
+        <div ref={r => this.bodyRef = r}
+            className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
+          <div className={css(ss.inventoryContent, custom.inventoryContent)}>
+            {rows}
+          </div>
         </div>
-      );
-    }
-
-    return null;
+        <InventoryFooter
+          onAddRowClick={this.addRowOfSlots}
+          onRemoveRowClick={() => this.removeRowOfSlots(rowData)}
+          onPruneRowsClick={() => this.pruneRowsOfSlots(rowData)}
+          addRowButtonDisabled={buttonDisabled}
+          removeRowButtonDisabled={removeAndPruneDisabled}
+          pruneRowsButtonDisabled={removeAndPruneDisabled}
+          currency={this.props.graphql.data ? this.props.graphql.data.myInventory.currency : 0}
+          itemCount={this.props.graphql.data ? this.props.graphql.data.myInventory.itemCount : 0}
+          totalMass={this.props.graphql.data ? this.props.graphql.data.myInventory.totalMass : 0}
+        />
+      </div>
+    );
   }
 
   public componentDidMount() {
@@ -153,15 +195,10 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       this.timePrevItemAdded = new Date().getTime();
     });
     client.OnInventoryRemoved((item) => {
-      if (!this.isFetching) {
+      if (!this.isFetching && this.props.visibleComponent === '') {
         this.isFetching = true;
         setTimeout(() => this.refetch(), 200);
       }
-      // if (this.props.visibleComponent === '' && !this.isFetching) {
-      //   this.props.onChangeInventoryItems(_.filter(
-      //     this.props.inventoryItems, inventoryItem => inventoryItem.id !== item,
-      //   ));
-      // }
     });
   }
 
@@ -181,6 +218,10 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
     if (graphqlDataChange || onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
       this.setState(() => this.internalInit(nextState, nextProps));
+    }
+
+    if (this.props.visibleComponent !== '' && nextProps.visibleComponent === '') {
+      this.refetch();
     }
   }
 
@@ -210,10 +251,17 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   // should not be called outside of initializeInventory
   private internalInit = (state: InventoryBodyState, props: InventoryBodyProps) => {
     if (!this.bodyRef) return;
+    const itemCount =
+      (props.graphql.data && props.graphql.data.myInventory && props.graphql.data.myInventory.itemCount) || 0;
     this.heightOfBody = getDimensionsOfElement(this.bodyRef).height;
     const rowsAndSlots = calcRowAndSlots(this.bodyRef, slotDimensions,
-      Math.max(InventoryBody.minSlots, props.graphql.data.myInventory.itemCount));
-    return base.distributeItems(rowsAndSlots, props.graphql.data.myInventory, state, props);
+      Math.max(InventoryBody.minSlots, itemCount));
+    return base.distributeItems(
+      rowsAndSlots,
+      (props.graphql.data && props.graphql.data.myInventory) || { items: [] },
+      state,
+      props,
+    );
   }
 
   private addRowOfSlots = () => {

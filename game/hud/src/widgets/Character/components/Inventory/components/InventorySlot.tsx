@@ -5,8 +5,8 @@
  *
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-07-10 18:06:20
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-08-01 15:50:09
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-09-25 16:41:54
  */
 
 import * as React from 'react';
@@ -155,6 +155,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         break;
       }
       case SlotType.CraftingItem: {
+        // Items in a Crafting Container
         itemComponent =
           <CraftingItem
             count={item.itemCount}

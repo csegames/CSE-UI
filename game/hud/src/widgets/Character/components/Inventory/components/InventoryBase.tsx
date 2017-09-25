@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-18 17:36:16
+ * @Last Modified time: 2017-09-25 16:41:53
  */
 
 import * as React from 'react';
@@ -41,6 +41,8 @@ import {
   itemHasPosition,
   shouldShowItem,
 } from '../../../lib/utils';
+
+declare const toastr: any;
 
 export interface InventoryBaseStyle extends StyleDeclaration {
   InventoryBase: React.CSSProperties;
@@ -450,13 +452,7 @@ export function distributeItemsNoFilter(slotsData: {
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
   }
-  // const vox = _.find(itemData.items, item => item.staticDefinition.name === 'Torch');
-  // const voxIndex = _.findIndex(itemData.items, item => item.location.inventory.position ===
-  //   (vox && vox.location.inventory.position));
-  // console.log('Torch item');
-  // console.log(voxIndex);
-  // console.log(voxIndex && slotNumberToItem[voxIndex]);
-  // console.log(vox);
+
   return {
     ...slotsData,
     itemIdToInfo,
@@ -867,19 +863,23 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
 
       const itemIdArray = stackGroupIdToItemIDs[stackGroupID];
       const nextInventoryItem = _.find(inventoryItems, item => itemIdArray[itemIdArray.length - 1] === item.id);
-      inventoryItems = _.filter(inventoryItems, item => slotNumberToItem[slotNumber].item.id !== item.id);
+      if (nextInventoryItem) {
+        inventoryItems = _.filter(inventoryItems, item => slotNumberToItem[slotNumber].item.id !== item.id);
 
-      slotNumberToItem[slotNumber] = {
-        id: stackGroupID,
-        isCrafting: isCraftingItem(nextInventoryItem),
-        isStack: isStackedItem(nextInventoryItem),
-        item: nextInventoryItem,
-      };
+        slotNumberToItem[slotNumber] = {
+          id: stackGroupID,
+          isCrafting: isCraftingItem(nextInventoryItem),
+          isStack: isStackedItem(nextInventoryItem),
+          item: nextInventoryItem,
+        };
 
-      itemIdToInfo[nextInventoryItem.id] = {
-        icon: nextInventoryItem.staticDefinition.iconUrl,
-        slot: slotNumber,
-      };
+        itemIdToInfo[nextInventoryItem.id] = {
+          icon: nextInventoryItem.staticDefinition.iconUrl,
+          slot: slotNumber,
+        };
+      } else {
+        slotNumberToItem[slotNumber] = null;
+      }
       delete itemIdToInfo[payload.inventoryItem.id];
     }
 
@@ -960,9 +960,10 @@ export async function equipItemRequest(item: InventoryItemFragment,
       request as any,
     );
 
-    // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
+  // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
     client.EquipItem(item.id);
+    toastr.error(`Fall back to client equip because moveItem request failed with ${res.data}`);
     return;
   }
 
@@ -1029,14 +1030,15 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     },
   });
   const res = await webAPI.ItemAPI.MoveItems(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      request as any,
-    );
-    // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    request as any,
+  );
+  // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
+    toastr.error(`Fall back to client unequip because moveItem request failed with ${res.data}`);
     client.UnequipItem(item.id);
   }
 }
@@ -1065,14 +1067,15 @@ export async function dropItemRequest(item: InventoryItemFragment) {
     },
   });
   const res = await webAPI.ItemAPI.MoveItems(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      request as any,
-    );
-    // TEMPORARY: If webAPI fails, then fall back to client command DropItem
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    request as any,
+  );
+  // TEMPORARY: If webAPI fails, then fall back to client command DropItem
   if (!res.ok) {
+    toastr.error(`Fall back to client drop because moveItem request failed with ${res.data}`);
     client.DropItem(item.id);
   }
 }
