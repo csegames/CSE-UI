@@ -183,6 +183,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
 
   public componentDidMount() {
     this.onDropItemListener = events.on(eventNames.onDropItem, this.onDropItem);
+    this.setBottomInfo();
   }
 
   public componentWillReceiveProps(nextProps: InventoryFooterProps) {
@@ -190,18 +191,22 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
         this.props.itemCount !== nextProps.itemCount ||
         this.props.totalMass !== nextProps.totalMass) {
 
-      this.setState((state, props) => {
-        return {
-          currency: props.currency,
-          itemCount: props.itemCount,
-          totalMass: props.totalMass,
-        };
-      });
+      this.setBottomInfo();
     }
   }
 
   public componentWillUnmount() {
     events.off(this.onDropItemListener);
+  }
+
+  private setBottomInfo = () => {
+    this.setState((state, props) => {
+      return {
+        currency: props.currency,
+        itemCount: props.itemCount,
+        totalMass: props.totalMass,
+      };
+    });
   }
 
   private onDropItem = (payload: DropItemCallback) => {

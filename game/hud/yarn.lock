@@ -1428,6 +1428,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
   dependencies:
     inherits "^2.0.1"
 
+clamp@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.camelotunchained.com/clamp/-/clamp-1.0.1.tgz#66a0e64011816e37196828fdc8c8c147312c8634"
+
 classnames@^2.2.4, classnames@^2.2.5:
   version "2.2.5"
   resolved "http://registry.camelotunchained.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
@@ -4538,7 +4542,7 @@ object.entries@^1.0.3, object.entries@^1.0.4:
     function-bind "^1.1.0"
     has "^1.0.1"
 
-object.omit@^2.0.0:
+object.omit@^2.0.0, object.omit@^2.0.1:
   version "2.0.1"
   resolved "http://registry.camelotunchained.com/object.omit/-/object.omit-2.0.1.tgz#1a9c744829f39dbb858c76ca3579ae2a54ebd1fa"
   dependencies:
@@ -5048,6 +5052,14 @@ react-apollo@^0.10.0:
   optionalDependencies:
     react-dom "0.14.x || 15.* || ^15.0.0"
 
+react-cursor-position@^2.2.0:
+  version "2.2.1"
+  resolved "http://registry.camelotunchained.com/react-cursor-position/-/react-cursor-position-2.2.1.tgz#1b0b62620fb4636883fa4cd3a25e8828ce610fd4"
+  dependencies:
+    object-assign "^4.1.1"
+    object.omit "^2.0.1"
+    prop-types "^15.5.10"
+
 "react-dom@0.14.x || 15.* || ^15.0.0", react-dom@^15.4.0, react-dom@^15.4.2, react-dom@^15.6.1:
   version "15.6.1"
   resolved "http://registry.camelotunchained.com/react-dom/-/react-dom-15.6.1.tgz#2cb0ed4191038e53c209eb3a79a23e2a4cf99470"
@@ -5066,6 +5078,16 @@ react-draggable@^2.2.3, react-draggable@^2.2.6:
   resolved "http://registry.camelotunchained.com/react-draggable/-/react-draggable-2.2.6.tgz#3a806e10f2da6babfea4136be6510e89b0d76901"
   dependencies:
     classnames "^2.2.5"
+
+react-image-magnify@^2.0.4:
+  version "2.0.4"
+  resolved "http://registry.camelotunchained.com/react-image-magnify/-/react-image-magnify-2.0.4.tgz#8ccb9f7050267801834be6f0a0c08f66d78ffda5"
+  dependencies:
+    clamp "^1.0.1"
+    object-assign "^4.1.1"
+    prop-types "^15.5.10"
+    react-cursor-position "^2.2.0"
+    react-required-if "^1.0.1"
 
 react-infinite@^0.11.0:
   version "0.11.0"
@@ -5129,6 +5151,10 @@ react-redux@^5.0.5:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
+
+react-required-if@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.camelotunchained.com/react-required-if/-/react-required-if-1.0.1.tgz#f41d06bebb75346c206cd1de8dc0ef5b7c8f9abd"
 
 react-resizable@^1.6.0:
   version "1.7.1"

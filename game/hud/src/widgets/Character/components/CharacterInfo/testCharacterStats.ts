@@ -2,14 +2,14 @@ import { ql } from 'camelot-unchained';
 
 export interface TestCharacterStats {
   stats: {
-    defense: TestDefenseStatsInterface;
+    defense: TestBodyPartStats;
     offense: TestOffenseStatsInterface;
   };
 }
 
-export interface TestDefenseStatsInterface {
-  resistances: TestBodyPartStats;
-  mitigations: TestBodyPartStats;
+export interface TestResistanceAndMitigations {
+  resistances: Partial<ql.schema.DamageType_Single>;
+  mitigations: Partial<ql.schema.DamageType_Single>;
 }
 
 export interface TestOffenseStatsInterface {
@@ -18,12 +18,12 @@ export interface TestOffenseStatsInterface {
 }
 
 export interface TestBodyPartStats {
-  head: Partial<ql.schema.DamageType_Single>;
-  torso: Partial<ql.schema.DamageType_Single>;
-  leftArm: Partial<ql.schema.DamageType_Single>;
-  rightArm: Partial<ql.schema.DamageType_Single>;
-  leftLeg: Partial<ql.schema.DamageType_Single>;
-  rightLeg: Partial<ql.schema.DamageType_Single>;
+  head: TestResistanceAndMitigations;
+  torso: TestResistanceAndMitigations;
+  leftArm: TestResistanceAndMitigations;
+  rightArm: TestResistanceAndMitigations;
+  leftLeg: TestResistanceAndMitigations;
+  rightLeg: TestResistanceAndMitigations;
 }
 
 const testDamageTypeValues: Partial<ql.schema.DamageType_Single> = {
@@ -80,35 +80,59 @@ const weaponStat: Partial<ql.schema.WeaponStat_Single> = {
 
 const testBodyPartData: TestBodyPartStats = {
   head: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
   torso: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
   leftArm: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
   rightArm: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
   leftLeg: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
   rightLeg: {
-    ...testDamageTypeValues,
+    resistances: {
+      ...testDamageTypeValues,
+    },
+    mitigations: {
+      ...testDamageTypeValues,
+    },
   },
 };
 
 const testCharacterStatsData: TestCharacterStats = {
   stats: {
     defense: {
-      resistances: {
-        ...testBodyPartData,
-      },
-
-      mitigations: {
-        ...testBodyPartData,
-      },
+      ...testBodyPartData,
     },
     offense: {
       PrimaryHandWeapon: {

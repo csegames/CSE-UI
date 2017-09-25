@@ -31,7 +31,7 @@ export class GraphQLClient {
     variables: ObjectMap<any>;
     headers?: ObjectMap<string> | null;
     apiHost?: string;
-   };
+  };
 
   constructor(options: QueryOptions) {
     this.conf = options;
@@ -45,7 +45,7 @@ export class GraphQLClient {
 
   public refetch = async () => {
     if (!this.lastQuery) {
-       return {
+      return {
         data: null,
         ok: false,
         statusText: 'No query to refetch.',
@@ -79,11 +79,14 @@ export interface GraphQLData<T> {
   lastError: string;
 }
 
-export interface GraphQLInjectedProps<T> extends GraphQLData<T> {
+export interface GraphQLProps<T> extends GraphQLData<T> {
   client: GraphQLClient;
   refetch: () => void;
 }
 
+export interface GraphQLInjectedProps<T> {
+  graphql: GraphQLProps<T>;
+}
 
 export function useConfig(config: Partial<GraphQLConfig>) {
   conf = withDefaults(config, conf);
@@ -93,8 +96,8 @@ export function withGraphQL<PropsType extends GraphQLInjectedProps<QueryDataType
     QueryDataType = any>(query: string | Partial<QuickQLQuery>, options?: Partial<WithGraphQLOptions>) {
   
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
-    return class extends React.Component<Omit<PropsType, 
-        keyof GraphQLInjectedProps<QueryDataType>>, GraphQLData<QueryDataType | null>> {
+    return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
+      GraphQLData<QueryDataType | null>> {
       
       public client: GraphQLClient;
       public query: QuickQLQuery;
@@ -115,7 +118,8 @@ export function withGraphQL<PropsType extends GraphQLInjectedProps<QueryDataType
         this.client = new GraphQLClient({
           url: this.opts.url,
           requestOptions: this.opts.requestOptions,
-         });
+          stringifyVariables: this.opts.stringifyVariables,
+        });
       }
 
       public componentDidMount() {
@@ -153,7 +157,16 @@ export function withGraphQL<PropsType extends GraphQLInjectedProps<QueryDataType
       }
 
       public render() {
-        return <WrappedComponent client={this.client} refetch={this.refetch} {...this.state} {...this.props} />;
+        return (
+          <WrappedComponent
+            graphql={{
+              client: this.client,
+              refetch: this.refetch,
+              ...this.state,
+            }}
+            {...this.props}
+          />
+        );
       }
     };
   };

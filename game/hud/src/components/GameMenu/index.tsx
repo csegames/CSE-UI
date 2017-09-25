@@ -156,7 +156,6 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private fireVisibilityEvent = () => {
-    console.log('fire visibility event');
     events.fire('hudnav--navigate', 'gamemenu');
   }
 }

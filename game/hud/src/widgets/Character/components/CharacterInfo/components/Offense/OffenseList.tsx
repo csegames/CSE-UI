@@ -10,19 +10,23 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
+
 import { utils } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import GridStats from '../GridStats';
-import { StatInterface } from '../StatListItem';
+import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
-import { prettifyText } from '../../../../lib/utils';
+import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 import { colors } from '../../../../lib/constants';
+
+import { TestOffenseStatsInterface } from '../../testCharacterStats';
 
 export interface OffenseListStyles extends StyleDeclaration {
   OffenseList: React.CSSProperties;
-  statSectionTitle: React.CSSProperties;
+  sectionTitleContainer: React.CSSProperties;
+  sectionTitle: React.CSSProperties;
+  doesNotMatchSearch: React.CSSProperties;
 }
 
 const defaultOffenseListStyle: OffenseListStyles = {
@@ -32,28 +36,38 @@ const defaultOffenseListStyle: OffenseListStyles = {
     backgroundColor: 'rgba(75, 67, 65, 0.2)',
   },
 
-  statSectionTitle: {
-    textAlign: 'center',
+  sectionTitleContainer: {
+    display: 'flex',
     padding:'5px',
-    fontSize: 24,
+    fontSize: 18,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
+    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
+    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
+  },
+
+  sectionTitle: {
+    marginLeft: '5px',
+  },
+
+  doesNotMatchSearch: {
+    opacity: 0.2,
+    backgroundColor: `rgba(0,0,0,0.2)`,
   },
 };
 
 export interface OffenseStatInfoSection {
   title: string;
-  stats: StatInterface[];
+  stats: any[];
 }
 
 export interface OffenseListProps {
   styles?: Partial<OffenseListStyles>;
-  statSections: OffenseStatInfoSection[];
+  offensiveStats: TestOffenseStatsInterface;
 }
 
 export interface OffenseListState {
   searchValue: string;
-  statSections: OffenseStatInfoSection[];
+
 }
 
 class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
@@ -61,7 +75,6 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
     super(props);
     this.state = {
       searchValue: '',
-      statSections: [],
     };
   }
 
@@ -76,17 +89,41 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
           onSearchChange={this.onSearchChange}
           renderContent={() => (
             <div>
-              {this.state.statSections.map((statSection, i) => {
+              {Object.keys(this.props.offensiveStats).map((weaponSlot, i) => {
+                // Prettify name to match what is displayed to user
+                const searchIncludes = searchIncludesSection(this.state.searchValue, prettifyText(weaponSlot));
+                const statArray = Object.keys(this.props.offensiveStats[weaponSlot]).map((stat) => {
+                  return {
+                    name: stat,
+                    value: this.props.offensiveStats[weaponSlot][stat],
+                  };
+                });
                 return (
                   <div key={i}>
-                    <header className={css(ss.statSectionTitle, custom.statSectionTitle)}>
-                      {prettifyText(statSection.title)}
+                    <header className={css(
+                      ss.sectionTitleContainer,
+                      custom.sectionTitleContainer,
+                      !searchIncludes && ss.doesNotMatchSearch,
+                      !searchIncludes && custom.doesNotMatchSearch,
+                    )}>
+                      <div className={'icon-filter-weapons'} />
+                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{prettifyText(weaponSlot)}</span>
                     </header>
-                    <GridStats
-                      statArray={statSection.stats}
+                    {<GridStats
+                      statArray={statArray}
                       searchValue={this.state.searchValue}
                       howManyGrids={2}
-                    />
+                      shouldRenderEmptyListItems={true}
+                      renderListItem={(item, index) => (
+                        <StatListItem
+                          index={index}
+                          statName={item.name}
+                          statValue={item.value}
+                          searchValue={this.state.searchValue}
+                          sectionTitle={weaponSlot}
+                        />
+                      )}
+                    />}
                   </div>
                 );
               })}
@@ -95,12 +132,6 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
         />
       </div>
     );
-  }
-
-  public componentWillReceiveProps(nextProps: OffenseListProps) {
-    if (!_.isEqual(nextProps.statSections, this.props.statSections)) {
-      this.setState({ statSections: nextProps.statSections });
-    }
   }
 
   private onSearchChange = (searchValue: string) => {

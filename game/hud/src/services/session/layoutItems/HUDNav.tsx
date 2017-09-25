@@ -81,7 +81,7 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'gamemenu'),
-            hideClientControlledUI();
+          hideClientControlledUI();
         },
       },
       {

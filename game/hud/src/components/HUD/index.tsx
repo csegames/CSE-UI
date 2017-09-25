@@ -7,6 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { client, ql, events } from 'camelot-unchained';
+import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import {
@@ -31,6 +32,18 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 import Console from '../Console';
+
+useConfig({
+  url: `${client.apiHost}/graphql`,
+  requestOptions: {
+    headers: {
+      loginToken: client.loginToken,
+      shardID: `${client.shardID}`,
+      characterID: client.characterID,
+    }
+  },
+  stringifyVariables: true,
+})
 
 export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
   dispatch: (action: any) => void;
