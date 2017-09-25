@@ -1,52 +1,38 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "noImplicitAny": true,
-        "removeComments": false,
-        "outDir": "./tmp",
-        "sourceMap": false,
-        "jsx": "react",
-        "module": "commonjs",
-        "noImplicitUseStrict": true,
-        "noUnusedLocals": true,
-        "alwaysStrict": false,
-        "skipLibCheck": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true,
-        "plugins": [
-            { "name": "tslint-language-service"}
-        ]
-    },
-    "formatCodeOptions": {
-        "indentSize": 2,
-        "tabSize": 2,
-        "newLineCharacter": "\r\n",
-        "convertTabsToSpaces": true,
-        "insertSpaceAfterCommaDelimiter": true,
-        "insertSpaceAfterSemicolonInForStatements": true,
-        "insertSpaceBeforeAndAfterBinaryOperators": true,
-        "insertSpaceAfterKeywordsInControlFlowStatements": true,
-        "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-        "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-        "placeOpenBraceOnNewLineForFunctions": false,
-        "placeOpenBraceOnNewLineForControlBlocks": false
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "resolution": "typings",
-    "moduleResolution": "node",
-    "exclude": [
-      "typings/browser.d.ts",
-      "typings/browser",
-      "typings/main.d.ts",
-      "typings/main",
-      "tmp",
-      "dist",
-      "publish",
-      "node_modules"
-    ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+  "compilerOptions": {
+    "target": "es6",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": false,
+    "jsx": "react",
+    "module": "commonjs",
+    "noImplicitUseStrict": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "plugins": [
+      { "name": "tslint-language-service"}
+    ]
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "resolution": "typings",
+  "moduleResolution": "node",
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser",
+    "typings/main.d.ts",
+    "typings/main",
+    "tmp",
+    "dist",
+    "publish",
+    "node_modules"
+  ],
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }
