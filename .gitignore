@@ -44,12 +44,9 @@ library/docs/
 *.config.js
 dev.config
 **__snapshots__
-<<<<<<< HEAD
 **/schema.ts
 **/schema.json
 **/definitions.ts
-=======
 game/hud/gql/
 game/hud/src/gqlDocuments\.ts
 game/hud/src/gqlInterfaces\.ts
->>>>>>> f8b2cd5656d7e595e3dd62dd56b6f87b81167e24
