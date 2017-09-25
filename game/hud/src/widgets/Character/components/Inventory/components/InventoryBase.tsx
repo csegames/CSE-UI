@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 16:41:53
+ * @Last Modified time: 2017-09-25 17:36:39
  */
 
 import * as React from 'react';
@@ -963,7 +963,6 @@ export async function equipItemRequest(item: InventoryItemFragment,
   // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
     client.EquipItem(item.id);
-    toastr.error(`Fall back to client equip because moveItem request failed with ${res.data}`);
     return;
   }
 
@@ -1038,7 +1037,6 @@ export async function unequipItemRequest(item: InventoryItemFragment,
   );
   // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
-    toastr.error(`Fall back to client unequip because moveItem request failed with ${res.data}`);
     client.UnequipItem(item.id);
   }
 }
@@ -1075,7 +1073,6 @@ export async function dropItemRequest(item: InventoryItemFragment) {
   );
   // TEMPORARY: If webAPI fails, then fall back to client command DropItem
   if (!res.ok) {
-    toastr.error(`Fall back to client drop because moveItem request failed with ${res.data}`);
     client.DropItem(item.id);
   }
 }
