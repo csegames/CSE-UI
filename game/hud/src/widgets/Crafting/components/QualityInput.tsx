@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Label from './Label';
 import Input from './Input';
-import {GlobalState} from '../services/session/reducer';
-import {StyleSheet, css, merge, qualityInput, QualityInputStyles} from '../styles';
+import { GlobalState } from '../services/session/reducer';
+import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../styles';
 
 export interface QualityInputReduxProps {
   dispatch?: (action: any) => void;
@@ -36,12 +36,12 @@ const select = (state: GlobalState, props: QualityInputProps): QualityInputRedux
 const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
-    <div className={css(ss.qualityInput)} style={ props.disabled ? {opacity: 0.1} : {} }>
-      <Label style={{label: qualityInput.label}}>Quality</Label>
+    <div className={css(ss.qualityInput)} style={ props.disabled ? { opacity: 0.1 } : {} }>
+      <Label style={{ label: qualityInput.label }}>Quality</Label>
       <Input
         name='quality'
         numeric={true} min={1} max={100}
-        style={{input: qualityInput.input}}
+        style={{ input: qualityInput.input }}
         disabled={props.disabled}
         size={3}
         onChange={(value: string) => props.onChange((value as any) | 0)}

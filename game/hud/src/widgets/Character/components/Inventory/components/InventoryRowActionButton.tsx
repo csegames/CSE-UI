@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {StyleDeclaration} from 'aphrodite';
-import {utils, IconButton} from 'camelot-unchained';
-import {colors} from '../../../lib/constants';
+import { StyleDeclaration } from 'aphrodite';
+import { utils, IconButton } from 'camelot-unchained';
+import { colors } from '../../../lib/constants';
 
 export interface InventoryRowActionButtonStyle extends StyleDeclaration {
   InventoryRowActionButton: React.CSSProperties;

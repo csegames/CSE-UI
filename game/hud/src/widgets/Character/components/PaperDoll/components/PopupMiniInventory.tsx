@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {PageController, PageInfo, Input} from 'camelot-unchained';
-import {StyleDeclaration, css, StyleSheet} from 'aphrodite';
+import { PageController, PageInfo, Input } from 'camelot-unchained';
+import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
-import {InventoryItemFragment} from '../../../../../gqlInterfaces';
-import {displaySlotNames, colors} from '../../../lib/constants';
-import {getItemDefinitionName} from '../../../lib/utils';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { displaySlotNames, colors } from '../../../lib/constants';
+import { getItemDefinitionName } from '../../../lib/utils';
 
 const containerDimensions = {
   width: 320,
@@ -209,7 +209,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
         {this.props.visible &&
         <div
           className={css(ss.miniInventoryBox, custom.miniInventoryBox)}
-          style={{top: this.state.top, left: this.state.left}}
+          style={{ top: this.state.top, left: this.state.left }}
           onMouseOver={() => this.mouseOver = true}
           onMouseLeave={() => this.mouseOver = false}>
           <div className={css(ss.headerContainer, custom.headerContainer)}>
@@ -275,7 +275,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
   }
 
   private initializeMiniInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
-    const {slotName} = this.props;
+    const { slotName } = this.props;
     const miniInventoryItems: InventoryItemFragment[] = [];
     if (inventoryItems) {
       inventoryItems.forEach((inventoryItem) => {
@@ -290,14 +290,14 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
           });
         }
       });
-      this.setState({miniInventoryItems});
+      this.setState({ miniInventoryItems });
     }
   }
 
   private setWindowPosition = () => {
-    const {slotName, align} = this.props;
+    const { slotName, align } = this.props;
     const offsets = document.getElementById(slotName).getBoundingClientRect();
-    const {top, left, height, width} = offsets;
+    const { top, left, height, width } = offsets;
     const margin = 5;
     this.setState((state, props) => {
       switch (align) {
@@ -348,7 +348,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
   }
 
   private onSearchChange = (e: any) => {
-    this.setState({searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
   }
 
   private onMouseDown = () => {

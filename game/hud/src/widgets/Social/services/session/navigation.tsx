@@ -8,9 +8,9 @@
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-04-06 15:18:40
  */
-import {Module} from 'redux-typed-modules';
-import {Map} from 'immutable';
-import {ApolloClient} from 'apollo-client';
+import { Module } from 'redux-typed-modules';
+import { Map } from 'immutable';
+import { ApolloClient } from 'apollo-client';
 
 import {
   LinkAddress,

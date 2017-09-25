@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import ItemIcon from './ItemIcon';
 

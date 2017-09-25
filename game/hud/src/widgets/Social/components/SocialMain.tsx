@@ -10,13 +10,13 @@
  */
 
 import * as React from 'react';
-import {graphql, InjectedGraphQLProps} from 'react-apollo';
-import {connect} from 'react-redux';
-import {events, ql, FloatSpinner} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { connect } from 'react-redux';
+import { events, ql, FloatSpinner } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import {NavigationState, selectLink, toggleCollapsedCategory} from '../services/session/navigation';
-import {CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals} from '../services/session/nav/navTypes';
+import { NavigationState, selectLink, toggleCollapsedCategory } from '../services/session/navigation';
+import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';
 
 import PersonalContent from './PersonalContent';
 import OrderContent from './OrderContent';

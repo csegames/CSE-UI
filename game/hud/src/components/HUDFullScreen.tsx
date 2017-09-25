@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {events, client, TabPanel, TabItem, ContentItem} from 'camelot-unchained';
-import {StyleDeclaration, css, StyleSheet} from 'aphrodite';
+import { events, client, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import Social from '../widgets/Social';
 import Character from '../widgets/Character';
@@ -164,7 +164,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     ];
 
     return (
-      <div style={this.state.visibleComponent === '' ? {visibility: 'hidden'} : {}}>
+      <div style={this.state.visibleComponent === '' ? { visibility: 'hidden' } : {}}>
         <TabPanel
           ref={ref => this.tabPanelRef = ref}
           tabs={tabs}
@@ -251,12 +251,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private setVisibleComponent = (name: string) => {
     if (this.state.initial) {
-      this.setState({initial: false});
+      this.setState({ initial: false });
     }
     if (this.state.visibleComponent !== name) {
-      this.setState({visibleComponent: name});
+      this.setState({ visibleComponent: name });
     } else {
-      this.setState({visibleComponent: ''});
+      this.setState({ visibleComponent: '' });
       setTimeout(() => client.ReleaseInputOwnership(), 100);
     }
   }

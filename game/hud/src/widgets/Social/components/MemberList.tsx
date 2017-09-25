@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import * as moment from 'moment';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   ql,
   Tooltip,
@@ -185,14 +185,14 @@ export const defaultMemberListColumnDefinitions = [
             items={renderData.ranks}
             renderListItem={(p: ql.CustomRank) => {
               return (
-                <div style={{padding: '5px'}}>
+                <div style={{ padding: '5px' }}>
                   {p.name}<br/>
                 </div>
               );
             }}
             renderSelectedItem={(p: ql.CustomRank) => {
               return (
-                <div style={{padding: '5px'}}>
+                <div style={{ padding: '5px' }}>
                   {p.name}<br/>
                 </div>
               );

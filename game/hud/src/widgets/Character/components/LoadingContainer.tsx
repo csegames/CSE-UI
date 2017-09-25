@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {Spinner} from 'camelot-unchained';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { Spinner } from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 export interface LoadingContainerStyles extends StyleDeclaration {
   loadingContainer: React.CSSProperties;
@@ -38,7 +38,7 @@ export interface LoadingContainerProps {
 }
 
 const LoadingContainer = (props: LoadingContainerProps) => {
-  const ss = StyleSheet.create({...defaultLoadingContainerStyle, ...props.styles});
+  const ss = StyleSheet.create({ ...defaultLoadingContainerStyle, ...props.styles });
   return (
     <div className={css(ss.loadingContainer)}><Spinner /></div>
   );

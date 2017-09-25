@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {clone} from '../../lib/reduxUtils';
+import { clone } from '../../lib/reduxUtils';
 
 export enum LayoutMode {
   FLOAT,
@@ -133,7 +133,7 @@ export interface HUDDragState {
 class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   private didUpdate: boolean = false;
-  private lastPosition = {x: NaN , y: NaN};
+  private lastPosition = { x: NaN , y: NaN };
   private mouseDownForScaleHold: boolean = false;
   private mouseScaleHoldInitTimeout: NodeJS.Timer = null;
   private mouseDownForOpacityHold: boolean = false;
@@ -273,11 +273,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private mouseMovement = (e: MouseEvent) => {
     if (this.lastPosition.x === NaN) {
       // just starting to move, so 0 move
-      this.lastPosition = {x: e.screenX, y: e.screenY};
-      return {x: 0, y: 0};
+      this.lastPosition = { x: e.screenX, y: e.screenY };
+      return { x: 0, y: 0 };
     }
-    const movement = {x: e.screenX - this.lastPosition.x, y: e.screenY - this.lastPosition.y};
-    this.lastPosition = {x: e.screenX, y: e.screenY};
+    const movement = { x: e.screenX - this.lastPosition.x, y: e.screenY - this.lastPosition.y };
+    this.lastPosition = { x: e.screenX, y: e.screenY };
     return movement;
   }
 
@@ -378,11 +378,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.setMode(mode);
     e.preventDefault();
     e.stopPropagation();
-    this.lastPosition = {x: e.screenX , y: e.screenY};
+    this.lastPosition = { x: e.screenX , y: e.screenY };
   }
 
   private onMouseUp = () => {
-    this.lastPosition = {x: NaN , y: NaN};
+    this.lastPosition = { x: NaN , y: NaN };
     this.mouseDownForScaleHold = false;
     if (this.mouseScaleHoldInitTimeout != null) {
       clearTimeout(this.mouseScaleHoldInitTimeout);
@@ -401,19 +401,19 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private setScale = (s: number) => {
     if (s < this.state.minScale) s = this.state.minScale;
     if (s > this.state.maxScale) s = this.state.maxScale;
-    this.setState({scale: s} as any);
+    this.setState({ scale: s } as any);
     this.didUpdate = true;
   }
 
   private setOpacity = (o: number) => {
     if (o < 0.1) o = 0.1;
     if (o > 1) o = 1;
-    this.setState({opacity: o} as any);
+    this.setState({ opacity: o } as any);
     this.didUpdate = true;
   }
 
   private setVisible = (v: boolean) => {
-    this.setState({visible: v} as any);
+    this.setState({ visible: v } as any);
     this.didUpdate = true;
   }
 
@@ -469,7 +469,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           this.props.gridDivisions,
         );
       case LayoutMode.EDGESNAP: {
-        const screen = {width: window.innerWidth, height: window.innerHeight};
+        const screen = { width: window.innerWidth, height: window.innerHeight };
         return {
           x: this.state.xAnchor === Edge.LEFT ?
           this.state.x : screen.width - this.state.width * this.state.scale - this.state.x,
@@ -510,7 +510,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private static fixedToEdgeSnap(x: number, y: number, h: number, w: number) {
-    const s = {w: window.innerWidth, h: window.innerHeight};
+    const s = { w: window.innerWidth, h: window.innerHeight };
 
     const left = y < (s.w - (y - w));
     const top = x < (s.h - (x - h));

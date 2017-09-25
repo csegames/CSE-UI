@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   ql,
   utils,
@@ -30,7 +30,7 @@ import GroupTitle from './GroupTitle';
 import CreateRankDialog from './CreateRankDialog';
 import RankListItemMenu from './RankListItemMenu';
 
-const {stringContains} = utils;
+const { stringContains } = utils;
 
 export const defaultRanksStyle: RanksStyle = {
   container: {
@@ -321,7 +321,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
             }}
             renderListItem={(p: ql.PermissionInfo) => {
               return (
-                <div key={p.tag} style={{padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)'}}>
+                <div key={p.tag} style={{ padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)' }}>
                   {p.name}<br/>
                   {p.description}<br/>
                   <i>enables {p.enables.join(', ')}</i>
@@ -331,7 +331,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
             renderSelectedItem={(p: ql.PermissionInfo) => {
               return (
                 <Tooltip key={p.tag} content={p.description}>
-                  <span style={{paddingRight: '5px'}}>{p.name + ' '}</span>
+                  <span style={{ paddingRight: '5px' }}>{p.name + ' '}</span>
                 </Tooltip>
               );
             }}

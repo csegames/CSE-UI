@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-26 12:07:42
  */
 
-import {LayoutMode, Edge} from '../../../components/HUDDrag';
+import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Building from '../../../widgets/Building';
 import HUDZOrder from '../HUDZOrder';
 

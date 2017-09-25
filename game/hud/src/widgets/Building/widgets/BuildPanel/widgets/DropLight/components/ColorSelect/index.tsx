@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {Color} from '../../lib/Color';
+import { Color } from '../../lib/Color';
 
 // tslint:disable
 const colorOps = require('color-ops');

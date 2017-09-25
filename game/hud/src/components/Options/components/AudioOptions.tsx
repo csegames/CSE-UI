@@ -11,10 +11,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {client} from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { client } from 'camelot-unchained';
 
-import {ConfigIndex, ConfigInfo} from '../OptionsMain';
+import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 import ListItem from './ListItem';
 
 export interface AudioOptionsStyle extends StyleDeclaration {

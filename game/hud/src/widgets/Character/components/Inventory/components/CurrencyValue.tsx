@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 
-import {colors} from '../../../lib/constants';
+import { colors } from '../../../lib/constants';
 
 enum CurrencyValueType {
   Small,
@@ -31,7 +31,7 @@ export const CurrencyValue = (props: {value: number}) => {
     case CurrencyValueType.Small:
       // $
       return (
-        <span style={{color: colors.smallMoney}}>
+        <span style={{ color: colors.smallMoney }}>
           {props.value}
         </span>
       );
@@ -40,7 +40,7 @@ export const CurrencyValue = (props: {value: number}) => {
       let mediumVal = props.value.toFixed(0);
       mediumVal = mediumVal.substring(0, mediumVal.length - 3);
       return (
-        <span style={{color: colors.OneHundredKMoney}}>
+        <span style={{ color: colors.OneHundredKMoney }}>
           {mediumVal}K
         </span>
       );
@@ -49,7 +49,7 @@ export const CurrencyValue = (props: {value: number}) => {
       let richValue = props.value.toFixed(0);
       richValue = richValue.substring(0, richValue.length - 6);
       return (
-        <span style={{color: colors.TenMMoney}}>
+        <span style={{ color: colors.TenMMoney }}>
           {richValue}M
         </span>
       );

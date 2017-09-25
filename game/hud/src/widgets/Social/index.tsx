@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import {Provider} from 'react-redux';
-import {client, events, jsKeyCodes} from 'camelot-unchained';
+import { Provider } from 'react-redux';
+import { client, events, jsKeyCodes } from 'camelot-unchained';
 import SocialMain from './components/SocialMain';
-import {store} from './services/session/reducer';
+import { store } from './services/session/reducer';
 
 
 export interface SocialContainerProps {
@@ -47,7 +47,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
 
   public componentDidMount() {
     this.hudNavListener = events.on('hudnav--navigate', (name: string) => {
-      const {visible} = this.state;
+      const { visible } = this.state;
       switch (name) {
         case 'social': {
           if (visible) {
@@ -75,7 +75,7 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
-    const {visible} = this.state;
+    const { visible } = this.state;
     if (e.which === jsKeyCodes.ESC && visible) {
       client.ReleaseInputOwnership();
       this.hide();
@@ -84,12 +84,12 @@ class SocialContainer extends React.Component<SocialContainerProps, SocialContai
 
   private show = () => {
     if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
-    this.setState({visible: true});
+    this.setState({ visible: true });
   }
 
   private hide = () => {
     if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
-    this.setState({visible: false});
+    this.setState({ visible: false });
   }
 }
 

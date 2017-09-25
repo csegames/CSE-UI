@@ -5,15 +5,15 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider, connect} from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider, connect } from 'react-redux';
 import thunk from 'redux-thunk';
-import {hasClientAPI} from 'camelot-unchained';
+import { hasClientAPI } from 'camelot-unchained';
 
 import PlayerStatusComponent from '../../components/PlayerStatusComponent';
-import reducer, {SessionState} from './services/session';
-import {PlayerState, doThing, initializePlayerSession} from './services/session/target';
-import {BodyParts} from '../../lib/PlayerStatus';
+import reducer, { SessionState } from './services/session';
+import { PlayerState, doThing, initializePlayerSession } from './services/session/target';
+import { BodyParts } from '../../lib/PlayerStatus';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
@@ -46,7 +46,7 @@ class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState>
   public render() {
     const hide = this.props.player.playerStatus.name === '';
 
-    const {position, targetPosition} = this.props.player.playerStatus;
+    const { position, targetPosition } = this.props.player.playerStatus;
     const a = position.x - targetPosition.x;
     const b = position.y - targetPosition.y;
     const distance = Math.ceil(Math.sqrt(a * a + b * b) * 100) / 100;

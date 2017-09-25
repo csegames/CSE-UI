@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-07-26 12:08:32
  */
 import Chat from 'cu-xmpp-chat';
-import {client} from 'camelot-unchained';
-import {LayoutMode, Edge} from '../../../components/HUDDrag';
+import { client } from 'camelot-unchained';
+import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

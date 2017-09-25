@@ -5,18 +5,18 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
-import {initialize} from './services/session/materials-by-type';
-import {BuildPaneProps} from '../../lib/BuildPane';
+import { initialize } from './services/session/materials-by-type';
+import { BuildPaneProps } from '../../lib/BuildPane';
 
 import TabbedPane from '../../components/TabbedPane';
 import MaterialSelector from './components/MaterialSelector';
 import MaterialPreview from './components/MaterialPreview';
-import {Anchor} from '../../../SavedDraggable';
+import { Anchor } from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 

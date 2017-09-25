@@ -9,7 +9,7 @@
  * @Last Modified time: 2016-09-27 18:45:37
  */
 
-import {client, events, signalr, WarbandMember, Gender, Race} from 'camelot-unchained';
+import { client, events, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
 import {
   addOrUpdate,
   BaseAction,
@@ -245,29 +245,29 @@ function memberCompare(a: WarbandMember, b: WarbandMember): boolean {
 const actionDefs: ActionDefinitions<WarbandState> = {};
 
 actionDefs[INITIALIZE_SIGNALR] = (s, a) => {
-  return merge(s, {isInitalizing: false});
+  return merge(s, { isInitalizing: false });
 };
 
 actionDefs[INITIALIZE_SIGNALR_SUCCESS] = (s, a) => {
-  return merge(s, {isInitalizing: false, signalRInitialized: true});
+  return merge(s, { isInitalizing: false, signalRInitialized: true });
 };
 
 actionDefs[INITIALIZE_SIGNALR_FAILED] = (s, a) => {
-  return merge(s, {isInitalizing: false, signalRInitialized: true});
+  return merge(s, { isInitalizing: false, signalRInitialized: true });
 };
 
 actionDefs[WARBAND_JOINED] = (s: WarbandState, a: WarbandAction) => {
   events.fire('chat-show-room', a.id);
-  return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
+  return merge(s, clearWarband(), { name: a.name, warbandID: a.id });
 };
 
 actionDefs[WARBAND_UPDATE] = (s: WarbandState, a: WarbandAction) => {
   if (a.id !== s.warbandID) {
     // we changed warbands
-    return merge(s, clearWarband(), {name: a.name, warbandID: a.id});
+    return merge(s, clearWarband(), { name: a.name, warbandID: a.id });
   }
   if (a.name !== s.name) {
-    return merge(s, {name: a.name});
+    return merge(s, { name: a.name });
   }
 };
 
@@ -288,11 +288,11 @@ actionDefs[WARBAND_ABANDONED] = (s, a) => {
 };
 
 actionDefs[MEMBER_JOINED] = (s, a) => {
-  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
+  return merge(s, { activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare) });
 };
 
 actionDefs[MEMBER_UPDATE] = (s, a) => {
-  return merge(s, {activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare)});
+  return merge(s, { activeMembers: addOrUpdate(s.activeMembers, a.member, memberCompare) });
 };
 
 actionDefs[MEMBER_REMOVED] = (s: WarbandState, a: WarbandAction) => {
@@ -300,7 +300,7 @@ actionDefs[MEMBER_REMOVED] = (s: WarbandState, a: WarbandAction) => {
   if (members.removed.length > 0) {
     systemMessage(`${members.removed[0].name} has left your warband.`);
   }
-  return merge(s, {activeMembers: members.result});
+  return merge(s, { activeMembers: members.result });
 };
 
 export default createReducer<WarbandState>(initialState(), actionDefs);

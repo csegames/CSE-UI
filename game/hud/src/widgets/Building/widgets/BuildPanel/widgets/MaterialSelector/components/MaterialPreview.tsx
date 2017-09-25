@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {BuildingMaterial} from 'camelot-unchained';
-import {GlobalState} from '../services/session/reducer';
+import { BuildingMaterial } from 'camelot-unchained';
+import { GlobalState } from '../services/session/reducer';
 
 function select(state: GlobalState) {
   const mat = state.materialSelector.hoverMaterial;

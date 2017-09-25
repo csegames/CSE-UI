@@ -10,14 +10,14 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {buildUIMode} from 'camelot-unchained';
+import { connect } from 'react-redux';
+import { buildUIMode } from 'camelot-unchained';
 
 import ActionBar from '../../widgets/Actionbar';
 import BuildingPanel from '../../widgets/BuildPanel';
 import SelectionView from '../../widgets/SelectionView';
 
-import {BuildingItem} from '../../lib/BuildingItem';
+import { BuildingItem } from '../../lib/BuildingItem';
 
 export interface BuildingAppProps {
   dispatch: (action: any) => void;

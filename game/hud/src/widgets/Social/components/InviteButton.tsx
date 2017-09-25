@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   webAPI,
   Spinner,
@@ -117,7 +117,7 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
             ) : null
           }
 
-        <div style={{display: 'flex'}}>
+        <div style={{ display: 'flex' }}>
         <Input
           inputRef={r => this.inputRef = r}
           placeholder={'Enter name & hit enter'}
@@ -142,7 +142,7 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
 
   private doInvite = async () => {
     if (this.inputRef == null) return;
-    await this.setState({inviting: true, error: null});
+    await this.setState({ inviting: true, error: null });
 
     const name = this.inputRef.value;
     const res = await webAPI.GroupsAPI.InviteByNameV1(

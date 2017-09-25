@@ -11,16 +11,16 @@
 
 import * as React from 'react';
 
-import {utils} from 'camelot-unchained';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { utils } from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import GridStats from '../GridStats';
 import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
-import {prettifyText, searchIncludesSection} from '../../../../lib/utils';
-import {colors} from '../../../../lib/constants';
+import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
+import { colors } from '../../../../lib/constants';
 
-import {TestOffenseStatsInterface} from '../../testCharacterStats';
+import { TestOffenseStatsInterface } from '../../testCharacterStats';
 
 export interface OffenseListStyles extends StyleDeclaration {
   OffenseList: React.CSSProperties;
@@ -135,7 +135,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   }
 
   private onSearchChange = (searchValue: string) => {
-    this.setState({searchValue});
+    this.setState({ searchValue });
   }
 }
 

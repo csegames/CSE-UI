@@ -5,18 +5,18 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
-import {loadLights} from './services/session/lights';
-import {BuildPaneProps} from '../../lib/BuildPane';
+import { loadLights } from './services/session/lights';
+import { BuildPaneProps } from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
 
 import DroplightPane from './components/DroplightPane';
 import LightSelector from './components/LightSelector';
-import {Anchor} from '../../../SavedDraggable';
+import { Anchor } from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 

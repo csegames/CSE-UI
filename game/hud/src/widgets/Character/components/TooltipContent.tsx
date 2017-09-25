@@ -12,11 +12,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import TooltipArmorInfo from './TooltipArmorInfo';
-import {prettifyText} from '../lib/utils';
-import {InventoryItemFragment} from '../../../gqlInterfaces';
+import { prettifyText } from '../lib/utils';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export const defaultTooltipStyle = {
   tooltip: {
@@ -142,7 +142,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
     const style = StyleSheet.create(defaultTooltipContentStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
 
-    const {slotName, instructions, gearSlots, shouldOnlyShowPrimaryInfo} = this.props;
+    const { slotName, instructions, gearSlots, shouldOnlyShowPrimaryInfo } = this.props;
 
     const item = this.state.item;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;

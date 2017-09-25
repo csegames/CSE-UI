@@ -12,16 +12,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {GraphQLInjectedProps} from 'camelot-unchained/lib/graphql/react';
-import {webAPI, client, ql} from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { webAPI, client, ql } from 'camelot-unchained';
 
-import {InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions} from './InventorySlot';
-import {InventoryRow} from './InventoryRow';
+import { InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions } from './InventorySlot';
+import { InventoryRow } from './InventoryRow';
 
-import {InventoryItemFragment, InventoryBaseQuery} from '../../../../../gqlInterfaces';
-import {nullVal, InventoryFilterButton, emptyStackHash} from '../../../lib/constants';
-import {UpdateInventoryItems} from '../../../lib/eventNames';
+import { InventoryItemFragment, InventoryBaseQuery } from '../../../../../gqlInterfaces';
+import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/constants';
+import { UpdateInventoryItems } from '../../../lib/eventNames';
 import {
   createMoveItemRequestToInventoryPosition,
   firstAvailableSlot,
@@ -142,7 +142,7 @@ export function createRowElementsForCraftingItems(state: InventoryBaseState, ite
       const item = itemData.items[slotIndex];
 
       if (!item) {
-        rowItems.push({slotType: SlotType.Empty, icon: ' '});
+        rowItems.push({ slotType: SlotType.Empty, icon: ' ' });
         continue;
       }
       rowItems.push({
@@ -178,7 +178,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
     for (let i = 0; i < state.slotsPerRow; ++i) {
       const itemDef = state.slotNumberToItem[slotIndex++];
       if (!itemDef) {
-        rowItems.push({slotType: SlotType.Empty, icon: ' '});
+        rowItems.push({ slotType: SlotType.Empty, icon: ' ' });
         continue;
       }
 
@@ -242,7 +242,7 @@ export function distributeItems(slotsData: {
       firstEmptyIndex: 0,
     };
   }
-  const items = props.inventoryItems && props.inventoryItems.length > 0 ? {items: props.inventoryItems} : itemData;
+  const items = props.inventoryItems && props.inventoryItems.length > 0 ? { items: props.inventoryItems } : itemData;
   if (hasActiveFilterButtons(props.activeFilters) || hasFilterText(props.searchValue)) {
     return distributeFilteredItems(slotsData, items, state, props);
   } else {
@@ -280,7 +280,7 @@ export function distributeItemsNoFilter(slotsData: {
   // place normal items with a position into their slots positions.
   partitionedItems.positionedItems.forEach((item) => {
     const wantPosition = getItemInventoryPosition(item);
-    const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+    const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
     if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
       partitionedItems.noPositionItems.push(item);
@@ -293,14 +293,14 @@ export function distributeItemsNoFilter(slotsData: {
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
+    itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
   });
 
   // place stacked items with position into their slots positions.
   _.values(partitionedItems.stackedItemsWithPosition).forEach((itemArr) => {
     itemArr.forEach((item) => {
       const wantPosition = getItemInventoryPosition(item);
-      const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+      const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
       if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
         partitionedItems.noPositionStackedItems[id] = itemArr;
@@ -313,7 +313,7 @@ export function distributeItemsNoFilter(slotsData: {
         isStack: isStackedItem(item),
         item,
       };
-      itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
+      itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
     });
   });
 
@@ -321,7 +321,7 @@ export function distributeItemsNoFilter(slotsData: {
   _.values(partitionedItems.craftingItems).forEach((craftingItemArr) => {
     craftingItemArr.forEach((item) => {
       const wantPosition = getItemInventoryPosition(item);
-      const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+      const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
       if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
         partitionedItems.noPositionItems.push(item);
@@ -334,7 +334,7 @@ export function distributeItemsNoFilter(slotsData: {
         isStack: isStackedItem(item),
         item,
       };
-      itemIdToInfo[id] = {slot: wantPosition, icon: getIcon(item)};
+      itemIdToInfo[id] = { slot: wantPosition, icon: getIcon(item) };
       if (!stackGroupIdToItemIDs[id]) {
         stackGroupIdToItemIDs[id] = [item.id];
       } else {
@@ -365,7 +365,7 @@ export function distributeItemsNoFilter(slotsData: {
     const item = itemsWithPosition[key];
 
     const position = getItemInventoryPosition(item);
-    const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+    const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
     // check if something is in this position already...
     if (slotNumberToItem[position] && slotNumberToItem[position] !== id) {
@@ -382,7 +382,7 @@ export function distributeItemsNoFilter(slotsData: {
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = {slot: position, icon: getIcon(item)};
+    itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
   });
 
   // figure out next available position
@@ -392,7 +392,7 @@ export function distributeItemsNoFilter(slotsData: {
   // using a batched api request so that they will remain in these positions
   // in the future
   noPositionArr.forEach((item, index) => {
-    const id = getItemMapID(item, {stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap});
+    const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
     const itemInstanceId = getItemInstanceID(item);
     const stackHash = isCraftingItem(item) ? getItemDefinitionId(item) : item.stackHash;
     // first check if there is a matching stack hash, then use that position
@@ -430,8 +430,8 @@ export function distributeItemsNoFilter(slotsData: {
 
         itemIDToStackGroupID[itemInstanceId] = stackGroupID;
 
-        itemIdToInfo[id] = {slot: firstAvailSlot, icon: getIcon(item)};
-        itemIdToInfo[itemInstanceId] = {slot: firstAvailSlot, icon: getIcon(item)};
+        itemIdToInfo[id] = { slot: firstAvailSlot, icon: getIcon(item) };
+        itemIdToInfo[itemInstanceId] = { slot: firstAvailSlot, icon: getIcon(item) };
       }
     }
 
@@ -443,7 +443,7 @@ export function distributeItemsNoFilter(slotsData: {
       isStack: isStackedItem(item),
       item,
     };
-    itemIdToInfo[id] = {slot: position, icon: getIcon(item)};
+    itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
   });
 
   // batch move all items with no position
@@ -506,8 +506,8 @@ export function distributeFilteredItems(slotsData: {
     }
 
     slotNumberToItem[indexCounter] = itemDef;
-    itemIdToInfo[itemDef.id] = {slot: indexCounter, icon: oldItemIdToInfo[itemID].icon};
-    itemIdToInfo[itemID] = {slot: indexCounter, icon: oldItemIdToInfo[itemID].icon};
+    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
+    itemIdToInfo[itemID] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
 
     indexCounter++;
   }
@@ -537,8 +537,8 @@ export function distributeFilteredItems(slotsData: {
 
     slotNumberToItem[indexCounter] = itemDef;
 
-    itemIdToInfo[itemDef.id] = {slot: indexCounter, icon: getIcon(item)};
-    itemIdToInfo[itemID] = {slot: indexCounter, icon: getIcon(item)};
+    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: getIcon(item) };
+    itemIdToInfo[itemID] = { slot: indexCounter, icon: getIcon(item) };
     indexCounter++;
   }
 

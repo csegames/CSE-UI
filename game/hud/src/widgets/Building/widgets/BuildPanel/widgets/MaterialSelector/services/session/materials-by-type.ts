@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, BuildingMaterial} from 'camelot-unchained';
+import { events, BuildingMaterial } from 'camelot-unchained';
 
-import {ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR} from '../../../../lib/BuildPane';
+import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 import MaterialsByType from '../../lib/MaterialsByType';
 import * as assign from 'object-assign';
 

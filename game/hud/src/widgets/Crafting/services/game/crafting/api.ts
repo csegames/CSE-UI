@@ -9,8 +9,8 @@
  * @Last Modified time: 2017-08-11 17:06:20
  */
 
-import {client, webAPI} from 'camelot-unchained';
-import {Promise} from 'es6-promise';
+import { client, webAPI } from 'camelot-unchained';
+import { Promise } from 'es6-promise';
 
 export interface VoxResponse {
   Result: number;

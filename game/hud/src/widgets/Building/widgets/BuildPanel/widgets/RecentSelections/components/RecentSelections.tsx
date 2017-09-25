@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {GlobalState} from '../services/session/reducer';
+import { GlobalState } from '../services/session/reducer';
 
-import {BuildingItem} from '../../../../../lib/BuildingItem';
+import { BuildingItem } from '../../../../../lib/BuildingItem';
 
 
 function select(state: GlobalState) {

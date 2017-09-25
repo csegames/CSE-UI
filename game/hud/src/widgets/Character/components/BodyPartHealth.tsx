@@ -12,8 +12,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {css, StyleDeclaration, StyleSheet} from 'aphrodite';
-import {characterBodyPartIcons} from '../lib/constants';
+import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import { characterBodyPartIcons } from '../lib/constants';
 
 export interface BodyPartHealthStyles extends StyleDeclaration {
   healthInfoContainer: React.CSSProperties;
@@ -129,7 +129,7 @@ class BodyPartHealth extends React.Component<BodyPartHealthProps, {}> {
   }
 
   private getMaxHealthForBodyPart = (healthComponent: HealthBodyParts) => {
-    const {maxHealthParts} = this.props;
+    const { maxHealthParts } = this.props;
     switch (healthComponent) {
       case HealthBodyParts.Head: return maxHealthParts['HEAD'];
       case HealthBodyParts.Torso: return maxHealthParts['TORSO'];

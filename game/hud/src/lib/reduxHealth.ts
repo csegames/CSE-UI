@@ -8,10 +8,10 @@
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-04-12 12:02:33
  */
-import {Race, Gender, Archetype, Faction, Player} from 'camelot-unchained';
+import { Race, Gender, Archetype, Faction, Player } from 'camelot-unchained';
 
-import {PlayerStatus, BodyParts} from './PlayerStatus';
-import {clone, BaseAction} from './reduxUtils';
+import { PlayerStatus, BodyParts } from './PlayerStatus';
+import { clone, BaseAction } from './reduxUtils';
 
 export interface HealthAction extends BaseAction {
   current?: number;
@@ -34,8 +34,8 @@ export function fakePlayer(): PlayerStatus {
     gender: Gender.Male,
     archetype: Archetype.WintersShadow,
     characterID: '',
-    position: {x: 0, y: 0},
-    targetPosition: {x: 0, y: 0},
+    position: { x: 0, y: 0 },
+    targetPosition: { x: 0, y: 0 },
     health: [{
       current: 10000,
       maximum: 10000,
@@ -102,44 +102,44 @@ export function staminaUpdated(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.stamina.current = action.current;
   playerStatus.stamina.maximum = action.max;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function healthUpdated(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.health[action.part].current = action.current;
   playerStatus.health[action.part].maximum = action.max;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function nameChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.name = action.text;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function raceChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.race = action.race;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function avatarChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.avatar = action.avatar;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function characterPositionChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.position = action.position;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 export function targetPositionChanged(status: PlayerStatus, action: HealthAction) {
   const playerStatus = clone(status);
   playerStatus.targetPosition = action.targetPosition;
-  return {playerStatus};
+  return { playerStatus };
 }
 
 let key = 3;

@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import {GroupInvite, groupType} from 'camelot-unchained';
-import {StyleSheet, css} from 'aphrodite';
-import {merge} from 'lodash';
+import { GroupInvite, groupType } from 'camelot-unchained';
+import { StyleSheet, css } from 'aphrodite';
+import { merge } from 'lodash';
 import * as className from 'classnames';
 
 import Slider from './Slider';
-import {acceptInvite, declineInvite} from '../services/session/invites';
+import { acceptInvite, declineInvite } from '../services/session/invites';
 
 const defaultStyle: InteractiveAlertStyle = {
   container: {
@@ -108,7 +108,7 @@ export default (props: {
     });
   }
 
-  if (alerts.length === 0) return <div style={{display: 'none'}}></div>;
+  if (alerts.length === 0) return <div style={{ display: 'none' }}></div>;
 
   return (
     <div className={css(ss.container)}>

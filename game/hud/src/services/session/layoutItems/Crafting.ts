@@ -8,7 +8,7 @@
  * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-07-26 12:08:51
  */
-import {LayoutMode, Edge} from '../../../components/HUDDrag';
+import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import Crafting from '../../../widgets/Crafting';
 import HUDZOrder from '../HUDZOrder';
 

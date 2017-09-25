@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {utils} from 'camelot-unchained';
+import { utils } from 'camelot-unchained';
 
-import {InventorySlotItemDef, slotDimensions, SlotType} from './InventorySlot';
+import { InventorySlotItemDef, slotDimensions, SlotType } from './InventorySlot';
 import InventoryRowActionButton from './InventoryRowActionButton';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import {
   calcRows,
@@ -102,16 +102,16 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
     switch (this.props.item.slotType) {
       case SlotType.CraftingContainer:
         const firstItem = this.props.item.stackedItems[0];
-        const {totalUnitCount, weight, averageQuality} = base.getContainerHeaderInfo(this.props.item.stackedItems);
+        const { totalUnitCount, weight, averageQuality } = base.getContainerHeaderInfo(this.props.item.stackedItems);
         header =
           `${getItemDefinitionName(firstItem)} | ${totalUnitCount} units | ${weight}kg | average quality ${averageQuality}%`;
-        rows = base.createRowElementsForCraftingItems(this.state, {items: this.props.item.stackedItems}).rows;
-        rowData = base.createRowElementsForCraftingItems(this.state, {items: this.props.item.stackedItems}).rowData;
+        rows = base.createRowElementsForCraftingItems(this.state, { items: this.props.item.stackedItems }).rows;
+        rowData = base.createRowElementsForCraftingItems(this.state, { items: this.props.item.stackedItems }).rowData;
         break;
       default:
         header = `${getItemDefinitionName(firstItem)} | ${this.props.item.stackedItems.length}`;
-        rows = base.createRowElements(this.state, {items: this.props.item.stackedItems}).rows;
-        rowData = base.createRowElements(this.state, {items: this.props.item.stackedItems}).rowData;
+        rows = base.createRowElements(this.state, { items: this.props.item.stackedItems }).rows;
+        rowData = base.createRowElements(this.state, { items: this.props.item.stackedItems }).rowData;
     }
 
     return (
@@ -168,7 +168,7 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
       slotsPerRow: props.slotsPerRow,
       ...rowsAndSlots,
     };
-    return base.distributeItems(rowData, {items: []},  state, props);
+    return base.distributeItems(rowData, { items: [] },  state, props);
   }
 
   private addRowOfSlots = () => {

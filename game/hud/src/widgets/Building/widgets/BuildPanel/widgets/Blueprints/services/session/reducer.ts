@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import bpReducer, {BlueprintsState} from './blueprints';
+import bpReducer, { BlueprintsState } from './blueprints';
 const blueprints = bpReducer;
 
 export default combineReducers({

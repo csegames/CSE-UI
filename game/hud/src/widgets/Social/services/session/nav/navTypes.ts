@@ -8,8 +8,8 @@
  * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
  * @Last Modified time: 2017-04-06 11:02:04
  */
-import {utils, ql} from 'camelot-unchained';
-import {Map} from 'immutable';
+import { utils, ql } from 'camelot-unchained';
+import { Map } from 'immutable';
 
 export enum SocialCategory {
   Personal,
@@ -108,7 +108,7 @@ export interface SubCategoryAddress {
 export type CategoryAddress = PrimaryCategoryAddress | SubCategoryAddress;
 
 export function defaultCategoryNav() {
-  return {id: '', displayName: '', links: []as any, collapsed: false};
+  return { id: '', displayName: '', links: []as any, collapsed: false };
 }
 
 export function linkAddressEquals(a: LinkAddress, b: LinkAddress) {

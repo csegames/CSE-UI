@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, merge, progressBar, ProgressBarStyles} from '../styles';
+import { StyleSheet, css, merge, progressBar, ProgressBarStyles } from '../styles';
 
 interface ProgressBarProps {
   total: number;

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events, buildUIMode} from 'camelot-unchained';
+import { events, buildUIMode } from 'camelot-unchained';
 import requester from './requester';
 import * as assign from 'object-assign';
 
@@ -37,7 +37,7 @@ const initialState = {
 export default function reducer(state: BuildingState = initialState, action: any = {}) {
   switch (action.type) {
     case CHANGE_MODE:
-      return assign({}, state, {mode: action.mode});
+      return assign({}, state, { mode: action.mode });
     default: return state;
   }
 }

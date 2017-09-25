@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton} from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 
@@ -132,7 +132,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
     const level = Number.parseInt(this.levelInputRef.value);
     const permisisons = this.listSelectRef.getRightKeys();
 
-    await this.setState({requestActive: true});
+    await this.setState({ requestActive: true });
 
     const res = await webAPI.GroupsAPI.CreateRankV1(
       webAPI.defaultConfig,
@@ -153,7 +153,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
       setTimeout(() => this.props.onCreated(), 200);
       return;
     }
-    this.setState({requestActive: false, errors: res.data});
+    this.setState({ requestActive: false, errors: res.data });
 
   }
 

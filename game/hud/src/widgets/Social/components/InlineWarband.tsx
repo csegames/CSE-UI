@@ -10,9 +10,9 @@
  */
 
 import * as React from 'react';
-import {StyleDeclaration} from 'aphrodite';
-import {ql, Spinner} from 'camelot-unchained';
-import {graphql, InjectedGraphQLProps} from 'react-apollo';
+import { StyleDeclaration } from 'aphrodite';
+import { ql, Spinner } from 'camelot-unchained';
+import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 export interface InlineWarbandStyle extends StyleDeclaration {
   card: React.CSSProperties;

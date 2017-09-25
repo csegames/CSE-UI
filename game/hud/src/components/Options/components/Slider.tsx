@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {utils} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { utils } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface SliderStyle extends StyleDeclaration {
   Slider: React.CSSProperties;

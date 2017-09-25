@@ -11,11 +11,11 @@
 
 import * as React from 'react';
 
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
-import {Tooltip} from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import { Tooltip } from 'camelot-unchained';
 
-import {InventoryFilterButton as FilterButtonDefinition} from '../../../lib/constants';
-import {prettifyText} from '../../../lib/utils';
+import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
+import { prettifyText } from '../../../lib/utils';
 
 export interface InventoryFilterButtonStyles extends StyleDeclaration {
   inventoryFilterButton: React.CSSProperties;
@@ -90,7 +90,7 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
       this.props.onDeactivated(this.props.filterButton);
     }
 
-    this.setState({activated: value});
+    this.setState({ activated: value });
   }
 
   constructor(props: InventoryFilterButtonProps) {
@@ -146,7 +146,7 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
       this.props.onActivated(this.props.filterButton);
     }
 
-    this.setState({activated: !this.state.activated});
+    this.setState({ activated: !this.state.activated });
   }
 }
 

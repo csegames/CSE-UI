@@ -10,16 +10,16 @@
  */
 
 import * as React from 'react';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
-import {utils, TabPanel, TabItem, ContentItem} from 'camelot-unchained';
-import {graphql, InjectedGraphQLProps} from 'react-apollo';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import { utils, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { graphql, InjectedGraphQLProps } from 'react-apollo';
 
 import GeneralInfo from './components/GeneralInfo';
 import DefenseList from './components/Defense/DefenseList';
 import OffenseList from './components/Offense/OffenseList';
-import {colors} from '../../lib/constants';
+import { colors } from '../../lib/constants';
 import queries from '../../../../gqlDocuments';
-import {CharacterInfoQuery} from '../../../../gqlInterfaces';
+import { CharacterInfoQuery } from '../../../../gqlInterfaces';
 
 // TEMPORARY
 import testCharacterStats from './testCharacterStats';
@@ -119,7 +119,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
   public render() {
     const ss = StyleSheet.create(defaultCharacterInfoStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const {myCharacter, myOrder} = this.props.data;
+    const { myCharacter, myOrder } = this.props.data;
     const tabs: TabItem[] = [
       {
         name: 'offense',
@@ -139,11 +139,11 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
     const content: ContentItem[] = [
       {
         name: 'Offense',
-        content: {render: this.renderOffenseInfo},
+        content: { render: this.renderOffenseInfo },
       },
       {
         name: 'Defense',
-        content: {render: this.renderDefenseInfo},
+        content: { render: this.renderDefenseInfo },
       },
     ];
 

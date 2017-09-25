@@ -12,7 +12,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {InventoryItemFragment} from '../../../gqlInterfaces';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.

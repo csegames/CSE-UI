@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {ql} from 'camelot-unchained';
-import {LinkAddress} from '../services/session/nav/navTypes';
+import { ql } from 'camelot-unchained';
+import { LinkAddress } from '../services/session/nav/navTypes';
 
 import InvitesList from './InvitesList';
 

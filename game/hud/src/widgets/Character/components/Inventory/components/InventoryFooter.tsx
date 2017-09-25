@@ -11,13 +11,13 @@
 
 import * as React from 'react';
 
-import {Tooltip, utils, events} from 'camelot-unchained';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { Tooltip, utils, events } from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';
 import InventoryRowActionButton from './InventoryRowActionButton';
-import {emptyStackHash, colors, footerInfoIcons, rowActionIcons} from '../../../lib/constants';
-import eventNames, {DropItemCallback} from '../../../lib/eventNames';
+import { emptyStackHash, colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
+import eventNames, { DropItemCallback } from '../../../lib/eventNames';
 
 export interface InventoryFooterStyles extends StyleDeclaration {
   InventoryFooter: React.CSSProperties;

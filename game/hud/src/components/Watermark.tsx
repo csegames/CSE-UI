@@ -10,8 +10,8 @@
  */
 
 import * as React from 'react';
-import {StyleSheet, css} from 'aphrodite';
-import {merge} from 'lodash';
+import { StyleSheet, css } from 'aphrodite';
+import { merge } from 'lodash';
 
 const defaultStyles: WatermarkStyle = {
   watermark: {

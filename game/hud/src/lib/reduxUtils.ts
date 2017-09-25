@@ -125,7 +125,7 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
   const result: T[] = [];
   const removed: T[] = [];
 
-  if (!(arr && arr.length)) return {result, removed};
+  if (!(arr && arr.length)) return { result, removed };
 
   let i = arr.length;
   while (--i > -1) {
@@ -137,7 +137,7 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
     }
   }
 
-  return {result, removed};
+  return { result, removed };
 }
 
 export function loggingMiddleware(store: any) {

@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import playerReducer, {TargetState} from './target';
+import playerReducer, { TargetState } from './target';
 const player = playerReducer as any;
 
 export default combineReducers({

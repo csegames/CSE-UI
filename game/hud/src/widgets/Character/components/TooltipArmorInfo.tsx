@@ -11,8 +11,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import {ql} from 'camelot-unchained';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { ql } from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 export interface TooltipArmorInfoStyles extends StyleDeclaration {
   armorInfo: React.CSSProperties;
@@ -62,8 +62,8 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, {}> {
   private ss: TooltipArmorInfoStyles;
 
   public render() {
-    this.ss = StyleSheet.create({...defaultTooltipArmorInfoStyle, ...this.props.styles});
-    const {addedResistances, addedMitigations} = this.calculateArmorStats();
+    this.ss = StyleSheet.create({ ...defaultTooltipArmorInfoStyle, ...this.props.styles });
+    const { addedResistances, addedMitigations } = this.calculateArmorStats();
     return (
       <div>
         {this.displayArmorSection(addedResistances, 'Resistances')}
@@ -77,10 +77,10 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, {}> {
       [statType: string]: number;
     }
     // Armor has a unique layout so we need a seperate function for armor stat info
-    const {item, slotName, gearSlots} = this.props;
+    const { item, slotName, gearSlots } = this.props;
     const itemInfo = item.staticDefinition;
-    let addedResistances: { total: StatInfo, specific: StatInfo } = {total: {}, specific: {}};
-    let addedMitigations: { total: StatInfo, specific: StatInfo } = {total: {}, specific: {}};
+    let addedResistances: { total: StatInfo, specific: StatInfo } = { total: {}, specific: {} };
+    let addedMitigations: { total: StatInfo, specific: StatInfo } = { total: {}, specific: {} };
     const statSlots = itemInfo.gearSlotSets.length === 1 ?
       itemInfo.gearSlotSets[0].gearSlots : itemInfo.gearSlotSets.length > 1 && gearSlots;
 
@@ -124,7 +124,7 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, {}> {
   }
 
   private calculateTotalStats = (statSlots: any, addedResistances: any, addedMitigations: any) => {
-    const {item} = this.props;
+    const { item } = this.props;
     statSlots.forEach((gearSlot: ql.schema.GearSlotDefRef) => {
       const slotName = gearSlot.id;
       const validArmorSlotName = slotName.substring(0, 1).toLowerCase() + slotName.substring(1, slotName.length);

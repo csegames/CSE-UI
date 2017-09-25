@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {ql, Tooltip} from 'camelot-unchained';
-import {css, StyleSheet, StyleDeclaration} from 'aphrodite';
+import { ql, Tooltip } from 'camelot-unchained';
+import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import TooltipContent, {defaultTooltipStyle} from './TooltipContent';
-import {InventoryItemFragment} from '../../../gqlInterfaces';
+import TooltipContent, { defaultTooltipStyle } from './TooltipContent';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export interface ItemStyles extends StyleDeclaration {
   ItemSlot: React.CSSProperties;
@@ -79,7 +79,7 @@ export interface ItemSlotProps {
 }
 
 const ItemSlot = (props: ItemSlotProps) => {
-  const ss = StyleSheet.create({...defaultItemStyles, ...props.styles});
+  const ss = StyleSheet.create({ ...defaultItemStyles, ...props.styles });
   const {
     item,
     iconUrl,

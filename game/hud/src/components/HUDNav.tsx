@@ -10,10 +10,10 @@
  */
 
 import * as React from 'react';
-import {Tooltip, utils} from 'camelot-unchained';
+import { Tooltip, utils } from 'camelot-unchained';
 import * as className from 'classnames';
-import {StyleSheet, css} from 'aphrodite';
-import {merge} from 'lodash';
+import { StyleSheet, css } from 'aphrodite';
+import { merge } from 'lodash';
 
 const defaultStyles: HUDNavStyle = {
   list: {
@@ -88,7 +88,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
               },
             }}>
               <li
-                className={className({[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}
+                className={className({ [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
                 onClick={this.show}>
                 <a href='#' className={className(css(ss.item), 'click-effect')}>
                   <span className='fa-stack click-effect'>
@@ -100,7 +100,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
             </Tooltip>) :
             (
               <div>
-                {this.props.items.map(({name, tooltip, onClick, icon, iconClass}) => {
+                {this.props.items.map(({ name, tooltip, onClick, icon, iconClass }) => {
                   return (
                     <Tooltip key={name} content={tooltip} styles={{
                       tooltip: {
@@ -109,7 +109,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                     }}>
                       <li
                         className={className(
-                          {[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}
+                          { [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
                           id={name}
                           key={name}
                           onClick={onClick}>
@@ -131,7 +131,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                 }}>
                   <li
                     className={className(
-                      {[css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL})}
+                      { [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
                     onClick={this.hide}>
                     <a href='#' className={className(css(ss.item), 'click-effect')}>
                       <span className='fa-stack click-effect'>

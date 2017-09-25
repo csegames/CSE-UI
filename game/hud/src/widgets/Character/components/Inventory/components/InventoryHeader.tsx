@@ -12,13 +12,13 @@
 import * as React from 'react';
 import * as FilterButtonAPI from './FilterButtonAPI';
 
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
-import {merge} from 'lodash';
-import {Input, client} from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { merge } from 'lodash';
+import { Input, client } from 'camelot-unchained';
 
 import InventoryFilterButton from './InventoryFilterButton';
 import FilterSelectMenu from './FilterSelectMenu';
-import {colors, InventoryFilterButton as FilterButtonDefinition} from '../../../lib/constants';
+import { colors, InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
 
 export interface InventoryHeaderStyle extends StyleDeclaration {
   InventoryHeader: React.CSSProperties;

@@ -12,14 +12,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import {events, TabPanel, TabItem, ContentItem} from 'camelot-unchained';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CharacterInfo from './CharacterInfo/CharacterInfo';
 import Inventory from './Inventory/Inventory';
 import PaperDoll from './PaperDoll/PaperDollContainer';
-import {InventoryItemFragment} from '../../../gqlInterfaces';
-import {colors} from '../lib/constants';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { colors } from '../lib/constants';
 
 export interface CharacterMainStyle extends StyleDeclaration {
   characterMain: React.CSSProperties;
@@ -152,11 +152,11 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     const content: ContentItem[] = [
       {
         name: 'Character',
-        content: {render: this.renderCharacterInfo},
+        content: { render: this.renderCharacterInfo },
       },
       {
         name: 'Inventory',
-        content: {render: this.renderInventory},
+        content: { render: this.renderInventory },
       },
     ];
     const defaultTabIndex = _.findIndex(tabs, tab => tab.name === this.props.visibleComponent);
@@ -235,7 +235,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     console.log('ON CHANGE INVENTORY ITEMS');
     console.log(inventoryItems);
     console.log(_.find(inventoryItems, item => item.staticDefinition.name === 'Torch'));
-    this.setState({inventoryItems});
+    this.setState({ inventoryItems });
   }
 }
 

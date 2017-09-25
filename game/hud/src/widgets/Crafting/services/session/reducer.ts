@@ -10,11 +10,11 @@
  */
 
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import ui, {UIState} from './ui';
-import job, {JobState} from './job';
-import recipes, {RecipesState} from './recipes';
+import ui, { UIState } from './ui';
+import job, { JobState } from './job';
+import recipes, { RecipesState } from './recipes';
 
 export {
   UIState,

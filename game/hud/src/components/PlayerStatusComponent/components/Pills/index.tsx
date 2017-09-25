@@ -140,13 +140,13 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
     const bgLayer = (
       <div className='PlayerStatusComponent__pills__layer'
-            style={{background: this.props.depletedColor}}>
+            style={{ background: this.props.depletedColor }}>
       </div>
     );
 
     const valueLayer = (
       <div className='PlayerStatusComponent__pills__layer'
-          style={{background: this.props.valueColor, [dimension]: filled + '%'}}>
+          style={{ background: this.props.valueColor, [dimension]: filled + '%' }}>
       </div>
     );
 
@@ -186,14 +186,14 @@ class Pills extends React.Component<PillsProps, PillsState> {
 
   private onEnter = () => {
     if (this.hoverTimeoutID != null || !this.mounted) return;
-    this.hoverTimeoutID = setTimeout(() => this.setState({showTextValues: true} as any), 500);
+    this.hoverTimeoutID = setTimeout(() => this.setState({ showTextValues: true } as any), 500);
   }
 
   private onLeave = () => {
     if (!this.mounted) return;
     clearTimeout(this.hoverTimeoutID);
     this.hoverTimeoutID = null;
-    this.setState({showTextValues: false} as any);
+    this.setState({ showTextValues: false } as any);
   }
 
 
@@ -247,7 +247,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
                   height: `${liHeight}px`,
                 }}
                 onMouseEnter={() => this.onEnter()}
-                onMouseLeave={() => this.onLeave()} ><div  style={{backgroundColor: depletedColor}}></div></li>;
+                onMouseLeave={() => this.onLeave()} ><div  style={{ backgroundColor: depletedColor }}></div></li>;
     }
     if (fillPercent >= 100) {
       return <li key={key}
@@ -257,7 +257,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
                   height: `${liHeight}px`,
                 }}
                 onMouseEnter={() => this.onEnter()}
-                onMouseLeave={() => this.onLeave()}  ><div  style={{backgroundColor: fillColor}}></div></li>;
+                onMouseLeave={() => this.onLeave()}  ><div  style={{ backgroundColor: fillColor }}></div></li>;
     }
 
     const remainder = 100 - fillPercent;
@@ -269,7 +269,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
                 transform: `rotateZ(${deg}deg) translateX(${offsetX}px)`,
                 height: `${liHeight}px`,
               }}
-              dangerouslySetInnerHTML={{__html: html}}
+              dangerouslySetInnerHTML={{ __html: html }}
               onMouseEnter={() => this.onEnter()}
               onMouseLeave={() => this.onLeave()} />;
   }

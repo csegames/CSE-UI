@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {BuildingBlueprint} from 'camelot-unchained';
+import { BuildingBlueprint } from 'camelot-unchained';
 
 export interface BlueprintListProps {
   blueprints: BuildingBlueprint[];
@@ -22,7 +22,7 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
 
   constructor(props: BlueprintListProps) {
     super(props);
-    this.state = {hoverIcon: null};
+    this.state = { hoverIcon: null };
   }
 
   public render() {

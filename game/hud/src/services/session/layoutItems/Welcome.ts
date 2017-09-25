@@ -9,7 +9,7 @@
  * @Last Modified time: 2017-07-26 12:13:14
  */
 import Welcome from '../../../components/Welcome';
-import {LayoutMode} from '../../../components/HUDDrag';
+import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

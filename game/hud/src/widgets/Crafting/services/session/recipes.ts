@@ -9,9 +9,9 @@
  * @Last Modified time: 2017-08-11 19:37:33
  */
 
-import {Module} from 'redux-typed-modules';
-import {Recipe} from '../types';
-import {VoxRecipe} from '../game/crafting';
+import { Module } from 'redux-typed-modules';
+import { Recipe } from '../types';
+import { VoxRecipe } from '../game/crafting';
 
 export interface RecipesState {
   updating: number;
@@ -35,12 +35,12 @@ export const initialState = (): RecipesState => {
 
 const module = new Module({
   initialState: initialState(),
-  actionExtraData: () => ({when: new Date()}),
+  actionExtraData: () => ({ when: new Date() }),
 });
 
 function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
   return voxRecipes.map((r: VoxRecipe) => {
-    const item: any = r.outputItem || {name: r.id};
+    const item: any = r.outputItem || { name: r.id };
     return {
       id: r.id,
       name: item.name,
@@ -65,7 +65,7 @@ export const gotVoxRecipes = module.createAction({
       case 'shape':
       case 'block':
       case 'make':
-        return {[type]: a.recipes.sort((a, b) => a.name.localeCompare(b.name))};
+        return { [type]: a.recipes.sort((a, b) => a.name.localeCompare(b.name)) };
     }
     console.error('CRAFTING: illegal recipe type ' + type);
     return {};

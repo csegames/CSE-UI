@@ -5,16 +5,16 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
-import {loadBlueprints} from './services/session/blueprints';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import { loadBlueprints } from './services/session/blueprints';
 import thunk from 'redux-thunk';
 
 import reducer from './services/session/reducer';
 import BlueprintsPane from './components/BlueprintsPane';
-import {BuildPaneProps} from '../../lib/BuildPane';
+import { BuildPaneProps } from '../../lib/BuildPane';
 import TabbedPane from '../../components/TabbedPane';
-import {Anchor} from '../../../SavedDraggable';
+import { Anchor } from '../../../SavedDraggable';
 
 
 const store = createStore(reducer, applyMiddleware(thunk));
@@ -36,7 +36,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
         >
           <Provider store={store}>
             <BlueprintsPane minimized={this.props.minimized}
-              handlePreviewIcon={(icon: string) => this.setState({previewIcon: icon})}
+              handlePreviewIcon={(icon: string) => this.setState({ previewIcon: icon })}
             />
           </Provider>
         </TabbedPane>

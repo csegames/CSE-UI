@@ -16,7 +16,7 @@ import {
   parseMessageForSlashCommand,
   events,
 } from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface ConsoleStyle extends StyleDeclaration {
   container: React.CSSProperties;

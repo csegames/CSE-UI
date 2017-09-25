@@ -5,19 +5,19 @@
  */
 
 import * as React from 'react';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import {events} from 'camelot-unchained';
+import { events } from 'camelot-unchained';
 import reducer from './services/session/reducer';
-import {initialize} from './services/session/materials';
-import {BuildPaneProps, DEACTIVATE_MATERIAL_SELECTOR} from '../../lib/BuildPane';
+import { initialize } from './services/session/materials';
+import { BuildPaneProps, DEACTIVATE_MATERIAL_SELECTOR } from '../../lib/BuildPane';
 
 import TabbedPane from '../../components/TabbedPane';
 import MaterialAndShapePane from './components/MaterialAndShapePane';
 import MaterialReplace from './components/MaterialReplace';
-import {Anchor} from '../../../SavedDraggable';
+import { Anchor } from '../../../SavedDraggable';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 

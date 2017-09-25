@@ -11,10 +11,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import {utils, client} from 'camelot-unchained';
-import {StyleSheet, css, StyleDeclaration} from 'aphrodite';
+import { utils, client } from 'camelot-unchained';
+import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import {ConfigInfo, ConfigIndex} from '../OptionsMain';
+import { ConfigInfo, ConfigIndex } from '../OptionsMain';
 
 export interface ActionButtonsStyle extends StyleDeclaration {
   ActionButtons: React.CSSProperties;

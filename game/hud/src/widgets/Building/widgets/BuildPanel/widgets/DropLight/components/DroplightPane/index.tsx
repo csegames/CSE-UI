@@ -5,19 +5,19 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {client} from 'camelot-unchained';
+import { connect } from 'react-redux';
+import { client } from 'camelot-unchained';
 
-import {BuildingItem, BuildingItemType} from '../../../../../../lib/BuildingItem';
-import {fireBuildingItemSelected} from '../../../../../../services/events';
+import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
+import { fireBuildingItemSelected } from '../../../../../../services/events';
 
-import {GlobalState} from '../../services/session/reducer';
+import { GlobalState } from '../../services/session/reducer';
 import * as lightService from '../../services/session/lights';
 
 import LightPreview from '../LightPreview';
 import ColorSelect from '../ColorSelect';
-import {Color} from '../../lib/Color';
-import {Light} from '../../lib/Light';
+import { Color } from '../../lib/Color';
+import { Light } from '../../lib/Light';
 
 function select(state: GlobalState) {
   return {
@@ -47,7 +47,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
 
   constructor(props: DropLightPaneProps) {
     super(props);
-    this.state = {preview: false};
+    this.state = { preview: false };
   }
 
   public render() {

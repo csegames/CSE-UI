@@ -64,7 +64,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
         html = `<div class='${this.props.pillClass || ''}' style='background-color: ${this.props.depletedColor};' />`;
       }
 
-      pills.push(<li key={i} className='player-status-bar__pills__pill' dangerouslySetInnerHTML={{__html: html}}/>);
+      pills.push(<li key={i} className='player-status-bar__pills__pill' dangerouslySetInnerHTML={{ __html: html }}/>);
       displayedHealth += pillHealth;
     }
     return pills;
@@ -90,7 +90,7 @@ class Pills extends React.Component<PillsProps, PillsState> {
       } else {
         html = `<div class='${this.props.pillClass || ''}' style='background-color: ${this.props.depletedColor};' />`;
       }
-      pills.push(<li key={i} className='player-status-bar__pills__pill' dangerouslySetInnerHTML={{__html: html}} />);
+      pills.push(<li key={i} className='player-status-bar__pills__pill' dangerouslySetInnerHTML={{ __html: html }} />);
       displayedHealth += pillHealth;
     }
     return pills;

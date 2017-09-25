@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {StyleDeclaration, StyleSheet, css} from 'aphrodite';
+import { connect } from 'react-redux';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import {WarbandSessionState, WarbandState} from '../services/session';
-import {initialize as warbandInit} from '../services/session/warband';
+import { WarbandSessionState, WarbandState } from '../services/session';
+import { initialize as warbandInit } from '../services/session/warband';
 import WarbandMemberDisplay from './WarbandMemberDisplay';
 
 function select(state: WarbandSessionState) {
