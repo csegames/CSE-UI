@@ -23,13 +23,13 @@ function runQuery(query: string, key: string, args: any = null) {
   return new Promise((resolve, reject) => {
     if (args) {
       let sargs = '(';
-      for (let key in args) {
+      for (const key in args) {
         sargs += key + ':' + args[key];
       }
       sargs += ')';
       query = query.replace(key, key + sargs);
     }
-    gql({ query }).then((data: any) => {
+    gql({query}).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
       if (info) {
         resolve(info);
@@ -72,7 +72,7 @@ const SlotToSubItemSlot = {
 export function voxGetPossibleIngredientsForSlot(slot: string) {
   slot = SlotToSubItemSlot[slot] || slot.toUpperCase();
   return new Promise((resolve, reject) => {
-    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', { slot: slot})
+    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', {slot})
       .then((possibleIngredients: VoxPossibleIngredient[]) => {
         resolve(possibleIngredients);
       })
@@ -105,6 +105,6 @@ export function voxGetPossibleItemSlots() {
       })
       .catch(() => {
         reject('Could not get possible item slots');
-      })
+      });
   });
 }

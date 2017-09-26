@@ -527,7 +527,7 @@ export const ingredients: IngredientsStyles = {
   },
   message: {
     paddingLeft: '1em',
-  }
+  },
 };
 
 export interface IngredientItemStyles {

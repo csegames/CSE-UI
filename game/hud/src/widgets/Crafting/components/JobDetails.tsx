@@ -49,6 +49,7 @@ export interface JobDetailsProps extends JobDetailsReduxProps {
   setRecipe: (recipe: Recipe) => void;
   addIngredient: (item: InventoryItem, qty: number) => void;
   removeIngredient: (ingredient: Ingredient) => void;
+  selectSlot: (slot: string) => void;
   style?: Partial<JobDetailsStyles>;
 }
 
@@ -84,6 +85,7 @@ export const JobDetails = (props: JobDetailsProps) => {
         <Ingredients
           add={props.addIngredient}
           remove={props.removeIngredient}
+          selectSlot={props.selectSlot}
           dispatch={props.dispatch}
           />
         <OutputItems/>

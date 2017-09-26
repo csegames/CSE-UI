@@ -6,10 +6,9 @@
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
-import { Ingredient } from '../services/types';
-import { voxGetPossibleIngredientsForSlot, VoxPossibleIngredient } from '../services/game/crafting';
-import { gotVoxPossibleIngredientsForSlot, setMessage } from '../services/session/job';
+import {GlobalState} from '../services/session/reducer';
+import {Ingredient} from '../services/types';
+import {setMessage} from '../services/session/job';
 import IngredientItem from './IngredientItem';
 import RepairItem from './RepairItem';
 import PossibleIngredients from './PossibleIngredients';
@@ -29,6 +28,7 @@ export interface IngredientsPropsRedux {
 }
 
 export interface IngredientsProps extends IngredientsPropsRedux{
+  selectSlot: (slot: string) => void;
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
@@ -102,7 +102,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     } else {
       let possible;
       console.log('INGREDIENTS: RENDER: SLOTS LOADED');
-      console.log('INGREDIENTS: RENDER: possibleSlots: ' + props.possibleSlots.join(","));
+      console.log('INGREDIENTS: RENDER: possibleSlots: ' + props.possibleSlots.join(','));
       if (!props.possibleIngredients) {
         console.log('INGREDIENTS: RENDER: NO POSSIBLE INGREDIENTS YET');
         if (props.selectedSlot) {
@@ -138,13 +138,13 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
                 style={{input: ingredientsStyles.quantity}}
                 numeric={true} min={1}
                 disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
-              <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
+              <Button disabled={!ready} style={{button: ingredientsStyles.add}}
                 onClick={this.addIngredient}>Add</Button>
             </div>
           );
         } else {
           console.log('INGREDIENTS: RENDER: DONT HAVE ANY INGREDIENTS');
-          props.dispatch(setMessage({ type: 'error', message: 'could not find any suitable ingredients for this slot'}));
+          props.dispatch(setMessage({type: 'error', message: 'could not find any suitable ingredients for this slot'}));
         }
       }
       addIngredients = (
@@ -162,7 +162,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
     return (
       <div className={css(ss.ingredients) + ' ingredients'}>
-        <h1 className={css(ss.title)}>Ingredients...</h1>
+        { /* <h1 className={css(ss.title)}>Ingredients...</h1> */ }
         {addIngredients}
         <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
           <div>{loaded}</div>
@@ -191,15 +191,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
   private selectSlot = (slot: string) => {
     // Selected slot.  Selecting a slot first clears the current ingredients
     console.log('INGREDIENTS: SELECT SLOT ' + slot);
-    const props = this.props;
-    props.dispatch(gotVoxPossibleIngredientsForSlot(undefined, slot));
-    voxGetPossibleIngredientsForSlot(slot)
-    .then((ingredients: VoxPossibleIngredient[]) => {
-      props.dispatch(gotVoxPossibleIngredientsForSlot(ingredients, slot));
-    })
-    .catch(() => {
-      props.dispatch(setMessage({ type: 'error', message: 'Failed to get possible ingredients' }));
-    });
+    this.props.selectSlot(slot);
   }
 
   private onChange = (value: string) => {

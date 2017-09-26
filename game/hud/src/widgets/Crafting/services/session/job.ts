@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Module } from 'redux-typed-modules';
-import { Ingredient, InventoryItem, Recipe, Message } from '../types';
-import { VoxStatus, VoxPossibleIngredient, VoxOutputItem, VoxItem } from '../game/crafting';
+import {Module} from 'redux-typed-modules';
+import {Ingredient, InventoryItem, Recipe, Message} from '../types';
+import {VoxStatus, VoxPossibleIngredient, VoxOutputItem, VoxItem} from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -87,31 +87,34 @@ export const addIngredient = module.createAction({
     return { ingredient, qty, movedTo };
   },
   reducer: (s, a) => {
-    const ingredients = [ ...s.ingredients ];
+    const ingredients = [...s.ingredients];
     const qty = a.qty;
     if (a.movedTo) {
-      let i;
-      // Upadte existing ingredient
-      for (i = 0; i < ingredients.length; i++) {
-        const ingredient = ingredients[i];
-        if (ingredient.id === a.movedTo) {
-          ingredient.qty += qty;
-          break;
-        }
-      }
-      if (i === ingredients.length) {
-        // or add new one
-        ingredients.push(Object.assign({}, a.ingredient, {
-          id: a.movedTo,
-          qty: a.qty,
-        }));
-      }
-      return {
-        ingredients: ingredients.sort((a, b) => a.name.localeCompare(b.name)),
-      };
+      console.log('ADD INGREDIENT: MOVED TO ' + a.movedTo);
+    } else {
+      console.log('ADD INGREDIENT: ID ' + a.ingredient.id);
     }
-    console.error('job:addIngredient missing modedTo ID');
-    return {};
+    // Update existing ingredient
+    let i;
+    for (i = 0; i < ingredients.length; i++) {
+      const ingredient = ingredients[i];
+      if (ingredient.id === (a.movedTo || a.ingredient.id)) {
+        ingredient.qty += qty;
+        console.log('ADD INGREDIENT: UPDATE INGREDIENT ' + ingredient.id + ' BY ' + qty + ' TO ' + ingredient.qty);
+        break;
+      }
+    }
+    if (i === ingredients.length) {
+      // or add new one
+      console.log('ADD INGREDIENT: ADD NEW INGREDIENT ' + a.ingredient.id + ' BY ' + qty);
+      ingredients.push(Object.assign({}, a.ingredient, {
+        id: a.movedTo || a.ingredient.id,
+        qty: a.qty,
+      }));
+    }
+    return {
+      ingredients: ingredients.sort((a, b) => a.name.localeCompare(b.name)),
+    };
   },
 });
 
@@ -167,7 +170,7 @@ export const collectJob = module.createAction({
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
-  action: (recipe: Recipe) => ({ recipe }),
+  action: (recipe: Recipe) => ({recipe}),
   reducer: (s, a) => ({
     recipe: a.recipe,
     possibleItemSlots: undefined,   // selecting a recipe clears the possible slots
@@ -201,7 +204,8 @@ export const gotVoxPossibleIngredientsForSlot = module.createAction({
     slot,
   }),
   reducer: (s, a) => ({
-    possibleIngredientsForSlot: a.ingredients && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
+    possibleIngredientsForSlot: a.ingredients
+      && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
     slot: a.slot,
   }),
 });
@@ -295,9 +299,9 @@ export const gotOutputItems = module.createAction({
 
 export const gotPossibleItemSlots = module.createAction({
   type: 'crafting/job/got-possible-slots',
-  action: (slots: string[] ) => ({ slots }),
+  action: (slots: string[]) => ({slots}),
   reducer: (s, a) => ({
-    possibleItemSlots: a.slots.slice(0)
+    possibleItemSlots: a.slots.slice(0),
   }),
 });
 

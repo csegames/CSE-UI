@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-09-15 20:09:39
+ * @Last Modified time: 2017-09-25 18:36:14
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
+import {connect} from 'react-redux';
+import {GlobalState} from '../services/session/reducer';
 import Select from './Select';
-import { StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles } from '../styles';
+import {StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles} from '../styles';
 
 interface PossibleSlotsReduxProps {
   possibleItemSlots?: string[];
@@ -23,9 +23,9 @@ interface PossibleSlotsReduxProps {
 const select = (state: GlobalState, props: PossibleSlotsProps): PossibleSlotsReduxProps => {
   const possibleItemSlots: string[] = [];
   state.job.possibleItemSlots.forEach((slot: string, index: number) => {
-      possibleItemSlots.push(slot);
+    possibleItemSlots.push(slot);
   });
-  return { possibleItemSlots };
+  return {possibleItemSlots};
 };
 
 export interface PossibleSlotsProps extends PossibleSlotsReduxProps {

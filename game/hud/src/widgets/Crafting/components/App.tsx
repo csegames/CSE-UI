@@ -12,14 +12,14 @@ import { craftingTimeToString } from '../services/util';
 // Types
 import { Recipe, Ingredient } from '../services/types';
 import {
-  VoxIngredient,
   VoxRecipe,
   VoxResponse,
   // Updated Game API - Using GraphQL and WebAPI
-  voxGetStatus, voxGetPossibleIngredients, voxGetRecipesFor,
+  voxGetStatus, voxGetRecipesFor, voxGetPossibleItemSlots,
   setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
   setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
   addVoxIngredient, removeVoxIngredient,
+  voxGetPossibleIngredientsForSlot, VoxPossibleIngredient,
 } from '../services/game/crafting';
 import { JobState, GlobalState } from '../services/session/reducer';
 
@@ -28,18 +28,11 @@ import {
   setLoading, setJobType, setMessage, addIngredient, removeIngredient,
   startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
   setName, setRecipe, gotVoxStatus,
-  gotOutputItems, gotPossibleItemSlots,
+  gotOutputItems, gotPossibleItemSlots, gotVoxPossibleIngredientsForSlot,
 } from '../services/session/job';
 import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
 import { gotVoxRecipes } from '../services/session/recipes';
 
-// Updated Game API - Using GraphQL and WebAPI
-import {
-  voxGetStatus, voxGetPossibleIngredients, voxGetRecipesFor,
-  setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
-  setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
-  addVoxIngredient, removeVoxIngredient,
-} from '../services/game/crafting';
 
 // Components
 import JobType from './JobType';
@@ -164,6 +157,7 @@ class App extends React.Component<AppProps, AppState> {
             setName={this.setName}
             addIngredient={this.addIngredient}
             removeIngredient={this.removeIngredient}
+            selectSlot={this.selectSlot}
           />
         );
       case 'tools':
@@ -237,6 +231,7 @@ class App extends React.Component<AppProps, AppState> {
     // GraphQL: get vox status
     voxGetStatus().then((status: any) => {
       props.dispatch(gotVoxStatus(status));
+      const type = status.jobType && status.jobType.toLowerCase();
       switch (status.jobState) {
         case 'Finished':
           this.stopWaiting();
@@ -244,8 +239,8 @@ class App extends React.Component<AppProps, AppState> {
           break;
         case 'Configuring':
           // Job is being defined. If there is a recipe selected, we need to load possible slots
-          if (status.jobType) {
-            this.loadLists(status.jobType, true);
+          if (type) {
+            this.loadLists(type, true);
           }
           if (status.recipeID) {
             this.loadPossibleSlots();
@@ -261,7 +256,6 @@ class App extends React.Component<AppProps, AppState> {
           break;
       }
       props.dispatch(gotOutputItems(status.outputItems));
-      const type = status.jobType && status.jobType.toLowerCase();
       if (type && type !== 'invalid') {
         this.loadLists(type, true);
       }
@@ -308,19 +302,6 @@ class App extends React.Component<AppProps, AppState> {
       });
   }
 
-  private loadPossibleIngredients = (job: string) => {
-    // only re-load possible ingredients if job type has changed, or we are doing a refresh
-    const props = this.props;
-    props.dispatch(gotVoxPossibleIngredients([], 'loading'));
-    voxGetPossibleIngredients()
-      .then((ingredients: VoxIngredient[]) => {
-        props.dispatch(gotVoxPossibleIngredients(ingredients, job));
-      })
-      .catch(() => {
-        props.dispatch(setMessage({ type: 'error', message: 'Failed to get vox ingredients' }));
-      });
-  }
-
   private loadLists = (job: string, refresh?: boolean) => {
     const props = this.props;
 
@@ -364,12 +345,14 @@ class App extends React.Component<AppProps, AppState> {
     success: string,
     getAction?: (response: any) => any,
     errorAction?: (error: any) => any,
+    andFinally?: () => any,
   ) => {
     const props = this.props;
     request()
       .then((response: any) => {
         if (getAction) props.dispatch(getAction(response));
-        props.dispatch(setMessage({ type: 'success', message: success }));
+        props.dispatch(setMessage({type: 'success', message: success}));
+        if (andFinally) andFinally();
       })
       .catch((error: any) => {
         if (errorAction) props.dispatch(errorAction(JSON.parse(error)));
@@ -517,14 +500,31 @@ class App extends React.Component<AppProps, AppState> {
     );
   }
 
+  private selectSlot = (slot: string) => {
+    const props = this.props;
+    props.dispatch(gotVoxPossibleIngredientsForSlot(undefined, slot));
+    voxGetPossibleIngredientsForSlot(slot)
+    .then((ingredients: VoxPossibleIngredient[]) => {
+      props.dispatch(gotVoxPossibleIngredientsForSlot(ingredients, slot));
+    })
+    .catch(() => {
+      props.dispatch(setMessage({type: 'error', message: 'Failed to get possible ingredients'}));
+    });
+  }
+
   // Ingredients
   private addIngredient = (ingredient: Ingredient, qty: number) => {
     const props = this.props;
+    const slot = this.props.job.slot;
     this.api(
       () => addVoxIngredient(ingredient.id, qty),
       'Added ingredient: ' + qty + ' x ' + ingredient.name,
       (response: VoxResponse) => {
         this.checkJobStatus();
+        // will trigger updating of possible ingredients
+        // (note we could work this out client side by updating the possibleIngredientsForSlot
+        // in our global state, rather than requerying but I am being lazy)
+        if (slot) this.selectSlot(slot);
         return addIngredient(ingredient, qty, response.MovedItemID);
       },
       (e: any) => {
@@ -532,14 +532,19 @@ class App extends React.Component<AppProps, AppState> {
           type: 'error',
           message: e.Message + (e.FieldCodes && e.FieldCodes.length ? ': ' + e.FieldCodes[0].Message : ''),
         }));
-      }
+      },
     );
   }
   private removeIngredient = (ingredient: Ingredient) => {
+    const slot = this.props.job.slot;
     this.api(() => removeVoxIngredient(ingredient.id, -1),
       'Ingredient: ' + ingredient.name + ' removed',
       () => {
         this.checkJobStatus();
+        // will trigger updating of possible ingredients
+        // (note we could work this out client side by updating the possibleIngredientsForSlot
+        // in our global state, rather than requerying but I am being lazy)
+        if (slot) this.selectSlot(slot);
         return removeIngredient(ingredient);
       },
     );
@@ -553,7 +558,7 @@ class App extends React.Component<AppProps, AppState> {
         props.dispatch(gotPossibleItemSlots(slots));
       })
       .catch(() => {
-        props.dispatch(setMessage({ type: 'error', message: 'Failed to get recipe slots' }));
+        props.dispatch(setMessage({type: 'error', message: 'Failed to get recipe slots'}));
       });
   }
 }

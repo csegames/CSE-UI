@@ -135,7 +135,7 @@ const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
 });
 
 const QUERY_POSSIBLE_ITEMSLOTS = GetQueryText('PossibleItemSlots', {
-  crafting: [ 'possibleItemSlots' ],
+  crafting: ['possibleItemSlots'],
 });
 
 export const QUERIES = {
