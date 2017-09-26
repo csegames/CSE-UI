@@ -68,8 +68,7 @@ let conf = withDefaults(null, defaultQueryOpts);
 function getOptions() {
   return {
     ...defaultWithGraphQLOptions,
-    url: conf.url,
-    requestOptions: conf.requestOptions,
+    ...conf,
   };
 }
 
@@ -92,8 +91,11 @@ export function useConfig(config: Partial<GraphQLConfig>) {
   conf = withDefaults(config, conf);
 }
 
-export function withGraphQL<PropsType extends GraphQLInjectedProps<QueryDataType | null>,
-    QueryDataType = any>(query: string | Partial<QuickQLQuery>, options?: Partial<WithGraphQLOptions>) {
+export function withGraphQL<
+  PropsType extends GraphQLInjectedProps<QueryDataType | null>,
+  QueryDataType = any>(
+  query: string | Partial<QuickQLQuery> | ((props: PropsType) => Partial<QuickQLQuery>),
+  options?: Partial<WithGraphQLOptions> | ((props: PropsType) => Partial<WithGraphQLOptions>)) {
   
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
     return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
@@ -112,7 +114,10 @@ export function withGraphQL<PropsType extends GraphQLInjectedProps<QueryDataType
           lastError: '',
         };
 
-        this.query = withDefaults(typeof query === 'string' ? {query} : query, defaultQuickQLQuery);
+        const q = typeof query === 'string' ? {query} : typeof query === 'function' ? query(props as any) : query;
+        this.query = withDefaults(q, defaultQuickQLQuery);
+
+        const opt = typeof options === 'function' ? options(props as any) : options;
         this.opts = withDefaults(options, getOptions());
 
         this.client = new GraphQLClient({

@@ -25,6 +25,7 @@ export const defaultStyle: Style = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    width: '800px',
     height: '450px',
     backgroundColor: 'rgba(0,0,0,0.8)',
     border: `1px solid ${utils.lightenColor('#202020', 30)}`,
