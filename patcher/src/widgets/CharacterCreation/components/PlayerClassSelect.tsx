@@ -114,7 +114,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
 
   public componentDidMount() {
     this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.CLASS_SELECT) {
+      if (page === CharacterCreationPage.Class) {
         this.toggleHelp();
       }
     });

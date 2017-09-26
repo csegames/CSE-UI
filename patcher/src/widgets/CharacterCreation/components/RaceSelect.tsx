@@ -103,7 +103,7 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
 
   public componentDidMount() {
     this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.RACE_SELECT) {
+      if (page === CharacterCreationPage.Race) {
         this.toggleHelp();
       }
     });

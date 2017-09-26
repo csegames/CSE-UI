@@ -39,7 +39,8 @@ export class AllocatePointButton extends React.Component<AllocatePointButtonProp
       <button
         className={`${direction === 'right' ? ' rightarrow right' : ' leftarrow right'}`}
         onMouseDown={this.props.onMouseDown}
-        onMouseUp={this.props.onMouseUp}>
+        onMouseUp={this.props.onMouseUp}
+        onMouseLeave={this.props.onMouseUp}>
       </button>
     );
   }

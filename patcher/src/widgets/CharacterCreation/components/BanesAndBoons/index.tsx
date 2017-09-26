@@ -104,6 +104,7 @@ export interface BanesAndBoonsState {
 
 export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
   banesAndBoonsContainer: {
+    height: '100%',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -125,6 +126,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
   },
 
   summaryContainer: {
+    height: '100%',
     width: '48vw',
     padding: '0 15px',
   },
@@ -332,7 +334,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '47.5vh',
+    height: 'calc(100% - 120px)',
     backgroundColor: colors.transparentBg,
     overflow: 'auto',
     '::-webkit-scrollbar': {
@@ -672,87 +674,69 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
                       }}>Reset banes</div>
                 </div>
               </div>
-              {/*<div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
-                <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
-                  {Object.keys(addedBoons).map((key: string, index: number) => (
-                    <div className={css(ss.addBoon, custom.addBoon)} key={index}>
-                      <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
-                    </div>
-                  ))}
-                </div>
-                <div className={css(ss.addedBaneContainer, custom.addedBaneContainer)}>
-                  {Object.keys(addedBanes).map((key: string, index: number) => (
-                    <div className={css(ss.addBane, custom.addBane)} key={index}>
-                      <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
-                    </div>
-                  ))}
-                </div>
-              </div>*/}
             </div>
-            <div>
-              <div className={css(ss.innerSummaryWrapper, custom.innerSummaryWrapper)}>
-                <div className={css(ss.addedBoonSummaryWrapper, custom.addedBoonSummaryWrapper)}>
-                  {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
-                    <div id={`boon-summary-${index}`}>
-                      <TraitSummary
-                        key={index}
-                        trait={traits[key]}
-                        onCancelClick={onCancelBoonClick}
-                        onCancelRankTrait={onCancelRankBoon}
-                        type='Boon'
-                        styles={traitSummaryStyles}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className={css(ss.addedBaneSummaryWrapper, custom.addedBaneSummaryWrapper)}>
-                  {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
+            <div className={css(ss.innerSummaryWrapper, custom.innerSummaryWrapper)}>
+              <div className={css(ss.addedBoonSummaryWrapper, custom.addedBoonSummaryWrapper)}>
+                {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
+                  <div id={`boon-summary-${index}`}>
                     <TraitSummary
                       key={index}
                       trait={traits[key]}
-                      onCancelClick={onCancelBaneClick}
+                      onCancelClick={onCancelBoonClick}
                       onCancelRankTrait={onCancelRankBoon}
-                      type='Bane'
+                      type='Boon'
                       styles={traitSummaryStyles}
                     />
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-              <div
-                className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
-                style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
-                  showResetAllAlertDialog ? 'visible' : 'hidden' }} />
-              <div
-                className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
-                style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
-                  showResetAllAlertDialog ? 'visible' : 'hidden' }}>
-                <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText,
-                  custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
-                <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
-                  Are you sure you want to reset all&nbsp;
-                  {showResetBoonAlertDialog && 'Boons'}
-                  {showResetBaneAlertDialog && 'Banes'}
-                  {showResetAllAlertDialog && 'Banes & Boons'}?
-                </p>
-                <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
-                  <div
-                    className={css(ss.alertButton, custom.alertButton)}
-                    onClick={() => {
-                      events.fire('play-sound', 'select');
-                      this.setState(Object.assign({}, this.state, {
-                        showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false,
-                      }));
-                    }}>
-                    Cancel
-                  </div>
-                  <div
-                    className={css(ss.resetAlertButton, custom.resetAlertButton)}
-                    onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' :
-                    showResetBoonAlertDialog ? 'boons' : 'both')}>
-                    Yes, reset!
-                  </div>
+              <div className={css(ss.addedBaneSummaryWrapper, custom.addedBaneSummaryWrapper)}>
+                {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
+                  <TraitSummary
+                    key={index}
+                    trait={traits[key]}
+                    onCancelClick={onCancelBaneClick}
+                    onCancelRankTrait={onCancelRankBoon}
+                    type='Bane'
+                    styles={traitSummaryStyles}
+                  />
+                ))}
+              </div>
+            </div>
+            <div
+              className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
+              style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                showResetAllAlertDialog ? 'visible' : 'hidden' }} />
+            <div
+              className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
+              style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                showResetAllAlertDialog ? 'visible' : 'hidden' }}>
+              <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText,
+                custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
+              <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
+                Are you sure you want to reset all&nbsp;
+                {showResetBoonAlertDialog && 'Boons'}
+                {showResetBaneAlertDialog && 'Banes'}
+                {showResetAllAlertDialog && 'Banes & Boons'}?
+              </p>
+              <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
+                <div
+                  className={css(ss.alertButton, custom.alertButton)}
+                  onClick={() => {
+                    events.fire('play-sound', 'select');
+                    this.setState(Object.assign({}, this.state, {
+                      showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false,
+                    }));
+                  }}>
+                  Cancel
+                </div>
+                <div
+                  className={css(ss.resetAlertButton, custom.resetAlertButton)}
+                  onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' :
+                  showResetBoonAlertDialog ? 'boons' : 'both')}>
+                  Yes, reset!
                 </div>
               </div>
             </div>
@@ -809,7 +793,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
     }
     this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.BANES_AND_BOONS) {
+      if (page === CharacterCreationPage.BanesAndBoons) {
         this.toggleHelp();
       }
     });

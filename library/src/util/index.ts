@@ -12,6 +12,7 @@ export * from './layoutLib';
 export * from './compare';
 export * from './colorManipulation';
 export * from './searchUtils';
+export * from './textUtils';
 
 import * as KeyCodes from './keyCodes';
 

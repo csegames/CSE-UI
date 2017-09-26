@@ -11,18 +11,20 @@ import Trait, { TraitStyle } from './Trait';
 import { styleConstants } from '../../styleConstants';
 
 const Bane = (props: {
+  styles?: Partial<TraitStyle>;
   trait: BanesAndBoonsInfo;
   traits: TraitMap;
-  onBaneClick: Function;
-  onCancelBane: Function;
-  onSelectRankBane: Function;
-  onCancelRankBane: Function;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   addedBanes: TraitIdMap;
-  styles: Partial<TraitStyle>;
   maxPoints: number;
   totalPoints: number;
+
+  shouldBeDefault?: boolean;
+  onBaneClick?: Function;
+  onCancelBane?: Function;
+  onSelectRankBane?: Function;
+  onCancelRankBane?: Function;
 }) => {
   const {
     trait,
@@ -39,12 +41,14 @@ const Bane = (props: {
     totalPoints,
   } = props;
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
-    onBaneClick(trait);
+    if (onBaneClick) {
+      onBaneClick(trait);
+    }
     events.fire('play-sound', 'bane-select');
   };
   const baneStyles = Object.assign(
     {},
-    { trait: { marginLeft: '10px', ...styles.trait } },
+    { trait: { marginLeft: '10px', ...styles && styles.trait || {} } },
     styles,
   );
   return (
@@ -63,6 +67,7 @@ const Bane = (props: {
       styles={baneStyles}
       maxPoints={maxPoints}
       totalPoints={totalPoints}
+      shouldBeDefault={props.shouldBeDefault}
     />
   );
 };

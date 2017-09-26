@@ -104,7 +104,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
 
   public componentDidMount() {
     this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.ATTRIBUTES) {
+      if (page === CharacterCreationPage.Attributes) {
         this.toggleHelp();
       }
     });

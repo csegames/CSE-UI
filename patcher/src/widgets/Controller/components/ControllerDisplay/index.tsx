@@ -144,7 +144,8 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
         (!this.state.selectedServer.shardID || this.state.selectedServer.available)) {
       events.fire('view-content', view.CHARACTERCREATION, {
-        apiHost: this.state.serverListHelper[this.state.selectedServer.shardID || 1].apiHost,
+        selectedServer: this.state.selectedServer.name,
+        apiHost: 'https://hatcheryapi.camelotunchained.com',
         apiVersion: 1,
         shard: this.state.selectedServer.shardID,
         apiKey: patcher.getLoginToken(),

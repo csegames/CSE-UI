@@ -11,18 +11,20 @@ import Trait, { TraitStyle } from './Trait';
 import { styleConstants } from '../../styleConstants';
 
 const Boon = (props: {
+  styles?: Partial<TraitStyle>;
   trait: BanesAndBoonsInfo;
   traits: TraitMap;
-  onBoonClick: Function;
-  onCancelBoon: Function;
-  onSelectRankBoon: Function;
-  onCancelRankBoon: Function;
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   addedBoons: TraitIdMap;
-  styles: Partial<TraitStyle>;
   maxPoints: number;
   totalPoints: number;
+  
+  shouldBeDefault?: boolean;
+  onBoonClick?: Function;
+  onCancelBoon?: Function;
+  onSelectRankBoon?: Function;
+  onCancelRankBoon?: Function;
 }) => {
   const {
     trait,
@@ -39,13 +41,15 @@ const Boon = (props: {
     totalPoints,
   } = props;
   const onBoonSelect = (trait: BanesAndBoonsInfo) => {
-    onBoonClick(trait);
+    if (onBoonClick) {
+      onBoonClick(trait);
+    }
     events.fire('play-sound', 'boon-select');
   };
   const boonStyles = Object.assign(
     {},
     styles,
-    { trait: { marginRight: '10px', ...styles.trait } },
+    { trait: { marginRight: '10px', ...styles && styles.trait || {} } },
   );
   return (
     <Trait
@@ -63,6 +67,7 @@ const Boon = (props: {
       styles={boonStyles}
       maxPoints={maxPoints}
       totalPoints={totalPoints}
+      shouldBeDefault={props.shouldBeDefault}
     />
   );
 };

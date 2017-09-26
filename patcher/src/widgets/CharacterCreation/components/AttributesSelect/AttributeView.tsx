@@ -111,12 +111,9 @@ export const defaultAttributeViewStyle: AttributeViewStyle = {
   },
 
   sectionTitleContainer: {
-    display: 'flex',
-    padding:'5px',
     fontSize: 18,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
+    fontWeight: 'bold',
+    color: '#ccc',
   },
 
   tooltip: {
@@ -140,6 +137,7 @@ export interface AttributeObjectInfo {
 
 export interface AttributeViewProps {
   styles?: Partial<AttributeViewStyle>;
+  howManyGrids?: number;
   statArray: AttributeObjectInfo[];
   title: string;
 }
@@ -165,7 +163,7 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
         </span>
         <GridStats
           statArray={this.props.statArray}
-          howManyGrids={3}
+          howManyGrids={this.props.howManyGrids || 3}
           searchValue={''}
           shouldRenderEmptyListItems={true}
           styles={{

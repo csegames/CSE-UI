@@ -84,13 +84,16 @@
   }
 
   .cu-character-creation__header {
+    display: flex;
+    align-items: center;
+    padding: 2px 15px;
     background-color: #0D0D0D;
-    height: 20px;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
     z-index: 10;
+    font-size: 14px;
   }
 
   .cu-btn {

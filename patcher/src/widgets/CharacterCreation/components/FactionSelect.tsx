@@ -55,7 +55,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
         enabled={this.state.helpEnabled}
         initialStep={0}
         steps={factionSteps}
-        onExit={this.toggleHelp}
+        onExit={() => this.setState({ helpEnabled: false })}
       >
         <div className='cu-character-creation__faction-select'>
           {this.props.factions.map(this.generateFactionContent)}
@@ -66,7 +66,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
 
   public componentDidMount() {
     this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.FACTION_SELECT) {
+      if (page === CharacterCreationPage.Faction) {
         this.toggleHelp();
       }
     });

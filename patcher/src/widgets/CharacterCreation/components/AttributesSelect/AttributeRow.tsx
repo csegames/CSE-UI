@@ -15,8 +15,6 @@ import { AttributeInfo, attributeType } from '../../services/session/attributes'
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import AllocatePointButton from './AllocatePointButton';
 
-declare const toastr: any;
-
 export interface AttributeRowStyle extends StyleDeclaration {
   AttributeRow: React.CSSProperties;
 }
