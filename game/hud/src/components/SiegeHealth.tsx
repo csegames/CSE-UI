@@ -103,9 +103,11 @@ const SiegeButton = (props: {
   );
 };
 
-const SiegeExitButton = (props: {}) => {
+const SiegeContextButton = (props: {}) => {
   return (
-    <SiegeButton enabled={true} onClick={() => client.SendSlashCommand('siege exit')}>Exit</SiegeButton>
+    <SiegeButton enabled={true} onClick={() => client.SendSlashCommand('siege context')}>
+      <i className='fa fa-cog' aria-hidden='true'></i>
+    </SiegeButton>
   );
 };
 
@@ -138,7 +140,7 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
       {
         props.showExit === false ? null :
         <AlignRight>
-          <SiegeExitButton />
+          <SiegeContextButton />
         </AlignRight>
       }
     </div>
