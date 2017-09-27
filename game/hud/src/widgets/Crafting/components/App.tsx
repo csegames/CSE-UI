@@ -14,7 +14,6 @@ import { Recipe, Ingredient } from '../services/types';
 import {
   VoxRecipe,
   VoxResponse,
-  // Updated Game API - Using GraphQL and WebAPI
   voxGetStatus, voxGetRecipesFor, voxGetPossibleItemSlots,
   setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
   setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
@@ -29,6 +28,7 @@ import {
   startJob, collectJob, clearJob, cancelJob, setQuality, setStatus, setCount,
   setName, setRecipe, gotVoxStatus,
   gotOutputItems, gotPossibleItemSlots, gotVoxPossibleIngredientsForSlot,
+  removePossibleIngredientForSlot, restorePossibleIngredientForSlot,
 } from '../services/session/job';
 import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
 import { gotVoxRecipes } from '../services/session/recipes';
@@ -521,10 +521,13 @@ class App extends React.Component<AppProps, AppState> {
       'Added ingredient: ' + qty + ' x ' + ingredient.name,
       (response: VoxResponse) => {
         this.checkJobStatus();
+        /*
         // will trigger updating of possible ingredients
         // (note we could work this out client side by updating the possibleIngredientsForSlot
         // in our global state, rather than requerying but I am being lazy)
         if (slot) this.selectSlot(slot);
+        */
+        props.dispatch(removePossibleIngredientForSlot(slot, ingredient, qty));
         return addIngredient(ingredient, qty, response.MovedItemID);
       },
       (e: any) => {
@@ -536,15 +539,19 @@ class App extends React.Component<AppProps, AppState> {
     );
   }
   private removeIngredient = (ingredient: Ingredient) => {
+    const props = this.props;
     const slot = this.props.job.slot;
     this.api(() => removeVoxIngredient(ingredient.id, -1),
       'Ingredient: ' + ingredient.name + ' removed',
       () => {
         this.checkJobStatus();
+        /*
         // will trigger updating of possible ingredients
         // (note we could work this out client side by updating the possibleIngredientsForSlot
         // in our global state, rather than requerying but I am being lazy)
         if (slot) this.selectSlot(slot);
+        */
+        props.dispatch(restorePossibleIngredientForSlot(slot, ingredient));
         return removeIngredient(ingredient);
       },
     );

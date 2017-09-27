@@ -162,7 +162,6 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
     return (
       <div className={css(ss.ingredients) + ' ingredients'}>
-        { /* <h1 className={css(ss.title)}>Ingredients...</h1> */ }
         {addIngredients}
         <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
           <div>{loaded}</div>

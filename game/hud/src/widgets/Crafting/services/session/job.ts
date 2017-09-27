@@ -99,8 +99,10 @@ export const addIngredient = module.createAction({
     for (i = 0; i < ingredients.length; i++) {
       const ingredient = ingredients[i];
       if (ingredient.id === (a.movedTo || a.ingredient.id)) {
-        ingredient.qty += qty;
-        console.log('ADD INGREDIENT: UPDATE INGREDIENT ' + ingredient.id + ' BY ' + qty + ' TO ' + ingredient.qty);
+        ingredients[i] = Object.assign({}, ingredient, {
+          qty: ingredient.qty + qty,
+        });
+        console.log('ADD INGREDIENT: UPDATE INGREDIENT ' + ingredient.id + ' BY ' + qty + ' TO ' + ingredient[i].qty);
         break;
       }
     }
@@ -126,6 +128,52 @@ export const removeIngredient = module.createAction({
     return {
       ingredients,
     };
+  },
+});
+
+export const removePossibleIngredientForSlot = module.createAction({
+  type: 'crafting/job/remove-possible-ingredient-for-slot',
+  action: (slot: string, item: Ingredient, qty: number) => ({slot, item, qty}),
+  reducer: (s, a) => {
+    // TODO:
+    const possibleIngredientsForSlot = s.possibleIngredientsForSlot.map((ingredient: Ingredient) => {
+      if (ingredient.id === a.item.id) {
+        const unitCount = ingredient.stats.unitCount - a.qty;
+        return Object.assign({}, ingredient, {
+          stats: Object.assign({}, ingredient.stats, {unitCount}),
+          qty: unitCount,
+        });
+      }
+      return ingredient;
+    });
+    return {
+      possibleIngredientsForSlot,
+    };
+  },
+});
+
+export const restorePossibleIngredientForSlot = module.createAction({
+  type: 'crafting/job/restore-possible-ingredient-for-slot',
+  action: (slot: string, item: Ingredient) => ({slot, item}),
+  reducer: (s, a) => {
+    // Cop-out: clear current slot when removing items from
+    // vox, force re-selection (which will update possible ingredients
+    // list) so we don't need to worry about updating the list
+    return {
+      slot: undefined,
+      possibleIngredientsForSlot: undefined,
+    };
+    /*
+    // for the ingredient being remove, if its slot matches the current
+    // slot, then add the ingredient back to the possible ingredients
+    // for slot
+    // if (a.item.slot != a.slot) return;
+    const possibleIngredientsForSlot = [...s.possibleIngredientsForSlot];
+    possibleIngredientsForSlot.push(a.item);
+    return {
+      possibleIngredientsForSlot,
+    };
+    */
   },
 });
 

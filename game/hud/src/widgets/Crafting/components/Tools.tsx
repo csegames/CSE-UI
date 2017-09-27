@@ -178,6 +178,14 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
               size: 5, numeric: true, min: 0, max: 100,
             })}
           </div>
+
+          <div>
+            { makeButton({
+              label: '/siege pack',
+              click: () => this.slash('siege pack', 'Pack away siege'),
+            })}
+          </div>
+
         </div>
         <VoxMessage/>
       </div>
