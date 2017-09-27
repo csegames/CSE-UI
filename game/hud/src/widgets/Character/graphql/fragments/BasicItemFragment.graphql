@@ -1,9 +1,16 @@
 fragment BasicItem on ItemStat_Single {
   quality
+  selfMass
+  totalMass
   encumbrance
   agilityRequirement
   dexterityRequirement
   strengthRequirement
+  vitalityRequirement
+  enduranceRequirement
+  attunementRequirement
+  willRequirement
+  faithRequirement
+  resonanceRequirement
   unitCount
-  totalMass
 }

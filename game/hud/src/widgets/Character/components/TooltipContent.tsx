@@ -175,7 +175,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
           <p className={css(style.regularText, customStyle.regularText)}>Resource ID: {item.id}</p>
           {!shouldOnlyShowPrimaryInfo && stats && Object.keys(stats.item).map((statType: string, i: number) => {
             if (!_.isObject(stats.item[statType]) && !_.includes(statType, 'typename')) {
-              return (
+              return stats.item[statType] > 0 && (
                 <p key={i} id={statType} className={css(style.regularText, customStyle.regularText)}>
                   {prettifyText(statType)}: {stats.item[statType]}
                 </p>
