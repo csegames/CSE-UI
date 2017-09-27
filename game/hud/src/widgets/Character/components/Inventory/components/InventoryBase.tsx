@@ -70,6 +70,7 @@ export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<Inventory
   activeFilters: {[id: string]: InventoryFilterButton};
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
   inventoryItems?: InventoryItemFragment[];
+  equippedItems?: ql.schema.EquippedItem[];
 }
 
 export interface ItemIDToInfo {
@@ -161,7 +162,11 @@ export function createRowElementsForCraftingItems(state: InventoryBaseState, ite
   };
 }
 
-export function createRowElements(state: InventoryBaseState, itemData: {items: InventoryItemFragment[]}) {
+export function createRowElements(
+  state: InventoryBaseState,
+  props: Partial<InventoryBaseWithQLProps>,
+  itemData: {items: InventoryItemFragment[]},
+) {
   const rows: JSX.Element[] = [];
   const rowData: InventorySlotItemDef[][] = [];
 
@@ -206,7 +211,7 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
     }
 
     rows.push((
-      <InventoryRow key={rowIndex} items={rowItems} />
+      <InventoryRow equippedItems={props.equippedItems} key={rowIndex} items={rowItems} />
     ));
     rowData.push(rowItems);
   }

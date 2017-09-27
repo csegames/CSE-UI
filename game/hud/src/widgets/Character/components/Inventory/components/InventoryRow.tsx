@@ -7,9 +7,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { InventorySlot, InventorySlotItemDef } from './InventorySlot';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import { ql } from 'camelot-unchained';
 
+import { InventorySlot, InventorySlotItemDef } from './InventorySlot';
 import { InventoryContainer } from './InventoryContainer';
 import { colors } from '../../../lib/constants';
 
@@ -39,6 +40,7 @@ export const defaultInventoryRowStyle: InventoryRowStyle = {
 export interface InventoryRowProps {
   styles?: Partial<InventoryRowStyle>;
   items: InventorySlotItemDef[];
+  equippedItems?: ql.schema.EquippedItem[];
 }
 
 export interface InventoryRowState {
@@ -66,23 +68,28 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
       <div className={css(ss.InventoryRow, custom.InventoryRow)}>
         <div className={css(ss.row, custom.row)}>
           {this.props.items.map((slotDef, index) => (
-            <InventorySlot key={index}
-                            styles={{
-                              InventorySlot: index === this.state.containerItemIndex ?
-                                defaultInventoryRowStyle.openContainerItemSlot : {},
-                            }}
-                            item={slotDef}
-                            itemIndex={index}
-                            onToggleContainer={this.toggleContainer} />
+            <InventorySlot
+              key={index}
+              styles={{
+                InventorySlot: index === this.state.containerItemIndex ?
+                  defaultInventoryRowStyle.openContainerItemSlot : {},
+              }}
+              item={slotDef}
+              itemIndex={index}
+              onToggleContainer={this.toggleContainer}
+              equippedItems={this.props.equippedItems}
+            />
           ))}
         </div>
         <div className={css(ss.row, custom.row)}>
           {this.state.showContainer ? (
-            <InventoryContainer item={this.props.items[this.state.containerItemIndex]}
-                                searchValue={''}
-                                activeFilters={null}
-                                slotsPerRow={this.props.items.length}
-                                onCloseClick={this.hideContainer} />
+            <InventoryContainer
+              item={this.props.items[this.state.containerItemIndex]}
+              searchValue={''}
+              activeFilters={null}
+              slotsPerRow={this.props.items.length}
+              onCloseClick={this.hideContainer}
+            />
           ) : null}
         </div>
       </div>
@@ -90,7 +97,9 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
   }
 
   public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {
-    return !_.isEqual(nextProps.items, this.props.items) || !_.isEqual(nextState, this.state);
+    return !_.isEqual(nextProps.items, this.props.items) ||
+      !_.isEqual(nextProps.equippedItems, this.props.equippedItems) ||
+      !_.isEqual(nextState, this.state);
   }
 
   public componentWillReceiveProps(nextProps: InventoryRowProps, nextState: InventoryRowState) {

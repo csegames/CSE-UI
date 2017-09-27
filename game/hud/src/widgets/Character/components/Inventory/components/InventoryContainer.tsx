@@ -105,8 +105,8 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
         break;
       default:
         header = `${getItemDefinitionName(firstItem)} | ${this.props.item.stackedItems.length}`;
-        rows = base.createRowElements(this.state, { items: this.props.item.stackedItems }).rows;
-        rowData = base.createRowElements(this.state, { items: this.props.item.stackedItems }).rowData;
+        rows = base.createRowElements(this.state, this.props, { items: this.props.item.stackedItems }).rows;
+        rowData = base.createRowElements(this.state, this.props, { items: this.props.item.stackedItems }).rowData;
     }
 
     return (

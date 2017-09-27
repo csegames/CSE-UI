@@ -152,6 +152,7 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
 export interface EquipmentSlotsProps {
   styles?: Partial<EquipmentSlotsStyles>;
   equippedItems: ql.schema.EquippedItem[];
+  onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
   inventoryItems: InventoryItemFragment[];
 }
 
@@ -162,7 +163,6 @@ export interface EquipmentSlotsAndInfo {
 
 export interface EquipmentSlotsState {
   showUnder: boolean;
-  equippedItems: ql.schema.EquippedItem[];
   slotNameItemMenuVisible: string;
 }
 
@@ -176,7 +176,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     super(props);
     this.state = {
       showUnder: false,
-      equippedItems: [],
       slotNameItemMenuVisible: '',
     };
   }
@@ -251,12 +250,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     this.onUnequipItemListener = events.on(eventNames.onUnequipItem, this.onUnequipItem);
   }
 
-  public componentWillReceiveProps(nextProps: EquipmentSlotsProps) {
-    if (!this.props.equippedItems && nextProps.equippedItems) {
-      this.setState({ equippedItems: nextProps.equippedItems });
-    }
-  }
-
   public componentWillUnmount() {
     events.off(this.equipItemListener);
     events.off(this.onUnequipItemListener);
@@ -265,16 +258,13 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   private onUnequipItem = (payload: UnequipItemCallback) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
     const { gearSlots, item } = payload;
-    const equippedItems = this.state.equippedItems;
+    const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
         return _.find(gearSlots, slot => gearSlot.id === slot.id);
       });
     }));
-    this.setState(state => ({
-      ...state,
-      equippedItems: filteredItems,
-    }));
+    this.props.onEquippedItemsChange(filteredItems);
 
     const updateInventoryItemsPayload: UpdateInventoryItems = {
       type: 'Unequip',
@@ -288,18 +278,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
   private onEquipItem = (payload: EquipItemCallback) => {
     const { inventoryItem, willEquipTo } = payload;
-    const equippedItems = this.state.equippedItems;
+    const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot) => {
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
     const newItem = { item: inventoryItem, gearSlots: willEquipTo };
-
-    this.setState(state => ({
-      ...state,
-      equippedItems: filteredItems.concat(newItem as ql.schema.EquippedItem),
-    }));
+    this.props.onEquippedItemsChange(filteredItems.concat(newItem as ql.schema.EquippedItem));
 
     const prevEquippedItem = _.filter(equippedItems, equippedItem =>
       _.findIndex(equippedItem.gearSlots, gearSlot => _.find(willEquipTo, slot => slot.id === gearSlot.id)) > -1);
@@ -314,7 +300,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
-    const equippedItems = this.state.equippedItems;
+    const equippedItems = this.props.equippedItems;
     const style = this.style;
     const customStyle = this.customStyle;
     return (

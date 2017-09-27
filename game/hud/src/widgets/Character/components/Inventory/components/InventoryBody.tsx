@@ -131,7 +131,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   public render() {
     const ss = StyleSheet.create(defaultInventoryBodyStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { rows, rowData } = base.createRowElements(this.state, { items: this.props.inventoryItems });
+    const { rows, rowData } = base.createRowElements(this.state, this.props, { items: this.props.inventoryItems });
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));

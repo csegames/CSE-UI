@@ -5,14 +5,13 @@
  */
 
 import * as React from 'react';
-// import { utils } from 'camelot-unchained';
+import { ql } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { colors, InventoryFilterButton } from '../../lib/constants';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
-// import reducer from '../../services/session/reducer';
 
 export interface InventoryStyle extends StyleDeclaration {
   inventory: React.CSSProperties;
@@ -58,6 +57,7 @@ export interface InventoryProps {
   visibleComponent: string;
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   inventoryItems: InventoryItemFragment[];
+  equippedItems: ql.schema.EquippedItem[];
 }
 
 export interface ActiveFilters {
@@ -82,15 +82,20 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
     const ss = StyleSheet.create({ ...defaultInventoryStyle, ...this.props.styles });
     return (
       <div className={css(ss.inventory)}>
-        <InventoryHeader filterText={this.state.filterText}
-                          onFilterChanged={this.onFilterTextChanged}
-                          onFilterButtonActivated={this.onFilterButtonActivated}
-                          onFilterButtonDeactivated={this.onFilterButtonDeactivated} />
-        <InventoryBody  inventoryItems={this.props.inventoryItems}
-                        onChangeInventoryItems={this.props.onChangeInventoryItems}
-                        searchValue={this.state.filterText}
-                        activeFilters={this.state.activeFilters}
-                        visibleComponent={this.props.visibleComponent} />
+        <InventoryHeader
+          filterText={this.state.filterText}
+          onFilterChanged={this.onFilterTextChanged}
+          onFilterButtonActivated={this.onFilterButtonActivated}
+          onFilterButtonDeactivated={this.onFilterButtonDeactivated}
+        />
+        <InventoryBody
+          equippedItems={this.props.equippedItems}
+          inventoryItems={this.props.inventoryItems}
+          onChangeInventoryItems={this.props.onChangeInventoryItems}
+          searchValue={this.state.filterText}
+          activeFilters={this.state.activeFilters}
+          visibleComponent={this.props.visibleComponent}
+        />
       </div>
     );
   }

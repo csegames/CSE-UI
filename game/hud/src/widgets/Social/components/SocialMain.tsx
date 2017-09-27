@@ -106,7 +106,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
           content = <PersonalContent dispatch={this.props.dispatch}
                                    address={this.props.navigation.currentView}
                                    refetch={this.refresh}
-                                   myCharacter={this.props.data.myCharacter} />;
+                                   myCharacter={this.props.data.myCharacter as any} />;
           break;
         case SocialCategory.Order:
           content = <OrderContent dispatch={this.props.dispatch}

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContextMenu, Tooltip, events } from 'camelot-unchained';
+import { ql, ContextMenu, Tooltip, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
@@ -108,6 +108,7 @@ export interface InventorySlotProps {
   item: InventorySlotItemDef & CraftingSlotItemDef;
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
+  equippedItems?: ql.schema.EquippedItem[];
 }
 
 export interface InventorySlotState {
@@ -202,6 +203,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     return nextProps.item.itemID !== this.props.item.itemID ||
       nextProps.item.groupStackHashID !== this.props.item.groupStackHashID ||
       nextProps.itemIndex !== this.props.itemIndex ||
+      !_.isEqual(nextProps.equippedItems, this.props.equippedItems) ||
       !_.isEqual(nextState, this.state);
   }
 
@@ -227,7 +229,17 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       this.setState({ showTooltip: true });
     }
     if (this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0) {
-      events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
+      const { gearSlotSets } = this.props.item.item.staticDefinition;
+      if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any)) ||
+        (this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any) &&
+        this.isRightOrLeftItem(gearSlotSets[1].gearSlots as any))) {
+
+        this.rightOrLeftItemAction((gearSlots) => {
+          events.fire(eventNames.onHighlightSlots, gearSlots);
+        });
+      } else {
+        events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
+      }
     }
   }
 
@@ -237,8 +249,60 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     events.fire(eventNames.onDehighlightSlots);
   }
 
+  private rightOrLeftItemAction = (action: (gearSlots: ql.schema.GearSlotDefRef[]) => void) => {
+    const { gearSlotSets } = this.props.item.item.staticDefinition;
+    // Dealing with a right or left weapon/piece of armor
+    const equippedItemFirstSlot = _.find(this.props.equippedItems, (item) => {
+      return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
+        gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
+    });
+    const equippedItemSecondSlot = _.find(this.props.equippedItems, (item) => {
+      if (item.item && item.item.staticDefinition.name === 'Jeweled Axe') {
+      }
+      return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
+        gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
+    });
+
+    if (gearSlotSets.length === 2 &&
+      equippedItemFirstSlot && !equippedItemSecondSlot && !_.isEqual(equippedItemFirstSlot, equippedItemSecondSlot)) {
+      action(gearSlotSets[1].gearSlots as ql.schema.GearSlotDefRef[]);
+      return;
+    } else {
+      action(gearSlotSets[0].gearSlots as ql.schema.GearSlotDefRef[]);
+      return;
+    }
+  }
+
+  private isRightOrLeftItem = (gearSlots: ql.schema.GearSlotDefRef[]) => {
+    if (gearSlots.length === 1) {
+      const firstGearSlotId = gearSlots[0].id;
+      return _.includes(firstGearSlotId.toLowerCase(), 'right') ||
+      _.includes(firstGearSlotId.toLowerCase(), 'left') ||
+      _.includes(firstGearSlotId.toLowerCase(), 'primary') ||
+      _.includes(firstGearSlotId.toLowerCase(), 'secondary');
+    }
+    return false;
+  }
+
   private onEquipItem = () => {
     if (this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0) {
+      const { gearSlotSets } = this.props.item.item.staticDefinition;
+      if (gearSlotSets.length === 2 &&
+          this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any) &&
+          this.isRightOrLeftItem(gearSlotSets[1].gearSlots as any) ||
+          (gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any))) {
+
+        this.rightOrLeftItemAction((gearSlots) => {
+          const payload: EquipItemCallback = {
+            inventoryItem: this.props.item.item as any,
+            willEquipTo: gearSlots,
+          };
+          events.fire(eventNames.onEquipItem, payload);
+          events.fire(eventNames.onDehighlightSlots);
+          this.setState({ showTooltip: false });
+        });
+        return;
+      }
       const payload: EquipItemCallback = {
         inventoryItem: this.props.item.item as any,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,

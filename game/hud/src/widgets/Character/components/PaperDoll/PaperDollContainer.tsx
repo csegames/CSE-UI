@@ -5,11 +5,12 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import { InjectedGraphQLProps, graphql } from 'react-apollo';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { bodyParts, client } from 'camelot-unchained';
+import { ql, bodyParts, client } from 'camelot-unchained';
 
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
@@ -89,6 +90,8 @@ export interface PaperDollProps extends InjectedGraphQLProps<PaperDollContainerQ
   styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
+  equippedItems: ql.schema.EquippedItem[];
+  onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
 }
 
 export interface PaperDollState {
@@ -105,7 +108,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
   public render() {
     const ss = StyleSheet.create({ ...defaultPaperDollStyle, ...this.props.styles });
-    const { myEquippedItems, myCharacter, myOrder } = this.props.data;
+    const { myCharacter, myOrder } = this.props.data;
 
     return (
       <div className={css(ss.paperDoll)}>
@@ -122,7 +125,11 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
             />
             <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
           </div>
-          <EquipmentSlots inventoryItems={this.props.inventoryItems} equippedItems={myEquippedItems as any} />
+          <EquipmentSlots
+            inventoryItems={this.props.inventoryItems}
+            equippedItems={this.props.equippedItems}
+            onEquippedItemsChange={this.props.onEquippedItemsChange}
+          />
         </div>
       </div>
     );
@@ -130,6 +137,12 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
   public componentDidMount() {
     this.initializeMaxHealthParts();
+  }
+
+  public componentWillReceiveProps(nextProps: PaperDollProps) {
+    if (!_.isEqual(nextProps.data.myEquippedItems, this.props.data.myEquippedItems)) {
+      this.props.onEquippedItemsChange(nextProps.data.myEquippedItems as ql.schema.EquippedItem[]);
+    }
   }
 
   private initializeMaxHealthParts = () => {

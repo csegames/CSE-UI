@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { ql, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CharacterInfo from './CharacterInfo/CharacterInfo';
@@ -110,6 +110,7 @@ export interface CharacterMainProps {
 
 export interface CharacterMainState {
   inventoryItems: InventoryItemFragment[];
+  equippedItems: ql.schema.EquippedItem[];
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
@@ -120,6 +121,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     super(props);
     this.state = {
       inventoryItems: null,
+      equippedItems: null,
     };
   }
 
@@ -158,7 +160,12 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     return (
       <div className={css(style.characterMain, customStyle.characterMain)}>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
-          <PaperDoll inventoryItems={this.state.inventoryItems} visibleComponent={this.props.visibleComponent} />
+          <PaperDoll
+            inventoryItems={this.state.inventoryItems}
+            equippedItems={this.state.equippedItems}
+            visibleComponent={this.props.visibleComponent}
+            onEquippedItemsChange={this.onChangeEquippedItems}
+          />
         </div>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
           <img src={'images/inventorybg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
@@ -197,8 +204,10 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     return (
       <Inventory
         inventoryItems={this.state.inventoryItems}
+        equippedItems={this.state.equippedItems}
         onChangeInventoryItems={this.onChangeInventoryItems}
-        visibleComponent={this.props.visibleComponent} />
+        visibleComponent={this.props.visibleComponent}
+      />
     );
   }
 
@@ -224,6 +233,10 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
 
   private selectTab = (index: number, name: string) => {
     events.fire('hudnav--navigate', name);
+  }
+
+  private onChangeEquippedItems = (equippedItems: ql.schema.EquippedItem[]) => {
+    this.setState({ equippedItems });
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
