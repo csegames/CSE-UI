@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-07-13 11:12:41
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 17:38:38
+ * @Last Modified time: 2017-09-27 12:42:48
  */
 
 import * as React from 'react';
@@ -221,16 +221,17 @@ export function createRowElements(state: InventoryBaseState, itemData: {items: I
   };
 }
 
-export function distributeItems(slotsData: {
-  slotsPerRow: number,
-  rowCount: number,
-  slotCount: number,
-},
-                              itemData: {
-                                items: InventoryItemFragment[],
-                              },
-                              state: InventoryBaseState,
-                              props: InventoryBaseProps): InventoryBaseState {
+export function distributeItems(
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  state: InventoryBaseState,
+  props: InventoryBaseProps): InventoryBaseState {
   if (!itemData || !itemData.items) {
     return {
       ...slotsData,
@@ -242,7 +243,7 @@ export function distributeItems(slotsData: {
       firstEmptyIndex: 0,
     };
   }
-  const items = props.inventoryItems && props.inventoryItems.length > 0 ? { items: props.inventoryItems } : itemData;
+  const items = props.inventoryItems ? { items: props.inventoryItems } : itemData;
   if (hasActiveFilterButtons(props.activeFilters) || hasFilterText(props.searchValue)) {
     return distributeFilteredItems(slotsData, items, state, props);
   } else {
@@ -256,11 +257,11 @@ export function distributeItemsNoFilter(slotsData: {
   rowCount: number,
   slotCount: number,
 },
-                                      itemData: {
-                                        items: InventoryItemFragment[],
-                                      },
-                                      state: InventoryBaseState,
-                                      props: InventoryBaseProps): InventoryBaseState {
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  state: InventoryBaseState,
+  props: InventoryBaseProps): InventoryBaseState {
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem = {};
   const stackGroupIdToItemIDs = {};

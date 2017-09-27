@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-27 10:19:44
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 17:29:47
+ * @Last Modified time: 2017-09-27 12:46:57
  */
 
 import * as React from 'react';
@@ -258,7 +258,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       Math.max(InventoryBody.minSlots, itemCount));
     return base.distributeItems(
       rowsAndSlots,
-      (props.graphql.data && props.graphql.data.myInventory) || { items: [] },
+      (props.graphql.data && props.graphql.data.myInventory),
       state,
       props,
     );

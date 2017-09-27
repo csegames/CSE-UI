@@ -6,7 +6,7 @@
  * @Author: Andrew Jackson (jacksonal300@gmail.com)
  * @Date: 2017-06-23 00:19:34
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 17:30:02
+ * @Last Modified time: 2017-09-27 12:24:07
  */
 
 import * as React from 'react';
@@ -233,7 +233,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         },
       },
     ];
-
     return (
       <div className={css(style.equipmentSlots, customStyle.equipmentSlots)}>
         <TabPanel

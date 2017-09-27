@@ -6,7 +6,7 @@
  * @Author: JB (jb@codecorsair.com)
  * @Date: 2017-03-23 15:27:25
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2017-09-25 17:24:07
+ * @Last Modified time: 2017-09-27 12:14:27
  */
 
 import * as React from 'react';
@@ -124,7 +124,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
   constructor(props: CharacterMainProps) {
     super(props);
     this.state = {
-      inventoryItems: [],
+      inventoryItems: null,
     };
   }
 
