@@ -5,10 +5,10 @@
  */
 
 import 'isomorphic-fetch';
-import { Promise } from 'es6-promise';
-import { gql } from './gql';
-import { QUERIES } from './queryText';
-import { VoxPossibleIngredient, VoxStatus, VoxRecipe } from './queryTypes';
+import {Promise} from 'es6-promise';
+import {gql} from './gql';
+import {QUERIES} from './queryText';
+import {VoxIngredient, VoxStatus, VoxRecipe} from './queryTypes';
 
 const ERRORS = {
   NotFound: 'No vox nearby',
@@ -73,7 +73,7 @@ export function voxGetPossibleIngredientsForSlot(slot: string) {
   slot = SlotToSubItemSlot[slot] || slot.toUpperCase();
   return new Promise((resolve, reject) => {
     runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', {slot})
-      .then((possibleIngredients: VoxPossibleIngredient[]) => {
+      .then((possibleIngredients: VoxIngredient[]) => {
         resolve(possibleIngredients);
       })
       .catch(() => {

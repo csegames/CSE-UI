@@ -29,7 +29,7 @@ export interface InventoryItem extends Item {
 
 export interface Ingredient extends InventoryItem {
   qty: number;
-  slots: string[];
+  slot: string;
 }
 
 export interface Recipe extends Item {}

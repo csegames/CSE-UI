@@ -535,6 +535,7 @@ export interface IngredientItemStyles {
   ingredientItem: React.CSSProperties;
   inline: React.CSSProperties;
   icon: React.CSSProperties;
+  slot: React.CSSProperties;
   qty: React.CSSProperties;
   times: React.CSSProperties;
   name: React.CSSProperties;
@@ -556,6 +557,10 @@ export const ingredientItem: IngredientItemStyles = {
     height: opts.ingredients.ICON_WIDTH,
     width: opts.ingredients.ICON_WIDTH,
     margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
+  },
+  slot: {
+    flex: '0 0 50px',
+    width: '50px',
   },
   qty: {
     flex: '0 0 50px',

@@ -6,7 +6,7 @@
 
 import {Module} from 'redux-typed-modules';
 import {Ingredient, InventoryItem, Recipe, Message} from '../types';
-import {VoxStatus, VoxPossibleIngredient, VoxOutputItem, VoxItem} from '../game/crafting';
+import {VoxStatus, VoxOutputItem, VoxItem, VoxIngredient} from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -135,7 +135,6 @@ export const removePossibleIngredientForSlot = module.createAction({
   type: 'crafting/job/remove-possible-ingredient-for-slot',
   action: (slot: string, item: Ingredient, qty: number) => ({slot, item, qty}),
   reducer: (s, a) => {
-    // TODO:
     const possibleIngredientsForSlot = s.possibleIngredientsForSlot.map((ingredient: Ingredient) => {
       if (ingredient.id === a.item.id) {
         const unitCount = ingredient.stats.unitCount - a.qty;
@@ -163,17 +162,6 @@ export const restorePossibleIngredientForSlot = module.createAction({
       slot: undefined,
       possibleIngredientsForSlot: undefined,
     };
-    /*
-    // for the ingredient being remove, if its slot matches the current
-    // slot, then add the ingredient back to the possible ingredients
-    // for slot
-    // if (a.item.slot != a.slot) return;
-    const possibleIngredientsForSlot = [...s.possibleIngredientsForSlot];
-    possibleIngredientsForSlot.push(a.item);
-    return {
-      possibleIngredientsForSlot,
-    };
-    */
   },
 });
 
@@ -247,7 +235,7 @@ export const setMessage = module.createAction({
 
 export const gotVoxPossibleIngredientsForSlot = module.createAction({
   type: 'crafting/job/got-vox-possible-ingredients-with-slots',
-  action: (ingredients: VoxPossibleIngredient[], slot: string) => ({
+  action: (ingredients: VoxIngredient[], slot: string) => ({
     ingredients,
     slot,
   }),
@@ -258,7 +246,7 @@ export const gotVoxPossibleIngredientsForSlot = module.createAction({
   }),
 });
 
-function mapVoxIngredientsToIngredients(vis: VoxPossibleIngredient[]): Ingredient[] {
+function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
   const ingredients: Ingredient[] = [];
   if (vis) {
     for (let i = 0; i < vis.length; i++) {
@@ -281,7 +269,7 @@ function mapVoxIngredientsToIngredients(vis: VoxPossibleIngredient[]): Ingredien
             currentPoints: vis[i].stats.durability.currentRepairPoints,
           },
         },
-        slots: [],
+        slot: vis[i].location && vis[i].location.inVox.itemSlot,
       });
     }
   }
@@ -311,7 +299,7 @@ export const gotVoxStatus = module.createAction({
   },
 });
 
-function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
+function mapVoxItemsToInventoryItems(vis: VoxItem[]): InventoryItem[] {
   const items: InventoryItem[] = [];
   if (vis) {
     for (let i = 0; i < vis.length; i++) {
@@ -341,8 +329,8 @@ function mapVoxItemToInventoryItem(vis: VoxItem[]): InventoryItem[] {
 
 export const gotOutputItems = module.createAction({
   type: 'crafting/job/got-output-items',
-  action: (outputItems: VoxOutputItem[]) => ({ outputItems }),
-  reducer: (s, a) => ({ outputItems: a.outputItems && mapVoxItemToInventoryItem(a.outputItems) }),
+  action: (outputItems: VoxOutputItem[]) => ({outputItems}),
+  reducer: (s, a) => ({outputItems: a.outputItems && mapVoxItemsToInventoryItems(a.outputItems)}),
 });
 
 export const gotPossibleItemSlots = module.createAction({

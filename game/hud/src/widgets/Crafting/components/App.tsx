@@ -18,7 +18,7 @@ import {
   setVoxJob, startVoxJob, collectVoxJob, clearVoxJob, cancelVoxJob,
   setVoxQuality, setVoxItemCount, setVoxName, setVoxRecipe,
   addVoxIngredient, removeVoxIngredient,
-  voxGetPossibleIngredientsForSlot, VoxPossibleIngredient,
+  voxGetPossibleIngredientsForSlot, VoxIngredient,
 } from '../services/game/crafting';
 import { JobState, GlobalState } from '../services/session/reducer';
 
@@ -504,7 +504,7 @@ class App extends React.Component<AppProps, AppState> {
     const props = this.props;
     props.dispatch(gotVoxPossibleIngredientsForSlot(undefined, slot));
     voxGetPossibleIngredientsForSlot(slot)
-    .then((ingredients: VoxPossibleIngredient[]) => {
+    .then((ingredients: VoxIngredient[]) => {
       props.dispatch(gotVoxPossibleIngredientsForSlot(ingredients, slot));
     })
     .catch(() => {

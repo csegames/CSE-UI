@@ -31,8 +31,19 @@ interface VoxItemStats {
   durability: VoxStatsDurability;
 }
 
+interface VoxLocation {
+  itemSlot: string;
+  voxInstanceId: string;
+
+}
+
+interface VoxItemLocation {
+  inVox: VoxLocation;
+}
+
 interface VoxItem {
   id: string;
+  location: VoxItemLocation;
   shardID: number;
   stats: VoxItemStats;
   staticDefinition: VoxStaticDefinition;
@@ -41,8 +52,6 @@ interface VoxItem {
 interface VoxIngredient extends VoxItem {
   givenName: string;
 }
-
-interface VoxPossibleIngredient extends VoxIngredient {}
 
 interface VoxSelectedRecipe {
   id: string;
@@ -81,5 +90,4 @@ export {
   VoxSelectedRecipe,
   VoxRecipe,
   VoxStatus,
-  VoxPossibleIngredient,
 };

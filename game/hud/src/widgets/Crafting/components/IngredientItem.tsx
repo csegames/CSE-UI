@@ -23,6 +23,7 @@ export const IngredientItem = (props: IngredientItemProps) => {
   return (
     <div className={css(ss.ingredientItem)}>
       <Icon className={css(ss.icon)} src={props.ingredient.static.icon}/>
+      <span className={css(ss.slot)}>{props.ingredient.slot}</span>
       <span className={css(ss.qty)}>{props.qty}</span>
       <span className={css(ss.pcnt)}>({pcnt}%)</span>
       <span className={css(ss.times)}>x</span>
