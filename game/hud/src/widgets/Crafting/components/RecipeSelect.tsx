@@ -55,7 +55,7 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
         </Label>
         <Select
           disabled={!this.props.enabled || this.props.status !== 'Configuring'}
-          style={{select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list}}
+          style={{ select: recipeSelect.select, impl: recipeSelect.select_impl, list: recipeSelect.select_list }}
           items={this.props.items}
           renderListItem={this.renderItem}
           renderActiveItem={this.renderActive}

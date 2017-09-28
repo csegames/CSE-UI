@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {GlobalState} from '../services/session/reducer';
-import {Ingredient} from '../services/types';
-import {setMessage} from '../services/session/job';
+import { connect } from 'react-redux';
+import { GlobalState } from '../services/session/reducer';
+import { Ingredient } from '../services/types';
+import { setMessage } from '../services/session/job';
 import IngredientItem from './IngredientItem';
 import RepairItem from './RepairItem';
 import PossibleIngredients from './PossibleIngredients';
@@ -135,16 +135,16 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
               />
               <span className={css(ss.times)}>x</span>
               <Input name='add-qty'
-                style={{input: ingredientsStyles.quantity}}
+                style={{ input: ingredientsStyles.quantity }}
                 numeric={true} min={1}
                 disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
-              <Button disabled={!ready} style={{button: ingredientsStyles.add}}
+              <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
                 onClick={this.addIngredient}>Add</Button>
             </div>
           );
         } else {
           console.log('INGREDIENTS: RENDER: DONT HAVE ANY INGREDIENTS');
-          props.dispatch(setMessage({type: 'error', message: 'could not find any suitable ingredients for this slot'}));
+          props.dispatch(setMessage({ type: 'error', message: 'could not find any suitable ingredients for this slot' }));
         }
       }
       addIngredients = (

@@ -351,7 +351,7 @@ class App extends React.Component<AppProps, AppState> {
     request()
       .then((response: any) => {
         if (getAction) props.dispatch(getAction(response));
-        props.dispatch(setMessage({type: 'success', message: success}));
+        props.dispatch(setMessage({ type: 'success', message: success }));
         if (andFinally) andFinally();
       })
       .catch((error: any) => {
@@ -508,7 +508,7 @@ class App extends React.Component<AppProps, AppState> {
       props.dispatch(gotVoxPossibleIngredientsForSlot(ingredients, slot));
     })
     .catch(() => {
-      props.dispatch(setMessage({type: 'error', message: 'Failed to get possible ingredients'}));
+      props.dispatch(setMessage({ type: 'error', message: 'Failed to get possible ingredients' }));
     });
   }
 
@@ -565,7 +565,7 @@ class App extends React.Component<AppProps, AppState> {
         props.dispatch(gotPossibleItemSlots(slots));
       })
       .catch(() => {
-        props.dispatch(setMessage({type: 'error', message: 'Failed to get recipe slots'}));
+        props.dispatch(setMessage({ type: 'error', message: 'Failed to get recipe slots' }));
       });
   }
 }

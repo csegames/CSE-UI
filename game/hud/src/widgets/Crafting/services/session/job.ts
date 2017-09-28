@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Module} from 'redux-typed-modules';
-import {Ingredient, InventoryItem, Recipe, Message} from '../types';
-import {VoxStatus, VoxOutputItem, VoxItem, VoxIngredient} from '../game/crafting';
+import { Module } from 'redux-typed-modules';
+import { Ingredient, InventoryItem, Recipe, Message } from '../types';
+import { VoxStatus, VoxOutputItem, VoxItem, VoxIngredient } from '../game/crafting';
 
 export interface JobState {
   loading: boolean;                   // Are we starting up?
@@ -133,13 +133,13 @@ export const removeIngredient = module.createAction({
 
 export const removePossibleIngredientForSlot = module.createAction({
   type: 'crafting/job/remove-possible-ingredient-for-slot',
-  action: (slot: string, item: Ingredient, qty: number) => ({slot, item, qty}),
+  action: (slot: string, item: Ingredient, qty: number) => ({ slot, item, qty }),
   reducer: (s, a) => {
     const possibleIngredientsForSlot = s.possibleIngredientsForSlot.map((ingredient: Ingredient) => {
       if (ingredient.id === a.item.id) {
         const unitCount = ingredient.stats.unitCount - a.qty;
         return Object.assign({}, ingredient, {
-          stats: Object.assign({}, ingredient.stats, {unitCount}),
+          stats: Object.assign({}, ingredient.stats, { unitCount }),
           qty: unitCount,
         });
       }
@@ -153,7 +153,7 @@ export const removePossibleIngredientForSlot = module.createAction({
 
 export const restorePossibleIngredientForSlot = module.createAction({
   type: 'crafting/job/restore-possible-ingredient-for-slot',
-  action: (slot: string, item: Ingredient) => ({slot, item}),
+  action: (slot: string, item: Ingredient) => ({ slot, item }),
   reducer: (s, a) => {
     // Cop-out: clear current slot when removing items from
     // vox, force re-selection (which will update possible ingredients
@@ -206,7 +206,7 @@ export const collectJob = module.createAction({
 
 export const setRecipe = module.createAction({
   type: 'crafting/job/set-recipe',
-  action: (recipe: Recipe) => ({recipe}),
+  action: (recipe: Recipe) => ({ recipe }),
   reducer: (s, a) => ({
     recipe: a.recipe,
     possibleItemSlots: undefined,   // selecting a recipe clears the possible slots
@@ -329,13 +329,13 @@ function mapVoxItemsToInventoryItems(vis: VoxItem[]): InventoryItem[] {
 
 export const gotOutputItems = module.createAction({
   type: 'crafting/job/got-output-items',
-  action: (outputItems: VoxOutputItem[]) => ({outputItems}),
-  reducer: (s, a) => ({outputItems: a.outputItems && mapVoxItemsToInventoryItems(a.outputItems)}),
+  action: (outputItems: VoxOutputItem[]) => ({ outputItems }),
+  reducer: (s, a) => ({ outputItems: a.outputItems && mapVoxItemsToInventoryItems(a.outputItems) }),
 });
 
 export const gotPossibleItemSlots = module.createAction({
   type: 'crafting/job/got-possible-slots',
-  action: (slots: string[]) => ({slots}),
+  action: (slots: string[]) => ({ slots }),
   reducer: (s, a) => ({
     possibleItemSlots: a.slots.slice(0),
   }),

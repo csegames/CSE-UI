@@ -6,14 +6,14 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-09-25 18:36:14
+ * @Last Modified time: 2017-09-28 23:11:01
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {GlobalState} from '../services/session/reducer';
+import { connect } from 'react-redux';
+import { GlobalState } from '../services/session/reducer';
 import Select from './Select';
-import {StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles} from '../styles';
+import { StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles } from '../styles';
 
 interface PossibleSlotsReduxProps {
   possibleItemSlots?: string[];
@@ -25,7 +25,7 @@ const select = (state: GlobalState, props: PossibleSlotsProps): PossibleSlotsRed
   state.job.possibleItemSlots.forEach((slot: string, index: number) => {
     possibleItemSlots.push(slot);
   });
-  return {possibleItemSlots};
+  return { possibleItemSlots };
 };
 
 export interface PossibleSlotsProps extends PossibleSlotsReduxProps {
@@ -48,7 +48,7 @@ export class PossibleSlots extends React.Component<PossibleSlotsProps, PossibleS
     return (
       <Select
         disabled={this.props.disabled}
-        style={{select: possibleSlots.select}}
+        style={{ select: possibleSlots.select }}
         items={this.props.possibleItemSlots}
         onSelectedItemChanged={this.props.onSelect}
         renderActiveItem={render}

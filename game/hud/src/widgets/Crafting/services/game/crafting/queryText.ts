@@ -90,8 +90,8 @@ const QUERY_VOX_STATUS = GetQueryText('VoxStatus', {
     voxStatus: {
       ingredients: {
         staticDefinition: true,
-        stats: {item: true, durability: true},
-        location: {inVox: true},
+        stats: { item: true, durability: true },
+        location: { inVox: true },
       },
       outputItems: {
         staticDefinition: true,
@@ -105,7 +105,7 @@ const QUERY_POSSIBLE_INGREDIENTS = GetQueryText('PossibleIngredients', {
   crafting: {
     possibleIngredients: {
       staticDefinition: true,
-      stats: {item: true, durability: true},
+      stats: { item: true, durability: true },
     },
   },
 });
