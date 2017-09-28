@@ -2,11 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2016-08-30 14:26:25
- * @Last Modified by: Andrew L. Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-04-12 12:02:33
  */
 import { Race, Gender, Archetype, Faction, Player } from 'camelot-unchained';
 

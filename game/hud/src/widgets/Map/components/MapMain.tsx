@@ -2,11 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: Justin Vick (justin.zezmin@gmail.com)
- * @Date: 9/8/2017 16:48
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2017-09-25 10:27:48
  */
 
 import * as React from 'react';

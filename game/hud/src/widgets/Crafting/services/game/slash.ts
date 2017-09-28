@@ -2,11 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: Mehuge (mehuge@sorcerer.co.uk)
- * @Date: 2017-05-13 21:57:23
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 12:51:42
  */
 
 import { client, hasClientAPI } from 'camelot-unchained';

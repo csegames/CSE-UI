@@ -2,11 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: JB (jb@codecorsair.com)
- * @Date: 2016-08-29 15:28:15
- * @Last Modified by: JB (jb@codecorsair.com)
- * @Last Modified time: 2016-09-27 18:45:37
  */
 
 import { client, events, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';

@@ -2,11 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * @Author: Andrew Jackson (jacksonal300@gmail.com)
- * @Date: 2017-07-16 12:04:10
- * @Last Modified by: Andrew Jackson (jacksonal300@gmail.com)
- * @Last Modified time: 2017-07-18 17:00:11
  */
 
 // IMPORTANT: This component is the shared code between the EditFilterButtonMenu and FilterButtonList components.
