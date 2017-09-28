@@ -304,7 +304,7 @@ export const possibleSlots: PossibleSlotsStyles = {
     flexDirection: 'row',
   },
   select: {
-    flex: '0 1 auto',
+    flex: '0 1 75px',
     minWidth: '75px',
     height: opts.input.HEIGHT,
   },
@@ -843,6 +843,7 @@ export const select: SelectStyles = {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     cursor: 'pointer',
     display: 'flex',
+    flex: '0 0 auto',
     alignItems: 'center',
     ':hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
