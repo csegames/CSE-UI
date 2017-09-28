@@ -26,6 +26,14 @@ html,body, #Patcher {
   font-family: 'Titillium Web', sans-serif;
 }
 
+.help-highlight {
+  background-color: rgba(255,255,255,0.2) !important;
+}
+
+.help-tooltip {
+  direction: ltr !important;
+}
+
 ::-webkit-scrollbar {
   width: 15px;
   height: 12px;

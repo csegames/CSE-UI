@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils, Tooltip } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { CharacterCreationPage } from '../index';
 
@@ -61,6 +61,7 @@ export const defaultNavigationStyle: NavigationStyle = {
   },
 
   progressImage: {
+    cursor: 'pointer',
     width: '55px',
     height: '55px',
   },
@@ -123,6 +124,7 @@ export interface NavigationPageInfo {
   pageNumber: CharacterCreationPage;
   pageComplete: boolean;
   pageVisited: boolean;
+  onClick: () => void;
 }
 
 export interface NavigationProps {
@@ -133,6 +135,7 @@ export interface NavigationProps {
   onHelpClick: () => void;
   pages: NavigationPageInfo[];
   currentPage: CharacterCreationPage;
+  disableNavButtons: boolean;
 }
 
 export interface NavigationState {
@@ -181,9 +184,22 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                 page.pageComplete ? navImages.done :
                 page.pageVisited && !page.pageComplete ? navImages.visited :
                 !page.pageVisited && !page.pageComplete && navImages.empty;
+              const pageName = CharacterCreationPage[page.pageNumber];
               return (
                 <div className={css(ss.navProgressSection, custom.navProgressSection)}>
-                  <img className={css(ss.progressImage, custom.progressImage)} src={imageSource} />
+                  <Tooltip
+                    styles={{
+                      tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  content={pageName}>
+                    <img
+                      className={css(ss.progressImage, custom.progressImage)}
+                      src={imageSource}
+                      onClick={!this.props.disableNavButtons ? page.onClick : () => {}}
+                    />
+                  </Tooltip>
                   {i < this.props.pages.length - 1 &&
                     <div className={css(
                       ss.navConnector,
@@ -196,7 +212,10 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
               );
             })}
           </div>
-          <button className={css(ss.navButton, custom.navButton)} onClick={this.props.onNextClick}>
+          <button
+            id='cu-char-creation-next'
+            className={css(ss.navButton, custom.navButton)}
+            onClick={this.props.onNextClick}>
             NEXT
             <span className={`fa fa-angle-right ${css(ss.navArrow, custom.navArrow)}`} />
           </button>

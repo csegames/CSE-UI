@@ -141,8 +141,8 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   private showCharacterCreation = () => {
-    // if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
-    //     (!this.state.selectedServer.shardID || this.state.selectedServer.available)) {
+    if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
+        (!this.state.selectedServer.shardID || this.state.selectedServer.available)) {
       events.fire('view-content', view.CHARACTERCREATION, {
         apiHost: this.state.serverListHelper[this.state.selectedServer.shardID || 1].apiHost,
         apiVersion: 1,
@@ -153,13 +153,13 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
           events.fire('view-content', view.NONE);
         },
       });
-    // } else {
-    //   toastr.error(
-    //     'You will not be able to create a character while the server is offline',
-    //     'Server is offline',
-    //     {timeOut: 5000},
-    //   );
-    // }
+    } else {
+      toastr.error(
+        'You will not be able to create a character while the server is offline',
+        'Server is offline',
+        {timeOut: 5000},
+      );
+    }
   }
 
   private installSelectedServer = () => {

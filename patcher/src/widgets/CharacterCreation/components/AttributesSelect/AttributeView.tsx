@@ -160,7 +160,9 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
 
     return (
       <div className='row'>
-        <span className={css(ss.sectionTitleContainer, custom.sectionTitleContainer)}>{this.props.title}</span>
+        <span id={this.props.title} className={css(ss.sectionTitleContainer, custom.sectionTitleContainer)}>
+          {this.props.title}
+        </span>
         <GridStats
           statArray={this.props.statArray}
           howManyGrids={3}
@@ -182,24 +184,32 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                     tooltip: defaultAttributeViewStyle.tooltip,
                   }}
                   content={() => a.attributeInfo &&
-                    <div className={css(ss.tooltipContent)}>
+                    <div className={css(ss.tooltipContent, custom.tooltipContent)}>
                       <div>{a.attributeInfo.name} {a.value}</div>
                       <div>{a.attributeInfo.description}</div>
                     </div>
                   }>
-                  <div className={css(
+                  <div id={a.attributeInfo.name} className={css(
                     ss.statsListItem,
                     custom.statsListItem,
                     isOdd && ss.lightListItem,
                     isOdd && custom.lightListItem,
                   )}>
-                    <span className={css(ss.statText, custom.statText)}>{a.attributeInfo && a.attributeInfo.name}</span>
-                    <span className={css(
-                      ss.statText,
-                      custom.statText,
-                      a.value && ss.statValue,
-                      a.value && custom.statValue,
-                    )}>{a.value}</span>
+                    <span
+                      id={`${a.attributeInfo.name}-title`}
+                      className={css(ss.statText, custom.statText)}>
+                      {a.attributeInfo && a.attributeInfo.name}
+                    </span>
+                    <span
+                      id={`${a.attributeInfo.name}-value`}
+                      className={css(
+                        ss.statText,
+                        custom.statText,
+                        a.value && ss.statValue,
+                        a.value && custom.statValue,
+                      )}>
+                      {a.value}
+                    </span>
                   </div>
                 </Tooltip>
               );

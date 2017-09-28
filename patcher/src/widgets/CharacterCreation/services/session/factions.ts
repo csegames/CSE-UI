@@ -9,6 +9,8 @@ import 'isomorphic-fetch';
 import { fetchJSON } from '../../lib/fetchHelpers';
 import { webAPI } from 'camelot-unchained';
 
+declare const toastr: any;
+
 export interface FactionInfo {
   id: number;
   name: string;
@@ -61,7 +63,11 @@ async function getFactions(dispatch: (action: any) => any, apiHost: string) {
     const res = await webAPI.GameDataAPI.GetFactionInfoV1({ url: `${apiHost}/` });
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchFactionsSuccess(data) : fetchFactionsFailed(data));
+    if (!res.ok) {
+      toastr.error('We were not able to retrieve character creation for you. Try again later.', 'Oh No!');
+    }
   } catch (err) {
+    toastr.error('We were not able to retrieve character creation for you. Try again later.', 'Oh No!');
     fetchFactionsFailed(err);
   }
 }

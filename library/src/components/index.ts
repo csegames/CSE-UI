@@ -34,3 +34,4 @@ export * from './IconButton';
 export * from './CUIcon';
 export * from './MOTD';
 export * from './GridStats';
+export * from './HelpWrapper';

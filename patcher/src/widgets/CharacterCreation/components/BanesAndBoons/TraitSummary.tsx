@@ -137,10 +137,13 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
      colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
 
     return (
-      <div className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
-        {!trait.required && <div className={css(ss.removeButton, custom.removeButton)} onClick={this.onCancelClick}>
+      <div
+        id={trait.required ? 'required-trait' : ''} className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
+        {!trait.required &&
+        <div className={css(ss.removeButton, custom.removeButton)} onClick={this.onCancelClick}>
           X
-        </div>}
+        </div>
+        }
         <div className={css(ss.titleContainer, custom.titleContainer)}>
           <div>
             <p className={css(ss.traitName, custom.traitName)}

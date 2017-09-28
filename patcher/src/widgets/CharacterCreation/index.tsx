@@ -7,6 +7,7 @@
 import 'es6-promise';
 import 'isomorphic-fetch';
 import * as React from 'react';
+import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -146,9 +147,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       case CharacterCreationPage.FACTION_SELECT:
         this.pagesVisited.push(CharacterCreationPage.FACTION_SELECT);
         content = (
-          <FactionSelect factions={this.props.factionsState.factions}
+          <FactionSelect
+            onFactionDoubleClick={this.factionNext}
+            factions={this.props.factionsState.factions}
             selectedFaction={this.props.factionsState.selected}
-            selectFaction={this.factionSelect} />
+            selectFaction={this.factionSelect}
+          />
         );
         break;
       case CharacterCreationPage.RACE_SELECT:
@@ -215,6 +219,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.FACTION_SELECT) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.FACTION_SELECT) !== -1,
+        onClick: () => this.setState({ page: CharacterCreationPage.FACTION_SELECT }),
       },
       {
         pageNumber: CharacterCreationPage.RACE_SELECT,
@@ -222,6 +227,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.RACE_SELECT) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.RACE_SELECT) !== -1,
+        onClick: () => this.setState({ page: CharacterCreationPage.RACE_SELECT }),
       },
       {
         pageNumber: CharacterCreationPage.CLASS_SELECT,
@@ -229,6 +235,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.CLASS_SELECT) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.CLASS_SELECT) !== -1,
+        onClick: () => this.setState({ page: CharacterCreationPage.CLASS_SELECT }),
       },
       {
         pageNumber: CharacterCreationPage.ATTRIBUTES,
@@ -236,6 +243,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.ATTRIBUTES) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.ATTRIBUTES) !== -1,
+        onClick: () => this.setState({ page: CharacterCreationPage.ATTRIBUTES }),
       },
       {
         pageNumber: CharacterCreationPage.BANES_AND_BOONS,
@@ -243,6 +251,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.BANES_AND_BOONS) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.BANES_AND_BOONS) !== -1,
+        onClick: () => this.setState({ page: CharacterCreationPage.BANES_AND_BOONS }),
       },
     ];
     return (
@@ -256,10 +265,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         <Navigation
           onNextClick={this.nextPage}
           onBackClick={this.state.page !== CharacterCreationPage.FACTION_SELECT ? this.previousPage : () => {}}
-          onHelpClick={() => {}}
+          onHelpClick={this.onHelpClick}
           onCancelClick={this.onCloseClick}
           currentPage={this.state.page}
           pages={pages}
+          disableNavButtons={!this.props.factionsState.factions || _.isEmpty(this.props.factionsState.factions)}
         />
       </div>
     );
@@ -301,6 +311,10 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       this.props.created(this.props.characterState.created);
       this.resetAndInit();
     }
+  }
+
+  private onHelpClick = () => {
+    events.fire('character-creation-help', this.state.page);
   }
 
   private filterVisitedAndCompletedPages = (page: CharacterCreationPage) => {

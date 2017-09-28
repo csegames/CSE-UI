@@ -10,11 +10,12 @@ import * as _ from 'lodash';
 import { Race, Gender, Archetype } from 'camelot-unchained';
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
-import { events } from 'camelot-unchained';
+import { events, HelpWrapper } from 'camelot-unchained';
 
+import { CharacterCreationPage } from '../../index';
 import AttributeRow from './AttributeRow';
 import AttributeView, { AttributeObjectInfo } from './AttributeView';
-
+import { attributeSteps } from '../HelpSteps';
 
 export interface AttributesSelectProps {
   attributes: AttributeInfo[];
@@ -27,15 +28,20 @@ export interface AttributesSelectProps {
 }
 
 export interface AttributesSelectState {
+  helpEnabled: boolean;
 }
 
 class AttributesSelect extends React.Component<AttributesSelectProps, AttributesSelectState> {
+  private helpEvent: EventListener;
   private maxAllotments: any;
   private allotments: any;
 
   constructor(props: AttributesSelectProps) {
     super(props);
     this.allotments = [] as any;
+    this.state = {
+      helpEnabled: false,
+    };
   }
 
   public render() {
@@ -63,32 +69,53 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
         attributeInfo: a,
         value: this.calculateDerivedValue(a, offset),
       }));
-
     return (
-      <div className='page'>
-        <video src={`videos/paper-bg.webm`} poster={`videos/paper-bg.jpg`} autoPlay loop></video>
-        <div className='selection-box'>
-          <h6>Distribute attribute points  <span className='points'>(Remaining {this.props.remainingPoints})</span></h6>
-          {sortedAttributes.map((a: AttributeInfo) =>
-            <AttributeRow
-              key={a.name}
-              attributeInfo={a}
-              offset={offset}
-              selectedClass={this.props.selectedClass}
-              allocatePoint={this.props.allocatePoint}
-              remainingPoints={this.props.remainingPoints}
-            />,
-          )}
-        </div>
-        <div className='view-content row attributes-view'>
-          <div style={{ width: '100%' }} className='col s12'>
-            <AttributeView title='Primary' statArray={primaries} />
-            <AttributeView title='Secondary' statArray={secondaries} />
-            <AttributeView title='Derived' statArray={derived} />
+      <HelpWrapper
+        enabled={this.state.helpEnabled}
+        initialStep={0}
+        steps={attributeSteps}
+        onExit={this.toggleHelp}>
+        <div className='page'>
+          <video src={`videos/paper-bg.webm`} poster={`videos/paper-bg.jpg`} autoPlay loop></video>
+          <div className='selection-box'>
+            <h6>Distribute attribute points  <span className='points'>(Remaining {this.props.remainingPoints})</span></h6>
+            {sortedAttributes.map((a: AttributeInfo) =>
+              <AttributeRow
+                key={a.name}
+                attributeInfo={a}
+                offset={offset}
+                selectedClass={this.props.selectedClass}
+                allocatePoint={this.props.allocatePoint}
+                remainingPoints={this.props.remainingPoints}
+              />,
+            )}
+          </div>
+          <div className='view-content row attributes-view'>
+            <div style={{ width: '100%' }} className='col s12'>
+              <AttributeView title='Primary' statArray={primaries} />
+              <AttributeView title='Secondary' statArray={secondaries} />
+              <AttributeView title='Derived' statArray={derived} />
+            </div>
           </div>
         </div>
-      </div>
+      </HelpWrapper>
     );
+  }
+
+  public componentDidMount() {
+    this.helpEvent = events.on('character-creation-help', (page: number) => {
+      if (page === CharacterCreationPage.ATTRIBUTES) {
+        this.toggleHelp();
+      }
+    });
+  }
+
+  public componentWillUnmount() {
+    events.off(this.helpEvent);
+  }
+
+  private toggleHelp = () => {
+    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private generateAttributeView = (info: AttributeInfo, value: number) => {

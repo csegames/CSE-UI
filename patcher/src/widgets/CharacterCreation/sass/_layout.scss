@@ -6,7 +6,7 @@
 
 @mixin selection-box($bg) {
   position: absolute;
-  z-index: 10;
+  z-index: 10 !important;
   background: $bg;
   border-width: 1px;
   border-image: $gradient-border;

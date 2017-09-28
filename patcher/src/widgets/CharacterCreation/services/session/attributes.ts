@@ -15,7 +15,7 @@ export enum attributeType {
   NONE,
   PRIMARY,        // can adjust during character creation, and can be raised through progression
   SECONDARY,      // can set during character creation, locked after creation
-  DERIVED,         // calculated from primary or secondary attributes, player can not directly change
+  DERIVED,        // calculated from primary or secondary attributes, player can not directly change
 }
 
 export interface AttributeInfo {

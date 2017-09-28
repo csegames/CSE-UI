@@ -6,12 +6,15 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { events, Tooltip, HelpWrapper } from 'camelot-unchained';
+
+import { CharacterCreationPage } from '../../index';
+import { banesAndBoonsSteps } from '../HelpSteps';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
 import { TraitStyle } from './Trait';
 import TraitSummary, { TraitSummaryStyle } from './TraitSummary';
-import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
 export interface BanesAndBoonsStyle extends StyleDeclaration {
@@ -96,6 +99,7 @@ export interface BanesAndBoonsState {
   showResetBoonAlertDialog: boolean;
   showResetBaneAlertDialog: boolean;
   showResetAllAlertDialog: boolean;
+  helpEnabled: boolean;
 }
 
 export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
@@ -472,6 +476,7 @@ export const defaultBanesAndBoonsStyles: BanesAndBoonsStyle = {
 };
 
 class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsState> {
+  private helpEvent: EventListener;
   constructor(props: BanesAndBoonsProps) {
     super(props);
     this.state = {
@@ -480,6 +485,7 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       showResetBoonAlertDialog: false,
       showResetBaneAlertDialog: false,
       showResetAllAlertDialog: false,
+      helpEnabled: false,
     };
   }
 
@@ -540,226 +546,251 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
     const banePoints = Object.keys(addedBanes).length > 0 && Object.keys(addedBanes).map((id: string) =>
       traits[id].points * -1).reduce((a, b) => a + b) || 0;
     return (
-      <div className={css(ss.banesAndBoonsContainer, custom.banesAndBoonsContainer)}>
-        <div className={css(ss.outerContainer, custom.outerContainer)}>
-          <div className={css(ss.headerContainer, custom.headerContainer)}>
-            <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
-            <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
-            </div>
-          </div>
-          <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
-            <div className={css(ss.boonsContainer, custom.boonsContainer)}>
-              {allBoons.map((trait: BanesAndBoonsInfo, index: number) => {
-                return (
-                  <Boon
-                    key={index}
-                    traits={traits}
-                    trait={trait}
-                    onBoonClick={onBoonClick}
-                    onCancelBoon={onCancelBoonClick}
-                    allPrerequisites={allPrerequisites}
-                    allExclusives={allExclusives}
-                    addedBoons={addedBoons}
-                    onSelectRankBoon={onSelectRankBoon}
-                    onCancelRankBoon={onCancelRankBoon}
-                    styles={boonStyles}
-                    maxPoints={maxPoints}
-                    totalPoints={boonPoints + banePoints}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </div>
-        <div className={css(ss.summaryContainer, custom.summaryContainer)}>
-          <div>
-            <div className={css(ss.pointsContainer, custom.pointsContainer)}>
-              <div className={css(ss.pointsBarContainer, custom.pointsBarContainer)}>
-                <p className={css(ss.totalPointsText, custom.totalPointsText)}
-                   style={{ color: colors.boonPrimary, marginTop: 0, marginBottom: '-5px' }}>
-                  {boonPoints}
+      <HelpWrapper enabled={this.state.helpEnabled} initialStep={0} steps={banesAndBoonsSteps} onExit={this.toggleHelp}>
+        <div className={css(ss.banesAndBoonsContainer, custom.banesAndBoonsContainer)}>
+          <div className={css(ss.outerContainer, custom.outerContainer)}>
+            <div className={css(ss.headerContainer, custom.headerContainer)}>
+              <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
+              <div>
+                <p id={'boon-minPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
+                  Minimum Points: {minPoints / 2}
                 </p>
-                <Tooltip
-                  styles={{
-                    tooltip: {
-                      backgroundColor: 'rgba(0,0,0,0.9)',
-                      maxWidth: '200px',
-                      ...styleConstants.direction.ltr,
-                    },
-                  }}
-                  content={() => (
-                    <p>
+                <p id={'boon-maxPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
+                  Maximum Points: {maxPoints / 2}
+                </p>
+              </div>
+            </div>
+            <div className={css(ss.boonsInnerWrapper, custom.boonsInnerWrapper)}>
+              <div className={css(ss.boonsContainer, custom.boonsContainer)}>
+                {allBoons.map((trait: BanesAndBoonsInfo, index: number) => {
+                  return (
+                    <div id={`boon-${index}`}>
+                      <Boon
+                        key={index}
+                        traits={traits}
+                        trait={trait}
+                        onBoonClick={onBoonClick}
+                        onCancelBoon={onCancelBoonClick}
+                        allPrerequisites={allPrerequisites}
+                        allExclusives={allExclusives}
+                        addedBoons={addedBoons}
+                        onSelectRankBoon={onSelectRankBoon}
+                        onCancelRankBoon={onCancelRankBoon}
+                        styles={boonStyles}
+                        maxPoints={maxPoints}
+                        totalPoints={boonPoints + banePoints}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          <div className={css(ss.summaryContainer, custom.summaryContainer)}>
+            <div>
+              <div id={'trait-pointsContainer'} className={css(ss.pointsContainer, custom.pointsContainer)}>
+                <div className={css(ss.pointsBarContainer, custom.pointsBarContainer)}>
+                  <p
+                    className={css(ss.totalPointsText, custom.totalPointsText)}
+                    style={{ color: colors.boonPrimary, marginTop: 0, marginBottom: '-5px' }}>
+                    {boonPoints}
+                  </p>
+                  <Tooltip
+                    styles={{
+                      tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.9)',
+                        maxWidth: '200px',
+                        ...styleConstants.direction.ltr,
+                      },
+                    }}
+                    content={() => (
+                      <p>
+                        {
+                          banePoints + boonPoints < minPoints ? `A minimumn of ${minPoints} points spent
+                          in both Banes and Boons is required. Current value: ${banePoints + boonPoints}` :
+                          banePoints + boonPoints > maxPoints ?
+                          `The maximumn number of points spent in both Banes and Boons is
+                          ${maxPoints}. Current value: ${banePoints + boonPoints}` :
+                          totalPoints > 0 ?
+                            `The value of Banes, ${banePoints}, must equal the value of Boons, ${boonPoints}` :
+                          totalPoints < 0 ?
+                            `The value of Boons, ${boonPoints}, must equal the value of Boons, ${banePoints}` :
+                            'Balanced'
+                        }
+                      </p>
+                  )}>
+                    <p className={css(ss.tooManyTraitsText, custom.tooManyTraitsText)}
+                      style={{ color: totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ||
+                      banePoints + boonPoints < minPoints || banePoints + boonPoints > maxPoints ?
+                      colors.banePrimary : colors.success }}>
                       {
-                        banePoints + boonPoints < minPoints ? `A minimumn of ${minPoints} points spent
-                        in both Banes and Boons is required. Current value: ${banePoints + boonPoints}` :
-                        banePoints + boonPoints > maxPoints ? `The maximumn number of points spent in both Banes and Boons is
-                        ${maxPoints}. Current value: ${banePoints + boonPoints}` :
-                        totalPoints > 0 ? `The value of Banes, ${banePoints}, must equal the value of Boons, ${boonPoints}` :
-                        totalPoints < 0 ? `The value of Boons, ${boonPoints}, must equal the value of Boons, ${banePoints}` :
+                        banePoints + boonPoints < minPoints ? 'Too few Banes and Boons' :
+                        banePoints + boonPoints > maxPoints ? 'Too many Banes and Boons' :
+                        totalPoints > 0 ? 'Not enough Banes' :
+                        totalPoints < 0 ? 'Not enough Boons' :
                         'Balanced'
                       }
                     </p>
-                )}>
-                  <p className={css(ss.tooManyTraitsText, custom.tooManyTraitsText)}
-                    style={{ color: totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ||
-                    banePoints + boonPoints < minPoints || banePoints + boonPoints > maxPoints ?
-                    colors.banePrimary : colors.success }}>
-                    {
-                      banePoints + boonPoints < minPoints ? 'Too few Banes and Boons' :
-                      banePoints + boonPoints > maxPoints ? 'Too many Banes and Boons' :
-                      totalPoints > 0 ? 'Not enough Banes' :
-                      totalPoints < 0 ? 'Not enough Boons' :
-                      'Balanced'
-                    }
+                  </Tooltip>
+                  <p className={css(ss.totalPointsText, custom.totalPointsText)}
+                    style={{ color: colors.banePrimary }}>
+                    {banePoints}
                   </p>
-                </Tooltip>
-                <p className={css(ss.totalPointsText, custom.totalPointsText)}
-                   style={{ color: colors.banePrimary }}>
-                  {banePoints}
-                </p>
-              </div>
-              <div className={css(ss.pointsMeter, custom.pointsMeter)}>
-                <div className={css(ss.balanceBar, custom.balanceBar)}
-                  style={{ flex: flexOfBoonBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-                  banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success }}
-                />
-                <div className={css(ss.balanceBar, custom.balanceBar)}
-                  style={{ flex: flexOfBaneBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-                  banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success }}
-                />
-              </div>
-              <div className={css(ss.resetButtonsContainer)}>
-                <div className={css(ss.boonResetButton, custom.boonResetButton)}
-                   onClick={() => {
-                     events.fire('play-sound', 'select');
-                     this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }));
-                   }}>Reset boons</div>
-                <div className={css(ss.resetAllButton, custom.resetAllButton)}
-                  onClick={() => {
-                    events.fire('play-sound', 'select');
-                    this.setState(Object.assign({}, this.state, { showResetAllAlertDialog: true }));
-                  }}>
-                  Reset all
                 </div>
-                <div className={css(ss.baneResetButton, custom.baneResetButton)}
+                <div className={css(ss.pointsMeter, custom.pointsMeter)}>
+                  <div
+                    className={css(ss.balanceBar, custom.balanceBar)}
+                    style={{
+                      flex: flexOfBoonBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                      banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success,
+                    }}
+                  />
+                  <div className={css(ss.balanceBar, custom.balanceBar)}
+                    style={{
+                      flex: flexOfBaneBar, backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                      banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success,
+                    }}
+                  />
+                </div>
+                <div className={css(ss.resetButtonsContainer)}>
+                  <div className={css(ss.boonResetButton, custom.boonResetButton)}
                     onClick={() => {
                       events.fire('play-sound', 'select');
-                      this.setState(Object.assign({}, this.state, { showResetBaneAlertDialog: true }));
-                    }}>Reset banes</div>
-              </div>
-            </div>
-            {/*<div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
-              <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
-                {Object.keys(addedBoons).map((key: string, index: number) => (
-                  <div className={css(ss.addBoon, custom.addBoon)} key={index}>
-                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
+                      this.setState(Object.assign({}, this.state, { showResetBoonAlertDialog: true }));
+                    }}>Reset boons</div>
+                  <div className={css(ss.resetAllButton, custom.resetAllButton)}
+                    onClick={() => {
+                      events.fire('play-sound', 'select');
+                      this.setState(Object.assign({}, this.state, { showResetAllAlertDialog: true }));
+                    }}>
+                    Reset all
                   </div>
-                ))}
-              </div>
-              <div className={css(ss.addedBaneContainer, custom.addedBaneContainer)}>
-                {Object.keys(addedBanes).map((key: string, index: number) => (
-                  <div className={css(ss.addBane, custom.addBane)} key={index}>
-                    <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
-                  </div>
-                ))}
-              </div>
-            </div>*/}
-          </div>
-          <div>
-            <div className={css(ss.innerSummaryWrapper, custom.innerSummaryWrapper)}>
-              <div className={css(ss.addedBoonSummaryWrapper, custom.addedBoonSummaryWrapper)}>
-                {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
-                  <TraitSummary
-                    key={index}
-                    trait={traits[key]}
-                    onCancelClick={onCancelBoonClick}
-                    onCancelRankTrait={onCancelRankBoon}
-                    type='Boon'
-                    styles={traitSummaryStyles}
-                  />
-                ))}
-              </div>
-              <div className={css(ss.addedBaneSummaryWrapper, custom.addedBaneSummaryWrapper)}>
-                {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
-                  <TraitSummary
-                    key={index}
-                    trait={traits[key]}
-                    onCancelClick={onCancelBaneClick}
-                    onCancelRankTrait={onCancelRankBoon}
-                    type='Bane'
-                    styles={traitSummaryStyles}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
-                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                   visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
-                   showResetAllAlertDialog ? 'visible' : 'hidden' }} />
-            <div className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
-                 style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
-                   visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
-                   showResetAllAlertDialog ? 'visible' : 'hidden' }}>
-              <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText,
-                custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
-              <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
-                Are you sure you want to reset all {showResetBoonAlertDialog && 'Boons'}{showResetBaneAlertDialog && 'Banes'}
-                {showResetAllAlertDialog && 'Banes & Boons'}?
-              </p>
-              <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
-                <div className={css(ss.alertButton, custom.alertButton)}
-                     onClick={() => {
-                       events.fire('play-sound', 'select');
-                       this.setState(Object.assign({}, this.state, {
-                         showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false,
-                       }));
-                     }}>
-                  Cancel
-                </div>
-                <div className={css(ss.resetAlertButton, custom.resetAlertButton)}
-                     onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' :
-                     showResetBoonAlertDialog ? 'boons' : 'both')}>
-                  Yes, reset!
+                  <div className={css(ss.baneResetButton, custom.baneResetButton)}
+                      onClick={() => {
+                        events.fire('play-sound', 'select');
+                        this.setState(Object.assign({}, this.state, { showResetBaneAlertDialog: true }));
+                      }}>Reset banes</div>
                 </div>
               </div>
+              {/*<div className={css(ss.dropZoneContainer, custom.dropZoneContainer)}>
+                <div className={css(ss.addedBoonContainer, custom.addedBoonContainer)}>
+                  {Object.keys(addedBoons).map((key: string, index: number) => (
+                    <div className={css(ss.addBoon, custom.addBoon)} key={index}>
+                      <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
+                    </div>
+                  ))}
+                </div>
+                <div className={css(ss.addedBaneContainer, custom.addedBaneContainer)}>
+                  {Object.keys(addedBanes).map((key: string, index: number) => (
+                    <div className={css(ss.addBane, custom.addBane)} key={index}>
+                      <img className={css(ss.addTraitImage, custom.addTraitImage)} src={traits[key].icon} />
+                    </div>
+                  ))}
+                </div>
+              </div>*/}
             </div>
-          </div>
-        </div>
-        <div className={css(ss.outerContainer, custom.outerContainer)}>
-          <div className={css(ss.headerContainer, custom.headerContainer)}>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              <div className={css(ss.innerSummaryWrapper, custom.innerSummaryWrapper)}>
+                <div className={css(ss.addedBoonSummaryWrapper, custom.addedBoonSummaryWrapper)}>
+                  {Object.keys(addedBoons).slice(0).reverse().map((key: string, index: number) => (
+                    <div id={`boon-summary-${index}`}>
+                      <TraitSummary
+                        key={index}
+                        trait={traits[key]}
+                        onCancelClick={onCancelBoonClick}
+                        onCancelRankTrait={onCancelRankBoon}
+                        type='Boon'
+                        styles={traitSummaryStyles}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className={css(ss.addedBaneSummaryWrapper, custom.addedBaneSummaryWrapper)}>
+                  {Object.keys(addedBanes).slice(0).reverse().map((key: string, index: number) => (
+                    <TraitSummary
+                      key={index}
+                      trait={traits[key]}
+                      onCancelClick={onCancelBaneClick}
+                      onCancelRankTrait={onCancelRankBoon}
+                      type='Bane'
+                      styles={traitSummaryStyles}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div
+                className={css(ss.resetAlertOverlay, custom.resetAlertOverlay)}
+                style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                  showResetAllAlertDialog ? 'visible' : 'hidden' }} />
+              <div
+                className={css(ss.resetAlertDialog, custom.resetAlertDialog)}
+                style={{ opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+                  visibility: showResetBoonAlertDialog || showResetBaneAlertDialog ||
+                  showResetAllAlertDialog ? 'visible' : 'hidden' }}>
+                <p className={css(ss.resetAlertDialogText, ss.alertPrimaryText,
+                  custom.resetAlertDialogText, custom.alertPrimaryText)}>Are you sure?</p>
+                <p className={css(ss.resetAlertDialogText, custom.resetAlertDialogText)}>
+                  Are you sure you want to reset all&nbsp;
+                  {showResetBoonAlertDialog && 'Boons'}
+                  {showResetBaneAlertDialog && 'Banes'}
+                  {showResetAllAlertDialog && 'Banes & Boons'}?
+                </p>
+                <div className={css(ss.resetAlertButtonContainer, custom.resetAlertButtonContainer)}>
+                  <div
+                    className={css(ss.alertButton, custom.alertButton)}
+                    onClick={() => {
+                      events.fire('play-sound', 'select');
+                      this.setState(Object.assign({}, this.state, {
+                        showResetBoonAlertDialog: false, showResetBaneAlertDialog: false, showResetAllAlertDialog: false,
+                      }));
+                    }}>
+                    Cancel
+                  </div>
+                  <div
+                    className={css(ss.resetAlertButton, custom.resetAlertButton)}
+                    onClick={() => this.onResetClick(showResetBaneAlertDialog ? 'banes' :
+                    showResetBoonAlertDialog ? 'boons' : 'both')}>
+                    Yes, reset!
+                  </div>
+                </div>
+              </div>
             </div>
-            <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
           </div>
-          <div className={css(ss.banesInnerWrapper, custom.banesInnerWrapper)}>
-            <div className={css(ss.banesContainer, custom.banesContainer)}>
-              {allBanes.map((trait: BanesAndBoonsInfo, index: number) => {
-                return (
-                  <Bane
-                    key={index}
-                    traits={traits}
-                    trait={trait}
-                    onBaneClick={onBaneClick}
-                    onCancelBane={onCancelBaneClick}
-                    allPrerequisites={allPrerequisites}
-                    allExclusives={allExclusives}
-                    addedBanes={addedBanes}
-                    onSelectRankBane={onSelectRankBane}
-                    onCancelRankBane={onCancelRankBane}
-                    styles={baneStyles}
-                    maxPoints={maxPoints}
-                    totalPoints={boonPoints + banePoints}
-                  />
-                );
-              })}
+          <div className={css(ss.outerContainer, custom.outerContainer)}>
+            <div className={css(ss.headerContainer, custom.headerContainer)}>
+              <div>
+                <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
+                <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              </div>
+              <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
+            </div>
+            <div className={css(ss.banesInnerWrapper, custom.banesInnerWrapper)}>
+              <div className={css(ss.banesContainer, custom.banesContainer)}>
+                {allBanes.map((trait: BanesAndBoonsInfo, index: number) => {
+                  return (
+                    <Bane
+                      key={index}
+                      traits={traits}
+                      trait={trait}
+                      onBaneClick={onBaneClick}
+                      onCancelBane={onCancelBaneClick}
+                      allPrerequisites={allPrerequisites}
+                      allExclusives={allExclusives}
+                      addedBanes={addedBanes}
+                      onSelectRankBane={onSelectRankBane}
+                      onCancelRankBane={onCancelRankBane}
+                      styles={baneStyles}
+                      maxPoints={maxPoints}
+                      totalPoints={boonPoints + banePoints}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </HelpWrapper>
     );
   }
 
@@ -777,6 +808,11 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       events.fire('play-sound', 'success');
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
     }
+    this.helpEvent = events.on('character-creation-help', (page: number) => {
+      if (page === CharacterCreationPage.BANES_AND_BOONS) {
+        this.toggleHelp();
+      }
+    });
   }
 
   public componentWillUpdate(nextProps: BanesAndBoonsProps) {
@@ -796,6 +832,14 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
       }
     }
+  }
+
+  public componentWillUnmount() {
+    events.off(this.helpEvent);
+  }
+
+  private toggleHelp = () => {
+    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {

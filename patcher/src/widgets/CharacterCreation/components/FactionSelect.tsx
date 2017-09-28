@@ -5,17 +5,22 @@
  */
 
 import * as React from 'react';
-import { Faction, events } from 'camelot-unchained';
+import * as _ from 'lodash';
+import { Faction, events, HelpWrapper, Spinner } from 'camelot-unchained';
 
+import { CharacterCreationPage } from '../index';
+import { factionSteps } from './HelpSteps';
 import { FactionInfo } from '../services/session/factions';
 
 export interface FactionSelectProps {
   factions: FactionInfo[];
   selectedFaction: FactionInfo;
   selectFaction: (Faction: FactionInfo) => void;
+  onFactionDoubleClick: () => void;
 }
 
 export interface FactionSelectState {
+  helpEnabled: boolean;
 }
 
 /*tslint:disable*/
@@ -29,40 +34,74 @@ const realmText: any = {
 /*tslint:enable*/
 
 class FactionSelect extends React.Component<FactionSelectProps, FactionSelectState> {
-
+  private helpEvent: EventListener;
   constructor(props: FactionSelectProps) {
     super(props);
+    this.state = {
+      helpEnabled: false,
+    };
   }
 
   public render() {
-    if (!this.props.factions) {
-      return <div> loading factions </div>;
+    if (!this.props.factions || _.isEmpty(this.props.factions)) {
+      return (
+        <div className='cu-character-creation__loading-container'>
+          <Spinner />
+        </div>
+      );
     }
     return (
-      <div className='cu-character-creation__faction-select'>
-
-        {this.props.factions.map(this.generateFactionContent)}
-      </div>
+      <HelpWrapper
+        enabled={this.state.helpEnabled}
+        initialStep={0}
+        steps={factionSteps}
+        onExit={this.toggleHelp}
+      >
+        <div className='cu-character-creation__faction-select'>
+          {this.props.factions.map(this.generateFactionContent)}
+        </div>
+      </HelpWrapper>
     );
+  }
+
+  public componentDidMount() {
+    this.helpEvent = events.on('character-creation-help', (page: number) => {
+      if (page === CharacterCreationPage.FACTION_SELECT) {
+        this.toggleHelp();
+      }
+    });
+  }
+
+  public componentWillUnmount() {
+    events.off(this.helpEvent);
   }
 
   private selectFaction = (faction: FactionInfo) => {
     this.props.selectFaction(faction);
   }
 
+  private toggleHelp = () => {
+    this.setState({ helpEnabled: !this.state.helpEnabled });
+  }
+
   private generateFactionContent = (info: FactionInfo) => {
     if (info.id === Faction.Factionless) return null;  // players can not be factionless!
     return (
-      <div key={info.id}
-           className={`cu-character-creation__faction-select__${info.shortName} ${ this.props.selectedFaction !== null ?
-            this.props.selectedFaction.id === info.id ? 'active' : '' : ''}`}
-           onClick={this.selectFaction.bind(this, info)}>
-        <div className={`cu-character-creation__faction-select__${info.shortName}__shield`}
-             onClick={this.selectFaction.bind(this, info)}></div>
-             <h4>{info.description}</h4>
-        <div className={`cu-character-creation__faction-select__${info.shortName}__description`}
-             onClick={this.selectFaction.bind(this, info)}>
-             {/*realmText[info.shortName]*/}
+      <div
+        key={info.id}
+        id={info.shortName}
+        className={`cu-character-creation__faction-select__${info.shortName} ${ this.props.selectedFaction !== null ?
+        this.props.selectedFaction.id === info.id ? 'active' : '' : ''}`}
+        onClick={this.selectFaction.bind(this, info)}
+        onDoubleClick={this.props.onFactionDoubleClick}>
+        <div
+          className={`cu-character-creation__faction-select__${info.shortName}__shield`}
+          onClick={this.selectFaction.bind(this, info)}></div>
+        <h4>{info.description}</h4>
+        <div
+          className={`cu-character-creation__faction-select__${info.shortName}__description`}
+          onClick={this.selectFaction.bind(this, info)}>
+          {/*realmText[info.shortName]*/}
         </div>
       </div>
     );

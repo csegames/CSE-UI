@@ -11,6 +11,16 @@ export interface SpinnerStyle extends StyleDeclaration {
   spinner: React.CSSProperties;
 }
 
+const spin = {
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+};
+
+
 export const defaultSpinnerStyle: SpinnerStyle = {
   spinner: {
     borderRadius: '50%',
@@ -19,6 +29,14 @@ export const defaultSpinnerStyle: SpinnerStyle = {
     height: '1em',
     border: '.25rem solid rgba(255, 255, 255, 0.2)',
     borderTopColor: '#ececec',
+    transition: 'all .3s',
+    animationName: spin,
+    WebkitAnimationName: spin,
+    animationDuration: '1s',
+    WebkitAnimationDuration: '1s',
+    animationIterationCount: 'infinite',
+    WebkitAnimatiionIterationCount: 'infinite',
+    WebkitBackfaceVisibility: 'hidden',
     ':hover': {
       borderTopColor: '#3fd0b0',
     },
