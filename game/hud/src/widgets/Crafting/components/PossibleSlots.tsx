@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-05-20 20:36:49
  * @Last Modified by: Mehuge (mehuge@sorcerer.co.uk)
- * @Last Modified time: 2017-09-28 23:11:01
+ * @Last Modified time: 2017-09-29 20:42:40
  */
 
 import * as React from 'react';
@@ -17,7 +17,6 @@ import { StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles } from '../s
 
 interface PossibleSlotsReduxProps {
   possibleItemSlots?: string[];
-  style?: Partial<PossibleSlotsStyles>;
 }
 
 const select = (state: GlobalState, props: PossibleSlotsProps): PossibleSlotsReduxProps => {
@@ -31,6 +30,7 @@ const select = (state: GlobalState, props: PossibleSlotsProps): PossibleSlotsRed
 export interface PossibleSlotsProps extends PossibleSlotsReduxProps {
   selectedItem: string;
   disabled?: boolean;
+  style?: Partial<PossibleSlotsStyles>;
   onSelect: (slot: string) => void;
   dispatch: (action: any) => void;
 }

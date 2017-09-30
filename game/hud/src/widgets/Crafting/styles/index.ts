@@ -461,11 +461,8 @@ export const outputItems: OutputItemsStyles = {
 
 export interface IngredientsStyles {
   ingredients: React.CSSProperties;
-  // title: React.CSSProperties;
-
   loadedIngredients: React.CSSProperties;
   remove: React.CSSProperties;
-
   addIngredient: React.CSSProperties;
   ingredient: React.CSSProperties;
   times: React.CSSProperties;
@@ -480,15 +477,6 @@ export const ingredients: IngredientsStyles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  /*
-  title: {
-    flex: '0 1 auto',
-    fontSize: '100%',
-    borderBottom: opts.ui.BOTTOM_BORDER,
-    fontWeight: 'normal',
-    marginTop: '0.5em',
-  },
-  */
   loadedIngredients: {
     flex: '1 1 auto',
     display: 'flex',

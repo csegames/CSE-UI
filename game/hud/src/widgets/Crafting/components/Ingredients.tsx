@@ -134,12 +134,16 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
                 onSelect={this.select}
               />
               <span className={css(ss.times)}>x</span>
-              <Input name='add-qty'
+              <Input
+                name='add-qty'
                 style={{ input: ingredientsStyles.quantity }}
                 numeric={true} min={1}
-                disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
-              <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
-                onClick={this.addIngredient}>Add</Button>
+                disabled={!qtyok}
+                onChange={this.onChange}
+                size={3}
+                value={this.state.qty.toString()}
+              />
+              <Button disabled={!ready} style={{ button: ingredientsStyles.add }} onClick={this.addIngredient}>Add</Button>
             </div>
           );
         } else {
@@ -166,8 +170,11 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
           <div>{loaded}</div>
           { last
-            ? <Button style={{ button: ingredientsStyles.remove }}
-                disabled={!configuring} onClick={() => props.remove(last)}>
+            ? <Button
+                style={{ button: ingredientsStyles.remove }}
+                disabled={!configuring}
+                onClick={() => props.remove(last)}
+              >
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>
             : undefined }

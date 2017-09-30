@@ -345,7 +345,7 @@ class App extends React.Component<AppProps, AppState> {
     success: string,
     getAction?: (response: any) => any,
     errorAction?: (error: any) => any,
-    andFinally?: () => any,
+    andFinally?: () => void,
   ) => {
     const props = this.props;
     request()

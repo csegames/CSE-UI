@@ -34,7 +34,6 @@ interface VoxItemStats {
 interface VoxLocation {
   itemSlot: string;
   voxInstanceId: string;
-
 }
 
 interface VoxItemLocation {
