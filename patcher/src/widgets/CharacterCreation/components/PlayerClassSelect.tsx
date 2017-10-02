@@ -11,9 +11,7 @@ import { classSteps } from './HelpSteps';
 import { CharacterCreationPage } from '../index';
 import { PlayerClassInfo } from '../services/session/playerClasses';
 import { FactionInfo } from '../services/session/factions';
-
-// tslint:disable-next-line
-const Animate = require('react-animate.css');
+import Animate from '../../../lib/Animate';
 
 /* tslint:disable */
 const classText: any = {
@@ -102,10 +100,14 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
             {text}
           </div>
           <div className='view-content'>
-            <Animate className='animate' animationEnter='fadeIn' animationLeave='fadeOut'
-            durationEnter={400} durationLeave={500}>
-            {view}
-          </Animate>
+            <Animate
+              className='animate'
+              animationEnter='fadeIn'
+              animationLeave='fadeOut'
+              durationEnter={400}
+              durationLeave={500}>
+              {view}
+            </Animate>
           </div>
         </div>
       </HelpWrapper>

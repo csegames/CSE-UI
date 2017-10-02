@@ -18,11 +18,6 @@ export interface HeaderProps {
 }
 
 class Header extends React.Component<HeaderProps, {}> {
-  private static propTypes = {
-    changeRoute: React.PropTypes.func.isRequired,
-    openChat: React.PropTypes.func.isRequired,
-    activeRoute: React.PropTypes.number.isRequired,
-  };
 
   public name = 'cse-patcher-header';
 

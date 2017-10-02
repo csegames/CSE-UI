@@ -27,7 +27,6 @@ import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
 
 // tslint:disable-next-line
-const Animate =  require('react-animate.css');
 
 import reducer from './services/session/reducer';
 import { RacesState, fetchRaces, selectRace, RaceInfo, resetRace } from './services/session/races';

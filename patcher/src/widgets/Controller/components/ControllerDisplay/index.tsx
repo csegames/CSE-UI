@@ -19,7 +19,6 @@ import ServerSelect from '../ServerSelect';
 import GameSelect from '../GameSelect';
 import ProgressBar from '../ProgressBar';
 
-import Animate from '../../../../lib/Animate';
 import QuickSelect from '../../../../lib/QuickSelect';
 import { patcher, Channel, ChannelStatus, PatchPermissions, permissionsString } from '../../../../services/patcher';
 import { view } from '../../../../components/OverlayView';

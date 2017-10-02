@@ -8,7 +8,7 @@ import * as React from 'react';
 import RoomId from './RoomId';
 import { chatType } from './ChatMessage';
 import JoinRoomModal from './JoinRoomModal';
-const Animate = require('react-animate.css');
+import Animate from '../lib/Animate';
 
 export interface JoinRoomButtonState {
   showJoinRoomModal: boolean;

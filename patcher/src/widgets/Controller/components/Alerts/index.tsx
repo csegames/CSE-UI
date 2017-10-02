@@ -13,10 +13,6 @@ export interface AlertsProps {
 }
 
 export class Alerts extends React.Component<AlertsProps, {}> {
-  private static propTypes = {
-    alerts: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  };
-  
   public render() {
     if (this.props.alerts.length === 0) return null;
     return <div className='Alerts'>{this.props.alerts[0].message}</div>;

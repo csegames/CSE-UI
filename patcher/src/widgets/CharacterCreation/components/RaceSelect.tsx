@@ -13,10 +13,9 @@ import { raceSteps } from './HelpSteps';
 import { RaceInfo } from '../services/session/races';
 import { FactionInfo } from '../services/session/factions';
 import RaceVisualEffects from './VisualEffects/RaceVisualEffects';
+import Animate from '../../../lib/Animate';
 
-/* tslint:disable */
-const Animate = require('react-animate.css');
-
+// tslint:disable
 const raceText: any = {
   HumanMaleA: 'Through luck, or perhaps something more, a few Humans managed to escape Veilstorm influence entirely. They did not change into something else, and were untouched by the Veil’s wrath, as though chosen for a special purpose. They may lack the strange powers that some other races possess, but they are also spared the curses that sometimes accompany these powers. Through sheer determination, Humans survive. They refuse to disappear, and prosper even in the most difficult of times, following the noble path of righteous strength that King Arthur lays before them.',
 
@@ -30,6 +29,7 @@ const raceText: any = {
 
   Luchorpan: 'Small and often underestimated, the Luchorpán are natural-born tricksters, masters of misdirection and illusion. They believe that lies can reveal the truth, that a person’s hidden nature is revealed when they are the victim of a prank. The clever fingers of the Luchorpán are naturally skilled at powerful crafting, and their quick reflexes, excellent hiding skills, or talent for climbing often get them out of whatever trouble their mischief gets them into. If all else fails, rumor holds that Luchorpán can simply vanish and reappear elsewhere. Bonds of love are considered unbreakable among the Luchorpán, and any of them would give up life itself to defend their family or their Realm.',
 };
+// tslint:enable
 
 export interface RaceSelectProps {
   selectedFaction: FactionInfo;
@@ -92,8 +92,12 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
             {text}
           </div>
           <div className='view-content'>
-            <Animate className='animate' animationEnter='fadeIn' animationLeave='fadeOut'
-            durationEnter={400} durationLeave={500}>
+            <Animate
+              className='animate'
+              animationEnter='fadeIn'
+              animationLeave='fadeOut'
+              durationEnter={400}
+              durationLeave={500}>
           </Animate>
           </div>
         </div>

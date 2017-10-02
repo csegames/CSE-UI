@@ -24,7 +24,7 @@
 // SOFTWARE.
 
 import * as React from 'react';
-import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 export interface AnimateProps {
   animationEnter: string;
@@ -37,13 +37,6 @@ export interface AnimateProps {
 }
 
 class Animate extends React.Component<AnimateProps, {}> {
-  static propTypes = {
-    animationEnter: React.PropTypes.string.isRequired,
-    animationLeave: React.PropTypes.string.isRequired,
-    durationEnter: React.PropTypes.number.isRequired,
-    durationLeave: React.PropTypes.number.isRequired
-  }
-
   renderStyle = (animationEnter: string, animationLeave: string, durationEnter: number, durationLeave: number) => {
     return (
         `
@@ -72,7 +65,7 @@ class Animate extends React.Component<AnimateProps, {}> {
     return (
 
 
-          <ReactCSSTransitionGroup
+          <CSSTransitionGroup
               key={this.props.key}
               component={this.props.component ? this.props.component : 'div'}
               transitionName={ {
@@ -88,7 +81,7 @@ class Animate extends React.Component<AnimateProps, {}> {
 
             {children}
 
-          </ReactCSSTransitionGroup>
+          </CSSTransitionGroup>
 
     )
   }

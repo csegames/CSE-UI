@@ -24,7 +24,7 @@
 // SOFTWARE.
 
 import * as React from 'react';
-import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 export interface AnimateProps {
   animationEnter: string;
@@ -37,39 +37,29 @@ export interface AnimateProps {
 }
 
 class Animate extends React.Component<AnimateProps, {}> {
-
-  private static propTypes = {
-    animationEnter: React.PropTypes.string.isRequired,
-    animationLeave: React.PropTypes.string.isRequired,
-    durationEnter: React.PropTypes.number.isRequired,
-    durationLeave: React.PropTypes.number.isRequired,
-  };
-
   public render() {
     const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props;
 
     return (
+    
+      <CSSTransitionGroup
+        key={this.props.key}
+        component={this.props.component ? this.props.component : 'div'}
+        transitionName={ {
+          enter: 'default-enter',
+          enterActive: animationEnter,
+          leave: 'default-leave',
+          leaveActive: animationLeave,
+        } }
+        transitionEnterTimeout={durationEnter}
+        transitionLeaveTimeout={durationLeave}
+        className={`${this.props.className ? this.props.className : ''}`}>
+      <style dangerouslySetInnerHTML={ { __html:
+        this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
 
+      {children}
 
-          <ReactCSSTransitionGroup
-              key={this.props.key}
-              component={this.props.component ? this.props.component : 'div'}
-              transitionName={ {
-                enter: 'default-enter',
-                enterActive: animationEnter,
-                leave: 'default-leave',
-                leaveActive: animationLeave,
-              } }
-              transitionEnterTimeout={durationEnter}
-              transitionLeaveTimeout={durationLeave}
-              className={`${this.props.className ? this.props.className : ''}`}>
-            <style dangerouslySetInnerHTML={ { __html:
-              this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
-
-            {children}
-
-          </ReactCSSTransitionGroup>
-
+      </CSSTransitionGroup>
     );
   }
 

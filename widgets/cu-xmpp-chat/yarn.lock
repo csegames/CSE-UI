@@ -12,22 +12,15 @@
   version "4.14.68"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.68.tgz#754fbab68bd2bbb69547dc8ce7574f7012eed7f6"
 
-"@types/react-addons-css-transition-group@^15.0.1":
-  version "15.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-addons-css-transition-group/-/react-addons-css-transition-group-15.0.3.tgz#cfcc3b726c5e73ed81e5921ef0660e9f95965b4e"
-  dependencies:
-    "@types/react" "*"
-    "@types/react-addons-transition-group" "*"
-
-"@types/react-addons-transition-group@*":
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/@types/react-addons-transition-group/-/react-addons-transition-group-15.0.1.tgz#0178de43e2b4ccfea8d2f7dfed252dcb339ff14a"
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-dom@^0.14.23":
   version "0.14.23"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-0.14.23.tgz#cecfcfad754b4c2765fe5d29b81b301889ad6c2e"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-transition-group@1.x":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-1.1.2.tgz#a349e70788a6dc723a5f439217011ef926c27b4f"
   dependencies:
     "@types/react" "*"
 
@@ -772,6 +765,10 @@ center-align@^0.1.1:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
 
+chain-function@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.camelotunchained.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
+
 chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1:
   version "1.1.3"
   resolved "http://registry.camelotunchained.com/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
@@ -1023,6 +1020,10 @@ detect-indent@^5.0.0:
   version "5.0.0"
   resolved "http://registry.camelotunchained.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
 
+dom-helpers@^3.2.0:
+  version "3.2.1"
+  resolved "http://registry.camelotunchained.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
+
 dot-prop@^3.0.0:
   version "3.0.0"
   resolved "http://registry.camelotunchained.com/dot-prop/-/dot-prop-3.0.0.tgz#1b708af094a49c9a0e7dbcad790aba539dac1177"
@@ -1186,6 +1187,12 @@ find-up@^1.0.0:
     path-exists "^2.0.0"
     pinkie-promise "^2.0.0"
 
+follow-redirects@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.camelotunchained.com/follow-redirects/-/follow-redirects-1.0.0.tgz#8e34298cbd2e176f254effec75a1c78cc849fd37"
+  dependencies:
+    debug "^2.2.0"
+
 for-in@^1.0.1:
   version "1.0.2"
   resolved "http://registry.camelotunchained.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -1203,14 +1210,6 @@ forever-agent@~0.6.1:
 form-data@^2.0.0, form-data@~2.1.1:
   version "2.1.4"
   resolved "http://registry.camelotunchained.com/form-data/-/form-data-2.1.4.tgz#33c183acf193276ecaa98143a69e94bfee1750d1"
-  dependencies:
-    asynckit "^0.4.0"
-    combined-stream "^1.0.5"
-    mime-types "^2.1.12"
-
-form-data@~2.3.1:
-  version "2.3.1"
-  resolved "http://registry.camelotunchained.com/form-data/-/form-data-2.3.1.tgz#6fb94fbd71885306d73d15cc497fe4cc4ecd44bf"
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.5"
@@ -2477,7 +2476,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6:
   version "15.5.10"
   resolved "http://registry.camelotunchained.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -2526,13 +2525,9 @@ rc@^1.0.1, rc@^1.1.5, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-addons-css-transition-group@^0.14.6, react-addons-css-transition-group@^0.14.7:
+react-addons-css-transition-group@^0.14.6:
   version "0.14.8"
   resolved "http://registry.camelotunchained.com/react-addons-css-transition-group/-/react-addons-css-transition-group-0.14.8.tgz#c7a2279e71095e743c43a3a4583a1e4f1a2dd61d"
-
-react-animate.css@0.0.4:
-  version "0.0.4"
-  resolved "http://registry.camelotunchained.com/react-animate.css/-/react-animate.css-0.0.4.tgz#22f894a37ecb4cef94f2ce60f59032f74e075408"
 
 react-dom@^15.4.2:
   version "15.6.1"
@@ -2563,7 +2558,17 @@ react-redux@^4.4.5:
     loose-envify "^1.1.0"
     prop-types "^15.5.4"
 
-react@^15.4.2:
+react-transition-group@1.x:
+  version "1.2.1"
+  resolved "http://registry.camelotunchained.com/react-transition-group/-/react-transition-group-1.2.1.tgz#e11f72b257f921b213229a774df46612346c7ca6"
+  dependencies:
+    chain-function "^1.0.0"
+    dom-helpers "^3.2.0"
+    loose-envify "^1.3.1"
+    prop-types "^15.5.6"
+    warning "^3.0.0"
+
+react@^15.4.2, react@^15.6.1:
   version "15.6.1"
   resolved "http://registry.camelotunchained.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
   dependencies:
@@ -2737,7 +2742,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@2, request@^2.65.0, request@^2.81.0:
+request@2, request@^2.61.0, request@^2.65.0, request@^2.81.0:
   version "2.81.0"
   resolved "http://registry.camelotunchained.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
@@ -3132,7 +3137,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "http://registry.camelotunchained.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.0.3:
+typescript@^2.0.3, typescript@^2.1.6:
   version "2.4.1"
   resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
 
@@ -3291,6 +3296,12 @@ verror@1.3.6:
   resolved "http://registry.camelotunchained.com/verror/-/verror-1.3.6.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
   dependencies:
     extsprintf "1.0.2"
+
+warning@^3.0.0:
+  version "3.0.0"
+  resolved "http://registry.camelotunchained.com/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
+  dependencies:
+    loose-envify "^1.0.0"
 
 wcwidth@^1.0.0:
   version "1.0.1"
