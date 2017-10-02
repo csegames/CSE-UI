@@ -29,6 +29,7 @@ const FIELD_LISTS = {
     'maxRepairPoints', 'maxHealth', 'fractureThreshold', 'fractureChance',
     'currentRepairPoints', 'currentHealth',
   ],
+  IN_VOX: ['itemSlot', 'voxInstanceID'],
   VOX_STATUS: [
     'voxState', 'jobType', 'jobState', 'startTime', 'totalCraftingTime', 'timeRemaining',
     'givenName', 'itemCount', 'recipeID', 'endQuality', 'usedRepairPoints',
@@ -54,6 +55,7 @@ const TYPES: any = {
   purifyRecipes: FIELD_LISTS.RECIPE,
   makeRecipes: FIELD_LISTS.RECIPE,
   voxStatus: FIELD_LISTS.VOX_STATUS,
+  inVox: FIELD_LISTS.IN_VOX,
 };
 
 const GetQueryPart = (name: string, def: any, parent: string, indent: string) => {
@@ -89,6 +91,7 @@ const QUERY_VOX_STATUS = GetQueryText('VoxStatus', {
       ingredients: {
         staticDefinition: true,
         stats: { item: true, durability: true },
+        location: { inVox: true },
       },
       outputItems: {
         staticDefinition: true,
@@ -102,10 +105,7 @@ const QUERY_POSSIBLE_INGREDIENTS = GetQueryText('PossibleIngredients', {
   crafting: {
     possibleIngredients: {
       staticDefinition: true,
-      stats: {
-        item: true,
-        durability: true,
-      },
+      stats: { item: true, durability: true },
     },
   },
 });
@@ -134,9 +134,14 @@ const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
   crafting: { makeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
 });
 
+const QUERY_POSSIBLE_ITEMSLOTS = GetQueryText('PossibleItemSlots', {
+  crafting: ['possibleItemSlots'],
+});
+
 export const QUERIES = {
   QUERY_VOX_STATUS,
   QUERY_POSSIBLE_INGREDIENTS,
+  QUERY_POSSIBLE_ITEMSLOTS,
   QUERY_PURIFY_RECIPES,
   QUERY_GRIND_RECIPES,
   QUERY_REFINE_RECIPES,

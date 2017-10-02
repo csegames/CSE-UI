@@ -8,23 +8,27 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import { Ingredient } from '../services/types';
+import { setMessage } from '../services/session/job';
 import IngredientItem from './IngredientItem';
 import RepairItem from './RepairItem';
 import PossibleIngredients from './PossibleIngredients';
+import PossibleSlots from './PossibleSlots';
 import Input from './Input';
 import Button from './Button';
 import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles } from '../styles';
 
 export interface IngredientsPropsRedux {
   dispatch?: (action: any) => void;
-  ingredients?: Ingredient[];
-  havePossibleIngredients?: boolean;
-  status?: string;
   job?: string;
-  loading?: boolean;
+  status?: string;
+  ingredients?: Ingredient[];
+  possibleSlots?: string[];
+  selectedSlot?: string;
+  possibleIngredients?: Ingredient[];
 }
 
 export interface IngredientsProps extends IngredientsPropsRedux{
+  selectSlot: (slot: string) => void;
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
   style?: Partial<IngredientsStyles>;
@@ -33,13 +37,13 @@ export interface IngredientsProps extends IngredientsPropsRedux{
 
 const select = (state: GlobalState, props: IngredientsProps): IngredientsPropsRedux => {
   const job = state.job;
-  const possibleIngredients = job.possibleIngredients;
   return {
     job: job.type,
     status: job.status,
     ingredients: job.ingredients,
-    havePossibleIngredients: !!(possibleIngredients && possibleIngredients.length),
-    loading: state.job.loading,
+    possibleSlots: job.possibleItemSlots,
+    selectedSlot: job.slot,
+    possibleIngredients: job.possibleIngredientsForSlot,
   };
 };
 
@@ -51,7 +55,10 @@ export interface IngredientsState {
 class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
   constructor(props: IngredientsProps) {
     super(props);
-    this.state = { selectedIngredient: null, qty: 1 };
+    this.state = {
+      selectedIngredient: null,
+      qty: 1,
+    };
   }
 
   public render() {
@@ -82,50 +89,92 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const qtyok = selectedIngredient && selectedIngredient.stats.unitCount > 0;
     const configuring = this.props.status === 'Configuring';
 
+
     let addIngredients;
-    if (props.loading) {
+    if (!props.possibleSlots) {
+      // waiting for slots to load
+      console.log('INGREDIENTS: RENDER: WAITING FOR SLOTS TO LOAD...');
       addIngredients = (
         <div className={css(ss.addIngredient)}>
-          ... loading
+          ... loading recipe details
         </div>
       );
     } else {
-      if (props.havePossibleIngredients) {
-        addIngredients = (
-          <div className={css(ss.addIngredient)}>
-            <PossibleIngredients
-              dispatch={this.props.dispatch}
-              disabled={!configuring}
-              selectedItem={selectedIngredient}
-              onSelect={this.select}
-            />
-            <span className={css(ss.times)}>x</span>
-            <Input name='add-qty'
-              style={{ input: ingredientsStyles.quantity }}
-              numeric={true} min={1}
-              disabled={!qtyok} onChange={this.onChange} size={3} value={this.state.qty.toString()} />
-            <Button disabled={!ready} style={{ button: ingredientsStyles.add }}
-              onClick={this.addIngredient}>Add</Button>
-          </div>
-        );
+      let possible;
+      console.log('INGREDIENTS: RENDER: SLOTS LOADED');
+      console.log('INGREDIENTS: RENDER: possibleSlots: ' + props.possibleSlots.join(','));
+      if (!props.possibleIngredients) {
+        console.log('INGREDIENTS: RENDER: NO POSSIBLE INGREDIENTS YET');
+        if (props.selectedSlot) {
+          // no ingredients, but slot selected, ingredients are being loaded
+          console.log('INGREDIENTS: RENDER: SELECTED SLOT IS ' + props.selectedSlot);
+          possible = (
+            <div className={css(ss.message) + ' ingredients-searching'}>
+              Searching bags for possible ingredients ...
+            </div>
+          );
+        } else {
+          console.log('INGREDIENTS: RENDER: WAITING FOR USET TO PICK A SLOT...');
+          possible = (
+            <div className={css(ss.message) + ' ingredients-pick-a-slot'}>
+              { '<< pick a slot' }
+            </div>
+          );
+        }
       } else {
-        addIngredients = (
-          <div className={css(ss.addIngredient)}>
-            No Suitable Ingredients
-          </div>
-        );
+        console.log('INGREDIENTS: RENDER: POSSIBLE INGREDIENTS LEN=' + props.possibleIngredients.length);
+        if (props.possibleIngredients.length) {
+          console.log('INGREDIENTS: RENDER: SHOW POSSIBLE INGREDIENTS');
+          possible = (
+            <div className={css(ss.ingredient) + ' ingredients-select-ingredient'}>
+              <PossibleIngredients
+                dispatch={this.props.dispatch}
+                disabled={!configuring}
+                selectedItem={selectedIngredient}
+                onSelect={this.select}
+              />
+              <span className={css(ss.times)}>x</span>
+              <Input
+                name='add-qty'
+                style={{ input: ingredientsStyles.quantity }}
+                numeric={true} min={1}
+                disabled={!qtyok}
+                onChange={this.onChange}
+                size={3}
+                value={this.state.qty.toString()}
+              />
+              <Button disabled={!ready} style={{ button: ingredientsStyles.add }} onClick={this.addIngredient}>Add</Button>
+            </div>
+          );
+        } else {
+          console.log('INGREDIENTS: RENDER: DONT HAVE ANY INGREDIENTS');
+          props.dispatch(setMessage({ type: 'error', message: 'could not find any suitable ingredients for this slot' }));
+        }
       }
+      addIngredients = (
+        <div className={css(ss.addIngredient) + ' ingredients-add'}>
+          <PossibleSlots
+            dispatch={this.props.dispatch}
+            disabled={!configuring}
+            selectedItem={props.selectedSlot}
+            onSelect={this.selectSlot}
+          />
+          {possible}
+        </div>
+      );
     }
 
     return (
-      <div className={css(ss.ingredients)}>
-        <h1 className={css(ss.title)}>Ingredients...</h1>
+      <div className={css(ss.ingredients) + ' ingredients'}>
         {addIngredients}
-        <div className={css(ss.loadedIngredients)}>
+        <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
           <div>{loaded}</div>
           { last
-            ? <Button style={{ button: ingredientsStyles.remove }}
-                disabled={!configuring} onClick={() => props.remove(last)}>
+            ? <Button
+                style={{ button: ingredientsStyles.remove }}
+                disabled={!configuring}
+                onClick={() => props.remove(last)}
+              >
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>
             : undefined }
@@ -143,6 +192,12 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
   private select = (ingredient: Ingredient) => {
     // Select inventory item
     this.setState({ selectedIngredient: ingredient });
+  }
+
+  private selectSlot = (slot: string) => {
+    // Selected slot.  Selecting a slot first clears the current ingredients
+    console.log('INGREDIENTS: SELECT SLOT ' + slot);
+    this.props.selectSlot(slot);
   }
 
   private onChange = (value: string) => {

@@ -8,7 +8,7 @@ import 'isomorphic-fetch';
 import { Promise } from 'es6-promise';
 import { gql } from './gql';
 import { QUERIES } from './queryText';
-import { VoxPossibleIngredient, VoxStatus, VoxRecipe } from './queryTypes';
+import { VoxIngredient, VoxStatus, VoxRecipe } from './queryTypes';
 
 const ERRORS = {
   NotFound: 'No vox nearby',
@@ -19,8 +19,16 @@ const ERRORS = {
   NotLoggedIn: 'Character not logged into game',
 };
 
-function runQuery(query: string, key: string) {
+function runQuery(query: string, key: string, args: any = null) {
   return new Promise((resolve, reject) => {
+    if (args) {
+      let sargs = '(';
+      for (const key in args) {
+        sargs += key + ':' + args[key];
+      }
+      sargs += ')';
+      query = query.replace(key, key + sargs);
+    }
     gql({ query }).then((data: any) => {
       const info = data && data.crafting && data.crafting[key];
       if (info) {
@@ -57,13 +65,19 @@ export function voxGetStatus() {
   });
 }
 
-export function voxGetPossibleIngredients() {
+const SlotToSubItemSlot = {
+  Alloy: 'ALLOY',
+};
+
+export function voxGetPossibleIngredientsForSlot(slot: string) {
+  slot = SlotToSubItemSlot[slot] || slot.toUpperCase();
   return new Promise((resolve, reject) => {
-    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients')
-      .then((possibleIngredients: VoxPossibleIngredient[]) => {
+    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', { slot })
+      .then((possibleIngredients: VoxIngredient[]) => {
         resolve(possibleIngredients);
       })
       .catch(() => {
+        debugger;
         reject('No vox nearby');
       });
   });
@@ -79,6 +93,18 @@ export function voxGetRecipesFor(type: string) {
       })
       .catch(() => {
         reject(`Could not get ${type} recipes`);
+      });
+  });
+}
+
+export function voxGetPossibleItemSlots() {
+  return new Promise((resolve, reject) => {
+    runQuery(QUERIES['QUERY_POSSIBLE_ITEMSLOTS'], 'possibleItemSlots')
+      .then((stuff: any) => {
+        resolve(stuff);
+      })
+      .catch(() => {
+        reject('Could not get possible item slots');
       });
   });
 }

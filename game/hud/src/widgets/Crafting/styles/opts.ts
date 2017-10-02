@@ -53,7 +53,8 @@ export const opts = {
     DROPDOWN_HEIGHT: '270px',
   },
   output: {
-    HEIGHT: '105px',
+    MIN_HEIGHT: '70px',
+    MAX_HEIGHT: '105px',
   },
   input: {
     HEIGHT: '24px',

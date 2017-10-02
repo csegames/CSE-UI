@@ -145,7 +145,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
           <div>
             { makeButton({
               label: '/cr specific',
-              click: () => this.slash('cr specific ' + this.state.alloyId, 'Check your inventory'),
+              click: () => this.slash('cr specific ' + this.state.alloyId, 'Check the ground around you'),
             })}
             { makeInput({
               get: () => this.state.alloyId,
@@ -178,6 +178,14 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
               size: 5, numeric: true, min: 0, max: 100,
             })}
           </div>
+
+          <div>
+            { makeButton({
+              label: '/siege pack',
+              click: () => this.slash('siege pack', 'Pack away siege'),
+            })}
+          </div>
+
         </div>
         <VoxMessage/>
       </div>

@@ -118,7 +118,7 @@ export function setVoxRecipe(id: string) {
   ));
 }
 
-export function addVoxIngredient(id: string, qty: number) {
+export function addVoxIngredient(id: string, qty: number, slot: number = 0) {
   return run(() => webAPI.CraftingAPI.AddIngredient(
     webAPI.defaultConfig,
     client.loginToken,
@@ -126,7 +126,7 @@ export function addVoxIngredient(id: string, qty: number) {
     client.characterID,
     id,
     qty,
-    -1,
+    slot,
   ));
 }
 
