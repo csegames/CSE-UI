@@ -31,7 +31,8 @@
     "postbuild": "rimraf tmp"
   },
   "dependencies": {
-    "camelot-unchained": "^0.8.13",
+    "camelot-unchained": "^0.9.13",
+    "cwd-in-node-modules": "^1.0.1",
     "es6-promise": "^3.1.2",
     "isomorphic-fetch": "^2.2.1",
     "node-xmpp-client": "^2.1.0",
@@ -43,8 +44,7 @@
     "react-dom": "^15.4.2",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.1.0",
-    "cwd-in-node-modules": "^1.0.1"
+    "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
