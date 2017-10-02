@@ -508,6 +508,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       .filter((c: PlayerClassInfo) => c.faction === this.props.factionsState.selected.id);
     this.props.dispatch(selectPlayerClass(factionClasses[0]));
     this.props.dispatch(selectRace(factionRaces[0]));
+    this.pushPagesCompleted(CharacterCreationPage.Faction);
     this.setState({ page: CharacterCreationPage.Faction + 1 });
     events.fire('play-sound', 'realm-select');
   }
@@ -526,7 +527,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     if (this.props.gender === 0) {
       Materialize.toast('Choose a gender to continue.', 3000);
       return;
-    }    
+    }
+    this.pushPagesCompleted(CharacterCreationPage.Class);
     this.setState({ page: CharacterCreationPage.Race + 1 });
     events.fire('play-sound', 'select');
   }
@@ -542,6 +544,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       Materialize.toast('Choose a class to continue.', 3000);
       return;
     }
+    this.pushPagesCompleted(CharacterCreationPage.Class);
     this.setState({ page: CharacterCreationPage.Class + 1 });
     events.fire('play-sound', 'select');
   }
