@@ -1011,15 +1011,17 @@ camelot-unchained@^0.8.13:
     react-dom "^15.4.2"
     redux-typed-modules "^2.2.1"
 
-camelot-unchained@^0.9.16:
-  version "0.9.16"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.16.tgz#7a5719f51d08c298eb63cf51676e6e672354448b"
+camelot-unchained@^0.9.17:
+  version "0.9.17"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.17.tgz#5f4d971dc16c308d218019976755f4b9e0dca289"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
     es6-promise "^3.0.2"
     fuzzysearch "^1.0.3"
     graphql-tag "^1.2.4"
+    intro.js "^2.8.0-alpha.1"
+    intro.js-react "^0.1.5"
     isomorphic-fetch "^2.2.1"
     jquery "^3.0.0"
     lodash "^4.17.4"
@@ -2178,6 +2180,14 @@ insert-module-globals@^7.0.0:
     process "~0.11.0"
     through2 "^2.0.0"
     xtend "^4.0.0"
+
+intro.js-react@^0.1.5:
+  version "0.1.5"
+  resolved "http://registry.camelotunchained.com/intro.js-react/-/intro.js-react-0.1.5.tgz#42ab5f0adefb7e451f1bac7c4469481416221e4d"
+
+intro.js@^2.8.0-alpha.1:
+  version "2.8.0-alpha.1"
+  resolved "http://registry.camelotunchained.com/intro.js/-/intro.js-2.8.0-alpha.1.tgz#0838783af88f6d52254f86c118e60a5d4a39f1fe"
 
 invariant@^2.0.0, invariant@^2.2.0:
   version "2.2.2"
