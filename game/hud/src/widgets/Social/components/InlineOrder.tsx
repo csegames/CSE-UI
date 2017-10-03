@@ -8,20 +8,16 @@ import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
 import gql from 'graphql-tag';
 import { Spinner } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 export interface InlineOrderStyle extends StyleDeclaration {
   card: React.CSSProperties;
 }
 
-interface InlineOrderProps extends InjectedGraphQLProps <{
-  order: {
-    id: string;
-    name: string;
-  },
-} > {
+interface InlineOrderProps {
   id: string;
   shard: number;
+  data?: any;
 }
 
 export const defaultInlineOrderStyle: InlineOrderStyle = {

@@ -8,13 +8,13 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
-import { InjectedGraphQLProps, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import { ql, bodyParts, client } from 'camelot-unchained';
 
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import { PaperDollContainerQuery, InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment } from '../../../../gqlInterfaces';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
 
@@ -86,12 +86,13 @@ export interface EquippedItemsMap {
   [slotName: string]: any;
 }
 
-export interface PaperDollProps extends InjectedGraphQLProps<PaperDollContainerQuery> {
+export interface PaperDollProps {
   styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
   equippedItems: ql.schema.EquippedItem[];
   onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
+  data?: any;
 }
 
 export interface PaperDollState {
@@ -156,4 +157,4 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
 const PaperDollWithQL = graphql(queries.PaperDollContainer as any)(PaperDoll);
 
-export default PaperDollWithQL;
+export default PaperDollWithQL as any;

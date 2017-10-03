@@ -7,14 +7,13 @@
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import { utils, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import GeneralInfo from './components/GeneralInfo';
 import DefenseList from './components/Defense/DefenseList';
 import OffenseList from './components/Offense/OffenseList';
 import { colors } from '../../lib/constants';
 import queries from '../../../../gqlDocuments';
-import { CharacterInfoQuery } from '../../../../gqlInterfaces';
 
 // TEMPORARY
 import testCharacterStats from './testCharacterStats';
@@ -105,8 +104,9 @@ export const defaultCharacterInfoStyle: CharacterInfoStyle = {
   },
 };
 
-export interface CharacterInfoProps extends InjectedGraphQLProps<CharacterInfoQuery> {
+export interface CharacterInfoProps {
   styles?: Partial<CharacterInfoStyle>;
+  data?: any;
 }
 
 class CharacterInfo extends React.Component<CharacterInfoProps, {}> {

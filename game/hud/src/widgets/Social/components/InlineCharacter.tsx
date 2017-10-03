@@ -8,20 +8,16 @@ import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
 import gql from 'graphql-tag';
 import { Spinner } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 export interface InlineCharacterStyle extends StyleDeclaration {
   card: React.CSSProperties;
 }
 
-interface InlineCharacterProps extends InjectedGraphQLProps <{
-  character: {
-    id: string;
-    name: string;
-  },
-} > {
+interface InlineCharacterProps {
   id: string;
   shard: number;
+  data?: any;
 }
 
 export const defaultInlineCharacterStyle: InlineCharacterStyle = {

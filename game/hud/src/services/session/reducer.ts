@@ -7,7 +7,8 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import layout, { LayoutState } from './layout';
 import invites, { InvitesState } from './invites';
-import ApolloClient, { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
+import { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
+import { ApolloClient } from 'react-apollo';
 import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
 import { client } from 'camelot-unchained';
 // Apollo Setup

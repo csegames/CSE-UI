@@ -13,7 +13,7 @@ import {
   Spinner,
   client,
 } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import GroupTitle from './GroupTitle';
 import ActionButton from './ActionButton';
@@ -32,10 +32,11 @@ export const defaultInviteListStyle: InvitesListStyle = {
   },
 };
 
-export interface InvitesListProps extends InjectedGraphQLProps<ql.MyCharacterInvitesQuery> {
+export interface InvitesListProps {
   dispatch: (action: any) => void;
   refetch: () => void;
   styles?: Partial<InvitesListStyle>;
+  data?: any;
 }
 
 async function onAcceptInvitePress(invite: ql.Invite) {
@@ -134,4 +135,4 @@ function PreQLInvitesList(props: InvitesListProps) {
 }
 
 export const InvitesList = graphql(ql.queries.MyCharacterInvites)(PreQLInvitesList as any);
-export default InvitesList;
+export default InvitesList as any;

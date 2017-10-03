@@ -161,7 +161,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       }
     }
 
-    const id = item.stackedItems ? item.stackedItems[0].id : item.itemID;
+    const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
 
     return id ? (
       <div className={css(ss.InventorySlot, custom.InventorySlot)}>

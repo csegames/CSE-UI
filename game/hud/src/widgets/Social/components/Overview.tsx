@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { ql, client, Card, Spinner, TitleCard } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import GroupTitle from './GroupTitle';
 import InlineCharacter from './InlineCharacter';
@@ -119,11 +119,12 @@ export interface OverviewStyle extends StyleDeclaration {
   recentActivityItem: React.CSSProperties;
 }
 
-export interface OrderOverviewProps extends InjectedGraphQLProps<ql.OrderActionsQuery> {
+export interface OrderOverviewProps {
   dispatch: (action: any) => any;
   refetch: () => void;
   order: ql.FullOrder;
   styles?: Partial < OverviewStyle >;
+  data?: any;
 }
 
 interface InlineCardComponentDetails {
@@ -237,7 +238,8 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
               {
                 this.props.data.loading
                   ? <Spinner />
-                  : this.props.data.order.recentActions.map((a, index) => this.renderActionCard(a, index, ss, custom))
+                  : this.props.data.order.recentActions.map((a: any, index: number) =>
+                    this.renderActionCard(a, index, ss, custom))
               }
             </div>
           </div>

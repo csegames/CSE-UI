@@ -6,7 +6,7 @@
 
 import { events, core } from 'camelot-unchained';
 import * as React from 'react';
-import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class AnnouncementState {
   public message: string = '';
@@ -32,10 +32,10 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
     }
 
     return (
-      <ReactCSSTransitionGroup transitionName='announcement' transitionEnterTimeout={500}
+      <CSSTransitionGroup transitionName='announcement' transitionEnterTimeout={500}
         transitionLeaveTimeout={300}>
         {announcement}
-      </ReactCSSTransitionGroup>
+      </CSSTransitionGroup>
     );
   }
 

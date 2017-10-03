@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { client, ql, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import {
   LayoutState,
@@ -45,10 +45,11 @@ useConfig({
   stringifyVariables: true,
 });
 
-export interface HUDProps extends InjectedGraphQLProps<ql.MySocialQuery> {
+export interface HUDProps {
   dispatch: (action: any) => void;
   layout: LayoutState;
   invites: InvitesState;
+  data?: any;
 }
 
 export interface HUDState {
@@ -187,7 +188,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 }
 
-const HUDWithQL = graphql(ql.queries.MySocial)(HUD);
+const HUDWithQL: any = graphql(ql.queries.MySocial)(HUD);
 
 function select(state: SessionState) {
   return {

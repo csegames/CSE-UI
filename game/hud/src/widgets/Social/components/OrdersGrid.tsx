@@ -8,7 +8,7 @@
  */
 
 import * as React from 'react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { Spinner, ColumnDefinition } from 'camelot-unchained';
@@ -39,7 +39,7 @@ export interface OrdersGridQuery {
   };
 }
 
-export interface OrdersGridProps extends InjectedGraphQLProps<OrdersGridQuery> {
+export interface OrdersGridProps {
   styles?: Partial<OrdersGridStyle>;
   columnDefinitions?: ColumnDefinition[];
   shard: number;
@@ -50,6 +50,7 @@ export interface OrdersGridProps extends InjectedGraphQLProps<OrdersGridQuery> {
   sort: string;
   reverse: boolean;
   orderBy: (by: string, asc: boolean) => void;
+  data?: any;
 }
 
 interface OrdersListColumn extends ColumnDefinition {

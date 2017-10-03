@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import { events, ql, FloatSpinner } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
@@ -60,11 +60,12 @@ export const defaultSocialMainStyle: SocialMainStyle = {
 };
 
 
-export interface SocialMainProps extends InjectedGraphQLProps<ql.MySocialQuery> {
+export interface SocialMainProps {
   dispatch: (action: any) => void;
   containerClass: string;
   navigation: NavigationState;
   styles?: Partial<SocialMainStyle>;
+  data?: any;
 }
 
 export interface SocialMainState {

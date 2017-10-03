@@ -7,15 +7,16 @@
 import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
 import { ql, Spinner } from 'camelot-unchained';
-import { graphql, InjectedGraphQLProps } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 export interface InlineWarbandStyle extends StyleDeclaration {
   card: React.CSSProperties;
 }
 
-interface InlineWarbandProps extends InjectedGraphQLProps<ql.InlineWarbandQuery> {
+interface InlineWarbandProps {
   id: string;
   shard: number;
+  data?: any;
 }
 
 export const defaultInlineWarbandStyle: InlineWarbandStyle = {
