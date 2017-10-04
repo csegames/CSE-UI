@@ -155,7 +155,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.pushPagesVisited(CharacterCreationPage.Faction);
         content = (
           <FactionSelect
-            onFactionDoubleClick={this.factionNext}
+            onFactionDoubleClick={() => this.goToPage(this.state.page + 1)}
             factions={this.props.factionsState.factions}
             selectedFaction={this.props.factionsState.selected}
             selectFaction={this.factionSelect}
@@ -246,7 +246,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Faction) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.Faction) !== -1,
-        onClick: () => this.setPage(CharacterCreationPage.Faction),
+        onClick: () => this.goToPage(CharacterCreationPage.Faction),
       },
       {
         pageNumber: CharacterCreationPage.Race,
@@ -254,7 +254,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Race) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.Race) !== -1,
-          onClick: () => this.setPage(CharacterCreationPage.Race),
+          onClick: () => this.goToPage(CharacterCreationPage.Race),
       },
       {
         pageNumber: CharacterCreationPage.Class,
@@ -262,7 +262,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Class) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.Class) !== -1,
-        onClick: () => this.setPage(CharacterCreationPage.Class),
+        onClick: () => this.goToPage(CharacterCreationPage.Class),
       },
       {
         pageNumber: CharacterCreationPage.Attributes,
@@ -270,7 +270,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Attributes) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.Attributes) !== -1,
-        onClick: () => this.setPage(CharacterCreationPage.Attributes),
+        onClick: () => this.goToPage(CharacterCreationPage.Attributes),
       },
       {
         pageNumber: CharacterCreationPage.BanesAndBoons,
@@ -278,7 +278,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.BanesAndBoons) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.BanesAndBoons) !== -1,
-        onClick: () => this.setPage(CharacterCreationPage.BanesAndBoons),
+        onClick: () => this.goToPage(CharacterCreationPage.BanesAndBoons),
       },
       {
         pageNumber: CharacterCreationPage.Summary,
@@ -286,7 +286,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Summary) !== -1,
         pageVisited: this.pagesVisited.findIndex((pageNumber) =>
           pageNumber === CharacterCreationPage.Summary) !== -1,
-        onClick: () => this.setPage(CharacterCreationPage.Summary),
+        onClick: () => this.goToPage(CharacterCreationPage.Summary),
       },
     ];
     return (
@@ -300,7 +300,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           {content}
         </div>
         <Navigation
-          onNextClick={this.nextPage}
+          onNextClick={() => this.goToPage(this.state.page + 1)}
           onBackClick={this.state.page !== CharacterCreationPage.Faction ? this.previousPage : () => {}}
           onHelpClick={this.onHelpClick}
           onCancelClick={this.onCloseClick}
@@ -378,11 +378,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     const { banesAndBoonsState } = this.props;
     const modelName = (this.characterNameInputRef as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
-    Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
-    .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
-    Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
-    banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0);
     const errors: any = [];
     if (normalName.length < 2 || modelName.length > 20)
       errors.push('A character name must be between 2 and 20 characters in length.');
@@ -392,22 +387,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
     if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
       errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
-    if (banesAndBoonsState.totalPoints !== 0)
-      errors.push('You must equally distribute points into your Boons and Banes');
-    if (sumOfTraitValues > banesAndBoonsState.maxPoints) 
-      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, exceeds the maximum points allowed. 
-      Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
-    if (sumOfTraitValues < banesAndBoonsState.minPoints) 
-      errors.push(
-        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
-      Minimum points required: ${banesAndBoonsState.minPoints}`);
-    if (this.props.attributesState.maxPoints !== this.props.attributesState.pointsAllocated)
-      errors.push(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
-      You have only spent ${this.props.attributesState.pointsAllocated} points.`);
-    if (!webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID).then(res => res.ok))
-      errors.push(
-        'We are having technical difficulties. You will not be able to create a character until they have been fixed.',
-      );
     if (errors.length > 0) {
       errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
     } else {
@@ -449,35 +428,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     }
   }
 
-  private nextPage = () => {
-    switch (this.state.page) {
-      case CharacterCreationPage.Faction: {
-        this.factionNext();
-        break;
-      }
-      case CharacterCreationPage.Race: {
-        this.raceNext();
-        break;
-      }
-      case CharacterCreationPage.Class: {
-        this.classNext();
-        break;
-      }
-      case CharacterCreationPage.Attributes: {
-        this.attributesNext();
-        break;
-      }
-      case CharacterCreationPage.BanesAndBoons: {
-        this.banesAndBoonsNext();
-        break;
-      }
-      case CharacterCreationPage.Summary: {
-        this.create();
-        break;
-      }
-    }
-  }
-
   private factionSelect = (selected: FactionInfo) => {
     this.props.dispatch(selectFaction(selected));
     this.pushPagesCompleted(CharacterCreationPage.Faction);
@@ -496,40 +446,10 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     events.fire('play-sound', 'select');
   }
 
-  private factionNext = () => {
-    if (this.props.factionsState.selected == null) {
-      Materialize.toast('Choose a faction to continue.', 3000);
-      return;
-    }
-    const factionRaces = this.props.racesState.races
-      .filter((r: RaceInfo) => r.faction === this.props.factionsState.selected.id);
-    const factionClasses = this.props.playerClassesState.playerClasses
-      .filter((c: PlayerClassInfo) => c.faction === this.props.factionsState.selected.id);
-    this.props.dispatch(selectPlayerClass(factionClasses[0]));
-    this.props.dispatch(selectRace(factionRaces[0]));
-    this.pushPagesCompleted(CharacterCreationPage.Faction);
-    this.setState({ page: CharacterCreationPage.Faction + 1 });
-    events.fire('play-sound', 'realm-select');
-  }
-
   private raceSelect = (selected: RaceInfo) => {
     this.props.dispatch(selectRace(selected));
     events.fire('play-sound', 'select');
     this.pushPagesCompleted(CharacterCreationPage.Race);
-  }
-
-  private raceNext = () => {
-    if (this.props.racesState.selected == null) {
-      Materialize.toast('Choose a race to continue.', 3000);
-      return;
-    }
-    if (this.props.gender === 0) {
-      Materialize.toast('Choose a gender to continue.', 3000);
-      return;
-    }
-    this.pushPagesCompleted(CharacterCreationPage.Race);
-    this.setState({ page: CharacterCreationPage.Race + 1 });
-    events.fire('play-sound', 'select');
   }
 
   private classSelect = (selected: PlayerClassInfo) => {
@@ -538,68 +458,121 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     this.pushPagesCompleted(CharacterCreationPage.Class);
   }
 
-  private classNext = () => {
-    if (this.props.playerClassesState.selected == null) {
-      Materialize.toast('Choose a class to continue.', 3000);
-      return;
-    }
-    this.pushPagesCompleted(CharacterCreationPage.Class);
-    this.setState({ page: CharacterCreationPage.Class + 1 });
-    events.fire('play-sound', 'select');
-  }
-
-  private attributesNext = () => {
-    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
-      toastr.error(`You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
-      You have only spent ${this.props.attributesState.pointsAllocated} points`, 'Oh No!!!', {timeOut: 5000});
-      return;
-    }
-    this.pushPagesCompleted(CharacterCreationPage.Attributes);
-    this.setState({ page: CharacterCreationPage.Attributes + 1 });
-    events.fire('play-sound', 'select');
-  }
-
-  private banesAndBoonsNext = () => {
-    const errors: any = [];
-    const { banesAndBoonsState } = this.props;
-    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
-      Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
-        .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
-      Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
-        banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0);
-
-    if (banesAndBoonsState.totalPoints !== 0) {
-      errors.push('You must equally distribute points into your Boons and Banes');
-    }
-    if (sumOfTraitValues > banesAndBoonsState.maxPoints) {
-      errors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}, exceeds the maximum points allowed. 
-      Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
-    }
-    if (sumOfTraitValues < banesAndBoonsState.minPoints) {
-      errors.push(
-        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
-      Minimum points required: ${banesAndBoonsState.minPoints}`);
-    }
-
-    if (errors.length > 0) {
-      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
-      return;
-    }
-
-    this.pushPagesCompleted(CharacterCreationPage.BanesAndBoons);
-    this.setState({ page: CharacterCreationPage.BanesAndBoons + 1 });
-    events.fire('play-sound', 'select');
-  }
-
   private previousPage = () => {
     this.setState({ page: this.state.page - 1 });
     events.fire('play-sound', 'select');
   }
 
-  private setPage = (page: number) => {
-    if (this.props.factionsState.selected.id) {
-      this.setState({ page });
+  private goToPage = (page: CharacterCreationPage) => {
+    const { banesAndBoonsState } = this.props;
+    const factionErrors = [];
+    const raceErrors = [];
+    const classErrors = [];
+    const attributeErrors = [];
+    const banesAndBoonsErrors = [];
+    const sumOfTraitValues = (Object.keys(banesAndBoonsState.addedBoons).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBoons).map((id: string) => banesAndBoonsState.traits[id].points)
+      .reduce((a, b) => a + b) || 0) + (Object.keys(banesAndBoonsState.addedBanes).length > 0 &&
+    Object.keys(banesAndBoonsState.addedBanes).map((id: string) =>
+      banesAndBoonsState.traits[id].points * -1).reduce((a, b) => a + b) || 0);
+    if (this.props.factionsState.selected == null) {
+      factionErrors.push('Choose a faction to continue');
     }
+    if (this.props.racesState.selected == null) {
+      raceErrors.push('Choose a race to continue.');
+    }
+    if (this.props.gender === 0) {
+      raceErrors.push('Choose a gender to continue.');
+    }
+    if (this.props.playerClassesState.selected == null) {
+      classErrors.push('Choose a class to continue.');
+    }
+    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
+      attributeErrors.push(
+        `You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
+        You have only spent ${this.props.attributesState.pointsAllocated} points`);
+    }
+    if (banesAndBoonsState.totalPoints !== 0) {
+      banesAndBoonsErrors.push('You must equally distribute points into your Boons and Banes');
+    }
+    if (sumOfTraitValues > banesAndBoonsState.maxPoints) {
+      banesAndBoonsErrors.push(`The total points of chosen Banes and Boons, ${sumOfTraitValues}
+      , exceeds the maximum points allowed. Maximum points allowed: ${banesAndBoonsState.maxPoints}`);
+    }
+    if (sumOfTraitValues < banesAndBoonsState.minPoints) {
+      banesAndBoonsErrors.push(
+        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
+      Minimum points required: ${banesAndBoonsState.minPoints}`);
+    }
+    if (_.isEmpty(Object.keys(banesAndBoonsState.addedBanes)) && _.isEmpty(Object.keys(banesAndBoonsState.addedBoons))) {
+      banesAndBoonsErrors.push('Must select banes and boons');
+    }
+    switch (page) {
+      case CharacterCreationPage.Faction: {
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.Faction });
+        break;
+      }
+      case CharacterCreationPage.Race: {
+        const errors = [...factionErrors];
+        if (!_.isEmpty(errors)) {
+          this.makeErrors(errors);
+          return;
+        }
+        this.pushPagesCompleted(CharacterCreationPage.Faction);
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.Race });
+        break;
+      }
+      case CharacterCreationPage.Class: {
+        const errors = [...factionErrors, ...raceErrors];
+        if (!_.isEmpty(errors)) {
+          this.makeErrors(errors);
+          return;
+        }
+        this.pushPagesCompleted(CharacterCreationPage.Race);
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.Class });
+        break;
+      }
+      case CharacterCreationPage.Attributes: {
+        const errors = [...factionErrors, ...raceErrors, ...classErrors];
+        if (!_.isEmpty(errors)) {
+          this.makeErrors(errors);
+          return;
+        }
+        this.pushPagesCompleted(CharacterCreationPage.Class);
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.Attributes });
+        break;
+      }
+      case CharacterCreationPage.BanesAndBoons: {
+        const errors = [...factionErrors, ...raceErrors, ...classErrors, ...attributeErrors];
+        if (!_.isEmpty(errors)) {
+          this.makeErrors(errors);
+          return;
+        }
+        this.pushPagesCompleted(CharacterCreationPage.Attributes);
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.BanesAndBoons });
+        break;
+      }
+      case CharacterCreationPage.Summary: {
+        const errors = [...factionErrors, ...raceErrors, ...classErrors, ...attributeErrors, ...banesAndBoonsErrors];
+        if (!_.isEmpty(errors)) {
+          this.makeErrors(errors);
+          return;
+        }
+        this.pushPagesCompleted(CharacterCreationPage.BanesAndBoons);
+        events.fire('play-sound', 'select');
+        this.setState({ page: CharacterCreationPage.Summary });
+        break;
+      }
+    }
+  }
+
+  private makeErrors = (errors: string[]) => {
+    errors.forEach((message) => toastr.error(message, 'Oh No!!', 5000));
   }
 
   private resetAndInit = (apiHost: string = this.props.apiHost) => {

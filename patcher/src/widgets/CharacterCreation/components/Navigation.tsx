@@ -211,7 +211,6 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
           </button>
           <div className={css(ss.progressContainer, custom.progressContainer)}>
             {this.props.pages.map((page, i) => {
-              console.log(page.pageComplete);
               const imageSource = page.pageNumber === this.props.currentPage ? navImages.current :
                 page.pageComplete ? navImages.done :
                 page.pageVisited && !page.pageComplete ? navImages.visited :

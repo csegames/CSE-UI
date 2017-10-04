@@ -17,6 +17,8 @@
   background: url(../images/bg.jpg) repeat-x top center fixed;
   background-color: $color2;
   color: white;
+  user-select: none;
+  -webkit-user-select: none;
 
   .cu-character-creation__loading-container {
     display: flex;
