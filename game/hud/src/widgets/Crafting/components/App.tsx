@@ -310,7 +310,11 @@ class App extends React.Component<AppProps, AppState> {
       case 'repair':
       case 'salvage':
         // no recipes to load
+        this.loadPossibleSlots();
         break;
+      case 'shape':
+        this.loadPossibleSlots();
+        // nobreak
       default:  // purify, refine, grind, shape, block, make
         voxGetRecipesFor(job)
           .then((recipes: VoxRecipe[]) => {
@@ -508,7 +512,8 @@ class App extends React.Component<AppProps, AppState> {
       props.dispatch(gotVoxPossibleIngredientsForSlot(ingredients, slot));
     })
     .catch(() => {
-      props.dispatch(setMessage({ type: 'error', message: 'Failed to get possible ingredients' }));
+      props.dispatch(gotVoxPossibleIngredientsForSlot([], slot));
+      props.dispatch(setMessage({ type: 'error', message: 'No suitable ingredients found' }));
     });
   }
 
@@ -563,6 +568,9 @@ class App extends React.Component<AppProps, AppState> {
     voxGetPossibleItemSlots()
       .then((slots: string[]) => {
         props.dispatch(gotPossibleItemSlots(slots));
+        if (slots.length === 1) {
+          this.selectSlot(slots[0]);
+        }
       })
       .catch(() => {
         props.dispatch(setMessage({ type: 'error', message: 'Failed to get recipe slots' }));

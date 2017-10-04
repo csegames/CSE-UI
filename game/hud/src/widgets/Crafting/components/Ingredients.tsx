@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
-import { Ingredient } from '../services/types';
+import { Ingredient, Recipe } from '../services/types';
 import { setMessage } from '../services/session/job';
 import IngredientItem from './IngredientItem';
 import RepairItem from './RepairItem';
@@ -22,12 +22,13 @@ export interface IngredientsPropsRedux {
   job?: string;
   status?: string;
   ingredients?: Ingredient[];
+  recipe?: Recipe;
   possibleSlots?: string[];
   selectedSlot?: string;
   possibleIngredients?: Ingredient[];
 }
 
-export interface IngredientsProps extends IngredientsPropsRedux{
+export interface IngredientsProps extends IngredientsPropsRedux {
   selectSlot: (slot: string) => void;
   add: (ingredient: Ingredient, qty: number) => void;
   remove: (ingredient: Ingredient) => void;
@@ -40,6 +41,7 @@ const select = (state: GlobalState, props: IngredientsProps): IngredientsPropsRe
   return {
     job: job.type,
     status: job.status,
+    recipe: job.recipe,
     ingredients: job.ingredients,
     possibleSlots: job.possibleItemSlots,
     selectedSlot: job.slot,
@@ -89,16 +91,19 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     const qtyok = selectedIngredient && selectedIngredient.stats.unitCount > 0;
     const configuring = this.props.status === 'Configuring';
 
-
     let addIngredients;
     if (!props.possibleSlots) {
-      // waiting for slots to load
       console.log('INGREDIENTS: RENDER: WAITING FOR SLOTS TO LOAD...');
-      addIngredients = (
-        <div className={css(ss.addIngredient)}>
-          ... loading recipe details
-        </div>
-      );
+      // If no recipe selected, thats why we have no slots, so only
+      // display loading message if we have a recipe selected.
+      if (props.recipe) {
+        // waiting for slots to load
+        addIngredients = (
+          <div className={css(ss.addIngredient)}>
+            ... loading recipe details
+          </div>
+        );
+      }
     } else {
       let possible;
       console.log('INGREDIENTS: RENDER: SLOTS LOADED');

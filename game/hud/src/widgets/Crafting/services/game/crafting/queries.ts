@@ -65,20 +65,14 @@ export function voxGetStatus() {
   });
 }
 
-const SlotToSubItemSlot = {
-  Alloy: 'ALLOY',
-};
-
 export function voxGetPossibleIngredientsForSlot(slot: string) {
-  slot = SlotToSubItemSlot[slot] || slot.toUpperCase();
   return new Promise((resolve, reject) => {
-    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', { slot })
+    runQuery(QUERIES.QUERY_POSSIBLE_INGREDIENTS, 'possibleIngredients', { slot: '"' + slot + '"' })
       .then((possibleIngredients: VoxIngredient[]) => {
         resolve(possibleIngredients);
       })
       .catch(() => {
-        debugger;
-        reject('No vox nearby');
+        reject('Failed to load possible ingredients');
       });
   });
 }
