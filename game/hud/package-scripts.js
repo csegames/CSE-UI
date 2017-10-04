@@ -179,7 +179,7 @@ module.exports = {
         description: 'Build the module.',
       },
       dev: {
-        script: 'nps report.start && nps lint && nps report.lint && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
+        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },

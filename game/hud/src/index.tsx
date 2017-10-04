@@ -4,6 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import 'core-js/es6/map';
+import 'core-js/es6/weak-map';
+import 'core-js/es6/set';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { client } from 'camelot-unchained';
