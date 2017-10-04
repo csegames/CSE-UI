@@ -62,12 +62,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   public render() {
-    const widgets = this.props.layout.widgets;
+    const widgets = this.props.layout.widgets.map((widget, name) => ({ widget, name })).toArray();
     const locked = this.props.layout.locked;
-
     const renderWidgets = widgets
-                    .sort((a, b) => a.position.zOrder - b.position.zOrder)
-                    .map((w, idx) => this.draggable(idx, w, w.component, w.dragOptions, w.props));
+                    .sort((a, b) => a.widget.position.zOrder - b.widget.position.zOrder)
+                    .map((w, idx) =>
+                      this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {renderWidgets}

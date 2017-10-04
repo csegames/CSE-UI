@@ -527,7 +527,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       Materialize.toast('Choose a gender to continue.', 3000);
       return;
     }
-    this.pushPagesCompleted(CharacterCreationPage.Class);
+    this.pushPagesCompleted(CharacterCreationPage.Race);
     this.setState({ page: CharacterCreationPage.Race + 1 });
     events.fire('play-sound', 'select');
   }
