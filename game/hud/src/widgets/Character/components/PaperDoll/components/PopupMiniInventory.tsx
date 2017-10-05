@@ -184,7 +184,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
         render: () => (
           <div className={css(ss.itemsContainer, custom.itemsContainer)}>
             {items.map((item) => {
-              const gearSlots = item && _.find(item.staticDefinition.gearSlotSets, gearSlotSet =>
+              const gearSlots = item && _.find(item.staticDefinition.gearSlotSets, (gearSlotSet): any =>
                 _.find(gearSlotSet.gearSlots, gearSlot => gearSlot.id === this.props.slotName)).gearSlots;
               return (
                 <div key={item.id} className={css(ss.itemSpacing, custom.itemSpacing)}>

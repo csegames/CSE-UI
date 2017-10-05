@@ -190,16 +190,6 @@ class Slider extends React.Component<SliderProps, SliderState> {
     if (index !== this.state.index) this.setState({ index } as any);
   }
 
-  public selectSlide = (index: number) => {
-    if (this.state.single) return;
-    let setIndex = index;
-    if (index < 0) {
-      setIndex = 0;
-    } else if (index >= this.props.children.length) {
-      setIndex = this.props.children.length - 1;
-    }
-  }
-
   public componentWillReceiveProps(nextProps: SliderProps) {
     const single = !Array.isArray(this.props.children);
     if (single) {

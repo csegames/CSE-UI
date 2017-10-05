@@ -260,7 +260,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const { gearSlots, item } = payload;
     const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
-      return !_.find(equippedItem.gearSlots, (gearSlot) => {
+      return !_.find(equippedItem.gearSlots, (gearSlot): any => {
         return _.find(gearSlots, slot => gearSlot.id === slot.id);
       });
     }));
@@ -280,7 +280,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const { inventoryItem, willEquipTo } = payload;
     const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
-      return !_.find(equippedItem.gearSlots, (gearSlot) => {
+      return !_.find(equippedItem.gearSlots, (gearSlot): any => {
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
@@ -305,7 +305,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const customStyle = this.customStyle;
     return (
       equipmentSlots.map((slot) => {
-        const equippedItem = _.find(equippedItems, (eItem) => {
+        const equippedItem = _.find(equippedItems, (eItem): any => {
           return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');

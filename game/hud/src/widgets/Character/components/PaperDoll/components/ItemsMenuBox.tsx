@@ -203,7 +203,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
           const shouldBelongOnPage = itemIndex + 1 <= (currentPage * 8) && itemIndex + 1 > ((currentPage * 8) - 8);
           if (shouldBelongOnPage) {
             inventoryItem.staticDefinition.gearSlotSets.forEach((gearSlotSet) => {
-              _.find(gearSlotSet.gearSlots, (slot) => {
+              _.find(gearSlotSet.gearSlots, (slot): any => {
                 if (slot.id === this.props.slotName) {
                   gearSlots = gearSlotSet.gearSlots;
                 }

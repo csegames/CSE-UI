@@ -6043,9 +6043,13 @@ typedarray@~0.0.5:
   version "0.0.6"
   resolved "http://registry.camelotunchained.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.0.3, typescript@^2.4.1:
+typescript@^2.0.3:
   version "2.4.1"
   resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
+
+typescript@next:
+  version "2.6.0-dev.20171006"
+  resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.6.0-dev.20171006.tgz#a2d066e9748b39a72353469e8c0c9a98012e1509"
 
 typings-core@^1.6.1:
   version "1.7.0"

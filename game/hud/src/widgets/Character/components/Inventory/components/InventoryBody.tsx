@@ -111,7 +111,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   private static minSlots = 200;
 
   private timePrevItemAdded: number;
-  private initial: boolean = true;
   private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
   private updateInventoryItemsHandler: EventListener;
   private dropItemHandler: EventListener;
@@ -207,7 +206,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const onActiveFiltersChange = !_.isEqual(nextProps.activeFilters, this.props.activeFilters);
 
     if (!this.props.graphql.data && nextProps.graphql.data) {
-      this.initial = false;
       this.timePrevItemAdded = new Date().getTime();
     }
 

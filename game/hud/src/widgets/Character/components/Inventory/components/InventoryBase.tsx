@@ -357,7 +357,8 @@ export function distributeItemsNoFilter(slotsData: {
   let noPositionArr = [...partitionedItems.noPositionItems];
 
   _.values(partitionedItems.noPositionStackedItems).forEach((itemArr) => {
-    noPositionArr = _.every(itemArr, item => _.find(noPositionArr, item)) ? noPositionArr : noPositionArr.concat(itemArr);
+    noPositionArr = _.every(itemArr, (item): any =>
+      _.find(noPositionArr, item)) ? noPositionArr : noPositionArr.concat(itemArr);
   });
 
   // iterate over non-stacked items with a position, check if there are position conflicts, if so then they
