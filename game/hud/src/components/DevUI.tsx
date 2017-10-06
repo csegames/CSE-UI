@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 
-import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
 import { client } from 'camelot-unchained';
 import { TabPanel } from 'camelot-unchained/lib/components';
+import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
+import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 type Content = string | ObjectMap<any>;
-
-export interface Data {
-  [id: string]: any;
-}
 
 export interface Button {
   title: string;
@@ -31,8 +29,8 @@ export interface Page {
   content: Content | undefined;
   pages: Partial<Page>[] | undefined;
   buttons: Button[] | undefined;
-  data: Data | undefined;
-  graphql: Data | undefined;
+  data: ObjectMap<any> | undefined;
+  gql: string | Partial<QuickQLQuery> | undefined;
 }
 
 export interface RootPage extends Partial<Page> {
@@ -65,7 +63,7 @@ const buttonStyle: {
   },
 };
 
-function evalContext(namespaces: { data: Data, graphql: Data }) {
+function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any> }) {
   // @ts-ignore: no-unused-locals
   const data = namespaces.data;
   // @ts-ignore: no-unused-locals
@@ -74,31 +72,36 @@ function evalContext(namespaces: { data: Data, graphql: Data }) {
   return (s: string) => { return eval(s); };
 }
 
-function parseTemplate(template: any, namespaces: { data: Data, graphql: Data }) {
+// @ts-ignore: no-unused-locals
+function parseTemplate(template: any, namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any> }) {
   const ctx = evalContext(namespaces);
-  return template.replace(/\${([^\s]*)}/g, (m: any, key: any) => ctx(key) || '');
+  return template.replace(/\${([^\s]*)}/g, (m: any, key: any) => {
+    return ctx(key) || '';
+  });
 }
 
-const DevUIButton = (props: Button) => {
-  const style = StyleSheet.create(buttonStyle);
-  return (
-    <div className={css(style.Button)}
-        onClick={() => {
-          if (props.command) {
-            client.SendSlashCommand(props.command);
-          } else if (props.call) {
-            const fn = client[props.call];
-            if (props.params) {
-              fn(...props.params);
-            } else {
-              fn();
+class DevUIButton extends React.PureComponent<Button> {
+  public render() {
+    const style = StyleSheet.create(buttonStyle);
+    return (
+      <div className={css(style.Button)}
+          onClick={() => {
+            if (this.props.command) {
+              client.SendSlashCommand(this.props.command);
+            } else if (this.props.call) {
+              const fn = client[this.props.call];
+              if (this.props.params) {
+                fn(...this.props.params);
+              } else {
+                fn();
+              }
             }
-          }
-        }}>
-      {props.title}
-    </div>
-  );
-};
+          }}>
+        {this.props.title}
+      </div>
+    );
+  }
+}
 
 const contentStyle: {
   Content: React.CSSProperties;
@@ -110,45 +113,82 @@ const contentStyle: {
   },
 };
 
-const DevUIContent = (props: {content: Content, data: Data, graphql: Data}) => {
-  const style = StyleSheet.create(contentStyle);
-  return (
-    <div className={css(style.Content)} >
-      {typeof props.content === 'string' ?
-        <DevUIStringContent content={props.content} data={props.data} graphql={props.graphql} /> :
-        <DevUIObjectContent content={props.content} data={props.data} graphql={props.graphql} />
-      }
-    </div>
-  );
-};
-
-const DevUIStringContent = (props: {content: string, data: Data, graphql: Data}) => {
-  if (props.data || props.graphql) {
-    const content = parseTemplate(props.content, { data: props.data, graphql: props.graphql });
-    return <div dangerouslySetInnerHTML={{ __html: content }} />;
+class DevUIContent extends React.PureComponent<Partial<Page>> {
+  public render() {
+    const style = StyleSheet.create(contentStyle);
+    return (
+      <div className={css(style.Content)}>
+        {typeof this.props.content === 'string' ?
+          <DevUIStringContentWithQL content={this.props.content} data={this.props.data} gql={this.props.gql} /> :
+          <DevUIObjectContent content={this.props.content} data={this.props.data} gql={this.props.gql} />
+        }
+      </div>
+    );
   }
-  return <div dangerouslySetInnerHTML={{ __html: props.content }} />;
-};
+}
 
-const DevUIObjectContent = (props: { content: ObjectMap<any>, data: Data, graphql: Data }): JSX.Element => {
-  const keys = Object.keys(props.content);
-  return (
-    <table style={{ border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%' }}>
-      {
-        keys.map(k => (
-          <tr style={{ border: '1px solid #ececec', padding: '2px' }}>
-            <th style={{ border: '1px solid #ececec', padding: '2px' }}>{k}</th>
-            <td style={{ border: '1px solid #ececec', padding: '2px' }}>
-              {typeof props.content[k] !== 'object'
-                ? <DevUIStringContent content={props.content[k]} data={props.data} graphql={props.graphql} />
-                : <DevUIObjectContent content={props.content[k]} data={props.data} graphql={props.graphql} />}
-            </td>
-          </tr>
-        ))
+type DevUIStringContentProps = Partial<Page> & GraphQLInjectedProps<any>;
+class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
+  public render() {
+    if (this.props.gql) {
+      if (!this.props.graphql.loading && this.props.graphql.data) {
+        const parsedContent = parseTemplate(this.props.content, {
+          data: this.props.data,
+          graphql: {
+            data: this.props.graphql.data,
+          },
+        });
+        return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
       }
-    </table>
-  );
-};
+      return <div>Loading...</div>;
+    } else if (this.props.data && !this.props.graphql) {
+      const parsedContent = parseTemplate(this.props.content, {
+        data: this.props.data,
+        graphql: null,
+      });
+      return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
+    } else {
+      return <div dangerouslySetInnerHTML={{ __html: this.props.content as any }} />;
+    }
+  }
+}
+
+const DevUIStringContentWithQL = withGraphQL<DevUIStringContentProps>((props: any): any => ({
+  query: props.gql,
+}))(DevUIStringContent);
+
+class DevUIObjectContent extends React.PureComponent<Partial<Page>> {
+  public render(): JSX.Element {
+    const keys = Object.keys(this.props.content);
+    return (
+      <table style={{ border: '1px solid #ececec', borderCollapse: 'collapse', width: '100%' }}>
+        {
+          keys.map(k => (
+            <tr style={{ border: '1px solid #ececec', padding: '2px' }}>
+              <th style={{ border: '1px solid #ececec', padding: '2px' }}>{k}</th>
+              <td style={{ border: '1px solid #ececec', padding: '2px' }}>
+                {typeof this.props.content[k] !== 'object'
+                  ?
+                    <DevUIStringContentWithQL
+                      content={this.props.content[k]}
+                      data={this.props.data}
+                      gql={this.props.gql}
+                    />
+                  :
+                    <DevUIObjectContent
+                      content={this.props.content[k]}
+                      data={this.props.data}
+                      gql={this.props.gql}
+                    />
+                }
+              </td>
+            </tr>
+          ))
+        }
+      </table>
+    );
+  }
+}
 
 const pageStyle: {
   Page: React.CSSProperties;
@@ -177,53 +217,68 @@ const pageStyle: {
   },
 };
 
-const DevUIPage = (props: Partial<Page>): JSX.Element => {
-  const style = StyleSheet.create(pageStyle);
-  return (
-    <div className={css(style.Page)}>
-      {props.title && <div className={css(style.title)}>{props.title}</div>}
-      {props.content && <DevUIContent content={props.content} data={props.data} graphql={props.graphql} />}
-      {props.buttons && <div>{props.buttons.map(b => <DevUIButton key={b.title} {...b} />)}</div>}
-      {props.pages && (
-        <div className={css(style.pages)}>
-          <TabPanel styles={{
-            tabPanel: {
-              flex: '1 1 auto',
-              width: 'initial',
-              height: 'initial',
-            },
-            tab: {
-              padding: '2px 10px',
-              background: '#444',
-              borderBottom: '1px solid transparent',
-            },
-            activeTab: {
-              background: '#777',
-              borderBottom: '1px solid orange',
-            },
-          }}
-          tabs={props.pages.map((p) => {
-            return {
-              tab: {
-                render: () => <span>{p.title}</span>,
-              },
-              rendersContent: p.title || '',
-            };
-          })}
-            content={props.pages.map((p) => {
-              return {
-                name: p.title || '',
-                content: {
-                  render: () => <DevUIPage {...p} />,
+class DevUIPage extends React.PureComponent<Partial<Page>> {
+  public render(): JSX.Element {
+    const style = StyleSheet.create(pageStyle);
+    return (
+      <div className={css(style.Page)}>
+        {this.props.title && <div className={css(style.title)}>{this.props.title}</div>}
+        {this.props.content &&
+          <DevUIContent
+            content={this.props.content}
+            data={this.props.data}
+            gql={this.props.gql}
+          />
+        }
+        {this.props.buttons && <div>{this.props.buttons.map(b => <DevUIButton key={b.title} {...b} />)}</div>}
+        {this.props.pages && (
+          <div className={css(style.pages)}>
+            <TabPanel
+              styles={{
+                contentContainer: {
+                  height: 'auto',
                 },
-              };
-            })} />
-        </div>)}
-    </div>
-  );
-};
+                content: {
+                  position: 'relative',
+                },
+                tabPanel: {
+                  flex: '1 1 auto',
+                  width: 'initial',
+                  height: 'initial',
+                },
+                tab: {
+                  padding: '2px 10px',
+                  background: '#444',
+                  borderBottom: '1px solid transparent',
+                },
+                activeTab: {
+                  background: '#777',
+                  borderBottom: '1px solid orange',
+                },
+              }}
+              tabs={this.props.pages.map((p) => {
+                return {
+                  tab: {
+                    render: () => <span>{p.title}</span>,
+                  },
+                  rendersContent: p.title || '',
+                };
+              })}
+              content={this.props.pages.map((p) => {
+                return {
+                  name: p.title || '',
+                  content: {
+                    render: () => <DevUIPage {...p} />,
+                  },
+                };
+              })} />
+          </div>)}
+      </div>
+    );
+  }
+}
 
-class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
+class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
 
   constructor(props: {}) {
     super(props);
@@ -276,7 +331,7 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    //tslint:disable
+    // tslint:disable
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
@@ -284,8 +339,13 @@ class DevUI extends React.Component<{}, ObjectMap<RootPage> | null> {
       }
       this.setState({
         [id]: page,
-      })
+      });
     });
+  }
+
+  public componentDidCatch(error: any, info: any) {
+    console.log(error);
+    console.log(info);
   }
 }
 
