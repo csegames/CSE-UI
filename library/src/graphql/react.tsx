@@ -94,7 +94,7 @@ export function useConfig(config: Partial<GraphQLConfig>) {
 export function withGraphQL<
   PropsType extends GraphQLInjectedProps<QueryDataType | null>,
   QueryDataType = any>(
-  query: string | Partial<QuickQLQuery> | ((props: PropsType) => Partial<QuickQLQuery>),
+  query?: string | Partial<QuickQLQuery> | ((props: PropsType) => Partial<QuickQLQuery>),
   options?: Partial<WithGraphQLOptions> | ((props: PropsType) => Partial<WithGraphQLOptions>)) {
   
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
@@ -102,7 +102,7 @@ export function withGraphQL<
       GraphQLData<QueryDataType | null>> {
       
       public client: GraphQLClient;
-      public query: QuickQLQuery;
+      public query: QuickQLQuery | undefined;
       public opts: WithGraphQLOptions;
       public pollingTimeout: number | null = null;
       
@@ -110,12 +110,14 @@ export function withGraphQL<
         super(props);
         this.state = {
           data: null,
-          loading: true,
+          loading: !!query,
           lastError: '',
         };
 
-        const q = typeof query === 'string' ? {query} : typeof query === 'function' ? query(props as any) : query;
-        this.query = withDefaults(q, defaultQuickQLQuery);
+        if (query) {
+          const q = typeof query === 'string' ? {query} : typeof query === 'function' ? query(props as any) : query;
+          this.query = withDefaults(q, defaultQuickQLQuery);
+        }
 
         const opt = typeof options === 'function' ? options(props as any) : options;
         this.opts = withDefaults(options, getOptions());
@@ -143,6 +145,7 @@ export function withGraphQL<
       }
 
       public refetch = async () => {
+        if (!this.query) return;
         if (this.state.loading === false) {
           this.setState({
             loading: true,
