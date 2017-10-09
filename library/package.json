@@ -1,6 +1,6 @@
 {
   "name": "camelot-unchained",
-  "version": "0.9.19",
+  "version": "0.9.20",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
