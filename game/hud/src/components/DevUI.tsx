@@ -26,11 +26,13 @@ export interface Button {
 
 export interface Page {
   title: string | undefined;
+  tabTitle: string | undefined;
   content: Content | undefined;
   pages: Partial<Page>[] | undefined;
   buttons: Button[] | undefined;
   data: ObjectMap<any> | undefined;
   gql: string | Partial<QuickQLQuery> | undefined;
+  activeTabIndex: number | undefined;
 }
 
 export interface RootPage extends Partial<Page> {
@@ -153,9 +155,9 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
   }
 }
 
-const DevUIStringContentWithQL = withGraphQL<DevUIStringContentProps>((props: any): any => ({
+const DevUIStringContentWithQL = withGraphQL<DevUIStringContentProps>((props: any): any => (props.gql ? {
   query: props.gql,
-}))(DevUIStringContent);
+} : {}))(DevUIStringContent);
 
 class DevUIObjectContent extends React.PureComponent<Partial<Page>> {
   public render(): JSX.Element {
@@ -218,6 +220,7 @@ const pageStyle: {
 };
 
 class DevUIPage extends React.PureComponent<Partial<Page>> {
+  private tabPanel: any;
   public render(): JSX.Element {
     const style = StyleSheet.create(pageStyle);
     return (
@@ -234,6 +237,8 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
         {this.props.pages && (
           <div className={css(style.pages)}>
             <TabPanel
+              defaultTabIndex={this.props.activeTabIndex}
+              ref={ref => this.tabPanel = ref}
               styles={{
                 contentContainer: {
                   height: 'auto',
@@ -259,14 +264,14 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
               tabs={this.props.pages.map((p) => {
                 return {
                   tab: {
-                    render: () => <span>{p.title}</span>,
+                    render: () => <span>{p.tabTitle || p.title}</span>,
                   },
-                  rendersContent: p.title || '',
+                  rendersContent: p.tabTitle || p.title || '',
                 };
               })}
               content={this.props.pages.map((p) => {
                 return {
-                  name: p.title || '',
+                  name: p.tabTitle || p.title || '',
                   content: {
                     render: () => <DevUIPage {...p} />,
                   },
@@ -275,6 +280,12 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
           </div>)}
       </div>
     );
+  }
+
+  public componentWillReceiveProps(nextProps: Partial<Page>) {
+    if (this.props.activeTabIndex !== nextProps.activeTabIndex) {
+      this.tabPanel.activeTabIndex = nextProps.activeTabIndex;
+    }
   }
 }
 
@@ -331,7 +342,6 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    // tslint:disable
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
