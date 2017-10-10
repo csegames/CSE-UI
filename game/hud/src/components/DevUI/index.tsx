@@ -113,8 +113,6 @@ const contentStyle: {
   Content: React.CSSProperties;
 } = {
   Content: {
-    display: 'flex',
-    flexDirection: 'column',
     flex: '1 1 auto',
   },
 };
@@ -207,7 +205,6 @@ const pageStyle: {
     flex: '1 1 auto',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'auto',
     padding: '10px',
     justifyContent: 'space-between',
     color: '#ececec',
@@ -323,23 +320,27 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                 background: page.background && page.background || '#111',
                 visibility: page.visible ? 'visible' : 'hidden',
                 display: 'flex',
+                overflowY: 'auto',
+                overflowX: 'hidden',
               }}>
-            { page.showCloseButton ?
-              <a
-                href={'#'}
-                style={{
-                  position: 'absolute',
-                  right: '0px',
-                  top: '0px',
-                  display: 'flex',
-                }}
-                onClick={() => this.setState({
-                  [k]: {
-                    ...page,
-                    visible: false,
-                  },
-                })}>X</a> : null }
-              <DevUIPage {...page} />
+            <div style={{ flex: 1 }}>
+              {page.showCloseButton ?
+                <a
+                  href={'#'}
+                  style={{
+                    position: 'absolute',
+                    right: '0px',
+                    top: '0px',
+                    display: 'flex',
+                  }}
+                  onClick={() => this.setState({
+                    [k]: {
+                      ...page,
+                      visible: false,
+                    },
+                  })}>X</a> : null}
+                <DevUIPage {...page} />
+              </div>
             </div>
           );
         })}
