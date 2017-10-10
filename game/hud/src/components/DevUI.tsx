@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 
-import { client } from 'camelot-unchained';
+// @ts-ignore
+import { client, webAPI } from 'camelot-unchained';
 import { TabPanel } from 'camelot-unchained/lib/components';
 import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
 import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 type Content = string | ObjectMap<any>;
+
+// @ts-ignore:no-unused-locals
+window['webAPI'] = webAPI;
 
 export interface Button {
   title: string;
@@ -150,7 +154,9 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
       });
       return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
     } else {
-      return <div dangerouslySetInnerHTML={{ __html: this.props.content as any }} />;
+      return <div dangerouslySetInnerHTML={{
+        __html: this.props.content as any,
+      }} />;
     }
   }
 }
@@ -261,17 +267,17 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
                   borderBottom: '1px solid orange',
                 },
               }}
-              tabs={this.props.pages.map((p) => {
+              tabs={this.props.pages.map((p, index) => {
                 return {
                   tab: {
                     render: () => <span>{p.tabTitle || p.title}</span>,
                   },
-                  rendersContent: p.tabTitle || p.title || '',
+                  rendersContent: index.toString(),
                 };
               })}
-              content={this.props.pages.map((p) => {
+              content={this.props.pages.map((p, index) => {
                 return {
-                  name: p.tabTitle || p.title || '',
+                  name: index.toString(),
                   content: {
                     render: () => <DevUIPage {...p} />,
                   },
