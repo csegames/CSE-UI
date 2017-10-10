@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils, Race, Gender, Archetype } from 'camelot-unchained';
+import { utils, webAPI, Race, Gender, Archetype } from 'camelot-unchained';
 
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
@@ -106,6 +106,7 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
           <div className={css(ss.characterNameInputContainer, custom.characterNameInputContainer) +
             ' cu-character-creation__name'}>
             <input
+              id='create-character-name-input'
               type='text'
               ref={this.props.inputRef}
               placeholder='Enter A Name Here'

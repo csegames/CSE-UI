@@ -75,3 +75,11 @@
 .standing__WintersShadow{
     @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/winters-shadow.png');
 }
+
+.class-selection-container {
+    display: flex;
+}
+
+.class-btn {
+    cursor: pointer;
+}

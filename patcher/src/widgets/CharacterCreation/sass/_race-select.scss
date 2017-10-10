@@ -134,6 +134,18 @@
   @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png');
 }
 
+.race-btn {
+  cursor: pointer;
+}
+
+.race-selection-container {
+  display: flex;
+}
+
+.gender-selection-container {
+  display: flex;
+}
+
 .videobg {
   margin-top: -20px;
 

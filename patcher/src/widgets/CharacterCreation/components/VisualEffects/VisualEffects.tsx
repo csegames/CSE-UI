@@ -36,15 +36,15 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
 
     return (
       <div className='videobg'>
-        {_.isArray(particlesInfo) ? particlesInfo.map((particleInfo) => {
-          return <div id={particleInfo.id} className={particleInfo.id} />;
+        {_.isArray(particlesInfo) ? particlesInfo.map((particleInfo, i) => {
+          return <div key={i} id={particleInfo.id} className={particleInfo.id} />;
         }) : <div id={particlesInfo.id} className={particlesInfo.id} />}
         <div className='parallax'>
-          {_.isArray(parallaxInfo) ? parallaxInfo.map((parallaxInfo) => {
+          {_.isArray(parallaxInfo) ? parallaxInfo.map((parallaxInfo, i) => {
             const extraClass = parallaxInfo.extraClass ? parallaxInfo.extraClass : '';
 
             // TODO: LOOK HERE SOMETIME !!!
-            return <div className={`bgelement ${parallaxInfo.id} ${extraClass}`} />;
+            return <div key={i} className={`bgelement ${parallaxInfo.id} ${extraClass}`} />;
           }) : <div className={`bgelement ${parallaxInfo.id} ${parallaxInfo.extraClass ? parallaxInfo.extraClass : ''}`} />}
         </div>
         {this.props.renderMisc && this.props.renderMisc()}

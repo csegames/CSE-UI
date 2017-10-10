@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Race, Faction, Gender, events, HelpWrapper } from 'camelot-unchained';
+import { Race, Faction, Gender, events } from 'camelot-unchained';
 
 import { CharacterCreationPage } from '../index';
 import { raceSteps } from './HelpSteps';
@@ -46,6 +46,7 @@ export interface RaceSelectState {
 
 class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
   private helpEvent: EventListener;
+
   constructor(props: RaceSelectProps) {
     super(props);
     this.state = {
@@ -67,54 +68,40 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
       </div>;
       text = <div className='selection-description'>{raceText[Race[this.props.selectedRace.id]]}</div>;
     }
-
     return (
-      <HelpWrapper
-        enabled={this.state.helpEnabled}
-        initialStep={0}
-        steps={raceSteps}
-        onExit={this.toggleHelp}>
-        <div className='page'>
-          <RaceVisualEffects
-            selectedRace={this.props.selectedRace}
-            selectedFaction={this.props.selectedFaction}
-            selectedGender={this.props.selectedGender}
-          />
-          {name}
-          <div className='selection-box'>
-            <h6>Choose your race</h6>
-            {this.props.races.filter((r: any) => r.faction === this.props.selectedFaction.id).map(this.generateRaceContent)}
-            <h6>Choose your gender</h6>
+      <div className='page'>
+        <RaceVisualEffects
+          selectedRace={this.props.selectedRace}
+          selectedFaction={this.props.selectedFaction}
+          selectedGender={this.props.selectedGender}
+        />
+        {name}
+        <div className='selection-box'>
+          <h6>Choose your race</h6>
+          <div className='race-selection-container'>
+            {this.props.races.filter((r: any) =>
+              r.faction === this.props.selectedFaction.id).map(this.generateRaceContent)}
+          </div>
+          <h6>Choose your gender</h6>
+          <div className='gender-selection-container'>
             <a id='male-btn' className={`gender-btn ${this.props.selectedGender === Gender.Male ? 'selected' : ''}`}
               onClick={() => this.selectGender(Gender.Male)}>Male</a>
             <a className={`gender-btn ${this.props.selectedGender === Gender.Female ? 'selected' : ''}`}
               onClick={() => this.selectGender(Gender.Female)}>Female</a>
-            {text}
           </div>
-          <div className='view-content'>
-            <Animate
-              className='animate'
-              animationEnter='fadeIn'
-              animationLeave='fadeOut'
-              durationEnter={400}
-              durationLeave={500}>
-          </Animate>
-          </div>
+          {text}
         </div>
-      </HelpWrapper>
+        <div className='view-content'>
+          <Animate
+            className='animate'
+            animationEnter='fadeIn'
+            animationLeave='fadeOut'
+            durationEnter={400}
+            durationLeave={500}>
+        </Animate>
+        </div>
+      </div>
     );
-  }
-
-  public componentDidMount() {
-    this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.Race) {
-        this.toggleHelp();
-      }
-    });
-  }
-  
-  public componentWillUnmount() {
-    events.off(this.helpEvent);
   }
 
   private toggleHelp = () => {
@@ -128,12 +115,11 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
 
   private generateRaceContent = (info: RaceInfo, index: number) => {
     return (
-      <a
-        id={`race-btn-${index}`}
+      <div
         key={info.id}
-        className={`thumb__${Race[info.id]}--${Gender[this.props.selectedGender]} ${this.props.selectedRace !== null ?
-          this.props.selectedRace.id === info.id ? 'active' : '' : ''}`}
-        onClick={this.selectRace.bind(this, info)}></a>
+        className={`race-btn thumb__${Race[info.id]}--${Gender[this.props.selectedGender]} 
+          ${this.props.selectedRace !== null ? this.props.selectedRace.id === info.id ? 'active' : '' : ''}`}
+        onClick={this.selectRace.bind(this, info)}></div>
     );
   }
 

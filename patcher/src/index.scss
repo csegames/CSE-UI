@@ -26,8 +26,13 @@ html,body, #Patcher {
   font-family: 'Titillium Web', sans-serif;
 }
 
+.introjs-overlay {
+  pointer-events: none !important;
+}
+
 .help-highlight {
   background-color: rgba(255,255,255,0.2) !important;
+  pointer-events: none !important;
 }
 
 .help-tooltip {

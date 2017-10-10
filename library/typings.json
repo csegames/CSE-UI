@@ -8,6 +8,8 @@
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
     "fuzzysearch": "github:cumodsquad/Typings/fuzzysearch/fuzzysearch.d.ts",
-    "intro.js-react": "github:cumodsquad/Typings/intro.js-react/introjs-react.d.ts"
+    "intro.js-react": "github:cumodsquad/Typings/intro.js-react/introjs-react.d.ts",
+    "emotion": "github:cumodsquad/Typings/emotion/emotion.d.ts",
+    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts"
   }
 }

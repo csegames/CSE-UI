@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Archetype, Faction, events, HelpWrapper } from 'camelot-unchained';
+import { Archetype, Faction, events } from 'camelot-unchained';
 import { classSteps } from './HelpSteps';
 
 import { CharacterCreationPage } from '../index';
@@ -49,7 +49,7 @@ export interface PlayerClassSelectState {
 }
 
 class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerClassSelectState> {
-  private helpEvent: EventListener;
+
   constructor(props: PlayerClassSelectProps) {
     super(props);
     this.state = {
@@ -85,45 +85,29 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
     }
 
     return (
-      <HelpWrapper
-        enabled={this.state.helpEnabled}
-        initialStep={0}
-        steps={classSteps}
-        onExit={this.toggleHelp}>
-        <div className='page'>
-          <video src={`videos/${videoTitle}.webm`} poster={`videos/${videoTitle}.jpg`} autoPlay loop></video>
-            {name}
-          <div className='selection-box'>
-            <h6>Choose your class</h6>
+      <div className='page'>
+        <video src={`videos/${videoTitle}.webm`} poster={`videos/${videoTitle}.jpg`} autoPlay loop></video>
+          {name}
+        <div className='selection-box'>
+          <h6>Choose your class</h6>
+          <div className='class-selection-container'>
             {this.props.classes.filter((c:any) => c.faction === this.props.selectedFaction.id ||
               c.faction === Faction.Factionless).map(this.generateClassContent)}
-            {text}
           </div>
-          <div className='view-content'>
-            <Animate
-              className='animate'
-              animationEnter='fadeIn'
-              animationLeave='fadeOut'
-              durationEnter={400}
-              durationLeave={500}>
-              {view}
-            </Animate>
-          </div>
+          {text}
         </div>
-      </HelpWrapper>
+        <div className='view-content'>
+          <Animate
+            className='animate'
+            animationEnter='fadeIn'
+            animationLeave='fadeOut'
+            durationEnter={400}
+            durationLeave={500}>
+            {view}
+          </Animate>
+        </div>
+      </div>
     );
-  }
-
-  public componentDidMount() {
-    this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.Class) {
-        this.toggleHelp();
-      }
-    });
-  }
-
-  public componentWillUnmount() {
-    events.off(this.helpEvent);
   }
 
   private selectClass = (info: PlayerClassInfo) => {
@@ -137,12 +121,11 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
 
   private generateClassContent = (info: PlayerClassInfo, index: number) => {
     return (
-      <a
+      <div
         key={info.id}
-        id={`class-btn-${index}`}
-        className={`thumb__${Archetype[info.id]} ${this.props.selectedClass !== null ? 
+        className={`class-btn thumb__${Archetype[info.id]} ${this.props.selectedClass !== null ? 
           this.props.selectedClass.id === info.id ? 'active' : '' : ''}`}
-        onClick={this.selectClass.bind(this, info)}></a>
+        onClick={this.selectClass.bind(this, info)}></div>
     );
   }
 }

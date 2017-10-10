@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Faction, events, HelpWrapper, Spinner } from 'camelot-unchained';
+import { Faction, events, Spinner } from 'camelot-unchained';
 
 import { CharacterCreationPage } from '../index';
 import { factionSteps } from './HelpSteps';
@@ -51,29 +51,10 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
       );
     }
     return (
-      <HelpWrapper
-        enabled={this.state.helpEnabled}
-        initialStep={0}
-        steps={factionSteps}
-        onExit={() => this.setState({ helpEnabled: false })}
-      >
-        <div className='cu-character-creation__faction-select'>
-          {this.props.factions.map(this.generateFactionContent)}
-        </div>
-      </HelpWrapper>
+      <div className='cu-character-creation__faction-select'>
+        {this.props.factions.map(this.generateFactionContent)}
+      </div>
     );
-  }
-
-  public componentDidMount() {
-    this.helpEvent = events.on('character-creation-help', (page: number) => {
-      if (page === CharacterCreationPage.Faction) {
-        this.toggleHelp();
-      }
-    });
-  }
-
-  public componentWillUnmount() {
-    events.off(this.helpEvent);
   }
 
   private selectFaction = (faction: FactionInfo) => {

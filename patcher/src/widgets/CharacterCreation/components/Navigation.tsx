@@ -244,6 +244,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             })}
           </div>
           <button
+            id='cu-char-creation-next'
             disabled={nextDisabled}
             className={css(
               ss.navButton,

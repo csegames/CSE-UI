@@ -13,7 +13,7 @@ import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import { events, Gender, Archetype, Faction, Race, webAPI, client } from 'camelot-unchained';
+import { events, Gender, Archetype, Faction, Race, webAPI, client, HelpInfo } from 'camelot-unchained';
 import { toTitleCase, toSentenceCase } from 'camelot-unchained/lib/util/textUtils';
 
 import { view } from '../../components/OverlayView';
@@ -25,6 +25,7 @@ import AttributesSelect from './components/AttributesSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
 import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
+import { helpSteps } from './components/HelpSteps';
 
 // tslint:disable-next-line
 
@@ -108,6 +109,7 @@ export interface CharacterCreationProps {
 export interface CharacterCreationState {
   page: CharacterCreationPage;
   selectedServerName: string;
+  helpEnabled: boolean;
 }
 
 export interface ContainerStyles extends StyleDeclaration {
@@ -138,12 +140,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   private pagesVisited: CharacterCreationPage[] = [];
   private pagesCompleted: CharacterCreationPage[] = [];
   private characterNameInputRef: Element;
+  private raceRef: any;
 
   constructor(props: any) {
     super(props);
     this.state = {
       page: CharacterCreationPage.Faction,
       selectedServerName: '',
+      helpEnabled: false,
     };
   }
 
@@ -289,8 +293,16 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         onClick: () => this.goToPage(CharacterCreationPage.Summary),
       },
     ];
+    const onNextClick = () => this.state.page !== CharacterCreationPage.Summary ?
+      this.goToPage(this.state.page + 1) : this.create();
     return (
       <div className='cu-character-creation'>
+        <HelpInfo
+          enabled={this.state.helpEnabled}
+          initialStep={0}
+          steps={helpSteps[CharacterCreationPage[this.state.page]]}
+          onExitClick={this.toggleHelp}
+        />
         <div className='cu-character-creation__header'>
           <span>[ {this.state.selectedServerName} ] Character Creation - 
             {toTitleCase(CharacterCreationPage[this.state.page])}
@@ -300,9 +312,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           {content}
         </div>
         <Navigation
-          onNextClick={() => this.goToPage(this.state.page + 1)}
+          onNextClick={onNextClick}
           onBackClick={this.state.page !== CharacterCreationPage.Faction ? this.previousPage : () => {}}
-          onHelpClick={this.onHelpClick}
+          onHelpClick={this.toggleHelp}
           onCancelClick={this.onCloseClick}
           currentPage={this.state.page}
           pages={pages}
@@ -351,8 +363,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     }
   }
 
-  private onHelpClick = () => {
-    events.fire('character-creation-help', this.state.page);
+  private toggleHelp = () => {
+    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private pushPagesCompleted = (page: CharacterCreationPage) => {
@@ -459,7 +471,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private previousPage = () => {
-    this.setState({ page: this.state.page - 1 });
+    this.setState({ page: this.state.page - 1, helpEnabled: false });
     events.fire('play-sound', 'select');
   }
 
@@ -521,7 +533,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Faction);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.Race });
+        this.setState({ page: CharacterCreationPage.Race, helpEnabled: false });
         break;
       }
       case CharacterCreationPage.Class: {
@@ -532,7 +544,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Race);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.Class });
+        this.setState({ page: CharacterCreationPage.Class, helpEnabled: false });
         break;
       }
       case CharacterCreationPage.Attributes: {
@@ -543,7 +555,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Class);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.Attributes });
+        this.setState({ page: CharacterCreationPage.Attributes, helpEnabled: false });
         break;
       }
       case CharacterCreationPage.BanesAndBoons: {
@@ -554,7 +566,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Attributes);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.BanesAndBoons });
+        this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false });
         break;
       }
       case CharacterCreationPage.Summary: {
@@ -565,7 +577,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.BanesAndBoons);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.Summary });
+        this.setState({ page: CharacterCreationPage.Summary, helpEnabled: false });
         break;
       }
     }

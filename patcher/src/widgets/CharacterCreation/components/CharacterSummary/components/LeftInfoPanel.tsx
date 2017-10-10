@@ -40,7 +40,6 @@ export const defaultLeftInfoPanelStyle: LeftInfoPanelStyle = {
     overflowY: 'auto',
     background: 'linear-gradient(top left, rgba(0,0,0,0.8), rgba(0,0,0,0.4), rgba(0,0,0,0.8))',
     padding: '10px',
-    zIndex: 999,
   },
 
   listHeader: {
@@ -175,7 +174,7 @@ export class LeftInfoPanel extends React.Component<LeftInfoPanelProps, LeftInfoP
       }));
     
     return (
-      <div className={css(ss.LeftInfoPanel, custom.LeftInfoPanel)}>
+      <div id='summary-panel' className={css(ss.LeftInfoPanel, custom.LeftInfoPanel)}>
         <AttributeView title='Primary' statArray={primaries} howManyGrids={2} />
         <AttributeView title='Secondary' statArray={secondaries} howManyGrids={2} />
         <AttributeView title='Derived' statArray={derived} howManyGrids={2} />
