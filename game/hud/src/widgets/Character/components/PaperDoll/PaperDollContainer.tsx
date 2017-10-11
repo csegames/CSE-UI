@@ -142,7 +142,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
   public componentWillReceiveProps(nextProps: PaperDollProps) {
     if (!_.isEqual(nextProps.data.myEquippedItems, this.props.data.myEquippedItems)) {
-      this.props.onEquippedItemsChange(nextProps.data.myEquippedItems as ql.schema.EquippedItem[]);
+      this.props.onEquippedItemsChange(nextProps.data.myEquippedItems.items as ql.schema.EquippedItem[]);
     }
   }
 
