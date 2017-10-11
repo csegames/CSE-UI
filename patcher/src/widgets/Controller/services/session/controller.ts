@@ -346,7 +346,6 @@ const connectionSlow = module.createAction({
   },
 });
 
-
 export const serverUpdate = module.createAction({
   type: 'controller/serverUpdate',
   action: (server: webAPI.ServerModel) => {

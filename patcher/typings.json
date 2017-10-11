@@ -13,6 +13,8 @@
     "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
     "reflux": "github:cumodsquad/Typings/reflux/reflux.d.ts",
     "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts",
-    "react-animate.css": "github:cumodsquad/Typings/react-animate.css/react-animate.css.d.ts"
+    "react-animate.css": "github:cumodsquad/Typings/react-animate.css/react-animate.css.d.ts",
+    "emotion": "github:cumodsquad/Typings/emotion/emotion.d.ts",
+    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts"
   }
 }

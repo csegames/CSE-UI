@@ -5,12 +5,13 @@
  */
 
 import * as React from 'react';
-import {events, client} from 'camelot-unchained';
-import {patcher} from '../../services/patcher';
+import { events, client, ql } from 'camelot-unchained';
+import { patcher } from '../../services/patcher';
 
 // views
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
+import PatchNotes from '../../widgets/PatchNotes';
 import Chat from 'cu-xmpp-chat';
 
 export interface OverlayViewProps {
@@ -22,6 +23,7 @@ export interface OverlayViewState {
   currentView: view;
   currentProps: any;
   inTransition: boolean;
+  selectedServer: ql.schema.ServerModel;
 }
 
 export enum view {
@@ -33,6 +35,7 @@ export enum view {
   CHARACTER,
   NEWS,
   CHAT,
+  PATCHNOTES,
 }
 
 class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
@@ -45,6 +48,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
       currentProps: null,
       previousProps: null,
       inTransition: false,
+      selectedServer: null,
     };
   }
 
@@ -73,15 +77,17 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentDidMount() {
+    events.on('patcher--select-server', server => {
+      this.setState({ selectedServer: server });
+    });
     events.on('view-content', (v: view, props: any) => {
       if (v === this.state.currentView) return;
-
       if (v === view.NONE) {
         events.fire('resume-videos');
       } else {
         events.fire('pause-videos');
       }
-
+      
       this.setState({
         previousView: this.state.currentView,
         previousProps: this.state.currentProps,
@@ -122,6 +128,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
 
       case view.CHAT:
         return null;
+
+      case view.PATCHNOTES:
+        return (
+          <div className={`View ${className}`}>
+            <PatchNotes defaultServer={this.state.selectedServer} />
+          </div>
+        );
 
       // others later
     }

@@ -146,6 +146,10 @@ export function withGraphQL<
 
       public refetch = async () => {
         if (!this.query) return;
+        if (typeof query === 'function') {
+          const q = query(this.props as any);
+          this.query = withDefaults(q, this.query);
+        }
         if (this.state.loading === false) {
           this.setState({
             loading: true,

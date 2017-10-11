@@ -7,6 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { webAPI, events, utils, client } from 'camelot-unchained';
+import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import QuickSelect from '../../../../components/QuickSelect';
 import { ServerType, PatcherServer } from '../../services/session/controller';
 import CharacterDeleteModal from '../CharacterDeleteModal';
@@ -209,6 +210,17 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
+    useConfig({
+      url: `https://hatcheryapi.camelotunchained.com/graphql`,
+      requestOptions: {
+        headers: {
+          loginToken: client.loginToken,
+          shardID: `${client.shardID}`,
+          characterID: character.id,
+        },
+      },
+      stringifyVariables: true,
+    });
     this.props.selectCharacter(character);
     this.setState({selectedCharacter: character} as any);
   }

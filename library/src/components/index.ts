@@ -36,3 +36,4 @@ export * from './MOTD';
 export * from './GridStats';
 export * from './HelpInfo';
 export * from './Animate';
+export * from './LoadingContainer';

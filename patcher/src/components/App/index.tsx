@@ -101,7 +101,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     }, 60000 * 30);
 
     events.on('view-content', (v: view) => {
-      if (this.props.currentRoute === Routes.NEWS && v !== view.NEWS) {
+      if ((this.props.currentRoute === Routes.NEWS && v !== view.NEWS) ||
+        (this.props.currentRoute === Routes.PATCHNOTES && v !== view.PATCHNOTES)) {
         this.props.dispatch(changeRoute(Routes.HERO));
       }
     });
@@ -120,18 +121,30 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   }
 
   private onRouteChanged = (route: Routes) => {
-    if (route === Routes.HERO) {
-      events.fire('view-content', view.NONE, null);
-      events.fire('resume-videos');
-    } else if (route === Routes.NEWS) {
-      events.fire('view-content', view.NEWS, {
-        news:this.props.newsState,
-        fetchPage:this.fetchNewsPage,
-      });
-      events.fire('pause-videos');
-    } else if (route === Routes.CHAT) {
-      events.fire('view-content', view.CHAT, null);
-      events.fire('pause-videos');
+    switch (route) {
+      case Routes.HERO: {
+        events.fire('view-content', view.NONE, null);
+        events.fire('resume-videos');
+        break;
+      }
+      case Routes.NEWS: {
+        events.fire('view-content', view.NEWS, {
+          news:this.props.newsState,
+          fetchPage:this.fetchNewsPage,
+        });
+        events.fire('pause-videos');
+        break;
+      }
+      case Routes.CHAT: {
+        events.fire('view-content', view.CHAT, null);
+        events.fire('pause-videos');
+        break;
+      }
+      case Routes.PATCHNOTES: {
+        events.fire('view-content', view.PATCHNOTES, null);
+        events.fire('pause-videos');
+        break;
+      }
     }
     this.props.dispatch(changeRoute(route));
     events.fire('play-sound', 'select');

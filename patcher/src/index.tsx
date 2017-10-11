@@ -12,9 +12,23 @@ import {Provider} from 'react-redux';
 import {thunkMiddleware, loggingMiddleware} from './lib/reduxUtils';
 import reducer from './services/session';
 import PatcherApp from './components/App';
+import { client } from 'camelot-unchained';
+import { useConfig } from 'camelot-unchained/lib/graphql/react';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
+
+useConfig({
+  url: `https://hatcheryapi.camelotunchained.com/graphql`,
+  requestOptions: {
+    headers: {
+      loginToken: client.loginToken,
+      shardID: `${client.shardID}`,
+      characterID: client.characterID,
+    },
+  },
+  stringifyVariables: true,
+});
 
 ReactDom.render(
   <Provider store={store}>

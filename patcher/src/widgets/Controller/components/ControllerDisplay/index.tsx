@@ -24,7 +24,13 @@ import { patcher, Channel, ChannelStatus, PatchPermissions, permissionsString } 
 import { view } from '../../../../components/OverlayView';
 
 import { GlobalState } from '../../services/session';
-import { ControllerState, PatcherServer, ServerType, initialize, reset } from '../../services/session/controller';
+import {
+  ControllerState,
+  PatcherServer,
+  ServerType,
+  initialize,
+  reset,
+} from '../../services/session/controller';
 
 declare const $: any;
 declare const toastr: any;

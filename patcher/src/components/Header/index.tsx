@@ -36,6 +36,9 @@ class Header extends React.Component<HeaderProps, {}> {
           <div
             className={`Header__menu__item ${this.props.activeRoute === Routes.NEWS ? 'active' : ''}`}
             onClick={() => this.internalLink(Routes.NEWS)}>News</div>
+          <div
+            className={`Header__menu__item ${this.props.activeRoute === Routes.PATCHNOTES ? 'active' : ''}`}
+            onClick={() => this.internalLink(Routes.PATCHNOTES)}>Patch Notes</div>
           <div className='Header__menu__item' onClick={() => this.externalLink('https://camelotunchained.com/')}>
               CamelotUnchained.com &nbsp;<i className='fa fa-external-link' aria-hidden='true'></i>
           </div>

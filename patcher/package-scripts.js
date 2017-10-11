@@ -1,10 +1,10 @@
 module.exports = {
   scripts: {
     lint: {
-      script: 'tslint src/**/*.ts{,x}',
+      script: 'tslint "src/**/*.ts{,x}"',
       description: 'Run TS-Lint"',
       fix: {
-        script: 'tslint --fix src/**/*.ts{,x}',
+        script: 'tslint --fix "src/**/*.ts{,x}"',
         description: 'Fix TS-Lint errors'
       }
     },
@@ -19,11 +19,24 @@ module.exports = {
     },
     build: {
       sass: 'node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js',
-      default: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps lint && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp'
+      default: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps lint && nps gql && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp'
     },
     publish: 'nps build',
     serve: 'http-server -p 9000 dist/ui/',
     debug: 'nps build && nps copy.patcher && nps patcher',
-    patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0'
+    patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
+    gql: {
+      mkdir: 'if not exist "gql" mkdir gql',
+      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+    },
+    gqlLocal: {
+      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+    },
   }
 };
