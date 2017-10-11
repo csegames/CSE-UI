@@ -283,7 +283,7 @@ export function distributeItemsNoFilter(slotsData: {
     const wantPosition = getItemInventoryPosition(item);
     const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
-    if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
+    if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id !== id)) {
       partitionedItems.noPositionItems.push(item);
       return;
     }
@@ -303,7 +303,7 @@ export function distributeItemsNoFilter(slotsData: {
       const wantPosition = getItemInventoryPosition(item);
       const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
-      if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
+      if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id !== id)) {
         partitionedItems.noPositionStackedItems[id] = itemArr;
         return;
       }
@@ -324,7 +324,7 @@ export function distributeItemsNoFilter(slotsData: {
       const wantPosition = getItemInventoryPosition(item);
       const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
-      if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition] !== id)) {
+      if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id !== id)) {
         partitionedItems.noPositionItems.push(item);
         return;
       }
