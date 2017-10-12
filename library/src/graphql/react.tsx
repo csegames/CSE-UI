@@ -120,7 +120,7 @@ export function withGraphQL<
         }
 
         const opt = typeof options === 'function' ? options(props as any) : options;
-        this.opts = withDefaults(options, getOptions());
+        this.opts = withDefaults(opt, getOptions());
 
         this.client = new GraphQLClient({
           url: this.opts.url,
