@@ -172,7 +172,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             <TooltipContent
               item={item.item || item.stackedItems[0]}
               shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
-              instructions={this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0 ?
+              instructions={item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
             />
         }>
@@ -228,8 +228,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     if (!this.state.contextMenuVisible) {
       this.setState({ showTooltip: true });
     }
-    if (this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0) {
-      const { gearSlotSets } = this.props.item.item.staticDefinition;
+    const item = this.props.item.item;
+    if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
+      const { gearSlotSets } = item.staticDefinition;
       if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any)) ||
         (this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any) &&
         this.isRightOrLeftItem(gearSlotSets[1].gearSlots as any))) {
@@ -250,26 +251,28 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   private rightOrLeftItemAction = (action: (gearSlots: ql.schema.GearSlotDefRef[]) => void) => {
-    const { gearSlotSets } = this.props.item.item.staticDefinition;
-    // Dealing with a right or left weapon/piece of armor
-    const equippedItemFirstSlot = _.find(this.props.equippedItems, (item) => {
-      return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
-        gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
-    });
-    const equippedItemSecondSlot = _.find(this.props.equippedItems, (item) => {
-      if (item.item && item.item.staticDefinition.name === 'Jeweled Axe') {
-      }
-      return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
-        gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
-    });
+    const { gearSlotSets } = this.props.item.item.staticDefinition && this.props.item.item.staticDefinition;
+    if (gearSlotSets) {
+      // Dealing with a right or left weapon/piece of armor
+      const equippedItemFirstSlot = _.find(this.props.equippedItems, (item) => {
+        return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
+          gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
+      });
+      const equippedItemSecondSlot = _.find(this.props.equippedItems, (item) => {
+        if (item.item && item.item.staticDefinition.name === 'Jeweled Axe') {
+        }
+        return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
+          gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
+      });
 
-    if (gearSlotSets.length === 2 &&
-      equippedItemFirstSlot && !equippedItemSecondSlot && !_.isEqual(equippedItemFirstSlot, equippedItemSecondSlot)) {
-      action(gearSlotSets[1].gearSlots as ql.schema.GearSlotDefRef[]);
-      return;
-    } else {
-      action(gearSlotSets[0].gearSlots as ql.schema.GearSlotDefRef[]);
-      return;
+      if (gearSlotSets.length === 2 &&
+        equippedItemFirstSlot && !equippedItemSecondSlot && !_.isEqual(equippedItemFirstSlot, equippedItemSecondSlot)) {
+        action(gearSlotSets[1].gearSlots as ql.schema.GearSlotDefRef[]);
+        return;
+      } else {
+        action(gearSlotSets[0].gearSlots as ql.schema.GearSlotDefRef[]);
+        return;
+      }
     }
   }
 
@@ -285,7 +288,8 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   private onEquipItem = () => {
-    if (this.props.item.item && this.props.item.item.staticDefinition.gearSlotSets.length > 0) {
+    const item = this.props.item.item;
+    if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
       const { gearSlotSets } = this.props.item.item.staticDefinition;
       if (gearSlotSets.length === 2 &&
           this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any) &&

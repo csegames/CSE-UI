@@ -90,15 +90,21 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
 }
 
 export function isCraftingItem(item: InventoryItemFragment) {
-  switch (item.staticDefinition.itemType) {
-    case 'Substance': return true;
-    case 'Alloy': return true;
-    default: return false;
+  if (item.staticDefinition) {
+    switch (item.staticDefinition.itemType) {
+      case 'Substance': return true;
+      case 'Alloy': return true;
+      default: return false;
+    }
   }
 }
 
 export function getIcon(item: InventoryItemFragment) {
-  return item.staticDefinition.iconUrl;
+  if (item.staticDefinition) {
+    return item.staticDefinition.iconUrl;
+  }
+  console.error('You provided an item to getIcon() function that has staticDefinition of null');
+  console.log(item);
 }
 
 export function isStackedItem(item: InventoryItemFragment) {
@@ -130,11 +136,19 @@ export function getItemInventoryPosition(item: InventoryItemFragment) {
 }
 
 export function getItemDefinitionId(item: InventoryItemFragment) {
-  return item.staticDefinition.id;
+  if (item.staticDefinition) {
+    return item.staticDefinition.id;
+  }
+  console.error('You provided an item to getItemDefinitionId() function that has staticDefinition of null');
+  console.log(item);
 }
 
 export function getItemDefinitionName(item: InventoryItemFragment) {
-  return item.staticDefinition.name;
+  if (item.staticDefinition) {
+    return item.staticDefinition.name;
+  }
+  console.error('You provided an item to getItemDefinitionName() function that has staticDefinition of null');
+  console.log(item);
 }
 
 export function generateStackGroupID(stackHash: string, stackGroupCounter: number) {

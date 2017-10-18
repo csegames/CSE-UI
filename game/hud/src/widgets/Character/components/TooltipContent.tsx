@@ -143,7 +143,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
     const stats = item && item.stats && item.stats;
 
-    return (
+    return itemInfo ? (
       <div className={css(style.tooltipContent, customStyle.tooltipContent)}>
         <div className={css(style.primaryInfo, customStyle.primaryInfo)}>
           <p className={css(style.itemTitle, customStyle.itemTitle)}>{itemInfo.name}</p>
@@ -216,7 +216,7 @@ class TooltipContent extends React.Component<TooltipContentProps, TooltipContent
           }
         {instructions && <p className={css(style.instructionText, customStyle.instructionText)}>{instructions}</p>}
       </div>
-    );
+    ) : <div>This item does not exist anymore.</div>;
   }
 }
 

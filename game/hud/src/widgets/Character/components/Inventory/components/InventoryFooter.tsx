@@ -210,7 +210,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
       return {
         ...state,
         totalMass: state.totalMass - item.stats.item.totalMass,
-        itemCount: item.staticDefinition.itemType === 'Ammo' || item.stackHash !== emptyStackHash ?
+        itemCount: item.staticDefinition && item.staticDefinition.itemType === 'Ammo' || item.stackHash !== emptyStackHash ?
           state.itemCount : state.itemCount - 1,
       };
     });

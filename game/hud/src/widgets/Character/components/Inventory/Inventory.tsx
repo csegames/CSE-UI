@@ -100,6 +100,11 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
     );
   }
 
+  public componentDidCatch(error: Error, info: any) {
+    console.error(error);
+    console.log(info);
+  }
+
   private onFilterTextChanged = (filterText: string) => {
     this.setState({ filterText });
   }

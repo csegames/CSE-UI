@@ -44,7 +44,8 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private renderGearSlotButtons = () => {
-    const { gearSlotSets } = this.props.item && this.props.item.staticDefinition;
+    const item = this.props.item;
+    const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
     const { contextMenuButton } = defaultContextMenuContentStyle;
     return gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
       return (

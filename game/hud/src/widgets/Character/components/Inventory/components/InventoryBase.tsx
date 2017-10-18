@@ -365,26 +365,22 @@ export function distributeItemsNoFilter(slotsData: {
   // get added to the no position array. Items are positioned first come first serve
   Object.keys(itemsWithPosition).forEach((key) => {
     const item = itemsWithPosition[key];
-
     const position = getItemInventoryPosition(item);
-    const id = getItemMapID(item, { stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
+    const id = getItemMapID(item, { itemIDToStackGroupID, stackHashToStackGroupID: partitionedItems.stackHashToGroupIDMap });
 
     // check if something is in this position already...
-    if (slotNumberToItem[position] && slotNumberToItem[position] !== id) {
+    if (slotNumberToItem[position] && slotNumberToItem[position].id !== id) {
       // if we're here then something else is in the slot and it's not this item or a stack of this item
       // so push this into the no position array and sort position out that way.
       noPositionArr.push(item);
       return;
     }
-
     // we will use stack hash if valid, otherwise item id as the id
-    slotNumberToItem[position] = {
-      id,
-      isCrafting: isCraftingItem(item),
-      isStack: isStackedItem(item),
-      item,
-    };
-    itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
+    if (!stackGroupIdToItemIDs[id]) {
+      stackGroupIdToItemIDs[id] = [item.id];
+    } else {
+      stackGroupIdToItemIDs[id].push(item.id);
+    }
   });
 
   // figure out next available position
@@ -563,7 +559,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
   const moveRequests: webAPI.MoveItemRequest[] = [];
 
   items.forEach((item) => {
-    itemIdToIcon[item.id] = item.staticDefinition.iconUrl;
+    itemIdToIcon[item.id] = item.staticDefinition && item.staticDefinition.iconUrl;
     if (isCraftingItem(item)) {
       const name = getItemDefinitionId(item);
       if (craftingItems[name]) {
