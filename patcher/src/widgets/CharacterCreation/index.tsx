@@ -437,9 +437,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.props.shard,
         this.props.apiVersion,
       ));
-
-      // We already have the character model, no need to get a push from signalr. Just fire off event.
-      events.fire(signalr.PATCHER_EVENTS_CHARACTERUPDATED, JSON.stringify(model));
     }
   }
 

@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
-import { client } from 'camelot-unchained';
+import { client, webAPI, events, signalr } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
 import { checkStatus, parseJSON } from '../../lib/fetchHelpers';
@@ -40,6 +39,10 @@ const CREATE_CHARACTER_FAILED = 'cu-character-creation/character/CREATE_CHARACTE
 
 const RESET = 'cu-character-creation/character/RESET';
 
+export function extractCharacterId(data: string) {
+  const characterId = data.match(/characters.*/g)[0].replace(/characters\/.*?\//g, '');
+  return characterId;
+}
 
 export function resetCharacter() {
   return {
@@ -52,22 +55,26 @@ export function createCharacter(model: CharacterCreationModel,
                                 apiUrl: string = client.apiHost,
                                 shard: number = 1,
                                 apiVersion: number = 1) {
-  return (dispatch: (action: any) => any) => {
-    dispatch(createCharacterStarted());
-    return fetch(`${apiUrl}/characters/${shard}`,
-      {
-        method: 'post',
-        body: JSON.stringify(model),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'api-version': apiVersion,
-          loginToken: apiKey,
-        },
-      })
-      .then(checkStatus).then(() => dispatch(createCharacterSuccess(model)))
-      .catch((error: ResponseError) => (error as any).response.json()
-      .then((error: any) => dispatch(createCharacterFailed(error))));
+  return async (dispatch: (action: any) => any) => {
+    await dispatch(createCharacterStarted());
+    const res = await webAPI.CharactersAPI.CreateCharacterV1(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      model as any,
+    );
+    if (res.ok) {
+      // We already have the character model, no need to get a push from signalr. Just fire off event.
+      const characterId = extractCharacterId(res.data);
+      events.fire(signalr.PATCHER_EVENTS_CHARACTERUPDATED, JSON.stringify({
+        ...model,
+        id: characterId,
+        shardID: shard,
+      }));
+      dispatch(createCharacterSuccess(model));
+      return;
+    }
+    dispatch(createCharacterFailed(res.data));
   };
 }
 

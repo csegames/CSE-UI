@@ -135,8 +135,8 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     }
 
     const {characters} = this.props;
-
     const serverCharacters: webAPI.SimpleCharacter[] = [];
+
     for (const key in characters) {
       if (characters[key].shardID.toString() === selectedServer.shardID.toString()) serverCharacters.push(characters[key]);
     }
