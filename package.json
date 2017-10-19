@@ -4,21 +4,15 @@
   "description": "Camelot Unchained UI",
   "main": "index.js",
   "dependencies": {
-    "pre-commit": "^1.2.2",
-    "tslint": "^5.1.0",
-    "typescript": "^2.2.2"
+    "tslint": "^5.1.0"
   },
   "devDependencies": {
-    "pre-commit": "^1.2.2",
     "tslint": "^5.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "cd game/hud && npm start lint && cd ../../library && npm start lint && cd ../patcher && npm start lint"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/csegames/cu-ui.git"
