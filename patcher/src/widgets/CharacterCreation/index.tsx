@@ -13,7 +13,7 @@ import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import { events, Gender, Archetype, Faction, Race, webAPI, client, HelpInfo } from 'camelot-unchained';
+import { client, events, signalr, Gender, Archetype, Faction, Race, webAPI, HelpInfo } from 'camelot-unchained';
 import { toTitleCase, toSentenceCase } from 'camelot-unchained/lib/util/textUtils';
 
 import { view } from '../../components/OverlayView';
@@ -437,6 +437,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.props.shard,
         this.props.apiVersion,
       ));
+
+      // We already have the character model, no need to get a push from signalr. Just fire off event.
+      events.fire(signalr.PATCHER_EVENTS_CHARACTERUPDATED, JSON.stringify(model));
     }
   }
 
