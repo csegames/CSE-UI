@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, utils } from 'camelot-unchained';
+import { webAPI, utils, client } from 'camelot-unchained';
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
@@ -126,7 +126,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
 
   private async getMessageOfTheDay() {
     try {
-      const res = await webAPI.ContentAPI.MessageOfTheDayV1(webAPI.defaultConfig);
+      const res = await webAPI.ContentAPI.MessageOfTheDayV1(webAPI.defaultConfig, client.patchResourceChannel);
       if (res.ok) {
         const data = JSON.parse(res.data);
         this.onMessage(data);

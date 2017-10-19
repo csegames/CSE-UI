@@ -480,6 +480,18 @@ babel-plugin-emotion@^8.0.4:
     source-map "^0.5.7"
     touch "^1.0.0"
 
+babel-plugin-emotion@^8.0.6:
+  version "8.0.6"
+  resolved "http://registry.camelotunchained.com/babel-plugin-emotion/-/babel-plugin-emotion-8.0.6.tgz#f86c6065378defd0f6adaacedab45858b2ca6091"
+  dependencies:
+    babel-generator "^6.26.0"
+    babel-macros "^1.0.2"
+    babel-plugin-syntax-jsx "^6.18.0"
+    convert-source-map "^1.5.0"
+    emotion-utils "^8.0.6"
+    source-map "^0.5.7"
+    touch "^1.0.0"
+
 babel-plugin-syntax-jsx@^6.18.0:
   version "6.18.0"
   resolved "http://registry.camelotunchained.com/babel-plugin-syntax-jsx/-/babel-plugin-syntax-jsx-6.18.0.tgz#0af32a9a6e13ca7a3fd5069e62d7b0f58d0d8946"
@@ -1041,12 +1053,32 @@ camelcase@^4.0.0:
   version "4.1.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
-camelot-unchained@^0.9.13, camelot-unchained@^0.9.19:
+camelot-unchained@^0.9.13:
   version "0.9.19"
   resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.19.tgz#f403796c2290f15034a9133311ea395a3fb2bdb2"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
+    es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
+    graphql-tag "^1.2.4"
+    intro.js "^2.8.0-alpha.1"
+    intro.js-react "^0.1.5"
+    isomorphic-fetch "^2.2.1"
+    jquery "^3.0.0"
+    lodash "^4.17.4"
+    moment "^2.17.1"
+    react "^16.0.0"
+    react-dom "^16.0.0"
+    redux-typed-modules "^2.2.1"
+
+camelot-unchained@^0.9.22:
+  version "0.9.22"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.22.tgz#9e211cfc4237bcc964e5ecbddd6b998022688920"
+  dependencies:
+    aphrodite "^1.2.3"
+    cwd-in-node-modules "^1.0.1"
+    emotion "^8.0.8"
     es6-promise "^3.0.2"
     fuzzysearch "^1.0.3"
     graphql-tag "^1.2.4"
@@ -1056,6 +1088,8 @@ camelot-unchained@^0.9.13, camelot-unchained@^0.9.19:
     moment "^2.17.1"
     react "^16.0.0"
     react-dom "^16.0.0"
+    react-emotion "^8.0.8"
+    react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
 capture-stack-trace@^1.0.0:
@@ -1614,6 +1648,10 @@ emotion-utils@^8.0.2-7:
   version "8.0.2-7"
   resolved "http://registry.camelotunchained.com/emotion-utils/-/emotion-utils-8.0.2-7.tgz#83f55c6d1ace6b47d02454755bfba97938812d6a"
 
+emotion-utils@^8.0.6:
+  version "8.0.6"
+  resolved "http://registry.camelotunchained.com/emotion-utils/-/emotion-utils-8.0.6.tgz#23dc1bc63711f86d074b4199b918580f3f2d7855"
+
 emotion@^8.0.5:
   version "8.0.5"
   resolved "http://registry.camelotunchained.com/emotion/-/emotion-8.0.5.tgz#bf7ab53554b95da88151bb5dc50a3b5795d0aa02"
@@ -1621,6 +1659,15 @@ emotion@^8.0.5:
     babel-plugin-emotion "^8.0.4"
     emotion-utils "^8.0.2-7"
     stylis-plugin-emotion "^8.0.5"
+
+emotion@^8.0.8:
+  version "8.0.8"
+  resolved "http://registry.camelotunchained.com/emotion/-/emotion-8.0.8.tgz#d898dd6a4262937bbe0427cb3b4f6c8bcb6582ec"
+  dependencies:
+    babel-plugin-emotion "^8.0.6"
+    emotion-utils "^8.0.6"
+    stylis "^3.3.2"
+    stylis-rule-sheet "^0.0.5"
 
 encoding@^0.1.11:
   version "0.1.12"
@@ -3547,6 +3594,13 @@ react-emotion@^8.0.5:
     babel-plugin-emotion "^8.0.4"
     emotion-utils "^8.0.2-7"
 
+react-emotion@^8.0.8:
+  version "8.0.8"
+  resolved "http://registry.camelotunchained.com/react-emotion/-/react-emotion-8.0.8.tgz#91acb5dcade0e29046880f993d558f4902d23423"
+  dependencies:
+    babel-plugin-emotion "^8.0.6"
+    emotion-utils "^8.0.6"
+
 react-redux@^4.4.5:
   version "4.4.8"
   resolved "http://registry.camelotunchained.com/react-redux/-/react-redux-4.4.8.tgz#e7bc1dd100e8b64e96ac8212db113239b9e2e08f"
@@ -4175,6 +4229,14 @@ strip-json-comments@~2.0.1:
 stylis-plugin-emotion@^8.0.5:
   version "8.0.5"
   resolved "http://registry.camelotunchained.com/stylis-plugin-emotion/-/stylis-plugin-emotion-8.0.5.tgz#81c1700c5002e41c26620d1e78855516d564938a"
+
+stylis-rule-sheet@^0.0.5:
+  version "0.0.5"
+  resolved "http://registry.camelotunchained.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.5.tgz#ebae935cc1f6fb31b9b62dba47f2ea8b833dad9f"
+
+stylis@^3.3.2:
+  version "3.3.2"
+  resolved "http://registry.camelotunchained.com/stylis/-/stylis-3.3.2.tgz#95ef285836e98243f8b8f64a9a72706ea6c893ea"
 
 subarg@^1.0.0:
   version "1.0.0"

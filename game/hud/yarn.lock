@@ -544,6 +544,19 @@ babel-generator@^6.18.0, babel-generator@^6.25.0:
     source-map "^0.5.0"
     trim-right "^1.0.1"
 
+babel-generator@^6.26.0:
+  version "6.26.0"
+  resolved "http://registry.camelotunchained.com/babel-generator/-/babel-generator-6.26.0.tgz#ac1ae20070b79f6e3ca1d3269613053774f20dc5"
+  dependencies:
+    babel-messages "^6.23.0"
+    babel-runtime "^6.26.0"
+    babel-types "^6.26.0"
+    detect-indent "^4.0.0"
+    jsesc "^1.3.0"
+    lodash "^4.17.4"
+    source-map "^0.5.6"
+    trim-right "^1.0.1"
+
 babel-helper-call-delegate@^6.24.1:
   version "6.24.1"
   resolved "http://registry.camelotunchained.com/babel-helper-call-delegate/-/babel-helper-call-delegate-6.24.1.tgz#ece6aacddc76e41c3461f88bfc575bd0daa2df8d"
@@ -627,6 +640,12 @@ babel-jest@^19.0.0:
     babel-plugin-istanbul "^4.0.0"
     babel-preset-jest "^19.0.0"
 
+babel-macros@^1.0.2:
+  version "1.1.1"
+  resolved "http://registry.camelotunchained.com/babel-macros/-/babel-macros-1.1.1.tgz#9684edf6e85d568a88ff1ce9e487e9d1c8e46bdc"
+  dependencies:
+    cosmiconfig "3.1.0"
+
 babel-messages@^6.23.0:
   version "6.23.0"
   resolved "http://registry.camelotunchained.com/babel-messages/-/babel-messages-6.23.0.tgz#f3cdf4703858035b2a2951c6ec5edf6c62f2630e"
@@ -639,6 +658,18 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-emotion@^8.0.6:
+  version "8.0.6"
+  resolved "http://registry.camelotunchained.com/babel-plugin-emotion/-/babel-plugin-emotion-8.0.6.tgz#f86c6065378defd0f6adaacedab45858b2ca6091"
+  dependencies:
+    babel-generator "^6.26.0"
+    babel-macros "^1.0.2"
+    babel-plugin-syntax-jsx "^6.18.0"
+    convert-source-map "^1.5.0"
+    emotion-utils "^8.0.6"
+    source-map "^0.5.7"
+    touch "^1.0.0"
+
 babel-plugin-istanbul@^4.0.0:
   version "4.1.4"
   resolved "http://registry.camelotunchained.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.4.tgz#18dde84bf3ce329fddf3f4103fae921456d8e587"
@@ -650,6 +681,10 @@ babel-plugin-istanbul@^4.0.0:
 babel-plugin-jest-hoist@^19.0.0:
   version "19.0.0"
   resolved "http://registry.camelotunchained.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-19.0.0.tgz#4ae2a04ea612a6e73651f3fde52c178991304bea"
+
+babel-plugin-syntax-jsx@^6.18.0:
+  version "6.18.0"
+  resolved "http://registry.camelotunchained.com/babel-plugin-syntax-jsx/-/babel-plugin-syntax-jsx-6.18.0.tgz#0af32a9a6e13ca7a3fd5069e62d7b0f58d0d8946"
 
 babel-plugin-transform-es2015-arrow-functions@^6.22.0:
   version "6.22.0"
@@ -932,6 +967,15 @@ babel-types@^6.18.0, babel-types@^6.19.0, babel-types@^6.24.1, babel-types@^6.25
     esutils "^2.0.2"
     lodash "^4.2.0"
     to-fast-properties "^1.0.1"
+
+babel-types@^6.26.0:
+  version "6.26.0"
+  resolved "http://registry.camelotunchained.com/babel-types/-/babel-types-6.26.0.tgz#a3b073f94ab49eb6fa55cd65227a334380632497"
+  dependencies:
+    babel-runtime "^6.26.0"
+    esutils "^2.0.2"
+    lodash "^4.17.4"
+    to-fast-properties "^1.0.3"
 
 babylon@^6.17.2, babylon@^6.17.4:
   version "6.17.4"
@@ -1257,7 +1301,7 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
-camelot-unchained@^0.9.13, camelot-unchained@^0.9.19:
+camelot-unchained@^0.9.13:
   version "0.9.19"
   resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.19.tgz#f403796c2290f15034a9133311ea395a3fb2bdb2"
   dependencies:
@@ -1274,6 +1318,26 @@ camelot-unchained@^0.9.13, camelot-unchained@^0.9.19:
     moment "^2.17.1"
     react "^16.0.0"
     react-dom "^16.0.0"
+    redux-typed-modules "^2.2.1"
+
+camelot-unchained@^0.9.22:
+  version "0.9.22"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.22.tgz#9e211cfc4237bcc964e5ecbddd6b998022688920"
+  dependencies:
+    aphrodite "^1.2.3"
+    cwd-in-node-modules "^1.0.1"
+    emotion "^8.0.8"
+    es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
+    graphql-tag "^1.2.4"
+    isomorphic-fetch "^2.2.1"
+    jquery "^3.0.0"
+    lodash "^4.17.4"
+    moment "^2.17.1"
+    react "^16.0.0"
+    react-dom "^16.0.0"
+    react-emotion "^8.0.8"
+    react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
 can-use-dom@^0.1.0:
@@ -1586,7 +1650,7 @@ content-type-parser@^1.0.1:
   version "1.0.1"
   resolved "http://registry.camelotunchained.com/content-type-parser/-/content-type-parser-1.0.1.tgz#c3e56988c53c65127fb46d4032a3a900246fdc94"
 
-convert-source-map@^1.1.0:
+convert-source-map@^1.1.0, convert-source-map@^1.5.0:
   version "1.5.0"
   resolved "http://registry.camelotunchained.com/convert-source-map/-/convert-source-map-1.5.0.tgz#9acd70851c6d5dfdd93d9282e5edf94a03ff46b5"
 
@@ -1620,6 +1684,15 @@ core-util-is@~1.0.0:
 corser@~2.0.0:
   version "2.0.1"
   resolved "http://registry.camelotunchained.com/corser/-/corser-2.0.1.tgz#8eda252ecaab5840dcd975ceb90d9370c819ff87"
+
+cosmiconfig@3.1.0:
+  version "3.1.0"
+  resolved "http://registry.camelotunchained.com/cosmiconfig/-/cosmiconfig-3.1.0.tgz#640a94bf9847f321800403cd273af60665c73397"
+  dependencies:
+    is-directory "^0.3.1"
+    js-yaml "^3.9.0"
+    parse-json "^3.0.0"
+    require-from-string "^2.0.1"
 
 create-ecdh@^4.0.0:
   version "4.0.0"
@@ -1980,6 +2053,19 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+emotion-utils@^8.0.6:
+  version "8.0.6"
+  resolved "http://registry.camelotunchained.com/emotion-utils/-/emotion-utils-8.0.6.tgz#23dc1bc63711f86d074b4199b918580f3f2d7855"
+
+emotion@^8.0.8:
+  version "8.0.8"
+  resolved "http://registry.camelotunchained.com/emotion/-/emotion-8.0.8.tgz#d898dd6a4262937bbe0427cb3b4f6c8bcb6582ec"
+  dependencies:
+    babel-plugin-emotion "^8.0.6"
+    emotion-utils "^8.0.6"
+    stylis "^3.3.2"
+    stylis-rule-sheet "^0.0.5"
+
 encoding@^0.1.11:
   version "0.1.12"
   resolved "http://registry.camelotunchained.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
@@ -2052,7 +2138,7 @@ enzyme@^2.8.2:
   dependencies:
     prr "~0.0.0"
 
-error-ex@^1.2.0:
+error-ex@^1.2.0, error-ex@^1.3.1:
   version "1.3.1"
   resolved "http://registry.camelotunchained.com/error-ex/-/error-ex-1.3.1.tgz#f855a86ce61adc4e8621c3cda21e7a7612c3a8dc"
   dependencies:
@@ -2097,6 +2183,10 @@ escodegen@1.8.x, escodegen@^1.6.1:
 esprima@2.7.x, esprima@^2.6.0, esprima@^2.7.1:
   version "2.7.3"
   resolved "http://registry.camelotunchained.com/esprima/-/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
+
+esprima@^4.0.0:
+  version "4.0.0"
+  resolved "http://registry.camelotunchained.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
 
 esprima@~3.1.0:
   version "3.1.3"
@@ -2951,6 +3041,10 @@ is-date-object@^1.0.1:
   version "1.0.1"
   resolved "http://registry.camelotunchained.com/is-date-object/-/is-date-object-1.0.1.tgz#9aa20eb6aeebbff77fbd33e74ca01b33581d3a16"
 
+is-directory@^0.3.1:
+  version "0.3.1"
+  resolved "http://registry.camelotunchained.com/is-directory/-/is-directory-0.3.1.tgz#61339b6f2475fc772fd9c9d83f5c8575dc154ae1"
+
 is-dotfile@^1.0.0:
   version "1.0.3"
   resolved "http://registry.camelotunchained.com/is-dotfile/-/is-dotfile-1.0.3.tgz#a6a2f32ffd2dfb04f5ca25ecd0f6b83cf798a1e1"
@@ -3430,6 +3524,13 @@ js-yaml@3.7.0, js-yaml@3.x, js-yaml@^3.7.0:
   dependencies:
     argparse "^1.0.7"
     esprima "^2.6.0"
+
+js-yaml@^3.9.0:
+  version "3.10.0"
+  resolved "http://registry.camelotunchained.com/js-yaml/-/js-yaml-3.10.0.tgz#2e78441646bd4682e963f22b6e92823c309c62dc"
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
 
 jsbn@~0.1.0:
   version "0.1.1"
@@ -4562,6 +4663,12 @@ parse-json@^2.1.0, parse-json@^2.2.0:
   dependencies:
     error-ex "^1.2.0"
 
+parse-json@^3.0.0:
+  version "3.0.0"
+  resolved "http://registry.camelotunchained.com/parse-json/-/parse-json-3.0.0.tgz#fa6f47b18e23826ead32f263e744d0e1e847fb13"
+  dependencies:
+    error-ex "^1.3.1"
+
 parse5@^1.5.1:
   version "1.5.1"
   resolved "http://registry.camelotunchained.com/parse5/-/parse5-1.5.1.tgz#9b7f3b0de32be78dc2401b17573ccaf0f6f59d94"
@@ -4900,6 +5007,13 @@ react-draggable@^2.2.3, react-draggable@^2.2.6:
   resolved "http://registry.camelotunchained.com/react-draggable/-/react-draggable-2.2.6.tgz#3a806e10f2da6babfea4136be6510e89b0d76901"
   dependencies:
     classnames "^2.2.5"
+
+react-emotion@^8.0.8:
+  version "8.0.8"
+  resolved "http://registry.camelotunchained.com/react-emotion/-/react-emotion-8.0.8.tgz#91acb5dcade0e29046880f993d558f4902d23423"
+  dependencies:
+    babel-plugin-emotion "^8.0.6"
+    emotion-utils "^8.0.6"
 
 react-image-magnify@^2.0.4:
   version "2.0.4"
@@ -5296,6 +5410,10 @@ require-directory@^2.1.1:
   version "2.1.1"
   resolved "http://registry.camelotunchained.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
 
+require-from-string@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.camelotunchained.com/require-from-string/-/require-from-string-2.0.1.tgz#c545233e9d7da6616e9d59adfb39fc9f588676ff"
+
 require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "http://registry.camelotunchained.com/require-main-filename/-/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
@@ -5538,6 +5656,10 @@ source-map@^0.4.2, source-map@^0.4.4:
   dependencies:
     amdefine ">=0.0.4"
 
+source-map@^0.5.7:
+  version "0.5.7"
+  resolved "http://registry.camelotunchained.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
+
 source-map@~0.2.0:
   version "0.2.0"
   resolved "http://registry.camelotunchained.com/source-map/-/source-map-0.2.0.tgz#dab73fbcfc2ba819b4de03bd6f6eaa48164b3f9d"
@@ -5718,6 +5840,14 @@ strip-json-comments@^2.0.0, strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "http://registry.camelotunchained.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
+stylis-rule-sheet@^0.0.5:
+  version "0.0.5"
+  resolved "http://registry.camelotunchained.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.5.tgz#ebae935cc1f6fb31b9b62dba47f2ea8b833dad9f"
+
+stylis@^3.3.2:
+  version "3.3.2"
+  resolved "http://registry.camelotunchained.com/stylis/-/stylis-3.3.2.tgz#95ef285836e98243f8b8f64a9a72706ea6c893ea"
+
 subarg@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/subarg/-/subarg-1.0.0.tgz#f62cf17581e996b48fc965699f54c06ae268b8d2"
@@ -5883,7 +6013,7 @@ to-arraybuffer@^1.0.0:
   version "1.0.1"
   resolved "http://registry.camelotunchained.com/to-arraybuffer/-/to-arraybuffer-1.0.1.tgz#7d229b1fcc637e466ca081180836a7aabff83f43"
 
-to-fast-properties@^1.0.1:
+to-fast-properties@^1.0.1, to-fast-properties@^1.0.3:
   version "1.0.3"
   resolved "http://registry.camelotunchained.com/to-fast-properties/-/to-fast-properties-1.0.3.tgz#b83571fa4d8c25b82e231b06e3a3055de4ca1a47"
 

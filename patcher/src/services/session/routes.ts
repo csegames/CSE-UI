@@ -42,8 +42,6 @@ export default function reducer(state: RoutesState = getInitialState(), action: 
   switch (action.type) {
     default: return state;
     case CHANGE_ROUTE: {
-      console.log('CHANGE ROUTE');
-      console.log(action);
       return merge(state, {current: action.current});
     }
   }
