@@ -5,7 +5,7 @@
  */
 
 import client from '../core/client';
-import { findIndexWhere } from '../util/arrayUtils';
+import { findIndexWhere } from '../utils/arrayUtils';
 
 export * from './SignalRHub';
 export * from './hubs/groupsHub';

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import { Quadrant, windowQuadrant } from '../util';
+import { Quadrant, windowQuadrant } from '../utils';
 
 const defaultStyles = {
   flyout: {

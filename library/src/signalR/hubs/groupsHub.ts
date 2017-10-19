@@ -7,7 +7,7 @@
 import client from '../../core/client';
 import events from '../../events';
 import { SignalRHub } from '../SignalRHub';
-import { eventMapper, EventMap } from '../../util/eventMapper';
+import { eventMapper, EventMap } from '../../utils/eventMapper';
 
 // UI EVENT NAMES
 export const GROUP_EVENTS_INVITE_RECEIVED = 'groups/inviteReceived';

@@ -23,29 +23,14 @@ import warbandRoles from './core/constants/warbandRoles';
 import warbandRanks from './core/constants/warbandRanks';
 import warbandPermissions from './core/constants/warbandPermissions';
 
-// classes
-import Ability from './core/classes/Ability';
-import Combatant from './core/classes/Combatant';
-import Player from './core/classes/Player';
-import Character from './core/classes/Character';
-import ControlGame from './core/classes/ControlGame';
-import Injury from './core/classes/Injury';
-import Population from './core/classes/Population';
-import Inventory from './core/classes/Inventory';
-import Item from './core/classes/Item';
-import EquippedGear from './core/classes/EquippedGear';
-import LogMessage from './core/classes/LogMessage';
-import ChatMessage from './core/classes/ChatMessage';
-import ConsoleMessage from './core/classes/ConsoleMessage';
-
 // libraries
 import * as core from './core/core';
 
 export * from './core/core';
 
-import * as legacyAPI from './restapi/RestAPI';
-
 import * as webAPI from './webAPI';
+
+import * as restAPI from './restapi';
 
 export * from './webAPI/definitions';
 
@@ -61,7 +46,7 @@ export * from './slashCommands';
 import * as slashCommandsExports from './slashCommands';
 
 // utils
-import * as utils from './util';
+import * as utils from './utils';
 
 // graphql
 import * as ql from './graphql';
@@ -92,23 +77,6 @@ export default {
   warbandRanks,
   warbandPermissions,
 
-  // core classes - #TODO: remove these (shouldn't be using them)
-  Ability,
-  Combatant,
-  Player,
-  Character,
-  ControlGame,
-  Injury,
-  Population,
-  Inventory,
-  EquippedGear,
-  LogMessage,
-  ChatMessage,
-  ConsoleMessage,
-
-  // RestAPI
-  legacyAPI,
-
   components,
 
   ...slashCommandsExports,
@@ -118,6 +86,7 @@ export default {
 export {
 
   webAPI,
+  restAPI,
 
   // cu
   utils,
@@ -141,27 +110,9 @@ export {
   warbandRoles,
   warbandPermissions,
 
-  // core classes
-  Ability,
-  Combatant,
-  Player,
-  Character,
-  ControlGame,
-  Injury,
-  Population,
-  Inventory,
-  Item,
-  EquippedGear,
-  LogMessage,
-  ChatMessage,
-  ConsoleMessage,
-
   // libraries
   core,
   events,
-
-  // Legacy RestAPI
-  legacyAPI,
 
   // misc
   signalr,

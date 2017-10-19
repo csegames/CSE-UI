@@ -5,7 +5,7 @@
  */
 import events from '../events';
 import client from '../core/client';
-import { eventMapper, EventMap } from '../util/eventMapper';
+import { eventMapper, EventMap } from '../utils/eventMapper';
 
 declare const $: any;
 

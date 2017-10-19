@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, Faction, legacyAPI, hasClientAPI } from 'camelot-unchained';
+import { client, Faction, hasClientAPI } from 'camelot-unchained';
 import * as React from 'react';
 import RespawnLocation from './RespawnLocation';
 
@@ -57,48 +57,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         case Faction.TDD: this.faction = 'T'; break;
         case Faction.Viking: this.faction = 'V'; break;
       }
-    });
-
-    this.getSpawnPoints((spawns: RespawnLocation[]): void => {
-      this.setState({ nearest: spawns.slice(0, 3) });
-    });
-  }
-
-  // specification
-  // spawn points are 'home' spawns
-  // control points are spawnable if owned
-  // show home point + 3 nearest controlled control points
-
-  private getSpawnPoints = (loaded: (spawns: RespawnLocation[]) => void): void => {
-    if (!hasClientAPI()) return;
-    const spawns: RespawnLocation[] = [];
-
-
-    // load control points
-    legacyAPI.getControlGame(true).then((data: any) => {
-      if (!hasClientAPI()) return;
-
-      // data.controlPoints is an array of spawns, each member has
-      // x, y, id and faction (which is a letter)
-      const controlPoints: any[] = data.controlPoints;
-      const x: number = client.locationX;
-      const y: number = client.locationY;
-      if (controlPoints) {
-        controlPoints.forEach((cp: any) => {
-          if (cp.faction === this.faction) {
-            spawns.push(new RespawnLocation(cp.id, cp.x, cp.y));
-          }
-        });
-        spawns.forEach((spawn: RespawnLocation): void => {
-          spawn.calcDistanceFromXY(x, y);
-        });
-        spawns.sort((a: RespawnLocation, b: RespawnLocation): number => {
-          return a.distance - b.distance;
-        });
-      }
-      loaded(spawns);
-    }, () => {
-      loaded(spawns);
     });
   }
 

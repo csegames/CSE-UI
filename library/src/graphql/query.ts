@@ -5,7 +5,7 @@
  */
 
 import * as _ from 'lodash';
-import { request as httpRequest, RequestOptions } from '../util/request';
+import { request as httpRequest, RequestOptions } from '../utils/request';
 import { ObjectMap, withDefaults } from './utils';
 
 // Query Definition as defined by apollo-codegen

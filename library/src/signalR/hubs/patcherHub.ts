@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { EventMap } from '../../util/eventMapper';
+import { EventMap } from '../../utils/eventMapper';
 import { SignalRHub, ConnectionState } from '../SignalRHub';
 import { client, events } from '../..';
 

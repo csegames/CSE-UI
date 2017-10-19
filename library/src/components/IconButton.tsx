@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import * as utils from '../util';
+import * as utils from '../utils';
 import Tooltip from './Tooltip';
 
 export interface IconButtonStyle extends StyleDeclaration {

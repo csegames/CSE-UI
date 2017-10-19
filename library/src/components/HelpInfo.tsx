@@ -12,7 +12,7 @@ import styled, { css } from 'react-emotion';
 import Animate from './Animate';
 
 import Tooltip from './Tooltip';
-import { darkenColor } from '../util';
+import { darkenColor } from '../utils';
 
 const HelpContainer: any = styled('div')`
   position: fixed;

@@ -6,7 +6,7 @@
 import BuildingBlueprint from './classes/BuildingBlueprint';
 import client from '../core/client';
 import events from '../events';
-import * as restApi from '../restapi/RestAPI';
+import * as restApi from '../restapi';
 
 let blueprintsLoaded: boolean = false;
 let blueprintsRequested: boolean = false;
@@ -73,8 +73,8 @@ function requestBlueprintSelect(blueprint: BuildingBlueprint) {
   events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 
-function requestBlueprintIcon(blueprint: BuildingBlueprint) {
-  restApi.getBlueprintIcon(blueprint.index).then((icon: string): void => {
+function requestBlueprintIcon(blueprint: BuildingBlueprint) {  
+  restApi.blueprints.getBlueprintIcon(blueprint.index).then((icon: string): void => {
     blueprint.icon = icon;
     fireHandleBlueprints();
   }, (): void => {

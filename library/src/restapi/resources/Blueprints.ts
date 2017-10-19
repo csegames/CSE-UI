@@ -5,26 +5,9 @@
  */
 
 import { Promise } from 'es6-promise';
-import * as RestClientLegacy from './../RestClientLegacy';
 import * as RestClient from './../RestClient';
 import client from '../../core/client';
 
 export function getBlueprintIcon(id: number): Promise<string> {
   return RestClient.getJSON('cuapi://buildingicons/blueprint/' + id);
-}
-
-export function getBlueprints(charId: string): Promise<any> {
-  return RestClientLegacy.getJSON('blueprint', true, {
-    characterID: charId,
-    loginToken: client.loginToken,
-  });
-}
-
-export function addBlueprint(charId: string, name: string, data: any): Promise<any> {
-  return RestClientLegacy.getJSON('blueprint/add', true, {
-    characterID: charId,
-    loginToken: client.loginToken,
-    newBlueprintName: name,
-    newBlueprintData: data,
-  });
 }

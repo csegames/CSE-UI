@@ -21,7 +21,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Quadrant, windowQuadrant } from '../util';
+import { Quadrant, windowQuadrant } from '../utils';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 export const defaultToolTipStyle: ToolTipStyle = {

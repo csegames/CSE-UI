@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Quadrant, windowQuadrant } from '../util';
+import { Quadrant, windowQuadrant } from '../utils';
 import { StyleSheet, css } from 'aphrodite';
 
 const defaultStyles = {

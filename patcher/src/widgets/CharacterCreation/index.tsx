@@ -13,8 +13,8 @@ import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import { client, events, signalr, Gender, Archetype, Faction, Race, webAPI, HelpInfo } from 'camelot-unchained';
-import { toTitleCase, toSentenceCase } from 'camelot-unchained/lib/util/textUtils';
+import { events, Gender, Archetype, Faction, Race, webAPI, client, HelpInfo } from 'camelot-unchained';
+import { toTitleCase, toSentenceCase } from 'camelot-unchained/lib/utils/textUtils';
 
 import { view } from '../../components/OverlayView';
 import { patcher } from '../../services/patcher';

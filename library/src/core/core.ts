@@ -37,22 +37,10 @@ export * from './constants/activeEffectActions';
 export * from './config/config';
 
 // classes
-import Ability from './classes/Ability';
 import Announcement from './classes/Announcement';
 import Combatant from './classes/Combatant';
-import Player from './classes/Player';
-import Character from './classes/Character';
-import ControlGame from './classes/ControlGame';
-import Injury from './classes/Injury';
-import Population from './classes/Population';
-import Inventory from './classes/Inventory';
 import Item from './classes/Item';
-import EquippedGear from './classes/EquippedGear';
-import LogMessage from './classes/LogMessage';
-import ChatMessage from './classes/ChatMessage';
-import ConsoleMessage from './classes/ConsoleMessage';
-
-export * from './classes/PlayerStatus';
+import Player from './classes/Player';
 export * from './classes/CombatLog';
 
 import { DEBUG_ASSERT, RUNTIME_ASSERT } from './utils/assert';
@@ -79,20 +67,10 @@ export {
   warbandPermissions,
 
   // core classes
-  Ability,
   Announcement,
   Combatant,
-  Player,
-  Character,
-  ControlGame,
-  Injury,
-  Population,
-  Inventory,
   Item,
-  EquippedGear,
-  LogMessage,
-  ChatMessage,
-  ConsoleMessage,
+  Player,
 
   // misc
   DEBUG_ASSERT,
