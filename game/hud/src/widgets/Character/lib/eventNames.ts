@@ -45,6 +45,7 @@ const eventNames = {
   onHighlightSlots: `${eventPrefix}onHighlightSlots`,
   onDehighlightSlots: `${eventPrefix}onDehighlightSlots`, // Called to get rid of highlight on equipment slots.
   updateInventoryItems: `${eventPrefix}updateInventoryItemOnEquip`, // Update ItemSlot state in InventoryBody component.
+  updateCharacterStats: `${eventPrefix}updateCharacterStats`, // Update character stats
 };
 
 export interface OnHighlightSlots {

@@ -32,6 +32,7 @@ const defaultGridStatsStyle: GridStatsStyles = {
 export interface GridStatsProps {
   styles?: Partial<GridStatsStyles>;
   sectionTitle?: string;
+  renderHeaderItem?: () => JSX.Element;
   howManyGrids: number;
   searchValue: string;
   statArray: any[];
@@ -66,6 +67,7 @@ export const GridStats = (props: GridStatsProps) => {
       {arrayOfGrids.map((grid, index) => {
         return (
           <div key={index} className={css(ss.statListSection, custom.statListSection)}>
+            {props.renderHeaderItem && props.renderHeaderItem()}
             {grid.map((item, i) => {
               return (
                 <div

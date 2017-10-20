@@ -7,6 +7,7 @@
 import * as React from 'react';
 
 import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import styled from 'react-emotion';
 import { utils } from 'camelot-unchained';
 
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
@@ -19,6 +20,15 @@ export interface StatListItemStyles extends StyleDeclaration {
   statValue: React.CSSProperties;
   doesNotMatchSearch: React.CSSProperties;
 }
+
+const StatText = styled('p')`
+  display: inline-block;
+  font-size: 16;
+  margin: 0;
+  padding: 0;
+  text-overflow: ellipsis;
+  color: ${(props: any) => props.color ? props.color : utils.lightenColor(colors.filterBackgroundColor, 150)};
+`;
 
 const defaultStatListItemStyle: StatListItemStyles = {
   statsListItem: {
@@ -45,7 +55,6 @@ const defaultStatListItemStyle: StatListItemStyles = {
   statText: {
     display: 'inline-block',
     fontSize: 16,
-    margin: 0,
     padding: 0,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
     textOverflow: 'ellipsis',
@@ -68,6 +77,7 @@ export interface StatListItemProps {
   index: number;
   searchValue: string;
   sectionTitle?: string;
+  colorOfName?: string;
 }
 
 class StatListItem extends React.Component<StatListItemProps, {}> {
@@ -91,11 +101,16 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
           !searchIncludes && ss.doesNotMatchSearch,
           !searchIncludes && custom.doesNotMatchSearch,
         )}>
-        <p className={css(ss.statText, custom.statText)}>{prettifyText(this.props.statName)}</p>
+        <StatText color={this.props.colorOfName}>{prettifyText(this.props.statName)}</StatText>
         {typeof this.props.statValue === 'function' ?
           this.props.statValue() :
           typeof this.props.statValue === 'number' || typeof this.props.statValue === 'string' ?
-            <p className={css(ss.statText, custom.statText, ss.statValue, custom.statValue)}>{this.props.statValue}</p> :
+            <span className={css(
+              ss.statText, custom.statText,
+              ss.statValue, custom.statValue,
+            )}>
+              {this.props.statValue}
+            </span> :
             null
         }
       </div>
@@ -113,7 +128,8 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
       this.props.searchValue,
       this.props.statName,
     );
-    return nextPropsIncludeListItem !== currentPropsIncludeListItem;
+
+    return nextPropsIncludeListItem !== currentPropsIncludeListItem || nextProps.statValue !== this.props.statValue;
   }
 
   private searchIncludesListItem = (sectionTitle: string, searchValue: string, statName: string) => {

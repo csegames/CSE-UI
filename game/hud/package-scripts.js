@@ -175,7 +175,7 @@ module.exports = {
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && nps report.gql && nps gql && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {

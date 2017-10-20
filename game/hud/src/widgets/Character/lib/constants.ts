@@ -36,6 +36,8 @@ export const colors = {
   tabHoverColorRed: '#b09885',
   tabClickColorGray: '#8c8987',
   tabClickColorRed: '#c7a993',
+  boonPrimary: '#41ACE9',
+  banePrimary: '#E85143',
 };
 
 export const paperDollIcons = {
@@ -229,12 +231,12 @@ export const rowActionIcons = {
 };
 
 export const characterBodyPartIcons = {
-  head: 'icon-health-head',
-  leftArm: 'icon-health-arm',
-  rightArm: 'icon-health-arm',
-  leftLeg: 'icon-health-leg',
-  rightLeg: 'icon-health-leg',
-  torso: 'icon-health-torso',
+  Head: 'icon-health-head',
+  LeftArm: 'icon-health-arm',
+  RightArm: 'icon-health-arm',
+  LeftLeg: 'icon-health-leg',
+  RightLeg: 'icon-health-leg',
+  Torso: 'icon-health-torso',
 };
 
 export enum ArmorType {

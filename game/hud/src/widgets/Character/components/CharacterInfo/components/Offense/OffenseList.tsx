@@ -6,16 +6,17 @@
 
 import * as React from 'react';
 
-import { utils } from 'camelot-unchained';
+import { ql, utils, events } from 'camelot-unchained';
 import { GridStats } from 'camelot-unchained/lib/components';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
+import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
-import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
+import DataUnavailable from '../DataUnavailable';
 import { colors } from '../../../../lib/constants';
-
-import { TestOffenseStatsInterface } from '../../testCharacterStats';
+import eventNames from '../../../../lib/eventNames';
 
 export interface OffenseListStyles extends StyleDeclaration {
   OffenseList: React.CSSProperties;
@@ -28,7 +29,6 @@ const defaultOffenseListStyle: OffenseListStyles = {
   OffenseList: {
     flex: 1,
     height: '100%',
-    backgroundColor: 'rgba(75, 67, 65, 0.2)',
   },
 
   sectionTitleContainer: {
@@ -50,14 +50,32 @@ const defaultOffenseListStyle: OffenseListStyles = {
   },
 };
 
-export interface OffenseStatInfoSection {
-  title: string;
-  stats: any[];
-}
+const defaultStats = {
+  piercingDamage: 0,
+  piercingBleed: 0,
+  piercingArmorPenetration: 0,
+  slashingDamage: 0,
+  slashingBleed: 0,
+  slashingArmorPenetration: 0,
+  crushingDamage: 0,
+  fallbackCrushingDamage: 0,
+  disruption: 0,
+  deflectionAmount: 0,
+  physicalProjectileSpeed: 0,
+  knockbackAmount: 0,
+  stability: 0,
+  falloffMinDistance: 0,
+  falloffMaxDistance: 0,
+  falloffReduction: 0,
+  deflectionRecovery: 0,
+  staminaCost: 0,
+  physicalPreparationTime: 0,
+  physicalRecoveryTime: 0,
+  range: 0,
+};
 
-export interface OffenseListProps {
+export interface OffenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
   styles?: Partial<OffenseListStyles>;
-  offensiveStats: TestOffenseStatsInterface;
 }
 
 export interface OffenseListState {
@@ -66,6 +84,8 @@ export interface OffenseListState {
 }
 
 class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
+  private updateCharStatsListener: EventListener;
+
   constructor(props: OffenseListProps) {
     super(props);
     this.state = {
@@ -76,62 +96,138 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   public render() {
     const ss = StyleSheet.create(defaultOffenseListStyle);
     const custom = StyleSheet.create(this.props.styles || {});
+    const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
-    return (
-      <div className={css(ss.OffenseList, custom.OffenseList)}>
-        <StatListContainer
-          searchValue={this.state.searchValue}
-          onSearchChange={this.onSearchChange}
-          renderContent={() => (
-            <div>
-              {Object.keys(this.props.offensiveStats).map((weaponSlot, i) => {
-                // Prettify name to match what is displayed to user
-                const searchIncludes = searchIncludesSection(this.state.searchValue, prettifyText(weaponSlot));
-                const statArray = Object.keys(this.props.offensiveStats[weaponSlot]).map((stat) => {
-                  return {
-                    name: stat,
-                    value: this.props.offensiveStats[weaponSlot][stat],
-                  };
-                });
-                return (
-                  <div key={i}>
-                    <header className={css(
-                      ss.sectionTitleContainer,
-                      custom.sectionTitleContainer,
-                      !searchIncludes && ss.doesNotMatchSearch,
-                      !searchIncludes && custom.doesNotMatchSearch,
-                    )}>
-                      <div className={'icon-filter-weapons'} />
-                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{prettifyText(weaponSlot)}</span>
-                    </header>
-                    {<GridStats
-                      statArray={statArray}
-                      searchValue={this.state.searchValue}
-                      howManyGrids={2}
-                      shouldRenderEmptyListItems={true}
-                      renderListItem={(item, index) => (
-                        <StatListItem
-                          index={index}
-                          statName={item.name}
-                          statValue={item.value}
-                          searchValue={this.state.searchValue}
-                          sectionTitle={weaponSlot}
-                        />
-                      )}
-                    />}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        />
-      </div>
-    );
+    if (myEquippedItems && myEquippedItems.items) {
+      const statArray = this.getStatArray();
+      return (
+        <div className={css(ss.OffenseList, custom.OffenseList)}>
+          <StatListContainer
+            searchValue={this.state.searchValue}
+            onSearchChange={this.onSearchChange}
+            renderContent={() => (
+              <GridStats
+                statArray={statArray}
+                searchValue={this.state.searchValue}
+                howManyGrids={1}
+                shouldRenderEmptyListItems={true}
+                renderHeaderItem={() => (
+                  <DescriptionItem>
+                    <header>Name</header>
+                    <header>Value</header>
+                  </DescriptionItem>
+                )}
+                renderListItem={(item, index) => (
+                  <StatListItem
+                    index={index}
+                    statName={item.name}
+                    statValue={item.value}
+                    searchValue={this.state.searchValue}
+                  />
+                )}
+              />
+            )}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <DataUnavailable wait={150}>
+          Offensive data is not available at this time.
+        </DataUnavailable>
+      );
+    }
+  }
+
+  public componentDidMount() {
+    this.updateCharStatsListener = events.on(eventNames.updateCharacterStats, () => {
+      this.props.graphql.refetch();
+    });
+  }
+
+  public componentWillUnmount() {
+    events.off(this.updateCharStatsListener);
   }
 
   private onSearchChange = (searchValue: string) => {
     this.setState({ searchValue });
   }
+
+  private getStatArray = () => {
+    let statItems = defaultStats;
+    this.props.graphql.data.myEquippedItems.items.forEach((equippedItem) => {
+      const weaponStats = equippedItem.item.stats.weapon;
+      Object.keys(weaponStats).forEach((weaponStat) => {
+        if (statItems[weaponStat]) {
+          statItems = {
+            ...statItems,
+            [weaponStat]: statItems[weaponStat] + weaponStats[weaponStat],
+          };
+          return;
+        }
+
+        statItems = {
+          ...statItems,
+          [weaponStat]: weaponStats[weaponStat],
+        };
+
+        return;
+      });
+    });
+
+    let statArray: { name: string, value: string }[] = [];
+    Object.keys(statItems).forEach((statName) => {
+      statArray = [...statArray, {
+        name: statName,
+        value: statItems[statName],
+      }];
+    });
+
+    return statArray;
+  }
 }
 
-export default OffenseList;
+const OffenseListWithQL = withGraphQL({
+  query: `
+    query OffenseListQuery {
+      myEquippedItems {
+        items {
+          item {
+            id
+            stats {
+              weapon {
+                ...WeaponStats
+              }
+            }
+          }
+        }
+      }
+    }
+
+    fragment WeaponStats on WeaponStat_Single {
+      piercingDamage
+      piercingBleed
+      piercingArmorPenetration
+      slashingDamage
+      slashingBleed
+      slashingArmorPenetration
+      crushingDamage
+      fallbackCrushingDamage
+      disruption
+      deflectionAmount
+      physicalProjectileSpeed
+      knockbackAmount
+      stability
+      falloffMinDistance
+      falloffMaxDistance
+      falloffReduction
+      deflectionRecovery
+      staminaCost
+      physicalPreparationTime
+      physicalRecoveryTime
+      range
+    }
+  `,
+})(OffenseList);
+
+export default OffenseListWithQL;

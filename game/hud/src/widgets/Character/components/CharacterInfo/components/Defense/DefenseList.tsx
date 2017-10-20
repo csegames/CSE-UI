@@ -6,14 +6,14 @@
 
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { utils } from 'camelot-unchained';
+import { ql, events, utils } from 'camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
+import DataUnavailable from '../DataUnavailable';
 import { colors } from '../../../../lib/constants';
-
-// Will need to change this with a fragment interface once we hook up graphql
-import { TestBodyPartStats } from '../../testCharacterStats';
+import eventNames from '../../../../lib/eventNames';
 
 export interface DefenseListStyle extends StyleDeclaration {
   DefenseList: React.CSSProperties;
@@ -39,9 +39,8 @@ const defaultDefenseListStyle: DefenseListStyle = {
 // This is the highest order data structure. We use an array of StatInfoSection's
 // to break up the ArmorStats (resistances, mitigations) into sections.
 
-export interface DefenseListProps {
+export interface DefenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
   styles?: Partial<DefenseListStyle>;
-  defensiveStats: TestBodyPartStats;
 }
 
 export interface DefenseListState {
@@ -51,6 +50,7 @@ export interface DefenseListState {
 class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   private ss: DefenseListStyle;
   private custom: Partial<DefenseListStyle>;
+  private updateCharacterStatsListener: EventListener;
 
   constructor(props: DefenseListProps) {
     super(props);
@@ -62,28 +62,47 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   public render() {
     const ss = this.ss =  StyleSheet.create(defaultDefenseListStyle);
     const custom = this.custom = StyleSheet.create(this.props.styles || {});
+    const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
-    return (
-      <div className={css(ss.DefenseList, custom.DefenseList)}>
-        <StatListContainer
-          searchValue={this.state.searchValue}
-          onSearchChange={this.onSearchChange}
-          renderContent={() => (
-          <div>
-            {Object.keys(this.props.defensiveStats).map((bodyPart, i) => {
-              return (
-                <BodyPartSection
-                  key={i}
-                  name={bodyPart}
-                  searchValue={this.state.searchValue}
-                  bodyPartStats={this.props.defensiveStats[bodyPart]}
-                />
-              );
-            })}
-          </div>
-        )} />
-      </div>
-    );
+    if (myEquippedItems && myEquippedItems.armorStats) {
+      return (
+        <div className={css(ss.DefenseList, custom.DefenseList)}>
+          <StatListContainer
+            searchValue={this.state.searchValue}
+            onSearchChange={this.onSearchChange}
+            renderContent={() => (
+            <div>
+              {myEquippedItems.armorStats.map((bodyPartStats, i) => {
+                return (
+                  <BodyPartSection
+                    key={i}
+                    name={bodyPartStats.subpartID}
+                    searchValue={this.state.searchValue}
+                    bodyPartStats={bodyPartStats}
+                  />
+                );
+              })}
+            </div>
+          )} />
+        </div>
+      );
+    } else {
+      return (
+        <DataUnavailable wait={150}>
+          Defensive data is not available at this time.
+        </DataUnavailable>
+      );
+    }
+  }
+
+  public componentDidMount() {
+    this.updateCharacterStatsListener = events.on(eventNames.updateCharacterStats, () => {
+      this.props.graphql.refetch();
+    });
+  }
+
+  public componentWillUnmount() {
+    events.off(this.updateCharacterStatsListener);
   }
 
   private onSearchChange = (searchValue: string) => {
@@ -91,4 +110,50 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   }
 }
 
-export default DefenseList;
+const DefenseListWithQL = withGraphQL({
+  query: `
+    query DefenseListQuery {
+      myEquippedItems {
+        armorStats {
+          subpartID
+          resistances {
+            ...DamageTypeValues
+          }
+          mitigations {
+            ...DamageTypeValues
+          }
+        }
+      }
+    }
+
+    fragment DamageTypeValues on DamageType_Single {
+      slashing
+      piercing
+      crushing
+      physical
+      acid
+      poison
+      disease
+      earth
+      water
+      fire
+      air
+      lightning
+      frost
+      elemental
+      life
+      mind
+      spirit
+      radiant
+      light
+      death
+      shadow
+      chaos
+      void
+      dark
+      arcane
+    }
+  `,
+})(DefenseList);
+
+export default DefenseListWithQL;

@@ -1,6 +1,7 @@
 {
   "name": "hud",
   "globalDependencies": {
+    "emotion": "github:CUModSquad/Typings/emotion/emotion.d.ts",
     "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts",
     "jquery": "registry:dt/jquery#1.10.0+20160620094458",
     "node": "registry:dt/node#6.0.0+20160621231320",
@@ -8,6 +9,7 @@
     "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118",
     "react-motion": "registry:dt/react-motion#0.0.0+20160705193226",
     "react-draggable": "github:cumodsquad/Typings/react-draggable/react-draggable.d.ts",
+    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts",
     "react-image-magnify": "github:cumodsquad/Typings/react-image-magnify/react-image-magnify.d.ts",
     "react-resizable": "github:cumodsquad/Typings/react-resizable/react-resizable.d.ts",
     "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts",

@@ -9,14 +9,14 @@ import * as _ from 'lodash';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
-import { webAPI, client, ql } from 'camelot-unchained';
+import { webAPI, client, ql, events } from 'camelot-unchained';
 
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions } from './InventorySlot';
 import { InventoryRow } from './InventoryRow';
 
 import { InventoryItemFragment, InventoryBaseQuery } from '../../../../../gqlInterfaces';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/constants';
-import { UpdateInventoryItems } from '../../../lib/eventNames';
+import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
 import {
   createMoveItemRequestToInventoryPosition,
   firstAvailableSlot,
@@ -955,6 +955,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
       client.characterID,
       request as any,
     );
+  setTimeout(() => events.fire(eventNames.updateCharacterStats), 100);
 
   // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
@@ -987,13 +988,13 @@ export async function equipItemRequest(item: InventoryItemFragment,
         voxSlot: 'Invalid',
       },
     });
-    webAPI.ItemAPI.MoveItems(
-        webAPI.defaultConfig,
-        client.loginToken,
-        client.shardID,
-        client.characterID,
-        equippedItemReq as any,
-      );
+    await webAPI.ItemAPI.MoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      equippedItemReq as any,
+    );
   }
 }
 
@@ -1031,6 +1032,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     client.characterID,
     request as any,
   );
+  setTimeout(() => events.fire(eventNames.updateCharacterStats), 100);
   // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
     client.UnequipItem(item.id);

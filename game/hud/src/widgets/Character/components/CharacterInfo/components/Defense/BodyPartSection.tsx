@@ -101,6 +101,7 @@ export interface DefenseStatInterface {
 // So Head will have (slashing, arcane, poison, etc.) resistances and Torso will have it's own (slashing, arcane, etc.)
 // resistances. Same with mitigation.
 export interface BodyPartStatInterface {
+  subpartID: string;
   resistances: Partial<ql.schema.DamageType_Single>;
   mitigations: Partial<ql.schema.DamageType_Single>;
 }
@@ -121,20 +122,22 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
 
   const statInfo: DefenseStatInterface = {} as any;
   Object.keys(props.bodyPartStats).forEach((defenseType) => {
-    Object.keys(props.bodyPartStats[defenseType]).forEach((damageType) => {
-      statInfo[damageType] = {
-        ...statInfo[damageType] || {},
-        name: damageType,
-        [`${defenseType}Value`]: props.bodyPartStats[defenseType][damageType],
-      };
-    });
+    if (defenseType === 'mitigations' || defenseType === 'resistances') {
+      Object.keys(props.bodyPartStats[defenseType]).forEach((damageType) => {
+        statInfo[damageType] = {
+          ...statInfo[damageType] || {},
+          name: damageType,
+          [`${defenseType}Value`]: props.bodyPartStats[defenseType][damageType],
+        };
+      });
+    }
   });
-  const headerListItem = { name: 'header', resistancesValue: 'R', mitigationsValue: 'M' };
   const statsArray = [
-    headerListItem,
     ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
       a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
   ];
+
+  const bodyPartName = props.name === '_BODY_BEGIN' ? 'Torso' : props.name;
 
   return (
     <div className={css(ss.bodyPartSection, custom.bodyPartSection)}>
@@ -144,11 +147,11 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
         !searchIncludes && ss.doesNotMatchSearch,
         !searchIncludes && custom.doesNotMatchSearch,
       )}>
-        <div className={characterBodyPartIcons[props.name]} style={{
+        <div className={characterBodyPartIcons[bodyPartName]} style={{
           transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
           webkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
         }} />
-        <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(props.name)}</span>
+        <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(bodyPartName)}</span>
       </header>
       <GridStats
         statArray={statsArray}
@@ -156,24 +159,22 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
         sectionTitle={props.name}
         howManyGrids={3}
         shouldRenderEmptyListItems={true}
+        renderHeaderItem={() => (
+          <div className={css(
+            ss.listHeader,
+            custom.listHeader,
+            !searchIncludes && ss.doesNotMatchSearch,
+            !searchIncludes && custom.doesNotMatchSearch)}
+          >
+            <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+              R
+            </Tooltip>
+            <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+              M
+            </Tooltip>
+          </div>
+        )}
         renderListItem={(item: DefenseStatInterface, index: number) => {
-          if (item.name === 'header') {
-            return (
-              <div className={css(
-                ss.listHeader,
-                custom.listHeader,
-                !searchIncludes && ss.doesNotMatchSearch,
-                !searchIncludes && custom.doesNotMatchSearch)}
-              >
-                <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
-                  {item.resistancesValue}
-                </Tooltip>
-                <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
-                  {item.mitigationsValue}
-                </Tooltip>
-              </div>
-            );
-          }
           return (
             <StatListItem
               index={index}

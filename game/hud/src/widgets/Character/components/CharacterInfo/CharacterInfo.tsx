@@ -7,16 +7,17 @@
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import { utils, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import styled from 'react-emotion';
 import { graphql } from 'react-apollo';
 
 import GeneralInfo from './components/GeneralInfo';
-import DefenseList from './components/Defense/DefenseList';
-import OffenseList from './components/Offense/OffenseList';
+import GeneralStats from './components/GeneralStats/GeneralStats';
+import DefenseInfo from './components/Defense/DefenseList';
+import OffenseInfo from './components/Offense/OffenseList';
+import TraitsInfo from './components/TraitsInfo/TraitsInfo';
+import Session from './components/Session/Session';
 import { colors } from '../../lib/constants';
 import queries from '../../../../gqlDocuments';
-
-// TEMPORARY
-import testCharacterStats from './testCharacterStats';
 
 export interface CharacterInfoStyle extends StyleDeclaration {
   CharacterInfo: React.CSSProperties;
@@ -30,6 +31,12 @@ export interface CharacterInfoStyle extends StyleDeclaration {
   activeTab: React.CSSProperties;
   infoContent: React.CSSProperties;
 }
+
+const TabText = styled('span')`
+  font-size: 18;
+  margin: 0;
+  padding: 0;
+`;
 
 export const defaultCharacterInfoStyle: CharacterInfoStyle = {
   CharacterInfo: {
@@ -46,7 +53,7 @@ export const defaultCharacterInfoStyle: CharacterInfoStyle = {
 
   infoContent: {
     flex: 1,
-    height: 'calc(100% - 180px)',
+    height: 'calc(100% - 150px)',
   },
 
   tabPanelContainer: {
@@ -117,28 +124,61 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
     const { myCharacter, myOrder } = this.props.data;
     const tabs: TabItem[] = [
       {
-        name: 'offense',
+        name: 'general',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>Offense</span>,
+          render: () => <TabText>General</TabText>,
         },
-        rendersContent: 'Offense',
+        rendersContent: 'General',
       },
       {
         name: 'defense',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>Defense</span>,
+          render: () => <TabText>Defense</TabText>,
         },
         rendersContent: 'Defense',
       },
+      {
+        name: 'offense',
+        tab: {
+          render: () => <TabText>Offense</TabText>,
+        },
+        rendersContent: 'Offense',
+      },
+      {
+        name: 'traits',
+        tab: {
+          render: () => <TabText>Boons/Banes</TabText>,
+        },
+        rendersContent: 'TraitsInfo',
+      },
+      {
+        name: 'session',
+        tab: {
+          render: () => <TabText>Session</TabText>,
+        },
+        rendersContent: 'Session',
+      },
     ];
     const content: ContentItem[] = [
+      {
+        name: 'General',
+        content: { render: this.renderGeneralInfo },
+      },
+      {
+        name: 'Defense',
+        content: { render: this.renderDefenseInfo },
+      },
       {
         name: 'Offense',
         content: { render: this.renderOffenseInfo },
       },
       {
-        name: 'Defense',
-        content: { render: this.renderDefenseInfo },
+        name: 'TraitsInfo',
+        content: { render: this.renderTraitsInfo },
+      },
+      {
+        name: 'Session',
+        content: { render: this.renderSessionInfo },
       },
     ];
 
@@ -168,17 +208,16 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
     ) : null;
   }
 
-  private renderOffenseInfo = () => {
-    return (
-      <OffenseList offensiveStats={testCharacterStats.stats.offense} />
-    );
+  public componentDidCatch(error: Error, info: any) {
+    console.error(error);
+    console.log(info);
   }
 
-  private renderDefenseInfo = () => {
-    return (
-      <DefenseList defensiveStats={testCharacterStats.stats.defense} />
-    );
-  }
+  private renderGeneralInfo = () => <GeneralStats />;
+  private renderDefenseInfo = () => <DefenseInfo />;
+  private renderOffenseInfo = () => <OffenseInfo />;
+  private renderSessionInfo = () => <Session />;
+  private renderTraitsInfo = () => <TraitsInfo />;
 }
 
 const CharacterInfoWithQL = graphql(queries.CharacterInfo as any)(CharacterInfo);

@@ -1,6 +1,19 @@
 query CharacterInfo {
   myCharacter {
     ...MyCharacter
+
+    progression {
+      skillParts {
+        skillPartID
+        level
+        progressionPoints
+      }
+      characterStats {
+        stat
+        bonusPoints
+        progressionPoints
+      }
+    }
   }
   myOrder {
     ...MyOrder
