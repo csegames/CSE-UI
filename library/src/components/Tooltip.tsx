@@ -29,6 +29,7 @@ export const defaultToolTipStyle: ToolTipStyle = {
     display: 'inline-block',
     position: 'relative',
   },
+
   tooltip: {
     position: 'fixed',
     backgroundColor: '#444',
@@ -71,6 +72,7 @@ export interface TooltipProps {
   onTooltipShow?: () => void;
   onTooltipHide?: () => void;
   fixedMode?: boolean;
+  wndRegion?: Quadrant;
 }
 
 export interface TooltipState {
@@ -91,7 +93,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   constructor(props: TooltipProps) {
     super(props);
     this.state = {
-      wndRegion: Quadrant.TopLeft,
+      wndRegion: Quadrant.TopLeft || this.props.wndRegion,
       show: this.props.show || false,
       ttClassName: this.props.tooltipClassName || 'Tooltip',
       offsetLeft: this.props.offsetLeft || 10,
@@ -137,8 +139,22 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     if (this.props.fixedMode && !this.state.tooltipDimensions) {
       this.setState({ tooltipDimensions: this.tooltipRef.getBoundingClientRect() });
     }
+
+    let computedStyle;
+    if (this.props.fixedMode && this.state.tooltipDimensions) {
+      const { top, left } = this.childRef.getBoundingClientRect();
+      computedStyle = this.computeStyle(
+        left,
+        top,
+        this.state.offsetLeft,
+        this.state.offsetTop,
+        this.state.offsetRight,
+        this.state.offsetBottom,
+      );
+
+    }
     if (!this.props.fixedMode) {
-      const computedStyle: any = this.computeStyle(
+      computedStyle = this.computeStyle(
         e.clientX,
         e.clientY,
         this.state.offsetLeft,
@@ -146,12 +162,13 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         this.state.offsetRight,
         this.state.offsetBottom,
       );
-      if (this.tooltipRef) {
-        this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
-        this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';
-        this.tooltipRef.style.bottom = computedStyle.bottom ? computedStyle.bottom : 'auto';
-        this.tooltipRef.style.top = computedStyle.top ? computedStyle.top : 'auto';
-      }
+    }
+
+    if (this.tooltipRef && computedStyle) {
+      this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
+      this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';
+      this.tooltipRef.style.bottom = computedStyle.bottom ? computedStyle.bottom : 'auto';
+      this.tooltipRef.style.top = computedStyle.top ? computedStyle.top : 'auto';
     }
   }
 
@@ -179,31 +196,32 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
                           offsetRight: number,
                           offsetBottom: number) => {
     const { top, left, width, height } = this.childRef.getBoundingClientRect();
+    const wndRegion = typeof this.props.wndRegion === 'number' ? this.props.wndRegion : this.state.wndRegion;
     if (this.props.fixedMode && this.state.tooltipDimensions) {
-      switch (this.state.wndRegion) {
+      switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
-            left: left + offsetLeft,
-            top: top + height + offsetTop,
+            left: x + offsetLeft,
+            top: y + height + offsetTop,
           };
         case Quadrant.TopRight:
           return {
-            left: left - this.state.tooltipDimensions.width + width + offsetRight,
-            top: top + height + offsetTop,
+            left: x - this.state.tooltipDimensions.width + width + offsetRight,
+            top: y + height + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
-            left: left + offsetLeft,
-            top: top - this.state.tooltipDimensions.height + offsetBottom,
+            left: x + offsetLeft,
+            top: y - this.state.tooltipDimensions.height + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            left: left - this.state.tooltipDimensions.width + width + offsetRight,
-            top: top - this.state.tooltipDimensions.height + offsetBottom,
+            left: x - this.state.tooltipDimensions.width + width + offsetRight,
+            top: y - this.state.tooltipDimensions.height + offsetBottom,
           };
       }
     } else {
-      switch (this.state.wndRegion) {
+      switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
             left: `${x + offsetLeft}px`,

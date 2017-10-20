@@ -27,7 +27,7 @@ body {
 #hud {
   width: 100%;
   height: 100%;
-  @import './_font.scss';  
+  @import './_font.scss';
 
   // components
   @import './components/PlayerStatusComponent/index';

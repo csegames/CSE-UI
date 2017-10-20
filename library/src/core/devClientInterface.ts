@@ -98,6 +98,15 @@ const devClientInterface: clientInterface = {
   Respawn: (id: string): void => {
   },
 
+  /* Skills */
+  SetSkillRunning: (callback: (abilityId: string, isRunning: boolean) => void): void => {},
+
+  SetSkillQueued: (callback: (abilityId: string, isQueued) => void): void => {},
+
+  UpdateSkillCooldown: (callback: (abilityId: string, started: number, duration: number) => void): void => {},
+
+  OnSkillError: (callback: (abilityId: string) => void): void => {},
+
   /* Abilities */
 
   OnAbilityNumbersChanged: (callback: (abilityNumbers: string[]) => void): void => {

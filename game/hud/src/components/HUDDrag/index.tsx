@@ -168,17 +168,20 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   public render() {
     const position = this.getPosition();
+    const scale = this.state.scale !== 1 ? {
+      transform: `scale(${this.state.scale})`,
+      WebkitTransform: `scale(${this.state.scale})`,
+    } : {};
     return (
       <div className={`HUDDrag`}
           style={{
             position: 'fixed',
             height: `${this.state.height}px`,
             width: `${this.state.width}px`,
-            transform: `scale(${this.state.scale})`,
-            WebkitTransform: `scale(${this.state.scale})`,
             left: `${position.x}px`,
             top: `${position.y}px`,
             pointerEvents: 'none',
+            ...scale,
           }}>
           <div style={{
             height: '100%',

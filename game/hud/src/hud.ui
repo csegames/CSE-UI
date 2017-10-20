@@ -13,6 +13,7 @@
   "handlesCombatLog": true,
   "handlesBuilding": true,
   "handlesAbilities": true,
+  "handlesSkillStates": true,
   "handlesEquippedGear": true,
   "handlesInventory": true,
   "handlesPlot": true,

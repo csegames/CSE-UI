@@ -34,7 +34,7 @@ class Settings {
     this.timeout = 2000;					// default timeout
     switch (channel) {
       case channelId.HATCHERY:
-        this.url = 'hatchery.camelotunchained.com';
+        this.url = 'hatcheryd.camelotunchained.com';
         // BUG: (returns https://) this.url = this.core.hatcheryApiUrl;
         this.port = this.core.hatcheryApiPort;
         break;

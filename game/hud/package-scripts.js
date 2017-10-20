@@ -92,6 +92,10 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/27/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      wolfhere: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1100/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       temps: {
         script: 'rimraf tmp && rimraf tmpp',
         hiddenFromHelp: true,
@@ -122,8 +126,8 @@ module.exports = {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
-      fledgling: {
-        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
+      wolfhere: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1100/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       cube: {
@@ -210,7 +214,11 @@ module.exports = {
       ignoreLintHatchery: {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
-      }
+      },
+      wolfhere: {
+        script: 'nps build,clean.wolfhere,copy.wolfhere',
+        description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
+      },
     },
     report: {
       start: {
