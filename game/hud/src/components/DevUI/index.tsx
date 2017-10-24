@@ -349,6 +349,8 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
+    client.OnOpenUI(this.onOpenUI);
+    client.OnCloseUI(this.onCloseUI);
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
@@ -363,6 +365,30 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   public componentDidCatch(error: any, info: any) {
     console.log(error);
     console.log(info);
+  }
+
+  private onOpenUI = (name: string) => {
+    if (this.state[name]) {
+      this.setState({
+        [name]: {
+          ...this.state[name],
+          visible: true,
+        },
+      });
+      return;
+    }
+  }
+
+  private onCloseUI = (name: string) => {
+    if (this.state[name]) {
+      this.setState({
+        [name]: {
+          ...this.state[name],
+          visible: false,
+        },
+      });
+      return;
+    }
   }
 }
 
