@@ -64,13 +64,6 @@ export function createCharacter(model: CharacterCreationModel,
       model as any,
     );
     if (res.ok) {
-      // We already have the character model, no need to get a push from signalr. Just fire off event.
-      const characterId = extractCharacterId(res.data);
-      events.fire(signalr.PATCHER_EVENTS_CHARACTERUPDATED, JSON.stringify({
-        ...model,
-        id: characterId,
-        shardID: shard,
-      }));
       dispatch(createCharacterSuccess(model));
       return;
     }
