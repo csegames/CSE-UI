@@ -119,7 +119,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
                  }}
                  inputRef={r => this.inputRef = r}
                  onFocus={() => client.RequestInputOwnership()}
-                 onBlue={() => client.ReleaseInputOwnership()}
+                 onBlur={() => client.ReleaseInputOwnership()}
                  onMouseEnter={() => client.RequestInputOwnership()}
                  onMouseLeave={() => {
                    client.ReleaseInputOwnership();
