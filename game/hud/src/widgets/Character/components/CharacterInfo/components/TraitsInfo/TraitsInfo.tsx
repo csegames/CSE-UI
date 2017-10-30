@@ -34,7 +34,7 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
 
   public render() {
     const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
-    if (myCharacter) {
+    if (myCharacter && myCharacter.traits) {
       return (
         <StatListContainer
           onSearchChange={this.onSearchChange}

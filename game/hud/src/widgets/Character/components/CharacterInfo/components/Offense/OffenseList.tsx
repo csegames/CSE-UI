@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 
 import { ql, utils, events } from 'camelot-unchained';
 import { GridStats } from 'camelot-unchained/lib/components';
@@ -99,33 +100,47 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
     if (myEquippedItems && myEquippedItems.items) {
-      const statArray = this.getStatArray();
+      const weaponSlotArray = this.getWeaponSlotArray().sort((a, b) => a.name.localeCompare(b.name));
       return (
         <div className={css(ss.OffenseList, custom.OffenseList)}>
           <StatListContainer
             searchValue={this.state.searchValue}
             onSearchChange={this.onSearchChange}
             renderContent={() => (
-              <GridStats
-                statArray={statArray}
-                searchValue={this.state.searchValue}
-                howManyGrids={1}
-                shouldRenderEmptyListItems={true}
-                renderHeaderItem={() => (
-                  <DescriptionItem>
-                    <header>Name</header>
-                    <header>Value</header>
-                  </DescriptionItem>
-                )}
-                renderListItem={(item, index) => (
-                  <StatListItem
-                    index={index}
-                    statName={item.name}
-                    statValue={item.value}
-                    searchValue={this.state.searchValue}
-                  />
-                )}
-              />
+              <div>
+                {weaponSlotArray.map((weaponSlot: any, i: number) => (
+                  <div key={i}>
+                    <header
+                      className={css(
+                      ss.sectionTitleContainer,
+                      custom.sectionTitleContainer,
+                    )}>
+                      <div className={'icon-filter-weapons'} />
+                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{weaponSlot.name}</span>
+                    </header>
+                    <GridStats
+                      statArray={weaponSlot.statArray}
+                      searchValue={this.state.searchValue}
+                      howManyGrids={2}
+                      shouldRenderEmptyListItems={true}
+                      renderHeaderItem={() => (
+                        <DescriptionItem>
+                          <header>Name</header>
+                          <header>Value</header>
+                        </DescriptionItem>
+                      )}
+                      renderListItem={(item, index) => (
+                        <StatListItem
+                          index={index}
+                          statName={item.name}
+                          statValue={item.value}
+                          searchValue={this.state.searchValue}
+                        />
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
             )}
           />
         </div>
@@ -153,37 +168,57 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
     this.setState({ searchValue });
   }
 
-  private getStatArray = () => {
-    let statItems = defaultStats;
+  private getWeaponSlotArray = () => {
+    let weaponItems = {};
     this.props.graphql.data.myEquippedItems.items.forEach((equippedItem) => {
       const weaponStats = equippedItem.item.stats.weapon;
-      Object.keys(weaponStats).forEach((weaponStat) => {
-        if (statItems[weaponStat]) {
+      const isWeapon = _.find(equippedItem.gearSlots, (gearSlot) =>
+        gearSlot.id === 'PrimaryHandWeapon' || gearSlot.id === 'SecondaryHandWeapon');
+      
+      if (isWeapon) {
+        let statItems = defaultStats;
+        Object.keys(weaponStats).forEach((weaponStat) => {
+          if (statItems[weaponStat]) {
+            statItems = {
+              ...statItems,
+              [weaponStat]: statItems[weaponStat] + weaponStats[weaponStat],
+            };
+            return;
+          }
+
           statItems = {
             ...statItems,
-            [weaponStat]: statItems[weaponStat] + weaponStats[weaponStat],
+            [weaponStat]: weaponStats[weaponStat],
           };
+
           return;
-        }
+        });
 
-        statItems = {
-          ...statItems,
-          [weaponStat]: weaponStats[weaponStat],
+        let weaponSlotName = '';
+        equippedItem.gearSlots.forEach((gearSlot) =>
+          weaponSlotName = weaponSlotName.length > 0 ? `${weaponSlotName} ${gearSlot.id}` : gearSlot.id);
+
+        weaponItems[weaponSlotName] = statItems;
+      }
+    });
+    
+    let weaponSlotArray: { name: string, statArray: any[] }[] = [];
+    Object.keys(weaponItems).forEach((weaponSlotName) => {
+      const statArray = Object.keys(weaponItems[weaponSlotName]).map((statName) => {
+        return {
+          name: statName,
+          value: weaponItems[weaponSlotName][statName],
         };
-
-        return;
       });
+      weaponSlotArray = [...weaponSlotArray,
+        {
+          name: weaponSlotName,
+          statArray,
+        }
+      ];
     });
 
-    let statArray: { name: string, value: string }[] = [];
-    Object.keys(statItems).forEach((statName) => {
-      statArray = [...statArray, {
-        name: statName,
-        value: statItems[statName],
-      }];
-    });
-
-    return statArray;
+    return weaponSlotArray;
   }
 }
 
@@ -192,6 +227,9 @@ const OffenseListWithQL = withGraphQL({
     query OffenseListQuery {
       myEquippedItems {
         items {
+          gearSlots {
+            id
+          }
           item {
             id
             stats {
