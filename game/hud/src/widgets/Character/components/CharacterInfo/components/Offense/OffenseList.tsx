@@ -17,6 +17,7 @@ import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
 import { colors } from '../../../../lib/constants';
+import { prettifyText } from '../../../../lib/utils';
 import eventNames from '../../../../lib/eventNames';
 
 export interface OffenseListStyles extends StyleDeclaration {
@@ -116,7 +117,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
                       custom.sectionTitleContainer,
                     )}>
                       <div className={'icon-filter-weapons'} />
-                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{weaponSlot.name}</span>
+                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{prettifyText(weaponSlot.name)}</span>
                     </header>
                     <GridStats
                       statArray={weaponSlot.statArray}

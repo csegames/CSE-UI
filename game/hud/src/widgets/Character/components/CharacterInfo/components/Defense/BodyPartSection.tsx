@@ -35,6 +35,7 @@ const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
 
   bodyPartSectionHeader: {
     display: 'flex',
+    justifyContent: 'space-between',
     padding: '5px',
     fontSize: 18,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
@@ -130,6 +131,7 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
           [`${defenseType}Value`]: props.bodyPartStats[defenseType][damageType],
         };
       });
+      return;
     }
   });
   const statsArray = [
@@ -147,11 +149,14 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
         !searchIncludes && ss.doesNotMatchSearch,
         !searchIncludes && custom.doesNotMatchSearch,
       )}>
-        <div className={characterBodyPartIcons[bodyPartName]} style={{
-          transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-          webkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-        }} />
-        <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(bodyPartName)}</span>
+        <div>
+          <span className={characterBodyPartIcons[bodyPartName]} style={{
+            transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+            webkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+          }} />
+          <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(bodyPartName)}</span>
+        </div>
+        <div>Armor Class: {props.bodyPartStats['armorClass']}</div>
       </header>
       <GridStats
         statArray={statsArray}

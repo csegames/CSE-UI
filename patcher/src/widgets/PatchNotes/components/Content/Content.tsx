@@ -37,6 +37,12 @@ const Body = styled('div')`
   color: #ccc;
 `;
 
+const InnerHTMLContainer = styled('div')`
+  flex: 1;
+  width: 100%;
+  height: 100%;
+`;
+
 export interface ContentQuery {
   patchNote: {
     id: string;
@@ -75,8 +81,7 @@ class Content extends React.Component<ContentProps, ContentState> {
         </Header>
         <Body>
           {patchNote ? <Animate animationEnter='fadeIn' animationLeave='fadeOut' durationEnter={400} durationLeave={0}>
-            <div
-              className={css` flex: 1; `}
+            <InnerHTMLContainer
               key={patchNote.id}
               dangerouslySetInnerHTML={{ __html: patchNote.htmlContent }}
             />

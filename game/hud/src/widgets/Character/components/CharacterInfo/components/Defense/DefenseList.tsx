@@ -116,6 +116,7 @@ const DefenseListWithQL = withGraphQL({
       myEquippedItems {
         armorStats {
           subpartID
+          armorClass
           resistances {
             ...DamageTypeValues
           }
