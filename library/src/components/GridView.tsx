@@ -181,11 +181,11 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
 
   public sortItems = (input: any[], column: ColumnDefinition, sorted: GridViewSort) => {
     if (sorted === GridViewSort.None) return input;
-    if (column.sortFunction) {
-      return input.sort((a, b) => sorted === GridViewSort.Down ?
-        column.sortFunction(a, b) : (column.sortFunction(a, b) * -1));
+    if (!column.sortFunction) {
+      column.sortFunction = (a: any, b: any) => column.key(a) < column.key(b) ? 1 : -1;
     }
-    return sorted === GridViewSort.Down ? input.sort() : input.sort().reverse();
+    return input.sort((a, b) => sorted === GridViewSort.Down ?
+      column.sortFunction(a, b) : (column.sortFunction(a, b) * -1));
   }
 
   public setSort = (index: number, sortBy: GridViewSort) => {
@@ -224,10 +224,11 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
 
   public componentWillReceiveProps(nextProps: P) {
     const items = cloneDeep(nextProps.items);
+    const sortedItems = this.sortItems(items, this.props.columnDefinitions[this.state.currentSort.index], this.state.currentSort.sorted);
     this.setState({
       items,
       itemsPerPage: this.props.itemsPerPage || 25,
-      sortedItems: items,
+      sortedItems,
     } as S);
   }
 
