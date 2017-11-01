@@ -169,12 +169,12 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   }
 
   private getWeaponSlotArray = () => {
-    let weaponItems = {};
+    const weaponItems = {};
     this.props.graphql.data.myEquippedItems.items.forEach((equippedItem) => {
       const weaponStats = equippedItem.item.stats.weapon;
-      const isWeapon = _.find(equippedItem.gearSlots, (gearSlot) =>
+      const isWeapon = _.find(equippedItem.gearSlots, gearSlot =>
         gearSlot.id === 'PrimaryHandWeapon' || gearSlot.id === 'SecondaryHandWeapon');
-      
+
       if (isWeapon) {
         let statItems = defaultStats;
         Object.keys(weaponStats).forEach((weaponStat) => {
@@ -195,13 +195,13 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
         });
 
         let weaponSlotName = '';
-        equippedItem.gearSlots.forEach((gearSlot) =>
+        equippedItem.gearSlots.forEach(gearSlot =>
           weaponSlotName = weaponSlotName.length > 0 ? `${weaponSlotName} ${gearSlot.id}` : gearSlot.id);
 
         weaponItems[weaponSlotName] = statItems;
       }
     });
-    
+
     let weaponSlotArray: { name: string, statArray: any[] }[] = [];
     Object.keys(weaponItems).forEach((weaponSlotName) => {
       const statArray = Object.keys(weaponItems[weaponSlotName]).map((statName) => {
@@ -214,7 +214,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
         {
           name: weaponSlotName,
           statArray,
-        }
+        },
       ];
     });
 
