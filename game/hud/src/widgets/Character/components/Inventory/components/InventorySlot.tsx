@@ -12,18 +12,16 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 import ContextMenuContent from './ContextMenuContent';
-import EmptyItem from '../../EmptyItem';
-import ItemStack from '../../ItemStack';
-import CraftingItem from './CraftingItem';
+import DraggableItemComponent from './DraggableItemComponent';
+import EmptyItemDropZone from './EmptyItemDropZone';
+import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
+
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
-import { getContainerHeaderInfo } from './InventoryBase';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 
 export interface InventorySlotStyle extends StyleDeclaration {
   InventorySlot: React.CSSProperties;
   itemContainer: React.CSSProperties;
-  itemIcon: React.CSSProperties;
-  slotOverlay: React.CSSProperties;
 }
 
 export const slotDimensions = 60;
@@ -34,38 +32,14 @@ export const defaultInventorySlotStyle: InventorySlotStyle = {
   },
 
   itemContainer: {
+    overflow: 'hidden',
     position: 'relative',
     width: `${slotDimensions}px`,
     height: `${slotDimensions}px`,
-    margin: '2.5px',
+    margin: '0px 2.5px',
     border: '1px solid rgba(200, 200, 200, 0.3)',
     background: 'rgba(200, 200, 200, 0.1)',
     display: 'inline-block',
-  },
-
-  itemIcon: {
-    verticalAlign: 'baseline',
-    backgroundSize: 'cover',
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    overflow: 'hidden',
-    cursor: 'pointer',
-  },
-
-  slotOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    cursor: 'pointer',
-    ':hover': {
-      boxShadow: 'inset 0 0 10px rgba(255,255,255,0.2)',
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 10px rgba(0,0,0,0.4)',
-    },
   },
 };
 
@@ -90,6 +64,7 @@ export interface InventorySlotItemDef {
   groupStackHashID?: string;
   stackedItems?: InventoryItemFragment[];
   item?: InventoryItemFragment;
+  slotIndex: number;
   icon: string;
 }
 
@@ -98,6 +73,7 @@ export interface CraftingSlotItemDef {
   slotType: SlotType;
   groupStackHashID?: string;
   icon: string;
+  slotIndex: number;
   quality?: number;
   itemCount?: number;
   item?: InventoryItemFragment;
@@ -109,6 +85,7 @@ export interface InventorySlotProps {
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
   equippedItems?: ql.schema.EquippedItem[];
+  onDropOnZone: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
 }
 
 export interface InventorySlotState {
@@ -135,37 +112,11 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const usesContainer = item.slotType === SlotType.Container
       || item.slotType === SlotType.CraftingContainer;
 
-    let itemComponent: JSX.Element;
-    const placeholderIcon = 'images/unknown-item.jpg';
-    switch (item.slotType) {
-      case SlotType.Standard: {
-        itemComponent = <img src={item.icon || placeholderIcon} className={css(ss.itemIcon, custom.itemIcon)} />;
-        break;
-      }
-      case SlotType.Stack: {
-        itemComponent = <ItemStack count={item.stackedItems.length} icon={item.icon} />;
-        break;
-      }
-      case SlotType.CraftingContainer: {
-        itemComponent = <ItemStack count={getContainerHeaderInfo(item.stackedItems).totalUnitCount} icon={item.icon} />;
-        break;
-      }
-      case SlotType.CraftingItem: {
-        // Items in a Crafting Container
-        itemComponent =
-          <CraftingItem
-            count={item.itemCount}
-            quality={item.quality}
-            icon={item.icon}
-          />;
-      }
-    }
-
     const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
     return id ? (
       <div className={css(ss.InventorySlot, custom.InventorySlot)}>
         <Tooltip
-          show={this.state.showTooltip}
+          show={getDragStore().isDragging ? false : this.state.showTooltip}
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
@@ -174,7 +125,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
             />
-        }>
+          }>
           <ContextMenu
             onContextMenuContentShow={this.onContextMenuContentShow}
             onContextMenuContentHide={this.onContextMenuContentHide}
@@ -186,24 +137,36 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               onMouseEnter={this.onMouseEnter}
               onMouseLeave={this.onMouseLeave}
               onDoubleClick={this.onEquipItem}>
-                {itemComponent}
-                <div className={css(ss.slotOverlay, custom.slotOverlay)} />
+                <DraggableItemComponent
+                  item={item}
+                  onDrop={this.props.onDropOnZone}
+                  onDragStart={this.hideTooltip}
+                  onDragEnd={() => this.mouseOver = false}
+                />
             </div>
           </ContextMenu>
         </Tooltip>
       </div>
     ) :
-    <div className={css(ss.itemContainer, custom.itemContainer)}>
-      <EmptyItem />
-    </div>;
+      <div className={css(ss.itemContainer, custom.itemContainer)}>
+        <EmptyItemDropZone slotIndex={this.props.item.slotIndex} onDrop={this.props.onDropOnZone} />
+      </div>;
+  }
+
+  public componentDidMount() {
+    window.addEventListener('resize', this.hideTooltip);
   }
 
   public shouldComponentUpdate(nextProps: InventorySlotProps, nextState: InventorySlotState) {
-    return nextProps.item.itemID !== this.props.item.itemID ||
-      nextProps.item.groupStackHashID !== this.props.item.groupStackHashID ||
-      nextProps.itemIndex !== this.props.itemIndex ||
-      !_.isEqual(nextProps.equippedItems, this.props.equippedItems) ||
-      !_.isEqual(nextState, this.state);
+    return this.state.showTooltip !== nextState.showTooltip ||
+    this.state.contextMenuVisible !== nextState.contextMenuVisible ||
+    this.props.itemIndex !== nextProps.itemIndex ||
+    !_.isEqual(this.props.item, nextProps.item);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('resize', this.hideTooltip);
+    this.hideTooltip();
   }
 
   private onToggleContainer = () => {
@@ -228,7 +191,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       this.setState({ showTooltip: true });
     }
     const item = this.props.item.item;
-    if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
+    if (!getDragStore().isDragging && item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
       const { gearSlotSets } = item.staticDefinition;
       if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any)) ||
         (this.isRightOrLeftItem(gearSlotSets[0].gearSlots as any) &&
@@ -312,6 +275,12 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       };
       events.fire(eventNames.onEquipItem, payload);
       events.fire(eventNames.onDehighlightSlots);
+      this.setState({ showTooltip: false });
+    }
+  }
+
+  private hideTooltip = () => {
+    if (this.state.showTooltip) {
       this.setState({ showTooltip: false });
     }
   }

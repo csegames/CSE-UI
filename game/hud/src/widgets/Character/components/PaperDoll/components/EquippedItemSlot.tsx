@@ -5,24 +5,20 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 
 import { Tooltip, events, ql } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
 import { Alignment } from './PopupMiniInventory';
-import { defaultSlotIcons } from '../../../lib/constants';
+import DraggableEquippedItem from './DraggableEquippedItem';
+import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
 
 export interface EquippedItemSlotStyle extends StyleDeclaration {
   equippedItemSlot: React.CSSProperties;
+  itemIcon: React.CSSProperties;
   popupMiniInventoryVisible: React.CSSProperties;
   itemContainer: React.CSSProperties;
   highlightSlotContainer: React.CSSProperties;
-  highlightSlotOverlay: React.CSSProperties;
-  defaultSlotIcon: React.CSSProperties;
-  slotOverlay: React.CSSProperties;
 }
 
 export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
@@ -37,6 +33,11 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     textAlign: 'center',
   },
 
+  itemIcon: {
+    width: '70px',
+    height: '70px',
+  },
+
   popupMiniInventoryVisible: {
     border: '1px solid yellow',
   },
@@ -45,36 +46,8 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
     position: 'relative',
   },
 
-  slotOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    cursor: 'pointer',
-    ':hover': {
-      boxShadow: 'inset 0 0 15px rgba(255,255,255,0.3)',
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 15px rgba(0,0,0,0.4)',
-    },
-  },
-
   highlightSlotContainer: {
     border: '1px solid yellow',
-  },
-
-  highlightSlotOverlay: {
-    boxShadow: 'inset 0 0 15px 5px yellow',
-  },
-
-  defaultSlotIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.3,
-    width: '100%',
-    height: '100%',
   },
 };
 
@@ -86,21 +59,17 @@ export interface EquippedItemSlotProps {
 
 export interface EquippedItemSlotState {
   itemMenuVisible: boolean;
-  highlightSlot: boolean;
   showTooltip: boolean;
+  itemIsOverBGColor: string;
 }
 
-export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
-
-  private onHighlightListener: EventListener;
-  private onDehighlightListener: EventListener;
-
+export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps, EquippedItemSlotState> {
   constructor(props: EquippedItemSlotProps) {
     super(props);
     this.state = {
       itemMenuVisible: false,
-      highlightSlot: false,
       showTooltip: false,
+      itemIsOverBGColor: null,
     };
   }
 
@@ -108,67 +77,34 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const style = StyleSheet.create(defaultEquippedItemSlotStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
-    const { highlightSlot, showTooltip } = this.state;
+    const { showTooltip } = this.state;
     const { slot } = this.props;
     const slotName = slot.slotName;
 
     const itemId = equippedItem && equippedItem.item.id;
-    const iconUrl = equippedItem &&
-      equippedItem.item.staticDefinition.iconUrl || `${defaultSlotIcons[slotName]} \
-      ${css(style.defaultSlotIcon, customStyle.defaultSlotIcon)}`;
-    const placeholderIcon = 'images/unknown-item.jpg';
-    const isRightSlot = _.includes(slotName.toLowerCase(), 'right');
+
     return (
-        <Tooltip show={itemId ? showTooltip : false} styles={defaultTooltipStyle} content={() =>
-          <TooltipContent
-            item={equippedItem.item}
-            slotName={slotName && slotName}
-            instructions='Right click to unequip'
-          />
-        }>
+      <Tooltip show={itemId ? showTooltip : false} styles={defaultTooltipStyle} content={() =>
+        <TooltipContent
+          item={equippedItem.item}
+          slotName={slotName && slotName}
+          instructions='Right click to unequip'
+        />
+      }>
           <div
-            style={isRightSlot ? { transform: 'scaleX(-1)', webkitTransform: 'scaleX(-1)' } : {}}
-            className={css(style.itemContainer, customStyle.itemContainer)}
+            className={css(
+              style.equippedItemSlot,
+              customStyle.equippedItemSlot,
+              this.state.itemMenuVisible && style.highlightSlotContainer,
+              this.state.itemMenuVisible && customStyle.highlightSlotContainer,
+            )}
             onMouseOver={this.onMouseOverItemSlot}
             onMouseLeave={this.onMouseLeave}
             onContextMenu={this.unequipItem}>
-            {equippedItem ?
-              <img
-                src={iconUrl || placeholderIcon}
-                className={css(
-                  style.equippedItemSlot,
-                  customStyle.equippedItemSlot,
-                  this.state.itemMenuVisible && style.highlightSlotContainer,
-                  this.state.itemMenuVisible && customStyle.highlightSlotContainer,
-                )}
-              /> :
-                <div className={css(
-                  style.equippedItemSlot,
-                  customStyle.equippedItemSlot,
-                  this.state.itemMenuVisible && style.highlightSlotContainer,
-                  this.state.itemMenuVisible && customStyle.highlightSlotContainer,
-                )}>
-                  <div className={`${iconUrl}`} />
-                </div>}
-            <div className={css(
-              style.slotOverlay,
-              customStyle.slotOverlay,
-              highlightSlot && style.highlightSlotOverlay,
-              highlightSlot && customStyle.highlightSlotOverlay,
-            )} />
+              <DraggableEquippedItem slotName={this.props.slot.slotName} equippedItem={this.props.providedEquippedItem} />
           </div>
-        </Tooltip>
+      </Tooltip>
     );
-  }
-
-  public componentDidMount() {
-    this.onHighlightListener = events.on(eventNames.onHighlightSlots, this.onHighlightSlots);
-    this.onDehighlightListener = events.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
-  }
-
-  public componentWillUnmount() {
-    events.off(this.onHighlightListener);
-    events.off(this.onDehighlightListener);
   }
 
   private unequipItem = () => {
@@ -176,16 +112,6 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const equippedItem = this.props.providedEquippedItem;
     const payload: UnequipItemCallback = equippedItem;
     events.fire(eventNames.onUnequipItem, payload);
-  }
-
-  private onHighlightSlots = (gearSlots: ql.schema.GearSlotDefRef[]) => {
-    if (_.find(gearSlots, (gearSlot: ql.schema.GearSlotDefRef) => this.props.slot.slotName === gearSlot.id)) {
-      this.setState({ highlightSlot: true });
-    }
-  }
-
-  private onDehighlightSlots = () => {
-    if (this.state.highlightSlot) this.setState({ highlightSlot: false });
   }
 
   private onMouseOverItemSlot = () => {

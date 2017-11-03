@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { ql, utils } from 'camelot-unchained';
 
 import { InventorySlotItemDef, slotDimensions, SlotType } from './InventorySlot';
 import InventoryRowActionButton from './InventoryRowActionButton';
@@ -70,6 +70,7 @@ export interface InventoryContainerProps extends base.InventoryBaseProps {
   item: InventorySlotItemDef;
   slotsPerRow: number;
   onCloseClick: () => void;
+  onDropOnZone: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
 }
 
 export interface InventoryContainerState extends base.InventoryBaseState {
@@ -105,8 +106,18 @@ export class InventoryContainer extends React.Component<InventoryContainerProps,
         break;
       default:
         header = `${getItemDefinitionName(firstItem)} | ${this.props.item.stackedItems.length}`;
-        rows = base.createRowElements(this.state, this.props, { items: this.props.item.stackedItems }).rows;
-        rowData = base.createRowElements(this.state, this.props, { items: this.props.item.stackedItems }).rowData;
+        rows = base.createRowElements(
+          this.state,
+          this.props,
+          { items: this.props.item.stackedItems },
+          this.props.onDropOnZone,
+        ).rows;
+        rowData = base.createRowElements(
+          this.state,
+          this.props,
+          { items: this.props.item.stackedItems },
+          this.props.onDropOnZone,
+        ).rowData;
     }
 
     return (

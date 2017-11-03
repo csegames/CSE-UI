@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { events, client } from 'camelot-unchained';
+import { ql, events, client } from 'camelot-unchained';
 import { withGraphQL } from 'camelot-unchained/lib/graphql/react';
 
 import * as base from './InventoryBase';
@@ -16,7 +16,10 @@ import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
 import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
 import queries from '../../../../../gqlDocuments';
-import { calcRowAndSlots, getDimensionsOfElement } from '../../../lib/utils';
+import {
+  calcRowAndSlots,
+  getDimensionsOfElement,
+} from '../../../lib/utils';
 
 export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBody: React.CSSProperties;
@@ -130,7 +133,12 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   public render() {
     const ss = StyleSheet.create(defaultInventoryBodyStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { rows, rowData } = base.createRowElements(this.state, this.props, { items: this.props.inventoryItems });
+    const { rows, rowData } = base.createRowElements(
+      this.state,
+      this.props,
+      { items: this.props.inventoryItems },
+      this.onDropOnZone,
+    );
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
@@ -149,7 +157,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
             </div>
           </div>
         }
-        <div ref={r => this.bodyRef = r}
+        <div ref={r => this.bodyRef = r} id='inventory-scroll-container'
             className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
           <div className={css(ss.inventoryContent, custom.inventoryContent)}>
             {rows}
@@ -204,7 +212,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const onInventoryItemsChange = !_.isEqual(nextProps.inventoryItems, this.props.inventoryItems);
     const onSearchValueChange = nextProps.searchValue !== this.props.searchValue;
     const onActiveFiltersChange = !_.isEqual(nextProps.activeFilters, this.props.activeFilters);
-
     if (!this.props.graphql.data && nextProps.graphql.data) {
       this.timePrevItemAdded = new Date().getTime();
     }
@@ -257,6 +264,10 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     );
   }
 
+  private onDropOnZone = (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => {
+    this.setState((state, props) => base.onMoveInventoryItem(dragItemData, dropZoneData, state, props));
+  }
+
   private addRowOfSlots = () => {
     this.setState(base.addRowOfSlots);
   }
@@ -274,6 +285,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 }
 
-const InventoryBodyWithQL = withGraphQL<InventoryBodyProps>({ query: queries.InventoryBase })(InventoryBody);
+const InventoryBodyWithQL = withGraphQL<InventoryBodyProps>(
+  { query: queries.InventoryBase },
+)(InventoryBody);
 
 export default InventoryBodyWithQL;

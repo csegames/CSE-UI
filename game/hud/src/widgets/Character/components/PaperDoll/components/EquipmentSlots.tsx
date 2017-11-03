@@ -39,6 +39,7 @@ export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
     flex: '1 1 auto',
     width: '100%',
     height: '100%',
+    overflow: 'hidden',
   },
   armorSlotsContainer: {
     flex: '1 1 auto',
@@ -265,14 +266,16 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     }));
     this.props.onEquippedItemsChange(filteredItems);
 
-    const updateInventoryItemsPayload: UpdateInventoryItems = {
-      type: 'Unequip',
-      equippedItem: {
-        item,
-        gearSlots,
-      } as any,
-    };
-    events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+    if (!payload.dontUpdateInventory) {
+      const updateInventoryItemsPayload: UpdateInventoryItems = {
+        type: 'Unequip',
+        equippedItem: {
+          item,
+          gearSlots,
+        } as any,
+      };
+      events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+    }
   }
 
   private onEquipItem = (payload: EquipItemCallback) => {
@@ -323,7 +326,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
                 isWeapon && style.weaponSpacing,
                 isWeapon && customStyle.weaponSpacing,
               )}>
-              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem}/>
+              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
             </div>
           </PopupMiniInventory>
         );

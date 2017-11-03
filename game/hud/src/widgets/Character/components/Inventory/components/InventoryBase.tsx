@@ -16,7 +16,7 @@ import { InventoryRow } from './InventoryRow';
 
 import { InventoryItemFragment, InventoryBaseQuery } from '../../../../../gqlInterfaces';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/constants';
-import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
+import eventNames, { UpdateInventoryItems, UnequipItemCallback } from '../../../lib/eventNames';
 import {
   createMoveItemRequestToInventoryPosition,
   firstAvailableSlot,
@@ -138,7 +138,7 @@ export function createRowElementsForCraftingItems(state: InventoryBaseState, ite
       const item = itemData.items[slotIndex];
 
       if (!item) {
-        rowItems.push({ slotType: SlotType.Empty, icon: ' ' });
+        rowItems.push({ slotType: SlotType.Empty, icon: ' ', slotIndex });
         continue;
       }
       rowItems.push({
@@ -147,12 +147,13 @@ export function createRowElementsForCraftingItems(state: InventoryBaseState, ite
         itemID: item.id,
         quality: getItemQuality(item),
         itemCount: getItemUnitCount(item),
+        slotIndex: slotIndex - 1,
         item,
       });
       ++slotIndex;
     }
     rows.push((
-      <InventoryRow key={rowIndex} items={rowItems} />
+      <InventoryRow key={rowIndex} items={rowItems} onDropOnZone={() => {}} />
     ));
     rowData.push(rowItems);
   }
@@ -166,6 +167,7 @@ export function createRowElements(
   state: InventoryBaseState,
   props: Partial<InventoryBaseWithQLProps>,
   itemData: {items: InventoryItemFragment[]},
+  onDropOnZone: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item) => void,
 ) {
   const rows: JSX.Element[] = [];
   const rowData: InventorySlotItemDef[][] = [];
@@ -178,7 +180,7 @@ export function createRowElements(
     for (let i = 0; i < state.slotsPerRow; ++i) {
       const itemDef = state.slotNumberToItem[slotIndex++];
       if (!itemDef) {
-        rowItems.push({ slotType: SlotType.Empty, icon: ' ' });
+        rowItems.push({ slotType: SlotType.Empty, icon: ' ', slotIndex: slotIndex - 1 });
         continue;
       }
 
@@ -188,6 +190,7 @@ export function createRowElements(
           icon: state.itemIdToInfo[itemDef.id].icon,
           groupStackHashID: itemDef.id,
           stackedItems: state.stackGroupIdToItemIDs[itemDef.id].map(id => itemMap[id]),
+          slotIndex: slotIndex - 1,
         });
         continue;
       }
@@ -199,6 +202,7 @@ export function createRowElements(
           groupStackHashID: itemDef.id,
           stackedItems: state.stackGroupIdToItemIDs[itemDef.id].map(id => itemMap[id]),
           item: itemDef.item,
+          slotIndex: slotIndex - 1,
         });
         continue;
       }
@@ -207,11 +211,12 @@ export function createRowElements(
         icon: state.itemIdToInfo[itemDef.id].icon,
         itemID: itemDef.id,
         item: itemDef.item,
+        slotIndex: slotIndex - 1,
       });
     }
 
     rows.push((
-      <InventoryRow equippedItems={props.equippedItems} key={rowIndex} items={rowItems} />
+      <InventoryRow equippedItems={props.equippedItems} key={rowIndex} items={rowItems} onDropOnZone={onDropOnZone} />
     ));
     rowData.push(rowItems);
   }
@@ -231,7 +236,7 @@ export function distributeItems(
     items: InventoryItemFragment[],
   },
   state: InventoryBaseState,
-  props: InventoryBaseProps): InventoryBaseState {
+  props: Partial<InventoryBaseWithQLProps>): InventoryBaseState {
   if (!itemData || !itemData.items) {
     return {
       ...slotsData,
@@ -261,16 +266,12 @@ export function distributeItemsNoFilter(slotsData: {
     items: InventoryItemFragment[],
   },
   state: InventoryBaseState,
-  props: InventoryBaseProps): InventoryBaseState {
+  props: Partial<InventoryBaseWithQLProps>): InventoryBaseState {
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem = {};
   const stackGroupIdToItemIDs = {};
   const itemIDToStackGroupID = {};
   const craftingNameToItemIDs = {};
-
-  if (itemData.items && props.onChangeInventoryItems) {
-    props.onChangeInventoryItems(itemData.items);
-  }
 
   const firstEmptyIndex = 0;
   const moveRequests: webAPI.MoveItemRequest[] = [];
@@ -307,6 +308,8 @@ export function distributeItemsNoFilter(slotsData: {
         partitionedItems.noPositionStackedItems[id] = itemArr;
         return;
       }
+
+      itemIDToStackGroupID[item.id] = id;
 
       slotNumberToItem[wantPosition] = {
         id,
@@ -384,7 +387,6 @@ export function distributeItemsNoFilter(slotsData: {
   });
 
   // figure out next available position
-
   // now we sort out positions for every item that doesn't have a position.
   // after figuring out the position, we will tell the server the position
   // using a batched api request so that they will remain in these positions
@@ -444,11 +446,20 @@ export function distributeItemsNoFilter(slotsData: {
     itemIdToInfo[id] = { slot: position, icon: getIcon(item) };
   });
 
+  const inventoryItems = [...itemData.items];
+  moveRequests.forEach((moveRequest: any) => {
+    const itemId = moveRequest.moveItemID;
+    const itemIndex = _.findIndex(itemData.items, item => item.id === itemId);
+    if (inventoryItems[itemIndex]) {
+      inventoryItems[itemIndex].location.inventory.position = moveRequest.to.position;
+    }
+  });
+
+  props.onChangeInventoryItems(inventoryItems);
   // batch move all items with no position
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
   }
-
   return {
     ...slotsData,
     itemIdToInfo,
@@ -467,11 +478,11 @@ export function distributeFilteredItems(slotsData: {
   rowCount: number,
   slotCount: number,
 },
-                                      itemData: {
-                                        items: InventoryItemFragment[],
-                                      },
-                                      state: InventoryBaseState,
-                                      props: InventoryBaseProps): InventoryBaseState {
+itemData: {
+  items: InventoryItemFragment[],
+},
+state: InventoryBaseState,
+props: Partial<InventoryBaseWithQLProps>): InventoryBaseState {
   const oldItemIdToInfo = _.merge({}, state.itemIdToInfo);
   const oldSlotNumberToItem = Object.assign({}, state.slotNumberToItem);
   const stackGroupIdToItemIDs = Object.assign({}, state.stackGroupIdToItemIDs);
@@ -496,10 +507,10 @@ export function distributeFilteredItems(slotsData: {
     if (!filteredItems[itemID]) {
       continue;
     }
-
+    const oldItem = oldItemIdToInfo[itemID];
     slotNumberToItem[indexCounter] = itemDef;
-    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
-    itemIdToInfo[itemID] = { slot: indexCounter, icon: oldItemIdToInfo[itemID].icon };
+    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: oldItem ? oldItem.icon : '' };
+    itemIdToInfo[itemID] = { slot: indexCounter, icon: oldItem ? oldItem.icon : '' };
 
     indexCounter++;
   }
@@ -1072,5 +1083,252 @@ export async function dropItemRequest(item: InventoryItemFragment) {
   // TEMPORARY: If webAPI fails, then fall back to client command DropItem
   if (!res.ok) {
     client.DropItem(item.id);
+  }
+}
+
+export function onMoveInventoryItem(dragItemData: any,
+                                    dropZoneData: ql.schema.Item | number,
+                                    state: InventoryBaseState,
+                                    props: InventoryBaseProps) {
+  if (typeof dropZoneData === 'number') {
+    return moveInventoryItemToEmptySlot(dragItemData, dropZoneData, state, props);
+  } else {
+    return swapInventoryItems(dragItemData, dropZoneData, state, props);
+  }
+}
+
+function moveInventoryItemToEmptySlot(dragItem: any,
+                                      dropZonePosition: number,
+                                      state: InventoryBaseState,
+                                      props: InventoryBaseProps) {
+  let dragItemData = dragItem.gearSlots ? dragItem.item : dragItem;
+  if (dragItem.item) {
+    const payload: UnequipItemCallback = {
+      item: dragItem.item,
+      gearSlots: dragItem.gearSlots,
+      dontUpdateInventory: true,
+    };
+    events.fire(eventNames.onUnequipItem, payload);
+  }
+
+  const dragItemId = getItemMapID(dragItemData, { itemIDToStackGroupID: state.itemIDToStackGroupID });
+
+  if (isStackedItem(dragItemData)) {
+    // If STACKED item, make a batchMove request
+    webAPI.ItemAPI.BatchMoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      createStackMoveItemRequests(dragItemData, dropZonePosition, state, props),
+    );
+  } else {
+    // If single item, make one moveItem request
+    const moveItemReq = JSON.stringify(createMoveItemRequestToInventoryPosition(dragItemData, dropZonePosition));
+    webAPI.ItemAPI.MoveItems(
+      webAPI.defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      moveItemReq as any,
+    );
+  }
+
+  // Now represent the swap in the UI...
+  const oldDragItemPosition = dragItemData.location.inventory ? dragItemData.location.inventory.position : -1;
+  if (dragItemData.location.inventory) {
+    dragItemData.location.inventory.position = dropZonePosition;
+  } else {
+    dragItemData = {
+      ...dragItemData,
+      location: {
+        ...dragItemData.location,
+        inventory: {
+          ...dragItemData.location.inventory,
+          position: dropZonePosition,
+        },
+      },
+    };
+  }
+
+  let invItems = props.inventoryItems;
+  const itemIndex = _.findIndex(invItems, item => item.id === dragItemData.id);
+  if (itemIndex > -1) {
+    if (isStackedItem(dragItemData)) {
+      state.stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
+        const i = _.findIndex(invItems, item => itemId === item.id);
+        invItems[i] = {
+          ...invItems[i],
+          location: {
+            ...invItems[i].location,
+            inventory: {
+              ...invItems[i].location.inventory,
+              position: dropZonePosition,
+            },
+          },
+        };
+      });
+    } else {
+      invItems[itemIndex] = dragItemData;
+    }
+  } else {
+    invItems = [...invItems, dragItemData];
+  }
+  props.onChangeInventoryItems(invItems);
+
+  delete state.slotNumberToItem[oldDragItemPosition];
+  return {
+    slotNumberToItem: {
+      ...state.slotNumberToItem,
+      [dropZonePosition]: {
+        id: dragItemId,
+        isStack: isStackedItem(dragItemData),
+        isCrafting: isCraftingItem(dragItemData),
+        item: dragItemData,
+      },
+    },
+
+    itemIdToInfo: {
+      ...state.itemIdToInfo,
+      [dragItemId]: {
+        slot: dropZonePosition,
+        icon: dragItemData.staticDefinition.iconUrl,
+      },
+    },
+  };
+}
+
+function swapInventoryItems(dragItem: any,
+                            dropZoneData: ql.schema.Item,
+                            state: InventoryBaseState,
+                            props: InventoryBaseProps,
+                          ) {
+  const dragItemData = dragItem.gearSlots ? dragItem.item : dragItem;
+  const dragItemId = getItemMapID(dragItemData, { itemIDToStackGroupID: state.itemIDToStackGroupID });
+  const dropZoneId = getItemMapID(dropZoneData, { itemIDToStackGroupID: state.itemIDToStackGroupID });
+  const invItems = props.inventoryItems;
+
+  let moveItemRequests: any[] = [];
+  if (isStackedItem(dragItemData)) {
+    // If dragged item is stacked item, add moveItem requests for each item in the stack.
+    const requests = createStackMoveItemRequests(dragItemData, dragItemData.location.inventory.position, state, props);
+    moveItemRequests = requests;
+
+    state.stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
+      const i = _.findIndex(invItems, item => item.id === itemId);
+      invItems[i] = {
+        ...invItems[i],
+        location: {
+          ...invItems[i].location,
+          inventory: {
+            ...invItems[i].location.inventory,
+            position: dropZoneData.location.inventory.position,
+          },
+        },
+      };
+    });
+  }
+
+  if (isStackedItem(dropZoneData)) {
+    // If dropzone item is stacked item, add moveItem requests for each item in the stack.
+    const requests = createStackMoveItemRequests(dropZoneData, dragItemData.location.inventory.position, state, props);
+    moveItemRequests = [...moveItemRequests, ...requests];
+
+    state.stackGroupIdToItemIDs[dropZoneId].forEach((itemId) => {
+      const i = _.findIndex(invItems, item => item.id === itemId);
+      invItems[i] = {
+        ...invItems[i],
+        location: {
+          ...invItems[i].location,
+          inventory: {
+            ...invItems[i].location.inventory,
+            position: dragItemData.location.inventory.position,
+          },
+        },
+      };
+    });
+  }
+
+  if (!isStackedItem(dragItemData) && !isStackedItem(dropZoneData)) {
+    // Both drag item and drop zone item are not stacked items. Just make two moveItem requests.
+    if (dragItemData.location.inventory) {
+      moveItemRequests = [
+        createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
+        createMoveItemRequestToInventoryPosition(dropZoneData, dragItemData.location.inventory.position),
+      ];
+    } else {
+      moveItemRequests = [
+        createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
+      ];
+    }
+  }
+
+  props.onChangeInventoryItems(invItems);
+
+  // Make move item requests to save the swapped positions to database
+  webAPI.ItemAPI.BatchMoveItems(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    moveItemRequests,
+  );
+
+  // Now represent the swap in the UI...
+  // Swap positions
+  if (dragItemData.location.inventory) {
+    const oldDragItemPosition = dragItemData.location.inventory.position;
+    const oldDropZonePosition = dropZoneData.location.inventory.position;
+    dragItemData.location.inventory.position = oldDropZonePosition;
+    dropZoneData.location.inventory.position = oldDragItemPosition;
+
+    // Represent the swap in the UI by updating slotNumberToItem
+    return {
+      slotNumberToItem: {
+        ...state.slotNumberToItem,
+        [dragItemData.location.inventory.position]: {
+          id: dragItemId,
+          isStack: isStackedItem(dragItemData),
+          isCrafting: isCraftingItem(dragItemData),
+          item: dragItemData,
+        },
+        [dropZoneData.location.inventory.position]: {
+          id: dropZoneId,
+          isStack: isStackedItem(dropZoneData),
+          isCrafting: isCraftingItem(dropZoneData),
+          item: dropZoneData,
+        },
+      },
+      itemIdToInfo: {
+        ...state.itemIdToInfo,
+        [dragItemId]: {
+          slot: dragItemData.location.inventory.position,
+          icon: dragItemData.staticDefinition.iconUrl,
+        },
+        [dropZoneId]: {
+          slot: dropZoneData.location.inventory.position,
+          icon: dropZoneData.staticDefinition.iconUrl,
+        },
+      },
+    };
+  }
+}
+
+function createStackMoveItemRequests(item: InventoryItemFragment,
+                                      newPosition: number,
+                                      state: InventoryBaseState,
+                                      props: InventoryBaseProps,
+                                    ) {
+  if (item.stackHash !== emptyStackHash) {
+    const itemId = getItemMapID(item, { itemIDToStackGroupID: state.itemIDToStackGroupID });
+    const moveItemRequests: any = [];
+    _.values(state.stackGroupIdToItemIDs[itemId]).forEach((id) => {
+      const item = _.find(props.inventoryItems, inventoryItem => inventoryItem.id === id);
+      moveItemRequests.push(createMoveItemRequestToInventoryPosition(
+        item,
+        newPosition,
+      ));
+    });
+    return moveItemRequests;
   }
 }

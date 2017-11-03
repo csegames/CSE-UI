@@ -94,7 +94,6 @@ export async function query<T>(query: QuickQLQuery, options?: Partial<QueryOptio
         },
       },
     );
-    
     if (response.ok) {
       return {
         data: JSON.parse(response.data).data as T,

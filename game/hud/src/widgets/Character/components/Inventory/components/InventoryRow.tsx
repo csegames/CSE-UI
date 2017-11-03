@@ -41,6 +41,7 @@ export interface InventoryRowProps {
   styles?: Partial<InventoryRowStyle>;
   items: InventorySlotItemDef[];
   equippedItems?: ql.schema.EquippedItem[];
+  onDropOnZone: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
 }
 
 export interface InventoryRowState {
@@ -78,20 +79,22 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
               itemIndex={index}
               onToggleContainer={this.toggleContainer}
               equippedItems={this.props.equippedItems}
+              onDropOnZone={this.props.onDropOnZone}
             />
           ))}
         </div>
-        <div className={css(ss.row, custom.row)}>
-          {this.state.showContainer ? (
+        {this.state.showContainer ? (
+          <div className={css(ss.row, custom.row)}>
             <InventoryContainer
               item={this.props.items[this.state.containerItemIndex]}
               searchValue={''}
               activeFilters={null}
               slotsPerRow={this.props.items.length}
               onCloseClick={this.hideContainer}
+              onDropOnZone={this.props.onDropOnZone}
             />
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     );
   }

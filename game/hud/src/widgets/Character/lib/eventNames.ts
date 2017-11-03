@@ -68,6 +68,7 @@ export interface EquipItemCallback {
 export interface UnequipItemCallback {
   item: InventoryItemFragment;
   gearSlots: Partial<ql.schema.GearSlotDefRef>[];
+  dontUpdateInventory?: boolean;
 }
 
 export interface DropItemCallback {

@@ -8,6 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { client, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
+import DragStore from '../DragAndDrop/DragStore';
 // import { graphql } from 'react-apollo';
 
 import {
@@ -71,7 +72,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {renderWidgets}
-
+        <DragStore />
         <ZoneName />
         <Console />
 

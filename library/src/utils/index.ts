@@ -13,6 +13,7 @@ export * from './compare';
 export * from './colorManipulation';
 export * from './searchUtils';
 export * from './textUtils';
+export * from './injectedProps';
 
 import * as KeyCodes from './keyCodes';
 

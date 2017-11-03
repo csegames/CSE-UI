@@ -18,7 +18,7 @@ const Container = styled('div')`
 `;
 
 export interface ScoreboardProps {
-
+  visible?: boolean;
 }
 
 export interface ScoreboardState {
@@ -30,7 +30,7 @@ class Scoreboard extends React.Component<ScoreboardProps, ScoreboardState> {
   constructor(props: ScoreboardProps) {
     super(props);
     this.state = {
-      visible: false,
+      visible: props.visible || false,
     };
   }
 

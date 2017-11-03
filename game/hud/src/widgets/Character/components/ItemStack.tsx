@@ -8,10 +8,13 @@ import * as React from 'react';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import ItemIcon from './ItemIcon';
-
 export interface ItemStackStyle extends StyleDeclaration {
   ItemStack: React.CSSProperties;
+  textContainer: React.CSSProperties;
+  header: React.CSSProperties;
+  footer: React.CSSProperties;
+  text: React.CSSProperties;
+  itemIcon: React.CSSProperties;
 }
 
 export const defaultItemStackStyle: ItemStackStyle = {
@@ -19,6 +22,78 @@ export const defaultItemStackStyle: ItemStackStyle = {
     width: '100%',
     height: '100%',
     position: 'relative',
+    cursor: 'pointer',
+  },
+
+  textContainer: {
+    position: 'absolute',
+    left: '0',
+    width: '100%',
+    background: 'inherit',
+    overflow: 'hidden',
+    cursor: 'inherit',
+    ':before': {
+      content: '""',
+      position: 'absolute',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      background: 'inherit',
+      backgroundAttachment: 'local',
+      webkitFilter: 'blur(4px)',
+      filter: 'blur(4px)',
+      cursor: 'inherit',
+    },
+    ':after': {
+      content: '""',
+      position: 'absolute',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0, 0, 0, 0.1)',
+      cursor: 'inherit',
+    },
+  },
+
+  header: {
+    top: 0,
+    ':before': {
+      top: 0,
+    },
+    ':after': {
+      top: 0,
+    },
+  },
+
+  footer: {
+    bottom: 0,
+    backgroundPosition: '0% 100%',
+    ':before': {
+      top: 0,
+    },
+    ':after': {
+      top: 0,
+    },
+  },
+
+  text: {
+    position: 'relative',
+    color: 'white',
+    textShadow: '0 1px 0 black',
+    textAlign: 'right',
+    zIndex: 1,
+    paddingRight: '2px',
+    cursor: 'inherit',
+    '-webkit-user-select': 'none',
+  },
+
+  itemIcon: {
+    verticalAlign: 'baseline',
+    backgroundSize: 'cover',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
     cursor: 'pointer',
   },
 };
@@ -45,7 +120,10 @@ export class ItemStack extends React.Component<ItemStackProps, ItemStackState> {
 
     return (
       <div className={css(ss.ItemStack, custom.ItemStack)}>
-        <ItemIcon url={this.props.icon} textBottom={this.props.count.toString()} />
+        <img className={css(ss.itemIcon, custom.itemIcon)} src={this.props.icon} />
+        <header className={css(ss.textContainer, custom.textContainer, ss.footer, custom.footer)}>
+          <div className={css(ss.text, custom.text)}>{this.props.count}</div>
+        </header>
       </div>
     );
   }

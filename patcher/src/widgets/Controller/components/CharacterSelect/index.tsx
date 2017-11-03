@@ -210,6 +210,8 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   public componentWillReceiveProps(nextProps: CharacterSelectProps) {
     if (!this.state.selectedCharacter || !this.props.selectedServer) return;
     if (this.props.selectedServer.shardID !== nextProps.selectedServer.shardID) {
+      console.log(nextProps.characters);
+      console.log(nextProps.characters[0]);
       this.selectCharacter(nextProps.characters[0]);
     }
   }

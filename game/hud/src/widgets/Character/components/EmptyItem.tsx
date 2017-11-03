@@ -5,28 +5,28 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import ItemIcon from './ItemIcon';
+import styled from 'react-emotion';
 
-export interface EmptyItemStyle extends StyleDeclaration {
-  EmptyItem: React.CSSProperties;
+const Item = styled('div')`
+  vertical-align: baseline;
+  background-size: cover;
+  width: ${(props: any) => props.width};
+  height: ${(props: any) => props.height};
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+`;
+
+export interface EmptyItemProps {
+  height?: number;
+  width?: number;
+  index?: number;
 }
 
-export const defaultEmptyItemStyle: EmptyItemStyle = {
-  EmptyItem: {
-    width: '100%',
-    height: '100%',
-    cursor: 'pointer',
-  },
-};
-
-export const EmptyItem = (props: {styles?: Partial<EmptyItemStyle>}) => {
-  const ss = StyleSheet.create(defaultEmptyItemStyle);
-  const custom = StyleSheet.create(props.styles || {});
+export const EmptyItem = (props: EmptyItemProps) => {
   return (
-    <div className={css(ss.EmptyItem, custom.EmptyItem)} >
-      {/* REQUIRED EMPTY SPACE HERE -- OTHERWISE FORMATTING GETS FUCKED*/}
-      <ItemIcon url={' '} />
+    <div style={{ position: 'relative' }}>
+      <Item width={props.width ? `${props.width}px` : '100%'} height={props.height ? `${props.height}px` : '100%'} />
     </div>
   );
 };
