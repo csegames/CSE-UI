@@ -198,6 +198,11 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     });
   }
 
+  public componentDidCatch(error: Error, info: any) {
+    console.error(error);
+    console.log(info);
+  }
+
   public componentWillUnmount() {
     events.off('character-created');
   }
@@ -210,19 +215,21 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
-    useConfig({
-      url: `https://hatcheryapi.camelotunchained.com/graphql`,
-      requestOptions: {
-        headers: {
-          loginToken: client.loginToken,
-          shardID: `${client.shardID}`,
-          characterID: character.id,
+    if (character) {
+      useConfig({
+        url: `https://hatcheryapi.camelotunchained.com/graphql`,
+        requestOptions: {
+          headers: {
+            loginToken: client.loginToken,
+            shardID: `${client.shardID}`,
+            characterID: character.id,
+          },
         },
-      },
-      stringifyVariables: true,
-    });
-    this.props.selectCharacter(character);
-    this.setState({selectedCharacter: character} as any);
+        stringifyVariables: true,
+      });
+      this.props.selectCharacter(character);
+      this.setState({selectedCharacter: character} as any);
+    }
   }
 }
 
