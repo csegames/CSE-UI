@@ -77,7 +77,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentDidMount() {
-    events.on('patcher--select-server', server => {
+    events.on('patcher--select-server', (server) => {
       this.setState({ selectedServer: server });
     });
     events.on('view-content', (v: view, props: any) => {

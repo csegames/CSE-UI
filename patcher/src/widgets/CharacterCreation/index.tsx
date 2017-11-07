@@ -193,9 +193,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       case CharacterCreationPage.Attributes:
         const remainingPoints = this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated;
         this.pushPagesVisited(CharacterCreationPage.Attributes);
-        if (this.pagesCompleted.find((pageNumber) => pageNumber === CharacterCreationPage.Attributes) &&
+        if (this.pagesCompleted.find(pageNumber => pageNumber === CharacterCreationPage.Attributes) &&
           remainingPoints !== 0) {
-          this.pagesCompleted.filter((pageNumber) => pageNumber === CharacterCreationPage.Attributes);
+          this.pagesCompleted.filter(pageNumber => pageNumber === CharacterCreationPage.Attributes);
         }
         content = (
           <AttributesSelect
@@ -246,49 +246,49 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     const pages: NavigationPageInfo[] = [
       {
         pageNumber: CharacterCreationPage.Faction,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Faction) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Faction) !== -1,
         onClick: () => this.goToPage(CharacterCreationPage.Faction),
       },
       {
         pageNumber: CharacterCreationPage.Race,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Race) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Race) !== -1,
           onClick: () => this.goToPage(CharacterCreationPage.Race),
       },
       {
         pageNumber: CharacterCreationPage.Class,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Class) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Class) !== -1,
         onClick: () => this.goToPage(CharacterCreationPage.Class),
       },
       {
         pageNumber: CharacterCreationPage.Attributes,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Attributes) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Attributes) !== -1,
         onClick: () => this.goToPage(CharacterCreationPage.Attributes),
       },
       {
         pageNumber: CharacterCreationPage.BanesAndBoons,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.BanesAndBoons) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.BanesAndBoons) !== -1,
         onClick: () => this.goToPage(CharacterCreationPage.BanesAndBoons),
       },
       {
         pageNumber: CharacterCreationPage.Summary,
-        pageComplete: this.pagesCompleted.findIndex((pageNumber) =>
+        pageComplete: this.pagesCompleted.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Summary) !== -1,
-        pageVisited: this.pagesVisited.findIndex((pageNumber) =>
+        pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Summary) !== -1,
         onClick: () => this.goToPage(CharacterCreationPage.Summary),
       },
@@ -344,6 +344,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     });
   }
 
+  public componentDidCatch(error: any, info: any) {
+    console.error(error);
+    console.log(info);
+  }
+
   public componentWillUpdate(nextProps: CharacterCreationProps, nextState: CharacterCreationState) {
     if (!_.isEqual(nextProps.factionsState.selected, this.props.factionsState.selected) ||
       !_.isEqual(nextProps.racesState.selected, this.props.racesState.selected) ||
@@ -380,8 +385,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private filterVisitedAndCompletedPages = (page: CharacterCreationPage) => {
-    this.pagesCompleted = this.pagesCompleted.filter((pageNumber) => pageNumber <= page);
-    this.pagesVisited = this.pagesVisited.filter((pageNumber) => pageNumber <= page);
+    this.pagesCompleted = this.pagesCompleted.filter(pageNumber => pageNumber <= page);
+    this.pagesVisited = this.pagesVisited.filter(pageNumber => pageNumber <= page);
   }
 
   private create = () => {
@@ -450,11 +455,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     this.props.dispatch(selectPlayerClass(factionClasses[0]));
     this.props.dispatch(selectRace(factionRaces[0]));
 
-    // reset race & class if they are not of the selected faction
-    if (this.props.racesState.selected && this.props.racesState.selected.faction !== selected.id) {
-      this.props.dispatch(selectRace(null));
-      this.props.dispatch(selectPlayerClass(null));
-    }
     events.fire('play-sound', 'select');
   }
 
@@ -584,7 +584,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private makeErrors = (errors: string[]) => {
-    errors.forEach((message) => toastr.error(message, 'Oh No!!', 5000));
+    errors.forEach(message => toastr.error(message, 'Oh No!!', 5000));
   }
 
   private resetAndInit = (apiHost: string = this.props.apiHost) => {

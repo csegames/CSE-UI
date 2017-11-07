@@ -28,7 +28,7 @@ export interface VisualEffectsProps {
 class VisualEffects extends React.Component<VisualEffectsProps, {}> {
   public render() {
     const { layerInfo, renderMisc } = this.props;
-
+    
     return (
       <div className='videobg'>
         <div className='parallax'>

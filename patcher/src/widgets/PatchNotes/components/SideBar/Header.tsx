@@ -87,7 +87,7 @@ class SideBarHeader extends React.Component<SideBarHeaderProps> {
         <SearchBar
           placeholder='Search patch notes'
           value={this.props.searchValue}
-          onChange={(e) => this.props.onSearchChange(e.target.value)}
+          onChange={e => this.props.onSearchChange(e.target.value)}
         />
         <Button className='filter-button' onClick={this.props.toggleFilter}>
           <span className={`fa ${this.props.filterOn ? 'fa-sort-desc' : 'fa-sort-asc'}`}></span>

@@ -150,7 +150,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   }
 }
 
-const SideBarWithQL = withGraphQL<SideBarProps>((props) => ({
+const SideBarWithQL = withGraphQL<SideBarProps>(props => ({
   query: `
     query SideBar($channel: Int!) {
       patchNotes(channel: $channel) {

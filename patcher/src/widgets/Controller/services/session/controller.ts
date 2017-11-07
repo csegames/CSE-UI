@@ -390,8 +390,6 @@ export const characterUpdate = module.createAction({
     const characters = utils.clone(s.characters);
     characters[a.character.id] = a.character;
     const servers = updateCharacterCounts(utils.clone(s.servers), characters);
-    console.log(a.character.id);
-    console.log(characters);
     return {
       characters,
       servers,

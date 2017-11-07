@@ -32,7 +32,6 @@ export interface RaceVisualEffectsState {
 export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, RaceVisualEffectsState> {
   public render() {
     const { selectedFaction, selectedRace, selectedGender } = this.props;
-    
     const arthurianLayerInfo = [
       { id: 'bg', extraClass: 'arthurian',resistance: -90, shouldParallaxVertical: true },
       { id: 'layer3', extraClass: 'arthurian',resistance: 90 },
