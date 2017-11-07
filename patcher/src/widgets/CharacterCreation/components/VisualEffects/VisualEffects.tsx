@@ -12,40 +12,42 @@ declare var $: any;
 declare var TweenLite: any;
 declare var particlesJS: any;
 
-export interface RenderParticleInfo {
+export interface LayerInfo {
   id: string;
-  effect: any;
-}
-
-export interface RenderParallaxInfo {
-  id: string;
-  resistance: number;
+  resistance?: number;
   extraClass?: string;
   shouldParallaxVertical?: boolean;
+  particleEffect?: any;
 }
 
 export interface VisualEffectsProps {
-  particlesInfo: RenderParticleInfo[] | RenderParticleInfo;
-  parallaxInfo: RenderParallaxInfo[] | RenderParallaxInfo;
+  layerInfo: LayerInfo[] | LayerInfo;
   renderMisc?: () => JSX.Element;
 }
 
 class VisualEffects extends React.Component<VisualEffectsProps, {}> {
   public render() {
-    const { particlesInfo, parallaxInfo, renderMisc } = this.props;
+    const { layerInfo, renderMisc } = this.props;
 
     return (
       <div className='videobg'>
-        {_.isArray(particlesInfo) ? particlesInfo.map((particleInfo, i) => {
-          return <div key={i} id={particleInfo.id} className={particleInfo.id} />;
-        }) : <div id={particlesInfo.id} className={particlesInfo.id} />}
         <div className='parallax'>
-          {_.isArray(parallaxInfo) ? parallaxInfo.map((parallaxInfo, i) => {
-            const extraClass = parallaxInfo.extraClass ? parallaxInfo.extraClass : '';
-
-            // TODO: LOOK HERE SOMETIME !!!
-            return <div key={i} className={`bgelement ${parallaxInfo.id} ${extraClass}`} />;
-          }) : <div className={`bgelement ${parallaxInfo.id} ${parallaxInfo.extraClass ? parallaxInfo.extraClass : ''}`} />}
+          {_.isArray(layerInfo) ? layerInfo.map((layer, i) => {
+            if (layer.particleEffect) {
+              // Particle layer
+              return <div key={i} id={layer.id} className={layer.id} />;
+            } else {
+              // Parallax layer
+              const extraClass = layer.extraClass ? layer.extraClass : '';
+              return <div key={i} className={`bgelement ${layer.id} ${extraClass}`} />;
+            }
+          }) : () => {
+            if (layerInfo.particleEffect) {
+              return <div id={layerInfo.id} className={layerInfo.id} />;
+            } else {
+              <div className={`bgelement ${layerInfo.id} ${layerInfo.extraClass ? layerInfo.extraClass : ''}`} />;
+            }
+          }}
         </div>
         {this.props.renderMisc && this.props.renderMisc()}
       </div>
@@ -61,7 +63,7 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
   }
 
   private setParallax = (e: MouseEvent) => {
-    const { parallaxInfo } = this.props;
+    const { layerInfo } = this.props;
     $.fn.parallaxBoth = function(resistance: any, mouse: any) {
       const el = $(this);
       TweenLite.to(el, 1, {
@@ -77,33 +79,41 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
       });
     };
     
-    if (_.isArray(parallaxInfo)) {
-      // this.props.parallaxInfo is an array
-      parallaxInfo.forEach((parallax) => {
-        if (!parallax.shouldParallaxVertical) {
-          return $(`.${parallax.id}`).parallaxHorizontal(parallax.resistance, e);
+    if (_.isArray(layerInfo)) {
+      // this.props.layerInfo is an array
+      layerInfo.forEach((layer) => {
+        if (!layer.particleEffect) {
+          if (!layer.shouldParallaxVertical) {
+            return $(`.${layer.id}`).parallaxHorizontal(layer.resistance, e);
+          }
+          return $(`.${layer.id}`).parallaxBoth(layer.resistance, e);
         }
-        return $(`.${parallax.id}`).parallaxBoth(parallax.resistance, e);
       });
     } else {
-      // this.props.parallaxInfo is an object
-      if (!parallaxInfo.shouldParallaxVertical) {
-        return $(`.${parallaxInfo.id}`).parallaxHorizontal(parallaxInfo.resistance, e);
+      // this.props.layerInfo is an object
+      if (!layerInfo.particleEffect) {
+        if (!layerInfo.shouldParallaxVertical) {
+          return $(`.${layerInfo.id}`).parallaxHorizontal(layerInfo.resistance, e);
+        }
+        return $(`.${layerInfo.id}`).parallaxBoth(layerInfo.resistance, e);
       }
-      return $(`.${parallaxInfo.id}`).parallaxBoth(parallaxInfo.resistance, e);
     }
   }
 
   private setParticles = () => {
-    const { particlesInfo } = this.props;
-    if (_.isArray(particlesInfo)) {
-      // this.props.particlesInfo is an array
-      particlesInfo.forEach((particle) => {
-        return particlesJS(particle.id, particle.effect);
+    const { layerInfo } = this.props;
+    if (_.isArray(layerInfo)) {
+      // this.props.layerInfo is an array
+      layerInfo.forEach((layer) => {
+        if (layer.particleEffect) {
+          return particlesJS(layer.id, layer.particleEffect);
+        }
       });
     } else {
-      // this.props.particlesInfo is an object
-      particlesJS(particlesInfo.id, particlesInfo.effect);
+      // this.props.layerInfo is an object
+      if (layerInfo.particleEffect) {
+        particlesJS(layerInfo.id, layerInfo.particleEffect);
+      }
     }
   }
 }
