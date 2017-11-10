@@ -138,14 +138,18 @@ export function initializePlayerSession() {
       }),
     );
 
-    client.OnCharacterPositionChanged(_.throttle((x: number, y: number) =>
-      dispatch(onCharacterPositionChanged({ x, y })), 250));
+    client.OnCharacterPositionChanged(_.throttle((x: number, y: number) => {
+      dispatch(onCharacterPositionChanged({ x, y }));
+    }, 1000));
 
-    client.OnFriendlyTargetPositionChanged(_.throttle((x: number, y: number) =>
-      dispatch(onTargetPositionChanged({ x, y })), 250));
+    client.OnFriendlyTargetPositionChanged(_.throttle((x: number, y: number) => {
+      dispatch(onTargetPositionChanged({ x, y }));
+    }, 1000));
 
     // init handlers / events
-    events.on(events.clientEventTopics.handlesFriendlyTarget, (player: Player) => dispatch(onCharacterUpdate(player)));
+    events.on(events.clientEventTopics.handlesFriendlyTarget,
+      _.throttle((player: Player) => dispatch(onCharacterUpdate(player)), 250,
+    ));
 
   };
 }

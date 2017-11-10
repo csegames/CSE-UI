@@ -39,7 +39,7 @@ export interface PillsState {
   showTextValues: boolean;
 }
 
-class Pills extends React.Component<PillsProps, PillsState> {
+class Pills extends React.PureComponent<PillsProps, PillsState> {
 
   private mounted = false;
   private hoverTimeoutID: any = null;

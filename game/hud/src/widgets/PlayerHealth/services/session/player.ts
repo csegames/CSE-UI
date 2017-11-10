@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as _ from 'lodash';
 import { client, events, Race, Faction, Gender, hasClientAPI, Player } from 'camelot-unchained';
 import { PlayerStatus, BodyParts } from '../../../../lib/PlayerStatus';
 
@@ -167,7 +168,9 @@ export function initializePlayerSession() {
       client.OnCharacterGenderChanged((gender: Gender) => dispatch(onAvatarChanged(getAvatar(gender, race))));
     });
 
-    events.on(events.clientEventTopics.handlesCharacter, (player: Player) => dispatch(onCharacterUpdate(player)));
+    events.on(events.clientEventTopics.handlesCharacter,
+      _.throttle((player: Player) => dispatch(onCharacterUpdate(player)), 250,
+    ));
 
   };
 }

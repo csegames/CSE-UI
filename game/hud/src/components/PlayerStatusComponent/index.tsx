@@ -62,9 +62,9 @@ export interface PlayerStatusComponentState {
   events: CombatEvent[];
 }
 
-class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, PlayerStatusComponentState> {
-
+class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentProps, PlayerStatusComponentState> {
   private shakeAnimationName: string = 'shakeit';
+  private mounted: boolean;
   private endTime: number = 0;
   private componentRef: HTMLDivElement = null;
 
@@ -292,12 +292,13 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     );
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     client.OnCombatLogEvent(this.parseCombatLogEvent);
+    this.mounted = true;
   }
 
   public componentWillUnmount() {
-
+    this.mounted = false;
   }
 
   public componentWillReceiveProps(props: PlayerStatusComponentProps) {
@@ -321,7 +322,6 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
 
   private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
     const events: CombatEvent[] = [];
-
     combatLogs.forEach((e) => {
       if (e.toName !== this.props.playerStatus.name) return;
       if (e.damages) {
@@ -363,11 +363,14 @@ class PlayerStatusComponent extends React.Component<PlayerStatusComponentProps, 
     });
 
     if (events.length > 0) {
-      if (this.state.events.length > 0 && (Date.now() - this.state.events[this.state.events.length - 1].when) > 200) {
+      if (this.state.events.length > 0 &&
+          (Date.now() - this.state.events[this.state.events.length - 1].when) > 200 &&
+          this.mounted
+        ) {
         this.setState({
           events,
         });
-      } else {
+      } else if (this.mounted) {
         this.setState({
           events: this.state.events.concat(events),
         });

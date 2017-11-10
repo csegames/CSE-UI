@@ -37,7 +37,7 @@ function select(state: SessionState) {
   };
 }
 
-class TargetHealth extends React.Component<TargetHealthProps, TargetHealthState> {
+class TargetHealth extends React.PureComponent<TargetHealthProps, TargetHealthState> {
 
   constructor(props: TargetHealthProps) {
     super(props);

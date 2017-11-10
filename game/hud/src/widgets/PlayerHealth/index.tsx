@@ -31,7 +31,7 @@ export interface PlayerHealthProps extends ContainerProps {
 export interface PlayerHealthState {
 }
 
-class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+class PlayerHealth extends React.PureComponent<PlayerHealthProps, PlayerHealthState> {
 
   constructor(props: PlayerHealthProps) {
     super(props);
