@@ -162,7 +162,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     }
 
     const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
-
     return id ? (
       <div className={css(ss.InventorySlot, custom.InventorySlot)}>
         <Tooltip
@@ -172,7 +171,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             <TooltipContent
               item={item.item || item.stackedItems[0]}
               shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
-              instructions={item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
+              instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
             />
         }>

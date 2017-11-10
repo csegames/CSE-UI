@@ -116,19 +116,28 @@ export function itemHasPosition(item: InventoryItemFragment) {
 }
 
 export function getItemUnitCount(item: InventoryItemFragment) {
-  return item.stats.item.unitCount;
+  if (item && item.stats && item.stats.item && item.stats.item.unitCount) {
+    return item.stats.item.unitCount;
+  }
+  return -1;
 }
 
 export function getItemMass(item: InventoryItemFragment) {
-  return Number(item.stats.item.totalMass.toFixed(2));
+  if (item && item.stats && item.stats.item && item.stats.item.totalMass) {
+    return Number(item.stats.item.totalMass.toFixed(2));
+  }
+  return -1;
 }
 
 export function getItemQuality(item: InventoryItemFragment) {
-  return Number((item.stats.item.quality * 100).toFixed(2));
+  if (item && item.stats && item.stats.item && item.stats.item.quality) {
+    return Number((item.stats.item.quality * 100).toFixed(2));
+  }
+  return -1;
 }
 
 export function getItemInventoryPosition(item: InventoryItemFragment) {
-  if (item.location && item.location.inventory && item.location.inventory) {
+  if (item && item.location && item.location.inventory && item.location.inventory) {
     return item.location.inventory.position;
   } else {
     return -1;
@@ -136,7 +145,7 @@ export function getItemInventoryPosition(item: InventoryItemFragment) {
 }
 
 export function getItemDefinitionId(item: InventoryItemFragment) {
-  if (item.staticDefinition) {
+  if (item && item.staticDefinition && item.staticDefinition.id) {
     return item.staticDefinition.id;
   }
   console.error('You provided an item to getItemDefinitionId() function that has staticDefinition of null');
@@ -144,7 +153,7 @@ export function getItemDefinitionId(item: InventoryItemFragment) {
 }
 
 export function getItemDefinitionName(item: InventoryItemFragment) {
-  if (item.staticDefinition) {
+  if (item && item.staticDefinition && item.staticDefinition.name) {
     return item.staticDefinition.name;
   }
   console.error('You provided an item to getItemDefinitionName() function that has staticDefinition of null');
