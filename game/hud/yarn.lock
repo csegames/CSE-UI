@@ -1302,8 +1302,8 @@ camelcase@^3.0.0:
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
 camelot-unchained@^0.9.13:
-  version "0.9.22"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.22.tgz#9e211cfc4237bcc964e5ecbddd6b998022688920"
+  version "0.9.24"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.24.tgz#66744264992b6fc1729919a4fad495717c6ebf71"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
@@ -1321,9 +1321,9 @@ camelot-unchained@^0.9.13:
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
-camelot-unchained@^0.9.24:
-  version "0.9.24"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.24.tgz#66744264992b6fc1729919a4fad495717c6ebf71"
+camelot-unchained@^0.9.25:
+  version "0.9.25"
+  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.25.tgz#0ec75c97e0522138b1a7f090543613dfecd52351"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"

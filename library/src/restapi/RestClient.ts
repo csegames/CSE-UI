@@ -24,7 +24,7 @@ class Settings {
   constructor(channel: channelId) {
     this.core = new CoreSettings();
     this.timeout = 2000;
-    if (hasClientAPI()) {
+    if (hasClientAPI() && events) {
       events.on('init', () => {
         this.apiToken = client.loginToken;
         this.channelId = client.patchResourceChannel;

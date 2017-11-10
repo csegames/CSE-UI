@@ -224,7 +224,11 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
 
   public componentWillReceiveProps(nextProps: P) {
     const items = cloneDeep(nextProps.items);
-    const sortedItems = this.sortItems(items, this.props.columnDefinitions[this.state.currentSort.index], this.state.currentSort.sorted);
+    const sortedItems = this.sortItems(
+      items,
+      this.props.columnDefinitions[this.state.currentSort.index],
+      this.state.currentSort.sorted,
+    );
     this.setState({
       items,
       itemsPerPage: this.props.itemsPerPage || 25,

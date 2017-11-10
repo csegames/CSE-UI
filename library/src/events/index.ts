@@ -8,6 +8,20 @@ import EventEmitter from './EventEmitter';
 import { clientEventTopics } from './defaultTopics';
 import BuildingEventTopics from '../building/events/BuildingEventTopics';
 
+import InitListener from './listeners/Init';
+import AnnouncementsListener from './listeners/Announcements';
+import BeginChatListener from './listeners/BeginChat';
+import ChatListener from './listeners/Chat';
+import CharacterListener from './listeners/Character';
+import EnemyTargetListener from './listeners/EnemyTarget';
+import FriendlyTargetListener from './listeners/FriendlyTarget';
+import ControlGameListener from './listeners/ControlGame';
+import ControlGameScoreListener from './listeners/ControlGameScore';
+import InventoryListener from './listeners/Inventory';
+import EquippedGearListener from './listeners/EquippedGear';
+import ConsoleListener from './listeners/Console';
+import LoggingListener from './listeners/Logging';
+import PlotListener from './listeners/Plot';
 import BlockSelectListener from '../building/events/BlockSelect';
 import BuildingModeListener from '../building/events/BuildingMode';
 import BlueprintSelectListener from '../building/events/BlueprintSelect';
@@ -16,6 +30,20 @@ import BlueprintCopyListener from '../building/events/BlueprintCopy';
 const buildingEventTopics = BuildingEventTopics;
 // Listeners
 const listeners: any = {
+  [clientEventTopics.initialize]: new InitListener(),
+  [clientEventTopics.handlesAnnouncements]: new AnnouncementsListener(),
+  [clientEventTopics.handlesBeginChat]: new BeginChatListener(),
+  [clientEventTopics.handlesChat]: new ChatListener(),
+  [clientEventTopics.handlesCharacter]: new CharacterListener(),
+  [clientEventTopics.handlesEnemyTarget]: new EnemyTargetListener(),
+  [clientEventTopics.handlesFriendlyTarget]: new FriendlyTargetListener(),
+  [clientEventTopics.handlesControlGame]: new ControlGameListener(),
+  [clientEventTopics.handlesControlGameScore]: new ControlGameScoreListener(),
+  [clientEventTopics.handlesInventory]: new InventoryListener(),
+  [clientEventTopics.handlesEquippedGear]: new EquippedGearListener(),
+  [clientEventTopics.handlesConsole]: new ConsoleListener(),
+  [clientEventTopics.handlesLogging]: new LoggingListener(),
+  [clientEventTopics.handlesPlot]: new PlotListener(),
   [buildingEventTopics.handlesBlockSelect]: new BlockSelectListener(),
   [buildingEventTopics.handlesBuildingMode]: new BuildingModeListener(),
   [buildingEventTopics.handlesBlueprintSelect]: new BlueprintSelectListener(),
@@ -65,7 +93,6 @@ export function once(topic: string, callback: (...params: any[]) => void): any {
 }
 
 // Unregister from events
-
 /**
  * Register a callback for specified topic, once only.  Automatically unregisters
  * from the event one triggered.
@@ -78,7 +105,6 @@ export function off(listener: any): void {
 }
 
 // Fire events
-
 /**
  * Trigger an event for a topic, passing the event data (by reference) to any registered
  * handlers.  If passing by reference is an issue, the caller is responsible for cloning.
