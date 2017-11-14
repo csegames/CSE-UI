@@ -44,8 +44,8 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
       <div className={css(style.WarbandMemberDisplay)}>
         <PlayerStatusComponent
           containerClass='WarbandMemberDisplay__Health'
-          playerStatus={this.props.member as any}
-          isLeader={leader} events={[]}
+          playerState={this.props.member as any}
+          isLeader={leader}
         />
       </div>
     );

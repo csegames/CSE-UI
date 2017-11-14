@@ -14,15 +14,19 @@ export interface EntityState {
   name: string;
   alive: boolean;
 
-  // position of this entity, or null if we're not sending position
+  // position of this entity, or null / undefined if we're not sending position
   position?: {
     x: number;
     y: number;
     z: number;
   };
-  // effects by id -- not used, may not want it this way, but we had
-  // a callback for this already. null if none
-  effects?: string[];
+  
+  // status -- null / undefined if no status on entity
+  status?: {
+    name: string;
+    icon: string;
+    description: string;
+  }[];
 }
 
 export type AnyEntityState = PlayerState | SiegeState | null;

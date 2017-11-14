@@ -25,7 +25,7 @@ export interface CombatLog {
 
   damages?: {
     sent: number;
-    recieved: number;
+    received: number;
     part: bodyParts;
     type: damageTypes;
   }[];
@@ -33,31 +33,31 @@ export interface CombatLog {
   // damage against an abilities disruption health, high enough disruption damage causes and interrupt
   disruption?: {
     sent: number;
-    recieved: number;
-    tracksInterupted?: skillTracks;
+    received: number;
+    tracksInterrupted?: skillTracks;
     source: string;
   };
 
   heals?: {
     sent: number;
-    recieved: number;
+    received: number;
     part: bodyParts;
   }[];
 
-  // Array of body Part ids that recieved a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
+  // Array of body Part ids that received a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
   cures?: bodyParts[];
 
   // resources spent or gained
   resources?: {
     sent: number;
-    recieved: number;
+    received: number;
     type: resourceTypes;
   }[];
 
   // impulse = knock back or a force applied to your character
   impulse?: {
     sent: number;
-    recieved: number;
+    received: number;
   };
 
   activeEffects?: {

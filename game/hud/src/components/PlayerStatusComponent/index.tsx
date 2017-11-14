@@ -9,13 +9,16 @@ import {
   client,
   CombatLog,
   damageTypes,
+  PlayerState,
+  Gender,
+  Race,
 } from 'camelot-unchained';
 import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
 
 import Pills, { Orientation } from './components/Pills';
 
-import { PlayerStatus, BodyParts } from '../../lib/PlayerStatus';
+import { BodyParts } from '../../lib/PlayerStatus';
 
 const VALUE_PER_BODY_PARTY_PILL = 3334;
 const VALUE_PER_BLOOD_PILL = 1000;
@@ -32,6 +35,43 @@ const DEPLETED_COLOR_DEAD = '#4e4e4e';
 const WOUND_COLOR = '#301bd0';
 const WOUND_COLOR_DEAD = '#4e4e4e';
 
+
+const characterImages = {
+  humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
+  humanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png',
+  luchorpanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png',
+  luchorpanF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png',
+  valkyrieM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  valkyrieF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmalevM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png',
+  humanmaleaM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png',
+  humanmaletM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png',
+  humanmalevF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png',
+  humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
+  humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
+};
+
+function getAvatar(gender: Gender, race: Race) {
+  if (gender === Gender.Male) { // MALE
+    switch (race) {
+      case 2: return characterImages.luchorpanM; // Luchorpan
+      case 4: return characterImages.valkyrieM; // Valkyrie
+      case 15: return characterImages.humanmalevM; // Humanmalev
+      case 16: return characterImages.humanmaleaM; // Humanmalea
+      case 17: return characterImages.humanmaletM; // Humanmalet
+      case 18: return characterImages.humanM; // Pict
+    }
+  } else {
+    switch (race) {
+      case 2: return characterImages.luchorpanF; // Luchorpan
+      case 4: return characterImages.valkyrieF; // Valkyrie
+      case 15: return characterImages.humanmalevF; // Humanmalev
+      case 16: return characterImages.humanmaleaF; // Humanmalea
+      case 17: return characterImages.humanmaletF; // Humanmalet
+      case 18: return characterImages.humanF; // Pict
+    }
+  }
+}
 
 export interface DamageEvent {
   kind: 'damage';
@@ -53,9 +93,8 @@ type CombatEvent = DamageEvent | HealEvent;
 export interface PlayerStatusComponentProps {
   containerClass?: string;
   mirror?: boolean;
-  playerStatus: PlayerStatus;
-  events: any;
   isLeader?: boolean;
+  playerState: PlayerState;
 }
 
 export interface PlayerStatusComponentState {
@@ -76,6 +115,8 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
   }
 
   public render() {
+    if (!this.props.playerState || this.props.playerState.type !== 'player') return null;
+
     // if (!this.validPlayer()) return null;
     const now = Date.now();
     // did we recently take damage?
@@ -90,9 +131,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
       }
     }
 
-    const dead = this.props.playerStatus.blood.current <= 0 ||
-                 this.props.playerStatus.health[BodyParts.Torso].current <= 0 ||
-                 this.props.playerStatus.health[BodyParts.Head].current <= 0;
+    const dead = this.props.playerState.alive === false;
 
     return (
       <div className={
@@ -108,7 +147,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
 
           <div className='PlayerStatusComponent__circle__bg'></div>
           <div className='PlayerStatusComponent__circle__avatar'>
-            <img src={this.props.playerStatus.avatar}
+            <img src={getAvatar(this.props.playerState.gender, this.props.playerState.race)}
                  style={dead ? { filter: 'grayscale(100%)', '-webkit-filter': 'grayscale(100%)' } : {}} />
           </div>
 
@@ -122,8 +161,8 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BLOOD_PILL}
-                 currentValue={this.props.playerStatus.blood.current}
-                 maxValue={this.props.playerStatus.blood.maximum}
+                 currentValue={this.props.playerState.blood.current}
+                 maxValue={this.props.playerState.blood.max}
                  flashThreshold={BLOOD_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'red'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
@@ -132,8 +171,8 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  containerClass='PlayerStatusComponent__circle__blood'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_STAMINA_PILL}
-                 currentValue={this.props.playerStatus.stamina.current}
-                 maxValue={this.props.playerStatus.stamina.maximum}
+                 currentValue={this.props.playerState.stamina.current}
+                 maxValue={this.props.playerState.stamina.max}
                  flashThreshold={STAMINA_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : 'yellow'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR} />
@@ -203,12 +242,12 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='right-arm'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.RightArm].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.RightArm].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.RightArm].current}
+                 maxValue={this.props.playerState.health[BodyParts.RightArm].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.RightArm]}
+                 wounds={this.props.playerState.health[BodyParts.RightArm].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -217,12 +256,12 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='left-arm'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.LeftArm].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.LeftArm].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.LeftArm].current}
+                 maxValue={this.props.playerState.health[BodyParts.LeftArm].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.LeftArm]}
+                 wounds={this.props.playerState.health[BodyParts.LeftArm].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -231,12 +270,12 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='head'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.Head].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.Head].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.Head].current}
+                 maxValue={this.props.playerState.health[BodyParts.Head].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.Head]}
+                 wounds={this.props.playerState.health[BodyParts.Head].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -245,12 +284,12 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='torso'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.Torso].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.Torso].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.Torso].current}
+                 maxValue={this.props.playerState.health[BodyParts.Torso].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.Torso]}
+                 wounds={this.props.playerState.health[BodyParts.Torso].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -259,12 +298,12 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='right-leg'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.RightLeg].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.RightLeg].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.RightLeg].current}
+                 maxValue={this.props.playerState.health[BodyParts.RightLeg].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.RightLeg]}
+                 wounds={this.props.playerState.health[BodyParts.RightLeg].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
@@ -273,19 +312,19 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
                  ref='left-leg'
                  mirror={this.props.mirror}
                  valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerStatus.health[BodyParts.LeftLeg].current}
-                 maxValue={this.props.playerStatus.health[BodyParts.LeftLeg].maximum}
+                 currentValue={this.props.playerState.health[BodyParts.LeftLeg].current}
+                 maxValue={this.props.playerState.health[BodyParts.LeftLeg].max}
                  flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
                  valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
                  depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerStatus.wounds[BodyParts.LeftLeg]}
+                 wounds={this.props.playerState.health[BodyParts.LeftLeg].wounds}
                  woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
                  />
 
         </div>
 
         <div className={`PlayerStatusComponent__name ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >
-          {this.props.playerStatus.name}
+          {this.props.playerState.name}
         </div>
 
       </div>
@@ -323,17 +362,17 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
   private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
     const events: CombatEvent[] = [];
     combatLogs.forEach((e) => {
-      if (e.toName !== this.props.playerStatus.name) return;
+      if (e.toName !== this.props.playerState.name) return;
       if (e.damages) {
         let value = 0;
         let max = 0;
         let type = damageTypes.NONE;
         e.damages.forEach((d) => {
-          if (d.recieved > max) {
-            max = d.recieved | 0;
+          if (d.received > max) {
+            max = d.received | 0;
             type = d.type;
           }
-          value += d.recieved | 0;
+          value += d.received | 0;
         });
         events.push({
           id: generateID(7),
@@ -348,10 +387,10 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
         let value = 0;
         let max = 0;
         e.heals.forEach((d) => {
-          if (d.recieved > max) {
-            max = d.recieved | 0;
+          if (d.received > max) {
+            max = d.received | 0;
           }
-          value += d.recieved | 0;
+          value += d.received | 0;
         });
         events.push({
           id: generateID(7),
