@@ -16,8 +16,6 @@ const Container = styled('div')`
 import PlayerStatusComponent from './PlayerStatusComponent';
 
 export interface PlayerHealthProps {
-  containerClass?: string;
-  isMini?: boolean;
 }
 
 export interface PlayerHealthState extends PlayerState {
