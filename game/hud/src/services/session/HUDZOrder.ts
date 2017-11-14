@@ -6,8 +6,8 @@
 
 const HUDZOrder = {
   ErrorMessages: 0,
-  Warband: 1,
-  Building: 2,
+  Building: 1,
+  Warband: 2,
   Chat: 3,
   Compass: 4,
   Crafting: 5,

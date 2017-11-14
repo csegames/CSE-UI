@@ -7,6 +7,7 @@
 @import './components/Pills/index';
 
 .PlayerStatusComponent {
+  display: flex;
   -webkit-user-select: none !important;
   user-select: none !important;
   -webkit-user-drag: none !important;
@@ -226,11 +227,11 @@
 
 // Name
 .PlayerStatusComponent__name {
-  position: relative;
-  top: -90px;
+  position: absolute;
+  top: -5px;
   left: 125px;
   color: #ececec;
-  font-size: 1.1em;
+  font-size: 1.3em;
   width: 170px;
   pointer-events: all;
 }

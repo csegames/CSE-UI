@@ -12,9 +12,11 @@ import {
   PlayerState,
   Gender,
   Race,
+  Tooltip,
 } from 'camelot-unchained';
 import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
+import styled from 'react-emotion';
 
 import Pills, { Orientation } from './components/Pills';
 
@@ -72,6 +74,40 @@ function getAvatar(gender: Gender, race: Race) {
     }
   }
 }
+
+const StatusContainer = styled('div')`
+  flex-wrap: wrap;
+  position: relative;
+  left: 150px;
+  top: 15px;
+  width: fit-content;
+  width: 128px;
+  height: 35px;
+`;
+
+const StatusIcon = styled('div')`
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin-right: 2px;
+  border-radius: 15px;
+  cursor: pointer;
+  pointer-events: all;
+  background: url(${(props: any) => props.src}) no-repeat;
+  background-size: 30px 30px;
+  &:hover {
+    box-shadow: inset 0 0 3px 2px rgba(255,255,255,0.7);
+  }
+`;
+
+const StatusTooltipHeader = styled('header')`
+  font-size: 2em;
+  font-weight: bold;
+`;
+
+const StatusTooltipDescription = styled('p')`
+  font-size: 1.3em;
+`;
 
 export interface DamageEvent {
   kind: 'damage';
@@ -223,7 +259,9 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
           </TransitionMotion>
 
         </div>
-
+        <div className={`PlayerStatusComponent__name ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >
+          {this.props.playerState.name}
+        </div>
         <div className='PlayerStatusComponent__healthBars'>
 
           <ul className='PlayerStatusComponent__healthBars__labels'>
@@ -237,96 +275,126 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
             </li>
           </ul>
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='right-arm'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.RightArm].current}
-                 maxValue={this.props.playerState.health[BodyParts.RightArm].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.RightArm].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='right-arm'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.RightArm].current}
+            maxValue={this.props.playerState.health[BodyParts.RightArm].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.RightArm].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='left-arm'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.LeftArm].current}
-                 maxValue={this.props.playerState.health[BodyParts.LeftArm].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.LeftArm].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='left-arm'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.LeftArm].current}
+            maxValue={this.props.playerState.health[BodyParts.LeftArm].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.LeftArm].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='head'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.Head].current}
-                 maxValue={this.props.playerState.health[BodyParts.Head].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.Head].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='head'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.Head].current}
+            maxValue={this.props.playerState.health[BodyParts.Head].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.Head].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='torso'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.Torso].current}
-                 maxValue={this.props.playerState.health[BodyParts.Torso].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.Torso].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='torso'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.Torso].current}
+            maxValue={this.props.playerState.health[BodyParts.Torso].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : '#0093e8'}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.Torso].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='right-leg'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.RightLeg].current}
-                 maxValue={this.props.playerState.health[BodyParts.RightLeg].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.RightLeg].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='right-leg'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.RightLeg].current}
+            maxValue={this.props.playerState.health[BodyParts.RightLeg].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.RightLeg].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
 
-          <Pills orientation={Orientation.Horizontal}
-                 containerClass='PlayerStatusComponent__healthBars__bodyPart'
-                 ref='left-leg'
-                 mirror={this.props.mirror}
-                 valuePerPill={VALUE_PER_BODY_PARTY_PILL}
-                 currentValue={this.props.playerState.health[BodyParts.LeftLeg].current}
-                 maxValue={this.props.playerState.health[BodyParts.LeftLeg].max}
-                 flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
-                 valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
-                 depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
-                 wounds={this.props.playerState.health[BodyParts.LeftLeg].wounds}
-                 woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
-                 />
-
+          <Pills
+            orientation={Orientation.Horizontal}
+            containerClass='PlayerStatusComponent__healthBars__bodyPart'
+            ref='left-leg'
+            mirror={this.props.mirror}
+            valuePerPill={VALUE_PER_BODY_PARTY_PILL}
+            currentValue={this.props.playerState.health[BodyParts.LeftLeg].current}
+            maxValue={this.props.playerState.health[BodyParts.LeftLeg].max}
+            flashThreshold={BODY_PART_REGEN_FLASH_THRESHOLD}
+            valueColor={dead ? VALUE_COLOR_DEAD : VALUE_COLOR}
+            depletedColor={dead ? DEPLETED_COLOR_DEAD : DEPLETED_COLOR}
+            wounds={this.props.playerState.health[BodyParts.LeftLeg].wounds}
+            woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
+          />
         </div>
 
-        <div className={`PlayerStatusComponent__name ${this.props.mirror ? 'PlayerStatusComponent--mirrored' : ''}`} >
-          {this.props.playerState.name}
-        </div>
-
+        {this.props.playerState.status &&
+          <StatusContainer>
+            <div>
+            {this.props.playerState.status.map((status) => {
+              return (
+                <Tooltip fixedMode content={() => (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    maxWidth: '400px',
+                    maxHeight: '750px',
+                    overflow: 'hidden',
+                  }}>
+                    <StatusTooltipHeader>{status.name}</StatusTooltipHeader>
+                    <StatusTooltipDescription>{status.description}</StatusTooltipDescription>
+                  </div>
+                )} styles={{
+                  tooltipFixed: {
+                    backgroundColor: 'rgba(0,0,0,0.9)',
+                    maxWidth: '500px',
+                  },
+                }}>
+                  <StatusIcon src={status.icon} />
+                </Tooltip>
+              );
+            })}
+            </div>
+          </StatusContainer>
+        }
       </div>
     );
   }
