@@ -232,8 +232,11 @@
   left: 125px;
   color: #ececec;
   font-size: 1.3em;
-  width: 170px;
+  overflow: visible;
   pointer-events: all;
+  white-space: nowrap;
+  background-color: rgba(0,0,0,0.7);
+  padding: 0 5px;
 }
 
 .PlayerStatusComponent__name--mirrored {
