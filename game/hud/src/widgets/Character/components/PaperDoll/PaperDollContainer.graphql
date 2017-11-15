@@ -15,8 +15,4 @@ query PaperDollContainer {
     gender
     race
   }
-  myOrder {
-    id
-    name
-  }
 }

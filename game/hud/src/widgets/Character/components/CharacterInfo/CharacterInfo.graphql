@@ -15,7 +15,4 @@ query CharacterInfo {
       }
     }
   }
-  myOrder {
-    ...MyOrder
-  }
 }

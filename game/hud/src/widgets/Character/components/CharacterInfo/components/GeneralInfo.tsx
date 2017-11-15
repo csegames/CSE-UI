@@ -9,7 +9,7 @@ import { utils } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
-import { MyCharacterFragment, MyOrderFragment } from '../../../../../gqlInterfaces';
+import { MyCharacterFragment } from '../../../../../gqlInterfaces';
 
 export interface GeneralInfoStyles extends StyleDeclaration {
   GeneralInfo: React.CSSProperties;
@@ -78,7 +78,7 @@ const defaultGeneralInfoStyle: GeneralInfoStyles = {
 export interface GeneralInfoProps {
   styles?: Partial<GeneralInfoStyles>;
   myCharacter: MyCharacterFragment;
-  myOrder: MyOrderFragment;
+  myOrder: any;
 }
 
 export interface GeneralInfoState {
