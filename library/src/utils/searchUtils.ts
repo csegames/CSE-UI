@@ -10,7 +10,6 @@ import * as _ from 'lodash';
 export function doesSearchInclude(searchValue: string, itemName: string): boolean {
   if (itemName) {
     return searchValue ? fuzzySearch(searchValue.toLowerCase().replace(/\s/g, ''), itemName.toLowerCase()) : true;
-  } else {
-    return searchValue && searchValue === '' ? true : false;
   }
+  return searchValue && searchValue === '' ? true : false;
 }

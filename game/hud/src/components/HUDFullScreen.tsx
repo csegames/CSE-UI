@@ -8,7 +8,7 @@ import * as React from 'react';
 import { events, client, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
-import Social from '../widgets/Social';
+// import Social from '../widgets/Social';
 import Character from '../widgets/Character';
 import Map from '../widgets/Map';
 
@@ -150,12 +150,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           render: this.renderMap,
         },
       },
-      {
-        name: 'Social',
-        content: {
-          render: this.renderSocial,
-        },
-      },
+      // {
+      //   name: 'Social',
+      //   content: {
+      //     render: this.renderSocial,
+      //   },
+      // },
     ];
 
     return (
@@ -202,9 +202,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return <Character visibleComponent={this.state.visibleComponent} />;
   }
 
-  private renderSocial = (prop: { active: boolean }) => {
-    return <Social visibleComponent={this.state.visibleComponent} />;
-  }
+  // private renderSocial = (prop: { active: boolean }) => {
+  //   return <Social visibleComponent={this.state.visibleComponent} />;
+  // }
 
   private renderMap = (prop: { active: boolean }) => {
     return <Map visibleComponent={this.state.visibleComponent} />;

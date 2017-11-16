@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import {
-  ql,
+  // ql,
   ConfirmDialog,
   webAPI,
   client,
@@ -57,7 +57,7 @@ export default (props: {
   groupId: string;
   close: () => void;
   refetch: () => void;
-  member: ql.FullOrderMember;
+  member: any; // ql.FullOrderMember
   styles?: Partial<MemberListMenuStyle>;
 }) => {
 

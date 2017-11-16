@@ -7,16 +7,16 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
-  client,
-  ql,
-  webAPI,
+  // client,
+  // ql,
+  // webAPI,
   RaisedButton,
   Spinner,
   ConfirmDialog,
 } from 'camelot-unchained';
 import GroupTitle from './GroupTitle';
-import { selectLink } from '../services/session/navigation';
-import { SocialCategory } from '../services/session/nav/navTypes';
+// import { selectLink } from '../services/session/navigation';
+// import { SocialCategory } from '../services/session/nav/navTypes';
 
 export interface OrderAdminStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -69,7 +69,7 @@ export const defaultOrderAdminStyle: OrderAdminStyle = {
 export interface OrderAdminProps {
   dispatch: (action: any) => any;
   refetch: () => void;
-  order: ql.FullOrder;
+  order: any; // ql.FullOrder;
   styles?: Partial<OrderAdminStyle>;
 }
 
@@ -127,7 +127,8 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
 
         {/* DISBAND */}
         {
-          ql.hasPermission(this.props.order.myMemberInfo.permissions, 'everything') ?
+          // ql.hasPermission(this.props.order.myMemberInfo.permissions, 'everything') ?
+          false ?
           (
             <div className={css(ss.section, custom.section)}>
               <div className={css(ss.sectionTitle, custom.sectionTitle)}>
@@ -159,44 +160,44 @@ export class OrderAdmin extends React.Component<OrderAdminProps, OrderAdminState
   }
 
   private abandon = async () => {
-    const res = await webAPI.OrdersAPI.AbandonV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-    );
+    // const res = await webAPI.OrdersAPI.AbandonV1(
+    //   webAPI.defaultConfig,
+    //   client.loginToken,
+    //   client.shardID,
+    //   client.characterID,
+    // );
 
-    if (res.ok) {
-      this.setState({ abandoning: false, abandonError: null });
-      this.props.dispatch(selectLink({
-        kind: 'Primary',
-        category: SocialCategory.Order,
-        id: 'create',
-      }));
-      this.props.refetch();
-      return;
-    }
-    this.setState({ abandoning: false, abandonError: res.data });
+    // if (res.ok) {
+    //   this.setState({ abandoning: false, abandonError: null });
+    //   this.props.dispatch(selectLink({
+    //     kind: 'Primary',
+    //     category: SocialCategory.Order,
+    //     id: 'create',
+    //   }));
+    //   this.props.refetch();
+    //   return;
+    // }
+    // this.setState({ abandoning: false, abandonError: res.data });
   }
 
   private disband = async () => {
-    const res = await webAPI.OrdersAPI.DisbandV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-    );
-    if (res.ok) {
-      this.setState({ disbanding: false, disbandError: null });
-      this.props.dispatch(selectLink({
-        kind: 'Primary',
-        category: SocialCategory.Order,
-        id: 'create',
-      }));
-      this.props.refetch();
-      return;
-    }
-    this.setState({ disbanding: false, disbandError: res.data });
+    // const res = await webAPI.OrdersAPI.DisbandV1(
+    //   webAPI.defaultConfig,
+    //   client.loginToken,
+    //   client.shardID,
+    //   client.characterID,
+    // );
+    // if (res.ok) {
+    //   this.setState({ disbanding: false, disbandError: null });
+    //   this.props.dispatch(selectLink({
+    //     kind: 'Primary',
+    //     category: SocialCategory.Order,
+    //     id: 'create',
+    //   }));
+    //   this.props.refetch();
+    //   return;
+    // }
+    // this.setState({ disbanding: false, disbandError: res.data });
   }
 }
 

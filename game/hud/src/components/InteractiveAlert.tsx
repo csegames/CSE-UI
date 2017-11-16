@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { GroupInvite, groupType } from 'camelot-unchained';
+import { IGroupInvite, groupType } from 'camelot-unchained';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';
 import * as className from 'classnames';
@@ -77,7 +77,7 @@ export interface Alert {
 
 export default (props: {
   dispatch: (action: any) => any;
-  invites: GroupInvite[];
+  invites: IGroupInvite[];
   style?: Partial<InteractiveAlertStyle>;
 }) => {
 
@@ -91,8 +91,8 @@ export default (props: {
         render: () => {
           return (
             <div className={css(ss.invite)}>
-              <h6>{i.invitedByName} has invited you to a {groupType[i.groupType]}.</h6>
-              <em>Invite code: {i.inviteCode}</em>
+              <h6>{i.ForGroup} has invited you to a {groupType[i.ForGroup]}.</h6>
+              <em>Invite code: {i.Code}</em>
               <div className={className(css(ss.button, ss.acceptButton))} onClick={() => props.dispatch(acceptInvite(i))}>
                 Accept
               </div>

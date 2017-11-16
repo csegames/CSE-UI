@@ -92,7 +92,8 @@ export async function query<T>(query: QuickQLQuery, options?: Partial<QueryOptio
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-    });
+      },
+    );
     
     if (response.ok) {
       return {

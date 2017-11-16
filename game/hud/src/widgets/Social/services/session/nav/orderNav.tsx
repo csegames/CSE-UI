@@ -5,10 +5,11 @@
  */
 
 import * as React from 'react';
-import { utils, ql } from 'camelot-unchained';
+import { utils } from 'camelot-unchained';
 import { SocialCategory, defaultCategoryNav } from './navTypes';
 
-export function generateMenu(order: ql.FullOrder, member: ql.FullOrderMember, previousNav = defaultCategoryNav()) {
+export function generateMenu(order: any/*ql.FullOrder*/, member: any/*ql.FullOrderMember*/,
+   previousNav = defaultCategoryNav()) {
 
   const links = [
     {
@@ -41,7 +42,7 @@ export function generateMenu(order: ql.FullOrder, member: ql.FullOrderMember, pr
   ];
 
   if (order.ranks !== null && order.ranks.length > 0) {
-    const memberRankIndex = utils.findIndexWhere(order.ranks, o => o.name === member.rank.name);
+    const memberRankIndex = -1; // utils.findIndexWhere(order.ranks, o => o.name === member.rank.name);
     if (memberRankIndex < 0 || memberRankIndex > order.ranks.length) throw new Error('Invalid member rank index');
 
     const memberRank = order.ranks[memberRankIndex];

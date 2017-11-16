@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { webAPI, client, ql, FloatSpinner } from 'camelot-unchained';
+import { /*webAPI, client,*/ ql, FloatSpinner } from 'camelot-unchained';
 
 export interface RankListItemMenuStyle extends StyleDeclaration {
   list: React.CSSProperties;
@@ -65,22 +65,22 @@ class RankListItemMenu extends React.Component<RankListItemMenuProps, RankListIt
   }
 
   private doDelete = async () => {
-    await this.setState({ deleting: true, deleteError: null });
+  //   await this.setState({ deleting: true, deleteError: null });
 
-    const res = await webAPI.GroupsAPI.RemoveRankV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      this.props.groupId,
-      this.props.rank.name,
-    );
-    if (res.ok) {
-      this.setState({ deleting: false });
-      this.props.refetch();
-      this.props.close();
-    }
-    this.setState({ deleting: false, deleteError: res.data });
+  //   const res = await webAPI.GroupsAPI.RemoveRankV1(
+  //     webAPI.defaultConfig,
+  //     client.loginToken,
+  //     client.shardID,
+  //     client.characterID,
+  //     this.props.groupId,
+  //     this.props.rank.name,
+  //   );
+  //   if (res.ok) {
+  //     this.setState({ deleting: false });
+  //     this.props.refetch();
+  //     this.props.close();
+  //   }
+  //   this.setState({ deleting: false, deleteError: res.data });
   }
 }
 

@@ -6,9 +6,9 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, ql, events } from 'camelot-unchained';
+import { client, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
-import { graphql } from 'react-apollo';
+// import { graphql } from 'react-apollo';
 
 import {
   LayoutState,
@@ -90,6 +90,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   public componentWillReceiveProps(props: HUDProps) {
+    if (!this.props.data && !props.data) return;
     if (!this.props.data ||
         (props.data && props.data.myOrder && props.data.myOrder.name !==
         (this.props.data && this.props.data.myOrder && this.props.data.myOrder.name))) {
@@ -97,7 +98,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       if (this.props.data && this.props.data.myOrder) events.fire('chat-leave-room', this.props.data.myOrder.name);
 
       // we either are just loading up, or we've changed order.
-      if (props.data.myOrder.id) {
+      if (props.data.myOrder && props.data.myOrder.id) {
         // we left our order, leave chat room
         events.fire('chat-show-room', props.data.myOrder.name);
       }
@@ -188,7 +189,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 }
 
-const HUDWithQL: any = graphql(ql.queries.MySocial)(HUD);
+const HUDWithQL: any = HUD; // graphql(ql.queries.MySocial)(HUD);
 
 function select(state: SessionState) {
   return {

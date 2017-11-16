@@ -167,7 +167,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
       }
     }
 
-    const dead = this.props.playerState.alive === false;
+    const dead = this.props.playerState.isAlive === false;
 
     return (
       <div className={

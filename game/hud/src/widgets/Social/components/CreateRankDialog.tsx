@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql, webAPI, client, Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
+import { ql, /*webAPI, client,*/ Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 
@@ -62,7 +62,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
 
     const permissions = {};
     props.permissions.forEach((p) => {
-      permissions[p.tag] = <Tooltip content={p.description}>{p.name}</Tooltip>;
+      permissions[p.id] = <Tooltip content={p.description}>{p.name}</Tooltip>;
     });
 
     this.state = {
@@ -87,6 +87,7 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
           {
               this.state.errors ? <p>{this.state.errors}!</p> : null
           }
+
           <Input label={'Name'} type='text' inputRef={r => this.nameInputRef = r}/>
           <Input
             label={'Level (2-1000)'}
@@ -123,32 +124,32 @@ class CreateRankDialog extends React.Component<CreateRankProps, CreateRankState>
   }
 
   private createRank = async () => {
-    const name = this.nameInputRef.value;
-    const level = Number.parseInt(this.levelInputRef.value);
-    const permisisons = this.listSelectRef.getRightKeys();
+    // const name = this.nameInputRef.value;
+    // const level = Number.parseInt(this.levelInputRef.value);
+    // const permisisons = this.listSelectRef.getRightKeys();
 
-    await this.setState({ requestActive: true });
+    // await this.setState({ requestActive: true });
 
-    const res = await webAPI.GroupsAPI.CreateRankV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      this.props.groupId,
-      name,
-      level,
-      permisisons,
-    );
-    if (res.ok) {
-      this.setState({
-        requestActive: false,
-        success: true,
-        errors: null,
-      });
-      setTimeout(() => this.props.onCreated(), 200);
-      return;
-    }
-    this.setState({ requestActive: false, errors: res.data });
+    // const res = await webAPI.GroupsAPI.CreateRankV1(
+    //   webAPI.defaultConfig,
+    //   client.loginToken,
+    //   client.shardID,
+    //   client.characterID,
+    //   this.props.groupId,
+    //   name,
+    //   level,
+    //   permisisons,
+    // );
+    // if (res.ok) {
+    //   this.setState({
+    //     requestActive: false,
+    //     success: true,
+    //     errors: null,
+    //   });
+    //   setTimeout(() => this.props.onCreated(), 200);
+    //   return;
+    // }
+    // this.setState({ requestActive: false, errors: res.data });
 
   }
 

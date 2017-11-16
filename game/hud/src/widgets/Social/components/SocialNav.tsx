@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql } from 'camelot-unchained';
+// import { ql } from 'camelot-unchained';
 import * as classNames from 'classnames';
 
 import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';
@@ -119,7 +119,7 @@ export const defaultSocialNavStyle: SocialNavStyle = {
 };
 
 export interface SocialNavProps {
-  mySocial: ql.MySocialQuery;
+  mySocial: any; // ql.MySocialQuery;
   refresh: () => void;
   navigation: NavigationState;
   dispatch: (action: any) => void;

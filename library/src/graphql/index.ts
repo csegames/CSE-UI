@@ -5,16 +5,10 @@
  */
 
 // Types are accumulated and exported from fragments, queries, or types
-export * from './fragments';
-export * from './queries';
 export * from './schema';
 
-import fragments from './fragments';
-import queries from './queries';
 import * as schema from './schema';
 
 export {
-  fragments,
-  queries,
   schema,
 };

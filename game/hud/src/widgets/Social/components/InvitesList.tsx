@@ -40,13 +40,13 @@ export interface InvitesListProps {
 }
 
 async function onAcceptInvitePress(invite: ql.Invite) {
-  const res = await webAPI.GroupsAPI.AcceptInviteV1(
+  const res = await webAPI.GroupsAPI.JoinV1(
     webAPI.defaultConfig,
     client.loginToken,
     client.shardID,
     client.characterID,
-    invite.groupID,
-    invite.inviteCode,
+    invite.forGroup,
+    invite.code,
   );
   return {
     ok: res.ok,
@@ -59,27 +59,27 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
     return <GridView items={props.data.myCharacter.invites}
                 columnDefinitions={[
                   {
-                    key: (i: ql.Invite) => i.groupType,
+                    key: (i: ql.Invite) => i.forGroup,
                     title: 'Group Type',
                     sortable: true,
-                    renderItem: (i: ql.Invite) => <span>{i.groupType}</span>,
+                    renderItem: (i: ql.Invite) => <span>{i.forGroup}</span>,
                   },
                   {
-                    key: (i: ql.Invite) => i.groupID,
+                    key: (i: ql.Invite) => i.forGroup,
                     title: 'Group',
                     sortable: true,
                     renderItem: (i: ql.Invite) => {
-                      if (i.groupType === 'Order') {
-                        return <InlineOrder id={i.groupID} shard={client.shardID} />;
+                      if (i.forGroup === 'Order') {
+                        return <InlineOrder id={i.forGroup} shard={client.shardID} />;
                       }
-                      return <InlineWarband id={i.groupID} shard={client.shardID} />;
+                      return <InlineWarband id={i.forGroup} shard={client.shardID} />;
                     },
                   },
                   {
-                    key: (i: ql.Invite) => i.member,
+                    key: (i: ql.Invite) => i.targetsID128,
                     title: 'Sent By',
                     sortable: true,
-                    renderItem: (i: ql.Invite) => <span>{i.member.name}</span>,
+                    renderItem: (i: ql.Invite) => <span>{i.targetsID128}</span>,
                   },
                   {
                     key: (i: ql.Invite) => i.status,
@@ -88,7 +88,7 @@ function renderInviteList(props: InvitesListProps, ss: InvitesListStyle, custom:
                     renderItem: (i: ql.Invite) => <span>{i.status}</span>,
                   },
                   {
-                    key: (i: ql.Invite) => i.inviteCode,
+                    key: (i: ql.Invite) => i.code,
                     title: 'Action',
                     renderItem: (i: ql.Invite) => {
                       if (i.status === 'Active') {
@@ -134,5 +134,5 @@ function PreQLInvitesList(props: InvitesListProps) {
   );
 }
 
-export const InvitesList = graphql(ql.queries.MyCharacterInvites)(PreQLInvitesList as any);
+export const InvitesList = graphql(null/*ql.queries.MyCharacterInvites*/)(PreQLInvitesList as any);
 export default InvitesList as any;

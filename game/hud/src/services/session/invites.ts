@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, client, GroupInvite, signalr, events } from 'camelot-unchained';
+import { client, IGroupInvite, signalr, events } from 'camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -32,13 +32,13 @@ const DECLINE_INVITE = 'hud/invites/DECLINE_INVITE';
  */
 
 function registerInviteEvents(dispatch: (action: InvitesAction) => any) {
-  events.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: GroupInvite) => dispatch(inviteReceived(invite)));
+  events.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: IGroupInvite) => dispatch(inviteReceived(invite)));
 }
 
 export interface InvitesAction extends BaseAction {
   error?: string;
-  invites?: GroupInvite[];
-  invite?: GroupInvite;
+  invites?: IGroupInvite[];
+  invite?: IGroupInvite;
 }
 
 /**
@@ -74,7 +74,7 @@ function requestInvites(): InvitesAction {
   };
 }
 
-function fetchInvitesSuccess(invites: GroupInvite[]): InvitesAction {
+function fetchInvitesSuccess(invites: IGroupInvite[]): InvitesAction {
   return {
     type: FETCH_INVITES_SUCCESS,
     invites,
@@ -90,7 +90,7 @@ function fetchInvitesFailed(error?: string): InvitesAction {
   };
 }
 
-function inviteReceived(invite: GroupInvite): InvitesAction {
+function inviteReceived(invite: IGroupInvite): InvitesAction {
   return {
     type: INVITE_RECEIVED,
     when: new Date(),
@@ -120,7 +120,7 @@ export function initializeInvites(): AsyncAction<InvitesAction> {
   };
 }
 
-export function acceptInvite(invite: GroupInvite): InvitesAction {
+export function acceptInvite(invite: IGroupInvite): InvitesAction {
   joinWithInvite(invite);
   return {
     type: ACCEPT_INVITE,
@@ -129,7 +129,7 @@ export function acceptInvite(invite: GroupInvite): InvitesAction {
   };
 }
 
-export function declineInvite(invite: GroupInvite): InvitesAction {
+export function declineInvite(invite: IGroupInvite): InvitesAction {
   return {
     type: DECLINE_INVITE,
     when: new Date(),
@@ -147,32 +147,32 @@ export function fetchInvites(): AsyncAction<InvitesAction> {
   };
 }
 
-async function joinWithInvite(invite: GroupInvite) {
-  try {
-    await webAPI.WarbandsAPI.JoinWithInviteV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      invite.groupID,
-      client.characterID,
-      invite.inviteCode,
-    );
-  } catch (err) {
-    webAPI.handleWebAPIError(err);
-  }
+async function joinWithInvite(invite: IGroupInvite) {
+  // try {
+  //   await webAPI.WarbandsAPI.JoinWithInviteV1(
+  //     webAPI.defaultConfig,
+  //     client.loginToken,
+  //     client.shardID,
+  //     invite.groupID,
+  //     client.characterID,
+  //     invite.inviteCode,
+  //   );
+  // } catch (err) {
+  //   webAPI.handleWebAPIError(err);
+  // }
 }
 
 async function getInvitesForCharacter() {
-  try {
-    await webAPI.GroupsAPI.GetInvitesForCharacterV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-    );
-  } catch (err) {
-    webAPI.handleWebAPIError(err);
-  }
+  // try {
+  //   await webAPI.GroupsAPI.GetInvitesForCharacterV1(
+  //     webAPI.defaultConfig,
+  //     client.loginToken,
+  //     client.shardID,
+  //     client.characterID,
+  //   );
+  // } catch (err) {
+  //   webAPI.handleWebAPIError(err);
+  // }
 }
 
 export interface InvitesState {
@@ -180,7 +180,7 @@ export interface InvitesState {
   signalRInitialized: boolean;
   isFetching: boolean;
   lastSuccess?: Date;
-  invites?: GroupInvite[];
+  invites?: IGroupInvite[];
   error?: string;
 }
 
@@ -193,8 +193,8 @@ function initialState(): InvitesState {
   };
 }
 
-function inviteEquals(a: GroupInvite, b: GroupInvite): boolean {
-  return a.inviteCode === b.inviteCode;
+function inviteEquals(a: IGroupInvite, b: IGroupInvite): boolean {
+  return a.Code === b.Code;
 }
 
 const actionDefs: ActionDefinitions<InvitesState> = {};
@@ -209,13 +209,13 @@ actionDefs[REQUEST_INVITES] = (state: InvitesState, action: InvitesAction) => me
 
 actionDefs[ACCEPT_INVITE] = (state: InvitesState, action: InvitesAction) => {
   return merge(state, {
-    invites: removeWhere(state.invites, i => i.inviteCode === action.invite.inviteCode).result,
+    invites: removeWhere(state.invites, i => i.Code === action.invite.Code).result,
   });
 };
 
 actionDefs[DECLINE_INVITE] = (state: InvitesState, action: InvitesAction) => {
   return merge(state, {
-    invites: removeWhere(state.invites, i => i.inviteCode === action.invite.inviteCode).result,
+    invites: removeWhere(state.invites, i => i.Code === action.invite.Code).result,
   });
 };
 

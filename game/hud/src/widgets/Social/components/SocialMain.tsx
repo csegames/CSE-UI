@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { events, ql, FloatSpinner } from 'camelot-unchained';
+import { events, /*ql,*/ FloatSpinner } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import { NavigationState, selectLink, toggleCollapsedCategory } from '../services/session/navigation';
@@ -215,7 +215,7 @@ class SocialMain extends React.Component<Partial<SocialMainProps>, SocialMainSta
   }
 }
 
-const SocialMainWithQL = graphql(ql.queries.MySocial, {
+const SocialMainWithQL = graphql(null, /*ql.queries.MySocial,*/ {
   options: {
   },
 })(SocialMain);

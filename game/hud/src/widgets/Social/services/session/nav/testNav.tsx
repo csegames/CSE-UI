@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { Map } from 'immutable';
-import { utils, ql } from 'camelot-unchained';
+import { utils /*ql*/ } from 'camelot-unchained';
 import {
   LinkAddress,
   SocialCategory,
@@ -37,7 +37,7 @@ export default function() {
               displayName: 'Overview',
               icon: <i className='fa fa-th'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => false,
+              display: (social: any) => false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
@@ -49,7 +49,7 @@ export default function() {
               displayName: 'Invites',
               icon: <i className='fa fa-envelope-o'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => true,
+              display: (social: any) => true,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
@@ -61,7 +61,7 @@ export default function() {
               displayName: 'Contacts',
               icon: <i className='fa fa-address-book-o'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => false,
+              display: (social: any) => false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
@@ -73,7 +73,7 @@ export default function() {
               displayName: 'Privacy Settings',
               icon: <i className='fa fa-shield'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => false,
+              display: (social: any) => false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Personal,
@@ -101,7 +101,7 @@ export default function() {
               displayName: 'Browse',
               icon: <i className='fa fa-bars'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => true,
+              display: (social: any) => true,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -113,7 +113,7 @@ export default function() {
               displayName: 'Create',
               icon: <i className='fa fa-newspaper-o'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => !(social.myOrder || false),
+              display: (social: any) => !(social.myOrder || false),
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -125,7 +125,7 @@ export default function() {
               displayName: 'Overview',
               icon: <i className='fa fa-th'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => social.myOrder || false,
+              display: (social: any) => social.myOrder || false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -136,7 +136,7 @@ export default function() {
               displayName: 'Members',
               icon: <i className='fa fa-users'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => social.myOrder || false,
+              display: (social: any) => social.myOrder || false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -147,7 +147,7 @@ export default function() {
               displayName: 'Ranks',
               icon: <i className='fa fa-star'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => social.myOrder || false,
+              display: (social: any) => social.myOrder || false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -180,7 +180,7 @@ export default function() {
               displayName: 'Administration',
               icon: <i className='fa fa-cogs'></i>,
               enabled: true,
-              display: (social: ql.MySocialQuery) => social.myOrder || false,
+              display: (social: any) => social.myOrder || false,
               address: {
                 kind: 'Primary',
                 category: SocialCategory.Order,
@@ -298,7 +298,7 @@ export default function() {
       //               displayName: 'Overview',
       //               icon: <i className='fa fa-th'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -310,7 +310,7 @@ export default function() {
       //               displayName: 'Members',
       //               icon: <i className='fa fa-users'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -322,7 +322,7 @@ export default function() {
       //               displayName: 'Ranks',
       //               icon: <i className='fa fa-star'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -334,7 +334,7 @@ export default function() {
       //               displayName: 'Assets',
       //               icon: <i className='fa fa-bank'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -346,7 +346,7 @@ export default function() {
       //               displayName: 'Contracts',
       //               icon: <i className='fa fa-file-text-o'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -358,7 +358,7 @@ export default function() {
       //               displayName: 'Administration',
       //               icon: <i className='fa fa-cogs'></i>,
       //               enabled: false,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -384,7 +384,7 @@ export default function() {
       //               displayName: 'Overview',
       //               icon: <i className='fa fa-th'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -396,7 +396,7 @@ export default function() {
       //               displayName: 'Members',
       //               icon: <i className='fa fa-users'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -408,7 +408,7 @@ export default function() {
       //               displayName: 'Ranks',
       //               icon: <i className='fa fa-star'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -420,7 +420,7 @@ export default function() {
       //               displayName: 'Assets',
       //               icon: <i className='fa fa-bank'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -432,7 +432,7 @@ export default function() {
       //               displayName: 'Contracts',
       //               icon: <i className='fa fa-file-text-o'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,
@@ -444,7 +444,7 @@ export default function() {
       //               displayName: 'Administration',
       //               icon: <i className='fa fa-cogs'></i>,
       //               enabled: true,
-      //               display: (social: ql.MySocialQuery) => true,
+      //               display: (social: any/*ql.MySocialQuery*/) => true,
       //               address: {
       //                 kind: 'Sub',
       //                 category: SocialCategory.Warbands,

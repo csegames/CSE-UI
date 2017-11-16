@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql, client, Card, Spinner, TitleCard } from 'camelot-unchained';
+import { /*ql,*/ client, Card, Spinner, TitleCard } from 'camelot-unchained';
 import { graphql } from 'react-apollo';
 
 import GroupTitle from './GroupTitle';
@@ -122,7 +122,7 @@ export interface OverviewStyle extends StyleDeclaration {
 export interface OrderOverviewProps {
   dispatch: (action: any) => any;
   refetch: () => void;
-  order: ql.FullOrder;
+  order: any; // ql.FullOrder;
   styles?: Partial < OverviewStyle >;
   data?: any;
 }
@@ -248,7 +248,8 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
     );
   }
 
-  private renderActionCard = (action: ql.MemberAction, key: number, ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
+  private renderActionCard = (action: any, /*ql.MemberAction,*/ key: number,
+     ss: OverviewStyle, custom: Partial<OverviewStyle>) => {
     const elements = parseForCharacter(action.message, client.shardID)
       .concat(parseForOrder(action.message, client.shardID));
     return (
@@ -261,7 +262,7 @@ class Overview extends React.Component<OrderOverviewProps, {}> {
   }
 }
 
-const OverviewQL = graphql(ql.queries.OrderActions, {
+const OverviewQL = graphql(null/*ql.queries.OrderActions*/, {
   options: (props: OrderOverviewProps) => ({
     variables: {
       id: props.order.id,

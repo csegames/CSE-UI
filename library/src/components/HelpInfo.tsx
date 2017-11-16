@@ -99,7 +99,7 @@ export class HelpInfo extends React.Component<HelpInfoProps, HelpInfoState> {
   }
 
   public render() {
-    const options = {...{ skipLabel: 'Exit', doneLabel: 'Exit' }};
+    const options = { ...{ skipLabel: 'Exit', doneLabel: 'Exit' } };
     return (
       <Animate
         className={css`position: absolute;`}

@@ -23,7 +23,7 @@ export default {
     },
     scale: 0.6,
     opacity: 1,
-    visibility: true,
+    visibility: false,
     zOrder: HUDZOrder.Warband,
     layoutMode: LayoutMode.EDGESNAP,
   },

@@ -140,12 +140,13 @@ export class InviteButton extends React.Component<InviteButtonProps, InviteButto
     await this.setState({ inviting: true, error: null });
 
     const name = this.inputRef.value;
-    const res = await webAPI.GroupsAPI.InviteByNameV1(
+    const res = await webAPI.GroupsAPI.InviteV1(
       webAPI.defaultConfig,
       client.loginToken,
       client.shardID,
       client.characterID,
       this.props.groupId,
+      null,
       name,
     );
 

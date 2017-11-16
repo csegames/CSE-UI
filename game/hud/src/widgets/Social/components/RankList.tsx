@@ -14,8 +14,8 @@ import {
   Dialog,
   GridView,
   ColumnDefinition,
-  webAPI,
-  client,
+  // webAPI,
+  // client,
   InlineTextInputEdit,
   InlineNumberInputEdit,
   InlineMultiSelectEdit,
@@ -125,7 +125,8 @@ function renderButtonBar(props: RanksProps, ss: RanksStyle, custom: Partial<Rank
 
         {
           // CREATE RANK
-          ql.hasPermission(props.userPermissions, 'create-rank')
+          // ql.hasPermission(props.userPermissions, 'create-rank')
+          false
             ? (
                 <Dialog ref={r => createRankDialogRef = r}
                         closeOnClickOutside={true}
@@ -177,70 +178,70 @@ export interface RenderDataInfo {
 }
 
 async function renameRank(renderData: RenderDataInfo, currentName: string, newName: string) {
-  const res = await webAPI.GroupsAPI.RenameRankV1(
-    webAPI.defaultConfig,
-    client.loginToken,
-    client.shardID,
-    client.characterID,
-    renderData.groupId,
-    currentName,
-    newName,
-  );
-  if (res.ok) {
-    renderData.refetch();
-    return {
-      ok: true,
-    };
-  }
-  return {
-    ok: false,
-    error: res.data,
-  };
+  // const res = await webAPI.GroupsAPI.RenameRankV1(
+  //   webAPI.defaultConfig,
+  //   client.loginToken,
+  //   client.shardID,
+  //   client.characterID,
+  //   renderData.groupId,
+  //   currentName,
+  //   newName,
+  // );
+  // if (res.ok) {
+  //   renderData.refetch();
+  //   return {
+  //     ok: true,
+  //   };
+  // }
+  // return {
+  //   ok: false,
+  //   error: res.data,
+  // };
 }
 
 async function setRankLevel(renderData: RenderDataInfo, r: ql.CustomRank, newLevel: number) {
-  const res = await webAPI.GroupsAPI.SetRankLevelV1(
-    webAPI.defaultConfig,
-    client.loginToken,
-    client.shardID,
-    client.characterID,
-    renderData.groupId,
-    r.name,
-    newLevel,
-  );
-  if (res.ok) {
-    renderData.refetch();
-    return {
-      ok: true,
-    };
-  }
-  return {
-    ok: false,
-    error: res.data,
-  };
+  // const res = await webAPI.GroupsAPI.SetRankLevelV1(
+  //   webAPI.defaultConfig,
+  //   client.loginToken,
+  //   client.shardID,
+  //   client.characterID,
+  //   renderData.groupId,
+  //   r.name,
+  //   newLevel,
+  // );
+  // if (res.ok) {
+  //   renderData.refetch();
+  //   return {
+  //     ok: true,
+  //   };
+  // }
+  // return {
+  //   ok: false,
+  //   error: res.data,
+  // };
 }
 
 async function setRankPermissions(renderData: RenderDataInfo, item: ql.CustomRank, permissions: ql.PermissionInfo[]) {
-  const res = await webAPI.GroupsAPI.SetRankPermissionsV1(
-    webAPI.defaultConfig,
-    client.loginToken,
-    client.shardID,
-    client.characterID,
-    renderData.groupId,
-    item.name,
-    permissions.map(p => p.tag),
-  );
+  // const res = await webAPI.GroupsAPI.SetRankPermissionsV1(
+  //   webAPI.defaultConfig,
+  //   client.loginToken,
+  //   client.shardID,
+  //   client.characterID,
+  //   renderData.groupId,
+  //   item.name,
+  //   permissions.map(p => p.tag),
+  // );
 
-  if (res.ok) {
-    renderData.refetch();
-    return {
-      ok: true,
-    };
-  }
-  return {
-    ok: false,
-    error: res.data,
-  };
+  // if (res.ok) {
+  //   renderData.refetch();
+  //   return {
+  //     ok: true,
+  //   };
+  // }
+  // return {
+  //   ok: false,
+  //   error: res.data,
+  // };
 }
 
 export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
@@ -256,7 +257,8 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => a.name < b.name ? 1 : -1,
     renderItem: (r: ql.CustomRank, renderData?:
     { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
-      if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
+      if ('' !== '' && renderData && renderData.userPermissions
+        /*&& ql.hasPermission(renderData.userPermissions, 'update-ranks')*/) {
         return (
           <InlineTextInputEdit
             value={r.name}
@@ -279,7 +281,8 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
     sortFunction: (a: ql.CustomRank, b: ql.CustomRank) => b.level - a.level,
     renderItem: (r: ql.CustomRank, renderData?:
     { userPermissions: ql.PermissionInfo[], groupId: string, refetch: () => void }) => {
-      if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
+      if ('' !== '' && renderData && renderData.userPermissions
+       /*&& ql.hasPermission(renderData.userPermissions, 'update-ranks')*/) {
         return (
           <InlineNumberInputEdit
             value={r.level}
@@ -304,7 +307,8 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
       userPermissions: ql.PermissionInfo[],
       groupPermissions: ql.PermissionInfo[],
       groupId: string, refetch: () => void }) => {
-      if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'update-ranks')) {
+      if ('' !== '' && renderData && renderData.userPermissions
+       /*&& ql.hasPermission(renderData.userPermissions, 'update-ranks')*/) {
         return (
           <InlineMultiSelectEdit
             items={renderData.groupPermissions}
@@ -316,7 +320,7 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
             }}
             renderListItem={(p: ql.PermissionInfo) => {
               return (
-                <div key={p.tag} style={{ padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)' }}>
+                <div key={p.id} style={{ padding: '5px', border: '1px solid rgba(0, 0, 0, 0.2)' }}>
                   {p.name}<br/>
                   {p.description}<br/>
                   <i>enables {p.enables.join(', ')}</i>
@@ -325,12 +329,12 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
             }}
             renderSelectedItem={(p: ql.PermissionInfo) => {
               return (
-                <Tooltip key={p.tag} content={p.description}>
+                <Tooltip key={p.id} content={p.description}>
                   <span style={{ paddingRight: '5px' }}>{p.name + ' '}</span>
                 </Tooltip>
               );
             }}
-            itemComparison={ (a: ql.PermissionInfo, b: ql.PermissionInfo) => a.tag === b.tag}
+            itemComparison={ (a: ql.PermissionInfo, b: ql.PermissionInfo) => a.id === b.id}
             filter={(text: string, p: ql.PermissionInfo) => stringContains(p.name, text)}
             onSave={(existing: ql.PermissionInfo[], permissions: ql.PermissionInfo[]): any  =>
                                           setRankPermissions(renderData, item, permissions) }
@@ -342,12 +346,12 @@ export const defaultRankListColumnDefinitions: ColumnDefinition[] = [
               .map((p) => {
                 return (
                   <Tooltip
-                    key={p.tag}
+                    key={p.id}
                     content={() => {
                       return (
                       <div>
                         <div>{p.description}</div>
-                        <i>id: {p.tag}</i>
+                        <i>id: {p.id}</i>
                       </div>
                       );
                     }}

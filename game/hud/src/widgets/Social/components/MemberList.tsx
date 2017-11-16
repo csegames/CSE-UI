@@ -14,8 +14,8 @@ import {
   ColumnDefinition,
   Race,
   Archetype,
-  client,
-  webAPI,
+  // client,
+  // webAPI,
   InlineDropDownSelectEdit,
 } from 'camelot-unchained';
 
@@ -135,25 +135,25 @@ export interface RenderDataInfo {
 }
 
 async function onSavePress(member: MemberInfo, rank: ql.CustomRank, renderData: RenderDataInfo) {
-  const res = await webAPI.GroupsAPI.AssignRankV1(
-    webAPI.defaultConfig,
-    client.loginToken,
-    client.shardID,
-    client.characterID,
-    renderData.groupId,
-    member.id,
-    rank.name,
-  );
-  if (res.ok) {
-    renderData.refetch();
-    return {
-      ok: true,
-    };
-  }
-  return {
-    ok: false,
-    error: res.data,
-  };
+  // const res = await webAPI.GroupsAPI.AssignRankV1(
+  //   webAPI.defaultConfig,
+  //   client.loginToken,
+  //   client.shardID,
+  //   client.characterID,
+  //   renderData.groupId,
+  //   member.id,
+  //   rank.name,
+  // );
+  // if (res.ok) {
+  //   renderData.refetch();
+  //   return {
+  //     ok: true,
+  //   };
+  // }
+  // return {
+  //   ok: false,
+  //   error: res.data,
+  // };
 }
 
 export const defaultMemberListColumnDefinitions = [
@@ -173,7 +173,7 @@ export const defaultMemberListColumnDefinitions = [
       width: '120px',
     },
     renderItem: (m: MemberInfo, renderData?: RenderDataInfo) => {
-      if (renderData && renderData.userPermissions && ql.hasPermission(renderData.userPermissions, 'assign-ranks')) {
+      if (renderData && renderData.userPermissions) {
         return (
           <InlineDropDownSelectEdit
             value={m.rank}
@@ -230,7 +230,7 @@ export const defaultMemberListColumnDefinitions = [
       flex: '0 0 180px !important',
       width: '180px',
     },
-    renderItem: (m: ql.FullOrderMember) => {
+    renderItem: (m: any) => {
       return (
         <Tooltip
           content={new Date(m.joined).toLocaleString()}
@@ -254,7 +254,7 @@ export const defaultMemberListColumnDefinitions = [
       flex: '0 0 180px !important',
       width: '180px',
     },
-    renderItem: (m: ql.FullOrderMember) => {
+    renderItem: (m: any) => {
       return (
         <Tooltip
           content={new Date(m.joined).toLocaleString()}
@@ -277,7 +277,8 @@ function renderButtonBar(props: MemberListProps, ss: MemberListStyle, custom: Pa
 
         {
           // CREATE RANK
-          ql.hasPermission(props.userPermissions, 'create-invites')
+          // ql.hasPermission(props.userPermissions, 'create-invites')
+          false
             ? <InviteButton dispatch={props.dispatch}
                               refetch={props.refetch}
                               groupId={props.group.id} />
@@ -311,7 +312,7 @@ export default (props: MemberListProps) => {
                   groupId: props.group.id,
                   refetch: props.refetch,
                 }}
-                rowMenu={(item: ql.FullOrderMember, close: () => void) => {
+                rowMenu={(item: any, close: () => void) => {
                   return <MemberListMenu member={item}
                                           close={close}
                                           refetch={props.refetch}

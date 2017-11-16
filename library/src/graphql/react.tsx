@@ -115,7 +115,7 @@ export function withGraphQL<
         };
 
         if (query) {
-          const q = typeof query === 'string' ? {query} : typeof query === 'function' ? query(props as any) : query;
+          const q = typeof query === 'string' ? { query } : typeof query === 'function' ? query(props as any) : query;
           this.query = withDefaults(q, defaultQuickQLQuery);
         }
 

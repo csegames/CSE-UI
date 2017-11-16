@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
-import { ql, Spinner } from 'camelot-unchained';
+import { /*ql,*/ Spinner } from 'camelot-unchained';
 import { graphql } from 'react-apollo';
 
 export interface InlineWarbandStyle extends StyleDeclaration {
@@ -36,7 +36,7 @@ const inlineWarband = (props: InlineWarbandProps) => {
   );
 };
 
-export default graphql(ql.queries.InlineWarband, {
+export default graphql(null/*ql.queries.InlineWarband*/, {
   options: (props: InlineWarbandProps) => ({
     variables: {
       id: props.id,

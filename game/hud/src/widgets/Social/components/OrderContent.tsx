@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { ql, Spinner } from 'camelot-unchained';
+import { /*ql,*/ Spinner } from 'camelot-unchained';
 import { LinkAddress, SocialCategory } from '../services/session/nav/navTypes';
 import { selectLink } from '../services/session/navigation';
 
@@ -19,7 +19,7 @@ import OrdersList from './OrdersList';
 export interface OrderContentProps {
   dispatch: (action: any) => any;
   address: LinkAddress;
-  order: ql.FullOrder;
+  order: any; // ql.FullOrder;
   refetch: () => void;
 }
 

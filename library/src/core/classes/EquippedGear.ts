@@ -31,9 +31,8 @@ class EquippedGear {
     });
     if (gearSlotItems.length > 0) {
       return gearSlotItems[0];
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**

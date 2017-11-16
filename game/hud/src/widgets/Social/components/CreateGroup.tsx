@@ -9,14 +9,14 @@ import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   Input,
   RaisedButton,
-  webAPI,
-  client,
+  // webAPI,
+  // client,
   Spinner,
 } from 'camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 import { SocialCategory } from '../services/session/nav/navTypes';
-import { selectLink } from '../services/session/navigation';
+// import { selectLink } from '../services/session/navigation';
 
 export interface CreateGroupStyle extends StyleDeclaration {
   container: React.CSSProperties;
@@ -107,29 +107,29 @@ export class CreateGroup extends React.Component<CreateGroupProps, CreateGroupSt
   }
 
   private create = async () => {
-    if (this.inputRef == null) return;
-    await this.setState({ creating: true, error: null });
+    // if (this.inputRef == null) return;
+    // await this.setState({ creating: true, error: null });
 
-    const name = this.inputRef.value;
-    const res = await webAPI.OrdersAPI.CreateV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      name,
-    );
-    const data = JSON.parse(res.data);
-    if (res.ok) {
-      this.setState({ creating: false, error: null });
-      this.props.refetch();
-      this.props.dispatch(selectLink({
-        kind: 'Primary',
-        category: SocialCategory.Order,
-        id: 'overview',
-      }));
-      return;
-    }
-    this.setState({ creating: false, error: data.FieldCodes.map((fc: any) => fc.Message) });
+    // const name = this.inputRef.value;
+    // const res = await webAPI.OrdersAPI.CreateV1(
+    //   webAPI.defaultConfig,
+    //   client.loginToken,
+    //   client.shardID,
+    //   client.characterID,
+    //   name,
+    // );
+    // const data = JSON.parse(res.data);
+    // if (res.ok) {
+    //   this.setState({ creating: false, error: null });
+    //   this.props.refetch();
+    //   this.props.dispatch(selectLink({
+    //     kind: 'Primary',
+    //     category: SocialCategory.Order,
+    //     id: 'overview',
+    //   }));
+    //   return;
+    // }
+    // this.setState({ creating: false, error: data.FieldCodes.map((fc: any) => fc.Message) });
   }
 }
 

@@ -12,7 +12,7 @@ export interface EntityState {
   faction: Faction;
   id: string;
   name: string;
-  alive: boolean;
+  isAlive: boolean;
 
   // position of this entity, or null / undefined if we're not sending position
   position?: {

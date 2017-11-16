@@ -231,8 +231,8 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
     );
     this.setState({
       items,
-      itemsPerPage: this.props.itemsPerPage || 25,
       sortedItems,
+      itemsPerPage: this.props.itemsPerPage || 25,
     } as S);
   }
 
@@ -247,7 +247,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
       const sorted = index === this.state.currentSort.index
         ? this.state.currentSort.sorted : GridViewSort.None;
 
-      if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) === false) return;
+      // if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) === false) return;
 
       headerItems.push((
         <div key={index} className={def.sortable
@@ -282,7 +282,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
     this.props.columnDefinitions.forEach((pdef, index) => {
       const def = this.props.columnDefinitions[index];
 
-      if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) === false) return;
+      // if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) === false) return;
 
       if (def.renderItem) {
         items.push(

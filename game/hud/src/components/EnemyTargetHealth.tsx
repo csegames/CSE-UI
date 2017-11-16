@@ -21,7 +21,7 @@ export interface PlayerHealthProps {
 export interface PlayerHealthState extends PlayerState {
 }
 
-class PlayerHealth extends React.PureComponent<PlayerHealthProps, PlayerHealthState> {
+class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
   constructor(props: PlayerHealthProps) {
     super(props);
   }
@@ -40,6 +40,10 @@ class PlayerHealth extends React.PureComponent<PlayerHealthProps, PlayerHealthSt
 
   public componentDidMount() {
     client.OnEnemyTargetStateChanged(this.setPlayerState);
+  }
+
+  public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
+    return true;
   }
 
   private setPlayerState = (state: PlayerState) => {
