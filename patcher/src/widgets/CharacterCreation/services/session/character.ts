@@ -60,7 +60,7 @@ export function createCharacter(model: CharacterCreationModel,
     const res = await webAPI.CharactersAPI.CreateCharacterV1(
       webAPI.defaultConfig,
       client.loginToken,
-      client.shardID,
+      shard,
       model as any,
     );
     if (res.ok) {
