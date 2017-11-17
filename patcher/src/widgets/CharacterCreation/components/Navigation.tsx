@@ -221,7 +221,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                 !page.pageVisited && !page.pageComplete && navImages.empty;
               const pageName = CharacterCreationPage[page.pageNumber];
               return (
-                <div className={css(ss.navProgressSection, custom.navProgressSection)}>
+                <div key={i} className={css(ss.navProgressSection, custom.navProgressSection)}>
                   <Tooltip
                     styles={{
                       tooltip: {
