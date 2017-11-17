@@ -16,7 +16,7 @@ import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
 import Chat from './layoutItems/Chat';
 import Welcome from './layoutItems/Welcome';
 import Warband from './layoutItems/Warband';
-import Respawn from './layoutItems/Respawn';
+// import Respawn from './layoutItems/Respawn';
 import Compass from './layoutItems/Compass';
 import Crafting from './layoutItems/Crafting';
 import EnemyTarget from './layoutItems/EnemyTarget';
@@ -124,9 +124,9 @@ function initialState(): LayoutState {
     [
       'compass', cloneDeep(Compass),
     ],
-    [
-      'respawn', cloneDeep(Respawn),
-    ],
+    // [
+    //   'respawn', cloneDeep(Respawn),
+    // ],
     [
       'warband', cloneDeep(Warband),
     ],
