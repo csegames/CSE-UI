@@ -73,6 +73,7 @@ export const defaultNavigationStyle: NavigationStyle = {
     cursor: 'pointer',
     width: '55px',
     height: '55px',
+    margin: '5px 0px 0px 0px',
   },
 
   navProgressSection: {
@@ -86,23 +87,26 @@ export const defaultNavigationStyle: NavigationStyle = {
     fontWeight: 'bold',
     letterSpacing: '0.1px',
     cursor: 'pointer',
-    color: '#919177',
+    color: '#D6B597',
     backgroundColor: 'transparent',
     border: '0px',
     outline: 'none',
+    padding: '20px',
+    width: '100px',
     ':hover': {
-      color: utils.lightenColor('#919177', 25),
+      color: utils.lightenColor('#D6B597', 25),
     },
   },
 
   navConnector: {
-    height: '1px',
-    width: '20px',
-    backgroundColor: utils.lightenColor('#0D0D0D', 20),
+    height: '2px ',
+    width: '30px',
+    margin: '0px -5px',
+    backgroundColor: utils.lightenColor('#2F2C29', 20),
   },
 
   navConnectorCompleted: {
-    backgroundColor: '#776759',
+    backgroundColor: '#D2B59D',
   },
 
   navArrow: {
@@ -110,7 +114,7 @@ export const defaultNavigationStyle: NavigationStyle = {
   },
 
   completedNavConnector: {
-    backgroundColor: '#FFD981',
+    backgroundColor: '#D2B59D',
   },
 
   otherActionButton: {
@@ -221,7 +225,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                   <Tooltip
                     styles={{
                       tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        backgroundColor: 'rgba(0,0,0,0.8)', 
                       },
                     }}
                   content={pageName}>

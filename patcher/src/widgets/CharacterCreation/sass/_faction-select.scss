@@ -17,6 +17,7 @@
   margin-left: auto;
   margin-right: auto;
   font-family: 'Caudex';
+  font-weight: normal;
   z-index: 6;
   position: relative;
 }
@@ -88,7 +89,6 @@
   }
   &:hover {
     flex-grow: 3;
-    padding-top: 5%;
     .cu-character-creation__faction-select__TDD__description {
       opacity: 1;
       width: 400px;
@@ -108,7 +108,6 @@
   }
   &:hover {
     flex-grow: 3;
-    padding-top: 5%;
     .cu-character-creation__faction-select__Arthurian__description {
       opacity: 1;
       width: 400px;
@@ -128,7 +127,6 @@
   }
   &:hover {
     flex-grow: 3;
-    padding-top: 5%;
     .cu-character-creation__faction-select__Viking__description {
       opacity: 1;
       width: 400px;

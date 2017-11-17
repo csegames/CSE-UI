@@ -58,7 +58,7 @@ export const defaultTraitStyles: TraitStyle = {
   },
 
   selectedTrait: {
-    border: '3px solid yellow',
+    border: '3px solid #FFDFA5',
   },
 
   disabledTrait: {
@@ -87,7 +87,7 @@ export const defaultTraitStyles: TraitStyle = {
   },
 
   selectedShadow: {
-    boxShadow: 'inset 0 0 10px yellow',
+    boxShadow: 'inset 0 0 30px #F4C066',
   },
 
   disabledShadow: {

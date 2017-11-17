@@ -33,63 +33,82 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
   public render() {
     const { selectedFaction, selectedRace, selectedGender } = this.props;
     const arthurianLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian',resistance: -90, shouldParallaxVertical: true },
-      { id: 'layer3', extraClass: 'arthurian',resistance: 90 },
-      { id: 'layer2', extraClass: 'arthurian',resistance: 50 },
-      { id: 'layer1', extraClass: 'arthurian',resistance: 60, shouldParallaxVertical: true },
-      { id: 'char', extraClass: `standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance: 70 },
-      { id: 'ray1', extraClass: 'arthurian',resistance: 50 },
-      { id: 'ray2', extraClass: 'arthurian',resistance: 25 },
-      { id: 'ray3', extraClass: 'arthurian',resistance: 70 },
+      { id: 'bg', extraClass: 'arthurian',resistance: 120 },
+      { id: 'layer1', extraClass: 'arthurian',resistance: 90},
+      { id: 'clouds', extraClass: 'arthurian' },
       { id: 'dust', particleEffect: dustParticles },
+      { id: 'ray3', extraClass: 'arthurian',resistance: -60 },
+      { id: 'viel', extraClass: 'arthurian' },
+      { id: 'viel2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
+      { id: 'base', extraClass: 'arthurian',resistance: 140 },
+      { id: 'char', extraClass: `standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance: 150 },
+      { id: 'ray1', extraClass: 'arthurian',resistance: 40 },
+      { id: 'ray2', extraClass: 'arthurian',resistance: -15 },
+      { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
     
     const vikingLayerInfo = [
-      { id: 'bg', extraClass: 'viking', resistance: -90, shouldParallaxVertical: true },
-      { id: 'layer3', extraClass: 'viking', resistance: 90, shouldParallaxVertical: true},
-      { id: 'layer2', extraClass: 'viking', resistance: 50 },
-      { id: 'layer1', extraClass: 'viking', resistance: 60 },
-      { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance:70 },
-      { id: 'ray1', extraClass: 'viking', resistance: 50 },
-      { id: 'ray2', extraClass: 'viking', resistance: -25 },
-      { id: 'ray3', extraClass: 'viking', resistance: 70 },
-      { id: 'particle', extraClass: 'viking', resistance: -20, shouldParallaxVertical: true },
+      { id: 'bg', extraClass: 'viking', resistance: 120 },
+      { id: 'layer2', extraClass: 'viking', resistance: 70 },
+      { id: 'layer1', extraClass: 'viking', resistance: 50 },
+      { id: 'lightning', extraClass: 'viking' },
       { id: 'snow', particleEffect: snowParticles },
-      { id: 'snow-close', particleEffect: snowCloseParticles },
+      { id: 'ray3', extraClass: 'viking', resistance: -60 },
+      { id: 'viel', extraClass: 'viking', resistance: 200,  shouldParallaxVertical: true },
+      { id: 'viel2', extraClass: 'viking' },
+      { id: 'base', extraClass: 'viking', resistance: 140 },
+      { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance:150 },
+      { id: 'ray1', extraClass: 'viking', resistance: 40 },
+      { id: 'ray2', extraClass: 'viking', resistance: -15 },
+      { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const tddLayerInfo = [
-      { id: 'bg', extraClass: 'tdd', resistance: 90 },
-      { id: 'layer3', extraClass: 'tdd', resistance: 70 },
-      { id: 'layer2', extraClass: 'tdd', resistance: 60 },
-      { id: 'layer1', extraClass: 'tdd', resistance: 50 },
-      { id: 'char', extraClass: `tdd standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance: 60 },
+      { id: 'bg', extraClass: 'tdd', resistance: 70 },
+      { id: 'layer3', extraClass: 'tdd', resistance: 80 },
+      { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
+      { id: 'layer2', extraClass: 'tdd', resistance: 100 },
+      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
+      { id: 'viel', extraClass: 'viking', resistance: 200,  shouldParallaxVertical: true },
+      { id: 'viel2', extraClass: 'viking' },
+      { id: 'base', extraClass: 'viking', resistance: 140 },
+      { id: 'char', extraClass: `tdd standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, resistance: 150 },
       { id: 'ray1', extraClass: 'tdd', resistance: 40 },
       { id: 'ray2', extraClass: 'tdd', resistance: -15 },
-      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
-      { id: 'particle', extraClass: 'tdd', resistance: -40,  shouldParallaxVertical: true },
-      { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
     ];
 
     let layerInfo;
     let miscInfo;
 
-    switch (Faction[selectedFaction.shortName]) {
-      case Faction.Arthurian: {
+    switch (selectedRace.id) {
+      case Race.HumanMaleA: {
         layerInfo = arthurianLayerInfo;
-        miscInfo = () => <div className='clouds arthurian'></div>;
         break;
       }
-      case Faction.Viking: {
+      case Race.Pict: {
+        layerInfo = arthurianLayerInfo;
+        break;
+      }
+      case Race.HumanMaleV: {
         layerInfo = vikingLayerInfo;
         miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
-      case Faction.TDD: {
+      case Race.Valkyrie: {
+        layerInfo = vikingLayerInfo;
+        miscInfo = () => <div className='clouds viking'></div>;
+        break;
+      } 
+      case Race.HumanMaleT: {
         layerInfo = tddLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      }
+      } 
+      case Race.Luchorpan: {
+        layerInfo = tddLayerInfo;
+        miscInfo = () => <div className='clouds tdd'></div>;
+        break;
+      } 
       default: {
         layerInfo = arthurianLayerInfo;
         break;

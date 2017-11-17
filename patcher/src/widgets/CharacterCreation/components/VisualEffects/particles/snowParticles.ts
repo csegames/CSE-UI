@@ -9,10 +9,10 @@
 const snowParticles = {
   "particles": {
     "number": {
-      "value": 50,
+      "value": 15,
       "density": {
         "enable": true,
-        "value_area": 1000
+        "value_area": 800
       }
     },
     "color": {
@@ -62,7 +62,7 @@ const snowParticles = {
     },
     "move": {
       "enable": true,
-      "speed": 12,
+      "speed": 10,
       "direction": "bottom-right",
       "random": true,
       "straight": false,

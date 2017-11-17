@@ -82,9 +82,13 @@
 
 .display-name {
   position: absolute;
-  left: 350px;
+  left: 50%;
   z-index: 1;
+  font-size: 3em;
   font-family: 'Caudex';
+  text-shadow: 0px 0px 10px black;
+  font-weight: normal;
+  color: white;
 }
 
 .selection-description {
