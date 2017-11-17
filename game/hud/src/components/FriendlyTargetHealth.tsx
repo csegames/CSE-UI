@@ -18,21 +18,25 @@ import PlayerStatusComponent from './PlayerStatusComponent';
 export interface PlayerHealthProps {
 }
 
-export interface PlayerHealthState extends PlayerState {
+export interface PlayerHealthState {
+  playerState: PlayerState;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
   constructor(props: PlayerHealthProps) {
     super(props);
+    this.state = {
+      playerState: null,
+    };
   }
 
   public render() {
-    if (!this.state) return null;
+    if (!this.state.playerState) return null;
     return (
       <Container>
         <PlayerStatusComponent
           containerClass='TargetHealth'
-          playerState={this.state}
+          playerState={this.state.playerState}
         />
       </Container>
     );
@@ -46,8 +50,8 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     return true;
   }
 
-  private setPlayerState = (state: PlayerState) => {
-    this.setState(state);
+  private setPlayerState = (playerState: PlayerState) => {
+    this.setState({ playerState });
   }
 }
 
