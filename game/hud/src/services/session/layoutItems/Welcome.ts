@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import Welcome from '../../../components/Welcome';
+import MOTD from '../../../components/MOTD';
 import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
@@ -24,13 +24,13 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.Welcome,
+    zOrder: HUDZOrder.MOTD,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true,
   },
-  component: Welcome,
+  component: MOTD,
   props: {},
 };

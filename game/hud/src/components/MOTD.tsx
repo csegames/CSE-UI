@@ -4,9 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI, utils, client } from 'camelot-unchained';
+import { utils, client } from 'camelot-unchained';
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { CUQuery } from 'camelot-unchained/lib/graphql/schema';
 
 export interface WelcomeStyles extends StyleDeclaration {
   Welcome: React.CSSProperties;
@@ -72,13 +74,12 @@ export const defaultWelcomeStyles: WelcomeStyles = {
   },
 };
 
-export interface WelcomeProps {
+export interface WelcomeProps extends GraphQLInjectedProps<Pick<CUQuery, 'motd'>> {
   styles?: Partial<WelcomeStyles>;
   setVisibility: (vis: boolean) => void;
 }
 
 export interface WelcomeState {
-  message: JSX.Element[];
 }
 
 export interface WelcomeData {
@@ -89,12 +90,11 @@ export interface WelcomeData {
 
 class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   public name: string = 'Welcome';
+  private defaultMessage: JSX.Element[] = [<div key='0'>Loading...</div>];
 
   constructor(props: WelcomeProps) {
     super(props);
-    const defaultMessage: JSX.Element[] = [<div key='0'>Welcome to Camelot Unchained! Loading welcome message...</div>];
     this.state = {
-      message: defaultMessage,
     };
   }
 
@@ -105,13 +105,22 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     return (
       <div className={css(ss.Welcome, custom.Welcome)}>
         <div className={css(ss.welcomeHeader, custom.welcomeHeader)}>
-          <div className=''>Welcome to Camelot Unchained</div>
+          <div className=''>
+            { this.props.graphql.data && this.props.graphql.data.motd && this.props.graphql.data.motd[0]
+              ? this.props.graphql.data.motd[0].title
+              : 'Welcome to Camelot Unchained'
+            }
+          </div>
           <div className={css(ss.close, custom.close)} onClick={this.hide}>
             <i className='fa fa-times click-effect'></i>
           </div>
         </div>
         <div className={css(ss.welcomeContent, custom.welcomeContent)}>
-          {this.state.message}
+        {
+          this.props.graphql.data && this.props.graphql.data.motd && this.props.graphql.data.motd[0]
+          ? <div key='100' dangerouslySetInnerHTML={{ __html: this.props.graphql.data.motd[0].htmlContent }} />
+          : this.defaultMessage
+        }
         </div>
         <div className={css(ss.welcomeFooter, custom.welcomeFooter)}>
           <a className={css(ss.dismissButton, custom.dismissButton)} onClick={this.hideDelay}>Dismiss For 24h</a>
@@ -119,29 +128,6 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
       </div>
     );
   }
-
-  public componentDidMount() {
-    this.getMessageOfTheDay();
-  }
-
-  private async getMessageOfTheDay() {
-    try {
-      const res = await webAPI.ContentAPI.MessageOfTheDayV1(webAPI.defaultConfig, client.patchResourceChannel);
-      if (res.ok) {
-        const data = JSON.parse(res.data);
-        this.onMessage(data);
-      }
-    } catch (err) {
-      webAPI.handleWebAPIError(err);
-    }
-  }
-
-  private onMessage = (data: WelcomeData) => {
-    if (data.message === '') return;
-    const welcomeMessage: JSX.Element = <div key='100' dangerouslySetInnerHTML={{ __html: data.message }} />;
-    this.setState({ message: welcomeMessage } as any);
-  }
-
   private hide = (): void => {
     this.props.setVisibility(false);
   }
@@ -153,4 +139,12 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 }
 
-export default Welcome;
+export default withGraphQL({
+  query: `query {
+    motd(channel: ${client.patchResourceChannel}) {
+      id
+      title
+      htmlContent
+    }
+  }`,
+})(Welcome);

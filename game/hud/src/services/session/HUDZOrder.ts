@@ -21,7 +21,7 @@ const HUDZOrder = {
   RefillAmmo: 13,
   ReleaseControl: 14,
   Respawn: 15,
-  Welcome: 17,
+  MOTD: 17,
   Options: 18,
   EnemyTargetSiegeHealth: 19,
   FriendlyTargetSiegeHealth: 20,
