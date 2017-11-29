@@ -133,7 +133,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     );
   }
 
-  private onMouseMove = (e: any) => {
+  private onMouseMove = (e: React.MouseEvent<any>) => {
     if (this.props.fixedMode && !this.state.tooltipDimensions) {
       this.setState({ tooltipDimensions: this.tooltipRef.getBoundingClientRect() });
     }
@@ -181,23 +181,23 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       switch (this.state.wndRegion) {
         case Quadrant.TopLeft:
           return {
-            left,
-            top: top + height,
+            left: left + offsetLeft,
+            top: top + height + offsetTop,
           };
         case Quadrant.TopRight:
           return {
-            left: left - this.state.tooltipDimensions.width + width,
-            top: top + height,
+            left: left - this.state.tooltipDimensions.width + width + offsetRight,
+            top: top + height + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
-            left,
-            top: top - this.state.tooltipDimensions.height,
+            left: left + offsetLeft,
+            top: top - this.state.tooltipDimensions.height + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            left: left - this.state.tooltipDimensions.width + width,
-            top: top - this.state.tooltipDimensions.height,
+            left: left - this.state.tooltipDimensions.width + width + offsetRight,
+            top: top - this.state.tooltipDimensions.height + offsetBottom,
           };
       }
     } else {

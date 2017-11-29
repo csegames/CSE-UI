@@ -12,13 +12,12 @@ import {
   PlayerState,
   Gender,
   Race,
-  Tooltip,
 } from 'camelot-unchained';
 import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
-import styled from 'react-emotion';
 
 import Pills, { Orientation } from './components/Pills';
+import Status from './components/Status';
 
 import { BodyParts } from '../../lib/PlayerStatus';
 
@@ -36,7 +35,6 @@ const DEPLETED_COLOR = '#3c3c3c';
 const DEPLETED_COLOR_DEAD = '#4e4e4e';
 const WOUND_COLOR = '#301bd0';
 const WOUND_COLOR_DEAD = '#4e4e4e';
-
 
 const characterImages = {
   humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
@@ -74,40 +72,6 @@ function getAvatar(gender: Gender, race: Race) {
     }
   }
 }
-
-const StatusContainer = styled('div')`
-  flex-wrap: wrap;
-  position: relative;
-  left: 150px;
-  top: 15px;
-  width: fit-content;
-  width: 128px;
-  height: 35px;
-`;
-
-const StatusIcon = styled('div')`
-  position: relative;
-  width: 30px;
-  height: 30px;
-  margin-right: 2px;
-  border-radius: 15px;
-  cursor: pointer;
-  pointer-events: all;
-  background: url(${(props: any) => props.src}) no-repeat;
-  background-size: 30px 30px;
-  &:hover {
-    box-shadow: inset 0 0 3px 2px rgba(255,255,255,0.7);
-  }
-`;
-
-const StatusTooltipHeader = styled('header')`
-  font-size: 2em;
-  font-weight: bold;
-`;
-
-const StatusTooltipDescription = styled('p')`
-  font-size: 1.3em;
-`;
 
 export interface DamageEvent {
   kind: 'damage';
@@ -152,7 +116,6 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
 
   public render() {
     if (!this.props.playerState || this.props.playerState.type !== 'player') return null;
-
     // if (!this.validPlayer()) return null;
     const now = Date.now();
     // did we recently take damage?
@@ -365,36 +328,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
             woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
           />
         </div>
-
-        {this.props.playerState.status &&
-          <StatusContainer>
-            <div>
-            {this.props.playerState.status.map((status) => {
-              return (
-                <Tooltip fixedMode content={() => (
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    maxWidth: '400px',
-                    maxHeight: '750px',
-                    overflow: 'hidden',
-                  }}>
-                    <StatusTooltipHeader>{status.name}</StatusTooltipHeader>
-                    <StatusTooltipDescription>{status.description}</StatusTooltipDescription>
-                  </div>
-                )} styles={{
-                  tooltipFixed: {
-                    backgroundColor: 'rgba(0,0,0,0.9)',
-                    maxWidth: '500px',
-                  },
-                }}>
-                  <StatusIcon src={status.icon} />
-                </Tooltip>
-              );
-            })}
-            </div>
-          </StatusContainer>
-        }
+        <Status statuses={this.props.playerState.statuses} />
       </div>
     );
   }
