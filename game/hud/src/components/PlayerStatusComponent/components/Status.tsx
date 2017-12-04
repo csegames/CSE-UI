@@ -55,12 +55,14 @@ class Status extends React.Component<StatusProps, StatusState> {
     const status = _.find(
       this.props.graphql.data.status.statuses,
       (statusEffect: ql.schema.StatusDef) => statusEffect.id === id);
-    return {
-      id,
-      name: status.name,
-      description: status.description,
-      iconURL: status.iconURL,
-    };
+    if (status) {
+      return {
+        id,
+        name: status.name,
+        description: status.description,
+        iconURL: status.iconURL,
+      };
+    }
   }
 }
 
