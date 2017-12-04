@@ -25,7 +25,7 @@ const StatusContainer = styled('div')`
 
 export interface StatusProps extends GraphQLInjectedProps<Pick<CUQuery, 'status'>> {
   statuses: {
-    id: string;
+    id: number;
     duration: number;
   }[];
 }
@@ -51,13 +51,13 @@ class Status extends React.Component<StatusProps, StatusState> {
     );
   }
 
-  private getStatusInfo = (id: string) => {
+  private getStatusInfo = (id: number) => {
     const status = _.find(
       this.props.graphql.data.status.statuses,
-      (statusEffect: ql.schema.StatusDef) => statusEffect.id === id);
+      (statusEffect: ql.schema.StatusDef) => statusEffect.numericID === id);
     if (status) {
       return {
-        id,
+        id: status.id,
         name: status.name,
         description: status.description,
         iconURL: status.iconURL,
@@ -72,6 +72,7 @@ const StatusWithQL = withGraphQL<StatusProps>({
       status {
         statuses {
           id
+          numericID
           iconURL
           description
           name

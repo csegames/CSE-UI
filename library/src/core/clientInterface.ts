@@ -23,7 +23,7 @@ export interface EntityState {
   
   // status -- null / undefined if no status on entity
   statuses?: {
-    id: string;
+    id: number;
     duration: number;
   }[];
 }
