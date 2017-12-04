@@ -22,10 +22,9 @@ export interface EntityState {
   };
   
   // status -- null / undefined if no status on entity
-  status?: {
-    name: string;
-    icon: string;
-    description: string;
+  statuses?: {
+    id: string;
+    duration: number;
   }[];
 }
 

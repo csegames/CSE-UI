@@ -39,7 +39,7 @@ export interface StatusIconProps {
     name: string;
     description: string;
     iconURL: string;
-  }
+  };
 }
 
 class StatusIcon extends React.Component<StatusIconProps> {
