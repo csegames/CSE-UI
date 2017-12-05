@@ -138,12 +138,14 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       this.setState({ tooltipDimensions: this.tooltipRef.getBoundingClientRect() });
     }
     if (!this.props.fixedMode) {
-      const computedStyle: any = this.computeStyle(e.clientX,
+      const computedStyle: any = this.computeStyle(
+        e.clientX,
         e.clientY,
         this.state.offsetLeft,
         this.state.offsetTop,
         this.state.offsetRight,
-        this.state.offsetBottom);
+        this.state.offsetBottom,
+      );
       if (this.tooltipRef) {
         this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
         this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';

@@ -19,7 +19,7 @@ const StatusContainer = styled('div')`
   left: 150px;
   top: 15px;
   width: fit-content;
-  width: 128px;
+  width: 168px;
   height: 35px;
 `;
 

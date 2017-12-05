@@ -11,14 +11,14 @@ import { Tooltip } from 'camelot-unchained';
 
 const Icon = styled('div')`
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin-right: 2px;
-  border-radius: 15px;
+  border-radius: 20px;
   cursor: pointer;
   pointer-events: all;
   background: url(${(props: any) => props.src}) no-repeat;
-  background-size: 30px 30px;
+  background-size: 40px 40px;
   &:hover {
     box-shadow: inset 0 0 3px 2px rgba(255,255,255,0.7);
   }
@@ -66,10 +66,11 @@ class StatusIcon extends React.Component<StatusIconProps> {
               backgroundColor: 'rgba(0,0,0,0.9)',
               maxWidth: '500px',
               minWidth: '300px',
+              padding: '20px 15px',
             },
           }}
         >
-          <Icon src={status.iconURL} />
+          <Icon style={{ backgroundImage: `url(${status.iconURL}), url(images/unknown-item.jpg)` }} />
       </Tooltip>
       );
     } else {
