@@ -37,7 +37,7 @@ export interface StatusState {
 class Status extends React.Component<StatusProps, StatusState> {
   public render() {
     return (
-      this.props.statuses && !this.props.graphql.loading && this.props.graphql.data.status ?
+      this.props.statuses && !this.props.graphql.loading && this.props.graphql.data && this.props.graphql.data.status ?
         <StatusContainer>
           <div>
           {this.props.statuses.map((status) => {
