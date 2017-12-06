@@ -50,3 +50,4 @@ dev.config
 game/hud/gql/
 game/hud/src/gqlDocuments\.ts
 game/hud/src/gqlInterfaces\.ts
+**/*.code-workspace
