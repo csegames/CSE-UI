@@ -203,6 +203,14 @@ module.exports = {
         script: 'nps build,clean.cube,copy.cube',
         description: 'Builds the module and copies to the CUBE (27) UI override directory',
       },
+      ignoreLint: {
+        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        description: 'Build module without running lint',
+      },
+      ignoreLintHatchery: {
+        script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
+        description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
+      }
     },
     report: {
       start: {

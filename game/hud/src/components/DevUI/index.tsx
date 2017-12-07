@@ -1,8 +1,9 @@
 import * as React from 'react';
+import * as _ from 'lodash';
 import { css, StyleSheet } from 'aphrodite';
 
 // @ts-ignore
-import { client, webAPI } from 'camelot-unchained';
+import { client, webAPI, events } from 'camelot-unchained';
 import { TabPanel } from 'camelot-unchained/lib/components';
 import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
 import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
@@ -12,6 +13,7 @@ type Content = string | ObjectMap<any>;
 
 // @ts-ignore:no-unused-locals
 window['webAPI'] = webAPI;
+window['events'] = events;
 
 export interface Button {
   title: string;
@@ -349,8 +351,8 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    client.OnOpenUI(this.onOpenUI);
-    client.OnCloseUI(this.onCloseUI);
+    events.on('hudnav--navigate', this.onToggleUIVisibility);
+
     client.OnUpdateDevUI((id: string, rootPage: any) => {
       let page = rootPage;
       if (typeof page === 'string') {
@@ -367,27 +369,15 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
     console.log(info);
   }
 
-  private onOpenUI = (name: string) => {
-    if (this.state[name]) {
+  private onToggleUIVisibility = (name: string) => {
+    if (this.state && _.includes(Object.keys(this.state), name)) {
+      const page = this.state[_.find(Object.keys(this.state), key => key === name)];
       this.setState({
         [name]: {
-          ...this.state[name],
-          visible: true,
+          ...page,
+          visible: !page.visible,
         },
       });
-      return;
-    }
-  }
-
-  private onCloseUI = (name: string) => {
-    if (this.state[name]) {
-      this.setState({
-        [name]: {
-          ...this.state[name],
-          visible: false,
-        },
-      });
-      return;
     }
   }
 }
