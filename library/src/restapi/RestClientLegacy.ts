@@ -43,6 +43,10 @@ class Settings {
         // BUG: (returns https://) this.url = this.core.wyrmlingApiUrl;
         this.port = this.core.wyrmlingApiPort;
         break;
+      case channelId.FLEDGLING:
+        this.url = 'fledglingd.camelotunchained.com';
+        this.port = this.core.fledglingApiPort;
+        break;
     }
   }
 

@@ -17,6 +17,8 @@ const defaults = {
   publicApiPort: 443,
   hatcheryApiUrl: 'https://hatchery.camelotunchained.com',
   hatcheryApiPort: 8000,
+  fledglingApiUrl: 'https://fledgling.camelotunchained.com',
+  fledglingApiPort: 8000,
   wyrmlingApiUrl: 'https://wyrmling.camelotunchained.com',
   wyrmlingApiPort: 8000,
 
@@ -35,6 +37,8 @@ class CoreSettings {
   public publicApiPort: number = defaults.publicApiPort;
   public hatcheryApiUrl: string = defaults.hatcheryApiUrl;
   public hatcheryApiPort: number = defaults.hatcheryApiPort;
+  public fledglingApiUrl: string = defaults.fledglingApiUrl;
+  public fledglingApiPort: number = defaults.fledglingApiPort;
   public wyrmlingApiUrl: string = defaults.wyrmlingApiUrl;
   public wyrmlingApiPort: number = defaults.wyrmlingApiPort;
   public apiToken: string = defaults.apiToken;

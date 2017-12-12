@@ -791,8 +791,6 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       classNames.push(StartCastState);
     }
 
-    console.log(status);
-
     return classNames;
   }
 }

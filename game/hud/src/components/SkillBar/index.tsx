@@ -49,7 +49,9 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
 
   private getAbilities = async () => {
     const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
-    this.setState({ abilities: res.sort(this.sortByAbilityID) });
+    const sortedAbilities = res.sort(this.sortByAbilityID);
+    sortedAbilities.forEach((skill: any) => this.registerAbility(skill));
+    this.setState({ abilities: sortedAbilities });
   }
 
   private sortByAbilityID = (a: SkillState, b: SkillState) => {
@@ -59,6 +61,7 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   }
 
   private onAbilityCreated = (abilityId: string, ability: string) => {
+    this.registerAbility(abilityId);
     this.setState({ abilities: [...this.state.abilities, JSON.parse(ability)] });
   }
 
@@ -68,6 +71,29 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
       return hexId !== abilityId;
     });
     this.setState({ abilities: newAbilities });
+  }
+
+  private getPrimaryComponent = (ability: any) => {
+    if (ability) {
+      return ability.rootComponentSlot;
+    }
+  }
+
+  private getSecondaryComponent = (ability: any) => {
+    if (ability && ability.rootComponentSlot && ability.rootComponentSlot.children) {
+      return ability.rootComponentSlot.children[0];
+    }
+  }
+
+  private registerAbility = (ability: any) => {
+    const abilityID = ability.id.toString(16);
+    const primaryComponent = this.getPrimaryComponent(ability);
+    const primaryComponentBaseID = primaryComponent && primaryComponent.baseComponentID ?
+      primaryComponent.baseComponentID.toString(16) : '';
+    const secondaryComponent = this.getSecondaryComponent(ability);
+    const secondaryComponentBaseID = secondaryComponent && secondaryComponent.baseComponentID ?
+      secondaryComponent.baseComponentID.toString(16) : '';
+    client.RegisterAbility(abilityID, primaryComponentBaseID, secondaryComponentBaseID);
   }
 }
 
