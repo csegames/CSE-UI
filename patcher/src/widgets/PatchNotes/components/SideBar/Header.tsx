@@ -6,10 +6,9 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { utils, ql } from 'camelot-unchained';
 
-import { PatcherServer } from '../../../Controller/services/session/controller';
 import Animate from '../../../../lib/Animate';
 import ServerSelect from './ServerSelect';
 
@@ -35,15 +34,6 @@ const SearchBar = styled('input')`
     border-bottom: 0px !important;
     box-shadow: inset 0 0 2px 1px rgba(63, 208, 176, 0.5) !important;
   }
-`;
-
-const ServerSelectOverlay = styled('div')`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
 `;
 
 const Button = styled('button')`

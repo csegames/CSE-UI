@@ -19,7 +19,7 @@
 }
 
 .Header__logo {
-  
+  margin-left: 28px;
 }
 
 .Header__menu {
@@ -36,15 +36,15 @@
   display: flex;
   align-items: center;
   &:hover {
-   color: #3fd0b0;
+   color: #d7bb4d;
   }
 
   &.active {
-   color: #7aeee2;
+   color: #d7bb4d;
   }
 }
 
-$glow-highlight: #3fd0b0;
+$glow-highlight: #d7bb4d;
 $glow-text: white;
 
 @keyframes glowStart {

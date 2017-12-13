@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import Animate from '../../lib/Animate';
-import { patcher } from '../../services/patcher';
 import { SoundsState } from '../../services/session/sounds';
 
 export interface WindowHeaderProps {
@@ -59,12 +58,6 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
     });
   }
 
-  private openSettings = () => {
-    this.setState({
-      settingsOpen: true,
-    });
-  }
-
   private muteSounds = () => {
     this.props.onMuteSounds();
   }
@@ -74,23 +67,4 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
   }
 }
 
-// DISABLED WINDOW CONTROLS FOR NOW
-// <li><a href='#' onClick={patcher.closeWindow}><img src='images/close.png' /></a></li>
-// <li><a href='#' onClick={patcher.maximizeWindow}><img src='images/max.png' /></a></li>
-// <li><a href='#' onClick={patcher.minimizeWindow}><img src='images/min.png' /></a></li>
-
 export default WindowHeader;
-
-/**
- * took out from line 57. no window controls in patcher
- * <li><a href='#' onClick={patcher.closeWindow}><img src='images/close.png' /></a></li>
- * <li><a href='#' onClick={patcher.maximizeWindow}><img src='images/max.png' /></a></li>
- * <li><a href='#' onClick={patcher.minimizeWindow}><img src='images/min.png' /></a></li>
-*/
-
-// no settings available right now... waiting on some patch server side stuff
-// <li>
-//   <a href='#' onClick={this.openSettings} className='hint--left hint--slide' data-hint='settings'>
-//     <img src='images/settings.png' />
-//   </a>
-// </li>

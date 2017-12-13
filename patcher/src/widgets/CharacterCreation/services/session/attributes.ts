@@ -5,9 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { client, Race, Gender, webAPI } from 'camelot-unchained';
-
-import {fetchJSON} from '../../lib/fetchHelpers';
+import { webAPI } from 'camelot-unchained';
 
 const totalPoints = 30;
 
@@ -36,10 +34,6 @@ const FETCH_ATTRIBUTES_SUCCESS = 'cu-character-creation/attributes/FETCH_ATTRIBU
 const FETCH_ATTRIBUTES_FAILED = 'cu-character-creation/attributes/FETCH_ATTRIBUTES_FAILED';
 
 const ALLOCATE_ATTRIBUTE_POINT = 'cu-character-creation/attributes/ALLOCATE_ATTRIBUTE_POINT';
-const UPDATE_WITH_OFFSETS = 'cu-character-creation/attributes/UPDATE_WITH_OFFSETS';
-
-const FETCH_OFFSETS = 'cu-character-creation/attributes/FETCH_OFFSETS';
-const FETCH_OFFSETS_SUCCESS = 'cu-character-creation/attributes/FETCH_OFFSETS_SUCCESS';
 
 const RESET = 'cu-character-creation/attributes/RESET';
 

@@ -4,15 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 
-import {BaseAction, defaultAction, FetchStatus, defaultFetchStatus, merge, hashMerge} from '../../lib/reduxUtils';
+import { BaseAction, defaultAction, FetchStatus, defaultFetchStatus, merge, hashMerge } from '../../lib/reduxUtils';
 
 import ResponseError from '../../lib/ResponseError';
-import {fetchJSON} from '../../lib/fetchHelpers';
+import { fetchJSON } from '../../lib/fetchHelpers';
 
-import {patcher} from '../patcher';
+import { patcher } from '../patcher';
 
 const HeroContentUrl = `${patcher.apiHost()}/patcherherocontent`;
 

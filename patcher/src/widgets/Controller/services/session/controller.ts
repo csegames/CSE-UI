@@ -43,11 +43,11 @@ export enum ServerType {
   UNKNOWN,
 }
 
-export function serverTypeToString(t: ServerType) {
+export function serverTypeToIcon(t: ServerType) {
   switch (t) {
-    case ServerType.CUGAME: return 'Camelot Unchained';
-    case ServerType.CUBE: return 'C.U.B.E.';
-    case ServerType.CHANNEL: return 'Tools';
+    case ServerType.CUGAME: return 'images/controller/cu-logo.png';
+    case ServerType.CUBE: return 'images/controller/cube-logo.png';
+    case ServerType.CHANNEL: return 'images/controller/tools-logo.png';
     case ServerType.UNKNOWN: return 'ERROR';
   }
 }
@@ -157,23 +157,6 @@ function updateCharacterCounts(
 
 // ACTIONS
 let channelUpdateInterval: NodeJS.Timer = null;
-
-const alertTimeouts: utils.Dictionary<NodeJS.Timer> = {};
-function alertReceivedDispatcher(alert: webAPI.PatcherAlert): utils.AsyncAction<ControllerAction> {
-  return (dispatch: (action: ControllerAction) => any) => {
-    dispatch(alertReceived(alert));
-
-    // timeout handles removal of the alert when it expires.
-    if (alertTimeouts[alert.id]) {
-      // already exists, cancel it
-      clearTimeout(alertTimeouts[alert.id]);
-    }
-
-    const expiresIn = Date.now() - Date.parse(alert.utcDateEnd);
-    alertTimeouts[alert.id] = setTimeout(() => dispatch(alertExpired(alert.id)), expiresIn);
-  };
-}
-
 
 const module = new Module({
   initialState: initialState(),
@@ -332,16 +315,6 @@ export const initSignalRFailed = module.createAction({
     return {
       isInitializing: false,
       signalRInitialized: false,
-    };
-  },
-});
-
-const connectionSlow = module.createAction({
-  type: 'controller/connectionSlow',
-  action: () => true,
-  reducer: (s, a) => {
-    return {
-      connectionSlow: true,
     };
   },
 });

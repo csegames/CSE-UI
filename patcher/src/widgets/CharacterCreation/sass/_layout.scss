@@ -58,7 +58,7 @@
 }
 
 .page {
-  @include page('../images/temp.jpg');
+  @include page('../images/bg.png');
 }
 
 .view-content {
@@ -75,6 +75,7 @@
     div {
       width: 100%;
       top: 0;
+      left: 0;
       bottom: 0;
     }
   }

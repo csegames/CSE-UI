@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { combineReducers, IReducer } from 'redux';
+import { combineReducers } from 'redux';
 
 import racesReducer from './races';
 const races = racesReducer;

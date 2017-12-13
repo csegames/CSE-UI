@@ -18,7 +18,7 @@ html,body, #app {
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 10px;
   height: 12px;
 }
 
@@ -28,7 +28,7 @@ html,body, #app {
 
 ::-webkit-scrollbar-thumb {
   background: darken($color1, 70%);
-  border: 1px solid #4E4E4E;
+  border: 1px solid rgba(255, 216, 180, 0.12);
 }
 
 h4 {

@@ -182,24 +182,26 @@
     right: 0px;
     top: 95px;
     bottom: 111px;
-    z-index: 16;
+    z-index: 9999999;
     overflow: hidden;
-    background-color: #1a1a1a;
+    background-color: rgba(0,0,0,0.9);
     
     .article-content {
       position: relative;
-      background-color: $color4;
       overflow-y: auto;
       overflow-x: hidden;
-      margin: 20px 20px;
-      height: calc(100% - 70px);
+      height: 100%;
       color: $color6;
       padding: 20px;
+      z-index: 10;
       
       .content-container {
+        position: relative;
         max-width: 740px;
         margin: auto;
         font-size: 1.3em;
+        background-color: #000;
+        padding: 0px 20px;
         img {
           display: block;
           margin: 0 auto;
@@ -211,9 +213,9 @@
     
     .fa-times {
       cursor: pointer;
-      position: fixed;
-      top: 125px;
-      right: 45px;
+      position: absolute;
+      top: 5px;
+      right: 10px;
       transition: all 0.3s;
       &:hover {
         color: darkred;

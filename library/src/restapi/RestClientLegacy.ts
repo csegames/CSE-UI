@@ -85,7 +85,7 @@ export function postJSON(endpoint: string,
       loginToken: client.loginToken,
     },
     body: JSON.stringify(data),
-  })
+  } as any)
     .then(RestUtil.checkStatus)
     .then(RestUtil.parseJSON);
 }

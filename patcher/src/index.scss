@@ -40,17 +40,17 @@ html,body, #Patcher {
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 10px;
   height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: inherit;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: darken($color1, 70%);
-  border: 1px solid #4E4E4E;
+  background: linear-gradient(to bottom, #56473C, #9A846F, #5D4C40);
+  border: 1px solid rgba(255, 216, 180, 0.12);
 }
 
 ::-webkit-input-placeholder {
@@ -222,6 +222,5 @@ input {
 @import './components/OverlayView/index';
 
 // widgets
-@import './widgets/Controller/index';
 @import './widgets/CharacterCreation/index';
 @import './widgets/News/index';

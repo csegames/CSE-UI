@@ -6,10 +6,9 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import * as moment from 'moment';
-import styled, { css } from 'react-emotion';
-import { client, utils, Spinner, LoadingContainer } from 'camelot-unchained';
+import styled from 'react-emotion';
+import { utils, LoadingContainer } from 'camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 import Animate from '../../../../lib/Animate';
 

@@ -11,7 +11,6 @@
  */
 // tslint:disable
 import { StepInfo } from 'camelot-unchained';
-import { CharacterCreationPage } from '../index';
 
 export const factionSteps: StepInfo[] = [
   {

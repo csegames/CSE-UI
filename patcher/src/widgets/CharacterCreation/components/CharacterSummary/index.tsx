@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils, webAPI, Race, Gender, Archetype } from 'camelot-unchained';
+import { Race, Gender, Archetype } from 'camelot-unchained';
 
-import { AttributeInfo, attributeType } from '../../services/session/attributes';
+import { AttributeInfo } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
 import LeftInfoPanel from './components/LeftInfoPanel';

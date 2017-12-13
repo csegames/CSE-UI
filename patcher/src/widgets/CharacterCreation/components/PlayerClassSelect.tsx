@@ -6,9 +6,7 @@
 
 import * as React from 'react';
 import { Archetype, Faction, events } from 'camelot-unchained';
-import { classSteps } from './HelpSteps';
 
-import { CharacterCreationPage } from '../index';
 import { PlayerClassInfo } from '../services/session/playerClasses';
 import { FactionInfo } from '../services/session/factions';
 import Animate from '../../../lib/Animate';
@@ -113,10 +111,6 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
   private selectClass = (info: PlayerClassInfo) => {
     events.fire('play-sound', 'select');
     this.props.selectClass(info);
-  }
-
-  private toggleHelp = () => {
-    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private generateClassContent = (info: PlayerClassInfo, index: number) => {

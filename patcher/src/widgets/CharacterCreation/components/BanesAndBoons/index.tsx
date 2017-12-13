@@ -8,8 +8,6 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { events, Tooltip } from 'camelot-unchained';
 
-import { CharacterCreationPage } from '../../index';
-import { banesAndBoonsSteps } from '../HelpSteps';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
@@ -807,10 +805,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
       }
     }
-  }
-
-  private toggleHelp = () => {
-    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {

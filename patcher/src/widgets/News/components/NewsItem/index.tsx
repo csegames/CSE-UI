@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {Post} from '../../../../services/session/news';
+import { Post } from '../../../../services/session/news';
 import Animate from '../../../../lib/Animate';
 
 export interface NewsItemProps {
@@ -81,7 +81,7 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
             <p dangerouslySetInnerHTML={{__html: post.excerpt.rendered}} />
           </div>
         </div>
-        <Animate animationEnter='slideInUp' animationLeave='slideOutDown'
+        <Animate animationEnter='fadeIn' animationLeave='fadeOut'
           durationEnter={400} durationLeave={500}>
           {fullArticle}
         </Animate>

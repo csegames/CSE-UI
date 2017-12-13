@@ -6,14 +6,15 @@
 
 import * as React from 'react';
 import { events } from 'camelot-unchained';
-import { patcher, User } from '../../../../services/patcher';
-import LayeredDiv from '../LayeredDiv';
+
+import LoginView from './components/LoginView';
+import { patcher } from '../../../../services/patcher';
 
 export interface LoginProps {
   onLogin: () => void;
 }
 
-enum LoginStatus {
+export enum LoginStatus {
   IDLE,
   INVALIDINPUT,
   WORKING,
@@ -59,91 +60,25 @@ class Login extends React.Component<LoginProps, LoginState> {
   }
 
   public render() {
-
-    const disableInput = this.state.status !== LoginStatus.IDLE && this.state.status !== LoginStatus.INVALIDINPUT;
-
-    let LoginButton: JSX.Element = null;
-    switch (this.state.status) {
-      case LoginStatus.INVALIDINPUT:
-        LoginButton = <div className='Login__button disabled' onClick={e => e.preventDefault()}>Login</div>;
-        break;
-      case LoginStatus.IDLE:
-        LoginButton = <div className='Login__button' tabIndex={4} onClick={this.login}>Login</div>;
-        break;
-      case LoginStatus.WORKING:
-        LoginButton = <div className='Login__button disabled' onClick={e => e.preventDefault()}>
-          <span className='wave-text'>
-            <i>V</i><i>e</i><i>r</i><i>i</i><i>f</i><i>y</i><i>i</i><i>n</i><i>g</i><i>.</i><i>.</i><i>.</i>
-          </span>
-        </div>;
-        break;
-      case LoginStatus.SUCCESS:
-        LoginButton = <div className='Login__button disabled success'>Success!</div>;
-        break;
-      case LoginStatus.FAILED:
-        LoginButton = <div className='Login__button disabled error'>Login Failed</div>;
-        break;
-    }
-
     return (
-      <div className='Login'>
-        <div className='flex-column'>
-          <label>Enter your email</label>
-          <input className='flex-stretch'
-                 ref={r => this.emailRef = r}
-                 type='email'
-                 value={this.state.email || ''}
-                 onChange={this.onEmailChanged}
-                 onKeyDown={this.onKeyDown}
-                 tabIndex={1}
-                 disabled={disableInput}
-                 required/>
-          
-          <div className='Login__rememberMe'>
-            
-            <input type='checkbox'
-                   className='filled-in'
-                   id='remember-me'
-                   ref={r => this.rememberRef = r}
-                   checked={this.state.rememberMe}
-                   onChange={this.onRememberMe}
-                   onKeyDown={this.onKeyDown}
-                   disabled={disableInput}
-                   tabIndex={3}/>
-            
-            <label htmlFor='remember-me'>Remember me</label>
-          </div>
-        </div>
-        
-        <div className='flex-column'>
-          <label>Enter your password</label>
-          <input id='password'
-                 className='flex-stretch'
-                 ref={r => this.passwordRef = r}
-                 type='password'
-                 value={this.state.password || ''}
-                 onChange={this.onPasswordChanged}
-                 onKeyDown={this.onKeyDown}
-                 tabIndex={2}
-                 disabled={disableInput}
-                 required/>
-          
-          <a href='https://api.citystateentertainment.com/Account/ForgottenPassword' target='_blank'>
-            Forgot your password?
-          </a>
-        </div>
-        
-        <div className='flex-column' style={{marginTop: '20px'}}>
-          {LoginButton}
-          <a href='https://api.citystateentertainment.com/Account/Login' target='_blank'>Create a new account.</a>
-        </div>
-     
-      </div>
+      <LoginView
+        email={this.state.email}
+        password={this.state.password}
+        rememberMe={this.state.rememberMe}
+        status={this.state.status}
+        onEmailChanged={this.onEmailChanged}
+        onKeyDown={this.onKeyDown}
+        onPasswordChanged={this.onPasswordChanged}
+        onRememberMe={this.onRememberMe}
+        onLogin={this.login}
+        emailRef={r => this.emailRef = r}
+        rememberRef={r => this.rememberRef = r}
+        passwordRef={r => this.passwordRef = r}
+      />
     );
   }
 
   public componentDidMount() : void {
-    // without this timeout, the label doesn't animate up above the input box
     if (this.emailRef.value.length === 0) {
       this.emailRef.focus();
     } else {
@@ -155,24 +90,24 @@ class Login extends React.Component<LoginProps, LoginState> {
     this.setState({
       email: evt.target.value,
       status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT,
-    } as any);
+    });
   }
 
   private onPasswordChanged = (evt: any) => {
     this.setState({
       password: evt.target.value,
       status: this.passwordRef.validity.valid && this.emailRef.validity.valid ? LoginStatus.IDLE : LoginStatus.INVALIDINPUT,
-    } as any);
+    });
   }
 
   private onRememberMe = (evt: any) => {
-    this.setState({rememberMe: !this.state.rememberMe} as any);
+    this.setState({rememberMe: !this.state.rememberMe});
     events.fire('play-sound', 'select');
   }
 
   private login = () => {
     events.fire('play-sound', 'server-select');
-    this.setState({status: LoginStatus.WORKING} as any);
+    this.setState({status: LoginStatus.WORKING});
     patcher.login({
       email: this.emailRef.value,
       password: this.passwordRef.value,
@@ -192,15 +127,10 @@ class Login extends React.Component<LoginProps, LoginState> {
     } else if (waitTime > 5000 || patcher.hasLoginError()) {
       this.setState({ status: LoginStatus.FAILED } as any);
       setTimeout(() => this.setState({status: this.passwordRef.validity.valid && this.emailRef.validity.valid ?
-         LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
+        LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
       return;
     }
     setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
-  }
-
-  private onHelp = () => {
-    window.open('https://api.citystateentertainment.com/Account/ForgottenPassword', '_blank');
-    events.fire('play-sound', 'select');
   }
 
   private onKeyDown = (event: any) => {

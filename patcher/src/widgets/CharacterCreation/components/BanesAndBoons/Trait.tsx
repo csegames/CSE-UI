@@ -10,8 +10,6 @@ import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/
 import { events, Tooltip } from 'camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
-declare const toastr: any;
-
 export interface TraitStyle extends StyleDeclaration {
   traitContainer: React.CSSProperties;
   trait: React.CSSProperties;
@@ -351,7 +349,7 @@ class Trait extends React.Component<TraitProps, {}> {
   }
 
   private onTraitClick = () => {
-    const { trait, onTraitClick, onCancelTrait, maxPoints, totalPoints } = this.props;
+    const { trait, onTraitClick, onCancelTrait } = this.props;
     if (trait.selected && onCancelTrait) {
       events.fire('play-sound', 'select');
       onCancelTrait(trait);
