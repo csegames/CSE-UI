@@ -86,7 +86,7 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   }
 
   private registerAbility = (ability: any) => {
-    const abilityID = ability.id.toString(16);
+    const abilityID = typeof ability.id === 'number' ? ability.id.toString(16) : ability.id;
     const primaryComponent = this.getPrimaryComponent(ability);
     const primaryComponentBaseID = primaryComponent && primaryComponent.baseComponentID ?
       primaryComponent.baseComponentID.toString(16) : '';
