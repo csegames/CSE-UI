@@ -6,12 +6,19 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-import { events, client, Tooltip } from 'camelot-unchained';
+import {
+  events,
+  client,
+  Tooltip,
+  SkillStateProgression,
+  SkillStateReasonEnum,
+  SkillStateStatusEnum,
+  SkillStateTypeEnum,
+} from 'camelot-unchained';
 import styled, { css, keyframes, cx } from 'react-emotion';
 
-import { SkillState, Progress, skillStateColors } from './skillState';
-import withOldSkillButton from './OldSkillButton';
+import { skillStateColors, SkillStateInfo } from './skillState';
+import skillStateConnector from './SkillStateConnector';
 export * from './skillState';
 
 const blinkStroke = keyframes`
@@ -73,7 +80,7 @@ const overlayPseudo = css`
 
 const pulsingBackground = css`
   ${overlayPseudo}
-  background: ${skillStateColors.holdColor};
+  background: ${skillStateColors.runningColor};
   animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
   -webkit-animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
 `;
@@ -150,20 +157,20 @@ const QueuedState = css`
   }
 `;
 
-const HoldState = css`
+const RunningState = css`
   filter: brightness(125%);
   &:before {
     ${pulsingBackground}
   }
   .inner-bg {
-    stroke: ${skillStateColors.holdColor};
+    stroke: ${skillStateColors.runningColor};
     animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
     -webkit-animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
   }
 
   .inner,
   .inner-blur {
-    stroke: ${skillStateColors.holdColor};
+    stroke: ${skillStateColors.runningColor};
     filter: url(#svg-blur);
     animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
     -webkit-animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
@@ -462,7 +469,7 @@ function makeGlowPathFor(layer: 'outer' | 'inner',
 // Skill Button Component
 
 export interface SkillButtonProps {
-  skillState?: SkillState;
+  skillState?: SkillStateInfo;
   children?: React.ReactNode;
   name: string;
   description: any;
@@ -477,6 +484,7 @@ export interface SkillButtonState {
   outer: RingState;
   inner: RingState;
   label: string;
+  startCast: boolean;
 }
 
 interface RingTimer {
@@ -509,23 +517,15 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     if (props.skillState && props.skillState.info) {
       // extract button state from props
       const { id, info } = props.skillState;
-      const { icon, type, /* track, */ keybind } = info;
-      const { status } = props.skillState;
-
-      // Why 'as any'?? Because they don't exist on every skillState. We check later down if these exist.
-      const { reason, timing, disruption } = props.skillState as any;
+      const { icon, keybind } = info;
+      const { timing, disruption } = props.skillState;
 
       const custom = { backgroundImage: 'url(' + icon + ')' };
 
       const outer = 'M 29.999 6 A 25 25 0 1 0 30 6 Z';
       const inner = 'M 29.999 9 A 22 22 0 1 0 30 9 Z';
 
-      const classNames: string[] = [type, ...this.getClassNames(props.skillState)];
-      switch (status) {
-        case 'unusable':
-          classNames.push(reason);
-          break;
-      }
+      const classNames: string[] = this.getClassNames(props.skillState);
 
       const x = 30;
       const y = 30;
@@ -545,11 +545,16 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       }
       if (disruption) {
         if (disruption.current >= disruption.end) {
-          classNames.push('interrupted');
+          classNames.push(InterruptedState);
           innerPath = makeGlowPathFor('inner', 500, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
         outerPath = makeGlowPathFor('outer', disruption.end, this.state.outer.current, x, y, outerRadius, outerDirection);
       }
+
+      if (this.state.startCast) {
+        classNames.push(StartCastState);
+      }
+
       // output button
       return (
         <Tooltip
@@ -601,7 +606,13 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   public componentWillReceiveProps(nextProps: SkillButtonProps) {
     if (!this.listener) {
       const { id } = (nextProps.skillState);
-      this.listener = events.on('skillsbutton-' + id, (data: SkillState) => this.processEvent(data));
+      this.listener = events.on('skillsbutton-' + id, (data: SkillStateInfo) => this.processEvent(data));
+    }
+
+    if (this.props.skillState.status ! & SkillStateStatusEnum.Running &&
+        nextProps.skillState.status & SkillStateStatusEnum.Running) {
+      this.setState({ startCast: true });
+      setTimeout(() => this.setState({ startCast: false }), 500);
     }
   }
 
@@ -621,15 +632,16 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
         current: 0,
       },
       label: '',
+      startCast: false,
     };
   }
 
   private performAbility = () => {
-    const hexId = parseInt(this.props.skillState.id, 10).toString(16);
+    const hexId = this.props.skillState.id.toString(16);
     client.Attack(hexId);
   }
 
-  private setTimerRing = (id: number, timer: Progress, clockwise: boolean) => {
+  private setTimerRing = (id: number, timer: SkillStateProgression, clockwise: boolean) => {
     // console.log('SKILLBUTTON: INIT: RING ' + id + ' TIMER ' + JSON.stringify(timer));
     let ring = this.rings[id];
     if (!ring) {
@@ -643,7 +655,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     this.setRingState(id, timer.current);
   }
 
-  private setDisruptionRing = (id: number, disruption: Progress, clockwise: boolean) => {
+  private setDisruptionRing = (id: number, disruption: SkillStateProgression, clockwise: boolean) => {
     let ring = this.rings[id];
     if (!ring) {
       ring = this.rings[id] = {
@@ -683,7 +695,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     this.rings[id] = undefined;
   }
 
-  private onStatusChange = (timing: Progress, disruption: Progress, isClockwise: boolean) => {
+  private onStatusChange = (timing: SkillStateProgression, disruption: SkillStateProgression, isClockwise: boolean) => {
     if (timing && (!disruption || disruption.current < disruption.end)) {
       this.setTimerRing(INNER, timing, isClockwise);
     }
@@ -698,8 +710,8 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     }
   }
 
-  private processEvent = (event: any) => {
-    if (_.includes(event.status, 'cooldown')) {
+  private processEvent = (event: SkillStateInfo) => {
+    if (event.status & SkillStateStatusEnum.Cooldown) {
       const now = Date.now();
       const ring = this.rings[INNER];
       if (ring) {
@@ -714,85 +726,71 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       }
     }
 
-    switch (event.status) {
-      case 'channel': {
-        this.onStatusChange(event.timing, event.disruption, true);
-        break;
-      }
+    if (event.status & SkillStateStatusEnum.Channel) {
+      this.onStatusChange(event.timing, event.disruption, true);
+    }
 
-      case 'preparation': {
-        this.onStatusChange(event.timing, event.disruption, true);
-        break;
-      }
+    if (event.status & SkillStateStatusEnum.Preparation) {
+      this.onStatusChange(event.timing, event.disruption, true);
+    }
 
-      case 'recovery': {
-        this.onStatusChange(event.timing, null, false);
-        break;
-      }
-
-      default: break;
+    if (event.status & SkillStateStatusEnum.Recovery) {
+      this.onStatusChange(event.timing, null, false);
     }
   }
 
-  private getClassNames = (skillState: any) => {
-    const classNames = [];
-    if (skillState.info.type === 'modal') {
+  private getClassNames = (skillState: SkillStateInfo) => {
+    const classNames: string[] = [];
+    if (skillState.info.type === SkillStateTypeEnum.Modal) {
       classNames.push(ModalState);
     }
 
-    const status = skillState.status.toLowerCase();
-    if (_.includes(status, 'unavailabe')) {
+    const status = skillState.status;
+    const reason = skillState.reason;
+    if (status & SkillStateStatusEnum.Unusable) {
       classNames.push(UnavailableState);
-      if (skillState.reason === 'noammo') {
+      if (reason & SkillStateReasonEnum.NoAmmo) {
         classNames.push(NoAmmoState);
       }
-      if (skillState.reason === 'noweapon') {
+      if (reason & SkillStateReasonEnum.NoWeapon) {
         classNames.push(NoWeaponState);
       }
     }
 
-    if (_.includes(status, 'ready')) {
+    if (status & SkillStateStatusEnum.Ready) {
       classNames.push(ReadyState);
     }
 
-    if (_.includes(status, 'error')) {
+    if (status & SkillStateStatusEnum.Error) {
       classNames.push(ErrorState);
     }
 
-    if (_.includes(status, 'queued')) {
+    if (status & SkillStateStatusEnum.Queued) {
       classNames.push(QueuedState);
     }
 
-    if (_.includes(status, 'cooldown')) {
+    if (status & SkillStateStatusEnum.Running) {
+      classNames.push(RunningState);
+    }
+
+    if (status & SkillStateStatusEnum.Cooldown) {
       classNames.push(CooldownState);
     }
 
-    if (_.includes(status, 'hold')) {
-      classNames.push(HoldState);
-    }
-
-    if (_.includes(status, 'channel')) {
+    if (status & SkillStateStatusEnum.Channel) {
       classNames.push(ChannelState);
     }
 
-    if (_.includes(status, 'interrupted')) {
-      classNames.push(InterruptedState);
-    }
-
-    if (_.includes(status, 'recovery')) {
+    if (status & SkillStateStatusEnum.Recovery) {
       classNames.push(RecoveryState);
     }
 
-    if (_.includes(status, 'preparation')) {
+    if (status & SkillStateStatusEnum.Preparation) {
       classNames.push(PreparationState);
-    }
-
-    if (_.includes(status, 'startcast')) {
-      classNames.push(StartCastState);
     }
 
     return classNames;
   }
 }
 
-export default withOldSkillButton()(SkillButton);
+export default skillStateConnector()(SkillButton);

@@ -26,6 +26,7 @@ import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
+import SkillBar from '../SkillBar';
 
 import { ZoneName } from '../ZoneName';
 
@@ -86,6 +87,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           invites={this.props.invites.invites} />
         <HUDFullScreen />
         <Watermark />
+        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
+          <SkillBar />
+        </div>
       </div>
     );
   }

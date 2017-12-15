@@ -41,6 +41,7 @@ import Announcement from './classes/Announcement';
 import Combatant from './classes/Combatant';
 import Item from './classes/Item';
 import Player from './classes/Player';
+import Ability from './classes/Ability';
 export * from './classes/CombatLog';
 
 import { DEBUG_ASSERT, RUNTIME_ASSERT } from './utils/assert';
@@ -71,6 +72,7 @@ export {
   Combatant,
   Item,
   Player,
+  Ability,
 
   // misc
   DEBUG_ASSERT,

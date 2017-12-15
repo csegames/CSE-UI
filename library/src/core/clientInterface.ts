@@ -55,6 +55,45 @@ export interface PlayerState extends EntityState {
   controllingEntityState?: AnyEntityState;
 }
 
+export enum SkillStateTypeEnum {
+  Standard,
+  Modal,
+}
+
+export enum SkillStateStatusEnum {
+  None = 0,
+  Ready = 1 << 0,
+  Unusable = 1 << 1,
+  Disabled = 1 << 2,
+  Queued = 1 << 3,
+  Preparation = 1 << 4,
+  Channel = 1 << 5,
+  Running = 1 << 6,
+  Recovery = 1 << 7,
+  Cooldown = 1 << 8,
+  Error = 1 << 9,
+}
+
+export enum SkillStateReasonEnum {
+  None = 0,
+  NoAmmo = 1 << 0,
+  NoWeapon = 1 << 1,
+}
+
+export interface SkillStateProgression {
+  current: number;
+  end: number;
+}
+
+export interface ClientSkillState {
+  id: number;
+  type: SkillStateTypeEnum;
+  status: SkillStateStatusEnum;
+  reason?: SkillStateReasonEnum;
+  timing?: SkillStateProgression;
+  disruption?: SkillStateProgression;
+}
+
 export interface SiegeState extends EntityState {
   type: 'siege';
   health: {
@@ -209,6 +248,8 @@ interface clientInterface {
   UpdateSkillCooldown(callback: (abilityId: string, started: number, duration: number) => void): void;
 
   OnSkillError(callback: (abilityId: string) => void):void;
+
+  OnSkillStateChanged(callback: (skillState: ClientSkillState) => void): void;
 
   /* Abilities */
 

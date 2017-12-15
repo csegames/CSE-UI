@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import clientInterface, { PlayerState, AnyEntityState } from './clientInterface';
+import clientInterface, { PlayerState, AnyEntityState, ClientSkillState } from './clientInterface';
 import configGroup from './config/configGroup';
 import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
@@ -106,6 +106,8 @@ const devClientInterface: clientInterface = {
   UpdateSkillCooldown: (callback: (abilityId: string, started: number, duration: number) => void): void => {},
 
   OnSkillError: (callback: (abilityId: string) => void): void => {},
+
+  OnSkillStateChanged: (callback: (skillState: ClientSkillState) => void): void => {},
 
   /* Abilities */
 

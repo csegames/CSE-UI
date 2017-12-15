@@ -6,16 +6,18 @@
  */
 
 import * as React from 'react';
-import { client, events, dxKeyCodes } from 'camelot-unchained';
+import { client, events, dxKeyCodes, SkillStateStatusEnum, SkillStateTypeEnum } from 'camelot-unchained';
+import { SkillStateInfo } from './skillState';
 
-export interface OldSkillButtonProps {
-  skillState: any;
+export interface SkillStateConnectorProps {
+  skillInfo: any;
   index: number;
 }
 
-export interface OldSkillButtonState {
+export interface SkillStateConnectorState {
   keybind: string;
   label: string;
+  skillState: SkillStateInfo;
   isClick: boolean;
   isRunning: boolean;
   isQueued: boolean;
@@ -29,17 +31,18 @@ export interface BasicButtonInfo {
   icon: string;
 }
 
-function oldSkillButton<PropsTypes extends any>() {
+function skillStateConnector<PropsTypes extends any>() {
   return (WrappedComponent: React.ComponentClass<PropsTypes> | React.StatelessComponent<PropsTypes>) => {
-    return class OldSkillButton extends React.Component<OldSkillButtonProps, OldSkillButtonState> {
+    return class OldSkillButton extends React.Component<SkillStateConnectorProps, SkillStateConnectorState> {
       private cooldownDuration: number = 0;
       private cooldownStarted: number = 0;
 
-      constructor(props: OldSkillButtonProps) {
+      constructor(props: SkillStateConnectorProps) {
         super(props);
         this.state = {
           keybind: '',
           label: '',
+          skillState: null,
           isClick: false,
           isRunning: false,
           isQueued: false,
@@ -55,13 +58,15 @@ function oldSkillButton<PropsTypes extends any>() {
           <WrappedComponent
             {...this.props}
             skillState={skillState}
-            name={this.props.skillState.name}
-            description={this.props.skillState.notes}
+            name={this.props.skillInfo.name}
+            description={this.props.skillInfo.notes}
           />
         );
       }
 
       public componentDidMount() {
+        // client.OnSkillStateChanged(this.handleSkillStateChanged);
+
         client.SetSkillRunning(this.handleSkillRunning);
         client.SetSkillQueued(this.handleSkillQueued);
         client.UpdateSkillCooldown(this.handleCooldown);
@@ -76,8 +81,8 @@ function oldSkillButton<PropsTypes extends any>() {
         });
       }
 
-      public componentWillUpdate(nextProps: OldSkillButtonProps, nextState: OldSkillButtonState) {
-        events.fire('skillsbutton-' + nextProps.skillState.id, this.generateSkillState(nextProps, nextState));
+      public componentWillUpdate(nextProps: SkillStateConnectorProps, nextState: SkillStateConnectorState) {
+        events.fire('skillsbutton-' + nextProps.skillInfo.id, this.generateSkillState(nextProps, nextState));
         if (this.state.isQueued && !nextState.isQueued && nextState.isRunning) {
           this.handleClick();
         }
@@ -89,7 +94,7 @@ function oldSkillButton<PropsTypes extends any>() {
       }
 
       private handleSkillRunning = (abilityId: string, isRunning: boolean) => {
-        if (this.props.skillState.id === abilityId) {
+        if (this.props.skillInfo.id === abilityId) {
           if ((isRunning && this.state.isRunning) || (!isRunning && !this.state.isRunning)) return;
           if (isRunning) {
             this.handleClick();
@@ -99,14 +104,14 @@ function oldSkillButton<PropsTypes extends any>() {
       }
 
       private handleSkillQueued = (abilityId: string, isQueued: boolean) => {
-        if (this.props.skillState.id === abilityId) {
+        if (this.props.skillInfo.id === abilityId) {
           if ((isQueued && this.state.isQueued) || (!isQueued && !this.state.isQueued)) return;
           this.setState({ isQueued });
         }
       }
 
       private handleCooldown = (abilityId: string, started: number, duration: number) => {
-        if (this.props.skillState.id === abilityId && (started + duration) - client.serverTime >= 0.0) {
+        if (this.props.skillInfo.id === abilityId && (started + duration) - client.serverTime >= 0.0) {
           this.cooldownStarted = started;
           const timeLeft = Math.round(duration * 1000);
           this.cooldownDuration = timeLeft;
@@ -116,53 +121,48 @@ function oldSkillButton<PropsTypes extends any>() {
             this.cooldownStarted = 0;
             this.cooldownDuration = 0;
             this.setState({ isCooldown: false });
-          }, timeLeft);
+          }, timeLeft - 50);
         }
       }
 
       private handleSkillError = (abilityId: string) => {
-        if (this.props.skillState.id === abilityId) {
+        if (this.props.skillInfo.id === abilityId) {
           this.setState({ isError: true });
 
           setTimeout(() => this.setState({ isError: false }), 500);
         }
       }
 
-      private generateSkillState = (props: OldSkillButtonProps, state: OldSkillButtonState) => {
-        let status = 'ready';
+      private generateSkillState = (props: SkillStateConnectorProps, state: SkillStateConnectorState) => {
+        let status: SkillStateStatusEnum = SkillStateStatusEnum.Ready;
         let timing;
 
-        if (state.isClick) {
-          status = status + ' startCast';
-        }
-
         if (state.isRunning) {
-          status = status + ' hold';
+          status |= status | SkillStateStatusEnum.Running;
         }
 
         if (state.isError) {
-          status = status + ' error';
+          status |= status | SkillStateStatusEnum.Error;
         }
 
         if (state.isQueued) {
-          status = status + ' queued';
+          status |= status | SkillStateStatusEnum.Queued;
         }
 
         if (state.isCooldown) {
-          status = status + ' cooldown';
+          status |= status | SkillStateStatusEnum.Cooldown;
           timing = {
             current: client.serverTime - this.cooldownStarted,
             end: ((this.cooldownStarted + this.cooldownDuration) - client.serverTime),
           };
         }
 
-        const skillState: any = {
-          id: props.skillState.id,
+        const skillState: SkillStateInfo = {
+          id: props.skillInfo.id,
           info: {
-            type: 'standard',
-            icon: props.skillState.icon,
+            type: SkillStateTypeEnum.Standard,
+            icon: props.skillInfo.icon,
             keybind: state.keybind,
-            track: '',
           },
           status,
           timing,
@@ -170,8 +170,27 @@ function oldSkillButton<PropsTypes extends any>() {
 
         return skillState;
       }
+
+      // private handleSkillStateChanged = (clientSkillState: ClientSkillState) => {
+      //   if (clientSkillState.id.toString(16) === this.props.skillInfo.id) {
+      //     const skillState: SkillStateInfo = {
+      //       id: clientSkillState.id,
+      //       info: {
+      //         type: clientSkillState.type,
+      //         keybind: this.state.keybind,
+      //         icon: this.props.skillInfo.icon,
+      //       },
+      //       status: clientSkillState.status,
+      //       reason: clientSkillState.reason,
+      //       timing: clientSkillState.timing,
+      //       disruption: clientSkillState.disruption,
+      //     };
+
+      //     this.setState({ skillState });
+      //   }
+      // }
     };
   };
 }
 
-export default oldSkillButton;
+export default skillStateConnector;

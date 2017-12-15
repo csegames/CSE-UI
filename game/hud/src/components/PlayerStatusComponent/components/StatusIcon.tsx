@@ -19,7 +19,6 @@ const Icon = styled('div')`
   pointer-events: all;
   background: url(${(props: any) => props.src}) no-repeat;
   background-size: 40px 40px;
-  z-index: 99999;
   &:hover {
     box-shadow: inset 0 0 3px 2px rgba(255,255,255,0.7);
   }

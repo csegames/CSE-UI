@@ -9,18 +9,33 @@ import * as _ from 'lodash';
 
 import { restAPI, client } from 'camelot-unchained';
 import styled from 'react-emotion';
-import SkillButton, { SkillState } from './SkillButton';
+import SkillButton from './SkillButton';
 
 const Container = styled('div')`
   display: flex;
+  justify-content: center;
 `;
+
+export interface ApiSkillInfo {
+  characterID: string;
+  duration: number;
+  icon: string;
+  id: number;
+  name: string;
+  notes: string;
+  preparationTime: number;
+  shardID: number;
+  cooldowns: any;
+  rootComponentSlot: any;
+  stats: any;
+}
 
 export interface SkillBarProps {
 
 }
 
 export interface SkillBarState {
-  abilities: SkillState[];
+  abilities: ApiSkillInfo[];
 }
 
 export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
@@ -34,8 +49,8 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   public render() {
     return (
       <Container>
-        {this.state.abilities.map((state: SkillState, index: number) => (
-          <SkillButton key={index} skillState={state} index={index + 1} />
+        {this.state.abilities.map((state: ApiSkillInfo, index: number) => (
+          <SkillButton key={index} skillInfo={state} index={index + 1} />
         ))}
       </Container>
     );
@@ -50,11 +65,11 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   private getAbilities = async () => {
     const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
     const sortedAbilities = res.sort(this.sortByAbilityID);
-    sortedAbilities.forEach((skill: any) => this.registerAbility(skill));
+    sortedAbilities.forEach((skill: ApiSkillInfo) => this.registerAbility(skill));
     this.setState({ abilities: sortedAbilities });
   }
 
-  private sortByAbilityID = (a: SkillState, b: SkillState) => {
+  private sortByAbilityID = (a: ApiSkillInfo, b: ApiSkillInfo) => {
     const aID = !_.isNumber(a.id) ? parseInt(a.id, 16) : a.id;
     const bID = !_.isNumber(b.id) ? parseInt(b.id, 16) : b.id;
     return aID - bID;
@@ -67,7 +82,7 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
 
   private onAbilityDeleted = (abilityId: string) => {
     const newAbilities = _.filter(this.state.abilities, (ability) => {
-      const hexId = parseInt(ability.id, 10).toString(16);
+      const hexId = ability.id.toString(16);
       return hexId !== abilityId;
     });
     this.setState({ abilities: newAbilities });
