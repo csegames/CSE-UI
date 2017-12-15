@@ -88,6 +88,7 @@ export interface SkillStateProgression {
 export interface ClientSkillState {
   id: number;
   type: SkillStateTypeEnum;
+  keybind: number;
   status: SkillStateStatusEnum;
   reason?: SkillStateReasonEnum;
   timing?: SkillStateProgression;

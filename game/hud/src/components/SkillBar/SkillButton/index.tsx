@@ -48,21 +48,21 @@ const opacityPulse = keyframes`
   }
 `;
 
-const bgPulse = keyframes`
+const recoveryBgPulse = keyframes`
   from {
-    background-color: rgba(${skillStateColors.channelColor}, 0.8);
+    background: rgba(25, 171, 255, 0.25);
   }
   to {
-    background-color: rgba(${skillStateColors.channelColor}, 0.25);
+    background: rgba(25, 171, 255, 0.1);
   }
 `;
 
 const prepBgPulse = keyframes`
   from {
-    background-color: rgba(${skillStateColors.channelColor}, 0.25);
+    background: rgba(255, 159, 25, 0.25);
   }
   to {
-    background-color: rgba(${skillStateColors.channelColor}, 0.1);
+    background: rgba(255, 159, 25, 0.1);
   }
 `;
 
@@ -127,6 +127,23 @@ const StartCastState = css`
   .outer,
   .outer-blur {
     stroke: ${skillStateColors.startCastColor};
+    animation: ${blinkStroke} .25s infinite reverse;
+    -webkit-animation: ${blinkStroke} .25s infinite reverse;
+  }
+`;
+
+const HitState = css`
+  filter: brightness(125%);
+  &:active {
+    filter: brightness(90%);
+  }
+  &:before {
+    background: ${skillStateColors.hitColor};
+    opacity: 0.3;
+  }
+  .outer,
+  .outer-blur {
+    stroke: ${skillStateColors.hitColor};
     animation: ${blinkStroke} .25s infinite reverse;
     -webkit-animation: ${blinkStroke} .25s infinite reverse;
   }
@@ -214,10 +231,9 @@ const ErrorState = css`
 const ChannelState = css`
   filter: brightness(125%);
   &:before {
-    ${timingPseudo}
+    ${timingPseudo};
     color: ${skillStateColors.channelColor};
-    animation: ${bgPulse} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${bgPulse} .75s steps(5, start) infinite alternate;
+    background: ${skillStateColors.channelColor};
   }
 
   .inner,
@@ -225,8 +241,9 @@ const ChannelState = css`
     stroke: ${skillStateColors.channelColor};
   }
 
-  .inner-bg {
-    stroke: #000;
+  .inner-bg,
+  .inner-blur {
+    stroke: ${skillStateColors.prepColor};
   }
 
   .outer,
@@ -238,9 +255,8 @@ const ChannelState = css`
 const RecoveryState = css`
   &:before {
     ${timingPseudo};
-    color: ${skillStateColors.recoveryColor};
-    animation: ${bgPulse} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${bgPulse} .75s steps(5, start) infinite alternate;
+    animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
+    -webkit-animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
   }
 
   .inner,
@@ -257,7 +273,6 @@ const PreparationState = css`
   filter: brightness(125%);
   &:before {
     ${timingPseudo};
-    color: ${skillStateColors.prepColor};
     animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
     -webkit-animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
   }
@@ -278,8 +293,10 @@ const PreparationState = css`
 `;
 
 const InterruptedState = css`
-  ${overlayPseudo};
-  background-color: rgba(255, 0, 0, 0.2);
+  &:before {
+    ${overlayPseudo};
+    background-color: rgba(255, 0, 0, 0.2);
+  }
 `;
 
 const ModalState = css`
@@ -453,8 +470,7 @@ function arc2path(x: number, y: number, radius: number, startAngle: number, endA
   return ['M', start.x, start.y, 'A', radius, radius, 0, large, 0, end.x, end.y].join(' ');
 }
 
-function makeGlowPathFor(layer: 'outer' | 'inner',
-                          end: number,
+function makeGlowPathFor(end: number,
                           current: number,
                           x: number,
                           y: number,
@@ -485,6 +501,7 @@ export interface SkillButtonState {
   inner: RingState;
   label: string;
   startCast: boolean;
+  hit: boolean;
 }
 
 interface RingTimer {
@@ -505,10 +522,21 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
 
   private rings: RingTimer[] = [undefined, undefined];
   private listener: any;
+  private prevEvent: SkillStateInfo;
 
   constructor(props: SkillButtonProps) {
     super(props);
-    this.state = this.initialState();
+    this.state = {
+      outer: {
+        current: 0,
+      },
+      inner: {
+        current: 0,
+      },
+      label: '',
+      startCast: false,
+      hit: false,
+    };
   }
 
   public render() {
@@ -540,18 +568,23 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       // Includes a timer, render timer in outer circle
       if (timing) {
         if (!disruption || disruption.current < disruption.end) {
-          innerPath = makeGlowPathFor('inner', timing.end, this.state.inner.current, x, y, innerRadius, innerDirection);
+          innerPath = makeGlowPathFor(timing.end, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
       }
       if (disruption) {
         if (disruption.current >= disruption.end) {
           classNames.push(InterruptedState);
-          innerPath = makeGlowPathFor('inner', 500, this.state.inner.current, x, y, innerRadius, innerDirection);
+          innerPath = makeGlowPathFor(500, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
-        outerPath = makeGlowPathFor('outer', disruption.end, this.state.outer.current, x, y, outerRadius, outerDirection);
+        outerPath = makeGlowPathFor(disruption.end, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
       }
 
+      if (this.state.hit) {
+        outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
+        classNames.push(HitState);
+      }
       if (this.state.startCast) {
+        outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
         classNames.push(StartCastState);
       }
 
@@ -608,12 +641,6 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       const { id } = (nextProps.skillState);
       this.listener = events.on('skillsbutton-' + id, (data: SkillStateInfo) => this.processEvent(data));
     }
-
-    if (this.props.skillState.status ! & SkillStateStatusEnum.Running &&
-        nextProps.skillState.status & SkillStateStatusEnum.Running) {
-      this.setState({ startCast: true });
-      setTimeout(() => this.setState({ startCast: false }), 500);
-    }
   }
 
   public componentWillUnmount() {
@@ -623,36 +650,22 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     }
   }
 
-  private initialState() {
-    return {
-      outer: {
-        current: 0,
-      },
-      inner: {
-        current: 0,
-      },
-      label: '',
-      startCast: false,
-    };
-  }
-
   private performAbility = () => {
     const hexId = this.props.skillState.id.toString(16);
     client.Attack(hexId);
   }
 
-  private setTimerRing = (id: number, timer: SkillStateProgression, clockwise: boolean) => {
-    // console.log('SKILLBUTTON: INIT: RING ' + id + ' TIMER ' + JSON.stringify(timer));
+  private setTimerRing = (id: number, timer: SkillStateProgression, clockwise: boolean, shouldPlayHit?: boolean) => {
     let ring = this.rings[id];
     if (!ring) {
       ring = this.rings[id] = {
         event: { when: Date.now(), remaining: timer.end - timer.current, direction: 1, clockwise },
-        timer: setInterval(() => this.ringTimerTick(id), 66),
+        timer: setInterval(() => this.ringTimerTick(id, shouldPlayHit), 66),
       };
     } else {
       ring.event = { when: Date.now(), remaining: timer.current, direction: 1, clockwise };
     }
-    this.setRingState(id, timer.current);
+    this.setRingState(id, timer.end - timer.current);
   }
 
   private setDisruptionRing = (id: number, disruption: SkillStateProgression, clockwise: boolean) => {
@@ -678,32 +691,38 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     this.setState((state, props) => newState as any);
   }
 
-  private ringTimerTick = (id: number) => {
+  private ringTimerTick = (id: number, shouldPlayHit?: boolean) => {
     const now = Date.now();
     const ring = this.rings[id];
     const elapsed = now - ring.event.when;
     let current = ring.event.remaining - elapsed;
     if (current < 0) current = 0;
     this.setRingState(id, current);
-    if (current === 0) this.ringStop(id);
+    if (current === 0) this.ringStop(id, shouldPlayHit);
   }
 
-  private ringStop = (id: number) => {
+  private ringStop = (id: number, shouldPlayHit?: boolean) => {
     const ring = this.rings[id];
     clearInterval(ring.timer);
     ring.timer = null;
     this.rings[id] = undefined;
+    if (shouldPlayHit) {
+      this.runHitAnimation();
+    }
   }
 
-  private onStatusChange = (timing: SkillStateProgression, disruption: SkillStateProgression, isClockwise: boolean) => {
+  private onStatusChange = (timing: SkillStateProgression,
+                            disruption: SkillStateProgression,
+                            isClockwise: boolean,
+                            shouldPlayHit?: boolean) => {
     if (timing && (!disruption || disruption.current < disruption.end)) {
-      this.setTimerRing(INNER, timing, isClockwise);
+      this.setTimerRing(INNER, timing, isClockwise, shouldPlayHit);
     }
 
     if (disruption) {
       if (disruption.current >= disruption.end) {
         this.ringStop(INNER);
-        this.setTimerRing(INNER, { current: 0, end: 500 }, !CLOCKWISE);
+        this.setTimerRing(INNER, { current: 0, end: 500 }, !CLOCKWISE, false);
       }
 
       this.setDisruptionRing(OUTER, disruption, !CLOCKWISE);
@@ -711,6 +730,16 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   }
 
   private processEvent = (event: SkillStateInfo) => {
+    // Recovery
+    if (event.status & SkillStateStatusEnum.Recovery) {
+      if (this.prevEvent && this.prevEvent.status & SkillStateStatusEnum.Recovery) {
+        this.onStatusChange(null, null, false);
+      } else {
+        this.onStatusChange(event.timing, null, false);
+      }
+    }
+
+    // Cooldown
     if (event.status & SkillStateStatusEnum.Cooldown) {
       const now = Date.now();
       const ring = this.rings[INNER];
@@ -726,17 +755,27 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       }
     }
 
+    // Channel
     if (event.status & SkillStateStatusEnum.Channel) {
-      this.onStatusChange(event.timing, event.disruption, true);
+      if (this.prevEvent && this.prevEvent.status & SkillStateStatusEnum.Channel) {
+        this.onStatusChange(null, event.disruption, true, true);
+      } else {
+        this.runStartCastAnimation();
+        this.onStatusChange(event.timing, event.disruption, true, true);
+      }
     }
 
+    // Preparation
     if (event.status & SkillStateStatusEnum.Preparation) {
-      this.onStatusChange(event.timing, event.disruption, true);
+      if (this.prevEvent && this.prevEvent.status & SkillStateStatusEnum.Preparation) {
+        this.onStatusChange(null, event.disruption, true, true);
+      } else {
+        this.runStartCastAnimation();
+        this.onStatusChange(event.timing, event.disruption, true, true);
+      }
     }
 
-    if (event.status & SkillStateStatusEnum.Recovery) {
-      this.onStatusChange(event.timing, null, false);
-    }
+    this.prevEvent = event;
   }
 
   private getClassNames = (skillState: SkillStateInfo) => {
@@ -744,7 +783,6 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     if (skillState.info.type === SkillStateTypeEnum.Modal) {
       classNames.push(ModalState);
     }
-
     const status = skillState.status;
     const reason = skillState.reason;
     if (status & SkillStateStatusEnum.Unusable) {
@@ -769,10 +807,6 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       classNames.push(QueuedState);
     }
 
-    if (status & SkillStateStatusEnum.Running) {
-      classNames.push(RunningState);
-    }
-
     if (status & SkillStateStatusEnum.Cooldown) {
       classNames.push(CooldownState);
     }
@@ -789,7 +823,20 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       classNames.push(PreparationState);
     }
 
+    if (status & SkillStateStatusEnum.Running ! & SkillStateStatusEnum.Preparation ! & SkillStateStatusEnum.Channel) {
+      classNames.push(RunningState);
+    }
     return classNames;
+  }
+
+  private runStartCastAnimation = () => {
+    this.setState({ startCast: true });
+    setTimeout(() => this.setState({ startCast: false }), 500);
+  }
+
+  private runHitAnimation = () => {
+    this.setState({ hit: true });
+    setTimeout(() => this.setState({ hit: false }), 250);
   }
 }
 

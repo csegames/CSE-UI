@@ -30,6 +30,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
     right: 0,
     userSelect: 'none',
     webkitUserSelect: 'none',
+    zIndex: 9998,
   },
   navigationContainer: {
     display: 'flex',
@@ -56,6 +57,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
     ':hover': {
       color: '#bbb',
     },
+    zIndex: 9999,
   },
   navTab: {
     minWidth: '100px',

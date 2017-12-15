@@ -20,6 +20,7 @@ import * as RestUtil from './RestUtil';
 // but a default CoreSettings object to its constructor, so
 // you can't customise the settings at all (e.g. like define
 // the api key or current channel)
+
 class Settings {
   public core: CoreSettings;
   public url: string;
@@ -32,22 +33,12 @@ class Settings {
     this.core = new CoreSettings();			// TODO: This class is a bit weird
     this.channelId = channel;
     this.timeout = 2000;					// default timeout
-    switch (channel) {
-      case channelId.HATCHERY:
-        this.url = 'hatcheryd.camelotunchained.com';
-        // BUG: (returns https://) this.url = this.core.hatcheryApiUrl;
-        this.port = this.core.hatcheryApiPort;
-        break;
-      case channelId.WYRMLING:
-        this.url = 'wyrmling.camelotunchained.com';
-        // BUG: (returns https://) this.url = this.core.wyrmlingApiUrl;
-        this.port = this.core.wyrmlingApiPort;
-        break;
-      case channelId.FLEDGLING:
-        this.url = 'fledglingd.camelotunchained.com';
-        this.port = this.core.fledglingApiPort;
-        break;
-    }
+
+    const host = client.webAPIHost;
+    const isLocalhost = host === 'localhost';
+    const protocol = isLocalhost ? 'http' : 'https';
+    this.port = protocol === 'https' ? 4443 : 8000;
+    this.url = host;
   }
 
   public getApiKey() {
