@@ -19,10 +19,10 @@ module.exports = {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      default: 'nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+      default: '(nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat) || true'
     },
     gqlLocal: {
-      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
+      schema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
       default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
@@ -179,11 +179,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && nps report.gql && nps gql && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
-        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
+        script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
