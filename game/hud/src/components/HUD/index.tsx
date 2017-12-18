@@ -44,7 +44,6 @@ useConfig({
       characterID: client.characterID,
     },
   },
-  stringifyVariables: true,
 });
 
 export interface HUDProps {

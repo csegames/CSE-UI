@@ -27,7 +27,6 @@ useConfig({
       characterID: client.characterID,
     },
   },
-  stringifyVariables: true,
 });
 
 ReactDom.render(

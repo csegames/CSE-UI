@@ -227,7 +227,6 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
             characterID: character.id,
           },
         },
-        stringifyVariables: true,
       });
       this.props.selectCharacter(character);
       this.setState({selectedCharacter: character} as any);
