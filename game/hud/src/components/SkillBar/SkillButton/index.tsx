@@ -158,20 +158,19 @@ const QueuedState = css`
     animation: ${pulseStroke} .75s steps(2, start) infinite alternate-reverse;
     -webkit-animation: ${pulseStroke} .75s steps(2, start) infinite alternate-reverse;
   }
+`;
 
-  &:before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: 120%;
-    height: 120%;
-    background: url(http://i.imgur.com/U4GWSJN.png);
-    background-size: cover;
-    z-index: 3;
-    border-radius: 0;
-    box-shadow: initial;
-  }
+const QueuedStateTick = styled('div')`
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 120%;
+  height: 120%;
+  z-index: 3;
+  border-radius: 0;
+  box-shadow: initial;
+  background: url(http://i.imgur.com/U4GWSJN.png) no-repeat;
+  background-size: 90%;
 `;
 
 const RunningState = css`
@@ -523,6 +522,8 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   private rings: RingTimer[] = [undefined, undefined];
   private listener: any;
   private prevEvent: SkillStateInfo;
+  private startCastTimeout: any;
+  private hitTimeout: any;
 
   constructor(props: SkillButtonProps) {
     super(props);
@@ -540,7 +541,6 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   }
 
   public render() {
-
     const props = this.props;
     if (props.skillState && props.skillState.info) {
       // extract button state from props
@@ -571,21 +571,29 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
           innerPath = makeGlowPathFor(timing.end, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
       }
+
       if (disruption) {
         if (disruption.current >= disruption.end) {
           classNames.push(InterruptedState);
           innerPath = makeGlowPathFor(500, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
         outerPath = makeGlowPathFor(disruption.end, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
+      } else {
+        outerPath = makeGlowPathFor(360, 0, x, y, outerRadius, outerDirection);
       }
 
       if (this.state.hit) {
         outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
         classNames.push(HitState);
+      } else if (this.hitTimeout && !this.state.hit) {
+        clearTimeout(this.hitTimeout);
       }
+
       if (this.state.startCast) {
         outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
         classNames.push(StartCastState);
+      } else if (this.startCastTimeout && !this.state.startCast) {
+        clearTimeout(this.startCastTimeout);
       }
 
       // output button
@@ -618,6 +626,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
             data-timer={this.state.label}
             onClick={this.performAbility}
           >
+            {props.skillState.status & SkillStateStatusEnum.Queued ? <QueuedStateTick /> : null}
             <svg width='100' height='100'>
               <path d={outer} fill='none' strokeWidth='3px' className='outer-bg-blur'></path>
               <path d={outer} fill='none' strokeWidth='3px' className='outer-bg'></path>
@@ -657,6 +666,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
 
   private setTimerRing = (id: number, timer: SkillStateProgression, clockwise: boolean, shouldPlayHit?: boolean) => {
     let ring = this.rings[id];
+    if (timer.end - timer.current < 0) return;
     if (!ring) {
       ring = this.rings[id] = {
         event: { when: Date.now(), remaining: timer.end - timer.current, direction: 1, clockwise },
@@ -831,12 +841,12 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
 
   private runStartCastAnimation = () => {
     this.setState({ startCast: true });
-    setTimeout(() => this.setState({ startCast: false }), 500);
+    this.startCastTimeout = setTimeout(() => this.setState({ startCast: false }), 500);
   }
 
   private runHitAnimation = () => {
     this.setState({ hit: true });
-    setTimeout(() => this.setState({ hit: false }), 250);
+    this.hitTimeout = setTimeout(() => this.setState({ hit: false }), 250);
   }
 }
 

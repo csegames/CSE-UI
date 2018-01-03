@@ -41,7 +41,7 @@ export default () => {
     // {cures} (BLUE) => HEAD(2) TORSO
     // {impulse} (INDIGO) => received (sent - received) IMPULSE
     // {activeEffects} (VIOLET) => activeEffects[0] activeEffects[1] ...
-
+    if (!log) return;
     let output = `${log.fromName}(${Faction[log.fromFaction]}) > ${log.toName}(${Faction[log.toFaction]}) | `;
 
     if (log.damages) {

@@ -364,7 +364,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
   private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
     const events: CombatEvent[] = [];
     combatLogs.forEach((e) => {
-      if (e.toName !== this.props.playerState.name) return;
+      if (!e || e.toName !== this.props.playerState.name) return;
       if (e.damages) {
         let value = 0;
         let max = 0;
