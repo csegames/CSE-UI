@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { client, events, dxKeyCodes, ClientSkillState, SkillStateStatusEnum, SkillStateTypeEnum } from 'camelot-unchained';
-import { SkillStateInfo } from './skillState';
+import { SkillStateInfo } from './lib';
 
 export interface SkillStateConnectorProps {
   skillInfo: any;
@@ -25,7 +25,7 @@ export interface BasicButtonInfo {
 
 function skillStateConnector<PropsTypes extends any>() {
   return (WrappedComponent: React.ComponentClass<PropsTypes> | React.StatelessComponent<PropsTypes>) => {
-    return class OldSkillButton extends React.Component<SkillStateConnectorProps, SkillStateConnectorState> {
+    return class SkillButtonWrapper extends React.Component<SkillStateConnectorProps, SkillStateConnectorState> {
       constructor(props: SkillStateConnectorProps) {
         super(props);
         this.state = {
@@ -55,6 +55,11 @@ function skillStateConnector<PropsTypes extends any>() {
 
       public componentDidMount() {
         client.OnSkillStateChanged(this.handleSkillStateChanged);
+      }
+
+      public componentDidCatch(error: Error, info: any) {
+        console.log(error);
+        console.log(info);
       }
 
       public componentWillUpdate(nextProps: SkillStateConnectorProps, nextState: SkillStateConnectorState) {

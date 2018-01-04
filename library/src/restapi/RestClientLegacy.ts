@@ -59,8 +59,8 @@ if (hasClientAPI()) {
 
 function makeAPIUrl(endpoint: string, useHttps: boolean): string {
   if (endpoint.indexOf('://') !== -1) return endpoint; // we already have a fully formed url, skip
-  const protocol = useHttps ? 'https' : 'http';
-  const port = useHttps ? '4443' : '8000';
+  const protocol = settings.url === 'localhost' ? 'http' : 'https';
+  const port = settings.url === 'localhost' ? '8000' : '4443';
   return protocol + '://' + settings.url + ':' + port + '/api/' + endpoint.replace(/^\//, '');
 }
 

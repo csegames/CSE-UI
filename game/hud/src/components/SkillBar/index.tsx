@@ -35,21 +35,21 @@ export interface SkillBarProps {
 }
 
 export interface SkillBarState {
-  abilities: ApiSkillInfo[];
+  skills: ApiSkillInfo[];
 }
 
 export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      abilities: [],
+      skills: [],
     };
   }
 
   public render() {
     return (
       <Container>
-        {this.state.abilities.map((state: ApiSkillInfo, index: number) => (
+        {this.state.skills.map((state: ApiSkillInfo, index: number) => (
           <SkillButton key={index} skillInfo={state} index={index + 1} />
         ))}
       </Container>
@@ -57,35 +57,42 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   }
 
   public componentDidMount() {
-    this.getAbilities();
-    client.OnAbilityCreated(this.onAbilityCreated);
-    client.OnAbilityDeleted(this.onAbilityDeleted);
+    this.initializeSkills();
+    client.OnAbilityCreated(this.onSkillCreated);
+    client.OnAbilityDeleted(this.onSkillDeleted);
   }
 
-  private getAbilities = async () => {
+  private initializeSkills = async () => {
     const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
-    const sortedAbilities = res.sort(this.sortByAbilityID);
-    sortedAbilities.forEach((skill: ApiSkillInfo) => this.registerAbility(skill));
-    this.setState({ abilities: sortedAbilities });
+    const skills = this.updateSkills(res);
+    this.setState({ skills });
   }
 
-  private sortByAbilityID = (a: ApiSkillInfo, b: ApiSkillInfo) => {
+  private updateSkills = (skills: any[]) => {
+    const sortedSkills = skills.sort(this.sortBySkillID);
+    sortedSkills.forEach((skill: ApiSkillInfo) => this.registerSkill(skill));
+    return sortedSkills;
+  }
+
+  private sortBySkillID = (a: ApiSkillInfo, b: ApiSkillInfo) => {
     const aID = !_.isNumber(a.id) ? parseInt(a.id, 16) : a.id;
     const bID = !_.isNumber(b.id) ? parseInt(b.id, 16) : b.id;
     return aID - bID;
   }
 
-  private onAbilityCreated = (abilityId: string, ability: string) => {
-    this.registerAbility(abilityId);
-    this.setState({ abilities: [...this.state.abilities, JSON.parse(ability)] });
+  private onSkillCreated = (abilityId: string, ability: string) => {
+    const newSkills = [...this.state.skills, JSON.parse(ability)];
+    const skills = this.updateSkills(newSkills);
+    this.setState({ skills });
   }
 
-  private onAbilityDeleted = (abilityId: string) => {
-    const newAbilities = _.filter(this.state.abilities, (ability) => {
+  private onSkillDeleted = (abilityId: string) => {
+    const newSkills = _.filter(this.state.skills, (ability) => {
       const hexId = ability.id.toString(16);
       return hexId !== abilityId;
     });
-    this.setState({ abilities: newAbilities });
+    const skills = this.updateSkills(newSkills);
+    this.setState({ skills });
   }
 
   private getPrimaryComponent = (ability: any) => {
@@ -100,8 +107,8 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
     }
   }
 
-  private registerAbility = (ability: any) => {
-    const abilityID = typeof ability.id === 'number' ? ability.id.toString(16) : ability.id;
+  private registerSkill = (ability: any) => {
+    const abilityID = _.isNumber(ability.id) ? ability.id.toString(16) : ability.id;
     const primaryComponent = this.getPrimaryComponent(ability);
     const primaryComponentBaseID = primaryComponent && primaryComponent.baseComponentID ?
       primaryComponent.baseComponentID.toString(16) : '';
