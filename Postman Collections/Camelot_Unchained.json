@@ -2200,7 +2200,7 @@
             ],
             "body": {},
             "url": {
-              "raw": "{{url}}/groups/invite?shardID={{shardID}}&characterID={{characterID}}&groupID=&targetID=FTW6Bej8eG9bM0IaJeR100&targetName=CSEajFemale",
+              "raw": "{{url}}/groups/invite?shardID={{shardID}}&characterID={{characterID}}&groupID=XoEubaRsUQJXGxH3jYI100&targetID=FTW6Bej8eG9bM0IaJeR100&targetName=CSEajFemale",
               "host": [
                 "{{url}}"
               ],
@@ -2221,7 +2221,7 @@
                 },
                 {
                   "key": "groupID",
-                  "value": "",
+                  "value": "XoEubaRsUQJXGxH3jYI100",
                   "equals": true
                 },
                 {
