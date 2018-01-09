@@ -1,0 +1,2246 @@
+{
+  "info": {
+    "name": "Camelot Unchained",
+    "_postman_id": "b628aa5e-5330-1d27-8f1c-4cca6c3a3e43",
+    "description": "Camelot Unchained API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "_postman_id": "31e3859d-3827-b8a6-e66f-7c3ae82bb3d9",
+      "name": "CHARACTER",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "09752312-8bcc-fb44-b0b4-be0d0d92b61b",
+          "name": "Get all characters",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/characters/getAll",
+            "description": "Get all characters on your account."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "fa9a6441-7c01-e1d2-b798-9c8acd0e36a9",
+          "name": "Delete character",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/characters/delete?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "characters",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Delete character with the provided CharacterID on the specified ShardID."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "3433798a-60ba-2737-f91b-0404e9008f3e",
+          "name": "Create Character",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\":\"ascend\",\n\t\"race\":15,\n\t\"gender\":2,\n\t\"faction\":2,\n\t\"archetype\":15,\n\t\"attributes\": {\n\t\t\"Attunement\":0,\n\t\t\"Will\":0,\n\t\t\"Faith\":0,\n\t\t\"Agility\":30,\n\t\t\"Vitality\":0,\n\t\t\"Endurance\":0,\n\t\t\"Resonance\":0,\n\t\t\"Strength\":0,\n\t\t\"Dexterity\":0\n\t},\n\t\"traits\": [\n\t\t\"5429de13da9beb2c3c3dd450\",\n\t\t\"5429de13da9beb2c3c3dd451\",\n\t\t\"5429de13da9beb2c3c3dd452\",\n\t\t\"5429de0eda9beb2c3c3dd32b\"\n\t]\n}"
+            },
+            "url": {
+              "raw": "{{url}}/characters/create?shardID={{shardID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "characters",
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "718c6fdc-ef64-d686-9ac2-4dfc3286d7b4",
+          "name": "Get character details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/characters/get?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "characters",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Get details for a specific character by ShardID and CharacterID."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "1c2d7851-19cd-0520-dc96-77c796e29a08",
+          "name": "Get characters on shard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/characters/getAllOnShard?shardID=1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "characters",
+                "getAllOnShard"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get all characters on a specific shard by shard id."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "505489df-be34-3777-6da1-7418bf32d69f",
+          "name": "Collect Character Daily Progression",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/character/collectdayprogression?shardID={{shardID}}&characterID={{characterID}}&logID=",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "character",
+                "collectdayprogression"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "logID",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Collect all the rewards in a daily progression log for a character and mark it as finished"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "3c7760ac-5db9-2517-0f8c-6eaf25d32281",
+      "name": "CONTENT",
+      "description": "General content data that will occasionally change.",
+      "item": [
+        {
+          "_postman_id": "b0abe154-d896-0f04-9405-0dfd3972ea52",
+          "name": "Message of the day",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/messageoftheday",
+            "description": "Get the current messge of the day"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "2b113c16-c9bd-e1c7-b3f8-5c07fdd31de8",
+          "name": "Patcher Hero Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/patcherherocontent",
+            "description": "Get the Hero Content to be displayed on the patcher."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "4204d469-31b3-cdd9-b85b-45cec0c68bee",
+          "name": "Patcher alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "1"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/patcheralerts",
+            "description": "Get any alerts to be displayed on the patcher."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "66367999-0ec6-79bc-4854-32c969f73fa4",
+      "name": "CRAFTING",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "508fd957-246d-9d81-e9f0-883d1134da79",
+          "name": "Set Vox Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxjob?shardID={{shardID}}&characterID={{characterID}}&job=shape",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxjob"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "job",
+                  "value": "shape"
+                }
+              ]
+            },
+            "description": "Set your voxes current job"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "38c44d6f-3ea2-8d87-ae00-9cf132f7b6a5",
+          "name": "Clear vox job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/clearvoxjob?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "clearvoxjob"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Clears the vox job, the vox must be in the configuration state without any items in it."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "f346515a-4965-d871-ab33-c2dd8da82c7f",
+          "name": "Add Item To Vox",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/addvoxingredient?shardID={{shardID}}&characterID={{characterID}}&itemInstanceID=unmQPvXIme5LZzJrvoSaT3&unitcount=0",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "addvoxingredient"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "itemInstanceID",
+                  "value": "unmQPvXIme5LZzJrvoSaT3"
+                },
+                {
+                  "key": "unitcount",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Adds an item to the vox from the player's inventory.  If unit count is 0 or less the entire stack is moved."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "9918ded1-9f7e-548c-7a28-ab083b6120aa",
+          "name": "Cancel Vox Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/cancelvoxjob?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "cancelvoxjob"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Job must be running to cancel."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "f1d2117b-2b5c-eb78-7616-468dddf6ee08",
+          "name": "Collect Vox Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/collectfinishedvoxjob?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "collectfinishedvoxjob"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Job must be in finished state to collect."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "77e381dd-7a1a-210f-6ccc-8d2747ab4922",
+          "name": "Start Vox Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/startvoxjob?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "startvoxjob"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Start a job in the configuration state that has been fully configured."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "99eac789-b2af-1c3a-3912-cb6df728b6c7",
+          "name": "Remove Item From Vox",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/removevoxingredient?shardID={{shardID}}&characterID={{characterID}}&itemInstanceID=gYBhKbnAVP6LcejQuY40ZD&unitcount=5",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "removevoxingredient"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "itemInstanceID",
+                  "value": "gYBhKbnAVP6LcejQuY40ZD"
+                },
+                {
+                  "key": "unitcount",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Removed an item from your vox and places it in your inventory. If unit count is 0 or less the entire stack is moved."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "0df9fce5-4e5c-9c16-46ba-afacb8d4d9a9",
+          "name": "Set Vox Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxtemplate?shardID={{shardID}}&characterID={{characterID}}&templateid=item_Arthurian_ArmorHeavyChest01",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxtemplate"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "templateid",
+                  "value": "item_Arthurian_ArmorHeavyChest01"
+                }
+              ]
+            },
+            "description": "Set the item template to create for a vox job. Only compatible with mak jobs"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "2df1352c-28b9-e4ca-0d18-362f4622f1da",
+          "name": "Set Vox Output Quality",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxquality?shardID={{shardID}}&characterID={{characterID}}&quality=100",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxquality"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "quality",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Set the end quality for a refine job.  This quality must be higher then the current quality of the substance but less then teh max quality allowed on the substance."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "22249e3d-d9d1-0d65-49a0-a7ed35f62817",
+          "name": "Set Vox Output Item Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxcustomitemname?shardID={{shardID}}&characterID={{characterID}}&itemname=foo",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxcustomitemname"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "itemname",
+                  "value": "foo"
+                }
+              ]
+            },
+            "description": "Set the custom name for the item produced from a make job."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "e8d080ef-4f5c-c24d-94f8-81005de5ade8",
+          "name": "Set Vox Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxrecipeid?shardID={{shardID}}&characterID={{characterID}}&recipeid=recipe_shape_cast_iron",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxrecipeid"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "recipeid",
+                  "value": "recipe_shape_cast_iron"
+                }
+              ]
+            },
+            "description": "Sets the recipe to craft, compatible with several vox jobs."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "20fceca1-4217-f38d-7bd5-7c35a79f100f",
+          "name": "Set Vox Item Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/crafting/setvoxitemcount?shardID={{shardID}}&characterID={{characterID}}&count=5",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "crafting",
+                "setvoxitemcount"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "count",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Sets the number of items to create for a make job"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "47a0e995-6221-3bc3-9e60-4880c7cf684f",
+      "name": "DEPRECATED",
+      "description": "Should not be used, but are still accessible",
+      "item": [
+        {
+          "_postman_id": "8c0708df-f32f-b7a0-0146-0146393db0fd",
+          "name": "Get server hostnames",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/servers/getHosts?channelID=4&name=Hatchery",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "servers",
+                "getHosts"
+              ],
+              "query": [
+                {
+                  "key": "channelID",
+                  "value": "4"
+                },
+                {
+                  "key": "name",
+                  "value": "Hatchery"
+                }
+              ]
+            },
+            "description": "Gets all server host names / addresses for a server by name and ChannelID."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "3e44fd35-f4b8-9921-1dff-f5935378ae5e",
+          "name": "Get servers on channel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/servers/getForChannel?channelId=4",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "servers",
+                "getForChannel"
+              ],
+              "query": [
+                {
+                  "key": "channelId",
+                  "value": "4"
+                }
+              ]
+            },
+            "description": "Request all servers running a specified channel by ChannelID"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "e368e459-13a8-b6ee-6acc-2e8fee1393c8",
+      "name": "GAME DATA",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "ec0ce731-debb-c401-56d7-a4e5cc2ebefd",
+          "name": "Get traits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "shardID",
+                "value": "1"
+              },
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/traits?shardID=1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "traits"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get traits by shard."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "9768a919-6e5f-630d-d649-87453d340ef2",
+          "name": "Get servers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/servers",
+            "description": "Request all servers"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "0319f628-20c0-2277-0c52-1a24071ede3b",
+          "name": "Get realms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/gamedata/factionInfo",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "8cbf0ff6-0e6a-ed0e-12fa-a47d639c65aa",
+          "name": "Get attribute info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/gamedata/attributeInfo?shard={{shardID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "gamedata",
+                "attributeInfo"
+              ],
+              "query": [
+                {
+                  "key": "shard",
+                  "value": "{{shardID}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "41d76e6f-9fcd-c414-b7dc-cab2743ee047",
+          "name": "Get archetypes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/gamedata/archetypes",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "d63f32c4-6e05-8e41-214a-18d845756b37",
+          "name": "Get races",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": "{{url}}/gamedata/races",
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "81b7f84a-987f-1b1a-902a-3e27d8ffc2cb",
+          "name": "Get attribute offsets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/gamedata/attributeOffsets?shard={{shardID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "gamedata",
+                "attributeOffsets"
+              ],
+              "query": [
+                {
+                  "key": "shard",
+                  "value": "{{shardID}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "e5d846e7-f10f-fb06-dd24-cc33236844b8",
+          "name": "Get Available Zones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/availableZones?shardID=1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "availableZones"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "7831c690-8ed4-d810-0964-e8a5406e4b30",
+          "name": "Get Zone Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/getZoneInfo?shardID=1?zoneID=1234",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "getZoneInfo"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "1?zoneID=1234"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "ff357415-fd80-b324-5c92-f00a5099d0c1",
+      "name": "ITEMS",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "9e1913e7-215f-6494-f5b7-51b54a351f4b",
+          "name": "Move item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/items/moveitems?shardID={{shardID}}&characterID={{characterID}}&request=\n{\"moveItemID\":\"Hy10W3UvNl5t0aJyyX0n81\",\"stackHash\":\"00000000000000000000000000000000\",\"unitCount\":1,\"from\":{\"entityID\":\"0000000000000000\",\"characterID\":\"JNCxMbuQnX9D8DHoU5E200\",\"position\":70,\"containerID\":\"0000000000000000000000\",\"gearSlotIDs\":[],\"location\":\"Inventory\",\"voxSlot\":\"Invalid\"},\"to\":{\"entityID\":\"0000000000000000\",\"characterID\":\"JNCxMbuQnX9D8DHoU5E200\",\"position\":71,\"containerID\":\"0000000000000000000000\",\"gearSlotIDs\":[],\"location\":\"Trash\",\"voxSlot\":\"Invalid\"}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "items",
+                "moveitems"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "request",
+                  "value": "{\"moveItemID\":\"Hy10W3UvNl5t0aJyyX0n81\",\"stackHash\":\"00000000000000000000000000000000\",\"unitCount\":1,\"from\":{\"entityID\":\"0000000000000000\",\"characterID\":\"JNCxMbuQnX9D8DHoU5E200\",\"position\":70,\"containerID\":\"0000000000000000000000\",\"gearSlotIDs\":[],\"location\":\"Inventory\",\"voxSlot\":\"Invalid\"},\"to\":{\"entityID\":\"0000000000000000\",\"characterID\":\"JNCxMbuQnX9D8DHoU5E200\",\"position\":71,\"containerID\":\"0000000000000000000000\",\"gearSlotIDs\":[],\"location\":\"Trash\",\"voxSlot\":\"Invalid\"}}"
+                }
+              ]
+            },
+            "description": "Moves an item from one location to another\n\nRequest parameters:\n\n* UnitCount - if negative this will move all matching items.\n* MoveItemID - Specify to move a particular item\n* StackHash - Specify to filter on stack hash to move a group of items\n\n* To/From:\n  * CharacterID\n    * From: The ID of the character that wraps the item to be moved. If valid, this ID will be used instead of the Entity ID\n    * To: The ID of the character the item should move into. If valid, this ID will be used instead of the Entity ID\n  * EntityID\n    * From: The ID of the entity that wraps the item to be moved. This will be used only if the CharacterID is invalid. Either the CharacterID or EntityID must be specified\n    * To: The ID of the entity the item should move into.  This will be used only if the CharacterID is invalid. Either the CharacterID or EntityID must be specified, except when dropping an item on the ground and not combining it with items already on the ground.\n  * Position\n    * From: The position to compair against in the case of moving a stack of items from a container or inventory.\n    * To: The position to set on the moved items in the case of moving to/within a container or inventory.\n  * ContainerID\n    * From: The vox or container item that contains the item(s) to move.\n    *To: The vox or conatiner item to move the item(s) into.\n  * GearSlotIDs \n    * From: Not used\n    * To: The gear slots to move the item into.  If no slots are specified, a best fit location will be used. Prioritizing empty slots on the player.\n  * Location \n    * From: The type of location the item(s) are in\n    * To: The type of location to move the item(s) to\n    * Possible Values: Container, Equipment, Ground, Inventory, Vox, Trash\n    * Trash location can only be moved to, not supported in from request\n  * VoxSlot\n    * From: The slot in a vox to remove an item from\n    * To: the Slot in a vox to place an item into\n    * Possible Values: Invalid, PrimarySubstance, SecondarySubstance1, SecondarySubstance2, SecondarySubstance3, Alloy, WeaponBlade, WeaponHandle, NonRecipe"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "98391218-c4fc-f1d9-b492-1d4de38d70b6",
+          "name": "Batch move items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[{\"UnitCount\" : -1, \"MoveItemID\":\"L54b4kj7MJ6QqjqfYASFBL\", \"StackHash\":\"00000000000000000000000000000000\", \r\n\"From\": { \"EntityID\":\"0000000000000000\", \"characterID\":\"YDVHmRP6zz9defuInWs100\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Inventory\", \"VoxSlot\":\"Invalid\"}, \r\n\"To\":   { \"EntityID\":\"0000000000000000\", \"characterID\":\"0000000000000000000000\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Trash\", \"VoxSlot\":\"Invalid\"}},\r\n{\"UnitCount\" : -1, \"MoveItemID\":\"UarQV5b2V86flMc1HwtdxG\", \"StackHash\":\"00000000000000000000000000000000\", \r\n\"From\": { \"EntityID\":\"0000000000000000\",\"characterID\":\"YDVHmRP6zz9defuInWs100\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Inventory\", \"voxSlot\":\"Invalid\"}, \r\n\"To\":   { \"EntityID\":\"0000000000000000\",\"characterID\":\"0000000000000000000000\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Trash\", \"VoxSlot\":\"Invalid\"}},\r\n{\"UnitCount\" : -1, \"MoveItemID\":\"xkixqONdCp6ZwGfItTw85B\", \"StackHash\":\"00000000000000000000000000000000\", \r\n\"From\": { \"EntityID\":\"0000000000000000\",\"characterID\":\"YDVHmRP6zz9defuInWs100\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Inventory\", \"voxSlot\":\"Invalid\"}, \r\n\"To\":   { \"EntityID\":\"0000000000000000\",\"characterID\":\"0000000000000000000000\",\"Position\":-1, \"ContainerID\":\"0000000000000000000000\", \"GearSlotIDs\":[], \"Location\":\"Trash\", \"VoxSlot\":\"Invalid\"}}]"
+            },
+            "url": {
+              "raw": "{{url}}/items/batchmoveitems?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "items",
+                "batchmoveitems"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Make multiple move item calls in one request"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "35b1e68a-f5ed-84a5-0aa0-34d89c2ad0a4",
+      "name": "PLOTS | BUILDING",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "5c582676-6e42-969a-f86a-5c8c677c888a",
+          "name": "ReleasePlot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/releasePlot?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "releasePlot"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "530a4c33-f5ac-f1d4-f92f-a93a0934791d",
+          "name": "TakeOwnership",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/takeOwnership?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "takeOwnership"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "e5c368cf-54e9-2674-94b6-fef0ea6741c1",
+          "name": "GrantPermissions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/grantPermissions?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}&newPermissions=BuildStructure&target=Faction",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "grantPermissions"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                },
+                {
+                  "key": "newPermissions",
+                  "value": "BuildStructure"
+                },
+                {
+                  "key": "target",
+                  "value": "Faction"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "fb735b17-7653-f72d-2151-9fc4bd77d1af",
+          "name": "RevokePermissions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/revokePermissions?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}&revokePermissions=BuildStructure&target=Faction",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "revokePermissions"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                },
+                {
+                  "key": "revokePermissions",
+                  "value": "BuildStructure"
+                },
+                {
+                  "key": "target",
+                  "value": "Faction"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "ca0f71cc-823a-fe99-c5de-8d6b8a2c9f99",
+          "name": "RemoveQueuedBlueprint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/removeQueuedBlueprint?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}&indexToRemove=0",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "removeQueuedBlueprint"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                },
+                {
+                  "key": "indexToRemove",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "5721f7ee-b73a-4910-c12f-662b475e8f71",
+          "name": "ReorderQueue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/reorderQueue?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}&indexToMove=0&destinationIndex=0",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "reorderQueue"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                },
+                {
+                  "key": "indexToMove",
+                  "value": "0"
+                },
+                {
+                  "key": "destinationIndex",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "d262122a-db2a-ad5e-164a-d12779777425",
+          "name": "GetQueueStatus",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/v1/plot/reorderQueue?shardID={{shardID}}&characterID={{characterID}}&plotEntityID={{buildingplotID}}&indexToMove=0&destinationIndex=0",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "v1",
+                "plot",
+                "reorderQueue"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "plotEntityID",
+                  "value": "{{buildingplotID}}"
+                },
+                {
+                  "key": "indexToMove",
+                  "value": "0"
+                },
+                {
+                  "key": "destinationIndex",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "29357e1c-575c-171a-1fa0-e6a3a30a943f",
+      "name": "SECURE TRADE",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "e954cf08-e279-800d-a7af-0ed5c11a11d9",
+          "name": "Invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/invite?shardID={{shardID}}&characterID={{characterID}}&tradeTargetID=0000000000000000",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "invite"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "tradeTargetID",
+                  "value": "0000000000000000"
+                }
+              ]
+            },
+            "description": "Invite another entity to trade items with you."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "bf559f3b-5016-5d7d-6e0a-4301b417b3a1",
+          "name": "Revoke Invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/revokeinvite?shardID={{shardID}}&characterID={{characterID}}&inviteTargetID=0000000000000000",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "revokeinvite"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "inviteTargetID",
+                  "value": "0000000000000000"
+                }
+              ]
+            },
+            "description": "Revoke the current item trade invite that exists for your player.\nAn invite cannot be revoted after it has been accepted."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "164b5eee-2707-9958-0d20-2befae0979e2",
+          "name": "Accept Invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/acceptinvite?shardID={{shardID}}&characterID={{characterID}}&inviterID=0000000000000000",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "acceptinvite"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "inviterID",
+                  "value": "0000000000000000"
+                }
+              ]
+            },
+            "description": "Accept an invitiation to begin a trade session from another entity."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "cd5017c2-a3fb-6b54-2419-e0588a4fa56e",
+          "name": "Reject Invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/rejectinvite?shardID={{shardID}}&characterID={{characterID}}&inviterID=0000000000000000",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "rejectinvite"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                },
+                {
+                  "key": "inviterID",
+                  "value": "0000000000000000"
+                }
+              ]
+            },
+            "description": "Reject an invite which has been sent to you."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "fd5a1a6d-0eca-ee11-bb55-8c7c09f851fd",
+          "name": "Lock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/lock?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "lock"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Lock down the items in your half of the trade window.  Once both parties have locked down their items they can confirm the trade.  You must be in the ModifyingItems state to do this."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "7f98cc49-732b-7523-7a76-28191282d6d8",
+          "name": "Unlock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/unlock?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "unlock"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Unlock the items in the trade window.  If the other player has confirmed, this will unconfirm their trade as well.  You must be in the Locked state to do so."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "da87c086-c32c-c9c5-d86f-61773fbb52c8",
+          "name": "Add Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[{\"ItemID\": \"0000000000000000000000\", \"UnitCount\" : 11}]"
+            },
+            "url": {
+              "raw": "{{url}}/secureTrade/additems?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "additems"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Add one or more items to the trade session.  You must be in the ModifyingItems secure trade state to do so."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "adfff6de-6124-c359-bc15-7c62daa50c8a",
+          "name": "Remove Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[{\"ItemID\": \"0000000000000000000000\", \"UnitCount\" : 1}]"
+            },
+            "url": {
+              "raw": "{{url}}/secureTrade/removeItems?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "removeItems"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Remove one or more items from the trade session.  You must be in the ModifyingItems secure trade state to do so."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "56c01adc-6373-d09c-2988-ea22d6827634",
+          "name": "Confirm",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/confirm?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "confirm"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Confirm a trade, a trade will not go through unless both parties have confirmed.  This can only be done from the Locked state."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "4b35bffb-2182-075b-ce37-ff8e587e057c",
+          "name": "Cancel Confirmation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/cancelconfirmation?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "cancelconfirmation"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Cancel a trade confirm, this will return this player to the locked state.  This can only be done from the Confirmed state."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "5a10ba8a-9d1e-5464-23fd-f68bb7f8743b",
+          "name": "Abort Trade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/secureTrade/abort?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "secureTrade",
+                "abort"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}"
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}"
+                }
+              ]
+            },
+            "description": "Abort a trade you're in the middle of.  You cannot abort while in the confirmed state"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "d6f70410-5186-e901-bf01-0f2f34549084",
+      "name": "CODEGEN",
+      "description": "Code Generation methods provide TypeScript generated code for use with the CU Api.",
+      "item": [
+        {
+          "_postman_id": "6eafbdf3-8b1b-94bd-a2e3-971e3f87dabc",
+          "name": "TypeScript Definitions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": "{{url}}/codegen/definitions.ts",
+            "description": "Generated TypeScript interfaces, types, and Web Api controllers for working with this Web Api."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "de3f3d6e-275f-d53e-f51b-a898b0c1464e",
+      "name": "GROUPS",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "dc112db3-e681-af6e-4840-955673932b93",
+          "name": "Create Warband",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/groups/createWarband?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "groups",
+                "createWarband"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}",
+                  "equals": true
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}",
+                  "equals": true
+                }
+              ]
+            },
+            "description": "Creates a new active Warband. If you are a member of an active Warband, this request will automatically remove you from that Warband and create a new one."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "2d1a694f-53da-ea14-1688-44366538ae43",
+          "name": "Create Battlegroup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/groups/createBattlegroup?shardID={{shardID}}&characterID={{characterID}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "groups",
+                "createBattlegroup"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}",
+                  "equals": true
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}",
+                  "equals": true
+                }
+              ]
+            },
+            "description": "Creates a new Battlegroup. \n\nIf you are a member of an existing Battlegroup, this will automatically remove you from that Battlegroup and create a new one.\n\nIf you are a member of an active Warband:\n - And ARE the leader will create a new Battlegroup and pull in your entire active Warband with you.\n - And are NOT the leader will automatically remove you from your Warband, creating a new Battlegroup and Warband for you."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "906019c3-1c97-5f09-a9c2-6a71116f0fd6",
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/groups/createOrder?shardID={{shardID}}&characterID={{characterID}}&name=TESTORDER",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "groups",
+                "createOrder"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}",
+                  "equals": true
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}",
+                  "equals": true
+                },
+                {
+                  "key": "name",
+                  "value": "TESTORDER",
+                  "equals": true
+                }
+              ]
+            },
+            "description": "Creates a new Order."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "9fe8432f-e452-ca79-e5fd-c5210e7e2a7c",
+          "name": "Invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "loginToken",
+                "value": "{{loginToken}}"
+              },
+              {
+                "key": "api-version",
+                "value": "{{version}}"
+              }
+            ],
+            "body": {},
+            "url": {
+              "raw": "{{url}}/groups/invite?shardID={{shardID}}&characterID={{characterID}}&groupID=&targetID=FTW6Bej8eG9bM0IaJeR100&targetName=CSEajFemale",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "groups",
+                "invite"
+              ],
+              "query": [
+                {
+                  "key": "shardID",
+                  "value": "{{shardID}}",
+                  "equals": true
+                },
+                {
+                  "key": "characterID",
+                  "value": "{{characterID}}",
+                  "equals": true
+                },
+                {
+                  "key": "groupID",
+                  "value": "",
+                  "equals": true
+                },
+                {
+                  "key": "targetID",
+                  "value": "FTW6Bej8eG9bM0IaJeR100",
+                  "equals": true
+                },
+                {
+                  "key": "targetName",
+                  "value": "CSEajFemale",
+                  "equals": true
+                }
+              ]
+            },
+            "description": "Invite another character to a group.\n\n*groupID is optional for an active Warband invite. If not provided, then the invite will assume your current active Warband.\n\n*targetID is not required if targetName is provided.\n\n*targetName is not required if targetID is provided."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
