@@ -126,6 +126,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
         classNames.push(HitState);
       } else if (this.hitTimeout && !this.state.hit) {
         clearTimeout(this.hitTimeout);
+        this.hitTimeout = null;
       }
 
       if (this.state.startCast) {
@@ -133,6 +134,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
         classNames.push(StartCastState);
       } else if (this.startCastTimeout && !this.state.startCast) {
         clearTimeout(this.startCastTimeout);
+        this.startCastTimeout = null;
       }
 
       // output button
