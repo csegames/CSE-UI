@@ -8,9 +8,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
-import { graphql } from 'react-apollo';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import { ql, bodyParts, client } from 'camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
@@ -86,13 +86,12 @@ export interface EquippedItemsMap {
   [slotName: string]: any;
 }
 
-export interface PaperDollProps {
+export interface PaperDollProps extends GraphQLInjectedProps<any> {
   styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
   equippedItems: ql.schema.EquippedItem[];
   onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
-  data?: any;
 }
 
 export interface PaperDollState {
@@ -109,9 +108,10 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
   public render() {
     const ss = StyleSheet.create({ ...defaultPaperDollStyle, ...this.props.styles });
-    const { myCharacter, myOrder } = this.props.data;
+    const myOrder = this.props.graphql.data && this.props.graphql.data.myOrder;
+    const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
 
-    return (
+    return this.props.graphql.data ? (
       <div className={css(ss.paperDoll)}>
         <img src={'images/paperdollbg.png'} className={css(ss.backgroundImg)} />
         <div className={css(ss.paperdollContainer)}>
@@ -133,7 +133,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
           />
         </div>
       </div>
-    );
+    ) : null;
   }
 
   public componentDidMount() {
@@ -141,8 +141,10 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
 
   public componentWillReceiveProps(nextProps: PaperDollProps) {
-    if (!_.isEqual(nextProps.data.myEquippedItems, this.props.data.myEquippedItems)) {
-      this.props.onEquippedItemsChange(nextProps.data.myEquippedItems.items as ql.schema.EquippedItem[]);
+    const graphqlData = this.props.graphql && this.props.graphql.data;
+    const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
+    if (!_.isEqual(nextGraphqlData && nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
+      this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items as ql.schema.EquippedItem[]);
     }
   }
 
@@ -155,6 +157,8 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
 }
 
-const PaperDollWithQL = graphql(queries.PaperDollContainer as any)(PaperDoll);
+const PaperDollWithQL = withGraphQL<PaperDollProps>(
+  { query: queries.PaperDollContainer },
+)(PaperDoll);
 
 export default PaperDollWithQL as any;

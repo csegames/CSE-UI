@@ -81,6 +81,7 @@ export interface CraftingSlotItemDef {
 
 export interface InventorySlotProps {
   styles?: Partial<InventorySlotStyle>;
+  filtering: boolean;
   item: InventorySlotItemDef & CraftingSlotItemDef;
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
@@ -109,10 +110,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const ss = StyleSheet.create(defaultInventorySlotStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
-    const usesContainer = item.slotType === SlotType.Container
-      || item.slotType === SlotType.CraftingContainer;
+    const usesContainer = item.slotType === SlotType.Container || item.slotType === SlotType.CraftingContainer;
+    const id = item.itemID;
 
-    const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
     return id ? (
       <div className={css(ss.InventorySlot, custom.InventorySlot)}>
         <Tooltip
@@ -120,7 +120,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
-              item={item.item || item.stackedItems[0]}
+              item={item.item}
               shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
               instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
@@ -129,7 +129,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           <ContextMenu
             onContextMenuContentShow={this.onContextMenuContentShow}
             onContextMenuContentHide={this.onContextMenuContentHide}
-            content={props => <ContextMenuContent item={item.item || item.stackedItems[0]} contextMenuProps={props} />}
+            content={props => <ContextMenuContent item={item.item} contextMenuProps={props} />}
           >
             <div
               className={css(ss.itemContainer, custom.itemContainer)}
@@ -139,6 +139,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               onDoubleClick={this.onEquipItem}>
                 <DraggableItemComponent
                   item={item}
+                  filtering={this.props.filtering}
                   onDrop={this.props.onDropOnZone}
                   onDragStart={this.hideTooltip}
                   onDragEnd={() => this.mouseOver = false}

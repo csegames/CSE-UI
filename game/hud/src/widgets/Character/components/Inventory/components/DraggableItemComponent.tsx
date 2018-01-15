@@ -37,6 +37,7 @@ const SlotOverlay = styled('div')`
 
 export interface ItemComponentProps extends DragAndDropInjectedProps {
   item: InventorySlotItemDef & CraftingSlotItemDef;
+  filtering: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
   onDrop: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
@@ -115,7 +116,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         break;
       }
       case SlotType.Stack: {
-        itemComponent = <ItemStack count={item.stackedItems.length} icon={item.icon} />;
+        itemComponent = <ItemStack count={item.item.stats.item.unitCount} icon={item.icon} />;
         break;
       }
       case SlotType.CraftingContainer: {
@@ -150,7 +151,8 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       id,
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
-      dropTarget: true,
+      dropTarget: props.filtering ? false : true,
+      disableDrag: props.filtering,
     };
   },
 )(ItemComponent);

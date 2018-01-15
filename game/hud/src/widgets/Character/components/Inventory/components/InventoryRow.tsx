@@ -39,6 +39,7 @@ export const defaultInventoryRowStyle: InventoryRowStyle = {
 
 export interface InventoryRowProps {
   styles?: Partial<InventoryRowStyle>;
+  filtering?: boolean;
   items: InventorySlotItemDef[];
   equippedItems?: ql.schema.EquippedItem[];
   onDropOnZone: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
@@ -77,6 +78,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
               }}
               item={slotDef}
               itemIndex={index}
+              filtering={this.props.filtering}
               onToggleContainer={this.toggleContainer}
               equippedItems={this.props.equippedItems}
               onDropOnZone={this.props.onDropOnZone}

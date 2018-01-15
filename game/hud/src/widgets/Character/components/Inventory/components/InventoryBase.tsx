@@ -172,8 +172,6 @@ export function createRowElements(
   const rows: JSX.Element[] = [];
   const rowData: InventorySlotItemDef[][] = [];
 
-  const itemMap = itemData ? _.keyBy(itemData.items, i => i.id) : {};
-
   let slotIndex = 0;
   for (let rowIndex = 0; rowIndex < state.rowCount; ++rowIndex) {
     const rowItems: InventorySlotItemDef[] = [];
@@ -189,7 +187,7 @@ export function createRowElements(
           slotType: SlotType.CraftingContainer,
           icon: state.itemIdToInfo[itemDef.id].icon,
           groupStackHashID: itemDef.id,
-          stackedItems: state.stackGroupIdToItemIDs[itemDef.id].map(id => itemMap[id]),
+          stackedItems: [],
           slotIndex: slotIndex - 1,
         });
         continue;
@@ -199,8 +197,7 @@ export function createRowElements(
         rowItems.push({
           slotType: SlotType.Stack,
           icon: state.itemIdToInfo[itemDef.id].icon,
-          groupStackHashID: itemDef.id,
-          stackedItems: state.stackGroupIdToItemIDs[itemDef.id].map(id => itemMap[id]),
+          itemID: itemDef.id,
           item: itemDef.item,
           slotIndex: slotIndex - 1,
         });
@@ -216,7 +213,13 @@ export function createRowElements(
     }
 
     rows.push((
-      <InventoryRow equippedItems={props.equippedItems} key={rowIndex} items={rowItems} onDropOnZone={onDropOnZone} />
+      <InventoryRow
+        equippedItems={props.equippedItems}
+        key={rowIndex}
+        items={rowItems}
+        onDropOnZone={onDropOnZone}
+        filtering={!_.isEmpty(props.activeFilters)}
+      />
     ));
     rowData.push(rowItems);
   }
@@ -500,7 +503,7 @@ props: Partial<InventoryBaseWithQLProps>): InventoryBaseState {
     if (!itemDef) continue;
 
     let itemID = itemDef.id;
-    if (itemDef.isStack || itemDef.isCrafting) {
+    if ((itemDef.isStack || itemDef.isCrafting) && !_.isEmpty(stackGroupIdToItemIDs[itemDef.id])) {
       itemID = stackGroupIdToItemIDs[itemDef.id][0];
     }
 
@@ -532,7 +535,7 @@ props: Partial<InventoryBaseWithQLProps>): InventoryBaseState {
     };
 
     let itemID = itemDef.id;
-    if (itemDef.isStack || itemDef.isCrafting) {
+    if ((itemDef.isStack || itemDef.isCrafting) && !_.isEmpty(stackGroupIdToItemIDs[itemDef.id])) {
       itemID = stackGroupIdToItemIDs[itemDef.id][0];
     }
 
@@ -1112,27 +1115,14 @@ function moveInventoryItemToEmptySlot(dragItem: any,
   }
 
   const dragItemId = getItemMapID(dragItemData, { itemIDToStackGroupID: state.itemIDToStackGroupID });
-
-  if (isStackedItem(dragItemData)) {
-    // If STACKED item, make a batchMove request
-    webAPI.ItemAPI.BatchMoveItems(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      createStackMoveItemRequests(dragItemData, dropZonePosition, state, props),
-    );
-  } else {
-    // If single item, make one moveItem request
-    const moveItemReq = JSON.stringify(createMoveItemRequestToInventoryPosition(dragItemData, dropZonePosition));
-    webAPI.ItemAPI.MoveItems(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      moveItemReq as any,
-    );
-  }
+  const moveItemReq = JSON.stringify(createMoveItemRequestToInventoryPosition(dragItemData, dropZonePosition));
+  webAPI.ItemAPI.MoveItems(
+    webAPI.defaultConfig,
+    client.loginToken,
+    client.shardID,
+    client.characterID,
+    moveItemReq as any,
+  );
 
   // Now represent the swap in the UI...
   const oldDragItemPosition = dragItemData.location.inventory ? dragItemData.location.inventory.position : -1;
@@ -1154,7 +1144,7 @@ function moveInventoryItemToEmptySlot(dragItem: any,
   let invItems = props.inventoryItems;
   const itemIndex = _.findIndex(invItems, item => item.id === dragItemData.id);
   if (itemIndex > -1) {
-    if (isStackedItem(dragItemData)) {
+    if (isStackedItem(dragItemData) && state.stackGroupIdToItemIDs[dragItemId]) {
       state.stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
         const i = _.findIndex(invItems, item => itemId === item.id);
         invItems[i] = {
@@ -1209,7 +1199,7 @@ function swapInventoryItems(dragItem: any,
   const invItems = props.inventoryItems;
 
   let moveItemRequests: any[] = [];
-  if (isStackedItem(dragItemData)) {
+  if (isStackedItem(dragItemData) && state.stackGroupIdToItemIDs[dragItemId]) {
     // If dragged item is stacked item, add moveItem requests for each item in the stack.
     const requests = createStackMoveItemRequests(dragItemData, dragItemData.location.inventory.position, state, props);
     moveItemRequests = requests;
@@ -1229,7 +1219,7 @@ function swapInventoryItems(dragItem: any,
     });
   }
 
-  if (isStackedItem(dropZoneData)) {
+  if (isStackedItem(dropZoneData) && state.stackGroupIdToItemIDs[dropZoneId]) {
     // If dropzone item is stacked item, add moveItem requests for each item in the stack.
     const requests = createStackMoveItemRequests(dropZoneData, dragItemData.location.inventory.position, state, props);
     moveItemRequests = [...moveItemRequests, ...requests];

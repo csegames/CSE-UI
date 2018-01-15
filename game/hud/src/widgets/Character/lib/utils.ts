@@ -108,7 +108,7 @@ export function getIcon(item: InventoryItemFragment) {
 }
 
 export function isStackedItem(item: InventoryItemFragment) {
-  return item.stackHash !== emptyStackHash;
+  return item.stats.item.unitCount > 1;
 }
 
 export function itemHasPosition(item: InventoryItemFragment) {
