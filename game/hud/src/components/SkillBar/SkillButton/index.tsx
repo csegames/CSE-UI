@@ -11,6 +11,7 @@ import {
   client,
   SkillStateProgression,
   SkillStateStatusEnum,
+  SkillStateTypeEnum,
 } from 'camelot-unchained';
 import { cx } from 'react-emotion';
 
@@ -118,7 +119,12 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
         }
         outerPath = makeGlowPathFor(disruption.end, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
       } else {
-        outerPath = makeGlowPathFor(360, 0, x, y, outerRadius, outerDirection);
+        if ((props.skillState.status & SkillStateStatusEnum.Held) ||
+            (props.skillState.info.type & SkillStateTypeEnum.Modal)) {
+          outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
+        } else {
+          outerPath = makeGlowPathFor(360, 0, x, y, outerRadius, outerDirection);
+        }
       }
 
       if (this.state.hit) {

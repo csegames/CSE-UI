@@ -154,6 +154,19 @@ export const HitState = css`
   }
 `;
 
+export const HeldState = css`
+  &:before {
+    ${pulsingBackground};
+  }
+
+  .outer,
+  .outer-blur {
+    stroke: ${skillStateColors.runningColor};
+    animation: ${pulseStroke} .75s infinite alternate-reverse;
+    -webkit-animation: ${pulseStroke} .75s infinite alternate-reverse;
+  }
+`;
+
 export const QueuedState = css`
   .inner,
   .outer,
@@ -420,5 +433,10 @@ export const getClassNames = (skillState: SkillStateInfo) => {
   if (status & SkillStateStatusEnum.Running ! & SkillStateStatusEnum.Preparation ! & SkillStateStatusEnum.Channel) {
     classNames.push(RunningState);
   }
+
+  if (status & SkillStateStatusEnum.Held) {
+    classNames.push(HeldState);
+  }
+
   return classNames;
 };

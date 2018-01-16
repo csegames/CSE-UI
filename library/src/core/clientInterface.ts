@@ -72,6 +72,7 @@ export enum SkillStateStatusEnum {
   Recovery = 1 << 7,
   Cooldown = 1 << 8,
   Error = 1 << 9,
+  Held = 1 << 10,
 }
 
 export enum SkillStateReasonEnum {
