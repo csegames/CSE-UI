@@ -1,0 +1,50 @@
+<html>
+  <body>
+      <script
+      src="http://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+      crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://citystate.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-pg4gku/b/8/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=68f254dc"></script>
+    <script type="text/javascript">
+      
+      window.ATL_JQ_PAGE_PROPS = jQuery.extend(window.ATL_JQ_PAGE_PROPS, {
+        fieldValues: {
+          // character id
+          email : window.cuAPI.characterID,
+          // client
+          customfield_10028 : 'characterID : ' + window.cuAPI.characterID + '\n' +
+          'shardID : ' + window.cuAPI.shardID + '\n' +
+          'channelID : ' + window.cuAPI.patchResourceChannel + '\n' +
+          'webAPIHost : ' + window.cuAPI.webAPIHost + '\n' +
+          'serverURL : ' + window.cuAPI.serverURL + '\n' +
+          'fps : ' + window.cuAPI.fps + '\n' +
+          'frameTime : ' + window.cuAPI.frameTime + '\n' +
+          'characters : ' + window.cuAPI.characters + '\n' +
+          'terrain : ' + window.cuAPI.terrain + '\n' +
+          'characters : ' + window.cuAPI.characters + '\n' +
+          'serverTime : ' + window.cuAPI.serverTime + '\n' +
+          'facing : ' + window.cuAPI.facing + '\n' +
+          'speed : ' + window.cuAPI.speed + '\n' +
+          'horizontalSpeed : ' + window.cuAPI.horizontalSpeed + '\n' +
+          'velFacing : ' + window.cuAPI.velFacing + '\n' +
+          'downCollisionAngle : ' + window.cuAPI.downCollisionAngle + '\n' +
+          'terrainCollisionAngle : ' + window.cuAPI.terrainCollisionAngle + '\n' +
+          'position : { x: ' + window.cuAPI.locationX + ' y: ' + window.cuAPI.locationY + ' z: ' + window.cuAPI.locationZ + ' }\n' +
+          'serverPosition : { x: ' + window.cuAPI.serverLocationX + ' y: ' + window.cuAPI.serverLocationY + ' z: ' + window.cuAPI.serverLocationZ + ' }\n' +
+          'velocity : { x: ' + window.cuAPI.velocityX + ' y: ' + window.cuAPI.velocityY + ' z: ' + window.cuAPI.velocityZ + ' }\n'
+          ,
+        },
+      });
+
+      jQuery(document).ready(function() {
+        
+        setTimeout(function() {
+          document.getElementById('atlwdg-trigger').addEventListener('mousedown', function() {
+            window.cuAPI && window.cuAPI.RequestInputOwnership();
+          });
+        }, 1000);
+
+      });
+    </script>
+  </body>
+</html>
