@@ -68,7 +68,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
 
   public componentWillMount() {
     client.OnPlotStatus(this.onPlotStatus);
-    setInterval(() => {if (this.state.plotOwned) this.getQueueStatus(); }, 2000);
   }
 
   public componentDidMount() {
@@ -97,83 +96,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         entityID,
       };
     });
-    this.getQueueStatus();
-  }
-
-  private changePermissions = (perm: plotPermissions) => {
-    webAPI.PlotsAPI.ModifyPermissionsV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      this.state.entityID,
-      perm,
-    );
-  }
-
-  private releasePlot = () => {
-    webAPI.PlotsAPI.ReleasePlotV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      client.shardID,
-      client.characterID,
-      this.state.entityID,
-    );
-  }
-
-  private removeQueuedBlueprint = async (idx: number) => {
-    try {
-      await webAPI.PlotsAPI.RemoveQueuedBlueprintV1(
-        webAPI.defaultConfig,
-        client.loginToken,
-        client.shardID,
-        client.characterID,
-        this.state.entityID,
-        idx,
-      );
-      this.getQueueStatus();
-    } catch (err) {
-      webAPI.handleWebAPIError(err);
-    }
-  }
-
-  private reorderBuildQueue = async (indexSource: number, indexDestination: number) => {
-    try {
-      await webAPI.PlotsAPI.ReorderQueueV1(
-        webAPI.defaultConfig,
-        client.loginToken,
-        client.shardID,
-        client.characterID,
-        this.state.entityID,
-        indexSource,
-        indexDestination,
-      );
-      this.getQueueStatus();
-    } catch (err) {
-      webAPI.handleWebAPIError(err);
-    }
-  }
-
-  private getQueueStatus = async () => {
-    if (this.state.plotOwned === false) return;
-    try {
-      const res = await webAPI.PlotsAPI.GetQueueStatusV1(
-        webAPI.defaultConfig,
-        client.loginToken,
-        client.shardID,
-        client.characterID,
-      );
-      const data = JSON.parse(res.data);
-      if (!res.ok) return;
-      this.setState((state, props) => ({
-        ...state,
-        queue: data.blueprints,
-        queueState: data.status,
-        numContributors: Math.min(data.numContributors, data.maxContributors),
-      }));
-    } catch (err) {
-      webAPI.handleWebAPIError(err);
-    }
   }
 
   private toggleQueue = () => {
@@ -216,26 +138,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
       <div className='cu-window-content'>
         <ul className='list'>
           <li>{permString}</li>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Self)}>
-            Self Only
-          </button>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Group)}>
-            Group
-          </button>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Friends)}>
-            Friends
-          </button>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Guild)}>
-            Guild
-          </button>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.Realm)}>
-            Realm
-          </button>
-          <button className='plotButton' onClick={this.changePermissions.bind(this, plotPermissions.All)}>
-            All
-          </button>
         </ul>
-        <button className='plotButton' onClick={this.releasePlot.bind(this)}>Release Plot</button>
         <button className='plotButton' onClick={this.toggleQueue.bind(this)}>View Queue</button>
       </div>
     );
@@ -268,14 +171,14 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         let upArrow: JSX.Element;
         if (i !== 0) {
           upArrow = (
-              <a onClick={() => this.reorderBuildQueue(i, i - 1)} className='plotMoveUp'>↑</a>
+              <a onClick={() => {}} className='plotMoveUp'>↑</a>
             );
         }
 
         let downArrow: JSX.Element;
         if (i !== this.state.queue.length - 1) {
           downArrow = (
-              <a onClick={() => this.reorderBuildQueue(i, i + 1)} className='plotMoveDown'>↓</a>
+              <a onClick={() => {}} className='plotMoveDown'>↓</a>
             );
         }
 
@@ -287,7 +190,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onClick={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
+                <a onClick={() => {}} className='cu-window-close'></a>
               </li>
             );
         } else {
@@ -298,7 +201,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
                 {downArrow}
-                <a onClick={() => this.removeQueuedBlueprint(i)} className='cu-window-close'></a>
+                <a onClick={() => {}} className='cu-window-close'></a>
                 <div>
                   {blueprint.amtNeeded} {blueprint.subName} needed to complete.
                 </div>
@@ -322,7 +225,6 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
     return (
       <div className='cu-window-content'>
         {renderedQueue}
-        <button className='plotButton' onClick={this.releasePlot.bind(this)}>Release Plot</button>
         <button className='plotButton' onClick={this.toggleQueue.bind(this)}>Permissions</button>
       </div>
     );
