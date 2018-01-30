@@ -42,6 +42,9 @@
           document.getElementById('atlwdg-trigger').addEventListener('mousedown', function() {
             window.cuAPI && window.cuAPI.RequestInputOwnership();
           });
+          document.getElementById('atlwdg-container').addEventListener('mouseenter', function() {
+            window.cuAPI && window.cuAPI.RequestInputOwnership();
+          });
         }, 1000);
 
       });
