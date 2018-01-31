@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { dxKeyCodes, jsToDXKeyCodeMap } from 'camelot-unchained';
+import { getVirtualKeyCode, vkKeyCodes } from 'camelot-unchained';
 
 import ListItem from '../ListItem';
 import { ConfigInfo } from '../../OptionsMain';
@@ -30,11 +30,12 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
   }
 
   public render() {
+    let keyCode = vkKeyCodes[Number(this.props.keyBinding.value)];
+    keyCode = keyCode.substring(3, keyCode.length);
     return (
       <ListItem
-        onClick={this.onClick}
         name={this.props.keyBinding.name}
-        value={this.props.listeningMode ? 'Press a key' : dxKeyCodes[this.props.keyBinding.value]}
+        value={this.props.listeningMode ? 'Press a key' : keyCode}
         searchIncludes={this.props.searchIncludes}
         isOddItem={this.props.isOddItem}
       />
@@ -49,14 +50,14 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
     window.removeEventListener('keydown', this.handleKeyEvent);
   }
 
-  private onClick = () => {
-    this.props.onToggleListeningMode(this.props.keyBinding);
-  }
+  // private onClick = () => {
+  //   this.props.onToggleListeningMode(this.props.keyBinding);
+  // }
 
   private handleKeyEvent = (e: any) => {
     if (this.props.listeningMode) {
       e.preventDefault();
-      this.props.handleKeyEvent(this.props.keyBinding, jsToDXKeyCodeMap[e.keyCode]);
+      this.props.handleKeyEvent(this.props.keyBinding, getVirtualKeyCode(e.keyCode));
     }
   }
 }

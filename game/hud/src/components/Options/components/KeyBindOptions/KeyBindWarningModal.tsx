@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils, client, dxKeyCodes } from 'camelot-unchained';
+import { utils, client } from 'camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { ConfigInfo } from '../../OptionsMain';
 
@@ -112,7 +112,9 @@ export class KeyBindWarningModal extends React.Component<KeyBindWarningModalProp
         <p className={css(ss.dialogText, custom.dialogText)}>
           <span className={css(ss.importantText, custom.importantText)}>{currentKeyBind.name}&nbsp;</span>
           is already using the key bind
-          <span className={css(ss.importantText, custom.importantText)}>&nbsp;{dxKeyCodes[currentKeyBind.value]}</span>
+          <span className={css(ss.importantText, custom.importantText)}>
+            &nbsp;{currentKeyBind.value}
+          </span>
         </p>
         <p className={css(ss.dialogText, custom.dialogText)}>Are you sure you want to override it?</p>
         <div className={css(ss.buttonContainer, custom.buttonContainer)}>
