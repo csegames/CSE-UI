@@ -81,6 +81,15 @@ export enum SkillStateReasonEnum {
   NoWeapon = 1 << 1,
 }
 
+export enum SkillStateTrackEnum {
+  None = 0,
+  PrimaryWeapon = 1 << 0,
+  SecondaryWeapon = 1 << 1,
+  BothWeapons = PrimaryWeapon | SecondaryWeapon,
+  Voice = 1 << 2,
+  Mind = 1 << 3,
+}
+
 export interface SkillStateProgression {
   current: number;
   end: number;
@@ -89,6 +98,7 @@ export interface SkillStateProgression {
 export interface ClientSkillState {
   id: number;
   type: SkillStateTypeEnum;
+  track: SkillStateTrackEnum;
   keybind: number;
   status: SkillStateStatusEnum;
   reason?: SkillStateReasonEnum;

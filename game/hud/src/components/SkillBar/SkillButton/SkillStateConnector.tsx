@@ -6,7 +6,15 @@
  */
 
 import * as React from 'react';
-import { client, events, dxKeyCodes, ClientSkillState, SkillStateStatusEnum, SkillStateTypeEnum } from 'camelot-unchained';
+import {
+  client,
+  events,
+  dxKeyCodes,
+  ClientSkillState,
+  SkillStateStatusEnum,
+  SkillStateTypeEnum,
+  SkillStateTrackEnum,
+} from 'camelot-unchained';
 import { SkillStateInfo } from './lib';
 
 export interface SkillStateConnectorProps {
@@ -34,13 +42,14 @@ function skillStateConnector<PropsTypes extends any>() {
       }
 
       public render() {
-        const skillState = this.state.skillState || {
+        const skillState: SkillStateInfo = this.state.skillState || {
           id: this.props.skillInfo.id,
           info: {
             type: SkillStateTypeEnum.Standard,
             keybind: null,
             icon: this.props.skillInfo.icon,
           },
+          track: SkillStateTrackEnum.PrimaryWeapon,
           status: SkillStateStatusEnum.Unusable,
         };
         return (
@@ -77,6 +86,7 @@ function skillStateConnector<PropsTypes extends any>() {
               keybind: dxKeyCodes[clientSkillState.keybind],
               icon: this.props.skillInfo.icon,
             },
+            track: SkillStateTrackEnum.PrimaryWeapon,
             status: clientSkillState.status,
             reason: clientSkillState.reason,
             timing: clientSkillState.timing,

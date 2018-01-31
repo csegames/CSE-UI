@@ -27,6 +27,7 @@ const HUDZOrder = {
   FriendlyTargetSiegeHealth: 20,
   PlayerSiegeHealth: 21,
   Scoreboard: 22,
+  SkillQueue: 23,
 };
 
 export default HUDZOrder;
