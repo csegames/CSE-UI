@@ -166,7 +166,13 @@ class Login extends React.Component<LoginProps, LoginState> {
   }
 
   private onRememberMe = (evt: any) => {
-    this.setState({rememberMe: !this.state.rememberMe} as any);
+    const newRememberMe = !this.state.rememberMe;
+    this.setState({rememberMe: newRememberMe} as any);
+
+    if (newRememberMe === false) {
+      // clear email addr from client's storage too
+      patcher.login({email: null, password: null, rememberMe: false});
+    }
     events.fire('play-sound', 'select');
   }
 
