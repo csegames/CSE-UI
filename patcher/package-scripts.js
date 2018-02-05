@@ -26,7 +26,7 @@ module.exports = {
     debug: 'nps build && nps copy.patcher && nps patcher',
     patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
     gql: {
-      mkdir: 'mkdir -p gql',
+      mkdir: 'mkdirp gql',
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',

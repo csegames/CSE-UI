@@ -39,7 +39,7 @@ const ListItem = styled('div')`
   }
 `;
 
-export interface ServerSelectProps extends GraphQLInjectedProps<{ serviceStatus: ql.schema.ServiceStatus }> {
+export interface ServerSelectProps extends GraphQLInjectedProps<{ serviceStatus: ql.schema.ConnectedServices }> {
   onServerSelect: (server: ql.schema.ServerModel) => void;
   selectedServer: ql.schema.ServerModel;
 }
