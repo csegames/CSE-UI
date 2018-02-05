@@ -551,10 +551,10 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
             <div>
               <p id={'boon-minPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
-                Minimum Points: {minPoints / 2}
+                Minimum Total Points Needed: {minPoints / 2}
               </p>
               <p id={'boon-maxPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
-                Maximum Points: {maxPoints / 2}
+                Maximum Total Points Allowed: {maxPoints / 2}
               </p>
             </div>
           </div>
@@ -739,8 +739,12 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         <div className={css(ss.outerContainer, custom.outerContainer)}>
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>
+                Minimum Total Points Needed: {minPoints / 2}
+              </p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>
+                Maximum Total Points Allowed: {maxPoints / 2}
+              </p>
             </div>
             <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
           </div>
