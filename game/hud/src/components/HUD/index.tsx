@@ -29,6 +29,7 @@ import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
 import ScenarioPopup from '../ScenarioPopup';
+import ScenarioResults from '../ScenarioResults';
 
 import { ZoneName } from '../ZoneName';
 
@@ -79,6 +80,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <DevUI />
         <ScenarioPopup />
+
+        <ScenarioResults />
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />

@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import { query, QueryOptions, QuickQLQuery, parseQuery, defaultQueryOpts, defaultQuickQLQuery } from './query';
 import { ObjectMap, Omit, withDefaults } from './utils';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -149,6 +150,13 @@ export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDa
       this.pollingRefetch();
     } else if (this.state.data === null) {
       this.refetch();
+    }
+  }
+
+  public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType>) {
+    if (!_.isEqual(this.props.query, nextProps.query)) {
+      const q = typeof nextProps.query === 'string' ? { query: nextProps.query } : nextProps.query;
+      this.query = withDefaults(q, defaultQuickQLQuery);
     }
   }
 
