@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import styled from 'react-emotion';
 import { client, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import DragStore from '../DragAndDrop/DragStore';
@@ -27,6 +28,7 @@ import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
+import ScenarioPopup, { ScenarioPopupType } from '../ScenarioPopup';
 
 import { ZoneName } from '../ZoneName';
 
@@ -34,6 +36,17 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 import Console from '../Console';
+
+const OverlayContainer = styled('div')`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(0,0,0,0.2) 55%, transparent);
+  pointer-events: none;
+  opacity: ${(props: any) => props.opacity};
+`;
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -54,12 +67,16 @@ export interface HUDProps {
 }
 
 export interface HUDState {
+  scenarioWidget: ScenarioPopupType;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
 
   constructor(props: HUDProps) {
     super(props);
+    this.state = {
+      scenarioWidget: ScenarioPopupType.None,
+    };
   }
 
   public render() {
@@ -82,11 +99,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <DevUI />
 
+        <OverlayContainer opacity={this.state.scenarioWidget === ScenarioPopupType.None ? 0 : 1}>
+          <ScenarioPopup type={this.state.scenarioWidget} />
+        </OverlayContainer>
+
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />
         <HUDFullScreen />
         <Watermark />
-        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10, pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
           <SkillBar />
         </div>
       </div>
@@ -106,10 +127,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         // we left our order, leave chat room
         events.fire('chat-show-room', props.data.myOrder.name);
       }
-
-      this.setState({
-        orderName: props.data.myOrder.name,
-      });
     }
   }
 

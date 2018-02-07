@@ -60,7 +60,7 @@ export const defaultWelcomeStyles: WelcomeStyles = {
   },
 
   close: {
-    position: 'fixed',
+    position: 'absolute',
     top: 2,
     right: 5,
     color: '#cdcdcd',
