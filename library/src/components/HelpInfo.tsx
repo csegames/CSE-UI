@@ -57,7 +57,10 @@ const TooltipIcon: any = styled('div')`
 const ExitButton: any = styled('div')`
   position: fixed;
   top: 0;
-  right: 15px;
+  right: 0;
+  padding: 0 15px;
+  text-align: right;
+  background-color: black;
   color: white;
   cursor: pointer;
   z-index: 9999;
@@ -143,7 +146,15 @@ export class HelpInfo extends React.Component<HelpInfoProps, HelpInfoState> {
           <div>
             <HelpContainer top={top} left={left} width={width} height={height} />
             {step.tooltipText &&
-              <Tooltip styles={{ tooltip: { zIndex: 9999 } }} content={step.tooltipText}>
+              <Tooltip
+                content={step.tooltipText}
+                styles={{
+                  tooltip: {
+                    zIndex: 9999,
+                    backgroundColor: 'rgba(0,0,0,0.9)',
+                    padding: '5px',
+                  }
+                }}>
                 <TooltipIcon top={top} left={left} width={width}>?</TooltipIcon>
               </Tooltip>
             }

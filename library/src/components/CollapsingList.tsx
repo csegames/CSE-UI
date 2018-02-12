@@ -61,6 +61,7 @@ export interface CollapsingListProps {
 
   // Defaults to false (Not collapsed)
   defaultCollapsed?: boolean;
+  collapsed?: boolean;
   onToggleCollapse?: (collapsed: boolean) => void;
   renderListItem?: (listItem: any, index: number) => JSX.Element;
   renderListFooter?: () => JSX.Element;
@@ -87,22 +88,23 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   public render() {
     const ss = StyleSheet.create(defaultCollapsingListStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const animationClass = this.props.animationClass && StyleSheet.create(this.props.animationClass(this.state.collapsed));
+    const animationClass = this.props.animationClass && StyleSheet.create(this.props.animationClass(this.props.collapsed));
+    const collapsed = typeof(this.props.collapsed) === 'boolean' ? this.props.collapsed : this.state.collapsed;
     return (
       <div className={css(ss.CollapsingList, custom.CollapsingList)}>
         <div className={css(ss.titleContainer, custom.titleContainer)}>
           {typeof this.props.title === 'string' ?
             <span className={css(ss.title, custom.title)} onClick={this.onToggleCollapse}>
-              <div className={css(ss.collapseButton, custom.collapseButton)}>{this.state.collapsed ? '+' : '-'}</div>
+              <div className={css(ss.collapseButton, custom.collapseButton)}>{this.props.collapsed ? '+' : '-'}</div>
               {this.props.title}
             </span> :
               <span className={css(ss.title, custom.title)} onClick={this.onToggleCollapse}>
-                {this.props.title(this.state.collapsed)}
+                {this.props.title(this.props.collapsed)}
               </span>
           }
         </div>
         <div className={css(ss.body, custom.body, animationClass && animationClass.anim)}
-          style={!animationClass ? (this.state.collapsed ? { display: 'none' } : {}) : {}}>
+          style={!animationClass ? (this.props.collapsed ? { display: 'none' } : {}) : {}}>
           {this.props.renderListHeader &&
             <div className={css(ss.listHeader, custom.listHeader)}>{this.props.renderListHeader()}</div>
           }
@@ -131,20 +133,25 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   }
 
   private onToggleCollapse = () => {
-    this.setState((state, props) => {
-      if (state.collapsed) {
-        // Show
-        if (this.props.onToggleCollapse) this.props.onToggleCollapse(false);
+    console.log(typeof(this.props.collapsed));
+    if (typeof(this.props.collapsed) !== "boolean") {
+      this.setState((state, props) => {
+        if (state.collapsed) {
+          // Show
+          if (this.props.onToggleCollapse) this.props.onToggleCollapse(false);
+          return {
+            collapsed: false,
+          };
+        }
+        // Hide
+        if (this.props.onToggleCollapse) this.props.onToggleCollapse(true);
         return {
-          collapsed: false,
+          collapsed: true,
         };
-      }
-      // Hide
-      if (this.props.onToggleCollapse) this.props.onToggleCollapse(true);
-      return {
-        collapsed: true,
-      };
-    });
+      });
+    } else if (this.props.onToggleCollapse) {
+      this.props.onToggleCollapse(!this.props.collapsed);
+    }
   }
 }
 

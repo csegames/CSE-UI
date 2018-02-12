@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI} from 'camelot-unchained';
+import { events, webAPI } from 'camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
 import { patcher, canAccessChannel } from '../../../../services/patcher';
@@ -29,12 +29,6 @@ const HoverArea = styled('div')`
   transform: rotate(35deg);
   z-index: 10;
   cursor: pointer;
-
-  &:hover ~ .character-button-game-mask {
-    filter: brightness(150%);
-    left: 0px;
-    width: 375px;
-  }
 `;
 
 export interface CharacterButtonProps {
@@ -50,9 +44,18 @@ export interface CharacterButtonProps {
 }
 
 export interface CharacterButtonState {
+  gameMaskOpen: boolean;
+  characterInfoOpen: boolean;
 }
 
 class CharacterButton extends React.PureComponent<CharacterButtonProps, CharacterButtonState> {
+  constructor(props: CharacterButtonProps) {
+    super(props);
+    this.state = {
+      gameMaskOpen: false,
+      characterInfoOpen: false,
+    };
+  }
   public render() {
     const {
       servers,
@@ -65,8 +68,17 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     } = this.props;
     return (
       <ButtonContainer>
-        <HoverArea className='hover-area' />
-        {servers && <GameSelect servers={servers} serverType={serverType} onSelectServerType={selectServerType} />}
+        {!this.state.gameMaskOpen && <HoverArea className='hover-area' onMouseEnter={this.onGameMaskOpen} />}
+        {servers &&
+          <GameSelect
+            servers={servers}
+            serverType={serverType}
+            onSelectServerType={selectServerType}
+            isOpen={this.state.gameMaskOpen}
+            onGameMaskOpen={this.onGameMaskOpen}
+            onGameMaskClose={this.onGameMaskClose}
+          />
+        }
         {serverType === ServerType.CHANNEL &&
           <ToolsSelect
             servers={servers}
@@ -79,6 +91,9 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
             character={character}
             selectedServer={selectedServer}
             onNavigateToCharacterSelect={onNavigateToCharacterSelect}
+            isOpen={this.state.characterInfoOpen}
+            onCharacterInfoOpen={this.onCharacterInfoOpen}
+            onCharacterInfoClose={this.onCharacterInfoClose}
           />
         }
       </ButtonContainer>
@@ -140,6 +155,26 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
         character.shardID.toString() !== selectedServer.shardID.toString()) {
       this.props.selectCharacter(serverCharacters[0]);
     }
+  }
+
+  private onGameMaskOpen = () => {
+    this.setState({ gameMaskOpen: true });
+    events.fire('play-sound', 'select-change');
+  }
+
+  private onGameMaskClose = () => {
+    this.setState({ gameMaskOpen: false });
+  }
+
+  private onCharacterInfoOpen = () => {
+    if (!this.state.characterInfoOpen) {
+      this.setState({ characterInfoOpen: true });
+      events.fire('play-sound', 'select-change');
+    }
+  }
+
+  private onCharacterInfoClose = () => {
+    this.setState({ characterInfoOpen: false });
   }
 }
 

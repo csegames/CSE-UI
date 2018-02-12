@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Faction, Spinner } from 'camelot-unchained';
+import { events, Faction, Spinner } from 'camelot-unchained';
 import { FactionInfo } from '../services/session/factions';
 
 export interface FactionSelectProps {
@@ -45,6 +45,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
 
   private selectFaction = (faction: FactionInfo) => {
     this.props.selectFaction(faction);
+    events.fire('play-sound', 'realm-select');
   }
 
   private generateFactionContent = (info: FactionInfo) => {
@@ -52,9 +53,9 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
     return (
       <div
         key={info.id}
-        id={info.shortName}
+        id={`cu-character-creation__faction-select__section-${info.shortName}`}
         className={`cu-character-creation__faction-select__${info.shortName} ${ this.props.selectedFaction !== null ?
-        this.props.selectedFaction.id === info.id ? 'active' : '' : ''}`}
+          this.props.selectedFaction.id === info.id ? 'active' : '' : ''}`}
         onClick={this.selectFaction.bind(this, info)}
         onDoubleClick={this.props.onFactionDoubleClick}>
         <div

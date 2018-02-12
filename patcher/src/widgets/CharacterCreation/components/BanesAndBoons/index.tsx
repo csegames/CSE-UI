@@ -787,7 +787,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: (totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
     }
     if (totalPoints === 0) {
-      events.fire('play-sound', 'success');
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
     }
   }
@@ -805,7 +804,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         );
       }
       if (nextProps.totalPoints === 0) {
-        events.fire('play-sound', 'success');
         this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
       }
     }

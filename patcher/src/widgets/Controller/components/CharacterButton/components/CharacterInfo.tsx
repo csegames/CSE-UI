@@ -32,6 +32,7 @@ const Container = styled('div')`
   margin-left: -95px;
   transition: left .2s cubic-bezier(0.93, 0.02, 1, 1.01);
   z-index: 2;
+  bottom: 4px;
   &:hover .character-button-char-pic {
     -webkit-filter: ${props => props.mouseOverPic ? 'brightness(150%) !important' : '' };
   }
@@ -66,7 +67,7 @@ const CharPic = styled('div')`
     background: url(${props => props.image});
     display:block;
     background-size: ${props => props.maleLuchorpan ? '245%' : '280%'};
-    background-position: ${props => props.maleLuchorpan ? '53% 25%' : '47% 20%'};
+    background-position: ${props => props.maleLuchorpan ? '48% 20%' : '50% 20%'};
     transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
     width: 200px;
     height: 100px;
@@ -105,7 +106,6 @@ const CharMask = styled('div')`
   transition: width .2s cubic-bezier(0.93, 0.02, 1, 1.01), -webkit-filter 1s ease;
   overflow: hidden;
   &:hover {
-    width: 405px;
     -webkit-filter: brightness(150%);
     &:after {
       opacity: 1;
@@ -120,7 +120,7 @@ const CharMask = styled('div')`
     background: url(${props => props.image});
     display:block;
     background-size: ${props => props.maleLuchorpan ? '245%' : '280%'};
-    background-position: ${props => props.maleLuchorpan ? '53% 25%' : '47% 20%'};
+    background-position: ${props => props.maleLuchorpan ? '48% 20%' : '50% 20%'};
     transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
     width: 200px;
     height: 100px;
@@ -193,11 +193,13 @@ export interface CharacterInfoProps {
   character: webAPI.SimpleCharacter;
   selectedServer: PatcherServer;
   onNavigateToCharacterSelect: () => void;
+  onCharacterInfoOpen: () => void;
+  onCharacterInfoClose: () => void;
+  isOpen: boolean;
 }
 
 export interface CharacterInfoState {
   initial: boolean;
-  mouseOverPic: boolean;
 }
 
 class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoState> {
@@ -208,7 +210,6 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
     super(props);
     this.state = {
       initial: true,
-      mouseOverPic: false,
     };
   }
 
@@ -226,29 +227,30 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         <Container
           className='character-button-char-container'
           onClick={onNavigateToCharacterSelect}
-          mouseOverPic={this.state.mouseOverPic}
+          mouseOverPic={this.props.isOpen}
         >
           <CharPic
             className='character-button-char-pic'
-            mouseOverPic={this.state.mouseOverPic}
+            mouseOverPic={this.props.isOpen}
             flipImage={flipImage}
             image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
             maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
-            onMouseOver={this.state.mouseOverPic ? this.onMouseOver : () => {}}>
+            onMouseOver={this.props.isOpen ? this.onMouseOver : () => {}}
+            onMouseLeave={this.props.isOpen ? this.onMouseLeave : () => {}}>
             <HoverArea
               onMouseOver={this.onMouseOver}
               onMouseLeave={this.onMouseLeave}
             />
           </CharPic>
           <CharMask
-            mouseOverPic={this.state.mouseOverPic}
+            mouseOverPic={this.props.isOpen}
             onMouseOver={this.onMouseOver}
             onMouseLeave={this.onMouseLeave}
             image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
             maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
             flipImage={flipImage}
             className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}>
-            <InfoContainer className='character-button-info' mouseOverPic={this.state.mouseOverPic}>
+            <InfoContainer className='character-button-info' mouseOverPic={this.props.isOpen}>
               <CharacterInfoContainer>
                 <CharacterName longName={isLongName}>
                   {character.name}
@@ -274,10 +276,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         <Container
           className='character-button-char-container'
           onClick={onNavigateToCharacterSelect}
-          mouseOverPic={this.state.mouseOverPic}>
+          mouseOverPic={this.props.isOpen}>
           <CharPic
             className={'character-button-char-pic'}
-            onMouseOver={this.state.mouseOverPic ? this.onMouseOver : () => {}}
+            onMouseOver={this.props.isOpen ? this.onMouseOver : () => {}}
             image={'images/controller/no-character-shadow.png'}>
             <HoverArea
               onMouseOver={this.onMouseOver}
@@ -286,11 +288,11 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           </CharPic>
           <CharMask
             className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}
-            mouseOverPic={this.state.mouseOverPic}
+            mouseOverPic={this.props.isOpen}
             onMouseOver={this.onMouseOver}
             onMouseLeave={this.onMouseLeave}
             image={'images/controller/no-character-shadow.png'}>
-            <InfoContainer className='character-button-info' mouseOverPic={this.state.mouseOverPic}>
+            <InfoContainer className='character-button-info' mouseOverPic={this.props.isOpen}>
               <CharacterName padding={'17px 0px 0px 120px'}>No Character Selected</CharacterName>
             </InfoContainer>
           </CharMask>
@@ -312,11 +314,12 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
       clearTimeout(this.onMouseLeaveTimeout);
       this.onMouseLeaveTimeout = null;
     }
-    this.setState({ mouseOverPic: true });
+
+    this.props.onCharacterInfoOpen();
   }
 
   private onMouseLeave = () => {
-    this.onMouseLeaveTimeout = setTimeout(() => this.setState({ mouseOverPic: false }), 100);
+    this.onMouseLeaveTimeout = setTimeout(() => this.props.onCharacterInfoClose(), 300);
   }
 }
 

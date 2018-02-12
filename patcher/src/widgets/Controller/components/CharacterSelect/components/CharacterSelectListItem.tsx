@@ -204,6 +204,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
 
   private onMouseEnter = () => {
     this.props.onCharacterSelect(this.props.character);
+    events.fire('play-sound', 'select-change');
   }
 
   private onClick = () => {

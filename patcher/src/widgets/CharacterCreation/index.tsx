@@ -299,9 +299,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   public componentWillReceiveProps(nextProps: CharacterCreationProps) {
-    // if (this.props && nextProps && this.props.shard !== nextProps.shard) {
-    //   this.resetAndInit();
-    // }
     if (this.props.factionsState !== nextProps.factionsState ||
         this.props.playerClassesState !== nextProps.playerClassesState ||
         this.props.racesState !== nextProps.racesState) {
@@ -540,7 +537,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Attributes);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false });
+        setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
         break;
       }
       case CharacterCreationPage.Summary: {
@@ -580,6 +577,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private onCloseClick = () => {
+    events.fire('play-sound', 'select');
     events.fire('view-content', view.NONE);
     this.resetAndInit();
   }

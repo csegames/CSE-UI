@@ -42,7 +42,7 @@ export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
     backgroundSize: 'contain',
     maxHeight: '80%',
     height: '70vh',
-    width: '30vw',
+    width: '100%',
   },
 
   characterNameInputContainer: {

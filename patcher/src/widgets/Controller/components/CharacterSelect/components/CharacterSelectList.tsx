@@ -7,12 +7,32 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 import { events, webAPI } from 'camelot-unchained';
 
 import { patcher, ChannelStatus } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
+
+const MinimizeAll = styled('div')`
+  cursor: pointer;
+  pointer-events: ${props => props.visible ? 'all' : 'none'}
+  z-index: 10;
+  opacity: 0.5;
+  padding: 15px 25px 0 25px;
+  margin-bottom: -10px;
+  display: flex;
+  align-items: center;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const ArrowIcon = styled('i')`
+  font-size: 12px;
+  margin-right: 5px;
+`;
 
 export interface CharacterSelectListProps {
   servers: {[id: string]: PatcherServer};
@@ -25,16 +45,20 @@ export interface CharacterSelectListProps {
 }
 
 export interface CharacterSelectListState {
+  minimized: boolean;
   serverForOptions: PatcherServer;
   optionsMenuPosition: { top: number, left: number };
+  serversCollapsed: {[shardID: number]: boolean};
 }
 
 class CharacterSelectList extends React.Component<CharacterSelectListProps, CharacterSelectListState> {
   constructor(props: CharacterSelectListProps) {
     super(props);
     this.state = {
+      minimized: false,
       serverForOptions: null,
       optionsMenuPosition: null,
+      serversCollapsed: {},
     };
   }
 
@@ -42,9 +66,14 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     // Put selected server at top
     const { servers, selectedServer } = this.props;
     const sortedServers = _.sortBy(servers, server => server.shardID === selectedServer.shardID ? -1 : 0);
-
     return (
       <div>
+        <MinimizeAll
+          onClick={this.state.minimized ? this.onMaximizeAllClick : this.onMinimizeAllClick}
+          visible={this.props.charSelectVisible}>
+            <ArrowIcon className={this.state.minimized ? 'fa fa-arrow-down' : 'fa fa-arrow-up'}></ArrowIcon>
+            {this.state.minimized ? 'Maximize All' : 'Minimize All'}
+        </MinimizeAll>
         {this.state.serverForOptions &&
           <ServerOptionsMenu
             top={this.state.optionsMenuPosition.top}
@@ -74,11 +103,17 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
               onChooseCharacter={this.props.onChooseCharacter}
               toggleMenu={this.toggleMenu}
               charSelectVisible={this.props.charSelectVisible}
+              collapsed={this.state.serversCollapsed[server.shardID]}
+              onToggleCollapse={this.onToggleCollapse}
             />
           );
         })}
       </div>
     );
+  }
+
+  public componentDidMount() {
+    this.onMaximizeAllClick();
   }
 
   public componentWillReceiveProps(nextProps: CharacterSelectListProps) {
@@ -105,6 +140,28 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
         },
       };
     });
+  }
+
+  private onToggleCollapse = (shardID: number, collapsed: boolean) => {
+    const serversCollapsed = this.state.serversCollapsed;
+    serversCollapsed[shardID] = collapsed;
+    this.setState({ serversCollapsed });
+  }
+
+  private onMinimizeAllClick = () => {
+    const serversCollapsed = this.state.serversCollapsed;
+    Object.keys(serversCollapsed).forEach((shardID) => {
+      serversCollapsed[shardID] = true;
+    });
+    this.setState({ serversCollapsed, minimized: true });
+  }
+
+  private onMaximizeAllClick = () => {
+    const serversCollapsed = this.state.serversCollapsed;
+    _.values(this.props.servers).forEach((server) => {
+      serversCollapsed[server.shardID] = false;
+    });
+    this.setState({ serversCollapsed, minimized: false });
   }
 
   private handleInstallUninstall = (e: React.MouseEvent<HTMLDivElement>) => {

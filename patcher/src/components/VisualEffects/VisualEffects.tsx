@@ -38,14 +38,22 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
           {_.isArray(layerInfo) ? layerInfo.map((layer, i) => {
             const extraClass = layer.extraClass ? layer.extraClass : '';
             if (layer.particleEffect) {
-              return <div key={i} id={layer.id} className={layer.id} style={layer.hidden ? { display: 'none' } : {}} />;
-            } else if (!layer.hidden && layer.resistance) {
+              return (
+                <div
+                  key={i}
+                  id={layer.id}
+                  className={layer.id}
+                  style={layer.hidden ? { opacity: 0 } : { opacity: 1 }}
+                />
+              );
+            } else if (layer.resistance) {
               return (
                 <div
                   key={i}
                   data-depth={layer.resistance / 1000}
                   className={_.isArray(layer.extraClass) ? cx([`bgelement ${layer.id}`, ...layer.extraClass]) :
                     `bgelement ${layer.id} ${extraClass}`}
+                  style={{ opacity: layer.hidden ? 0 : 1 }}
                 />
               );
             }

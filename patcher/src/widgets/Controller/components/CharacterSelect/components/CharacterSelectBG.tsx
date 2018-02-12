@@ -35,7 +35,7 @@ const charTransitionNameAnim = keyframes`
   }
 `;
 
-const charTransitionBGAnim = keyframes`
+const charTransitionBaseAnim = keyframes`
   from {
     opacity: 0;
   }
@@ -55,13 +55,8 @@ const CharNameTransitionAnim = css`
 `;
 
 const CharBaseTransitionAnim = css`
-  -webkit-animation: ${charTransitionBGAnim} 1s ease forwards;
-  animation: ${charTransitionBGAnim} 1s ease forwards;
-`;
-
-const CharBGTransitionAnim = css`
-  -webkit-animation: ${charTransitionBGAnim} 3s ease forwards;
-  animation: ${charTransitionBGAnim} 3s ease forwards;
+  -webkit-animation: ${charTransitionBaseAnim} 1s ease forwards;
+  animation: ${charTransitionBaseAnim} 1s ease forwards;
 `;
 
 const CharacterInfoOverlay = styled('div')`
@@ -126,9 +121,10 @@ export interface CharacterSelectBGProps {
 }
 
 export interface CharacterSelectBGState {
+  firstChar: webAPI.SimpleCharacter;
+  visualFXChar: webAPI.SimpleCharacter;
   shouldTransition: boolean;
   visualFXTransition: boolean;
-  visualFXChar: webAPI.SimpleCharacter;
   characterNameFontSize: number;
 }
 
@@ -136,19 +132,21 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
   private vfxCharTimeout: any;
   private transitionTimeout: any;
   private backgroundTimeout: any;
+  private charTimeout: any;
 
   constructor(props: CharacterSelectBGProps) {
     super(props);
     this.state = {
+      firstChar: null,
+      visualFXChar: null,
       shouldTransition: false,
       visualFXTransition: false,
-      visualFXChar: null,
       characterNameFontSize: 2,
     };
   }
 
   public render() {
-    const visualFXChar = this.state.visualFXChar || this.props.selectedCharacter;
+    const visualFXChar = this.state.visualFXChar || this.state.firstChar;
 
     if (visualFXChar) {
       const { selectedCharacter } = this.props;
@@ -156,22 +154,21 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
       const charImgClass = [`bgelement char ${Faction[faction].toLowerCase()} standing__${Race[race]}--${Gender[gender]}`];
       const charBaseClass = [Faction[faction].toLowerCase()];
       const charNameClass = [];
-      const charBGClass = [];
 
       if (this.state.shouldTransition) {
         charNameClass.push(CharNameTransitionAnim);
         charImgClass.push(CharTransitionAnim);
         charBaseClass.push(CharBaseTransitionAnim);
       }
-
+      let hidden = false;
       if (this.state.visualFXTransition) {
-        charBGClass.push(CharBGTransitionAnim);
+        hidden = true;
       }
 
       return (
         <div id='char-select-fx'>
           <CharacterSelectFX
-            fadeClass={cx(charBGClass)}
+            hidden={hidden}
             key={visualFXChar.faction}
             selectedFaction={{ id: visualFXChar.faction }}
             selectedRace={{ id: visualFXChar.race }}
@@ -194,6 +191,10 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
     }
   }
 
+  public componentDidMount() {
+    this.setState({ firstChar: this.props.selectedCharacter });
+  }
+
   public componentWillReceiveProps(nextProps: CharacterSelectBGProps) {
     if (this.props.selectedCharacter && nextProps.selectedCharacter) {
       if (nextProps.selectedCharacter.name.length > 17) {
@@ -204,7 +205,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
       if (this.props.selectedCharacter.id !== nextProps.selectedCharacter.id) {
         this.playTransitionAnimation();
         if ((this.props.selectedCharacter.faction !== nextProps.selectedCharacter.faction) ||
-            (this.props.selectedCharacter.gender !== nextProps.selectedCharacter.gender)) {
+            (this.props.selectedCharacter.race !== nextProps.selectedCharacter.race)) {
           this.updateVisualFXChar(nextProps.selectedCharacter);
         }
       }
@@ -212,14 +213,24 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
   }
 
   private updateVisualFXChar = (nextChar: webAPI.SimpleCharacter) => {
-    clearTimeout(this.vfxCharTimeout);
+    if (this.vfxCharTimeout) {
+      clearTimeout(this.vfxCharTimeout);
+      this.vfxCharTimeout = null;
+    }
+
+    if (this.backgroundTimeout) {
+      clearTimeout(this.backgroundTimeout);
+      this.backgroundTimeout = null;
+    }
+
+    if (this.charTimeout) {
+      clearTimeout(this.charTimeout);
+      this.charTimeout = null;
+    }
     this.vfxCharTimeout = setTimeout(() => {
-      if (this.backgroundTimeout) {
-        clearTimeout(this.backgroundTimeout);
-        this.backgroundTimeout = null;
-      }
-      this.setState({ visualFXChar: nextChar, visualFXTransition: true });
-      this.backgroundTimeout = setTimeout(() => this.setState({ visualFXTransition: false }), 3000);
+      this.setState({  visualFXTransition: true });
+      this.charTimeout = setTimeout(() => this.setState({ visualFXChar: nextChar }), 700);
+      this.backgroundTimeout = setTimeout(() => this.setState({ visualFXTransition: false }), 720);
     }, 299);
   }
 

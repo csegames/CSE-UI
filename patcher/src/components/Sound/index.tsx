@@ -17,6 +17,7 @@ export interface SoundProps {
 export interface SoundState {
   sounds: { [id: string]: string };
   paused: boolean;
+  patcherThemeEnded: boolean;
 }
 
 const sounds = {
@@ -43,15 +44,25 @@ export class Sound extends React.Component<SoundProps, SoundState> {
     this.state = {
       sounds: {},
       paused: false,
+      patcherThemeEnded: false,
     };
   }
 
   public render() {
     return (
       <div>
-        <audio loop={true}
-               src='sounds/patcher-theme.ogg'
-               ref={r => this.bgRef = r }/>
+        <audio
+          src='sounds/patcher-theme.ogg'
+          onEnded={() => this.setState({ patcherThemeEnded: true })}
+          ref={r => this.bgRef = r}
+        />
+        {this.state.patcherThemeEnded &&
+          <audio
+            loop={true}
+            src='sounds/patcher-ambient.ogg'
+            ref={r => this.bgRef = r}
+          />
+        }
         {this.renderAudioElements()}
       </div>
     );
@@ -89,9 +100,22 @@ export class Sound extends React.Component<SoundProps, SoundState> {
 
   private playSound(name: string) {
     if (this.props.soundsState.playSound) {
+      const sounds = this.state.sounds;
+      // Grab dupe sound if any
+      let dupeSoundId = '';
+      Object.keys(sounds).forEach((key) => {
+        if (sounds[key] === name) {
+          dupeSoundId = key;
+        }
+      });
+      if (dupeSoundId) {
+        // If potential duplicate sound found then delete current sound playing and play new sound
+        delete sounds[dupeSoundId];
+      }
       const id = generateID(7);
+      sounds[id] = name;
       this.setStateAsync({
-        sounds: { ...this.state.sounds, [id]: name },
+        sounds,
       });
     }
   }
@@ -182,7 +206,9 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         setTimeout(() => fade(from + increment, to, increment, done), 100);
       } else {
         this.bgRef.volume = to;
-        if (done) done();
+        if (done) {
+          done();
+        }
       }
     };
     // Note:-

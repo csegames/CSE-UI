@@ -114,7 +114,7 @@ const snowParticles = {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": false
 };
 
 export default snowParticles;

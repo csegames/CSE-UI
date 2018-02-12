@@ -98,8 +98,8 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
     return (
       <Container>
         <ButtonContainer
-          onClick={this.onClick}
           onMouseEnter={this.onMouseEnter}
+          onClick={this.onClick}
           cursor={this.props.server.available ? 'pointer' : 'not-allowed'}>
           <Text>
             <Plus>+</Plus>
@@ -124,6 +124,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
           events.fire('view-content', view.NONE);
         },
       });
+      events.fire('play-sound', 'server-select');
     } else {
       toastr.error(
         'You will not be able to create a character while the server is offline',
@@ -134,7 +135,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
   }
 
   private onMouseEnter = () => {
-
+    events.fire('play-sound', 'select-change');
   }
 }
 

@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import { events } from 'camelot-unchained';
 import styled, { keyframes } from 'react-emotion';
 import { ButtonText, PatchButtonStyle } from '../styles';
 
@@ -29,9 +30,16 @@ const DownloadingButtonView = styled('div')`
   ${PatchButtonStyle};
   background: url(images/controller/play-button-grey.png);
   filter: brightness(140%);
-
   &:hover {
-    filter: brightness(150%);
+    filter: brightness(140%);
+  }
+  &:hover:before {
+    animation: none;
+    -webkit-animation: none;
+  }
+  &:hover:after {
+    animation: none;
+    -webkit-animation: none;
   }
 `;
 
@@ -59,11 +67,15 @@ export interface DownloadingButtonProps {
 class DownloadingButton extends React.Component<DownloadingButtonProps> {
   public render() {
     return (
-      <DownloadingButtonView onClick={this.props.onClick}>
+      <DownloadingButtonView onClick={this.props.onClick} onMouseOver={this.playSound}>
         <ButtonText>{this.props.text}</ButtonText>
         <Shine />
       </DownloadingButtonView>
     );
+  }
+
+  private playSound = () => {
+    events.fire('play-sound', 'select-change');
   }
 }
 

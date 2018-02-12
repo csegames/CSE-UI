@@ -26,7 +26,7 @@ const imageShine = keyframes`
 
 const GameMask = styled('div')`
   position: relative;
-  height: 92px;
+  height: 97px;
   width: ${props => props.width ? props.width : 375}px;
   left: ${props => props.left}px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent),
@@ -98,13 +98,12 @@ export interface GameSelectProps {
   servers: {[id: string]: PatcherServer};
   serverType: ServerType;
   onSelectServerType: (serverType: ServerType) => void;
-}
-
-export interface GameSelectState {
+  onGameMaskOpen: () => void;
+  onGameMaskClose: () => void;
   isOpen: boolean;
 }
 
-class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
+class GameSelect extends React.Component<GameSelectProps> {
   private closeTimeout: any;
 
   constructor(props: GameSelectProps) {
@@ -120,10 +119,10 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     return (
       <GameMask
         className='character-button-game-mask'
-        onMouseOver={this.open}
-        onMouseOut={this.close}
-        left={this.state.isOpen ? 0 : serverType === ServerType.CUBE ? -115 : serverType === ServerType.CHANNEL ? -215 : 0}
-        width={!this.state.isOpen ? (serverType === ServerType.CUBE ? 250 : serverType === ServerType.CUGAME ? 175 :
+        onMouseOver={this.onMouseOver}
+        onMouseOut={this.onMouseLeave}
+        left={this.props.isOpen ? 0 : serverType === ServerType.CUBE ? -115 : serverType === ServerType.CHANNEL ? -215 : 0}
+        width={!this.props.isOpen ? (serverType === ServerType.CUBE ? 250 : serverType === ServerType.CUGAME ? 175 :
           serverType === ServerType.CHANNEL && 330) : 375}
         isCUGame={serverType === ServerType.CUGAME}
       >
@@ -138,25 +137,25 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     );
   }
 
-  private open = () => {
+  private onMouseOver = () => {
     if (this.closeTimeout) {
       clearTimeout(this.closeTimeout);
       this.closeTimeout = null;
     }
-    if (!this.state.isOpen) {
-      this.setState({ isOpen: true });
+    if (!this.props.isOpen) {
+      this.props.onGameMaskOpen();
     }
   }
 
-  private close = () => {
-    if (this.state.isOpen) {
-      this.closeTimeout = setTimeout(() => this.setState({ isOpen: false }), 100);
+  private onMouseLeave = () => {
+    if (this.props.isOpen) {
+      this.closeTimeout = setTimeout(() => this.props.onGameMaskClose(), 100);
     }
   }
 
   private onSelectServerType = (serverType: ServerType) => {
     this.props.onSelectServerType(serverType);
-    this.close();
+    this.onMouseLeave();
   }
 
   private getServerTypes = () => {

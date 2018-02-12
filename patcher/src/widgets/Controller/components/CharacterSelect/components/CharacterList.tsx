@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { CollapsingList, webAPI } from 'camelot-unchained';
+import { webAPI, events, CollapsingList } from 'camelot-unchained';
 
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterSelectListItem from './CharacterSelectListItem';
@@ -48,6 +48,7 @@ const ServerOptionsButton = styled('div')`
 
 export interface CharacterListProps {
   index: number;
+  collapsed: boolean;
   server: PatcherServer;
   sortedServers: PatcherServer[];
   serverCharacters: webAPI.SimpleCharacter[];
@@ -55,6 +56,7 @@ export interface CharacterListProps {
   onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
   onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
   toggleMenu: (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => void;
+  onToggleCollapse: (shardID: number, collapsed: boolean) => void;
   charSelectVisible: boolean;
 }
 
@@ -76,6 +78,8 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
         <CollapsingList
           key={server.shardID}
           items={serverCharacters}
+          collapsed={this.props.collapsed}
+          onToggleCollapse={this.onToggleCollapse}
           animationClass={this.handleAnimationClass}
           styles={index === sortedServers.length - 1 ? {
             body: {
@@ -108,7 +112,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                 </Icon>
                 &nbsp;{server.name} ({serverCharacters.length})&nbsp;
               </div>
-              <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.props.toggleMenu(e, server)}>
+              <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
                 <i className='fa fa-cog' />
               </ServerOptionsButton>
             </ServerTitle>
@@ -141,6 +145,9 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
   }
 
   public componentWillReceiveProps(nextProps: CharacterListProps) {
+    if (this.props.collapsed !== nextProps.collapsed) {
+      console.log(nextProps.collapsed);
+    }
     if (this.props.server.shardID !== nextProps.server.shardID) {
       this.setState({ initialHeight: null });
       setTimeout(() => {
@@ -148,6 +155,17 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
         this.setState({ initialHeight: characterList.clientHeight - 40 });
       }, 300);
     }
+  }
+
+  private onToggleMenu = (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => {
+    events.fire('play-sound', 'select');
+    this.props.toggleMenu(e, server);
+  }
+
+  private onToggleCollapse = (collapsed: boolean) => {
+    events.fire('play-sound', 'select-change');
+
+    this.props.onToggleCollapse(this.props.server.shardID, collapsed);
   }
 
   private handleAnimationClass = (collapsed: boolean) => {

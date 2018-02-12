@@ -113,7 +113,7 @@ const glowyOrbsParticles = {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": false
 };
   
   export default glowyOrbsParticles;

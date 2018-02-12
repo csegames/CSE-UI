@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { webAPI } from 'camelot-unchained';
+import { webAPI, events } from 'camelot-unchained';
 
 const totalPoints = 30;
 
@@ -142,6 +142,7 @@ export default function reducer(state: AttributesState = initialState, action: a
             state.pointsAllocated + action.value + allocated <= totalPoints) {
             a.allocatedPoints += action.value;
             allocated += action.value;
+            events.fire('play-sound', 'select');
           }
           return a;
         }),

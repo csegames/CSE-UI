@@ -51,7 +51,8 @@ class Hero extends React.Component<HeroProps, HeroState> {
             <div
               key={index}
               className={`Hero__controls__item ${this.state.currentItem === index ? 'active' : ''}`}
-              onClick={this.selectIndex.bind(this, index)}>
+              onClick={this.selectIndex.bind(this, index)}
+              onMouseEnter={this.playSound}>
                 {index + 1}
             </div>)}
         </div>
@@ -71,6 +72,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private selectIndex = (index: number) => {
     clearTimeout(this.timeout);
     this.timeout = null;
+    events.fire('play-sound', 'select');
     this.setState({
       currentItem: index,
     } as any);
@@ -97,6 +99,10 @@ class Hero extends React.Component<HeroProps, HeroState> {
       if (v.paused) v.play();
     }
     this.timeNext(this.state.currentItem + 1);
+  }
+
+  private playSound = () => {
+    events.fire('play-sound', 'select-change');
   }
 }
 

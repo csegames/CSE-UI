@@ -42,8 +42,8 @@ const Bane = (props: {
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     if (onBaneClick) {
       onBaneClick(trait);
+      events.fire('play-sound', 'bane-select');
     }
-    events.fire('play-sound', 'bane-select');
   };
   const baneStyles = Object.assign(
     {},

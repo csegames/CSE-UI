@@ -42,8 +42,8 @@ const Boon = (props: {
   const onBoonSelect = (trait: BanesAndBoonsInfo) => {
     if (onBoonClick) {
       onBoonClick(trait);
+      events.fire('play-sound', 'boon-select');
     }
-    events.fire('play-sound', 'boon-select');
   };
   const boonStyles = Object.assign(
     {},

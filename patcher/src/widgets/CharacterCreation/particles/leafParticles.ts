@@ -114,7 +114,7 @@ const leafParticles = {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": false
 };
 
 export default leafParticles;

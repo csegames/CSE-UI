@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { webAPI, events } from 'camelot-unchained';
 
-import { PatcherServer } from '../../services/session/controller';
+import { PatcherServer, ServerType } from '../../services/session/controller';
 import CharacterSelectList from './components/CharacterSelectList';
 import CharacterSelectBG from './components/CharacterSelectBG'; 
 import CharacterDeleteModal from '../CharacterDeleteModal';
@@ -31,7 +31,6 @@ const Header = styled('div')`
   align-items: center;
   justify-content: flex-end;
   padding: 2px;
-  background: linear-gradient(to left, rgba(0,0,0,0.69), rgba(0,0,0,0) 30%);
   position: absolute;
   top: 0;
   right: 0;
@@ -135,14 +134,23 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     }
     const selectedCharacter = this.state.selectedCharacter || this.props.selectedCharacter ||
       _.values(this.props.characters)[0];
+
+    const servers = {};
+    Object.keys(this.props.servers).forEach((serverKey) => {
+      const server = this.props.servers[serverKey];
+      if (server.type === ServerType.CUGAME) {
+        servers[serverKey] = server;
+      }
+    });
+
     return (
       <Container id='cu-character-select' visible={this.props.charSelectVisible}>
-        <Header><CloseButton onClick={this.props.onCloseClick}>X</CloseButton></Header>
+        <Header><CloseButton onClick={this.onCloseClick}>X</CloseButton></Header>
         <CharacterSelectBG selectedCharacter={selectedCharacter} />
         <ListBG />
         <ListContainer innerRef={ref => this.listRef = ref}>
           <CharacterSelectList
-            servers={this.props.servers}
+            servers={servers}
             characters={this.props.characters}
             selectedCharacter={selectedCharacter}
             selectedServer={this.props.selectedServer}
@@ -155,7 +163,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
         {this.state.showDeleteModal &&
           <CharacterDeleteModal
             character={selectedCharacter}
-            servers={this.props.servers}
+            servers={servers}
             closeModal={this.toggleModal}
             onSuccess={this.toggleModal}
           />
@@ -199,6 +207,11 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
   private toggleModal = () => {
     this.setState({ showDeleteModal: !this.state.showDeleteModal });
+  }
+
+  private onCloseClick = () => {
+    events.fire('play-sound', 'select');
+    this.props.onCloseClick();
   }
 }
 

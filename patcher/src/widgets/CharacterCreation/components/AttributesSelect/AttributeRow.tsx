@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Archetype, events } from 'camelot-unchained';
+import { Archetype } from 'camelot-unchained';
 
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
@@ -89,8 +89,6 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
         this.props.allocatePoint(this.props.attributeInfo.name, 1);
       }, 30);
     }, 500);
-    
-    if (this.props.remainingPoints !== 0) events.fire('play-sound', 'select');
   }
 
   private decreaseAttribute = () => {
@@ -101,7 +99,6 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
         this.props.allocatePoint(this.props.attributeInfo.name, -1);
       }, 30);
     }, 500);
-    if (this.props.attributeInfo.allocatedPoints !== 0) events.fire('play-sound', 'select');
   }
 
   private clearMouseDownInterval = () => {

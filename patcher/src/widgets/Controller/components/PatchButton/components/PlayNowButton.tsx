@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import { events } from 'camelot-unchained';
 import styled from 'react-emotion';
 import { PatchButtonStyle, ButtonText, ButtonGlow, shine } from '../styles';
 
@@ -72,11 +73,15 @@ export interface PlayNowButtonProps {
 class PlayNowButton extends React.Component<PlayNowButtonProps> {
   public render() {
     return (
-      <PlayNowButtonView onClick={this.props.onClick}>
+      <PlayNowButtonView onClick={this.props.onClick} onMouseEnter={this.playSound}>
         <ButtonText>{this.props.text}</ButtonText>
         <ButtonGlow className='patch-button-glow' />
       </PlayNowButtonView>
     );
+  }
+
+  private playSound = () => {
+    events.fire('play-sound', 'select-change');
   }
 }
 

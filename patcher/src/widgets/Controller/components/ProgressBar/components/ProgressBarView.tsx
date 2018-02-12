@@ -58,7 +58,7 @@ const Bar = styled('div')`
     content: "";
     transition: all linear .5s
     background: url(images/controller/loading-bar-end.png) no-repeat center right;
-    width: ${props => props.progress >= 10 ? '185px' : `${props.progress}%`};
+    width: ${props => props.progress >= 10 ? '185px' : `35px`};
     height: 10px;
     margin-top: 2px;
   }

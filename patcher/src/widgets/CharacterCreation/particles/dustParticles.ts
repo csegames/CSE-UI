@@ -79,7 +79,7 @@ const dustParticles = {
         "resize": false
       }
     },
-    "retina_detect": true
+    "retina_detect": false
   };
   
   

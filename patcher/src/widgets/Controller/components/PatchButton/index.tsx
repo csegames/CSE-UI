@@ -173,9 +173,10 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     // Display EULA if CU game
     if (selectedServer.type !== ServerType.CHANNEL) {
       this.setState({ showEuala: true });
-      this.playSound('select');
+      this.playSound('launch-game');
     } else {
       this.launchClient();
+      this.playSound('launch-game');
     }
   }
 
@@ -184,7 +185,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   }
 
   private launchClient = () => {
-    const {selectedServer, selectedCharacter} = this.props;
+    const { selectedServer, selectedCharacter } = this.props;
     if (!selectedServer) return;
 
     this.setState({ showEuala: false });
@@ -216,7 +217,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       launchString += ' autoconnect=1';
     }
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
-    this.playSound('launch-game');
+    this.playSound('select');
   }
 
   private install = () => {
