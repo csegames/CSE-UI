@@ -9,9 +9,8 @@ import * as React from 'react';
 import styled, { keyframes, css } from 'react-emotion';
 import { Gender, Archetype, Race, webAPI } from 'camelot-unchained';
 
-import CharacterImages from '../../../../../lib/characterImages';
+import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';
-import { shouldFlipCharImage } from '../../../lib/CharacterImages';
 
 const shine = keyframes`
   0%, 80% {

@@ -70,7 +70,7 @@ class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
         </MenuContainer>
         <OptionsMenuOverlay onClick={this.props.toggleMenu} />
       </div>
-    )
+    );
   }
 }
 
