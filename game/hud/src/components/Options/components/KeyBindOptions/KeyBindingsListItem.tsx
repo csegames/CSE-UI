@@ -38,6 +38,7 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
         value={this.props.listeningMode ? 'Press a key' : keyCode}
         searchIncludes={this.props.searchIncludes}
         isOddItem={this.props.isOddItem}
+        onClick={this.onClick}
       />
     );
   }
@@ -50,9 +51,9 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
     window.removeEventListener('keydown', this.handleKeyEvent);
   }
 
-  // private onClick = () => {
-  //   this.props.onToggleListeningMode(this.props.keyBinding);
-  // }
+  private onClick = () => {
+    this.props.onToggleListeningMode(this.props.keyBinding);
+  }
 
   private handleKeyEvent = (e: any) => {
     if (this.props.listeningMode) {
