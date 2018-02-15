@@ -142,6 +142,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
+    const { graphql } = this.props;
     return (
       <div className={css(ss.inventoryBody, custom.inventoryBody)}>
         {!this.props.graphql.data &&
@@ -170,9 +171,9 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
           addRowButtonDisabled={buttonDisabled}
           removeRowButtonDisabled={removeAndPruneDisabled}
           pruneRowsButtonDisabled={removeAndPruneDisabled}
-          currency={this.props.graphql.data ? this.props.graphql.data.myInventory.currency : 0}
-          itemCount={this.props.graphql.data ? this.props.graphql.data.myInventory.itemCount : 0}
-          totalMass={this.props.graphql.data ? this.props.graphql.data.myInventory.totalMass : 0}
+          currency={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.currency : 0}
+          itemCount={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.itemCount : 0}
+          totalMass={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.totalMass : 0}
         />
       </div>
     );
