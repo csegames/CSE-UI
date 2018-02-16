@@ -300,6 +300,9 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
       this.setState({ visible: false });
     }
     if (name === 'options') {
+      if (this.state.visible) {
+        client.ReleaseInputOwnership();
+      }
       this.setState({ visible: !this.state.visible });
     }
   }
