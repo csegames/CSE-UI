@@ -158,7 +158,6 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
               onChange={(e: any) => this.onSearchChange(e, pageLength)}
               placeholder={'Filter'}
               value={searchValue}
-              onFocus={() => client.RequestInputOwnership()}
               onBlur={() => client.ReleaseInputOwnership()}
               styles={{ input: defaultItemsMenuBoxStyle.searchInput }}
             />
