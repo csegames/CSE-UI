@@ -31,7 +31,9 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
 
   public render() {
     let keyCode = vkKeyCodes[Number(this.props.keyBinding.value)];
-    keyCode = keyCode.substring(3, keyCode.length);
+    if (keyCode) {
+      keyCode = keyCode.substring(3, keyCode.length);
+    }
     return (
       <ListItem
         name={this.props.keyBinding.name}
