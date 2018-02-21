@@ -6,12 +6,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
-import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql, bodyParts, client } from 'camelot-unchained';
+import { ql, bodyParts, client, events } from 'camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
+import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
@@ -99,7 +98,7 @@ export interface PaperDollState {
 }
 
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
-
+  private refetchListener: any;
   constructor(props: PaperDollProps) {
     super(props);
     this.state = {
@@ -138,6 +137,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
   public componentDidMount() {
     this.initializeMaxHealthParts();
+    this.refetchListener = events.on('refetch-character-info', this.refetch);
   }
 
   public componentWillReceiveProps(nextProps: PaperDollProps) {
@@ -145,6 +145,16 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
     if (!_.isEqual(nextGraphqlData && nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
       this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items as ql.schema.EquippedItem[]);
+    }
+  }
+
+  public componentWillUnmount() {
+    events.off(this.refetchListener);
+  }
+
+  private refetch = () => {
+    if (this.props.graphql) {
+      this.props.graphql.refetch();
     }
   }
 

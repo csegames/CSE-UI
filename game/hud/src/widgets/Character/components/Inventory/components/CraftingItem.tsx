@@ -14,8 +14,8 @@ export interface CraftingItemStyle extends StyleDeclaration {
 
 export const defaultCraftingItemStyle: CraftingItemStyle = {
   CraftingItem: {
-    width: '100%',
-    height: '100%',
+    width: '60px',
+    height: '60px',
     position: 'relative',
     cursor: 'pointer',
   },

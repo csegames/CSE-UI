@@ -58,7 +58,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
   }
 
   public data() {
-    return this.props.item.item;
+    return this.props.item.item || this.props.item.stackedItems[0];
   }
 
   public onDragStart(e: DragEvent<ql.schema.Item, ItemComponentProps>) {
@@ -77,7 +77,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
 
   public onDragEnter(e: DragEvent<any, ItemComponentProps>) {
     this.setState(() => {
-      if (e.dataTransfer.gearSlots) {
+      if (e.dataTransfer && e.dataTransfer.gearSlots) {
         return {
           backgroundColor: 'rgba(186, 50, 50, 0.4)',
         };
@@ -101,7 +101,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
 
   public onDrop(e: DragEvent<any, ItemComponentProps>) {
     // FOR NOW, don't allow drop if drag item is an equipped item.
-    if (!e.dataTransfer.gearSlots) {
+    if (!e.dataTransfer || !e.dataTransfer.gearSlots) {
       this.props.onDrop(e.dataTransfer, this.props.item.item as any);
     }
   }
@@ -151,8 +151,8 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       id,
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
-      dropTarget: props.filtering ? false : true,
-      disableDrag: props.filtering,
+      dropTarget: item.slotType !== SlotType.CraftingItem && (props.filtering ? false : true),
+      disableDrag: props.filtering || item.slotType === SlotType.CraftingItem,
     };
   },
 )(ItemComponent);

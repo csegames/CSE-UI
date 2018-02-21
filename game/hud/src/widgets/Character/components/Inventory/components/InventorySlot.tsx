@@ -77,6 +77,7 @@ export interface CraftingSlotItemDef {
   quality?: number;
   itemCount?: number;
   item?: InventoryItemFragment;
+  disableDrop?: boolean;
 }
 
 export interface InventorySlotProps {
@@ -111,7 +112,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const custom = StyleSheet.create(this.props.styles || {});
 
     const usesContainer = item.slotType === SlotType.Container || item.slotType === SlotType.CraftingContainer;
-    const id = item.itemID;
+    const id = item.itemID || item.groupStackHashID;
 
     return id ? (
       <div className={css(ss.InventorySlot, custom.InventorySlot)}>
@@ -120,7 +121,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
-              item={item.item}
+              item={item.item || (item.stackedItems && item.stackedItems[0])}
               shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
               instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
@@ -129,7 +130,11 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           <ContextMenu
             onContextMenuContentShow={this.onContextMenuContentShow}
             onContextMenuContentHide={this.onContextMenuContentHide}
-            content={props => <ContextMenuContent item={item.item} contextMenuProps={props} />}
+            content={props =>
+              <ContextMenuContent
+                item={item.item || (item.stackedItems && item.stackedItems[0])} contextMenuProps={props}
+              />
+            }
           >
             <div
               className={css(ss.itemContainer, custom.itemContainer)}
@@ -150,7 +155,11 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       </div>
     ) :
       <div className={css(ss.itemContainer, custom.itemContainer)}>
-        <EmptyItemDropZone slotIndex={this.props.item.slotIndex} onDrop={this.props.onDropOnZone} />
+        <EmptyItemDropZone
+          disableDrop={this.props.item.disableDrop}
+          slotIndex={this.props.item.slotIndex}
+          onDrop={this.props.onDropOnZone}
+        />
       </div>;
   }
 

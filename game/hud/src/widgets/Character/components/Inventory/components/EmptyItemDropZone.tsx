@@ -20,6 +20,7 @@ const SlotOverlay = styled('div')`
 
 export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
   slotIndex: number;
+  disableDrop: boolean;
   onDrop: (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => void;
 }
 
@@ -36,20 +37,24 @@ class EmptyItemWrapper extends React.PureComponent<EmptyItemDropZoneProps> {
     return (
       <Container>
         <EmptyItem width={60} height={60} index={this.props.slotIndex} />
-        <SlotOverlay backgroundColor={this.props.dragItemIsOver ? 'rgba(46, 213, 80, 0.4)' : 'transparent'} />
+        <SlotOverlay
+          backgroundColor={!this.props.disableDrop && this.props.dragItemIsOver ? 'rgba(46, 213, 80, 0.4)' : 'transparent'}
+        />
       </Container>
     );
   }
 }
 
 const EmptyItemDropZone = dragAndDrop<EmptyItemProps & EmptyItemDropZoneProps>(
-  (props: EmptyItemProps & EmptyItemDropZoneProps) => ({
-    id: 'emptyDropZone',
-    dataKey: 'inventory-items',
-    scrollBodyId: 'inventory-scroll-container',
-    dropTarget: true,
-    disableDrag: true,
-  }),
+  (props: EmptyItemProps & EmptyItemDropZoneProps) => {
+    return {
+      id: 'emptyDropZone',
+      dataKey: 'inventory-items',
+      scrollBodyId: 'inventory-scroll-container',
+      dropTarget: props.disableDrop !== true,
+      disableDrag: true,
+    };
+  },
 )(EmptyItemWrapper);
 
 export default EmptyItemDropZone;

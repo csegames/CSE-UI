@@ -5,40 +5,44 @@
  */
 
 import * as React from 'react';
-
-import { ContextMenuContentProps, RaisedButton, events, ql } from 'camelot-unchained';
-
-import { StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
+import { ContextMenuContentProps, events, ql } from 'camelot-unchained';
 import eventNames from '../../../lib/eventNames';
 import { prettifyText } from '../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
-export interface ContextMenuContentStyle extends StyleDeclaration {
-  contextMenuButton: React.CSSProperties;
-}
+const Button = styled('div')`
+  background-color: gray;
+  color: white;
+  pointer-events: all;
+  border-bottom: 1px solid #222;
+  max-width: 300px;
+  padding: 5px;
+  cursor: pointer;
 
-export const defaultContextMenuContentStyle: ContextMenuContentStyle = {
-  contextMenuButton: {
-    borderBottom: '1px solid #222',
-    maxWidth: '300px',
-  },
-};
+  &:hover {
+    -webkit-filter: brightness(120%);
+    filter: brightness(120%);
+  }
+
+  &:active {
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.5);
+  }
+`;
 
 export interface ContextMenuContentCompProps {
-  styles?: Partial<ContextMenuContentStyle>;
   item: InventoryItemFragment;
   contextMenuProps: ContextMenuContentProps;
 }
 
 class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}> {
   public render() {
-    const { contextMenuButton } = defaultContextMenuContentStyle;
     return (
       <div>
         {this.renderGearSlotButtons()}
-        <RaisedButton styles={{ button: contextMenuButton }} onClick={this.onDropItem}>
+        <Button onClick={this.onDropItem}>
           Drop item
-        </RaisedButton>
+        </Button>
       </div>
     );
   }
@@ -46,12 +50,10 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   private renderGearSlotButtons = () => {
     const item = this.props.item;
     const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
-    const { contextMenuButton } = defaultContextMenuContentStyle;
     return gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
       return (
-        <RaisedButton
+        <Button
           key={i}
-          styles={{ button: contextMenuButton }}
           onClick={() => this.onEquipItem(gearSlotSet.gearSlots)}
           onMouseOver={() => this.onHighlightSlots(gearSlotSet.gearSlots)}
           onMouseLeave={this.onDehighlightSlots}>
@@ -63,7 +65,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
               return prettifyText(gearSlot.id);
             }
           })}
-        </RaisedButton>
+        </Button>
       );
     });
   }

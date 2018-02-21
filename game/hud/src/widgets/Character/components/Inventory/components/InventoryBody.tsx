@@ -234,6 +234,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
   private refetch = async () => {
     await this.props.graphql.refetch();
+    events.fire('refetch-character-info');
     const res: any = await this.props.graphql.client.query({
       operationName: 'InventoryBase',
       namedQuery: 'myInventory',

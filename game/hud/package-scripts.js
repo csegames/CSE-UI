@@ -84,6 +84,10 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      wyrmlingPrep: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       fledgling: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -124,6 +128,10 @@ module.exports = {
       },
       wyrmling: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      wyrmlingPrep: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       wolfhere: {
@@ -198,6 +206,10 @@ module.exports = {
       wyrmling: {
         script: 'nps build,clean.wyrmling,copy.wyrmling',
         description: 'Builds the module and copies to the Wyrmling (10) UI override directory',
+      },
+      wyrmlingPrep: {
+        script: 'nps build,clean.wyrmlingPrep,copy.wyrmlingPrep',
+        description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
       },
       fledgling: {
         script: 'nps build,clean.fledgling,copy.fledgling',

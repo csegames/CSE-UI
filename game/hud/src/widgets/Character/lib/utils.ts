@@ -6,7 +6,7 @@
 
 import * as _ from 'lodash';
 import { client, utils } from 'camelot-unchained';
-import { emptyStackHash, inventoryFilterButtons, nullVal } from './constants';
+import { inventoryFilterButtons, nullVal, emptyStackHash } from './constants';
 import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
@@ -108,7 +108,7 @@ export function getIcon(item: InventoryItemFragment) {
 }
 
 export function isStackedItem(item: InventoryItemFragment) {
-  return item.stats.item.unitCount > 1;
+  return item.stats.item.unitCount > 1 || item.stackHash !== emptyStackHash;
 }
 
 export function itemHasPosition(item: InventoryItemFragment) {
@@ -168,22 +168,13 @@ export function getItemInstanceID(item: InventoryItemFragment) {
   return item.id;
 }
 
-export function getItemMapID(item: InventoryItemFragment, data: {
-  stackHashToStackGroupID?: {[stackHash: string]: {position: number, stackGroupID: string}[]},
-  itemIDToStackGroupID?: {[id: string]: string};
-}) {
-
-  const stackHash = isCraftingItem(item) ? getItemDefinitionId(item) : item.stackHash;
-
-  if (stackHash === emptyStackHash) return item.id;
-
-  if (data.stackHashToStackGroupID) {
-    return data.stackHashToStackGroupID[stackHash] &&
-      data.stackHashToStackGroupID[stackHash][0].stackGroupID || stackHash;
-  }
-
-  if (data.itemIDToStackGroupID) {
-    return data.itemIDToStackGroupID[item.id];
+export function getItemMapID(item: InventoryItemFragment) {
+  if (isCraftingItem(item)) {
+    return item.staticDefinition.name + item.staticDefinition.id;
+  } else if (isStackedItem(item)) {
+    return item.staticDefinition.name + item.staticDefinition.id;
+  } else {
+    return item.id;
   }
 }
 

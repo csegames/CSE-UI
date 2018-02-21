@@ -69,21 +69,23 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
     return (
       <div className={css(ss.InventoryRow, custom.InventoryRow)}>
         <div className={css(ss.row, custom.row)}>
-          {this.props.items.map((slotDef, index) => (
-            <InventorySlot
-              key={index}
-              styles={{
-                InventorySlot: index === this.state.containerItemIndex ?
-                  defaultInventoryRowStyle.openContainerItemSlot : {},
-              }}
-              item={slotDef}
-              itemIndex={index}
-              filtering={this.props.filtering}
-              onToggleContainer={this.toggleContainer}
-              equippedItems={this.props.equippedItems}
-              onDropOnZone={this.props.onDropOnZone}
-            />
-          ))}
+          {this.props.items.map((slotDef, index) => {
+            return (
+              <InventorySlot
+                key={index}
+                styles={{
+                  InventorySlot: index === this.state.containerItemIndex ?
+                    defaultInventoryRowStyle.openContainerItemSlot : {},
+                }}
+                item={slotDef}
+                itemIndex={index}
+                filtering={this.props.filtering}
+                onToggleContainer={this.toggleContainer}
+                equippedItems={this.props.equippedItems}
+                onDropOnZone={this.props.onDropOnZone}
+              />
+            );
+          })}
         </div>
         {this.state.showContainer ? (
           <div className={css(ss.row, custom.row)}>
