@@ -8,18 +8,18 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql, events, client, Vec3F, Euler3f } from 'camelot-unchained';
+import { events, client, Vec3F, Euler3f } from 'camelot-unchained';
 import { withGraphQL } from 'camelot-unchained/lib/graphql/react';
 
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
 import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
-import queries from '../../../../../gqlDocuments';
 import {
   calcRowAndSlots,
   getDimensionsOfElement,
 } from '../../../lib/utils';
+import queries from '../../../../../gqlDocuments';
 
 export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBody: React.CSSProperties;
@@ -138,6 +138,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       this.props,
       { items: this.props.inventoryItems },
       this.onDropOnZone,
+      this.refetch,
+      this.bodyRef && getDimensionsOfElement(this.bodyRef).width,
     );
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
@@ -263,19 +265,29 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     if (!this.bodyRef) return;
     const itemCount =
       (props.graphql.data && props.graphql.data.myInventory && props.graphql.data.myInventory.itemCount) || 0;
-    this.heightOfBody = getDimensionsOfElement(this.bodyRef).height;
-    const rowsAndSlots = calcRowAndSlots(this.bodyRef, slotDimensions,
-      Math.max(InventoryBody.minSlots, itemCount));
+    const rowsAndSlots = calcRowAndSlots(
+      this.bodyRef.getBoundingClientRect(),
+      slotDimensions,
+      Math.max(InventoryBody.minSlots, itemCount),
+    );
+    const inventory = props.graphql.data && {
+      ...props.graphql.data.myInventory,
+      items: props.graphql.data.myInventory.items,
+    };
     return base.distributeItems(
       rowsAndSlots,
-      (props.graphql.data && props.graphql.data.myInventory),
+      inventory,
       state,
       props,
     );
   }
 
-  private onDropOnZone = (dragItemData: ql.schema.Item, dropZoneData: ql.schema.Item | number) => {
-    this.setState((state, props) => base.onMoveInventoryItem(dragItemData, dropZoneData, state, props));
+  private onDropOnZone = (dragItemData: base.InventoryDataTransfer,
+                          dropZoneData: base.InventoryDataTransfer) => {
+    // this function only gets called for inventory items, containers take care of their own state.
+    this.setState((state, props) => {
+      return base.onMoveInventoryItem(dragItemData, dropZoneData, state, props);
+    });
   }
 
   private addRowOfSlots = () => {

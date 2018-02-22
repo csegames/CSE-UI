@@ -1,12 +1,7 @@
 query PaperDollContainer {
   myEquippedItems {
     items {
-      gearSlots {
-        id
-      }
-      item {
-        ...InventoryItem
-      }
+      ...EquippedItem
     }
   }
   myCharacter {

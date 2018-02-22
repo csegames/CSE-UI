@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { ql } from 'camelot-unchained';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../gqlInterfaces';
 
 /*
   These are the events used throughout the Character widget. We use these to have a more responsive UI because
@@ -49,25 +48,25 @@ const eventNames = {
 };
 
 export interface OnHighlightSlots {
-  gearSlots: Partial<ql.schema.GearSlotDefRef>[];
+  gearSlots: GearSlotDefRefFragment[];
 }
 
 export interface UpdateInventoryItems {
-  equippedItem?: Partial<ql.schema.EquippedItem> & Partial<ql.schema.EquippedItem>[];
+  equippedItem?: EquippedItemFragment[] | EquippedItemFragment;
   inventoryItem?: InventoryItemFragment;
-  willEquipTo?: Partial<ql.schema.GearSlotDefRef>[];
+  willEquipTo?: GearSlotDefRefFragment[];
   type: 'Equip' | 'Unequip' | 'Drop';
 }
 
 export interface EquipItemCallback {
   inventoryItem: InventoryItemFragment;
-  willEquipTo: Partial<ql.schema.GearSlotDefRef>[];
-  prevEquippedItem?: Partial<ql.schema.EquippedItem>;
+  willEquipTo: GearSlotDefRefFragment[];
+  prevEquippedItem?: EquippedItemFragment;
 }
 
 export interface UnequipItemCallback {
   item: InventoryItemFragment;
-  gearSlots: Partial<ql.schema.GearSlotDefRef>[];
+  gearSlots: GearSlotDefRefFragment[];
   dontUpdateInventory?: boolean;
 }
 

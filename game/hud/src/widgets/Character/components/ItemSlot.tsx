@@ -10,6 +10,7 @@ import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from './TooltipContent';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { placeholderIcon } from '../lib/constants';
 
 export interface ItemStyles extends StyleDeclaration {
   ItemSlot: React.CSSProperties;
@@ -88,7 +89,6 @@ const ItemSlot = (props: ItemSlotProps) => {
     showTooltip,
     useFontIcon,
   } = props;
-  const placeholderIcon = 'http://camelot-unchained.s3.amazonaws.com/icons/components/120/stone-wall.jpg';
   return item ? (
     <Tooltip
       show={showTooltip}

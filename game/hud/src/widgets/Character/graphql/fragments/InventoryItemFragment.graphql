@@ -1,10 +1,12 @@
 fragment InventoryItem on Item {
   id
+  givenName
   stackHash
+  containerColor {
+    ...ContainerColor
+  }
   location {
-    inventory {
-      position
-    }
+    ...ItemLocation
   }
   stats {
     item {
@@ -41,5 +43,12 @@ fragment InventoryItem on Item {
         id
       }
     }
+    isVox
+  }
+  containerDrawers {
+    ...ContainerDrawers
+  }
+  permissibleHolder {
+    ...PermissibleHolder
   }
 }

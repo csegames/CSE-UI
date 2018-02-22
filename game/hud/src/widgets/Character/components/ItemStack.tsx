@@ -5,8 +5,9 @@
  */
 
 import * as React from 'react';
-
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import { placeholderIcon } from '../lib/constants';
+import { StandardSlot } from './Inventory/components/DraggableItemComponent';
 
 export interface ItemStackStyle extends StyleDeclaration {
   ItemStack: React.CSSProperties;
@@ -14,7 +15,6 @@ export interface ItemStackStyle extends StyleDeclaration {
   header: React.CSSProperties;
   footer: React.CSSProperties;
   text: React.CSSProperties;
-  itemIcon: React.CSSProperties;
 }
 
 export const defaultItemStackStyle: ItemStackStyle = {
@@ -86,16 +86,6 @@ export const defaultItemStackStyle: ItemStackStyle = {
     cursor: 'inherit',
     '-webkit-user-select': 'none',
   },
-
-  itemIcon: {
-    verticalAlign: 'baseline',
-    backgroundSize: 'cover',
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    overflow: 'hidden',
-    cursor: 'pointer',
-  },
 };
 
 export interface ItemStackProps {
@@ -118,9 +108,10 @@ export class ItemStack extends React.Component<ItemStackProps, ItemStackState> {
     const ss = StyleSheet.create(defaultItemStackStyle);
     const custom = StyleSheet.create(this.props.styles || {});
 
+    const slotIcon = this.props.icon || placeholderIcon;
     return (
       <div className={css(ss.ItemStack, custom.ItemStack)}>
-        <img className={css(ss.itemIcon, custom.itemIcon)} src={this.props.icon} />
+        <StandardSlot src={slotIcon} />
         <header className={css(ss.textContainer, custom.textContainer, ss.footer, custom.footer)}>
           <div className={css(ss.text, custom.text)}>{this.props.count}</div>
         </header>

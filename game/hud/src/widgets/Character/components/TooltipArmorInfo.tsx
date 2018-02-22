@@ -8,6 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { ql } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import { InventoryItemFragment } from '../../../gqlInterfaces';
 
 export interface TooltipArmorInfoStyles extends StyleDeclaration {
   armorInfo: React.CSSProperties;
@@ -48,7 +49,7 @@ export const defaultTooltipArmorInfoStyle: TooltipArmorInfoStyles = {
 
 export interface TooltipArmorInfoProps {
   styles?: Partial<TooltipArmorInfoStyles>;
-  item: ql.schema.Item;
+  item: InventoryItemFragment;
   slotName: string;
   gearSlots: ql.schema.GearSlotDefRef;
 }

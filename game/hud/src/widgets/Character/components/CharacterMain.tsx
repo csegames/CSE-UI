@@ -7,13 +7,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ql, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
+import { ContainerIdToDrawerInfo } from './Inventory/components/InventoryBase';
 import CharacterInfo from './CharacterInfo/CharacterInfo';
 import Inventory from './Inventory/Inventory';
 import PaperDoll from './PaperDoll/PaperDollContainer';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../gqlInterfaces';
 import { colors } from '../lib/constants';
 
 export interface CharacterMainStyle extends StyleDeclaration {
@@ -99,6 +100,7 @@ export const defaultCharacterMainStyle: CharacterMainStyle = {
     bottom: 0,
     right: 0,
     zIndex: 0,
+    background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent)',
   },
 };
 
@@ -110,7 +112,8 @@ export interface CharacterMainProps {
 
 export interface CharacterMainState {
   inventoryItems: InventoryItemFragment[];
-  equippedItems: ql.schema.EquippedItem[];
+  equippedItems: EquippedItemFragment[];
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
@@ -122,6 +125,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     this.state = {
       inventoryItems: null,
       equippedItems: null,
+      containerIdToDrawerInfo: null,
     };
   }
 
@@ -168,7 +172,7 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
           />
         </div>
         <div className={css(style.splitPanel, customStyle.splitPanel)}>
-          <img src={'images/inventorybg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
+          <img src={'images/inventory/bag_bg.png'} className={css(style.backgroundImg, customStyle.backgroundImg)} />
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
             defaultTabIndex={defaultTabIndex >= 0 ? defaultTabIndex : 0}
@@ -205,7 +209,9 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
       <Inventory
         inventoryItems={this.state.inventoryItems}
         equippedItems={this.state.equippedItems}
+        containerIdToDrawerInfo={this.state.containerIdToDrawerInfo}
         onChangeInventoryItems={this.onChangeInventoryItems}
+        onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
         visibleComponent={this.props.visibleComponent}
       />
     );
@@ -235,12 +241,16 @@ class CharacterMain extends React.Component<CharacterMainProps, CharacterMainSta
     events.fire('hudnav--navigate', name);
   }
 
-  private onChangeEquippedItems = (equippedItems: ql.schema.EquippedItem[]) => {
+  private onChangeEquippedItems = (equippedItems: EquippedItemFragment[]) => {
     this.setState({ equippedItems });
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
     this.setState({ inventoryItems });
+  }
+
+  private onChangeContainerIdToDrawerInfo = (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => {
+    this.setState({ containerIdToDrawerInfo });
   }
 }
 

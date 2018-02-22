@@ -7,13 +7,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql, bodyParts, client, events } from 'camelot-unchained';
+import { bodyParts, client, events } from 'camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
 
@@ -89,8 +89,8 @@ export interface PaperDollProps extends GraphQLInjectedProps<any> {
   styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: ql.schema.EquippedItem[];
-  onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
+  equippedItems: EquippedItemFragment[];
+  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
 }
 
 export interface PaperDollState {
@@ -144,7 +144,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     const graphqlData = this.props.graphql && this.props.graphql.data;
     const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
     if (!_.isEqual(nextGraphqlData && nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
-      this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items as ql.schema.EquippedItem[]);
+      this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
     }
   }
 

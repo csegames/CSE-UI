@@ -38,462 +38,525 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-damage-acid:before {
-  content: "\61";
-}
-.icon-damage-air:before {
-  content: "\62";
-}
-.icon-damage-arcane:before {
-  content: "\63";
-}
-.icon-damage-chaos:before {
-  content: "\64";
-}
-.icon-damage-crushing:before {
-  content: "\65";
-}
-.icon-damage-death:before {
-  content: "\66";
-}
-.icon-damage-disease:before {
-  content: "\67";
-}
-.icon-damage-earth:before {
-  content: "\68";
-}
-.icon-damage-fire:before {
-  content: "\69";
-}
-.icon-damage-frost:before {
-  content: "\6a";
-}
-.icon-damage-life:before {
-  content: "\6b";
-}
-.icon-damage-lightning:before {
-  content: "\6c";
-}
-.icon-damage-mind:before {
-  content: "\6d";
-}
-.icon-damage-physics-impact:before {
-  content: "\6e";
-}
-.icon-damage-piercing:before {
-  content: "\6f";
-}
-.icon-damage-poison:before {
-  content: "\70";
-}
-.icon-damage-radiant:before {
-  content: "\71";
-}
-.icon-damage-shadow:before {
-  content: "\72";
-}
-.icon-damage-slashing:before {
-  content: "\73";
-}
-.icon-damage-spirit:before {
-  content: "\74";
-}
-.icon-damage-system:before {
-  content: "\75";
-}
-.icon-damage-void:before {
-  content: "\76";
-}
-.icon-damage-water:before {
-  content: "\77";
-}
-.icon-filter-alloys:before {
-  content: "\78";
-}
-.icon-filter-armor:before {
-  content: "\79";
-}
-.icon-filter-arrow:before {
-  content: "\7a";
-}
-.icon-filter-axe:before {
-  content: "\41";
-}
-.icon-filter-bandages:before {
-  content: "\42";
-}
-.icon-filter-basalt-slab:before {
-  content: "\43";
-}
-.icon-filter-black-board:before {
-  content: "\44";
-}
-.icon-filter-black-log:before {
-  content: "\45";
-}
-.icon-filter-blocks:before {
-  content: "\46";
-}
-.icon-filter-bolt:before {
-  content: "\47";
-}
-.icon-filter-bow:before {
-  content: "\48";
-}
-.icon-filter-building:before {
-  content: "\49";
-}
-.icon-filter-cherry-board:before {
-  content: "\4a";
-}
-.icon-filter-cherry-log:before {
-  content: "\4b";
-}
-.icon-filter-cloths:before {
-  content: "\4c";
-}
-.icon-filter-cloths-raw:before {
-  content: "\4d";
-}
-.icon-filter-consumables:before {
-  content: "\4e";
-}
-.icon-filter-dagger:before {
-  content: "\4f";
-}
-.icon-filter-dark-board:before {
-  content: "\50";
-}
-.icon-filter-dark-log:before {
-  content: "\51";
-}
-.icon-filter-decor:before {
-  content: "\52";
-}
-.icon-filter-deployables:before {
-  content: "\53";
-}
-.icon-filter-focus:before {
-  content: "\54";
-}
-.icon-filter-food:before {
-  content: "\55";
-}
-.icon-filter-gneiss-slab:before {
-  content: "\56";
-}
-.icon-filter-granite-slab:before {
-  content: "\57";
-}
-.icon-filter-great-axe:before {
-  content: "\58";
-}
-.icon-filter-great-hammer:before {
-  content: "\59";
-}
-.icon-filter-great-mace:before {
-  content: "\5a";
-}
-.icon-filter-great-sword:before {
-  content: "\30";
-}
-.icon-filter-hammer:before {
-  content: "\31";
-}
-.icon-filter-hardmetal-bar:before {
-  content: "\32";
-}
-.icon-filter-heavy-back:before {
-  content: "\33";
-}
-.icon-filter-heavy-chest:before {
-  content: "\34";
-}
-.icon-filter-heavy-cloak:before {
-  content: "\35";
-}
 .icon-filter-heavy-face:before {
-  content: "\36";
-}
-.icon-filter-heavy-feet:before {
-  content: "\37";
-}
-.icon-filter-heavy-forearm:before {
-  content: "\38";
-}
-.icon-filter-heavy-hand:before {
-  content: "\39";
-}
-.icon-filter-heavy-neck:before {
-  content: "\21";
-}
-.icon-filter-heavy-shins:before {
-  content: "\22";
-}
-.icon-filter-heavy-shoulder:before {
-  content: "\23";
-}
-.icon-filter-heavy-skull:before {
-  content: "\24";
-}
-.icon-filter-heavy-thighs:before {
-  content: "\25";
-}
-.icon-filter-heavy-waist:before {
-  content: "\26";
-}
-.icon-filter-igneous-ore:before {
-  content: "\27";
-}
-.icon-filter-interactive:before {
-  content: "\28";
-}
-.icon-filter-leathers:before {
-  content: "\29";
-}
-.icon-filter-leathers-raw:before {
-  content: "\2a";
-}
-.icon-filter-light-back:before {
-  content: "\2b";
-}
-.icon-filter-light-board:before {
-  content: "\2c";
-}
-.icon-filter-light-chest:before {
-  content: "\2d";
-}
-.icon-filter-light-cloak:before {
-  content: "\2e";
-}
-.icon-filter-light-face:before {
-  content: "\2f";
-}
-.icon-filter-light-feet:before {
-  content: "\3a";
-}
-.icon-filter-light-forearm:before {
-  content: "\3b";
-}
-.icon-filter-light-hand:before {
-  content: "\3c";
-}
-.icon-filter-light-log:before {
-  content: "\3d";
-}
-.icon-filter-light-neck:before {
-  content: "\3e";
-}
-.icon-filter-light-shins:before {
-  content: "\3f";
-}
-.icon-filter-light-shoulder:before {
-  content: "\40";
-}
-.icon-filter-light-skull:before {
-  content: "\5b";
-}
-.icon-filter-light-thighs:before {
-  content: "\5d";
-}
-.icon-filter-light-waist:before {
-  content: "\5e";
-}
-.icon-filter-long-sword:before {
-  content: "\5f";
-}
-.icon-filter-mace:before {
-  content: "\60";
-}
-.icon-filter-marble-slab:before {
-  content: "\7b";
-}
-.icon-filter-medium-back:before {
-  content: "\7c";
-}
-.icon-filter-medium-chest:before {
-  content: "\7d";
-}
-.icon-filter-medium-cloak:before {
-  content: "\7e";
-}
-.icon-filter-medium-face:before {
-  content: "\5c";
-}
-.icon-filter-medium-feet:before {
   content: "\e000";
 }
-.icon-filter-medium-forearm:before {
+.icon-damage-acid:before {
   content: "\e001";
 }
-.icon-filter-medium-hand:before {
+.icon-damage-air:before {
   content: "\e002";
 }
-.icon-filter-medium-neck:before {
+.icon-damage-arcane:before {
   content: "\e003";
 }
-.icon-filter-medium-shins:before {
+.icon-damage-chaos:before {
   content: "\e004";
 }
-.icon-filter-medium-shoulder:before {
+.icon-damage-crushing:before {
   content: "\e005";
 }
-.icon-filter-medium-skull:before {
+.icon-damage-death:before {
   content: "\e006";
 }
-.icon-filter-medium-thighs:before {
+.icon-damage-disease:before {
   content: "\e007";
 }
-.icon-filter-medium-waist:before {
+.icon-damage-earth:before {
   content: "\e008";
 }
-.icon-filter-metal-bar:before {
+.icon-damage-fire:before {
   content: "\e009";
 }
-.icon-filter-metals:before {
+.icon-damage-frost:before {
   content: "\e00a";
 }
-.icon-filter-metals-raw:before {
+.icon-damage-life:before {
   content: "\e00b";
 }
-.icon-filter-metamorphic-ore:before {
+.icon-damage-lightning:before {
   content: "\e00c";
 }
-.icon-filter-munitions:before {
+.icon-damage-mind:before {
   content: "\e00d";
 }
-.icon-filter-outerlayer:before {
+.icon-damage-physics-impact:before {
   content: "\e00e";
 }
-.icon-filter-polearm:before {
+.icon-damage-piercing:before {
   content: "\e00f";
 }
-.icon-filter-potion:before {
+.icon-damage-poison:before {
   content: "\e010";
 }
-.icon-filter-quartzite-slab:before {
+.icon-damage-radiant:before {
   content: "\e011";
 }
-.icon-filter-reagents:before {
+.icon-damage-shadow:before {
   content: "\e012";
 }
-.icon-filter-sandstone-slab:before {
+.icon-damage-slashing:before {
   content: "\e013";
 }
-.icon-filter-sedimentary-ore:before {
+.icon-damage-spirit:before {
   content: "\e014";
 }
-.icon-filter-shield:before {
+.icon-damage-system:before {
   content: "\e015";
 }
-.icon-filter-siege:before {
+.icon-damage-void:before {
   content: "\e016";
 }
-.icon-filter-slate-slab:before {
+.icon-damage-water:before {
   content: "\e017";
 }
-.icon-filter-softmetal-bar:before {
+.icon-filter-alloys:before {
   content: "\e018";
 }
-.icon-filter-spear:before {
+.icon-filter-armor:before {
   content: "\e019";
 }
-.icon-filter-staff:before {
+.icon-filter-arrow:before {
   content: "\e01a";
 }
-.icon-filter-stones:before {
+.icon-filter-axe:before {
   content: "\e01b";
 }
-.icon-filter-stones-raw:before {
+.icon-filter-bandages:before {
   content: "\e01c";
 }
-.icon-filter-substances:before {
+.icon-filter-basalt-slab:before {
   content: "\e01d";
 }
-.icon-filter-sword:before {
+.icon-filter-black-board:before {
   content: "\e01e";
 }
-.icon-filter-thrown:before {
+.icon-filter-black-log:before {
   content: "\e01f";
 }
-.icon-filter-torch:before {
+.icon-filter-blocks:before {
   content: "\e020";
 }
-.icon-filter-trap:before {
+.icon-filter-bolt:before {
   content: "\e021";
 }
-.icon-filter-underlayer:before {
+.icon-filter-bow:before {
   content: "\e022";
 }
-.icon-filter-vial:before {
+.icon-filter-building:before {
   content: "\e023";
 }
-.icon-filter-weapons:before {
+.icon-filter-cherry-board:before {
   content: "\e024";
 }
-.icon-filter-woods:before {
+.icon-filter-cherry-log:before {
   content: "\e025";
 }
-.icon-filter-woods-raw:before {
+.icon-filter-cloths:before {
   content: "\e026";
 }
-.icon-health-arm:before {
+.icon-filter-cloths-raw:before {
   content: "\e027";
 }
-.icon-health-head:before {
+.icon-filter-consumables:before {
   content: "\e028";
 }
-.icon-health-leg:before {
+.icon-filter-dagger:before {
   content: "\e029";
 }
-.icon-health-torso:before {
+.icon-filter-dark-board:before {
   content: "\e02a";
 }
-.icon-slot-back:before {
+.icon-filter-dark-log:before {
   content: "\e02b";
 }
-.icon-slot-chest:before {
+.icon-filter-decor:before {
   content: "\e02c";
 }
-.icon-slot-cloak:before {
+.icon-filter-deployables:before {
   content: "\e02d";
 }
-.icon-slot-face:before {
+.icon-filter-focus:before {
   content: "\e02e";
 }
-.icon-slot-feet:before {
+.icon-filter-food:before {
   content: "\e02f";
 }
-.icon-slot-forearmleft:before {
+.icon-filter-gneiss-slab:before {
   content: "\e030";
 }
-.icon-slot-hand:before {
+.icon-filter-granite-slab:before {
   content: "\e031";
 }
-.icon-slot-neck:before {
+.icon-filter-great-axe:before {
   content: "\e032";
 }
-.icon-slot-shin:before {
+.icon-filter-great-hammer:before {
   content: "\e033";
 }
-.icon-slot-shoulder:before {
+.icon-filter-great-mace:before {
   content: "\e034";
 }
-.icon-slot-skull:before {
+.icon-filter-great-sword:before {
   content: "\e035";
 }
-.icon-slot-thighs:before {
+.icon-filter-hammer:before {
   content: "\e036";
 }
-.icon-slot-waist:before {
+.icon-filter-hardmetal-bar:before {
   content: "\e037";
 }
-.icon-ui-bag:before {
+.icon-filter-heavy-back:before {
   content: "\e038";
 }
-.icon-ui-gold:before {
+.icon-filter-heavy-chest:before {
   content: "\e039";
 }
-.icon-ui-weight:before {
+.icon-filter-heavy-cloak:before {
   content: "\e03a";
+}
+.icon-filter-heavy-feet:before {
+  content: "\e03b";
+}
+.icon-filter-heavy-forearm:before {
+  content: "\e03c";
+}
+.icon-filter-heavy-hand:before {
+  content: "\e03d";
+}
+.icon-filter-heavy-neck:before {
+  content: "\e03e";
+}
+.icon-filter-heavy-shins:before {
+  content: "\e03f";
+}
+.icon-filter-heavy-shoulder:before {
+  content: "\e040";
+}
+.icon-filter-heavy-skull:before {
+  content: "\e041";
+}
+.icon-filter-heavy-thighs:before {
+  content: "\e042";
+}
+.icon-filter-heavy-waist:before {
+  content: "\e043";
+}
+.icon-filter-igneous-ore:before {
+  content: "\e044";
+}
+.icon-filter-interactive:before {
+  content: "\e045";
+}
+.icon-filter-leathers:before {
+  content: "\e046";
+}
+.icon-filter-leathers-raw:before {
+  content: "\e047";
+}
+.icon-filter-light-back:before {
+  content: "\e048";
+}
+.icon-filter-light-board:before {
+  content: "\e049";
+}
+.icon-filter-light-chest:before {
+  content: "\e04a";
+}
+.icon-filter-light-cloak:before {
+  content: "\e04b";
+}
+.icon-filter-light-face:before {
+  content: "\e04c";
+}
+.icon-filter-light-feet:before {
+  content: "\e04d";
+}
+.icon-filter-light-forearm:before {
+  content: "\e04e";
+}
+.icon-filter-light-hand:before {
+  content: "\e04f";
+}
+.icon-filter-light-log:before {
+  content: "\e050";
+}
+.icon-filter-light-neck:before {
+  content: "\e051";
+}
+.icon-filter-light-shins:before {
+  content: "\e052";
+}
+.icon-filter-light-shoulder:before {
+  content: "\e053";
+}
+.icon-filter-light-skull:before {
+  content: "\e054";
+}
+.icon-filter-light-thighs:before {
+  content: "\e055";
+}
+.icon-filter-light-waist:before {
+  content: "\e056";
+}
+.icon-filter-long-sword:before {
+  content: "\e057";
+}
+.icon-filter-mace:before {
+  content: "\e058";
+}
+.icon-filter-marble-slab:before {
+  content: "\e059";
+}
+.icon-filter-medium-back:before {
+  content: "\e05a";
+}
+.icon-filter-medium-chest:before {
+  content: "\e05b";
+}
+.icon-filter-medium-cloak:before {
+  content: "\e05c";
+}
+.icon-filter-medium-face:before {
+  content: "\e05d";
+}
+.icon-filter-medium-feet:before {
+  content: "\e05e";
+}
+.icon-filter-medium-forearm:before {
+  content: "\e05f";
+}
+.icon-filter-medium-hand:before {
+  content: "\e060";
+}
+.icon-filter-medium-neck:before {
+  content: "\e061";
+}
+.icon-filter-medium-shins:before {
+  content: "\e062";
+}
+.icon-filter-medium-shoulder:before {
+  content: "\e063";
+}
+.icon-filter-medium-skull:before {
+  content: "\e064";
+}
+.icon-filter-medium-thighs:before {
+  content: "\e065";
+}
+.icon-filter-medium-waist:before {
+  content: "\e066";
+}
+.icon-filter-metal-bar:before {
+  content: "\e067";
+}
+.icon-filter-metals:before {
+  content: "\e068";
+}
+.icon-filter-metals-raw:before {
+  content: "\e069";
+}
+.icon-filter-metamorphic-ore:before {
+  content: "\e06a";
+}
+.icon-filter-munitions:before {
+  content: "\e06b";
+}
+.icon-filter-outerlayer:before {
+  content: "\e06c";
+}
+.icon-filter-polearm:before {
+  content: "\e06d";
+}
+.icon-filter-potion:before {
+  content: "\e06e";
+}
+.icon-filter-quartzite-slab:before {
+  content: "\e06f";
+}
+.icon-filter-reagents:before {
+  content: "\e070";
+}
+.icon-filter-sandstone-slab:before {
+  content: "\e071";
+}
+.icon-filter-sedimentary-ore:before {
+  content: "\e072";
+}
+.icon-filter-shield:before {
+  content: "\e073";
+}
+.icon-filter-siege:before {
+  content: "\e074";
+}
+.icon-filter-slate-slab:before {
+  content: "\e075";
+}
+.icon-filter-softmetal-bar:before {
+  content: "\e076";
+}
+.icon-filter-spear:before {
+  content: "\e077";
+}
+.icon-filter-staff:before {
+  content: "\e078";
+}
+.icon-filter-stones:before {
+  content: "\e079";
+}
+.icon-filter-stones-raw:before {
+  content: "\e07a";
+}
+.icon-filter-substances:before {
+  content: "\e07b";
+}
+.icon-filter-sword:before {
+  content: "\e07c";
+}
+.icon-filter-thrown:before {
+  content: "\e07d";
+}
+.icon-filter-torch:before {
+  content: "\e07e";
+}
+.icon-filter-trap:before {
+  content: "\e07f";
+}
+.icon-filter-underlayer:before {
+  content: "\e080";
+}
+.icon-filter-vial:before {
+  content: "\e081";
+}
+.icon-filter-weapons:before {
+  content: "\e082";
+}
+.icon-filter-woods:before {
+  content: "\e083";
+}
+.icon-filter-woods-raw:before {
+  content: "\e084";
+}
+.icon-health-arm:before {
+  content: "\e085";
+}
+.icon-health-head:before {
+  content: "\e086";
+}
+.icon-health-leg:before {
+  content: "\e087";
+}
+.icon-health-torso:before {
+  content: "\e088";
+}
+.icon-slot-back:before {
+  content: "\e089";
+}
+.icon-slot-chest:before {
+  content: "\e08a";
+}
+.icon-slot-cloak:before {
+  content: "\e08b";
+}
+.icon-slot-face:before {
+  content: "\e08c";
+}
+.icon-slot-feet:before {
+  content: "\e08d";
+}
+.icon-slot-forearmleft:before {
+  content: "\e08e";
+}
+.icon-slot-hand:before {
+  content: "\e08f";
+}
+.icon-slot-neck:before {
+  content: "\e090";
+}
+.icon-slot-shin:before {
+  content: "\e091";
+}
+.icon-slot-shoulder:before {
+  content: "\e092";
+}
+.icon-slot-skull:before {
+  content: "\e093";
+}
+.icon-slot-thighs:before {
+  content: "\e094";
+}
+.icon-slot-waist:before {
+  content: "\e095";
+}
+.icon-ui-bag:before {
+  content: "\e096";
+}
+.icon-ui-gold:before {
+  content: "\e097";
+}
+.icon-ui-weight:before {
+  content: "\e098";
+}
+.icon-alt:before {
+  content: "\e099";
+}
+.icon-ctrl:before {
+  content: "\e09a";
+}
+.icon-mouse1:before {
+  content: "\e09b";
+}
+.icon-mouse2:before {
+  content: "\e09c";
+}
+.icon-mouse3:before {
+  content: "\e09d";
+}
+.icon-mouse4:before {
+  content: "\e09e";
+}
+.icon-mouse5:before {
+  content: "\e09f";
+}
+.icon-shift:before {
+  content: "\e0a0";
+}
+.icon-space:before {
+  content: "\e0a1";
+}
+.icon-rank-1:before {
+  content: "\e0a2";
+}
+.icon-rank-2:before {
+  content: "\e0a3";
+}
+.icon-rank-3:before {
+  content: "\e0a4";
+}
+.icon-rank-4:before {
+  content: "\e0a5";
+}
+.icon-rank-5:before {
+  content: "\e0a6";
+}
+.icon-rank-6:before {
+  content: "\e0a7";
+}
+.icon-rank-7:before {
+  content: "\e0a8";
+}
+.icon-rank-8:before {
+  content: "\e0a9";
+}
+.icon-rank-9:before {
+  content: "\e0aa";
+}
+.icon-rank-10:before {
+  content: "\e0ab";
+}
+.icon-permissions-drop-in:before {
+  content: "\e0ac";
+}
+.icon-permissions-pick-up:before {
+  content: "\e0ad";
 }

@@ -1,0 +1,4 @@
+fragment ContainerStats on ContainerDefStat_Single {
+  maxItemCount
+  maxItemMass
+}

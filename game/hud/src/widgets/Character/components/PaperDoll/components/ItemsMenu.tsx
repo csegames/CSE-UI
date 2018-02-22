@@ -11,7 +11,7 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import { InventoryState } from '../../../services/session/inventoryState';
 // import ItemsMenuBox from './ItemsMenuBox';
-import { ql } from 'camelot-unchained';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface ItemsMenuStyles extends StyleDeclaration {
   itemsMenu: React.CSSProperties;
@@ -104,13 +104,13 @@ export interface ItemsMenuProps {
   openingSide: string;
   onMouseEnter: (e: any) => void;
   onMouseLeave: (e: any) => void;
-  equippedItem: ql.schema.EquippedItem;
+  equippedItem: EquippedItemFragment;
 }
 
 export interface ItemsMenuState {
   top: number;
   left: number;
-  validItems: Partial<ql.schema.Item>[];
+  validItems: InventoryItemFragment[];
 }
 
 class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
@@ -168,7 +168,7 @@ class ItemsMenu extends React.Component<ItemsMenuProps, ItemsMenuState> {
 
   private initializeValidItems = (itemSlots = this.props.inventoryState.itemSlots) => {
     const { slotName } = this.props;
-    const validItems: Partial<ql.schema.Item>[] = [];
+    const validItems: InventoryItemFragment[] = [];
     if (itemSlots) {
       itemSlots.forEach((inventoryItem) => {
         const itemInfo = inventoryItem.item && inventoryItem.item.staticDefinition;

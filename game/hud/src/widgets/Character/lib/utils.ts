@@ -5,19 +5,52 @@
  */
 
 import * as _ from 'lodash';
-import { client, utils, Vec3F, Euler3f } from 'camelot-unchained';
-import { inventoryFilterButtons, nullVal, emptyStackHash } from './constants';
-import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
+import { ql, client, utils, Vec3F, Euler3f, ItemPermissions } from 'camelot-unchained';
+import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
+import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
+import { SlotNumberToItem, InventoryDataTransfer } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import {
+  InventoryItemFragment,
+  ContainerDrawersFragment,
+  GearSlotDefRefFragment,
+  ContainedItemsFragment,
+} from '../../../gqlInterfaces';
+
+declare const toastr: any;
+
+export interface InventoryBodyDimensions {
+  width: number;
+  height: number;
+}
 
 export const prettifyText = (slotName: string) => {
   if (slotName) return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
 };
 
-export function calcRowAndSlots(div: HTMLElement, slotDimensions: number, minSlots: number, gutterSize: number = 65) {
-  const slotsPerRow = calcSlotsPerRow(div, slotDimensions, gutterSize);
-  const slotCountAndRows = calcRows(div, slotDimensions, minSlots, slotsPerRow);
+export function calcRowsForContainer(bodyDimensions: InventoryBodyDimensions,
+                                      slotDimensions: number,
+                                      containerSlots: ContainedItemsFragment[],
+                                      gutterSize: number = 65) {
+  const lastItem = _.sortBy(containerSlots, (a) => a.location.inContainer.position)[containerSlots.length - 1];
+  const lastItemSlotPos = lastItem ? lastItem.location.inContainer.position : 0;
+  const slotsPerRow = calcSlotsPerRow(bodyDimensions, slotDimensions, gutterSize);
+  const rowCount = lastItemSlotPos + 1 > slotsPerRow ? Math.ceil((lastItemSlotPos + 1) / slotsPerRow) : 1;
+  const slotCount = Math.max(slotsPerRow, lastItemSlotPos + 1);
+
+  return {
+    rowCount,
+    slotCount,
+    slotsPerRow,
+  }
+}
+
+export function calcRowAndSlots(bodyDimensions: InventoryBodyDimensions,
+                                slotDimensions: number,
+                                minSlots: number,
+                                gutterSize: number = 65) {
+  const slotsPerRow = calcSlotsPerRow(bodyDimensions, slotDimensions, gutterSize);
+  const slotCountAndRows = calcRows(bodyDimensions, slotDimensions, minSlots, slotsPerRow);
   return {
     slotsPerRow,
     ...slotCountAndRows,
@@ -34,16 +67,19 @@ export function searchIncludesSection(searchValue: string, sectionTitle: string)
   return false;
 }
 
-export function calcSlotsPerRow(div: HTMLElement, slotDimensions: number, gutterSize: number = 65) {
+export function calcSlotsPerRow(bodyDimensions: InventoryBodyDimensions, slotDimensions: number, gutterSize: number = 65) {
   return Math.floor(
-    (div.getBoundingClientRect().width - gutterSize) /* gutters & scrollbar */
+    (bodyDimensions.width - gutterSize) /* gutters & scrollbar */
     /
     (slotDimensions + 4), /* slot width / height */
   );
 }
 
-export function calcRows(div: HTMLElement, slotDimensions: number, minSlots: number, slotsPerRow: number) {
-  const { height } = div.getBoundingClientRect();
+export function calcRows(bodyDimensions: InventoryBodyDimensions,
+                          slotDimensions: number,
+                          minSlots: number,
+                          slotsPerRow: number) {
+  const { height } = bodyDimensions;
   const minRows = Math.ceil(height / (slotDimensions + 4));
   // how many slots do we need to fit in rows
   const slotsToFit = Math.max(minSlots, minRows * slotsPerRow);
@@ -59,7 +95,9 @@ export function calcRows(div: HTMLElement, slotDimensions: number, minSlots: num
 }
 
 export function getDimensionsOfElement(div: HTMLElement) {
-  return div.getBoundingClientRect();
+  if (div) {
+    return div.getBoundingClientRect();
+  }
 }
 
 export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment,
@@ -89,8 +127,7 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment
   }
 }
 
-export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment,
-    position: number): any {
+export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment, position: number): any {
   return {
     moveItemID: item.id,
     stackHash: item.stackHash,
@@ -116,7 +153,70 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
   };
 }
 
+export function createMoveItemRequestToContainerPosition(oldPosition: InventoryDataTransfer,
+                                                          newPosition: InventoryDataTransfer): any {
+  const oldItem = oldPosition.item;
+  const newPosContainerID = newPosition.containerID ?
+    newPosition.containerID[newPosition.containerID.length - 1] : newPosition.containerID;
+  const oldPosContainerID = oldPosition.containerID ?
+    oldPosition.containerID[oldPosition.containerID.length - 1] : oldPosition.containerID;
+
+  return {
+    moveItemID: oldItem.id,
+    stackHash: oldItem.stackHash,
+    unitCount: -1,
+    to: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: newPosition.position,
+      containerID: newPosContainerID,
+      drawerID: newPosition.drawerID,
+      gearSlotIDs: [],
+      location: newPosition.containerID ? 'Container' : 'Inventory',
+      voxSlot: 'Invalid',
+    },
+    from: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: oldItem.location.inContainer ? oldItem.location.inContainer.position : oldItem.location.inventory.position,
+      containerID: oldPosContainerID,
+      drawerID: oldPosition.drawerID,
+      gearSlotIDs: [],
+      location: oldPosition.containerID ? 'Container' : 'Inventory',
+      voxSlot: 'Invalid',
+    },
+  };
+}
+
+export function getInventoryDataTransfer(payload: {
+  item: InventoryItemFragment,
+  position: number,
+  location: string,
+  containerID?: string[],
+  drawerID?: string;
+  gearSlots?: GearSlotDefRefFragment[],
+}): InventoryDataTransfer {
+  if (!payload) {
+    return null;
+  }
+
+  // A drag object will only have gearSlots attribute if it is currently equipped
+  const { item, containerID, drawerID, gearSlots, position, location } = payload;
+
+  return {
+    containerID,
+    drawerID,
+    gearSlots,
+    item,
+    position,
+    location,
+  };
+}
+
 export function isCraftingItem(item: InventoryItemFragment) {
+  if (!item) {
+    return false;
+  }
   if (item.staticDefinition) {
     switch (item.staticDefinition.itemType) {
       case 'Substance': return true;
@@ -124,6 +224,32 @@ export function isCraftingItem(item: InventoryItemFragment) {
       default: return false;
     }
   }
+  console.error('You provided an item to isCraftingItem() function that has staticDefinion of null');
+  console.log(item);
+}
+
+export function isStackedItem(item: InventoryItemFragment) {
+  if (item && item.stats) {
+    return item.stats.item.unitCount > 1 || item.stackHash !== emptyStackHash;
+  }
+
+  console.log('You provided an item to isStackedItem() function that has stats of null');
+  console.log(item);
+  return false;
+}
+
+export function isContainerItem(item: InventoryItemFragment) {
+  if (!item || !item.containerDrawers) {
+    return false;
+  }
+  return _.isArray(item.containerDrawers);
+}
+
+export function isVoxItem(item: InventoryItemFragment) {
+  if (!item) {
+    return false;
+  }
+  return item.staticDefinition.isVox;
 }
 
 export function getIcon(item: InventoryItemFragment) {
@@ -132,10 +258,6 @@ export function getIcon(item: InventoryItemFragment) {
   }
   console.error('You provided an item to getIcon() function that has staticDefinition of null');
   console.log(item);
-}
-
-export function isStackedItem(item: InventoryItemFragment) {
-  return item.stats.item.unitCount > 1 || item.stackHash !== emptyStackHash;
 }
 
 export function itemHasPosition(item: InventoryItemFragment) {
@@ -151,14 +273,14 @@ export function getItemUnitCount(item: InventoryItemFragment) {
 
 export function getItemMass(item: InventoryItemFragment) {
   if (item && item.stats && item.stats.item && item.stats.item.totalMass) {
-    return Number(item.stats.item.totalMass.toFixed(2));
+    return item.stats.item.totalMass;
   }
   return -1;
 }
 
 export function getItemQuality(item: InventoryItemFragment) {
   if (item && item.stats && item.stats.item && item.stats.item.quality) {
-    return Number((item.stats.item.quality * 100).toFixed(2));
+    return Number((item.stats.item.quality * 100));
   }
   return -1;
 }
@@ -208,6 +330,15 @@ export function getItemMapID(item: InventoryItemFragment) {
   console.error('You provided an item to getItemMapID() function that has staticDefinition of null');
 }
 
+export function getContainerID(item: InventoryItemFragment) {
+  if (_.isArray(item.containerDrawers)) {
+    // Is an actual container
+    return item.id;
+  } else {
+    console.error(`${item.id} requested a containerID with getContainerID and is not a container!`);
+  }
+}
+
 export function firstAvailableSlot(startWith: number, slotNumberToItem: SlotNumberToItem) {
   let slotNumber = startWith;
   while (true) {
@@ -250,6 +381,99 @@ export function shouldShowItem(item: InventoryItemFragment, activeFilters: Activ
     return doesSearchValueIncludeItem;
 
     // If there are no filters or searchValue, every item should be shown.
+  } else {
+    return true;
+  }
+}
+
+export function getContainerColor(item: InventoryItemFragment, alpha?: number) {
+  if (item && item.containerColor) {
+    const { containerColor } = item;
+    if (containerColor) {
+      return `rgba(${containerColor.r}, ${containerColor.g}, ${containerColor.b}, ${alpha || 1})`;
+    } else {
+      return utils.lightenColor(colors.filterBackgroundColor, 5);
+    }
+  }
+
+  console.error('You provided an undefined item to getContainerColor() function');
+}
+
+export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
+                                        dropDataTransfer: InventoryDataTransfer,
+                                        dropContainerID: string[],
+                                        containerPermissions: number,
+                                        drawerMaxStats: ql.schema.ContainerDefStat_Single,
+                                        drawerCurrentStats: DrawerCurrentStats,
+                                        showToasts: boolean) {
+  if (!dropContainerID) {
+    return true;
+  }
+  // Dropping inside a container
+  const dragContainerDrawers: ContainerDrawersFragment[] = dragDataTransfer.item.containerDrawers;
+
+  // Go through container drawers to see if double nesting a container
+  const doubleNestingContainer = dragContainerDrawers && dropContainerID.length > 1;
+
+  const puttingInSelf = dragDataTransfer.item.id === dropContainerID[dropContainerID.length - 1];
+
+  // Go through drawers to see if the drag container already contains containers in it
+  const hasContainersAlready = _.find(dragContainerDrawers, drawer =>
+    _.findIndex(drawer.containedItems, _item =>
+      _item.containerDrawers && _item.containerDrawers.length > 0) !== -1);
+
+  // TODO: allow equipped items to be moved into a container, for now dont. I'll make it a task -AJ
+  const isAnEquippedItem = dragDataTransfer.gearSlots;
+
+  // Does user have Container Permissions (Add, Remove, See)
+  const userMeetsPermissions = !containerPermissions || containerPermissions & ItemPermissions.AddContents;
+
+  // Check if drop item would exceed max Drawer Stats (maxItemCount, maxMass)
+  const meetsUnitCountStat = drawerMaxStats.maxItemCount === -1 ||
+    (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
+    (dropDataTransfer.item ? (drawerCurrentStats.totalUnitCount - dropDataTransfer.item.stats.item.unitCount +
+      dragDataTransfer.item.stats.item.unitCount) <= drawerMaxStats.maxItemCount :
+      drawerCurrentStats.totalUnitCount + dragDataTransfer.item.stats.item.unitCount <= drawerMaxStats.maxItemCount) : true);
+
+  const meetsMassStat = drawerMaxStats.maxItemMass === -1 ||
+    (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
+    (dropDataTransfer.item ? (drawerCurrentStats.weight - dropDataTransfer.item.stats.item.totalMass +
+      dragDataTransfer.item.stats.item.totalMass) <= drawerMaxStats.maxItemMass :
+      drawerCurrentStats.weight + dragDataTransfer.item.stats.item.totalMass <= drawerMaxStats.maxItemMass) : true);
+
+  const canPutInContainer = !doubleNestingContainer && !puttingInSelf && !hasContainersAlready &&
+    !isAnEquippedItem && userMeetsPermissions && meetsUnitCountStat && meetsMassStat;
+
+  if (!canPutInContainer) {
+    // Can NOT put in container
+    if (showToasts) {
+      if (isAnEquippedItem) {
+        toastr.error('Try moving the equipped item to the inventory first', 'Try this', { timeout: 3000 });
+      }
+
+      if (doubleNestingContainer) {
+        toastr.error('A container can only be nested one level', 'Darn!', { timeout: 3000 });
+      }
+
+      if (puttingInSelf) {
+        toastr.error('You can\'t put a container inside of itself', 'Silly!', { timeout: 3000 });
+      }
+
+      if (!puttingInSelf && hasContainersAlready) {
+        toastr.error(`${dragDataTransfer.item.givenName ||
+          dragDataTransfer.item.staticDefinition.name} already contains a container inside.`, 'Darn!', { timeout: 3000 });
+      }
+
+      if (!meetsUnitCountStat) {
+        toastr.error('You have reached the max amount of items in this drawer', 'You can\'t do that', { timeout: 3000 });
+      }
+
+      if (!meetsMassStat) {
+        toastr.error('You have reached the max amount of mass in this drawer', 'You can\'t do that', { timeout: 3000 })
+      }
+    }
+
+    return false;
   } else {
     return true;
   }

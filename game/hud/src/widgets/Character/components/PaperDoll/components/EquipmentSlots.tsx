@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, ql, events } from 'camelot-unchained';
+import { ContentItem, TabItem, TabPanel, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';
@@ -18,7 +18,7 @@ import eventNames, {
   UnequipItemCallback,
   UpdateInventoryItems,
 } from '../../../lib/eventNames';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquipmentSlotsStyles extends StyleDeclaration {
   equipmentSlots: React.CSSProperties;
@@ -151,8 +151,8 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
 
 export interface EquipmentSlotsProps {
   styles?: Partial<EquipmentSlotsStyles>;
-  equippedItems: ql.schema.EquippedItem[];
-  onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
+  equippedItems: EquippedItemFragment[];
+  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
   inventoryItems: InventoryItemFragment[];
 }
 
@@ -287,7 +287,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       });
     }));
     const newItem = { item: inventoryItem, gearSlots: willEquipTo };
-    this.props.onEquippedItemsChange(filteredItems.concat(newItem as ql.schema.EquippedItem));
+    this.props.onEquippedItemsChange(filteredItems.concat(newItem as any));
 
     const prevEquippedItem = _.filter(equippedItems, equippedItem =>
       _.findIndex(equippedItem.gearSlots, gearSlot => _.find(willEquipTo, slot => slot.id === gearSlot.id)) > -1);

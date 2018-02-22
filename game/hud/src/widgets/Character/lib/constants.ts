@@ -13,6 +13,8 @@ export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.
 export const nullVal = '0000000000000000000000';
 
+export const placeholderIcon = 'images/unknown-item.jpg';
+
 export const colors = {
   filterOn: '#c0f6d4',
   filterBackgroundColor: '#372F2D',
