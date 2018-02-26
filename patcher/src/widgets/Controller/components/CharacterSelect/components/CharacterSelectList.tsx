@@ -71,7 +71,7 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
         <MinimizeAll
           onClick={this.state.minimized ? this.onMaximizeAllClick : this.onMinimizeAllClick}
           visible={this.props.charSelectVisible}>
-            <ArrowIcon className={this.state.minimized ? 'fa fa-arrow-down' : 'fa fa-arrow-up'}></ArrowIcon>
+            <ArrowIcon className={this.state.minimized ? 'fa fa-arrow-to-bottom' : 'fa fa-arrow-to-top'}></ArrowIcon>
             {this.state.minimized ? 'Maximize All' : 'Minimize All'}
         </MinimizeAll>
         {this.state.serverForOptions &&

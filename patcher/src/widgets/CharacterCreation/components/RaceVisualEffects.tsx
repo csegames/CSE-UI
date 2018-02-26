@@ -107,9 +107,9 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
 
     const tddHumanLayerInfo = [
       { id: 'bg', extraClass: 'tdd-human', resistance: 70 },
-      { id: 'layer3', extraClass: 'tdd-human', resistance: 80 },
+      { id: 'layer2', extraClass: 'tdd-human', resistance: 80 },
       { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
-      { id: 'layer2', extraClass: 'tdd-human', resistance: 100 },
+      { id: 'layer1', extraClass: 'tdd-human', resistance: 100 },
       { id: 'ray1', extraClass: 'tdd', resistance: 40 },
       { id: 'ray2', extraClass: 'tdd', resistance: -15 },
       { id: 'ray3', extraClass: 'tdd', resistance: -60 },

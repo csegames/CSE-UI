@@ -145,9 +145,6 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
   }
 
   public componentWillReceiveProps(nextProps: CharacterListProps) {
-    if (this.props.collapsed !== nextProps.collapsed) {
-      console.log(nextProps.collapsed);
-    }
     if (this.props.server.shardID !== nextProps.server.shardID) {
       this.setState({ initialHeight: null });
       setTimeout(() => {
