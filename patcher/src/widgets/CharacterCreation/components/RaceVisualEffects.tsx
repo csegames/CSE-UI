@@ -56,7 +56,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
       { id: 'char', extraClass: `standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
         resistance: 150, hidden: hideCharImg },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
-    ]
+    ];
     
     const vikingLayerInfo = [
       { id: 'bg', extraClass: 'viking', resistance: 120 },

@@ -48,7 +48,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
       { id: 'veil', extraClass: 'arthurian', resistance: 10 },
       { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
-    ]
+    ];
     
     const vikingLayerInfo = [
       { id: 'bg', extraClass: 'viking', resistance: 120 },
@@ -97,7 +97,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
       { id: 'ray2', extraClass: 'tdd', resistance: -15 },
       { id: 'ray3', extraClass: 'tdd', resistance: -60 },
       { id: 'veil', extraClass: 'tdd-human', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd', resistance: 10 }
+      { id: 'veil2', extraClass: 'tdd', resistance: 10 },
     ];
 
     let layerInfo;
