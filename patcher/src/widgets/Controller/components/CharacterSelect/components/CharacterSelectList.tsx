@@ -65,7 +65,9 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
   public render() {
     // Put selected server at top
     const { servers, selectedServer } = this.props;
-    const sortedServers = _.sortBy(servers, server => server.shardID === selectedServer.shardID ? -1 : 0);
+    const sortedServers = selectedServer ?
+      _.sortBy(servers, server => server.shardID === selectedServer.shardID ? -1 : 0) : _.values(servers);
+
     return (
       <div>
         <MinimizeAll
