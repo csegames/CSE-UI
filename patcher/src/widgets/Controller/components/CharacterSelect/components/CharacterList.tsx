@@ -93,7 +93,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
               transition: '0.5s ease',
             },
             CollapsingList: {
-              paddingTop: 15,
+              marginTop: 15,
             },
           } : {
             body: {

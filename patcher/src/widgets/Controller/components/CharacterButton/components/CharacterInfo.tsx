@@ -319,7 +319,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
   }
 
   private onMouseLeave = () => {
-    this.onMouseLeaveTimeout = setTimeout(() => this.props.onCharacterInfoClose(), 300);
+    this.onMouseLeaveTimeout = setTimeout(() => this.props.onCharacterInfoClose(), 10);
   }
 }
 
