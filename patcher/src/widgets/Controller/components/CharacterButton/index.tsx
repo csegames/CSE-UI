@@ -140,7 +140,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     const { selectedServer, character, characters } = props;
     const serverCharacters: webAPI.SimpleCharacter[] = [];
 
-    if (!selectedServer.shardID) {
+    if (!selectedServer || !selectedServer.shardID) {
       this.props.selectCharacter(null);
       return;
     }
