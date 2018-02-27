@@ -38,3 +38,4 @@ export * from './HelpInfo';
 export * from './Animate';
 export * from './LoadingContainer';
 export * from './CollapsingList';
+export * from './ErrorBoundary';

@@ -11,6 +11,7 @@ import { client, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import DragStore from '../DragAndDrop/DragStore';
 // import { graphql } from 'react-apollo';
+import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
 
 import {
   LayoutState,
@@ -169,44 +170,50 @@ class HUD extends React.Component<HUDProps, HUDState> {
     if (typeof props === 'function') {
       props = props();
     }
-    return <HUDDrag name={type}
-      key={widget.position.zOrder}
-      defaultHeight={widget.position.size.height}
-      defaultWidth={widget.position.size.width}
-      defaultScale={widget.position.scale}
-      defaultX={widget.position.x.offset}
-      defaultY={widget.position.y.offset}
-      defaultXAnchor={widget.position.x.anchor}
-      defaultYAnchor={widget.position.y.anchor}
-      defaultOpacity={widget.position.opacity}
-      defaultMode={widget.position.layoutMode}
-      defaultVisible={widget.position.visibility}
-      gridDivisions={10}
-      locked={this.props.layout.locked}
-      save={(s: HUDDragState) => {
-        this.props.dispatch(setPosition({
-          name: type,
-          widget,
-          position: {
-            x: { anchor: s.xAnchor, offset: s.x },
-            y: { anchor: s.yAnchor, offset: s.y },
-            size: { width: s.width, height: s.height },
-            scale: s.scale,
-            opacity: s.opacity,
-            visibility: widget.position.visibility,
-            zOrder: widget.position.zOrder,
-            layoutMode: widget.position.layoutMode,
-          },
-        }));
-      }}
-      render={() => {
-        if (this.props.layout.locked && !widget.position.visibility) return null;
-        return <Widget
-          setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({ name: type, visibility: vis }))}
-          {...props}
-        />;
-      }}
-      {...options} />;
+    return (
+      <ErrorBoundary>
+        <HUDDrag
+          name={type}
+          key={widget.position.zOrder}
+          defaultHeight={widget.position.size.height}
+          defaultWidth={widget.position.size.width}
+          defaultScale={widget.position.scale}
+          defaultX={widget.position.x.offset}
+          defaultY={widget.position.y.offset}
+          defaultXAnchor={widget.position.x.anchor}
+          defaultYAnchor={widget.position.y.anchor}
+          defaultOpacity={widget.position.opacity}
+          defaultMode={widget.position.layoutMode}
+          defaultVisible={widget.position.visibility}
+          gridDivisions={10}
+          locked={this.props.layout.locked}
+          save={(s: HUDDragState) => {
+            this.props.dispatch(setPosition({
+              name: type,
+              widget,
+              position: {
+                x: { anchor: s.xAnchor, offset: s.x },
+                y: { anchor: s.yAnchor, offset: s.y },
+                size: { width: s.width, height: s.height },
+                scale: s.scale,
+                opacity: s.opacity,
+                visibility: widget.position.visibility,
+                zOrder: widget.position.zOrder,
+                layoutMode: widget.position.layoutMode,
+              },
+            }));
+          }}
+          render={() => {
+            if (this.props.layout.locked && !widget.position.visibility) return null;
+            return <Widget
+              setVisibility={(vis: boolean) => this.props.dispatch(setVisibility({ name: type, visibility: vis }))}
+              {...props}
+            />;
+          }}
+          {...options}
+        />
+      </ErrorBoundary>
+    );
   }
 }
 
