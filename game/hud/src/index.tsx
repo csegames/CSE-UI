@@ -10,6 +10,7 @@ import 'core-js/es6/set';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { client } from 'camelot-unchained';
+import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
 
 import initialize from './services/initialization';
 import HUD from './components/HUD';
@@ -46,16 +47,20 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   client.OnInitialized(() => {
     initialize();
     ReactDom.render(
-      <ApolloProvider store={store} client={apollo}>
-        <HUD />
-      </ApolloProvider>,
+      <ErrorBoundary reloadUIOnError outputErrorToConsole>
+        <ApolloProvider store={store} client={apollo}>
+          <HUD />
+        </ApolloProvider>
+      </ErrorBoundary>,
       root);
   });
 } else {
   initialize();
   ReactDom.render(
-    <ApolloProvider store={store} client={apollo}>
-      <HUD />
-    </ApolloProvider>,
+    <ErrorBoundary reloadUIOnError outputErrorToConsole>
+      <ApolloProvider store={store} client={apollo}>
+        <HUD />
+      </ApolloProvider>
+    </ErrorBoundary>,
     root);
 }

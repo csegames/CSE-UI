@@ -5,9 +5,13 @@
  */
 
 import * as React from 'react';
+import client from '../core/client';
 
 export interface ErrorBoundaryProps {
   renderError?: () => (JSX.Element | React.ReactNode);
+  reloadUIOnError?: boolean;
+  onError?: (error: Error, info: { componentStack: string }) => void;
+  outputErrorToConsole?: boolean;
 }
 
 export interface ErrorBoundaryState {
@@ -22,14 +26,24 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
     };
   }
 
-  public componentDidCatch(error, info) {
+  public componentDidCatch(error: Error, info: { componentStack: string }) {
+    if (this.props.outputErrorToConsole) {
+      console.error(error, info);
+    }
+    if (this.props.onError) {
+      this.props.onError(error, info);
+    }
+    if (this.props.reloadUIOnError && !client.debug) {
+      client.ReloadAllUI();
+    }
     this.setState({ hasError: true });
-    console.error(error, info);
   }
 
   public render() {
     if (this.state.hasError) {
-      return this.props.renderError ? this.props.renderError() : <h2>Unhandled UI Error: Reload UI</h2>;
+      return this.props.renderError ? 
+        this.props.renderError() : 
+        <h2>Unhandled UI Error! <button onClick={client.ReloadAllUI}>Reload UI</button></h2>;
     }
     return this.props.children as any;
   }
