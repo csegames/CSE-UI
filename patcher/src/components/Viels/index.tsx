@@ -61,7 +61,7 @@ export const BigBottomVeil = styled('div')`
   background: url(images/controller/veil-top-bar.png) repeat-x top;
   bottom: 0px;
   width: 100%;
-  height: 90px;
+  height: 105px;
   z-index: 9;
   transform: rotate(180deg);
 `;

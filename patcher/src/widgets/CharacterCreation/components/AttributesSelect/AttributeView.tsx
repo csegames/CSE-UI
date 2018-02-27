@@ -96,6 +96,8 @@ export const defaultAttributeViewStyle: AttributeViewStyle = {
     fontSize: 16,
     padding: 0,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
 

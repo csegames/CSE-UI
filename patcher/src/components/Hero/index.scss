@@ -19,12 +19,11 @@
   flex-wrap: nowrap;
   user-select: none !important;
   -webkit-user-select: none !important;
+  transition: opacity 2s ease;
 }
 
 .Hero--paused {
-  video {
-    display: none;
-  }
+  opacity: 0;
 }
 
 img.archer-vid, img.hero-vid {

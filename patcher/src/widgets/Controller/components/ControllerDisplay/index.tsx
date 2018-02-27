@@ -17,6 +17,7 @@ import {
   PatcherServer,
   ServerType,
   initialize,
+  characterRemoved,
 } from '../../services/session/controller';
 
 export interface ControllerDisplayReduxProps {
@@ -62,6 +63,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
         onLogin={this.onLogin}
         onChooseCharacter={this.onChooseCharacter}
         onToggleCharacterSelect={this.toggleCharacterSelect}
+        onDeleteCharacterSuccess={this.onDeleteCharacterSuccess}
         selectCharacter={this.selectCharacter}
         selectServer={this.selectServer}
         selectServerType={this.selectServerType}
@@ -71,9 +73,6 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
 
   public componentDidMount() {
     this.getServers();
-  }
-
-  public componentWillUnmount() {
   }
 
   private getServers = async () => {
@@ -112,13 +111,17 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   private selectServer = (server: PatcherServer) => {
-    events.fire('play-sound', 'select');
-    this.setState({ selectedServer: server });
+    if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
+      events.fire('play-sound', 'select');
+      this.setState({ selectedServer: server });
+    }
   }
 
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
-    events.fire('play-sound', 'select');
-    this.setState({ selectedCharacter: character });
+    if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
+      events.fire('play-sound', 'select');
+      this.setState({ selectedCharacter: character });
+    }
   }
 
   private onChooseCharacter = (character: webAPI.SimpleCharacter) => {
@@ -126,6 +129,10 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     const characterServer = _.find(this.props.ControllerState.servers, server => server.shardID === character.shardID);
     this.selectServer(characterServer);
     this.selectCharacter(character);
+  }
+
+  private onDeleteCharacterSuccess = (id: string) => {
+    this.props.dispatch(characterRemoved(id));
   }
 }
 

@@ -189,7 +189,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
           <CharacterName fontSize={this.state.fontSize}>
             {character.name}
           </CharacterName>
-          <CharacterMetaData>{Archetype[character.archetype]} - {Race[character.race]}</CharacterMetaData>
+          <CharacterMetaData>{Archetype[character.archetype]} - {webAPI.raceString(character.race)}</CharacterMetaData>
           <DeleteButton visible={this.props.charSelectVisible} onClick={this.toggleDeleteModal}>X</DeleteButton>
         </Container>
       </div>

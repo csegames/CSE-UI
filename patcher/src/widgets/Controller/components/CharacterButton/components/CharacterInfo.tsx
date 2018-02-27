@@ -6,23 +6,43 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled, { keyframes, css } from 'react-emotion';
-import { Gender, Archetype, Race, webAPI } from 'camelot-unchained';
+import { webAPI, Gender, Archetype, Race, Spinner } from 'camelot-unchained';
 
 import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';
 
+declare const toastr: any;
+
 const shine = keyframes`
-  0%, 80% {
-    width: 0%;
+  from {
+    left: 20px;
     opacity: 1;
   }
-  100% {
-    width: 100%;
+  to {
+    left: 80%;
     opacity: 0;
   }
 `;
 
+const idleShine = keyframes`
+  0% {
+    left: 20px;
+    opacity: 0;
+  }
+  90% {
+    left: 20px;
+    opacity: 0;
+  }
+  91% {
+    opacity: 1;
+  }
+  100% {
+    left: 80%;
+    opacity: 0;
+  }
+`;
 
 const Container = styled('div')`
   position: relative;
@@ -33,9 +53,68 @@ const Container = styled('div')`
   transition: left .2s cubic-bezier(0.93, 0.02, 1, 1.01);
   z-index: 2;
   bottom: 4px;
-  &:hover .character-button-char-pic {
-    -webkit-filter: ${props => props.mouseOverPic ? 'brightness(150%) !important' : '' };
+  transition: -webkit-filter 0.3s ease;
+  &:hover {
+    -webkit-filter: brightness(150%);
   }
+
+  &:hover:before {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    opacity: 0;
+    height: 110%;
+    width: 90px;
+    z-index: 10;
+    background: linear-gradient(transparent, rgba(255,255,255,0.2));
+    clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+    -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+    -webkit-animation: ${shine} 0.5s ease forwards;
+    animation: ${shine} 0.5s ease forwards;
+    animation-delay: 0.3s;
+    -webkit-animation-delay: 0.3s;
+  }
+
+  &:hover:after {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    opacity: 0;
+    height: 110%;
+    width: 90px;
+    z-index: 10;
+    background: linear-gradient(transparent, rgba(255,255,255,0.2));
+    clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+    -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+    -webkit-animation: ${shine} 0.5s ease forwards;
+    animation: ${shine} 0.5s ease forwards;
+  }
+`;
+
+const IdleShine = styled('div')`
+  pointer-events: none;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  opacity: 0;
+  height: 110%;
+  width: 90px;
+  z-index: 10;
+  background: linear-gradient(transparent, rgba(255,255,255,0.2));
+  clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+  -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
+  -webkit-animation: ${idleShine} 9s ease infinite;
+  animation: ${idleShine} 9s ease infinite;
 `;
 
 const CharPic = styled('div')`
@@ -48,16 +127,7 @@ const CharPic = styled('div')`
   z-index: 2;
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 57% 100%, 0% 100%);
   transition: -webkit-filter 0.8s ease;
-  cursor: ${props => props.mouseOverPic ? 'pointer' : 'default'};
-  &:hover {
-    -webkit-filter: ${props => props.mouseOverPic ? 'brightness(150%)' : 'brightness(100%)'};
-  }
-  &:hover + .character-button-char-mask {
-    -webkit-filter: brightness(150%);
-    &:after {
-      opacity: 1;
-    }
-  }
+  cursor: pointer;
   &:hover ~ .block-area {
     z-index: 0;
   }
@@ -72,48 +142,18 @@ const CharPic = styled('div')`
     width: 200px;
     height: 100px;
   }
-  &:after {
-    content: "";
-    position: absolute;
-    -webkit-mask-image: url(images/controller/character-face-spot.png);
-    -webkit-mask-size: cover;
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(to right, transparent 55%, rgba(255,255,255,0.4));
-    -webkit-animation: ${props => !props.mouseOverPic ? `${shine} 7s ease infinite` : ''};
-    animation: ${props => !props.mouseOverPic ? `${shine} 7s ease infinite` : ''};
-  }
-`;
-
-const HoverArea = styled('div')`
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  -webkit-clip-path: polygon(40% 0%, 100% 0%, 55% 100%, 0% 100%);
 `;
 
 const CharMask = styled('div')`
   position: absolute;
   left: 105px;
   height: 103px;
-  width: ${props => props.mouseOverPic ? 405 : 0}px;
+  width: 405px;
   cursor: pointer;
   background: url(images/controller/character-info-spot.png);
   background-size: cover;
   transition: width .2s cubic-bezier(0.93, 0.02, 1, 1.01), -webkit-filter 1s ease;
   overflow: hidden;
-  &:hover {
-    -webkit-filter: brightness(150%);
-    &:after {
-      opacity: 1;
-    }
-  }
-  &:hover .character-button-info {
-    opacity: 1;
-  }
   &:before {
     content:"";
     position:absolute;
@@ -130,7 +170,6 @@ const CharMask = styled('div')`
     content: "";
     transition: opacity 1s linear;
     transition-delay: 0.5s;
-    opacity: 0;
     position: absolute;
     background: url(images/controller/slideout-icon.png) no-repeat;
     width: 50px;
@@ -145,7 +184,7 @@ const InitialCharMaskAnim = css`
 `;
 
 const InfoContainer = styled('div')`
-  opacity: ${props => props.mouseOverPic ? 1 : 0};
+  opacity: 1;
   background-size: 280%;
   background-position: 52% 23%;
   transition: opacity 1s ease;
@@ -184,32 +223,48 @@ const ServerInfoContainer = styled('div')`
   color: white;
   font-size: 14px;
   font-weight: normal;
-  padding: 15px 0 0 120px;
+  padding: ${props => props.padding ? props.padding : '8px 0 0 120px'};
   white-space: nowrap;
   pointer-events: none;
 `;
 
+const ServerName = styled('div')`
+  margin-left: -20px;
+`;
+
+const AccessLevel = styled('div')`
+  font-size: 12px;
+  color: gray;
+`;
+
+const SpinnerContainer = styled('div')`
+  position: absolute;
+  right: 105px;
+  top: 40px;
+`;
+
 export interface CharacterInfoProps {
   character: webAPI.SimpleCharacter;
+  characters: {[id: string]: webAPI.SimpleCharacter};
   selectedServer: PatcherServer;
   onNavigateToCharacterSelect: () => void;
-  onCharacterInfoOpen: () => void;
-  onCharacterInfoClose: () => void;
-  isOpen: boolean;
+  hasAccessToServers: boolean;
 }
 
 export interface CharacterInfoState {
   initial: boolean;
+  isLoading: boolean;
 }
 
 class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoState> {
-  private initialTimeout: any;  
-  private onMouseLeaveTimeout: any;
+  private initialTimeout: any;
+  private loadingInterval: any;
 
   constructor(props: CharacterInfoProps) {
     super(props);
     this.state = {
       initial: true,
+      isLoading: true,
     };
   }
 
@@ -227,30 +282,20 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         <Container
           className='character-button-char-container'
           onClick={onNavigateToCharacterSelect}
-          mouseOverPic={this.props.isOpen}
         >
+          <IdleShine />
           <CharPic
             className='character-button-char-pic'
-            mouseOverPic={this.props.isOpen}
             flipImage={flipImage}
             image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
-            maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
-            onMouseOver={this.props.isOpen ? this.onMouseOver : () => {}}
-            onMouseLeave={this.props.isOpen ? this.onMouseLeave : () => {}}>
-            <HoverArea
-              onMouseOver={this.onMouseOver}
-              onMouseLeave={this.onMouseLeave}
-            />
+            maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}>
           </CharPic>
           <CharMask
-            mouseOverPic={this.props.isOpen}
-            onMouseOver={this.onMouseOver}
-            onMouseLeave={this.onMouseLeave}
             image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
             maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
             flipImage={flipImage}
             className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}>
-            <InfoContainer className='character-button-info' mouseOverPic={this.props.isOpen}>
+            <InfoContainer className='character-button-info'>
               <CharacterInfoContainer>
                 <CharacterName longName={isLongName}>
                   {character.name}
@@ -259,12 +304,17 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
               </CharacterInfoContainer>
               {selectedServer &&
                 <ServerInfoContainer longName={isLongName}>
-                  <ServerActiveIcon
-                    className='fa fa-power-off'
-                    aria-hidden='true'
-                    color={selectedServer.available ? 'green' : 'red'}>
-                  </ServerActiveIcon>
-                  <span>{selectedServer.name} - {webAPI.accessLevelString(selectedServer.accessLevel)}</span>
+                  <ServerName>
+                    <ServerActiveIcon
+                      className='fa fa-power-off'
+                      aria-hidden='true'
+                      color={selectedServer.available ? 'green' : 'red'}>
+                    </ServerActiveIcon>
+                    {selectedServer.name}
+                  </ServerName>
+                  <AccessLevel>
+                    {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
+                  </AccessLevel>
                 </ServerInfoContainer>
               }
             </InfoContainer>
@@ -275,26 +325,41 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
       return (
         <Container
           className='character-button-char-container'
-          onClick={onNavigateToCharacterSelect}
-          mouseOverPic={this.props.isOpen}>
+          onClick={this.props.hasAccessToServers ? onNavigateToCharacterSelect : this.noAccessError}>
           <CharPic
             className={'character-button-char-pic'}
-            onMouseOver={this.props.isOpen ? this.onMouseOver : () => {}}
             image={'images/controller/no-character-shadow.png'}>
-            <HoverArea
-              onMouseOver={this.onMouseOver}
-              onMouseLeave={this.onMouseLeave}
-            />
+            {this.state.isLoading && <SpinnerContainer><Spinner /></SpinnerContainer>}
           </CharPic>
           <CharMask
             className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}
-            mouseOverPic={this.props.isOpen}
-            onMouseOver={this.onMouseOver}
-            onMouseLeave={this.onMouseLeave}
             image={'images/controller/no-character-shadow.png'}>
-            <InfoContainer className='character-button-info' mouseOverPic={this.props.isOpen}>
-              <CharacterName padding={'17px 0px 0px 120px'}>No Character Selected</CharacterName>
-            </InfoContainer>
+            {!this.state.isLoading &&
+              <InfoContainer className='character-button-info'>
+                
+                <CharacterInfoContainer>
+                <CharacterName>
+                  {this.props.hasAccessToServers ? 'No Character Selected' : 'There are no servers available'}
+                  {this.props.hasAccessToServers && <CharacterMetaInfo>Click to select character</CharacterMetaInfo>}
+                </CharacterName>
+              </CharacterInfoContainer>
+                {selectedServer &&
+                  <ServerInfoContainer>
+                    <ServerName>
+                      <ServerActiveIcon
+                        className='fa fa-power-off'
+                        aria-hidden='true'
+                        color={selectedServer.available ? 'green' : 'red'}>
+                      </ServerActiveIcon>
+                      {selectedServer.name}
+                    </ServerName>
+                    <AccessLevel>
+                      {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
+                    </AccessLevel>
+                  </ServerInfoContainer>
+                }
+              </InfoContainer>
+            }
           </CharMask>
         </Container>
       );
@@ -303,23 +368,29 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
 
   public componentDidMount() {
     this.initialTimeout = setTimeout(() => this.setState({ initial: false }), 1000);
+
+    let loadingIntervalCount = 0;
+    this.loadingInterval = setInterval(() => {
+      if (this.props.character) {
+        this.setState({ isLoading: false });
+        clearInterval(this.loadingInterval);
+      } else {
+        if (loadingIntervalCount < 10 && _.isEmpty(this.props.characters)) {
+          loadingIntervalCount++;
+        } else {
+          clearInterval(this.loadingInterval);
+          this.setState({ isLoading: false });
+        }
+      }
+    }, 500);
   }
 
   public componentWillUnmount() {
     clearTimeout(this.initialTimeout);
   }
 
-  private onMouseOver = () => {
-    if (this.onMouseLeaveTimeout) {
-      clearTimeout(this.onMouseLeaveTimeout);
-      this.onMouseLeaveTimeout = null;
-    }
-
-    this.props.onCharacterInfoOpen();
-  }
-
-  private onMouseLeave = () => {
-    this.onMouseLeaveTimeout = setTimeout(() => this.props.onCharacterInfoClose(), 10);
+  private noAccessError = () => {
+    toastr.error('You do not have access to any servers', 'Oh No!!', {timeOut: 5000});
   }
 }
 

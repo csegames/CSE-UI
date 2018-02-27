@@ -51,6 +51,7 @@ export interface ControllerDisplayViewProps {
   onLogin: () => void;
   onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
   onToggleCharacterSelect: () => void;
+  onDeleteCharacterSuccess: (id: string) => void;
   selectCharacter: (character: webAPI.SimpleCharacter) => void;
   selectServer: (server: PatcherServer) => void;
   selectServerType: (serverType: ServerType) => void;
@@ -96,6 +97,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
               selectedServer={selectedServer}
               onChooseCharacter={this.props.onChooseCharacter}
               onCloseClick={this.props.onToggleCharacterSelect}
+              onDeleteCharacterSuccess={this.props.onDeleteCharacterSuccess}
             />
           </div>
         }

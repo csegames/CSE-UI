@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { webAPI, events, CollapsingList } from 'camelot-unchained';
 
@@ -28,6 +29,16 @@ const ServerTitle = styled('div')`
   &:hover {
     filter: brightness(140%);
   }
+`;
+
+const AccessLevelText = styled('div')`
+  margin-top: ${props => props.marginTop}px;
+  text-align: right;
+  font-size: 14px;
+  opacity: 0.5;
+  margin-right: 30px;
+  margin-top: -10px;
+  padding-bottom: ${props => props.paddingBottom}px;
 `;
 
 const Icon = styled('i')`
@@ -86,7 +97,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
               transition: '0.5s ease',
             },
             CollapsingList: {
-              paddingBottom: 145,
+              marginBottom: 145,
             },
           } : index === 0 ? {
             body: {
@@ -101,6 +112,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
             },
           }}
           title={(collapsed: boolean) =>
+            <div>
             <ServerTitle>
               <div>
                 <Icon marginRight={5}>{collapsed ? '+' : '-'}</Icon>
@@ -116,6 +128,10 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                 <i className='fa fa-cog' />
               </ServerOptionsButton>
             </ServerTitle>
+            <AccessLevelText paddingBottom={collapsed ? 10 : 0}>
+              Accessible to {webAPI.accessLevelString(server.accessLevel)}
+            </AccessLevelText>
+            </div>
           }
           renderListItem={(character: webAPI.SimpleCharacter, i: number) => (
             <CharacterSelectListItem
@@ -128,7 +144,9 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
             />
           )}
           renderListFooter={() => (
-            <CreateCharacterItem server={server} />
+            <div>
+              <CreateCharacterItem server={server} />
+            </div>
           )}
         />
       </div>
@@ -136,22 +154,27 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
   }
 
   public componentDidMount() {
-    setTimeout(() => {
-      const characterList = document.getElementById(`character-list-${this.props.server.shardID}`);
-      if (!this.state.initialHeight) {
-        this.setState({ initialHeight: characterList.clientHeight - 40 });
-      }
-    }, 300);
+    this.initHeight();
   }
 
   public componentWillReceiveProps(nextProps: CharacterListProps) {
-    if (this.props.server.shardID !== nextProps.server.shardID) {
+    if (this.props.server.shardID !== nextProps.server.shardID ||
+        !_.isEqual(this.props.serverCharacters, nextProps.serverCharacters)) {
       this.setState({ initialHeight: null });
       setTimeout(() => {
         const characterList = document.getElementById(`character-list-${this.props.server.shardID}`);
         this.setState({ initialHeight: characterList.clientHeight - 40 });
       }, 300);
     }
+  }
+
+  private initHeight = () => {
+    setTimeout(() => {
+      const characterList = document.getElementById(`character-list-${this.props.server.shardID}`);
+      if (!this.state.initialHeight) {
+        this.setState({ initialHeight: characterList.clientHeight - 40 });
+      }
+    }, 300);
   }
 
   private onToggleMenu = (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => {

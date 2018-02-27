@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, events } from 'camelot-unchained';
+import { webAPI, events, jsKeyCodes } from 'camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
 import CharacterSelectList from './components/CharacterSelectList';
@@ -107,6 +107,7 @@ export interface CharacterSelectProps {
   selectedCharacter: webAPI.SimpleCharacter;
   selectedServer: PatcherServer;
   onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
+  onDeleteCharacterSuccess: (id: string) => void;
   onCloseClick: () => void;
   charSelectVisible: boolean;
 }
@@ -145,7 +146,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
     return (
       <Container id='cu-character-select' visible={this.props.charSelectVisible}>
-        <Header><CloseButton onClick={this.onCloseClick}>X</CloseButton></Header>
+        <Header><CloseButton onClick={this.onClose}>X</CloseButton></Header>
         <CharacterSelectBG selectedCharacter={selectedCharacter} />
         <ListBG />
         <ListContainer innerRef={ref => this.listRef = ref}>
@@ -165,7 +166,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
             character={selectedCharacter}
             servers={servers}
             closeModal={this.toggleModal}
-            onSuccess={this.toggleModal}
+            onSuccess={this.onDeleteSuccess}
           />
         }
         {this.state.showDeleteModal && <Overlay />}
@@ -175,6 +176,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
 
   public componentDidMount() {
     events.on('character-select-show-delete', this.toggleModal);
+    window.addEventListener('keydown', this.handleEscKey);
   }
 
   public componentWillReceiveProps(nextProps: CharacterSelectProps) {
@@ -189,6 +191,10 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     if (this.props.charSelectVisible !== nextProps.charSelectVisible && this.listRef) {
       this.listRef.scrollTop = 0;
     }
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleEscKey);
   }
 
   private setSelectedCharacter = (character: webAPI.SimpleCharacter) => {
@@ -209,7 +215,18 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     this.setState({ showDeleteModal: !this.state.showDeleteModal });
   }
 
-  private onCloseClick = () => {
+  private onDeleteSuccess = (id: string) => {
+    this.props.onDeleteCharacterSuccess(id);
+    this.toggleModal();
+  }
+
+  private handleEscKey = (e: KeyboardEvent) => {
+    if (e.which === jsKeyCodes.ESC && this.props.charSelectVisible) {
+      this.onClose();
+    }
+  }
+
+  private onClose = () => {
     events.fire('play-sound', 'select');
     this.props.onCloseClick();
   }

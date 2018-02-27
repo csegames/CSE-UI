@@ -133,7 +133,6 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   }
 
   private onToggleCollapse = () => {
-    console.log(typeof(this.props.collapsed));
     if (typeof(this.props.collapsed) !== "boolean") {
       this.setState((state, props) => {
         if (state.collapsed) {

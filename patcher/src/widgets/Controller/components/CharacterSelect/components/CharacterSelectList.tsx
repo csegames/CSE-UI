@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, webAPI } from 'camelot-unchained';
 
-import { patcher, ChannelStatus } from '../../../../../services/patcher';
+import { patcher, canAccessChannel, ChannelStatus } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
@@ -64,16 +64,13 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
 
   public render() {
     // Put selected server at top
-    const { servers, selectedServer } = this.props;
-    const sortedServers = selectedServer ?
-      _.sortBy(servers, server => server.shardID === selectedServer.shardID ? -1 : 0) : _.values(servers);
-
+    const sortedServers = this.getServers();
     return (
       <div>
         <MinimizeAll
           onClick={this.state.minimized ? this.onMaximizeAllClick : this.onMinimizeAllClick}
           visible={this.props.charSelectVisible}>
-            <ArrowIcon className={this.state.minimized ? 'fa fa-arrow-to-bottom' : 'fa fa-arrow-to-top'}></ArrowIcon>
+            <ArrowIcon className={this.state.minimized ? 'fal fa-arrow-to-bottom' : 'fal fa-arrow-to-top'}></ArrowIcon>
             {this.state.minimized ? 'Maximize All' : 'Minimize All'}
         </MinimizeAll>
         {this.state.serverForOptions &&
@@ -122,6 +119,17 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     if (this.props.charSelectVisible && !nextProps.charSelectVisible && this.state.serverForOptions) {
       this.setState({ serverForOptions: null });
     }
+  }
+
+  private getServers = () => {
+    const { servers, selectedServer } = this.props;
+    const serversForPermission = _.values(servers).filter((server) => {
+      return canAccessChannel(patcher.getPermissions(), server.channelPatchPermissions);
+    });
+    const sortedServers = selectedServer ?
+      _.sortBy(serversForPermission, server => server.shardID === selectedServer.shardID ? -1 : 0) :
+      _.values(serversForPermission);
+    return sortedServers;
   }
 
   private toggleMenu = (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => {

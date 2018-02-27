@@ -14,7 +14,7 @@ export interface CharacterDeleteModalProps {
   servers: {[id: string]: PatcherServer};
   character: webAPI.SimpleCharacter;
   closeModal: () => void;
-  onSuccess: () => void;
+  onSuccess: (id: string) => void;
 }
 
 export interface CharacterDeleteModalState {
@@ -75,15 +75,23 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
         this.setState({ success: true, error: null, deleting: false });
 
         setTimeout(() => {
-          this.props.onSuccess();
+          this.props.onSuccess(character.id);
         }, 200);
         return;
       }
       // failed 
-      this.setState({ deleting: false, success: false, error: data.Message });
+      this.setState({
+        deleting: false,
+        success: false,
+        error: data.Message || 'Uh oh... There was an error deleting your character!',
+      });
     } catch (err) {
       console.error(err);
-      this.setState({ deleting: false, success: false, error: null });
+      this.setState({
+        deleting: false,
+        success: false,
+        error: 'Uh oh... There was an error in deleting your character!',
+      });
     }
   }
 

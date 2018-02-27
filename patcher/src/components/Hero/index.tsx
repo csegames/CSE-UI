@@ -51,7 +51,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
             <div
               key={index}
               className={`Hero__controls__item ${this.state.currentItem === index ? 'active' : ''}`}
-              onClick={this.selectIndex.bind(this, index)}
+              onClick={this.onIndexClick.bind(this, index)}
               onMouseEnter={this.playSound}>
                 {index + 1}
             </div>)}
@@ -69,10 +69,14 @@ class Hero extends React.Component<HeroProps, HeroState> {
     return <div key={item.id} dangerouslySetInnerHTML={{__html: `${item.content}`}}></div>;
   }
 
+  private onIndexClick = (index: number) => {
+    events.fire('play-sound', 'select');
+    this.selectIndex(index);
+  }
+
   private selectIndex = (index: number) => {
     clearTimeout(this.timeout);
     this.timeout = null;
-    events.fire('play-sound', 'select');
     this.setState({
       currentItem: index,
     } as any);
@@ -88,6 +92,13 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private pause = () => {
     if (this.state.paused) return;
     this.setState({paused: true} as any);
+    const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
+    for (let vid: any = 0; vid < videoElements.length; vid++) {
+      const v = videoElements[vid];
+      if (!v.paused) {
+        v.pause();
+      }
+    }
   }
 
   private resume = () => {

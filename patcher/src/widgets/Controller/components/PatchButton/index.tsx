@@ -73,7 +73,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   }
 
   public render() {
-    const {selectedServer} = this.props;
+    const { selectedServer } = this.props;
     let lastUpdatedText;
     if (!selectedServer) {
       return null;

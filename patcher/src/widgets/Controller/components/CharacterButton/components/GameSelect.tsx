@@ -7,7 +7,9 @@
 
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
+import { events } from 'camelot-unchained';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
+import { patcher, canAccessChannel } from '../../../../../services/patcher';
 
 const imageShine = keyframes`
   0% {
@@ -27,14 +29,13 @@ const imageShine = keyframes`
 const GameMask = styled('div')`
   position: relative;
   height: 97px;
-  width: ${props => props.width ? props.width : 375}px;
-  left: ${props => props.left}px;
+  width: 175px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent),
     url(images/controller/games-bot-left-bg.png) no-repeat;
   background-size: cover;
   -webkit-mask-image: url(images/controller/bottom-left-mask.png);
   -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: ${props => props.isCUGame ? '495px' : '100% 100%'};
+  -webkit-mask-size: 100% 100%;
   box-shadow: inset 0px 0px 20px 20px rgba(0, 0, 0, 0.5);
   z-index: 1;
   transition: left ease .4s, width ease .4s, filter ease .4s, -webkit-mask-size ease 0.1s;
@@ -42,10 +43,6 @@ const GameMask = styled('div')`
   cursor: pointer;
   border: 1px solid #535353;
   border-left: 0px;
-
-  &:hover {
-    filter: brightness(150%)
-  }
 
   &:hover ~ .hover-area {
     z-index: 1;
@@ -64,19 +61,28 @@ const GameMask = styled('div')`
   }
 `;
 
+const PopupContainer = styled('div')`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: ${props => props.top}px;
+  opacity: ${props => props.opacity};
+  visibility: ${props => props.opacity === 0 ? 'hidden' : 'visible'};
+  transition: ${props => props.instant ? '' : 'all 0.5s ease'};
+`;
+
 const GameImage = styled('div')`
   display: inline-block;
   position: relative;
   pointer-events: all;
-  margin-top: 15px;
   margin-left: 35px;
   width: 60px;
-  height: 60px;
+  height: 95px;
   zoom: 100%;
   cursor: pointer;
-  background-image: url(${props => props.img});
-  transition: all .2s cubic-bezier(0.93, 0.02, 1, 1.01);
+  background: url(${props => props.img}) no-repeat center;
   z-index: 10;
+  transition: ${props => props.instant ? '' : 'opacity .3s ease'};
   bottom: 0;
 
   &:before {
@@ -86,7 +92,6 @@ const GameImage = styled('div')`
     bottom: 0;
     left: 32px;
     opacity: 0;
-    transition: opacity .3s ease;
     box-shadow: 0 0 75px 16px rgba(255,255,255,0.89);
   }
   &:hover:before {
@@ -98,64 +103,94 @@ export interface GameSelectProps {
   servers: {[id: string]: PatcherServer};
   serverType: ServerType;
   onSelectServerType: (serverType: ServerType) => void;
-  onGameMaskOpen: () => void;
-  onGameMaskClose: () => void;
-  isOpen: boolean;
 }
 
-class GameSelect extends React.Component<GameSelectProps> {
+export interface GameSelectState {
+  instant: boolean;
+  isOpen: boolean;
+  popupHeight: number;
+}
+
+class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
   private closeTimeout: any;
+  private popupRef: HTMLDivElement;
 
   constructor(props: GameSelectProps) {
     super(props);
     this.state = {
+      instant: false,
       isOpen: false,
+      popupHeight: 0,
     };
   }
   public render() {
     const { serverType } = this.props;
     const serverTypes: ServerType[] = this.getServerTypes();
-
     return (
-      <GameMask
-        className='character-button-game-mask'
-        onMouseOver={this.onMouseOver}
-        onMouseOut={this.onMouseLeave}
-        left={this.props.isOpen ? 0 : serverType === ServerType.CUBE ? -115 : serverType === ServerType.CHANNEL ? -215 : 0}
-        width={!this.props.isOpen ? (serverType === ServerType.CUBE ? 250 : serverType === ServerType.CUGAME ? 175 :
-          serverType === ServerType.CHANNEL && 330) : 375}
-        isCUGame={serverType === ServerType.CUGAME}
-      >
-        {serverTypes.map(serverType => (
+      <div>
+        <GameMask
+          className='character-button-game-mask'
+          width={175}
+          isCUGame={serverType === ServerType.CUGAME}
+        >
           <GameImage
             key={serverType}
             img={serverTypeToIcon(serverType)}
-            onClick={() => this.onSelectServerType(serverType)}
+            onMouseEnter={this.open}
+            onMouseLeave={this.close}
           />
-        ))}
-      </GameMask>
+        </GameMask>
+        <PopupContainer
+          className='game-popup-container'
+          innerRef={r => this.popupRef = r}
+          top={-(this.state.popupHeight + 5)}
+          opacity={this.state.isOpen ? 1 : 0}
+          instant={this.state.instant}
+          onMouseEnter={this.open}
+          onMouseLeave={this.close}
+        >
+          {serverTypes.map(type => type === this.props.serverType ? null : (
+            <GameImage
+              key={type}
+              img={serverTypeToIcon(type)}
+              onClick={() => this.onSelectServerType(type)}
+            />
+          ))}
+        </PopupContainer>
+      </div>
     );
   }
 
-  private onMouseOver = () => {
+  public componentDidMount() {
+    setTimeout(() => {
+      this.setState({ popupHeight: this.popupRef.getBoundingClientRect().height });
+    }, 300);
+  }
+
+  private open = () => {
     if (this.closeTimeout) {
       clearTimeout(this.closeTimeout);
       this.closeTimeout = null;
+    } else {
+      events.fire('play-sound', 'select-change');
     }
-    if (!this.props.isOpen) {
-      this.props.onGameMaskOpen();
-    }
+    this.setState({ isOpen: true });
   }
 
-  private onMouseLeave = () => {
-    if (this.props.isOpen) {
-      this.closeTimeout = setTimeout(() => this.props.onGameMaskClose(), 100);
+  private close = (instant?: boolean) => {
+    if (this.state.isOpen) {
+      if (instant === true) {
+        this.setState({ isOpen: false, instant: true });
+        setTimeout(() => this.setState({ instant: false }), 50);
+      } else {
+        this.closeTimeout = setTimeout(() => this.setState({ isOpen: false }), 50);
+      }
     }
   }
 
   private onSelectServerType = (serverType: ServerType) => {
     this.props.onSelectServerType(serverType);
-    this.onMouseLeave();
+    this.close(true);
   }
 
   private getServerTypes = () => {
@@ -163,7 +198,8 @@ class GameSelect extends React.Component<GameSelectProps> {
     for (let i = ServerType.CUGAME; i < ServerType.UNKNOWN; ++i) {
       let anyOfType = false;
       for (const key in this.props.servers) {
-        if (this.props.servers[key].type === i) {
+        if (this.props.servers[key].type === i &&
+            canAccessChannel(patcher.getPermissions(), this.props.servers[key].channelPatchPermissions)) {
           anyOfType = true;
           break;
         }

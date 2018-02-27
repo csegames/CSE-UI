@@ -6,12 +6,11 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { events, webAPI } from 'camelot-unchained';
+import { webAPI } from 'camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
-import { patcher, canAccessChannel } from '../../../../services/patcher';
+import { patcher, permissionsString, canAccessChannel } from '../../../../services/patcher';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
@@ -31,6 +30,16 @@ const HoverArea = styled('div')`
   cursor: pointer;
 `;
 
+const AccessLevelText = styled('div')`
+  position: absolute;
+  top: -25px;
+  left: 15px;
+  color: white;
+  font-size: 14px;
+  opacity: 0.5;
+  margin-right: 30px;
+`;
+
 export interface CharacterButtonProps {
   character: webAPI.SimpleCharacter;
   selectedServer: PatcherServer;
@@ -44,39 +53,42 @@ export interface CharacterButtonProps {
 }
 
 export interface CharacterButtonState {
-  gameMaskOpen: boolean;
-  characterInfoOpen: boolean;
+  hasAccess: boolean;
 }
 
 class CharacterButton extends React.PureComponent<CharacterButtonProps, CharacterButtonState> {
   constructor(props: CharacterButtonProps) {
     super(props);
     this.state = {
-      gameMaskOpen: false,
-      characterInfoOpen: false,
+      hasAccess: true,
     };
   }
+
   public render() {
     const {
       servers,
       character,
+      characters,
       selectedServer,
       onNavigateToCharacterSelect,
       serverType,
       selectServerType,
       selectServer,
     } = this.props;
+
     return (
       <ButtonContainer>
-        {!this.state.gameMaskOpen && <HoverArea className='hover-area' onMouseEnter={this.onGameMaskOpen} />}
+        {patcher.getPermissions() &&
+          <AccessLevelText>
+            Your Access Level: {permissionsString(patcher.getPermissions())}
+          </AccessLevelText>
+        }
+        <HoverArea />
         {servers &&
           <GameSelect
             servers={servers}
             serverType={serverType}
             onSelectServerType={selectServerType}
-            isOpen={this.state.gameMaskOpen}
-            onGameMaskOpen={this.onGameMaskOpen}
-            onGameMaskClose={this.onGameMaskClose}
           />
         }
         {serverType === ServerType.CHANNEL &&
@@ -89,35 +101,31 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
         {serverType === ServerType.CUGAME &&
           <CharacterInfo
             character={character}
+            characters={characters}
             selectedServer={selectedServer}
+            hasAccessToServers={this.state.hasAccess}
             onNavigateToCharacterSelect={onNavigateToCharacterSelect}
-            isOpen={this.state.characterInfoOpen}
-            onCharacterInfoOpen={this.onCharacterInfoOpen}
-            onCharacterInfoClose={this.onCharacterInfoClose}
           />
         }
       </ButtonContainer>
     );
   }
 
-  public componentWillReceiveProps(nextProps: CharacterButtonProps) {
-    const serversNotEmpty = _.isEmpty(this.props.servers) && !_.isEmpty(nextProps.servers);
-    const serverTypeChange = this.props.serverType !== nextProps.serverType;
-    const charactersNotEmpty = _.isEmpty(this.props.characters) && !_.isEmpty(nextProps.characters);
-    const selectedServerChange = !_.isEqual(this.props.selectedServer, nextProps.selectedServer);
-
-    if (serversNotEmpty || serverTypeChange) {
-      this.initializeSelectedServer(nextProps);
-    }
-
-    if (charactersNotEmpty || selectedServerChange) {
-      this.initializeSelectedCharacter(nextProps);
-    }
-  }
-
   public componentDidCatch(error: Error, info: any) {
     console.error(error);
     console.log(info);
+  }
+
+  public componentWillUpdate(nextProps: CharacterButtonProps) {
+    const { selectedServer, character, characters } = nextProps;
+    if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type !== this.props.serverType) {
+      this.initializeSelectedServer(this.props);
+    }
+
+    if (!character || character === null || !characters[character.id] ||
+        character.shardID.toString() !== character.shardID.toString()) {
+      this.initializeSelectedCharacter(this.props);
+    }
   }
 
   private initializeSelectedServer = (props: CharacterButtonProps) => {
@@ -129,6 +137,12 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
         values.push(servers[key]);
       }
     });
+    if (values.length === 0) {
+      this.setState({ hasAccess: false });
+      this.props.selectServer(null);
+      return;
+    }
+
     if (props.serverType === ServerType.CHANNEL) {
       this.props.selectServer(values.find(value => value.name === 'Editor') || values[0]);
     } else {
@@ -151,30 +165,16 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
       }
     });
 
+    if (serverCharacters) {
+      serverCharacters.sort((a, b) => {
+        return Date.parse(b.lastLogin) - Date.parse(a.lastLogin);
+      });
+    }
+
     if (!character || character === null || !characters[character.id] ||
         character.shardID.toString() !== selectedServer.shardID.toString()) {
       this.props.selectCharacter(serverCharacters[0]);
     }
-  }
-
-  private onGameMaskOpen = () => {
-    this.setState({ gameMaskOpen: true });
-    events.fire('play-sound', 'select-change');
-  }
-
-  private onGameMaskClose = () => {
-    this.setState({ gameMaskOpen: false });
-  }
-
-  private onCharacterInfoOpen = () => {
-    if (!this.state.characterInfoOpen) {
-      this.setState({ characterInfoOpen: true });
-      events.fire('play-sound', 'select-change');
-    }
-  }
-
-  private onCharacterInfoClose = () => {
-    this.setState({ characterInfoOpen: false });
   }
 }
 

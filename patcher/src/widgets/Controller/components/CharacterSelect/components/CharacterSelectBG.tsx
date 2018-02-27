@@ -87,8 +87,9 @@ const CharImg = styled('div')`
   width: 100%;
   height: 100%;
   z-index: 2;
+  opacity: ${props => props.opacity};
   background-repeat: no-repeat !important;
-  background-position: 35% !important;
+  background-position: 25% !important;
   background-size: contain !important;
   height: ${props => props.height || 80}%;
   bottom: 25px;
@@ -174,7 +175,11 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
             selectedRace={{ id: visualFXChar.race }}
             selectedGender={visualFXChar.gender}
           />
-          <CharImg className={cx(charImgClass)} height={selectedCharacter.race === Race.Luchorpan ? 65 : 80} />
+          <CharImg
+            className={cx(charImgClass)}
+            height={selectedCharacter.race === Race.Luchorpan ? 65 : 80}
+            opacity={this.state.visualFXChar === null ? 1 : 0}
+          />
           <CharBase className={cx(charBaseClass)} />
           <CharacterInfoOverlay className={cx(charNameClass)}>
             <CharacterName fontSize={this.state.characterNameFontSize}>{selectedCharacter.name}</CharacterName>
