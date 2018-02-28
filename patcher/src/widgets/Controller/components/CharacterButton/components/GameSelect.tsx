@@ -9,7 +9,6 @@ import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
 import { events } from 'camelot-unchained';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
-import { patcher, canAccessChannel } from '../../../../../services/patcher';
 
 const imageShine = keyframes`
   0% {
@@ -198,8 +197,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     for (let i = ServerType.CUGAME; i < ServerType.UNKNOWN; ++i) {
       let anyOfType = false;
       for (const key in this.props.servers) {
-        if (this.props.servers[key].type === i &&
-            canAccessChannel(patcher.getPermissions(), this.props.servers[key].channelPatchPermissions)) {
+        if (this.props.servers[key].type === i) {
           anyOfType = true;
           break;
         }

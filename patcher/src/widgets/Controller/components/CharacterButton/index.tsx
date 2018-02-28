@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { webAPI } from 'camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
-import { patcher, permissionsString, canAccessChannel } from '../../../../services/patcher';
+import { patcher, permissionsString } from '../../../../services/patcher';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
@@ -76,6 +76,15 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
       selectServer,
     } = this.props;
 
+    if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type !== this.props.serverType) {
+      this.initializeSelectedServer(this.props);
+    }
+
+    if (!character || character === null || !characters[character.id] ||
+        (selectedServer && character.shardID !== selectedServer.shardID)) {
+      this.initializeSelectedCharacter(this.props);
+    }
+
     return (
       <ButtonContainer>
         {patcher.getPermissions() &&
@@ -102,6 +111,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
           <CharacterInfo
             character={character}
             characters={characters}
+            servers={servers}
             selectedServer={selectedServer}
             hasAccessToServers={this.state.hasAccess}
             onNavigateToCharacterSelect={onNavigateToCharacterSelect}
@@ -117,23 +127,14 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
   }
 
   public componentWillUpdate(nextProps: CharacterButtonProps) {
-    const { selectedServer, character, characters } = nextProps;
-    if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type !== this.props.serverType) {
-      this.initializeSelectedServer(this.props);
-    }
-
-    if (!character || character === null || !characters[character.id] ||
-        character.shardID.toString() !== character.shardID.toString()) {
-      this.initializeSelectedCharacter(this.props);
-    }
+    
   }
 
   private initializeSelectedServer = (props: CharacterButtonProps) => {
     const values = [];
     const servers = props.servers;
     Object.keys(servers).forEach((key: string) => {
-      if (servers[key].type === props.serverType &&
-        canAccessChannel(patcher.getPermissions(), servers[key].channelPatchPermissions)) {
+      if (servers[key].type === props.serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
         values.push(servers[key]);
       }
     });
@@ -146,6 +147,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     if (props.serverType === ServerType.CHANNEL) {
       this.props.selectServer(values.find(value => value.name === 'Editor') || values[0]);
     } else {
+      this.setState({ hasAccess: true });
       this.props.selectServer(values[0]);
     }
   }

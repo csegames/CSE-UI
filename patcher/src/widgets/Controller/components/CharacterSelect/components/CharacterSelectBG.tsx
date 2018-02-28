@@ -60,6 +60,7 @@ const CharBaseTransitionAnim = css`
 `;
 
 const CharacterInfoOverlay = styled('div')`
+  cursor: default;
   display: block;
   position: absolute;
   bottom: 10%;
@@ -72,6 +73,7 @@ const CharacterName = styled('div')`
   font-family: "Caudex";
   font-size: 28px;
   font-size: ${props => props.fontSize}vw;
+  left: 41%;
 `;
 
 const CharacterMetaInfo = styled('div')`

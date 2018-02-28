@@ -246,6 +246,7 @@ const SpinnerContainer = styled('div')`
 export interface CharacterInfoProps {
   character: webAPI.SimpleCharacter;
   characters: {[id: string]: webAPI.SimpleCharacter};
+  servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
   onNavigateToCharacterSelect: () => void;
   hasAccessToServers: boolean;
@@ -375,7 +376,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         this.setState({ isLoading: false });
         clearInterval(this.loadingInterval);
       } else {
-        if (loadingIntervalCount < 10 && _.isEmpty(this.props.characters)) {
+        if (loadingIntervalCount < 10 && _.isEmpty(this.props.servers)) {
           loadingIntervalCount++;
         } else {
           clearInterval(this.loadingInterval);

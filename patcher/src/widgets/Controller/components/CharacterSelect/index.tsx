@@ -14,6 +14,7 @@ const Container = styled('div')`
   height: 100%;
   opacity: ${props => props.visible ? 1 : 0};
   visibility: ${props => props.visible ? 'visible' : 'hidden'};
+  -webkit-user-select: none;
 `;
 
 const Overlay = styled('div')`
