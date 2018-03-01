@@ -8,6 +8,7 @@ import { TabPanel } from 'camelot-unchained/lib/components';
 import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
 import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import ClientInterface from 'camelot-unchained/lib/core/clientInterface';
 
 type Content = string | ObjectMap<any>;
 
@@ -71,17 +72,20 @@ const buttonStyle: {
   },
 };
 
-function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any> }) {
+function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface }) {
   // @ts-ignore: no-unused-locals
   const data = namespaces.data;
   // @ts-ignore: no-unused-locals
   const graphql = namespaces.graphql;
+  // @ts-ignore: no-unused-locals
+  const client = namespaces.client;
   // tslint:disable-next-line
   return (s: string) => { return eval(s); };
 }
 
 // @ts-ignore: no-unused-locals
-function parseTemplate(template: any, namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any> }) {
+function parseTemplate(template: any,
+   namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface  }) {
   const ctx = evalContext(namespaces);
   return template.replace(/\${([^\s]*)}/g, (m: any, key: any) => {
     return ctx(key) || '';
@@ -143,6 +147,7 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
           graphql: {
             data: this.props.graphql.data,
           },
+          client,
         });
         return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
       }
@@ -151,6 +156,7 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
       const parsedContent = parseTemplate(this.props.content, {
         data: this.props.data,
         graphql: null,
+        client,
       });
       return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
     } else {
