@@ -64,16 +64,16 @@ const CharacterInfoOverlay = styled('div')`
   display: block;
   position: absolute;
   bottom: 10%;
-  left: 50%;
   z-index: 11;
   color: white;
+  left: 41%;
+  opacity: ${props => props.opacity};
 `;
 
 const CharacterName = styled('div')`
   font-family: "Caudex";
   font-size: 28px;
   font-size: ${props => props.fontSize}vw;
-  left: 41%;
 `;
 
 const CharacterMetaInfo = styled('div')`
@@ -108,6 +108,7 @@ const CharBase = styled('div')`
   bottom: 0px !important;
   right: 0px;
   z-index: 1;
+  opacity: ${props => props.opacity};
   &.arthurian {
     background-image: url(images/visualfx/art/art-base.png);
   }
@@ -182,10 +183,12 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
             height={selectedCharacter.race === Race.Luchorpan ? 65 : 80}
             opacity={this.state.visualFXChar === null ? 1 : 0}
           />
-          <CharBase className={cx(charBaseClass)} />
-          <CharacterInfoOverlay className={cx(charNameClass)}>
+          <CharBase className={cx(charBaseClass)} opacity={this.state.visualFXChar === null ? 1 : 0} />
+          <CharacterInfoOverlay className={cx(charNameClass)} opacity={this.state.visualFXChar === null ? 1 : 0}>
             <CharacterName fontSize={this.state.characterNameFontSize}>{selectedCharacter.name}</CharacterName>
-            <CharacterMetaInfo>{Archetype[selectedCharacter.archetype]} - {Race[selectedCharacter.race]}</CharacterMetaInfo>
+            <CharacterMetaInfo>
+              {Archetype[selectedCharacter.archetype]} - {webAPI.raceString(selectedCharacter.race)}
+            </CharacterMetaInfo>
           </CharacterInfoOverlay>
         </div>
       );

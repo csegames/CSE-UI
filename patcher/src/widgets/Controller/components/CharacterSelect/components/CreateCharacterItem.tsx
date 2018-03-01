@@ -31,8 +31,6 @@ const activeShine = keyframes`
 
 const activeItem = css`
   filter: brightness(180%);
-  left: -2px;
-  top: -2px;
 
   &:before {
     content: "";

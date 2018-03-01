@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { keyframes, css } from 'react-emotion';
-import { webAPI, Gender, Archetype, Race, Spinner } from 'camelot-unchained';
+import { events, webAPI, Gender, Archetype, Race, Spinner } from 'camelot-unchained';
 
 import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';
@@ -282,6 +282,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
       return (
         <Container
           className='character-button-char-container'
+          onMouseEnter={this.playSound}
           onClick={onNavigateToCharacterSelect}
         >
           <IdleShine />
@@ -388,6 +389,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
 
   public componentWillUnmount() {
     clearTimeout(this.initialTimeout);
+  }
+
+  private playSound = () => {
+    events.fire('play-sound', 'select-change');
   }
 
   private noAccessError = () => {
