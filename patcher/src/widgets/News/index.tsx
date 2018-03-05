@@ -87,7 +87,7 @@ export interface NewsState extends FetchStatus {
 
 const postsPerPage = 12;
 function makePostsUrl(page: number): string {
-  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}?callback=foo`;
+  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}`;
 }
 
 let stateCache: NewsState = utils.merge(defaultFetchStatus, {
