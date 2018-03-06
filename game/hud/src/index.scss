@@ -57,6 +57,10 @@ body {
     }
   }
 
+  .display-none {
+    display: none;
+  }
+
   .loading-spin {
     -webkit-animation: loading-spin 1s infinite;
     animation: loading-spin 1s infinite;

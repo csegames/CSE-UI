@@ -23,14 +23,14 @@
   "resolution": "typings",
   "moduleResolution": "node",
   "exclude": [
+    "node_modules",
     "typings/browser.d.ts",
     "typings/browser",
     "typings/main.d.ts",
     "typings/main",
     "tmp",
     "dist",
-    "publish",
-    "node_modules"
+    "publish"
   ],
   "atom": {
     "rewriteTsconfig": false

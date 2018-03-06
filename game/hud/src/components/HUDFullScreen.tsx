@@ -10,7 +10,7 @@ import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 // import Social from '../widgets/Social';
 import Character from '../widgets/Character';
-import Map from '../widgets/Map';
+import Map from './Map';
 
 export interface HUDFullScreenStyle extends StyleDeclaration {
   hudFullScreen: React.CSSProperties;
@@ -209,7 +209,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   // }
 
   private renderMap = (prop: { active: boolean }) => {
-    return <Map visibleComponent={this.state.visibleComponent} />;
+    return <Map />;
   }
 
   private handleNavigation = (name: string) => {
