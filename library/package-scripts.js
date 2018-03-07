@@ -54,11 +54,8 @@ module.exports = {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/graphql/schema.json',
       typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',
       default: 'nps gql.schema && nps gql.typings',
+      localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
+      local: 'nps gql.localschema && nps gql.typings'
     },
-    gqlLocal: {
-      schema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
-      typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',
-      default: 'nps gqlLocal.schema && nps gqlLocal.typings',
-    }
   }
 };

@@ -66,6 +66,14 @@ body {
     animation: loading-spin 1s infinite;
   }
 
+  .map-tooltip {
+    position: relative;
+    padding: 1px 3px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    white-space: nowrap;
+  }
+
   @-webkit-keyframes loading-spin {
     from {
       -webkit-transform: rotate(0deg);
