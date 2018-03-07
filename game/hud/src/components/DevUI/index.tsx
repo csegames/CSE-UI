@@ -152,17 +152,13 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
         return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
       }
       return <div>Loading...</div>;
-    } else if (this.props.data && !this.props.graphql) {
+    } else {
       const parsedContent = parseTemplate(this.props.content, {
         data: this.props.data,
         graphql: null,
         client,
       });
       return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
-    } else {
-      return <div dangerouslySetInnerHTML={{
-        __html: this.props.content as any,
-      }} />;
     }
   }
 }
@@ -304,7 +300,6 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
 
   constructor(props: {}) {
     super(props);
-
     this.state = null;
   }
 
