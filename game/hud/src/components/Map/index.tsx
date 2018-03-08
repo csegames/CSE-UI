@@ -8,14 +8,54 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import OL from 'ol';
 import { CUQuery } from 'camelot-unchained/lib/graphql/schema';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
 
 declare const ol: typeof OL;
 
 const Container = styled('div')`
 `;
 
-export interface Props extends GraphQLInjectedProps<Pick<CUQuery, 'world'>> {
+const query = `
+{
+  world {
+    map {
+      static {
+        position
+        anchor
+        tooltip
+        src
+        offset
+        size
+        color
+        actions {
+          onClick {
+            type
+            command
+          }
+        }
+      }
+
+      dynamic {
+        position
+        anchor
+        tooltip
+        src
+        offset
+        size
+        color
+        actions {
+          onClick {
+            type
+            command
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export interface Props {
 
 }
 
@@ -45,49 +85,9 @@ export class GameMap extends React.Component<Props, State> {
       <Container style={{ position: 'relative' }}>
         <div id='worldmap' ref={r => this.mapRef = r} ></div>
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
+        <GraphQL query={query} onQueryResult={this.onQueryResult}/>
       </Container>
     );
-  }
-
-  public componentWillReceiveProps(nextProps: Props) {
-    if (!this.map || nextProps.graphql.loading || !nextProps.graphql.data) {
-      return;
-    }
-
-    if (!nextProps.graphql.data.world || !nextProps.graphql.data.world.map) {
-      // no map data, so nothing to do
-      return;
-    }
-
-    if (nextProps.graphql.data.world.map.dynamic) {
-
-      const features = nextProps.graphql.data.world.map.dynamic.map((point): ol.Feature => {
-        const feature = new ol.Feature({
-          type: 'icon',
-          geometry: new ol.geom.Point(point.position as Coord),
-          content: point.tooltip,
-        });
-
-        let image: ol.style.Icon;
-        image = new ol.style.Icon({
-          src: point.src,
-          color: point.color,
-          // anchor: point.anchor,
-          anchorOrigin: 'top-left',
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
-        });
-
-        feature.setStyle(new ol.style.Style({ image }));
-        return feature;
-      });
-
-      if (features.length > 0) {
-        console.log('adding features');
-        this.dynamicVectorSource.clear();
-        this.dynamicVectorSource.addFeatures(features);
-      }
-    }
   }
 
   public componentDidMount() {
@@ -177,42 +177,46 @@ export class GameMap extends React.Component<Props, State> {
     if (this.initialized) return false;
     return true;
   }
-}
 
-export default withGraphQL(`
-{
-  world {
-    map {
-      static {
-        position
-        anchor
-        tooltip
-        src
-				offset
-        size
-        actions {
-          onClick {
-            type
-            command
-          }
-        }
-      }
+  private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
+    if (!this.map || graphql.loading || !graphql.data) {
+      return;
+    }
 
-      dynamic {
-        position
-        anchor
-        tooltip
-        src
-				offset
-        size
-        actions {
-          onClick {
-            type
-            command
-          }
-        }
+    if (!graphql.data.world || !graphql.data.world.map) {
+      // no map data, so nothing to do
+      return;
+    }
+
+    if (graphql.data.world.map.dynamic) {
+
+      const features = graphql.data.world.map.dynamic.map((point): ol.Feature => {
+        const feature = new ol.Feature({
+          type: 'icon',
+          geometry: new ol.geom.Point(point.position as Coord),
+          content: point.tooltip,
+        });
+
+        let image: ol.style.Icon;
+        image = new ol.style.Icon({
+          src: point.src,
+          color: point.color,
+          // anchor: point.anchor,
+          anchorOrigin: 'top-left',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+        });
+
+        feature.setStyle(new ol.style.Style({ image }));
+        return feature;
+      });
+
+      if (features.length > 0) {
+        this.dynamicVectorSource.clear();
+        this.dynamicVectorSource.addFeatures(features);
       }
     }
   }
 }
-`)(GameMap);
+
+export default GameMap;

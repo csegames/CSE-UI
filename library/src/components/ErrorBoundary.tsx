@@ -8,7 +8,7 @@ import * as React from 'react';
 import client from '../core/client';
 
 export interface ErrorBoundaryProps {
-  renderError?: () => (JSX.Element | React.ReactNode);
+  renderError?: (error: Error, info: { componentStack: string }) => (JSX.Element | React.ReactNode);
   reloadUIOnError?: boolean;
   onError?: (error: Error, info: { componentStack: string }) => void;
   outputErrorToConsole?: boolean;
@@ -16,6 +16,8 @@ export interface ErrorBoundaryProps {
 
 export interface ErrorBoundaryState {
   hasError: boolean;
+  error: Error;
+  info: { componentStack: string };
 }
 
 export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -23,6 +25,8 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
     super(props);
     this.state = {
       hasError: false,
+      error: null,
+      info: null,
     };
   }
 
@@ -36,13 +40,17 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
     if (this.props.reloadUIOnError && !client.debug) {
       client.ReloadAllUI();
     }
-    this.setState({ hasError: true });
+    this.setState({
+      error,
+      info,
+      hasError: true,
+    });
   }
 
   public render() {
     if (this.state.hasError) {
       return this.props.renderError ? 
-        this.props.renderError() : 
+        this.props.renderError(this.state.error, this.state.info) : 
         <h2>Unhandled UI Error! <button onClick={client.ReloadAllUI}>Reload UI</button></h2>;
     }
     return this.props.children as any;

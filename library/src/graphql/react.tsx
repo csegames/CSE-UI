@@ -7,8 +7,9 @@
 import * as React from 'react';
 import { query, QueryOptions, QuickQLQuery, parseQuery, defaultQueryOpts, defaultQuickQLQuery } from './query';
 import { ObjectMap, Omit, withDefaults } from './utils';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
-export interface WithGraphQLOptions extends QueryOptions {
+export interface GraphQLOptions extends QueryOptions {
   // if set to a number greater than 0, in ms, the component will poll the server on an interval
   // skipping the cache (default: 0)
   pollInterval: number;
@@ -18,7 +19,7 @@ export interface WithGraphQLOptions extends QueryOptions {
   // useCache: boolean;
 }
 
-const defaultWithGraphQLOptions : WithGraphQLOptions = {
+const defaultGraphQLOptions : GraphQLOptions = {
   ...defaultQueryOpts,
   pollInterval: 0,
   // useCache: true,
@@ -67,7 +68,7 @@ let conf = withDefaults(null, defaultQueryOpts);
 
 function getOptions() {
   return {
-    ...defaultWithGraphQLOptions,
+    ...defaultGraphQLOptions,
     ...conf,
   };
 }
@@ -78,106 +79,129 @@ export interface GraphQLData<T> {
   lastError: string;
 }
 
-export interface GraphQLProps<T> extends GraphQLData<T> {
+export interface GraphQLResult<T> extends GraphQLData<T> {
   client: GraphQLClient;
   refetch: () => void;
 }
 
 export interface GraphQLInjectedProps<T> {
-  graphql: GraphQLProps<T>;
+  graphql: GraphQLResult<T>;
 }
 
 export function useConfig(config: Partial<GraphQLConfig>) {
   conf = withDefaults(config, conf);
 }
 
+
+export interface GraphQLProps<QueryDataType> extends Partial<GraphQLOptions> {
+  query?: string | Partial<QuickQLQuery>;
+  onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
+}
+
+export interface GraphQLState<T> extends GraphQLData<T> {
+
+}
+
+export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDataType>, GraphQLState<QueryDataType>> {
+  private client: GraphQLClient;
+  private query: QuickQLQuery | undefined;
+  private options: GraphQLOptions;
+  private pollingTimeout: number | null = null;
+
+  constructor(props: GraphQLProps<QueryDataType>) {
+    super(props);
+    this.state = {
+      data: null,
+      loading: false,
+      lastError: null,
+    };
+
+    if (props.query) {
+      const q = typeof props.query === 'string' ? { query: props.query } : props.query;
+      this.query = withDefaults(q, defaultQuickQLQuery);
+    }
+
+    this.options = withDefaults(props, getOptions());
+
+    this.client = new GraphQLClient({
+      url: this.options.url,
+      requestOptions: this.options.requestOptions,
+      stringifyVariables: this.options.stringifyVariables,
+    });
+  }
+
+  public render() {
+    return (
+      <ErrorBoundary renderError={error => <span>GraphQL Component Error: {error}</span>}>
+        {
+          this.props.children ? (this.props.children as any)({
+            ...this.state,
+            client: this.client,
+            refetch: this.refetch,
+          }) : null
+        }
+      </ErrorBoundary>
+    );
+  }
+
+  public componentDidMount() {
+    if (this.options.pollInterval > 0) {
+      this.pollingRefetch();
+    } else if (this.state.data === null) {
+      this.refetch();
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.pollingTimeout) {
+      clearTimeout(this.pollingTimeout);
+      this.pollingTimeout = null;
+    }
+  }
+
+  private refetch = async () => {
+    if (!this.query) return;
+    if (this.state.loading === false) {
+      this.setState({
+        loading: true,
+      });
+    }
+    const result = await this.client.query(this.query);
+    const state = {
+      data: result.data as QueryDataType,
+      loading: false,
+      lastError: result.statusText,
+    };
+    this.setState(state);
+    this.props.onQueryResult && this.props.onQueryResult({
+      ...state,
+      client: this.client,
+      refetch: this.refetch,
+    });
+  }
+
+  private pollingRefetch = async () => {
+    await this.refetch();
+    this.pollingTimeout = setTimeout(this.pollingRefetch, this.options.pollInterval);
+  }
+}
+
 export function withGraphQL<
   PropsType extends GraphQLInjectedProps<QueryDataType | null>,
   QueryDataType = any>(
   query?: string | Partial<QuickQLQuery> | ((props: PropsType) => Partial<QuickQLQuery>),
-  options?: Partial<WithGraphQLOptions> | ((props: PropsType) => Partial<WithGraphQLOptions>)) {
+  options?: Partial<GraphQLOptions> | ((props: PropsType) => Partial<GraphQLOptions>)) {
   
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
     return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
       GraphQLData<QueryDataType | null>> {
-      
-      public client: GraphQLClient;
-      public query: QuickQLQuery | undefined;
-      public opts: WithGraphQLOptions;
-      public pollingTimeout: number | null = null;
-      
-      constructor(props: Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>) {
-        super(props);
-        this.state = {
-          data: null,
-          loading: !!query,
-          lastError: '',
-        };
-
-        if (query) {
-          const q = typeof query === 'string' ? { query } : typeof query === 'function' ? query(props as any) : query;
-          this.query = withDefaults(q, defaultQuickQLQuery);
-        }
-
-        const opt = typeof options === 'function' ? options(props as any) : options;
-        this.opts = withDefaults(opt, getOptions());
-
-        this.client = new GraphQLClient({
-          url: this.opts.url,
-          requestOptions: this.opts.requestOptions,
-          stringifyVariables: this.opts.stringifyVariables,
-        });
-      }
-
-      public componentDidMount() {
-        if (this.opts.pollInterval > 0) {
-          this.pollingRefetch();
-        } else if (this.state.data === null) {
-          this.refetch();
-        }
-      }
-
-      public componentWillUnmount() {
-        if (this.pollingTimeout) {
-          clearTimeout(this.pollingTimeout);
-          this.pollingTimeout = null;
-        }
-      }
-
-      public refetch = async () => {
-        if (!this.query) return;
-        if (typeof query === 'function') {
-          const q = query(this.props as any);
-          this.query = withDefaults(q, this.query);
-        }
-        if (this.state.loading === false) {
-          this.setState({
-            loading: true,
-          });
-        }
-        const result = await this.client.query(this.query);
-        this.setState({
-          data: result.data as QueryDataType,
-          loading: false,
-          lastError: result.statusText,
-        });
-      }
-
-      public pollingRefetch = async () => {
-        await this.refetch();
-        this.pollingTimeout = setTimeout(this.pollingRefetch, this.opts.pollInterval);
-      }
-
       public render() {
         return (
-          <WrappedComponent
-            graphql={{
-              client: this.client,
-              refetch: this.refetch,
-              ...this.state,
-            }}
-            {...this.props}
-          />
+          <GraphQL query={query} {...options}>
+            {
+              (graphql: GraphQLResult<QueryDataType>) => <WrappedComponent graphql={graphql} {...this.props} />
+            }
+          </GraphQL>
         );
       }
     };

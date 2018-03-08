@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { ql } from 'camelot-unchained';
 import { GridStats, Tooltip } from 'camelot-unchained/lib/components';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
 
 import { colors } from '../../../../lib/constants';
 import StatListContainer from '../StatListContainer';
@@ -17,7 +17,21 @@ import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
 
-export interface TraitsProps extends GraphQLInjectedProps<{ myCharacter: ql.schema.CUCharacter }> {
+const query = `
+query TraitsInfo {
+  myCharacter {
+    traits {
+      id
+      name
+      icon
+      description
+      points
+    }
+  }
+}
+`;
+
+export interface TraitsProps {
 }
 
 export interface TraitsState {
@@ -33,57 +47,66 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
   }
 
   public render() {
-    const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
-    if (myCharacter && myCharacter.traits) {
-      return (
-        <StatListContainer
-          onSearchChange={this.onSearchChange}
-          searchValue={this.state.searchValue}
-          renderContent={() => (
-            <GridStats
-              statArray={this.props.graphql.data.myCharacter.traits}
-              searchValue={this.state.searchValue}
-              howManyGrids={1}
-              shouldRenderEmptyListItems={true}
-              renderHeaderItem={() => (
-                <DescriptionItem>
-                  <header>Name</header>
-                  <header>Points</header>
-                </DescriptionItem>
-              )}
-              renderListItem={(item, index) => item && (
-                <Tooltip
-                  styles={{
-                    Tooltip: {
-                      width: '100%',
-                    },
-                    tooltip: {
-                      backgroundColor: 'rgba(0,0,0,0.9)',
-                      maxWidth: '500px',
-                    },
-                  }}
-                  content={() => <TraitSummary trait={item} />}
-                >
-                  <StatListItem
-                    index={index}
-                    statName={item.name}
-                    statValue={item.points}
-                    searchValue={this.state.searchValue}
-                    colorOfName={item.points < 0 ? colors.banePrimary : colors.boonPrimary}
-                  />
-                </Tooltip>
-              )}
-            />
-          )}
-        />
-      );
-    } else {
-      return (
-        <DataUnavailable wait={150}>
-          Boons and Bane data not available at this time.
-        </DataUnavailable>
-      );
-    }
+
+    return (
+      <GraphQL query={query}>
+        {
+          (graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
+            const myCharacter = graphql.data && graphql.data.myCharacter;
+            if (myCharacter && myCharacter.traits) {
+              return (
+                <StatListContainer
+                  onSearchChange={this.onSearchChange}
+                  searchValue={this.state.searchValue}
+                  renderContent={() => (
+                    <GridStats
+                      statArray={graphql.data.myCharacter.traits}
+                      searchValue={this.state.searchValue}
+                      howManyGrids={1}
+                      shouldRenderEmptyListItems={true}
+                      renderHeaderItem={() => (
+                        <DescriptionItem>
+                          <header>Name</header>
+                          <header>Points</header>
+                        </DescriptionItem>
+                      )}
+                      renderListItem={(item, index) => item && (
+                        <Tooltip
+                          styles={{
+                            Tooltip: {
+                              width: '100%',
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(0,0,0,0.9)',
+                              maxWidth: '500px',
+                            },
+                          }}
+                          content={() => <TraitSummary trait={item} />}
+                        >
+                          <StatListItem
+                            index={index}
+                            statName={item.name}
+                            statValue={item.points}
+                            searchValue={this.state.searchValue}
+                            colorOfName={item.points < 0 ? colors.banePrimary : colors.boonPrimary}
+                          />
+                        </Tooltip>
+                      )}
+                    />
+                  )}
+                />
+              );
+            } else {
+              return (
+                <DataUnavailable wait={150}>
+                  Boons and Bane data not available at this time.
+                </DataUnavailable>
+              );
+            }
+          }
+        }
+      </GraphQL>
+    );
   }
 
   private onSearchChange = (searchValue: string) => {
@@ -91,18 +114,4 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
   }
 }
 
-const TraitsInfoWithQL = withGraphQL(`
-  query TraitsInfo {
-    myCharacter {
-      traits {
-        id
-        name
-        icon
-        description
-        points
-      }
-    }
-  }
-`)(Traits);
-
-export default TraitsInfoWithQL;
+export default Traits;
