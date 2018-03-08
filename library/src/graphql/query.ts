@@ -6,7 +6,8 @@
 
 import * as _ from 'lodash';
 import { request as httpRequest, RequestOptions } from '../utils/request';
-import { ObjectMap, withDefaults } from './utils';
+import { withDefaults } from '../utils/withDefaults';
+import { ObjectMap } from '../utils/ObjectMap';
 
 // Query Definition as defined by apollo-codegen
 export interface GraphQLQueryDefinition {

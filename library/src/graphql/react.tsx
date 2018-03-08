@@ -7,7 +7,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { query, QueryOptions, QuickQLQuery, parseQuery, defaultQueryOpts, defaultQuickQLQuery } from './query';
-import { ObjectMap, Omit, withDefaults } from './utils';
+import { withDefaults } from '../utils/withDefaults';
+import { ObjectMap } from '../utils/ObjectMap';
+import { Omit } from '../utils/typeUtils';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export interface GraphQLOptions extends QueryOptions {
