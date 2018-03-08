@@ -55,13 +55,3 @@ export const BottomRightVeil = styled('div')`
   height: 260px;
   z-index: 10;
 `;
-
-export const BigBottomVeil = styled('div')`
-  position: absolute;
-  background: url(images/controller/veil-top-bar.png) repeat-x top;
-  bottom: 0px;
-  width: 100%;
-  height: 105px;
-  z-index: 9;
-  transform: rotate(180deg);
-`;

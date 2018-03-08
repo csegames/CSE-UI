@@ -301,7 +301,9 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
               <CharacterInfoContainer>
                 <CharacterName longName={isLongName}>
                   {character.name}
-                  <CharacterMetaInfo>{Archetype[character.archetype]} - {Race[character.race]}</CharacterMetaInfo>
+                  <CharacterMetaInfo>
+                    {Archetype[character.archetype]} - {webAPI.raceString(character.race)}
+                  </CharacterMetaInfo>
                 </CharacterName>
               </CharacterInfoContainer>
               {selectedServer &&

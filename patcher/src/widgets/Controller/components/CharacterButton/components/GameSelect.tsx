@@ -8,7 +8,9 @@
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
 import { events } from 'camelot-unchained';
+import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
+import { patcher, permissionsString } from '../../../../../services/patcher';
 
 const imageShine = keyframes`
   0% {
@@ -70,7 +72,7 @@ const PopupContainer = styled('div')`
   transition: ${props => props.instant ? '' : 'all 0.5s ease'};
 `;
 
-const GameImage = styled('div')`
+const SelectedGame = styled('div')`
   display: inline-block;
   position: relative;
   pointer-events: all;
@@ -83,19 +85,18 @@ const GameImage = styled('div')`
   z-index: 10;
   transition: ${props => props.instant ? '' : 'opacity .3s ease'};
   bottom: 0;
+`;
 
-  &:before {
-    content: '';
-    z-index: 0;
-    position: absolute;
-    bottom: 0;
-    left: 32px;
-    opacity: 0;
-    box-shadow: 0 0 75px 16px rgba(255,255,255,0.89);
-  }
-  &:hover:before {
-    opacity: 1;
-  }
+const AccessLevelText = styled('div')`
+  position: absolute;
+  top: -25px;
+  left: 15px;
+  color: white;
+  font-size: 14px;
+  margin-right: 30px;
+  opacity: ${props => props.opacity};
+  -webkit-transition: 0.4s ease;
+  transition: 0.4s ease;
 `;
 
 export interface GameSelectProps {
@@ -127,12 +128,17 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     const serverTypes: ServerType[] = this.getServerTypes();
     return (
       <div>
+        {patcher.getPermissions() &&
+          <AccessLevelText opacity={this.state.isOpen ? 0 : 0.5}>
+            Your Access Level: {permissionsString(patcher.getPermissions())}
+          </AccessLevelText>
+        }
         <GameMask
           className='character-button-game-mask'
           width={175}
           isCUGame={serverType === ServerType.CUGAME}
         >
-          <GameImage
+          <SelectedGame
             key={serverType}
             img={serverTypeToIcon(serverType)}
             onMouseEnter={this.open}
@@ -149,10 +155,10 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
           onMouseLeave={this.close}
         >
           {serverTypes.map(type => type === this.props.serverType ? null : (
-            <GameImage
+            <GameSelectItem
               key={type}
-              img={serverTypeToIcon(type)}
-              onClick={() => this.onSelectServerType(type)}
+              type={type}
+              onSelectServerType={this.onSelectServerType}
             />
           ))}
         </PopupContainer>
@@ -163,7 +169,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
   public componentDidMount() {
     setTimeout(() => {
       this.setState({ popupHeight: this.popupRef.getBoundingClientRect().height });
-    }, 300);
+    }, 800);
   }
 
   private open = () => {

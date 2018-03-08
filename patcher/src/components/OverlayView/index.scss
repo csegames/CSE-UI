@@ -32,7 +32,7 @@
 }
 
 .View {
-  height: calc(100% - 105px);
+  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   background-color: #1a1a1a;
@@ -51,7 +51,11 @@
 .View {
   .cse-chat {
     position: absolute;
-    height: calc(100% - 105px);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
   }
   .cu-character-creation {
     position: absolute;

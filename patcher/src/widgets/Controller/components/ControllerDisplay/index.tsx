@@ -11,6 +11,7 @@ import { events, webAPI } from 'camelot-unchained';
 
 import ControllerDisplayView from './components/ControllerDisplayView';
 
+import { Routes } from '../../../../services/session/routes';
 import { GlobalState } from '../../services/session';
 import {
   ControllerState,
@@ -26,6 +27,7 @@ export interface ControllerDisplayReduxProps {
 }
 
 export interface ControllerDisplayProps extends ControllerDisplayReduxProps {
+  activeRoute: Routes;
 }
 
 export interface ControllerDisplayState {
@@ -55,6 +57,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   public render() {
     return (
       <ControllerDisplayView
+        activeRoute={this.props.activeRoute}
         controllerState={this.props.ControllerState}
         selectedServer={this.state.selectedServer}
         selectedCharacter={this.state.selectedCharacter}
@@ -120,6 +123,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
     if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
       events.fire('play-sound', 'select');
+      localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
       this.setState({ selectedCharacter: character });
     }
   }

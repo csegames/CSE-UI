@@ -17,6 +17,7 @@ import ProgressBar from '../../ProgressBar';
 import CharacterButton from '../../CharacterButton';
 import { patcher } from '../../../../../services/patcher';
 
+import { Routes } from '../../../../../services/session/routes';
 import {
   ControllerState,
   PatcherServer,
@@ -43,6 +44,7 @@ const ControllerBody = styled('div')`
 `;
 
 export interface ControllerDisplayViewProps {
+  activeRoute: Routes;
   controllerState: ControllerState;
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
@@ -70,6 +72,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
   }
 
   public render() {
+    const { activeRoute } = this.props;
     const { alerts, servers, characters } = this.props.controllerState;
     const selectedServer = this.props.selectedServer ? servers[this.props.selectedServer.name] : null;
     const selectedCharacter = this.props.selectedCharacter ? characters[this.props.selectedCharacter.id] : null;
@@ -102,6 +105,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
           </div>
         }
         {!this.props.charSelectVisible &&
+          activeRoute !== Routes.NEWS && activeRoute !== Routes.CHAT && activeRoute !== Routes.PATCHNOTES &&
           <ControllerBody>
             <CharacterButton
               character={selectedCharacter}

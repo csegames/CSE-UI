@@ -65,7 +65,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
                 items={this.props.heroContentState.items} />
         </div>
 
-        <Controller onLogIn={this.onLogIn} />
+        <Controller onLogIn={this.onLogIn} activeRoute={this.props.currentRoute} />
         <Sound soundsState={this.props.soundsState} />
         <OverlayView />
       </div>

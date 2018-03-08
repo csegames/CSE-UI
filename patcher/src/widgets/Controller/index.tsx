@@ -9,6 +9,7 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 
 import { thunkMiddleware } from '../../lib/reduxUtils';
+import { Routes } from '../../services/session/routes';
 
 import reducer from './services/session';
 import ControllerDisplay from './components/ControllerDisplay';
@@ -17,6 +18,7 @@ const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
 export interface ControllerProps {
   onLogIn: () => void;
+  activeRoute: Routes;
 }
 
 class ControllerContainer extends React.Component<ControllerProps, {}> {

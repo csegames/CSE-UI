@@ -13,7 +13,6 @@ import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
 import PatchNotes from '../../widgets/PatchNotes';
 import Chat from 'cu-xmpp-chat';
-import { BigBottomVeil } from '../Viels';
 
 export interface OverlayViewProps {
 }
@@ -66,7 +65,6 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         {patcher.hasLoginToken() ?
         <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
           <Chat loginToken={patcher.getLoginToken()} />
-          <BigBottomVeil />
         </div>
         : null }
 
@@ -126,7 +124,6 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         return (
           <div className={`View ${className}`}>
             <News {...props} />
-            <BigBottomVeil />
           </div>
         );
 
@@ -137,7 +134,6 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         return (
           <div className={`View ${className}`}>
             <PatchNotes defaultServer={this.state.selectedServer} />
-            <BigBottomVeil />
           </div>
         );
 

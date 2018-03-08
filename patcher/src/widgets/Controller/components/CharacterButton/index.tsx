@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { webAPI } from 'camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
-import { patcher, permissionsString } from '../../../../services/patcher';
+import { patcher } from '../../../../services/patcher';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
@@ -28,16 +28,6 @@ const HoverArea = styled('div')`
   transform: rotate(35deg);
   z-index: 10;
   cursor: pointer;
-`;
-
-const AccessLevelText = styled('div')`
-  position: absolute;
-  top: -25px;
-  left: 15px;
-  color: white;
-  font-size: 14px;
-  opacity: 0.5;
-  margin-right: 30px;
 `;
 
 export interface CharacterButtonProps {
@@ -82,16 +72,11 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
 
     if (!character || character === null || !characters[character.id] ||
         (selectedServer && character.shardID !== selectedServer.shardID)) {
-      this.initializeSelectedCharacter(this.props);
+      setTimeout(() => this.initializeSelectedCharacter(this.props), 100);
     }
 
     return (
       <ButtonContainer>
-        {patcher.getPermissions() &&
-          <AccessLevelText>
-            Your Access Level: {permissionsString(patcher.getPermissions())}
-          </AccessLevelText>
-        }
         <HoverArea />
         {servers &&
           <GameSelect
@@ -175,7 +160,10 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
 
     if (!character || character === null || !characters[character.id] ||
         character.shardID.toString() !== selectedServer.shardID.toString()) {
-      this.props.selectCharacter(serverCharacters[0]);
+      const lastSelectedCharacterID = localStorage.getItem('cu-patcher-last-selected-character-id');
+      const lastSelectedCharacter = serverCharacters.find((char: webAPI.SimpleCharacter) =>
+        char.id === lastSelectedCharacterID);
+      this.props.selectCharacter(lastSelectedCharacter || serverCharacters[0]);
     }
   }
 }
