@@ -114,14 +114,14 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   private selectServer = (server: PatcherServer) => {
-    if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
+    if (server && server.shardID && !_.isEqual(server, this.state.selectedServer)) {
       events.fire('play-sound', 'select');
       this.setState({ selectedServer: server });
     }
   }
 
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
-    if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
+    if (character && character.id && !_.isEqual(character, this.state.selectedCharacter)) {
       events.fire('play-sound', 'select');
       localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
       this.setState({ selectedCharacter: character });
