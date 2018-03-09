@@ -73,6 +73,11 @@ export class ReconnectingWebSocket {
     this.socket.close();
   }
 
+  public refresh = () => {
+    this.socket.close();
+    this.connect();
+  }
+
   private connect = () => {
     this.socket = new WebSocket(this.url, this.protocols);
     this.socket.onerror = this.error;

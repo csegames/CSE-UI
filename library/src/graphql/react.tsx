@@ -5,8 +5,21 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-import { query, QueryOptions, QuickQLQuery, parseQuery, defaultQueryOpts, defaultQuickQLQuery } from './query';
+import {
+  query,
+  QueryOptions,
+  GraphQLQuery,
+  parseQuery,
+  defaultQueryOpts,
+  defaultQuery,
+} from './query';
+import {
+  subscribe,
+  Subscription,
+  defaultSubscription,
+  SubscriptionResult,
+  SubscriptionManager,
+} from './subscription';
 import { withDefaults } from '../utils/withDefaults';
 import { ObjectMap } from '../utils/ObjectMap';
 import { Omit } from '../utils/typeUtils';
@@ -41,7 +54,7 @@ export class GraphQLClient {
     this.conf = options;
   }
 
-  public query = async (query: QuickQLQuery) => {
+  public query = async (query: GraphQLQuery) => {
     this.lastQuery = query as any;
     this.lastQuery.query = parseQuery(query.query);
     return await this.refetch();
@@ -96,22 +109,29 @@ export function useConfig(config: Partial<GraphQLConfig>) {
 }
 
 
-export interface GraphQLProps<QueryDataType> extends Partial<GraphQLOptions> {
-  query?: string | Partial<QuickQLQuery>;
+export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
+  query: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
+  subscription?: string | (Partial<Subscription> & Partial<GraphQLOptions>);
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
+  subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
 }
 
 export interface GraphQLState<T> extends GraphQLData<T> {
 
 }
 
-export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDataType>, GraphQLState<QueryDataType>> {
+export class GraphQL<QueryDataType, SubscriptionDataType> 
+  extends React.Component<GraphQLProps<QueryDataType, SubscriptionDataType>, GraphQLState<QueryDataType>> {
   private client: GraphQLClient;
-  private query: QuickQLQuery | undefined;
-  private options: GraphQLOptions;
+  private query: GraphQLQuery | undefined;
+  private queryOptions: GraphQLOptions;
+  private subscription: Subscription | undefined;
+  private subscriptionOptions: GraphQLOptions;
   private pollingTimeout: number | null = null;
+  private subscriptionID: string;
+  private subscriptionManager: SubscriptionManager;
 
-  constructor(props: GraphQLProps<QueryDataType>) {
+  constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
     this.state = {
       data: null,
@@ -119,17 +139,20 @@ export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDa
       lastError: null,
     };
 
-    if (props.query) {
-      const q = typeof props.query === 'string' ? { query: props.query } : props.query;
-      this.query = withDefaults(q, defaultQuickQLQuery);
+    const q = typeof props.query === 'string' ? { query: props.query } : props.query;
+    this.query = withDefaults(q, defaultQuery);
+    const qp = typeof props.query === 'string' ? {} : props.query;
+    this.queryOptions = withDefaults<GraphQLOptions>(qp, getOptions());
+
+    if (props.subscription) {
+      const s = typeof props.subscription === 'string' ? { query: props.subscription } : props.subscription;
+      this.subscription = withDefaults(s, defaultSubscription);
     }
 
-    this.options = withDefaults(props, getOptions());
-
     this.client = new GraphQLClient({
-      url: this.options.url,
-      requestOptions: this.options.requestOptions,
-      stringifyVariables: this.options.stringifyVariables,
+      url: this.queryOptions.url,
+      requestOptions: this.queryOptions.requestOptions,
+      stringifyVariables: this.queryOptions.stringifyVariables,
     });
   }
 
@@ -148,10 +171,15 @@ export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDa
   }
 
   public componentDidMount() {
-    if (this.options.pollInterval > 0) {
+    if (this.queryOptions.pollInterval > 0) {
       this.pollingRefetch();
     } else if (this.state.data === null) {
       this.refetch();
+    }
+
+    if (this.props.subscription) {
+      const result = subscribe(this.subscription, this.subscriptionHandler,
+        this.subscriptionOptions, this.subscriptionError);
     }
   }
 
@@ -167,6 +195,18 @@ export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDa
       clearTimeout(this.pollingTimeout);
       this.pollingTimeout = null;
     }
+  }
+
+  private subscriptionHandler = (result: SubscriptionResult<SubscriptionDataType>) => {
+    if (!this.props.subscriptionHandler) return;
+    const data = this.props.subscriptionHandler(result, this.state.data);
+    this.setState({
+      data,
+    });
+  }
+
+  private subscriptionError = (e: ErrorEvent) => {
+    console.error(e);
   }
 
   private refetch = async () => {
@@ -192,22 +232,37 @@ export class GraphQL<QueryDataType> extends React.Component<GraphQLProps<QueryDa
 
   private pollingRefetch = async () => {
     await this.refetch();
-    this.pollingTimeout = setTimeout(this.pollingRefetch, this.options.pollInterval);
+    this.pollingTimeout = setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
   }
 }
 
 export function withGraphQL<
   PropsType extends GraphQLInjectedProps<QueryDataType | null>,
   QueryDataType = any>(
-  query?: string | Partial<QuickQLQuery> | ((props: PropsType) => Partial<QuickQLQuery>),
+  query?: string | Partial<GraphQLQuery> | ((props: PropsType) => Partial<GraphQLQuery>),
   options?: Partial<GraphQLOptions> | ((props: PropsType) => Partial<GraphQLOptions>)) {
   
+  const q = typeof query === 'function' ? query(this.props) : query;
+  const opts = typeof options === 'function' ? options(this.props) : options;
+
+  let queryProp: Partial<GraphQLQuery> & Partial<GraphQLOptions>;
+  if (typeof q === 'string') {
+    queryProp = {
+      query: q,
+      ...opts,
+    };
+  } else {
+    queryProp = {
+      ...q,
+      ...opts,
+    };
+  }
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
     return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
       GraphQLData<QueryDataType | null>> {
       public render() {
         return (
-          <GraphQL query={query} {...options}>
+          <GraphQL query={queryProp}>
             {
               (graphql: GraphQLResult<QueryDataType>) => <WrappedComponent graphql={graphql} {...this.props} />
             }
