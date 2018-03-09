@@ -85,7 +85,11 @@ export class GameMap extends React.Component<Props, State> {
       <Container style={{ position: 'relative' }}>
         <div id='worldmap' ref={r => this.mapRef = r} ></div>
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
-        <GraphQL query={query} onQueryResult={this.onQueryResult}/>
+        <GraphQL
+          query={query}
+          pollInterval={1000}
+          onQueryResult={this.onQueryResult}
+        />
       </Container>
     );
   }
@@ -200,8 +204,9 @@ export class GameMap extends React.Component<Props, State> {
         let image: ol.style.Icon;
         image = new ol.style.Icon({
           src: point.src,
-          color: point.color,
-          // anchor: point.anchor,
+          // color: point.color,
+          // crossOrigin: 'anonymous',
+          anchor: point.anchor,
           anchorOrigin: 'top-left',
           anchorXUnits: 'pixels',
           anchorYUnits: 'pixels',
