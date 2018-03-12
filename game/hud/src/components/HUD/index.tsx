@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import styled from 'react-emotion';
 import { client, events } from 'camelot-unchained';
 import { useConfig } from 'camelot-unchained/lib/graphql/react';
 import DragStore from '../DragAndDrop/DragStore';
@@ -29,7 +28,7 @@ import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
-import ScenarioPopup, { ScenarioPopupType } from '../ScenarioPopup';
+import ScenarioPopup from '../ScenarioPopup';
 
 import { ZoneName } from '../ZoneName';
 
@@ -37,17 +36,6 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 
 import Console from '../Console';
-
-const OverlayContainer = styled('div')`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(0,0,0,0.2) 55%, transparent);
-  pointer-events: none;
-  opacity: ${(props: any) => props.opacity};
-`;
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -68,18 +56,9 @@ export interface HUDProps {
 }
 
 export interface HUDState {
-  scenarioWidget: ScenarioPopupType;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
-
-  constructor(props: HUDProps) {
-    super(props);
-    this.state = {
-      scenarioWidget: ScenarioPopupType.None,
-    };
-  }
-
   public render() {
     const widgets = this.props.layout.widgets.map((widget, name) => ({ widget, name })).toArray();
     const locked = this.props.layout.locked;
@@ -99,10 +78,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
 
         <DevUI />
-
-        <OverlayContainer opacity={this.state.scenarioWidget === ScenarioPopupType.None ? 0 : 1}>
-          <ScenarioPopup type={this.state.scenarioWidget} />
-        </OverlayContainer>
+        <ScenarioPopup />
 
         <InteractiveAlert dispatch={this.props.dispatch}
           invites={this.props.invites.invites} />
@@ -113,22 +89,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
       </div>
     );
-  }
-
-  public componentWillReceiveProps(props: HUDProps) {
-    if (!this.props.data && !props.data) return;
-    if (!this.props.data ||
-        (props.data && props.data.myOrder && props.data.myOrder.name !==
-        (this.props.data && this.props.data.myOrder && this.props.data.myOrder.name))) {
-
-      if (this.props.data && this.props.data.myOrder) events.fire('chat-leave-room', this.props.data.myOrder.name);
-
-      // we either are just loading up, or we've changed order.
-      if (props.data.myOrder && props.data.myOrder.id) {
-        // we left our order, leave chat room
-        events.fire('chat-show-room', props.data.myOrder.name);
-      }
-    }
   }
 
   public componentDidMount() {
@@ -158,6 +118,22 @@ class HUD extends React.Component<HUDProps, HUDState> {
       if (currentDate < savedDelayDate) this.setVisibility('welcome', false);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  public componentWillReceiveProps(props: HUDProps) {
+    if (!this.props.data && !props.data) return;
+    if (!this.props.data ||
+        (props.data && props.data.myOrder && props.data.myOrder.name !==
+        (this.props.data && this.props.data.myOrder && this.props.data.myOrder.name))) {
+
+      if (this.props.data && this.props.data.myOrder) events.fire('chat-leave-room', this.props.data.myOrder.name);
+
+      // we either are just loading up, or we've changed order.
+      if (props.data.myOrder && props.data.myOrder.id) {
+        // we left our order, leave chat room
+        events.fire('chat-show-room', props.data.myOrder.name);
+      }
     }
   }
 

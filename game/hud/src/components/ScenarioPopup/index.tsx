@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import { client } from 'camelot-unchained';
 
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';
@@ -32,8 +33,6 @@ export enum ScenarioPopupType {
 }
 
 export interface ScenarioPopupProps {
-  // Will get rid of this, simulating getting type from client
-  type: ScenarioPopupType;
 }
 
 export interface ScenarioPopupState {
@@ -76,10 +75,27 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
     }
   }
 
-  public componentWillReceiveProps(nextProps: ScenarioPopupProps) {
-    if (this.props.type !== nextProps.type) {
-      this.setState({ type: nextProps.type });
+  public componentDidMount() {
+    client.ScenarioRoundEnded((scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {
+      this.handleScenarioType(scenarioEnded, didWin);
+    });
+  }
+
+  private handleScenarioType = (scenarioEnded: boolean, didWin: boolean) => {
+    if (scenarioEnded) {
+      // Show either Victory or Defeat
+      if (didWin) {
+        this.setState({ type: ScenarioPopupType.Victory });
+      } else {
+        this.setState({ type: ScenarioPopupType.Defeat });
+      }
+    } else {
+      // Just show round over
+      client.ReleaseInputOwnership();
+      this.setState({ type: ScenarioPopupType.RoundOver });
     }
+
+    setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
   }
 }
 

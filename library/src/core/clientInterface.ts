@@ -601,6 +601,9 @@ interface clientInterface {
 
   /* Dev UI */
   OnUpdateDevUI(c: (pageID: string, rootPage: any) => void): void;
+
+  /* Scenarios */
+  ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 }
 
 export default clientInterface;

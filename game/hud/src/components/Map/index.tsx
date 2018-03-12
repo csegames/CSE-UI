@@ -162,8 +162,6 @@ export class GameMap extends React.Component<Props, State> {
           point.position[1] / this.metadata.ScalePxToM,
         ];
 
-        console.log(`player position: ${projectedPosition.join(',')}`);
-
         const feature = new ol.Feature({
           type: 'icon',
           geometry: new ol.geom.Point(projectedPosition),

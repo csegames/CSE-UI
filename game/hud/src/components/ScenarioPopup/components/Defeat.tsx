@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, blast, slideUp, glow, fadeIn, fadeInOut } from '../animations';
+import { slideDownBounceUp, blast, slideUp, glow, fadeIn, fadeOut, fadeInOut } from '../animations';
 
 const slideBounceTime = 0.4;
 
@@ -22,9 +22,9 @@ const Container = styled('div')`
   width: 700px;
   height: 370px;
   -webkit-animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s;
+    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
   animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s;
+    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
 `;
 
 const RadialGradient = styled('div')`

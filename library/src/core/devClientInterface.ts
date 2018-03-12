@@ -533,6 +533,9 @@ const devClientInterface: clientInterface = {
   OnUpdateDevUI: (c: (pageID: string, rootPage: any) => void): void => {
   },
 
+  /* Scenarios */
+  ScenarioRoundEnded: (c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void => {
+  },
 
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',

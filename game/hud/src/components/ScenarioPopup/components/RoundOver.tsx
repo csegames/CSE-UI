@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, fadeIn, slideUp } from '../animations';
+import { slideDownBounceUp, fadeIn, fadeOut, slideUp } from '../animations';
 
 const slideBounceTime = 0.4;
 
@@ -21,9 +21,9 @@ const Container = styled('div')`
   width: 700px;
   height: 370px;
   -webkit-animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s;
+    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
   animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s;
+    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
 `;
 
 const Frame = styled('div')`
@@ -90,10 +90,6 @@ class RoundOver extends React.Component<RoundOverProps> {
         <BackgroundShadow />
       </Container>
     );
-  }
-
-  public componentDidMount() {
-
   }
 }
 
