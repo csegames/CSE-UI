@@ -9,6 +9,8 @@ import styled from 'react-emotion';
 import OL from 'ol';
 import { CUQuery } from 'camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
+import { request } from 'camelot-unchained/lib/utils/request';
+import { client } from 'camelot-unchained';
 
 declare const ol: typeof OL;
 
@@ -55,12 +57,23 @@ const query = `
 }
 `;
 
+interface MapMetadata {
+  ZoneName: string;
+  ResourceID: string;
+  MapBoundsM: {
+    min: { x: number; y: number; z: number; };
+    max: { x: number; y: number; z: number; };
+  };
+  MapResolutionPx: { x: number; y: number; };
+  ScalePxToM: number;
+}
+
+
 export interface Props {
 
 }
 
 export interface State {
-
 }
 
 type Coord = [number, number];
@@ -73,10 +86,13 @@ export class GameMap extends React.Component<Props, State> {
   private staticVectorSource: ol.source.Vector;
   private dynamicVectorSource: ol.source.Vector;
   private initialized = false;
+  private zoneID: string;
+  private metadata: MapMetadata;
 
   constructor(props: Props) {
     super(props);
     this.state = {
+      metadata: null,
     };
   }
 
@@ -95,9 +111,97 @@ export class GameMap extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    const height = 4525;
-    const width = 4512;
-    const extent: [number, number, number, number] = [width * -0.5, height * -0.5, width * 0.5, height * 0.5];
+    this.initialized = true;
+    client.OnCharacterZoneChanged((id) => {
+      this.zoneID = id;
+      this.fetchMetaData();
+    });
+  }
+
+  public componentWillUnmount() {
+    this.map.setTarget(undefined);
+    this.dynamicVectorSource.clear();
+    this.staticVectorSource.clear();
+    this.initialized = false;
+  }
+
+  public shouldComponentUpdate() {
+    if (this.initialized) return false;
+    return true;
+  }
+
+  private fetchMetaData = () => {
+    request('get', `https://s3.amazonaws.com/camelot-unchained/map/zone/${this.zoneID}/metadata.json`)
+      .then((result) => {
+        if (!result.ok) {
+          console.error(result.statusText);
+          setTimeout(() => this.fetchMetaData(), 5000);
+          return;
+        }
+        this.metadata = result.json();
+        this.initializeMap(this.metadata);
+      });
+  }
+
+  private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
+    if (!this.map || graphql.loading || !graphql.data) {
+      return;
+    }
+
+    if (!graphql.data.world || !graphql.data.world.map) {
+      // no map data, so nothing to do
+      return;
+    }
+
+    if (graphql.data.world.map.dynamic) {
+
+      const features = graphql.data.world.map.dynamic.map((point): ol.Feature => {
+
+        const projectedPosition: Coord = [
+          point.position[0] / this.metadata.ScalePxToM,
+          point.position[1] / this.metadata.ScalePxToM,
+        ];
+
+        console.log(`player position: ${projectedPosition.join(',')}`);
+
+        const feature = new ol.Feature({
+          type: 'icon',
+          geometry: new ol.geom.Point(projectedPosition),
+          content: point.tooltip,
+        });
+
+        let image: ol.style.Icon;
+        image = new ol.style.Icon({
+          src: point.src,
+          // color: point.color,
+          // crossOrigin: 'anonymous',
+          anchor: point.anchor,
+          anchorOrigin: 'top-left',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+        });
+
+        feature.setStyle(new ol.style.Style({ image }));
+        return feature;
+      });
+
+      if (features.length > 0) {
+        this.dynamicVectorSource.clear();
+        this.dynamicVectorSource.addFeatures(features);
+      }
+    }
+  }
+
+  private initializeMap = (metadata: MapMetadata) => {
+    // const height = metadata.MapResolutionPx.y;
+    // const width = metadata.MapResolutionPx.x;
+    // const extent: [number, number, number, number] = [width * -0.5, height * -0.5, width * 0.5, height * 0.5];
+    const extent: [number, number, number, number] = [
+      metadata.MapBoundsM.min.x / metadata.ScalePxToM,
+      metadata.MapBoundsM.min.y / metadata.ScalePxToM,
+      metadata.MapBoundsM.max.x / metadata.ScalePxToM,
+      metadata.MapBoundsM.max.y / metadata.ScalePxToM,
+    ];
     const projection = new ol.proj.Projection({
       code: 'map-image',
       units: 'pixels',
@@ -115,12 +219,8 @@ export class GameMap extends React.Component<Props, State> {
     const layers = [
       new ol.layer.Image({
         source: new ol.source.ImageStatic({
-          url: 'images/world-map.jpg',
-          projection: new ol.proj.Projection({
-            code: 'map-image',
-            units: 'pixels',
-            extent,
-          }),
+          projection,
+          url: `https://s3.amazonaws.com/camelot-unchained/map/zone/${metadata.ResourceID}/full.bmp`,
           imageExtent: extent,
         }),
       }),
@@ -166,61 +266,6 @@ export class GameMap extends React.Component<Props, State> {
         this.tooltipRef.innerHTML = feature.get('content');
       }
     });
-
-    this.initialized = true;
-  }
-
-  public componentWillUnmount() {
-    this.map.setTarget(undefined);
-    this.dynamicVectorSource.clear();
-    this.staticVectorSource.clear();
-    this.initialized = false;
-  }
-
-  public shouldComponentUpdate() {
-    if (this.initialized) return false;
-    return true;
-  }
-
-  private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
-    if (!this.map || graphql.loading || !graphql.data) {
-      return;
-    }
-
-    if (!graphql.data.world || !graphql.data.world.map) {
-      // no map data, so nothing to do
-      return;
-    }
-
-    if (graphql.data.world.map.dynamic) {
-
-      const features = graphql.data.world.map.dynamic.map((point): ol.Feature => {
-        const feature = new ol.Feature({
-          type: 'icon',
-          geometry: new ol.geom.Point(point.position as Coord),
-          content: point.tooltip,
-        });
-
-        let image: ol.style.Icon;
-        image = new ol.style.Icon({
-          src: point.src,
-          // color: point.color,
-          // crossOrigin: 'anonymous',
-          anchor: point.anchor,
-          anchorOrigin: 'top-left',
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
-        });
-
-        feature.setStyle(new ol.style.Style({ image }));
-        return feature;
-      });
-
-      if (features.length > 0) {
-        this.dynamicVectorSource.clear();
-        this.dynamicVectorSource.addFeatures(features);
-      }
-    }
   }
 }
 
