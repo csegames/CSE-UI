@@ -19,6 +19,9 @@ export interface WebSocketOptions {
   // How long to wait, in ms, before deciding that a connection attempt has
   // timed out, default 2000
   connectTimeout: number;
+
+  // If true, logs actions taken, default false
+  debug: boolean;
 }
 
 export const defaultWebSocketOptions: WebSocketOptions = {
@@ -26,6 +29,7 @@ export const defaultWebSocketOptions: WebSocketOptions = {
   protocols: '',
   reconnectInterval: 1000,
   connectTimeout: 2000,
+  debug: false,
 };
 
 export class ReconnectingWebSocket {
@@ -36,8 +40,8 @@ export class ReconnectingWebSocket {
   private protocols: string | string[];
   private socket: WebSocket;
   private state: number;
-
   private connectTimeoutHandle: number;
+  private debug: boolean;
 
   public get isOpen() {
     return this.socket && this.socket.readyState === WebSocket.OPEN;
@@ -48,11 +52,15 @@ export class ReconnectingWebSocket {
   }
 
   constructor(options?: Partial<WebSocketOptions>) {
+    if (options && options.debug) {
+      this.log(`constructor => ${options && JSON.stringify(options)}`);
+    }
     const opts =  withDefaults(options, defaultWebSocketOptions);
     this.url = opts.url;
     this.protocols = opts.protocols;
     this.connectTimeoutInterval = opts.connectTimeout;
     this.reconnectInterval = opts.reconnectInterval;
+    this.debug = opts.debug;
     this.connect();
   }
 
@@ -62,6 +70,9 @@ export class ReconnectingWebSocket {
   public onerror = function(event: ErrorEvent) {};
 
   public send = (data: any) => {
+    if (this.debug) {
+      this.log(`send => ${JSON.stringify(data)}`);
+    }
     try {
       this.socket.send(data);
     } catch (err) {
@@ -70,18 +81,27 @@ export class ReconnectingWebSocket {
   }
 
   public close = () => {
+    if (this.debug) {
+      this.log('close');
+    }
     this.socket.close();
   }
 
   public refresh = () => {
+    if (this.debug) {
+      this.log('refresh');
+    }
     this.socket.close();
     this.connect();
   }
 
   private connect = () => {
+    if (this.debug) {
+      this.log(`connect => url: '${this.url}', protocols: '${this.protocols}'`);
+    }
     this.socket = new WebSocket(this.url, this.protocols);
     this.socket.onerror = this.error;
-    this.socket.onmessage = this.onmessage;
+    this.socket.onmessage = this.message;
     this.socket.onclose = this.closed;
     this.socket.onopen = this.open;
     this.connectTimeoutHandle = setTimeout(() => {
@@ -93,6 +113,9 @@ export class ReconnectingWebSocket {
   }
 
   private reconnect = () => {
+    if (this.debug) {
+      this.log('reconnecting');
+    }
     this.socket.close();
     if (this.reconnectInterval < 0) return;
     setTimeout(() => {
@@ -101,11 +124,20 @@ export class ReconnectingWebSocket {
   }
 
   private message = (e: MessageEvent) => {
-    ++this.messageCount;
-    this.onmessage(e);
+    if (this.debug) {
+      this.log(`message => ${JSON.stringify(e)}`);
+    }
+    if (e.data) {
+      ++this.messageCount;
+      this.onmessage(e);
+    }
+    return false;
   }
 
   private error = (e: any) => {
+    if (this.debug) {
+      this.log(`error => ${JSON.stringify(e)}`);
+    }
     switch (e.code) {
       case 'ECONNREFUSED':
         this.reconnect();
@@ -117,11 +149,21 @@ export class ReconnectingWebSocket {
   }
 
   private open = (e: Event) => {
+    if (this.debug) {
+      this.log('connection open');
+    }
     clearTimeout(this.connectTimeoutHandle);
     this.onopen(e);
   }
 
   private closed = (e: CloseEvent) => {
+    if (this.debug) {
+      this.log('connection closed');
+    }
     this.onclose(e);
+  }
+
+  private log = (message: string) => {
+    console.log(`ReconnectingWebSocket | ${message}`);
   }
 }

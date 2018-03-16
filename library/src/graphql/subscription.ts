@@ -8,9 +8,11 @@ import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
 
+
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
   initPayload: any;
+  debug: boolean;
   onDataReceived: (data: DataType) => void;
   onError: (error: Error) => void;
   onClosed: () => void;
@@ -22,6 +24,7 @@ export const defaultSubscriptionOpts: Options<any> = {
   reconnectInterval: 1000,
   connectTimeout: 2000,
   initPayload: {},
+  debug: false,
   onDataReceived: data => console.log(data),
   onError: e => console.error(e),
   onClosed: () => null,
@@ -84,11 +87,17 @@ export const defaultSubscription: Subscription = {
 export class SubscriptionManager {
   private socket: ReconnectingWebSocket;
   private idCounter = 0;
-  private initPayload: any;
-  private subscriptions: ObjectMap<SubscriptionHandle>;
+  private initPayload: ObjectMap<any>;
+  private subscriptions: ObjectMap<SubscriptionHandle> = {};
   private keepAliveTimeoutHandler: number;
+  private debug: boolean = false;
+  private messageQueue: string[] = [];
 
   constructor(options: Partial<Options<any>>) {
+    this.debug = options.debug;
+    if (this.debug) {
+      this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
+    }
     this.socket = new ReconnectingWebSocket(options);
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;
@@ -105,8 +114,12 @@ export class SubscriptionManager {
     const start = {
       id,
       type: GQL_START,
-      payload: JSON.stringify(subscription),
+      payload: subscription,
     };
+
+    if (this.debug) {
+      this.log(`subscribe => ${JSON.stringify(start)}`);
+    }
 
     this.subscriptions[id] = {
       id,
@@ -120,9 +133,14 @@ export class SubscriptionManager {
   }
 
   public stop = (id: string) => {
+    if (this.debug) {
+      this.log(`stop => ${id}`);
+    }
+
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
     }
+
     this.send({
       id,
       type: GQL_STOP,
@@ -130,14 +148,24 @@ export class SubscriptionManager {
   }
 
   private init = () => {
+    if (this.debug) {
+      this.log('init');
+    }
     this.socket.send(JSON.stringify({
       type: GQL_CONNECTION_INIT,
       payload: this.initPayload,
     }));
+    if (this.messageQueue.length > 0) {
+      this.messageQueue.forEach(m => this.socket.send(m));
+      this.messageQueue = [];
+    }
   }
 
   private messageHandler = (e: MessageEvent) => {
     const op = JSON.parse(e.data) as OperationMessage;
+    if (this.debug) {
+      this.log(`messageHandler => op message: ${JSON.stringify(op)}`);
+    }
     switch (op.type) {
       case GQL_CONNECTION_ACK: {
         Object.values(this.subscriptions).forEach(s => this.send(s.start));
@@ -154,6 +182,9 @@ export class SubscriptionManager {
         this.keepAliveTimeoutHandler = setTimeout(() => {
           this.socket.refresh();
         }, 5000);
+        this.send({
+          type: 'ka',
+        });
         break;
       }
       case GQL_CONNECTION_ERROR: {
@@ -195,9 +226,19 @@ export class SubscriptionManager {
   }
 
   private send = (op: OperationMessage) => {
+    if (this.debug) {
+      this.log(`send => op message: ${JSON.stringify(op)}`);
+    }
     if (this.socket.isOpen) {
       this.socket.send(JSON.stringify(op));
+    } else if (this.debug) {
+      this.messageQueue.push(JSON.stringify(op));
+      this.log('op message queued due to socket not open');
     }
+  }
+
+  private log = (message: string) => {
+    console.log(`SubscriptionManager | ${message}`);
   }
 }
 

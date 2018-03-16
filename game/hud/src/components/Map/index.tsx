@@ -17,6 +17,8 @@ declare const ol: typeof OL;
 const Container = styled('div')`
 `;
 
+type QueryDataType = Pick<CUQuery, 'world'>;
+
 const query = `
 {
   world {
@@ -103,13 +105,12 @@ export class GameMap extends React.PureComponent<Props, State> {
       <Container style={{ position: 'relative' }}>
         <div id='worldmap' ref={r => this.mapRef = r} ></div>
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
-        {this.state.updateMap ?
-          <GraphQL
-            query={query}
-            pollInterval={2000}
-            onQueryResult={this.onQueryResult}
-          /> : null
-        }
+        <GraphQL
+          query={{
+            query,
+          }}
+          onQueryResult={this.onQueryResult}
+        />
       </Container>
     );
   }
@@ -121,7 +122,7 @@ export class GameMap extends React.PureComponent<Props, State> {
       this.fetchMetaData();
     });
 
-    this.navigationEventHandle = events.on('hudnav--navigate', this.handleNavigationEvent);
+    this.fetchMetaData();
   }
 
   public componentWillUnmount() {
@@ -155,6 +156,7 @@ export class GameMap extends React.PureComponent<Props, State> {
   }
 
   private fetchMetaData = () => {
+    this.zoneID = '762';
     request('get', `https://s3.amazonaws.com/camelot-unchained/map/zone/${this.zoneID}/metadata.json`)
       .then((result) => {
         if (!result.ok) {
@@ -167,7 +169,7 @@ export class GameMap extends React.PureComponent<Props, State> {
       });
   }
 
-  private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
+  private onQueryResult = (graphql: GraphQLResult<QueryDataType>) => {
     if (!this.map || graphql.loading || !graphql.data) {
       return;
     }

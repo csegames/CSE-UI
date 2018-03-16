@@ -19,6 +19,8 @@ import {
   defaultSubscription,
   SubscriptionResult,
   SubscriptionManager,
+  Options as SubscriptionOptions,
+  defaultSubscriptionOpts,
 } from './subscription';
 import { withDefaults } from '../utils/withDefaults';
 import { ObjectMap } from '../utils/ObjectMap';
@@ -111,7 +113,7 @@ export function useConfig(config: Partial<GraphQLConfig>) {
 
 export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
   query: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
-  subscription?: string | (Partial<Subscription> & Partial<GraphQLOptions>);
+  subscription?: string | (Partial<Subscription> & Partial<SubscriptionOptions<SubscriptionDataType>>);
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
 }
@@ -147,6 +149,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (props.subscription) {
       const s = typeof props.subscription === 'string' ? { query: props.subscription } : props.subscription;
       this.subscription = withDefaults(s, defaultSubscription);
+      this.subscriptionOptions = withDefaults(s, defaultSubscriptionOpts as any);
     }
 
     this.client = new GraphQLClient({
@@ -202,6 +205,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     const data = this.props.subscriptionHandler(result, this.state.data);
     this.setState({
       data,
+    });
+    this.props.onQueryResult && this.props.onQueryResult({
+      ...this.state,
+      data: data as QueryDataType,
+      client: this.client,
+      refetch: this.refetch,
     });
   }
 
