@@ -87,7 +87,9 @@ function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>
 function parseTemplate(template: any,
    namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface  }) {
   const ctx = evalContext(namespaces);
-  return template.replace(/%([^%]*)%/g, (m: any, key: any) => {
+
+  // Replace statements wrapped with %% with their retrieved data ex.) %% graphql.data.myCharacter.name %%
+  return template.replace(/%%([\s\S]*?)%%/g, (m: any, key: any) => {
     return ctx(key) || '';
   });
 }
@@ -320,12 +322,12 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //       maxStamina
 //     }
 //   }`,
-//   content: `My Character name: %graphql.data.myCharacter.name% | ` +
-//   `traits length: % graphql.data.myCharacter.traits.length % | ` +
-//   `traits length * 2: % graphql.data.myCharacter.traits.length * 2 % |` +
-//   `do you have more than 2 traits? % graphql.data.myCharacter.traits.length > 2
-//     ? '<font color="green">yes</font>' : '<font color="red">no</font>' % | ` +
-//   `traits: %graphql.data.myCharacter.traits.map(function(t){ return t.name; }).join(', ')%`
+//   content: `My Character name: %%graphql.data.myCharacter.name%% | ` +
+//   `traits length: %% graphql.data.myCharacter.traits.length %% | ` +
+//   `traits length * 2: %% graphql.data.myCharacter.traits.length * 2 %% |` +
+//   `do you have more than 2 traits? %% graphql.data.myCharacter.traits.length > 2
+//     ? '<font color="green">yes</font>' : '<font color="red">no</font>' %% | ` +
+//   `traits: %%graphql.data.myCharacter.traits.map(function(t){ return t.name; }).join(', ')%%`
 //   ,
 // };
 
