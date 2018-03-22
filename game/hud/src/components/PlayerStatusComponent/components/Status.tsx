@@ -40,10 +40,10 @@ class Status extends React.Component<StatusProps, StatusState> {
       this.props.statuses && !this.props.graphql.loading && this.props.graphql.data && this.props.graphql.data.status ?
         <StatusContainer>
           <div>
-          {this.props.statuses.map((status) => {
+          {this.props.statuses.map((status, index) => {
             const statusInfo = this.getStatusInfo(status.id);
             return (
-              <StatusIcon key={status.id} status={statusInfo} />
+              <StatusIcon key={`${index}-${status.id}`} status={statusInfo} />
             );
           })}
           </div>

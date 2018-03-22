@@ -116,7 +116,8 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         break;
       }
       case SlotType.Stack: {
-        itemComponent = <ItemStack count={item.item.stats.item.unitCount} icon={item.icon} />;
+        const count = item.stackedItems ? item.stackedItems.length : item.item.stats.item.unitCount;
+        itemComponent = <ItemStack count={count} icon={item.icon} />;
         break;
       }
       case SlotType.CraftingContainer: {
