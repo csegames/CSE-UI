@@ -14,6 +14,7 @@ import { patcher, canAccessChannel, ChannelStatus } from '../../../../../service
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
+import { APIServerStatus } from '../../ControllerDisplay/index';
 
 const MinimizeAll = styled('div')`
   cursor: pointer;
@@ -42,6 +43,7 @@ export interface CharacterSelectListProps {
   onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
   onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
   charSelectVisible: boolean;
+  apiServerStatus: APIServerStatus;
 }
 
 export interface CharacterSelectListState {
@@ -84,6 +86,7 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
           />
         }
         {_.values(sortedServers).map((server, index) => {
+          const apiServerOnline = this.props.apiServerStatus[server.apiHost];
           const serverCharacters: webAPI.SimpleCharacter[] = [];
           Object.keys(this.props.characters).forEach((key) => {
             if (this.props.characters[key].shardID === server.shardID) {
@@ -104,6 +107,7 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
               charSelectVisible={this.props.charSelectVisible}
               collapsed={this.state.serversCollapsed[server.shardID]}
               onToggleCollapse={this.onToggleCollapse}
+              apiServerOnline={apiServerOnline}
             />
           );
         })}

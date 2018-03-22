@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes, css } from 'react-emotion';
-import { events, signalr } from 'camelot-unchained';
+import { events } from 'camelot-unchained';
 
 import { patcher } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
@@ -67,7 +67,7 @@ const ButtonContainer = styled('div')`
   height: 51px;
   width: 85%;
   margin: 15px 15px 25px 15px;
-  background: url(images/controller/create-new-button.png) no-repeat;
+  background: url(${props => props.backgroundImg}) no-repeat;
   background-size: cover;
   transition: all ease .1s;
   &:hover {
@@ -83,51 +83,81 @@ const Plus = styled('span')`
 const Text = styled('div')`
   display: flex;
   align-items: center;
-  color: white;
+  color: ${props => props.color};
   font-size: 16px;
+`;
+
+const SubText = styled('div')`
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 5px;
+  text-align: center;
+  color: #FF6A6A;
+  font-size: 10px;
+  text-transform: uppercase;
 `;
 
 export interface CreateCharacterItemProps {
   server: PatcherServer;
+  apiServerOnline: 'Online' | 'Offline' | undefined;
 }
 
 class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
   public render() {
+    const { apiServerOnline } = this.props;
+    const backgroundImg = apiServerOnline === 'Online' ? 'images/controller/create-new-button.png' :
+      'images/controller/create-new-button_offline.png';
+    const isOnline = apiServerOnline === 'Online';
+    const isOffline = apiServerOnline === 'Offline';
+    const isChecking = typeof apiServerOnline === 'undefined';
     return (
       <Container>
         <ButtonContainer
           onMouseEnter={this.onMouseEnter}
-          onClick={this.onClick}
-          cursor={this.props.server.available ? 'pointer' : 'not-allowed'}>
-          <Text>
+          backgroundImg={backgroundImg}
+          onClick={isOnline ? this.onClick : this.onClickOffline}
+          cursor={isOnline ? 'pointer' : 'not-allowed'}>
+          <Text color={isOnline ? 'white' : '#FF6A6A'}>
             <Plus>+</Plus>
             Create New Character
           </Text>
+          {isOffline && <SubText>Unavailable</SubText>}
+          {isChecking && <SubText>Checking if server is online</SubText>}
         </ButtonContainer>
       </Container>
     );
   }
 
-  private onClick = () => {
-    if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
-        (!this.props.server.shardID || this.props.server.available)) {
-      events.fire('view-content', view.CHARACTERCREATION, {
-        selectedServer: this.props.server.name,
-        apiHost: this.props.server.apiHost,
-        apiVersion: 1,
-        shard: this.props.server.shardID,
-        apiKey: patcher.getLoginToken(),
-        created: (c) => {
-          events.fire('character-created', c.name);
-          events.fire('view-content', view.NONE);
-        },
-      });
-      events.fire('play-sound', 'server-select');
-    } else {
+  private onClick = (isOnline?: boolean) => {
+    events.fire('view-content', view.CHARACTERCREATION, {
+      selectedServer: this.props.server.name,
+      apiHost: this.props.server.apiHost,
+      apiVersion: 1,
+      shard: this.props.server.shardID,
+      apiKey: patcher.getLoginToken(),
+      created: (c) => {
+        events.fire('character-created', c.name);
+        events.fire('view-content', view.NONE);
+      },
+    });
+    events.fire('play-sound', 'server-select');
+  }
+
+  private onClickOffline = () => {
+    if (this.props.apiServerOnline === 'Offline') {
       toastr.error(
-        'You will not be able to create a character while the server is offline',
-        'Server is offline',
-        {timeOut: 5000},
+        'You will not be able to create a character while the API server is offline',
+        'API Server is offline',
+        {timeOut: 3000},
+      );
+    }
+
+    if (typeof this.props.apiServerOnline === 'undefined') {
+      toastr.error(
+        'Checking if API server is online',
+        'Checking',
+        {timeOut: 3000},
       );
     }
   }

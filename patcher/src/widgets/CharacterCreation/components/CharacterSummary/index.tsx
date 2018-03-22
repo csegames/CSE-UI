@@ -19,7 +19,6 @@ export interface CharacterSummaryStyle extends StyleDeclaration {
   characterContainer: React.CSSProperties;
   standingCharacter: React.CSSProperties;
   characterNameInputContainer: React.CSSProperties;
-  characterNameInput: React.CSSProperties;
 }
 
 export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
@@ -49,16 +48,6 @@ export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
     position: 'relative',
     width: 'auto',
     bottom: '55px',
-  },
-
-  characterNameInput: {
-    border: 0,
-    borderBottom: '2px solid #665546',
-    backgroundColor: 'rgba(0,0,0,1)',
-    color: '#FCFCCF',
-    '::-webkit-input-placeholder': {
-      color: '#FCFCCF',
-    },
   },
 };
 
@@ -107,10 +96,10 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
             ' cu-character-creation__name'}>
             <input
               id='create-character-name-input'
+              autoFocus
               type='text'
               ref={this.props.inputRef}
               placeholder='Enter A Name Here'
-              className={css(ss.characterNameInput, custom.characterNameInput)}
             />
           </div>
         </div>

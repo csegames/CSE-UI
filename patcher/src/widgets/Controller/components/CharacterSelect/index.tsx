@@ -7,6 +7,7 @@ import { PatcherServer, ServerType } from '../../services/session/controller';
 import CharacterSelectList from './components/CharacterSelectList';
 import CharacterSelectBG from './components/CharacterSelectBG'; 
 import CharacterDeleteModal from '../CharacterDeleteModal';
+import { APIServerStatus } from '../ControllerDisplay/index';
 
 const Container = styled('div')`
   position: relative;
@@ -111,6 +112,7 @@ export interface CharacterSelectProps {
   onDeleteCharacterSuccess: (id: string) => void;
   onCloseClick: () => void;
   charSelectVisible: boolean;
+  apiServerStatus: APIServerStatus;
 }
 
 export interface CharacterSelectState {
@@ -159,6 +161,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
             onCharacterSelect={this.onSelectCharacter}
             onChooseCharacter={this.onChooseCharacter}
             charSelectVisible={this.props.charSelectVisible}
+            apiServerStatus={this.props.apiServerStatus}
           />
         </ListContainer>
         <BottomListFade />

@@ -33,7 +33,7 @@
   opacity: .7;
   transition: opacity .2s ease-in-out;
   &:focus, &:hover{
-      opacity: 1;
+    opacity: 1;
   }
 
   input {
@@ -47,16 +47,15 @@
     text-align: center;
     font-size: 1.3em;
     font-weight: 200;
-    box-shadow: inset 0px 0px 3px 0px rgba(200,200,200,.1);
-    border: 1px solid #1a1a1a;
+    border: 1px solid transparent;
+    box-shadow: inset 0px 0px 3px 0px rgba(200,200,200, 0);
     cursor: pointer;
-    &:hover {
-      border: 1px solid #3fd0b0;
-      color: #3fd0b0;
-    }
 
     &:focus {
       outline: 0;
+      border: 1px solid #665546;
+      box-shadow: 0 0px 2px #d7bb4d !important;
+      outline: none;
     }
 
     &.disabled {

@@ -16,6 +16,7 @@ import CharacterSelect from '../../CharacterSelect';
 import ProgressBar from '../../ProgressBar';
 import CharacterButton from '../../CharacterButton';
 import { patcher } from '../../../../../services/patcher';
+import { APIServerStatus } from '../index';
 
 import { Routes } from '../../../../../services/session/routes';
 import {
@@ -50,6 +51,7 @@ export interface ControllerDisplayViewProps {
   selectedCharacter: webAPI.SimpleCharacter;
   charSelectVisible: boolean;
   serverType: ServerType;
+  apiServerStatus: APIServerStatus;
   onLogin: () => void;
   onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
   onToggleCharacterSelect: () => void;
@@ -101,6 +103,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
               onChooseCharacter={this.props.onChooseCharacter}
               onCloseClick={this.props.onToggleCharacterSelect}
               onDeleteCharacterSuccess={this.props.onDeleteCharacterSuccess}
+              apiServerStatus={this.props.apiServerStatus}
             />
           </div>
         }

@@ -69,6 +69,7 @@ export interface CharacterListProps {
   toggleMenu: (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => void;
   onToggleCollapse: (shardID: number, collapsed: boolean) => void;
   charSelectVisible: boolean;
+  apiServerOnline: 'Online' | 'Offline' | undefined;
 }
 
 export interface CharacterListState {
@@ -145,7 +146,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
           )}
           renderListFooter={() => (
             <div>
-              <CreateCharacterItem server={server} />
+              <CreateCharacterItem server={server} apiServerOnline={this.props.apiServerOnline} />
             </div>
           )}
         />

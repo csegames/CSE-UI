@@ -189,7 +189,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     if (!selectedServer) return;
 
     this.setState({ showEuala: false });
-    let launchString = this.commands.toLowerCase();
+    let launchString = this.commands ? this.commands.toLowerCase() : '';
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
       
       if (!launchString.includes('servershardid') && 
@@ -216,6 +216,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       
       launchString += ' autoconnect=1';
     }
+
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
     this.playSound('select');
   }

@@ -21,6 +21,10 @@ import {
   characterRemoved,
 } from '../../services/session/controller';
 
+export interface APIServerStatus {
+  [shardId: string]: 'Online' | 'Offline';
+}
+
 export interface ControllerDisplayReduxProps {
   dispatch?: (action: any) => void;
   ControllerState: ControllerState;
@@ -38,6 +42,7 @@ export interface ControllerDisplayState {
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
   serverListHelper: {[shardId: string]: webAPI.ServerModel};
+  apiServerStatus: APIServerStatus;
 }
 
 class ControllerDisplay extends React.Component<ControllerDisplayProps, ControllerDisplayState> {
@@ -51,6 +56,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
       selectedServer: null,
       selectedCharacter: null,
       serverListHelper: {},
+      apiServerStatus: {},
     };
   }
 
@@ -70,6 +76,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
         selectCharacter={this.selectCharacter}
         selectServer={this.selectServer}
         selectServerType={this.selectServerType}
+        apiServerStatus={this.state.apiServerStatus}
       />
     );
   }
@@ -97,7 +104,24 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   private toggleCharacterSelect = () => {
+    this.updateApiServerStatus();
     this.setState({ charSelectVisible: !this.state.charSelectVisible });
+  }
+
+  private updateApiServerStatus = () => {
+    const { servers } = this.props.ControllerState;
+    const apiServerStatus = {};
+    Object.keys(servers).forEach((_key) => {
+      webAPI.ServersAPI.GetServersV1({ url: servers[_key].apiHost + '/' })
+        .then((_res) => {
+          if (_res.ok) {
+            apiServerStatus[servers[_key].apiHost] = 'Online';
+          } else {
+            apiServerStatus[servers[_key].apiHost] = 'Offline';
+          }
+          this.setState({ apiServerStatus });
+        });
+    });
   }
 
   private selectServerType = (serverType: ServerType) => {

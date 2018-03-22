@@ -52,22 +52,23 @@ const BarContainer = styled('div')`
 `;
 
 const Bar = styled('div')`
+  position: relative;
+  left: ${props => -(100 - props.progress)}%;
   display: flex;
   width: 100%;
+  transition: all linear .5s;
   &:after {
     content: "";
-    transition: all linear .5s
     background: url(images/controller/loading-bar-end.png) no-repeat center right;
-    width: ${props => props.progress >= 10 ? '185px' : `35px`};
+    width: 200px;
     height: 10px;
     margin-top: 2px;
   }
 
   &:before {
     content: "";
-    transition: all linear .5s;
     background: url(images/controller/loading-bar-repeat.png) center;
-    width: ${props => props.progress}%;
+    width: 100%;
     height: 10px;
     margin-top: 2px;
   }

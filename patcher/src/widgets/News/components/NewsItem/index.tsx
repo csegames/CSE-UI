@@ -35,9 +35,9 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
     let fullArticle: any = null;
     if (this.state.showFullArticle) {
       fullArticle = (
-        <div key='0' className='full-article'>
+        <div key='0' className='full-article' onClick={this.hideFullArticle}>
           <div className='article-content card-panel'>
-            <div className='content-container'>
+            <div className='content-container' onClick={e => e.stopPropagation()}>
                 <span className='card-title grey-text' onClick={this.hideFullArticle}
                 dangerouslySetInnerHTML={{
                   __html: `${title}<i class="fa fa-times" aria-hidden="true"></i><p>${dateString}</p>`,

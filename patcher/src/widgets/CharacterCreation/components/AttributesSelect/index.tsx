@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { Race, Gender, Archetype } from 'camelot-unchained';
+import styled from 'react-emotion';
 
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
@@ -24,6 +25,13 @@ export interface AttributesSelectProps {
 
 export interface AttributesSelectState {
 }
+
+const AllocateInstructions = styled('div')`
+  font-size: 12px;
+  color: #605345;
+  font-weight: 600;
+  cursor: default;
+`;
 
 class AttributesSelect extends React.Component<AttributesSelectProps, AttributesSelectState> {
   constructor(props: AttributesSelectProps) {
@@ -72,6 +80,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
               remainingPoints={this.props.remainingPoints}
             />,
           )}
+          <AllocateInstructions>*Hold down buttons to allocate points faster</AllocateInstructions>
         </div>
         <div className='view-content row attributes-view'>
           <div style={{ width: '100%' }} className='col s12'>
