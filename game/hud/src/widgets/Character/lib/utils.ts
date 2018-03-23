@@ -169,13 +169,16 @@ export function getItemInstanceID(item: InventoryItemFragment) {
 }
 
 export function getItemMapID(item: InventoryItemFragment) {
-  if (isCraftingItem(item)) {
-    return item.staticDefinition.name + item.staticDefinition.id;
-  } else if (isStackedItem(item)) {
-    return item.staticDefinition.name + item.staticDefinition.id;
-  } else {
-    return item.id;
+  if (item && item.staticDefinition) {
+    if (isCraftingItem(item)) {
+      return item.staticDefinition.name + item.staticDefinition.id;
+    } else if (isStackedItem(item)) {
+      return item.staticDefinition.name + item.staticDefinition.id;
+    } else {
+      return item.id;
+    }
   }
+  console.error('You provided an item to getItemMapID() function that has staticDefinition of null');
 }
 
 export function firstAvailableSlot(startWith: number, slotNumberToItem: SlotNumberToItem) {
