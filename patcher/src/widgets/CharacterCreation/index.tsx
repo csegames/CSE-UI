@@ -214,6 +214,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
             remainingPoints={remainingPoints}
             banesAndBoonsState={this.props.banesAndBoonsState}
             inputRef={ref => this.characterNameInputRef = ref}
+            characterState={this.props.characterState}
           />
         );
     }

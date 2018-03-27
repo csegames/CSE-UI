@@ -54,7 +54,7 @@ export function createCharacter(model: CharacterCreationModel,
       dispatch(createCharacterSuccess(model));
       return;
     }
-    dispatch(createCharacterFailed(res.data));
+    dispatch(createCharacterFailed(JSON.parse(res.data).FieldCodes[0].Message));
   };
 }
 
@@ -74,7 +74,7 @@ export function createCharacterSuccess(model: CharacterCreationModel) {
 export function createCharacterFailed(error: any) {
   return {
     type: CREATE_CHARACTER_FAILED,
-    error: JSON.parse(error.Message),
+    error: JSON.parse(error),
   };
 }
 

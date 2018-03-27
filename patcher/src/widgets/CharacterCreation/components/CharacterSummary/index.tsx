@@ -12,6 +12,7 @@ import { Race, Gender, Archetype } from 'camelot-unchained';
 import { AttributeInfo } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
+import { CharacterState } from '../../services/session/character';
 import LeftInfoPanel from './components/LeftInfoPanel';
 
 export interface CharacterSummaryStyle extends StyleDeclaration {
@@ -61,6 +62,7 @@ export interface CharacterSummaryProps {
   selectedClass: Archetype;
   remainingPoints: number;
   banesAndBoonsState: BanesAndBoonsState;
+  characterState: CharacterState;
   inputRef: (ref: Element) => void;
 }
 
