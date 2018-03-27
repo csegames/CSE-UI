@@ -10,7 +10,7 @@ import OL from 'ol';
 import { CUQuery } from 'camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
 import { request } from 'camelot-unchained/lib/utils/request';
-import { client } from 'camelot-unchained';
+import { events, client } from 'camelot-unchained';
 
 declare const ol: typeof OL;
 
@@ -74,11 +74,12 @@ export interface Props {
 }
 
 export interface State {
+  updateMap: boolean;
 }
 
 type Coord = [number, number];
 
-export class GameMap extends React.Component<Props, State> {
+export class GameMap extends React.PureComponent<Props, State> {
   private mapRef: HTMLDivElement = null;
   private tooltipRef: HTMLDivElement = null;
   private map: ol.Map;
@@ -88,11 +89,12 @@ export class GameMap extends React.Component<Props, State> {
   private initialized = false;
   private zoneID: string;
   private metadata: MapMetadata;
+  private navigationEventHandle: EventListener;
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      metadata: null,
+      updateMap: false,
     };
   }
 
@@ -101,11 +103,13 @@ export class GameMap extends React.Component<Props, State> {
       <Container style={{ position: 'relative' }}>
         <div id='worldmap' ref={r => this.mapRef = r} ></div>
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
-        <GraphQL
-          query={query}
-          pollInterval={1000}
-          onQueryResult={this.onQueryResult}
-        />
+        {this.state.updateMap ?
+          <GraphQL
+            query={query}
+            pollInterval={2000}
+            onQueryResult={this.onQueryResult}
+          /> : null
+        }
       </Container>
     );
   }
@@ -116,6 +120,8 @@ export class GameMap extends React.Component<Props, State> {
       this.zoneID = id;
       this.fetchMetaData();
     });
+
+    this.navigationEventHandle = events.on('hudnav--navigate', this.handleNavigationEvent);
   }
 
   public componentWillUnmount() {
@@ -123,11 +129,27 @@ export class GameMap extends React.Component<Props, State> {
     this.dynamicVectorSource.clear();
     this.staticVectorSource.clear();
     this.initialized = false;
+    events.off(this.navigationEventHandle);
   }
 
-  public shouldComponentUpdate() {
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
+    if (this.state.updateMap !== nextState.updateMap) return true;
     if (this.initialized) return false;
     return true;
+  }
+
+  private handleNavigationEvent = (name: string) => {
+    if (name === 'map') {
+      this.setState({
+        updateMap: true,
+      });
+    } else {
+      if (this.state.updateMap) {
+        this.setState({
+          updateMap: false,
+        });
+      }
+    }
   }
 
   private fetchMetaData = () => {

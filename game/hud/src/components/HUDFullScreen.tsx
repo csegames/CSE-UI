@@ -267,7 +267,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onCloseFullScreen = (visibleComp?: string) => {
-    events.fire('hudnav--navigate', visibleComp || this.state.visibleComponent);
+    events.fire('hudnav--navigate', '');
+    this.setVisibleComponent('');
   }
 }
 
