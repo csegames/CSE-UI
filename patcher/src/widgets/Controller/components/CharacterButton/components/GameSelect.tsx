@@ -148,7 +148,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
         <PopupContainer
           className='game-popup-container'
           innerRef={r => this.popupRef = r}
-          top={-(this.state.popupHeight + 5)}
+          top={this.popupRef ? -(this.popupRef.getBoundingClientRect().height + 5) : 0}
           opacity={this.state.isOpen ? 1 : 0}
           instant={this.state.instant}
           onMouseEnter={this.open}
@@ -164,12 +164,6 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
         </PopupContainer>
       </div>
     );
-  }
-
-  public componentDidMount() {
-    setTimeout(() => {
-      this.setState({ popupHeight: this.popupRef.getBoundingClientRect().height });
-    }, 800);
   }
 
   private open = () => {
