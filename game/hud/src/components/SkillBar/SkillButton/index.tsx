@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import {
   events,
   client,
@@ -291,6 +292,12 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       const now = Date.now();
       const ring = this.rings[INNER];
       if (ring) {
+        if (this.prevEvent && !_.isEqual(this.prevEvent.timing, event.timing)) {
+          this.rings[INNER] && this.ringStop(INNER);
+          this.runTimerAnimation(event.timing, null, false);
+          return;
+        }
+
         const elapsed = now - ring.event.when;
         const current = Math.floor(ring.event.remaining - elapsed);
         if (current <= 0) {
