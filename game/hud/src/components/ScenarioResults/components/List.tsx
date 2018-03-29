@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { utils } from 'camelot-unchained';
 
-import { FactionColors } from '../constants';
+import { FactionColors } from '../../../lib/factionColors';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';
 import ListItem from './ListItem';

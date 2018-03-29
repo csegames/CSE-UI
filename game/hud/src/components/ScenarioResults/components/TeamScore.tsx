@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css, keyframes } from 'react-emotion';
-import { FactionColors } from '../constants';
+import { FactionColors } from '../../../lib/factionColors';
 import { TeamInterface } from './ScenarioResultsContainer';
 
 const WaitTillWidgetSlideIn = css`

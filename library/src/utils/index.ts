@@ -14,6 +14,7 @@ export * from './colorManipulation';
 export * from './searchUtils';
 export * from './textUtils';
 export * from './injectedProps';
+export * from './distance';
 
 import * as KeyCodes from './keyCodes';
 

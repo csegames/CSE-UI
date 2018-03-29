@@ -17,7 +17,6 @@ import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
 
 import Pills, { Orientation } from './components/Pills';
-import Status from './components/Status';
 
 import { BodyParts } from '../../lib/PlayerStatus';
 
@@ -328,7 +327,7 @@ class PlayerStatusComponent extends React.PureComponent<PlayerStatusComponentPro
             woundColor={dead ? WOUND_COLOR_DEAD : WOUND_COLOR}
           />
         </div>
-        <Status statuses={this.props.playerState.statuses} />
+        {/* <Status statuses={this.props.playerState.statuses} /> */}
       </div>
     );
   }

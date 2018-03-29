@@ -14,10 +14,11 @@ import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql
 import StatusIcon from './StatusIcon';
 
 const StatusContainer = styled('div')`
+  display: inline-block;
   flex-wrap: wrap;
-  position: relative;
-  left: 150px;
-  top: 15px;
+  position: absolute;
+  left: 515px;
+  top: 95px;
   width: fit-content;
   width: 168px;
   height: 35px;
@@ -49,6 +50,11 @@ class Status extends React.Component<StatusProps, StatusState> {
           </div>
         </StatusContainer> : null
     );
+  }
+
+  public shouldComponentUpdate(nextProps: StatusProps) {
+    return !_.isEqual(nextProps.graphql, this.props.graphql) ||
+      !_.isEqual(nextProps.statuses, this.props.statuses);
   }
 
   private getStatusInfo = (id: number) => {

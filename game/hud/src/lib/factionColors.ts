@@ -9,6 +9,7 @@ export interface FactionColorsInterface {
   [id: string]: {
     textColor: string;
     backgroundColor: string;
+    flatBackgroundColor: string;
   };
 }
 
@@ -16,13 +17,16 @@ export const FactionColors: FactionColorsInterface = {
   Arthurian: {
     textColor: '#F43835',
     backgroundColor: 'rgba(237, 81, 81, 0.15)',
+    flatBackgroundColor: '#ED5151',
   },
   Tuatha: {
     textColor: '#8FC971',
     backgroundColor: 'rgba(125, 237, 81, 0.15)',
+    flatBackgroundColor: '#7DED51',
   },
   Viking: {
     textColor: '#63D7FF',
     backgroundColor: 'rgba(80, 157, 235, 0.15)',
+    flatBackgroundColor: '#509DEB',
   },
 };

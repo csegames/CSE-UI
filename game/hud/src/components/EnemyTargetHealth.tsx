@@ -5,20 +5,25 @@
  */
 
 import * as React from 'react';
-import { client, PlayerState } from 'camelot-unchained';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { client, PlayerState, Vec3f, utils } from 'camelot-unchained';
+import HealthBar from './HealthBar';
 
 const Container = styled('div')`
-  width: 415px;
-  height: 248.3px;
+  transform: scale(0.45);
+  -webkit-transform: scale(0.45);
+  margin-left: -125px;
+  margin-top: -80px;
 `;
 
-import PlayerStatusComponent from './PlayerStatusComponent';
-
 export interface PlayerHealthProps {
+
 }
 
 export interface PlayerHealthState {
+  myPlayerPosition: Vec3f;
+  otherPlayerPosition: Vec3f;
   playerState: PlayerState;
 }
 
@@ -26,17 +31,24 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
+      myPlayerPosition: { x: 0, y: 0, z: 0 },
+      otherPlayerPosition: { x: 0, y: 0, z: 0 },
       playerState: null,
     };
   }
 
   public render() {
-    if (!this.state.playerState) return null;
+    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
+
+    const { myPlayerPosition, otherPlayerPosition } = this.state;
+    const distanceToTarget = otherPlayerPosition && myPlayerPosition ?
+      Number(utils.distanceVec3(otherPlayerPosition, myPlayerPosition).toFixed(2)) : 0;
     return (
       <Container>
-        <PlayerStatusComponent
-          containerClass='TargetHealth'
+        <HealthBar
+          type='compact'
           playerState={this.state.playerState}
+          distanceToTarget={distanceToTarget}
         />
       </Container>
     );
@@ -44,14 +56,26 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   public componentDidMount() {
     client.OnEnemyTargetStateChanged(this.setPlayerState);
+    client.OnPlayerStateChanged(this.setMyPlayerPosition);
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return true;
+    return !_.isEqual(nextState.myPlayerPosition, this.state.myPlayerPosition) ||
+      !_.isEqual(nextState.otherPlayerPosition, this.state.otherPlayerPosition) ||
+      !_.isEqual(nextState.playerState, this.state.playerState);
   }
 
   private setPlayerState = (playerState: PlayerState) => {
+    if (playerState && playerState.position) {
+      this.setState({ otherPlayerPosition: playerState.position });
+    }
     this.setState({ playerState });
+  }
+
+  private setMyPlayerPosition = (playerState: PlayerState) => {
+    if (playerState && playerState.position) {
+      this.setState({ myPlayerPosition: playerState.position });
+    }
   }
 }
 
