@@ -255,7 +255,7 @@ interface clientInterface {
   /* Skills */
   SetSkillRunning(callback: (abilityId: string, isRunning: boolean) => void): void;
 
-  SetSkillQueued(callback: (abilityId: string, isQueued) => void): void;
+  SetSkillQueued(callback: (abilityId: string, isQueued: boolean) => void): void;
 
   UpdateSkillCooldown(callback: (abilityId: string, started: number, duration: number) => void): void;
 

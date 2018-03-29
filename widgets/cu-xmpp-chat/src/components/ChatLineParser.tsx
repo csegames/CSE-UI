@@ -46,7 +46,9 @@ class ChatLineParser {
   }
 
   parse(text: string): JSX.Element[] {
-    if (text === null) return null;
+    if (!text) {
+      return null;
+    }
     const keygen = () : number => { return this._key++; };
     const tokens : ChatTextParserToken[] = [];
     // Parsers which need recursion should be first

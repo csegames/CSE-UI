@@ -18,6 +18,9 @@ class ChatTextParser {
     this.tokens = tokens;
   }
   public parse(text: string, callback: (token: number, text: string, match: RegExpExecArray) => JSX.Element[], index: number = 0): JSX.Element[] {
+    if (!text) {
+      return null;
+    }
     let html : JSX.Element[] = [];
     let insert : JSX.Element[];
     let section : string;
