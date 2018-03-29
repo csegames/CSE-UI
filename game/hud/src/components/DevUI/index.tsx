@@ -347,27 +347,22 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
           const page = this.state[k];
           if (!page) return null;
           return (
-            <div
-              key={k}
-              style={{
-                width: `${page.width}px`,
-                height: `${page.height}px`,
-                left: `${page.x}px`,
-                top: `${page.y}px`,
-                position: 'fixed',
-                background: page.background && page.background || '#111',
-                visibility: page.visible ? 'visible' : 'hidden',
-                display: 'flex',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-              }}>
-            <div style={{ flex: 1 }}>
+            <div style={{
+              width: `${page.width}px`,
+              height: `${page.height}px`,
+              left: `${page.x}px`,
+              top: `${page.y}px`,
+              position: 'fixed',
+              visibility: page.visible ? 'visible' : 'hidden',
+              background: page.background && page.background || '#111',
+            }}>
+            <div style={{ position: 'relative' }}>
               {page.showCloseButton ?
                 <a
                   href={'#'}
                   style={{
                     position: 'absolute',
-                    right: '0px',
+                    right: '15px',
                     top: '0px',
                     display: 'flex',
                   }}
@@ -377,7 +372,19 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                       visible: false,
                     },
                   })}>X</a> : null}
-                <DevUIPage {...page} />
+              </div>
+              <div
+                key={k}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                }}>
+                <div style={{ flex: 1 }}>
+                  <DevUIPage {...page} />
+                </div>
               </div>
             </div>
           );
