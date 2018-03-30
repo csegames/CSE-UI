@@ -6,7 +6,7 @@
 
 const FIELD_LISTS = {
   ITEM: [
-    'givenName', 'name', 'id', 'shardID',
+    'givenName', 'debugname', 'id', 'shardID',
   ],
   RECIPE: ['id'],
   ITEM_DEF_REF: [
