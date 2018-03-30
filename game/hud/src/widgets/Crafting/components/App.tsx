@@ -8,6 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { events, client, jsKeyCodes } from 'camelot-unchained';
 import { craftingTimeToString } from '../services/util';
+import { expandError } from '../services/game/crafting/errors';
 
 // Types
 import { Recipe, Ingredient } from '../services/types';
@@ -333,12 +334,12 @@ class App extends React.Component<AppProps, AppState> {
     if (error.FieldCodes) {
       props.dispatch(setMessage({
         type: 'error',
-        message: error.FieldCodes[0].Code + ': ' + error.FieldCodes[0].Message,
+        message: error.FieldCodes[0].Code + ': ' + expandError(error.FieldCodes[0].Message),
       }));
     } else {
       props.dispatch(setMessage({
         type: 'error',
-        message: (error.Code ? error.Code + ': ' : '') + error.Message,
+        message: (error.Code ? error.Code + ': ' : '') + expandError(error.Message),
       }));
     }
   }
