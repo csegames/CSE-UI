@@ -42,7 +42,7 @@ const TYPES: any = {
   'stats.item': FIELD_LISTS.STATS_ITEM,
   'stats.durability': FIELD_LISTS.STATS_DURABILITY,
   ingredientItem: FIELD_LISTS.ITEM_DEF_REF,
-  ingredientDef: FIELD_LISTS.ITEM_DEF_REF,
+  ingredient: FIELD_LISTS.ITEM_DEF_REF,
   'voxStatus.ingredients': FIELD_LISTS.ITEM,
   ingredients: FIELD_LISTS.RECIPE_INGREDIENT_DEF,
   'makeRecipes.ingredients': FIELD_LISTS.MAKE_RECIPE_INGREDIENT_DEF,
@@ -123,15 +123,15 @@ const QUERY_REFINE_RECIPES = GetQueryText('RefineRecipes', {
 });
 
 const QUERY_SHAPE_RECIPES = GetQueryText('ShapeRecipes', {
-  crafting: { shapeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: { shapeRecipes: { outputItem: true, ingredients: { ingredient: true } } },
 });
 
 const QUERY_BLOCK_RECIPES = GetQueryText('BlockRecipes', {
-  crafting: { blockRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: { blockRecipes: { outputItem: true, ingredients: { ingredient: true } } },
 });
 
 const QUERY_MAKE_RECIPES = GetQueryText('MakeRecipes', {
-  crafting: { makeRecipes: { outputItem: true, ingredients: { ingredientDef: true } } },
+  crafting: { makeRecipes: { outputItem: true, ingredients: { ingredient: true } } },
 });
 
 const QUERY_POSSIBLE_ITEMSLOTS = GetQueryText('PossibleItemSlots', {
