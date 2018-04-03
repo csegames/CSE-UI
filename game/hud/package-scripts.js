@@ -84,6 +84,10 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      wyrmlingPrep: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       fledgling: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -126,6 +130,10 @@ module.exports = {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/10/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      wyrmlingPrep: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       wolfhere: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1100/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -166,11 +174,11 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -t [ envify --NODE_ENV production ]',
+          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -u ol -t [ envify --NODE_ENV production ]',
           hiddenFromHelp: true,
         },
         lib: {
-          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk > build/js/lib.js',
+          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
         }
       },
@@ -198,6 +206,10 @@ module.exports = {
       wyrmling: {
         script: 'nps build,clean.wyrmling,copy.wyrmling',
         description: 'Builds the module and copies to the Wyrmling (10) UI override directory',
+      },
+      wyrmlingPrep: {
+        script: 'nps build,clean.wyrmlingPrep,copy.wyrmlingPrep',
+        description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
       },
       fledgling: {
         script: 'nps build,clean.fledgling,copy.fledgling',

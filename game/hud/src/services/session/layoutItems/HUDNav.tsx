@@ -236,8 +236,8 @@ export default {
         },
       },
       {
-        name: 'scoreboard',
-        tooltip: 'Scoreboard',
+        name: 'scenario-results',
+        tooltip: 'Scenario Results',
         iconClass: 'fa-star',
         icon: (
           <span className='fa-stack click-effect'>
@@ -247,7 +247,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'scoreboard');
+          events.fire('hudnav--navigate', 'scenario-results');
         },
       },
       // {

@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import { ql } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { colors, InventoryFilterButton } from '../../lib/constants';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import { ContainerIdToDrawerInfo } from './components/InventoryBase';
 
 export interface InventoryStyle extends StyleDeclaration {
   inventory: React.CSSProperties;
@@ -55,9 +55,11 @@ export const defaultInventoryStyle: InventoryStyle = {
 export interface InventoryProps {
   styles?: Partial<InventoryStyle>;
   visibleComponent: string;
-  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: ql.schema.EquippedItem[];
+  equippedItems: EquippedItemFragment[];
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
+  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
 }
 
 export interface ActiveFilters {
@@ -91,6 +93,8 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
         <InventoryBody
           equippedItems={this.props.equippedItems}
           inventoryItems={this.props.inventoryItems}
+          containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
+          onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
           onChangeInventoryItems={this.props.onChangeInventoryItems}
           searchValue={this.state.filterText}
           activeFilters={this.state.activeFilters}

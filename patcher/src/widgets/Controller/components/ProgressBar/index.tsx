@@ -5,10 +5,11 @@
  */
 
 import * as React from 'react';
-import {webAPI, events, utils} from 'camelot-unchained';
-import {patcher, ChannelStatus} from '../../../../services/patcher';
-import {ServerType, PatcherServer} from '../../services/session/controller';
-import {Progress} from '../../lib/Progress';
+import { utils } from 'camelot-unchained';
+
+import { patcher, ChannelStatus } from '../../../../services/patcher';
+import { PatcherServer } from '../../services/session/controller';
+import ProgressBarView from './components/ProgressBarView';
 
 export interface ProgressBarProps {
   servers: utils.Dictionary<PatcherServer>;
@@ -28,35 +29,25 @@ class ProgressBar extends React.Component<ProgressBarProps, ProgressBarState> {
   }
 
   public render() {
-    let bar: any = null;
+    let progress: number = null;
     let percentDone: number = null;
     if (this.installingChannel !== -1) {
       // are we downloading anything?
-      const downloadRate: number = patcher.getDownloadRate();
       const downloadRemaining: number = patcher.getDownloadRemaining();
       const estimate: number = patcher.getDownloadEstimate();
       percentDone = estimate ? 100.0 - ((downloadRemaining / estimate) * 100) : 0;
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--working' style={{width: `${percentDone}%`}} />;
+      progress = percentDone.toFixed(0) as any;
     } else if (this.props.selectedServer &&
       (this.props.selectedServer.channelStatus === ChannelStatus.Ready ||
-       this.props.selectedServer.channelStatus === ChannelStatus.Running ||
-       this.props.selectedServer.channelStatus === ChannelStatus.Launching)) {
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--complete' style={{width: `100%`}} />;
+        this.props.selectedServer.channelStatus === ChannelStatus.Running ||
+        this.props.selectedServer.channelStatus === ChannelStatus.Launching)) {
+      progress = 100;
     } else {
-      bar = <div className='ProgressBar__bar__fill ProgressBar__bar__fill--error' style={{width: `0%`}} />;
+      progress = 0;
     }
 
     return (
-      <div className='ProgressBar'>
-        <div className='ProgressBar__bar'>{bar}</div>
-        {percentDone === null ? null : <label>{percentDone.toFixed(0)}%</label>}        
-        <div className='ProgressBar__pause ProgressBar__settings--hidden'>
-          <i className='fa fa-pause' aria-hidden='true'></i>
-        </div>
-        <div className='ProgressBar__settings ProgressBar__settings--hidden'>
-          <i className='fa fa-cog' aria-hidden='true'></i>
-        </div>
-      </div>
+      <ProgressBarView progress={progress} />
     );
   }
 

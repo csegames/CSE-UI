@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#cu-character-creation {
+#cu-character-creation, #cu-character-select {
   @import './sass/constants';
   position: fixed;
   top: 0;
@@ -14,7 +14,6 @@
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: url(../images/bg.jpg) repeat-x top center fixed;
   background-color: $color2;
   color: white;
   user-select: none;
@@ -53,17 +52,17 @@
 
 
   ::-webkit-scrollbar {
-    width: 15px;
+    width: 10px;
     height: 12px;
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.5);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom,transparent, #454545, transparent);
-    border: 1px solid #4E4E4E;
+    background: linear-gradient(to bottom, #56473C, #9A846F, #5D4C40);
+    border: 1px solid rgba(255, 216, 180, 0.12);
   }
 
   a {
@@ -77,25 +76,14 @@
     background: url(../images/bg.jpg) repeat-x top center fixed;
     background-color: $color2;
     color: #e2e2e2;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .cu-character-creation__content {
     position: relative;
     height: calc(100% - 70px);
     margin-top: 20px;
-  }
-
-  .cu-character-creation__header {
-    display: flex;
-    align-items: center;
-    padding: 2px 15px;
-    background-color: #0D0D0D;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 10;
-    font-size: 14px;
   }
 
   .cu-btn {

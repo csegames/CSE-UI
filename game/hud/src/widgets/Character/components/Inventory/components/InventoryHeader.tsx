@@ -104,7 +104,7 @@ export class InventoryHeader extends React.Component<InventoryHeaderProps, Inven
               inputWrapper: merge(defaultInventoryHeaderStyle.filterInputWrapper,
                     this.props.styles ? this.props.styles.filterInputWrapper : {}),
             }}
-            onFocus={() => client.RequestInputOwnership()}
+            onClick={() => client.RequestInputOwnership()}
             onBlur={() => client.ReleaseInputOwnership()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onFilterChanged(e.target.value)}
             value={this.props.filterText}

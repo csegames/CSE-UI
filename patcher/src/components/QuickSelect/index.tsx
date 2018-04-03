@@ -7,13 +7,6 @@
 import * as React from 'react';
 import { events } from 'camelot-unchained';
 
-enum QuickSelectDirection {
-  DOWN,
-  UP,
-  LEFT,
-  RIGHT,
-}
-
 export interface QuickSelectProps {
   items: any[];
   selectedItemIndex?: any;
@@ -31,9 +24,6 @@ export interface QuickSelectState {
 }
 
 class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
-  private static idCounter: number = 0;
-  private uniqueId: string = 'QuickSelect-' + QuickSelect.idCounter++;
-
   constructor(props: QuickSelectProps) {
     super(props);
     this.state = {
@@ -77,7 +67,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
           e.stopPropagation();
         }} ><i className={`fa ${this.state.showList ? 'fa-chevron-down' : 'fa-chevron-up'}`} aria-hidden='true'></i></div>
         <div className={`QuickSelect__listView ${this.state.showList ? '' : 'QuickSelect__listView--hidden'}`}
-             style={this.props.items.length > ((420 / (this.props.itemHeight + 1)) | 0) ? {} : {overflow: 'hidden'}} >
+            style={this.props.items.length > ((420 / (this.props.itemHeight + 1)) | 0) ? {} : {overflow: 'hidden'}} >
           {this.props.items.map(this.buildListItem)}
         </div>
       </div>

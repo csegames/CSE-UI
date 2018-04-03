@@ -7,7 +7,6 @@
 import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
-import { fetchJSON } from '../../lib/fetchHelpers';
 import ResponseError from '../../lib/ResponseError';
 
 import { Archetype, Faction } from 'camelot-unchained';

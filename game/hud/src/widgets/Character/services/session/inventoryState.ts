@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { ql } from 'camelot-unchained';
 import { Module } from 'redux-typed-modules';
+import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
 export const types = {
   SET_ITEM_SLOTS: 'charactersheets-inventory-SET_ITEM_SLOTS',
@@ -13,8 +13,8 @@ export const types = {
 
 export interface ItemSlot {
   index: number;
-  item?: ql.schema.Item;
-  stack?: ql.schema.Item[];
+  item?: InventoryItemFragment;
+  stack?: InventoryItemFragment[];
 }
 
 export interface InventoryState {

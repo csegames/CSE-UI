@@ -181,7 +181,10 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
         // If scrollBodyId provided then addEventListener scroll
         if (this.options && this.options.scrollBodyId) {
-          document.getElementById(this.options.scrollBodyId).addEventListener('scroll', this.onScroll);
+          const scrollBody = document.getElementById(this.options.scrollBodyId);
+          if (scrollBody) {
+            scrollBody.addEventListener('scroll', this.onScroll);
+          }
         }
       }
 
@@ -218,7 +221,10 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
         // If scrollBodyId provided then removeEventListener scroll
         if (this.options && this.options.scrollBodyId) {
-          document.getElementById(this.options.scrollBodyId).removeEventListener('scroll', this.onScroll);
+          const scrollBody = document.getElementById(this.options.scrollBodyId);
+          if (scrollBody) {
+            scrollBody.removeEventListener('scroll', this.onScroll);
+          }
         }
       }
 

@@ -7,8 +7,7 @@
 
 import * as React from 'react';
 import { ql } from 'camelot-unchained';
-import styled, { css } from 'react-emotion';
-import { PatcherServer } from '../Controller/services/session/controller';
+import styled from 'react-emotion';
 import Content from './components/Content/Content';
 import SideBar from './components/SideBar/SideBar';
 

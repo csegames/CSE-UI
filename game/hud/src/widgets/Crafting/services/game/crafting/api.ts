@@ -20,10 +20,18 @@ function run(startRequest: () => any) {
   return new Promise((resolve, reject) => {
     startRequest()
       .then((response: any) => {
-        if (response.ok) {
-          resolve(response.data);
-        } else {
-          reject(response.data);
+        try {
+          const data = response.json();
+          if (response.ok) {
+            console.log('RESPONSE OK: ', data);
+            resolve(data);
+          } else {
+            console.log('REJECT: ', data);
+            reject(data);
+          }
+        } catch (e) {
+          console.log('EXCEPTION: ', e);
+          reject({ Code: e.number, Message: e.message });
         }
       })
       .catch((error: any) => {

@@ -5,22 +5,17 @@
  */
 
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import {connect} from 'react-redux';
-import {events} from 'camelot-unchained';
-import Chat from 'cu-xmpp-chat';
-
-import Animate from '../../lib/Animate';
-
-import {patcher, Channel} from '../../services/patcher';
+import { connect } from 'react-redux';
+import { events } from 'camelot-unchained';
 
 // Session
-import reducer, {GlobalState} from '../../services/session';
-import {changeRoute, Routes} from '../../services/session/routes';
-import {HeroContentState, fetchHeroContent, validateHeroContent} from '../../services/session/heroContent';
-import {NewsState, fetchPage} from '../../services/session/news';
-import {SoundsState, muteMusic, unMuteMusic, muteSounds, unMuteSounds} from '../../services/session/sounds';
-import {ChatState, showChat, hideChat} from '../../services/session/chat';
+import { GlobalState } from '../../services/session';
+import { changeRoute, Routes } from '../../services/session/routes';
+import { HeroContentState, fetchHeroContent, validateHeroContent } from '../../services/session/heroContent';
+import { NewsState, fetchPage } from '../../services/session/news';
+import { SoundsState, muteMusic, unMuteMusic, muteSounds, unMuteSounds } from '../../services/session/sounds';
+import { ChatState, showChat } from '../../services/session/chat';
+import { TopVeil, TopLeftVeil, BottomVeil, BottomLeftVeil, BottomRightVeil } from '../Viels';
 
 // Components
 import Hero from '../Hero';
@@ -28,20 +23,10 @@ import Sound from '../Sound';
 import Header from '../Header';
 import WindowHeader from '../WindowHeader';
 
-import OverlayView, {view} from '../OverlayView';
+import OverlayView, { view } from '../OverlayView';
 
 // Widgets
 import Controller from '../../widgets/Controller';
-
-function select(state: GlobalState): PatcherAppProps {
-  return {
-    currentRoute: state.routes.current,
-    heroContentState: state.heroContent,
-    newsState: state.news,
-    soundsState: state.sounds,
-    chatState: state.chat,
-  };
-}
 
 export interface PatcherAppProps {
   dispatch?: (action: any) => void;
@@ -57,18 +42,13 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   private heroContentInterval: any = null;
 
   public render() {
-
-    let chat: any = null;
-    if (this.props.chatState.showChat) {
-      chat = (
-        <div id='chat-window' key='0'>
-          <Chat hideChat={this.hideChat} loginToken={patcher.getLoginToken()} />
-        </div>
-      );
-    }
-
     return (
       <div className='PatcherApp'>
+        <TopVeil />
+        <TopLeftVeil />
+        <BottomVeil />
+        <BottomLeftVeil />
+        <BottomRightVeil />
         <WindowHeader soundsState={this.props.soundsState}
           onMuteSounds={() => this.props.dispatch(this.props.soundsState.playSound ?
             muteSounds(this.props.soundsState) : unMuteSounds(this.props.soundsState))}
@@ -85,7 +65,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
                 items={this.props.heroContentState.items} />
         </div>
 
-        <Controller onLogIn={this.onLogIn} />
+        <Controller onLogIn={this.onLogIn} activeRoute={this.props.currentRoute} />
         <Sound soundsState={this.props.soundsState} />
         <OverlayView />
       </div>
@@ -150,11 +130,6 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     events.fire('play-sound', 'select');
   }
 
-  private hideChat = () => {
-    this.props.dispatch(hideChat());
-    events.fire('play-sound', 'select');
-  }
-
   private showChat = () => {
     this.props.dispatch(showChat());
     events.fire('play-sound', 'select');
@@ -165,20 +140,20 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
     events.fire('play-sound', 'select');
   }
 
-  private onPatcherAPIUpdate = () => {
-    this.setState({});
-  }
-
   private onLogIn = () => {
     setTimeout(() => this.setState({}), 500);
   }
 
 }
 
+function select(state: GlobalState): PatcherAppProps {
+  return {
+    currentRoute: state.routes.current,
+    heroContentState: state.heroContent,
+    newsState: state.news,
+    soundsState: state.sounds,
+    chatState: state.chat,
+  };
+}
+
 export default connect(select)(PatcherApp);
-
-
-          // <Animate animationEnter='slideInRight' animationLeave='slideOutRight'
-          //   durationEnter={400} durationLeave={500}>
-          //   {chat}
-          // </Animate>

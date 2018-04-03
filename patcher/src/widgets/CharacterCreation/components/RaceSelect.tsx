@@ -6,13 +6,11 @@
 
 import * as React from 'react';
 
-import { Race, Faction, Gender, events } from 'camelot-unchained';
+import { Race, Gender, events } from 'camelot-unchained';
 
-import { CharacterCreationPage } from '../index';
-import { raceSteps } from './HelpSteps';
 import { RaceInfo } from '../services/session/races';
 import { FactionInfo } from '../services/session/factions';
-import RaceVisualEffects from './VisualEffects/RaceVisualEffects';
+import RaceVisualEffects from './RaceVisualEffects';
 import Animate from '../../../lib/Animate';
 
 // tslint:disable
@@ -45,8 +43,6 @@ export interface RaceSelectState {
 }
 
 class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
-  private helpEvent: EventListener;
-
   constructor(props: RaceSelectProps) {
     super(props);
     this.state = {
@@ -102,10 +98,6 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
         </div>
       </div>
     );
-  }
-
-  private toggleHelp = () => {
-    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private selectRace = (race: RaceInfo) => {

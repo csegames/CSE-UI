@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import {Post} from '../../../../services/session/news';
+import { Post } from '../../../../services/session/news';
 import Animate from '../../../../lib/Animate';
 
 export interface NewsItemProps {
@@ -35,9 +35,9 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
     let fullArticle: any = null;
     if (this.state.showFullArticle) {
       fullArticle = (
-        <div key='0' className='full-article'>
+        <div key='0' className='full-article' onClick={this.hideFullArticle}>
           <div className='article-content card-panel'>
-            <div className='content-container'>
+            <div className='content-container' onClick={e => e.stopPropagation()}>
                 <span className='card-title grey-text' onClick={this.hideFullArticle}
                 dangerouslySetInnerHTML={{
                   __html: `${title}<i class="fa fa-times" aria-hidden="true"></i><p>${dateString}</p>`,
@@ -81,7 +81,7 @@ class NewsItem extends React.Component<NewsItemProps, NewsItemState> {
             <p dangerouslySetInnerHTML={{__html: post.excerpt.rendered}} />
           </div>
         </div>
-        <Animate animationEnter='slideInUp' animationLeave='slideOutDown'
+        <Animate animationEnter='fadeIn' animationLeave='fadeOut'
           durationEnter={400} durationLeave={500}>
           {fullArticle}
         </Animate>

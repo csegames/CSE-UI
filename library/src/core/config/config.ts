@@ -14,6 +14,8 @@ import KeyBind from './KeyBind';
 import KeyBindConfigVar from './KeyBindConfigVar';
 import keyboardModifier from './keyboardModifier';
 import AudioConfigVar from './AudioConfigVar';
+import vkKeyCodes from './VK_KeyCodes';
+import { getJSKeyCode, getVirtualKeyCode } from './keyCodeMap';
 
 export * from './AudioSetting';
 
@@ -24,8 +26,11 @@ export {
   dxKeyCodes,
   jsKeyCodes,
   jsToDXKeyCodeMap,
+  vkKeyCodes,
   KeyBind,
   KeyBindConfigVar,
   keyboardModifier,
   AudioConfigVar,
+  getJSKeyCode,
+  getVirtualKeyCode,
 };

@@ -1,0 +1,21 @@
+fragment PermissibleHolder on FlagsPermissibleHolderGQL {
+  userPermissions
+  userGrants {
+    permissions
+    target {
+      targetType
+      description
+    }
+  }
+  permissibleSets {
+    keyType
+    isActive
+    permissibles {
+      permissions
+      target {
+        targetType
+        description
+      }
+    }
+  }
+}

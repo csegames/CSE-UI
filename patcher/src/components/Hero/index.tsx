@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import {events} from 'camelot-unchained';
-import {HeroContentItem} from '../../services/session/heroContent';
+import { events } from 'camelot-unchained';
 import Animate from '../../lib/Animate';
+import { HeroContentItem } from '../../services/session/heroContent';
 
 export interface HeroProps {
   isFetching: boolean;
@@ -37,20 +37,25 @@ class Hero extends React.Component<HeroProps, HeroState> {
     const currentItem = this.props.items.length > 0 ? this.renderHeroItem(this.props.items[this.state.currentItem]) : null;
     return (
       <div className={`Hero ${this.state.paused ? 'Hero--paused' : ''}`}>
-        <Animate animationEnter='fadeIn' animationLeave='fadeOut'
-          durationEnter={400} durationLeave={500}
-          className={`Hero__item`}>
+        <Animate
+          animationEnter='fadeIn'
+          animationLeave='fadeOut'
+          durationEnter={400}
+          durationLeave={500}
+          className='Hero__item'
+        >
           {currentItem}
         </Animate>
-        <ul className={`Hero__controls ${this.props.items.length < 2 ? 'hidden' : ''}`}>
+        <div className={`Hero__controls ${this.props.items.length < 2 ? 'hidden' : ''}`}>
           {this.props.items.map((item, index) =>
-            <li
+            <div
               key={index}
-              className={`${this.state.currentItem === index ? 'active' : ''}`}
-              onClick={this.selectIndex.bind(this, index)}>
+              className={`Hero__controls__item ${this.state.currentItem === index ? 'active' : ''}`}
+              onClick={this.onIndexClick.bind(this, index)}
+              onMouseEnter={this.playSound}>
                 {index + 1}
-            </li>)}
-        </ul>
+            </div>)}
+        </div>
       </div>
     );
   }
@@ -62,6 +67,11 @@ class Hero extends React.Component<HeroProps, HeroState> {
 
   private renderHeroItem = (item: HeroContentItem) => {
     return <div key={item.id} dangerouslySetInnerHTML={{__html: `${item.content}`}}></div>;
+  }
+
+  private onIndexClick = (index: number) => {
+    events.fire('play-sound', 'select');
+    this.selectIndex(index);
   }
 
   private selectIndex = (index: number) => {
@@ -82,12 +92,12 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private pause = () => {
     if (this.state.paused) return;
     this.setState({paused: true} as any);
-  }
-  
-  private pauseVids = () => {
     const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
     for (let vid: any = 0; vid < videoElements.length; vid++) {
-      if (!videoElements[vid].paused) videoElements[vid].pause();
+      const v = videoElements[vid];
+      if (!v.paused) {
+        v.pause();
+      }
     }
   }
 
@@ -100,6 +110,10 @@ class Hero extends React.Component<HeroProps, HeroState> {
       if (v.paused) v.play();
     }
     this.timeNext(this.state.currentItem + 1);
+  }
+
+  private playSound = () => {
+    events.fire('play-sound', 'select-change');
   }
 }
 

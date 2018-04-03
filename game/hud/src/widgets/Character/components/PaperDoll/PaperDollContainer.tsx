@@ -6,15 +6,14 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import { bodyParts, client, events } from 'camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
-import { graphql } from 'react-apollo';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql, bodyParts, client } from 'camelot-unchained';
-
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
 
@@ -86,13 +85,12 @@ export interface EquippedItemsMap {
   [slotName: string]: any;
 }
 
-export interface PaperDollProps {
+export interface PaperDollProps extends GraphQLInjectedProps<any> {
   styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: ql.schema.EquippedItem[];
-  onEquippedItemsChange: (equippedItems: ql.schema.EquippedItem[]) => void;
-  data?: any;
+  equippedItems: EquippedItemFragment[];
+  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
 }
 
 export interface PaperDollState {
@@ -100,7 +98,7 @@ export interface PaperDollState {
 }
 
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
-
+  private refetchListener: any;
   constructor(props: PaperDollProps) {
     super(props);
     this.state = {
@@ -109,9 +107,10 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
   public render() {
     const ss = StyleSheet.create({ ...defaultPaperDollStyle, ...this.props.styles });
-    const { myCharacter, myOrder } = this.props.data;
+    const myOrder = this.props.graphql.data && this.props.graphql.data.myOrder;
+    const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
 
-    return (
+    return this.props.graphql.data ? (
       <div className={css(ss.paperDoll)}>
         <img src={'images/paperdollbg.png'} className={css(ss.backgroundImg)} />
         <div className={css(ss.paperdollContainer)}>
@@ -133,16 +132,29 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
           />
         </div>
       </div>
-    );
+    ) : null;
   }
 
   public componentDidMount() {
     this.initializeMaxHealthParts();
+    this.refetchListener = events.on('refetch-character-info', this.refetch);
   }
 
   public componentWillReceiveProps(nextProps: PaperDollProps) {
-    if (!_.isEqual(nextProps.data.myEquippedItems, this.props.data.myEquippedItems)) {
-      this.props.onEquippedItemsChange(nextProps.data.myEquippedItems.items as ql.schema.EquippedItem[]);
+    const graphqlData = this.props.graphql && this.props.graphql.data;
+    const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
+    if (nextGraphqlData && !_.isEqual(nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
+      this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
+    }
+  }
+
+  public componentWillUnmount() {
+    events.off(this.refetchListener);
+  }
+
+  private refetch = () => {
+    if (this.props.graphql) {
+      this.props.graphql.refetch();
     }
   }
 
@@ -155,6 +167,8 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
 }
 
-const PaperDollWithQL = graphql(queries.PaperDollContainer as any)(PaperDoll);
+const PaperDollWithQL = withGraphQL<PaperDollProps>(
+  { query: queries.PaperDollContainer },
+)(PaperDoll);
 
 export default PaperDollWithQL as any;

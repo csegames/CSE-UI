@@ -151,7 +151,7 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
               get: () => this.state.alloyId,
               change: (value: string) => this.setState({ alloyId: value }),
               size: 40,
-              defaultValue: 'item_alloy_vikingsteel 100 1000',
+              defaultValue: 'item_craftingsubstance_aluminum_raw 100 1000',
             })}
           </div>
 

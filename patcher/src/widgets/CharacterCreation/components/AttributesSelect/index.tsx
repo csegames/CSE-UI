@@ -5,16 +5,13 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
+import { Race, Gender, Archetype } from 'camelot-unchained';
+import styled from 'react-emotion';
 
-import { Race, Gender, Archetype, events } from 'camelot-unchained';
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
-
-import { CharacterCreationPage } from '../../index';
 import AttributeRow from './AttributeRow';
-import AttributeView, { AttributeObjectInfo } from './AttributeView';
-import { attributeSteps } from '../HelpSteps';
+import AttributeView from './AttributeView';
 
 export interface AttributesSelectProps {
   attributes: AttributeInfo[];
@@ -29,13 +26,16 @@ export interface AttributesSelectProps {
 export interface AttributesSelectState {
 }
 
-class AttributesSelect extends React.Component<AttributesSelectProps, AttributesSelectState> {
-  private maxAllotments: any;
-  private allotments: any;
+const AllocateInstructions = styled('div')`
+  font-size: 12px;
+  color: #605345;
+  font-weight: 600;
+  cursor: default;
+`;
 
+class AttributesSelect extends React.Component<AttributesSelectProps, AttributesSelectState> {
   constructor(props: AttributesSelectProps) {
     super(props);
-    this.allotments = [] as any;
     this.state = {
     };
   }
@@ -80,6 +80,7 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
               remainingPoints={this.props.remainingPoints}
             />,
           )}
+          <AllocateInstructions>*Hold down buttons to allocate points faster</AllocateInstructions>
         </div>
         <div className='view-content row attributes-view'>
           <div style={{ width: '100%' }} className='col s12'>
@@ -87,53 +88,6 @@ class AttributesSelect extends React.Component<AttributesSelectProps, Attributes
             <AttributeView title='Secondary' statArray={secondaries} />
             <AttributeView title='Derived' statArray={derived} />
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  private generateAttributeView = (info: AttributeInfo, value: number) => {
-    let stringValue: string = value.toFixed(4);
-    switch (info.units.toLowerCase()) {
-      case 'units':
-        stringValue = value.toString();
-        break;
-      case 'units/second':
-        stringValue = value.toFixed(4) + '/s';
-        break;
-      case 'years':
-        stringValue = Math.floor(value) + ' years';
-        break;
-      case 'percent':
-        stringValue = value.toFixed(1) + '%';
-        break;
-      case 'degrees celsius':
-        stringValue = value.toFixed(1) + ' °C';
-        break;
-      case 'kilograms':
-        stringValue = value.toFixed(1) + ' kg';
-        break;
-      case 'meters':
-        stringValue = value.toFixed(1) + ' m';
-        break;
-      case 'meters/second':
-        stringValue = value.toFixed(1) + ' m/s';
-        break;
-      default:
-        stringValue = value.toFixed(4);
-    }
-    return (
-      <div key={info.name} className='attribute-row row'>
-        <div className='col s2 attribute-header'>
-          <div className='col s8 attribute-header-name'>
-            {info.name}
-          </div>
-          <div className='col s4 attribute-header-value'>
-            {stringValue}
-          </div>
-        </div>
-        <div className='col s10 attribute-description'>
-          {info.description}
         </div>
       </div>
     );

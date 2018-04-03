@@ -101,7 +101,14 @@ export class SignalRHub {
     }
   }
 
-  public start(onStart?: (hub: SignalRHub) => void) {
+  public start(onStart?: (hub: SignalRHub) => void, options?: {
+    host: string;
+  }) {
+    if (options) {
+      if (options.host) {
+        this.signalRHost = options.host;
+      }
+    }
     this.conn = ($ as any).hubConnection();
     this.conn.url = this.signalRHost;
     this.hub = this.conn.createHubProxy(this.hubName);

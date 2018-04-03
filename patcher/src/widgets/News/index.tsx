@@ -5,16 +5,15 @@
  */
 
 import * as React from 'react';
-import {Promise} from 'es6-promise';
 import 'isomorphic-fetch';
 
 import ResponseError from '../../lib/ResponseError';
-import {fetchJSON} from '../../lib/fetchHelpers';
+import { fetchJSON } from '../../lib/fetchHelpers';
 
-import {utils} from 'camelot-unchained';
+import { utils } from 'camelot-unchained';
 import NewsItem from './components/NewsItem';
-import {NewsState, Post} from '../../services/session/news';
-import {FetchStatus, defaultFetchStatus, hashMerge} from '../../lib/reduxUtils';
+import { NewsState, Post } from '../../services/session/news';
+import { FetchStatus, defaultFetchStatus, hashMerge } from '../../lib/reduxUtils';
 
 export interface RenderedObject {
   rendered: string;
@@ -88,7 +87,7 @@ export interface NewsState extends FetchStatus {
 
 const postsPerPage = 12;
 function makePostsUrl(page: number): string {
-  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}?callback=foo`;
+  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}`;
 }
 
 let stateCache: NewsState = utils.merge(defaultFetchStatus, {

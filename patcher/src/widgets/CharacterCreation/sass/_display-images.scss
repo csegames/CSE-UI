@@ -31,22 +31,12 @@
 @mixin view-standing($url) {
   background-image: url($url);
   background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
+  background-size: 35%;
+  background-position: 60%;
   overflow: hidden;
   position: absolute;
-  left: 100px;  
-  &:after {
-    content:"";
-    display:block;
-    position:absolute;
-    background: linear-gradient(to bottom, transparent 50%,rgba(0, 0, 0, 0.4) 95%);
-    width:100%;
-    height:100%;
-    -webkit-mask-image: url($url);
-    -webkit-mask-repeat:no-repeat;
-    -webkit-mask-position: 55% bottom;
-    -webkit-mask-size: contain;
+  &.char-select:after {
+    -webkit-mask-position: 35% bottom;
   }
 }
 

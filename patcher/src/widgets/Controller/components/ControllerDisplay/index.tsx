@@ -5,42 +5,24 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import { connect } from 'react-redux';
-import { events, client, Race, Archetype, Faction, utils, webAPI, signalr } from 'camelot-unchained';
-import { CharacterCreationModel } from '../../../CharacterCreation';
+import { events, webAPI } from 'camelot-unchained';
 
-import Login from '../Login';
-import Alerts from '../Alerts';
-import PatchButton from '../PatchButton';
-import CharacterSelect from '../CharacterSelect';
-import CharacterButtons from '../CharacterButtons';
-import CharacterDeleteModal from '../CharacterDeleteModal';
-import ServerSelect from '../ServerSelect';
-import GameSelect from '../GameSelect';
-import ProgressBar from '../ProgressBar';
+import ControllerDisplayView from './components/ControllerDisplayView';
 
-import QuickSelect from '../../../../lib/QuickSelect';
-import { patcher, Channel, ChannelStatus, PatchPermissions, permissionsString } from '../../../../services/patcher';
-import { view } from '../../../../components/OverlayView';
-
+import { Routes } from '../../../../services/session/routes';
 import { GlobalState } from '../../services/session';
 import {
   ControllerState,
   PatcherServer,
   ServerType,
   initialize,
-  reset,
+  characterRemoved,
 } from '../../services/session/controller';
 
-declare const $: any;
-declare const toastr: any;
-
-const lastPlay: any = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
-
-function select(state: GlobalState): ControllerDisplayReduxProps {
-  return {
-    ControllerState: state.controller,
-  };
+export interface APIServerStatus {
+  [shardId: string]: 'Online' | 'Offline';
 }
 
 export interface ControllerDisplayReduxProps {
@@ -49,70 +31,58 @@ export interface ControllerDisplayReduxProps {
 }
 
 export interface ControllerDisplayProps extends ControllerDisplayReduxProps {
+  activeRoute: Routes;
 }
 
 export interface ControllerDisplayState {
+  charSelectVisible: boolean;
   loggedIn: boolean;
   showCreation: boolean;
   serverType: ServerType;
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
   serverListHelper: {[shardId: string]: webAPI.ServerModel};
+  apiServerStatus: APIServerStatus;
 }
 
 class ControllerDisplay extends React.Component<ControllerDisplayProps, ControllerDisplayState> {
   constructor(props: ControllerDisplayProps) {
     super(props);
     this.state = {
+      charSelectVisible: false,
       loggedIn: false,
       showCreation: false,
       serverType: ServerType.CUGAME,
       selectedServer: null,
       selectedCharacter: null,
       serverListHelper: {},
+      apiServerStatus: {},
     };
   }
 
   public render() {
-    const { alerts } = this.props.ControllerState;
-    const selectedServer = this.state.selectedServer ? this.props.ControllerState.servers[this.state.selectedServer.name] :
-      null;
-    const selectedCharacter = this.state.selectedCharacter ?
-      this.props.ControllerState.characters[this.state.selectedCharacter.id] : null;
-    if (!selectedCharacter) selectedCharacter == null;
-    const alertArray: webAPI.PatcherAlert[] = [];
-    for (const key in alerts) alertArray.push(alerts[key]);
-
-    if (!patcher.hasLoginToken()) {
-      return (
-        <div className='ControllerDisplay'>
-          <Alerts alerts={alertArray} />
-          <Login onLogin={this.onLogin} />
-        </div>
-      );
-    }
-
     return (
-      <div className='ControllerDisplay'>
-        <Alerts alerts={alertArray} />
-        <ProgressBar servers={this.props.ControllerState.servers} selectedServer={selectedServer} />
-        <div className='ControllerDisplay__controls'>
-          {this.renderSelections()}
-          <PatchButton
-            servers={this.props.ControllerState.servers}
-            selectedServer={selectedServer}
-            selectedCharacter={selectedCharacter}
-          />
-        </div>
-      </div>
+      <ControllerDisplayView
+        activeRoute={this.props.activeRoute}
+        controllerState={this.props.ControllerState}
+        selectedServer={this.state.selectedServer}
+        selectedCharacter={this.state.selectedCharacter}
+        charSelectVisible={this.state.charSelectVisible}
+        serverType={this.state.serverType}
+        onLogin={this.onLogin}
+        onChooseCharacter={this.onChooseCharacter}
+        onToggleCharacterSelect={this.toggleCharacterSelect}
+        onDeleteCharacterSuccess={this.onDeleteCharacterSuccess}
+        selectCharacter={this.selectCharacter}
+        selectServer={this.selectServer}
+        selectServerType={this.selectServerType}
+        apiServerStatus={this.state.apiServerStatus}
+      />
     );
   }
 
   public componentDidMount() {
     this.getServers();
-  }
-
-  public componentWillUnmount() {
   }
 
   private getServers = async () => {
@@ -129,158 +99,80 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
     }
   }
 
-  private playSound = (sound: string) => {
-    events.fire('play-sound', sound);
-  }
-
   private onLogin = () => {
-    const lastCharacterID = lastPlay && lastPlay.characterID ? lastPlay.characterID : null;
-    const lastServer = lastPlay && lastPlay.serverName ? lastPlay.serverName : null;
-    const lastChannel = lastPlay && lastPlay.channelID ? lastPlay.channelID : null;
-
     this.props.dispatch(initialize());
   }
 
-  private onLogOut = () => {
-    this.props.dispatch(reset());
+  private toggleCharacterSelect = () => {
+    this.updateApiServerStatus();
+    this.setState({ charSelectVisible: !this.state.charSelectVisible });
   }
 
-  private showCharacterCreation = () => {
-    if (signalr.patcherHub.connectionState === signalr.ConnectionState.Connected &&
-        (!this.state.selectedServer.shardID || this.state.selectedServer.available)) {
-      events.fire('view-content', view.CHARACTERCREATION, {
-        selectedServer: this.state.selectedServer.name,
-        apiHost: this.state.serverListHelper[this.state.selectedServer.shardID || 1].apiHost,
-        apiVersion: 1,
-        shard: this.state.selectedServer.shardID,
-        apiKey: patcher.getLoginToken(),
-        created: (c: CharacterCreationModel) => {
-          events.fire('character-created', c.name);
-          events.fire('view-content', view.NONE);
-        },
-      });
-    } else {
-      toastr.error(
-        'You will not be able to create a character while the server is offline',
-        'Server is offline',
-        {timeOut: 5000},
-      );
-    }
-  }
-
-  private installSelectedServer = () => {
-    const {selectedServer} = this.state;
-    patcher.installChannel(selectedServer.channelID | 0);
-    this.playSound('select');
-  }
-
-  private queueStateChange = (obj: any) => {
-    setTimeout(() => this.setState(obj), 2);
+  private updateApiServerStatus = () => {
+    const { servers } = this.props.ControllerState;
+    const apiServerStatus = {};
+    Object.keys(servers).forEach((_key) => {
+      webAPI.ServersAPI.GetServersV1({ url: servers[_key].apiHost + '/' })
+        .then((_res) => {
+          if (_res.ok) {
+            apiServerStatus[servers[_key].apiHost] = 'Online';
+          } else {
+            apiServerStatus[servers[_key].apiHost] = 'Offline';
+          }
+          this.setState({ apiServerStatus });
+        });
+    });
   }
 
   private selectServerType = (serverType: ServerType) => {
     if (this.state.serverType === serverType) return;
     events.fire('play-sound', 'select');
     if (serverType === ServerType.CUBE) {
-      this.queueStateChange({
+      this.setState({
         serverType,
         selectedServer: this.props.ControllerState.servers['C.U.B.E.'],
-      } as any);
+      });
     } else {
-      this.queueStateChange({serverType} as any);
+      this.setState({ serverType });
     }
   }
 
   private selectServer = (server: PatcherServer) => {
-    if (this.state.selectedServer === server) return;
-    events.fire('play-sound', 'select');
-    this.queueStateChange({selectedServer: server} as any);
+    // Only check for undefined because selected server can be null
+    if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
+      events.fire('play-sound', 'select');
+      this.setState({ selectedServer: server });
+    }
   }
 
   private selectCharacter = (character: webAPI.SimpleCharacter) => {
-    if (this.state.selectedCharacter === character) return;
-    events.fire('play-sound', 'select');
-    this.queueStateChange({selectedCharacter: character} as any);
-  }
-
-  private renderSelections = () => {
-    const { servers, characters, alerts } = this.props.ControllerState;
-    const selectedServer = this.state.selectedServer ? this.props.ControllerState.servers[this.state.selectedServer.name] :
-      null;
-
-    switch (this.state.serverType) {
-      case ServerType.CUGAME:
-
-        return (
-          <div className='ControllerDisplay__selections'>
-
-            <div className='ControllerDisplay__selections__game'>
-              <GameSelect selectType={this.selectServerType} servers={this.props.ControllerState.servers} />
-              <i>Select your game</i>&nbsp;
-            </div>
-
-            <div className='ControllerDisplay__selections__server'>
-              <ServerSelect selectServer={this.selectServer}
-                            initialServer={selectedServer}
-                            servers={servers}
-                            serverType={this.state.serverType} />
-              <i>Select a server</i>&nbsp;
-            </div>
-
-            <div className='ControllerDisplay__selections__character'>
-              <CharacterSelect selectCharacter={this.selectCharacter}
-                                selectedServer={selectedServer}
-                                characters={characters} />
-              <i>Select or</i>
-              <a href='#' onClick={this.showCharacterCreation}>create new character</a>&nbsp;
-            </div>
-
-            <div className='ControllerDisplay__permissions'>
-              Your Access Level is {permissionsString(patcher.getPermissions())}.
-            </div>
-          </div>
-        );
-
-      case ServerType.CUBE:
-
-        return (
-          <div className='ControllerDisplay__selections'>
-            <div className='ControllerDisplay__selections__game'>
-              <GameSelect selectType={this.selectServerType} servers={this.props.ControllerState.servers} />
-              <i>Select your game</i>&nbsp;
-            </div>
-            <div className='ControllerDisplay__permissions'>
-              Your Access Level is {permissionsString(patcher.getPermissions())}.
-            </div>
-          </div>
-        );
-
-      case ServerType.CHANNEL:
-
-        return (
-          <div className='ControllerDisplay__selections'>
-
-            <div className='ControllerDisplay__selections__game'>
-              <GameSelect selectType={this.selectServerType} servers={this.props.ControllerState.servers} />
-              <i>Select your game</i>&nbsp;
-            </div>
-
-            <div className='ControllerDisplay__selections__server'>
-              <ServerSelect initialServer={selectedServer}
-                            selectServer={this.selectServer}
-                            servers={servers}
-                            serverType={this.state.serverType} />
-              <i>Select a server</i>&nbsp;
-            </div>
-            <div className='ControllerDisplay__permissions'>
-              Your Access Level is {permissionsString(patcher.getPermissions())}.
-            </div>
-          </div>
-        );
-
-      default: return <h1>UNKNOWN GAME TYPE</h1>;
+    // Only check for undefined because selected character can be null
+    if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
+      if (character && character.id) {
+        // Save last selected character
+        localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
+      }
+      events.fire('play-sound', 'select');
+      this.setState({ selectedCharacter: character });
     }
   }
+
+  private onChooseCharacter = (character: webAPI.SimpleCharacter) => {
+    this.toggleCharacterSelect();
+    const characterServer = _.find(this.props.ControllerState.servers, server => server.shardID === character.shardID);
+    this.selectServer(characterServer);
+    this.selectCharacter(character);
+  }
+
+  private onDeleteCharacterSuccess = (id: string) => {
+    this.props.dispatch(characterRemoved(id));
+  }
+}
+
+function select(state: GlobalState): ControllerDisplayReduxProps {
+  return {
+    ControllerState: state.controller,
+  };
 }
 
 export default connect(select)(ControllerDisplay);

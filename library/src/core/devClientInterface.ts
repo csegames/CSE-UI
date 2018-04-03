@@ -164,6 +164,12 @@ const devClientInterface: clientInterface = {
   DropItem: (itemID: string): void => {
   },
 
+  StartPlacingItem: (resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void => {},
+
+  CommitPlacedItem: (callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void => {},
+
+  CancelPlacingItem: (): void => {},
+
   /* Config */
 
   OnReceiveConfigVars: (c: (configs: string) => void): void => {
@@ -533,6 +539,9 @@ const devClientInterface: clientInterface = {
   OnUpdateDevUI: (c: (pageID: string, rootPage: any) => void): void => {
   },
 
+  /* Scenarios */
+  ScenarioRoundEnded: (c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void => {
+  },
 
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',

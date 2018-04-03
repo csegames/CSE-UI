@@ -7,8 +7,6 @@
 import 'isomorphic-fetch';
 import { client, Race, Gender, webAPI } from 'camelot-unchained';
 
-import { fetchJSON } from '../../lib/fetchHelpers';
-
 export interface AttributeOffsetInfo {
   race: Race;
   gender: Gender;

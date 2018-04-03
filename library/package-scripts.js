@@ -27,7 +27,7 @@ module.exports = {
       default: 'nps updateApi.buildDefinitions && nps updateApi.cleanControllers && nps updateApi.copyControllers',
     },
     copies: 'nps copy.definitions && nps copy.thirdParty && nps copy.misc',
-    build: 'nps clean -s && nps lint && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
+    build: 'nps clean -s && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
     //docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/',
     test: {
       default: {
@@ -54,11 +54,8 @@ module.exports = {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/graphql/schema.json',
       typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',
       default: 'nps gql.schema && nps gql.typings',
+      localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
+      local: 'nps gql.localschema && nps gql.typings'
     },
-    gqlLocal: {
-      schema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
-      typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',
-      default: 'nps gqlLocal.schema && nps gqlLocal.typings',
-    }
   }
 };

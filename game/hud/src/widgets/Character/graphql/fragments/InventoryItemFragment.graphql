@@ -1,10 +1,12 @@
 fragment InventoryItem on Item {
   id
+  givenName
   stackHash
+  containerColor {
+    ...ContainerColor
+  }
   location {
-    inventory {
-      position
-    }
+    ...ItemLocation
   }
   stats {
     item {
@@ -29,10 +31,24 @@ fragment InventoryItem on Item {
     name
     iconUrl
     itemType
+    deploySettings {
+      isDoor
+      snapToGround
+      rotateYaw
+      rotatePitch
+      rotateRoll
+    }
     gearSlotSets {
       gearSlots {
         id
       }
     }
+    isVox
+  }
+  containerDrawers {
+    ...ContainerDrawers
+  }
+  permissibleHolder {
+    ...PermissibleHolder
   }
 }

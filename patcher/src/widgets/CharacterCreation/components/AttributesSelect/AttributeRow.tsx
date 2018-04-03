@@ -8,25 +8,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { Archetype, events, jsKeyCodes } from 'camelot-unchained';
+import { Archetype } from 'camelot-unchained';
 
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import AllocatePointButton from './AllocatePointButton';
 
-export interface AttributeRowStyle extends StyleDeclaration {
-  AttributeRow: React.CSSProperties;
-}
-
-export const defaultAttributeRowStyle: AttributeRowStyle = {
-  AttributeRow: {
-    
-  },
-};
-
 export interface AttributeRowProps {
-  styles?: Partial<AttributeRowStyle>;
   attributeInfo: AttributeInfo;
   offset: AttributeOffsetInfo;
   selectedClass: Archetype;
@@ -57,8 +45,6 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
   private mouseDownInterval: any;
 
   public render() {
-    const ss = StyleSheet.create(defaultAttributeRowStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { attributeInfo, offset } = this.props;
     const isImportant = _.includes(importantAttributes[this.props.selectedClass], attributeInfo.name);
     
@@ -103,8 +89,6 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
         this.props.allocatePoint(this.props.attributeInfo.name, 1);
       }, 30);
     }, 500);
-    
-    if (this.props.remainingPoints !== 0) events.fire('play-sound', 'select');
   }
 
   private decreaseAttribute = () => {
@@ -115,7 +99,6 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
         this.props.allocatePoint(this.props.attributeInfo.name, -1);
       }, 30);
     }, 500);
-    if (this.props.attributeInfo.allocatedPoints !== 0) events.fire('play-sound', 'select');
   }
 
   private clearMouseDownInterval = () => {

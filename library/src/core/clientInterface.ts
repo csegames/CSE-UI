@@ -81,6 +81,15 @@ export enum SkillStateReasonEnum {
   NoWeapon = 1 << 1,
 }
 
+export enum SkillStateTrackEnum {
+  None = 0,
+  PrimaryWeapon = 1 << 0,
+  SecondaryWeapon = 1 << 1,
+  BothWeapons = PrimaryWeapon | SecondaryWeapon,
+  Voice = 1 << 2,
+  Mind = 1 << 3,
+}
+
 export interface SkillStateProgression {
   current: number;
   end: number;
@@ -89,6 +98,7 @@ export interface SkillStateProgression {
 export interface ClientSkillState {
   id: number;
   type: SkillStateTypeEnum;
+  track: SkillStateTrackEnum;
   keybind: number;
   status: SkillStateStatusEnum;
   reason?: SkillStateReasonEnum;
@@ -245,7 +255,7 @@ interface clientInterface {
   /* Skills */
   SetSkillRunning(callback: (abilityId: string, isRunning: boolean) => void): void;
 
-  SetSkillQueued(callback: (abilityId: string, isQueued) => void): void;
+  SetSkillQueued(callback: (abilityId: string, isQueued: boolean) => void): void;
 
   UpdateSkillCooldown(callback: (abilityId: string, started: number, duration: number) => void): void;
 
@@ -294,6 +304,12 @@ interface clientInterface {
   EquipItem(itemID: string): void;
 
   DropItem(itemID: string): void;
+
+  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void;
+
+  CommitPlacedItem(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
+
+  CancelPlacingItem(): void;
 
   /* Config */
 
@@ -591,6 +607,9 @@ interface clientInterface {
 
   /* Dev UI */
   OnUpdateDevUI(c: (pageID: string, rootPage: any) => void): void;
+
+  /* Scenarios */
+  ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 }
 
 export default clientInterface;

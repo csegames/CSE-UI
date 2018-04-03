@@ -29,6 +29,9 @@ class CombatLogParser {
   }
 
   parseAction(text: string): JSX.Element[] {
+    if (!text) {
+      return null;
+    }
     const html: JSX.Element[] = [];
     const content : JSX.Element[] = this.parse(text.substr(4).trim());
     html.push(<span key={this._key++} className="chat-line-action">&lt;{content}&gt;</span>);
@@ -36,10 +39,14 @@ class CombatLogParser {
   }
 
   isAction(text: string): boolean {
-     return text.toLowerCase().substr(0, 4) === '/me ';
+    if (!text) {
+      return false;
+    }
+    return text.toLowerCase().substr(0, 4) === '/me ';
   }
 
   parse(text: string): JSX.Element[] {
+    if (text === null) return null;
     const keygen = () : number => { return this._key++; };
     const tokens : ChatTextParserToken[] = [];
     // Parsers which need recursion should be first

@@ -6,16 +6,8 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-
-export interface AllocatePointButtonStyle extends StyleDeclaration {
-}
-
-export const defaultAllocatePointButtonStyle: AllocatePointButtonStyle = {
-};
 
 export interface AllocatePointButtonProps {
-  styles?: Partial<AllocatePointButtonStyle>;
   direction: 'left' | 'right';
   onMouseDown: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseUp: (e?: React.MouseEvent<HTMLButtonElement>) => void;
@@ -32,8 +24,6 @@ export class AllocatePointButton extends React.Component<AllocatePointButtonProp
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultAllocatePointButtonStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { direction } = this.props;    
     return (
       <button

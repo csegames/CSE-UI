@@ -11,11 +11,10 @@
  */
 // tslint:disable
 import { StepInfo } from 'camelot-unchained';
-import { CharacterCreationPage } from '../index';
 
 export const factionSteps: StepInfo[] = [
   {
-    element: 'cu-character-creation__faction-select',
+    element: 'cu-character-creation__faction-select__section-Viking',
     tooltipText: 'Double click on a faction to choose.',
   },
 ];

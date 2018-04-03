@@ -6,11 +6,12 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, Input, client } from 'camelot-unchained';
+import { Input, client } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames } from '../../../lib/constants';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 const containerDimensions = {
   width: 305,
@@ -119,8 +120,8 @@ export interface ItemsMenuBoxProps {
   left: number;
   visible: boolean;
   slotName: string;
-  validItems: Partial<ql.schema.Item>[];
-  equippedItem: ql.schema.EquippedItem;
+  validItems: InventoryItemFragment[];
+  equippedItem: EquippedItemFragment;
 }
 
 export interface ItemsMenuBoxState {
@@ -158,7 +159,6 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
               onChange={(e: any) => this.onSearchChange(e, pageLength)}
               placeholder={'Filter'}
               value={searchValue}
-              onFocus={() => client.RequestInputOwnership()}
               onBlur={() => client.ReleaseInputOwnership()}
               styles={{ input: defaultItemsMenuBoxStyle.searchInput }}
             />
@@ -184,7 +184,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
     );
   }
 
-  private renderValidItems = (validItems: Partial<ql.schema.Item>[]) => {
+  private renderValidItems = (validItems: InventoryItemFragment[]) => {
     const ss = this.ss;
     const { currentPage } = this.state;
     const emptySlots = [];
@@ -199,7 +199,7 @@ class ItemsMenuBox extends React.Component<ItemsMenuBoxProps, ItemsMenuBoxState>
 
     return (
       <div className={css(ss.slotContainer)}>
-        {validItems.map((inventoryItem: Partial<ql.schema.Item>, itemIndex: number) => {
+        {validItems.map((inventoryItem: InventoryItemFragment, itemIndex: number) => {
           const shouldBelongOnPage = itemIndex + 1 <= (currentPage * 8) && itemIndex + 1 > ((currentPage * 8) - 8);
           if (shouldBelongOnPage) {
             inventoryItem.staticDefinition.gearSlotSets.forEach((gearSlotSet) => {

@@ -51,7 +51,7 @@ class BuildingRequests {
       return faker.redo();
     }
 
-    building.undo();
+    building.redo();
   }
 
   public rotX() {

@@ -54,6 +54,15 @@ const lightenDarkenColor = (color: string, amount: number) => {
   return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 };
 
+export const hex2rgba = (color: string, alpha: number) => {
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const a = alpha;
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 // Used to darken a color by a percentage amount. darkenColor(#ffffff, 20) will darken the hex 20%.
 export const darkenColor = (color: string, amount: number) => {
   return lightenDarkenColor(color, amount * -1);

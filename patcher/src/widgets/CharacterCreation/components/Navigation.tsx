@@ -48,6 +48,7 @@ export const defaultNavigationStyle: NavigationStyle = {
   },
 
   middleNavContainer: {
+    flex: 1,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -188,18 +189,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
     
     return (
       <div className={css(ss.Navigation, custom.Navigation)}>
-        <div className={css(ss.cancelHelpContainer, custom.cancelHelpContainer, ss.section, custom.section)}>
-          <button
-            className={css(ss.otherActionButton, custom.otherActionButton)}
-            onClick={this.props.onCancelClick}>
-            CANCEL
-          </button>
-          <button
-            className={css(ss.otherActionButton, custom.otherActionButton)}
-            onClick={this.props.onHelpClick}>
-            HELP?
-          </button>
-        </div>
+        <div className={css(ss.section, custom.section)} />
         <div className={css(ss.middleNavContainer, custom.middleNavContainer, ss.section, custom.section)}>
           <button
             disabled={backDisabled}

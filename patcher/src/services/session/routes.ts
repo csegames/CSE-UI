@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {BaseAction, defaultAction, merge} from '../../lib/reduxUtils';
+import { BaseAction, defaultAction, merge } from '../../lib/reduxUtils';
 
 export enum Routes {
   HERO,

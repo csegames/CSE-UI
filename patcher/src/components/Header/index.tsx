@@ -5,11 +5,10 @@
  */
 
 import * as React from 'react';
-import {events} from 'camelot-unchained';
+import { events } from 'camelot-unchained';
 
-import {Routes} from '../../services/session/routes';
-import {patcher} from '../../services/patcher';
-import {view} from '../OverlayView';
+import { Routes } from '../../services/session/routes';
+import { patcher } from '../../services/patcher';
 
 export interface HeaderProps {
   changeRoute: (route: Routes) => void;
@@ -36,9 +35,6 @@ class Header extends React.Component<HeaderProps, {}> {
           <div
             className={`Header__menu__item ${this.props.activeRoute === Routes.NEWS ? 'active' : ''}`}
             onClick={() => this.internalLink(Routes.NEWS)}>News</div>
-          <div
-            className={`Header__menu__item ${this.props.activeRoute === Routes.PATCHNOTES ? 'active' : ''}`}
-            onClick={() => this.internalLink(Routes.PATCHNOTES)}>Patch Notes</div>
           <div className='Header__menu__item' onClick={() => this.externalLink('https://camelotunchained.com/')}>
               CamelotUnchained.com &nbsp;<i className='fa fa-external-link' aria-hidden='true'></i>
           </div>
@@ -54,11 +50,6 @@ class Header extends React.Component<HeaderProps, {}> {
     );
   }
 
-  private signOut() {
-    patcher.logout();
-    setTimeout(() => events.fire('logged-in'), 250);
-  }
-
   private externalLink = (url: string) => {
     window.open(url, '_blank');
     events.fire('play-sound', 'select');
@@ -68,13 +59,5 @@ class Header extends React.Component<HeaderProps, {}> {
     this.props.changeRoute(route);
   }
 }
-
-/* tslint:disable */
-// LOGOUT REMOVED
-// {patcher.hasLoginToken() ? <div onClick={this.signOut} className='Header__menu__item'>Logout <i className="fa fa-sign-out" aria-hidden="true"></i></div> : null}
-
-// DISABLED -- paste into unordered list to re-enable
-// <li className={this.props.activeRoute == Routes.PATCHNOTES ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.PATCHNOTES)}>Patch Notes</a></li>
-// <li className={this.props.activeRoute == Routes.SUPPORT ? 'active' : ''}><a onClick={this.internalLink.bind(this, Routes.SUPPORT)}>Support</a></li>
 
 export default Header;

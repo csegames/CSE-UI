@@ -8,8 +8,6 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { events, Tooltip } from 'camelot-unchained';
 
-import { CharacterCreationPage } from '../../index';
-import { banesAndBoonsSteps } from '../HelpSteps';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Bane from './Bane';
 import Boon from './Boon';
@@ -553,10 +551,10 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
             <p className={css(ss.boonsHeader, custom.boonsHeader)} style={{ color: colors.boonPrimary }}>Boons</p>
             <div>
               <p id={'boon-minPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
-                Minimum Points: {minPoints / 2}
+                Minimum Total Points Needed: {minPoints / 2}
               </p>
               <p id={'boon-maxPoints'} className={css(ss.rangePointsText, custom.rangePointsText)}>
-                Maximum Points: {maxPoints / 2}
+                Maximum Total Points Allowed: {maxPoints / 2}
               </p>
             </div>
           </div>
@@ -741,8 +739,12 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         <div className={css(ss.outerContainer, custom.outerContainer)}>
           <div className={css(ss.headerContainer, custom.headerContainer)}>
             <div>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Minimum Points: {minPoints / 2}</p>
-              <p className={css(ss.rangePointsText, custom.rangePointsText)}>Maximum Points: {maxPoints / 2}</p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>
+                Minimum Total Points Needed: {minPoints / 2}
+              </p>
+              <p className={css(ss.rangePointsText, custom.rangePointsText)}>
+                Maximum Total Points Allowed: {maxPoints / 2}
+              </p>
             </div>
             <p className={css(ss.banesHeader, custom.banesHeader)} style={{ color: colors.banePrimary }}>Banes</p>
           </div>
@@ -785,7 +787,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: (totalPoints * -1) + 0.5, flexOfBoonBar: 1 }));
     }
     if (totalPoints === 0) {
-      events.fire('play-sound', 'success');
       this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
     }
   }
@@ -803,14 +804,9 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
         );
       }
       if (nextProps.totalPoints === 0) {
-        events.fire('play-sound', 'success');
         this.setState(Object.assign({}, this.state, { flexOfBaneBar: 1, flexOfBoonBar: 1 }));
       }
     }
-  }
-
-  private toggleHelp = () => {
-    this.setState({ helpEnabled: !this.state.helpEnabled });
   }
 
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {

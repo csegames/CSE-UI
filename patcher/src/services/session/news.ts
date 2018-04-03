@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Promise } from 'es6-promise';
 import 'isomorphic-fetch';
 
 import {
@@ -116,7 +115,7 @@ export function fetchPageFailed(error: ResponseError): NewsAction {
 }
 
 function makePostsUrl(page: number): string {
-  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}?callback=foo`;
+  return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}`;
 }
 
 export function fetchPage(page: number): AsyncAction<NewsAction> {

@@ -7,8 +7,6 @@
 import 'isomorphic-fetch';
 import { Race, Faction, webAPI } from 'camelot-unchained';
 
-import { fetchJSON } from '../../lib/fetchHelpers';
-
 export interface RaceInfo {
   name: string;
   description: string;

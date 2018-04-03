@@ -5,23 +5,47 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { webAPI, events, utils } from 'camelot-unchained';
 import * as moment from 'moment';
+import { webAPI, events, utils } from 'camelot-unchained';
+import styled from 'react-emotion';
 
-
-import { patcher, Channel, ChannelStatus, PatchPermissions } from '../../../../services/patcher';
-import { CSENormalizeString } from '../../../../lib/CSENormalizeString';
+import { patcher, ChannelStatus } from '../../../../services/patcher';
 
 import Animate from '../../../../lib/Animate';
 
-import LayeredDiv from '../LayeredDiv';
+import UpdateMessage from './components/UpdateMessage';
+import PatchButtonView from './components/PatchButtonView';
 import EualaModal from '../EualaModal';
-import CommandLineArgsModal from '../CommandLineArgsModal';
-import UninstallButton from '../UninstallButton';
 import { ServerType, PatcherServer } from '../../services/session/controller';
 
-import { Progress } from '../../lib/Progress';
+const Container = styled('div')`
+  display: flex;
+  flex-direction: row-reverse;
+  font-weight: 200;
+`;
+
+const UpdateInfoContainer = styled('div')`
+  display: flex;
+  flex-direction: row-reverse;
+  label {
+    color: #8f8f8f;
+    font-size: 0.9em;
+  }
+`;
+
+const LastUpdatedText = styled('label')`
+  display: flex;
+  align-items: flex-end;
+  margin-right: 5px;
+  padding-bottom: 5px;
+  font-size: 12px;
+  font-weight: normal;
+`;
+
+const ButtonContainer = styled('div')`
+  display: flex;
+  z-index: 10;
+`;
 
 export interface PatchButtonProps {
   servers: utils.Dictionary<PatcherServer>;
@@ -31,52 +55,65 @@ export interface PatchButtonProps {
 
 export interface PatchButtonState {
   showEuala: boolean;
+  installingChannel: number;
+  installingChannelName: string;
 }
 
 class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
-  private startDownload: number;
   private commands: string = '';
-  private installingChannel: number;
-  private installingChannelName: string;
+  private startDownload: number;
 
   constructor(props: PatchButtonProps) {
     super(props);
     this.state = {
       showEuala: false,
+      installingChannel: -1,
+      installingChannelName: '',
     };
   }
 
   public render() {
-    const {selectedServer} = this.props;
+    const { selectedServer } = this.props;
+    let lastUpdatedText;
     if (!selectedServer) {
       return null;
     }
-    let updateMessage;
-    if (selectedServer.channelStatus !== ChannelStatus.NotInstalled 
-    && (selectedServer.lastUpdated && selectedServer.lastUpdated > 0)) {
-      updateMessage = `Updated ${moment(selectedServer.lastUpdated).fromNow()}`;
+
+    if (selectedServer.channelStatus !== ChannelStatus.NotInstalled &&
+        (selectedServer.lastUpdated && selectedServer.lastUpdated > 0)) {
+      lastUpdatedText = `Updated ${moment(selectedServer.lastUpdated).fromNow()}`;
     }
+    
     return (
-      <div className='PatchButton'>
-
-        <div className='PatchButton__updateGroup'>
-          <div>
-            {this.renderButton()}
-            <label>
-              {updateMessage}
-            </label>
-          </div>
-          {this.renderProgressText()}
-        </div>
-
+      <Container>
+        <UpdateInfoContainer>
+          <ButtonContainer>
+            <PatchButtonView
+              selectedServer={selectedServer}
+              selectedCharacter={this.props.selectedCharacter}
+              onInstallClick={this.install}
+              onPlayClick={this.playNow}
+              onPlayOfflineClick={this.playOffline}
+              onPauseMusic={this.pauseMusic}
+              shouldPauseMusic={this.shouldPauseMusic}
+            />
+          </ButtonContainer>
+          <LastUpdatedText>{lastUpdatedText}</LastUpdatedText>
+          <UpdateMessage
+            installingChannelName={this.state.installingChannelName}
+            installingChannel={this.state.installingChannel}
+            startDownload={this.startDownload}
+            onStartDownloadChange={startDownload => this.startDownload = startDownload}
+          />
+        </UpdateInfoContainer>
         <Animate animationEnter='slideInUp' animationLeave='slideOutDown' durationEnter={400} durationLeave={500}>
-
-          {this.state.showEuala ? (<div className='fullscreen-blackout flex-row' key='accept-euala'>
-                                      <EualaModal accept={this.launchClient} decline={this.closeEualaModal} />
-                                    </div>) : null}
-
+          {this.state.showEuala ? (
+            <div className='fullscreen-blackout flex-row' key='accept-euala'>
+              <EualaModal accept={this.launchClient} decline={this.closeEualaModal} />
+            </div>
+          ) : null}
         </Animate>
-      </div>
+      </Container>
     );
   }
 
@@ -84,15 +121,14 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     for (const key in nextProps.servers) {
       const s = nextProps.servers[key];
       if (s.channelStatus === ChannelStatus.Updating) {
-        if (this.installingChannel !== s.channelID) this.startDownload = undefined;
-        this.installingChannel = s.channelID;
-        this.installingChannelName = s.name;
+        if (this.state.installingChannel !== s.channelID) this.startDownload = undefined;
+        this.setState({ installingChannel: s.channelID, installingChannelName: s.name });
         return;
       }
     }
-    this.installingChannel = -1;
-    this.startDownload = undefined;
+    this.setState({ installingChannel: -1 });
   }
+
 
   private playSound = (sound: string) => {
     events.fire('play-sound', sound);
@@ -136,23 +172,24 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
 
     // Display EULA if CU game
     if (selectedServer.type !== ServerType.CHANNEL) {
-      this.setState({ showEuala: true } as any);
-      this.playSound('select');
+      this.setState({ showEuala: true });
+      this.playSound('launch-game');
     } else {
       this.launchClient();
+      this.playSound('launch-game');
     }
   }
 
   private closeEualaModal = () => {
-    this.setState({ showEuala: false } as any);
+    this.setState({ showEuala: false });
   }
 
   private launchClient = () => {
-    const {selectedServer, selectedCharacter} = this.props;
+    const { selectedServer, selectedCharacter } = this.props;
     if (!selectedServer) return;
 
-    this.setState({ showEuala: false } as any);
-    let launchString = this.commands.toLowerCase();
+    this.setState({ showEuala: false });
+    let launchString = this.commands ? this.commands.toLowerCase() : '';
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
       
       if (!launchString.includes('servershardid') && 
@@ -179,20 +216,14 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       
       launchString += ' autoconnect=1';
     }
+
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
-    this.playSound('launch-game');
+    this.playSound('select');
   }
 
   private install = () => {
     const { selectedServer } = this.props;
     patcher.installChannel(selectedServer.channelID | 0);
-    this.startDownload = undefined;
-    this.playSound('select');
-  }
-
-  private uninstall = () => {
-    const { selectedServer } = this.props;
-    patcher.uninstallChannel(selectedServer.channelID | 0);
     this.playSound('select');
   }
 
@@ -209,109 +240,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     }
     // music should be paused if there are any clients running
     return running;
-  }
-
-  private renderButton = () => {
-    const { selectedServer } = this.props;
-    const videoElements: any = document.getElementsByTagName('video');
-
-    // get status for channel this server uses from patcher api directly
-    // const channels = patcher.getAllChannels();
-    // const index = utils.findIndexWhere(channels, c => c.channelID === selectedServer.channelID);
-
-    switch (selectedServer.channelStatus) {
-
-      case ChannelStatus.NotInstalled:
-        return <div className='PatchButton__button' onClick={this.install}>Install</div>;
-
-      case ChannelStatus.Validating:
-        this.startDownload = undefined;
-        return <div className='PatchButton__button PatchButton__button--disabled'>Validating</div>;
-
-      case ChannelStatus.Updating:
-
-        return <div className='PatchButton__button PatchButton__button--disabled'>Installing</div>;
-
-      case ChannelStatus.OutOfDate:
-        return <div className='PatchButton__button PatchButton__button--disabled'>Awaiting Update</div>;
-
-      case ChannelStatus.Ready:
-
-        this.pauseMusic(this.shouldPauseMusic());
-        for (let vid: any = 0; vid < videoElements.length; vid++) {
-          videoElements[vid].play();
-        }
-
-        this.startDownload = undefined;
-
-        const permissions = patcher.getPermissions();
-
-        if (selectedServer.type === ServerType.CUGAME) {
-          if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) === 0) {
-            return <div className='PatchButton__button PatchButton__button--disabled'>Server Offline</div>;
-          } else if (!selectedServer.available) {
-            return <div className='PatchButton__button PatchButton__button--warning' onClick={this.playOffline}>
-              Play Offline
-            </div>;
-          } else if (!selectedServer.characterCount || !this.props.selectedCharacter) {
-            return <div className='PatchButton__button PatchButton__button--disabled PatchButton__button--smallerText'>
-              No Character Selected
-            </div>;
-          } else {
-            return <div className='PatchButton__button PatchButton__button--success' onClick={this.playNow}>Play Now</div>;
-          }
-        }
-
-        return <div className='PatchButton__button PatchButton__button--success' onClick={this.playNow}>Play Now</div>;
-
-      case ChannelStatus.Launching:
-        return <div className='PatchButton__button PatchButton__button--disabled'>Launching</div>;
-
-      case ChannelStatus.Running:
-        this.pauseMusic(true);
-        for (let vid: any = 0; vid < videoElements.length; vid++) {
-          videoElements[vid].pause();
-        }
-        return <div className='PatchButton__button PatchButton__button--disabled'>Playing</div>;
-
-      case ChannelStatus.Uninstalling:
-        this.startDownload = undefined;
-        return <div className='PatchButton__button PatchButton__button--disabled'>Uninstalling</div>;
-
-      case ChannelStatus.UpdateFailed:
-        return <div className='PatchButton__button PatchButton__button--error' onClick={this.install}>Update Failed.</div>;
-    }
-  }
-
-  private renderProgressText = () => {
-
-    if (this.installingChannel === -1) return null;
-
-    if (this.startDownload === undefined) this.startDownload = Date.now();
-
-    const downloadRate: number = patcher.getDownloadRate();
-    const downloadRemaining: number = patcher.getDownloadRemaining();
-    const estimate: number = patcher.getDownloadEstimate();
-
-    const percentDone = estimate ? 100.0 - ((downloadRemaining / estimate) * 100) : 0;
-    // bar!
-    // layers.push(() => <div className='fill' style={{ width: percentDone + '%', opacity: 1 }} />);
-
-    const downloadDuration: number = (Date.now() - this.startDownload) / 1000;
-    const remainingTime: number = percentDone ? ((100 / percentDone) * downloadDuration) - downloadDuration : undefined;
-    const time: string = percentDone ? Progress.secondsToString(remainingTime) : 'starting';
-    const rate: string = Progress.bypsToString(downloadRate);
-    const dataSize: string = Progress.bytesToString(estimate - downloadRemaining) + ' of ' +
-      Progress.bytesToString(estimate);
-    const percentDisplay: string = percentDone ? '(' + Math.round(percentDone * 100) / 100.0 + '%)' : '';
-
-    return (
-        <div className='PatchButton__updateText'>
-          <div>Updating {this.installingChannelName}...</div>
-          <div>{time} estimated remaining</div>
-          <div>{dataSize} ({rate})</div>
-        </div>
-    );
   }
 }
 

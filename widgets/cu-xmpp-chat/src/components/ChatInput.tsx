@@ -255,7 +255,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
                   ref="new-text"
                   placeholder="Say something!"
                   onBlur={() => client.ReleaseInputOwnership()}
-                  onFocus={() => client.RequestInputOwnership()}
+                  onClick={() => client.RequestInputOwnership()}
                   onKeyDown={this.keyDown}
                   onKeyUp={this.keyUp}
                   onChange={this.parseInput}>

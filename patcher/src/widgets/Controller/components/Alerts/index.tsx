@@ -5,8 +5,17 @@
  */
 
 import * as React from 'react';
-import {webAPI} from 'camelot-unchained';
-import Animate from '../../../../lib/Animate';
+import { webAPI } from 'camelot-unchained';
+import styled from 'react-emotion';
+
+const Container = styled('div')`
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, #600000, #600000 2px, #6F0000 2px, #6F0000 5px);
+  border-top: 3px solid #600000;
+  border-bottom: 3px solid #600000;
+  color: #ececec;
+  padding: 3px 15px;
+`;
 
 export interface AlertsProps {
   alerts: webAPI.PatcherAlert[];  
@@ -15,7 +24,7 @@ export interface AlertsProps {
 export class Alerts extends React.Component<AlertsProps, {}> {
   public render() {
     if (this.props.alerts.length === 0) return null;
-    return <div className='Alerts'>{this.props.alerts[0].message}</div>;
+    return <Container>{this.props.alerts[0].message}</Container>;
   }
 }
 

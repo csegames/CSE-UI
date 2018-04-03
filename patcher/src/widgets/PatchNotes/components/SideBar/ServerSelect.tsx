@@ -10,8 +10,6 @@ import styled from 'react-emotion';
 import { utils, client, ql } from 'camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
-import { PatcherServer } from '../../../Controller/services/session/controller';
-
 const ServerSelectContainer = styled('div')`
   position: absolute;
   width: 200px;
@@ -50,10 +48,11 @@ export interface ServerSelectState {
 
 class ServerSelect extends React.Component<ServerSelectProps, ServerSelectState> {
   public render() {
-    if (!this.props.graphql.data || !this.props.graphql.data.serviceStatus) return null;
+    const props: any = this.props;
+    if (!props.graphql.data || !props.graphql.data.serviceStatus) return null;
     return (
       <ServerSelectContainer>
-        {this.props.graphql.data.serviceStatus.servers.map((server) => {
+        {props.graphql.data.serviceStatus.servers.map((server) => {
           const selected = !this.props.selectedServer ? server.channelID === client.patchResourceChannel :
             server.channelID === this.props.selectedServer.channelID;
           return (

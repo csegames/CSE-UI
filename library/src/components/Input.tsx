@@ -63,7 +63,7 @@ export const Input = (props: Partial<InputProps>) => {
       {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null}
       <input
         ref={r => props.inputRef ? props.inputRef(r) : null}
-        onFocus={() => client.RequestInputOwnership()}
+        onClick={() => client.RequestInputOwnership()}
         onBlur={() => client.ReleaseInputOwnership()}
         className={css(ss.input, custom.input)}
         {...inputProps}

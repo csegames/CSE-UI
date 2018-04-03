@@ -6,15 +6,12 @@
  */
 
 import * as React from 'react';
-import * as moment from 'moment';
 import * as _ from 'lodash';
-import styled, { css, EmotionStyleProperty } from 'react-emotion';
+import styled from 'react-emotion';
 import { client, utils, ql } from 'camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 import { PatcherServer } from '../../../Controller/services/session/controller';
-import Animate from '../../../../lib/Animate';
-import queries from '../../../../gqlDocuments';
 import SideBarHeader from './Header';
 import SideBarList from './List';
 

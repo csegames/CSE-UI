@@ -5,18 +5,16 @@
  */
 
 import * as React from 'react';
-import {
-  webAPI,
-  events,
-  Spinner,
-  Tooltip,
-  client,
-} from 'camelot-unchained';
+import * as _ from 'lodash';
+import { webAPI, events, client } from 'camelot-unchained';
+import CharacterDeleteModalView from './components/CharacterDeleteModalView';
+import { PatcherServer } from '../../services/session/controller';
 
 export interface CharacterDeleteModalProps {
+  servers: {[id: string]: PatcherServer};
   character: webAPI.SimpleCharacter;
   closeModal: () => void;
-  onSuccess: () => void;
+  onSuccess: (id: string) => void;
 }
 
 export interface CharacterDeleteModalState {
@@ -40,57 +38,22 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
 
   public render() {
     return (
-      <div className='CharacterDeleteModal'>
-        <div className='CharacterDeleteModal__title'>Delete character?</div>
-        <div className='CharacterDeleteModal__text'>Warning! This cannot be undone.</div>
-        <label>Enter character name to confirm</label>
-        <input id='name' ref='name' type='text' onKeyUp={this.onKeyUp}/>
-        {
-          this.state.error ?
-            <div className='ChracterDeleteModal__error'>
-              <Tooltip content={() => <span>{this.state.error || 'An unknown error occurred.'}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Delete failed.
-                </Tooltip>
-            </div> :
-            null
-        }
-
-        {
-          this.state.success ?
-            <div className='ChracterDeleteModal__success'>
-              <Tooltip content={() => <span>{`${this.props.character.name} was deleted.`}</span>}
-                      styles={{tooltip: {maxWidth: '400px'}}}>
-                  <i className='fa fa-info-circle'></i> Success!
-                </Tooltip>
-            </div> :
-            null
-        }
-        <div className='CharacterDeleteModal__buttons'>
-          {
-            this.state.deleting ?
-              <button className='CharacterDeleteModal__button'>
-                <Spinner />
-              </button> :
-              <button className='CharacterDeleteModal__button'
-                      disabled={!this.state.deleteEnabled}
-                      onClick={this.deleteCharacter}>
-                Delete
-              </button>
-
-          }
-          <button className='CharacterDeleteModal__button' onClick={this.cancelDelete}>Cancel</button>
-        </div>
+      <div>
+        <CharacterDeleteModalView
+          error={this.state.error}
+          success={this.state.success}
+          deleting={this.state.deleting}
+          deleteEnabled={this.state.deleteEnabled}
+          onChange={this.onChange}
+          onDeleteCharacter={this.deleteCharacter}
+          onCancelDelete={this.cancelDelete}
+        />
       </div>
     );
   }
 
-  public componentDidMount() {
-    (this.refs['name'] as HTMLInputElement).focus();
-  }
-
-  private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) : void => {
-    const input : HTMLInputElement = this.refs['name'] as HTMLInputElement;
-    this.setState({ deleteEnabled: input.value === this.props.character.name });
+  private onChange = (e: React.ChangeEvent<HTMLInputElement>) : void => {
+    this.setState({ deleteEnabled: e.target.value === this.props.character.name });
   }
 
   private deleteCharacter = async () => {
@@ -100,7 +63,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     const character = this.props.character;
     try {
       const res = await webAPI.CharactersAPI.DeleteCharacterV1(
-        webAPI.defaultConfig,
+        { url: _.values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/' },
         client.loginToken,
         character.shardID,
         character.id,
@@ -112,15 +75,23 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
         this.setState({ success: true, error: null, deleting: false });
 
         setTimeout(() => {
-          this.props.onSuccess();
+          this.props.onSuccess(character.id);
         }, 200);
         return;
       }
       // failed 
-      this.setState({ deleting: false, success: false, error: data.Message });
+      this.setState({
+        deleting: false,
+        success: false,
+        error: data.Message || 'Uh oh... There was an error deleting your character!',
+      });
     } catch (err) {
-      webAPI.handleWebAPIError(err);
-      this.setState({ deleting: false, success: false, error: err });
+      console.error(err);
+      this.setState({
+        deleting: false,
+        success: false,
+        error: 'Uh oh... There was an error in deleting your character!',
+      });
     }
   }
 

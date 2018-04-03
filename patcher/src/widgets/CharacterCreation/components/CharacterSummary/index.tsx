@@ -7,11 +7,12 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils, webAPI, Race, Gender, Archetype } from 'camelot-unchained';
+import { Race, Gender, Archetype } from 'camelot-unchained';
 
-import { AttributeInfo, attributeType } from '../../services/session/attributes';
+import { AttributeInfo } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
+import { CharacterState } from '../../services/session/character';
 import LeftInfoPanel from './components/LeftInfoPanel';
 
 export interface CharacterSummaryStyle extends StyleDeclaration {
@@ -19,7 +20,6 @@ export interface CharacterSummaryStyle extends StyleDeclaration {
   characterContainer: React.CSSProperties;
   standingCharacter: React.CSSProperties;
   characterNameInputContainer: React.CSSProperties;
-  characterNameInput: React.CSSProperties;
 }
 
 export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
@@ -42,23 +42,13 @@ export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
     backgroundSize: 'contain',
     maxHeight: '80%',
     height: '70vh',
-    width: '30vw',
+    width: '100%',
   },
 
   characterNameInputContainer: {
     position: 'relative',
     width: 'auto',
     bottom: '55px',
-  },
-
-  characterNameInput: {
-    border: 0,
-    borderBottom: '2px solid #665546',
-    backgroundColor: 'rgba(0,0,0,1)',
-    color: '#FCFCCF',
-    '::-webkit-input-placeholder': {
-      color: '#FCFCCF',
-    },
   },
 };
 
@@ -72,6 +62,7 @@ export interface CharacterSummaryProps {
   selectedClass: Archetype;
   remainingPoints: number;
   banesAndBoonsState: BanesAndBoonsState;
+  characterState: CharacterState;
   inputRef: (ref: Element) => void;
 }
 
@@ -107,10 +98,10 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
             ' cu-character-creation__name'}>
             <input
               id='create-character-name-input'
+              autoFocus
               type='text'
               ref={this.props.inputRef}
               placeholder='Enter A Name Here'
-              className={css(ss.characterNameInput, custom.characterNameInput)}
             />
           </div>
         </div>

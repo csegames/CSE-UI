@@ -60,7 +60,7 @@ class Input extends React.Component<InputProps, InputState> {
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
           onBlur={this.onBlur}
-          onFocus={this.onFocus}
+          onClick={this.onClick}
           value={this.state.value}
           />
         {adjuster}
@@ -113,7 +113,7 @@ class Input extends React.Component<InputProps, InputState> {
     this.setState({ changed: true, value: e.target.value });
   }
 
-  private onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  private onClick = (e: React.MouseEvent<HTMLInputElement>) => {
     console.log('CRAFTING: REQUEST INPUT OWNERSHIP - ALL YOUR INPUTZ BELONGZ TO US!!!');
     client.RequestInputOwnership();
   }

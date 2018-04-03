@@ -11,13 +11,10 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-
-import { events, Gender, Archetype, Faction, Race, webAPI, client, HelpInfo } from 'camelot-unchained';
-import { toTitleCase, toSentenceCase } from 'camelot-unchained/lib/utils/textUtils';
+import { StyleDeclaration } from 'aphrodite';
+import { events, Gender, HelpInfo } from 'camelot-unchained';
 
 import { view } from '../../components/OverlayView';
-import { patcher } from '../../services/patcher';
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/PlayerClassSelect';
 import RaceSelect from './components/RaceSelect';
@@ -26,6 +23,7 @@ import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
 import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
 import { helpSteps } from './components/HelpSteps';
+import CharCreationHeader from './components/CharCreationHeader';
 
 // tslint:disable-next-line
 
@@ -50,7 +48,6 @@ import {
 import {
   AttributeOffsetsState,
   fetchAttributeOffsets,
-  AttributeOffsetInfo,
   resetAttributeOffsets,
 } from './services/session/attributeOffsets';
 import { CharacterState, createCharacter, CharacterCreationModel, resetCharacter } from './services/session/character';
@@ -58,12 +55,9 @@ import { selectGender, resetGender } from './services/session/genders';
 import {
   BanesAndBoonsState,
   resetBanesAndBoons,
-  fetchTraits,
 } from './services/session/banesAndBoons';
 
 export { CharacterCreationModel } from './services/session/character';
-
-declare const Materialize: any;
 
 const store = createStore(reducer, applyMiddleware(thunk as any));
 
@@ -116,31 +110,12 @@ export interface ContainerStyles extends StyleDeclaration {
   closeButton: React.CSSProperties;
 }
 
-const defaultCharacterCreationStyle: ContainerStyles = {
-  closeButton: {
-    position: 'absolute',
-    fontSize: '20px',
-    top: 2,
-    right: 5,
-    color: 'white',
-    cursor: 'pointer',
-    zIndex: 10,
-    ':hover': {
-      textShadow: '0 0 3px white',
-    },
-    ':active': {
-      textShadow: '0 0 10px white',
-    },
-  },
-};
-
 declare const toastr: any;
 
 class CharacterCreation extends React.Component<CharacterCreationProps, CharacterCreationState> {
   private pagesVisited: CharacterCreationPage[] = [];
   private pagesCompleted: CharacterCreationPage[] = [];
   private characterNameInputRef: Element;
-  private raceRef: any;
 
   constructor(props: any) {
     super(props);
@@ -239,10 +214,10 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
             remainingPoints={remainingPoints}
             banesAndBoonsState={this.props.banesAndBoonsState}
             inputRef={ref => this.characterNameInputRef = ref}
+            characterState={this.props.characterState}
           />
         );
     }
-    const ss = StyleSheet.create(defaultCharacterCreationStyle);
     const pages: NavigationPageInfo[] = [
       {
         pageNumber: CharacterCreationPage.Faction,
@@ -303,11 +278,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           steps={helpSteps[CharacterCreationPage[this.state.page]]}
           onExitClick={this.toggleHelp}
         />
-        <div className='cu-character-creation__header'>
-          <span>[ {this.state.selectedServerName} ] Character Creation - 
-            {toTitleCase(CharacterCreationPage[this.state.page])}
-          </span>
-        </div>
+        <CharCreationHeader
+          selectedServerName={this.state.selectedServerName}
+          onCloseClick={this.onCloseClick}
+          onHelpClick={this.toggleHelp} page={this.state.page}
+        />
         <div className='cu-character-creation__content'>
           {content}
         </div>
@@ -325,9 +300,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   public componentWillReceiveProps(nextProps: CharacterCreationProps) {
-    // if (this.props && nextProps && this.props.shard !== nextProps.shard) {
-    //   this.resetAndInit();
-    // }
     if (this.props.factionsState !== nextProps.factionsState ||
         this.props.playerClassesState !== nextProps.playerClassesState ||
         this.props.racesState !== nextProps.racesState) {
@@ -566,7 +538,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Attributes);
         events.fire('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false });
+        setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
         break;
       }
       case CharacterCreationPage.Summary: {
@@ -606,6 +578,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private onCloseClick = () => {
+    events.fire('play-sound', 'select');
     events.fire('view-content', view.NONE);
     this.resetAndInit();
   }

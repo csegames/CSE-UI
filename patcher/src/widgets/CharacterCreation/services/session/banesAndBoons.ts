@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { fetchJSON } from '../../../../lib/fetchHelpers';
-import ResponseError from '../../../../lib/ResponseError';
 import { Module } from 'redux-typed-modules';
-import { webAPI, client, Faction, Race } from 'camelot-unchained';
+import { webAPI, client } from 'camelot-unchained';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -243,7 +241,6 @@ export const onSelectRankBoon = module.createAction({
     const raceBoons = state.raceBoons;
     const factionBoons = state.factionBoons;
     const addedBoons = state.addedBoons;
-    const traits = state.traits;
     const nextRankBoon = action.boon.ranks[action.boon.rank + 1] ? action.boon.ranks[action.boon.rank + 1] :
       action.boon.ranks[action.boon.rank];
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
@@ -358,7 +355,6 @@ export const onSelectRankBane = module.createAction({
     const raceBanes = state.raceBanes;
     const factionBanes = state.factionBanes;
     const addedBanes = state.addedBanes;
-    const traits = state.traits;
     const nextRankBane = action.bane.ranks[action.bane.rank + 1] ? action.bane.ranks[action.bane.rank + 1] :
       action.bane.id;
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
@@ -421,7 +417,6 @@ export const onCancelRankBane = module.createAction({
     const raceBanes = state.raceBanes;
     const factionBanes = state.factionBanes;
     const addedBanes = state.addedBanes;
-    const traits = state.traits;
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
       action.bane.id;
     if (action.bane.rank !== 0) {
@@ -775,7 +770,6 @@ export const onResetBoons = module.createAction({
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
-    const ranks = banesAndBoons.ranks;
     const generalBoons = state.generalBoons;
     const playerClassBoons = state.playerClassBoons;
     const raceBoons = state.raceBoons;
@@ -816,18 +810,6 @@ export const onResetBoons = module.createAction({
         factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
-    ].map((id) => {
-      traits[id] = {...traits[id], selected: true, required: true};
-      return Object.assign({}, traits[id], { required: true });
-    });
-
-    const requiredBanes = [
-      ...playerClassTraits && playerClassTraits.required ?
-        playerClassTraits.required.filter((id: string) => traits[id].points <= -1) : [],
-      ...factionTraits && factionTraits.required ?
-        factionTraits.required.filter((id: string) => traits[id].points <= -1) : [],
-      ...raceTraits && raceTraits.required ?
-        raceTraits.required.filter((id: string) => traits[id].points <= -1) : [],
     ].map((id) => {
       traits[id] = {...traits[id], selected: true, required: true};
       return Object.assign({}, traits[id], { required: true });
@@ -875,7 +857,6 @@ export const onResetBanes = module.createAction({
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
-    const ranks = banesAndBoons.ranks;
     const generalBanes = state.generalBanes;
     const playerClassBanes = state.playerClassBanes;
     const raceBanes = state.raceBanes;
@@ -908,18 +889,6 @@ export const onResetBanes = module.createAction({
     const playerClassTraits = allClassTraits[Object.keys(playerClasses).indexOf(playerClass)];
     const factionTraits = allFactionTraits[Object.keys(factions).indexOf(faction)];
     const raceTraits = allRaceTraits[Object.keys(races).indexOf(race)];
-
-    const requiredBoons = [
-      ...playerClassTraits && playerClassTraits.required ?
-        playerClassTraits.required.filter((id: string) => traits[id].points >= 1) : [],
-      ...factionTraits && factionTraits.required ?
-        factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
-      ...raceTraits && raceTraits.required ?
-        raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
-    ].map((id) => {
-      traits[id] = {...traits[id], selected: true, required: true};
-      return Object.assign({}, traits[id], { required: true });
-    });
 
     const requiredBanes = [
       ...playerClassTraits && playerClassTraits.required ?

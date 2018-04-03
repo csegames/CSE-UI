@@ -67,7 +67,7 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
   }
 
   private materialSelectorDeactivated = () => {
-    this.setState((state, props) => ({ showMaterialSelector: true } as BuildPanelState));
+    this.setState((state, props) => ({ showMaterialSelector: false } as BuildPanelState));
   }
 }
 

@@ -6,10 +6,10 @@
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {createStore, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 
-import {thunkMiddleware, loggingMiddleware} from './lib/reduxUtils';
+import { thunkMiddleware } from './lib/reduxUtils';
 import reducer from './services/session';
 import PatcherApp from './components/App';
 import { client } from 'camelot-unchained';

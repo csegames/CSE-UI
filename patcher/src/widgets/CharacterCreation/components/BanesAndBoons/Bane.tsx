@@ -8,7 +8,6 @@ import * as React from 'react';
 import { events } from 'camelot-unchained';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Trait, { TraitStyle } from './Trait';
-import { styleConstants } from '../../styleConstants';
 
 const Bane = (props: {
   styles?: Partial<TraitStyle>;
@@ -43,8 +42,8 @@ const Bane = (props: {
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     if (onBaneClick) {
       onBaneClick(trait);
+      events.fire('play-sound', 'bane-select');
     }
-    events.fire('play-sound', 'bane-select');
   };
   const baneStyles = Object.assign(
     {},

@@ -19,11 +19,12 @@ module.exports = {
     },
     build: {
       sass: 'node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js',
-      default: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps lint && nps gql && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp'
+      noLint: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp',
+      default: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps lint && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp'
     },
     publish: 'nps build',
     serve: 'http-server -p 9000 dist/ui/',
-    debug: 'nps build && nps copy.patcher && nps patcher',
+    debug: 'nps build.noLint && nps copy.patcher && nps patcher',
     patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
     gql: {
       mkdir: 'mkdirp gql',

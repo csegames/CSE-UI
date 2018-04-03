@@ -1,4 +1,3 @@
-
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -6,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import {
   events,
   client,
@@ -191,24 +191,14 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   }) => {
     const { id, timer, clockwise, shouldPlayHit, overrideCurrentTimer } = info;
     let ring = this.rings[id];
-    if (timer && (timer.end - timer.current < 0)) {
-      // If current time is already greater than end time then just don't play timer animation
-      return;
-    }
-
-    if (overrideCurrentTimer && ring) {
-      clearInterval(this.rings[id].timer);
-    }
 
     if (!ring || overrideCurrentTimer) {
       ring = this.rings[id] = {
         event: { when: Date.now(), remaining: timer.end - timer.current, direction: 1, clockwise },
         timer: setInterval(() => this.ringTimerTick(id, shouldPlayHit), 66),
       };
-    } else {
-      ring.event = { when: Date.now(), remaining: timer.current, direction: 1, clockwise };
+      this.setRingState(id, timer.end - timer.current);
     }
-    this.setRingState(id, timer.end - timer.current);
   }
 
   private setDisruptionRing = (info: { id: number, disruption: SkillStateProgression, clockwise: boolean }) => {
@@ -232,6 +222,9 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       label,
       [id === INNER ? 'inner' : 'outer']: { current },
     };
+    if (id === INNER && this.props.skillState.status & SkillStateStatusEnum.Preparation) {
+      events.fire(`skill-button-timer-${this.props.skillState.id}`, current);
+    }
     this.setState((state, props) => newState as any);
   }
 
@@ -299,6 +292,12 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
       const now = Date.now();
       const ring = this.rings[INNER];
       if (ring) {
+        if (this.prevEvent && !_.isEqual(this.prevEvent.timing, event.timing)) {
+          this.rings[INNER] && this.ringStop(INNER);
+          this.runTimerAnimation(event.timing, null, false);
+          return;
+        }
+
         const elapsed = now - ring.event.when;
         const current = Math.floor(ring.event.remaining - elapsed);
         if (current <= 0) {

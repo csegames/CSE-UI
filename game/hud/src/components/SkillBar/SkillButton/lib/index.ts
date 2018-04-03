@@ -5,7 +5,13 @@
  *
  */
 
-import { SkillStateTypeEnum, SkillStateStatusEnum, SkillStateReasonEnum, SkillStateProgression } from 'camelot-unchained';
+import {
+  SkillStateTypeEnum,
+  SkillStateStatusEnum,
+  SkillStateReasonEnum,
+  SkillStateProgression,
+  SkillStateTrackEnum,
+} from 'camelot-unchained';
 export * from './styles';
 
 export interface SkillStateInfo {
@@ -15,6 +21,7 @@ export interface SkillStateInfo {
     icon: string;
     keybind: string;
   };
+  track: SkillStateTrackEnum;
   status: SkillStateStatusEnum;
   reason?: SkillStateReasonEnum;
   timing?: SkillStateProgression;

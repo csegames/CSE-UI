@@ -5,8 +5,6 @@
  */
 
 import 'isomorphic-fetch';
-
-import { fetchJSON } from '../../lib/fetchHelpers';
 import { webAPI } from 'camelot-unchained';
 
 declare const toastr: any;

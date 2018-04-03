@@ -96,6 +96,8 @@ export const defaultAttributeViewStyle: AttributeViewStyle = {
     fontSize: 16,
     padding: 0,
     color: utils.lightenColor(colors.filterBackgroundColor, 150),
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
 
@@ -206,7 +208,7 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                         a.value && ss.statValue,
                         a.value && custom.statValue,
                       )}>
-                      {a.value}
+                      {a.value ? parseFloat(a.value.toFixed(2)) : ''}
                     </span>
                   </div>
                 </Tooltip>
@@ -225,7 +227,7 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                     custom.statText,
                     a.value && ss.statValue,
                     a.value && custom.statValue,
-                  )}>{a.value}</span>
+                  )}>{a.value ? parseFloat(a.value.toFixed(2)) : ''}</span>
                 </div>
               );
             }

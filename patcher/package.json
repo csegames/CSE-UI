@@ -27,15 +27,15 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "rimraf typings && typings install"
+    "postinstall": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
     "aphrodite": "^1.1.0",
     "apisauce": "^0.3.1",
     "babel-runtime": "^6.26.0",
-    "camelot-unchained": "^0.9.37",
-    "cu-xmpp-chat": "^0.3.6",
-    "emotion": "^8.0.5",
+    "camelot-unchained": "^0.9.50",
+    "cu-xmpp-chat": "^0.3.7",
+    "emotion": "^8.0.12",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
     "isomorphic-fetch": "^2.2.1",
@@ -44,7 +44,7 @@
     "normalizr": "^2.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-emotion": "^8.0.5",
+    "react-emotion": "^8.0.12",
     "react-redux": "^4.4.5",
     "react-tap-event-plugin": "^3.0.2",
     "react-transition-group": "1.x",

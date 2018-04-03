@@ -57,9 +57,21 @@ body {
     }
   }
 
+  .display-none {
+    display: none;
+  }
+
   .loading-spin {
     -webkit-animation: loading-spin 1s infinite;
     animation: loading-spin 1s infinite;
+  }
+
+  .map-tooltip {
+    position: relative;
+    padding: 1px 3px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    white-space: nowrap;
   }
 
   @-webkit-keyframes loading-spin {
@@ -100,6 +112,47 @@ body {
       text-shadow: 0 0 1px #efefef, 0 0 2px #efefef, 0 0 3px #efefef, 0 0 4px #f4d142, 0 0 7px #f4d142, 0 0 8px #f4d142;
     }
   }
+
+  @mixin shake($x, $y, $rot, $name, $steps:10, $opacity:false) {
+    $r:0deg;
+    $h:0px;
+    $v:0px; 
+    
+    $interval: $steps;
+    $step: 0%;
+  
+    @keyframes #{$name}{ 
+      @while $step < 100% {
+        @if ($rot != 0deg){ $r : random($rot) - $rot/2;} 
+          @else {$r : 0deg;}
+        @if ($x != 0px){ $h : random($x) - $x/2; } 
+          @else { $h : 0px; }
+        @if ($y != 0px){ $v : random($y) - $y/2; } 
+          @else { $v : 0px; }
+      
+        @if($step == 0%){
+          #{$step} {
+            transform: translate(0px, 0px) rotate(0deg);
+            @if($opacity){
+              opacity: random(10)*.1;
+            }
+          }  
+        } @else {
+          #{$step} {
+            transform: translate($h, $v) rotate($r);
+            @if($opacity){
+              opacity: random(10)*.1; 
+            }
+          }
+        }
+        $step: $step + $interval;
+      }
+  
+    }
+  }
+  
+  @include shake(20px, 20px, 5deg, 'shake-hard', 3);
+  
 
   a {
     text-decoration: none;

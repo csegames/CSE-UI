@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events, client, ql } from 'camelot-unchained';
+import { events, ql } from 'camelot-unchained';
 import { patcher } from '../../services/patcher';
 
 // views
@@ -36,6 +36,7 @@ export enum view {
   NEWS,
   CHAT,
   PATCHNOTES,
+  CHARACTERSELECT,
 }
 
 class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
@@ -56,8 +57,8 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     return (
       <div
         className={`OverlayView ${this.state.previousView === view.NONE && this.state.currentView === view.NONE ?
-          'OverlayView--hidden' : ''} ${this.state.currentView === view.CHARACTERCREATION ?
-            'OverlayView--wholescreen' : ''}`}>
+          'OverlayView--hidden' : ''} ${this.state.currentView === view.CHARACTERCREATION ||
+            this.state.currentView === view.CHARACTERSELECT ? 'OverlayView--wholescreen' : ''}`}>
         {this.renderView(false)}
         {this.renderView(true)}
 
@@ -68,9 +69,9 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         : null }
 
         {patcher.hasLoginToken() ?
-        <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
-          <CharacterCreation {...this.state.currentProps} />
-        </div>
+          <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
+            <CharacterCreation {...this.state.currentProps} />
+          </div>
         : null }
       </div>
     );

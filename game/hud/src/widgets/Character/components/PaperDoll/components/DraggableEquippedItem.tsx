@@ -4,8 +4,13 @@ import { ql, events } from 'camelot-unchained';
 
 import styled, { css } from 'react-emotion';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
-import { defaultSlotIcons } from '../../../lib/constants';
+import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
+import { getInventoryDataTransfer } from '../../../lib/utils';
+import { InventoryDataTransfer } from '../../Inventory/components/InventoryBase';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+
+declare const toastr: any;
 
 const Container = styled('div')`
   position: relative;
@@ -17,7 +22,7 @@ const Container = styled('div')`
 
 const ItemIcon = styled('img')`
   overflow: hidden;
-  width: 70px;
+  width: 69px;
   height: 70px;
 `;
 
@@ -42,7 +47,7 @@ const defaultIconStyle = css`
 
 export interface DraggableEquippedItemProps extends DragAndDropInjectedProps {
   slotName: string;
-  equippedItem: ql.schema.EquippedItem;
+  equippedItem: EquippedItemFragment;
 }
 
 export interface DraggableEquippedItemState {
@@ -70,22 +75,32 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public data() {
-    return this.props.equippedItem;
+    const equippedItem = this.props.equippedItem;
+    return getInventoryDataTransfer({
+      item: equippedItem.item,
+      location: 'equipped',
+      position: -1,
+      gearSlots: equippedItem.gearSlots,
+    });
   }
 
   public onDragStart() {
     this.setState({ opacity: 0.3 });
   }
 
-  public onDrop(e: DragEvent<ql.schema.Item, DraggableEquippedItemProps>) {
-    const item = e.dataTransfer;
-    item.location.inventory = null;
-    this.equipItem(item, this.props.equippedItem);
+  public onDrop(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
+    const item = e.dataTransfer.item;
+    if (item.location.inventory) {
+      item.location.inventory = null;
+      this.equipItem(item, this.props.equippedItem);
+    } else {
+      toastr.error('Move item out of container, then try to equip it.', 'Try this', { timeout: 2000 });
+    }
   }
 
-  public onDragOver(e: DragEvent<ql.schema.Item, DraggableEquippedItemProps>) {
+  public onDragOver(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
     if (this.state.backgroundColor === 'transparent') {
-      if (this.canEquip(e.dataTransfer)) {
+      if (this.canEquip(e.dataTransfer.item as any)) {
         this.setState({ backgroundColor: colors.canEquip });
       } else {
         this.setState({ backgroundColor: colors.cannotEquip });
@@ -105,9 +120,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     const { equippedItem, slotName } = this.props;
     const iconUrl = equippedItem && equippedItem.item.staticDefinition.iconUrl ||
       `${defaultSlotIcons[slotName]} \ ${defaultIconStyle}`;
-    const placeholderIcon = 'images/unknown-item.jpg';
     const isRightSlot = _.includes(slotName.toLowerCase(), 'right');
-    const flipIcon = isRightSlot ? { transform: 'scaleX(-1)', webkitTransform: 'scaleX(-1)' } : {};
+    const flipIcon = isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
     return (
       <Container opacity={this.state.opacity}>
         {this.props.equippedItem ? <ItemIcon style={flipIcon} src={iconUrl || placeholderIcon} /> :
@@ -140,8 +154,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     if (this.state.highlightSlot) this.setState({ highlightSlot: false });
   }
 
-  private canEquip = (dragItem: ql.schema.Item) => {
-    if (dragItem && dragItem.staticDefinition) {
+  private canEquip = (dragItem: InventoryItemFragment) => {
+    if (dragItem && dragItem.staticDefinition && !dragItem.location.inContainer) {
       const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
       let canEquip = false;
       gearSlotSets.forEach((set) => {
@@ -156,7 +170,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     }
   }
 
-  private equipItem = (inventoryItem: ql.schema.Item, equippedItem: ql.schema.EquippedItem) => {
+  private equipItem = (inventoryItem: InventoryItemFragment, equippedItem: EquippedItemFragment) => {
     const gearSlotSet = _.find(inventoryItem.staticDefinition.gearSlotSets, (set) => {
       return _.findIndex(set.gearSlots, (slot) => {
         return _.lowerCase(slot.id) === _.lowerCase(this.props.slotName);

@@ -4,23 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI, events, signalr } from 'camelot-unchained';
+import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
 
-import { checkStatus, parseJSON } from '../../lib/fetchHelpers';
-import ResponseError from '../../lib/ResponseError';
-
 import { Race, Faction, Gender, Archetype } from 'camelot-unchained';
-
-declare const Materialize: any;
-
-const defaultBanes = {
-  '5429de13da9beb2c3c3dd450':3,
-  '5429de13da9beb2c3c3dd451':1,
-  '5429de13da9beb2c3c3dd452':1,
-};
-
-const defaultBoons = {'5429de0eda9beb2c3c3dd32b':1};
 
 export interface CharacterCreationModel {
   name: string;
@@ -67,7 +54,7 @@ export function createCharacter(model: CharacterCreationModel,
       dispatch(createCharacterSuccess(model));
       return;
     }
-    dispatch(createCharacterFailed(res.data));
+    dispatch(createCharacterFailed(JSON.parse(res.data).FieldCodes[0].Message));
   };
 }
 
@@ -87,7 +74,7 @@ export function createCharacterSuccess(model: CharacterCreationModel) {
 export function createCharacterFailed(error: any) {
   return {
     type: CREATE_CHARACTER_FAILED,
-    error: JSON.parse(error.Message),
+    error: JSON.parse(error),
   };
 }
 

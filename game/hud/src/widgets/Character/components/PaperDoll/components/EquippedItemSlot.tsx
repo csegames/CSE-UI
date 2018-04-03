@@ -6,12 +6,14 @@
 
 import * as React from 'react';
 
-import { Tooltip, events, ql } from 'camelot-unchained';
+import { Tooltip, events } from 'camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquippedItemSlotStyle extends StyleDeclaration {
   equippedItemSlot: React.CSSProperties;
@@ -53,7 +55,7 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
 
 export interface EquippedItemSlotProps {
   styles?: Partial<EquippedItemSlotStyle>;
-  providedEquippedItem: ql.schema.EquippedItem;
+  providedEquippedItem: EquippedItemFragment;
   slot: { slotName: string, openingSide: Alignment };
 }
 
