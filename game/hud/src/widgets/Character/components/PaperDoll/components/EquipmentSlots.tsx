@@ -286,8 +286,18 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
-    const newItem = { item: inventoryItem, gearSlots: willEquipTo };
-    this.props.onEquippedItemsChange(filteredItems.concat(newItem as any));
+    const newItem: InventoryItemFragment = {
+      ...inventoryItem,
+      location: {
+        inventory: null,
+        inContainer: null,
+        equipped: {
+          gearSlots: willEquipTo,
+        },
+      }
+    }
+    const newEquippedItem = { item: newItem, gearSlots: willEquipTo };
+    this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem as any));
 
     const prevEquippedItem = _.filter(equippedItems, equippedItem =>
       _.findIndex(equippedItem.gearSlots, gearSlot => _.find(willEquipTo, slot => slot.id === gearSlot.id)) > -1);

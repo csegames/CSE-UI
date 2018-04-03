@@ -5,4 +5,9 @@ fragment ItemLocation on ItemLocationDescription {
   inventory {
     position
   }
+  equipped {
+    gearSlots {
+      id
+    }
+  }
 }

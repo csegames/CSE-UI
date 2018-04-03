@@ -11,7 +11,7 @@ import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 import Item from '../../Item';
 import EmptyItem from '../../EmptyItem';
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 export const itemDimensions = {
@@ -54,7 +54,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
     const { item } = this.props;
     return item ? (
       <Tooltip styles={defaultTooltipStyle} content={() =>
-        <TooltipContent item={item} instructions='Left click to equip' />
+        <TooltipContent isVisible={true} item={item} instructions='Left click to equip' />
       }>
         <div
           onClick={this.onEquipItem}

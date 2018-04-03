@@ -15,6 +15,45 @@ export const nullVal = '0000000000000000000000';
 
 export const placeholderIcon = 'images/unknown-item.jpg';
 
+export const MORE_THAN_STAT_COLOR = '#DFBA79';
+export const LESS_THAN_STAT_COLOR = '#AA9B81';
+
+export const TOOLTIP_PADDING = '10px';
+
+// --- Item tooltips ---
+export const shortenedWeaponStatWords = {
+  ['Deflection Recovery']: 'Deflection Rcvry',
+  ['Falloff Max Distance']: 'Max FO Dist',
+  ['Falloff Min Distance']: 'Min FO Dist',
+  ['Falloff Reduction']: 'FO Reduction',
+  ['Physical Preparation Time']: 'Prep',
+  ['Physical Recovery Time']: 'Recovery',
+  ['Stamina Cost']: 'Stamina',
+  ['Armor Penetration']: 'AP',
+
+  Amount: '',
+  Damage: 'Dmg',
+  Fallback: 'FB',
+  Penetration: 'Pen',
+  Physical: 'Phys',
+  Preparation: 'Prep',
+  Projectile: 'Prjtl',
+  Requirement: '',
+};
+
+// s = seconds, m = meters, m/s meters per second
+export const weaponStatUnits = {
+  deflectionRecovery: 's',
+  physicalPreparationTime: 's',
+  physicalRecoveryTime: 's',
+  falloffMinDistance: 'm',
+  falloffMaxDistance: 'm',
+  range: 'm',
+  physicalProjectileSpeed: 'm/s',
+  knockbackAmount: 'N',
+};
+// -------------------
+
 export const colors = {
   filterOn: '#c0f6d4',
   filterBackgroundColor: '#372F2D',
@@ -40,6 +79,9 @@ export const colors = {
   tabClickColorRed: '#c7a993',
   boonPrimary: '#41ACE9',
   banePrimary: '#E85143',
+  tooltipViking: 'rgba(35, 155, 242, 0.25)',
+  tooltipArt: 'rgba(247, 33, 33, 0.25)',
+  tooltipTDD: 'rgba(196, 216, 1, 0.25)',
 };
 
 export const paperDollIcons = {
@@ -239,6 +281,7 @@ export const characterBodyPartIcons = {
   LeftLeg: 'icon-health-leg',
   RightLeg: 'icon-health-leg',
   Torso: 'icon-health-torso',
+  _BODY_BEGIN: 'icon-health-torso',
 };
 
 export enum ArmorType {

@@ -15,7 +15,12 @@ import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { rowActionIcons } from '../../../../lib/constants';
-import { calcRowsForContainer, getContainerColor, createMoveItemRequestToContainerPosition } from '../../../../lib/utils';
+import {
+  calcRowsForContainer,
+  getContainerColor,
+  getContainerInfo,
+  createMoveItemRequestToContainerPosition,
+} from '../../../../lib/utils';
 import {
   ContainerDrawersFragment,
   InventoryItemFragment,
@@ -135,7 +140,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     });
 
     // Get header info
-    const { totalUnitCount, weight } = base.getContainerHeaderInfo(drawerItems);
+    const { totalUnitCount, weight } = getContainerInfo(drawerItems);
 
     // Create rows
     const { rows, rowData } = base.createRowElementsForContainerItems({
@@ -288,6 +293,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
           position: dropZoneData.position,
         },
         inventory: null,
+        equipped: null,
       },
     };
 
@@ -298,6 +304,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
           position: dragItemData.position,
         },
         inventory: null,
+        equipped: null,
       },
     };
 

@@ -138,6 +138,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       private mouseDownTimeout: any;
       private initTimeout: any;
       private initialPosition: PositionInformation;
+      private dimensions: { height: number; width: number; top: number; left: number; };
       private onScroll = _.throttle(() => {
         // This inits position after throttled through scroll if a scrollById is provided.
         this.initPosition();
@@ -188,6 +189,12 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         }
       }
 
+      public shouldComponentUpdate(nextProps: any, nextState: DragAndDropState) {
+        return !_.isEqual(nextState.draggingPosition, this.state.draggingPosition) ||
+          nextState.dragItemIsOver !== this.state.dragItemIsOver ||
+          !_.isEqual(nextProps, this.props);
+      }
+
       public componentWillReceiveProps(nextProps: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
         if (!_.isEqual(this.props, nextProps)) {
           if (this.state.dragItemIsOver) {
@@ -198,10 +205,14 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         }
       }
 
-      public componentDidUpdate() {
-        if (!this.ref) return;
-
-        const dimensions = this.ref.getBoundingClientRect();
+      public componentDidUpdate(prevProps: any, prevState: DragAndDropState) {
+        if (!this.ref || !this.dimensions) return;
+        const dimensions = {
+          width: this.dimensions.width,
+          height: this.dimensions.height,
+          top: this.dimensions.top,
+          left: this.dimensions.left,
+        };
         const positionHasChanged = dimensions && this.initialPosition &&
           (dimensions.width !== this.initialPosition.width || dimensions.height !== this.initialPosition.height ||
           dimensions.top !== this.initialPosition.top || dimensions.left !== this.initialPosition.left);
@@ -230,9 +241,11 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private initPosition = () => {
         this.initTimeout = setTimeout(() => {
-          const dimensions = this.ref && this.ref.getBoundingClientRect();
-          if (dimensions) {
-            const { top, left, width, height } = dimensions;
+          if (!this.dimensions) {
+            this.dimensions = this.ref && this.ref.getBoundingClientRect();
+          }
+          if (this.dimensions) {
+            const { top, left, width, height } = this.dimensions;
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {

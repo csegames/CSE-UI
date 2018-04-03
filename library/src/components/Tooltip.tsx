@@ -83,12 +83,13 @@ export interface TooltipState {
   offsetRight: number;
   offsetTop: number;
   offsetBottom: number;
-  tooltipDimensions: { width: number, height: number };
 }
 
 export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   private childRef: HTMLDivElement;
   private tooltipRef: HTMLDivElement;
+  private windowDimensions: { innerHeight: number, innerWidth: number };
+  private tooltipDimensions: { width: number, height: number };
 
   constructor(props: TooltipProps) {
     super(props);
@@ -100,7 +101,6 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       offsetTop: this.props.offsetTop || 10,
       offsetRight: this.props.offsetRight || 5,
       offsetBottom: this.props.offsetBottom || 5,
-      tooltipDimensions: null,
     };
   }
 
@@ -135,13 +135,26 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     );
   }
 
+  public componentDidMount() {
+    this.initWindowDimensions();
+    window.addEventListener('resize', this.initWindowDimensions);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('resize', this.initWindowDimensions);
+  }
+
+  private initWindowDimensions = () => {
+    this.windowDimensions = { innerHeight: window.innerHeight, innerWidth: window.innerWidth };
+  }
+
   private onMouseMove = (e: React.MouseEvent<any>) => {
-    if (this.props.fixedMode && !this.state.tooltipDimensions) {
-      this.setState({ tooltipDimensions: this.tooltipRef.getBoundingClientRect() });
+    if (!this.tooltipDimensions && this.tooltipRef) {
+      this.tooltipDimensions = this.tooltipRef.getBoundingClientRect();
     }
 
     let computedStyle;
-    if (this.props.fixedMode && this.state.tooltipDimensions) {
+    if (this.props.fixedMode && this.tooltipDimensions) {
       const { top, left } = this.childRef.getBoundingClientRect();
       computedStyle = this.computeStyle(
         left,
@@ -165,10 +178,28 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
 
     if (this.tooltipRef && computedStyle) {
-      this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
-      this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';
-      this.tooltipRef.style.bottom = computedStyle.bottom ? computedStyle.bottom : 'auto';
-      this.tooltipRef.style.top = computedStyle.top ? computedStyle.top : 'auto';
+      if (computedStyle.bottom) {
+        const topScreenOverflow = e.clientY - this.tooltipDimensions.height;
+        if (topScreenOverflow < 0) {
+          // Tooltip is overflowing the top of the viewport
+          this.tooltipRef.style.bottom = `${computedStyle.bottom + topScreenOverflow}px`;
+        } else {
+          this.tooltipRef.style.bottom = `${computedStyle.bottom}px`;
+        }
+      }
+
+      if (computedStyle.top) {
+        const bottomScreenOverflow = this.windowDimensions.innerHeight - (e.clientY + this.tooltipDimensions.height);
+        if (bottomScreenOverflow < 0) {
+          // Tooltip is overflowing the bottom of the viewport
+          this.tooltipRef.style.top = `${computedStyle.top + bottomScreenOverflow}px`;
+        } else {
+          this.tooltipRef.style.top = `${computedStyle.top}px`;
+        }
+      }
+
+      this.tooltipRef.style.left = computedStyle.left ? `${computedStyle.left}px` : 'auto';
+      this.tooltipRef.style.right = computedStyle.right ? `${computedStyle.right}px` : 'auto';
     }
   }
 
@@ -195,9 +226,9 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
                           offsetTop: number,
                           offsetRight: number,
                           offsetBottom: number) => {
-    const { top, left, width, height } = this.childRef.getBoundingClientRect();
     const wndRegion = typeof this.props.wndRegion === 'number' ? this.props.wndRegion : this.state.wndRegion;
-    if (this.props.fixedMode && this.state.tooltipDimensions) {
+    if (this.props.fixedMode && this.tooltipDimensions) {
+      const { top, left, width, height } = this.childRef.getBoundingClientRect();
       switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
@@ -206,41 +237,41 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
           };
         case Quadrant.TopRight:
           return {
-            left: x - this.state.tooltipDimensions.width + width + offsetRight,
+            left: x - this.tooltipDimensions.width + width + offsetRight,
             top: y + height + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
             left: x + offsetLeft,
-            top: y - this.state.tooltipDimensions.height + offsetBottom,
+            top: y - this.tooltipDimensions.height + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            left: x - this.state.tooltipDimensions.width + width + offsetRight,
-            top: y - this.state.tooltipDimensions.height + offsetBottom,
+            left: x - this.tooltipDimensions.width + width + offsetRight,
+            top: y - this.tooltipDimensions.height + offsetBottom,
           };
       }
     } else {
       switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
-            left: `${x + offsetLeft}px`,
-            top: `${y + offsetTop}px`,
+            left: x + offsetLeft,
+            top: y + offsetTop,
           };
         case Quadrant.TopRight:
           return {
-            right: `${window.window.innerWidth - x + offsetRight}px`,
-            top: `${y + offsetTop}px`,
+            right: this.windowDimensions.innerWidth - x + offsetRight,
+            top: y + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
-            left: `${x + offsetLeft}px`,
-            bottom: `${window.window.innerHeight - y + offsetBottom}px`,
+            left: x + offsetLeft,
+            bottom: this.windowDimensions.innerHeight - y + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            right: `${window.window.innerWidth - x + offsetRight}px`,
-            bottom: `${window.window.innerHeight - y + offsetBottom}px`,
+            right: this.windowDimensions.innerWidth - x + offsetRight,
+            bottom: this.windowDimensions.innerHeight - y + offsetBottom,
           };
       }
     }

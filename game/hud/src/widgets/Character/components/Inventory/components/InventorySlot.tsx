@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { ql, ContextMenu, Tooltip, ItemPermissions, events } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
@@ -127,22 +127,24 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   public render() {
-    const { item } = this.props;
+    const { item, equippedItems } = this.props;
 
     const usesContainer = item.slotType === SlotType.Container || item.slotType === SlotType.CraftingContainer;
     const hasViewPermissions = !this.props.item.containerPermissions ||
       this.props.item.containerPermissions & ItemPermissions.ViewContents;
     const id = item.itemID || item.groupStackHashID;
+    const tooltipVisible = getDragStore().isDragging ? false : (this.state.showTooltip);
 
     return id ? (
       <Container>
         <Tooltip
-          show={getDragStore().isDragging ? false : this.state.showTooltip}
+          show={tooltipVisible}
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
+              isVisible={tooltipVisible}
               item={item.item || (item.stackedItems && item.stackedItems[0])}
-              shouldOnlyShowPrimaryInfo={item.slotType === SlotType.CraftingContainer}
+              equippedItems={equippedItems}
               instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
             />
@@ -161,7 +163,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             <ItemContainer
               slotImage={this.props.showGraySlots ? 'images/inventory/item_slot_grey.png' : 'images/inventory/item_slot.png'}
               onClick={usesContainer && hasViewPermissions ? this.onToggleContainer : null}
-              onMouseEnter={this.onMouseEnter}
+              onMouseOver={this.onMouseOver}
               onMouseLeave={this.onMouseLeave}
               onDoubleClick={this.onEquipItem}>
                 <DraggableItemComponent
@@ -204,6 +206,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     this.state.contextMenuVisible !== nextState.contextMenuVisible ||
     this.props.itemIndex !== nextProps.itemIndex ||
     this.props.containerIsOpen !== nextProps.containerIsOpen ||
+    this.props.equippedItems !== nextProps.equippedItems ||
     !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
     !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
     !_.isEqual(this.props.item, nextProps.item);
@@ -230,23 +233,25 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     }
   }
 
-  private onMouseEnter = () => {
-    this.mouseOver = true;
-    if (!this.state.contextMenuVisible) {
-      this.setState({ showTooltip: true });
-    }
-    const item = this.props.item.item;
-    if (!getDragStore().isDragging && item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
-      const { gearSlotSets } = item.staticDefinition;
-      if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots)) ||
-        (this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
-        this.isRightOrLeftItem(gearSlotSets[1].gearSlots))) {
+  private onMouseOver = () => {
+    if (!this.mouseOver) {
+      this.mouseOver = true;
+      if (!this.state.contextMenuVisible) {
+        this.setState({ showTooltip: true });
+      }
+      const item = this.props.item.item;
+      if (!getDragStore().isDragging && item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
+        const { gearSlotSets } = item.staticDefinition;
+        if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots)) ||
+          (this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
+          this.isRightOrLeftItem(gearSlotSets[1].gearSlots))) {
 
-        this.rightOrLeftItemAction((gearSlots) => {
-          events.fire(eventNames.onHighlightSlots, gearSlots);
-        });
-      } else {
-        events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
+          this.rightOrLeftItemAction((gearSlots) => {
+            events.fire(eventNames.onHighlightSlots, gearSlots);
+          });
+        } else {
+          events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
+        }
       }
     }
   }
@@ -266,8 +271,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
       });
       const equippedItemSecondSlot = _.find(this.props.equippedItems, (item) => {
-        if (item.item && item.item.staticDefinition.name === 'Jeweled Axe') {
-        }
         return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
           gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
       });

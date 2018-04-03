@@ -157,6 +157,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
   public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {
     return !_.isEqual(this.props.items, nextProps.items) ||
       !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
+      !_.isEqual(this.props.equippedItems, nextProps.equippedItems) ||
       !_.isEqual(this.state.containersOpen, nextState.containersOpen) ||
       !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
       !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||

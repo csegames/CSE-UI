@@ -186,6 +186,9 @@ interface clientInterface {
   signalRHost?: string;
   shardID?: number;
 
+  /* player state object */
+  playerState: PlayerState;
+
   OnInitialized(c: () => void): number;
 
   CancelOnInitialized(c: number): void;

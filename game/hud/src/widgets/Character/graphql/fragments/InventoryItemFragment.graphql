@@ -12,21 +12,10 @@ fragment InventoryItem on Item {
     ...ItemActions
   }
   stats {
-    item {
-      ...BasicItem
-    }
-    alloy {
-      ...AlloyStats
-    }
-    substance {
-      ...SubstanceStats
-    }
-    weapon {
-      ...WeaponStats
-    }
-    armor {
-      ...ArmorParts
-    }
+    ...ItemStats
+  }
+  equiprequirement {
+    ...EquipRequirement
   }
   staticDefinition {
     id
@@ -45,7 +34,7 @@ fragment InventoryItem on Item {
     }
     gearSlotSets {
       gearSlots {
-        id
+        ...GearSlotDefRef
       }
     }
     isVox

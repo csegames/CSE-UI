@@ -12,7 +12,7 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
-import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
+import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquippedItemSlotStyle extends StyleDeclaration {
@@ -80,16 +80,14 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
     const { showTooltip } = this.state;
-    const { slot } = this.props;
-    const slotName = slot.slotName;
 
     const itemId = equippedItem && equippedItem.item.id;
-
     return (
-      <Tooltip show={itemId ? showTooltip : false} styles={defaultTooltipStyle} content={() =>
+      <Tooltip show={itemId ? showTooltip : false}
+        styles={defaultTooltipStyle} content={() =>
         <TooltipContent
+          isVisible={showTooltip}
           item={equippedItem.item}
-          slotName={slotName && slotName}
           instructions='Right click to unequip'
         />
       }>

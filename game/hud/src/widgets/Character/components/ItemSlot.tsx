@@ -8,7 +8,7 @@ import * as React from 'react';
 import { ql, Tooltip } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-import TooltipContent, { defaultTooltipStyle } from './TooltipContent';
+import TooltipContent, { defaultTooltipStyle } from './Tooltip';
 import { InventoryItemFragment } from '../../../gqlInterfaces';
 import { placeholderIcon } from '../lib/constants';
 
@@ -79,9 +79,6 @@ const ItemSlot = (props: ItemSlotProps) => {
   const {
     item,
     iconUrl,
-    slotName,
-    gearSlots,
-    tooltipInstructions,
     onClick,
     onDoubleClick,
     onMouseEnter,
@@ -94,12 +91,7 @@ const ItemSlot = (props: ItemSlotProps) => {
       show={showTooltip}
       styles={defaultTooltipStyle}
       content={() =>
-        <TooltipContent
-          item={item}
-          slotName={slotName && slotName}
-          gearSlots={gearSlots && gearSlots}
-          instructions={tooltipInstructions}
-        />
+        <TooltipContent isVisible={showTooltip} item={item} />
       }>
         <div
           className={css(ss.ItemSlot)}

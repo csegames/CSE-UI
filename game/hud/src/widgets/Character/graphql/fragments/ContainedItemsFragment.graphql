@@ -9,21 +9,7 @@ fragment ContainedItems on Item {
     ...ItemLocation
   }
   stats {
-    item {
-      ...BasicItem
-    }
-    alloy {
-      ...AlloyStats
-    }
-    substance {
-      ...SubstanceStats
-    }
-    weapon {
-      ...WeaponStats
-    }
-    armor {
-      ...ArmorParts
-    }
+    ...ItemStats
   }
   staticDefinition {
     id
@@ -33,7 +19,7 @@ fragment ContainedItems on Item {
     itemType
     gearSlotSets {
       gearSlots {
-        id
+        ...GearSlotDefRef
       }
     }
     isVox
@@ -60,21 +46,7 @@ fragment ContainedItems on Item {
         ...ItemLocation
       }
       stats {
-        item {
-          ...BasicItem
-        }
-        alloy {
-          ...AlloyStats
-        }
-        substance {
-          ...SubstanceStats
-        }
-        weapon {
-          ...WeaponStats
-        }
-        armor {
-          ...ArmorParts
-        }
+        ...ItemStats
       }
       staticDefinition {
         id
@@ -84,7 +56,7 @@ fragment ContainedItems on Item {
         itemType
         gearSlotSets {
           gearSlots {
-            id
+            ...GearSlotDefRef
           }
         }
         isVox

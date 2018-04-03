@@ -9,11 +9,11 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 
-import * as base from '../InventoryBase';
+import * as base from '../../../Inventory/components/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';
 import { InventorySlotItemDef, slotDimensions, SlotType } from '../InventorySlot';
 import InventoryRowActionButton from '../InventoryRowActionButton';
-import { calcRows, getItemDefinitionName } from '../../../../lib/utils';
+import { calcRows, getContainerInfo, getItemDefinitionName } from '../../../../lib/utils';
 import { rowActionIcons } from '../../../../lib/constants';
 
 const HeaderContent = styled('div')`
@@ -58,7 +58,7 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
     switch (this.props.item.slotType) {
       case SlotType.CraftingContainer:
         const firstItem = this.props.item && this.props.item.stackedItems[0];
-        const { totalUnitCount, weight, averageQuality } = base.getContainerHeaderInfo(this.props.item.stackedItems);
+        const { totalUnitCount, weight, averageQuality } = getContainerInfo(this.props.item.stackedItems);
         header =
           `${getItemDefinitionName(firstItem)} | ${totalUnitCount} units | ${weight}kg | average quality ${averageQuality}%`;
         rows =

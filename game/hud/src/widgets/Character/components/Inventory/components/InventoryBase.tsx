@@ -39,7 +39,6 @@ import {
   getItemInstanceID,
   getItemInventoryPosition,
   getItemMapID,
-  getItemMass,
   getItemQuality,
   getItemUnitCount,
   getInventoryDataTransfer,
@@ -1061,24 +1060,6 @@ export function partitionItems(items: InventoryItemFragment[]) {
     noPositionItems,
     idToGroupIDMap,
     moveRequests,
-  };
-}
-
-export function getContainerHeaderInfo(items: (InventoryItemFragment | ContainedItemsFragment)[]) {
-  let totalUnitCount = 0;
-  let averageQuality = 0;
-  let weight = 0;
-  const stackedItemsLength = _.isArray(items) ? items.length : 0;
-
-  _.isArray(items) && items.forEach((item: any) => {
-    totalUnitCount += getItemUnitCount(item);
-    averageQuality += getItemQuality(item);
-    weight += getItemMass(item);
-  });
-  return {
-    totalUnitCount: Number(totalUnitCount.toFixed(2)),
-    averageQuality: Number((averageQuality / stackedItemsLength).toFixed(2)),
-    weight: Number(weight.toFixed(2)),
   };
 }
 

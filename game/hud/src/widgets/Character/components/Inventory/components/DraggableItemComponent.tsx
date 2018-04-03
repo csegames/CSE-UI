@@ -13,12 +13,12 @@ import styled from 'react-emotion';
 import ItemStack from '../../ItemStack';
 import CraftingItem from './CraftingItem';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from './InventorySlot';
-import { getContainerHeaderInfo, InventoryDataTransfer } from './InventoryBase';
+import { InventoryDataTransfer } from './InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
 import eventNames from '../../../lib/eventNames';
-import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor  } from '../../../lib/utils';
+import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo  } from '../../../lib/utils';
 
 const Container = styled('div')`
   display: flex;
@@ -199,16 +199,6 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     const { item } = this.props;
     let itemComponent: JSX.Element;
     switch (item.slotType) {
-      case SlotType.Stack: {
-        const count = item.stackedItems && item.stackedItems.length > 1 ?
-          item.stackedItems.length : item.item.stats.item.unitCount;
-        itemComponent = <ItemStack count={count} icon={item.icon} />;
-        break;
-      }
-      case SlotType.CraftingContainer: {
-        itemComponent = <ItemStack count={getContainerHeaderInfo(item.stackedItems).totalUnitCount} icon={item.icon} />;
-        break;
-      }
       case SlotType.CraftingItem: {
         // Items in a Crafting Container
         itemComponent =
@@ -217,6 +207,16 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
             quality={item.quality}
             icon={item.icon}
           />;
+      }
+      case SlotType.Stack: {
+        const count = item.stackedItems && item.stackedItems.length > 1 ?
+          item.stackedItems.length : item.item.stats.item.unitCount;
+        itemComponent = <ItemStack count={count} icon={item.icon} />;
+        break;
+      }
+      case SlotType.CraftingContainer: {
+        itemComponent = <ItemStack count={getContainerInfo(item.stackedItems).totalUnitCount} icon={item.icon} />;
+        break;
       }
       default: {
         itemComponent = <StandardSlot src={item.icon || placeholderIcon} />;

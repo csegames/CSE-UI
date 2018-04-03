@@ -32,6 +32,25 @@ const devClientInterface: clientInterface = {
   serverURL: '',
   serverTime: 1,
   vsync: 1,
+  playerState: {
+    id: 'TestPlayer',
+    name: 'CSEaj',
+    type: 'player',
+    isAlive: true,
+    race: 2,
+    faction: 1,
+    gender: 1,
+    health: [
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+    ],
+    stamina: { current: 500, max: 1000 },
+    blood: { current: 500, max: 1000 },
+  },
 
   FOV: (degrees: number) => {
   },

@@ -5,7 +5,7 @@
  */
 
 import * as _ from 'lodash';
-import { ql, client, utils, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
+import { ql, client, utils, Faction, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { SlotNumberToItem, InventoryDataTransfer } from '../components/Inventory/components/InventoryBase';
@@ -24,8 +24,18 @@ export interface InventoryBodyDimensions {
   height: number;
 }
 
-export const prettifyText = (slotName: string) => {
-  if (slotName) return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+export const prettifyText = (slotName: string, shortenedWords?: {[word: string]: string}) => {
+  if (slotName) {
+    if (shortenedWords) {
+      let _slotName = slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+      Object.keys(shortenedWords).forEach((word) => {
+        _slotName = _slotName.replace(word, shortenedWords[word]);
+      });
+      return _slotName;
+    } else {
+      return slotName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+    }
+  }
 };
 
 export function calcRowsForContainer(bodyDimensions: InventoryBodyDimensions,
@@ -213,18 +223,88 @@ export function getInventoryDataTransfer(payload: {
 }
 
 export function isCraftingItem(item: InventoryItemFragment) {
-  if (!item) {
-    return false;
-  }
-  if (item.staticDefinition) {
+  if (item && item.staticDefinition) {
     switch (item.staticDefinition.itemType) {
       case 'Substance': return true;
       case 'Alloy': return true;
       default: return false;
     }
   }
+
   console.error('You provided an item to isCraftingItem() function that has staticDefinion of null');
   console.log(item);
+  return false;
+}
+
+export function isAlloyItem(item: InventoryItemFragment) {
+  if (item && item.staticDefinition) {
+    if (item.staticDefinition.itemType === 'Alloy') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  console.error('You provided a bad item to isAlloyItem() function');
+  console.log(item);
+  return false;
+}
+
+export function isSubstanceItem(item: InventoryItemFragment) {
+  if (item && item.staticDefinition) {
+    if (item.staticDefinition.itemType === 'Substance') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  console.error('You provided a bad item to isSubstanceItem() function');
+  console.log(item);
+  return false;
+}
+
+export function isWeaponItem(item: InventoryItemFragment) {
+  if (item && item.staticDefinition) {
+    const { itemType } = item.staticDefinition;
+    if (itemType === 'Weapon' || itemType === 'Ammo') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  console.error('You provided a bad item to isWeaponItem() function');
+  console.log(item);
+  return false;
+}
+
+export function isArmorItem(item: InventoryItemFragment) {
+  if (item && item.staticDefinition) {
+    if (item.staticDefinition.itemType === 'Armor') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  console.error('You provided a bad item to isArmorItem() function');
+  console.log(item);
+  return false;
+}
+
+export function isBuildingBlockItem(item: InventoryItemFragment) {
+  if (item && item.staticDefinition) {
+    if (item.staticDefinition.itemType === 'Block') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  console.error('You provided a bad item to isBuildingBlockItem() function');
+  console.log(item);
+  return false;
 }
 
 export function isStackedItem(item: InventoryItemFragment) {
@@ -338,6 +418,34 @@ export function getContainerID(item: InventoryItemFragment) {
   }
 }
 
+export function hasDurabilityStats(item: InventoryItemFragment) {
+  let hasStats = false;
+  if (item && item.stats && item.stats.durability) {
+    Object.keys(item.stats.durability).forEach((statName) => {
+      if (item.stats.durability[statName] > 0) {
+        hasStats = true;
+        return;
+      }
+    });
+  }
+
+  return hasStats;
+}
+
+export function hasItemRequirements(item: InventoryItemFragment) {
+  let hasReqs = false;
+  if (item && item.stats && item.stats.item) {
+    Object.keys(item.stats.item).forEach((itemStatName) => {
+      if (_.includes(itemStatName.toLowerCase(), 'requirement') && item.stats.item[itemStatName] !== 0) {
+        hasReqs = true;
+        return;
+      }
+    });
+  }
+
+  return hasReqs;
+}
+
 export function firstAvailableSlot(startWith: number, slotNumberToItem: SlotNumberToItem) {
   let slotNumber = startWith;
   while (true) {
@@ -385,6 +493,26 @@ export function shouldShowItem(item: InventoryItemFragment, activeFilters: Activ
   }
 }
 
+export function getContainerInfo(items: (InventoryItemFragment | ContainedItemsFragment)[]) {
+  // This gives you information about the containers current unit count, average quality, and weight.
+  // This is used for crafting containers and regular containers.
+  let totalUnitCount = 0;
+  let averageQuality = 0;
+  let weight = 0;
+  const stackedItemsLength = _.isArray(items) ? items.length : 0;
+
+  _.isArray(items) && items.forEach((item: any) => {
+    totalUnitCount += getItemUnitCount(item);
+    averageQuality += getItemQuality(item);
+    weight += getItemMass(item);
+  });
+  return {
+    totalUnitCount: Number(totalUnitCount.toFixed(2)),
+    averageQuality: Number((averageQuality / stackedItemsLength).toFixed(2)),
+    weight: Number(weight.toFixed(2)),
+  };
+}
+
 export function getContainerColor(item: InventoryItemFragment, alpha?: number) {
   if (item && item.containerColor) {
     const { containerColor } = item;
@@ -396,6 +524,23 @@ export function getContainerColor(item: InventoryItemFragment, alpha?: number) {
   }
 
   console.error('You provided an undefined item to getContainerColor() function');
+}
+
+export function getTooltipColor(faction: Faction) {
+  switch (faction) {
+    case Faction.Arthurian: {
+      return colors.tooltipArt;
+    }
+    case Faction.Viking: {
+      return colors.tooltipViking;
+    }
+    case Faction.TDD: {
+      return colors.tooltipTDD;
+    }
+    default: {
+      return colors.tooltipViking;
+    }
+  }
 }
 
 export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,

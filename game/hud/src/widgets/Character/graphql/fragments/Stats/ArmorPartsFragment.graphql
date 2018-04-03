@@ -1,7 +1,7 @@
 fragment ArmorParts on ArmorStatSet {
   statsPerSlot {
     gearSlot {
-      id
+      ...GearSlotDefRef
     }
     stats {
       armorClass
