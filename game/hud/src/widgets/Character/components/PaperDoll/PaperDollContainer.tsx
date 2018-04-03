@@ -143,7 +143,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   public componentWillReceiveProps(nextProps: PaperDollProps) {
     const graphqlData = this.props.graphql && this.props.graphql.data;
     const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
-    if (!_.isEqual(nextGraphqlData && nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
+    if (nextGraphqlData && !_.isEqual(nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
       this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
     }
   }

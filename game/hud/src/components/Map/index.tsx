@@ -125,7 +125,9 @@ export class GameMap extends React.PureComponent<Props, State> {
   }
 
   public componentWillUnmount() {
-    this.map.setTarget(undefined);
+    if (this.map) {
+      this.map.setTarget(undefined);
+    }
     this.dynamicVectorSource.clear();
     this.staticVectorSource.clear();
     this.initialized = false;
@@ -274,18 +276,20 @@ export class GameMap extends React.PureComponent<Props, State> {
       stopEvent: false,
     });
 
-    this.map.setTarget(this.mapRef);
-    this.map.addOverlay(this.tooltip);
+    if (this.map) {
+      this.map.setTarget(this.mapRef);
+      this.map.addOverlay(this.tooltip);
 
-    this.map.on('pointermove', (e: any) => {
-      const pixel = e.pixel;
-      const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
-      this.tooltipRef.style.display = feature ? '' : 'none';
-      if (feature) {
-        this.tooltip.setPosition(e.coordinate);
-        this.tooltipRef.innerHTML = feature.get('content');
-      }
-    });
+      this.map.on('pointermove', (e: any) => {
+        const pixel = e.pixel;
+        const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
+        this.tooltipRef.style.display = feature ? '' : 'none';
+        if (feature) {
+          this.tooltip.setPosition(e.coordinate);
+          this.tooltipRef.innerHTML = feature.get('content');
+        }
+      });
+    }
   }
 }
 
