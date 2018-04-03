@@ -29,6 +29,13 @@ fragment InventoryItem on Item {
     name
     iconUrl
     itemType
+    deploySettings {
+      isDoor
+      snapToGround
+      rotateYaw
+      rotatePitch
+      rotateRoll
+    }
     gearSlotSets {
       gearSlots {
         id

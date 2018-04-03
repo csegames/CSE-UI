@@ -5,7 +5,7 @@
  */
 
 import * as _ from 'lodash';
-import { client, utils } from 'camelot-unchained';
+import { client, utils, Vec3F, Euler3f } from 'camelot-unchained';
 import { inventoryFilterButtons, nullVal, emptyStackHash } from './constants';
 import { SlotNumberToItem } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
@@ -60,6 +60,33 @@ export function calcRows(div: HTMLElement, slotDimensions: number, minSlots: num
 
 export function getDimensionsOfElement(div: HTMLElement) {
   return div.getBoundingClientRect();
+}
+
+export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment,
+    worldPosition: Vec3F,
+    rotation: Euler3f): any {
+  return {
+    moveItemID: item.id,
+    stackHash: item.stackHash,
+    unitCount: -1,
+    to: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      worldPosition,
+      rotation,
+      location: 'Ground',
+      voxSlot: 'Invalid',
+    },
+    from: {
+      entityID: nullVal,
+      characterID: client.characterID,
+      position: getItemInventoryPosition(item),
+      containerID: nullVal,
+      gearSlotIDs: [],
+      location: 'Inventory',
+      voxSlot: 'Invalid',
+    },
+  }
 }
 
 export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment,

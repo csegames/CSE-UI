@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ContextMenuContentProps, events, ql } from 'camelot-unchained';
+import { ql, client, events, ContextMenuContentProps } from 'camelot-unchained';
 import eventNames from '../../../lib/eventNames';
 import { prettifyText } from '../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
@@ -40,6 +40,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
     return (
       <div>
         {this.renderGearSlotButtons()}
+        {this.props.item.staticDefinition.deploySettings && <Button onClick={this.onDeployItem}>Deploy</Button>}
         <Button onClick={this.onDropItem}>
           Drop item
         </Button>
@@ -89,6 +90,16 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
     events.fire(eventNames.updateInventoryItems, payload);
     events.fire(eventNames.onDropItem, payload);
     contextMenuProps.close();
+  }
+
+  private onDeployItem = () => {
+    const { id, staticDefinition, } = this.props.item;
+    this.closeInventory();
+    client.StartPlacingItem(staticDefinition.id, id, staticDefinition.deploySettings);
+  }
+
+  private closeInventory = () => {
+    events.fire('hudnav--navigate', 'inventory');
   }
 
   private onHighlightSlots = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {

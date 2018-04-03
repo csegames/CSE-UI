@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql, events, client } from 'camelot-unchained';
+import { ql, events, client, Vec3F, Euler3f } from 'camelot-unchained';
 import { withGraphQL } from 'camelot-unchained/lib/graphql/react';
 
 import * as base from './InventoryBase';
@@ -192,6 +192,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
           this.timePrevItemAdded &&
           timeNextItemAdded - this.timePrevItemAdded > 100
         ) {
+        // When inventory is closed and item is added to inventory, resync inventory with server
         this.isFetching = true;
         setTimeout(() => this.refetch(), 200);
       }
@@ -199,9 +200,16 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     });
     client.OnInventoryRemoved((item) => {
       if (!this.isFetching && this.props.visibleComponent === '') {
+        // When inventory is closed and item is removed from inventory, resync inventory with server
         this.isFetching = true;
         setTimeout(() => this.refetch(), 200);
       }
+    });
+    client.CommitPlacedItem((itemInstanceIDString: string, position: Vec3F, rotation: Euler3f) => {
+      // Calls a moveItem request to a world position.
+      // This then will call client.OnInventoryRemoved which will then sync the inventory with the server.
+      const item = _.find(this.props.inventoryItems, _item => _item.id === itemInstanceIDString);
+      base.onCommitPlacedItem(item, position, rotation);
     });
   }
 

@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
-import { webAPI, client, ql, events, MoveItemRequest } from 'camelot-unchained';
+import { ql, events, webAPI, client, MoveItemRequest, Vec3F, Euler3f } from 'camelot-unchained';
 
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType, slotDimensions } from './InventorySlot';
 import { InventoryRow } from './InventoryRow';
@@ -19,6 +19,7 @@ import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/con
 import eventNames, { UpdateInventoryItems, UnequipItemCallback } from '../../../lib/eventNames';
 import {
   createMoveItemRequestToInventoryPosition,
+  createMoveItemRequestToWorldPosition,
   firstAvailableSlot,
   generateStackGroupID,
   getIcon,
@@ -1118,6 +1119,11 @@ export async function dropItemRequest(item: InventoryItemFragment) {
   if (!res.ok) {
     client.DropItem(item.id);
   }
+}
+
+export function onCommitPlacedItem(item: InventoryItemFragment, position: Vec3F, rotation: Euler3f) {
+  const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
+  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveItemReq as any);
 }
 
 export function onMoveInventoryItem(dragItemData: any,

@@ -305,6 +305,12 @@ interface clientInterface {
 
   DropItem(itemID: string): void;
 
+  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void;
+
+  CommitPlacedItem(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
+
+  CancelPlacingItem(): void;
+
   /* Config */
 
   OnReceiveConfigVars(c: (configs: string) => void): void;
