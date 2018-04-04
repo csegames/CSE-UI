@@ -109,7 +109,7 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
               ss.statText, custom.statText,
               ss.statValue, custom.statValue,
             )}>
-              {this.props.statValue}
+              {Number(Number(this.props.statValue).toFixed(2))}
             </span> :
             null
         }

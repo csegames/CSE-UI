@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils, webAPI, Race } from 'camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
@@ -107,7 +107,9 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
           <div className={css(ss.characterName, custom.characterName)}>
             <p className={css(ss.characterNameText, custom.characterNameText)}>{myCharacter.name}</p>
             <p className={css(ss.otherInfoText, custom.otherInfoText)}>{myCharacter.faction}</p>
-            <p className={css(ss.otherInfoText, custom.otherInfoText)}>{myCharacter.gender} {myCharacter.race}</p>
+            <p className={css(ss.otherInfoText, custom.otherInfoText)}>
+              {myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}
+            </p>
           </div>
           <div className={css(ss.otherInfoContainer, custom.otherInfoContainer)}>
             {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}

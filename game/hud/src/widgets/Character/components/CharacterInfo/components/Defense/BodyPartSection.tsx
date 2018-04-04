@@ -156,7 +156,7 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
           }} />
           <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(bodyPartName)}</span>
         </div>
-        <div>Armor Class: {props.bodyPartStats['armorClass']}</div>
+        <div>Armor Class: {Number(props.bodyPartStats['armorClass'].toFixed(2))}</div>
       </header>
       <GridStats
         statArray={statsArray}
