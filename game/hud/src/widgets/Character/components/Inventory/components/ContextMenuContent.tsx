@@ -95,7 +95,13 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   private onDeployItem = () => {
     const { id, staticDefinition, } = this.props.item;
     this.closeInventory();
-    client.StartPlacingItem(staticDefinition.id, id, staticDefinition.deploySettings);
+    const deploySettings = {};
+    Object.keys(staticDefinition.deploySettings).forEach((key) => {
+      if (key !== 'resourceID') {
+        deploySettings[key] = staticDefinition.deploySettings[key];
+      }
+    });
+    client.StartPlacingItem(staticDefinition.deploySettings.resourceID, id, deploySettings);
   }
 
   private closeInventory = () => {

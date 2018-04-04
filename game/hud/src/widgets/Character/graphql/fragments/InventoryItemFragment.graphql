@@ -31,7 +31,9 @@ fragment InventoryItem on Item {
     name
     iconUrl
     itemType
+    defaultResourceID
     deploySettings {
+      resourceID
       isDoor
       snapToGround
       rotateYaw
