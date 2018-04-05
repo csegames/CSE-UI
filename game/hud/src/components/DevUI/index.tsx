@@ -48,8 +48,10 @@ export interface RootPage extends Partial<Page> {
   x: number;
   y: number;
   visible: boolean;
+  maximized: boolean;
   background?: string;
   showCloseButton?: boolean;
+  showMaximizeButton?: boolean;
 }
 
 
@@ -345,13 +347,16 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
       <div>
         {keys.map((k) => {
           const page = this.state[k];
+          const isMaximized = page.maximized;
           if (!page) return null;
           return (
             <div style={{
-              width: `${page.width}px`,
-              height: `${page.height}px`,
-              left: `${page.x}px`,
-              top: `${page.y}px`,
+              width: isMaximized ? `100%` : `${page.width}px`,
+              height: isMaximized ? `100%` : `${page.height}px`,
+              top: isMaximized ? 0 : page.y,
+              right: isMaximized ? 0 : 'default',
+              left: isMaximized ? 0 : page.x,
+              bottom: isMaximized ? 0 : 'default',
               position: 'fixed',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
@@ -372,6 +377,20 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                       visible: false,
                     },
                   })}>X</a> : null}
+                {page.showMaximizeButton ?
+                  <a
+                    href={'#'}
+                    style={{
+                      position: 'absolute',
+                      right: '50px',
+                      top: '0px',
+                    }}
+                    onClick={() => this.setState({
+                      [k]: {
+                        ...page,
+                        maximized: isMaximized ? false : true,
+                      }
+                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</a> : null }
               </div>
               <div
                 key={k}
