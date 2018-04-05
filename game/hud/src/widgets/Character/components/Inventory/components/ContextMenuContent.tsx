@@ -101,7 +101,10 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
         deploySettings[key] = staticDefinition.deploySettings[key];
       }
     });
-    client.StartPlacingItem(staticDefinition.deploySettings.resourceID, id, deploySettings);
+
+    const _resourceID = staticDefinition.deploySettings.resourceID !== '0' ?
+      staticDefinition.deploySettings.resourceID : staticDefinition.defaultResourceID; 
+    client.StartPlacingItem(_resourceID, id, deploySettings);
   }
 
   private closeInventory = () => {
