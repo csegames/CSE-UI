@@ -42,14 +42,12 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
     const { graphql } = this.props;
     const participantsAndTeams = this.getParticipantsAndTeams(graphql.data && graphql.data.scenariosummary);
 
-    const shouldShow = this.state.visible && participantsAndTeams &&
-      !_.isEmpty(participantsAndTeams.participants) && !_.isEmpty(participantsAndTeams.teams);
     return (
       <ScenarioResultsView
-        visible={shouldShow}
+        visible={this.state.visible}
         participants={participantsAndTeams ? participantsAndTeams.participants : []}
         teams={participantsAndTeams ? participantsAndTeams.teams : []}
-        onCloseClick={this.onCloseClick}
+        onCloseClick={this.fireVisibility}
         status={{ loading: graphql.loading, lastError: graphql.lastError }}
         scenarioID={this.props.scenarioID}
       />
@@ -77,8 +75,17 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
       this.props.graphql.refetch();
     }
 
-    if (nextState.visible && nextProps.graphql.data &&
-        nextProps.graphql.data.scenariosummary && _.isEmpty(nextProps.graphql.data.scenariosummary.teamOutcomes)) {
+    const prevTeamOutcome = this.props.graphql.data && this.props.graphql.data.scenariosummary &&
+      this.props.graphql.data.scenariosummary.teamOutcomes;
+    const nextTeamOutcome = nextProps.graphql.data && nextProps.graphql.data.scenariosummary &&
+      nextProps.graphql.data.scenariosummary.teamOutcomes;
+    if ((!prevTeamOutcome || _.isEmpty(prevTeamOutcome)) && (nextTeamOutcome && !_.isEmpty(nextTeamOutcome))) {
+      if (!this.state.visible && !nextState.visible) {
+        this.fireVisibility();
+      }
+    }
+
+    if (nextProps.graphql.data && nextProps.graphql.data.scenariosummary && _.isEmpty(nextTeamOutcome)) {
       if (!this.pollingInterval) {
         this.pollingInterval = setInterval(() => this.props.graphql.refetch(), 2000);
       }
@@ -88,7 +95,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
     }
   }
 
-  private onCloseClick = () => {
+  private fireVisibility = () => {
     events.fire('hudnav--navigate', 'scenario-results');
   }
 

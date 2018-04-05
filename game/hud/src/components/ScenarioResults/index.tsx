@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { ql, client, events } from 'camelot-unchained';
+import { ql, client } from 'camelot-unchained';
 import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
 import ScenarioResultsContainer from './components/ScenarioResultsContainer';
 
@@ -85,7 +85,6 @@ class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResu
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {
     if (scenarioEnded) {
-      setTimeout(() => events.fire('hudnav--navigate', 'scenario-results'), 5000);
       this.setState({ scenarioID });
     }
   }
