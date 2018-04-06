@@ -307,9 +307,11 @@ interface clientInterface {
 
   StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void;
 
-  CommitPlacedItem(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
+  CommitItemPlacement(): void;
 
-  CancelPlacingItem(): void;
+  CancelItemPlacement(): void;
+
+  SendCommitItemRequest(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
 
   /* Config */
 

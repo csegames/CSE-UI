@@ -207,7 +207,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
         setTimeout(() => this.refetch(), 200);
       }
     });
-    client.CommitPlacedItem((itemInstanceIDString: string, position: Vec3F, rotation: Euler3f) => {
+    client.SendCommitItemRequest((itemInstanceIDString: string, position: Vec3F, rotation: Euler3f) => {
       // Calls a moveItem request to a world position.
       // This then will call client.OnInventoryRemoved which will then sync the inventory with the server.
       const item = _.find(this.props.inventoryItems, _item => _item.id === itemInstanceIDString);

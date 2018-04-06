@@ -266,10 +266,12 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
 
   private setDragDataTransfer = (props: ItemComponentProps) => {
     const item = props.item.item || props.item.stackedItems[0];
+    const pos = item.location.inContainer ? item.location.inContainer.position :
+      item.location.inventory ? item.location.inventory.position : -1;
     this.myDataTransfer = getInventoryDataTransfer({
       item,
       location: item.location.inContainer ? 'inContainer' : 'inventory',
-      position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
+      position: pos,
       containerID: props.containerID,
       drawerID: props.drawerID,
     });

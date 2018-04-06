@@ -400,6 +400,7 @@ export function createRowElements(
           groupStackHashID: itemDef.id,
           stackedItems: state.stackGroupIdToItemIDs[stackId] ?
             state.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [itemDef.item],
+          item: itemDef.item,
           slotIndex: { position: slotIndex - 1, location: 'inventory' },
         });
         continue;
