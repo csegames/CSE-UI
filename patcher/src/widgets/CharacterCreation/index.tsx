@@ -488,7 +488,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
       Minimum points required: ${banesAndBoonsState.minPoints}`);
     }
-    if (_.isEmpty(Object.keys(banesAndBoonsState.addedBanes)) && _.isEmpty(Object.keys(banesAndBoonsState.addedBoons))) {
+    if (banesAndBoonsState.minPoints !== 0 &&
+        _.isEmpty(Object.keys(banesAndBoonsState.addedBanes)) && _.isEmpty(Object.keys(banesAndBoonsState.addedBoons))) {
       banesAndBoonsErrors.push('Must select banes and boons');
     }
     switch (page) {
