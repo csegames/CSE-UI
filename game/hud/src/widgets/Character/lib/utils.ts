@@ -109,7 +109,6 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment
     unitCount: -1,
     to: {
       entityID: nullVal,
-      characterID: client.characterID,
       worldPosition,
       rotation,
       location: 'Ground',
