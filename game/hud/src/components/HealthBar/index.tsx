@@ -169,7 +169,7 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
   }
 
   public shouldComponentUpdate(nextProps: HealthBarProps, nextState: HealthBarState) {
-    return nextProps.distanceToTarget !== nextProps.distanceToTarget ||
+    return nextProps.distanceToTarget !== this.props.distanceToTarget ||
       !_.isEqual(nextProps.playerState, this.props.playerState) ||
       !_.isEqual(nextState.events, this.state.events);
   }
