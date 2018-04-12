@@ -289,7 +289,7 @@ export function initialize() {
     dispatch(init());
     window.onresize = () => {
       if (window.innerWidth >= 640 && window.innerHeight >= 480) {
-        // dispatch(resize());
+        dispatch(resize());
       }
     };
 
@@ -403,11 +403,11 @@ export const resize = module.createAction({
     return {};
   },
   reducer: (s, a) => {
-    RUNTIME_ASSERT(a.screen.width >= 640 && a.screen.height >= 480, 'ignoring resize event for small window');
-    const onScreenWidgets = Map<string, Widget<any>>();
+    RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
+    let onScreenWidgets = Map<string, Widget<any>>();
     s.widgets.forEach((value, key) => {
-      onScreenWidgets.set(key, {
-        position: forceOnScreen(value.position, a.screen),
+      onScreenWidgets = onScreenWidgets.set(key, {
+        position: forceOnScreen(value.position, screen),
         dragOptions: value.dragOptions,
         component: value.component,
         props: value.props,

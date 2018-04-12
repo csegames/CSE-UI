@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import { clone } from '../../lib/reduxUtils';
 
 export enum LayoutMode {
@@ -208,33 +209,6 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   public componentWillReceiveProps(props: HUDDragProps) {
-
-    if (this.state.mode === EditMode.NONE) {
-      this.setState({
-        height: props.defaultHeight,
-        width: props.defaultWidth,
-        scale: props.defaultScale,
-        opacity: props.defaultOpacity,
-        x: props.defaultX,
-        y: props.defaultY,
-        xAnchor: props.defaultXAnchor,
-        yAnchor: props.defaultYAnchor,
-        visible: props.defaultVisible || true,
-
-        minHeight: props.minHeight || props.defaultHeight / 4,
-        maxHeight: props.maxHeight || props.defaultHeight * 5,
-        minWidth: props.minWidth || props.defaultWidth / 4,
-        maxWidth: props.maxWidth || props.defaultWidth * 5,
-        minScale: props.minScale || 0.5,
-        maxScale: props.maxScale || 3,
-
-        scaleFactor: props.scaleFactor || 0.01,
-
-        mode: EditMode.NONE,
-        layoutMode: props.defaultMode || LayoutMode.GRID,
-      });
-    }
-
     if (this.state.layoutMode === LayoutMode.EDGESNAP) {
       const fixedPos = this.getPosition();
       const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x, fixedPos.y, this.state.height, this.state.width);
@@ -264,7 +238,9 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       stateUpdate.visible = props.defaultVisible;
     }
 
-    if (stateUpdate !== {}) this.setState(stateUpdate);
+    if (!_.isEmpty(stateUpdate)) {
+      this.setState(stateUpdate);
+    }
   }
 
   private setMode = (m: EditMode) => {
@@ -415,8 +391,20 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.didUpdate = true;
   }
 
-  private setVisible = (v: boolean) => {
-    this.setState({ visible: v } as any);
+  private toggleVisibility = () => {
+    this.setState((state, props) => {
+      if (state.visible) {
+        // Hide
+        return {
+          visible: false,
+        };
+      }
+
+      // Show
+      return {
+        visible: true,
+      };
+    });
     this.didUpdate = true;
   }
 
@@ -563,7 +551,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
                    >
                 <a href='#'>
                   <i className={`fa ${this.state.visible ? 'fa-eye' : 'fa-eye-slash'}`}
-                     onClick={() => this.setVisible(!this.state.visible)}></i>
+                     onClick={this.toggleVisibility}></i>
                 </a>
               </div>
           }
