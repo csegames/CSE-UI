@@ -200,7 +200,8 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     let itemComponent: JSX.Element;
     switch (item.slotType) {
       case SlotType.Stack: {
-        const count = item.stackedItems ? item.stackedItems.length : item.item.stats.item.unitCount;
+        const count = item.stackedItems && item.stackedItems.length > 1 ?
+          item.stackedItems.length : item.item.stats.item.unitCount;
         itemComponent = <ItemStack count={count} icon={item.icon} />;
         break;
       }
