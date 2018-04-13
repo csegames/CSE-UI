@@ -24,9 +24,10 @@ export const ColumnSection = styled('div')`
 export enum SortBy {
   None = 'none',
   Faction = 'faction',
-  Kills = 'killCount',
+  PlayerKills = 'playerKills',
+  PlayerAssists = 'playerAssists',
+  NPCKills = 'nonPlayerKills',
   Deaths = 'deathCount',
-  Assists = 'killAssistCount',
   HealingDealt = 'healingApplied',
   DamageReceived = 'damageReceived',
   HealingReceived = 'healingReceived',

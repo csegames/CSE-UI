@@ -174,30 +174,48 @@ class List extends React.Component<ListProps, ListState> {
   }
 
   private sortPlayersByStat = (a: TeamPlayer, b: TeamPlayer, state: ListState) => {
-    if (state.selectedSortBy === SortBy.Name) {
-      // sorting by name
-      if (state.leastToGreatest) {
-        return b.displayName.localeCompare(a.displayName);
-      }
-      return a.displayName.localeCompare(b.displayName);
-    } else if (state.selectedSortBy === SortBy.Faction) {
-      if (state.leastToGreatest) {
-        return b.teamID.localeCompare(a.teamID);
-      }
-      return a.teamID.localeCompare(b.teamID);
-    } else {
-      // sorting by numberz
-      if (a && a.damage[state.selectedSortBy] && b && b.damage[state.selectedSortBy]) {
+    switch (state.selectedSortBy) {
+      case SortBy.Name: {
         if (state.leastToGreatest) {
-          return a.damage[state.selectedSortBy].anyCharacter -
-            b.damage[state.selectedSortBy].anyCharacter;
+          return b.displayName.localeCompare(a.displayName);
         }
-        return b.damage[state.selectedSortBy].anyCharacter - a.damage[state.selectedSortBy].anyCharacter;
-      } else if (state.selectedSortBy === SortBy.Score) {
+        return a.displayName.localeCompare(b.displayName);
+      }
+      case SortBy.Faction: {
+        if (state.leastToGreatest) {
+          return b.teamID.localeCompare(a.teamID);
+        }
+        return a.teamID.localeCompare(b.teamID);
+      }
+      case SortBy.PlayerKills: {
+        if (state.leastToGreatest) {
+          return a.damage.killCount.playerCharacter - b.damage.killCount.playerCharacter;
+        }
+        return b.damage.killCount.playerCharacter - a.damage.killCount.playerCharacter;
+      }
+      case SortBy.PlayerAssists: {
+        if (state.leastToGreatest) {
+          return a.damage.killAssistCount.playerCharacter - b.damage.killAssistCount.playerCharacter;
+        }
+        return b.damage.killAssistCount.playerCharacter - a.damage.killAssistCount.playerCharacter;
+      }
+      case SortBy.NPCKills: {
+        if (state.leastToGreatest) {
+          return a.damage.killCount.nonPlayerCharacter - b.damage.killCount.nonPlayerCharacter;
+        }
+        return b.damage.killCount.nonPlayerCharacter - a.damage.killCount.nonPlayerCharacter;
+      }
+      case SortBy.Score: {
         if (state.leastToGreatest) {
           return a.score - b.score;
         }
         return b.score - a.score;
+      }
+      default: {
+        if (state.leastToGreatest) {
+          return a.damage[state.selectedSortBy].anyCharacter - b.damage[state.selectedSortBy].anyCharacter;
+        }
+        return b.damage[state.selectedSortBy].anyCharacter - a.damage[state.selectedSortBy].anyCharacter;
       }
     }
   }

@@ -35,7 +35,7 @@ const Container = styled('div')`
   position: relative;
   display: flex;
   justify-content: space-around;
-  padding: 5px 25px;
+  padding: 5px 20px;
   color: white;
   cursor: pointer;
   pointer-events: all;
@@ -149,6 +149,10 @@ export const DamageDealt = styled('div')`
   flex: 1;
 `;
 
+export const NPCKills = styled('div')`
+  flex: 1;
+`;
+
 export interface ListItemProps {
   player: TeamPlayer;
   searchIncludes: boolean;
@@ -175,17 +179,18 @@ class ListItem extends React.Component<ListItemProps> {
         <Team color={colors.textColor}>{teamString && teamString.substr(0, 1)}</Team>
         <Name>{player.displayName}</Name>
         <KDAContainer>
-          <Kills>{player.damage.killCount.anyCharacter}</Kills>
+          <Kills>{player.damage.killCount.playerCharacter}</Kills>
           <Divider>/</Divider>
           <Deaths>{player.damage.deathCount.anyCharacter}</Deaths>
           <Divider>/</Divider>
-          <Assists>{player.damage.killAssistCount.anyCharacter}</Assists>
+          <Assists>{player.damage.killAssistCount.playerCharacter}</Assists>
         </KDAContainer>
-        <HealingDealt>{player.damage.healingApplied.anyCharacter}</HealingDealt>
+        <NPCKills>{player.damage.killCount.nonPlayerCharacter}</NPCKills>
+        <DamageDealt>{player.damage.damageApplied.anyCharacter} </DamageDealt>
         <DamageReceived>{player.damage.damageReceived.anyCharacter}</DamageReceived>
+        <HealingDealt>{player.damage.healingApplied.anyCharacter}</HealingDealt>
         <HealingReceived>{player.damage.healingReceived.anyCharacter}</HealingReceived>
         <Score>{player.score}</Score>
-        <DamageDealt>{player.damage.damageApplied.anyCharacter}</DamageDealt>
       </Container>
     );
   }

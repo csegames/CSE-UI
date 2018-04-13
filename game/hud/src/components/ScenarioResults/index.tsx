@@ -35,13 +35,14 @@ const query = (scenarioID: string) => `
               anyCharacter
             }
             killCount {
-              anyCharacter
+              playerCharacter
+              nonPlayerCharacter
             }
             deathCount {
               anyCharacter
             }
             killAssistCount {
-              anyCharacter
+              playerCharacter
             }
           }
         }
