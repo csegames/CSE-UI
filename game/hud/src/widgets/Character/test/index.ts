@@ -480,5 +480,5 @@ export const testBadItem = JSON.parse(`
         }
       ]
     }
-  }`
+  }`,
 );

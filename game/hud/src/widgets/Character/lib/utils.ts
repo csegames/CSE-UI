@@ -32,7 +32,7 @@ export function calcRowsForContainer(bodyDimensions: InventoryBodyDimensions,
                                       slotDimensions: number,
                                       containerSlots: ContainedItemsFragment[],
                                       gutterSize: number = 65) {
-  const lastItem = _.sortBy(containerSlots, (a) => a.location.inContainer.position)[containerSlots.length - 1];
+  const lastItem = _.sortBy(containerSlots, a => a.location.inContainer.position)[containerSlots.length - 1];
   const lastItemSlotPos = lastItem ? lastItem.location.inContainer.position : 0;
   const slotsPerRow = calcSlotsPerRow(bodyDimensions, slotDimensions, gutterSize);
   const rowCount = lastItemSlotPos + 1 > slotsPerRow ? Math.ceil((lastItemSlotPos + 1) / slotsPerRow) : 1;
@@ -42,7 +42,7 @@ export function calcRowsForContainer(bodyDimensions: InventoryBodyDimensions,
     rowCount,
     slotCount,
     slotsPerRow,
-  }
+  };
 }
 
 export function calcRowAndSlots(bodyDimensions: InventoryBodyDimensions,
@@ -123,7 +123,7 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment
       location: 'Inventory',
       voxSlot: 'Invalid',
     },
-  }
+  };
 }
 
 export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment, position: number): any {
@@ -468,7 +468,7 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
       }
 
       if (!meetsMassStat) {
-        toastr.error('You have reached the max amount of mass in this drawer', 'You can\'t do that', { timeout: 3000 })
+        toastr.error('You have reached the max amount of mass in this drawer', 'You can\'t do that', { timeout: 3000 });
       }
     }
 

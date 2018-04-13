@@ -389,7 +389,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                       [k]: {
                         ...page,
                         maximized: isMaximized ? false : true,
-                      }
+                      },
                     })}>{isMaximized ? 'Minimize' : 'Maximize'}</a> : null }
               </div>
               <div
