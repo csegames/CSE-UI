@@ -52,7 +52,7 @@ const WoundContainer = styled('div')`
   top: 5px;
   right: 0;
   bottom: 0;
-  left: -1px; 
+  left: -1px;
   z-index: 10;
 `;
 

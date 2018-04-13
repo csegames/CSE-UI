@@ -235,7 +235,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       this.props.searchValue !== nextProps.searchValue ||
       !_.isEqual(this.props.activeFilters, nextProps.activeFilters) ||
       this.props.slotsPerRow !== nextProps.slotsPerRow ||
-      
+
       this.state.slotsPerRow !== nextState.slotsPerRow ||
       this.state.slotCount !== nextState.slotCount ||
       this.state.rowCount !== nextState.rowCount;

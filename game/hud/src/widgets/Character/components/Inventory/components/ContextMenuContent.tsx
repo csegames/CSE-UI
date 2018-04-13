@@ -93,7 +93,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
   }
 
   private onDeployItem = () => {
-    const { id, staticDefinition, } = this.props.item;
+    const { id, staticDefinition } = this.props.item;
     this.closeInventory();
     const deploySettings = {};
     Object.keys(staticDefinition.deploySettings).forEach((key) => {
@@ -103,7 +103,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps, {}
     });
 
     const _resourceID = staticDefinition.deploySettings.resourceID !== '0' ?
-      staticDefinition.deploySettings.resourceID : staticDefinition.defaultResourceID; 
+      staticDefinition.deploySettings.resourceID : staticDefinition.defaultResourceID;
     client.StartPlacingItem(_resourceID, id, deploySettings);
   }
 
