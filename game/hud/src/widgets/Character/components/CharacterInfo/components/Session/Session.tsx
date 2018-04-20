@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import * as moment from 'moment';
-import { ql, events } from 'camelot-unchained';
-import { Tooltip, GridStats } from 'camelot-unchained/lib/components';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { ql, events } from '@csegames/camelot-unchained';
+import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import StatsListContainer from '../StatListContainer';
 import DescriptionItem from '../DescriptionItem';

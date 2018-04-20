@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, utils, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { client, utils, events, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import ActionButtons from './components/ActionButtons';

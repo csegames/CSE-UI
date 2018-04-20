@@ -10,7 +10,7 @@ import {
   jsKeyCodes,
   parseMessageForSlashCommand,
   events,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface ConsoleStyle extends StyleDeclaration {

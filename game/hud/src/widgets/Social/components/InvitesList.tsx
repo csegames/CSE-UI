@@ -12,7 +12,7 @@ import {
   GridView,
   Spinner,
   client,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { graphql } from 'react-apollo';
 
 import GroupTitle from './GroupTitle';

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { /*ql,*/ Spinner } from 'camelot-unchained';
+import { /*ql,*/ Spinner } from '@csegames/camelot-unchained';
 import { LinkAddress, SocialCategory } from '../services/session/nav/navTypes';
 import { selectLink } from '../services/session/navigation';
 

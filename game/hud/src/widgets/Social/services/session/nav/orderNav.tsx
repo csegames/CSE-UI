@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { SocialCategory, defaultCategoryNav } from './navTypes';
 
 export function generateMenu(order: any/*ql.FullOrder*/, member: any/*ql.FullOrderMember*/,

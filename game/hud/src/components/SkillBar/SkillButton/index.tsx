@@ -12,7 +12,7 @@ import {
   SkillStateProgression,
   SkillStateStatusEnum,
   SkillStateTypeEnum,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { cx } from 'react-emotion';
 
 import SkillButtonView from './SkillButtonView';

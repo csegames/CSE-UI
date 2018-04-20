@@ -8,8 +8,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { events, client, Vec3F, Euler3f } from 'camelot-unchained';
-import { withGraphQL } from 'camelot-unchained/lib/graphql/react';
+import { events, client, Vec3F, Euler3f } from '@csegames/camelot-unchained';
+import { withGraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';

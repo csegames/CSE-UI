@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction } from 'camelot-unchained';
+import { Faction } from '@csegames/camelot-unchained';
 
 import { HealthBarValues } from '../index';
 import ClassIndicator from './ClassIndicator';

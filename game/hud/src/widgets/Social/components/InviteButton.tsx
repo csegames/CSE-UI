@@ -14,7 +14,7 @@ import {
   client,
   jsKeyCodes,
   Tooltip,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 export interface InviteButtonStyle extends StyleDeclaration {
   button: React.CSSProperties;

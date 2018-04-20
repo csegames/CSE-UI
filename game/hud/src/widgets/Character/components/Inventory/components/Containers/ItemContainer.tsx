@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ItemPermissions } from 'camelot-unchained';
+import { ItemPermissions } from '@csegames/camelot-unchained';
 
 import * as base from '../InventoryBase';
 import { InventorySlotItemDef } from '../InventorySlot';

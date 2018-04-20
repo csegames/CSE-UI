@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Input, client } from 'camelot-unchained';
+import { Input, client } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';

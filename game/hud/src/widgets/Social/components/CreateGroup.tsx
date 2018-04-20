@@ -12,7 +12,7 @@ import {
   // webAPI,
   // client,
   Spinner,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 import { SocialCategory } from '../services/session/nav/navTypes';

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql } from 'camelot-unchained';
+import { ql } from '@csegames/camelot-unchained';
 import { colors } from '../../../../lib/constants';
 
 const TraitName = styled('header')`

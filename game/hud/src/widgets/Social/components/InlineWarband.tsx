@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
-import { /*ql,*/ Spinner } from 'camelot-unchained';
+import { /*ql,*/ Spinner } from '@csegames/camelot-unchained';
 import { graphql } from 'react-apollo';
 
 export interface InlineWarbandStyle extends StyleDeclaration {

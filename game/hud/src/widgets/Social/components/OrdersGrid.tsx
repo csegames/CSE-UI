@@ -11,7 +11,7 @@ import * as React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { Spinner, ColumnDefinition } from 'camelot-unchained';
+import { Spinner, ColumnDefinition } from '@csegames/camelot-unchained';
 import GridViewPager from './GridViewPager';
 
 export interface OrdersGridStyle extends StyleDeclaration {

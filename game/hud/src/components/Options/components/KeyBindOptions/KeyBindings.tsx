@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { client, utils, Input } from 'camelot-unchained';
+import { client, utils, Input } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import { ConfigIndex, ConfigInfo } from '../../OptionsMain';

@@ -11,7 +11,7 @@ import {
   SkillStateReasonEnum,
   SkillStateProgression,
   SkillStateTrackEnum,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 export * from './styles';
 
 export interface SkillStateInfo {

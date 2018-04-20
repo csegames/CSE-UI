@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { /*webAPI, client,*/ ql, FloatSpinner } from 'camelot-unchained';
+import { /*webAPI, client,*/ ql, FloatSpinner } from '@csegames/camelot-unchained';
 
 export interface RankListItemMenuStyle extends StyleDeclaration {
   list: React.CSSProperties;

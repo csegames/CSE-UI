@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, client, events, ContextMenuContentProps } from 'camelot-unchained';
+import { ql, client, events, ContextMenuContentProps } from '@csegames/camelot-unchained';
 import eventNames from '../../../lib/eventNames';
 import { prettifyText } from '../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';

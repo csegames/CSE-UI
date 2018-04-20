@@ -9,8 +9,8 @@ import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { client } from 'camelot-unchained';
-import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
+import { client } from '@csegames/camelot-unchained';
+import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
 import initialize from './services/initialization';
 import HUD from './components/HUD';

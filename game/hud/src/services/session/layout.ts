@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import { client, events, RUNTIME_ASSERT } from 'camelot-unchained';
+import { client, events, RUNTIME_ASSERT } from '@csegames/camelot-unchained';
 
 import { cloneDeep } from 'lodash';
 import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';

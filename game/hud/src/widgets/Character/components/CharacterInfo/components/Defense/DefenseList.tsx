@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { ql, events, utils } from 'camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { ql, events, utils } from '@csegames/camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';

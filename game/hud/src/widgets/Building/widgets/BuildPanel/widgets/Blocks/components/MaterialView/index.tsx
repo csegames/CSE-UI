@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { BuildingMaterial } from 'camelot-unchained';
+import { BuildingMaterial } from '@csegames/camelot-unchained';
 
 export interface MaterialViewProps {
   onClick: () => void;

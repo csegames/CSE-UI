@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import { IGroupInvite, groupType } from 'camelot-unchained';
+import { IGroupInvite, groupType } from '@csegames/camelot-unchained';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';
 import * as className from 'classnames';
 
-import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
-import styled from 'react-emotion';
+// import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+// import styled from 'react-emotion';
 
 import Slider from './Slider';
 import { acceptInvite, declineInvite } from '../services/session/invites';

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, ItemPermissions } from 'camelot-unchained';
+import { ql, events, ItemPermissions } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import ItemStack from '../../ItemStack';

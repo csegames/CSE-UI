@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, events } from 'camelot-unchained';
+import { ContentItem, TabItem, TabPanel, events } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import EquippedItemSlot from './EquippedItemSlot';

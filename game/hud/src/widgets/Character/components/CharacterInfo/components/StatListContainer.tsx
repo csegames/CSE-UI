@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils, Input } from 'camelot-unchained';
+import { utils, Input } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { colors } from '../../../lib/constants';

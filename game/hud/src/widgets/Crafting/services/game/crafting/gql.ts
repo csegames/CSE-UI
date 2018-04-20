@@ -6,7 +6,7 @@
 
 import 'isomorphic-fetch';
 import { Promise } from 'es6-promise';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 export function gql({ query, variables }: { query: string, variables?: any }) {
   const url = client.apiHost + '/graphql';

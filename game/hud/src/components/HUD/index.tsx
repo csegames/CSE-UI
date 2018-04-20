@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, events } from 'camelot-unchained';
-import { useConfig } from 'camelot-unchained/lib/graphql/react';
+import { client, events } from '@csegames/camelot-unchained';
+import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 import DragStore from '../DragAndDrop/DragStore';
 // import { graphql } from 'react-apollo';
-import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
+import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
 import {
   LayoutState,

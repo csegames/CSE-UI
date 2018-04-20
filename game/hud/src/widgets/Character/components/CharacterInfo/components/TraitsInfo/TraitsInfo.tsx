@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import { ql } from 'camelot-unchained';
-import { GridStats, Tooltip } from 'camelot-unchained/lib/components';
-import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
+import { ql } from '@csegames/camelot-unchained';
+import { GridStats, Tooltip } from '@csegames/camelot-unchained/lib/components';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import { colors } from '../../../../lib/constants';
 import StatListContainer from '../StatListContainer';

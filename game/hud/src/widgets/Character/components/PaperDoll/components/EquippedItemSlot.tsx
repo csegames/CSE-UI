@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Tooltip, events } from 'camelot-unchained';
+import { Tooltip, events } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';

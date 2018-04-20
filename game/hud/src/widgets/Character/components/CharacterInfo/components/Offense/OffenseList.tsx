@@ -7,9 +7,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ql, utils, events } from 'camelot-unchained';
-import { GridStats } from 'camelot-unchained/lib/components';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { ql, utils, events } from '@csegames/camelot-unchained';
+import { GridStats } from '@csegames/camelot-unchained/lib/components';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import DescriptionItem from '../DescriptionItem';

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events, client, utils, soundEvents } from 'camelot-unchained';
+import { events, client, utils, soundEvents } from '@csegames/camelot-unchained';
 import HUDNav from '../../../components/HUDNav';
 import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';

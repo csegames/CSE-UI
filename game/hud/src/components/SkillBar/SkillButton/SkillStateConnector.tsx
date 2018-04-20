@@ -14,7 +14,7 @@ import {
   SkillStateStatusEnum,
   SkillStateTypeEnum,
   SkillStateTrackEnum,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { SkillStateInfo } from './lib';
 
 export interface SkillStateConnectorProps {

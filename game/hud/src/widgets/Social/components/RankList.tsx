@@ -19,7 +19,7 @@ import {
   InlineTextInputEdit,
   InlineNumberInputEdit,
   InlineMultiSelectEdit,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 import CreateRankDialog from './CreateRankDialog';

@@ -8,8 +8,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
-import { ql, events, webAPI, client, MoveItemRequest, Vec3F, Euler3f } from 'camelot-unchained';
+import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import { ql, events, webAPI, client, MoveItemRequest, Vec3F, Euler3f } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from './InventoryRow';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../../lib/constants';

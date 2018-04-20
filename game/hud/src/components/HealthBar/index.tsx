@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { client, Faction, PlayerState, CombatLog, damageTypes } from 'camelot-unchained';
+import { client, Faction, PlayerState, CombatLog, damageTypes } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 import { generateID } from 'redux-typed-modules';
 

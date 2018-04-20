@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { Name, KDAContainer, Divider, Kills, Deaths, Assists, Team } from './ListItem';
 import ListHeaderItem, { SortBy } from './ListHeaderItem';
 

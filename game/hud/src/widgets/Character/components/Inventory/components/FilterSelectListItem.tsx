@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { CUIcon, utils } from 'camelot-unchained';
+import { CUIcon, utils } from '@csegames/camelot-unchained';
 import { colors, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
 

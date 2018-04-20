@@ -19,7 +19,7 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib
 // interface for window cuAPI
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 interface WindowInterface extends Window {
   cuAPI: any;
   opener: WindowInterface;

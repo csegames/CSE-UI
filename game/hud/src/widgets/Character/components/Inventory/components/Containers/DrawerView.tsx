@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
 import { getContainerColor } from '../../../../lib/utils';
 import { colors } from '../../../../lib/constants';

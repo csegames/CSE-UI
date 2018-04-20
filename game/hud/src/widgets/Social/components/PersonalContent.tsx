@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { ql } from 'camelot-unchained';
+import { ql } from '@csegames/camelot-unchained';
 import { LinkAddress } from '../services/session/nav/navTypes';
 
 import InvitesList from './InvitesList';

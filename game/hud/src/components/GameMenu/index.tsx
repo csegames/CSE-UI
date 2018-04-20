@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events, utils } from 'camelot-unchained';
+import { client, events, utils } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export interface GameMenuStyle extends StyleDeclaration {

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { ql } from 'camelot-unchained';
+import { ql } from '@csegames/camelot-unchained';
 
 import { InventorySlot, InventorySlotItemDef, SlotType } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events } from 'camelot-unchained';
+import { ql, events } from '@csegames/camelot-unchained';
 
 import styled, { css } from 'react-emotion';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';

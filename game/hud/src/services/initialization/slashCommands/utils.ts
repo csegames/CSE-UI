@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import yargs from 'yargs-parser';
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string | Object): void => {

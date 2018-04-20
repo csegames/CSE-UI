@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { getVirtualKeyCode, vkKeyCodes } from 'camelot-unchained';
+import { getVirtualKeyCode, vkKeyCodes } from '@csegames/camelot-unchained';
 
 import ListItem from '../ListItem';
 import { ConfigInfo } from '../../OptionsMain';

@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
 import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
 import { colors } from '../../../lib/constants';

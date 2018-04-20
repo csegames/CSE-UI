@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { utils, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
+import { utils, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 import { graphql } from 'react-apollo';
 

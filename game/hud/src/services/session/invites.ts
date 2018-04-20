@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, IGroupInvite, signalr, events } from 'camelot-unchained';
+import { client, IGroupInvite, signalr, events } from '@csegames/camelot-unchained';
 import {
   merge,
   BaseAction,

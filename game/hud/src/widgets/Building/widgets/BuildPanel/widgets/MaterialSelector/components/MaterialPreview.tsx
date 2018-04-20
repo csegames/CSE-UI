@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { BuildingMaterial } from 'camelot-unchained';
+import { BuildingMaterial } from '@csegames/camelot-unchained';
 import { GlobalState } from '../services/session/reducer';
 
 function select(state: GlobalState) {

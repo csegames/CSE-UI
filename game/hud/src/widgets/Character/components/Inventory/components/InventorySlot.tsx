@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, ContextMenu, Tooltip, ItemPermissions, events } from 'camelot-unchained';
+import { ql, ContextMenu, Tooltip, ItemPermissions, events } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';

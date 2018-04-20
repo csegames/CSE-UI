@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Spinner } from 'camelot-unchained';
+import { Spinner } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 export interface LoadingContainerStyles extends StyleDeclaration {

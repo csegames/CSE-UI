@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { setDragStoreInfo, getDragStore } from './DragStore';
 
 export interface PositionInformation {

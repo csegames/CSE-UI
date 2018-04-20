@@ -15,7 +15,7 @@ import {
   skillTracks,
   resourceTypes,
   activeEffectActions,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {

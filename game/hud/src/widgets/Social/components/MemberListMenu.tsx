@@ -10,7 +10,7 @@ import {
   ConfirmDialog,
   webAPI,
   client,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 export const defaultMemberListMenuStyle: MemberListMenuStyle = {

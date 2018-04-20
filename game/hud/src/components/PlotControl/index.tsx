@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events, plotPermissions, webAPI } from 'camelot-unchained';
+import { client, events, plotPermissions, webAPI } from '@csegames/camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;

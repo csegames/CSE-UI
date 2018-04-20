@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { ql, /*webAPI, client,*/ Spinner, Tooltip, Input, DualListSelect, FlatButton } from 'camelot-unchained';
+import { ql, /*webAPI, client,*/ Spinner, Tooltip, Input, DualListSelect, FlatButton } from '@csegames/camelot-unchained';
 
 import GroupTitle from './GroupTitle';
 

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-// import { ql } from 'camelot-unchained';
+// import { ql } from '@csegames/camelot-unchained';
 import * as classNames from 'classnames';
 
 import { CategoryNav, SocialCategory, NavLink, NavSection, linkAddressEquals } from '../services/session/nav/navTypes';

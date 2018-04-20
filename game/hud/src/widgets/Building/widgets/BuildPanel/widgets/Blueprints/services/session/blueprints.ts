@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, buildUIMode, BuildingBlueprint } from 'camelot-unchained';
+import { events, buildUIMode, BuildingBlueprint } from '@csegames/camelot-unchained';
 import requester from './requester';
 import * as assign from 'object-assign';
 

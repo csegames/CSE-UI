@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { client, events, jsKeyCodes } from 'camelot-unchained';
+import { client, events, jsKeyCodes } from '@csegames/camelot-unchained';
 import SocialMain from './components/SocialMain';
 import { store } from './services/session/reducer';
 

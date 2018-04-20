@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 import { BuildingItem } from '../lib/BuildingItem';
 
 const ITEM_SELECTED_EVENT = 'building/selection/ITEM_SELECTED_EVENT';

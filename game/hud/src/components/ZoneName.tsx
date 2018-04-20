@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, webAPI } from 'camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 
 export interface ZoneNameState {
   name: string;

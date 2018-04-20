@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Tooltip, utils } from 'camelot-unchained';
+import { Tooltip, utils } from '@csegames/camelot-unchained';
 import * as className from 'classnames';
 import { StyleSheet, css } from 'aphrodite';
 import { merge } from 'lodash';

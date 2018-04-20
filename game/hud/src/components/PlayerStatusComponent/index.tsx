@@ -12,7 +12,7 @@ import {
   PlayerState,
   Gender,
   Race,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { spring, TransitionMotion } from 'react-motion';
 import { generateID } from 'redux-typed-modules';
 

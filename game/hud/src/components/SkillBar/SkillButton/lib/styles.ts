@@ -5,7 +5,7 @@
  *
  */
 
-import { SkillStateStatusEnum, SkillStateReasonEnum, SkillStateTypeEnum } from 'camelot-unchained';
+import { SkillStateStatusEnum, SkillStateReasonEnum, SkillStateTypeEnum } from '@csegames/camelot-unchained';
 import { css, keyframes } from 'react-emotion';
 import { SkillStateInfo } from './index';
 

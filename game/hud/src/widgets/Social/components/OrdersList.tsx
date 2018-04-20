@@ -11,7 +11,7 @@ import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import GroupTitle from './GroupTitle';
 import OrdersGrid from './OrdersGrid';
-import { client, Input } from 'camelot-unchained';
+import { client, Input } from '@csegames/camelot-unchained';
 
 export interface OrdersListStyle extends StyleDeclaration {
   container: React.CSSProperties;

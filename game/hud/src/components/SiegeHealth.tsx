@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client, AnyEntityState, SiegeState, PlayerState } from 'camelot-unchained';
+import { client, AnyEntityState, SiegeState, PlayerState } from '@csegames/camelot-unchained';
 import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {

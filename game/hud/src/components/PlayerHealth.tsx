@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, PlayerState } from 'camelot-unchained';
+import { client, PlayerState } from '@csegames/camelot-unchained';
 import HealthBar from './HealthBar';
 
 const Container = styled('div')`

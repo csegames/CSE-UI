@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { events, /*ql,*/ FloatSpinner } from 'camelot-unchained';
+import { events, /*ql,*/ FloatSpinner } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import { NavigationState, selectLink, toggleCollapsedCategory } from '../services/session/navigation';

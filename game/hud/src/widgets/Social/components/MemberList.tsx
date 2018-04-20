@@ -17,7 +17,7 @@ import {
   // client,
   // webAPI,
   InlineDropDownSelectEdit,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 import MemberListMenu from './MemberListMenu';
 import GroupTitle from './GroupTitle';

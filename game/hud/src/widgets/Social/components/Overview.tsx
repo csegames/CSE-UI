@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { /*ql,*/ client, Card, Spinner, TitleCard } from 'camelot-unchained';
+import { /*ql,*/ client, Card, Spinner, TitleCard } from '@csegames/camelot-unchained';
 import { graphql } from 'react-apollo';
 
 import GroupTitle from './GroupTitle';

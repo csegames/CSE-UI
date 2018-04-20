@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, webAPI } from 'camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { nullVal } from '../../../../lib/constants';
 import { getContainerColor } from '../../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../../gqlInterfaces';

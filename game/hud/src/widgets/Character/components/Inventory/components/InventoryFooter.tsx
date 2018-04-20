@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Tooltip, utils, events } from 'camelot-unchained';
+import { Tooltip, utils, events } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import CurrencyValue from './CurrencyValue';

@@ -5,7 +5,7 @@
  */
 
 import * as _ from 'lodash';
-import { ql, client, utils, Vec3F, Euler3f, ItemPermissions } from 'camelot-unchained';
+import { ql, client, utils, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { SlotNumberToItem, InventoryDataTransfer } from '../components/Inventory/components/InventoryBase';

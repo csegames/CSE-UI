@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { buildUIMode } from 'camelot-unchained';
+import { buildUIMode } from '@csegames/camelot-unchained';
 
 import buildingActions from '../../services/session/requester';
 import { GlobalState } from '../../services/session/reducer';

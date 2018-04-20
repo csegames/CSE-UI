@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
 import gql from 'graphql-tag';
-import { Spinner } from 'camelot-unchained';
+import { Spinner } from '@csegames/camelot-unchained';
 import { graphql } from 'react-apollo';
 
 export interface InlineOrderStyle extends StyleDeclaration {

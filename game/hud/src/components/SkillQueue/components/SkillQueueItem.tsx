@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { events, SkillStateStatusEnum } from 'camelot-unchained';
+import { events, SkillStateStatusEnum } from '@csegames/camelot-unchained';
 import { SkillStateInfo, skillStateColors, makeGlowPathFor } from '../../SkillBar/SkillButton/lib';
 
 const Container = styled('div')`

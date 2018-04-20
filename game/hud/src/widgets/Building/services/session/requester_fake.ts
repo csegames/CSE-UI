@@ -1,4 +1,4 @@
-import { events, buildUIMode, BuildingBlock, BuildingMaterial } from 'camelot-unchained';
+import { events, buildUIMode, BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
 
 class BuildingRequests {
 

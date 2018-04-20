@@ -9,7 +9,7 @@ import * as FilterButtonAPI from './FilterButtonAPI';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { merge } from 'lodash';
-import { Input, client } from 'camelot-unchained';
+import { Input, client } from '@csegames/camelot-unchained';
 
 import InventoryFilterButton from './InventoryFilterButton';
 import FilterSelectMenu from './FilterSelectMenu';

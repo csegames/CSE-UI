@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, client, Item } from 'camelot-unchained';
+import { events, client, Item } from '@csegames/camelot-unchained';
 import * as React from 'react';
 
 

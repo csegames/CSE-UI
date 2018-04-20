@@ -7,8 +7,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { bodyParts, client, events } from 'camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { bodyParts, client, events } from '@csegames/camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';

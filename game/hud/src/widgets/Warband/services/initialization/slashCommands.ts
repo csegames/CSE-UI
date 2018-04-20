@@ -10,7 +10,7 @@ import {
   events,
   // registerSlashCommand,
   // webAPI,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string): void => events.fire('system_message', message);

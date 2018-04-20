@@ -7,8 +7,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { ql, utils, Tooltip } from 'camelot-unchained';
-import { GridStats } from 'camelot-unchained/lib/components';
+import { ql, utils, Tooltip } from '@csegames/camelot-unchained';
+import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';
 import { colors, characterBodyPartIcons } from '../../../../lib/constants';

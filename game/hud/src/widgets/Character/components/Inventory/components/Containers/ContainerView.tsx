@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 import { colors } from '../../../../lib/constants';
 import { ContainerColorFragment } from '../../../../../../gqlInterfaces';

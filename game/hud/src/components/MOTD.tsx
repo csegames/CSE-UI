@@ -4,11 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { utils, client } from 'camelot-unchained';
+import { utils, client } from '@csegames/camelot-unchained';
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
-import { CUQuery } from 'camelot-unchained/lib/graphql/schema';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 export interface WelcomeStyles extends StyleDeclaration {
   Welcome: React.CSSProperties;

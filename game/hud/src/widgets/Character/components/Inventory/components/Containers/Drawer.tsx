@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, webAPI, Tooltip } from 'camelot-unchained';
+import { client, webAPI, Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../InventoryBase';
 import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';

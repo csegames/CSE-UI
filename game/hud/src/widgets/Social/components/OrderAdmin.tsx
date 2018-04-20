@@ -13,7 +13,7 @@ import {
   RaisedButton,
   Spinner,
   ConfirmDialog,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import GroupTitle from './GroupTitle';
 // import { selectLink } from '../services/session/navigation';
 // import { SocialCategory } from '../services/session/nav/navTypes';

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Input, IconButton, utils, events } from 'camelot-unchained';
+import { Input, IconButton, utils, events } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import FilterSelectListItem from './FilterSelectListItem';

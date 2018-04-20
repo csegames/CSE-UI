@@ -5,7 +5,7 @@
  */
 import { utils,
   // ql,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { Map } from 'immutable';
 
 export enum SocialCategory {

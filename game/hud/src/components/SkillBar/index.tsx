@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { restAPI, client } from 'camelot-unchained';
+import { restAPI, client } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 import SkillButton from './SkillButton';
 

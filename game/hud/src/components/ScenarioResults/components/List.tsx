@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 import { FactionColors } from '../../../lib/factionColors';
 import { SortBy } from './ListHeaderItem';

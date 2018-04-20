@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, client } from 'camelot-unchained';
-import { GraphQLResult } from 'camelot-unchained/lib/graphql/react';
+import { ql, events, client } from '@csegames/camelot-unchained';
+import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
 
 export interface TeamInterface {

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { ql, Tooltip } from 'camelot-unchained';
+import { ql, Tooltip } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from './TooltipContent';

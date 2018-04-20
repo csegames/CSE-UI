@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 
 import Blocks from '../../widgets/Blocks';
 import RecentSelections from '../../widgets/RecentSelections';

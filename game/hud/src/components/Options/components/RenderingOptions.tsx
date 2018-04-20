@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import ListItem from './ListItem';
 import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 

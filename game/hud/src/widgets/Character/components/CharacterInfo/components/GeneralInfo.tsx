@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils, webAPI, Race } from 'camelot-unchained';
+import { utils, webAPI, Race } from '@csegames/camelot-unchained';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';

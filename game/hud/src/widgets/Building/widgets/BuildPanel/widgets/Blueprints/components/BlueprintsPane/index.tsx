@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { BuildingBlueprint } from 'camelot-unchained';
+import { BuildingBlueprint } from '@csegames/camelot-unchained';
 
 import { GlobalState } from '../../services/session/reducer';
 import blueprintService from '../../services/session/requester';

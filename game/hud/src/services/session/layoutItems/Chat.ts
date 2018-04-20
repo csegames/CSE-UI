@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import Chat from 'cu-xmpp-chat';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { Tooltip } from 'camelot-unchained';
+import { Tooltip } from '@csegames/camelot-unchained';
 
 import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';

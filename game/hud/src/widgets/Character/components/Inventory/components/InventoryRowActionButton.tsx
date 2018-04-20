@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { StyleDeclaration } from 'aphrodite';
-import { utils, IconButton } from 'camelot-unchained';
+import { utils, IconButton } from '@csegames/camelot-unchained';
 import { colors } from '../../../lib/constants';
 
 export interface InventoryRowActionButtonStyle extends StyleDeclaration {

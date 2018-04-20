@@ -9,7 +9,7 @@ import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import {
   RaisedButton,
   Tooltip,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 
 export interface ActionButtonStyle extends StyleDeclaration {
   container: React.CSSProperties;

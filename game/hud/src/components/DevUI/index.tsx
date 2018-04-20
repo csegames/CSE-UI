@@ -3,12 +3,12 @@ import * as _ from 'lodash';
 import { css, StyleSheet } from 'aphrodite';
 
 // @ts-ignore
-import { client, webAPI, events } from 'camelot-unchained';
-import { TabPanel } from 'camelot-unchained/lib/components';
-import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
-import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
-import { GraphQL, GraphQLData } from 'camelot-unchained/lib/graphql/react';
-import ClientInterface from 'camelot-unchained/lib/core/clientInterface';
+import { client, webAPI, events } from '@csegames/camelot-unchained';
+import { TabPanel } from '@csegames/camelot-unchained/lib/components';
+import { ObjectMap } from '@csegames/camelot-unchained/lib/utils/ObjectMap';
+import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
+import ClientInterface from '@csegames/camelot-unchained/lib/core/clientInterface';
 
 type Content = string | ObjectMap<any>;
 
@@ -38,7 +38,7 @@ export interface Page {
   pages: Partial<Page>[] | undefined;
   buttons: Button[] | undefined;
   data: ObjectMap<any> | undefined;
-  query: string | Partial<QuickQLQuery> | undefined;
+  query: string | Partial<GraphQLQuery> | undefined;
   activeTabIndex: number | undefined;
 }
 

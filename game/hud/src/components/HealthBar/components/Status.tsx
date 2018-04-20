@@ -8,9 +8,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql } from 'camelot-unchained';
-import { CUQuery } from 'camelot-unchained/lib/graphql';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { ql } from '@csegames/camelot-unchained';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import StatusIcon from './StatusIcon';
 
 const StatusContainer = styled('div')`

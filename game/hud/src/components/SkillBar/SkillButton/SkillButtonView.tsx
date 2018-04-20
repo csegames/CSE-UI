@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Tooltip, SkillStateStatusEnum } from 'camelot-unchained';
+import { Tooltip, SkillStateStatusEnum } from '@csegames/camelot-unchained';
 
 import { SkillStateInfo } from './lib';
 

@@ -6,7 +6,7 @@
  * @Author: Mehuge (mehuge@sorcerer.co.uk)
  * @Date: 2017-03-08
  */
-import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition } from 'camelot-unchained';
+import { GridViewImpl, GridViewProps, GridViewState, GridViewSort, ColumnDefinition } from '@csegames/camelot-unchained';
 
 export interface GridViewPagerProps extends GridViewProps {
   total: number;

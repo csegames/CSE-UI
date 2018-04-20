@@ -1,4 +1,4 @@
-import { building, BuildingBlock } from 'camelot-unchained';
+import { building, BuildingBlock } from '@csegames/camelot-unchained';
 import faker from './requester_fake';
 
 class BuildingRequests {

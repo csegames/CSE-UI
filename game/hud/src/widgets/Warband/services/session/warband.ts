@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events, signalr, WarbandMember, Gender, Race } from 'camelot-unchained';
+import { client, events, signalr, WarbandMember, Gender, Race } from '@csegames/camelot-unchained';
 import {
   addOrUpdate,
   BaseAction,

@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { ql, client } from 'camelot-unchained';
-import { GraphQL, GraphQLResult } from 'camelot-unchained/lib/graphql/react';
+import { ql, client } from '@csegames/camelot-unchained';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsContainer from './components/ScenarioResultsContainer';
 
 const query = (scenarioID: string) => `

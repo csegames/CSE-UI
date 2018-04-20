@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { ql, client, events, Tooltip } from 'camelot-unchained';
+import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
