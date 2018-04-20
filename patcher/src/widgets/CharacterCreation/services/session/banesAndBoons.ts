@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as _ from 'lodash';
 import { Module } from 'redux-typed-modules';
 import { webAPI, client } from 'camelot-unchained';
 
@@ -490,7 +491,6 @@ export const onInitializeTraits = module.createAction({
     const addedBanes: { [id: string]: string } = {};
     const traits: { [id: string]: BanesAndBoonsInfo } = {};
     banesAndBoons.traits.forEach((i: BanesAndBoonsInfo) => traits[i.id] = i);
-
     // Rank traits
     const allRanks = ranks.map((rankArray: string[]) =>
       rankArray.map((rankId: string, i: number) =>
@@ -586,13 +586,15 @@ export const onInitializeTraits = module.createAction({
       return Object.assign({}, traits[id], { required: true });
     });
 
+    const mappedClassTraits = _.reduce(allClassTraits.map(playerClass => [...playerClass.optional, ...playerClass.required]),
+      (a: string[], b: string[]) => a.concat(b)) || [];
+    const mappedRaceTraits = _.reduce(allRaceTraits.map(race => [...race.optional, ...race.required]),
+      (a: string[], b: string[]) => a.concat(b)) || [];
+    const mappedFactionTraits = _.reduce(allFactionTraits.map(faction => [...faction.optional, ...faction.required]),
+      (a: string[], b: string[]) => a.concat(b)) || [];
     const undesirableTraits: { [id: string]: string } = {};
-    [
-      ...allClassTraits.map(playerClass => [...playerClass.optional, ...playerClass.required]).reduce((a, b) =>
-        a.concat(b)),
-      ...allRaceTraits.map(race => [...race.optional, ...race.required]).reduce((a, b) => a.concat(b)),
-      ...allFactionTraits.map(faction => [...faction.optional, ...faction.required]).reduce((a, b) => a.concat(b)),
-    ].forEach((key: string) => undesirableTraits[key] = key);
+    [ ...mappedClassTraits, ...mappedRaceTraits, ...mappedFactionTraits].forEach((key: string) =>
+      undesirableTraits[key] = key);
 
     if (initType === 'boons' || initType === 'both') {
 
@@ -612,7 +614,7 @@ export const onInitializeTraits = module.createAction({
         traits[key] = { ...traits[key], category: 'Class' };
       });
 
-     // factionBoons
+      // factionBoons
       factionTraits && factionTraits.optional && [
         ...factionTraits.optional.filter((id: string) => {
           traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction' } : traits[id];
@@ -645,13 +647,13 @@ export const onInitializeTraits = module.createAction({
         raceBoons[key] = key;
         traits[key] = { ...traits[key], category: 'Race' };
       });
-      
+
       // generalBoons
       [
         ...allTraits.filter((boon: BanesAndBoonsInfo) => {
-          traits[boon.id] = combinedRanks[boon.id] &&
+          traits[boon.id] = (combinedRanks[boon.id] &&
             !undesirableTraits[boon.id] ? { ...traits[boon.id], category: 'General' }
-          : traits[boon.id];
+          : traits[boon.id]);
           return !combinedRanks[boon.id] && !undesirableTraits[boon.id] && traits[boon.id].points >= 1;
         }),
         ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points >= 1),
@@ -703,9 +705,9 @@ export const onInitializeTraits = module.createAction({
       // generalBanes
       [
         ...allTraits.filter((bane: BanesAndBoonsInfo) => {
-          traits[bane.id] = combinedRanks[bane.id] &&
+          traits[bane.id] = (combinedRanks[bane.id] &&
             !undesirableTraits[bane.id] ? { ...traits[bane.id], category: 'General' }
-          : traits[bane.id];
+          : traits[bane.id]);
           return !combinedRanks[bane.id] && !undesirableTraits[bane.id] && traits[bane.id].points <= -1;
         }),
         ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points <= -1),
@@ -830,7 +832,6 @@ export const onResetBoons = module.createAction({
     ];
 
     allBoonIds.forEach((id: string) => traits[id] = !traits[id].required ? { ...traits[id], selected: false } : traits[id]);
-
     return {
       ...state,
       generalBoons,
