@@ -175,6 +175,13 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     );
   }
 
+  public shouldComponentUpdate(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>,
+     nextState: GraphQLState<QueryDataType>) {
+    if (!_.isEqual(this.state.data, nextState.data)) return true;
+    if (!_.isEqual(this.props, nextProps)) return true;
+    return false;
+  }
+
   public componentDidMount() {
     if (this.queryOptions.pollInterval > 0) {
       this.pollingRefetch();

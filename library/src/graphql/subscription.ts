@@ -102,6 +102,7 @@ export class SubscriptionManager {
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;
     this.socket.onerror = this.errorHandler;
+    this.initPayload = options.initPayload;
   }
 
   public subscribe = <T>(
