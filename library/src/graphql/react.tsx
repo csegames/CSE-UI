@@ -5,6 +5,8 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
+
 import {
   query,
   QueryOptions,
@@ -186,10 +188,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     }
   }
 
-  public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType>) {
+  public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     if (!_.isEqual(this.props.query, nextProps.query)) {
       const q = typeof nextProps.query === 'string' ? { query: nextProps.query } : nextProps.query;
-      this.query = withDefaults(q, defaultQuickQLQuery);
+      this.query = withDefaults(q, defaultQuery);
     }
   }
 
