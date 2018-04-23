@@ -70,7 +70,7 @@ async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInte
   if (res.ok) {
     const data = JSON.parse(res.data);
     dispatch(onInitializeTraits({
-      playerClass: payload.playerClass,
+      playerClass: _.trim(payload.playerClass),
       race: payload.race,
       faction: payload.faction,
       banesAndBoons: data,
@@ -536,30 +536,44 @@ export const onInitializeTraits = module.createAction({
       }));
 
     // Getting all the non-general traits
-    const allClassTraits = Object.keys(playerClasses).map((playerClass) => {
-      return {
-        optional: playerClasses[playerClass] && playerClasses[playerClass].optional ?
-          playerClasses[playerClass].optional : [],
-        required: playerClasses[playerClass] && playerClasses[playerClass].required ?
-          playerClasses[playerClass].required : [],
-      };
-    });
-    const allRaceTraits = Object.keys(races).map((race) => {      
-      return {
-        optional: races[race] && races[race].optional ? races[race].optional : [],
-        required: races[race] && races[race].required ? races[race].required : [],
-      };
-    });
-    const allFactionTraits = Object.keys(factions).map((faction) => {
-      return {
-        optional: factions[faction] && factions[faction].optional ? factions[faction].optional : [],
-        required: factions[faction] && factions[faction].required ? factions[faction].required : [],
-      };
+    const allClassTraits = []
+    Object.keys(playerClasses).forEach((playerClass) => {
+      if (playerClass !== 'Any') {
+        allClassTraits.push({
+          id: playerClass,
+          optional: playerClasses[playerClass] && playerClasses[playerClass].optional ?
+            playerClasses[playerClass].optional : [],
+          required: playerClasses[playerClass] && playerClasses[playerClass].required ?
+            playerClasses[playerClass].required : [],
+        });
+      }
     });
 
-    const playerClassTraits = allClassTraits[Object.keys(playerClasses).indexOf(playerClass)];
-    const factionTraits = allFactionTraits[Object.keys(factions).indexOf(faction)];
-    const raceTraits = allRaceTraits[Object.keys(races).indexOf(race)];
+    const allRaceTraits = [];
+    Object.keys(races).forEach((race) => {
+      if (race !== 'Any') {
+        allRaceTraits.push({
+          id: race,
+          optional: races[race] && races[race].optional ? races[race].optional : [],
+          required: races[race] && races[race].required ? races[race].required : [],
+        });
+      }
+    });
+
+    const allFactionTraits = [];
+    Object.keys(factions).forEach((faction) => {
+      if (faction !== 'Any') {
+        allFactionTraits.push({
+          id: faction,
+          optional: factions[faction] && factions[faction].optional ? factions[faction].optional : [],
+          required: factions[faction] && factions[faction].required ? factions[faction].required : [],
+        });
+      }
+    });
+
+    const playerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === playerClass);
+    const factionTraits = _.find(allFactionTraits, _faction => _faction.id === faction);
+    const raceTraits = _.find(allRaceTraits, _race => _race.id === race);
 
     // Required traits
     const requiredBoons = [
