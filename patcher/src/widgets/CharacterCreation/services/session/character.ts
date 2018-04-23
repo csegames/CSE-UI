@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
-
-import { Race, Faction, Gender, Archetype } from 'camelot-unchained';
+import { client, webAPI, Race, Faction, Gender, Archetype } from '@csegames/camelot-unchained';
 
 export interface CharacterCreationModel {
   name: string;

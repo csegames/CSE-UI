@@ -12,7 +12,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { StyleDeclaration } from 'aphrodite';
-import { events, Gender, HelpInfo } from 'camelot-unchained';
+import { events, Gender, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -197,7 +197,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
             dispatch={dispatch}
             baneStyles={{}}
             boonStyles={{}}
-            styles={{}}
             traitSummaryStyles={{}}
           />
         );

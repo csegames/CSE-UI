@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, events, CollapsingList } from 'camelot-unchained';
+import { webAPI, events, CollapsingList } from '@csegames/camelot-unchained';
 
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterSelectListItem from './CharacterSelectListItem';

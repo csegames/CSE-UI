@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { webAPI } from 'camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { patcher, ChannelStatus, PatchPermissions } from '../../../../../services/patcher';
 import { ServerType, PatcherServer } from '../../../services/session/controller';
 import PlayNowButton from './PlayNowButton';

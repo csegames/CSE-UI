@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { Race, Faction, webAPI } from 'camelot-unchained';
+import { Race, Faction, webAPI } from '@csegames/camelot-unchained';
 
 export interface RaceInfo {
   name: string;

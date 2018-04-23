@@ -5,7 +5,7 @@
  *
  */
 
-import { webAPI, Race, Gender } from 'camelot-unchained';
+import { webAPI, Race, Gender } from '@csegames/camelot-unchained';
 
 export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
   return (character.race === Race.HumanMaleA && character.gender === Gender.Female) ||

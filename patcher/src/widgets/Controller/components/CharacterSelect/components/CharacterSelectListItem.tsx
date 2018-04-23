@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { webAPI, Race, Gender, Archetype, events } from 'camelot-unchained';
+import { webAPI, Race, Gender, Archetype, events } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
 import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 

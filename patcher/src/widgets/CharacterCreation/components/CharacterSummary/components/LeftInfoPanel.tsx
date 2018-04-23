@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils, Race, Gender, Archetype } from 'camelot-unchained';
+import { utils, Race, Gender, Archetype } from '@csegames/camelot-unchained';
 
 import { AttributeInfo, attributeType } from '../../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../../services/session/attributeOffsets';

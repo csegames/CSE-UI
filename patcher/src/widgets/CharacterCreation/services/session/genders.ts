@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Gender } from 'camelot-unchained';
+import { Gender } from '@csegames/camelot-unchained';
 
 const SELECT_GENDER = 'cu-character-creation/genders/SELECT_GENDER';
 const RESET_GENDER = 'cu-character-creation/geners/RESET_GENDER';

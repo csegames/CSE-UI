@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { client, Race, Gender, webAPI } from 'camelot-unchained';
+import { client, Race, Gender, webAPI } from '@csegames/camelot-unchained';
 
 export interface AttributeOffsetInfo {
   race: Race;

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Archetype, Faction, events } from 'camelot-unchained';
+import { Archetype, Faction, events } from '@csegames/camelot-unchained';
 
 import { PlayerClassInfo } from '../services/session/playerClasses';
 import { FactionInfo } from '../services/session/factions';

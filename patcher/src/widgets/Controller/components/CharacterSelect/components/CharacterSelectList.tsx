@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { events, webAPI } from 'camelot-unchained';
+import { events, webAPI } from '@csegames/camelot-unchained';
 
 import { patcher, canAccessChannel, ChannelStatus } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';

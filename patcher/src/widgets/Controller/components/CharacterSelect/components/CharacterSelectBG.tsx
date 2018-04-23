@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css, keyframes, cx } from 'react-emotion';
-import { webAPI, Race, Archetype, Gender, Faction } from 'camelot-unchained';
+import { webAPI, Race, Archetype, Gender, Faction } from '@csegames/camelot-unchained';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
 

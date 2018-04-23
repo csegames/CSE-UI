@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes, css } from 'react-emotion';
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 
 import { patcher } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';

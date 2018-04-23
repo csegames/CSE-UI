@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 
 // Session
 import { GlobalState } from '../../services/session';

@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import styled, { css } from 'react-emotion';
-import { utils, ql } from 'camelot-unchained';
+import { utils, ql } from '@csegames/camelot-unchained';
 
 const colors = {
   evenListItem: '#575757',

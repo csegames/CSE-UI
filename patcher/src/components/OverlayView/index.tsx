@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events, ql } from 'camelot-unchained';
+import { events, ql } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
 
 // views

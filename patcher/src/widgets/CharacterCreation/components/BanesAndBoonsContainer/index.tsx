@@ -9,10 +9,9 @@ import BanesAndBoons from '../../components/BanesAndBoons';
 import { RacesState } from '../../services/session/races';
 import { FactionsState } from '../../services/session/factions';
 import { PlayerClassesState } from '../../services/session/playerClasses';
-import { BanesAndBoonsStyle } from '../BanesAndBoons';
 import { TraitSummaryStyle } from '../BanesAndBoons/TraitSummary';
 import { TraitStyle } from '../BanesAndBoons/Trait';
-import { Race, Faction, Archetype } from 'camelot-unchained';
+import { Race, Faction, Archetype } from '@csegames/camelot-unchained';
 import {
   BanesAndBoonsInfo,
   BanesAndBoonsState,
@@ -34,7 +33,6 @@ export interface BanesAndBoonsContainerProps {
   race: RacesState;
   faction: FactionsState;
   playerClass: PlayerClassesState;
-  styles: Partial<BanesAndBoonsStyle>;
   traitSummaryStyles: Partial<TraitSummaryStyle>;
   baneStyles: Partial<TraitStyle>;
   boonStyles: Partial<TraitStyle>;
@@ -68,7 +66,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       minPoints,
       maxPoints,
     } = this.props.banesAndBoons;
-    const { styles, traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
+    const { traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
     return (
       <BanesAndBoons
         generalBoons={generalBoons}
@@ -91,12 +89,11 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         onBoonClick={this.onSelectBoonClick}
         onCancelBaneClick={this.onCancelBane}
         onCancelBoonClick={this.onCancelBoon}
-        onResetClick={this.onResetClick}
+        onReset={this.onResetClick}
         onSelectRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onSelectRankBoon({ boon }))}
         onSelectRankBane={(bane: BanesAndBoonsInfo) => dispatch(onSelectRankBane({ bane }))}
         onCancelRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onCancelRankBoon({ boon }))}
         onCancelRankBane={(bane: BanesAndBoonsInfo) => dispatch(onCancelRankBane({ bane }))}
-        styles={styles}
         traitSummaryStyles={traitSummaryStyles}
         baneStyles={baneStyles}
         boonStyles={boonStyles}

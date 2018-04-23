@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, client, ql } from 'camelot-unchained';
+import { utils, client, ql } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 
 const ServerSelectContainer = styled('div')`

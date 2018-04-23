@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
 const BANE = 'Bane';

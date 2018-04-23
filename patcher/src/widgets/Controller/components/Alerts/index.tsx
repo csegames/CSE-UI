@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { webAPI } from 'camelot-unchained';
 import styled from 'react-emotion';
+import { webAPI } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   overflow: hidden;

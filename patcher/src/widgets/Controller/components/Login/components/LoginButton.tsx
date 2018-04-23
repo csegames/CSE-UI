@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
 import { LoginStatus } from '../index';
 

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { webAPI } from 'camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import Login from '../../Login';
 import Alerts from '../../Alerts';

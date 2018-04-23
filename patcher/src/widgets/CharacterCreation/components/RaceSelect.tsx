@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Race, Gender, events } from 'camelot-unchained';
+import { Race, Gender, events } from '@csegames/camelot-unchained';
 
 import { RaceInfo } from '../services/session/races';
 import { FactionInfo } from '../services/session/factions';

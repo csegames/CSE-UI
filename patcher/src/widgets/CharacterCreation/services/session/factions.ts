@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { webAPI } from 'camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 declare const toastr: any;
 

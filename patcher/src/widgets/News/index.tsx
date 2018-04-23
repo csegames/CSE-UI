@@ -4,13 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
 import 'isomorphic-fetch';
+import * as React from 'react';
+import { utils } from '@csegames/camelot-unchained';
 
 import ResponseError from '../../lib/ResponseError';
 import { fetchJSON } from '../../lib/fetchHelpers';
 
-import { utils } from 'camelot-unchained';
 import NewsItem from './components/NewsItem';
 import { NewsState, Post } from '../../services/session/news';
 import { FetchStatus, defaultFetchStatus, hashMerge } from '../../lib/reduxUtils';

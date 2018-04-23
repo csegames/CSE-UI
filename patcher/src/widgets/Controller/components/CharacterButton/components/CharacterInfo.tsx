@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { keyframes, css } from 'react-emotion';
-import { events, webAPI, Gender, Archetype, Race, Spinner } from 'camelot-unchained';
+import { events, webAPI, Gender, Archetype, Race, Spinner } from '@csegames/camelot-unchained';
 
 import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';

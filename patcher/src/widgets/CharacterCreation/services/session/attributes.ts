@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { webAPI, events } from 'camelot-unchained';
+import { webAPI, events } from '@csegames/camelot-unchained';
 
 const totalPoints = 30;
 

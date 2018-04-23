@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { utils, Tooltip } from 'camelot-unchained';
+import { utils, Tooltip } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { CharacterCreationPage } from '../index';
 

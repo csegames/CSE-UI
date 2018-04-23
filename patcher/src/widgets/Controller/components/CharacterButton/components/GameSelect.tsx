@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { events } from 'camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
 import { patcher, permissionsString } from '../../../../../services/patcher';

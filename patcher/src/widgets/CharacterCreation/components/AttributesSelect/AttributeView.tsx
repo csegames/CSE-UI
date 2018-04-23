@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { Tooltip } from 'camelot-unchained/lib/components';
 
 import { AttributeInfo } from '../../services/session/attributes';

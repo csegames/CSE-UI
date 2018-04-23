@@ -6,7 +6,7 @@
 
 import * as _ from 'lodash';
 import { Module } from 'redux-typed-modules';
-import { webAPI, client } from 'camelot-unchained';
+import { webAPI, client } from '@csegames/camelot-unchained';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -471,6 +471,7 @@ export const onInitializeTraits = module.createAction({
   }) => action,
   reducer: (state, action) => {
     const { playerClass, faction, race, banesAndBoons, initType } = action;
+    const generalTraits = banesAndBoons.general;
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
@@ -535,8 +536,7 @@ export const onInitializeTraits = module.createAction({
         allExclusives[exclusive] = exclusive;
       }));
 
-    // Getting all the non-general traits
-    const allClassTraits = []
+    const allClassTraits = [];
     Object.keys(playerClasses).forEach((playerClass) => {
       if (playerClass !== 'Any') {
         allClassTraits.push({
@@ -663,15 +663,21 @@ export const onInitializeTraits = module.createAction({
       });
 
       // generalBoons
-      [
-        ...allTraits.filter((boon: BanesAndBoonsInfo) => {
-          traits[boon.id] = (combinedRanks[boon.id] &&
-            !undesirableTraits[boon.id] ? { ...traits[boon.id], category: 'General' }
-          : traits[boon.id]);
-          return !combinedRanks[boon.id] && !undesirableTraits[boon.id] && traits[boon.id].points >= 1;
-        }),
-        ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points >= 1),
-      ].forEach((trait: BanesAndBoonsInfo) => generalBoons[trait.id] = trait.id);
+      generalTraits && generalTraits.optional && [
+        ...generalTraits.optional.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+          return traits[id].points >= 1 && !combinedRanks[id];
+        }) || [],
+        ...generalTraits.required.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+            { ...traits[id], selected: true };
+          return traits[id].points >= 1 && !combinedRanks[id];
+        }) || [],
+        generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+      ].filter((id: string) => id).forEach((key: string) => {
+        generalBoons[key] = key;
+        traits[key] = { ...traits[key], category: 'General' };
+      });
 
       // addedBoons
       requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
@@ -717,15 +723,16 @@ export const onInitializeTraits = module.createAction({
       });
 
       // generalBanes
-      [
-        ...allTraits.filter((bane: BanesAndBoonsInfo) => {
-          traits[bane.id] = (combinedRanks[bane.id] &&
-            !undesirableTraits[bane.id] ? { ...traits[bane.id], category: 'General' }
-          : traits[bane.id]);
-          return !combinedRanks[bane.id] && !undesirableTraits[bane.id] && traits[bane.id].points <= -1;
-        }),
-        ...firstRanksArr.filter((rank: BanesAndBoonsInfo) => !undesirableTraits[rank.id] && rank.points <= -1),
-      ].forEach((trait: BanesAndBoonsInfo) => generalBanes[trait.id] = trait.id);
+      generalTraits && generalTraits.optional && [
+        ...generalTraits.optional.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+          return traits[id].points <= -1 && !combinedRanks[id];
+        }) || [],
+        generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
+      ].filter((id: string) => id).forEach((key: string) => {
+        generalBanes[key] = key;
+        traits[key] = { ...traits[key], category: 'General' };
+      });
 
       // addedBanes
       requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
@@ -783,6 +790,7 @@ export const onResetBoons = module.createAction({
   }) => action,
   reducer: (state, action) => {
     const { banesAndBoons, playerClass, faction, race } = action;
+    const generalTraits = banesAndBoons.general;
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
@@ -820,6 +828,8 @@ export const onResetBoons = module.createAction({
     const raceTraits = allRaceTraits[Object.keys(races).indexOf(race)];
 
     const requiredBoons = [
+      ...generalTraits && generalTraits.required ?
+        generalTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...playerClassTraits && playerClassTraits.required ?
         playerClassTraits.required.filter((id: string) => traits[id].points >= 1) : [],
       ...factionTraits && factionTraits.required ?
@@ -869,6 +879,7 @@ export const onResetBanes = module.createAction({
   }) => action,
   reducer: (state, action) => {
     const { banesAndBoons, playerClass, faction, race } = action;
+    const generalTraits = banesAndBoons.general;
     const playerClasses = banesAndBoons.classes;
     const factions = banesAndBoons.factions;
     const races = banesAndBoons.races;
@@ -906,6 +917,8 @@ export const onResetBanes = module.createAction({
     const raceTraits = allRaceTraits[Object.keys(races).indexOf(race)];
 
     const requiredBanes = [
+      ...generalTraits && generalTraits.required ?
+        generalTraits.required.filter((id: string) => traits[id].points <= -1) : [],
       ...playerClassTraits && playerClassTraits.required ?
         playerClassTraits.required.filter((id: string) => traits[id].points <= -1) : [],
       ...factionTraits && factionTraits.required ?

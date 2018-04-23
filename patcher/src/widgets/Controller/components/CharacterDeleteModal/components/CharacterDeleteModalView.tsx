@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Tooltip, Spinner } from 'camelot-unchained';
+import { Tooltip, Spinner } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   display: flex;

@@ -10,7 +10,7 @@
  *
  */
 // tslint:disable
-import { StepInfo } from 'camelot-unchained';
+import { StepInfo } from '@csegames/camelot-unchained';
 
 export const factionSteps: StepInfo[] = [
   {

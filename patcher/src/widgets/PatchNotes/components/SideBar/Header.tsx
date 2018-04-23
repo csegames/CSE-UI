@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, ql } from 'camelot-unchained';
+import { utils, ql } from '@csegames/camelot-unchained';
 
 import Animate from '../../../../lib/Animate';
 import ServerSelect from './ServerSelect';

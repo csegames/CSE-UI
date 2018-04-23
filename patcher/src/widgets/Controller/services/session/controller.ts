@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
-import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
+import { client, utils, signalr, events, webAPI } from '@csegames/camelot-unchained';
 import { Module } from 'redux-typed-modules';
+import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
 
 export interface ControllerState {
   isInitializing: boolean;

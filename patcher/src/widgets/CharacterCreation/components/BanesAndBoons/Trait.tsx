@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
-import { events, Tooltip } from 'camelot-unchained';
+import { events, Tooltip } from '@csegames/camelot-unchained';
 import { styleConstants, colors } from '../../styleConstants';
 
 export interface TraitStyle extends StyleDeclaration {

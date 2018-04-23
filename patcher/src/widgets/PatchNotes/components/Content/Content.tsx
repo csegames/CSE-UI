@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import styled from 'react-emotion';
-import { utils, LoadingContainer } from 'camelot-unchained';
+import { utils, LoadingContainer } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
 import Animate from '../../../../lib/Animate';
 
