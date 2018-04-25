@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@csegames/camelot-unchained@^0.1.3":
-  version "0.1.3"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.3.tgz#f68f65389384b7d8b511e48541c479c38aadfef0"
+"@csegames/camelot-unchained@^0.1.4":
+  version "0.1.4"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.4.tgz#2e3fd42a869bca9bb07f6443b2323019515299e0"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
