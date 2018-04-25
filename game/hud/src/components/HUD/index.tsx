@@ -47,6 +47,13 @@ useConfig({
       characterID: client.characterID,
     },
   },
+}, {
+  url: client.apiHost.replace('http', 'ws') + '/graphql',
+  initPayload: {
+    shardID: client.shardID,
+    loginToken: client.loginToken,
+    characterID: client.characterID,
+  },
 });
 
 export interface HUDProps {

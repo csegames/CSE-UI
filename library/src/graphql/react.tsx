@@ -23,6 +23,7 @@ import {
   SubscriptionManager,
   Options as SubscriptionOptions,
   defaultSubscriptionOpts,
+  Options,
 } from './subscription';
 import { withDefaults } from '../utils/withDefaults';
 import { ObjectMap } from '../utils/ObjectMap';
@@ -84,12 +85,19 @@ export class GraphQLClient {
 export interface GraphQLConfig extends QueryOptions {
 }
 
-let conf = withDefaults(null, defaultQueryOpts);
-
-function getOptions() {
+let queryConf = withDefaults(null, defaultQueryOpts);
+function getQueryOptions() {
   return {
     ...defaultGraphQLOptions,
-    ...conf,
+    ...queryConf,
+  };
+}
+
+let subsConf = withDefaults(null, defaultSubscriptionOpts);
+function getSubscriptionOptions() {
+  return {
+    ...defaultSubscriptionOpts,
+    ...subsConf,
   };
 }
 
@@ -108,8 +116,9 @@ export interface GraphQLInjectedProps<T> {
   graphql: GraphQLResult<T>;
 }
 
-export function useConfig(config: Partial<GraphQLConfig>) {
-  conf = withDefaults(config, conf);
+export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfig: Partial<Options<any>>) {
+  queryConf = withDefaults(queryConfig, queryConf);
+  subsConf = withDefaults(subscriptionConfig, subsConf);
 }
 
 
@@ -130,7 +139,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private query: GraphQLQuery | undefined;
   private queryOptions: GraphQLOptions;
   private subscription: Subscription | undefined;
-  private subscriptionOptions: GraphQLOptions;
+  private subscriptionOptions: Options<any>;
   private pollingTimeout: number | null = null;
   private subscriptionID: string;
   private subscriptionManager: SubscriptionManager;
@@ -146,12 +155,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     const q = typeof props.query === 'string' ? { query: props.query } : props.query;
     this.query = withDefaults(q, defaultQuery);
     const qp = typeof props.query === 'string' ? {} : props.query;
-    this.queryOptions = withDefaults<GraphQLOptions>(qp, getOptions());
+    this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
 
     if (props.subscription) {
       const s = typeof props.subscription === 'string' ? { query: props.subscription } : props.subscription;
       this.subscription = withDefaults(s, defaultSubscription);
-      this.subscriptionOptions = withDefaults(s, defaultSubscriptionOpts as any);
+      this.subscriptionOptions = withDefaults<Options<any>>(s, getSubscriptionOptions());
     }
 
     this.client = new GraphQLClient({
