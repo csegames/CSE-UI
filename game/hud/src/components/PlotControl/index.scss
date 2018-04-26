@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-$cu-styles-root: '../../../interface-lib/camelot-unchained/styles/';
-@import "../../../node_modules/camelot-unchained/lib/index.scss";
+$cu-styles-root: '../../../interface-lib/@csegames/camelot-unchained/styles/';
+@import "../../../node_modules/@csegames/camelot-unchained/lib/index.scss";
 
 #plotcontrol-container {
   pointer-events: all;

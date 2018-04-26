@@ -168,7 +168,7 @@ class InventoryWindow extends React.Component<InventoryWindowProps, InventoryWin
               onClick={() => this.simDblClick(this.useItem, key)}
               onContextMenu={() => this.dropItem(key)}>
             <div className='quantity'>{stack.length}</div>
-            <div className='icon'><img src='../../interface-lib/camelot-unchained/images/items/icon.png' /></div>
+            <div className='icon'><img src='../../interface-lib/@csegames/camelot-unchained/images/items/icon.png' /></div>
             <div className='name'>{firstItem.name}</div>
             <div className='tooltip'>
               <h1 className='tooltip__title'>{firstItem.name}</h1>

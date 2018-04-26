@@ -182,11 +182,11 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -u ol -t [ envify --NODE_ENV production ]',
+          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u @csegames/camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -u ol -t [ envify --NODE_ENV production ]',
           hiddenFromHelp: true,
         },
         lib: {
-          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
+          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r @csegames/camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
         }
       },

@@ -7,7 +7,6 @@
     "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
   },
   "globalDependencies": {
-    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
     "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
     "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
     "node": "registry:dt/node#6.0.0+20160621231320"

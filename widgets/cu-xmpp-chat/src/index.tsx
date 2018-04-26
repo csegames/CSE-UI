@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import {client, registerSlashCommand, parseMessageForSlashCommand} from 'camelot-unchained';
-import {events} from 'camelot-unchained';
+import { events, client, registerSlashCommand, parseMessageForSlashCommand } from '@csegames/camelot-unchained';
 
 import ChatSession from './components/ChatSession';
 import ChatRoomInfo from './components/ChatRoomInfo';
