@@ -23,7 +23,6 @@ import { InvitesState, initializeInvites } from '../../services/session/invites'
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 
-import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';
@@ -90,8 +89,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <ScenarioResults />
 
-        <InteractiveAlert dispatch={this.props.dispatch}
-          invites={this.props.invites.invites} />
         <HUDFullScreen />
         <Watermark />
         <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>

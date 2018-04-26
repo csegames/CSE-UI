@@ -30,6 +30,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     this.state = {
       playerState: null,
     };
+    this.setPlayerState = _.throttle(this.setPlayerState, 150);
   }
 
   public render() {

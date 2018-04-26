@@ -22,33 +22,32 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  myPlayerPosition: Vec3f;
-  otherPlayerPosition: Vec3f;
+  distanceToTarget: number;
   playerState: PlayerState;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+  private myPlayerPosition: Vec3f;
+  private otherPlayerPosition: Vec3f;
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
-      myPlayerPosition: { x: 0, y: 0, z: 0 },
-      otherPlayerPosition: { x: 0, y: 0, z: 0 },
+      distanceToTarget: 0,
       playerState: null,
     };
+    this.setPlayerState = _.throttle(this.setPlayerState, 150);
+    this.setMyPlayerPosition = _.throttle(this.setMyPlayerPosition, 150);
   }
 
   public render() {
     if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
 
-    const { myPlayerPosition, otherPlayerPosition } = this.state;
-    const distanceToTarget = otherPlayerPosition && myPlayerPosition ?
-      Number(utils.distanceVec3(otherPlayerPosition, myPlayerPosition).toFixed(2)) : 0;
     return (
       <Container>
         <HealthBar
           type='compact'
           playerState={this.state.playerState}
-          distanceToTarget={distanceToTarget}
+          distanceToTarget={this.state.distanceToTarget}
         />
       </Container>
     );
@@ -60,21 +59,33 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return !_.isEqual(nextState.myPlayerPosition, this.state.myPlayerPosition) ||
-      !_.isEqual(nextState.otherPlayerPosition, this.state.otherPlayerPosition) ||
+    return nextState.distanceToTarget !== this.state.distanceToTarget ||
       !_.isEqual(nextState.playerState, this.state.playerState);
   }
 
   private setPlayerState = (playerState: PlayerState) => {
     if (playerState && playerState.position) {
-      this.setState({ otherPlayerPosition: playerState.position });
+      this.otherPlayerPosition = playerState.position;
+      const distanceToTarget = this.getDistanceToTarget(this.myPlayerPosition, this.otherPlayerPosition);
+      this.setState({ playerState, distanceToTarget });
     }
     this.setState({ playerState });
   }
 
   private setMyPlayerPosition = (playerState: PlayerState) => {
     if (playerState && playerState.position) {
-      this.setState({ myPlayerPosition: playerState.position });
+      this.myPlayerPosition = playerState.position;
+      const distanceToTarget = this.getDistanceToTarget(this.myPlayerPosition, this.otherPlayerPosition);
+      this.setState({ distanceToTarget });
+    }
+  }
+
+  private getDistanceToTarget = (myPlayerPosition: Vec3f, otherPlayerPosition: Vec3f) => {
+    if (otherPlayerPosition && myPlayerPosition) {
+      const distanceToTarget = Number(utils.distanceVec3(otherPlayerPosition, myPlayerPosition).toFixed(2));
+      return distanceToTarget;
+    } else {
+      return 0;
     }
   }
 }

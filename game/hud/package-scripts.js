@@ -92,6 +92,10 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      nuadaPrep: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1400/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       cube: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/27/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -132,6 +136,10 @@ module.exports = {
       },
       wyrmlingPrep: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      nuadaPrep: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1400/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       wolfhere: {
@@ -211,9 +219,9 @@ module.exports = {
         script: 'nps build,clean.wyrmlingPrep,copy.wyrmlingPrep',
         description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
       },
-      fledgling: {
-        script: 'nps build,clean.fledgling,copy.fledgling',
-        description: 'Builds the module and copies to the Fledgling (30) UI override directory',
+      nuadaPrep: {
+        script: 'nps build,clean.nuadaPrep,copy.nuadaPrep',
+        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
       },
       cube: {
         script: 'nps build,clean.cube,copy.cube',
