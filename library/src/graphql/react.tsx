@@ -123,8 +123,9 @@ export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfi
 
 
 export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
-  query: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
+  query?: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
   subscription?: string | (Partial<Subscription> & Partial<SubscriptionOptions<SubscriptionDataType>>);
+  initialData?: QueryDataType;
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
 }
@@ -147,27 +148,29 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
     this.state = {
-      data: null,
+      data: props.initialData || null,
       loading: false,
       lastError: null,
     };
 
-    const q = typeof props.query === 'string' ? { query: props.query } : props.query;
-    this.query = withDefaults(q, defaultQuery);
-    const qp = typeof props.query === 'string' ? {} : props.query;
-    this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
+    if (props.query) {
+      const q = typeof props.query === 'string' ? { query: props.query } : props.query;
+      this.query = withDefaults(q, defaultQuery);
+      const qp = typeof props.query === 'string' ? {} : props.query;
+      this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
+
+      this.client = new GraphQLClient({
+        url: this.queryOptions.url,
+        requestOptions: this.queryOptions.requestOptions,
+        stringifyVariables: this.queryOptions.stringifyVariables,
+      });
+    }
 
     if (props.subscription) {
       const s = typeof props.subscription === 'string' ? { query: props.subscription } : props.subscription;
       this.subscription = withDefaults(s, defaultSubscription);
       this.subscriptionOptions = withDefaults<Options<any>>(s, getSubscriptionOptions());
     }
-
-    this.client = new GraphQLClient({
-      url: this.queryOptions.url,
-      requestOptions: this.queryOptions.requestOptions,
-      stringifyVariables: this.queryOptions.stringifyVariables,
-    });
   }
 
   public render() {
@@ -221,9 +224,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private subscriptionHandler = (result: SubscriptionResult<SubscriptionDataType>) => {
     if (!this.props.subscriptionHandler) return;
     const data = this.props.subscriptionHandler(result, this.state.data);
-    this.setState({
-      data,
-    });
+    this.setState({ data });
     this.props.onQueryResult && this.props.onQueryResult({
       ...this.state,
       data: data as QueryDataType,
