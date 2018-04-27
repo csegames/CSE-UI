@@ -22,6 +22,23 @@
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
+"@csegames/cu-xmpp-chat@0.1.0":
+  version "0.1.0"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.0.tgz#3b8a999ad7da61c06b412faeaf2c0c1464047032"
+  dependencies:
+    "@csegames/camelot-unchained" "0.1.5"
+    cwd-in-node-modules "^1.0.1"
+    es6-promise "^3.1.2"
+    node-xmpp-client "^2.1.0"
+    normalizr "^2.0.0"
+    randomstring "^1.1.5"
+    react "^16.0.0"
+    react-dom "^16.0.0"
+    react-redux "^4.4.5"
+    react-transition-group "1.x"
+    redux "^3.5.2"
+    redux-thunk "^2.1.0"
+
 "@mapbox/mapbox-gl-style-spec@^9.0.1":
   version "9.0.1"
   resolved "http://registry.camelotunchained.com/@mapbox%2fmapbox-gl-style-spec/-/mapbox-gl-style-spec-9.0.1.tgz#b9cab82d2356741e6ad9c9dcf9572e445aacb059"
@@ -1390,26 +1407,6 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
-camelot-unchained@^0.9.13:
-  version "0.9.48"
-  resolved "http://registry.camelotunchained.com/camelot-unchained/-/camelot-unchained-0.9.48.tgz#81dd8ec2b1834feb10f21f6a73c1b1a9e7875723"
-  dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    emotion "^8.0.8"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-emotion "^8.0.8"
-    react-transition-group "1.x"
-    redux-typed-modules "^2.2.1"
-
 can-use-dom@^0.1.0:
   version "0.1.0"
   resolved "http://registry.camelotunchained.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
@@ -1875,24 +1872,6 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   resolved "http://registry.camelotunchained.com/cssstyle/-/cssstyle-0.2.37.tgz#541097234cb2513c83ceed3acddc27ff27987d54"
   dependencies:
     cssom "0.3.x"
-
-cu-xmpp-chat@^0.3.7:
-  version "0.3.7"
-  resolved "http://registry.camelotunchained.com/cu-xmpp-chat/-/cu-xmpp-chat-0.3.7.tgz#c4b3099715ed6196757781218ac4ff7382665347"
-  dependencies:
-    camelot-unchained "^0.9.13"
-    cwd-in-node-modules "^1.0.1"
-    es6-promise "^3.1.2"
-    isomorphic-fetch "^2.2.1"
-    node-xmpp-client "^2.1.0"
-    normalizr "^2.0.0"
-    randomstring "^1.1.5"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-redux "^4.4.5"
-    react-transition-group "1.x"
-    redux "^3.5.2"
-    redux-thunk "^2.1.0"
 
 currently-unhandled@^0.4.1:
   version "0.4.1"

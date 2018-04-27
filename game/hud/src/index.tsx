@@ -22,12 +22,13 @@ import { ApolloProvider } from 'react-apollo';
 // if (client.debug) {
 //   // tslint:disable
 //   {
-//       let createClass = React.createClass;
-//       Object.defineProperty(React, 'createClass', {
-//         set: (nextCreateClass) => {
-//           createClass = nextCreateClass;
-//         }
-//       });
+//     // @ts-ignore
+//     let createClass = React.createClass;
+//     Object.defineProperty(React, 'createClass', {
+//       set: (nextCreateClass) => {
+//         createClass = nextCreateClass;
+//       }
+//     });
 //   }
 //   const {whyDidYouUpdate} = require('why-did-you-update');
 //   whyDidYouUpdate(React);
