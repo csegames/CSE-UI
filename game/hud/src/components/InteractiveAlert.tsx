@@ -97,7 +97,8 @@
 //   //           <div className={css(ss.invite)}>
 //   //             <h6>{i.ForGroup} has invited you to a {groupType[i.ForGroup]}.</h6>
 //   //             <em>Invite code: {i.Code}</em>
-//   //             <div className={className(css(ss.button, ss.acceptButton))} onClick={() => props.dispatch(acceptInvite(i))}>
+//   //             <div className={className(css(ss.button, ss.acceptButton))}
+//   //               onClick={() => props.dispatch(acceptInvite(i))}>
 //   //               Accept
 //   //             </div>
 //   //             <div

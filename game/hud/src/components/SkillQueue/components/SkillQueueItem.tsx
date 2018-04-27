@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 import { events, SkillStateStatusEnum } from '@csegames/camelot-unchained';
 import { SkillStateInfo, skillStateColors, makeGlowPathFor } from '../../SkillBar/SkillButton/lib';
@@ -95,6 +96,11 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
     this.timerListener = events.on(`skill-button-timer-${this.props.skill.id}`, (current: number) => {
       this.setState({ current });
     });
+  }
+
+  public shouldComponentUpdate(nextProps: SkillQueueItemProps, nextState: SkillQueueItemState) {
+    return nextState.current !== this.state.current ||
+      !_.isEqual(nextProps.skill, this.props.skill);
   }
 
   public componentWillUnmount() {

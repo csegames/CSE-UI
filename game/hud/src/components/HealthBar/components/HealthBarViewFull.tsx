@@ -7,13 +7,15 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction } from '@csegames/camelot-unchained';
+import { PlayerState } from '@csegames/camelot-unchained';
 
-import { HealthBarValues } from '../index';
+import { isEqualPlayerState } from '../../../lib/playerStateEqual';
+import { BodyParts } from '../../../lib/PlayerStatus';
+import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFunctions';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
-import HealthSlideOut from './HealthSlideOut';
+// import HealthSlideOut from './HealthSlideOut';
 
 const Container = styled('div')`
   position: relative;
@@ -85,19 +87,19 @@ const BloodBall = styled('div')`
   }
 `;
 
-const BloodCount = styled('div')`
-  position: absolute;
-  left: 15px;
-  bottom: -20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  width: 76px;
-  height: 22px;
-  background: url(images/healthbar/regular/blood_number.png);
-  z-index: 10;
-`;
+// const BloodCount = styled('div')`
+//   position: absolute;
+//   left: 15px;
+//   bottom: -20px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: white;
+//   width: 76px;
+//   height: 22px;
+//   background: url(images/healthbar/regular/blood_number.png);
+//   z-index: 10;
+// `;
 
 const HealthPillsContainer = styled('div')`
   position: absolute;
@@ -131,13 +133,9 @@ const StaminaBar = styled('div')`
   }
 `;
 
-export interface HealthBarViewProps extends HealthBarValues {
-  faction: Faction;
+export interface HealthBarViewProps {
   shouldShake: boolean;
-  isAlive: boolean;
-  name: string;
-  currentStamina: number;
-  currentBlood: number;
+  playerState: PlayerState;
 }
 
 export interface HealthBarViewState {
@@ -146,67 +144,43 @@ export interface HealthBarViewState {
 
 class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
   public render() {
+    const { playerState } = this.props;
+    const bloodPercent = getBloodPercent(playerState);
+    const staminaPercent = getStaminaPercent(playerState);
+    const faction = getFaction(playerState);
     return (
-      <Container shouldShake={this.props.shouldShake} isAlive={this.props.isAlive}>
+      <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive}>
         <ContentContainer>
           <NameContainer>
-            <Name>{this.props.name}</Name>
+            <Name>{playerState.name}</Name>
           </NameContainer>
-          <ClassIndicator top={15} left={140} width={70} height={70} borderRadius={35} faction={this.props.faction} />
-          <BloodBall percent={this.props.bloodPercent}>
-            <BloodCount>{this.props.currentBlood}</BloodCount>
+          <ClassIndicator top={15} left={140} width={70} height={70} borderRadius={35} faction={faction} />
+          <BloodBall percent={bloodPercent}>
+            {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
           </BloodBall>
-          <HealthSlideOut
+          {/* <HealthSlideOut
             right={65}
             height={208}
             currentStamina={this.props.currentStamina}
             bodyPartsCurrentHealth={this.props.bodyPartsCurrentHealth}
-          />
+          /> */}
           <HealthPillsContainer>
-            <SmallBar
-              height={21}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.rightArmHealthPercent}
-              wounds={this.props.rightArmWounds}
-            />
-            <SmallBar
-              height={21}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.leftArmHealthPercent}
-              wounds={this.props.leftArmWounds}
-            />
-            <BigBar
-              left={5}
-              height={41}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.headHealthPercent}
-              wounds={this.props.headWounds}
-            />
-            <BigBar
-              left={5}
-              height={41}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.torsoHealthPercent}
-              wounds={this.props.torsoWounds}
-            />
-            <SmallBar
-              height={21}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.rightLegHealthPercent}
-              wounds={this.props.rightLegWounds}
-            />
-            <SmallBar
-              height={21}
-              isAlive={this.props.isAlive}
-              healthPercent={this.props.leftLegHealthPercent}
-              wounds={this.props.leftLegWounds}
-            />
-            <StaminaBar percent={this.props.staminaPercent} />
+            <SmallBar height={21} bodyPart={BodyParts.RightArm} playerState={playerState} />
+            <SmallBar height={21} bodyPart={BodyParts.LeftArm} playerState={playerState} />
+            <BigBar left={5} height={41} bodyPart={BodyParts.Head} playerState={playerState} />
+            <BigBar left={5} height={41} bodyPart={BodyParts.Torso} playerState={playerState} />
+            <SmallBar height={21} bodyPart={BodyParts.RightLeg} playerState={playerState} />
+            <SmallBar height={21} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
+            <StaminaBar percent={staminaPercent} />
           </HealthPillsContainer>
         </ContentContainer>
         <ContainerOverlay />
       </Container>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: HealthBarViewProps, nextState: HealthBarViewState) {
+    return !isEqualPlayerState(this.props.playerState, nextProps.playerState);
   }
 }
 

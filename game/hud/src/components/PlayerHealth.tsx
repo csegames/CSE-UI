@@ -8,6 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { client, PlayerState } from '@csegames/camelot-unchained';
+import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
 
 const Container = styled('div')`
@@ -30,7 +31,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     this.state = {
       playerState: null,
     };
-    this.setPlayerState = _.throttle(this.setPlayerState, 300);
+    this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
 
   public render() {
@@ -47,7 +48,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return !_.isEqual(nextState.playerState, this.state.playerState);
+    return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
   private setPlayerState = (playerState: PlayerState) => {

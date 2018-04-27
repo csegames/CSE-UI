@@ -5,6 +5,6 @@
  *
  */
 
-export function numEqualsCloseEnough(a: number, b: number) {
-  return Math.abs(a - b) < 0.01;
+export function numEqualsCloseEnough(a: number, b: number, closeEnoughNumber: number = 0.01) {
+  return Math.abs(a - b) < closeEnoughNumber;
 }

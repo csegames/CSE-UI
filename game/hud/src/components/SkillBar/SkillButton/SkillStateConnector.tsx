@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import {
   client,
   events,
@@ -64,6 +65,12 @@ function skillStateConnector<PropsTypes extends any>() {
 
       public componentDidMount() {
         client.OnSkillStateChanged(this.handleSkillStateChanged);
+      }
+
+      public shouldComponentUpdate(nextProps: SkillStateConnectorProps, nextState: SkillStateConnectorState) {
+        return !_.isEqual(nextProps.skillInfo, this.props.skillInfo) ||
+          !_.isEqual(nextState.skillState, this.state.skillState) ||
+          nextProps.index !== this.props.index;
       }
 
       public componentDidCatch(error: Error, info: any) {

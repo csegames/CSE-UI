@@ -6,30 +6,18 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-import { utils, Faction, PlayerState, damageTypes } from '@csegames/camelot-unchained';
+import { PlayerState, damageTypes } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
-import { BodyParts } from '../../lib/PlayerStatus';
+import { isEqualPlayerState } from '../../lib/playerStateEqual';
 import HealthBarViewCompact from './components/HealthBarViewCompact';
-// import HealthBarViewFull from './components/HealthBarViewFull';
-// import HealthBarViewMini from './components/HealthBarViewMini';
+import HealthBarViewFull from './components/HealthBarViewFull';
+import HealthBarViewMini from './components/HealthBarViewMini';
+import DistanceText from './components/DistanceText';
 import Status from './components/Status';
 
 const Container = styled('div')`
   position: relative;
-`;
-
-const DistanceText = styled('div')`
-  position: absolute;
-  left: 198px;
-  bottom: -29px;
-  z-index: -1;
-  font-size: 24px;
-  color: white;
-  background-color: rgba(0,0,0,0.6);
-  width: 100px;
-  text-align: center;
 `;
 
 export interface DamageEvent {
@@ -47,160 +35,142 @@ export interface HealEvent {
   when: number;
 }
 
-
-export interface HealthBarValues {
-  bloodPercent: number;
-  staminaPercent: number;
-  bodyPartsCurrentHealth: number[];
-
-  // Health
-  rightArmHealthPercent: number;
-  leftArmHealthPercent: number;
-  headHealthPercent: number;
-  torsoHealthPercent: number;
-  rightLegHealthPercent: number;
-  leftLegHealthPercent: number;
-
-  // Wounds
-  rightArmWounds: number;
-  leftArmWounds: number;
-  headWounds: number;
-  torsoWounds: number;
-  rightLegWounds: number;
-  leftLegWounds: number;
-}
+// type CombatEvent  = DamageEvent | HealEvent;
 
 export type HealthBarType = 'full' | 'compact' | 'mini';
 
 export interface HealthBarProps {
   type: HealthBarType;
   playerState: PlayerState;
-  distanceToTarget?: number;
+  target?: 'enemy' | 'friendly';
 }
 
 export interface HealthBarState {
+  // events: CombatEvent[];
+  // shouldShake: boolean;
 }
 
 class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
+  // private mounted: boolean;
+  // private endTime: number;
+  // constructor(props: HealthBarProps) {
+  //   super(props);
+  //   this.state = {
+  //     events: [],
+  //     shouldShake: false,
+  //   };
+  // }
+
   public render() {
-    const { playerState, distanceToTarget } = this.props;
-    const healthBarVals = this.getHealthBarValues();
+    const { playerState, target } = this.props;
+
+    // const now = Date.now();
+    // // did we recently take damage?
+    // for (let i = this.state.events.length - 1; i >= 0; --i) {
+    //   const e = this.state.events[i];
+    //   if (now - e.when > 200) break;
+    //   if (e.kind === 'damage') {
+    //     this.endTime = now + 200;
+    //     setTimeout(() => this.shakeIt());
+    //     setTimeout(() => this.endShake(), 201);
+    //     break;
+    //   }
+    // }
+
 
     return (
       <Container>
         {this.props.type === 'compact' &&
           <div>
-            <HealthBarViewCompact
-              shouldShake={false}
-              faction={playerState ? playerState.faction : Faction.Factionless}
-              isAlive={playerState ? playerState.isAlive : true}
-              name={playerState ? playerState.name : 'unknown'}
-              {...healthBarVals}
-            />
+            <HealthBarViewCompact shouldShake={false} playerState={playerState} />
             <Status statuses={playerState ? playerState.statuses : null} />
           </div>
         }
-        {/* {this.props.type === 'full' &&
+        {this.props.type === 'full' &&
           <div>
-            <HealthBarViewFull
-              shouldShake={false}
-              faction={playerState ? playerState.faction : Faction.Factionless}
-              isAlive={playerState ? playerState.isAlive : true}
-              name={playerState ? playerState.name : 'unknown'}
-              currentStamina={playerState && playerState.stamina ? playerState.stamina.current : 0}
-              currentBlood={playerState && playerState.blood ? playerState.blood.current : 0}
-              {...healthBarVals}
-            />
+            <HealthBarViewFull shouldShake={false} playerState={playerState} />
             <Status statuses={playerState ? playerState.statuses : null} />
           </div>
         }
         {
           this.props.type === 'mini' &&
           <div>
-            <HealthBarViewMini
-              shouldShake={false}
-              faction={playerState ? playerState.faction : Faction.Factionless}
-              isAlive={playerState ? playerState.isAlive : true}
-              name={playerState ? playerState.name : 'unknown'}
-              currentStamina={playerState && playerState.stamina ? playerState.stamina.current : 0}
-              currentBlood={playerState && playerState.blood ? playerState.blood.current : 0}
-              {...healthBarVals}
-            />
+            <HealthBarViewMini shouldShake={false} playerState={playerState} />
             <Status statuses={playerState ? playerState.statuses : null} />
           </div>
-        } */}
-        {typeof distanceToTarget === 'number' && <DistanceText>{distanceToTarget}m</DistanceText>}
+        }
+        {target && <DistanceText targetType={target} />}
       </Container>
     );
   }
 
+  public componentDidMount() {
+    // client.OnCombatLogEvent(this.parseCombatLogEvent);
+  }
+
   public shouldComponentUpdate(nextProps: HealthBarProps, nextState: HealthBarState) {
-    return !utils.numEqualsCloseEnough(nextProps.distanceToTarget, this.props.distanceToTarget) ||
-      !_.isEqual(nextProps.playerState, this.props.playerState);
+    return !isEqualPlayerState(nextProps.playerState, this.props.playerState);
   }
 
-  private getHealthBarValues = (): HealthBarValues => {
-    const { playerState } = this.props;
-    if (!playerState || !_.has(playerState, 'blood') || !_.has(playerState, 'stamina') || !_.has(playerState, 'health')) {
-      return {
-        bloodPercent: 100,
-        staminaPercent: 100,
+  // private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
+  //   const events: CombatEvent[] = [];
+  //   combatLogs.forEach((e) => {
+  //     // Go through combat log and look for damage/heal events
+  //     if (!e || e.toName !== this.props.playerState.name) return;
+  //     if (e.damages) {
+  //       // Found a damage event
+  //       let value = 0;
+  //       let max = 0;
+  //       let type = damageTypes.NONE;
+  //       e.damages.forEach((d) => {
+  //         if (d.received > max) {
+  //           max = d.received | 0;
+  //           type = d.type;
+  //         }
+  //         value += d.received | 0;
+  //       });
+  //       events.push({
+  //         id: generateID(7),
+  //         kind: 'damage',
+  //         type,
+  //         value,
+  //         when: Date.now(),
+  //       });
+  //     }
 
-        // Health
-        bodyPartsCurrentHealth: [5, 5, 5, 5, 5, 5],
-        rightArmHealthPercent: 100,
-        leftArmHealthPercent: 100,
-        headHealthPercent: 100,
-        torsoHealthPercent: 100,
-        rightLegHealthPercent: 100,
-        leftLegHealthPercent: 100,
+  //     if (e.heals) {
+  //       // Found a heal event
+  //       let value = 0;
+  //       let max = 0;
+  //       e.heals.forEach((d) => {
+  //         if (d.received > max) {
+  //           max = d.received | 0;
+  //         }
+  //         value += d.received | 0;
+  //       });
+  //       events.push({
+  //         id: generateID(7),
+  //         kind: 'heal',
+  //         value,
+  //         when: Date.now(),
+  //       });
+  //     }
+  //   });
 
-        // Wounds
-        rightArmWounds: 0,
-        leftArmWounds: 0,
-        headWounds: 0,
-        torsoWounds: 0,
-        rightLegWounds: 0,
-        leftLegWounds: 0,
-      };
-    }
-
-    const bloodPercent = (playerState.blood.current / playerState.blood.max) * 100;
-    const staminaPercent = (playerState.stamina.current / playerState.stamina.max) * 100;
-    const bodyPartsCurrentHealth: number[] = [];
-    const bodyHealthPercent: number[] = [];
-    const bodyWounds: number[] = [];
-    playerState.health && playerState.health.forEach((bodyPart) => {
-      bodyPartsCurrentHealth.push(bodyPart.current);
-
-      const healthPercent = (bodyPart.current / bodyPart.max) * 100;
-      bodyHealthPercent.push(healthPercent);
-
-      bodyWounds.push(bodyPart.wounds);
-    });
-
-    return {
-      bloodPercent,
-      staminaPercent,
-
-      // Health
-      bodyPartsCurrentHealth,
-      rightArmHealthPercent: bodyHealthPercent[BodyParts.RightArm],
-      leftArmHealthPercent: bodyHealthPercent[BodyParts.LeftArm],
-      headHealthPercent: bodyHealthPercent[BodyParts.Head],
-      torsoHealthPercent: bodyHealthPercent[BodyParts.Torso],
-      rightLegHealthPercent: bodyHealthPercent[BodyParts.RightLeg],
-      leftLegHealthPercent: bodyHealthPercent[BodyParts.LeftLeg],
-
-      // Wounds
-      rightArmWounds: bodyWounds[BodyParts.RightArm],
-      leftArmWounds: bodyWounds[BodyParts.LeftArm],
-      headWounds: bodyWounds[BodyParts.Head],
-      torsoWounds: bodyWounds[BodyParts.Torso],
-      rightLegWounds: bodyWounds[BodyParts.RightLeg],
-      leftLegWounds: bodyWounds[BodyParts.LeftLeg],
-    };
-  }
+  //   if (events.length > 0) {
+  //     const stateEvents = this.state.events;
+  //     if (stateEvents.length > 0 && (Date.now() - stateEvents[stateEvents.length - 1].when) > 200 && this.mounted
+  //       ) {
+  //       this.setState({
+  //         events,
+  //       });
+  //     } else if (this.mounted) {
+  //       this.setState({
+  //         events: stateEvents.concat(events),
+  //       });
+  //     }
+  //   }
+  // }
 }
 
 export default HealthBar;

@@ -61,7 +61,6 @@ const OUTER = 1;
 const CLOCKWISE = true;
 
 class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
-
   private rings: RingTimer[] = [undefined, undefined];
   private listener: any;
   private prevEvent: SkillStateInfo;
@@ -169,6 +168,16 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
       const { id } = (nextProps.skillState);
       this.listener = events.on('skillsbutton-' + id, (data: SkillStateInfo) => this.processEvent(data));
     }
+  }
+
+  public shouldComponentUpdate(nextProps: SkillButtonProps, nextState: SkillButtonState) {
+    return nextProps.index !== this.props.index ||
+      nextState.label !== this.state.label ||
+      nextState.inner.current !== this.state.inner.current ||
+      nextState.outer.current !== this.state.outer.current ||
+      !_.isEqual(nextProps.skillState, this.props.skillState) ||
+      nextState.startCast !== this.state.startCast ||
+      nextState.hit !== this.state.hit;
   }
 
   public componentWillUnmount() {

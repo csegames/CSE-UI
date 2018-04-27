@@ -62,6 +62,10 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
     client.OnAbilityDeleted(this.onSkillDeleted);
   }
 
+  public shouldComponentUpdate(nextProps: SkillBarProps, nextState: SkillBarState) {
+    return !_.isEqual(nextState.skills, this.state.skills);
+  }
+
   private initializeSkills = async () => {
     const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
     const skills = this.updateSkills(res);
