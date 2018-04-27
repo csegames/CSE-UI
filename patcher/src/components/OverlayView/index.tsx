@@ -12,7 +12,7 @@ import { patcher } from '../../services/patcher';
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
 import PatchNotes from '../../widgets/PatchNotes';
-import Chat from 'cu-xmpp-chat';
+import Chat from '@csegames/cu-xmpp-chat';
 
 export interface OverlayViewProps {
 }

@@ -151,7 +151,7 @@ export interface HealthBarViewState {
 
 }
 
-class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
+class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarViewState> {
   public render() {
     const factionColor = {
       [Faction.Arthurian]: '#581212',

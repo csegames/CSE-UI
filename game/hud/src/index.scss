@@ -43,7 +43,7 @@ body {
   @import './widgets/Building/index';
   @import './widgets/Social/index';
   // external scss
-  @import 'cu-xmpp-chat/lib/index.scss';
+  @import '@csegames/cu-xmpp-chat/lib/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;
