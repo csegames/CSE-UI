@@ -27,7 +27,7 @@ useConfig({
       characterID: client.characterID,
     },
   },
-});
+}, {});
 
 ReactDom.render(
   <Provider store={store}>

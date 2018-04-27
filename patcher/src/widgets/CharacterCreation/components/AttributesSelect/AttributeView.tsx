@@ -8,10 +8,9 @@
 import * as React from 'react';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { utils } from '@csegames/camelot-unchained';
-import { Tooltip } from 'camelot-unchained/lib/components';
+import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import { AttributeInfo } from '../../services/session/attributes';
-import { GridStats } from 'camelot-unchained/lib/components';
 
 export const colors = {
   filterBackgroundColor: '#372F2D',

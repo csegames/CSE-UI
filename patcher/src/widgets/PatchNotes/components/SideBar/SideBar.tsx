@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { client, utils, ql } from '@csegames/camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import { PatcherServer } from '../../../Controller/services/session/controller';
 import SideBarHeader from './Header';

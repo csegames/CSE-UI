@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { toTitleCase } from 'camelot-unchained/lib/utils/textUtils';
+import { toTitleCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 import { CharacterCreationPage } from '../index';
 
 const Header = styled('div')`
