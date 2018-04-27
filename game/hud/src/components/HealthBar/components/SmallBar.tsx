@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import { utils } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   position: relative;
@@ -35,8 +36,6 @@ const Bar = styled('div')`
     bottom: 0;
     left: 0;
     width: ${(props: any) => props.percent}%;
-    transition: width 0.1s;
-    -webkit-transition: width 0.1s;
     height: 100%;
     background: linear-gradient(to bottom, #00A4F1, #00A4F1);
     box-shadow: inset 0 0 5px #4AD8FF;
@@ -72,7 +71,7 @@ export interface SmallBarState {
 
 }
 
-class SmallBar extends React.PureComponent<SmallBarProps, SmallBarState> {
+class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
   public render() {
     const { isAlive, healthPercent, wounds } = this.props;
     return (
@@ -85,6 +84,12 @@ class SmallBar extends React.PureComponent<SmallBarProps, SmallBarState> {
         </WoundContainer>
       </Container>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: SmallBarProps, nextState: SmallBarState) {
+    return !utils.numEqualsCloseEnough(this.props.healthPercent, nextProps.healthPercent) ||
+      this.props.wounds !== nextProps.wounds ||
+      this.props.isAlive !== nextProps.isAlive;
   }
 }
 

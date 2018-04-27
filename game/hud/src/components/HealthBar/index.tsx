@@ -7,14 +7,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { client, Faction, PlayerState, CombatLog, damageTypes } from '@csegames/camelot-unchained';
+import { utils, Faction, PlayerState, damageTypes } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
-import { generateID } from 'redux-typed-modules';
 
 import { BodyParts } from '../../lib/PlayerStatus';
 import HealthBarViewCompact from './components/HealthBarViewCompact';
-import HealthBarViewFull from './components/HealthBarViewFull';
-import HealthBarViewMini from './components/HealthBarViewMini';
+// import HealthBarViewFull from './components/HealthBarViewFull';
+// import HealthBarViewMini from './components/HealthBarViewMini';
 import Status from './components/Status';
 
 const Container = styled('div')`
@@ -48,7 +47,6 @@ export interface HealEvent {
   when: number;
 }
 
-type CombatEvent = DamageEvent | HealEvent;
 
 export interface HealthBarValues {
   bloodPercent: number;
@@ -81,37 +79,12 @@ export interface HealthBarProps {
 }
 
 export interface HealthBarState {
-  events: CombatEvent[];
-  shouldShake: boolean;
 }
 
 class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
-  private mounted: boolean;
-  private endTime: number;
-  constructor(props: HealthBarProps) {
-    super(props);
-    this.state = {
-      events: [],
-      shouldShake: false,
-    };
-  }
-
   public render() {
     const { playerState, distanceToTarget } = this.props;
     const healthBarVals = this.getHealthBarValues();
-
-    const now = Date.now();
-    // did we recently take damage?
-    for (let i = this.state.events.length - 1; i >= 0; --i) {
-      const e = this.state.events[i];
-      if (now - e.when > 200) break;
-      if (e.kind === 'damage') {
-        this.endTime = now + 200;
-        setTimeout(() => this.shakeIt());
-        setTimeout(() => this.endShake(), 201);
-        break;
-      }
-    }
 
     return (
       <Container>
@@ -122,14 +95,12 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
               faction={playerState ? playerState.faction : Faction.Factionless}
               isAlive={playerState ? playerState.isAlive : true}
               name={playerState ? playerState.name : 'unknown'}
-              currentStamina={playerState && playerState.stamina ? playerState.stamina.current : 0}
-              currentBlood={playerState && playerState.blood ? playerState.blood.current : 0}
               {...healthBarVals}
             />
             <Status statuses={playerState ? playerState.statuses : null} />
           </div>
         }
-        {this.props.type === 'full' &&
+        {/* {this.props.type === 'full' &&
           <div>
             <HealthBarViewFull
               shouldShake={false}
@@ -157,81 +128,15 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
             />
             <Status statuses={playerState ? playerState.statuses : null} />
           </div>
-        }
+        } */}
         {typeof distanceToTarget === 'number' && <DistanceText>{distanceToTarget}m</DistanceText>}
       </Container>
     );
   }
 
-  public componentDidMount() {
-    client.OnCombatLogEvent(this.parseCombatLogEvent);
-    this.mounted = true;
-  }
-
   public shouldComponentUpdate(nextProps: HealthBarProps, nextState: HealthBarState) {
-    return nextProps.distanceToTarget !== this.props.distanceToTarget ||
-      !_.isEqual(nextProps.playerState, this.props.playerState) ||
-      !_.isEqual(nextState.events, this.state.events);
-  }
-
-  private parseCombatLogEvent = (combatLogs: CombatLog[]) => {
-    const events: CombatEvent[] = [];
-    combatLogs.forEach((e) => {
-      // Go through combat log and look for damage/heal events
-      if (!e || e.toName !== this.props.playerState.name) return;
-      if (e.damages) {
-        // Found a damage event
-        let value = 0;
-        let max = 0;
-        let type = damageTypes.NONE;
-        e.damages.forEach((d) => {
-          if (d.received > max) {
-            max = d.received | 0;
-            type = d.type;
-          }
-          value += d.received | 0;
-        });
-        events.push({
-          id: generateID(7),
-          kind: 'damage',
-          type,
-          value,
-          when: Date.now(),
-        });
-      }
-
-      if (e.heals) {
-        // Found a heal event
-        let value = 0;
-        let max = 0;
-        e.heals.forEach((d) => {
-          if (d.received > max) {
-            max = d.received | 0;
-          }
-          value += d.received | 0;
-        });
-        events.push({
-          id: generateID(7),
-          kind: 'heal',
-          value,
-          when: Date.now(),
-        });
-      }
-    });
-
-    if (events.length > 0) {
-      const stateEvents = this.state.events;
-      if (stateEvents.length > 0 && (Date.now() - stateEvents[stateEvents.length - 1].when) > 200 && this.mounted
-        ) {
-        this.setState({
-          events,
-        });
-      } else if (this.mounted) {
-        this.setState({
-          events: stateEvents.concat(events),
-        });
-      }
-    }
+    return !utils.numEqualsCloseEnough(nextProps.distanceToTarget, this.props.distanceToTarget) ||
+      !_.isEqual(nextProps.playerState, this.props.playerState);
   }
 
   private getHealthBarValues = (): HealthBarValues => {
@@ -295,17 +200,6 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
       rightLegWounds: bodyWounds[BodyParts.RightLeg],
       leftLegWounds: bodyWounds[BodyParts.LeftLeg],
     };
-  }
-
-  private shakeIt = () => {
-    if (this.state.shouldShake) return;
-    this.setState({ shouldShake: true });
-  }
-
-  private endShake = () => {
-    if (Date.now() < this.endTime) return;
-    if (!this.state.shouldShake) return;
-    this.setState({ shouldShake: false });
   }
 }
 

@@ -144,7 +144,7 @@ export interface HealthBarViewState {
 
 }
 
-class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarViewState> {
+class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
   public render() {
     return (
       <Container shouldShake={this.props.shouldShake} isAlive={this.props.isAlive}>

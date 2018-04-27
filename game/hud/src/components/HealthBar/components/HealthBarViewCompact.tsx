@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction } from '@csegames/camelot-unchained';
+import { utils, Faction } from '@csegames/camelot-unchained';
 
 import { HealthBarValues } from '../index';
 import ClassIndicator from './ClassIndicator';
@@ -143,15 +143,13 @@ export interface HealthBarViewProps extends HealthBarValues {
   shouldShake: boolean;
   isAlive: boolean;
   name: string;
-  currentStamina: number;
-  currentBlood: number;
 }
 
 export interface HealthBarViewState {
 
 }
 
-class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarViewState> {
+class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
   public render() {
     const factionColor = {
       [Faction.Arthurian]: '#581212',
@@ -221,6 +219,25 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
         <ContainerOverlay />
       </Container>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: HealthBarViewProps, nextState: HealthBarViewState) {
+    return !utils.numEqualsCloseEnough(nextProps.staminaPercent, this.props.staminaPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.headHealthPercent, this.props.headHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.torsoHealthPercent, this.props.torsoHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.rightArmHealthPercent, this.props.rightArmHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.leftArmHealthPercent, this.props.leftArmHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.rightLegHealthPercent, this.props.rightLegHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.leftLegHealthPercent, this.props.leftLegHealthPercent) ||
+      !utils.numEqualsCloseEnough(nextProps.bloodPercent, this.props.bloodPercent) ||
+      nextProps.headWounds !== this.props.headWounds ||
+      nextProps.torsoWounds !== this.props.torsoWounds ||
+      nextProps.rightArmWounds !== this.props.rightArmWounds ||
+      nextProps.rightLegWounds !== this.props.rightLegWounds ||
+      nextProps.leftArmWounds !== this.props.leftArmWounds ||
+      nextProps.leftLegWounds !== this.props.leftLegWounds ||
+      nextProps.isAlive !== this.props.isAlive ||
+      nextProps.name !== this.props.name;
   }
 }
 

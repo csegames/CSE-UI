@@ -235,6 +235,10 @@ module.exports = {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
+      ignoreLintNuadaPrep: {
+        script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',
+        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory.',
+      },
       wolfhere: {
         script: 'nps build,clean.wolfhere,copy.wolfhere',
         description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',

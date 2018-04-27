@@ -34,8 +34,8 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
       distanceToTarget: 0,
       playerState: null,
     };
-    this.setPlayerState = _.throttle(this.setPlayerState, 150);
-    this.setMyPlayerPosition = _.throttle(this.setMyPlayerPosition, 150);
+    this.setPlayerState = _.throttle(this.setPlayerState, 300);
+    this.setMyPlayerPosition = _.throttle(this.setMyPlayerPosition, 1000);
   }
 
   public render() {
@@ -58,7 +58,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return nextState.distanceToTarget !== this.state.distanceToTarget ||
+    return !utils.numEqualsCloseEnough(nextState.distanceToTarget, this.state.distanceToTarget) ||
       !_.isEqual(nextState.playerState, this.state.playerState);
   }
 

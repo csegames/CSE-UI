@@ -60,7 +60,7 @@ const INNER = 0;
 const OUTER = 1;
 const CLOCKWISE = true;
 
-class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState> {
+class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
   private rings: RingTimer[] = [undefined, undefined];
   private listener: any;
