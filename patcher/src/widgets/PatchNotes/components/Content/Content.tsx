@@ -97,21 +97,23 @@ class Content extends React.Component<ContentProps, ContentState> {
   }
 }
 
-const ContentWithQL = withGraphQL<ContentProps>((props: ContentProps) => ({
-  query: `
-    query Content($id: String!) {
-      patchNote(id: $id) {
-        id
-        htmlContent
-        utcDisplayStart
-        patchNumber
-        title
+const ContentWithQL = withGraphQL<ContentProps>((props: ContentProps) => {
+  return {
+    query: `
+      query Content($id: String!) {
+        patchNote(id: $id) {
+          id
+          htmlContent
+          utcDisplayStart
+          patchNumber
+          title
+        }
       }
-    }
-  `,
-  variables: {
-    id: props.patchNoteId,
-  },
-}))(Content);
+    `,
+    variables: {
+      id: props.patchNoteId,
+    },
+  }
+})(Content);
 
 export default ContentWithQL;

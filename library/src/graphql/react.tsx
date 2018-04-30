@@ -269,28 +269,32 @@ export function withGraphQL<
   QueryDataType = any>(
   query?: string | Partial<GraphQLQuery> | ((props: PropsType) => Partial<GraphQLQuery>),
   options?: Partial<GraphQLOptions> | ((props: PropsType) => Partial<GraphQLOptions>)) {
-  
-  const q = typeof query === 'function' ? query(this.props) : query;
-  const opts = typeof options === 'function' ? options(this.props) : options;
 
-  let queryProp: Partial<GraphQLQuery> & Partial<GraphQLOptions>;
-  if (typeof q === 'string') {
-    queryProp = {
-      query: q,
-      ...opts,
-    };
-  } else {
-    queryProp = {
-      ...q,
-      ...opts,
-    };
-  }
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
     return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
       GraphQLData<QueryDataType | null>> {
+
+      public queryProp: Partial<GraphQLQuery> & Partial<GraphQLOptions>;
+      constructor(props: any) {
+        super(props);
+        const q = typeof query === 'function' ? query(props) : query;
+        const opts = typeof options === 'function' ? options(props) : options;
+
+        if (typeof q === 'string') {
+          this.queryProp = {
+            query: q,
+            ...opts,
+          };
+        } else {
+          this.queryProp = {
+            ...q,
+            ...opts,
+          };
+        }
+      }
       public render() {
         return (
-          <GraphQL query={queryProp}>
+          <GraphQL query={this.queryProp}>
             {
               (graphql: GraphQLResult<QueryDataType>) => <WrappedComponent graphql={graphql} {...this.props} />
             }
