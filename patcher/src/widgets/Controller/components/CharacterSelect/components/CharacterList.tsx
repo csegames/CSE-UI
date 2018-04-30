@@ -14,6 +14,8 @@ import { PatcherServer } from '../../../services/session/controller';
 import CharacterSelectListItem from './CharacterSelectListItem';
 import CreateCharacterItem from './CreateCharacterItem';
 
+import PlayerCounts from './PlayerCounts';
+
 const ServerTitle = styled('div')`
   display: flex;
   justify-content: space-between;
@@ -114,24 +116,25 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
           }}
           title={(collapsed: boolean) =>
             <div>
-            <ServerTitle>
-              <div>
-                <Icon marginRight={5}>{collapsed ? '+' : '-'}</Icon>
-                <Icon
-                  className='fa fa-power-off'
-                  aria-hidden='true'
-                  color={server.available ? 'green' : 'red'}
-                  size={12}>
-                </Icon>
-                &nbsp;{server.name} ({serverCharacters.length})&nbsp;
-              </div>
-              <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
-                <i className='fa fa-cog' />
-              </ServerOptionsButton>
-            </ServerTitle>
-            <AccessLevelText paddingBottom={collapsed ? 10 : 0}>
-              Accessible to {webAPI.accessLevelString(server.accessLevel)}
-            </AccessLevelText>
+              <ServerTitle>
+                <div>
+                  <Icon marginRight={5}>{collapsed ? '+' : '-'}</Icon>
+                  <Icon
+                    className='fa fa-power-off'
+                    aria-hidden='true'
+                    color={server.available ? 'green' : 'red'}
+                    size={12}>
+                  </Icon>
+                  &nbsp;{server.name} ({serverCharacters.length})&nbsp;
+                </div>
+                <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
+                  <i className='fa fa-cog' />
+                </ServerOptionsButton>
+              </ServerTitle>
+              <AccessLevelText paddingBottom={collapsed ? 10 : 0}>
+                Accessible to {webAPI.accessLevelString(server.accessLevel)}
+              </AccessLevelText>
+              <PlayerCounts server={server.name} />
             </div>
           }
           renderListItem={(character: webAPI.SimpleCharacter, i: number) => (

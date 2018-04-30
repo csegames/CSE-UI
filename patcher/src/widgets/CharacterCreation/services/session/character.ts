@@ -55,12 +55,12 @@ export function createCharacter(model: CharacterCreationModel,
       }
       const errorData = JSON.parse(res.data);
       const error = errorData.FieldCodes && errorData.FieldCodes[0] ? errorData.FieldCodes[0].Message :
-        errorData.Message ? errorData.Message : 'There was an error with character creation!'
+        errorData.Message ? errorData.Message : 'There was an error with character creation!';
       dispatch(createCharacterFailed(error));
     } catch (e) {
       dispatch(createCharacterFailed('There was an unexpected error!'));
     }
-    
+
   };
 }
 
