@@ -101,6 +101,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 containerIsOpen={containerIsOpen}
                 drawerMaxStats={this.props.drawerMaxStats}
                 drawerCurrentStats={this.props.drawerCurrentStats}
+                syncWithServer={this.props.syncWithServer}
               />
             );
           })}

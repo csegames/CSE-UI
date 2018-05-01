@@ -76,8 +76,11 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
     const contentProps = this.props.contentProps || {};
 
     return (
-      <div onContextMenu={this.onContextMenu} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
-           style={{ display: 'inline-block' }}>
+      <div
+        onContextMenu={this.onContextMenu}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :

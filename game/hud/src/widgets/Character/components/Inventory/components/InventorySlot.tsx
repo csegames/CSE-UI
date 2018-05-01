@@ -11,7 +11,7 @@ import { ql, ContextMenu, Tooltip, ItemPermissions, events } from '@csegames/cam
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import TooltipContent, { defaultTooltipStyle } from '../../TooltipContent';
-import ContextMenuContent from './ContextMenuContent';
+import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { InventoryDataTransfer } from './InventoryBase';
@@ -107,6 +107,7 @@ export interface InventorySlotProps {
   containerIsOpen?: boolean;
   drawerMaxStats?: ql.schema.ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
+  syncWithServer: () => void;
 }
 
 export interface InventorySlotState {
@@ -151,7 +152,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             onContextMenuContentHide={this.onContextMenuContentHide}
             content={props =>
               <ContextMenuContent
-                item={item.item || (item.stackedItems && item.stackedItems[0])} contextMenuProps={props}
+                item={item.item || (item.stackedItems && item.stackedItems[0])}
+                contextMenuProps={props}
+                syncWithServer={this.props.syncWithServer}
               />
             }
           >

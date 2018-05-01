@@ -8,6 +8,9 @@ fragment InventoryItem on Item {
   location {
     ...ItemLocation
   }
+  actions {
+    ...ItemActions
+  }
   stats {
     item {
       ...BasicItem

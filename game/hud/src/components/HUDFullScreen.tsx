@@ -8,6 +8,7 @@ import * as React from 'react';
 import { events, client, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
+import eventNames from '../widgets/Character/lib/eventNames';
 // import Social from '../widgets/Social';
 import Character from '../widgets/Character';
 import Map from './Map';
@@ -95,6 +96,7 @@ export interface FullScreenNavProps {
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: EventListener;
+  private closeInventoryListener: EventListener;
   private tabPanelRef: TabPanel;
 
   constructor(props: any) {
@@ -185,6 +187,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public componentDidMount() {
     this.navigateListener = events.on('hudnav--navigate', this.handleNavigation);
+    this.closeInventoryListener = events.on(eventNames.onCloseInventory, this.onCloseFullScreen);
     client.OnOpenUI((name: string) => {
       // a hacky way to close widget with ESC because focus() doesn't work
       // and window doesn't pick up keydown events unless window is focused
@@ -198,6 +201,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public componentWillUnmount() {
     events.off(this.navigateListener);
+    events.off(this.closeInventoryListener);
   }
 
   private renderCharacter = (prop: { active: boolean }) => {

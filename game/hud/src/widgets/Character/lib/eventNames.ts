@@ -38,6 +38,7 @@ import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } f
 
 const eventPrefix = 'charactersheet__';
 const eventNames = {
+  onCloseInventory: `${eventPrefix}onCloseInventory`,
   onEquipItem: `${eventPrefix}onEquipItem`,
   onUnequipItem: `${eventPrefix}onUnequipItem`,
   onDropItem: `${eventPrefix}onDropItem`,
