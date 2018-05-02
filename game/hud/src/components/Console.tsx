@@ -137,7 +137,12 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
           </InputWrapper>
         </ConsoleWrapper>
 
-        <InfoWrapper>
+        <InfoWrapper onClick={() => client.RequestInputOwnership()}
+                   onBlur={() => client.ReleaseInputOwnership()}
+                   onMouseEnter={() => client.RequestInputOwnership()}
+                   onMouseLeave={() => {
+                     client.ReleaseInputOwnership();
+                   }}>
           <ObjectDisplay data={Console.getAPIData()} skipFunctions />
         </InfoWrapper>
       </Container>
