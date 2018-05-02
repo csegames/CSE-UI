@@ -113,7 +113,7 @@ const ContentWithQL = withGraphQL<ContentProps>((props: ContentProps) => {
     variables: {
       id: props.patchNoteId,
     },
-  }
+  };
 })(Content);
 
 export default ContentWithQL;
