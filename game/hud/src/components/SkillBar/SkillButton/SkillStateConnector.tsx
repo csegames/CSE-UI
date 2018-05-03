@@ -87,7 +87,7 @@ function skillStateConnector<PropsTypes extends any>() {
       private handleSkillStateChanged = (clientSkillState: ClientSkillState) => {
         if (clientSkillState.id === this.props.skillInfo.id) {
           const skillState: SkillStateInfo = {
-            id: clientSkillState.id,
+            id: clientSkillState.id.toString(),
             info: {
               type: clientSkillState.type,
               keybind: dxKeyCodes[clientSkillState.keybind],

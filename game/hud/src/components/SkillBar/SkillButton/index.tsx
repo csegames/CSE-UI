@@ -188,8 +188,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
   }
 
   private performAbility = () => {
-    const hexId = this.props.skillState.id.toString(16);
-    client.Attack(hexId);
+    client.Attack(this.props.skillState.id);
   }
 
   private setTimerRing = (info: {

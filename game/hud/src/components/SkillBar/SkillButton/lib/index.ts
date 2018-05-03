@@ -15,7 +15,7 @@ import {
 export * from './styles';
 
 export interface SkillStateInfo {
-  id: number;
+  id: string;
   info: {
     type: SkillStateTypeEnum;
     icon: string;
