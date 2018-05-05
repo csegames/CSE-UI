@@ -52,7 +52,7 @@ class TooltipContainerInfo extends React.PureComponent<TooltipContainerInfoProps
             {drawerStatsMass.map((_drawerStats, i) => {
               return (
                 <div key={i}>{_drawerStats.currentMass} / {_drawerStats.maxItemMass}</div>
-              )
+              );
             })}
           </div>
         }

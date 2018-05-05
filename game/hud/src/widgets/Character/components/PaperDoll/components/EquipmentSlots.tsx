@@ -294,8 +294,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         equipped: {
           gearSlots: willEquipTo,
         },
-      }
-    }
+      },
+    };
     const newEquippedItem = { item: newItem, gearSlots: willEquipTo };
     this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem as any));
 

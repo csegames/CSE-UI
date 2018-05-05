@@ -146,7 +146,7 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
         // Go through equipped items to find which ones match item stat slots
         replacedEquippedItems.forEach((equippedItem) => {
           if (equippedItem.item.stats.armorBySubpart) {
-            const equippedItemSubpartIDs = equippedItem.item.stats.armorBySubpart.map((_subPart) => _subPart.subPartId);
+            const equippedItemSubpartIDs = equippedItem.item.stats.armorBySubpart.map(_subPart => _subPart.subPartId);
             if (_.includes(equippedItemSubpartIDs, subpart.subPartId)) {
               equippedItem.item.stats.armorBySubpart.forEach((equippedItemStat) => {
                 const equippedResistances: { [name: string]: number } = {};
@@ -176,7 +176,7 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
     }
     return {
       comparedResistances,
-    }
+    };
   }
 }
 

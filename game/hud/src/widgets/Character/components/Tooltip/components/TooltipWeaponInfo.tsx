@@ -128,7 +128,7 @@ class TooltipWeaponInfo extends React.Component<TooltipWeaponInfoProps, TooltipW
         filteredWeaponStats[statName] = {
           value: weaponStats[statName],
           compared: comparedStat,
-        }
+        };
       }
     });
 
@@ -146,7 +146,7 @@ class TooltipWeaponInfo extends React.Component<TooltipWeaponInfoProps, TooltipW
         itemsWithComparedStats = _.filter(equippedItems, (_equippedItem) => {
           const equippedGearSlotIDs = _equippedItem.gearSlots.map(_gearSlot => _gearSlot.id);
           return _.findIndex(itemGearSlotIDs, itemSlotID => _.includes(equippedGearSlotIDs, itemSlotID)) !== -1;
-        }).map((item) => item.item);
+        }).map(item => item.item);
       }
 
       itemsWithComparedStats = _.uniqBy(itemsWithComparedStats, item => item.id);
