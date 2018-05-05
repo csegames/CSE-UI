@@ -16,7 +16,7 @@ const Container = styled('div')`
   left: ${(props: any) => props.left}px;
   width: 100%;
   height: ${(props: any) => props.height}px;
-  margin-bottom: 5px;
+  margin-bottom: ${({ scale }: {scale: number}) => 3 * scale}px;
 `;
 
 const BarContainer = styled('div')`
@@ -30,7 +30,7 @@ const BarContainer = styled('div')`
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #303030, #1D1D1D);
-  box-shadow: inset 0 0 2px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 2 * scale}px rgba(0,0,0,0.8);
   -webkit-transition: width 0.2s;
 `;
 
@@ -42,7 +42,7 @@ const Bar = styled('div')`
   left: 0;
   height: 100%;
   background: linear-gradient(to bottom, #0068FF, #104489);
-  box-shadow: inset 0 0 5px #3693FF;
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 5 * scale}px #3693FF;
 `;
 
 const WoundContainer = styled('div')`
@@ -50,17 +50,18 @@ const WoundContainer = styled('div')`
   align-items: center;
   justify-content: flex-end;
   position: absolute;
-  top: 5px;
+  top: ${({ scale }: {scale: number}) => 5 * scale}px;
   right: 0;
   bottom: 0;
-  left: -1px;
+  left: ${({ scale }: {scale: number}) => -1 * scale}px;
   z-index: 10;
 `;
 
 const WoundPill = styled('div')`
-  width: 111px;
-  height: 44px;
+  width: ${({ scale }: {scale: number}) => 111 * scale}px;
+  height: ${({ scale }: {scale: number}) => 44 * scale}px;
   background: url(images/healthbar/regular/large_lock.png);
+  background-size: contain;
 `;
 
 export interface BigBarProps {
@@ -68,6 +69,7 @@ export interface BigBarProps {
   height: number;
   bodyPart: BodyParts;
   playerState: PlayerState;
+  scale: number;
 }
 
 export interface BigBarState {
@@ -78,15 +80,15 @@ class BigBar extends React.Component<BigBarProps, BigBarState> {
     const healthPercent = getHealthPercent(this.props.playerState, this.props.bodyPart);
     const wounds = getWoundsForBodyPart(this.props.playerState, this.props.bodyPart);
     return (
-      <Container height={this.props.height} left={this.props.left}>
-        <BarContainer>
-          <Bar style={{ width: healthPercent + '%' }} />
+      <Container height={this.props.height} left={this.props.left} scale={this.props.scale}>
+        <BarContainer scale={this.props.scale}>
+          <Bar style={{ width: healthPercent + '%' }} scale={this.props.scale}/>
         </BarContainer>
         {wounds > 0 ?
-          <WoundContainer>
-            <WoundPill />
-            {wounds >= 2 && <WoundPill />}
-            {!this.props.playerState.isAlive && wounds >= 2 && <WoundPill />}
+          <WoundContainer scale={this.props.scale}>
+            <WoundPill scale={this.props.scale}/>
+            {wounds >= 2 && <WoundPill scale={this.props.scale}/>}
+            {!this.props.playerState.isAlive && wounds >= 2 && <WoundPill scale={this.props.scale}/>}
           </WoundContainer> : null
         }
       </Container>

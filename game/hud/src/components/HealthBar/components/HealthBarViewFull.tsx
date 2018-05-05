@@ -154,7 +154,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <NameContainer>
             <Name>{playerState.name}</Name>
           </NameContainer>
-          <ClassIndicator top={15} left={140} width={70} height={70} borderRadius={35} faction={faction} />
+          <ClassIndicator scale={1} top={15} left={140} width={70} height={70} borderRadius={35} faction={faction} />
           <BloodBall percent={bloodPercent}>
             {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
           </BloodBall>
@@ -165,12 +165,12 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
             bodyPartsCurrentHealth={this.props.bodyPartsCurrentHealth}
           /> */}
           <HealthPillsContainer>
-            <SmallBar height={21} bodyPart={BodyParts.RightArm} playerState={playerState} />
-            <SmallBar height={21} bodyPart={BodyParts.LeftArm} playerState={playerState} />
-            <BigBar left={5} height={41} bodyPart={BodyParts.Head} playerState={playerState} />
-            <BigBar left={5} height={41} bodyPart={BodyParts.Torso} playerState={playerState} />
-            <SmallBar height={21} bodyPart={BodyParts.RightLeg} playerState={playerState} />
-            <SmallBar height={21} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
+            <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
+            <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
+            <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
+            <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Torso} playerState={playerState} />
+            <SmallBar height={21} scale={1} bodyPart={BodyParts.RightLeg} playerState={playerState} />
+            <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
             <StaminaBar percent={staminaPercent} />
           </HealthPillsContainer>
         </ContentContainer>

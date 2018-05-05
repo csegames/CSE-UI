@@ -7,7 +7,7 @@
 
 
 import BuildingEventTopics from './BuildingEventTopics';
-import EventEmitter from '../../events/EventEmitter';
+import { EventEmitter } from '../../events/EventEmitter';
 import client from '../../core/client';
 import buildUIMode from '../../core/constants/buildUIMode';
 
@@ -26,7 +26,7 @@ export default class BuildingModeListener {
   public ktype: string;
   public topic: string = BuildingEventTopics.handlesBuildingMode;
 
-  public start(emitter: EventEmitter): void {
+  public start(emitter: EventEmitter) {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

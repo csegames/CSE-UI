@@ -17,7 +17,6 @@ import DistanceText from './components/DistanceText';
 import Status from './components/Status';
 
 const Container = styled('div')`
-  position: relative;
 `;
 
 export interface DamageEvent {

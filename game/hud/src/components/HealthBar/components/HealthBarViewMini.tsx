@@ -18,8 +18,8 @@ import BigBar from './BigBar';
 
 const Container = styled('div')`
   position: relative;
-  height: 242px;
-  width: 392px;
+  height: ${({ scale }: {scale: number}) => 242 * scale}px;
+  width: ${({ scale }: {scale: number}) => 392 * scale}px;
   -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
   animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
@@ -28,22 +28,22 @@ const Container = styled('div')`
 
 const NameContainer = styled('div')`
   position: absolute;
-  top: 7px;
-  left: 155px;
+  top: ${({ scale }: {scale: number}) => 7 * scale}px;
+  left: ${({ scale }: {scale: number}) => 155 * scale}px;
   display: flex;
   align-items: center;
-  height: 64px;
-  width: 404px;
+  height: ${({ scale }: {scale: number}) => 64 * scale}px;
+  width: ${({ scale }: {scale: number}) => 404 * scale}px;
   background: url(images/healthbar/mini/name-bg.png) no-repeat;
   background-size: contain;
 `;
 
 const Name = styled('div')`
   color: white;
-  max-width: 375px;
-  font-size: 32px;
-  line-height: 32px;
-  margin-left: 50px;
+  max-width: ${({ scale }: {scale: number}) => 375 * scale}px;
+  font-size: ${({ scale }: {scale: number}) => 32 * scale}px;
+  line-height: ${({ scale }: {scale: number}) => 32 * scale}px;
+  margin-left: ${({ scale }: {scale: number}) => 50 * scale}px;
   overflow: hidden;
   word-wrap: break-word;
 `;
@@ -51,6 +51,7 @@ const Name = styled('div')`
 const ContainerOverlay = styled('div')`
   position: absolute;
   background: url(images/healthbar/mini/main_frame_compact.png);
+  background-size: contain;
   top: 0;
   right: 0;
   bottom: 0;
@@ -59,11 +60,11 @@ const ContainerOverlay = styled('div')`
 
 const BloodBall = styled('div')`
   position: absolute;
-  left: 25px;
-  bottom: 20px;
-  width: 85px;
-  height: 85px;
-  border-radius: 42.5px;
+  left: ${({ scale }: {scale: number}) => 25 * scale}px;
+  bottom: ${({ scale }: {scale: number}) => 20 * scale}px;
+  width: ${({ scale }: {scale: number}) => 85 * scale}px;
+  height: ${({ scale }: {scale: number}) => 85 * scale}px;
+  border-radius: ${({ scale }: {scale: number}) => 42.5 * scale}px;
   background: #440000;
 
   &:after {
@@ -71,7 +72,7 @@ const BloodBall = styled('div')`
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 52.5px;
+    border-radius: ${({ scale }: {scale: number}) => 52.5 * scale}px;
     background: #E30000;
     -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent}%,
       transparent ${(props: any) => props.percent}%);
@@ -93,19 +94,29 @@ const BloodBall = styled('div')`
 //   z-index: 10;
 // `;
 
-const HealthPillsContainer = styled('div')`
+const HealthBars = styled('div')`
   position: absolute;
-  top: 74px;
-  left: 120px;
-  width: 264px;
-  height: 185px;
+  top: ${({ scale }: {scale: number}) => 74 * scale}px;
+  left: ${({ scale }: {scale: number}) => 118 * scale}px;
+  display: flex:
+  flex-direction: column;
+`;
+
+const SmallHealthPillsContainer = styled('div')`
+  position: relative;
+  left: ${({ scale }: {scale: number}) => 5 * scale}px;
+  width: ${({ scale }: {scale: number}) => 253 * scale}px;
+`;
+
+const BigHealthPillsContainer = styled('div')`
+  width: ${({ scale }: {scale: number}) => 264 * scale}px;
 `;
 
 const StaminaBar = styled('div')`
   position: relative;
   width: 103%;
-  height: 15px;
-  left: -15px;
+  height: ${({ scale }: {scale: number}) => 15 * scale}px;
+  left: ${({ scale }: {scale: number}) => -15 * scale}px;
   background: linear-gradient(to top, #303030, #1D1D1D);
   -webkit-mask-image: url(images/healthbar/regular/stamina_mask.png);
   -webkit-mask-size: 100% 100%;
@@ -140,24 +151,32 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
     const bloodPercent = getBloodPercent(playerState);
     const staminaPercent = getStaminaPercent(playerState);
     const faction = getFaction(playerState);
+    const scale = 0.33;
     return (
-      <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive}>
-        <NameContainer>
-          <Name>{playerState.name}</Name>
+      <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
+        <NameContainer scale={scale}>
+          <Name scale={scale}>{playerState.name}</Name>
         </NameContainer>
-        <ClassIndicator top={15} left={115} width={55} height={55} borderRadius={27.5} faction={faction} />
-        <BloodBall percent={bloodPercent}>
+        <ClassIndicator scale={scale} top={15 * scale} left={115 * scale} width={55 * scale}
+          height={55 * scale} borderRadius={27.5 * scale} faction={faction} />
+        <BloodBall percent={bloodPercent} scale={scale}>
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
         </BloodBall>
-        <HealthPillsContainer>
-          <SmallBar height={13} bodyPart={BodyParts.RightArm} playerState={playerState} />
-          <SmallBar height={13} bodyPart={BodyParts.LeftArm} playerState={playerState} />
-          <BigBar left={0} height={35} bodyPart={BodyParts.Head} playerState={playerState} />
-          <BigBar left={0} height={35} bodyPart={BodyParts.Torso} playerState={playerState} />
-          <SmallBar height={13} bodyPart={BodyParts.RightLeg} playerState={playerState} />
-          <SmallBar height={13} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
-          <StaminaBar percent={staminaPercent} />
-        </HealthPillsContainer>
+        <HealthBars scale={scale}>
+          <SmallHealthPillsContainer scale={scale}>
+            <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.RightArm} playerState={playerState} />
+            <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.LeftArm} playerState={playerState} />
+          </SmallHealthPillsContainer>
+          <BigHealthPillsContainer scale={scale}>
+            <BigBar left={0} height={35 * scale} scale={scale} bodyPart={BodyParts.Head} playerState={playerState} />
+            <BigBar left={0} height={35 * scale} scale={scale} bodyPart={BodyParts.Torso} playerState={playerState} />
+          </BigHealthPillsContainer>
+          <SmallHealthPillsContainer scale={scale}>
+            <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.RightLeg} playerState={playerState} />
+            <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
+          </SmallHealthPillsContainer>
+          <StaminaBar percent={staminaPercent} scale={scale}/>
+        </HealthBars>
         <ContainerOverlay />
       </Container>
     );

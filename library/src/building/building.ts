@@ -6,7 +6,7 @@
 import BuildingMaterial from './classes/BuildingMaterial';
 import BuildingBlock from './classes/BuildingBlock';
 import client from '../core/client';
-import events from '../events';
+import * as events  from '../events';
 
 const materialsLoaded: boolean = false;
 let materialsRequested: boolean = false;

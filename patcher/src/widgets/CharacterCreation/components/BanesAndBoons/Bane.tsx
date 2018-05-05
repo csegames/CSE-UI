@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from '@csegames/camelot-unchained';
+import * as events  from '@csegames/camelot-unchained';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Trait, { TraitStyle } from './Trait';
 

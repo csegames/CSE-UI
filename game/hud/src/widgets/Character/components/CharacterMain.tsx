@@ -7,8 +7,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { events, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
+import { TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import { ContainerIdToDrawerInfo } from './Inventory/components/InventoryBase';
 import CharacterInfo from './CharacterInfo/CharacterInfo';
@@ -117,7 +118,7 @@ export interface CharacterMainState {
 }
 
 class CharacterMain extends React.Component<CharacterMainProps, CharacterMainState> {
-  private hudnavListener: EventListener;
+  private hudnavListener: number;
   private tabPanelRef: TabPanel;
 
   constructor(props: CharacterMainProps) {

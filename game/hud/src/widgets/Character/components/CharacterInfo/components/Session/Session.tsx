@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import * as moment from 'moment';
-import { ql, events } from '@csegames/camelot-unchained';
+import { ql } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
 import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -25,7 +26,7 @@ export interface SessionState {
 }
 
 class Session extends React.Component<SessionProps, SessionState> {
-  private visibilityListener: EventListener;
+  private visibilityListener: number;
   constructor(props: SessionProps) {
     super(props);
     this.state = {

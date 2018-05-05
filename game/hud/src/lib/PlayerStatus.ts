@@ -46,4 +46,5 @@ export enum BodyParts {
   RightArm,
   LeftLeg,
   RightLeg,
+  Count,
 }

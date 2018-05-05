@@ -9,8 +9,10 @@ import {
   Input,
   jsKeyCodes,
   parseMessageForSlashCommand,
-  events,
 } from '@csegames/camelot-unchained';
+
+import * as events from '@csegames/camelot-unchained/lib/events';
+
 import styled from 'react-emotion';
 
 import ObjectDisplay from './ObjectDisplay';

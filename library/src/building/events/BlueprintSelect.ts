@@ -5,9 +5,8 @@
  */
 'use strict';
 
-
+import { EventEmitter } from '../../events/EventEmitter';
 import BuildingEventTopics from './BuildingEventTopics';
-import EventEmitter from '../../events/EventEmitter';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {

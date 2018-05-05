@@ -6,7 +6,9 @@
 
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { client, events, jsKeyCodes } from '@csegames/camelot-unchained';
+import { client, jsKeyCodes } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
+
 import SocialMain from './components/SocialMain';
 import { store } from './services/session/reducer';
 
@@ -21,7 +23,7 @@ export interface SocialContainerState {
 }
 
 class SocialContainer extends React.Component<SocialContainerProps, SocialContainerState> {
-  private hudNavListener: EventListener;
+  private hudNavListener: number;
   private initialized = false;
   private mainRef: any = null;
 

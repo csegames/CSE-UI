@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 export interface PositionInformation {
   top: number;

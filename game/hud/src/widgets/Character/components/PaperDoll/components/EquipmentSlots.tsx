@@ -7,8 +7,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ContentItem, TabItem, TabPanel, events } from '@csegames/camelot-unchained';
+import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
@@ -169,8 +170,8 @@ export interface EquipmentSlotsState {
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
   private style: EquipmentSlotsStyles;
   private customStyle: Partial<EquipmentSlotsStyles>;
-  private equipItemListener: EventListener;
-  private onUnequipItemListener: EventListener;
+  private equipItemListener: number;
+  private onUnequipItemListener: number;
 
   constructor(props: EquipmentSlotsProps) {
     super(props);

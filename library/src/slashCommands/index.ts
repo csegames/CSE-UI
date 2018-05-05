@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import events from '../events';
+import * as events  from '../events';
 
 export interface SlashCommand {
   command: string;
@@ -44,7 +44,6 @@ export function unregisterSlashCommand(command: string) {
   let index = -1;
   for (let i = 0; i < registry.length; ++i) {
     if (registry[i].command === cmd) {
-      events.off(prefix(cmd));
       index = i;
       break;
     }

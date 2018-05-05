@@ -13,10 +13,10 @@ import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 
 const Container = styled('div')`
   position: relative;
-  left: -5px;
+  left: ${({ scale }: {scale: number}) => -5 * scale}px;
   width: 100%;
   height: ${(props: any) => props.height}px;
-  margin-bottom: 3px;
+  margin-bottom: ${({ scale }: {scale: number}) => 3 * scale}px;
 `;
 
 const BarContainer = styled('div')`
@@ -28,7 +28,7 @@ const BarContainer = styled('div')`
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #303030, #1D1D1D);
-  box-shadow: inset 0 0 2px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 2 * scale}px rgba(0,0,0,0.8);
   -webkit-transition: width 0.2s;
 `;
 
@@ -40,7 +40,7 @@ const Bar = styled('div')`
   left: 0;
   height: 100%;
   background: linear-gradient(to bottom, #00A4F1, #00A4F1);
-  box-shadow: inset 0 0 5px #4AD8FF;
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 5 * scale}px #4AD8FF;
 `;
 
 const WoundContainer = styled('div')`
@@ -48,23 +48,25 @@ const WoundContainer = styled('div')`
   align-items: center;
   justify-content: flex-end;
   position: absolute;
-  top: 5px;
+  top: ${({ scale }: {scale: number}) => 5 * scale}px;
   right: 0;
   bottom: 0;
-  left: 14px;
+  left: ${({ scale }: {scale: number}) => 14 * scale}px;
   z-index: 10;
 `;
 
 const WoundPill = styled('div')`
-  width: 104px;
-  height: 17px;
+  width: ${({ scale }: {scale: number}) => 104 * scale}px;
+  height: ${({ scale }: {scale: number}) => 17 * scale}px;
   background: url(images/healthbar/regular/small_lock.png);
+  background-size: contain;
 `;
 
 export interface SmallBarProps {
   height: number;
   bodyPart: BodyParts;
   playerState: PlayerState;
+  scale: number;
 }
 
 export interface SmallBarState {
@@ -75,15 +77,15 @@ class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
     const healthPercent = getHealthPercent(this.props.playerState, this.props.bodyPart);
     const wounds = getWoundsForBodyPart(this.props.playerState, this.props.bodyPart);
     return (
-      <Container height={this.props.height}>
-        <BarContainer>
-          <Bar style={{ width: healthPercent + '%' }} />
+      <Container height={this.props.height} scale={this.props.scale}>
+        <BarContainer scale={this.props.scale}>
+          <Bar style={{ width: healthPercent + '%' }} scale={this.props.scale}/>
         </BarContainer>
         {wounds > 0 ?
-          <WoundContainer>
-            <WoundPill />
-            {wounds >= 2 && <WoundPill />}
-            {!this.props.playerState.isAlive && wounds >= 2 && <WoundPill />}
+          <WoundContainer scale={this.props.scale}>
+            <WoundPill scale={this.props.scale}/>
+            {wounds >= 2 && <WoundPill scale={this.props.scale}/>}
+            {!this.props.playerState.isAlive && wounds >= 2 && <WoundPill scale={this.props.scale}/>}
           </WoundContainer> : null
         }
       </Container>

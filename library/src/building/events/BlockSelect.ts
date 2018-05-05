@@ -7,7 +7,7 @@
 
 
 import BuildingEventTopics from './BuildingEventTopics';
-import EventEmitter from '../../events/EventEmitter';
+import { EventEmitter } from '../../events/EventEmitter';
 import client from '../../core/client';
 
 import * as building from '../../building/building';

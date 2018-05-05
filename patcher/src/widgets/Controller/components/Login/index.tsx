@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from '@csegames/camelot-unchained';
+import * as events  from '@csegames/camelot-unchained';
 
 import LoginView from './components/LoginView';
 import { patcher } from '../../../../services/patcher';

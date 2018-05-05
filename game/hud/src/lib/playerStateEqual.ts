@@ -5,114 +5,92 @@
  *
  */
 
-import * as _ from 'lodash';
-import { utils, PlayerState } from '@csegames/camelot-unchained';
-import { getStaminaPercent, getHealthPercent, getBloodPercent } from '../components/HealthBar/lib/healthFunctions';
+import { PlayerState } from '@csegames/camelot-unchained/lib/core/clientInterface';
+import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
 import { BodyParts } from './PlayerStatus';
 
-export function isEqualPlayerState(playerStateOne: PlayerState, playerStateTwo: PlayerState) {
-  if (!playerStateOne || !playerStateTwo) {
+export function isEqualPlayerState(a: PlayerState, b: PlayerState) {
+  if (!a || !b) {
     return false;
   }
 
-  const headHealthEqual = playerStateOne.health[BodyParts.Head] && playerStateTwo.health[BodyParts.Head] ?
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.Head),
-      getHealthPercent(playerStateTwo, BodyParts.Head),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.health[BodyParts.Head].max,
-      playerStateTwo.health[BodyParts.Head].max,
-    ) : false;
+  if (a.id !== b.id) {
+    return false;
+  }
 
-  const torsoHealthEqual = playerStateOne.health[BodyParts.Torso] && playerStateTwo.health[BodyParts.Torso] &&
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.Torso),
-      getHealthPercent(playerStateTwo, BodyParts.Torso),
-    ) &&
-    utils.numEqualsCloseEnough(playerStateOne.health[BodyParts.Torso].max, playerStateTwo.health[BodyParts.Torso].max);
+  if (a.isAlive !== b.isAlive) {
+    return false;
+  }
 
-  const rightArmHealthEqual = playerStateOne.health[BodyParts.RightArm] && playerStateTwo.health[BodyParts.RightArm] &&
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.RightArm),
-      getHealthPercent(playerStateTwo, BodyParts.RightArm),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.health[BodyParts.RightArm].max,
-      playerStateTwo.health[BodyParts.RightArm].max,
-    );
+  if (!a.health && b.health || a.health && !b.health) {
+    return false;
+  }
 
-  const leftArmHealthEqual = playerStateOne.health[BodyParts.LeftArm] && playerStateTwo.health[BodyParts.LeftArm] &&
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.LeftArm),
-      getHealthPercent(playerStateTwo, BodyParts.LeftArm),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.health[BodyParts.LeftArm].max,
-      playerStateTwo.health[BodyParts.LeftArm].max,
-    );
+  if (!a.blood && b.blood || a.blood && !b.blood) {
+    return false;
+  }
 
-  const rightLegHealthEqual = playerStateOne.health[BodyParts.RightLeg] && playerStateTwo.health[BodyParts.RightLeg] &&
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.RightLeg),
-      getHealthPercent(playerStateTwo, BodyParts.RightLeg),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.health[BodyParts.RightLeg].max,
-      playerStateTwo.health[BodyParts.RightLeg].max,
-    );
+  if (!a.stamina && b.stamina || a.stamina && !b.stamina) {
+    return false;
+  }
 
-  const leftLegHealthEqual = playerStateOne.health[BodyParts.LeftLeg] && playerStateTwo.health[BodyParts.LeftLeg] &&
-    utils.numEqualsCloseEnough(
-      getHealthPercent(playerStateOne, BodyParts.LeftLeg),
-      getHealthPercent(playerStateTwo, BodyParts.LeftLeg),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.health[BodyParts.LeftLeg].max,
-      playerStateTwo.health[BodyParts.LeftLeg].max,
-    );
+  if (!a.statuses && b.statuses || a.statuses && !b.statuses) {
+    return false;
+  }
 
-  const staminaEqual = playerStateOne.stamina && playerStateTwo.stamina &&
-    utils.numEqualsCloseEnough(
-      getStaminaPercent(playerStateOne),
-      getStaminaPercent(playerStateTwo),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.stamina.max,
-      playerStateTwo.stamina.max,
-    );
+  if (a.blood) {
+    if (!numEqualsCloseEnough(a.blood.current, b.blood.current)) {
+      return false;
+    }
 
-  const bloodEqual = playerStateOne.blood && playerStateTwo.blood &&
-    utils.numEqualsCloseEnough(
-      getBloodPercent(playerStateOne),
-      getBloodPercent(playerStateTwo),
-    ) &&
-    utils.numEqualsCloseEnough(
-      playerStateOne.blood.max,
-      playerStateTwo.blood.max,
-    );
+    if (!numEqualsCloseEnough(a.blood.max, b.blood.max)) {
+      return false;
+    }
+  }
 
-  const playerStateDoesEqual = playerStateOne.id === playerStateTwo.id &&
-    // Check current health
-    headHealthEqual && torsoHealthEqual && rightArmHealthEqual && leftArmHealthEqual && rightLegHealthEqual &&
-      leftLegHealthEqual && staminaEqual && bloodEqual &&
+  if (a.stamina) {
+    if (!numEqualsCloseEnough(a.stamina.current, b.stamina.current)) {
+      return false;
+    }
 
-      // Check status changes
-      isEqualStatusEffects(playerStateOne, playerStateTwo) &&
+    if (!numEqualsCloseEnough(a.stamina.max, b.stamina.max)) {
+      return false;
+    }
+  }
 
-      // Check if is alive
-      playerStateOne.isAlive === playerStateTwo.isAlive;
+  if (a.health) {
+    for (let i = 0; i < BodyParts.Count; ++i) {
+      if (a.health[i].wounds !== b.health[i].wounds) {
+        return false;
+      }
 
-  return playerStateDoesEqual;
+      if (!numEqualsCloseEnough(a.health[i].current, b.health[i].current)) {
+        return false;
+      }
+
+      if (!numEqualsCloseEnough(a.health[i].max, b.health[i].max)) {
+        return false;
+      }
+    }
+  }
+
+  if (a.statuses) {
+    if (a.statuses.length !== b.statuses.length) {
+      return false;
+    }
+
+    const aStatuses = a.statuses.sort(statusSortMethod);
+    const bStatuses = b.statuses.sort(statusSortMethod);
+    for (let i = 0; i < aStatuses.length; ++i) {
+      if (aStatuses[i] !== bStatuses[i]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
-export function isEqualStatusEffects(playerStateOne: PlayerState, playerStateTwo: PlayerState) {
-  if (!playerStateOne.statuses || !playerStateTwo.statuses) {
-    return false;
-  }
-
-  const pOneStatusIds = _.sortBy(playerStateOne.statuses.map(status => status.id), id => id);
-  const pTwoStatusIds = _.sortBy(playerStateTwo.statuses.map(status => status.id), id => id);
-  return playerStateOne.statuses.length === playerStateTwo.statuses.length ||
-    _.isEqual(pOneStatusIds, pTwoStatusIds);
+function statusSortMethod(a: {id: number}, b: {id: number}) {
+  return a.id - b.id;
 }

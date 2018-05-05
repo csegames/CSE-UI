@@ -104,7 +104,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
         <NameContainer factionColor={factionColor[faction]}>
           <Name>{this.props.playerState.name}</Name>
         </NameContainer>
-        <ClassIndicator top={15} left={140} width={75} height={75} borderRadius={37.5} faction={faction} />
+        <ClassIndicator scale={1} top={15} left={140} width={75} height={75} borderRadius={37.5} faction={faction} />
         <BloodBall playerState={playerState} />
         {/*
           This is commented out because it will not be shown by default but will be a toggle in the options menu.
@@ -117,12 +117,12 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           />
         */}
         <HealthPillsContainer>
-          <SmallBar height={21} bodyPart={BodyParts.RightArm} playerState={playerState} />
-          <SmallBar height={21} bodyPart={BodyParts.LeftArm} playerState={playerState} />
-          <BigBar left={5} height={41} bodyPart={BodyParts.Head} playerState={playerState} />
-          <BigBar left={5} height={41} bodyPart={BodyParts.Torso} playerState={playerState} />
-          <SmallBar height={21} bodyPart={BodyParts.RightLeg} playerState={playerState} />
-          <SmallBar height={21} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
+          <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
+          <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
+          <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
+          <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Torso} playerState={playerState} />
+          <SmallBar height={21} scale={1} bodyPart={BodyParts.RightLeg} playerState={playerState} />
+          <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
         <ContainerOverlay />

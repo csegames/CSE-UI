@@ -10,7 +10,6 @@ import { findIndexWhere } from '../utils/arrayUtils';
 export * from './SignalRHub';
 export * from './hubs/groupsHub';
 export * from './hubs/patcherHub';
-export * from './hubs/warbandsHub';
 
 declare const $: any;
 

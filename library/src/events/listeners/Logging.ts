@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from '../EventEmitter';
+import { EventEmitter } from '../EventEmitter';
 import { clientEventTopics } from '../defaultTopics';
 import LogMessage from '../../core/classes/LogMessage';
 import client from '../../core/client';

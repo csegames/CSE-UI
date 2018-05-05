@@ -10,7 +10,8 @@ import OL from 'ol';
 import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
-import { events, client } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
+import client from '@csegames/camelot-unchained/lib/core/client';
 
 declare const ol: typeof OL;
 
@@ -89,7 +90,7 @@ export class GameMap extends React.PureComponent<Props, State> {
   private initialized = false;
   private zoneID: string;
   private metadata: MapMetadata;
-  private navigationEventHandle: EventListener;
+  private navigationEventHandle: number;
 
   constructor(props: Props) {
     super(props);

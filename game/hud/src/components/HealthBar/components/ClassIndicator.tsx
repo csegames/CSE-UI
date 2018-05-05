@@ -22,7 +22,7 @@ const Container = styled('div')`
   width: ${(props: any) => props.width}px;
   height: ${(props: any) => props.height}px;
   border-radius: ${(props: any) => props.borderRadius}px;
-  font-size: 30px;
+  font-size: ${({ scale }: {scale: number}) => 30 * scale}px;
 `;
 
 export interface ClassIndicatorProps {
@@ -32,6 +32,7 @@ export interface ClassIndicatorProps {
   width: number;
   height: number;
   borderRadius: number;
+  scale: number;
 }
 
 export interface ClassIndicatorState {
@@ -41,7 +42,7 @@ export interface ClassIndicatorState {
 class ClassIndicator extends React.PureComponent<ClassIndicatorProps, ClassIndicatorState> {
   public render() {
     const factionBackground = this.getFactionIndicator();
-    const { top, left, width, height, borderRadius } = this.props;
+    const { top, left, width, height, borderRadius, scale } = this.props;
     return (
       <Container
         top={top}
@@ -50,6 +51,7 @@ class ClassIndicator extends React.PureComponent<ClassIndicatorProps, ClassIndic
         height={height}
         borderRadius={borderRadius}
         backgroundImg={factionBackground}
+        scale={scale}
       >
         {Faction[this.props.faction].charAt(0)}
       </Container>

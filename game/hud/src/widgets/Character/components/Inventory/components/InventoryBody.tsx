@@ -8,8 +8,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { events, client, Vec3F, Euler3f } from '@csegames/camelot-unchained';
+import { client, Vec3F, Euler3f } from '@csegames/camelot-unchained';
 import { withGraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
@@ -115,8 +116,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
 
   private timePrevItemAdded: number;
   private isFetching: boolean = false; // This is used when refetching for data onInventoryAdded and onInventoryRemoved.
-  private updateInventoryItemsHandler: EventListener;
-  private dropItemHandler: EventListener;
+  private updateInventoryItemsHandler: number;
+  private dropItemHandler: number;
   private bodyRef: HTMLDivElement;
   private heightOfBody: number;
 

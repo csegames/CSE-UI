@@ -4,8 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import EventEmitter from './EventEmitter';
+import { emitter } from './EventEmitter';
 import { clientEventTopics } from './defaultTopics';
+
 import BuildingEventTopics from '../building/events/BuildingEventTopics';
 
 import InitListener from './listeners/Init';
@@ -24,7 +25,7 @@ import BuildingModeListener from '../building/events/BuildingMode';
 import BlueprintSelectListener from '../building/events/BlueprintSelect';
 import BlueprintCopyListener from '../building/events/BlueprintCopy';
 
-const buildingEventTopics = BuildingEventTopics;
+export const buildingEventTopics = BuildingEventTopics;
 // Listeners
 const listeners: any = {
   [clientEventTopics.initialize]: new InitListener(),
@@ -44,19 +45,16 @@ const listeners: any = {
   [buildingEventTopics.handlesBlueprintCopy]: new BlueprintCopyListener(),
 };
 
-// Event Emitter.  A single instance of event emitter handles all cu-events events
-const emitter: EventEmitter = new EventEmitter();
-
 /**
  * Register a callback for specified topic.
  * @method on
  * @param topic {string}      The topic name of the event
  * @param callback {function} The handler to be called when the event is triggered.
- *                            Passed the event data as the first argumnt
- * @return {any} an event handler id (can be used to stop listening for the event)
+ *                            Passed the event data as the first argument
+ * @return {number} an event handler id (used to stop listening for the event)
  */
 
-export function on(topic: string, callback: (...params: any[]) => void): any {
+export function on(topic: string, callback: (...params: any[]) => void) {
   const listener = listeners[topic];
   if (listener) {
     const handle = emitter.addListener(topic, listener.once, callback);
@@ -73,10 +71,10 @@ export function on(topic: string, callback: (...params: any[]) => void): any {
  * @param topic {string}      The topic name of the event
  * @param callback {function} The handler to be called when the event is triggered.
  *                            Passed the event data as the first argument
- * @return {any} an event handler id (can be used to stop listening for the event)
+ * @return {number} an event handler id (used to stop listening for the event)
  */
 
-export function once(topic: string, callback: (...params: any[]) => void): any {
+export function once(topic: string, callback: (...params: any[]) => void) {
   const listener = listeners[topic];
   if (listener) {
     const handle = emitter.addListener(topic, true, callback);
@@ -91,11 +89,11 @@ export function once(topic: string, callback: (...params: any[]) => void): any {
  * Register a callback for specified topic, once only.  Automatically unregisters
  * from the event one triggered.
  * @method off
- * @param listener {any}      ID returned from a call to on() once() or addEventListener()
+ * @param listener {number} Handle returned from a call to on() once() or addEventListener()
  */
 
-export function off(listener: any): void {
-  emitter.removeListener(listener);
+export function off(handle: number) {
+  emitter.removeListener(handle);
 }
 
 // Fire events
@@ -107,30 +105,18 @@ export function off(listener: any): void {
  * @param data {any}      Data to be passed to registered handlers
  */
 
-export function fire(topic: string, ...params: any[]): void {
+export function fire(topic: string, ...params: any[]) {
   emitter.emit(topic, ...params);
 }
 
-function diagnostics(): void {
+export function diagnostics(): void {
   emitter.diagnostics();
 }
 
-export function addListener(topic: string, callback: (...params: any[]) => void): void {
-  on(topic, callback);
+export function addListener(topic: string, callback: (...params: any[]) => void) {
+  return on(topic, callback);
 }
 
-export function removeListener(listener: any): void {
-  off(listener);
+export function removeListener(handle: number) {
+  off(handle);
 }
-
-export default {
-  clientEventTopics,
-  buildingEventTopics,
-  on,
-  once,
-  off,
-  fire,
-  diagnostics,
-  addListener,
-  removeListener,
-};

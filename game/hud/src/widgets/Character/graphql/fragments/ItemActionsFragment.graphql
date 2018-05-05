@@ -5,4 +5,5 @@ fragment ItemActions on ItemActionDefGQL {
   enabled
   lastTimePerformed
   uIReaction
+  showWhenDisabled
 }

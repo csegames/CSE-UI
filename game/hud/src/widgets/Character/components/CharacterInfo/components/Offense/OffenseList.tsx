@@ -7,10 +7,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ql, utils, events } from '@csegames/camelot-unchained';
+import { ql, utils } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
@@ -86,7 +87,7 @@ export interface OffenseListState {
 }
 
 class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
-  private updateCharStatsListener: EventListener;
+  private updateCharStatsListener: number;
 
   constructor(props: OffenseListProps) {
     super(props);

@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { events, client, jsKeyCodes } from '@csegames/camelot-unchained';
+import { client, jsKeyCodes } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
 import { expandError } from '../services/game/crafting/errors';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 
 // Types
 import { Recipe, Ingredient } from '../services/types';

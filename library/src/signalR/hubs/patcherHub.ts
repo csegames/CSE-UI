@@ -47,10 +47,39 @@ export const patcherEventsMap: EventMap[] = [
   },
 ];
 
+
+
+
 export function createPatcherHub(hostName?: string): SignalRHub {
   const newPatcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug }, hostName);
 
   let reconnectTries = 0;
+
+  function invokeIdentify(hub: SignalRHub) {
+    hub.invoke('identify', client.loginToken)
+      .done((success: boolean) => {
+        if (!success) {
+          if (client.debug) console.log('PatcherHub identify failed.');
+          // Try again!
+          setTimeout(() => invokeIdentify(hub), 5000);
+          return;
+        }
+        // invalidate to force a resend of all data to this client
+        if (client.debug) console.log('PatcherHub identify success!');
+        hub.invoke('invalidate');
+        events.fire(PATCHER_LIFETIME_EVENT_IDENTIFIED, hub);
+      })
+      .fail(() => {
+        setTimeout(() => {
+          if (reconnectTries === 5) {
+            reconnectTries = 0;
+            hub.onStarting(hub);
+          }
+          reconnectTries++;
+          hub.onConnected(hub);
+        }, 5000);
+      });
+  }
 
   ////////////////////////////////////
   // lifetime events
@@ -66,30 +95,7 @@ export function createPatcherHub(hostName?: string): SignalRHub {
 
   newPatcherHub.onConnected = function(hub: SignalRHub) {
     events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
-
-    // if identify method fails then try to reconnect
-    hub.invoke('identify', client.loginToken)
-      .done((success: boolean) => {
-        if (!success) {
-          if (client.debug) console.log('PatcherHub identify failed.');
-          // Try again!
-          setTimeout(() => hub.onConnected(hub), 5000);
-          return;
-        }
-        // invalidate to force a resend of all data to this client
-        hub.invoke('invalidate');
-        events.fire(PATCHER_LIFETIME_EVENT_IDENTIFIED, hub);
-      })
-      .fail(() => {
-        setTimeout(() => {
-          if (reconnectTries === 5) {
-            reconnectTries = 0;
-            hub.onStarting(hub);
-          }
-          reconnectTries++;
-          hub.onConnected(hub);
-        }, 5000);
-      });
+    invokeIdentify(hub);
   };
 
   newPatcherHub.onReconnecting = function(hub: SignalRHub) {

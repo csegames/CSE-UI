@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events } from '@csegames/camelot-unchained';
+import { ql } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import styled, { css } from 'react-emotion';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
@@ -62,8 +63,8 @@ const colors = {
 };
 
 class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, DraggableEquippedItemState> {
-  private onHighlightListener: EventListener;
-  private onDehighlightListener: EventListener;
+  private onHighlightListener: number;
+  private onDehighlightListener: number;
 
   constructor(props: DraggableEquippedItemProps) {
     super(props);

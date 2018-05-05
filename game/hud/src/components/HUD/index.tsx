@@ -8,10 +8,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { client, events, PlayerState } from '@csegames/camelot-unchained';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
-import DragStore from '../DragAndDrop/DragStore';
 // import { graphql } from 'react-apollo';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
+import DragStore from '../DragAndDrop/DragStore';
 import {
   LayoutState,
   setPosition,
@@ -22,7 +22,6 @@ import {
 import { InvitesState, initializeInvites } from '../../services/session/invites';
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
-
 import Watermark from '../Watermark';
 import HUDFullScreen from '../HUDFullScreen';
 import DevUI from '../DevUI';

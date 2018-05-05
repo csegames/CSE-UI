@@ -6,8 +6,9 @@
 
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { ql, events, utils } from '@csegames/camelot-unchained';
+import { ql, utils } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
@@ -50,7 +51,7 @@ export interface DefenseListState {
 class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   private ss: DefenseListStyle;
   private custom: Partial<DefenseListStyle>;
-  private updateCharacterStatsListener: EventListener;
+  private updateCharacterStatsListener: number;
 
   constructor(props: DefenseListProps) {
     super(props);

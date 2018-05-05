@@ -16,7 +16,8 @@ import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../
 import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
 import { fireBuildingItemSelected } from '../../../../../../services/events';
 
-import { events, BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
+import { BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import MaterialView from '../MaterialView';
 import ShapesView from '../ShapesView';
@@ -43,6 +44,8 @@ export interface MaterialAndShapePaneState {
 }
 
 class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, MaterialAndShapePaneState> {
+
+  private handlesBlockSelectListener: number;
 
   constructor(props: MaterialAndShapePaneProps) {
     super(props);
@@ -80,11 +83,12 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   }
 
   public componentDidMount() {
-    events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
+    this.handlesBlockSelectListener =
+      events.addListener(events.buildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
   }
 
   public componentWillUnmount() {
-    events.removeListener(this.blockSelectionListener);
+    events.removeListener(this.handlesBlockSelectListener);
     events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 

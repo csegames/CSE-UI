@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from '@csegames/camelot-unchained';
+import * as events  from '@csegames/camelot-unchained';
 import Animate from '../../lib/Animate';
 import { HeroContentItem } from '../../services/session/heroContent';
 

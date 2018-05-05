@@ -6,8 +6,9 @@
 
 import * as React from 'react';
 
-import { Tooltip, utils, events } from '@csegames/camelot-unchained';
+import { Tooltip, utils } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import CurrencyValue from './CurrencyValue';
 import InventoryRowActionButton from './InventoryRowActionButton';
@@ -104,7 +105,7 @@ export interface InventoryFooterState {
 }
 
 class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
-  private onDropItemListener: EventListener;
+  private onDropItemListener: number;
 
   constructor(props: InventoryFooterProps) {
     super(props);
