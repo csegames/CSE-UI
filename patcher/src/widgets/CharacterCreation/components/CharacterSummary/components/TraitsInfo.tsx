@@ -99,6 +99,7 @@ export class TraitsSummary extends React.Component<TraitsSummaryProps, TraitsSum
                   key={id}
                   shouldBeDefault
                   trait={traits[id]}
+                  boonPoints={0}
                   {...this.props.banesAndBoonsState}
                 />
               );
@@ -114,6 +115,7 @@ export class TraitsSummary extends React.Component<TraitsSummaryProps, TraitsSum
                   key={id}
                   shouldBeDefault
                   trait={traits[id]}
+                  banePoints={0}
                   {...this.props.banesAndBoonsState}
                 />
               );

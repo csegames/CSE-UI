@@ -238,8 +238,8 @@ class Trait extends React.Component<TraitProps, {}> {
       !addedTraits[trait.id]).length >= trait.maxAllowed;
 
     const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives || trait.required ||
-    (trait.points <= -1 && totalPoints + (trait.points * -1) > maxPoints && !trait.selected) ||
-    (trait.points >= 1 && totalPoints + (trait.points) > maxPoints && !trait.selected);
+    (trait.points <= -1 && totalPoints + (trait.points * -1) > (maxPoints / 2) && !trait.selected) ||
+    (trait.points >= 1 && totalPoints + (trait.points) > (maxPoints / 2) && !trait.selected);
 
     const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
       colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';

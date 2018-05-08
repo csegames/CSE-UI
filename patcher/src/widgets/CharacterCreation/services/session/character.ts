@@ -42,17 +42,25 @@ export function createCharacter(model: CharacterCreationModel,
                                 apiVersion: number = 1) {
   return async (dispatch: (action: any) => any) => {
     await dispatch(createCharacterStarted());
-    const res = await webAPI.CharactersAPI.CreateCharacterV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      shard,
-      model as any,
-    );
-    if (res.ok) {
-      dispatch(createCharacterSuccess(model));
-      return;
+    try {
+      const res = await webAPI.CharactersAPI.CreateCharacterV1(
+        { url: apiUrl },
+        client.loginToken,
+        shard,
+        model,
+      );
+      if (res.ok) {
+        dispatch(createCharacterSuccess(model));
+        return;
+      }
+      const errorData = JSON.parse(res.data);
+      const error = errorData.FieldCodes && errorData.FieldCodes[0] ? errorData.FieldCodes[0].Message :
+        errorData.Message ? errorData.Message : 'There was an error with character creation!'
+      dispatch(createCharacterFailed(error));
+    } catch (e) {
+      dispatch(createCharacterFailed('There was an unexpected error!'));
     }
-    dispatch(createCharacterFailed(JSON.parse(res.data).FieldCodes[0].Message));
+    
   };
 }
 

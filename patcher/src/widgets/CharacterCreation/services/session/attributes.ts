@@ -81,7 +81,7 @@ export function fetchAttributes(shard: number = 1, apiHost: string) {
 
 async function getAttributeInfo(dispatch: (action: any) => any, shard: number, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetAttributeInfoV1({ url: `${apiHost}/` }, shard);
+    const res = await webAPI.GameDataAPI.GetAttributeInfoV1({ url: apiHost }, shard);
     const data = JSON.parse(res.data);
     if (res.ok) {
       data.map((a: any) => {

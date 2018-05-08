@@ -17,7 +17,7 @@ const Bane = (props: {
   allExclusives: TraitIdMap;
   addedBanes: TraitIdMap;
   maxPoints: number;
-  totalPoints: number;
+  banePoints: number;
 
   shouldBeDefault?: boolean;
   onBaneClick?: Function;
@@ -37,7 +37,7 @@ const Bane = (props: {
     addedBanes,
     styles,
     maxPoints,
-    totalPoints,
+    banePoints,
   } = props;
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     if (onBaneClick) {
@@ -65,7 +65,7 @@ const Bane = (props: {
       primaryColor='#E85143'
       styles={baneStyles}
       maxPoints={maxPoints}
-      totalPoints={totalPoints}
+      totalPoints={banePoints}
       shouldBeDefault={props.shouldBeDefault}
     />
   );

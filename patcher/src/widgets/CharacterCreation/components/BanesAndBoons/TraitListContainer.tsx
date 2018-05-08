@@ -122,7 +122,7 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
                     <Boon
                       trait={trait}
                       addedBoons={this.props.addedBoons}
-                      totalPoints={this.props.boonPoints + this.props.banePoints}
+                      boonPoints={this.props.boonPoints}
                       traits={this.props.traits}
                       onBoonClick={this.props.onBoonClick}
                       onCancelBoon={this.props.onCancelBoonClick}
@@ -136,7 +136,7 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
                       <Bane
                         trait={trait}
                         addedBanes={this.props.addedBanes}
-                        totalPoints={this.props.boonPoints + this.props.banePoints}
+                        banePoints={this.props.banePoints}
                         traits={this.props.traits}
                         onBaneClick={this.props.onBaneClick}
                         onCancelBane={this.props.onCancelBaneClick}

@@ -58,7 +58,7 @@ export function resetClass() {
 }
 
 async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
-  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: `${apiHost}/` });
+  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: apiHost });
   const data = JSON.parse(res.data);
   if (res.ok) {
     dispatch(fetchPlayerClassesSuccess(data));

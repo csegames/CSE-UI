@@ -66,7 +66,7 @@ export interface FetchTraitInterface {
 }
 
 async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInterface) {
-  const res = await webAPI.TraitsAPI.GetTraitsV1({ url: `${payload.apiHost}/` }, client.shardID);
+  const res = await webAPI.TraitsAPI.GetTraitsV1({ url: payload.apiHost }, client.shardID);
   if (res.ok) {
     const data = JSON.parse(res.data);
     dispatch(onInitializeTraits({
@@ -99,14 +99,9 @@ export const fetchTraits = (payload: FetchTraitInterface) => {
   };
 };
 
-export const resetBaneOrBoon = (payload: {
-  playerClass: string,
-  race: string,
-  faction: string,
-  initType: 'boons' | 'banes' | 'both',
-}) => {
+export const resetBaneOrBoon = (payload: FetchTraitInterface) => {
   return (dispatch: (action: any) => any) => {
-    return webAPI.TraitsAPI.GetTraitsV1(webAPI.defaultConfig, client.shardID)
+    return webAPI.TraitsAPI.GetTraitsV1({ url: payload.apiHost }, client.shardID)
       .then((result) => {
         const data = JSON.parse(result.data);
         if (result.ok) {
@@ -692,6 +687,11 @@ export const onInitializeTraits = module.createAction({
           traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : traits[id];
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
+        ...playerClassTraits.required.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class', selected: true } :
+            { ...traits[id], selected: true };
+          return traits[id].points <= -1 && !combinedRanks[id];
+        }) || [],
         playerClassTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
       ].filter((id: string) => id).forEach((key: string) => {
         playerClassBanes[key] = key;
@@ -702,6 +702,11 @@ export const onInitializeTraits = module.createAction({
       factionTraits && factionTraits.optional && [
         ...factionTraits.optional.filter((id: string) => {
           traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction' } : traits[id];
+          return traits[id].points <= -1 && !combinedRanks[id];
+        }) || [],
+        ...factionTraits.required.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction', selected: true } :
+            { ...traits[id], selected: true };
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         factionTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
@@ -716,6 +721,11 @@ export const onInitializeTraits = module.createAction({
           traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race' } : traits[id];
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
+        ...raceTraits.required.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race', selected: true } :
+            { ...traits[id], selected: true };
+          return traits[id].points <= -1 && !combinedRanks[id];
+        }) || [],
         raceTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
       ].filter((id: string) => id).forEach((key: string) => {
         raceBanes[key] = key;
@@ -726,6 +736,11 @@ export const onInitializeTraits = module.createAction({
       generalTraits && generalTraits.optional && [
         ...generalTraits.optional.filter((id: string) => {
           traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+          return traits[id].points <= -1 && !combinedRanks[id];
+        }) || [],
+        ...generalTraits.required.filter((id: string) => {
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+            { ...traits[id], selected: true };
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
@@ -841,6 +856,7 @@ export const onResetBoons = module.createAction({
       return Object.assign({}, traits[id], { required: true });
     });
 
+    console.log(requiredBoons);
     requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
 
     const totalPoints = (Object.keys(state.addedBanes).length > 0 &&
