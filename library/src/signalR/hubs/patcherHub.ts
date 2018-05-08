@@ -24,7 +24,7 @@ export const PATCHER_LIFETIME_EVENT_DISCONNECTED = 'patcher/disconnected';
 export const PATCHER_LIFETIME_EVENT_IDENTIFIED = 'patcher/identified';
 export const PATCHER_LIFETIME_EVENT_STATECHANGED = 'patcher/statechanged';
 
-const patcherEventsMap: EventMap[] = [
+export const patcherEventsMap: EventMap[] = [
   {
     receive: 'serverUpdate',
     send: PATCHER_EVENTS_SERVERUPDATED,
@@ -47,69 +47,75 @@ const patcherEventsMap: EventMap[] = [
   },
 ];
 
-export const patcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug });
+export function createPatcherHub(hostName?: string): SignalRHub {
+  const newPatcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug }, hostName);
 
-let reconnectTries = 0;
+  let reconnectTries = 0;
 
-////////////////////////////////////
-// lifetime events
-////////////////////////////////////
+  ////////////////////////////////////
+  // lifetime events
+  ////////////////////////////////////
 
-patcherHub.onStarting = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_STARTING, hub);
-};
+  newPatcherHub.onStarting = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_STARTING, hub);
+  };
 
-patcherHub.onConnectionSlow = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_CONNECTIONSLOW);
-};
+  newPatcherHub.onConnectionSlow = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_CONNECTIONSLOW);
+  };
 
-patcherHub.onConnected = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
+  newPatcherHub.onConnected = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
 
-  // if identify method fails then try to reconnect
-  hub.invoke('identify', client.loginToken)
-    .done((success: boolean) => {
-      if (!success) {
-        if (client.debug) console.log('PatcherHub identify failed.');
-        // Try again!
-        setTimeout(() => hub.onConnected(hub), 5000);
-        return;
-      }
-      // invalidate to force a resend of all data to this client
-      hub.invoke('invalidate');
-      events.fire(PATCHER_LIFETIME_EVENT_IDENTIFIED, hub);
-    })
-    .fail(() => {
-      setTimeout(() => {
-        if (reconnectTries === 5) {
-          reconnectTries = 0;
-          hub.onStarting(hub);
+    // if identify method fails then try to reconnect
+    hub.invoke('identify', client.loginToken)
+      .done((success: boolean) => {
+        if (!success) {
+          if (client.debug) console.log('PatcherHub identify failed.');
+          // Try again!
+          setTimeout(() => hub.onConnected(hub), 5000);
+          return;
         }
-        reconnectTries++;
-        hub.onConnected(hub);
-      }, 5000);
-    });
-};
+        // invalidate to force a resend of all data to this client
+        hub.invoke('invalidate');
+        events.fire(PATCHER_LIFETIME_EVENT_IDENTIFIED, hub);
+      })
+      .fail(() => {
+        setTimeout(() => {
+          if (reconnectTries === 5) {
+            reconnectTries = 0;
+            hub.onStarting(hub);
+          }
+          reconnectTries++;
+          hub.onConnected(hub);
+        }, 5000);
+      });
+  };
 
-patcherHub.onReconnecting = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_RECONNECTING, hub);
-};
+  newPatcherHub.onReconnecting = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_RECONNECTING, hub);
+  };
 
-patcherHub.onReconnected = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_RECONNECTED, hub);
-};
+  newPatcherHub.onReconnected = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_RECONNECTED, hub);
+  };
 
-patcherHub.onStateChanged = function(hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) {
-  events.fire(PATCHER_LIFETIME_EVENT_STATECHANGED, hub, state);
-  switch (state.newState) {
-    case ConnectionState.Connecting:
-      events.fire(PATCHER_LIFETIME_EVENT_CONNECTING, hub);
-      break;
-  }
-};
+  newPatcherHub.onStateChanged = function(hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) {
+    events.fire(PATCHER_LIFETIME_EVENT_STATECHANGED, hub, state);
+    switch (state.newState) {
+      case ConnectionState.Connecting:
+        events.fire(PATCHER_LIFETIME_EVENT_CONNECTING, hub);
+        break;
+    }
+  };
 
-patcherHub.onDisconnected = function(hub: SignalRHub) {
-  events.fire(PATCHER_LIFETIME_EVENT_DISCONNECTED, hub);
-};
+  newPatcherHub.onDisconnected = function(hub: SignalRHub) {
+    events.fire(PATCHER_LIFETIME_EVENT_DISCONNECTED, hub);
+  };
+
+  return newPatcherHub;
+}
+
+export const patcherHub = createPatcherHub();
 
 export default patcherHub;

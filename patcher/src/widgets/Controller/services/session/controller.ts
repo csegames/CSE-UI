@@ -180,8 +180,8 @@ export const initialize = module.createAction({
     return (dispatch: (action: ControllerAction) => any) => {
       dispatch(reset());
       dispatch(initSignalR());
-
       try {
+        // Connect to main signalr patcher hub
         signalr.patcherHub.start(() => {
           dispatch(initSignalRSuccess());
           registerPatcherHubEvents(dispatch);
@@ -195,6 +195,20 @@ export const initialize = module.createAction({
         console.error(e);
         dispatch(initSignalRFailed());
       }
+
+        // Connect to all server's patcher hubs
+        webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
+          if (res.ok) {
+            const servers = JSON.parse(res.data);
+            servers.forEach((server) => {
+              try {
+                signalr.createPatcherHub(server.apiHost + '/signalr').start();
+              } catch (e) {
+                console.error(e);
+              }
+            });
+          }
+        });
     };
   },
 });
