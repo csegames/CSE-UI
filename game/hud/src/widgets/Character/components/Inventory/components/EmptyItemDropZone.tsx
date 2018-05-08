@@ -9,12 +9,19 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { ql } from '@csegames/camelot-unchained';
 
-import { SlotIndexInterface } from './InventorySlot';
+import { SlotIndexInterface, SlotType } from './InventorySlot';
 import EmptyItem, { EmptyItemProps } from '../../EmptyItem';
-import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
+import { ContainerPermissionDef } from './InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
-import { getInventoryDataTransfer, isContainerSlotVerified } from '../../../lib/utils';
+import { InventoryDataTransfer } from '../../../lib/eventNames';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import {
+  getInventoryDataTransfer,
+  isContainerSlotVerified,
+  isCraftingSlotVerified,
+  isCraftingItem,
+} from '../../../lib/utils';
 
 const Container = styled('div')`
   position: relative;
@@ -31,12 +38,16 @@ const SlotOverlay = styled('div')`
 `;
 
 export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
+  slotType: SlotType;
   slotIndex: SlotIndexInterface;
   disableDrop: boolean;
   onDrop: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   containerPermissions: ContainerPermissionDef | ContainerPermissionDef[];
   drawerMaxStats?: ql.schema.ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
+
+  // Only used by item stacks that are represented as containers. This item is the first item in the stack.
+  item?: InventoryItemFragment;
 }
 
 export interface EmptyItemDropZoneState {
@@ -57,21 +68,28 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
   }
 
   public onDrop(e: DragEvent<InventoryDataTransfer, EmptyItemProps & EmptyItemDropZoneProps>) {
-    const { containerPermissions, drawerMaxStats, drawerCurrentStats } = this.props;
-
-    const canPutIn = isContainerSlotVerified(
-      e.dataTransfer,
-      this.myDataTransfer,
-      this.props.slotIndex.containerID,
-      containerPermissions,
-      drawerMaxStats,
-      drawerCurrentStats,
-      true,
-    );
-
+    const { item, containerPermissions, drawerMaxStats, drawerCurrentStats, slotType } = this.props;
     // If containerPermissions is falsy or user has permission to add contents to container then proceed to drop
     if (this.props.slotIndex.containerID) {
-      // Dropping inside a container
+      const canPutIn = isContainerSlotVerified(
+        e.dataTransfer,
+        this.myDataTransfer,
+        this.props.slotIndex.containerID,
+        containerPermissions,
+        drawerMaxStats,
+        drawerCurrentStats,
+        true,
+      ) && slotType === SlotType.Empty;
+      // Dropping inside a container and not a crafting container
+      if (canPutIn) {
+        this.props.onDrop(e.dataTransfer, this.myDataTransfer);
+      }
+    } else if (item && isCraftingItem(item)) {
+      const canPutIn = isCraftingSlotVerified(
+        e.dataTransfer,
+        this.myDataTransfer,
+        true,
+      );
       if (canPutIn) {
         this.props.onDrop(e.dataTransfer, this.myDataTransfer);
       }
@@ -82,21 +100,37 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
   }
 
   public onDragOver(e: DragEvent<InventoryDataTransfer, EmptyItemProps & EmptyItemDropZoneProps>) {
-    const { containerPermissions, drawerMaxStats, drawerCurrentStats } = this.props;
-    const canPutIn = isContainerSlotVerified(
-      e.dataTransfer,
-      this.myDataTransfer,
-      this.props.slotIndex.containerID,
-      containerPermissions,
-      drawerMaxStats,
-      drawerCurrentStats,
-      false,
-    );
-
+    const { containerPermissions, drawerMaxStats, drawerCurrentStats, item, slotType } = this.props;
     const notAllowedColor = 'rgba(186, 50, 50, 0.4)';
     const allowedColor = 'rgba(46, 213, 80, 0.4)';
     this.setState((state, props) => {
       if (this.props.slotIndex.containerID) {
+        // is an empty slot inside actual container
+        const canPutIn = isContainerSlotVerified(
+          e.dataTransfer,
+          this.myDataTransfer,
+          this.props.slotIndex.containerID,
+          containerPermissions,
+          drawerMaxStats,
+          drawerCurrentStats,
+          false,
+        ) && slotType === SlotType.Empty;
+        if (!canPutIn) {
+          return {
+            backgroundColor: notAllowedColor,
+          };
+        } else {
+          return {
+            backgroundColor: allowedColor,
+          };
+        }
+      } else if (item && isCraftingItem(item)) {
+        // is an empty slot inside crafting container
+        const canPutIn = isCraftingSlotVerified(
+          e.dataTransfer,
+          this.myDataTransfer,
+          false,
+        );
         if (!canPutIn) {
           return {
             backgroundColor: notAllowedColor,
@@ -107,7 +141,7 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
           };
         }
       } else {
-        // is in regular inventory
+        // is an empty slot in regular inventory
         return {
           backgroundColor: allowedColor,
         };
@@ -140,7 +174,8 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
 
   private setDropDataTransfer = (props: EmptyItemDropZoneProps) => {
     const dropZoneData = getInventoryDataTransfer({
-      item: null,
+      slotType: SlotType.Empty,
+      item: props.item || null,
       position: props.slotIndex.position,
       location: props.slotIndex.location,
       containerID: props.slotIndex.containerID,

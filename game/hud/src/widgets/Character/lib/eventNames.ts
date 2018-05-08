@@ -4,7 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../gqlInterfaces';
+import { SlotType } from '../components/Inventory/components/InventorySlot';
+import { EquippedItemFragment, InventoryItemFragment, GearSlotDefRefFragment } from '../../../gqlInterfaces';
 
 /*
   These are the events used throughout the Character widget. We use these to have a more responsive UI because
@@ -48,31 +49,45 @@ const eventNames = {
   updateCharacterStats: `${eventPrefix}updateCharacterStats`, // Update character stats
 };
 
+export interface InventoryDataTransfer {
+  item: InventoryItemFragment;
+  position: number;
+  location: string;
+  drawerID?: string;
+  containerID?: string[];
+  gearSlots?: GearSlotDefRefFragment[];
+  slotType?: SlotType;
+  fullStack?: boolean;
+}
+
+export interface EquippedItemDataTransfer extends InventoryDataTransfer {
+  gearSlots: GearSlotDefRefFragment[];
+}
+
 export interface OnHighlightSlots {
   gearSlots: GearSlotDefRefFragment[];
 }
 
-export interface UpdateInventoryItems {
-  equippedItem?: EquippedItemFragment[] | EquippedItemFragment;
-  inventoryItem?: InventoryItemFragment;
+export interface UpdateInventoryItemsPayload {
+  equippedItem?: EquippedItemDataTransfer | EquippedItemDataTransfer[];
+  inventoryItem?: InventoryDataTransfer;
   willEquipTo?: GearSlotDefRefFragment[];
   type: 'Equip' | 'Unequip' | 'Drop';
 }
 
 export interface EquipItemCallback {
-  inventoryItem: InventoryItemFragment;
+  inventoryItem: InventoryDataTransfer;
   willEquipTo: GearSlotDefRefFragment[];
   prevEquippedItem?: EquippedItemFragment;
 }
 
 export interface UnequipItemCallback {
-  item: InventoryItemFragment;
-  gearSlots: GearSlotDefRefFragment[];
+  item: EquippedItemDataTransfer;
   dontUpdateInventory?: boolean;
 }
 
 export interface DropItemCallback {
-  inventoryItem: InventoryItemFragment;
+  inventoryItem: InventoryDataTransfer;
 }
 
 export default eventNames;

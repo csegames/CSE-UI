@@ -88,9 +88,11 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
     }
 
     const myCharacter = typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
-    const skills = this.updateSkills(myCharacter.skills);
-    if (!_.isEqual(skills, this.state.skills)) {
-      this.setState({ skills });
+    if (myCharacter) {
+      const skills = this.updateSkills(myCharacter.skills);
+      if (!_.isEqual(skills, this.state.skills)) {
+        this.setState({ skills });
+      }
     }
   }
 

@@ -8,13 +8,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { ql } from '@csegames/camelot-unchained';
 
 import * as base from '../../../Inventory/components/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';
-import { InventorySlotItemDef, slotDimensions, SlotType } from '../InventorySlot';
+import { DrawerCurrentStats } from '../Containers/Drawer';
+import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { calcRows, getContainerInfo, getItemDefinitionName } from '../../../../lib/utils';
 import { rowActionIcons } from '../../../../lib/constants';
+import { InventoryDataTransfer } from '../../../../lib/eventNames';
 
 const HeaderContent = styled('div')`
   display: flex;
@@ -32,8 +35,13 @@ export interface CraftingContainerProps extends base.InventoryBaseProps {
   item: InventorySlotItemDef;
   slotsPerRow: number;
   onCloseClick: () => void;
-  onDropOnZone: (dragItemData: base.InventoryDataTransfer, dropZoneData: base.InventoryDataTransfer) => void;
+  onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   bodyWidth: number;
+  containerID?: string[];
+  drawerID?: string;
+  containerPermissions?: base.ContainerPermissionDef;
+  drawerCurrentStats?: DrawerCurrentStats;
+  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
 }
 
 export interface CraftingContainerState extends base.InventoryBaseState {
@@ -41,7 +49,7 @@ export interface CraftingContainerState extends base.InventoryBaseState {
 
 export class CraftingContainer extends React.Component<CraftingContainerProps, CraftingContainerState> {
 
-  private static minSlots = 20;
+  private static minSlots = 10;
   private contentRef: HTMLElement = null;
 
   constructor(props: CraftingContainerProps) {
@@ -52,52 +60,24 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
   }
 
   public render() {
-    let header = '';
-    let rows: any = null;
-    let rowData: InventorySlotItemDef[][] = [];
-    switch (this.props.item.slotType) {
-      case SlotType.CraftingContainer:
-        const firstItem = this.props.item && this.props.item.stackedItems[0];
-        const { totalUnitCount, weight, averageQuality } = getContainerInfo(this.props.item.stackedItems);
-        header =
-          `${getItemDefinitionName(firstItem)} | ${totalUnitCount} units | ${weight}kg | average quality ${averageQuality}%`;
-        rows =
-          base.createRowElementsForCraftingItems(
-            this.state,
-            this.props,
-            { items: this.props.item.stackedItems },
-            () => {},
-            this.props.bodyWidth,
-          ).rows;
-        rowData =
-          base.createRowElementsForCraftingItems(
-            this.state,
-            this.props,
-            { items: this.props.item.stackedItems },
-            () => {},
-            this.props.bodyWidth,
-          ).rowData;
-        break;
-      default:
-        header = `${firstItem && getItemDefinitionName(firstItem)} | ${this.props.item.stackedItems &&
-          this.props.item.stackedItems.length}`;
-        rows = base.createRowElements(
-          this.state,
-          this.props,
-          { items: this.props.item.stackedItems },
-          this.props.onDropOnZone,
-          () => {},
-          this.props.bodyWidth,
-        ).rows;
-        rowData = base.createRowElements(
-          this.state,
-          this.props,
-          { items: this.props.item.stackedItems },
-          this.props.onDropOnZone,
-          () => {},
-          this.props.bodyWidth,
-        ).rowData;
-    }
+    const firstItem = this.props.item && this.props.item.stackedItems[0];
+    const { totalUnitCount, weight, averageQuality } = getContainerInfo(this.props.item.stackedItems);
+    const header =
+      `${getItemDefinitionName(firstItem)} | ${totalUnitCount} units | ${weight}kg | average quality ${averageQuality}%`;
+    const { rows, rowData } = base.createRowElementsForCraftingItems({
+      state: this.state,
+      props: this.props,
+      containerItem: this.props.item.item,
+      itemData: { items: this.props.item.stackedItems },
+      bodyWidth: this.props.bodyWidth,
+      onDropOnZone: this.props.onDropOnZone,
+      containerID: this.props.containerID,
+      drawerID: this.props.drawerID,
+      drawerCurrentStats: this.props.drawerCurrentStats,
+      drawerMaxStats: this.props.drawerMaxStats,
+      syncWithServer: () => {},
+      onMoveStack: () => {},
+    }) as any;
 
     return (
       <ContainerView
@@ -142,6 +122,8 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
     return !_.isEqual(this.props.item, nextProps.item) ||
       !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
       !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
+      !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
+      !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
       this.props.slotsPerRow !== nextProps.slotsPerRow ||
       this.props.searchValue !== nextProps.searchValue ||
       !_.isEqual(this.props.activeFilters, nextProps.activeFilters) ||

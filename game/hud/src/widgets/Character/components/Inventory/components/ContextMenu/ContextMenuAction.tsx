@@ -100,14 +100,14 @@ class ContextMenuAction extends React.Component<Props, State> {
     this.setState({ shouldQuery: false });
     if (resultData && resultData.item) {
       const myAction = _.find(resultData.item.actions, (a: ItemActionDefGQL) => a.id === this.props.action.id);
-      this.initTimer(myAction.lastTimePerformed);
+      this.initTimer(myAction && myAction.lastTimePerformed);
     }
 
     return result;
   }
 
   private initTimer = (lastTimePerformed: string) => {
-    if (this.props.action && this.props.action.cooldownSeconds > 0) {
+    if (this.props.action && lastTimePerformed && this.props.action.cooldownSeconds > 0) {
       const { cooldownSeconds } = this.props.action;
       const timeLeft = utils.prettyPrintTimeSpan(lastTimePerformed, cooldownSeconds.toString());
       if (timeLeft !== '') {

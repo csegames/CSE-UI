@@ -13,9 +13,10 @@ import { InventorySlot, InventorySlotItemDef, SlotType } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import CraftingContainer from './Containers/CraftingContainer';
 import ItemContainer from './Containers/ItemContainer';
-import { InventoryDataTransfer, ContainerIdToDrawerInfo } from './InventoryBase';
+import { ContainerIdToDrawerInfo } from './InventoryBase';
 import { colors } from '../../../lib/constants';
 import { hasViewContentPermissions } from '../../../lib/utils';
+import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
@@ -50,18 +51,20 @@ export interface ContainerInfo {
 export interface InventoryRowProps {
   items: InventorySlotItemDef[];
   inventoryItems: InventoryItemFragment[];
-  equippedItems?: EquippedItemFragment[];
-  onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  containerID?: string[];
+  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
   onContainerIdToDrawerInfoChange: (newObj: ContainerIdToDrawerInfo) => void;
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
   syncWithServer: () => void;
   bodyWidth: number;
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
-  drawerCurrentStats?: DrawerCurrentStats;
 
   styles?: Partial<InventoryRowStyle>;
+  containerID?: string[];
+  drawerID?: string;
+  equippedItems?: EquippedItemFragment[];
+  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerCurrentStats?: DrawerCurrentStats;
   filtering?: boolean;
 
   // Display gray slots png instead of gold
@@ -85,7 +88,6 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
     const ss = StyleSheet.create(defaultInventoryRowStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     const { containersOpen } = this.state;
-
     return (
       <div className={css(ss.InventoryRow, custom.InventoryRow)}>
         <div className={css(ss.row, custom.row)}>
@@ -100,6 +102,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 onToggleContainer={() => this.toggleContainer(index)}
                 equippedItems={this.props.equippedItems}
                 onDropOnZone={this.props.onDropOnZone}
+                onMoveStack={this.props.onMoveStack}
                 showGraySlots={this.props.showGraySlots}
                 containerIsOpen={containerIsOpen}
                 drawerMaxStats={this.props.drawerMaxStats}
@@ -120,11 +123,17 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   searchValue={''}
                   activeFilters={null}
                   slotsPerRow={this.props.items.length}
-                  onCloseClick={() => this.hideContainer(container.itemIndex)}
+                  inventoryItems={this.props.inventoryItems}
+                  onChangeInventoryItems={this.props.onChangeInventoryItems}
                   onDropOnZone={this.props.onDropOnZone}
                   containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
                   onChangeContainerIdToDrawerInfo={this.props.onContainerIdToDrawerInfoChange}
+                  drawerCurrentStats={this.props.drawerCurrentStats}
+                  drawerMaxStats={this.props.drawerMaxStats}
                   bodyWidth={this.props.bodyWidth}
+                  containerID={this.props.containerID}
+                  drawerID={this.props.drawerID}
+                  onCloseClick={() => this.hideContainer(container.itemIndex)}
                 />
               </div>
             );
@@ -172,12 +181,12 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
   public componentWillReceiveProps(nextProps: InventoryRowProps) {
     // If item is moved away and container is open, then close the container.
     if (!_.isEqual(nextProps.items, this.props.items)) {
-      const containersOpen = this.state.containersOpen;
+      const containersOpen = [...this.state.containersOpen];
       this.state.containersOpen.forEach((container, i) => {
         const nextItemSlot = nextProps.items[container.itemIndex];
         const prevItemSlot = this.props.items[container.itemIndex];
-        if (nextItemSlot && nextItemSlot.item && nextItemSlot.item.id !==
-          (prevItemSlot && prevItemSlot.item && prevItemSlot.item.id)) {
+        if (nextItemSlot && nextItemSlot.groupStackHashID !==
+          (prevItemSlot && prevItemSlot.groupStackHashID)) {
           containersOpen[i] = null;
         }
       });

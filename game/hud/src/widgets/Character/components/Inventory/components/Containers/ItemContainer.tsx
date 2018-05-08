@@ -13,6 +13,7 @@ import * as base from '../InventoryBase';
 import { InventorySlotItemDef } from '../InventorySlot';
 import Drawer from './Drawer';
 import ContainerHeader from './ContainerHeader';
+import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { ContainerDrawersFragment } from '../../../../../../gqlInterfaces';
 import {
   getContainerColor,
@@ -78,7 +79,7 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
   slotsPerRow: number;
   onCloseClick: () => void;
   containerID: string[];
-  onDropOnZone: (dragItemData: base.InventoryDataTransfer, dropZoneData: base.InventoryDataTransfer) => void;
+  onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   syncWithServer: () => void;

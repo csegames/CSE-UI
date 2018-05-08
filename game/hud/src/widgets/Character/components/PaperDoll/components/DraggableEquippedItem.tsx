@@ -4,10 +4,9 @@ import { ql } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import styled, { css } from 'react-emotion';
-import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
+import eventNames, { EquipItemCallback, InventoryDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
-import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
-import { InventoryDataTransfer } from '../../Inventory/components/InventoryBase';
+import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
@@ -77,7 +76,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
   public data() {
     const equippedItem = this.props.equippedItem;
-    return getInventoryDataTransfer({
+    return getEquippedDataTransfer({
       item: equippedItem.item,
       location: 'equipped',
       position: -1,
@@ -90,12 +89,12 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public onDrop(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
-    const item = e.dataTransfer.item;
+    const item = {...e.dataTransfer.item};
     if (this.canEquip(item) && item.location.inventory) {
       item.location.inventory = null;
-      this.equipItem(item, this.props.equippedItem);
+      this.equipItem(e.dataTransfer, this.props.equippedItem);
     } else if (!item.location.inventory) {
-      toastr.error('Move item out of container, then try to equip it.', 'Try this', { timeout: 2000 });
+      this.equipItem(e.dataTransfer, this.props.equippedItem);
     } else if (!this.canEquip(item)) {
       if (item.equiprequirement && item.equiprequirement.requirementDescription) {
         toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
@@ -180,15 +179,14 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     return false;
   }
 
-  private equipItem = (inventoryItem: InventoryItemFragment, equippedItem: EquippedItemFragment) => {
-    const gearSlotSet = _.find(inventoryItem.staticDefinition.gearSlotSets, (set) => {
+  private equipItem = (inventoryItem: InventoryDataTransfer, equippedItem: EquippedItemFragment) => {
+    const gearSlotSet = _.find(inventoryItem.item.staticDefinition.gearSlotSets, (set) => {
       return _.findIndex(set.gearSlots, (slot) => {
         return _.lowerCase(slot.id) === _.lowerCase(this.props.slotName);
       }) !== -1;
     });
 
     const willEquipTo = gearSlotSet && gearSlotSet.gearSlots;
-
     const payload: EquipItemCallback = {
       inventoryItem,
       prevEquippedItem: equippedItem,

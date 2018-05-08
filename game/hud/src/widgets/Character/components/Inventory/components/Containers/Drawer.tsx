@@ -15,6 +15,7 @@ import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { rowActionIcons } from '../../../../lib/constants';
+import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import {
   calcRowsForContainer,
   getContainerColor,
@@ -133,6 +134,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     const { stats, requirements } = drawer;
 
     // Grab items from containerIdToDrawerInfo (Managed by CharacterMain)
+
     const container = this.props.containerIdToDrawerInfo[containerID[containerID.length - 1]];
     const drawerInfo = container ? container.drawers[drawer.id] : {};
     const drawerItems: ContainedItemsFragment[] = [];
@@ -157,6 +159,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       drawerMaxStats: stats,
       drawerCurrentStats: { totalUnitCount, weight },
       syncWithServer,
+      onMoveStack: () => {},
       bodyWidth: this.props.bodyWidth,
     });
 
@@ -259,9 +262,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   private internalInit = (state: DrawerState, props: DrawerProps) => {
+    // Initialize slot data, that's the only state drawers need to maintain.
     if (!props.bodyWidth) return;
     const rowData = this.getRowsAndSlots(props);
-    return base.distributeItems(rowData, { items: [] },  state, props);
+    return base.initializeSlotsData(rowData);
   }
 
   private getRowsAndSlots = (props: DrawerProps) => {
@@ -284,7 +288,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   private getContainerPermissions = (): base.ContainerPermissionDef | base.ContainerPermissionDef[] => {
     const { containerID, inventoryItems, containerItem } = this.props;
     const itemPermissions: base.ContainerPermissionDef = {
-      userPermission: containerItem.permissibleHolder ? containerItem.permissibleHolder.userPermissions : 0,
+      userPermission: containerItem.permissibleHolder ?
+        containerItem.permissibleHolder.userPermissions : ItemPermissions.All,
       isChild: false,
       isParent: false,
     };
@@ -292,8 +297,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     const containerPermissionsArray: base.ContainerPermissionDef[] = [itemPermissions];
 
     if (containerID.length > 1) {
+      const parentContainer = _.find(inventoryItems, item => item.id === containerID[0]);
       const parentPermissions: base.ContainerPermissionDef = {
-        userPermission: _.find(inventoryItems, item => item.id === containerID[0]).permissibleHolder.userPermissions,
+        userPermission: parentContainer.permissibleHolder ?
+          parentContainer.permissibleHolder.userPermissions : ItemPermissions.All,
         isChild: false,
         isParent: true,
       };
@@ -309,7 +316,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
           if (_containedItem.permissibleHolder &&
               _containedItem.permissibleHolder.userPermissions ! & ItemPermissions.Ground) {
             const childPermissions: base.ContainerPermissionDef = {
-              userPermission: _containedItem.permissibleHolder.userPermissions,
+              userPermission: _containedItem.permissibleHolder ?
+                _containedItem.permissibleHolder.userPermissions : ItemPermissions.All,
               isChild: true,
               isParent: false,
             };
@@ -326,7 +334,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     return containerPermissionsArray.length > 1 ? containerPermissionsArray : itemPermissions;
   }
 
-  private onDropOnZone = (dragItemData: base.InventoryDataTransfer, dropZoneData: base.InventoryDataTransfer) => {
+  private onDropOnZone = (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => {
     // These will be modified throughout the function
     const containerIdToDrawerInfo = { ...this.props.containerIdToDrawerInfo };
     const inventoryItems = [...this.props.inventoryItems];
@@ -456,7 +464,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     });
   }
 
-  private getUpdatedDropContainer = (dropZoneData: base.InventoryDataTransfer,
+  private getUpdatedDropContainer = (dropZoneData: InventoryDataTransfer,
                                       newDragItem: InventoryItemFragment,
                                       newDropItem: InventoryItemFragment,
                                       inventoryItems: InventoryItemFragment[],
@@ -470,7 +478,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         if (dropZoneContainer) {
           // Look for item in container drawer
           const newDropZoneDrawer = dropZoneContainer.containerDrawers.map((_dropZoneDrawer) => {
-            const filteredDrawer = _.filter(_drawer.containedItems, _containedItem =>
+            const filteredDrawer = _.filter(_dropZoneDrawer.containedItems, _containedItem =>
               _containedItem.id !== newDragItem.id && (newDropItem ? _containedItem.id !== newDropItem.id : true));
             return {
               ..._dropZoneDrawer,
@@ -497,6 +505,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         }
         return _drawer;
       });
+
     } else {
       // Dropped in a top level container inside the inventory
       newDropContainerDrawers = _.map(inventoryItems[indexOfDropZoneContainer].containerDrawers, (_drawer) => {
@@ -521,10 +530,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     return newDropContainerDrawers;
   }
 
-  private getUpdatedDragContainer = (dragItemData: base.InventoryDataTransfer,
+  private getUpdatedDragContainer = (dragItemData: InventoryDataTransfer,
                                       newDragItem: InventoryItemFragment,
                                       newDropItem: InventoryItemFragment,
-                                      dropZoneData: base.InventoryDataTransfer,
+                                      dropZoneData: InventoryDataTransfer,
                                       inventoryItems: InventoryItemFragment[],
                                       indexOfTopDragItemContainer: number) => {
     let newDragContainerDrawers;
@@ -540,21 +549,36 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
             let newContainedItems;
             if (!newDropItem) {
               // drop zone was an EMPTY slot
-              newContainedItems = dragItemData.drawerID !== dropZoneData.drawerID ?
-              _.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id) : [
-                ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                newDragItem,
-              ];
+              if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
+                dragItemData.drawerID !== dropZoneData.drawerID) {
+                // Coming from a different container or drawer
+                newContainedItems =
+                  _.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id);
+              } else {
+                // Moving in same container and drawer
+                newContainedItems = [
+                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+                  newDragItem,
+                ];
+              }
             } else {
               // SWAPPING with item in drop zone
-              newContainedItems = dragItemData.drawerID !== dropZoneData.drawerID ? [
-                ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                newDropItem,
-              ] : [
-                ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                newDragItem,
-                newDropItem,
-              ];
+              if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
+                dragItemData.drawerID !== dropZoneData.drawerID) {
+                // Coming from a different container and drawer
+                newContainedItems = [
+                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+                  newDropItem,
+                ];
+              } else {
+                // Moving in same container and drawer
+                newContainedItems = [
+                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id &&
+                    _containedItem.id !== dropZoneData.item.id),
+                  newDragItem,
+                  newDropItem,
+                ];
+              }
             }
 
             return {
@@ -585,21 +609,35 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
           let newDrawer;
           if (!newDropItem) {
             // EMPTY
-            newDrawer = dragItemData.drawerID !== dropZoneData.drawerID ?
-            _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id) : [
-              ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-              newDragItem,
-            ];
+            if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
+              dragItemData.drawerID !== dropZoneData.drawerID) {
+              // Coming from a different container or drawer
+              newDrawer = _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id);
+            } else {
+              // Moving in same container and drawer
+              newDrawer = [
+                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+                newDragItem,
+              ];
+            }
           } else {
             // SWAPPING
-            newDrawer = dragItemData.drawerID !== dropZoneData.drawerID ? [
-              ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-              newDropItem,
-            ] : [
-              ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-              newDragItem,
-              newDropItem,
-            ];
+            if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
+              dragItemData.drawerID !== dropZoneData.drawerID) {
+              // Coming from a different container or drawer
+              newDrawer = [
+                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+                newDropItem,
+              ];
+            } else {
+              // Moving in same container and drawer
+              newDrawer = [
+                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id &&
+                  _containedItem.id !== dropZoneData.item.id),
+                newDragItem,
+                newDropItem,
+              ];
+            }
           }
           return {
             ..._drawer,

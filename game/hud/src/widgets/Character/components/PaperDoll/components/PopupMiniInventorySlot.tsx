@@ -9,7 +9,7 @@ import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
-import { hasEquipmentPermissions } from '../../../lib/utils';
+import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import Item from '../../Item';
 import EmptyItem from '../../EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
@@ -82,8 +82,13 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
       return;
     }
+    const inventoryItemDataTransfer = getInventoryDataTransfer({
+      item,
+      position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
+      location: item.location.inContainer ? 'Container' : 'Inventory',
+    });
     const payload: EquipItemCallback = {
-      inventoryItem: item,
+      inventoryItem: inventoryItemDataTransfer,
       willEquipTo: this.props.gearSlots,
     };
     client.EquipItem(item.id);

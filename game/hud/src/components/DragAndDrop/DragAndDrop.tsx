@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { utils } from '@csegames/camelot-unchained';
-import { setDragStoreInfo, getDragStore } from './DragStore';
+import { setDragStoreInfo, getDragStore, defaultDragStoreState } from './DragStore';
 
 export interface PositionInformation {
   top: number;
@@ -132,6 +132,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>,
       DragAndDropState
     > {
+      public mounted: boolean;
       private ref: HTMLDivElement;
       private draggableRef: any;
 
@@ -176,6 +177,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       public componentDidMount() {
         // Init position of items
         this.initPosition();
+        this.mounted = true;
 
         // onResize re init position of items
         window.addEventListener('resize', this.initPosition);
@@ -224,6 +226,9 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       public componentWillUnmount() {
         // Clear initPosition timeout
+        this.mounted = false;
+        setDragStoreInfo(defaultDragStoreState);
+
         clearTimeout(this.initTimeout);
         clearTimeout(this.mouseDownTimeout);
 
@@ -241,19 +246,21 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private initPosition = () => {
         this.initTimeout = setTimeout(() => {
-          if (!this.dimensions) {
-            this.dimensions = this.ref && this.ref.getBoundingClientRect();
-          }
-          if (this.dimensions) {
-            const { top, left, width, height } = this.dimensions;
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
-              this.initialPosition = { top, left, width, height };
-              if (!this.state.draggingPosition ||
-                  this.state.draggingPosition.width !== width ||
-                  this.state.draggingPosition.height !== height) {
-                this.setState({ draggingPosition: this.initialPosition });
+          if (this.mounted) {
+            if (!this.dimensions) {
+              this.dimensions = this.ref && this.ref.getBoundingClientRect();
+            }
+            if (this.dimensions) {
+              const { top, left, width, height } = this.dimensions;
+              const windowWidth = window.innerWidth;
+              const windowHeight = window.innerHeight;
+              if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
+                this.initialPosition = { top, left, width, height };
+                if (!this.state.draggingPosition ||
+                    this.state.draggingPosition.width !== width ||
+                    this.state.draggingPosition.height !== height) {
+                  this.setState({ draggingPosition: this.initialPosition });
+                }
               }
             }
           }
@@ -261,7 +268,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private onMouseEnter = (e: any) => {
-        if (!this.state.dragItemIsOver) {
+        if (this.mounted && !this.state.dragItemIsOver) {
           const dragStore = getDragStore();
           if (dragStore.isDragging && !_.isEqual(dragStore.draggableRef, this.draggableRef) &&
               dragStore.dataKey === this.options.dataKey) {
@@ -282,7 +289,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private onMouseLeave = (e: any) => {
-        if (this.state.dragItemIsOver) {
+        if (this.mounted && this.state.dragItemIsOver) {
           this.setState({ dragItemIsOver: false });
 
           setDragStoreInfo({ dropTargetRef: null });
@@ -296,7 +303,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.button === 2) return;
-        if (!this.options.disableDrag && this.initialPosition) {
+        if (this.mounted && !this.options.disableDrag && this.initialPosition) {
           this.mouseDownTimeout = setTimeout(() => {
             // Call onDragStart if it is defined
             setDragStoreInfo({

@@ -9,17 +9,15 @@ import { ql, client, utils, Faction, Vec3F, Euler3f, ItemPermissions } from '@cs
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { ActiveFilters } from '../components/Inventory/Inventory';
-import {
-  SlotNumberToItem,
-  InventoryDataTransfer,
-  ContainerPermissionDef,
-} from '../components/Inventory/components/InventoryBase';
+import { InventoryDataTransfer, EquippedItemDataTransfer } from './eventNames';
+import { SlotNumberToItem, ContainerPermissionDef } from '../components/Inventory/components/InventoryBase';
 import {
   InventoryItemFragment,
   ContainerDrawersFragment,
   GearSlotDefRefFragment,
   ContainedItemsFragment,
 } from '../../../gqlInterfaces';
+import { SlotType } from '../components/Inventory/components/InventorySlot';
 
 declare const toastr: any;
 
@@ -101,7 +99,6 @@ export function calcRows(bodyDimensions: InventoryBodyDimensions,
   // (will fill a row to fit or add an extra row)
   const slotCount = (slotsPerRow - (slotsToFit % slotsPerRow)) + slotsToFit;
   const rowCount = slotCount / slotsPerRow;
-
   return {
     slotCount,
     rowCount,
@@ -140,11 +137,13 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment
   };
 }
 
-export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment, position: number): any {
+export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment,
+                                                          position: number,
+                                                          amount?: number): any {
   return {
     moveItemID: item.id,
     stackHash: item.stackHash,
-    unitCount: -1,
+    unitCount: amount || -1,
     to: {
       entityID: nullVal,
       characterID: client.characterID,
@@ -208,14 +207,15 @@ export function getInventoryDataTransfer(payload: {
   containerID?: string[],
   drawerID?: string;
   gearSlots?: GearSlotDefRefFragment[],
+  slotType?: SlotType;
+  fullStack?: boolean;
 }): InventoryDataTransfer {
   if (!payload) {
     return null;
   }
 
   // A drag object will only have gearSlots attribute if it is currently equipped
-  const { item, containerID, drawerID, gearSlots, position, location } = payload;
-
+  const { slotType, item, containerID, drawerID, gearSlots, position, location, fullStack } = payload;
   return {
     containerID,
     drawerID,
@@ -223,6 +223,36 @@ export function getInventoryDataTransfer(payload: {
     item,
     position,
     location,
+    slotType,
+    fullStack,
+  };
+}
+
+export function getEquippedDataTransfer(payload: {
+  item: InventoryItemFragment,
+  position: number,
+  location: string,
+  gearSlots: GearSlotDefRefFragment[],
+  containerID?: string[],
+  drawerID?: string,
+  slotType?: SlotType,
+  fullStack?: boolean;
+}): EquippedItemDataTransfer {
+  if (!payload) {
+    return null;
+  }
+
+  // A drag object will only have gearSlots attribute if it is currently equipped
+  const { containerID, item, drawerID, gearSlots, position, location, slotType, fullStack } = payload;
+  return {
+    slotType,
+    containerID,
+    drawerID,
+    gearSlots,
+    item,
+    position,
+    location,
+    fullStack,
   };
 }
 
@@ -400,12 +430,19 @@ export function getItemInstanceID(item: InventoryItemFragment) {
   return item.id;
 }
 
-export function getItemMapID(item: InventoryItemFragment, pos?: number) {
+export function getItemMapID(item: InventoryItemFragment, wantPos?: number, noPos?: boolean) {
   if (item && item.staticDefinition) {
+    const pos = getItemInventoryPosition(item);
     if (isCraftingItem(item)) {
-      return `${item.staticDefinition.name + item.staticDefinition.id}${pos || ''}`;
+      return `${item.staticDefinition.name + item.staticDefinition.id}${typeof wantPos === 'number' ?
+        wantPos : pos !== -1 && !noPos ? pos : ''}`;
     } else if (isStackedItem(item)) {
-      return `${item.staticDefinition.name + item.staticDefinition.id}${pos || ''}`;
+      if (item.stackHash !== emptyStackHash) {
+        return `${item.stackHash}${pos !== -1 && !noPos ? pos : ''}`;
+      } else {
+        return `${item.staticDefinition.name + item.staticDefinition.id}${typeof wantPos === 'number' ?
+          wantPos : pos !== -1 && !noPos ? pos : ''}`;
+      }
     } else {
       return item.id;
     }
@@ -505,8 +542,8 @@ export function hasInventoryPermissions(item: InventoryItemFragment) {
 }
 
 export function hasEquipmentPermissions(item: InventoryItemFragment) {
-  const itemMeetsRequirements = item.equiprequirement &&
-    (item.equiprequirement.status === 'RequirementMet' || item.equiprequirement.status === 'NoRequirement');
+  const itemMeetsRequirements = !item.equiprequirement || (item.equiprequirement &&
+    (item.equiprequirement.status === 'RequirementMet' || item.equiprequirement.status === 'NoRequirement'));
   if ((!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) && itemMeetsRequirements) {
     return ItemPermissions.All;
   }
@@ -671,9 +708,6 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
                                         drawerMaxStats: ql.schema.ContainerDefStat_Single,
                                         drawerCurrentStats: DrawerCurrentStats,
                                         showToasts: boolean) {
-  if (!dropContainerID) {
-    return true;
-  }
   // Dropping inside a container
   const dragContainerDrawers: ContainerDrawersFragment[] = dragDataTransfer.item.containerDrawers;
 
@@ -691,19 +725,22 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
   const isAnEquippedItem = dragDataTransfer.gearSlots;
 
   // Does user have Container Permissions (Add, Remove, See)
-  const userMeetsPermissions = !_.isArray(containerPermissions) ?
+  const userMeetsPermissions = !containerPermissions || (!_.isArray(containerPermissions) ?
     containerPermissions.userPermission & ItemPermissions.AddContents :
+
       _.findIndex(containerPermissions, permission =>
-        permission.isParent && permission.userPermission & ItemPermissions.AddContents) === -1;
+        permission.isParent && permission.userPermission & ItemPermissions.AddContents) !== -1 &&
+        _.findIndex(containerPermissions, permission =>
+          !permission.isParent && !permission.isChild && permission.userPermission & ItemPermissions.AddContents) !== -1);
 
   // Check if drop item would exceed max Drawer Stats (maxItemCount, maxMass)
-  const meetsUnitCountStat = drawerMaxStats.maxItemCount === -1 ||
+  const meetsUnitCountStat = !drawerMaxStats || drawerMaxStats.maxItemCount === -1 ||
     (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
     (dropDataTransfer.item ? (drawerCurrentStats.totalUnitCount - dropDataTransfer.item.stats.item.unitCount +
       dragDataTransfer.item.stats.item.unitCount) <= drawerMaxStats.maxItemCount :
       drawerCurrentStats.totalUnitCount + dragDataTransfer.item.stats.item.unitCount <= drawerMaxStats.maxItemCount) : true);
 
-  const meetsMassStat = drawerMaxStats.maxItemMass === -1 ||
+  const meetsMassStat = !drawerMaxStats || drawerMaxStats.maxItemMass === -1 ||
     (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
     (dropDataTransfer.item ? (drawerCurrentStats.weight - dropDataTransfer.item.stats.item.totalMass +
       dragDataTransfer.item.stats.item.totalMass) <= drawerMaxStats.maxItemMass :
@@ -749,4 +786,49 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
   } else {
     return true;
   }
+}
+
+export function isCraftingSlotVerified(dragDataTransfer: InventoryDataTransfer,
+                                        dropDataTransfer: InventoryDataTransfer,
+                                        showToasts: boolean) {
+  // Putting an item inside of it's container
+  const puttingInsideSelf = dragDataTransfer.slotType === SlotType.CraftingContainer &&
+    (dragDataTransfer.item.id === dropDataTransfer.item.id);
+
+  // Trying to move inside same crafting container
+  const puttingInSameContainer = dragDataTransfer.slotType === SlotType.CraftingItem &&
+    (getItemMapID(dragDataTransfer.item) === getItemMapID(dropDataTransfer.item));
+
+  // Checks if you are dropping in a crafting item of the same type
+  const isSameCraftingMaterial = dragDataTransfer.item.staticDefinition.name + dragDataTransfer.item.staticDefinition.id ===
+    dropDataTransfer.item.staticDefinition.name + dropDataTransfer.item.staticDefinition.id;
+
+  // Check to see if trying to put on top of a crafting container.
+  const tryingToSwapWithContainer = dropDataTransfer.slotType === SlotType.CraftingContainer;
+
+  if (puttingInsideSelf || puttingInSameContainer || !isSameCraftingMaterial || tryingToSwapWithContainer) {
+    if (showToasts) {
+      if (puttingInsideSelf) {
+        toastr.error('You can\'t put an item inside of itself', 'Silly!', { timeout: 3000 });
+      }
+
+      if (puttingInSameContainer) {
+        toastr.error(
+          'You can\'t move an item to a different spot in a crafting container',
+          'You can\'t do that',
+          { timeout: 3000 },
+        );
+      }
+
+      if (tryingToSwapWithContainer) {
+        toastr.error('Open the crafting container and then put the item inside.', 'Try this', { timeout: 3000 });
+      }
+
+      if (!isSameCraftingMaterial) {
+        toastr.error('Item\'s must be of the same crafting material', 'You can\'t do that', { timeout: 3000 });
+      }
+    }
+    return false;
+  }
+  return true;
 }

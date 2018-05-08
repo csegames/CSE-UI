@@ -13,17 +13,12 @@ import styled from 'react-emotion';
 import ItemStack from '../../ItemStack';
 import CraftingItem from './CraftingItem';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from './InventorySlot';
-import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
+import { ContainerPermissionDef } from './InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
-import eventNames from '../../../lib/eventNames';
-import {
-  getInventoryDataTransfer,
-  isContainerSlotVerified,
-  getContainerColor,
-  getContainerInfo,
-} from '../../../lib/utils';
+import eventNames, { InventoryDataTransfer } from '../../../lib/eventNames';
+import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo } from '../../../lib/utils';
 
 const Container = styled('div')`
   display: flex;
@@ -47,11 +42,10 @@ export const SlotOverlay = styled('div')`
   left: 2px;
   bottom: 2px;
   right: 2px;
-  z-index: 10;
+  z-index: 1;
   cursor: pointer;
   background-color: ${(props: any) => props.backgroundColor};
   border: ${(props: any) => props.containerIsOpen ? `1px solid ${props.borderColor}` : '0px'};
-  z-index: 10;
   &:hover {
     box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
   };
@@ -75,8 +69,6 @@ const FirstContainerItem = styled('div')`
   bottom: 4px;
   width: 25px;
   height: 25px;
-  background: ${(props: any) => props.background};
-  background-size: cover;
   border: 1px solid #795B46;
   cursor: pointer;
   z-index: 9;
@@ -130,19 +122,20 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
   }
 
   public onDragEnter(e: DragEvent<InventoryDataTransfer, ItemComponentProps>) {
+    const { item, containerID, containerPermissions, drawerMaxStats, drawerCurrentStats } = this.props;
     this.setState(() => {
-      const canDrop = isContainerSlotVerified(
-        e.dataTransfer,
-        this.myDataTransfer,
-        this.props.containerID,
-        this.props.containerPermissions,
-        this.props.drawerMaxStats,
-        this.props.drawerCurrentStats,
-        false,
-      );
       const notAllowedColor = 'rgba(186, 50, 50, 0.4)';
       const allowedColor = 'rgba(46, 213, 80, 0.4)';
-      if (this.props.containerID) {
+      if (containerID) {
+        const canDrop = isContainerSlotVerified(
+          e.dataTransfer,
+          this.myDataTransfer,
+          containerID,
+          containerPermissions,
+          drawerMaxStats,
+          drawerCurrentStats,
+          false,
+        );
         if (canDrop) {
           return {
             backgroundColor: allowedColor,
@@ -152,6 +145,11 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
             backgroundColor: notAllowedColor,
           };
         }
+      } else if (item.slotType === SlotType.CraftingItem ||
+          (e.dataTransfer.slotType === SlotType.CraftingItem && item.slotType === SlotType.CraftingContainer)) {
+        return {
+          backgroundColor: notAllowedColor,
+        };
       } else {
         if (e.dataTransfer && e.dataTransfer['gearSlots']) {
           return {
@@ -178,7 +176,8 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
 
   public onDrop(e: DragEvent<InventoryDataTransfer, ItemComponentProps>) {
     // FOR NOW, don't allow drop if drag item is an equipped item.
-    const containerSlotVerified = (this.props.containerID &&
+    const { item, containerID, drawerID } = this.props;
+    const containerSlotVerified = (containerID &&
       isContainerSlotVerified(
         e.dataTransfer,
         this.myDataTransfer,
@@ -188,10 +187,12 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         this.props.drawerCurrentStats,
         true,
       )) || true;
-    if (containerSlotVerified && !e.dataTransfer || !e.dataTransfer['gearSlots']) {
-      const { item, containerID, drawerID } = this.props;
+    if (item.slotType !== SlotType.CraftingItem &&
+        !(e.dataTransfer.slotType === SlotType.CraftingItem && item.slotType === SlotType.CraftingContainer) &&
+        (containerSlotVerified && !e.dataTransfer || !e.dataTransfer['gearSlots'])) {
       const location = item.item.location;
       const dropZoneData = getInventoryDataTransfer({
+        slotType: item.slotType,
         item: item.item,
         location: location.inContainer ? 'inContainer' : 'inventory',
         position: location.inContainer ? location.inContainer.position : location.inventory.position,
@@ -249,8 +250,8 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         {itemComponent}
         {item.slotType === SlotType.Container &&
           <FirstContainerItem
-            background={containerFirstItem ? `url(${containerFirstItem.staticDefinition.iconUrl})` :
-              `url(${placeholderIcon})`}
+            style={{ background: containerFirstItem ? `url(${containerFirstItem.staticDefinition.iconUrl})` :
+              `url(${placeholderIcon})`, backgroundSize: 'cover' }}
           />
         }
         {item && item.slotType === SlotType.Container &&
@@ -270,7 +271,9 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
   }
 
   public componentWillReceiveProps(nextProps: ItemComponentProps) {
-    this.setDragDataTransfer(nextProps);
+    if (!_.isEqual(this.props, nextProps)) {
+      this.setDragDataTransfer(nextProps);
+    }
   }
 
   private setDragDataTransfer = (props: ItemComponentProps) => {
@@ -278,11 +281,13 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     const pos = item.location.inContainer ? item.location.inContainer.position :
       item.location.inventory ? item.location.inventory.position : -1;
     this.myDataTransfer = getInventoryDataTransfer({
+      slotType: props.item.slotType,
       item,
       location: item.location.inContainer ? 'inContainer' : 'inventory',
       position: pos,
       containerID: props.containerID,
       drawerID: props.drawerID,
+      fullStack: props.item.slotType === SlotType.CraftingContainer,
     });
   }
 }
@@ -296,7 +301,7 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
       dropTarget: item.slotType !== SlotType.CraftingItem && (props.filtering ? false : true),
-      disableDrag: props.filtering || item.slotType === SlotType.CraftingItem ||
+      disableDrag: props.filtering ||
         (props.containerPermissions && (_.isArray(props.containerPermissions) ?
           // if container permissions is an array, search parent containers and this container
           // if they have RemoveContents permission
