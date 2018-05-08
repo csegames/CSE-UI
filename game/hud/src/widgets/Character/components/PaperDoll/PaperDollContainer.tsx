@@ -163,7 +163,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     client.playerState.health.forEach((part, i) => {
       maxHealthParts[bodyParts[i]] = part.max;
     });
-    
+
     this.setState({ maxHealthParts });
   }
 }
