@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, events } from '@csegames/camelot-unchained';
+import { client, events, PlayerState } from '@csegames/camelot-unchained';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 import DragStore from '../DragAndDrop/DragStore';
 // import { graphql } from 'react-apollo';
@@ -102,9 +102,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
 
-    if (client && client.OnCharacterHealthChanged) {
+    if (client && client.OnPlayerStateChanged) {
 
-      client.OnCharacterAliveOrDead((alive: boolean) => {
+      client.OnPlayerStateChanged((playerState: PlayerState) => {
+        const alive = playerState.isAlive;
         const respawn = this.props.layout.widgets.get('respawn');
         if (!alive && respawn && !respawn.position.visibility) {
           this.setVisibility('respawn', true);

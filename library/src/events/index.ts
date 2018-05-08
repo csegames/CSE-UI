@@ -12,9 +12,6 @@ import InitListener from './listeners/Init';
 import AnnouncementsListener from './listeners/Announcements';
 import BeginChatListener from './listeners/BeginChat';
 import ChatListener from './listeners/Chat';
-import CharacterListener from './listeners/Character';
-import EnemyTargetListener from './listeners/EnemyTarget';
-import FriendlyTargetListener from './listeners/FriendlyTarget';
 import ControlGameListener from './listeners/ControlGame';
 import ControlGameScoreListener from './listeners/ControlGameScore';
 import InventoryListener from './listeners/Inventory';
@@ -34,9 +31,6 @@ const listeners: any = {
   [clientEventTopics.handlesAnnouncements]: new AnnouncementsListener(),
   [clientEventTopics.handlesBeginChat]: new BeginChatListener(),
   [clientEventTopics.handlesChat]: new ChatListener(),
-  [clientEventTopics.handlesCharacter]: new CharacterListener(),
-  [clientEventTopics.handlesEnemyTarget]: new EnemyTargetListener(),
-  [clientEventTopics.handlesFriendlyTarget]: new FriendlyTargetListener(),
   [clientEventTopics.handlesControlGame]: new ControlGameListener(),
   [clientEventTopics.handlesControlGameScore]: new ControlGameScoreListener(),
   [clientEventTopics.handlesInventory]: new InventoryListener(),
