@@ -12,7 +12,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { StyleDeclaration } from 'aphrodite';
-import { events, Gender, HelpInfo } from '@csegames/camelot-unchained';
+import { events, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -55,6 +55,7 @@ import { selectGender, resetGender } from './services/session/genders';
 import {
   BanesAndBoonsState,
   resetBanesAndBoons,
+  fetchTraits,
 } from './services/session/banesAndBoons';
 
 export { CharacterCreationModel } from './services/session/character';
@@ -525,6 +526,13 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           this.makeErrors(errors);
           return;
         }
+        this.props.dispatch(fetchTraits({
+          apiHost: this.props.apiHost,
+          playerClass: Archetype[this.props.playerClassesState.selected.id],
+          race: Race[this.props.racesState.selected.id],
+          faction: Faction[this.props.factionsState.selected.id],
+          initType: 'both',
+        }));
         this.pushPagesCompleted(CharacterCreationPage.Class);
         events.fire('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Attributes, helpEnabled: false });

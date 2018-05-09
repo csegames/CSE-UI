@@ -321,12 +321,12 @@
 
   .base {
     z-index: 2;
-    background-position:55% bottom;
-    background-size:contain;
-    max-height:20%;
+    background-position: 55% bottom;
+    background-size: contain;
+    max-height: 20%;
     top: auto !important;
-    bottom:0px !important;
-    right:0px;
+    bottom: -10px !important;
+    right: 0px;
     &.char-select {
       background-position: 35% bottom;
     }

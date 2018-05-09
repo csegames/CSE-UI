@@ -24,7 +24,6 @@ import {
   onCancelBaneClick,
   onCancelBoonClick,
   resetBaneOrBoon,
-  fetchTraits,
 } from '../../services/session/banesAndBoons';
 
 export interface BanesAndBoonsContainerProps {
@@ -99,20 +98,6 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         boonStyles={boonStyles}
       />
     );
-  }
-
-  public componentDidMount() {
-    // Initialize all Banes & Boons
-    const { banesAndBoons, dispatch, playerClass, race, faction } = this.props;
-    if (banesAndBoons.initial) {
-      dispatch(fetchTraits({
-        apiHost: this.props.apiHost,
-        playerClass: Archetype[playerClass.selected.id],
-        race: Race[race.selected.id],
-        faction: Faction[faction.selected.id],
-        initType: 'both',
-      }));
-    }
   }
 
   private onSelectBoonClick = (boon: BanesAndBoonsInfo) => {
