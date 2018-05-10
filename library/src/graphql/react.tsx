@@ -123,10 +123,12 @@ export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfi
   subsConf = withDefaults(subscriptionConfig, subsConf);
 }
 
+export type GraphQLQueryOptions = Partial<GraphQLQuery> &  Partial<GraphQLOptions>;
+export type GraphQLSubscriptionOptions<DataType> = Partial<Subscription> & Partial<SubscriptionOptions<DataType>>;
 
 export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
-  query?: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
-  subscription?: string | (Partial<Subscription> & Partial<SubscriptionOptions<SubscriptionDataType>>);
+  query?: string | GraphQLQueryOptions;
+  subscription?: string | GraphQLSubscriptionOptions<SubscriptionDataType>;
   initialData?: QueryDataType;
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;

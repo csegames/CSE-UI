@@ -33,8 +33,8 @@ import { ZoneName } from '../ZoneName';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
-
 import Console from '../Console';
+import { InteractiveAlertView } from '../InteractiveAlert';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -82,6 +82,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
         </div>
+
+        <InteractiveAlertView />
 
         <DevUI />
         <ScenarioPopup />

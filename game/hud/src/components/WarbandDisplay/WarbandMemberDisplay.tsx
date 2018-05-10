@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { WarbandMember } from '@csegames/camelot-unchained';
+import { WarbandMember } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 import styled from 'react-emotion';
 
 import HealthBar from '../HealthBar';
@@ -33,7 +33,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   public render() {
     if (!this.props.member) return null;
     return (
-      <Container>
+      <Container key={this.props.member.characterID}>
         <HealthBar type='mini' playerState={this.props.member as any} />
       </Container>
     );

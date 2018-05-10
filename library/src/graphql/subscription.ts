@@ -7,7 +7,7 @@
 import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
-
+import client from '../core/client';
 
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
@@ -18,12 +18,20 @@ export interface Options<DataType> extends WebSocketOptions {
   onClosed: () => void;
 }
 
+
+const subscriptionUrl =  `${client.apiHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
+const subscriptionInitPayload = {
+  shardID: client.shardID,
+  loginToken: client.loginToken,
+  characterID: client.characterID,
+};
+
 export const defaultSubscriptionOpts: Options<any> = {
-  url: '/graphql',
+  url: subscriptionUrl,
   protocols: 'graphql-ws',
-  reconnectInterval: 5000,
+  reconnectInterval: 1000,
   connectTimeout: 2000,
-  initPayload: {},
+  initPayload: subscriptionInitPayload,
   debug: false,
   onDataReceived: data => console.log(data),
   onError: e => console.error(e),
@@ -56,6 +64,7 @@ export interface OperationMessage {
 
 export interface SubscriptionResult<T> {
   data: T;
+  ok: boolean;
   errors?: Error[];
 }
 
@@ -176,7 +185,17 @@ export class SubscriptionManager {
       case GQL_DATA: {
         const subscription = this.subscriptions[op.id];
         if (subscription && subscription.onData) {
-          subscription.onData(op.payload);
+          let data = null;
+          try {
+            data = JSON.parse(op.payload.data).data;
+          } catch (e) {
+          }
+          const result = {
+            data,
+            ok: op.payload.errors === null,
+            errors: op.payload.errors,
+          };
+          subscription.onData(result);
         }
         break;
       }
