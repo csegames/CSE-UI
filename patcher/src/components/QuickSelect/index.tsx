@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 
 export interface QuickSelectProps {
   items: any[];

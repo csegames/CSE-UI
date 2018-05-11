@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled, { keyframes, css } from 'react-emotion';
-import * as events  from '@csegames/camelot-unchained';
 
 import { patcher } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';

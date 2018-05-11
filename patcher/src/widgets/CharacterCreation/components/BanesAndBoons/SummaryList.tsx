@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as events  from '@csegames/camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import TraitSummary, { TraitSummaryStyle } from './TraitSummary';
 import SummaryListHeader from './SummaryListHeader';
