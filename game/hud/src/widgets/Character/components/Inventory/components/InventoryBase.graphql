@@ -5,6 +5,5 @@ query InventoryBase {
     }
     itemCount
     totalMass
-    currency
   }
 }

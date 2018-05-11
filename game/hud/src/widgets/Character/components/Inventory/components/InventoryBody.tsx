@@ -174,7 +174,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
           addRowButtonDisabled={buttonDisabled}
           removeRowButtonDisabled={removeAndPruneDisabled}
           pruneRowsButtonDisabled={removeAndPruneDisabled}
-          currency={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.currency : 0}
           itemCount={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.itemCount : 0}
           totalMass={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.totalMass : 0}
         />

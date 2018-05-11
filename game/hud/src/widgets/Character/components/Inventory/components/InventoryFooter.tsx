@@ -10,7 +10,6 @@ import { Tooltip, utils } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
-import CurrencyValue from './CurrencyValue';
 import InventoryRowActionButton from './InventoryRowActionButton';
 import { emptyStackHash, colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
 import eventNames, { DropItemCallback } from '../../../lib/eventNames';
@@ -93,13 +92,11 @@ export interface InventoryFooterProps {
   removeRowButtonDisabled: boolean;
   pruneRowsButtonDisabled: boolean;
 
-  currency: number;
   itemCount: number;
   totalMass: number;
 }
 
 export interface InventoryFooterState {
-  currency: number;
   itemCount: number;
   totalMass: number;
 }
@@ -110,7 +107,6 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   constructor(props: InventoryFooterProps) {
     super(props);
     this.state = {
-      currency: 0,
       itemCount: 0,
       totalMass: 0,
     };
@@ -143,15 +139,6 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
           />
         </div>
         <div>
-          <Tooltip content={`Currency: ${this.state.currency.toLocaleString()}`}>
-            <div className={css(style.insetDiv, customStyle.insetDiv)}>
-              <span className={
-                `${footerInfoIcons.gold} ${css(style.infoIcon, customStyle.infoIcon, style.goldIcon, customStyle.goldIcon)}`}
-              />
-              <CurrencyValue value={this.state.currency} />
-            </div>
-          </Tooltip>
-
           <Tooltip content={'Item Count'}>
             <div className={css(style.insetDiv, customStyle.insetDiv)}>
               <span className={
@@ -183,8 +170,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   public componentWillReceiveProps(nextProps: InventoryFooterProps) {
-    if (this.props.currency !== nextProps.currency ||
-        this.props.itemCount !== nextProps.itemCount ||
+    if (this.props.itemCount !== nextProps.itemCount ||
         this.props.totalMass !== nextProps.totalMass) {
 
       this.setBottomInfo();
@@ -198,7 +184,6 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   private setBottomInfo = () => {
     this.setState((state, props) => {
       return {
-        currency: props.currency,
         itemCount: props.itemCount,
         totalMass: props.totalMass,
       };
