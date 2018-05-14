@@ -490,7 +490,7 @@ interface clientInterface {
   ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 
   /* Deployable Items */
-  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void;
+  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any, abitraryString?: string): void;
 
   ResetItemPlacement(): void;
 
@@ -498,7 +498,8 @@ interface clientInterface {
 
   CancelItemPlacement(): void;
 
-  SendCommitItemRequest(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
+  SendCommitItemRequest(callback: (itemInstanceIDString: string, position: any, rotation: any,
+    arbitraryString?: string) => void): void;
 }
 
 export default clientInterface;

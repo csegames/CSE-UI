@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-import { client, Vec3F, Euler3f } from '@csegames/camelot-unchained';
+import { client, webAPI, Vec3F, Euler3f } from '@csegames/camelot-unchained';
 import { withGraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
@@ -21,6 +21,8 @@ import {
   getDimensionsOfElement,
 } from '../../../lib/utils';
 import queries from '../../../../../gqlDocuments';
+
+declare const toastr: any;
 
 export interface InventoryBodyStyles extends StyleDeclaration {
   inventoryBody: React.CSSProperties;
@@ -207,12 +209,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
         setTimeout(() => this.refetch(), 200);
       }
     });
-    client.SendCommitItemRequest((itemInstanceIDString: string, position: Vec3F, rotation: Euler3f) => {
-      // Calls a moveItem request to a world position.
-      // This then will call client.OnInventoryRemoved which will then sync the inventory with the server.
-      const item = _.find(this.props.inventoryItems, _item => _item.id === itemInstanceIDString);
-      base.onCommitPlacedItem(item, position, rotation);
-    });
+    client.SendCommitItemRequest(this.handleCommitItemRequest);
   }
 
   public componentWillUpdate(nextProps: InventoryBodyProps, nextState: InventoryBodyState) {
@@ -253,6 +250,44 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     });
     this.props.onChangeInventoryItems(res.data.myInventory.items);
     this.isFetching = false;
+  }
+
+  private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {
+    // Calls a moveItem request to a world position.
+    // This then will call client.OnInventoryRemoved which will then sync the inventory with the server.
+    if (actionId) {
+      // Handle as an item action
+      this.makeItemActionRequest(itemId, actionId, position, rotation);
+    } else {
+      const item = _.find(this.props.inventoryItems, _item => _item.id === itemId);
+      base.onCommitPlacedItem(item, position, rotation);
+    }
+  }
+
+  private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {
+    try {
+      const res = await webAPI.ItemAPI.PerformItemAction(
+        webAPI.defaultConfig,
+        client.loginToken,
+        client.shardID,
+        client.characterID,
+        itemId,
+        client.playerState.id,
+        actionId,
+        { WorldPosition: position, Rotation: rotation },
+      );
+      if (!res.ok) {
+        const data = JSON.parse(res.data);
+        if (data.FieldCodes && data.FieldCodes.length > 0) {
+          toastr.error(data.FieldCodes[0].Message, 'Oh No!', { timeout: 3000 });
+        } else {
+          // This means api server failed perform item action request but did not provide a message about what happened
+          toastr.error('An error occured', 'Oh No!', { timeout: 3000 });
+        }
+      }
+    } catch (e) {
+      toastr.error('There was an unhandled error!', 'Oh No!!', { timeout: 5000 });
+    }
   }
 
   // set up rows from scratch / works as a re-initialize as well

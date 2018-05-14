@@ -6,11 +6,12 @@
 
 import * as React from 'react';
 import { ql, client, events, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
+import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import ContextMenuAction from './ContextMenuAction';
 import eventNames from '../../../../lib/eventNames';
-import { prettifyText } from '../../../../lib/utils';
-import { InventoryItemFragment, ItemActionsFragment } from '../../../../../../gqlInterfaces';
+import { prettifyText, hasGroundPermissions, hasEquipmentPermissions } from '../../../../lib/utils';
+import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
 
 declare const toastr: any;
 
@@ -22,49 +23,58 @@ export interface ContextMenuContentCompProps {
 
 class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
   public render() {
+    const { item } = this.props;
+    const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
     return (
       <div>
-        {this.renderGearSlotButtons()}
-        {this.props.item.actions && this.props.item.actions.map((action) => {
+        {hasEquipmentPermissions(item) ? gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
+          return (
+            <ContextMenuAction
+              key={i}
+              name={`Equip to ${gearSlotSet.gearSlots.map((gearSlot, i) => {
+                if (i !== gearSlotSet.gearSlots.length - 1) {
+                  return prettifyText(gearSlot.id) + ', ';
+                } else {
+                  return prettifyText(gearSlot.id);
+                }
+              }).toString()}`}
+              onActionClick={() => this.onEquipItem(gearSlotSet.gearSlots)}
+              onMouseOver={() => this.onHighlightSlots(gearSlotSet.gearSlots)}
+              onMouseLeave={this.onDehighlightSlots}
+              syncWithServer={this.props.syncWithServer}
+            />
+          );
+        }) : null}
+        {item.actions && item.actions.map((action) => {
+          if (!action.enabled && !action.showWhenDisabled) {
+            return null;
+          }
           return (
             <ContextMenuAction
               key={action.id}
               name={action.name}
-              action={action}
+              action={action as ItemActionDefGQL}
               onActionClick={this.onActionClick}
               syncWithServer={this.props.syncWithServer}
             />
           );
         })}
-        {this.props.item.staticDefinition.deploySettings &&
-          <ContextMenuAction name={'Deploy'} onActionClick={this.onDeployItem} syncWithServer={this.props.syncWithServer} />
+        {hasGroundPermissions(item) && item.staticDefinition.deploySettings ?
+          <ContextMenuAction
+            name={'Deploy'}
+            onActionClick={this.onDeployItem}
+            syncWithServer={this.props.syncWithServer}
+          /> : null
         }
-        <ContextMenuAction name={'Drop item'} onActionClick={this.onDropItem} syncWithServer={this.props.syncWithServer} />
+        {hasGroundPermissions(item) ?
+          <ContextMenuAction
+            name={'Drop item'}
+            onActionClick={this.onDropItem}
+            syncWithServer={this.props.syncWithServer}
+          /> : null
+        }
       </div>
     );
-  }
-
-  private renderGearSlotButtons = () => {
-    const item = this.props.item;
-    const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
-    return gearSlotSets && gearSlotSets.map((gearSlotSet, i) => {
-      return (
-        <ContextMenuAction
-          key={i}
-          name={`Equip to ${gearSlotSet.gearSlots.map((gearSlot, i) => {
-            if (i !== gearSlotSet.gearSlots.length - 1) {
-              return prettifyText(gearSlot.id) + ', ';
-            } else {
-              return prettifyText(gearSlot.id);
-            }
-          }).toString()}`}
-          onActionClick={() => this.onEquipItem(gearSlotSet.gearSlots)}
-          onMouseOver={() => this.onHighlightSlots(gearSlotSet.gearSlots)}
-          onMouseLeave={this.onDehighlightSlots}
-          syncWithServer={this.props.syncWithServer}
-        />
-      );
-    });
   }
 
   private onEquipItem = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
@@ -88,7 +98,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
     contextMenuProps.close();
   }
 
-  private onDeployItem = () => {
+  private onDeployItem = (action?: ItemActionDefGQL) => {
     const { id, staticDefinition } = this.props.item;
     this.closeInventory();
     const deploySettings = {};
@@ -100,10 +110,18 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
 
     const _resourceID = staticDefinition.deploySettings.resourceID !== '0' ?
       staticDefinition.deploySettings.resourceID : staticDefinition.defaultResourceID;
-    client.StartPlacingItem(_resourceID, id, deploySettings);
+    client.StartPlacingItem(_resourceID, id, deploySettings, action ? action.id : null);
   }
 
-  private onActionClick = async (action: ItemActionsFragment) => {
+  private onActionClick = (action: ItemActionDefGQL) => {
+    if (action.uIReaction === 'PlacementMode') {
+      this.onDeployItem(action);
+    } else {
+      this.makeItemActionRequest(action);
+    }
+  }
+
+  private makeItemActionRequest = async (action: ItemActionDefGQL) => {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
@@ -111,7 +129,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         client.shardID,
         client.characterID,
         this.props.item.id,
-        client['playerState'].id,
+        client.playerState.id,
         action.id,
         null,
       );

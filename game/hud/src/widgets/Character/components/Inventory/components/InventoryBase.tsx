@@ -62,6 +62,12 @@ export const defaultInventoryBaseStyle: InventoryBaseStyle = {
   },
 };
 
+export interface ContainerPermissionDef {
+  userPermission: number;
+  isParent: boolean;
+  isChild: boolean;
+}
+
 export interface InventoryDataTransfer {
   item: InventoryItemFragment;
   position: number;
@@ -244,7 +250,7 @@ export function createRowElementsForContainerItems(payload: {
   containerID: string[],
   drawerID: string,
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void,
-  containerPermissions: number,
+  containerPermissions: ContainerPermissionDef | ContainerPermissionDef[],
   drawerMaxStats: ql.schema.ContainerDefStat_Single,
   drawerCurrentStats: DrawerCurrentStats,
   syncWithServer: () => void,

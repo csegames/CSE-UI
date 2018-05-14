@@ -15,7 +15,10 @@ import CraftingContainer from './Containers/CraftingContainer';
 import ItemContainer from './Containers/ItemContainer';
 import { InventoryDataTransfer, ContainerIdToDrawerInfo } from './InventoryBase';
 import { colors } from '../../../lib/constants';
+import { hasViewContentPermissions } from '../../../lib/utils';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+
+declare const toastr: any;
 
 export interface InventoryRowStyle extends StyleDeclaration {
   InventoryRow: React.CSSProperties;
@@ -185,6 +188,10 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
   }
 
   private toggleContainer = (index: number) => {
+    if (!hasViewContentPermissions(this.props.items[index].item)) {
+      toastr.error('You do not have viewing permissions for this container', 'Oh No!!', { timeout: 3000 });
+      return;
+    }
     const isOpen = _.find(this.state.containersOpen, container => container.itemIndex === index);
     if (isOpen) {
       this.hideContainer(index);

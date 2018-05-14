@@ -8,18 +8,20 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, webAPI, Tooltip } from '@csegames/camelot-unchained';
+import { client, webAPI, Tooltip, ItemPermissions } from '@csegames/camelot-unchained';
 
 import * as base from '../InventoryBase';
 import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
+import { ContainerPermissionDef } from '../InventoryBase';
 import { rowActionIcons } from '../../../../lib/constants';
 import {
   calcRowsForContainer,
   getContainerColor,
   getContainerInfo,
   createMoveItemRequestToContainerPosition,
+  isContainerItem,
 } from '../../../../lib/utils';
 import {
   ContainerDrawersFragment,
@@ -128,7 +130,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     };
   }
   public render() {
-    const { drawer, containerItem, containerID, permissions, syncWithServer } = this.props;
+    const { drawer, containerItem, containerID, syncWithServer } = this.props;
     const { stats, requirements } = drawer;
 
     // Grab items from containerIdToDrawerInfo (Managed by CharacterMain)
@@ -142,6 +144,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     // Get header info
     const { totalUnitCount, weight } = getContainerInfo(drawerItems);
 
+    const containerPermissions = this.getContainerPermissions();
+
     // Create rows
     const { rows, rowData } = base.createRowElementsForContainerItems({
       state: this.state,
@@ -150,7 +154,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       containerID,
       drawerID: drawer.id,
       onDropOnZone: this.onDropOnZone,
-      containerPermissions: permissions ? permissions.userPermissions : 0,
+      containerPermissions,
       drawerMaxStats: stats,
       drawerCurrentStats: { totalUnitCount, weight },
       syncWithServer,
@@ -276,6 +280,51 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     );
 
     return rowData;
+  }
+
+  private getContainerPermissions = (): ContainerPermissionDef | ContainerPermissionDef[] => {
+    const { containerID, inventoryItems, containerItem } = this.props;
+    const itemPermissions: ContainerPermissionDef = {
+      userPermission: containerItem.permissibleHolder ? containerItem.permissibleHolder.userPermissions : 0,
+      isChild: false,
+      isParent: false,
+    };
+
+    let containerPermissionsArray: ContainerPermissionDef[] = [itemPermissions];
+
+    if (containerID.length > 1) {
+      const parentPermissions: ContainerPermissionDef = {
+        userPermission: _.find(inventoryItems, item => item.id === containerID[0]).permissibleHolder.userPermissions,
+        isChild: false,
+        isParent: true,
+      };
+      containerPermissionsArray.push(parentPermissions);
+    }
+
+    function getChildContainerPermissions(containerItem: InventoryItemFragment) {
+      if (isContainerItem(containerItem)) {
+        return;
+      }
+      containerItem.containerDrawers.forEach((drawer) => {
+        drawer.containedItems.forEach((_containedItem) => {
+          if (_containedItem.permissibleHolder &&
+              _containedItem.permissibleHolder.userPermissions ! & ItemPermissions.Ground) {
+            const childPermissions: ContainerPermissionDef = {
+              userPermission: _containedItem.permissibleHolder.userPermissions,
+              isChild: true,
+              isParent: false,
+            };
+            containerPermissionsArray.push(childPermissions);
+          }
+
+          getChildContainerPermissions(containerItem);
+        });
+      });
+    }
+
+    getChildContainerPermissions(containerItem);
+
+    return containerPermissionsArray.length > 1 ? containerPermissionsArray : itemPermissions;
   }
 
   private onDropOnZone = (dragItemData: base.InventoryDataTransfer, dropZoneData: base.InventoryDataTransfer) => {

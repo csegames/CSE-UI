@@ -8,8 +8,12 @@ import * as _ from 'lodash';
 import { ql, client, utils, Faction, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
-import { SlotNumberToItem, InventoryDataTransfer } from '../components/Inventory/components/InventoryBase';
 import { ActiveFilters } from '../components/Inventory/Inventory';
+import {
+  SlotNumberToItem,
+  InventoryDataTransfer,
+  ContainerPermissionDef,
+} from '../components/Inventory/components/InventoryBase';
 import {
   InventoryItemFragment,
   ContainerDrawersFragment,
@@ -418,6 +422,123 @@ export function getContainerID(item: InventoryItemFragment) {
   }
 }
 
+export function hasTradePermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Trade;
+}
+
+export function hasTrashPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Trash;
+}
+
+export function hasCraftWithVoxPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.CraftWithVox;
+}
+
+export function hasControlPermissions(item: InventoryItemFragment) {
+  // Can jump on and fire seige engines
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Control;
+}
+
+export function hasAddContentPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.AddContents;
+}
+
+export function hasRemoveContentPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.RemoveContents;
+}
+
+export function hasViewContentPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.ViewContents;
+}
+
+export function hasModifyDisplayPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.ModifyDisplay;
+}
+
+export function hasGroundPermissions(item: InventoryItemFragment) {
+  // Can be placed on ground ex) Deployed, Drop
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Ground;
+}
+
+export function hasInventoryPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Inventory;
+}
+
+export function hasEquipmentPermissions(item: InventoryItemFragment) {
+  const itemMeetsRequirements = item.equiprequirement &&
+    (item.equiprequirement.status === 'RequirementMet' || item.equiprequirement.status === 'NoRequirement');
+  if ((!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) && itemMeetsRequirements) {
+    return ItemPermissions.All;
+  }
+
+  return itemMeetsRequirements && ((item && !item.permissibleHolder) ||
+      (item && item.permissibleHolder && item.permissibleHolder.userPermissions & ItemPermissions.Equipment));
+}
+
+export function hasContainerPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Container;
+}
+
+export function hasVoxPermissions(item: InventoryItemFragment) {
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.Vox;
+}
+
+export function hasAllPermissions(item: InventoryItemFragment){
+  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return ItemPermissions.All;
+  }
+
+  return item.permissibleHolder.userPermissions & ItemPermissions.All;
+}
+
 export function hasDurabilityStats(item: InventoryItemFragment) {
   let hasStats = false;
   if (item && item.stats && item.stats.durability) {
@@ -546,7 +667,7 @@ export function getTooltipColor(faction: Faction) {
 export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
                                         dropDataTransfer: InventoryDataTransfer,
                                         dropContainerID: string[],
-                                        containerPermissions: number,
+                                        containerPermissions: ContainerPermissionDef | ContainerPermissionDef[],
                                         drawerMaxStats: ql.schema.ContainerDefStat_Single,
                                         drawerCurrentStats: DrawerCurrentStats,
                                         showToasts: boolean) {
@@ -570,7 +691,10 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
   const isAnEquippedItem = dragDataTransfer.gearSlots;
 
   // Does user have Container Permissions (Add, Remove, See)
-  const userMeetsPermissions = !containerPermissions || containerPermissions & ItemPermissions.AddContents;
+  const userMeetsPermissions = !_.isArray(containerPermissions) ?
+    containerPermissions.userPermission & ItemPermissions.AddContents :
+      _.findIndex(containerPermissions, permission =>
+        permission.isParent && permission.userPermission & ItemPermissions.AddContents) === -1;
 
   // Check if drop item would exceed max Drawer Stats (maxItemCount, maxMass)
   const meetsUnitCountStat = drawerMaxStats.maxItemCount === -1 ||
@@ -593,6 +717,10 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
     if (showToasts) {
       if (isAnEquippedItem) {
         toastr.error('Try moving the equipped item to the inventory first', 'Try this', { timeout: 3000 });
+      }
+
+      if (!userMeetsPermissions) {
+        toastr.error('You do not have permissions to add items to this container', 'Oh No!', { timeout: 3000 });
       }
 
       if (doubleNestingContainer) {

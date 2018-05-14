@@ -6,7 +6,7 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 import styled, { css } from 'react-emotion';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
-import { getInventoryDataTransfer } from '../../../lib/utils';
+import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import { InventoryDataTransfer } from '../../Inventory/components/InventoryBase';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
@@ -91,11 +91,17 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
   public onDrop(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
     const item = e.dataTransfer.item;
-    if (item.location.inventory) {
+    if (this.canEquip(item) && item.location.inventory) {
       item.location.inventory = null;
       this.equipItem(item, this.props.equippedItem);
-    } else {
+    } else if (!item.location.inventory) {
       toastr.error('Move item out of container, then try to equip it.', 'Try this', { timeout: 2000 });
+    } else if (!this.canEquip(item)) {
+      if (item.equiprequirement && item.equiprequirement.requirementDescription) {
+        toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
+      } else {
+        toastr.error('You cannot equip this item', 'Oh No!', { timeout: 3000 });
+      }
     }
   }
 
@@ -156,7 +162,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   private canEquip = (dragItem: InventoryItemFragment) => {
-    if (dragItem && dragItem.staticDefinition && !dragItem.location.inContainer) {
+    // Check permissions and gearSlots
+    if (dragItem && hasEquipmentPermissions(dragItem) && dragItem.staticDefinition && !dragItem.location.inContainer) {
       const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
       let canEquip = false;
       gearSlotSets.forEach((set) => {
@@ -169,6 +176,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
       return canEquip;
     }
+
+    return false;
   }
 
   private equipItem = (inventoryItem: InventoryItemFragment, equippedItem: EquippedItemFragment) => {

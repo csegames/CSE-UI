@@ -11,7 +11,7 @@ import { ql } from '@csegames/camelot-unchained';
 
 import { SlotIndexInterface } from './InventorySlot';
 import EmptyItem, { EmptyItemProps } from '../../EmptyItem';
-import { InventoryDataTransfer } from './InventoryBase';
+import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { getInventoryDataTransfer, isContainerSlotVerified } from '../../../lib/utils';
@@ -34,7 +34,7 @@ export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
   slotIndex: SlotIndexInterface;
   disableDrop: boolean;
   onDrop: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  containerPermissions: number;
+  containerPermissions: ContainerPermissionDef | ContainerPermissionDef[];
   drawerMaxStats?: ql.schema.ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
 }

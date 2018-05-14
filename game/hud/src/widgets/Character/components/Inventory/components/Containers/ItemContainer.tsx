@@ -8,14 +8,18 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ItemPermissions } from '@csegames/camelot-unchained';
 
 import * as base from '../InventoryBase';
 import { InventorySlotItemDef } from '../InventorySlot';
 import Drawer from './Drawer';
 import ContainerHeader from './ContainerHeader';
-import { getContainerColor } from '../../../../lib/utils';
 import { ContainerDrawersFragment } from '../../../../../../gqlInterfaces';
+import {
+  getContainerColor,
+  hasViewContentPermissions,
+  hasAddContentPermissions,
+  hasRemoveContentPermissions,
+} from '../../../../lib/utils';
 
 const Container = styled('div')`
   position: relative;
@@ -84,10 +88,6 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
 class ItemContainer extends React.Component<ItemContainerProps> {
   public render() {
     const { item } = this.props.item;
-    const userPermissions = item.permissibleHolder && item.permissibleHolder.userPermissions;
-    const canViewContents = !userPermissions || userPermissions & ItemPermissions.ViewContents;
-    const canAddContents = !userPermissions || userPermissions & ItemPermissions.AddContents;
-    const canRemoveContents = !userPermissions || userPermissions & ItemPermissions.RemoveContents;
 
     const overlayColor = getContainerColor(item, 0.3);
     const fadeColor = getContainerColor(item, 0.05);
@@ -99,17 +99,17 @@ class ItemContainer extends React.Component<ItemContainerProps> {
         <ContainerSubHeader>
           <PermissionIcon
             className='fa fa-eye'
-            color={item.containerColor.hex}
-            opacity={canViewContents ? 1 : 0.3}
+            color={'#fff'}
+            opacity={hasViewContentPermissions(item) ? 1 : 0.3}
           />
           <PermissionIcon
             className='icon-permissions-drop-in'
-            color={item.containerColor.hex}
-            opacity={canAddContents ? 1 : 0.3} />
+            color={'#fff'}
+            opacity={hasAddContentPermissions(item) ? 1 : 0.3} />
           <PermissionIcon
             className='icon-permissions-pick-up'
-            color={item.containerColor.hex}
-            opacity={canRemoveContents ? 1 : 0.3}
+            color={'#fff'}
+            opacity={hasRemoveContentPermissions(item) ? 1 : 0.3}
           />
         </ContainerSubHeader>
         {item.containerDrawers.map((_drawer: ContainerDrawersFragment, i: number) => {

@@ -92,6 +92,10 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      nuada: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1300/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       nuadaPrep: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1400/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -136,6 +140,10 @@ module.exports = {
       },
       wyrmlingPrep: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      nuada: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1300/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
       nuadaPrep: {
@@ -219,6 +227,10 @@ module.exports = {
         script: 'nps build,clean.wyrmlingPrep,copy.wyrmlingPrep',
         description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
       },
+      nuada: {
+        script: 'nps build,clean.nuada,copy.nuada',
+        description: 'Builds the module and copies to the Nuada (1300) UI override directory',
+      },
       nuadaPrep: {
         script: 'nps build,clean.nuadaPrep,copy.nuadaPrep',
         description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
@@ -234,6 +246,10 @@ module.exports = {
       ignoreLintHatchery: {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
+      },
+      ignoreLintNuada: {
+        script: 'nps build.ignoreLint,clean.nuada,copy.nuada',
+        description: 'Builds the module and copies to the Nuada (1300) UI override directory',
       },
       ignoreLintNuadaPrep: {
         script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',

@@ -7,17 +7,20 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, ContextMenu, Tooltip, ItemPermissions, events } from '@csegames/camelot-unchained';
+import { ql, ContextMenu, Tooltip, events } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
-import { InventoryDataTransfer } from './InventoryBase';
+import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
 import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
+import { hasEquipmentPermissions } from '../../../lib/utils';
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
+
+declare const toastr: any;
 
 export const slotDimensions = 62;
 
@@ -89,7 +92,7 @@ export interface ContainerSlotItemDef {
   groupStackHashID?: string;
   icon: string;
   slotIndex: SlotIndexInterface;
-  containerPermissions?: number;
+  containerPermissions?: ContainerPermissionDef | ContainerPermissionDef[];
   quality?: number;
   itemCount?: number;
   item?: InventoryItemFragment;
@@ -130,8 +133,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const { item, equippedItems } = this.props;
 
     const usesContainer = item.slotType === SlotType.Container || item.slotType === SlotType.CraftingContainer;
-    const hasViewPermissions = !this.props.item.containerPermissions ||
-      this.props.item.containerPermissions & ItemPermissions.ViewContents;
     const id = item.itemID || item.groupStackHashID;
     const tooltipVisible = getDragStore().isDragging ? false : (this.state.showTooltip);
 
@@ -162,7 +163,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           >
             <ItemContainer
               slotImage={this.props.showGraySlots ? 'images/inventory/item_slot_grey.png' : 'images/inventory/item_slot.png'}
-              onClick={usesContainer && hasViewPermissions ? this.onToggleContainer : null}
+              onClick={usesContainer ? this.onToggleContainer : null}
               onMouseOver={this.onMouseOver}
               onMouseLeave={this.onMouseLeave}
               onDoubleClick={this.onEquipItem}>
@@ -299,6 +300,16 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
   private onEquipItem = () => {
     const item = this.props.item.item;
+    // Check if has permissions
+    if (!hasEquipmentPermissions(item)) {
+      // Item does not have equip permissions
+      if (item.equiprequirement && item.equiprequirement.requirementDescription) {
+        toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
+      } else {
+        toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
+      }
+      return;
+    }
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
       const { gearSlotSets } = this.props.item.item.staticDefinition;
       if (gearSlotSets.length === 2 &&

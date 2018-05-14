@@ -39,10 +39,6 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
     this.init();
   }
 
-  public shouldComponentUpdate(nextProps: SkillQueueProps, nextState: SkillQueueState) {
-    return !_.isEqual(nextState.queuedSkills, this.state.queuedSkills);
-  }
-
   private init = async () => {
     const skills = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
     skills.forEach((skill: ApiSkillInfo) => events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent));

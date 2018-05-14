@@ -9,10 +9,13 @@ import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
+import { hasEquipmentPermissions } from '../../../lib/utils';
 import Item from '../../Item';
 import EmptyItem from '../../EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+
+declare const toastr: any;
 
 export const itemDimensions = {
   height: 70,
@@ -74,6 +77,11 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
 
   private onEquipItem = () => {
     const { item } = this.props;
+    if (!hasEquipmentPermissions(item)) {
+      // Check if item has equipment permissions
+      toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
+      return;
+    } 
     const payload: EquipItemCallback = {
       inventoryItem: item,
       willEquipTo: this.props.gearSlots,

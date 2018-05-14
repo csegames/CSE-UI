@@ -13,12 +13,17 @@ import styled from 'react-emotion';
 import ItemStack from '../../ItemStack';
 import CraftingItem from './CraftingItem';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from './InventorySlot';
-import { InventoryDataTransfer } from './InventoryBase';
+import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
 import eventNames from '../../../lib/eventNames';
-import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo  } from '../../../lib/utils';
+import {
+  getInventoryDataTransfer,
+  isContainerSlotVerified,
+  getContainerColor,
+  getContainerInfo,
+} from '../../../lib/utils';
 
 const Container = styled('div')`
   display: flex;
@@ -42,6 +47,7 @@ export const SlotOverlay = styled('div')`
   left: 2px;
   bottom: 2px;
   right: 2px;
+  z-index: 10;
   cursor: pointer;
   background-color: ${(props: any) => props.backgroundColor};
   border: ${(props: any) => props.containerIsOpen ? `1px solid ${props.borderColor}` : '0px'};
@@ -81,7 +87,7 @@ export interface ItemComponentProps extends DragAndDropInjectedProps {
   onDragStart: () => void;
   onDragEnd: () => void;
   onDrop: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  containerPermissions: number;
+  containerPermissions: ContainerPermissionDef | ContainerPermissionDef[];
   containerID?: string[];
   drawerID?: string;
   containerIsOpen?: boolean;
@@ -289,7 +295,16 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       scrollBodyId: 'inventory-scroll-container',
       dropTarget: item.slotType !== SlotType.CraftingItem && (props.filtering ? false : true),
       disableDrag: props.filtering || item.slotType === SlotType.CraftingItem ||
-        (props.containerPermissions && (props.containerPermissions & ItemPermissions.RemoveContents) === 0),
+        (props.containerPermissions && (_.isArray(props.containerPermissions) ?
+        
+          // if container permissions is an array, search parent containers and this container
+          // if they have RemoveContents permission
+          _.findIndex(props.containerPermissions, (permission: ContainerPermissionDef) =>
+            (permission.isParent || (!permission.isChild && !permission.isParent)) &&
+            permission.userPermission & ItemPermissions.RemoveContents) === -1 :
+
+          // if does not have parent containers, just return this container to see if it has RemoveContents permissions
+          (props.containerPermissions && props.containerPermissions.userPermission & ItemPermissions.RemoveContents) === 0)),
     };
   },
 )(ItemComponent);
