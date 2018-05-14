@@ -113,6 +113,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         this.props.item.id,
         client['playerState'].id,
         action.id,
+        null,
       );
       if (res.ok) {
         if (action.uIReaction === 'CloseInventory') {

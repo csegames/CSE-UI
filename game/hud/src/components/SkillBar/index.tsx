@@ -7,9 +7,25 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { restAPI, client } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import styled from 'react-emotion';
 import SkillButton from './SkillButton';
+
+const query = `
+  {
+    myCharacter {
+      skills {
+        id
+        name
+        icon
+        notes
+        tracks
+      }
+    }
+  }
+`;
 
 const Container = styled('div')`
   display: flex;
@@ -49,6 +65,7 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   public render() {
     return (
       <Container>
+        <GraphQL query={query} onQueryResult={this.initializeSkills} />
         {this.state.skills.map((state: ApiSkillInfo, index: number) => (
           <SkillButton key={index} skillInfo={state} index={index + 1} />
         ))}
@@ -57,7 +74,6 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   }
 
   public componentDidMount() {
-    this.initializeSkills();
     client.OnAbilityCreated(this.onSkillCreated);
     client.OnAbilityDeleted(this.onSkillDeleted);
   }
@@ -66,10 +82,16 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
     return !_.isEqual(nextState.skills, this.state.skills);
   }
 
-  private initializeSkills = async () => {
-    const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
-    const skills = this.updateSkills(res);
-    this.setState({ skills });
+  private initializeSkills = (graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>) => {
+    if (graphql.loading || !graphql.data) {
+      return;
+    }
+
+    const myCharacter = typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
+    const skills = this.updateSkills(myCharacter.skills);
+    if (!_.isEqual(skills, this.state.skills)) {
+      this.setState({ skills });
+    }
   }
 
   private updateSkills = (skills: any[]) => {
