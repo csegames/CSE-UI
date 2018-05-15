@@ -569,9 +569,14 @@ export function distributeItemsNoFilter(slotsData: {
       if (wantPosition === -1 || (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id !== id)) {
         partitionedItems.noPositionItems.push(item);
         return;
-      } else if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
+      }
+
+      if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
+        // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
+        stackGroupIdToItemIDs[id].push(item.id);
         return;
       }
+
       slotNumberToItem[wantPosition] = {
         id,
         isCrafting: isCraftingItem(item),
@@ -935,7 +940,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
     }
 
     if (isStackedItem(item) || isCraftingItem(item)) {
-      const id = getItemMapID(item);
+      let id = getItemMapID(item);
       const stackId = item.stackHash !== emptyStackHash ? item.stackHash : id;
       if (itemHasPosition(item)) {
         const wantPosition = getItemInventoryPosition(item);
@@ -966,7 +971,6 @@ export function partitionItems(items: InventoryItemFragment[]) {
         return;
 
       } else {
-
         let stackGroupID = '';
         const mapEntries =  idToGroupIDMap[id];
         const stackGroupIndex = mapEntries ? 0 : -1;
@@ -1002,7 +1006,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
   temporaryNoPositionStackedItems.forEach((item) => {
     const foundOtherStack = _.find(items, invItem => item.stackHash !== emptyStackHash ?
       item.stackHash === invItem.stackHash : getItemMapID(item) === getItemMapID(invItem));
-    const id = getItemMapID(item);
+    let id = getItemMapID(item);
     const stackId = item.stackHash !== emptyStackHash ? item.stackHash : id;
 
     if (foundOtherStack && itemHasPosition(foundOtherStack)) {

@@ -51,6 +51,7 @@ export const SlotOverlay = styled('div')`
   cursor: pointer;
   background-color: ${(props: any) => props.backgroundColor};
   border: ${(props: any) => props.containerIsOpen ? `1px solid ${props.borderColor}` : '0px'};
+  z-index: 10;
   &:hover {
     box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
   };
@@ -210,9 +211,10 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         itemComponent =
           <CraftingItem
             count={item.itemCount}
-            quality={item.quality}
+            quality={Number(item.quality.toFixed(2))}
             icon={item.icon}
           />;
+        break;
       }
       case SlotType.Stack: {
         const count = item.stackedItems && item.stackedItems.length > 1 ?

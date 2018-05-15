@@ -400,12 +400,12 @@ export function getItemInstanceID(item: InventoryItemFragment) {
   return item.id;
 }
 
-export function getItemMapID(item: InventoryItemFragment) {
+export function getItemMapID(item: InventoryItemFragment, pos?: number) {
   if (item && item.staticDefinition) {
     if (isCraftingItem(item)) {
-      return item.staticDefinition.name + item.staticDefinition.id;
+      return `${item.staticDefinition.name + item.staticDefinition.id}${pos || ''}`;
     } else if (isStackedItem(item)) {
-      return item.staticDefinition.name + item.staticDefinition.id;
+      return `${item.staticDefinition.name + item.staticDefinition.id}${pos || ''}`;
     } else {
       return item.id;
     }
