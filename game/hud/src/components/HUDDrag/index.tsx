@@ -503,13 +503,13 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private static fixedToEdgeSnap(x: number, y: number, h: number, w: number) {
     const s = { w: window.innerWidth, h: window.innerHeight };
 
-    const left = y < (s.w - (y - w));
-    const top = x < (s.h - (x - h));
+    const left = x < (s.w - (x + w));
+    const top = y < (s.h - (y + h));
 
     return {
-      x: left ? x : s.w - x + w,
+      x: left ? x : s.w - (x + w),
       xAnchor: left ? Edge.LEFT : Edge.RIGHT,
-      y: top ? y : s.h - y + h,
+      y: top ? y : s.h - (y + h),
       yAnchor: top ? Edge.TOP : Edge.BOTTOM,
     };
   }

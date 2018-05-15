@@ -11,14 +11,10 @@ enum HUDZOrder {
   Chat,
   Compass,
   Crafting,
-  EnemyTarget,
   Announcement,
-  FriendlyTarget,
   HUDNav,
   Inventory,
-  PlayerHealth,
   PlotControl,
-  RefillAmmo,
   ReleaseControl,
   Respawn,
   MOTD,
@@ -26,8 +22,12 @@ enum HUDZOrder {
   EnemyTargetSiegeHealth,
   FriendlyTargetSiegeHealth,
   PlayerSiegeHealth,
+  PlayerHealth,
+  FriendlyTarget,
+  EnemyTarget,
   Scoreboard,
   SkillQueue,
+  RefillAmmo,
 }
 
 export default HUDZOrder;
