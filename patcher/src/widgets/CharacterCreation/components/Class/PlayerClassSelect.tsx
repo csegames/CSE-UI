@@ -5,11 +5,13 @@
  */
 
 import * as React from 'react';
-import { Archetype, Faction, events } from '@csegames/camelot-unchained';
+import { includes } from 'lodash';
+import { Archetype, Faction, Race, Gender, events, webAPI } from '@csegames/camelot-unchained';
 
-import { PlayerClassInfo } from '../services/session/playerClasses';
-import { FactionInfo } from '../services/session/factions';
-import Animate from '../../../lib/Animate';
+import PlayerClassVisualEffects from './PlayerClassVisualEffects';
+import { PlayerClassInfo } from '../../services/session/playerClasses';
+import { FactionInfo } from '../../services/session/factions';
+import { RaceInfo } from '../../services/session/races';
 
 /* tslint:disable */
 const classText: any = {
@@ -37,9 +39,11 @@ const classText: any = {
 
 export interface PlayerClassSelectProps {
   classes: PlayerClassInfo[];
+  selectedGender: Gender;
+  selectedRace: RaceInfo;
   selectedClass: PlayerClassInfo;
-  selectClass: (playerClass: PlayerClassInfo) => void;
   selectedFaction: FactionInfo;
+  selectClass: (playerClass: PlayerClassInfo) => void;
 }
 
 export interface PlayerClassSelectState {
@@ -59,12 +63,10 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
     if (!this.props.classes) return <div> loading classes</div>;
 
     let videoTitle = this.props.selectedFaction.shortName;
-    let view: any = null;
     let text: any = null;
     let name: any = null;
     if (this.props.selectedClass) {
       name = <h2 className='display-name'>{this.props.selectedClass.name}</h2>;
-      view = <div className={`standing__${Archetype[this.props.selectedClass.id]}`}></div>;
       text = <div className='selection-description player-class-s-d'>
         {classText[Archetype[this.props.selectedClass.id]]}
       </div>;
@@ -84,6 +86,12 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
 
     return (
       <div className='page'>
+        <PlayerClassVisualEffects
+          selectedClass={this.props.selectedClass}
+          selectedRace={this.props.selectedRace}
+          selectedFaction={this.props.selectedFaction}
+          selectedGender={this.props.selectedGender}
+        />
         <video src={`videos/${videoTitle}.webm`} poster={`videos/${videoTitle}.jpg`} autoPlay loop></video>
           {name}
         <div className='selection-box'>
@@ -93,16 +101,6 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
               c.faction === Faction.Factionless).map(this.generateClassContent)}
           </div>
           {text}
-        </div>
-        <div className='view-content'>
-          <Animate
-            className='animate'
-            animationEnter='fadeIn'
-            animationLeave='fadeOut'
-            durationEnter={400}
-            durationLeave={500}>
-            {view}
-          </Animate>
         </div>
       </div>
     );
@@ -114,11 +112,14 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
   }
 
   private generateClassContent = (info: PlayerClassInfo, index: number) => {
+    const { selectedRace, selectedGender, selectedClass } = this.props;
+    const race = includes(Race[selectedRace.id].toLowerCase(), 'human') ?
+      webAPI.raceString(selectedRace.id) : Race[selectedRace.id];
     return (
       <div
         key={info.id}
-        className={`class-btn thumb__${Archetype[info.id]} ${this.props.selectedClass !== null ? 
-          this.props.selectedClass.id === info.id ? 'active' : '' : ''}`}
+        className={`class-btn thumb__${race}_${Gender[selectedGender]}_${Archetype[info.id]} ${selectedClass
+          !== null ? this.props.selectedClass.id === info.id ? 'active' : '' : ''}`}
         onClick={this.selectClass.bind(this, info)}></div>
     );
   }

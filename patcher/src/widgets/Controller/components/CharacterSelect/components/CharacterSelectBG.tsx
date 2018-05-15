@@ -6,19 +6,21 @@
  */
 
 import * as React from 'react';
+import { includes } from 'lodash';
 import styled, { css, keyframes, cx } from 'react-emotion';
 import { webAPI, Race, Archetype, Gender, Faction } from '@csegames/camelot-unchained';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
+import CharacterImages from '../../../../../lib/characterImages';
 
 const charTransitionAnim = keyframes`
   from {
-    background-position: 25%;
+    left: 10%;
     opacity: 0;
   }
 
   to {
-    background-position: 35%;
+    left: 15%;
     opacity: 1;
   }
 `;
@@ -84,15 +86,12 @@ const CharacterMetaInfo = styled('div')`
   opacity:.7;
 `;
 
-const CharImg = styled('div')`
+const CharImg = styled('img')`
+  left: 10%;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: auto;
   z-index: 2;
   opacity: ${props => props.opacity};
-  background-repeat: no-repeat !important;
-  background-position: 25% !important;
-  background-size: contain !important;
   height: ${props => props.height || 80}%;
   bottom: 25px;
 `;
@@ -151,13 +150,14 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
 
   public render() {
     const visualFXChar = this.state.visualFXChar || this.state.firstChar;
-
     if (visualFXChar) {
       const { selectedCharacter } = this.props;
-      const { faction, race, gender } = selectedCharacter;
-      const charImgClass = [`bgelement char ${Faction[faction].toLowerCase()} standing__${Race[race]}--${Gender[gender]}`];
+      const { faction, race, gender, archetype } = selectedCharacter;
+      const raceString = includes(Race[race].toLowerCase(), 'human') ? webAPI.raceString(race) : Race[race];
+      const charImgClass = [`bgelement char`];
       const charBaseClass = [Faction[faction].toLowerCase()];
       const charNameClass = [];
+      const charInfo = `${raceString}${Gender[gender]}${Archetype[archetype]}`;
 
       if (this.state.shouldTransition) {
         charNameClass.push(CharNameTransitionAnim);
@@ -176,11 +176,13 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
             key={visualFXChar.faction}
             selectedFaction={{ id: visualFXChar.faction }}
             selectedRace={{ id: visualFXChar.race }}
-            selectedGender={visualFXChar.gender}
+            selectedClass={{ id: visualFXChar.archetype }}
           />
           <CharImg
             className={cx(charImgClass)}
-            height={selectedCharacter.race === Race.Luchorpan ? 65 : 80}
+            src={CharacterImages[charInfo]}
+            height={selectedCharacter.race === Race.Luchorpan ||
+              selectedCharacter.archetype === Archetype.WintersShadow ? 65 : 80}
             opacity={this.state.visualFXChar === null ? 1 : 0}
           />
           <CharBase className={cx(charBaseClass)} opacity={this.state.visualFXChar === null ? 1 : 0} />
@@ -203,6 +205,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
 
   public componentDidMount() {
     this.setState({ firstChar: this.props.selectedCharacter });
+    this.playTransitionAnimation();
   }
 
   public componentWillReceiveProps(nextProps: CharacterSelectBGProps) {

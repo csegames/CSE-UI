@@ -15,8 +15,8 @@ import { events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@cse
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
-import PlayerClassSelect from './components/PlayerClassSelect';
-import RaceSelect from './components/RaceSelect';
+import PlayerClassSelect from './components/Class/PlayerClassSelect';
+import RaceSelect from './components/Race/RaceSelect';
 import AttributesSelect from './components/AttributesSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
 import Navigation, { NavigationPageInfo } from './components/Navigation';
@@ -158,9 +158,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         content = (
           <PlayerClassSelect
             classes={this.props.playerClassesState.playerClasses}
+            selectedGender={this.props.gender}
+            selectedRace={this.props.racesState.selected}
             selectedClass={this.props.playerClassesState.selected}
-            selectClass={this.classSelect}
             selectedFaction={this.props.factionsState.selected}
+            selectClass={this.classSelect}
           />
         );
         break;

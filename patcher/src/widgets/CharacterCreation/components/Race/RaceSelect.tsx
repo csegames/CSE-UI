@@ -8,10 +8,10 @@ import * as React from 'react';
 
 import { Race, Gender, events } from '@csegames/camelot-unchained';
 
-import { RaceInfo } from '../services/session/races';
-import { FactionInfo } from '../services/session/factions';
+import { RaceInfo } from '../../services/session/races';
+import { FactionInfo } from '../../services/session/factions';
 import RaceVisualEffects from './RaceVisualEffects';
-import Animate from '../../../lib/Animate';
+import Animate from '../../../../lib/Animate';
 
 // tslint:disable
 const raceText: any = {

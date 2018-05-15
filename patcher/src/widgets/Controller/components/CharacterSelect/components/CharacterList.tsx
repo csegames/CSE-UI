@@ -40,7 +40,7 @@ const ServerTitle = styled('div')`
   div {
     display: inline;
     text-align: left;
-    margin-top: 2px;
+    margin-top: 6px;
     margin-left: 45px;
   }
   font-family: "Caudex";
@@ -52,6 +52,7 @@ const ServerInfo = styled('div')`
   height: 20px;
   width: 407px;
   margin-left: -33px;
+  margin-top: 3px;
   font-size: 12px;
   p {
     display: inline;
@@ -81,6 +82,11 @@ const ServerOptionsButton = styled('div')`
     color: #fff;
     filter: drop-shadow(1px 1px 5px rgba(255,255,255,0.5));
   }
+`;
+
+const Body = css`
+  transition: 0.5s ease;
+  padding: 0 0 0 15px;
 `;
 
 export interface CharacterListProps {
@@ -120,23 +126,17 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
           onToggleCollapse={this.onToggleCollapse}
           animationClass={this.handleAnimationClass}
           styles={index === sortedServers.length - 1 ? {
-            body: css`
-              transition: 0.5s ease;
-            `,
+            body: Body,
             container: css`
               margin-bottom: 145px;
             `,
           } : index === 0 ? {
-            body: css`
-              transition: 0.5s ease;
-            `,
+            body: Body,
             container: css`
               margin-top: 15px;
             `,
           } : {
-            body: css`
-              transition: 0.5s ease;
-            `,
+            body: Body,
           }}
           title={(collapsed: boolean) =>
             <Server>

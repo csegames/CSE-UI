@@ -6,13 +6,13 @@
 
 import * as React from 'react';
 import { Race, Gender } from '@csegames/camelot-unchained';
-import { RaceInfo } from '../services/session/races';
-import { FactionInfo } from '../services/session/factions';
-import VisualEffects from '../../../components/VisualEffects/VisualEffects';
+import { RaceInfo } from '../../services/session/races';
+import { FactionInfo } from '../../services/session/factions';
+import VisualEffects from '../../../../components/VisualEffects/VisualEffects';
 
-import snowParticles from '../particles/snowParticles';
-import glowyOrbsParticles from '../particles/glowyOrbsParticles';
-import dustParticles from '../particles/dustParticles';
+import snowParticles from '../../particles/snowParticles';
+import glowyOrbsParticles from '../../particles/glowyOrbsParticles';
+import dustParticles from '../../particles/dustParticles';
 
 export interface RaceVisualEffectsProps {
   selectedRace: Partial<RaceInfo>;
@@ -29,7 +29,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
   public render() {
     const { selectedRace, selectedGender, hideCharImg } = this.props;
     const arthurianLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian',resistance: 120 },
+      { id: 'bg', extraClass: 'arthurian', resistance: 120 },
       { id: 'layer1', extraClass: 'arthurian',resistance: 90},
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian',resistance: 40 },

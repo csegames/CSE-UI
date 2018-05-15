@@ -134,15 +134,16 @@ const CharPic = styled('div')`
     z-index: 0;
   }
   &:before {
-    position:absolute;
-    content:"";
-    background: url(${props => props.image});
+    position: absolute;
+    content: "";
     display:block;
-    background-size: ${props => props.maleLuchorpan ? '245%' : '280%'};
-    background-position: ${props => props.maleLuchorpan ? '48% 20%' : '50% 20%'};
+    background: url(${props => props.backgroundImg});
+    background-size: 280%;
+    background-position: ${props => props.backgroundPosition};
     transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
     width: 200px;
     height: 100px;
+    bottom: 0;
   }
 `;
 
@@ -161,12 +162,16 @@ const CharMask = styled('div')`
     position:absolute;
     background: url(${props => props.image});
     display:block;
-    background-size: ${props => props.maleLuchorpan ? '245%' : '280%'};
-    background-position: ${props => props.maleLuchorpan ? '48% 20%' : '50% 20%'};
+    background-size: 280%;
+    background-position: ${props => props.backgroundPosition};
     transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
+    -webkit-mask: url(images/controller/character-profile-selected-mask.png) no-repeat;
+    -webkit-mask-size: cover;
+    -webkit-mask-position-x: 51px;
     width: 200px;
     height: 100px;
     left: -107px;
+    bottom: 0;
   }
   &:after {
     content: "";
@@ -275,6 +280,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         flipImage = true;
       }
 
+      const race = _.includes(Race[character.race].toLowerCase(), 'human') ?
+        webAPI.raceString(character.race) : Race[character.race];
+      const charInfo = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
+
       return (
         <Container
           className='character-button-char-container'
@@ -283,16 +292,27 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         >
           <IdleShine />
           <CharPic
+            flipImage={flipImage}
             className='character-button-char-pic'
-            flipImage={flipImage}
-            image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
-            maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}>
-          </CharPic>
+            backgroundImg={CharacterImages[charInfo]}
+            backgroundPosition={
+              character.race === Race.Luchorpan ||
+                (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
+                  character.archetype === Archetype.ForestStalker) ? '50% 25%' :
+              character.archetype === Archetype.WintersShadow ? '45% 25%' :
+              '50% 20%'
+            }
+          />
           <CharMask
-            image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
-            maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
+            className='character-button-char-mask'
             flipImage={flipImage}
-            className='character-button-char-mask'>
+            image={CharacterImages[charInfo]}
+            backgroundPosition={
+              character.race === Race.Luchorpan ||
+                (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
+              character.archetype === Archetype.WintersShadow ? '45% 25%' :
+              '50% 20%'
+            }>
             <InfoContainer className='character-button-info'>
               <CharacterName longName={isLongName}>
                 {character.name}

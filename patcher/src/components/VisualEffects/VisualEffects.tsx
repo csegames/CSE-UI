@@ -31,7 +31,7 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
   private parallaxInstance: any;
   public render() {
     const { layerInfo } = this.props;
-    
+
     return (
       <div className='videobg'>
         <div className='parallax' data-relative-input='true' id={this.props.id}>
