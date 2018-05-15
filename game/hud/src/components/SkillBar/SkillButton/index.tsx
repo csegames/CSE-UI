@@ -271,6 +271,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
   }
 
   private ringStop = (id: number, shouldPlayHit?: boolean) => {
+    this.setState({ label: '' });
     if (id === OUTER && this.outerTimeout) {
       clearTimeout(this.outerTimeout);
       this.outerTimeout = null;
@@ -355,6 +356,13 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
         this.runStartCastAnimation();
       }
       this.runTimerAnimation(event.timing, event.disruption, true, true);
+    }
+
+    // Unusable
+    if (event.status & SkillStateStatusEnum.Unusable) {
+      if (this.rings[INNER]) {
+        this.ringStop(INNER);
+      }
     }
 
     this.prevEvent = event;
