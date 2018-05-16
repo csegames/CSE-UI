@@ -298,7 +298,6 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       dropTarget: item.slotType !== SlotType.CraftingItem && (props.filtering ? false : true),
       disableDrag: props.filtering || item.slotType === SlotType.CraftingItem ||
         (props.containerPermissions && (_.isArray(props.containerPermissions) ?
-        
           // if container permissions is an array, search parent containers and this container
           // if they have RemoveContents permission
           _.findIndex(props.containerPermissions, (permission: ContainerPermissionDef) =>

@@ -940,7 +940,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
     }
 
     if (isStackedItem(item) || isCraftingItem(item)) {
-      let id = getItemMapID(item);
+      const id = getItemMapID(item);
       const stackId = item.stackHash !== emptyStackHash ? item.stackHash : id;
       if (itemHasPosition(item)) {
         const wantPosition = getItemInventoryPosition(item);
@@ -1006,7 +1006,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
   temporaryNoPositionStackedItems.forEach((item) => {
     const foundOtherStack = _.find(items, invItem => item.stackHash !== emptyStackHash ?
       item.stackHash === invItem.stackHash : getItemMapID(item) === getItemMapID(invItem));
-    let id = getItemMapID(item);
+    const id = getItemMapID(item);
     const stackId = item.stackHash !== emptyStackHash ? item.stackHash : id;
 
     if (foundOtherStack && itemHasPosition(foundOtherStack)) {

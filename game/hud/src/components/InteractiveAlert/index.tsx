@@ -85,15 +85,14 @@ class InteractiveAlert extends React.Component<Props, State> {
         subscriptionHandler={this.handleSubscription}
       >
         {(result: GraphQLResult<Pick<CUQuery, 'myInteractiveAlerts'>>) => {
-            return !_.isEmpty(this.state.alerts) ? (
-              <InteractiveAlertView
-                alert={this.state.alerts[0]}
-                onTradeAccept={this.onTradeAccept}
-                onTradeDecline={this.onTradeDecline}
-              />
-            ) : null;
-          }
-        }
+          return !_.isEmpty(this.state.alerts) ? (
+            <InteractiveAlertView
+              alert={this.state.alerts[0]}
+              onTradeAccept={this.onTradeAccept}
+              onTradeDecline={this.onTradeDecline}
+            />
+          ) : null;
+        }}
       </GraphQL>
     );
   }
@@ -212,6 +211,6 @@ class InteractiveAlert extends React.Component<Props, State> {
   private openTradeWindow = () => {
     events.fire('hudnav--navigate', 'trade-left', true);
   }
-};
+}
 
 export default InteractiveAlert;

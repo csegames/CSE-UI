@@ -81,7 +81,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       // Check if item has equipment permissions
       toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
       return;
-    } 
+    }
     const payload: EquipItemCallback = {
       inventoryItem: item,
       willEquipTo: this.props.gearSlots,

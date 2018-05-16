@@ -531,7 +531,7 @@ export function hasVoxPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Vox;
 }
 
-export function hasAllPermissions(item: InventoryItemFragment){
+export function hasAllPermissions(item: InventoryItemFragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }

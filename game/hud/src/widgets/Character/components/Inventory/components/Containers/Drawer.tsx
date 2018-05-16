@@ -14,7 +14,6 @@ import * as base from '../InventoryBase';
 import { InventorySlotItemDef, slotDimensions } from '../InventorySlot';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
-import { ContainerPermissionDef } from '../InventoryBase';
 import { rowActionIcons } from '../../../../lib/constants';
 import {
   calcRowsForContainer,
@@ -282,18 +281,18 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     return rowData;
   }
 
-  private getContainerPermissions = (): ContainerPermissionDef | ContainerPermissionDef[] => {
+  private getContainerPermissions = (): base.ContainerPermissionDef | base.ContainerPermissionDef[] => {
     const { containerID, inventoryItems, containerItem } = this.props;
-    const itemPermissions: ContainerPermissionDef = {
+    const itemPermissions: base.ContainerPermissionDef = {
       userPermission: containerItem.permissibleHolder ? containerItem.permissibleHolder.userPermissions : 0,
       isChild: false,
       isParent: false,
     };
 
-    let containerPermissionsArray: ContainerPermissionDef[] = [itemPermissions];
+    const containerPermissionsArray: base.ContainerPermissionDef[] = [itemPermissions];
 
     if (containerID.length > 1) {
-      const parentPermissions: ContainerPermissionDef = {
+      const parentPermissions: base.ContainerPermissionDef = {
         userPermission: _.find(inventoryItems, item => item.id === containerID[0]).permissibleHolder.userPermissions,
         isChild: false,
         isParent: true,
@@ -309,7 +308,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         drawer.containedItems.forEach((_containedItem) => {
           if (_containedItem.permissibleHolder &&
               _containedItem.permissibleHolder.userPermissions ! & ItemPermissions.Ground) {
-            const childPermissions: ContainerPermissionDef = {
+            const childPermissions: base.ContainerPermissionDef = {
               userPermission: _containedItem.permissibleHolder.userPermissions,
               isChild: true,
               isParent: false,
