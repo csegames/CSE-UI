@@ -29,9 +29,10 @@ export interface RequestResult {
 }
 
 function queryParams(params: any = {}) {
-  return Object.keys(params)
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-    .join('&');
+  return Object.keys(params).map(k => {
+    const stringParam = typeof params[k] !== 'string' ? JSON.stringify(params[k]) : params[k];
+    return encodeURIComponent(k) + '=' + encodeURIComponent(stringParam);
+  }).join('&');
 }
 
 function withQuery(url: string, params: any = {}) {

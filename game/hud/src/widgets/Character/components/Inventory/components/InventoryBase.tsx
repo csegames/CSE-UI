@@ -1298,7 +1298,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
                             equipToSlotNumber: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const inventoryItemPosition = getItemInventoryPosition(item);
-  const request = JSON.stringify({
+  const request = {
     moveItemID: item.id,
     stackHash: item.stackHash,
     unitCount: -1,
@@ -1316,10 +1316,11 @@ export async function equipItemRequest(item: InventoryItemFragment,
       characterID: client.characterID,
       position: inventoryItemPosition,
       containerID: nullVal,
-      gearSlotIDs: [],
+      gearSlotIDs: nullVal,
       location: 'Inventory',
       voxSlot: 'Invalid',
-    }});
+    }
+  };
   const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
       client.loginToken,
@@ -1337,7 +1338,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
 
   if (equippedItem) {
     const equippedGearSlotIDs = equippedItem.gearSlots.map(gearSlot => gearSlot.id);
-    const equippedItemReq = JSON.stringify({
+    const equippedItemReq = {
       moveItemID: equippedItem.item.id,
       stackHash: item.stackHash,
       unitCount: -1,
@@ -1359,7 +1360,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
         location: 'Equipment',
         voxSlot: 'Invalid',
       },
-    });
+    };
     await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
       client.loginToken,
@@ -1374,7 +1375,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
                                 slotNumberToItem: SlotNumberToItem) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
-  const request = JSON.stringify({
+  const request = {
     moveItemID: item.id,
     stackHash: item.stackHash,
     unitCount: -1,
@@ -1383,7 +1384,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
       characterID: client.characterID,
       position: firstAvailableSlot(0, slotNumberToItem),
       containerID: nullVal,
-      gearSlotIDs: [],
+      gearSlotIDs: nullVal,
       location: 'Inventory',
       voxSlot: 'Invalid',
     },
@@ -1396,7 +1397,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
       location: 'Equipment',
       voxSlot: 'Invalid',
     },
-  });
+  };
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
     client.loginToken,
@@ -1412,7 +1413,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
 }
 
 export async function dropItemRequest(item: InventoryItemFragment) {
-  const request = JSON.stringify({
+  const request = {
     moveItemID: item.id,
     stackHash: item.stackHash,
     unitCount: -1,
@@ -1420,7 +1421,7 @@ export async function dropItemRequest(item: InventoryItemFragment) {
       entityID: nullVal,
       position: -1,
       containerID: nullVal,
-      gearSlotIDs: [],
+      gearSlotIDs: nullVal,
       location: 'Ground',
       voxSlot: 'Invalid',
     },
@@ -1429,11 +1430,11 @@ export async function dropItemRequest(item: InventoryItemFragment) {
       characterID: client.characterID,
       position: getItemInventoryPosition(item),
       containerID: nullVal,
-      gearSlotIDs: [],
+      gearSlotIDs: nullVal,
       location: 'Inventory',
       voxSlot: 'Invalid',
     },
-  });
+  };
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
     client.loginToken,
@@ -1448,7 +1449,7 @@ export async function dropItemRequest(item: InventoryItemFragment) {
 }
 
 export function onCommitPlacedItem(item: InventoryItemFragment, position: Vec3F, rotation: Euler3f) {
-  const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
+  const moveItemReq = createMoveItemRequestToWorldPosition(item, position, rotation);
   webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveItemReq as any);
 }
 
@@ -1481,7 +1482,7 @@ function moveInventoryItemToEmptySlot(dragItemData: InventoryDataTransfer,
   }
 
   const dragItemId = getItemMapID(dragItem);
-  const moveItemReq = JSON.stringify(createMoveItemRequestToInventoryPosition(dragItem, dropZoneData.position));
+  const moveItemReq = createMoveItemRequestToInventoryPosition(dragItem, dropZoneData.position);
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
     client.loginToken,
