@@ -12,7 +12,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { StyleDeclaration } from 'aphrodite';
-import { events, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
+import { events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -24,6 +24,7 @@ import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
 import { helpSteps } from './components/HelpSteps';
 import CharCreationHeader from './components/CharCreationHeader';
+import LoadingOverlay from './components/LoadingOverlay';
 
 // tslint:disable-next-line
 
@@ -105,6 +106,7 @@ export interface CharacterCreationState {
   page: CharacterCreationPage;
   selectedServerName: string;
   helpEnabled: boolean;
+  checkingApiServer: boolean;
 }
 
 export interface ContainerStyles extends StyleDeclaration {
@@ -124,6 +126,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       page: CharacterCreationPage.Faction,
       selectedServerName: '',
       helpEnabled: false,
+      checkingApiServer: false,
     };
   }
 
@@ -284,6 +287,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           onHelpClick={this.toggleHelp} page={this.state.page}
         />
         <div className='cu-character-creation__content'>
+          {this.state.checkingApiServer && <LoadingOverlay />}
           {content}
         </div>
         <Navigation
@@ -448,6 +452,19 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private goToPage = (page: CharacterCreationPage) => {
+    // Check if api server is still up
+    this.setState({ checkingApiServer: true });
+    const apiServerOnline = this.isApiServerOnline();
+    if (!apiServerOnline) {
+      toastr.error(
+        `Sorry, I am unable to reach the API server right now. It may just be getting a
+        quick update, please wait and give it a try in a minute!`,
+        'Oh No!!',
+        { timeout: 3000 },
+      );
+      return;
+    }
+
     const { banesAndBoonsState } = this.props;
     const factionErrors = [];
     const raceErrors = [];
@@ -492,6 +509,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         _.isEmpty(Object.keys(banesAndBoonsState.addedBanes)) && _.isEmpty(Object.keys(banesAndBoonsState.addedBoons))) {
       banesAndBoonsErrors.push('Must select banes and boons');
     }
+
     switch (page) {
       case CharacterCreationPage.Faction: {
         events.fire('play-sound', 'select');
@@ -561,6 +579,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         break;
       }
     }
+  }
+
+  private isApiServerOnline = async () => {
+    const res = await webAPI.ServersAPI.GetServersV1({ url: this.props.apiHost });
+    this.setState({ checkingApiServer: false });
+    return res;
   }
 
   private makeErrors = (errors: string[]) => {
