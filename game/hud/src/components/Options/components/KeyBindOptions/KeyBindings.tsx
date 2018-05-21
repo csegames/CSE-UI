@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { client, utils, Input } from '@csegames/camelot-unchained';
+import { client, Input } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
+import SearchableList from '../../../SearchableList';
 import { ConfigIndex, ConfigInfo } from '../../OptionsMain';
 import KeyBindWarningModal, { WarningModalInfo } from './KeyBindWarningModal';
 import KeyBindingsListItem from './KeyBindingsListItem';
@@ -25,8 +26,11 @@ export const defaultKeyBindingsStyle: KeyBindingsStyle = {
   },
 
   listContainer: {
-    overflow: 'auto',
-    height: 'calc(100% - 50px)',
+    height: '289px',
+  },
+
+  listItemsContainer: {
+    overflow: 'hidden',
   },
 
   searchInput: {
@@ -81,22 +85,28 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
           onChange={this.onSearchChange}
           value={this.state.searchValue}
         />
-        <div ref={ref => this.listRef = ref} className={css(ss.listContainer, custom.listContainer)}>
-          {this.state.keyBindings.map((keyBinding, i) => {
-            const searchIncludes = utils.doesSearchInclude(this.state.searchValue, keyBinding.name);
-            return (
-              <KeyBindingsListItem
-                key={keyBinding.name}
-                keyBinding={keyBinding}
-                searchIncludes={searchIncludes}
-                onToggleListeningMode={this.onToggleListeningMode}
-                listeningMode={this.state.whichConfigIsListening === keyBinding.name}
-                handleKeyEvent={this.handleKeyEvent}
-                isOddItem={i % 2 !== 0}
-              />
-            );
-          })}
-        </div>
+        <SearchableList
+          getRef={r => this.listRef = r}
+          containerClass={css(ss.listContainer)}
+          listItemsContainerClass={css(ss.listItemsContainer)}
+          listItemsData={this.state.keyBindings}
+          listItemHeight={40}
+          listHeight={289}
+          searchValue={this.state.searchValue}
+          searchKey={'name'}
+          renderListItem={(keyBinding: ConfigInfo, searchIncludes, isVisible, i) => (
+            <KeyBindingsListItem
+              key={keyBinding.name}
+              isVisible={isVisible}
+              keyBinding={keyBinding}
+              searchIncludes={searchIncludes}
+              onToggleListeningMode={this.onToggleListeningMode}
+              listeningMode={this.state.whichConfigIsListening === keyBinding.name}
+              handleKeyEvent={this.handleKeyEvent}
+              isOddItem={i % 2 !== 0}
+            />
+          )}
+        />
         <KeyBindWarningModal
           onConfirmPress={this.onConfirmModalPress}
           onCancelPress={this.onCancelModalPress}
@@ -116,36 +126,6 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
   public componentWillReceiveProps(nextProps: KeyBindingsProps) {
     if (!_.isEqual(nextProps.keyBindConfigs, this.props.keyBindConfigs)) {
       this.setState({ keyBindings: nextProps.keyBindConfigs });
-    }
-  }
-
-  public componentWillUpdate(nextProps: KeyBindingsProps, nextState: KeyBindingsState) {
-    if (nextState.searchValue !== this.state.searchValue) {
-      this.setState(this.distributeFilteredConfigVars(nextState.searchValue));
-    }
-  }
-
-  private distributeFilteredConfigVars = (searchValue: string) => {
-    const keyBindings = this.props.keyBindConfigs;
-    if (searchValue === '') {
-      return {
-        keyBindings,
-      };
-    } else {
-      const keyBindingsThatMatchSearch: ConfigInfo[] = [];
-      const filteredKeyBindings = keyBindings.filter((keyBinding) => {
-        const includedInSearch = utils.doesSearchInclude(searchValue, keyBinding.name);
-        if (includedInSearch) {
-          keyBindingsThatMatchSearch.push(keyBinding);
-          return false;
-        } else {
-          return true;
-        }
-      });
-      const distributedKeyBindings = [...keyBindingsThatMatchSearch, ...filteredKeyBindings];
-      return {
-        keyBindings: distributedKeyBindings,
-      };
     }
   }
 
