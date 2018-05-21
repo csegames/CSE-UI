@@ -5,75 +5,75 @@
  */
 
 .thumb__BlackKnight{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_black-knight.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_black-knight.png');
 }
 
 .thumb__Fianna{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_fianna.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_fianna.png');
 }
 
 .thumb__Mjolnir{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_mjolnir.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_mjolnir.png');
 }
 
 .thumb__Physician{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_physician.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_physician.png');
 }
 
 .thumb__Empath{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_empath.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_empath.png');
 }
 
 .thumb__Stonehealer{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_stonehealer.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_stonehealer.png');
 }
 
 .thumb__Blackguard{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_blackguard.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_blackguard.png');
 }
 
 .thumb__ForestStalker{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_forest-stalker.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_forest-stalker.png');
 }
 
 .thumb__WintersShadow{
-    @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_winter-shadow.png');
+    @include selection-thumbnail('../images/classes/thumb/icon_winter-shadow.png');
 }
 
 .standing__Empath{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/empath.png');
+    @include view-standing('../images/classes/standing//empath.png');
 }
 
 .standing__BlackKnight{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/black-knight.png');
+    @include view-standing('../images/classes/standing//black-knight.png');
 }
 
 .standing__Fianna{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/fianna.png');
+    @include view-standing('../images/classes/standing//fianna.png');
 }
 
 .standing__Mjolnir{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/mjolnir.png');
+    @include view-standing('../images/classes/standing//mjolnir.png');
 }
 
 .standing__Physician{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/physician.png');
+    @include view-standing('../images/classes/standing//physician.png');
 }
 
 .standing__Stonehealer{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/stonehealer.png');
+    @include view-standing('../images/classes/standing//stonehealer.png');
 }
 
 .standing__Blackguard{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/blackguard.png');
+    @include view-standing('../images/classes/standing//blackguard.png');
 }
 
 .standing__ForestStalker{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/forest-stalker.png');
+    @include view-standing('../images/classes/standing//forest-stalker.png');
 }
 
 .standing__WintersShadow{
-    @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/winters-shadow.png');
+    @include view-standing('../images/classes/standing//winters-shadow.png');
 }
 
 .class-selection-container {
