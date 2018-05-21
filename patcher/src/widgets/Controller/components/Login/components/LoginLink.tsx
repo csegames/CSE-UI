@@ -40,7 +40,7 @@ class LoginLink extends React.Component<LoginLinkProps> {
       >
         {this.props.children}
       </Link>
-    )
+    );
   }
 }
 

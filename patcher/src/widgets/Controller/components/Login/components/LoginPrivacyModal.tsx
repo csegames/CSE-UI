@@ -59,9 +59,9 @@ class LoginPrivacyModal extends React.Component<LoginPrivacyModalProps> {
     return (
       <Container>
         <InputBox
-          accentColor="rgb(255,95,76)"
-          highlightColorStrong="rgba(255, 95, 76, 0.7)"
-          highlightColorWeak="rgba(255, 95, 76, 0.1)"
+          accentColor='rgb(255,95,76)'
+          highlightColorStrong='rgba(255, 95, 76, 0.7)'
+          highlightColorWeak='rgba(255, 95, 76, 0.1)'
         >
           <Modal>
             <ModalHeader>Login Failed: Privacy Policy</ModalHeader>
