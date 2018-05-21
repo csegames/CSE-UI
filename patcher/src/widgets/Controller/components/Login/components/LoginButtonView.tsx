@@ -51,7 +51,12 @@ export interface LoginButtonViewProps {
 class LoginButtonView extends React.PureComponent<LoginButtonViewProps> {
   public render() {
     return (
-      <Button className={this.props.className ? this.props.className : ''} href={this.props.href} target='_blank'>
+      <Button
+        onClick={this.props.onClick}
+        className={this.props.className ? this.props.className : ''}
+        href={this.props.href}
+        target='_blank'
+      >
         {this.props.text}
         {this.props.children}
       </Button>

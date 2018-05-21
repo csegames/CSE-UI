@@ -149,6 +149,7 @@ class Login extends React.Component<LoginProps, LoginState> {
           break;
         }
       }
+      return;
     }
     setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
   }
