@@ -31,6 +31,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
           return (
             <ContextMenuAction
               key={i}
+              itemId={item.id}
               name={`Equip to ${gearSlotSet.gearSlots.map((gearSlot, i) => {
                 if (i !== gearSlotSet.gearSlots.length - 1) {
                   return prettifyText(gearSlot.id) + ', ';
@@ -52,6 +53,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
           return (
             <ContextMenuAction
               key={action.id}
+              itemId={item.id}
               name={action.name}
               action={action as ItemActionDefGQL}
               onActionClick={this.onActionClick}
@@ -61,6 +63,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         })}
         {hasGroundPermissions(item) && item.staticDefinition.deploySettings ?
           <ContextMenuAction
+            itemId={item.id}
             name={'Deploy'}
             onActionClick={this.onDeployItem}
             syncWithServer={this.props.syncWithServer}
@@ -68,6 +71,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         }
         {hasGroundPermissions(item) ?
           <ContextMenuAction
+            itemId={item.id}
             name={'Drop item'}
             onActionClick={this.onDropItem}
             syncWithServer={this.props.syncWithServer}

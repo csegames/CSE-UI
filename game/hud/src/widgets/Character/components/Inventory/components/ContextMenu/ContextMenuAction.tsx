@@ -6,12 +6,30 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { utils, client } from '@csegames/camelot-unchained';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 declare const toastr: any;
 
+const query = (itemId: string) => `
+  {
+    item (id: "${itemId}", shard: ${client.shardID}) {
+      id
+      actions {
+        id
+        lastTimePerformed
+      }
+    }
+  }
+`;
+
 const Button = styled('div')`
+  display: flex;
+  justify-content: space-between;
   background-color: ${(props: any) => props.disabled ? '#434343' : 'gray' };
   color: white;
   pointer-events: all;
@@ -19,6 +37,7 @@ const Button = styled('div')`
   max-width: 300px;
   padding: 5px;
   cursor: ${(props: any) => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${(props: any) => props.disabled ? 0.5 : 1};
 
   &:hover {
     -webkit-filter: brightness(120%);
@@ -26,11 +45,16 @@ const Button = styled('div')`
   }
 
   &:active {
-    box-shadow: inset 0 0 3px rgba(0,0,0,0.5);
+    ${(props: any) => props.disabled ? '' : 'box-shadow: inset 0 0 3px rgba(0,0,0,0.5)'};
   }
 `;
 
+const CooldownText = styled('div')`
+  margin-left: 10px;
+`;
+
 export interface Props {
+  itemId: string;
   name: string;
   onActionClick: (action?: ItemActionDefGQL) => void;
   syncWithServer: () => void;
@@ -40,7 +64,8 @@ export interface Props {
 }
 
 export interface State {
-  secondsLeft: number;
+  cooldownLeft: string;
+  shouldQuery: boolean;
 }
 
 class ContextMenuAction extends React.Component<Props, State> {
@@ -48,35 +73,45 @@ class ContextMenuAction extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      secondsLeft: 0,
+      cooldownLeft: '',
+      shouldQuery: true,
     };
   }
 
   public render() {
-    const { secondsLeft } = this.state;
+    const { cooldownLeft, shouldQuery } = this.state;
     const { name, action } = this.props;
-    return (
-      <Button disabled={secondsLeft > 0 || (action && !action.enabled)} onClick={this.onActionClick}>
-        {name}&nbsp;{secondsLeft > 0 ? `${secondsLeft}s` : null}
+    const q = query(this.props.itemId);
+    return (action && !action.enabled && !action.showWhenDisabled) ? null : (
+      <Button disabled={shouldQuery || cooldownLeft !== '' || (action && !action.enabled)} onClick={this.onActionClick}>
+        <div>{name}</div>
+        {shouldQuery && <GraphQL query={q} onQueryResult={this.handleQueryResult} />}
+        <CooldownText>{cooldownLeft !== '' ? `${cooldownLeft}` : null}</CooldownText>
       </Button>
     );
-  }
-
-  public componentDidMount() {
-    this.initTimer();
   }
 
   public componentWillUnmount() {
     clearTimeout(this.cooldownTimeout);
   }
 
-  private initTimer = () => {
+  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'item'>>) => {
+    const resultData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+    this.setState({ shouldQuery: false });
+    if (resultData && resultData.item) {
+      const myAction = _.find(resultData.item.actions, (a: ItemActionDefGQL) => a.id === this.props.action.id);
+      this.initTimer(myAction.lastTimePerformed);
+    }
+
+    return result;
+  }
+
+  private initTimer = (lastTimePerformed: string) => {
     if (this.props.action && this.props.action.cooldownSeconds > 0) {
-      const { lastTimePerformed, cooldownSeconds } = this.props.action;
-      const now = Date.parse(new Date().toISOString());
-      const elapsedTime = Number(Math.floor((now - Date.parse(lastTimePerformed)) / 1000).toFixed(0));
-      if (cooldownSeconds - elapsedTime > 0) {
-        this.startCooldown(cooldownSeconds - elapsedTime);
+      const { cooldownSeconds } = this.props.action;
+      const timeLeft = utils.prettyPrintTimeSpan(lastTimePerformed, cooldownSeconds.toString());
+      if (timeLeft !== '') {
+        this.startCooldown(lastTimePerformed);
       }
     }
   }
@@ -84,12 +119,12 @@ class ContextMenuAction extends React.Component<Props, State> {
   private onActionClick = () => {
     const { action } = this.props;
     if (action) {
-      if (!action.enabled || this.state.secondsLeft > 0) {
+      if (!action.enabled || this.state.cooldownLeft !== '') {
         // Handle disabled action button
         toastr.error('That action is currently disabled', 'Oh no!!', { timeout: 3000 });
       } else {
         if (action.cooldownSeconds) {
-          this.startCooldown(action.cooldownSeconds);
+          this.startCooldown(new Date().toISOString());
         }
         this.props.onActionClick(action);
       }
@@ -98,17 +133,24 @@ class ContextMenuAction extends React.Component<Props, State> {
     }
   }
 
-  private startCooldown = (cooldownLeft: number) => {
-    this.cooldownTimeout = setTimeout(() => this.updateCooldownSeconds(cooldownLeft), 1000);
+  private startCooldown = (lastTimePerformed: string) => {
+    this.cooldownTimeout = this.updateCooldownSeconds(lastTimePerformed);
   }
 
-  private updateCooldownSeconds = (cooldownLeft: number) => {
-    const nextCooldownLeft = cooldownLeft - 1;
-    this.setState({ secondsLeft: nextCooldownLeft });
+  private updateCooldownSeconds = (lastTimePerformed: string) => {
+    const timeLeft = utils.prettyPrintTimeSpan(lastTimePerformed, this.props.action.cooldownSeconds.toString());
+
+    if (timeLeft !== this.state.cooldownLeft || this.state.cooldownLeft === '') {
+      this.setState({ cooldownLeft: timeLeft });
+    }
+
+    if (this.state.shouldQuery) {
+      this.setState({ shouldQuery: false });
+    }
 
     // Recursively run the update to cooldown seconds with cooldownLeft
-    if (nextCooldownLeft > 0) {
-      this.cooldownTimeout = setTimeout(() => this.updateCooldownSeconds(nextCooldownLeft), 1000);
+    if (timeLeft !== '') {
+      this.cooldownTimeout = setTimeout(() => this.updateCooldownSeconds(lastTimePerformed), 1000);
     } else {
       this.clearCooldownTimeout();
     }

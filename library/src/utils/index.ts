@@ -16,6 +16,7 @@ export * from './textUtils';
 export * from './injectedProps';
 export * from './distance';
 export * from './compareNumbers';
+export * from './time';
 
 import * as KeyCodes from './keyCodes';
 
