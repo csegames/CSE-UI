@@ -22,9 +22,9 @@
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
-"@csegames/camelot-unchained@^0.1.19":
-  version "0.1.19"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.19.tgz#63d129d4ca0c80dfa96cc128acdeada2c15151be"
+"@csegames/camelot-unchained@^0.1.20":
+  version "0.1.20"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.20.tgz#7201d48be40036428729cd04b07024c3fe147953"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
