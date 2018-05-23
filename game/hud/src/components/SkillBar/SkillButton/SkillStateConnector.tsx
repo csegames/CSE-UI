@@ -47,7 +47,7 @@ function skillStateConnector<PropsTypes extends any>() {
           id: this.props.skillInfo.id,
           info: {
             type: SkillStateTypeEnum.Standard,
-            keybind: null,
+            keybind: dxKeyCodes[this.props.skillInfo.keybind],
             icon: this.props.skillInfo.icon,
           },
           track: SkillStateTrackEnum.PrimaryWeapon,
@@ -64,13 +64,19 @@ function skillStateConnector<PropsTypes extends any>() {
       }
 
       public componentDidMount() {
-        client.OnSkillStateChanged(this.handleSkillStateChanged);
+        client.OnSkillStateChanged(this.handleClientSkillStateChanged);
       }
 
       public shouldComponentUpdate(nextProps: SkillStateConnectorProps, nextState: SkillStateConnectorState) {
         return !_.isEqual(nextProps.skillInfo, this.props.skillInfo) ||
           !_.isEqual(nextState.skillState, this.state.skillState) ||
           nextProps.index !== this.props.index;
+      }
+
+      public componentDidUpdate(prevProps: SkillStateConnectorProps) {
+        if (!_.isEqual(prevProps.skillInfo, this.props.skillInfo)) {
+          this.handleApiSkillStateChange();
+        }
       }
 
       public componentDidCatch(error: Error, info: any) {
@@ -84,13 +90,29 @@ function skillStateConnector<PropsTypes extends any>() {
         }
       }
 
-      private handleSkillStateChanged = (clientSkillState: ClientSkillState) => {
+      private handleApiSkillStateChange = () => {
+        const { skillState } = this.state;
+        if (skillState) {
+          const newSkillState: SkillStateInfo = {
+            ...skillState,
+            info: {
+              type: skillState.info ? skillState.info.type : SkillStateTypeEnum.Standard,
+              keybind: dxKeyCodes[this.props.skillInfo.keybind],
+              icon: this.props.skillInfo.icon,
+            },
+          }
+          
+          this.setState({ skillState: newSkillState });
+        }
+      }
+
+      private handleClientSkillStateChanged = (clientSkillState: ClientSkillState) => {
         if (clientSkillState.id === this.props.skillInfo.id) {
           const skillState: SkillStateInfo = {
             id: clientSkillState.id.toString(),
             info: {
               type: clientSkillState.type,
-              keybind: dxKeyCodes[clientSkillState.keybind],
+              keybind: dxKeyCodes[this.props.skillInfo.keybind],
               icon: this.props.skillInfo.icon,
             },
             track: SkillStateTrackEnum.PrimaryWeapon,
