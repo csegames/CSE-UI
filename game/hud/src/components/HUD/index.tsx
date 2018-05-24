@@ -179,7 +179,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                 size: { width: s.width, height: s.height },
                 scale: s.scale,
                 opacity: s.opacity,
-                visibility: widget.position.visibility,
+                visibility: s.visible,
                 zOrder: widget.position.zOrder,
                 layoutMode: widget.position.layoutMode,
               },
