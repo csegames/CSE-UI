@@ -114,7 +114,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
     const dataTransfer = getInventoryDataTransfer({
       item,
       location: item.location.inContainer ? 'inContainer' : 'inventory',
-      position: position,
+      position,
       containerID,
       drawerID,
     });

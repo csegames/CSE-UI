@@ -17,9 +17,8 @@ import EmptyItemDropZone from './EmptyItemDropZone';
 import { ContainerPermissionDef } from './InventoryBase';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
 import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
-import { hasEquipmentPermissions } from '../../../lib/utils';
+import { hasEquipmentPermissions, getInventoryDataTransfer } from '../../../lib/utils';
 import eventNames, { EquipItemCallback, InventoryDataTransfer } from '../../../lib/eventNames';
-import { getInventoryDataTransfer } from '../../../lib/utils';
 
 declare const toastr: any;
 
@@ -318,7 +317,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   private onEquipItem = () => {
     const item = this.props.item.item;
     const inventoryItemDataTransfer = getInventoryDataTransfer({
-      item: item,
+      item,
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
       location: item.location.inContainer ? 'Container' : 'Inventory',
       containerID: this.props.item.slotIndex.containerID,
@@ -342,7 +341,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
           this.isRightOrLeftItem(gearSlotSets[1].gearSlots) ||
           (gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots))) {
-        
+
         // Is a right or left item. If there is already an item equipped in one, then try to equip to the other.
         this.rightOrLeftItemAction((gearSlots) => {
           const payload: EquipItemCallback = {

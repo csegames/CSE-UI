@@ -100,8 +100,8 @@ function skillStateConnector<PropsTypes extends any>() {
               keybind: dxKeyCodes[this.props.skillInfo.keybind],
               icon: this.props.skillInfo.icon,
             },
-          }
-          
+          };
+
           this.setState({ skillState: newSkillState });
         }
       }

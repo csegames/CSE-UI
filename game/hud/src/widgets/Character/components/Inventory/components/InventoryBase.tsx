@@ -183,20 +183,20 @@ export function defaultInventoryBaseState(): InventoryBaseState {
 }
 
 export function createRowElementsForCraftingItems(payload: {
-                                                    state: InventoryBaseState,
-                                                    props: InventoryBaseProps,
-                                                    containerItem: InventoryItemFragment,
-                                                    containerID: string[],
-                                                    drawerID: string,
-                                                    drawerCurrentStats: DrawerCurrentStats,
-                                                    drawerMaxStats: ql.schema.ContainerDefStat_Single,
-                                                    itemData: {items: InventoryItemFragment[]},
-                                                    bodyWidth: number,
-                                                    syncWithServer: () => void,
-                                                    onDropOnZone: (dragItemData: InventoryDataTransfer,
-                                                      dropZoneData: InventoryDataTransfer) => void,
-                                                    onMoveStack: (item: InventoryItemFragment, amount: number) => void
-                                                  }) {
+  state: InventoryBaseState,
+  props: InventoryBaseProps,
+  containerItem: InventoryItemFragment,
+  containerID: string[],
+  drawerID: string,
+  drawerCurrentStats: DrawerCurrentStats,
+  drawerMaxStats: ql.schema.ContainerDefStat_Single,
+  itemData: {items: InventoryItemFragment[]},
+  bodyWidth: number,
+  syncWithServer: () => void,
+  onDropOnZone: (dragItemData: InventoryDataTransfer,
+    dropZoneData: InventoryDataTransfer) => void,
+  onMoveStack: (item: InventoryItemFragment, amount: number) => void,
+}) {
   const { state, props, containerItem, containerID, drawerID, itemData,
     syncWithServer, bodyWidth, onDropOnZone, onMoveStack, drawerCurrentStats, drawerMaxStats } = payload;
   const rows: JSX.Element[] = [];
@@ -525,7 +525,7 @@ export function distributeItems(
 export function initializeSlotsData(slotsData: { slotsPerRow: number, rowCount: number, slotCount: number }) {
   return {
     ...slotsData,
-  }
+  };
 }
 
 // we are not filtering items here, put items based on slot position
@@ -1016,7 +1016,7 @@ export function partitionItems(items: InventoryItemFragment[]) {
     }
 
     if (isStackedItem(item) || isCraftingItem(item)) {
-      let id = getItemMapID(item);
+      const id = getItemMapID(item);
       if (itemHasPosition(item)) {
         const wantPosition = getItemInventoryPosition(item);
 
@@ -1236,10 +1236,10 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
                                               props: InventoryBaseProps,
                                               payload: UpdateInventoryItemsPayload) {
   // This updates slotNumberToItem and itemIdToInfo when an item is equipped
-  const itemIdToInfo = {...state.itemIdToInfo};
-  const itemIDToStackGroupID = {...state.itemIDToStackGroupID};
-  const stackGroupIdToItemIDs = {...state.stackGroupIdToItemIDs};
-  let slotNumberToItem = {...state.slotNumberToItem};
+  const itemIdToInfo = { ...state.itemIdToInfo };
+  const itemIDToStackGroupID = { ...state.itemIDToStackGroupID };
+  const stackGroupIdToItemIDs = { ...state.stackGroupIdToItemIDs };
+  let slotNumberToItem = { ...state.slotNumberToItem };
   let inventoryItems = [...props.inventoryItems];
 
   if (payload.equippedItem && payload.inventoryItem) {
@@ -1268,7 +1268,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
           },
           inContainer: null,
           equipped: null,
-        }
+        },
       };
 
       inventoryItems = [...inventoryItems, newInventoryItem];
@@ -1368,7 +1368,7 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
   }
 
   if (payload.inventoryItem && payload.inventoryItem.containerID) {
-    let containerIdToDrawerInfo = {...props.containerIdToDrawerInfo};
+    let containerIdToDrawerInfo = { ...props.containerIdToDrawerInfo };
     const removeResults = removeItemInContainer(
       payload.inventoryItem.item,
       payload.inventoryItem.containerID,
@@ -1378,8 +1378,8 @@ export function onUpdateInventoryItemsHandler(state: InventoryBaseState,
       containerIdToDrawerInfo,
     );
     inventoryItems = [...removeResults.inventoryItems];
-    slotNumberToItem = {...removeResults.slotNumberToItem};
-    containerIdToDrawerInfo = {...removeResults.containerIDToDrawerInfo};
+    slotNumberToItem = { ...removeResults.slotNumberToItem };
+    containerIdToDrawerInfo = { ...removeResults.containerIDToDrawerInfo };
 
     if (payload.type === 'Equip') {
       equipItemRequest(payload.inventoryItem.item, payload.willEquipTo, null, 0);
@@ -1413,9 +1413,9 @@ function removeItemInContainer(item: InventoryItemFragment,
                                 containerIDToDrawerInfo: ContainerIdToDrawerInfo;
                               } {
   let invItems = [...inventoryItems];
-  let slotToItem = {...slotNumberToItem};
-  let containerToDrawer = {...containerIDToDrawerInfo};
-  let parentContainer = {..._.find(invItems, _item => _item.id === containerID[0])};
+  const slotToItem = { ...slotNumberToItem };
+  const containerToDrawer = { ...containerIDToDrawerInfo };
+  const parentContainer = { ..._.find(invItems, _item => _item.id === containerID[0]) };
 
   // Find a drawer that can possibly contain the inventory item
   const potentialDrawerIndex = _.findIndex(parentContainer.containerDrawers, (drawer, i) => {
@@ -1438,7 +1438,7 @@ function removeItemInContainer(item: InventoryItemFragment,
     slotToItem[parentContainer.location.inventory.position] = {
       ...slotNumberToItem[parentContainer.location.inventory.position],
       item: parentContainer,
-    }
+    };
 
     delete containerToDrawer[containerID[0]].drawers[potentialDrawer.id][itemInDrawer.location.inContainer.position];
 
@@ -1457,7 +1457,7 @@ function removeItemInContainer(item: InventoryItemFragment,
           return drawer.id === drawerID;
         });
         const nextPotentialDrawer = nextContainer.containerDrawers[nextPotentialDrawerIndex];
-        
+
         const nextItemInDrawer = _.find(nextPotentialDrawer.containedItems, containedItem => containedItem.id === item.id);
         if (nextItemInDrawer) {
           const newNextDrawerContainedItems = _.filter(

@@ -145,9 +145,9 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItemFrag
     stackHash: item.stackHash,
     unitCount: amount || -1,
     to: {
+      position,
       entityID: nullVal,
       characterID: client.characterID,
-      position: position,
       containerID: nullVal,
       gearSlotIDs: [] as any,
       location: 'Inventory',

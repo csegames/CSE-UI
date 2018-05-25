@@ -300,7 +300,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
     const prevEquippedItem = _.filter(equippedItems, equippedItem =>
       _.findIndex(equippedItem.gearSlots, gearSlot =>
-        _.find(willEquipTo, slot => slot.id === gearSlot.id)
+        _.find(willEquipTo, slot => slot.id === gearSlot.id),
       ) > -1)
       .map((equippedItem) => {
         return getEquippedDataTransfer({
@@ -310,7 +310,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           gearSlots: equippedItem.gearSlots,
         });
       });
-    
+
     const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
       type: 'Equip',
       inventoryItem,

@@ -89,7 +89,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public onDrop(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
-    const item = {...e.dataTransfer.item};
+    const item = { ...e.dataTransfer.item };
     if (this.canEquip(item) && item.location.inventory) {
       item.location.inventory = null;
       this.equipItem(e.dataTransfer, this.props.equippedItem);
