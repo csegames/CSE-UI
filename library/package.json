@@ -1,6 +1,6 @@
 {
   "name": "@csegames/camelot-unchained",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -92,7 +92,7 @@
     "download-cli": "^1.0.5",
     "graphql-code-generator": "^0.5.2",
     "jest": "^19.0.2",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.9.0",
     "npm-watch": "^0.1.4",
     "nps": "^5.0.5",
     "react-test-renderer": "^15.5.4",
