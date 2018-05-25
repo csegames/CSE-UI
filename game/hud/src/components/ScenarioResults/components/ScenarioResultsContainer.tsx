@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, client } from '@csegames/camelot-unchained';
+import { ql, events, client, soundEvents, Faction } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
 
@@ -31,6 +31,8 @@ export interface ScenarioResultsContainerState {
 
 class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerProps, ScenarioResultsContainerState> {
   private pollingInterval: any;
+  private visibilityTimeout: any;
+
   constructor(props: ScenarioResultsContainerProps) {
     super(props);
     this.state = {
@@ -81,13 +83,13 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
       nextProps.graphql.data.scenariosummary.teamOutcomes;
     if ((!prevTeamOutcome || _.isEmpty(prevTeamOutcome)) && (nextTeamOutcome && !_.isEmpty(nextTeamOutcome))) {
       if (!this.state.visible && !nextState.visible) {
-        this.fireVisibility();
+        this.fireVisibility(nextProps);
       }
     }
 
     if (nextProps.graphql.data && nextProps.graphql.data.scenariosummary && _.isEmpty(nextTeamOutcome)) {
       if (!this.pollingInterval) {
-        this.pollingInterval = setInterval(() => this.props.graphql.refetch(), 2000);
+        this.pollingInterval = setInterval(() => this.props.graphql.refetch(), 5000);
       }
     } else {
       clearInterval(this.pollingInterval);
@@ -95,14 +97,32 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
     }
   }
 
-  private fireVisibility = () => {
-    events.fire('hudnav--navigate', 'scenario-results');
+  public componentWillUnmount() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+
+    if (this.visibilityTimeout) {
+      clearTimeout(this.visibilityTimeout);
+      this.visibilityTimeout = null;
+    }
+  }
+
+  private fireVisibility = (nextProps?: ScenarioResultsContainerProps) => {
+    if (nextProps) {
+      this.playScenarioEndSound(nextProps);
+      this.visibilityTimeout = setTimeout(() => events.fire('hudnav--navigate', 'scenario-results'), 2000);
+    } else {
+      events.fire('hudnav--navigate', 'scenario-results');
+    }
   }
 
   private toggleVisibility = () => {
     if (!this.state.visible) {
       client.RequestInputOwnership();
     } else {
+      client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_END_CLOSEWINDOW);
       client.ReleaseInputOwnership();
     }
     this.setState({ visible: !this.state.visible });
@@ -122,6 +142,50 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
         participants,
         teams,
       };
+    }
+  }
+
+  private playScenarioEndSound = (nextProps: ScenarioResultsContainerProps) => {
+    const winningTeam = _.find(nextProps.graphql.data.scenariosummary.teamOutcomes,
+      teamOutcome => teamOutcome.outcome === 'Win');
+    switch (winningTeam.teamID) {
+      case 'Tuatha': {
+        if (client.playerState.faction === Faction.TDD) {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+        } else {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        }
+        break;
+      }
+
+      case 'Arthurian': {
+        if (client.playerState.faction === Faction.Arthurian) {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+        } else {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        }
+        break;
+      }
+
+      case 'Viking': {
+        if (client.playerState.faction === Faction.Viking) {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+        } else {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        }
+        break;
+      }
+
+      default: {
+        // Teams theoretically won't always be one of these Factions, so handle that case.
+        const me = _.find(winningTeam.participants, particapant => particapant.displayName === client.playerState.name);
+        if (me) {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+        } else {
+          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        }
+        break;
+      }
     }
   }
 }
