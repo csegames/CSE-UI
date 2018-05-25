@@ -17,15 +17,16 @@ const Button = styled('a')`
   height: 50px;
   margin: 5px;
   text-align: center;
-  font-family:"caudex";
-  border-image: linear-gradient(180deg,#e2cb8e,#8e6d27) stretch;
+  font-family: Caudex;
+  border-image: linear-gradient(180deg, #e2cb8e, #8e6d27) stretch;
   border-style: solid;
   border-width: 3px 1px;
   transition: background-color .3s;
   background-color: rgba(17, 17, 17, 0.8);
   border-image-slice: 1;
-  color: #b89969;
+  color: ${(props: any) => props.textColor ? props.textColor : '#B89969'};
   cursor: pointer;
+  opacity: ${(props: any) => props.disabled ? 0.5 : 1};
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -35,28 +36,29 @@ const Button = styled('a')`
   transition: all ease .2s;
   text-decoration: none;
   &:hover {
-    background-color: rgba(36, 28, 28, 0.8);
+    background-color: ${(props: any) => props.disabled ? '' : 'rgba(36, 28, 28, 0.8)'};
     border-image-slice: 1;
-    color: #ffd695;
+    color: ${(props: any) => props.disabled ? '' : '#ffd695'};
   }
 `;
 
-export interface LoginButtonViewProps {
+export interface GenericButtonProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   text?: string;
   className?: string;
   href?: string;
+  disabled?: boolean;
 }
 
-class LoginButtonView extends React.PureComponent<LoginButtonViewProps> {
+class GenericButton extends React.Component<GenericButtonProps> {
   public render() {
     return (
       <Button
         onClick={this.props.onClick}
         className={this.props.className ? this.props.className : ''}
         href={this.props.href}
-        target='_blank'
-      >
+        disabled={this.props.disabled}
+        target='_blank'>
         {this.props.text}
         {this.props.children}
       </Button>
@@ -64,4 +66,4 @@ class LoginButtonView extends React.PureComponent<LoginButtonViewProps> {
   }
 }
 
-export default LoginButtonView;
+export default GenericButton;

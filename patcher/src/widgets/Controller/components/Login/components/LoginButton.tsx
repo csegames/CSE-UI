@@ -9,7 +9,7 @@ import * as React from 'react';
 import { utils } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
 import { LoginStatus } from '../index';
-import LoginButtonView from './LoginButtonView';
+import GenericButton from '../../../../GenericButton';
 
 const waveTextAnimation = keyframes`
   0% {
@@ -142,24 +142,24 @@ class LoginButton extends React.Component<LoginButtonProps> {
   public render() {
     switch (this.props.status) {
       case LoginStatus.INVALIDINPUT:
-        return <LoginButtonView text='Login' onClick={this.props.onClick} />;
+        return <GenericButton text='Login' onClick={this.props.onClick} />;
       case LoginStatus.IDLE:
-        return <LoginButtonView text='Login' onClick={this.props.onClick} />;
+        return <GenericButton text='Login' onClick={this.props.onClick} />;
       case LoginStatus.WORKING:
-        return <LoginButtonView onClick={e => e.preventDefault()}>
+        return <GenericButton onClick={e => e.preventDefault()}>
           <WaveText>
             <i>V</i><i>e</i><i>r</i><i>i</i><i>f</i><i>y</i><i>i</i><i>n</i><i>g</i><i>.</i><i>.</i><i>.</i>
           </WaveText>
           <HorizontalBorderShine />
           <VerticalBorderShine />
           <ButtonGlow />
-        </LoginButtonView>;
+        </GenericButton>;
       case LoginStatus.SUCCESS:
-        return <LoginButtonView text='Success' onClick={() => {}} />;
+        return <GenericButton text='Success' onClick={() => {}} />;
       case LoginStatus.FAILED:
-        return <LoginButtonView text='Login Failed' className={FailedButton} onClick={() => {}} />;
+        return <GenericButton text='Login Failed' className={FailedButton} onClick={() => {}} />;
       case LoginStatus.PRIVACYERROR:
-        return <LoginButtonView text='Login Failed' className={FailedButton} onClick={() => {}} />;
+        return <GenericButton text='Login Failed' className={FailedButton} onClick={() => {}} />;
     }
   }
 }
