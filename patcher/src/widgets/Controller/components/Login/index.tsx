@@ -113,6 +113,8 @@ class Login extends React.Component<LoginProps, LoginState> {
     if (newRememberMe === false) {
       // clear email addr from client's storage too
       patcher.login({email: null, password: null, rememberMe: false});
+      // Resets form fields when remember me is unchecked
+      this.setState({email: null, password: null});
     }
     events.fire('play-sound', 'select');
   }
