@@ -30,7 +30,7 @@ const Modal = styled('div')`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 250px;
+  height: 400px;
 `;
 
 const ModalHeader = styled('div')`
@@ -50,6 +50,10 @@ const ModalText = styled('div')`
   margin: 0 15px 10px 15px;
 `;
 
+const Section = styled('div')`
+  margin-bottom: 10px;
+`;
+
 export interface LoginPrivacyModalProps {
   onClick: () => void;
 }
@@ -66,13 +70,26 @@ class LoginPrivacyModal extends React.Component<LoginPrivacyModalProps> {
           <Modal>
             <ModalHeader>Login Failed: Privacy Policy</ModalHeader>
             <ModalText>
-              Our privacy policy has changed. In order to access the game, you must accept these changes on the
-              CSE account webpage
-              <LoginLink underline href='https://api.citystateentertainment.com/Account'>
-                https://api.citystateentertainment.com/Account.
-              </LoginLink>
-              <br />
-              Please, go to the account webpage and accept the changes before attempting to log in again.
+              <Section>
+                Our privacy policy has changed. In order to access the game, you must accept these changes on the
+                CSE account webpage
+                <LoginLink underline href='https://api.citystateentertainment.com/Account'>
+                  https://api.citystateentertainment.com/Account.
+                </LoginLink>
+              </Section>
+              
+              <Section>
+                Please, go to the account webpage and accept the changes before attempting to log in again.
+              </Section>
+              
+              <Section>
+                If you would like to edit your privacy settings, go to the account page.
+                Under the Privacy Policy section, there is a 'Privacy Settings' link. Click on it and follow the directions.
+              </Section>
+              
+              <Section>
+                You can also edit your privacy settings by clicking 'Edit Account Details'. Then click 'Privacy Settings'.
+              </Section>
             </ModalText>
             <LoginButtonView text='OK' onClick={this.props.onClick} />
           </Modal>

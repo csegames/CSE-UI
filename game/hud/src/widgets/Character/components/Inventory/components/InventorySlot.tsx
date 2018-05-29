@@ -14,11 +14,11 @@ import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
-import { InventoryDataTransfer, ContainerPermissionDef } from './InventoryBase';
+import { ContainerPermissionDef } from './InventoryBase';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
 import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
-import { hasEquipmentPermissions } from '../../../lib/utils';
-import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
+import { hasEquipmentPermissions, getInventoryDataTransfer } from '../../../lib/utils';
+import eventNames, { EquipItemCallback, InventoryDataTransfer } from '../../../lib/eventNames';
 
 declare const toastr: any;
 
@@ -29,7 +29,7 @@ const Container = styled('div')`
   height: 62px;
 `;
 
-const ItemContainer = styled('div')`
+const ItemWrapper = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,6 +55,8 @@ export enum SlotType {
   CraftingContainer,
   // CraftingItem - item slots in a crafting container
   CraftingItem,
+  // EmptyCraftingItem - empty slots in a crafting container
+  EmptyCraftingItem,
 }
 
 export interface SlotIndexInterface {
@@ -84,6 +86,10 @@ export interface CraftingSlotItemDef {
   itemCount?: number;
   item?: InventoryItemFragment;
   disableDrop?: boolean;
+  containerID?: string[];
+  drawerID?: string;
+  drawerCurrentStats?: DrawerCurrentStats;
+  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
 }
 
 export interface ContainerSlotItemDef {
@@ -97,6 +103,7 @@ export interface ContainerSlotItemDef {
   itemCount?: number;
   item?: InventoryItemFragment;
   disableDrop?: boolean;
+  stackedItems?: InventoryItemFragment[];
 }
 
 export interface InventorySlotProps {
@@ -105,6 +112,7 @@ export interface InventorySlotProps {
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
+  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
   equippedItems?: EquippedItemFragment[];
   showGraySlots?: boolean;
   containerIsOpen?: boolean;
@@ -143,8 +151,10 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           styles={defaultTooltipStyle}
           content={() =>
             <TooltipContent
-              isVisible={tooltipVisible}
               item={item.item || (item.stackedItems && item.stackedItems[0])}
+              slotType={item.slotType}
+              stackedItems={item.stackedItems}
+              isVisible={tooltipVisible}
               equippedItems={equippedItems}
               instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
                 'Double click to equip or right click to open context menu' : ''}
@@ -156,12 +166,15 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             content={props =>
               <ContextMenuContent
                 item={item.item || (item.stackedItems && item.stackedItems[0])}
+                onMoveStack={this.props.onMoveStack}
                 contextMenuProps={props}
                 syncWithServer={this.props.syncWithServer}
+                containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
+                drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
               />
             }
           >
-            <ItemContainer
+            <ItemWrapper
               slotImage={this.props.showGraySlots ? 'images/inventory/item_slot_grey.png' : 'images/inventory/item_slot.png'}
               onClick={usesContainer ? this.onToggleContainer : null}
               onMouseOver={this.onMouseOver}
@@ -180,22 +193,24 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
                   drawerMaxStats={this.props.drawerMaxStats}
                   drawerCurrentStats={this.props.drawerCurrentStats}
                 />
-            </ItemContainer>
+            </ItemWrapper>
           </ContextMenu>
         </Tooltip>
       </Container>
     ) :
-      <ItemContainer
+      <ItemWrapper
         slotImage={this.props.showGraySlots ? 'images/inventory/item_slot_grey.png' : 'images/inventory/item_slot.png'}>
         <EmptyItemDropZone
+          slotType={this.props.item.slotType}
           disableDrop={this.props.item.disableDrop}
           slotIndex={this.props.item.slotIndex}
           onDrop={this.props.onDropOnZone}
           containerPermissions={item.containerPermissions}
           drawerMaxStats={this.props.drawerMaxStats}
           drawerCurrentStats={this.props.drawerCurrentStats}
+          item={this.props.item.item}
         />
-      </ItemContainer>;
+      </ItemWrapper>;
   }
 
   public componentDidMount() {
@@ -210,7 +225,8 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     this.props.equippedItems !== nextProps.equippedItems ||
     !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
     !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
-    !_.isEqual(this.props.item, nextProps.item);
+    !_.isEqual(this.props.item, nextProps.item) ||
+    !_.isEqual(this.props.item.item, nextProps.item.item);
   }
 
   public componentWillUnmount() {
@@ -300,26 +316,36 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
   private onEquipItem = () => {
     const item = this.props.item.item;
-    // Check if has permissions
-    if (!hasEquipmentPermissions(item)) {
-      // Item does not have equip permissions
-      if (item.equiprequirement && item.equiprequirement.requirementDescription) {
-        toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
-      } else {
-        toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
-      }
-      return;
-    }
+    const inventoryItemDataTransfer = getInventoryDataTransfer({
+      item,
+      position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
+      location: item.location.inContainer ? 'Container' : 'Inventory',
+      containerID: this.props.item.slotIndex.containerID,
+      drawerID: this.props.item.slotIndex.drawerID,
+    });
+
+    // Left or Right item
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
+      // Check if has permissions
+      if (!hasEquipmentPermissions(item)) {
+        // Item does not have equip permissions
+        if (item.equiprequirement && item.equiprequirement.requirementDescription) {
+          toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
+        } else {
+          toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
+        }
+        return;
+      }
       const { gearSlotSets } = this.props.item.item.staticDefinition;
       if (gearSlotSets.length === 2 &&
           this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
           this.isRightOrLeftItem(gearSlotSets[1].gearSlots) ||
           (gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots))) {
 
+        // Is a right or left item. If there is already an item equipped in one, then try to equip to the other.
         this.rightOrLeftItemAction((gearSlots) => {
           const payload: EquipItemCallback = {
-            inventoryItem: this.props.item.item,
+            inventoryItem: inventoryItemDataTransfer,
             willEquipTo: gearSlots,
           };
           events.fire(eventNames.onEquipItem, payload);
@@ -328,8 +354,10 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         });
         return;
       }
+
+      // No special handling for this item
       const payload: EquipItemCallback = {
-        inventoryItem: this.props.item.item,
+        inventoryItem: inventoryItemDataTransfer,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,
       };
       events.fire(eventNames.onEquipItem, payload);

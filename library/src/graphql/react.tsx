@@ -48,11 +48,13 @@ const defaultGraphQLOptions : GraphQLOptions = {
 
 export class GraphQLClient {
   private conf: QueryOptions;
-  public lastQuery: {
+  public lastQuery:  {
     query: string;
     variables: ObjectMap<any>;
     headers?: ObjectMap<string> | null;
     apiHost?: string;
+    namedQuery?: string;
+    operationName?: string;
   };
 
   constructor(options: QueryOptions) {
@@ -75,8 +77,8 @@ export class GraphQLClient {
     }
     return await query({
       query: this.lastQuery.query,
-      operationName: null,
-      namedQuery: null,
+      operationName: this.lastQuery.operationName,
+      namedQuery: this.lastQuery.namedQuery,
       variables: this.lastQuery.variables,
     }, this.conf);
   }

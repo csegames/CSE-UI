@@ -52,6 +52,7 @@ export interface SkillQueueItemState {
 
 class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItemState> {
   private timerListener: any;
+  private mounted: boolean;
 
   constructor(props: SkillQueueItemProps) {
     super(props);
@@ -93,8 +94,11 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
   }
 
   public componentDidMount() {
+    this.mounted = true;
     this.timerListener = events.on(`skill-button-timer-${this.props.skill.id}`, (current: number) => {
-      this.setState({ current });
+      if (this.mounted) {
+        this.setState({ current });
+      }
     });
   }
 
@@ -104,6 +108,7 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
   }
 
   public componentWillUnmount() {
+    this.mounted = false;
     events.off(this.timerListener);
   }
 }

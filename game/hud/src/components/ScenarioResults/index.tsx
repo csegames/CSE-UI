@@ -8,48 +8,15 @@
 import * as React from 'react';
 import { ql, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
 import ScenarioResultsContainer from './components/ScenarioResultsContainer';
 
-const query = (scenarioID: string) => `
-  {
-    scenariosummary(id: "${scenarioID}") {
-      scenarioInstanceID
-      shardID
-      teamOutcomes {
-        teamID
-        outcome
-        participants {
-          displayName
-          score
-          damage {
-            healingApplied {
-              anyCharacter
-            }
-            healingReceived {
-              anyCharacter
-            }
-            damageApplied {
-              anyCharacter
-            }
-            damageReceived {
-              anyCharacter
-            }
-            killCount {
-              playerCharacter
-              nonPlayerCharacter
-            }
-            deathCount {
-              anyCharacter
-            }
-            killAssistCount {
-              playerCharacter
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+const query = (scenarioID: string): Partial<GraphQLQuery> => ({
+  namedQuery: 'scenarioSummary',
+  variables: {
+    scenarioID,
+  },
+});
 
 export interface ScenarioResultsProps {
 

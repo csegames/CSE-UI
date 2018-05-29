@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
+import { client, soundEvents } from '@csegames/camelot-unchained';
 
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';
@@ -92,6 +92,7 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
     } else {
       // Just show round over
       client.ReleaseInputOwnership();
+      client.PlaySoundEvent(soundEvents.PLAY_SCENARIO_UI_WIDGET_ROUNDOVER);
       this.setState({ type: ScenarioPopupType.RoundOver });
     }
 

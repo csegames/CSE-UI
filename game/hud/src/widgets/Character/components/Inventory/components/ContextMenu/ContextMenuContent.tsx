@@ -9,9 +9,14 @@ import { ql, client, events, webAPI, ContextMenuContentProps } from '@csegames/c
 import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import ContextMenuAction from './ContextMenuAction';
-import eventNames from '../../../../lib/eventNames';
-import { prettifyText, hasGroundPermissions, hasEquipmentPermissions } from '../../../../lib/utils';
+import eventNames, { UpdateInventoryItemsPayload } from '../../../../lib/eventNames';
 import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import {
+  prettifyText,
+  hasGroundPermissions,
+  hasEquipmentPermissions,
+  getInventoryDataTransfer,
+} from '../../../../lib/utils';
 
 declare const toastr: any;
 
@@ -19,6 +24,9 @@ export interface ContextMenuContentCompProps {
   item: InventoryItemFragment;
   contextMenuProps: ContextMenuContentProps;
   syncWithServer: () => void;
+  containerID: string[];
+  drawerID: string;
+  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
 }
 
 class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
@@ -31,6 +39,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
           return (
             <ContextMenuAction
               key={i}
+              itemId={item.id}
               name={`Equip to ${gearSlotSet.gearSlots.map((gearSlot, i) => {
                 if (i !== gearSlotSet.gearSlots.length - 1) {
                   return prettifyText(gearSlot.id) + ', ';
@@ -45,6 +54,14 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
             />
           );
         }) : null}
+        {/* TODO
+        {isStackedItem(item) &&
+          <ContextMenuAction
+            name={'Move half'}
+            onActionClick={() => this.props.onMoveStack(item, Math.floor(item.stats.item.unitCount / 2))}
+            syncWithServer={this.props.syncWithServer}
+          />
+        } */}
         {item.actions && item.actions.map((action) => {
           if (!action.enabled && !action.showWhenDisabled) {
             return null;
@@ -52,6 +69,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
           return (
             <ContextMenuAction
               key={action.id}
+              itemId={item.id}
               name={action.name}
               action={action as ItemActionDefGQL}
               onActionClick={this.onActionClick}
@@ -61,6 +79,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         })}
         {hasGroundPermissions(item) && item.staticDefinition.deploySettings ?
           <ContextMenuAction
+            itemId={item.id}
             name={'Deploy'}
             onActionClick={this.onDeployItem}
             syncWithServer={this.props.syncWithServer}
@@ -68,6 +87,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         }
         {hasGroundPermissions(item) ?
           <ContextMenuAction
+            itemId={item.id}
             name={'Drop item'}
             onActionClick={this.onDropItem}
             syncWithServer={this.props.syncWithServer}
@@ -79,7 +99,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
 
   private onEquipItem = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
     const { item, contextMenuProps } = this.props;
-    const payload: any = {
+    const payload = {
       inventoryItem: item,
       willEquipTo: gearSlots,
     };
@@ -89,9 +109,19 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
   }
 
   private onDropItem = () => {
-    const { item, contextMenuProps } = this.props;
-    const payload = {
-      inventoryItem: item,
+    const { item, contextMenuProps, containerID, drawerID } = this.props;
+    const position = item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position;
+    const dataTransfer = getInventoryDataTransfer({
+      item,
+      location: item.location.inContainer ? 'inContainer' : 'inventory',
+      position,
+      containerID,
+      drawerID,
+    });
+
+    const payload: UpdateInventoryItemsPayload = {
+      type: 'Drop',
+      inventoryItem: dataTransfer,
     };
     events.fire(eventNames.updateInventoryItems, payload);
     events.fire(eventNames.onDropItem, payload);

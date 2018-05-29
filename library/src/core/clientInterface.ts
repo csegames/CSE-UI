@@ -106,6 +106,11 @@ export interface ClientSkillState {
   disruption?: SkillStateProgression;
 }
 
+export interface ClientSkillBarItem {
+  id: number;
+  keybind: number;
+}
+
 export interface SiegeState extends EntityState {
   type: 'siege';
   health: {
@@ -241,6 +246,8 @@ interface clientInterface {
 
   /* Skills */
   OnSkillStateChanged(callback: (skillState: ClientSkillState) => void): void;
+
+  OnSkillBarChanged(callback: (newSkillBar: ClientSkillBarItem[]) => void): void;
 
   /* Abilities */
   Attack(abilityID: string): void;

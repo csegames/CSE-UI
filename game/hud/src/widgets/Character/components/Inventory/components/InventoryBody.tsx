@@ -15,12 +15,10 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
-import eventNames, { UpdateInventoryItems } from '../../../lib/eventNames';
-import {
-  calcRowAndSlots,
-  getDimensionsOfElement,
-} from '../../../lib/utils';
+import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer } from '../../../lib/eventNames';
+import { calcRowAndSlots, getDimensionsOfElement } from '../../../lib/utils';
 import queries from '../../../../../gqlDocuments';
+import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
 
@@ -136,14 +134,15 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   public render() {
     const ss = StyleSheet.create(defaultInventoryBodyStyles);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { rows, rowData } = base.createRowElements(
-      this.state,
-      this.props,
-      { items: this.props.inventoryItems },
-      this.onDropOnZone,
-      this.refetch,
-      this.bodyRef && getDimensionsOfElement(this.bodyRef).width,
-    );
+    const { rows, rowData } = base.createRowElements({
+      state: this.state,
+      props: this.props,
+      itemData: { items: this.props.inventoryItems },
+      onDropOnZone: this.onDropOnZone,
+      onMoveStack: this.onMoveStack,
+      syncWithServer: this.refetch,
+      bodyWidth: this.bodyRef && getDimensionsOfElement(this.bodyRef).width,
+    });
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.heightOfBody));
@@ -193,8 +192,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       const timeNextItemAdded = new Date().getTime();
       if (this.props.visibleComponent === '' &&
           !this.isFetching &&
-          this.timePrevItemAdded &&
-          timeNextItemAdded - this.timePrevItemAdded > 100
+          (!this.timePrevItemAdded ||
+          timeNextItemAdded - this.timePrevItemAdded > 100)
         ) {
         // When inventory is closed and item is added to inventory, resync inventory with server
         this.isFetching = true;
@@ -221,7 +220,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     const onSearchValueChange = nextProps.searchValue !== this.props.searchValue;
     const onActiveFiltersChange = !_.isEqual(nextProps.activeFilters, this.props.activeFilters);
     if (!this.props.graphql.data && nextProps.graphql.data) {
-      this.timePrevItemAdded = new Date().getTime();
+      // this.timePrevItemAdded = new Date().getTime();
     }
 
     if (graphqlDataChange || onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
@@ -317,8 +316,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     );
   }
 
-  private onDropOnZone = (dragItemData: base.InventoryDataTransfer,
-                          dropZoneData: base.InventoryDataTransfer) => {
+  private onDropOnZone = (dragItemData: InventoryDataTransfer,
+                          dropZoneData: InventoryDataTransfer) => {
     // this function only gets called for inventory items, containers take care of their own state.
     this.setState((state, props) => {
       return base.onMoveInventoryItem(dragItemData, dropZoneData, state, props);
@@ -337,8 +336,12 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     this.setState((state, props) => base.pruneRowsOfSlots(state, rowData, this.heightOfBody));
   }
 
-  private onUpdateInventoryOnEquip = (payload: UpdateInventoryItems) => {
+  private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {
     this.setState((state, props) => base.onUpdateInventoryItemsHandler(state, props, payload));
+  }
+
+  private onMoveStack = (item: InventoryItemFragment, amount: number) => {
+    this.setState((state, props) => base.onMoveStack(state, props, item, amount));
   }
 }
 

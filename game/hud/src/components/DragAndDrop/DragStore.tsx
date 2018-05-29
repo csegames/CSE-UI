@@ -33,7 +33,7 @@ export interface DragStoreState {
   dragRender: JSX.Element;
 }
 
-const defaultDragStoreState: DragStoreState = {
+export const defaultDragStoreState: DragStoreState = {
   isDragging: false,
   dataKey: '',
   draggableRef: null,

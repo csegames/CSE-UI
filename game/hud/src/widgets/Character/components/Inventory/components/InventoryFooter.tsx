@@ -191,7 +191,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   private onDropItem = (payload: DropItemCallback) => {
-    const item = payload.inventoryItem;
+    const item = payload.inventoryItem.item;
     this.setState((state, props) => {
       return {
         ...state,

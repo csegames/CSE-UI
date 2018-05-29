@@ -12,12 +12,13 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
-import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
+import { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
+import { getEquippedDataTransfer } from '../../../lib/utils';
 import eventNames, {
   EquipItemCallback,
   UnequipItemCallback,
-  UpdateInventoryItems,
+  UpdateInventoryItemsPayload,
 } from '../../../lib/eventNames';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
@@ -258,22 +259,19 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
   private onUnequipItem = (payload: UnequipItemCallback) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
-    const { gearSlots, item } = payload;
+    const { item } = payload;
     const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {
       return !_.find(equippedItem.gearSlots, (gearSlot): any => {
-        return _.find(gearSlots, slot => gearSlot.id === slot.id);
+        return _.find(item.gearSlots, slot => gearSlot.id === slot.id);
       });
     }));
     this.props.onEquippedItemsChange(filteredItems);
 
     if (!payload.dontUpdateInventory) {
-      const updateInventoryItemsPayload: UpdateInventoryItems = {
+      const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
         type: 'Unequip',
-        equippedItem: {
-          item,
-          gearSlots,
-        } as any,
+        equippedItem: item,
       };
       events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
     }
@@ -288,7 +286,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       });
     }));
     const newItem: InventoryItemFragment = {
-      ...inventoryItem,
+      ...inventoryItem.item,
       location: {
         inventory: null,
         inContainer: null,
@@ -298,11 +296,22 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       },
     };
     const newEquippedItem = { item: newItem, gearSlots: willEquipTo };
-    this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem as any));
+    this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem));
 
     const prevEquippedItem = _.filter(equippedItems, equippedItem =>
-      _.findIndex(equippedItem.gearSlots, gearSlot => _.find(willEquipTo, slot => slot.id === gearSlot.id)) > -1);
-    const updateInventoryItemsPayload: UpdateInventoryItems = {
+      _.findIndex(equippedItem.gearSlots, gearSlot =>
+        _.find(willEquipTo, slot => slot.id === gearSlot.id),
+      ) > -1)
+      .map((equippedItem) => {
+        return getEquippedDataTransfer({
+          item: equippedItem.item,
+          position: 0,
+          location: 'Equipped',
+          gearSlots: equippedItem.gearSlots,
+        });
+      });
+
+    const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
       type: 'Equip',
       inventoryItem,
       willEquipTo,
@@ -323,23 +332,24 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
         return (
-          <PopupMiniInventory
+          // <PopupMiniInventory
+          //   key={slot.slotName}
+          //   align={slot.openingSide}
+          //   inventoryItems={this.props.inventoryItems}
+          //   slotName={slot.slotName}
+          //   visible={slot.slotName === this.state.slotNameItemMenuVisible}
+          //   onVisibilityChange={this.onToggleItemMenuVisibility}>
+          <div
             key={slot.slotName}
-            align={slot.openingSide}
-            inventoryItems={this.props.inventoryItems}
-            slotName={slot.slotName}
-            visible={slot.slotName === this.state.slotNameItemMenuVisible}
-            onVisibilityChange={this.onToggleItemMenuVisibility}>
-            <div
-              className={css(
-                !isWeapon && style.itemSlotSpacing,
-                !isWeapon && customStyle.itemSlotSpacing,
-                isWeapon && style.weaponSpacing,
-                isWeapon && customStyle.weaponSpacing,
-              )}>
-              <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
-            </div>
-          </PopupMiniInventory>
+            className={css(
+              !isWeapon && style.itemSlotSpacing,
+              !isWeapon && customStyle.itemSlotSpacing,
+              isWeapon && style.weaponSpacing,
+              isWeapon && customStyle.weaponSpacing,
+            )}>
+            <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
+          </div>
+          // </PopupMiniInventory>
         );
       })
     );
@@ -367,13 +377,13 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     );
   }
 
-  private onToggleItemMenuVisibility = (slotName: string) => {
-    if (slotName === this.state.slotNameItemMenuVisible) {
-      this.setState({ slotNameItemMenuVisible: '' });
-    } else {
-      this.setState({ slotNameItemMenuVisible: slotName });
-    }
-  }
+  // private onToggleItemMenuVisibility = (slotName: string) => {
+  //   if (slotName === this.state.slotNameItemMenuVisible) {
+  //     this.setState({ slotNameItemMenuVisible: '' });
+  //   } else {
+  //     this.setState({ slotNameItemMenuVisible: slotName });
+  //   }
+  // }
 
   private toggleOuter = () => {
     this.setState({ showUnder: false });

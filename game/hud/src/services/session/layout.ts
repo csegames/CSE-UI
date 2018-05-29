@@ -371,7 +371,10 @@ export const resetHUD = module.createAction({
   action: () => {
     return {};
   },
-  reducer: (s, a) => initialState(),
+  reducer: (s, a) => {
+    localStorage.setItem(localStorageKey, null);
+    return initialState();
+  },
 });
 
 

@@ -80,7 +80,7 @@ export interface State {
 
 type Coord = [number, number];
 
-export class GameMap extends React.PureComponent<Props, State> {
+export class GameMap extends React.Component<Props, State> {
   private mapRef: HTMLDivElement = null;
   private tooltipRef: HTMLDivElement = null;
   private map: ol.Map;

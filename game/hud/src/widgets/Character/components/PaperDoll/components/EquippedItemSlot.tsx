@@ -10,6 +10,7 @@ import { Tooltip, events } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
+import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
@@ -110,7 +111,15 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   private unequipItem = () => {
     // Fires off onUnequipItem event
     const equippedItem = this.props.providedEquippedItem;
-    const payload: UnequipItemCallback = equippedItem;
+    const equippedItemDataTransfer = getEquippedDataTransfer({
+      item: equippedItem.item,
+      position: 0,
+      location: 'Equipped',
+      gearSlots: equippedItem.gearSlots,
+    });
+    const payload: UnequipItemCallback = {
+      item: equippedItemDataTransfer,
+    };
     events.fire(eventNames.onUnequipItem, payload);
   }
 

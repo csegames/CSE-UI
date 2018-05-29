@@ -9,6 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 
+import { SlotType } from '../../Inventory/components/InventorySlot';
 import TooltipDurabilityInfo from './TooltipDurabilityInfo';
 import TooltipRequirementInfo from './TooltipRequirementInfo';
 import { hasDurabilityStats, hasItemRequirements } from '../../../lib/utils';
@@ -119,11 +120,12 @@ const InstructionText = styled('div')`
 
 export interface TooltipFooterProps {
   item: InventoryItemFragment;
+  slotType?: SlotType;
 }
 
 class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
   public render() {
-    const { item } = this.props;
+    const { item, slotType } = this.props;
     return (
       <Container>
         <FooterOverlay />
@@ -160,7 +162,10 @@ class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
             <TooltipRequirementInfo item={item} />
           </MidSectionContainer>
         }
-        <InstructionText>right click item for more actions</InstructionText>
+        <InstructionText>
+          {slotType === SlotType.CraftingContainer ? 'left click to open crafting container | ' : ''}
+          right click item for more actions
+        </InstructionText>
       </Container>
     );
   }

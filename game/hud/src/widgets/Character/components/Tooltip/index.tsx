@@ -8,6 +8,7 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
+import { SlotType } from '../../components/Inventory/components/InventorySlot';
 import TooltipHeader from './components/TooltipHeader';
 import TooltipArmorInfo from './components/TooltipArmorInfo';
 import TooltipWeaponInfo from './components/TooltipWeaponInfo';
@@ -85,22 +86,24 @@ export interface TooltipContentProps {
   isVisible: boolean;
   equippedItems?: EquippedItemFragment[];
   instructions?: string;
+  stackedItems?: InventoryItemFragment[];
+  slotType?: SlotType;
 }
 
 class TooltipContent extends React.Component<TooltipContentProps> {
   public render() {
-    const { item, equippedItems } = this.props;
+    const { item, equippedItems, slotType, stackedItems } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
       <Container factionColor={getTooltipColor(client.playerState.faction)}>
-        <TooltipHeader item={item} />
+        <TooltipHeader item={item} slotType={slotType} stackedItems={stackedItems} />
         {isArmorItem(item) && <TooltipArmorInfo item={item} equippedItems={equippedItems} />}
         {isWeaponItem(item) && <TooltipWeaponInfo item={item} equippedItems={equippedItems} />}
         {isContainerItem(item) && <TooltipContainerInfo item={item} />}
-        {isSubstanceItem(item) && <TooltipSubstanceInfo item={item} />}
+        {isSubstanceItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipSubstanceInfo item={item} />}
         {isBuildingBlockItem(item) && <TooltipBuildingBlockInfo item={item} />}
-        <TooltipFooter item={item} />
+        <TooltipFooter item={item} slotType={slotType} />
       </Container>
     ) : <div>This item does not exist anymore.</div>;
   }

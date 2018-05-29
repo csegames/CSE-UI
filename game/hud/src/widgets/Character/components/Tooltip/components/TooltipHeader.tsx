@@ -9,9 +9,10 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
+import { SlotType } from '../../Inventory/components/InventorySlot';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 import { TOOLTIP_PADDING } from '../../../lib/constants';
-import { getTooltipColor } from '../../../lib/utils';
+import { getTooltipColor, getContainerInfo } from '../../../lib/utils';
 
 const Container = styled('div')`
   position: relative;
@@ -91,19 +92,25 @@ const Icon = styled('div')`
 
 export interface TooltipHeaderProps {
   item: InventoryItemFragment;
+  slotType?: SlotType;
+  stackedItems?: InventoryItemFragment[];
 }
 
 class TooltipHeader extends React.PureComponent<TooltipHeaderProps> {
   public render() {
-    const { item } = this.props;
+    const { item, slotType, stackedItems } = this.props;
+    const containerInfo = slotType && slotType === SlotType.CraftingContainer &&
+      stackedItems && getContainerInfo(stackedItems);
     const itemInfo = item.staticDefinition;
-    const itemQuality = Number((item.stats.item.quality * 100).toFixed(1));
+    const itemQuality = slotType && slotType === SlotType.CraftingContainer ? containerInfo.averageQuality :
+      Number((item.stats.item.quality * 100).toFixed(1));
 
     return (
       <Container>
         <HeaderOverlay factionColor={getTooltipColor(client.playerState.faction)} />
         <SubContainer>
           <ItemName>{itemInfo.name}</ItemName>
+          <ItemSubtitle>{item.id}</ItemSubtitle>
           {itemInfo.description && <ItemSubtitle>({itemInfo.description})</ItemSubtitle>}
           <ItemSubtitle>{itemInfo.itemType}</ItemSubtitle>
         </SubContainer>
