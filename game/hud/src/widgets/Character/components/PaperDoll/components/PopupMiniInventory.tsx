@@ -18,7 +18,7 @@ import { getItemDefinitionName } from '../../../lib/utils';
 
 const containerDimensions = {
   width: 320,
-  height: 215,
+  height: 225,
 };
 
 export interface PopupMiniInventoryStyle extends StyleDeclaration {
@@ -59,7 +59,7 @@ export const defaultPopupMiniInventoryStyle: PopupMiniInventoryStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '2px 5px',
+    padding: '2px 5px 2px',
     height: '15px',
     backgroundColor: 'rgba(74, 77, 84, 0.5)',
   },
@@ -92,9 +92,11 @@ export const defaultPopupMiniInventoryStyle: PopupMiniInventoryStyle = {
   },
 
   pageNumberText: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     fontSize: '15px',
     margin: '0 5px 0 0',
-    display: 'inline-block',
   },
 
   controllerButton: {
@@ -243,19 +245,17 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
                     !morePrev && ss.disabledControllerButton,
                     !morePrev && custom.disabledControllerButton,
                   )}
-                  onClick={onPrevPageClick}>{'<Prev'}</div>
-                  <div>
-                    <p className={css(ss.pageNumberText, custom.pageNumberText)}>
-                      {state.activePageIndex + 1} / {pages.length}
-                    </p>
-                    <div className={css(
-                      ss.controllerButton,
-                      custom.controllerButton,
-                      !moreNext && ss.disabledControllerButton,
-                      !moreNext && custom.disabledControllerButton,
-                    )}
-                    onClick={onNextPageClick}>{'Next>'}</div>
-                  </div>
+                  onClick={onPrevPageClick}>{'< Prev'}</div>
+                  <p className={css(ss.pageNumberText, custom.pageNumberText)}>
+                    {state.activePageIndex + 1} / {pages.length}
+                  </p>
+                  <div className={css(
+                    ss.controllerButton,
+                    custom.controllerButton,
+                    !moreNext && ss.disabledControllerButton,
+                    !moreNext && custom.disabledControllerButton,
+                  )}
+                  onClick={onNextPageClick}>{'Next >'}</div>
                 </div>
               );
             }}
