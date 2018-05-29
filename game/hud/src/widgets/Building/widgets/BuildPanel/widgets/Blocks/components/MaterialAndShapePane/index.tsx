@@ -16,8 +16,7 @@ import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../
 import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
 import { fireBuildingItemSelected } from '../../../../../../services/events';
 
-import { BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
-import * as events from '@csegames/camelot-unchained/lib/events';
+import { events, BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
 
 import MaterialView from '../MaterialView';
 import ShapesView from '../ShapesView';
