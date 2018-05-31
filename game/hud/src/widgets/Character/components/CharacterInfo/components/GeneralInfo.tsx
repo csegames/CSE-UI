@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-import { utils, webAPI, Race } from '@csegames/camelot-unchained';
+import { ql, utils, webAPI, Race } from '@csegames/camelot-unchained';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
-import { MyCharacterFragment } from '../../../../../gqlInterfaces';
 
 export interface GeneralInfoStyles extends StyleDeclaration {
   GeneralInfo: React.CSSProperties;
@@ -77,8 +77,6 @@ const defaultGeneralInfoStyle: GeneralInfoStyles = {
 
 export interface GeneralInfoProps {
   styles?: Partial<GeneralInfoStyles>;
-  myCharacter: MyCharacterFragment;
-  myOrder: any;
 }
 
 export interface GeneralInfoState {
@@ -96,29 +94,37 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
   public render() {
     const ss = StyleSheet.create(defaultGeneralInfoStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { myCharacter } = this.props;
-
     return (
-      <div className={css(ss.GeneralInfo, custom.GeneralInfo)}>
-        <div className={css(ss.generalInfoHeader, custom.generalInfoHeader)}>
-          <div className={css(ss.avatarIconContainer, custom.avatarIconContainer)}>
-            <img src={characterAvatarIcon[`${myCharacter.gender}${myCharacter.race}`]} />
-          </div>
-          <div className={css(ss.characterName, custom.characterName)}>
-            <p className={css(ss.characterNameText, custom.characterNameText)}>{myCharacter.name}</p>
-            <p className={css(ss.otherInfoText, custom.otherInfoText)}>{myCharacter.faction}</p>
-            <p className={css(ss.otherInfoText, custom.otherInfoText)}>
-              {myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}
-            </p>
-          </div>
-          <div className={css(ss.otherInfoContainer, custom.otherInfoContainer)}>
-            {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}
-            <p className={css(ss.otherInfoText, custom.otherInfoText)}>
-              The content of this box is TBD
-            </p>
-          </div>
-        </div>
-      </div>
+      <GraphQL query={{ namedQuery: 'myStaticCharacter' }}>
+        {(graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
+          if (graphql.loading || !graphql.data) return null;
+          const myCharacter: ql.schema.CUCharacter =
+            typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
+
+          return (
+            <div className={css(ss.GeneralInfo, custom.GeneralInfo)}>
+              <div className={css(ss.generalInfoHeader, custom.generalInfoHeader)}>
+                <div className={css(ss.avatarIconContainer, custom.avatarIconContainer)}>
+                  <img src={characterAvatarIcon[`${myCharacter.gender}${myCharacter.race}`]} />
+                </div>
+                <div className={css(ss.characterName, custom.characterName)}>
+                  <p className={css(ss.characterNameText, custom.characterNameText)}>{myCharacter.name}</p>
+                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>{myCharacter.faction}</p>
+                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>
+                    {myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}
+                  </p>
+                </div>
+                <div className={css(ss.otherInfoContainer, custom.otherInfoContainer)}>
+                  {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}
+                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>
+                    The content of this box is TBD
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      </GraphQL>
     );
   }
 }

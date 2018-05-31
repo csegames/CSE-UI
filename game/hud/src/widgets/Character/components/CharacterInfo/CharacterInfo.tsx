@@ -8,7 +8,6 @@ import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import { utils, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
-import { graphql } from 'react-apollo';
 
 import GeneralInfo from './components/GeneralInfo';
 import GeneralStats from './components/GeneralStats/GeneralStats';
@@ -17,7 +16,6 @@ import OffenseInfo from './components/Offense/OffenseList';
 import TraitsInfo from './components/TraitsInfo/TraitsInfo';
 import Session from './components/Session/Session';
 import { colors } from '../../lib/constants';
-import queries from '../../../../gqlDocuments';
 
 export interface CharacterInfoStyle extends StyleDeclaration {
   CharacterInfo: React.CSSProperties;
@@ -113,7 +111,6 @@ export const defaultCharacterInfoStyle: CharacterInfoStyle = {
 
 export interface CharacterInfoProps {
   styles?: Partial<CharacterInfoStyle>;
-  data?: any;
 }
 
 class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
@@ -121,7 +118,6 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
   public render() {
     const ss = StyleSheet.create(defaultCharacterInfoStyle);
     const custom = StyleSheet.create(this.props.styles || {});
-    const { myCharacter, myOrder } = this.props.data;
     const tabs: TabItem[] = [
       {
         name: 'general',
@@ -182,10 +178,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
       },
     ];
 
-    return myCharacter ? (
+    return (
       <div className={css(ss.CharacterInfo, custom.CharacterInfo)}>
         <div className={css(ss.generalInfoContainer, custom.generalInfoContainer)}>
-          <GeneralInfo myCharacter={myCharacter} myOrder={myOrder} />
+          <GeneralInfo />
         </div>
         <div className={css(ss.infoContent, custom.infoContent)}>
           <TabPanel
@@ -205,7 +201,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
           />
         </div>
       </div>
-    ) : null;
+    );
   }
 
   public componentDidCatch(error: Error, info: any) {
@@ -220,6 +216,4 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
   private renderTraitsInfo = () => <TraitsInfo />;
 }
 
-const CharacterInfoWithQL = graphql(queries.CharacterInfo as any)(CharacterInfo);
-
-export default CharacterInfoWithQL;
+export default CharacterInfo;

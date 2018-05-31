@@ -4,11 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { utils, client } from '@csegames/camelot-unchained';
 import * as React from 'react';
 import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { ql, utils, client } from '@csegames/camelot-unchained';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+
+const query = {
+  namedQuery: 'motd',
+  variables: {
+    channel: client.patchResourceChannel,
+  },
+};
 
 export interface WelcomeStyles extends StyleDeclaration {
   Welcome: React.CSSProperties;
@@ -74,7 +80,7 @@ export const defaultWelcomeStyles: WelcomeStyles = {
   },
 };
 
-export interface WelcomeProps extends GraphQLInjectedProps<Pick<CUQuery, 'motd'>> {
+export interface WelcomeProps {
   styles?: Partial<WelcomeStyles>;
   setVisibility: (vis: boolean) => void;
 }
@@ -103,29 +109,38 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     const custom = StyleSheet.create(this.props.styles || {});
 
     return (
-      <div className={css(ss.Welcome, custom.Welcome)}>
-        <div className={css(ss.welcomeHeader, custom.welcomeHeader)}>
-          <div className=''>
-            { this.props.graphql.data && this.props.graphql.data.motd && this.props.graphql.data.motd[0]
-              ? this.props.graphql.data.motd[0].title
-              : 'Welcome to Camelot Unchained'
-            }
-          </div>
-          <div className={css(ss.close, custom.close)} onClick={this.hide}>
-            <i className='fa fa-times click-effect'></i>
-          </div>
-        </div>
-        <div className={css(ss.welcomeContent, custom.welcomeContent)}>
-        {
-          this.props.graphql.data && this.props.graphql.data.motd && this.props.graphql.data.motd[0]
-          ? <div key='100' dangerouslySetInnerHTML={{ __html: this.props.graphql.data.motd[0].htmlContent }} />
-          : this.defaultMessage
-        }
-        </div>
-        <div className={css(ss.welcomeFooter, custom.welcomeFooter)}>
-          <a className={css(ss.dismissButton, custom.dismissButton)} onClick={this.hideDelay}>Dismiss For 24h</a>
-        </div>
-      </div>
+      <GraphQL query={query}>
+        {(graphql: GraphQLResult<{ motd: ql.schema.MessageOfTheDay }>) => {
+          const gqlData = typeof graphql.data === 'string' ? JSON.parse(graphql.data) : graphql.data;
+          if (graphql.loading || !gqlData) return null;
+
+          return (
+            <div className={css(ss.Welcome, custom.Welcome)}>
+              <div className={css(ss.welcomeHeader, custom.welcomeHeader)}>
+                <div className=''>
+                  { gqlData && gqlData.motd && gqlData.motd[0]
+                    ? gqlData.motd[0].title
+                    : 'Welcome to Camelot Unchained'
+                  }
+                </div>
+                <div className={css(ss.close, custom.close)} onClick={this.hide}>
+                  <i className='fa fa-times click-effect'></i>
+                </div>
+              </div>
+              <div className={css(ss.welcomeContent, custom.welcomeContent)}>
+              {
+                gqlData && gqlData.motd && gqlData.motd[0]
+                ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
+                : this.defaultMessage
+              }
+              </div>
+              <div className={css(ss.welcomeFooter, custom.welcomeFooter)}>
+                <a className={css(ss.dismissButton, custom.dismissButton)} onClick={this.hideDelay}>Dismiss For 24h</a>
+              </div>
+            </div>
+          );
+        }}
+      </GraphQL>
     );
   }
   private hide = (): void => {
@@ -139,12 +154,4 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 }
 
-export default withGraphQL({
-  query: `query {
-    motd(channel: ${client.patchResourceChannel}) {
-      id
-      title
-      htmlContent
-    }
-  }`,
-})(Welcome);
+export default Welcome;
