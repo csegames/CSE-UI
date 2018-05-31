@@ -331,13 +331,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
+        const slotVisible = slot.slotName === this.state.slotNameItemMenuVisible;
         return (
           <PopupMiniInventory
             key={slot.slotName}
             align={slot.openingSide}
             inventoryItems={this.props.inventoryItems}
             slotName={slot.slotName}
-            visible={slot.slotName === this.state.slotNameItemMenuVisible}
+            visible={slotVisible}
             onVisibilityChange={this.onToggleItemMenuVisibility}>
           <div
             key={slot.slotName}
@@ -347,7 +348,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
               isWeapon && style.weaponSpacing,
               isWeapon && customStyle.weaponSpacing,
             )}>
-            <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
+            <EquippedItemSlot tooltipDisabled={slotVisible}
+                              slot={slot}
+                              providedEquippedItem={equippedItem} />
           </div>
           </PopupMiniInventory>
         );
