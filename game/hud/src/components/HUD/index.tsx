@@ -87,7 +87,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <ScenarioPopup />
 
         <ScenarioResults />
-
         <HUDFullScreen />
         <Watermark />
         <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>

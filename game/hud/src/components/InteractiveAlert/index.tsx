@@ -73,6 +73,7 @@ class InteractiveAlert extends React.Component<Props, State> {
   }
 
   public render() {
+    console.log('render: InteractiveAlert');
     return (
       <GraphQL
         query={query}

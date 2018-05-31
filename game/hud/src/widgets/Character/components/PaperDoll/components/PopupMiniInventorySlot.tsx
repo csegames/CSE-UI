@@ -68,11 +68,12 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
             icon={item.staticDefinition.iconUrl}
             styles={{
               Item: defaultPopupMiniInventorySlotStyles.PopupMiniInventorySlot,
-            }}
-          />
+            }} />
         </div>
       </Tooltip>
-    ) : <div className={css(ss.PopupMiniInventorySlot, custom.PopupMiniInventorySlot)}><EmptyItem /></div>;
+    ) : <div className={css(ss.PopupMiniInventorySlot, custom.PopupMiniInventorySlot)}>
+          <EmptyItem />
+        </div>;
   }
 
   private onEquipItem = () => {

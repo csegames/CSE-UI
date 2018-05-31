@@ -20,7 +20,9 @@ const defaultListItemStyle: ListItemStyles = {
   ListItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '5px',
+    alignItems: 'center',
+    height: '35px',
+    padding: '0 5px',
     cursor: 'pointer',
     webkitUserSelect: 'none',
     userSelect: 'none',

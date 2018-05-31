@@ -21,7 +21,7 @@ export interface Options<DataType> extends WebSocketOptions {
 export const defaultSubscriptionOpts: Options<any> = {
   url: '/graphql',
   protocols: 'graphql-ws',
-  reconnectInterval: 1000,
+  reconnectInterval: 5000,
   connectTimeout: 2000,
   initPayload: {},
   debug: false,
@@ -98,11 +98,12 @@ export class SubscriptionManager {
     if (this.debug) {
       this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
     }
-    this.socket = new ReconnectingWebSocket(options);
+    const opts =  withDefaults(options, defaultSubscriptionOpts);
+    this.socket = new ReconnectingWebSocket(opts);
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;
     this.socket.onerror = this.errorHandler;
-    this.initPayload = options.initPayload;
+    this.initPayload = opts.initPayload;
   }
 
   public subscribe = <T>(
@@ -177,6 +178,7 @@ export class SubscriptionManager {
         if (subscription && subscription.onData) {
           subscription.onData(op.payload);
         }
+        break;
       }
       case GQL_CONNECTION_KEEP_ALIVE: {
         clearTimeout(this.keepAliveTimeoutHandler);
@@ -184,7 +186,7 @@ export class SubscriptionManager {
           this.socket.refresh();
         }, 5000);
         this.send({
-          type: 'ka',
+          type: GQL_CONNECTION_KEEP_ALIVE,
         });
         break;
       }
@@ -198,7 +200,7 @@ export class SubscriptionManager {
       case GQL_COMPLETE: {
         const subscription = this.subscriptions[op.id];
         if (subscription) {
-          if (subscription.onError) {
+          if (subscription[op.id].onError) {
             const message = `SubscriptionManager | GQL_COMPLETE received for id ${op.id} without acknowledged stop request`;
             subscription[op.id].onError(new ErrorEvent('GQL_COMPLETE', {
               message,
@@ -211,7 +213,7 @@ export class SubscriptionManager {
       }
       case GQL_ERROR: {
         const subscription = this.subscriptions[op.id];
-        if (subscription && subscription.onError) {
+        if (subscription && subscription[op.id].onError) {
           subscription[op.id].onError(new ErrorEvent('GQL_ERROR', {
             error: new Error(op.payload),
             message: op.payload,

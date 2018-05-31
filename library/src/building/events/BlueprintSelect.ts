@@ -18,7 +18,7 @@ function run(emitter: EventEmitter, topic: string) {
   }
 }
 
-export default class BlockSelectListener {
+export default class BlueprintSelectListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintSelect;

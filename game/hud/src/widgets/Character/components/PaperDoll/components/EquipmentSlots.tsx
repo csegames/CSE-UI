@@ -12,7 +12,7 @@ import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
-import { Alignment } from './PopupMiniInventory';
+import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import eventNames, {
@@ -332,13 +332,13 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
         return (
-          // <PopupMiniInventory
-          //   key={slot.slotName}
-          //   align={slot.openingSide}
-          //   inventoryItems={this.props.inventoryItems}
-          //   slotName={slot.slotName}
-          //   visible={slot.slotName === this.state.slotNameItemMenuVisible}
-          //   onVisibilityChange={this.onToggleItemMenuVisibility}>
+          <PopupMiniInventory
+            key={slot.slotName}
+            align={slot.openingSide}
+            inventoryItems={this.props.inventoryItems}
+            slotName={slot.slotName}
+            visible={slot.slotName === this.state.slotNameItemMenuVisible}
+            onVisibilityChange={this.onToggleItemMenuVisibility}>
           <div
             key={slot.slotName}
             className={css(
@@ -349,7 +349,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
             )}>
             <EquippedItemSlot slot={slot} providedEquippedItem={equippedItem} />
           </div>
-          // </PopupMiniInventory>
+          </PopupMiniInventory>
         );
       })
     );
@@ -377,13 +377,13 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     );
   }
 
-  // private onToggleItemMenuVisibility = (slotName: string) => {
-  //   if (slotName === this.state.slotNameItemMenuVisible) {
-  //     this.setState({ slotNameItemMenuVisible: '' });
-  //   } else {
-  //     this.setState({ slotNameItemMenuVisible: slotName });
-  //   }
-  // }
+  private onToggleItemMenuVisibility = (slotName: string) => {
+    if (slotName === this.state.slotNameItemMenuVisible) {
+      this.setState({ slotNameItemMenuVisible: '' });
+    } else {
+      this.setState({ slotNameItemMenuVisible: slotName });
+    }
+  }
 
   private toggleOuter = () => {
     this.setState({ showUnder: false });

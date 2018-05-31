@@ -8,9 +8,9 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-import LoginButtonView from './LoginButtonView';
+import GenericButton from '../../../../GenericButton';
 import LoginLink from './LoginLink';
-import InputBox from './InputBox';
+import PatcherModal from '../../../../PatcherModal';
 
 const Container = styled('div')`
   position: fixed;
@@ -62,7 +62,7 @@ class LoginPrivacyModal extends React.Component<LoginPrivacyModalProps> {
   public render() {
     return (
       <Container>
-        <InputBox
+        <PatcherModal
           accentColor='rgb(255,95,76)'
           highlightColorStrong='rgba(255, 95, 76, 0.7)'
           highlightColorWeak='rgba(255, 95, 76, 0.1)'
@@ -91,9 +91,9 @@ class LoginPrivacyModal extends React.Component<LoginPrivacyModalProps> {
                 You can also edit your privacy settings by clicking 'Edit Account Details'. Then click 'Privacy Settings'.
               </Section>
             </ModalText>
-            <LoginButtonView text='OK' onClick={this.props.onClick} />
+            <GenericButton text='OK' onClick={this.props.onClick} />
           </Modal>
-        </InputBox>
+        </PatcherModal>
       </Container>
     );
   }

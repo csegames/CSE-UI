@@ -35,7 +35,10 @@ const Container = styled('div')`
   position: relative;
   display: flex;
   justify-content: space-around;
-  padding: 5px 20px;
+  align-items: center;
+  padding: 0 20px;
+  height: 34px;
+  margin-bottom: 3px;
   color: white;
   cursor: pointer;
   pointer-events: all;
@@ -155,10 +158,9 @@ export const NPCKills = styled('div')`
 
 export interface ListItemProps {
   player: TeamPlayer;
+  isVisible: boolean;
   searchIncludes: boolean;
   backgroundColor: string;
-  scrollTop: number;
-  listHeight: number;
 }
 
 class ListItem extends React.Component<ListItemProps> {
@@ -196,13 +198,7 @@ class ListItem extends React.Component<ListItemProps> {
   }
 
   public shouldComponentUpdate(nextProps: ListItemProps) {
-    return (
-      this.props.searchIncludes !== nextProps.searchIncludes ||
-      this.props.backgroundColor !== nextProps.backgroundColor ||
-      this.props.player.displayName !== nextProps.player.displayName ||
-      this.props.scrollTop !== nextProps.scrollTop ||
-      this.props.listHeight !== nextProps.listHeight
-    );
+    return nextProps.isVisible;
   }
 }
 

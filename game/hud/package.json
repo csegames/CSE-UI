@@ -72,7 +72,7 @@
     "postinstall": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
-    "@csegames/camelot-unchained": "^0.1.24",
+    "@csegames/camelot-unchained": "^0.1.26",
     "@csegames/cu-xmpp-chat": "^0.1.0",
     "@types/ol": "^4.6.1",
     "@types/openlayers": "^4.6.2",
@@ -97,9 +97,9 @@
     "object-assign-shim": "^1.0.0",
     "ol": "^4.6.4",
     "randomcolor": "^0.5.3",
-    "react": "^16.0.0",
+    "react": "^16.3.0",
     "react-apollo": "^1.4.16",
-    "react-dom": "^16.0.0",
+    "react-dom": "^16.3.0",
     "react-draggable": "^2.2.3",
     "react-emotion": "^8.0.8",
     "react-image-magnify": "^2.0.4",
