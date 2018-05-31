@@ -56,11 +56,13 @@ export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
 
 export interface EquippedItemSlotProps {
   styles?: Partial<EquippedItemSlotStyle>;
+  tooltipDisabled: boolean;
   providedEquippedItem: EquippedItemFragment;
   slot: { slotName: string, openingSide: Alignment };
 }
 
 export interface EquippedItemSlotState {
+  isMouseOver: boolean;
   itemMenuVisible: boolean;
   showTooltip: boolean;
   itemIsOverBGColor: string;
@@ -70,6 +72,7 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   constructor(props: EquippedItemSlotProps) {
     super(props);
     this.state = {
+      isMouseOver: false,
       itemMenuVisible: false,
       showTooltip: false,
       itemIsOverBGColor: null,
@@ -80,7 +83,9 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     const style = StyleSheet.create(defaultEquippedItemSlotStyle);
     const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
-    const { showTooltip } = this.state;
+    const showTooltip = !this.props.tooltipDisabled &&
+                        !this.state.itemMenuVisible &&
+                        this.state.isMouseOver;
 
     const itemId = equippedItem && equippedItem.item.id;
     return (
@@ -124,13 +129,16 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   }
 
   private onMouseOverItemSlot = () => {
-    if (!this.state.itemMenuVisible) {
+    this.setState({ isMouseOver: true });
+    if (this.state.itemMenuVisible || this.props.tooltipDisabled) {
+      this.setState({ showTooltip: false });
+    } else {
       this.setState({ showTooltip: true });
     }
   }
 
   private onMouseLeave = () => {
-    this.setState({ showTooltip: false });
+    this.setState({ isMouseOver: false, showTooltip: false });
   }
 }
 
