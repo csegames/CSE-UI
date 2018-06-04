@@ -49,7 +49,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
         visible={this.state.visible}
         participants={participantsAndTeams ? participantsAndTeams.participants : []}
         teams={participantsAndTeams ? participantsAndTeams.teams : []}
-        onCloseClick={this.fireVisibility}
+        onCloseClick={this.toggleVisibility}
         status={{ loading: graphql.loading, lastError: graphql.lastError }}
         scenarioID={this.props.scenarioID}
       />
@@ -146,45 +146,47 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
   }
 
   private playScenarioEndSound = (nextProps: ScenarioResultsContainerProps) => {
-    const winningTeam = _.find(nextProps.graphql.data.scenariosummary.teamOutcomes,
-      teamOutcome => teamOutcome.outcome === 'Win');
-    switch (winningTeam.teamID) {
-      case 'Tuatha': {
-        if (client.playerState.faction === Faction.TDD) {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-        } else {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+    if (nextProps.graphql && nextProps.graphql.data && nextProps.graphql.data.scenariosummary) {
+      const winningTeam = _.find(nextProps.graphql.data.scenariosummary.teamOutcomes,
+        teamOutcome => teamOutcome.outcome === 'Win');
+      switch (winningTeam.teamID) {
+        case 'Tuatha': {
+          if (client.playerState.faction === Faction.TDD) {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+          } else {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+          }
+          break;
         }
-        break;
-      }
 
-      case 'Arthurian': {
-        if (client.playerState.faction === Faction.Arthurian) {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-        } else {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        case 'Arthurian': {
+          if (client.playerState.faction === Faction.Arthurian) {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+          } else {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+          }
+          break;
         }
-        break;
-      }
 
-      case 'Viking': {
-        if (client.playerState.faction === Faction.Viking) {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-        } else {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        case 'Viking': {
+          if (client.playerState.faction === Faction.Viking) {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+          } else {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+          }
+          break;
         }
-        break;
-      }
 
-      default: {
-        // Teams theoretically won't always be one of these Factions, so handle that case.
-        const me = _.find(winningTeam.participants, particapant => particapant.displayName === client.playerState.name);
-        if (me) {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-        } else {
-          client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        default: {
+          // Teams theoretically won't always be one of these Factions, so handle that case.
+          const me = _.find(winningTeam.participants, particapant => particapant.displayName === client.playerState.name);
+          if (me) {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+          } else {
+            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+          }
+          break;
         }
-        break;
       }
     }
   }
