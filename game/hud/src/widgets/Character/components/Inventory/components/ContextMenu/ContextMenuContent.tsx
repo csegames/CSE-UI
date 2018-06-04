@@ -164,10 +164,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         null,
       );
       if (res.ok) {
-        if (action.uIReaction === 'CloseInventory') {
-          this.closeInventory();
-          this.props.contextMenuProps.close();
-        }
+        this.handleUIReaction(action);
       } else {
         const data = JSON.parse(res.data);
         if (data.FieldCodes && data.FieldCodes.length > 0) {
@@ -182,8 +179,29 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
     }
   }
 
+  private handleUIReaction = (action: ItemActionDefGQL) => {
+    switch (action.uIReaction) {
+      case 'CloseInventory': {
+        this.closeInventory();
+        this.props.contextMenuProps.close();
+        break;
+      }
+
+      case 'OpenMiniMap': {
+        this.openMiniMap();
+        break;
+      }
+
+      default: break;
+    }
+  }
+
   private closeInventory = () => {
     events.fire(eventNames.onCloseInventory);
+  }
+
+  private openMiniMap = () => {
+    events.fire('hudnav--navigate', 'map');
   }
 
   private onHighlightSlots = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
