@@ -53,6 +53,7 @@ export const defaultTraitStyles: TraitStyle = {
     marginRight: 0,
     marginLeft: 0,
     userSelect: 'none',
+    backgroundSize: 'cover',
   },
 
   selectedTrait: {
@@ -307,11 +308,10 @@ class Trait extends React.Component<TraitProps, {}> {
             trait.selected && !shouldBeDefault && custom.selectedTrait,
           )}
           onClick={shouldBeDisabled ? () => {} : trait.ranks ? this.onRankClick : this.onTraitClick}
-          style={{ border: `3px solid ${traitColor}` }}>
+          style={{ border: `3px solid ${traitColor}`, background: `url(${trait.icon}) no-repeat` }}>
             <div className={css(ss.traitPointsCircle, custom.traitPointsCircle)}>
               {type === 'Bane' ? trait.points * -1 : trait.points}
             </div>
-            <img className={css(ss.traitImage, custom.traitImage)} src={trait.icon} />
               {trait.ranks &&
               <p className={css(ss.rankText, custom.rankText)}>
                 {trait.rank === 0 ? 0 : traits[addedRankTrait].rank + 1} / {trait.ranks.length}

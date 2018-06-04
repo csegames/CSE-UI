@@ -602,8 +602,12 @@ export const onInitializeTraits = module.createAction({
     const mappedFactionTraits = _.reduce(allFactionTraits.map(faction => [...faction.optional, ...faction.required]),
       (a: string[], b: string[]) => a.concat(b)) || [];
     const undesirableTraits: { [id: string]: string } = {};
-    [ ...mappedClassTraits, ...mappedRaceTraits, ...mappedFactionTraits].forEach((key: string) =>
-      undesirableTraits[key] = key);
+    const allMappedTraits = [ ...mappedClassTraits, ...mappedRaceTraits, ...mappedFactionTraits];
+    Object.keys(traits).forEach((key) => {
+      if (!allMappedTraits.find(traitId => traitId === key)) {
+        undesirableTraits[key] = key;
+      }
+    });
 
     if (initType === 'boons' || initType === 'both') {
 
@@ -658,21 +662,30 @@ export const onInitializeTraits = module.createAction({
       });
 
       // generalBoons
-      generalTraits && generalTraits.optional && [
-        ...generalTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
-          return traits[id].points >= 1 && !combinedRanks[id];
-        }) || [],
-        ...generalTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
-            { ...traits[id], selected: true };
-          return traits[id].points >= 1 && !combinedRanks[id];
-        }) || [],
-        generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
-      ].filter((id: string) => id).forEach((key: string) => {
-        generalBoons[key] = key;
-        traits[key] = { ...traits[key], category: 'General' };
-      });
+      if (generalTraits) {
+        generalTraits.optional && [
+          ...generalTraits.optional.filter((id: string) => {
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+            return traits[id].points >= 1 && !combinedRanks[id];
+          }) || [],
+          ...generalTraits.required.filter((id: string) => {
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+              { ...traits[id], selected: true };
+            return traits[id].points >= 1 && !combinedRanks[id];
+          }) || [],
+          generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+        ].filter((id: string) => id).forEach((key: string) => {
+          generalBoons[key] = key;
+          traits[key] = { ...traits[key], category: 'General' };
+        });
+      } else {
+        Object.keys(undesirableTraits).forEach((key) => {
+          if (traits[key].points > 0) {
+            generalBoons[key] = key;
+            traits[key] = { ...traits[key], category: 'General' };
+          }
+        });
+      }
 
       // addedBoons
       requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
@@ -733,21 +746,30 @@ export const onInitializeTraits = module.createAction({
       });
 
       // generalBanes
-      generalTraits && generalTraits.optional && [
-        ...generalTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
-          return traits[id].points <= -1 && !combinedRanks[id];
-        }) || [],
-        ...generalTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
-            { ...traits[id], selected: true };
-          return traits[id].points <= -1 && !combinedRanks[id];
-        }) || [],
-        generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
-      ].filter((id: string) => id).forEach((key: string) => {
-        generalBanes[key] = key;
-        traits[key] = { ...traits[key], category: 'General' };
-      });
+      if (generalTraits) {
+        generalTraits.optional && [
+          ...generalTraits.optional.filter((id: string) => {
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+            return traits[id].points <= -1 && !combinedRanks[id];
+          }) || [],
+          ...generalTraits.required.filter((id: string) => {
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+              { ...traits[id], selected: true };
+            return traits[id].points <= -1 && !combinedRanks[id];
+          }) || [],
+          generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
+        ].filter((id: string) => id).forEach((key: string) => {
+          generalBanes[key] = key;
+          traits[key] = { ...traits[key], category: 'General' };
+        });
+      } else {
+        Object.keys(undesirableTraits).forEach((key) => {
+          if (traits[key].points < 0) {
+            generalBanes[key] = key;
+            traits[key] = { ...traits[key], category: 'General' };
+          }
+        });
+      }
 
       // addedBanes
       requiredBanes.forEach((trait: BanesAndBoonsInfo) => addedBanes[trait.id] = trait.id);
@@ -856,7 +878,6 @@ export const onResetBoons = module.createAction({
       return Object.assign({}, traits[id], { required: true });
     });
 
-    console.log(requiredBoons);
     requiredBoons.forEach((trait: BanesAndBoonsInfo) => addedBoons[trait.id] = trait.id);
 
     const totalPoints = (Object.keys(state.addedBanes).length > 0 &&
