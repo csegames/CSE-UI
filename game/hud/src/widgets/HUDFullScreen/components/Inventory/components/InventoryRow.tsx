@@ -8,7 +8,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { ql } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import { InventorySlot } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';
@@ -40,18 +39,13 @@ export interface ContainerInfo {
 
 export interface InventoryRowProps {
   items: InventorySlotItemDef[];
-  inventoryItems: InventoryItemFragment[];
-  myTradeItems?: InventoryItemFragment[];
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onMoveStack: (item: InventoryItemFragment, amount: number) => void;
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
   onContainerIdToDrawerInfoChange: (newObj: ContainerIdToDrawerInfo) => void;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   syncWithServer: () => void;
   bodyWidth: number;
-  myTradeState: SecureTradeState;
 
   containerID?: string[];
   drawerID?: string;
@@ -92,7 +86,6 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 itemIndex={index}
                 filtering={this.props.filtering}
                 onToggleContainer={() => this.toggleContainer(index)}
-                equippedItems={this.props.equippedItems}
                 onDropOnZone={this.props.onDropOnZone}
                 onMoveStack={this.props.onMoveStack}
                 showGraySlots={this.props.showGraySlots}
@@ -116,12 +109,9 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   searchValue={''}
                   activeFilters={null}
                   slotsPerRow={this.props.items.length}
-                  inventoryItems={this.props.inventoryItems}
                   onChangeInventoryItems={this.props.onChangeInventoryItems}
                   onDropOnZone={this.props.onDropOnZone}
-                  containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
                   onChangeContainerIdToDrawerInfo={this.props.onContainerIdToDrawerInfoChange}
-                  stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
                   onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
                   drawerCurrentStats={this.props.drawerCurrentStats}
                   drawerMaxStats={this.props.drawerMaxStats}
@@ -129,7 +119,6 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   containerID={this.props.containerID}
                   drawerID={this.props.drawerID}
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
-                  myTradeState={this.props.myTradeState}
                 />
               </Row>
             );
@@ -146,17 +135,12 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   slotsPerRow={this.props.items.length}
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
                   onDropOnZone={this.props.onDropOnZone}
-                  inventoryItems={this.props.inventoryItems}
-                  myTradeItems={this.props.myTradeItems}
                   onChangeInventoryItems={this.props.onChangeInventoryItems}
                   containerID={(this.props.containerID && [...this.props.containerID, itemDef.itemID]) || [itemDef.itemID]}
-                  containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
                   onChangeContainerIdToDrawerInfo={this.props.onContainerIdToDrawerInfoChange}
-                  stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
                   onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
                   syncWithServer={this.props.syncWithServer}
                   bodyWidth={this.props.bodyWidth}
-                  myTradeState={this.props.myTradeState}
                 />
               </Row>
             );
@@ -168,14 +152,10 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
 
   public shouldComponentUpdate(nextProps: InventoryRowProps, nextState: InventoryRowState) {
     return !_.isEqual(this.props.items, nextProps.items) ||
-      !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
       !_.isEqual(this.props.equippedItems, nextProps.equippedItems) ||
-      !_.isEqual(this.props.myTradeItems, nextProps.myTradeItems) ||
-      !_.isEqual(this.props.myTradeState, nextProps.myTradeState) ||
       !_.isEqual(this.state.containersOpen, nextState.containersOpen) ||
       !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
       !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
-      !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
       this.props.bodyWidth !== nextProps.bodyWidth ||
       this.props.filtering !== nextProps.filtering;
   }

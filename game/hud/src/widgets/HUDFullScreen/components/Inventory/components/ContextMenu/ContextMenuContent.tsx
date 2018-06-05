@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import { includes } from 'lodash';
 import { ql, client, events, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
 import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -16,11 +17,17 @@ import {
   hasGroundPermissions,
   hasEquipmentPermissions,
   getInventoryDataTransfer,
+  FullScreenContext,
 } from '../../../../lib/utils';
 
 declare const toastr: any;
 
-export interface ContextMenuContentCompProps {
+export interface InjectedContextedMenuContentProps {
+  visibleComponentRight: string;
+  visibleComponentLeft: string;
+}
+
+export interface ContextMenuProps {
   item: InventoryItemFragment;
   contextMenuProps: ContextMenuContentProps;
   syncWithServer: () => void;
@@ -29,7 +36,9 @@ export interface ContextMenuContentCompProps {
   onMoveStack: (item: InventoryItemFragment, amount: number) => void;
 }
 
-class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
+export type ContextMenuComponentProps = InjectedContextedMenuContentProps & ContextMenuProps;
+
+class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
   public render() {
     const { item } = this.props;
     const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
@@ -41,11 +50,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
               key={i}
               itemId={item.id}
               name={`Equip to ${gearSlotSet.gearSlots.map((gearSlot, i) => {
-                if (i !== gearSlotSet.gearSlots.length - 1) {
-                  return prettifyText(gearSlot.id) + ', ';
-                } else {
-                  return prettifyText(gearSlot.id);
-                }
+                return prettifyText(gearSlot.id);
               }).toString()}`}
               onActionClick={() => this.onEquipItem(gearSlotSet.gearSlots)}
               onMouseOver={() => this.onHighlightSlots(gearSlotSet.gearSlots)}
@@ -95,6 +100,14 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
         }
       </div>
     );
+  }
+
+  public componentDidUpdate(prevProps: ContextMenuComponentProps) {
+    const { visibleComponentLeft, visibleComponentRight } = this.props;
+    if (includes(prevProps.visibleComponentRight, 'inventory') && !includes(visibleComponentRight, 'inventory') ||
+        includes(prevProps.visibleComponentLeft, 'inventory') && !includes(visibleComponentLeft, 'inventory')) {
+      this.props.contextMenuProps.close();
+    }
   }
 
   private onEquipItem = (gearSlots: GearSlotDefRefFragment[]) => {
@@ -226,4 +239,22 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
   }
 }
 
-export default ContextMenuContent;
+class ContextMenuContentWithInjectedProps extends React.Component<ContextMenuProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ visibleComponentLeft, visibleComponentRight }) => {
+          return (
+            <ContextMenuContent
+              {...this.props}
+              visibleComponentLeft={visibleComponentLeft}
+              visibleComponentRight={visibleComponentRight}
+            />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default ContextMenuContentWithInjectedProps;

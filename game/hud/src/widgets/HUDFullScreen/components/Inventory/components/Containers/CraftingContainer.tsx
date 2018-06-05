@@ -15,10 +15,11 @@ import ContainerView, { CloseButton } from './ContainerView';
 import { DrawerCurrentStats } from '../Containers/Drawer';
 import { slotDimensions } from '../InventorySlot';
 import InventoryRowActionButton from '../InventoryRowActionButton';
-import { calcRows, getContainerInfo, getItemDefinitionName } from '../../../../lib/utils';
+import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } from '../../../../lib/utils';
 import { rowActionIcons } from '../../../../lib/constants';
 import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
+import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
 
 const HeaderContent = styled('div')`
   display: flex;
@@ -32,7 +33,13 @@ const FooterContent = styled('div')`
   align-items: center;
 `;
 
-export interface CraftingContainerProps extends base.InventoryBaseProps {
+export interface InjectedCraftingContainerProps {
+  myTradeItems: InventoryItemFragment[];
+  inventoryItems: InventoryItemFragment[];
+  stackGroupIdToItemIDs: {[id: string]: string[]};
+}
+
+export interface CraftingContainerProps {
   item: InventorySlotItemDef;
   slotsPerRow: number;
   onCloseClick: () => void;
@@ -45,15 +52,17 @@ export interface CraftingContainerProps extends base.InventoryBaseProps {
   drawerMaxStats?: ql.schema.ContainerDefStat_Single;
 }
 
+export type CraftingContainerComponentProps = CraftingContainerProps &
+  InjectedCraftingContainerProps & base.InventoryBaseProps;
+
 export interface CraftingContainerState extends base.InventoryBaseState {
 }
 
-export class CraftingContainer extends React.Component<CraftingContainerProps, CraftingContainerState> {
-
+export class CraftingContainer extends React.Component<CraftingContainerComponentProps, CraftingContainerState> {
   private static minSlots = 10;
   private contentRef: HTMLElement = null;
 
-  constructor(props: CraftingContainerProps) {
+  constructor(props: CraftingContainerComponentProps) {
     super(props);
     this.state = {
       ...base.defaultInventoryBaseState(),
@@ -78,7 +87,8 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
       drawerMaxStats: this.props.drawerMaxStats,
       syncWithServer: () => {},
       onMoveStack: () => {},
-    }) as any;
+      myTradeItems: this.props.myTradeItems,
+    });
 
     return (
       <ContainerView
@@ -119,10 +129,8 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
     this.initialize();
   }
 
-  public shouldComponentUpdate(nextProps: CraftingContainerProps, nextState: CraftingContainerState) {
+  public shouldComponentUpdate(nextProps: CraftingContainerComponentProps, nextState: CraftingContainerState) {
     return !_.isEqual(this.props.item, nextProps.item) ||
-      !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
-      !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
       !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
       !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
       this.props.slotsPerRow !== nextProps.slotsPerRow ||
@@ -141,7 +149,7 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
   }
 
   // should not be called outside of initializeInventory
-  private internalInit = (state: CraftingContainerState, props: CraftingContainerProps) => {
+  private internalInit = (state: CraftingContainerState, props: CraftingContainerComponentProps) => {
     if (!this.contentRef) return;
     const rowsAndSlots = calcRows(20, slotDimensions,
       Math.max(CraftingContainer.minSlots, props.item.stackedItems.length), props.slotsPerRow);
@@ -149,7 +157,14 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
       slotsPerRow: props.slotsPerRow,
       ...rowsAndSlots,
     };
-    return base.distributeItems(rowData, { items: [] },  state, props);
+    return base.distributeItems({
+      slotsData: rowData,
+      itemData: { items: [] },
+      state,
+      props,
+      inventoryItems: props.inventoryItems,
+      stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
+    });
   }
 
   private addRowOfSlots = () => {
@@ -167,4 +182,23 @@ export class CraftingContainer extends React.Component<CraftingContainerProps, C
   }
 }
 
-export default CraftingContainer;
+class CraftingContainerWithInjectedContext extends React.Component<CraftingContainerProps & base.InventoryBaseProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ myTradeItems, inventoryItems, stackGroupIdToItemIDs }) => {
+          return (
+            <CraftingContainer
+              {...this.props}
+              myTradeItems={myTradeItems}
+              inventoryItems={inventoryItems}
+              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+            />
+          )
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default CraftingContainerWithInjectedContext;

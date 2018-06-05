@@ -17,9 +17,9 @@ import InventoryFooter from './InventoryFooter';
 import { slotDimensions } from './InventorySlot';
 import { InventorySlotItemDef } from '../../../lib/itemInterfaces';
 import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
-import { calcRowAndSlots } from '../../../lib/utils';
+import { calcRowAndSlots, FullScreenContext } from '../../../lib/utils';
 import queries from '../../../../../gqlDocuments';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItemFragment, SecureTradeState } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
 
@@ -91,17 +91,28 @@ const RefreshButton = styled('div')`
   }
 `;
 
-export interface InventoryBodyProps extends base.InventoryBaseWithQLProps {
-  styles?: Partial<InventoryBodyStyles>;
-  visibleComponent: string;
+export interface InjectedInventoryBodyProps {
+  myTradeItems: InventoryItemFragment[];
+  myTradeState: SecureTradeState;
+  stackGroupIdToItemIDs: {[id: string]: string[]};
+  inventoryItems: InventoryItemFragment[];
+  containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
+  visibleComponentRight: string;
+  visibleComponentLeft: string;
 }
+
+export interface InventoryBodyProps {
+  styles?: Partial<InventoryBodyStyles>;
+}
+
+export type InventoryBodyComponentProps = InjectedInventoryBodyProps & InventoryBodyProps & base.InventoryBaseWithQLProps;
 
 export interface InventoryBodyState extends base.InventoryBaseState {
   heightOfBody: number;
   widthOfBody: number;
 }
 
-class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodyState> {
+class InventoryBody extends React.Component<InventoryBodyComponentProps, InventoryBodyState> {
   private static minSlots = 200;
 
   private timePrevItemAdded: number;
@@ -114,7 +125,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   // stack group id is generated that is used in
   // generateing the stack group id
 
-  constructor(props: InventoryBodyProps) {
+  constructor(props: InventoryBodyComponentProps) {
     super(props);
     this.state = {
       ...base.defaultInventoryBaseState(),
@@ -131,6 +142,9 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       onMoveStack: this.onMoveStack,
       syncWithServer: this.refetch,
       bodyWidth: this.state.widthOfBody,
+      myTradeItems: this.props.myTradeItems,
+      myTradeState: this.props.myTradeState,
+      stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
     });
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
@@ -178,7 +192,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     client.SubscribeInventory(true);
     client.OnInventoryAdded((item) => {
       const timeNextItemAdded = new Date().getTime();
-      if (this.props.visibleComponent === '' &&
+      if ((this.props.visibleComponentRight === '' || this.props.visibleComponentLeft === '') &&
           !this.isFetching &&
           (!this.timePrevItemAdded ||
           timeNextItemAdded - this.timePrevItemAdded > 100)
@@ -190,7 +204,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       this.timePrevItemAdded = new Date().getTime();
     });
     client.OnInventoryRemoved((item) => {
-      if (!this.isFetching && this.props.visibleComponent === '') {
+      if (!this.isFetching && (this.props.visibleComponentLeft === '' || this.props.visibleComponentRight)) {
         // When inventory is closed and item is removed from inventory, resync inventory with server
         this.isFetching = true;
         setTimeout(() => this.refetch(), 200);
@@ -199,7 +213,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     client.SendCommitItemRequest(this.handleCommitItemRequest);
   }
 
-  public componentDidUpdate(prevProps: InventoryBodyProps, prevState: InventoryBodyState) {
+  public componentDidUpdate(prevProps: InventoryBodyComponentProps, prevState: InventoryBodyState) {
     const thisInventory = this.props.graphql.data && this.props.graphql.data.myInventory;
     const prevInventory = prevProps.graphql.data && prevProps.graphql.data.myInventory;
 
@@ -215,7 +229,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       this.setState(() => this.internalInit(this.state, this.props));
     }
 
-    if (this.props.visibleComponent !== '' && prevProps.visibleComponent === '') {
+    if ((this.props.visibleComponentLeft !== '' && prevProps.visibleComponentLeft === '') ||
+        (this.props.visibleComponentRight !== '' && prevProps.visibleComponentRight === '')) {
       this.refetch();
     }
 
@@ -292,7 +307,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 
   // should not be called outside of initializeInventory
-  private internalInit = (state: InventoryBodyState, props: InventoryBodyProps) => {
+  private internalInit = (state: InventoryBodyState, props: InventoryBodyComponentProps) => {
     if (!this.bodyRef) return;
     const itemCount =
       (props.graphql.data && props.graphql.data.myInventory && props.graphql.data.myInventory.itemCount) || 0;
@@ -305,19 +320,29 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       ...props.graphql.data.myInventory,
       items: props.graphql.data.myInventory.items as any,
     };
-    return base.distributeItems(
-      rowsAndSlots,
-      inventory,
+    return base.distributeItems({
+      slotsData: rowsAndSlots,
+      itemData: inventory,
       state,
       props,
-    );
+      inventoryItems: props.inventoryItems,
+      stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
+    });
   }
 
   private onDropOnZone = (dragItemData: InventoryDataTransfer,
                           dropZoneData: InventoryDataTransfer) => {
     // this function only gets called for inventory items, containers take care of their own state.
     this.setState((state, props) => {
-      return base.onMoveInventoryItem(dragItemData, dropZoneData, state, props);
+      return base.onMoveInventoryItem({
+        dragItemData,
+        dropZoneData,
+        state,
+        props,
+        containerIdToDrawerInfo: props.containerIdToDrawerInfo,
+        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
+        inventoryItems: props.inventoryItems,
+      });
     });
   }
 
@@ -334,16 +359,65 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 
   private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {
-    this.setState((state, props) => base.onUpdateInventoryItemsHandler(state, props, payload));
+    this.setState((state, props) => (
+      base.onUpdateInventoryItemsHandler({
+        state,
+        props,
+        payload,
+        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
+        inventoryItems: props.inventoryItems,
+        containerIdToDrawerInfo: props.containerIdToDrawerInfo,
+      })
+    ));
   }
 
   private onMoveStack = (item: InventoryItemFragment, amount: number) => {
-    this.setState((state, props) => base.onMoveStack(state, props, item, amount));
+    this.setState((state, props) => (
+      base.onMoveStack({
+        state,
+        props,
+        item,
+        amount,
+        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
+        inventoryItems: props.inventoryItems,
+      })
+    ));
   }
 }
 
-const InventoryBodyWithQL = withGraphQL<InventoryBodyProps>(
+const InventoryBodyWithQL = withGraphQL<InventoryBodyComponentProps>(
   { query: queries.InventoryBase },
 )(InventoryBody);
 
-export default InventoryBodyWithQL;
+class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProps & base.InventoryBaseProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({
+            myTradeItems,
+            myTradeState,
+            stackGroupIdToItemIDs,
+            inventoryItems,
+            containerIdToDrawerInfo,
+            visibleComponentLeft,
+            visibleComponentRight,
+          }) => {
+          return (
+            <InventoryBodyWithQL
+              {...this.props}
+              inventoryItems={inventoryItems}
+              myTradeItems={myTradeItems}
+              myTradeState={myTradeState}
+              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+              containerIdToDrawerInfo={containerIdToDrawerInfo}
+              visibleComponentLeft={visibleComponentLeft}
+              visibleComponentRight={visibleComponentRight}
+            />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default InventoryBodyWithInjectedContext;

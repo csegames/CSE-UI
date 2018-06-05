@@ -298,6 +298,21 @@ export default {
           events.fire('hudnav--navigate', 'reset');
         },
       },
+      {
+        name: 'reloadui',
+        tooltip: 'Reload UI',
+        iconClass: 'fa-refresh',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.ReloadAllUI();
+        },
+      },
     ],
   },
 };

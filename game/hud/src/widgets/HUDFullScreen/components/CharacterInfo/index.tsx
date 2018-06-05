@@ -114,64 +114,19 @@ export interface CharacterInfoProps {
 class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
   private tabPanelRef: any;
   public render() {
-    const tabs: TabItem[] = [
-      {
-        name: 'general',
-        tab: {
-          render: () => <TabText>General</TabText>,
-        },
-        rendersContent: 'General',
-      },
-      {
-        name: 'defense',
-        tab: {
-          render: () => <TabText>Defense</TabText>,
-        },
-        rendersContent: 'Defense',
-      },
-      {
-        name: 'offense',
-        tab: {
-          render: () => <TabText>Offense</TabText>,
-        },
-        rendersContent: 'Offense',
-      },
-      {
-        name: 'traits',
-        tab: {
-          render: () => <TabText>Boons/Banes</TabText>,
-        },
-        rendersContent: 'TraitsInfo',
-      },
-      {
-        name: 'session',
-        tab: {
-          render: () => <TabText>Session</TabText>,
-        },
-        rendersContent: 'Session',
-      },
+    const tabs: TabItem<{ title: string }>[] = [
+      { name: 'general', tab: { title: 'General' }, rendersContent: 'General' },
+      { name: 'defense', tab: { title: 'Defense' }, rendersContent: 'Defense' },
+      { name: 'offense', tab: { title: 'Offense' }, rendersContent: 'Offense' },
+      { name: 'traits', tab: { title: 'Boons/Banes' }, rendersContent: 'TraitsInfo' },
+      { name: 'session', tab: { title: 'Session' }, rendersContent: 'Session' },
     ];
     const content: ContentItem[] = [
-      {
-        name: 'General',
-        content: { render: this.renderGeneralInfo },
-      },
-      {
-        name: 'Defense',
-        content: { render: this.renderDefenseInfo },
-      },
-      {
-        name: 'Offense',
-        content: { render: this.renderOffenseInfo },
-      },
-      {
-        name: 'TraitsInfo',
-        content: { render: this.renderTraitsInfo },
-      },
-      {
-        name: 'Session',
-        content: { render: this.renderSessionInfo },
-      },
+      { name: 'General', content: { render: this.renderGeneralInfo } },
+      { name: 'Defense', content: { render: this.renderDefenseInfo } },
+      { name: 'Offense', content: { render: this.renderOffenseInfo } },
+      { name: 'TraitsInfo', content: { render: this.renderTraitsInfo } },
+      { name: 'Session', content: { render: this.renderSessionInfo } },
     ];
 
     return (
@@ -184,6 +139,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
             ref={ref => this.tabPanelRef = ref}
             defaultTabIndex={0}
             tabs={tabs}
+            renderTab={(tab: { title: string }) => <TabText>{tab.title}</TabText>}
             onActiveTabChanged={() => {}}
             content={content}
             styles={{

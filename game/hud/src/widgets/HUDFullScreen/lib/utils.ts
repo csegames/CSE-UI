@@ -4,16 +4,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, client, utils, Faction, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
+import { ql, client, utils, events, TabItem, Faction, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
-import { SlotNumberToItem, ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
+import { ContainerIdToDrawerInfo, SlotNumberToItem, ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
 import { InventoryDataTransfer, EquippedItemDataTransfer } from './eventNames';
 import { ActiveFilters } from '../components/Inventory';
-import { InventoryItemFragment, ContainerDrawersFragment, GearSlotDefRefFragment } from '../../../gqlInterfaces';
 import { SlotType } from '../lib/itemInterfaces';
+import {
+  EquippedItemFragment,
+  InventoryItemFragment,
+  ContainerDrawersFragment,
+  GearSlotDefRefFragment,
+} from '../../../gqlInterfaces';
 
 declare const toastr: any;
 
@@ -835,4 +842,65 @@ export function isCraftingSlotVerified(dragDataTransfer: InventoryDataTransfer,
     return false;
   }
   return true;
+}
+
+export interface FullScreenNavState {
+  visibleComponentLeft: string;
+  visibleComponentRight: string;
+  inventoryItems: InventoryItemFragment[];
+  equippedItems: EquippedItemFragment[];
+  myTradeItems: InventoryItemFragment[];
+  myTradeState: SecureTradeState;
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
+  stackGroupIdToItemIDs: {[id: string]: string[]};
+  tabsLeft: TabItem<{ title: string }>[];
+  tabsRight: TabItem<{ title: string }>[];
+}
+
+export interface HUDFullScreenTabData {
+  title: string;
+
+  // A temporary tab means that it can be closed (e.g. Trade Window)
+  icon?: string;
+  temporary?: boolean;
+  onTemporaryTabClose?: () => void;
+}
+
+export const defaultTabsLeft: TabItem<HUDFullScreenTabData>[] = [
+  { name: 'equippedgear-left', tab: { title: 'Equipped' }, rendersContent: 'Equipped Gear' },
+  { name: 'inventory-left', tab: { title: 'Inventory' }, rendersContent: 'Inventory' },
+  { name: 'character-stats-left', tab: { title: 'Stats' }, rendersContent: 'CharacterStats' },
+  { name: 'map-left', tab: { title: 'Map' }, rendersContent: 'Map' },
+];
+
+export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
+  { name: 'equippedgear-right', tab: { title: 'Equipped' }, rendersContent: 'Equipped Gear' },
+  { name: 'inventory-right', tab: { title: 'Inventory' }, rendersContent: 'Inventory' },
+  { name: 'character-stats-right', tab: { title: 'Stats' }, rendersContent: 'CharacterStats' },
+  { name: 'map-right', tab: { title: 'Map' }, rendersContent: 'Map' },
+];
+
+export const defaultFullScreenState: FullScreenNavState = {
+  visibleComponentLeft: '',
+  visibleComponentRight: '',
+  inventoryItems: null,
+  equippedItems: null,
+  containerIdToDrawerInfo: {},
+  stackGroupIdToItemIDs: {},
+  myTradeItems: null,
+  myTradeState: 'None',
+  tabsLeft: defaultTabsLeft,
+  tabsRight: defaultTabsRight,
+};
+
+export const FullScreenContext = React.createContext(defaultFullScreenState);
+
+export function requestUIKeydown() {
+  const shouldFullscreenListen = false;
+  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
+}
+
+export function releaseUIKeydown() {
+  const shouldFullscreenListen = true;
+  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }

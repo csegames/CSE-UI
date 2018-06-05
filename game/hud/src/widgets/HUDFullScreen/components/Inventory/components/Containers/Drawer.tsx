@@ -9,6 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { client, webAPI, Tooltip, ItemPermissions } from '@csegames/camelot-unchained';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import { slotDimensions } from '../InventorySlot';
@@ -22,6 +23,7 @@ import {
   getContainerInfo,
   createMoveItemRequestToContainerPosition,
   isContainerItem,
+  FullScreenContext,
 } from '../../../../lib/utils';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import { ContainerDrawersFragment, PermissibleHolderFragment, InventoryItemFragment } from '../../../../../../gqlInterfaces';
@@ -94,8 +96,15 @@ export interface DrawerCurrentStats {
   weight: number;
 }
 
-// TODO: clean up these fkn drawer props, they don't need to extend InventoryBaseProps
-export interface DrawerProps extends base.InventoryBaseProps {
+export interface InjectedDrawerProps {
+  inventoryItems: InventoryItemFragment[];
+  stackGroupIdToItemIDs: {[id: string]: string[]};
+  containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
+  myTradeItems: InventoryItemFragment[];
+  myTradeState: SecureTradeState;
+}
+
+export interface DrawerProps {
   index: number;
   slotsPerRow: number;
   containerID: string[];
@@ -106,20 +115,19 @@ export interface DrawerProps extends base.InventoryBaseProps {
 
   // Will be sent to InventoryBody component who will act as the state machine for all container -> drawer -> slot
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
-  containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   bodyWidth: number;
-
-  // TODO: Get rid of these guys...
-  footerWidth?: string | number;
-  marginTop?: number;
+  marginTop?: number | string;
+  footerWidth?: number | string;
 }
+
+export type DrawerComponentProps = DrawerProps & InjectedDrawerProps & base.InventoryBaseProps;
 
 export interface DrawerState extends base.InventoryBaseState {
 }
 
-class Drawer extends React.Component<DrawerProps, DrawerState> {
+class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
   private contentRef: any;
-  constructor(props: DrawerProps) {
+  constructor(props: DrawerComponentProps) {
     super(props);
     this.state = {
       ...base.defaultInventoryBaseState(),
@@ -157,14 +165,18 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
       syncWithServer,
       onMoveStack: () => {},
       bodyWidth: this.props.bodyWidth,
+      containerIdToDrawerInfo: this.props.containerIdToDrawerInfo,
+      stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
+      myTradeState: this.props.myTradeState,
+      myTradeItems: this.props.myTradeItems,
     });
 
     const requirementIconColor = getContainerColor(containerItem, 0.3);
     return (
       <DrawerView
-        containerItem={this.props.containerItem}
         marginTop={this.props.marginTop}
         footerWidth={this.props.footerWidth}
+        containerItem={this.props.containerItem}
         headerContent={() => (
           <HeaderContent showImg={this.props.index !== 0}>
             <RequirementsContainer>
@@ -231,11 +243,13 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     window.addEventListener('resize', () => this.initialize(this.props));
   }
 
-  public shouldComponentUpdate(nextProps: DrawerProps, nextState: DrawerState) {
+  public shouldComponentUpdate(nextProps: DrawerComponentProps, nextState: DrawerState) {
     return !_.isEqual(this.props.containerItem, nextProps.containerItem) ||
       !_.isEqual(this.props.drawer.containedItems, nextProps.drawer.containedItems) ||
       !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
       !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
+      !_.isEqual(this.props.myTradeItems, nextProps.myTradeItems) ||
+      !_.isEqual(this.props.stackGroupIdToItemIDs, nextProps.stackGroupIdToItemIDs) ||
       !_.isEqual(this.props.containerID, nextProps.containerID) ||
       this.props.index !== nextProps.index ||
       this.props.bodyWidth !== nextProps.bodyWidth ||
@@ -254,18 +268,18 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   // set up rows from scratch / works as a re-initialize as well
-  private initialize = (props: DrawerProps) => {
+  private initialize = (props: DrawerComponentProps) => {
     this.setState(() => this.internalInit(this.state, props));
   }
 
-  private internalInit = (state: DrawerState, props: DrawerProps) => {
+  private internalInit = (state: DrawerState, props: DrawerComponentProps) => {
     // Initialize slot data, that's the only state drawers need to maintain.
     if (!props.bodyWidth) return;
     const rowData = this.getRowsAndSlots(props);
     return base.initializeSlotsData(rowData);
   }
 
-  private getRowsAndSlots = (props: DrawerProps) => {
+  private getRowsAndSlots = (props: DrawerComponentProps) => {
     const { drawer, containerID, containerIdToDrawerInfo } = props;
     const container = containerIdToDrawerInfo[containerID[containerID.length - 1]];
     const drawerInfo = container ? container.drawers[drawer.id] : {};
@@ -659,4 +673,25 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 }
 
-export default Drawer;
+class DrawerWithInjectedContext extends React.Component<DrawerProps & base.InventoryBaseProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ inventoryItems, stackGroupIdToItemIDs, containerIdToDrawerInfo, myTradeItems, myTradeState }) => {
+          return (
+            <Drawer
+              {...this.props}
+              inventoryItems={inventoryItems}
+              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+              containerIdToDrawerInfo={containerIdToDrawerInfo}
+              myTradeItems={myTradeItems}
+              myTradeState={myTradeState}
+            />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default DrawerWithInjectedContext;

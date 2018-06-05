@@ -9,6 +9,7 @@ import { utils, Input } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { colors } from '../../../lib/constants';
+import { requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
 
 export interface StatListContainerStyles {
   StatListContainer: React.CSSProperties;
@@ -50,6 +51,8 @@ const StatListContainer = (props: StatListContainerProps) => {
       <Input
         placeholder='Filter'
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onSearchChange(e.target.value)}
+        onClick={() => requestUIKeydown()}
+        onBlur={() => releaseUIKeydown()}
         value={props.searchValue}
         styles={InputStyle}
       />

@@ -79,9 +79,6 @@ const TradeSection = styled('div')`
 `;
 
 export interface TradeWindowViewProps {
-  inventoryItems: InventoryItemFragment[];
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
   myTradeState: ql.schema.SecureTradeState;
   theirTradeState: ql.schema.SecureTradeState;
   onMyTradeStateChange: (newTradeState: SecureTradeState) => void;
@@ -128,9 +125,6 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
             items={this.props.myTradeItems}
             onTradeItemsChange={this.props.onMyTradeItemsChange}
             tradeState={this.props.myTradeState}
-            inventoryItems={this.props.inventoryItems}
-            containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
-            stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
             getRef={this.setTradeDropRef}
             bodyWidth={this.state.dropContainerWidth}
             bodyHeight={this.state.dropContainerHeight}
@@ -155,9 +149,6 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
             useGrayBG={true}
             items={this.props.theirTradeItems}
             tradeState={this.props.theirTradeState}
-            inventoryItems={this.props.theirTradeItems}
-            containerIdToDrawerInfo={this.state.theirContainerIdToDrawerInfo}
-            stackGroupIdToItemIDs={this.state.theirStackGroupIdToItemIDs}
             bodyHeight={this.state.dropContainerHeight}
             bodyWidth={this.state.dropContainerWidth}
           />

@@ -53,20 +53,20 @@ const customTabPanelStyles: OptionsTabPanelStyles = {
     }
     &:active {
       box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
-      background-color: ${utils.lightenColor('#454545', 10)};
-    },
+      background-color: ${utils.lightenColor('#454545', 10)}
+    }
   `,
 
   activeTab: css`
     box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
-    background-color: ${utils.lightenColor('#454545', 30)};
+    background-color: ${utils.lightenColor('#454545', 30)}
     &:hover {
-      background-color: ${utils.lightenColor('#454545', 30)};
+      background-color: ${utils.lightenColor('#454545', 30)}
     }
     &:active {
       box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
-      background-color: ${utils.lightenColor('#454545', 30)};
-    },
+      background-color: ${utils.lightenColor('#454545', 30)}
+    }
   `,
 
   tabPanelContentContainer: css`
@@ -150,9 +150,23 @@ export interface OptionsState {
   loadSaveText: string;
 }
 
+const tabs: TabItem<{ title: string }>[] = [
+  { name: 'KEYBIND', tab: { title: 'KEY BINDINGS' }, rendersContent: 'KeyBindings' },
+  { name: 'INPUT', tab: { title: 'INPUT' }, rendersContent: 'Input' },
+  { name: 'AUDIO', tab: { title: 'AUDIO' }, rendersContent: 'Audio' },
+  { name: 'RENDERING', tab: { title: 'GRAPHICS' }, rendersContent: 'Graphics' },
+];
+
 export class Options extends React.Component<OptionsProps, OptionsState> {
+  private content: ContentItem[] = [];
   constructor(props: OptionsProps) {
     super(props);
+    this.content = [
+      { name: 'KeyBindings', content: { render: this.renderKeyBindings } },
+      { name: 'Input', content: { render: this.renderInput } },
+      { name: 'Audio', content: { render: this.renderAudio } },
+      { name: 'Graphics', content: { render: this.renderGraphics } },
+    ]
     this.state = {
       activeConfigIndex: ConfigIndex.KEYBIND,
       keyBindConfigs: [],
@@ -165,56 +179,6 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   }
 
   public render() {
-    const tabs: TabItem[] = [
-      {
-        name: 'KEYBIND',
-        tab: {
-          render: () => <TabText>KEY BINDINGS</TabText>,
-        },
-        rendersContent: 'KeyBindings',
-      },
-      {
-        name: 'INPUT',
-        tab: {
-          render: () => <TabText>INPUT</TabText>,
-        },
-        rendersContent: 'Input',
-      },
-      {
-        name: 'AUDIO',
-        tab: {
-          render: () => <TabText>AUDIO</TabText>,
-        },
-        rendersContent: 'Audio',
-      },
-      {
-        name: 'RENDERING',
-        tab: {
-          render: () => <TabText>GRAPHICS</TabText>,
-        },
-        rendersContent: 'Graphics',
-      },
-    ];
-
-    const content: ContentItem[] = [
-      {
-        name: 'KeyBindings',
-        content: { render: this.renderKeyBindings },
-      },
-      {
-        name: 'Input',
-        content: { render: this.renderInput },
-      },
-      {
-        name: 'Audio',
-        content: { render: this.renderAudio },
-      },
-      {
-        name: 'Graphics',
-        content: { render: this.renderGraphics },
-      },
-    ];
-
     return this.state.visible ? (
       <Container>
         <Header>
@@ -223,8 +187,9 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
         </Header>
         <TabPanel
           tabs={tabs}
-          content={content}
+          content={this.content}
           onActiveTabChanged={this.onActiveTabChanged}
+          renderTab={(tab: { title: string }) => <TabText>{tab.title}</TabText>}
           styles={{
             tabPanel: customTabPanelStyles.tabPanelContainer,
             tabs: customTabPanelStyles.tabs,

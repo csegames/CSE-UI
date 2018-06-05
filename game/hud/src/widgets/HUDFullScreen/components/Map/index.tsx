@@ -119,6 +119,8 @@ export class GameMap extends React.Component<Props, State> {
 
   public componentDidMount() {
     this.initialized = true;
+    this.zoneID = window['zoneID'];
+    this.fetchMetaData();
     client.OnCharacterZoneChanged((id) => {
       this.zoneID = id;
       this.fetchMetaData();

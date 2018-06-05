@@ -6,14 +6,13 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -48,13 +47,6 @@ const BackgroundImage = styled('img')`
 `;
 
 export interface InventoryProps {
-  visibleComponent: string;
-  inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItemFragment[];
-  myTradeItems: InventoryItemFragment[];
-  myTradeState: SecureTradeState;
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
@@ -90,18 +82,11 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
           onFilterButtonDeactivated={this.onFilterButtonDeactivated}
         />
         <InventoryBody
-          equippedItems={this.props.equippedItems}
-          inventoryItems={this.props.inventoryItems}
-          myTradeItems={this.props.myTradeItems}
-          containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
-          stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
           onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
           onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
           onChangeInventoryItems={this.props.onChangeInventoryItems}
           searchValue={this.state.filterText}
           activeFilters={this.state.activeFilters}
-          visibleComponent={this.props.visibleComponent}
-          myTradeState={this.props.myTradeState}
         />
       </Container>
     );

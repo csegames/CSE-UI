@@ -6,7 +6,8 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
+import { includes } from 'lodash';
+import { client, events } from '@csegames/camelot-unchained';
 import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
 import {
   SecureTradeStatus,
@@ -21,7 +22,7 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
 import TradeWindowView from './components/TradeWindowView';
-import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
+import { FullScreenContext } from '../../lib/utils';
 import { InventoryItemFragment as ItemQueryFragment } from '../../graphql/fragments/strings/InventoryItemFragment';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
@@ -79,25 +80,27 @@ type SubscriptionType = {
   secureTradeUpdates: ISecureTradeUpdate & SecureTradeCompletedUpdate & SecureTradeStateUpdate & SecureTradeItemUpdate;
 };
 
-export interface TradeWindowProps {
+export interface InjectedTradeWindowProps {
   isVisible: boolean;
-  inventoryItems: InventoryItemFragment[];
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
   myTradeItems: InventoryItemFragment[];
-  onMyTradeItemsChange: (myTradeItems: InventoryItemFragment[]) => void;
   myTradeState: SecureTradeState;
+}
+
+export interface TradeWindowProps {
+  onMyTradeItemsChange: (myTradeItems: InventoryItemFragment[]) => void;
   onMyTradeStateChange: (tradeState: SecureTradeState) => void;
   onCloseFullScreen: () => void;
 }
+
+export type TradeWindowComponentProps = InjectedTradeWindowProps & TradeWindowProps;
 
 export interface TradeWindowState {
   theirTradeState: SecureTradeState;
   theirTradeItems: InventoryItemFragment[];
 }
 
-class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
-  constructor(props: TradeWindowProps) {
+class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindowState> {
+  constructor(props: TradeWindowComponentProps) {
     super(props);
     this.state = {
       theirTradeState: 'None',
@@ -119,9 +122,6 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
         {(graphql: GraphQLResult<QueryType>) => {
           return (
             <TradeWindowView
-              inventoryItems={this.props.inventoryItems}
-              containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
-              stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
               myTradeState={this.props.myTradeState}
               myTradeItems={this.props.myTradeItems}
               onMyTradeItemsChange={this.props.onMyTradeItemsChange}
@@ -136,7 +136,7 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
     ) : null;
   }
 
-  public componentDidUpdate(prevProps: TradeWindowProps, prevState: TradeWindowState) {
+  public componentDidUpdate(prevProps: TradeWindowComponentProps, prevState: TradeWindowState) {
     if (this.props.myTradeState === 'Confirmed' && this.state.theirTradeState === 'ModifyingItems' &&
         prevState.theirTradeState === 'Locked') {
       this.props.onMyTradeStateChange('Locked');
@@ -188,6 +188,7 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
     this.props.onMyTradeItemsChange([]);
     this.onTheirTradeItemsChange([]);
 
+    events.fire('hudnav--navigate', 'trade', false);
     this.props.onCloseFullScreen();
   }
 
@@ -200,4 +201,23 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
   }
 }
 
-export default TradeWindow;
+class TradeWindowWithInjectedContext extends React.Component<TradeWindowProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ myTradeItems, myTradeState, visibleComponentLeft, visibleComponentRight }) => {
+          return (
+            <TradeWindow
+              {...this.props}
+              isVisible={includes(visibleComponentLeft, 'trade') || includes(visibleComponentRight, 'trade')}
+              myTradeItems={myTradeItems}
+              myTradeState={myTradeState}
+            />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default TradeWindowWithInjectedContext;

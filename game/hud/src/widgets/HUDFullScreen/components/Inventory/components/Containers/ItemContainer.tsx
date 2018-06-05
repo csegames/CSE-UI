@@ -8,7 +8,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import Drawer from './Drawer';
@@ -82,10 +81,8 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
   containerID: string[];
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
-  containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   syncWithServer: () => void;
   bodyWidth: number;
-  myTradeState: SecureTradeState;
 }
 
 class ItemContainer extends React.Component<ItemContainerProps> {
@@ -127,18 +124,14 @@ class ItemContainer extends React.Component<ItemContainerProps> {
               footerWidth={isLastItem ? '100%' : 'calc(100% - 153px)'}
               drawer={_drawer}
               onChangeInventoryItems={this.props.onChangeInventoryItems}
-              inventoryItems={this.props.inventoryItems}
               containerItem={item}
               containerID={this.props.containerID ? this.props.containerID : [item.id]}
               onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
-              containerIdToDrawerInfo={this.props.containerIdToDrawerInfo}
               onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
-              stackGroupIdToItemIDs={this.props.stackGroupIdToItemIDs}
               slotsPerRow={this.props.slotsPerRow}
               syncWithServer={this.props.syncWithServer}
               permissions={item.permissibleHolder}
               bodyWidth={this.props.bodyWidth}
-              myTradeState={this.props.myTradeState}
             />
           );
         })}
@@ -149,14 +142,11 @@ class ItemContainer extends React.Component<ItemContainerProps> {
   public shouldComponentUpdate(nextProps: ItemContainerProps) {
     return this.props.searchValue !== nextProps.searchValue ||
       this.props.activeFilters !== nextProps.activeFilters ||
-      !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
-      !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
       !_.isEqual(this.props.item, nextProps.item) ||
       !_.isEqual(this.props.containerID, nextProps.containerID) ||
       this.props.bodyWidth !== nextProps.bodyWidth ||
       this.props.slotsPerRow !== nextProps.slotsPerRow ||
-      this.props.bodyWidth !== nextProps.bodyWidth ||
-      this.props.myTradeState !== nextProps.myTradeState;
+      this.props.bodyWidth !== nextProps.bodyWidth;
   }
 }
 

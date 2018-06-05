@@ -58,7 +58,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       <Tooltip styles={defaultTooltipStyle} content={() =>
         <TooltipContent isVisible={true} item={item} instructions='Left click to equip' />
       }>
-        <div
+        <Slot
           onClick={this.onEquipItem}
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}>
@@ -67,7 +67,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
             icon={item.staticDefinition.iconUrl}
             styles={SlotStyle}
           />
-        </div>
+        </Slot>
       </Tooltip>
     ) : <Slot>
           <EmptyItem />

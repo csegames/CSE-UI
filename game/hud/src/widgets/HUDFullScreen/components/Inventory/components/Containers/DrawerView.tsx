@@ -65,7 +65,7 @@ export interface DrawerViewProps {
   headerContent: () => JSX.Element;
   mainContent: () => JSX.Element;
   footerContent: () => JSX.Element;
-  marginTop?: number;
+  marginTop?: number | string;
   footerWidth?: number | string;
   contentRef?: (ref: HTMLDivElement) => void;
 }
