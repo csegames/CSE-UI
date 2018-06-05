@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
 import TooltipHeader from './components/TooltipHeader';
@@ -26,23 +26,15 @@ import {
 import { SlotType } from '../../lib/itemInterfaces';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 
-export const defaultTooltipStyle = {
-  tooltip: {
-    boxShadow: '0px',
-    padding: '0px',
-    border: '0px',
-    background: 'none',
-    maxWidth: '500px',
-    maxHeight: '750px',
-  },
-  tooltipFixed: {
-    boxShadow: '0px',
-    padding: '0px',
-    border: '0px',
-    background: 'none',
-    width: '750px',
-    maxWidth: '750px',
-  },
+export const defaultTooltipStyle: { tooltip: string } = {
+  tooltip: css`
+    box-shadow: 0px;
+    padding: 0px;
+    border: 0px;
+    background: none;
+    max-width: 500px;
+    max-height: 750px;
+  `,
 };
 
 const Container = styled('div')`
@@ -83,7 +75,6 @@ const Container = styled('div')`
 
 export interface TooltipContentProps {
   item: InventoryItemFragment;
-  isVisible: boolean;
   equippedItems?: EquippedItemFragment[];
   instructions?: string;
   stackedItems?: InventoryItemFragment[];
@@ -106,12 +97,6 @@ class TooltipContent extends React.Component<TooltipContentProps> {
         <TooltipFooter item={item} slotType={slotType} />
       </Container>
     ) : <div>This item does not exist anymore.</div>;
-  }
-
-  public shouldComponentUpdate(nextProps: TooltipContentProps) {
-    const showing = !this.props.isVisible && nextProps.isVisible;
-    const hiding = this.props.isVisible && !nextProps.isVisible;
-    return showing || hiding;
   }
 }
 

@@ -86,7 +86,7 @@ class BodyPartHealth extends React.Component<BodyPartHealthProps, {}> {
           const isRightPart = _.includes(healthComponent.toLowerCase(), 'right');
           const name = healthComponent.substr(0).toUpperCase() + healthComponent.substr(1, healthComponent.length);
           return (
-            <HealthCompContainer>
+            <HealthCompContainer key={i}>
               <Icon className={classNames(isRightPart ? FlipIcon : '', characterBodyPartIcons[name])} />
               <HealthCompInfo>
                 <HealthCompSecondaryText>

@@ -36,6 +36,7 @@ import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
+import { Tooltip } from '../Tooltip';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -71,7 +72,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const locked = this.props.layout.locked;
     const renderWidgets = widgets
                     .sort((a, b) => a.widget.position.zOrder - b.widget.position.zOrder)
-                    .map((w, idx) =>
+                    .map((w, idx) => 
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
@@ -95,6 +96,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <SkillBar />
         </div>
         <ContextMenu />
+        <Tooltip />
         <Watermark />
       </div>
     );

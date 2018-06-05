@@ -42,9 +42,9 @@ class TooltipRequirementInfo extends React.PureComponent<TooltipRequirementInfoP
         <div>
           <StatName>Requirements</StatName>
           <StatItem>
-            {Object.keys(itemStatRequirements).map((itemStatName) => {
+            {Object.keys(itemStatRequirements).map((itemStatName, i) => {
               return (
-                <div>
+                <div key={i}>
                   <StatName>{prettifyText(itemStatName, shortenedWeaponStatWords)}</StatName>
                   <StatValue>{itemStatRequirements[itemStatName]}</StatValue>
                 </div>

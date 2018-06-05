@@ -28,6 +28,7 @@ const Container = styled('div')`
   opacity: 0.7;
   user-select: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  pointer-events: all;
   &:hover {
     background-color: #888;
     transform: ease 0.2s;

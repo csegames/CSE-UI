@@ -6,13 +6,14 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
+import { ql, client, events } from '@csegames/camelot-unchained';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import ItemComponent from '../../ItemShared/Item';
 import EmptyItem from '../../ItemShared/EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
+import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
@@ -55,20 +56,16 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   public render() {
     const { item } = this.props;
     return item ? (
-      <Tooltip styles={defaultTooltipStyle} content={() =>
-        <TooltipContent isVisible={true} item={item} instructions='Left click to equip' />
-      }>
-        <Slot
-          onClick={this.onEquipItem}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}>
-          <ItemComponent
-            id={item.id}
-            icon={item.staticDefinition.iconUrl}
-            styles={SlotStyle}
-          />
-        </Slot>
-      </Tooltip>
+      <Slot
+        onClick={this.onEquipItem}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}>
+        <ItemComponent
+          id={item.id}
+          icon={item.staticDefinition.iconUrl}
+          styles={SlotStyle}
+        />
+      </Slot>
     ) : <Slot>
           <EmptyItem />
         </Slot>;
@@ -95,12 +92,16 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
     events.fire(eventNames.onEquipItem, payload);
   }
 
-  private onMouseEnter = () => {
+  private onMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+    const { item } = this.props;
     events.fire(eventNames.onHighlightSlots, this.props.gearSlots);
+    const content = <TooltipContent item={item} instructions='Left click to equip' />;
+    showTooltip({ content, event, styles: defaultTooltipStyle });
   }
 
   private onMouseLeave = () => {
     events.fire(eventNames.onDehighlightSlots);
+    hideTooltip();
   }
 }
 

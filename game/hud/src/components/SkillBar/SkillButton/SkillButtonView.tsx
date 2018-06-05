@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
-import { Tooltip, SkillStateStatusEnum } from '@csegames/camelot-unchained';
-import { overlayPseudo } from './lib/styles';
+import styled, { css } from 'react-emotion';
+import { SkillStateStatusEnum } from '@csegames/camelot-unchained';
 
+import { showTooltip, hideTooltip } from '../../../services/actions/tooltips';
+import { overlayPseudo } from './lib/styles';
 import { SkillStateInfo } from './lib';
 
 const Button = styled('div')`
@@ -19,6 +20,7 @@ const Button = styled('div')`
   height: 50px;
   flex-grow: 0;
   flex-shrink: 0;
+  margin: 5px;
   border: 1px solid #111;
   border-radius: 100%;
   background-size: contain;
@@ -94,10 +96,24 @@ const QueuedStateTick = styled('div')`
   background-size: 90%;
 `;
 
-const TooltipHeader = styled('header')`
+const TooltipHeader = styled('div')`
   font-size: 22px;
   font-weight: 700;
 `;
+
+const TooltipContentContainer = styled('div')`
+  color: white;
+`;
+
+const DefaultTooltipStyles = {
+  tooltip: css`
+    padding: 2px 5px 5px 5px;
+    background-color: rgba(0,0,0,0.9);
+    min-width: 200px;
+    max-width: 300px;
+    max-height: 750px;
+  `,
+};
 
 export interface SkillButtonViewProps {
   skillState: SkillStateInfo;
@@ -122,50 +138,32 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
     const { skillState } = this.props;
     const icon = { backgroundImage: 'url(' + skillState.info.icon + ')' };
     return (
-      <Tooltip
-        styles={{
-          Tooltip: {
-            margin: '5px',
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0,0,0,0.9)',
-            minWidth: '200px',
-            maxWidth: '300px',
-            maxHeight: '750px',
-          },
-        }}
-        content={() => (
-          <div>
-            <TooltipHeader>{this.props.name}</TooltipHeader>
-            <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
-          </div>
-        )}
+      <Button
+        id={skillState.id}
+        className={this.props.classNames}
+        style={icon}
+        keybind={skillState.info.keybind}
+        onClick={this.props.onSkillClick}
+        onMouseOver={this.onMouseOver}
+        onMouseLeave={this.onMouseLeave}
       >
-        <Button
-          id={skillState.id}
-          className={this.props.classNames}
-          style={icon}
-          keybind={skillState.info.keybind}
-          onClick={this.props.onSkillClick}
-        >
-          {skillState.status & SkillStateStatusEnum.Queued ? <QueuedStateTick /> : null}
-          <svg width='100' height='100'>
-            <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg-blur'></path>
-            <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg'></path>
-            <path d={this.props.outerPath} fill='none' strokeWidth='3px' className='outer-blur'></path>
-            <path d={this.props.outerPath} fill='none' strokeWidth='3px' className='outer'></path>
-            <path d={this.props.inner} fill='none' strokeWidth='3px' className='inner-bg-blur'></path>
-            <path d={this.props.inner} fill='none' strokeWidth='3px' className='inner-bg'></path>
-            <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner-blur'></path>
-            <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner'></path>
-          </svg>
-          {Number(this.props.timer) !== 0 &&
-            <TimingOverlay className='skill-timing-overlay'>
-              {this.props.timer}
-            </TimingOverlay>
-          }
-        </Button>
-      </Tooltip>
+        {skillState.status & SkillStateStatusEnum.Queued ? <QueuedStateTick /> : null}
+        <svg width='100' height='100'>
+          <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg-blur'></path>
+          <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg'></path>
+          <path d={this.props.outerPath} fill='none' strokeWidth='3px' className='outer-blur'></path>
+          <path d={this.props.outerPath} fill='none' strokeWidth='3px' className='outer'></path>
+          <path d={this.props.inner} fill='none' strokeWidth='3px' className='inner-bg-blur'></path>
+          <path d={this.props.inner} fill='none' strokeWidth='3px' className='inner-bg'></path>
+          <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner-blur'></path>
+          <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner'></path>
+        </svg>
+        {Number(this.props.timer) !== 0 &&
+          <TimingOverlay className='skill-timing-overlay'>
+            {this.props.timer}
+          </TimingOverlay>
+        }
+      </Button>
     );
   }
 
@@ -177,6 +175,18 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
       nextProps.outerPath !== this.props.outerPath ||
       !_.isEqual(nextProps.skillState, this.props.skillState) ||
       nextProps.classNames !== this.props.classNames;
+  }
+
+  private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
+    const content = <TooltipContentContainer>
+      <TooltipHeader>{this.props.name}</TooltipHeader>
+      <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
+    </TooltipContentContainer>;
+    showTooltip({ content, event, styles: DefaultTooltipStyles });
+  }
+
+  private onMouseLeave = () => {
+    hideTooltip();
   }
 }
 

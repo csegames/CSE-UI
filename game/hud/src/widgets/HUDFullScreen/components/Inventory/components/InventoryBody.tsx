@@ -204,7 +204,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       this.timePrevItemAdded = new Date().getTime();
     });
     client.OnInventoryRemoved((item) => {
-      if (!this.isFetching && (this.props.visibleComponentLeft === '' || this.props.visibleComponentRight)) {
+      if (!this.isFetching && (this.props.visibleComponentLeft === '' || this.props.visibleComponentRight === '')) {
         // When inventory is closed and item is removed from inventory, resync inventory with server
         this.isFetching = true;
         setTimeout(() => this.refetch(), 200);
@@ -229,8 +229,8 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       this.setState(() => this.internalInit(this.state, this.props));
     }
 
-    if ((this.props.visibleComponentLeft !== '' && prevProps.visibleComponentLeft === '') ||
-        (this.props.visibleComponentRight !== '' && prevProps.visibleComponentRight === '')) {
+    if ((this.props.visibleComponentLeft === '' && prevProps.visibleComponentLeft !== '') ||
+        (this.props.visibleComponentRight === '' && prevProps.visibleComponentRight !== '')) {
       this.refetch();
     }
 

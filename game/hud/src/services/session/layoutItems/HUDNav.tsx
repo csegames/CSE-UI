@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, utils, soundEvents } from '@csegames/camelot-unchained';
+import { client, utils } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import HUDNav from '../../../components/HUDNav';
@@ -97,39 +97,39 @@ export default {
       //     hideClientControlledUI();
       //   },
       // },
-      {
-        name: 'spellbook',
-        tooltip: 'Spellbook',
-        iconClass: 'fa-book',
-        icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-book fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'spellbook');
-          client.PlaySoundEvent(soundEvents.PLAY_UI_SPELLBOOK_OPEN);
-          client.ShowUI('spellbook');
-        },
-      },
-      {
-        name: 'skillbuilder',
-        tooltip: 'Skill Builder',
-        iconClass: 'fa-rotate-270 fa-sitemap',
-        icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-rotate-270 fa-sitemap fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'skillbuilder');
-          client.ShowUI('ability-builder');
-        },
-      },
+      // {
+      //   name: 'spellbook',
+      //   tooltip: 'Spellbook',
+      //   iconClass: 'fa-book',
+      //   icon: (
+      //     <span className='fa-stack click-effect'>
+      //       <i className='fa fa-square fa-stack-2x'></i>
+      //       <i className='fa fa-book fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'spellbook');
+      //     client.PlaySoundEvent(soundEvents.PLAY_UI_SPELLBOOK_OPEN);
+      //     client.ShowUI('spellbook');
+      //   },
+      // },
+      // {
+      //   name: 'skillbuilder',
+      //   tooltip: 'Skill Builder',
+      //   iconClass: 'fa-rotate-270 fa-sitemap',
+      //   icon: (
+      //     <span className='fa-stack click-effect'>
+      //       <i className='fa fa-square fa-stack-2x'></i>
+      //       <i className='fa fa-rotate-270 fa-sitemap fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'skillbuilder');
+      //     client.ShowUI('ability-builder');
+      //   },
+      // },
       {
         name: 'building',
         tooltip: 'Toggle Building Mode',
@@ -193,21 +193,21 @@ export default {
           events.fire('hudnav--navigate', 'inventory-right');
         },
       },
-      {
-        name: 'plotcontrol',
-        tooltip: 'Plot Controller',
-        iconClass: 'fa-map-signs',
-        icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'plotcontrol');
-        },
-      },
+      // {
+      //   name: 'plotcontrol',
+      //   tooltip: 'Plot Controller',
+      //   iconClass: 'fa-map-signs',
+      //   icon: (
+      //     <span className='fa-stack click-effect'>
+      //       <i className='fa fa-square fa-stack-2x'></i>
+      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: true,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'plotcontrol');
+      //   },
+      // },
       {
         name: 'map',
         tooltip: 'World Map',

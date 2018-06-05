@@ -64,6 +64,13 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     this.tabPanelRightRef.activeTabIndex = 1;
   }
 
+  public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
+    if ((prevState.visibleComponentLeft === '' && this.state.visibleComponentLeft !== '') ||
+        (prevState.visibleComponentRight === '' && this.state.visibleComponentRight !== '')) {
+      window.addEventListener('keydown', this.handleKeydownEvent);
+    }
+  }
+
   public componentWillUnmount() {
     events.off(this.navigateListener);
     events.off(this.shouldKeydownListener);
