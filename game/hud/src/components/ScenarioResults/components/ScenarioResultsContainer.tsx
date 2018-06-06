@@ -112,6 +112,8 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
   private fireVisibility = (nextProps?: ScenarioResultsContainerProps) => {
     if (nextProps) {
       this.playScenarioEndSound(nextProps);
+
+      // We do the timeout to match the animation with the sound.
       this.visibilityTimeout = setTimeout(() => events.fire('hudnav--navigate', 'scenario-results'), 2000);
     } else {
       events.fire('hudnav--navigate', 'scenario-results');

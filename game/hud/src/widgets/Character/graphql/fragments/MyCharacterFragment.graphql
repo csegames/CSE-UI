@@ -1,8 +1,0 @@
-fragment MyCharacter on CUCharacter {
-  id
-  name
-  faction
-  race
-  gender
-  archetype
-}

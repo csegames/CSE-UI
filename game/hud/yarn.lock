@@ -22,26 +22,6 @@
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
-"@csegames/camelot-unchained@^0.1.25":
-  version "0.1.25"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.25.tgz#73d43c334c5e0df4f1f172dfc3dd65aec6f2e091"
-  dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    emotion "^8.0.8"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-emotion "^8.0.8"
-    react-transition-group "1.x"
-    redux-typed-modules "^2.2.1"
-
 "@csegames/camelot-unchained@^0.1.26":
   version "0.1.26"
   resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.26.tgz#48a50337c2428b8945b0c7bd2b205603936ff3e7"
@@ -4419,11 +4399,7 @@ multipipe@^0.1.2:
   dependencies:
     duplexer2 "0.0.2"
 
-nan@^2.0.5, nan@^2.3.0:
-  version "2.6.2"
-  resolved "http://registry.camelotunchained.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
-
-nan@^2.10.0:
+nan@^2.0.5, nan@^2.10.0, nan@^2.3.0:
   version "2.10.0"
   resolved "http://registry.camelotunchained.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
 
@@ -5247,16 +5223,7 @@ react-cursor-position@^2.2.0:
     object.omit "^2.0.1"
     prop-types "^15.5.10"
 
-react-dom@^16.0.0:
-  version "16.0.0"
-  resolved "http://registry.camelotunchained.com/react-dom/-/react-dom-16.0.0.tgz#9cc3079c3dcd70d4c6e01b84aab2a7e34c303f58"
-  dependencies:
-    fbjs "^0.8.16"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.0"
-
-react-dom@^16.3.0:
+react-dom@^16.0.0, react-dom@^16.3.0:
   version "16.4.0"
   resolved "http://registry.camelotunchained.com/react-dom/-/react-dom-16.4.0.tgz#099f067dd5827ce36a29eaf9a6cdc7cbf6216b1e"
   dependencies:
@@ -5425,16 +5392,7 @@ react-transition-group@1.x:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react@^16.0.0:
-  version "16.0.0"
-  resolved "http://registry.camelotunchained.com/react/-/react-16.0.0.tgz#ce7df8f1941b036f02b2cca9dbd0cb1f0e855e2d"
-  dependencies:
-    fbjs "^0.8.16"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.0"
-
-react@^16.3.0:
+react@^16.0.0, react@^16.3.0:
   version "16.4.0"
   resolved "http://registry.camelotunchained.com/react/-/react-16.4.0.tgz#402c2db83335336fba1962c08b98c6272617d585"
   dependencies:

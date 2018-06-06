@@ -10,8 +10,12 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { ql } from '@csegames/camelot-unchained';
 import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import StatusIcon from './StatusIcon';
+
+const query = {
+  namedQuery: 'statusEffects',
+};
 
 const StatusContainer = styled('div')`
   display: inline-block;
@@ -24,7 +28,7 @@ const StatusContainer = styled('div')`
   height: 35px;
 `;
 
-export interface StatusProps extends GraphQLInjectedProps<Pick<CUQuery, 'status'>> {
+export interface StatusProps {
   statuses: {
     id: number;
     duration: number;
@@ -32,13 +36,19 @@ export interface StatusProps extends GraphQLInjectedProps<Pick<CUQuery, 'status'
 }
 
 export interface StatusState {
-
+  statusEffects: ql.schema.StatusDef[];
 }
 
 class Status extends React.Component<StatusProps, StatusState> {
+  constructor(props: StatusProps) {
+    super(props);
+    this.state = {
+      statusEffects: null,
+    };
+  }
   public render() {
     return (
-      this.props.statuses && !this.props.graphql.loading && this.props.graphql.data && this.props.graphql.data.status ?
+      this.props.statuses && this.state.statusEffects ?
         <StatusContainer>
           <div>
           {this.props.statuses.map((status, index) => {
@@ -48,18 +58,27 @@ class Status extends React.Component<StatusProps, StatusState> {
             );
           })}
           </div>
-        </StatusContainer> : null
+        </StatusContainer> : <GraphQL query={query} onQueryResult={this.handleQueryResult} />
     );
   }
 
-  public shouldComponentUpdate(nextProps: StatusProps) {
-    return !_.isEqual(nextProps.graphql, this.props.graphql) ||
+  public shouldComponentUpdate(nextProps: StatusProps, nextState: StatusState) {
+    return !_.isEqual(nextState.statusEffects, this.state.statusEffects) ||
       !_.isEqual(nextProps.statuses, this.props.statuses);
+  }
+
+  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'status'>>) => {
+    const resultData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+
+    if (resultData && resultData.status && resultData.status.statuses &&
+        !_.isEqual(resultData.status.statuses, this.state.statusEffects)) {
+      this.setState({ statusEffects: resultData.status.statuses });
+    }
   }
 
   private getStatusInfo = (id: number) => {
     const status = _.find(
-      this.props.graphql.data.status.statuses,
+      this.state.statusEffects,
       (statusEffect: ql.schema.StatusDef) => statusEffect.numericID === id);
     if (status) {
       return {
@@ -72,20 +91,4 @@ class Status extends React.Component<StatusProps, StatusState> {
   }
 }
 
-const StatusWithQL = withGraphQL<StatusProps>({
-  query: `
-    query StatusEffectsStoreQuery {
-      status {
-        statuses {
-          id
-          numericID
-          iconURL
-          description
-          name
-        }
-      }
-    }
-  `,
-})(Status);
-
-export default StatusWithQL;
+export default Status;

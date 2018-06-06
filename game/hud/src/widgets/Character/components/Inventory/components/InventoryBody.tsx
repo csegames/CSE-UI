@@ -243,7 +243,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     events.fire('refetch-character-info');
     const res: any = await this.props.graphql.client.query({
       operationName: 'InventoryBase',
-      namedQuery: 'myInventory',
+      namedQuery: '',
       query: queries.InventoryBase,
       variables: null,
     });
