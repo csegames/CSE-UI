@@ -11,6 +11,19 @@ import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
 
+const query = `
+{
+  myCharacter {
+    id
+    name
+    faction
+    race
+    gender
+    archetype
+  }
+}
+`;
+
 export interface GeneralInfoStyles extends StyleDeclaration {
   GeneralInfo: React.CSSProperties;
   avatarIconContainer: React.CSSProperties;
@@ -95,7 +108,7 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
     const ss = StyleSheet.create(defaultGeneralInfoStyle);
     const custom = StyleSheet.create(this.props.styles || {});
     return (
-      <GraphQL query={{ namedQuery: 'myStaticCharacter' }}>
+      <GraphQL query={query}>
         {(graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
           if (graphql.loading || !graphql.data) return null;
           const myCharacter: ql.schema.CUCharacter =
