@@ -50,25 +50,27 @@ const activeItem = css`
 `;
 
 const Container = styled('div')`
-  display: flex;
-  justify-content: flex-end;
+  position: relative;
+  display: block;
+  text-align: center;
+  margin-left: -5px;
 `;
 
 const ButtonContainer = styled('div')`
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
   pointer-events: all;
   cursor: ${props => props.cursor};
   color: white;
   font-family: "Caudex";
   font-size: 13px;
-  height: 51px;
-  width: 85%;
+  height: 50px;
+  width: 345px;
   margin: 15px 15px 25px 15px;
+  padding-bottom: 5px;
   background: url(${props => props.backgroundImg}) no-repeat;
-  background-size: cover;
+  background-size: contain;
   transition: all ease .1s;
   &:hover {
     ${activeItem};
@@ -77,21 +79,25 @@ const ButtonContainer = styled('div')`
 
 const Plus = styled('span')`
   font-size: 24px;
-  margin-right: 10px;
+  margin-right: 5px;
 `;
 
 const Text = styled('div')`
-  display: flex;
-  align-items: center;
+  position: absolute;
+  top: 5px;
+  right: 0;
+  left: 0;
+  bottom: 22px;
   color: ${props => props.color};
   font-size: 16px;
 `;
 
 const SubText = styled('div')`
   position: absolute;
+  top: 30px;
   right: 0;
   left: 0;
-  bottom: 5px;
+  bottom: 13px;
   text-align: center;
   color: #FF6A6A;
   font-size: 10px;

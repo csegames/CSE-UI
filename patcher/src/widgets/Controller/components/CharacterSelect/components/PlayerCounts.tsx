@@ -12,7 +12,6 @@ import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 const PlayerCount = styled('span')`
-  font-size: 14px;
   padding-right: ${props => props.faction === Faction.Viking ? '0px' : '10px'};
   color: ${props => props.faction === Faction.Arthurian ? '#FF8080'
     : props.faction === Faction.Viking ? '#6DB9D9'
@@ -20,14 +19,14 @@ const PlayerCount = styled('span')`
 `;
 
 const PlayerCountLabel = styled('span')`
-  font-size: 14px;
-  opacity: 0.5;
   padding-right: 4px;
+  opacity: 0.5;
 `;
 
 const PlayerCountsContainer = styled('div')`
-  margin-left: 24px;
-  margin-top: -24px;
+  display: inline;
+  margin-top: -5px;
+  margin-left: 75px;
 `;
 
 function query(server: string) {

@@ -16,40 +16,65 @@ import CreateCharacterItem from './CreateCharacterItem';
 
 import PlayerCounts from './PlayerCounts';
 
-const ServerTitle = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  color: #dac0a9;
-  font-family: "Caudex";
-  font-size: 16px;
-  height: 30px;
-  width: 330px;
-  padding: 5px 15px 5px 35px;
-  text-transform: Uppercase;
-  letter-spacing: 1px;
-  background: url(images/controller/server-name-bg.png) no-repeat;
+const Server = styled('div')`
+  display: block;
+  height: 55px;
+  width: 407px;
   &:hover {
     filter: brightness(140%);
   }
 `;
 
-const AccessLevelText = styled('div')`
-  margin-top: ${props => props.marginTop}px;
+const ServerTitle = styled('div')`
+  display: flex;
+  justify-content: space-between;
   text-align: right;
-  font-size: 14px;
-  opacity: 0.5;
-  margin-right: 30px;
-  margin-top: -10px;
-  padding-bottom: ${props => props.paddingBottom}px;
+  height: 30px;
+  width: 390px;
+  margin-left: -16px;
+  margin-right: 5px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  background: url(images/controller/server-name-bg.png) no-repeat;
+  div {
+    display: inline;
+    text-align: left;
+    margin-top: 2px;
+    margin-left: 45px;
+  }
+  font-family: "Caudex";
+  color: #dac0a9;`;
+
+const ServerInfo = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  height: 20px;
+  width: 407px;
+  margin-left: -33px;
+  background: url(images/controller/server-name-bg.png) no-repeat;
+  font-size: 12px;
+  p {
+    display: inline;
+    margin-top: -5px;
+    margin-right: 5px;
+    opacity: 0.5;
+  }
 `;
 
 const Icon = styled('i')`
+  position: relative;
+  top: -1px;
+  display: inline;
+  margin-right: 6px;
   color: ${props => props.color};
   font-size: ${props => props.size}px;
-  margin-right: ${props => props.marginRight}px;
 `;
 
 const ServerOptionsButton = styled('div')`
+  display: inline;
+  margin-top: 9px;
+  margin-right: 5px;
   cursor: pointer;
   pointer-events: ${props => props.visible ? 'all' : 'none'};
   z-index: 1;
@@ -115,27 +140,27 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
             },
           }}
           title={(collapsed: boolean) =>
-            <div>
+            <Server>
               <ServerTitle>
                 <div>
-                  <Icon marginRight={5}>{collapsed ? '+' : '-'}</Icon>
+                  <Icon size={14}>{collapsed ? '+' : '-'}</Icon>
                   <Icon
                     className='fa fa-power-off'
                     aria-hidden='true'
                     color={server.available ? 'green' : 'red'}
                     size={12}>
                   </Icon>
-                  &nbsp;{server.name} ({serverCharacters.length})&nbsp;
+                    {server.name} ({serverCharacters.length})
                 </div>
                 <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
                   <i className='fa fa-cog' />
                 </ServerOptionsButton>
               </ServerTitle>
-              <AccessLevelText paddingBottom={collapsed ? 10 : 0}>
-                Accessible to {webAPI.accessLevelString(server.accessLevel)}
-              </AccessLevelText>
-              <PlayerCounts server={server.name} />
-            </div>
+              <ServerInfo>
+                <PlayerCounts server={server.name} />
+                <p>Accessible to {webAPI.accessLevelString(server.accessLevel)}</p>
+              </ServerInfo>
+            </Server>
           }
           renderListItem={(character: webAPI.SimpleCharacter, i: number) => (
             <CharacterSelectListItem
@@ -148,9 +173,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
             />
           )}
           renderListFooter={() => (
-            <div>
-              <CreateCharacterItem server={server} apiServerOnline={this.props.apiServerOnline} />
-            </div>
+            <CreateCharacterItem server={server} apiServerOnline={this.props.apiServerOnline} />
           )}
         />
       </div>

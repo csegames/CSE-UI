@@ -38,10 +38,11 @@ const Container = styled('div')`
   color: white;
   font-family: "Caudex";
   font-size: 13px;
-  width: 250px;
+  width: 255px;
   padding: 8px 0 12px 90px;
   margin-top: ${props => props.marginTop};
   margin-bottom: ${props => props.marginBottom};
+  margin-left: -10px;
   left: 35px;
   top: 0;
   background: url(images/controller/character-select-bg.png) no-repeat;
@@ -167,12 +168,11 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
 
     const classImg = CharacterImages[`${Race[character.race]}${Gender[character.gender]}`];
     return (
-      <div>
         <Container
           onClick={this.onClick}
           onMouseEnter={this.onMouseEnter}
           backgroundColor={this.props.selected ? 'white' : 'transparent'}
-          marginTop={!this.props.marginTop ? '15px' : this.props.marginTop}
+          marginTop={!this.props.marginTop ? '10px' : this.props.marginTop}
           marginBottom={!this.props.marginBottom ? '0px' : this.props.marginBottom}
           className={this.props.selected ? activeItem : ''}
           visible={this.props.charSelectVisible}>
@@ -192,7 +192,6 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
           <CharacterMetaData>{Archetype[character.archetype]} - {webAPI.raceString(character.race)}</CharacterMetaData>
           <DeleteButton visible={this.props.charSelectVisible} onClick={this.toggleDeleteModal}>X</DeleteButton>
         </Container>
-      </div>
     );
   }
 
