@@ -9,8 +9,8 @@ import { ql, client, events, webAPI, ContextMenuContentProps } from '@csegames/c
 import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import ContextMenuAction from './ContextMenuAction';
-import eventNames, { UpdateInventoryItemsPayload } from '../../../../lib/eventNames';
-import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/eventNames';
+import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../../gqlInterfaces';
 import {
   prettifyText,
   hasGroundPermissions,
@@ -97,10 +97,17 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
     );
   }
 
-  private onEquipItem = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
+  private onEquipItem = (gearSlots: GearSlotDefRefFragment[]) => {
     const { item, contextMenuProps } = this.props;
-    const payload = {
-      inventoryItem: item,
+    const itemDataTransfer = getInventoryDataTransfer({
+      item,
+      position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
+      location: item.location.inContainer ? 'Container' : 'Inventory',
+      containerID: this.props.containerID,
+      drawerID: this.props.drawerID,
+    });
+    const payload: EquipItemPayload = {
+      inventoryItem: itemDataTransfer,
       willEquipTo: gearSlots,
     };
     events.fire(eventNames.onEquipItem, payload);

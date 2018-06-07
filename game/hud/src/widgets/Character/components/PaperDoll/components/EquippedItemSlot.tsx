@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Tooltip, events } from '@csegames/camelot-unchained';
 import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-import eventNames, { UnequipItemCallback } from '../../../lib/eventNames';
+import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
@@ -122,7 +122,7 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
       location: 'Equipped',
       gearSlots: equippedItem.gearSlots,
     });
-    const payload: UnequipItemCallback = {
+    const payload: UnequipItemPayload = {
       item: equippedItemDataTransfer,
     };
     events.fire(eventNames.onUnequipItem, payload);

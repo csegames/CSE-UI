@@ -15,7 +15,7 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 import * as base from './InventoryBase';
 import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef, slotDimensions } from './InventorySlot';
-import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer } from '../../../lib/eventNames';
+import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
 import { calcRowAndSlots, getDimensionsOfElement } from '../../../lib/utils';
 import queries from '../../../../../gqlDocuments';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
@@ -185,7 +185,8 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   public componentDidMount() {
     this.initializeInventory();
     this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
-    this.dropItemHandler = events.on(eventNames.onDropItem, payload => base.dropItemRequest(payload.inventoryItem));
+    this.dropItemHandler = events.on(eventNames.onDropItem, (payload: DropItemPayload) =>
+      base.dropItemRequest(payload.inventoryItem.item));
     window.addEventListener('resize', this.initializeInventory);
     client.SubscribeInventory(true);
     client.OnInventoryAdded((item) => {

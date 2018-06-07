@@ -4,7 +4,7 @@ import { ql } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import styled, { css } from 'react-emotion';
-import eventNames, { EquipItemCallback, InventoryDataTransfer } from '../../../lib/eventNames';
+import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
@@ -187,7 +187,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     });
 
     const willEquipTo = gearSlotSet && gearSlotSet.gearSlots;
-    const payload: EquipItemCallback = {
+    const payload: EquipItemPayload = {
       inventoryItem,
       prevEquippedItem: equippedItem,
       willEquipTo,

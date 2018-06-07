@@ -8,7 +8,7 @@ import * as React from 'react';
 import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
-import eventNames, { EquipItemCallback } from '../../../lib/eventNames';
+import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import Item from '../../Item';
 import EmptyItem from '../../EmptyItem';
@@ -88,7 +88,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
       location: item.location.inContainer ? 'Container' : 'Inventory',
     });
-    const payload: EquipItemCallback = {
+    const payload: EquipItemPayload = {
       inventoryItem: inventoryItemDataTransfer,
       willEquipTo: this.props.gearSlots,
     };

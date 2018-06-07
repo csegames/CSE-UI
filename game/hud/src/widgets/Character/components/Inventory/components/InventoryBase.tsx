@@ -17,7 +17,7 @@ import eventNames, {
   InventoryDataTransfer,
   EquippedItemDataTransfer,
   UpdateInventoryItemsPayload,
-  UnequipItemCallback,
+  UnequipItemPayload,
 } from '../../../lib/eventNames';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import {
@@ -1655,7 +1655,7 @@ function moveInventoryItemToEmptySlot(dragItemData: InventoryDataTransfer | Equi
 
   // If equipped item moving to empty slot in inventory, then unequip it
   if (dragItemData.gearSlots) {
-    const payload: UnequipItemCallback = {
+    const payload: UnequipItemPayload = {
       item: dragItemData as EquippedItemDataTransfer,
       dontUpdateInventory: true,
     };

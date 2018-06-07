@@ -16,8 +16,8 @@ import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import eventNames, {
-  EquipItemCallback,
-  UnequipItemCallback,
+  EquipItemPayload,
+  UnequipItemPayload,
   UpdateInventoryItemsPayload,
 } from '../../../lib/eventNames';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
@@ -257,7 +257,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     events.off(this.onUnequipItemListener);
   }
 
-  private onUnequipItem = (payload: UnequipItemCallback) => {
+  private onUnequipItem = (payload: UnequipItemPayload) => {
     // Listens to onUnequipItem event. We need this in order to update other slots affected by the unequip.
     const { item } = payload;
     const equippedItems = this.props.equippedItems;
@@ -277,7 +277,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     }
   }
 
-  private onEquipItem = (payload: EquipItemCallback) => {
+  private onEquipItem = (payload: EquipItemPayload) => {
     const { inventoryItem, willEquipTo } = payload;
     const equippedItems = this.props.equippedItems;
     const filteredItems = _.filter(equippedItems, ((equippedItem) => {

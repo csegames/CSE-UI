@@ -75,18 +75,18 @@ export interface UpdateInventoryItemsPayload {
   type: 'Equip' | 'Unequip' | 'Drop';
 }
 
-export interface EquipItemCallback {
+export interface EquipItemPayload {
   inventoryItem: InventoryDataTransfer;
   willEquipTo: GearSlotDefRefFragment[];
   prevEquippedItem?: EquippedItemFragment;
 }
 
-export interface UnequipItemCallback {
+export interface UnequipItemPayload {
   item: EquippedItemDataTransfer;
   dontUpdateInventory?: boolean;
 }
 
-export interface DropItemCallback {
+export interface DropItemPayload {
   inventoryItem: InventoryDataTransfer;
 }
 

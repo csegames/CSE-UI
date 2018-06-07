@@ -12,7 +12,7 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
 import { emptyStackHash, colors, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
-import eventNames, { DropItemCallback } from '../../../lib/eventNames';
+import eventNames, { DropItemPayload } from '../../../lib/eventNames';
 
 export interface InventoryFooterStyles extends StyleDeclaration {
   InventoryFooter: React.CSSProperties;
@@ -190,7 +190,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
     });
   }
 
-  private onDropItem = (payload: DropItemCallback) => {
+  private onDropItem = (payload: DropItemPayload) => {
     const item = payload.inventoryItem.item;
     this.setState((state, props) => {
       return {
