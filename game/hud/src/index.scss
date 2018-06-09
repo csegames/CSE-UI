@@ -114,43 +114,43 @@ body {
   @mixin shake($x, $y, $rot, $name, $steps:10, $opacity:false) {
     $r:0deg;
     $h:0px;
-    $v:0px; 
-    
+    $v:0px;
+
     $interval: $steps;
     $step: 0%;
-  
-    @keyframes #{$name}{ 
+
+    @keyframes #{$name}{
       @while $step < 100% {
-        @if ($rot != 0deg){ $r : random($rot) - $rot/2;} 
+        @if ($rot != 0deg){ $r : random($rot) - $rot/2;}
           @else {$r : 0deg;}
-        @if ($x != 0px){ $h : random($x) - $x/2; } 
+        @if ($x != 0px){ $h : random($x) - $x/2; }
           @else { $h : 0px; }
-        @if ($y != 0px){ $v : random($y) - $y/2; } 
+        @if ($y != 0px){ $v : random($y) - $y/2; }
           @else { $v : 0px; }
-      
+
         @if($step == 0%){
           #{$step} {
             transform: translate(0px, 0px) rotate(0deg);
             @if($opacity){
               opacity: random(10)*.1;
             }
-          }  
+          }
         } @else {
           #{$step} {
             transform: translate($h, $v) rotate($r);
             @if($opacity){
-              opacity: random(10)*.1; 
+              opacity: random(10)*.1;
             }
           }
         }
         $step: $step + $interval;
       }
-  
+
     }
   }
-  
+
   @include shake(20px, 20px, 5deg, 'shake-hard', 3);
-  
+
 
   a {
     text-decoration: none;
@@ -164,5 +164,59 @@ body {
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+}
+
+/* CSE_Koo scroll bars */
+
+#hud .cse-ui-scroller-full {
+  div::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  div::-webkit-scrollbar-button:vertical:increment:start {
+    width: 8px; height: 10px;
+    background: url(../images/settings/scrollbar-top-arrow.png);
+  }
+  div::-webkit-scrollbar-button:vertical:decrement:end {
+    width: 8px; height: 10px;
+    background: url(../images/settings/scrollbar-bot-arrow.png);
+  }
+  div::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: none;
+    background: transparent;
+    background: url(../images/settings/scrollbar-track.png);
+    background-repeat: vertical;
+    background-size: 8px;
+  }
+  div::-webkit-scrollbar-thumb:vertical {
+    box-shadow: none;
+    background-color: transparent;
+    background-image: url(../images/settings/scrollbar-thumb.png);
+    background-repeat: vertical;
+    background-size: 8px;
+  }
+}
+
+
+#hud .cse-ui-scroller-thumbonly {
+  div::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  div::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: none;
+    background: transparent;
+  }
+  div::-webkit-scrollbar-thumb:vertical {
+    border: 35px solid rgb(64,64,64);
+    border-width: 35px 4px 35px 4px;
+    border-image: url(../images/settings/scrollbar-thumb-ends.png);
+    border-image-slice: 35 4 35 4;
+    min-height: 100px;
+    box-shadow: none;
+    background: none;
   }
 }

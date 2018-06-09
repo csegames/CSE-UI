@@ -26,7 +26,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.GameMenu,
+    zOrder: HUDZOrder.Settings,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

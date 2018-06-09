@@ -5,33 +5,33 @@
  */
 
 import { LayoutMode } from '../../../components/HUDDrag';
-import Options, { OptionDimensions } from '../../../components/Options/OptionsMain';
+import Settings, { SettingsDimensions } from '../../../components/Settings/SettingsMain';
 import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
     x: {
       anchor: 5,
-      offset: -(OptionDimensions.width / 2),
+      offset: -(SettingsDimensions.width / 2),
     },
     y: {
       anchor: 5,
-      offset: -(OptionDimensions.height / 2),
+      offset: -(SettingsDimensions.height / 2),
     },
     size: {
-      width: OptionDimensions.width,
-      height: OptionDimensions.height,
+      width: SettingsDimensions.width,
+      height: SettingsDimensions.height,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.Options,
+    zOrder: HUDZOrder.Settings,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true,
   },
-  component: Options,
+  component: Settings,
   props: {},
 };

@@ -33,7 +33,7 @@ import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
 import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
 import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
 import GameMenu from './layoutItems/GameMenu';
-import Options from './layoutItems/Options';
+import Settings from './layoutItems/Settings';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
@@ -174,7 +174,7 @@ function initialState(): LayoutState {
       'gameMenu', cloneDeep(GameMenu),
     ],
     [
-      'options', cloneDeep(Options),
+      'settings', cloneDeep(Settings),
     ],
     [
       'skillqueue', cloneDeep(SkillQueue),
