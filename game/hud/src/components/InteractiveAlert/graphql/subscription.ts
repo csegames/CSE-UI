@@ -44,5 +44,6 @@ export const subscription: GraphQLSubscriptionOptions<SubscriptionData> = {
     `,
   url,
   initPayload,
+  debug: false,
 };
 

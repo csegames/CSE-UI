@@ -103,7 +103,7 @@ export class SubscriptionManager {
   private messageQueue: string[] = [];
 
   constructor(options: Partial<Options<any>>) {
-    this.debug = options.debug;
+    this.debug = options.debug || false;
     if (this.debug) {
       this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
     }
@@ -253,9 +253,11 @@ export class SubscriptionManager {
     }
     if (this.socket.isOpen) {
       this.socket.send(JSON.stringify(op));
-    } else if (this.debug) {
+    } else {
       this.messageQueue.push(JSON.stringify(op));
-      this.log('op message queued due to socket not open');
+      if (this.debug) {
+        this.log('op message queued due to socket not open');
+      }
     }
   }
 

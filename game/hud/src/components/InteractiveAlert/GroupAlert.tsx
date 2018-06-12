@@ -55,6 +55,7 @@ export interface GroupAlertProps {
 export class GroupAlertView extends React.Component<GroupAlertProps> {
   public render() {
     const { alert } = this.props;
+    console.log(`GroupAlertView | render()`);
     return (
       <Container>
         <h6>

@@ -158,10 +158,8 @@ export class SignalRHub {
     };
     if (this.eventHandlers[event]) {
       this.eventHandlers[event].push(handler);
-      console.log('pushed event ' + this.eventHandlers[event].length);
     } else {
       this.eventHandlers[event] = [handler];
-      console.log('first event pushed ' + this.eventHandlers[event].length);
     }
     this.handlerIDMap[handler.id] = event;
 
@@ -170,8 +168,6 @@ export class SignalRHub {
     if (event === 'connected' && this.connectionState === ConnectionState.Connected) {
       (callback as any)(this);
     }
-
-    console.log(JSON.stringify(this.eventHandlers));
 
     return handler.id;
   }
@@ -240,9 +236,6 @@ export class SignalRHub {
   private fireEvent = (event: hubEvents, ...params: any[]) => {
     if (this.debug) console.log(`SignalRHub [${this.hubName}] | fireEvent(event: '${event}')`);
     const handlers = this.eventHandlers[event];
-    console.log(handlers && handlers.length);
-    console.log(JSON.stringify(this.eventHandlers));
-    console.log(handlers && JSON.stringify(handlers));
     if (handlers) {
       handlers.forEach(h => h.callback(this, ...params));
     }
