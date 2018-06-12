@@ -5,8 +5,9 @@
  */
 
 import * as React from 'react';
-import { WarbandMember } from '@csegames/camelot-unchained/lib/webAPI/definitions';
+import { GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 import styled from 'react-emotion';
+import { client } from '@csegames/camelot-unchained';
 
 import HealthBar from '../HealthBar';
 
@@ -17,7 +18,7 @@ const Container = styled('div')`
 
 export interface WarbandMemberDisplayProps {
   key: string | number;
-  member: WarbandMember;
+  member: GroupMemberState;
   isMini?: boolean;
 }
 
@@ -33,10 +34,14 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   public render() {
     if (!this.props.member) return null;
     return (
-      <Container key={this.props.member.characterID}>
+      <Container key={this.props.member.id} onClick={this.targetMember}>
         <HealthBar type='mini' playerState={this.props.member as any} />
       </Container>
     );
+  }
+
+  public targetMember = () => {
+    client.RequestFriendlyTargetEntityID(this.props.member.entityID);
   }
 }
 
