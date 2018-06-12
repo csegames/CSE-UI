@@ -55,7 +55,7 @@ class Select extends React.Component<SelectProps, SelectState> {
     const selectedIndex = this.props.items.indexOf(this.props.selectedItem);
     return(
       <div className={css(ss.select)}>
-        <div className={css(ss.impl)} style={this.state.showList ? { zIndex: '1000' } : {}}>
+        <div className={css(ss.impl)} style={this.state.showList ? { zIndex: 1000 } : {}}>
           <div
             className={this.state.showList ? css(ss.outside) : css(ss.outside, ss.outsideHidden)}
             onClick={(e) => { this.onClick(e, false); }} />

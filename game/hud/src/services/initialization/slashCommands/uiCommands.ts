@@ -6,6 +6,7 @@
 import { client, registerSlashCommand } from '@csegames/camelot-unchained';
 
 export default () => {
+  console.log('registering client ui commands');
   /**
    * Reload the UI or a single UI Module
    */

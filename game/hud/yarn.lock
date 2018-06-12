@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@csegames/camelot-unchained@0.1.5":
-  version "0.1.5"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.5.tgz#af98cf39ffef343007224c0f293f8a8fc33bff05"
+"@csegames/camelot-unchained@^0.1.31":
+  version "0.1.31"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.31.tgz#ee640e6b03970890de41379a4db19c77e61cab76"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
@@ -16,48 +16,29 @@
     jquery "^3.0.0"
     lodash "^4.17.4"
     moment "^2.17.1"
+    node-xmpp-client "2.1.0"
+    randomstring "^1.1.5"
     react "^16.0.0"
     react-dom "^16.0.0"
     react-emotion "^8.0.8"
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
-"@csegames/camelot-unchained@^0.1.29":
-  version "0.1.29"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.29.tgz#5ceffab80494839e1ba6e4f4fe8647ce42af701c"
+"@csegames/cu-xmpp-chat@^0.1.2":
+  version "0.1.2"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.2.tgz#c87bb34a1767ff36163c68a3a6cb660869524722"
   dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    emotion "^8.0.8"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-emotion "^8.0.8"
-    react-transition-group "1.x"
-    redux-typed-modules "^2.2.1"
-
-"@csegames/cu-xmpp-chat@^0.1.0":
-  version "0.1.0"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.0.tgz#3b8a999ad7da61c06b412faeaf2c0c1464047032"
-  dependencies:
-    "@csegames/camelot-unchained" "0.1.5"
+    "@csegames/camelot-unchained" "^0.1.31"
+    aphrodite "^2.2.2"
     cwd-in-node-modules "^1.0.1"
     es6-promise "^3.1.2"
     node-xmpp-client "^2.1.0"
     normalizr "^2.0.0"
     randomstring "^1.1.5"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-redux "^4.4.5"
+    react-redux "^5.0.5"
     react-transition-group "1.x"
-    redux "^3.5.2"
-    redux-thunk "^2.1.0"
+    redux "^3.7.2"
+    redux-thunk "^2.2.0"
 
 "@mapbox/mapbox-gl-style-spec@^9.0.1":
   version "9.0.1"
@@ -320,6 +301,14 @@ aphrodite@^1.2.3:
   dependencies:
     asap "^2.0.3"
     inline-style-prefixer "^3.0.1"
+    string-hash "^1.1.3"
+
+aphrodite@^2.2.2:
+  version "2.2.2"
+  resolved "http://registry.camelotunchained.com/aphrodite/-/aphrodite-2.2.2.tgz#1292a6c67f5c35f8855f3f61475fe530d903bdd1"
+  dependencies:
+    asap "^2.0.3"
+    inline-style-prefixer "^4.0.0"
     string-hash "^1.1.3"
 
 apisauce@0.3.1:
@@ -1169,6 +1158,10 @@ bowser@^1.6.0:
   version "1.7.0"
   resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.7.0.tgz#169de4018711f994242bff9a8009e77a1f35e003"
 
+bowser@^1.7.3:
+  version "1.9.3"
+  resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.9.3.tgz#6643ae4d783f31683f6d23156976b74183862162"
+
 boxen@^0.6.0:
   version "0.6.0"
   resolved "http://registry.camelotunchained.com/boxen/-/boxen-0.6.0.tgz#8364d4248ac34ff0ef1b2f2bf49a6c60ce0d81b6"
@@ -1818,7 +1811,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.5.2, create-react-class@^15.5.3:
+create-react-class@^15.5.2, create-react-class@^15.5.3:
   version "15.6.0"
   resolved "http://registry.camelotunchained.com/create-react-class/-/create-react-class-15.6.0.tgz#ab448497c26566e1e29413e883207d57cfe7bed4"
   dependencies:
@@ -1859,6 +1852,13 @@ css-in-js-utils@^1.0.3:
   resolved "http://registry.camelotunchained.com/css-in-js-utils/-/css-in-js-utils-1.0.3.tgz#9ac7e02f763cf85d94017666565ed68a5b5f3215"
   dependencies:
     hyphenate-style-name "^1.0.2"
+
+css-in-js-utils@^2.0.0:
+  version "2.0.1"
+  resolved "http://registry.camelotunchained.com/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
+  dependencies:
+    hyphenate-style-name "^1.0.2"
+    isobject "^3.0.1"
 
 css-select@~1.2.0:
   version "1.2.0"
@@ -3071,6 +3071,13 @@ inline-style-prefixer@^3.0.1:
     bowser "^1.6.0"
     css-in-js-utils "^1.0.3"
 
+inline-style-prefixer@^4.0.0:
+  version "4.0.2"
+  resolved "http://registry.camelotunchained.com/inline-style-prefixer/-/inline-style-prefixer-4.0.2.tgz#d390957d26f281255fe101da863158ac6eb60911"
+  dependencies:
+    bowser "^1.7.3"
+    css-in-js-utils "^2.0.0"
+
 insert-module-globals@^7.0.0:
   version "7.0.1"
   resolved "http://registry.camelotunchained.com/insert-module-globals/-/insert-module-globals-7.0.1.tgz#c03bf4e01cb086d5b5e5ace8ad0afe7889d638c3"
@@ -3321,6 +3328,10 @@ isobject@^2.0.0, isobject@^2.1.0:
   resolved "http://registry.camelotunchained.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
   dependencies:
     isarray "1.0.0"
+
+isobject@^3.0.1:
+  version "3.0.1"
+  resolved "http://registry.camelotunchained.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
 isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
@@ -4501,7 +4512,7 @@ node-status-codes@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/node-status-codes/-/node-status-codes-1.0.0.tgz#5ae5541d024645d32a58fcddc9ceecea7ae3ac2f"
 
-node-xmpp-client@^2.1.0:
+node-xmpp-client@2.1.0, node-xmpp-client@^2.1.0:
   version "2.1.0"
   resolved "http://registry.camelotunchained.com/node-xmpp-client/-/node-xmpp-client-2.1.0.tgz#8ba7ce98dacc85869d4d146baaad87e523362258"
   dependencies:
@@ -5057,7 +5068,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0:
   version "15.6.0"
   resolved "http://registry.camelotunchained.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -5306,17 +5317,6 @@ react-openlayers@^0.2.1:
     react-async-loader "^0.1.2"
     react-async-script-loader "^0.2.2"
 
-react-redux@^4.4.5:
-  version "4.4.8"
-  resolved "http://registry.camelotunchained.com/react-redux/-/react-redux-4.4.8.tgz#e7bc1dd100e8b64e96ac8212db113239b9e2e08f"
-  dependencies:
-    create-react-class "^15.5.1"
-    hoist-non-react-statics "^1.0.3"
-    invariant "^2.0.0"
-    lodash "^4.2.0"
-    loose-envify "^1.1.0"
-    prop-types "^15.5.4"
-
 react-redux@^5.0.5:
   version "5.0.5"
   resolved "http://registry.camelotunchained.com/react-redux/-/react-redux-5.0.5.tgz#f8e8c7b239422576e52d6b7db06439469be9846a"
@@ -5502,7 +5502,7 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
-redux-thunk@^2.1.0, redux-thunk@^2.2.0:
+redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "http://registry.camelotunchained.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
@@ -5510,7 +5510,7 @@ redux-typed-modules@^2.2.1:
   version "2.2.1"
   resolved "http://registry.camelotunchained.com/redux-typed-modules/-/redux-typed-modules-2.2.1.tgz#2787297b8a620e8d73e2a020737106deaa596a2b"
 
-redux@*, redux@^3.4.0, redux@^3.5.2, redux@^3.6.0, redux@^3.7.2:
+redux@*, redux@^3.4.0, redux@^3.6.0, redux@^3.7.2:
   version "3.7.2"
   resolved "http://registry.camelotunchained.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   dependencies:
@@ -6468,9 +6468,9 @@ typescript@^2.0.3:
   version "2.4.1"
   resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
 
-typescript@next:
-  version "2.6.0-dev.20171006"
-  resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.6.0-dev.20171006.tgz#a2d066e9748b39a72353469e8c0c9a98012e1509"
+typescript@^2.9.1:
+  version "2.9.1"
+  resolved "http://registry.camelotunchained.com/typescript/-/typescript-2.9.1.tgz#fdb19d2c67a15d11995fd15640e373e09ab09961"
 
 typings-core@^1.6.1:
   version "1.7.0"

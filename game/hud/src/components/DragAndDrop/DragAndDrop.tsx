@@ -6,8 +6,9 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import { utils } from '@csegames/camelot-unchained';
 import { setDragStoreInfo, getDragStore, defaultDragStoreState } from './DragStore';
+
+import { Omit } from '@csegames/camelot-unchained/lib/utils/typeUtils';
 
 export interface PositionInformation {
   top: number;
@@ -125,11 +126,11 @@ export interface DragAndDropState extends DragAndDropInjectedProps {
 }
 
 function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref: any) => any }>(
-  options: DraggableOptions | ((props: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) => DraggableOptions),
+  options: DraggableOptions | ((props: Omit<PropsTypes, keyof DragAndDropInjectedProps>) => DraggableOptions),
 ) {
   return (WrappedComponent: React.ComponentClass<PropsTypes> | React.StatelessComponent<PropsTypes>) => {
     return class DragAndDrop extends React.Component<
-      utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>,
+      Omit<PropsTypes, keyof DragAndDropInjectedProps>,
       DragAndDropState
     > {
       public mounted: boolean;
@@ -146,7 +147,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }, 50);
       private options: DraggableOptions;
 
-      constructor(props: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
+      constructor(props: Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
         super(props);
 
         this.options = options ? typeof options === 'function' ? options(props) : options : null;
@@ -197,7 +198,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
           !_.isEqual(nextProps, this.props);
       }
 
-      public componentWillReceiveProps(nextProps: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
+      public componentWillReceiveProps(nextProps: Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
         if (!_.isEqual(this.props, nextProps)) {
           if (this.state.dragItemIsOver) {
             this.setState({ dragItemIsOver: false });
