@@ -23,7 +23,7 @@ import { InvitesState, initializeInvites } from '../../services/session/invites'
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import Watermark from '../Watermark';
-import HUDFullScreen from '../HUDFullScreen';
+import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
 import ScenarioPopup from '../ScenarioPopup';

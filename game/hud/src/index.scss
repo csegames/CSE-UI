@@ -41,7 +41,7 @@ body {
   @import './components/DevUI/index';
   // widgets
   @import './widgets/Building/index';
-  @import './widgets/Social/index';
+  @import './widgets/HUDFullScreen/components/Social/index';
   // external scss
   @import '@csegames/cu-xmpp-chat/lib/index.scss';
   .chat-window {

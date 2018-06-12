@@ -15,7 +15,8 @@ import {
   getActiveWarbandID,
   quitWarband,
   kickFromWarbandByEntityID,
- } from './warband';
+} from './warband';
+import { inviteToTrade } from './trade';
 
 // BASIC MANAGEMENT
 
@@ -93,6 +94,7 @@ export function getSelfMenuItems({ id, name }: ContextMenuState) {
 
 export function getFriendlyTargetMenuItems({ id, name }: ContextMenuState) {
   const items: MenuItem[] = [
+    { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
   ];
 
   if (hasActiveWarband() && !isEntityIDInWarband(id)) {

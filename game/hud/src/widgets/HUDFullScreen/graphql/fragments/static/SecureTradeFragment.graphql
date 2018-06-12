@@ -1,0 +1,11 @@
+fragment SecureTrade on SecureTradeStatus {
+  myState
+  myItems {
+    ...InventoryItem
+  }
+  theirEntityID
+  theirState
+  theirItems {
+    ...InventoryItem
+  }
+}

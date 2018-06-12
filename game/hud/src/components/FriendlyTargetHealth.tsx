@@ -7,13 +7,15 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
+import { client, PlayerState } from '@csegames/camelot-unchained';
 import HealthBar from './HealthBar';
 import { showFriendlyTargetContextMenu } from '../services/actions/contextMenu';
 
 const Container = styled('div')`
+  cursor: pointer;
+  pointer-events: all;
   transform: scale(0.45);
   -webkit-transform: scale(0.45);
   margin-left: -125px;
@@ -26,6 +28,7 @@ export interface PlayerHealthProps {
 
 export interface PlayerHealthState {
   playerState: PlayerState;
+  showContextMenu: boolean;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
@@ -33,6 +36,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     super(props);
     this.state = {
       playerState: null,
+      showContextMenu: false,
     };
     this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
@@ -52,7 +56,8 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return !isEqualPlayerState(nextState.playerState, this.state.playerState);
+    return !isEqualPlayerState(nextState.playerState, this.state.playerState) ||
+      nextState.showContextMenu !== this.state.showContextMenu;
   }
 
   private setPlayerState = (playerState: PlayerState) => {

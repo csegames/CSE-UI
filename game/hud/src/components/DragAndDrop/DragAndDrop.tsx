@@ -111,6 +111,9 @@ export interface DraggableOptions {
 
   // Disables drag. If dropTarget is set to true, acts as only a drop zone.
   disableDrag?: boolean;
+
+  // Sets container of D&D item to flex 1 width 100% and height 100%
+  fullDimensions?: boolean;
 }
 
 export interface DraggableData {
@@ -162,6 +165,8 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         return (
           <div
             ref={ref => this.ref = ref}
+            id={'drag-and-drop-item-container'}
+            style={this.options.fullDimensions ? { flex: '1', width: '100%', height: '100%' } : {}}
             onMouseMove={this.onMouseEnter}
             onMouseLeave={this.onMouseLeave}
             onMouseDown={this.onMouseDown}
@@ -246,30 +251,33 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private initPosition = () => {
-        this.initTimeout = setTimeout(() => {
-          if (this.mounted) {
-            if (!this.dimensions) {
-              this.dimensions = this.ref && this.ref.getBoundingClientRect();
-            }
-            if (this.dimensions) {
-              const { top, left, width, height } = this.dimensions;
-              const windowWidth = window.innerWidth;
-              const windowHeight = window.innerHeight;
-              if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
-                this.initialPosition = { top, left, width, height };
-                if (!this.state.draggingPosition ||
-                    this.state.draggingPosition.width !== width ||
-                    this.state.draggingPosition.height !== height) {
-                  this.setState({ draggingPosition: this.initialPosition });
+        // Only initialize position if the item actually does anything with dragging/dropping
+        if (!this.options.disableDrag || this.options.dropTarget) {
+          this.initTimeout = setTimeout(() => {
+            if (this.mounted) {
+              if (!this.dimensions) {
+                this.dimensions = this.ref && this.ref.getBoundingClientRect();
+              }
+              if (this.dimensions) {
+                const { top, left, width, height } = this.dimensions;
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
+                  this.initialPosition = { top, left, width, height };
+                  if (!this.state.draggingPosition ||
+                      this.state.draggingPosition.width !== width ||
+                      this.state.draggingPosition.height !== height) {
+                    this.setState({ draggingPosition: this.initialPosition });
+                  }
                 }
               }
             }
-          }
-        }, 50);
+          }, 50);
+        }
       }
 
       private onMouseEnter = (e: any) => {
-        if (this.mounted && !this.state.dragItemIsOver) {
+        if (this.mounted && this.options.dropTarget && !this.state.dragItemIsOver) {
           const dragStore = getDragStore();
           if (dragStore.isDragging && !_.isEqual(dragStore.draggableRef, this.draggableRef) &&
               dragStore.dataKey === this.options.dataKey) {
@@ -290,7 +298,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private onMouseLeave = (e: any) => {
-        if (this.mounted && this.state.dragItemIsOver) {
+        if (this.mounted && this.options.dropTarget && this.state.dragItemIsOver) {
           this.setState({ dragItemIsOver: false });
 
           setDragStoreInfo({ dropTargetRef: null });

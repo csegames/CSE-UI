@@ -208,6 +208,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (this.props.subscription) {
       const result = subscribe(this.subscription, this.subscriptionHandler,
         this.subscriptionOptions, this.subscriptionError);
+      this.subscriptionID = result.id;
+      this.subscriptionManager = result.subscriptions;
     }
   }
 
@@ -222,6 +224,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (this.pollingTimeout) {
       clearTimeout(this.pollingTimeout);
       this.pollingTimeout = null;
+    }
+
+    if (this.subscriptionManager) {
+      this.subscriptionManager.stop(this.subscriptionID);
     }
   }
 

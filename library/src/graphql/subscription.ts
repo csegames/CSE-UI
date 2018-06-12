@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as _ from 'lodash';
 import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
@@ -93,6 +94,16 @@ export const defaultSubscription: Subscription = {
   variables: null,
 };
 
+function getFrameIdentifier(frame: OperationMessage | string) {
+  const { id, type, payload } = typeof frame === 'string' ? JSON.parse(frame) : frame;
+  const operationName = payload && payload.operationName;
+  if (operationName) {
+    return `${type}${operationName}`;
+  } else {
+    return `${type}${id}`;
+  }
+}
+
 export class SubscriptionManager {
   private socket: ReconnectingWebSocket;
   private idCounter = 0;
@@ -144,9 +155,9 @@ export class SubscriptionManager {
   }
 
   public stop = (id: string) => {
-    if (this.debug) {
+    // if (this.debug) {
       this.log(`stop => ${id}`);
-    }
+    // }
 
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
@@ -179,7 +190,17 @@ export class SubscriptionManager {
     }
     switch (op.type) {
       case GQL_CONNECTION_ACK: {
-        Object.values(this.subscriptions).forEach(s => this.send(s.start));
+        // Use lodash for version
+        _.values(this.subscriptions).forEach(s => {
+          // Check to see if the message has already been added to the messageQueue
+          const inMessageQueue = _.findIndex(this.messageQueue, (message: string) => {
+            const messageIdentifier = getFrameIdentifier(message);
+            return getFrameIdentifier(message) === getFrameIdentifier(s.start);
+          }) !== -1;
+          if (!inMessageQueue) {
+            this.send(s.start);
+          }
+        });
         break;
       }
       case GQL_DATA: {

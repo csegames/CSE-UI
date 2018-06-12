@@ -81,22 +81,6 @@ export default {
           hideClientControlledUI();
         },
       },
-      {
-        name: 'character',
-        tooltip: 'Character',
-        iconClass: 'fa-user',
-        icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'character');
-          hideClientControlledUI();
-        },
-      },
       // {
       //   name: 'social',
       //   tooltip: 'Social',
@@ -189,7 +173,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'inventory');
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
         },
       },
       {
@@ -204,7 +189,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'equippedgear');
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
         },
       },
       {

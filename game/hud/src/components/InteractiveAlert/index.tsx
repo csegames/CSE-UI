@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
@@ -13,7 +14,7 @@ import { remove } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
 
 import { query, QueryData } from './graphql/query';
 import { subscription, SubscriptionData } from './graphql/subscription';
-import { TradeAlertView, handleNewTradeAlert } from './TradeAlert';
+import { TradeAlertView, handleNewTradeAlert, removeTradeInvite } from './TradeAlert';
 import { GroupAlertView, handleNewGroupAlert } from './GroupAlert';
 
 const Container = styled('div')`
@@ -42,33 +43,48 @@ export class InteractiveAlertView extends React.Component<Props, State> {
 
   public render() {
     return (
-      <Container>
-      {
-        this.state.alerts.map((alert) => {
-          switch (alert.category) {
-            case 'Trade': return <TradeAlertView alert={alert as TradeAlert} remove={this.removeAlert} />;
-            case 'Group': return <GroupAlertView alert={alert as GroupAlert} remove={this.removeAlert} />;
-          }
-          return null;
-        })
-      }
       <GraphQL
         query={query}
         onQueryResult={this.handleQueryResult}
         subscription={subscription}
         subscriptionHandler={this.handleSubscription}
-      />
-      </Container>
+      >
+        {() =>
+        <Container>
+          {!_.isEmpty(this.state.alerts) ? (
+            this.state.alerts.map((a, i) => {
+              console.log(a);
+              switch (a.category) {
+                case 'Trade': {
+                  return <TradeAlertView key={i} alert={a as TradeAlert} remove={this.removeAlert} />;
+                }
+                case 'Group': {
+                  return <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />;
+                }
+              }
+              return null;
+            })
+          ) : null}
+          </Container>
+        }
+      </GraphQL>
     );
   }
 
   private removeAlert = (alert: IInteractiveAlert) => {
-    this.setState((state) => {
-      return {
-        ...state,
-        alerts: remove(state.alerts, alert),
-      };
-    });
+    let alerts = [...this.state.alerts];
+    switch (alert.category) {
+      case 'Trade': {
+        alerts = removeTradeInvite(this.state.alerts, alert as TradeAlert).alerts;
+        break;
+      }
+
+      default: {
+        alerts = remove(alerts, alert);
+        break;
+      }
+    }
+    this.setState({ alerts });
   }
 
   private handleQueryResult = (result: GraphQLResult<QueryData>) => {
@@ -88,13 +104,12 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     if (alert) {
       switch (alert.category) {
         case 'Trade':
-          handleNewTradeAlert(this, alert as TradeAlert);
+          this.setState(handleNewTradeAlert(this.state.alerts, alert as TradeAlert));
           break;
         case 'Group':
           handleNewGroupAlert(this, alert as GroupAlert);
           break;
       }
     }
-    return data;
   }
 }

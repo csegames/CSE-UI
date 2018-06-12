@@ -6,56 +6,48 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, client, webAPI } from '@csegames/camelot-unchained';
 import { IInteractiveAlert, TradeAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
-import { removeWhere } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
-import { InteractiveAlertView } from './index';
 
 // Utility Functions
-function removeTradeInvite(ia: InteractiveAlertView, toRemove: TradeAlert) {
-  ia.setState((state) => {
-    const result = removeWhere<IInteractiveAlert>(state.alerts.slice(), (a) => {
-      return a.category === 'Trade' && (a as TradeAlert).otherEntityID === toRemove.otherEntityID;
-    });
-    return {
-      ...state,
-      alerts: result.result,
-    };
+export function removeTradeInvite(alertsList: IInteractiveAlert[], toRemove: TradeAlert) {
+  const alerts = _.filter([...alertsList], a => {
+    return !(a.category === 'Trade' && (a as TradeAlert).otherName === toRemove.otherName);
   });
+  return {
+    alerts,
+  }
 }
 
 function openTradeWindow() {
-  events.fire('hudnav--navigate', 'trade-left', true);
+  events.fire('hudnav--navigate', 'trade', true);
 }
 
-export function handleNewTradeAlert(ia: InteractiveAlertView, alert: TradeAlert) {
+export function handleNewTradeAlert(alertsList: IInteractiveAlert[], alert: TradeAlert) {
+  const alerts: IInteractiveAlert[] = [...alertsList];
   switch (alert.kind) {
     case 'NewInvite': {
-      ia.setState((state) => {
-        const alerts = state.alerts.slice();
-        alerts.push(alert);
-        return {
-          ...state,
-          alerts,
-        };
-      });
-      return;
+      alerts.push(alert);
+      return {
+        alerts,
+      };
     }
 
     case 'InviteRevoked': {
-      removeTradeInvite(ia, alert);
+      removeTradeInvite(alerts, alert);
       return;
     }
 
     case 'InviteAccepted': {
-      removeTradeInvite(ia, alert);
+      removeTradeInvite(alerts, alert);
       openTradeWindow();
       return;
     }
 
     case 'InviteDeclined': {
-      removeTradeInvite(ia, alert);
+      removeTradeInvite(alerts, alert);
       return;
     }
 
@@ -109,7 +101,17 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     );
   }
 
-  private onAccept = async () => {
+  private onAccept = () => {
+    this.props.remove(this.props.alert);
+    this.makeAcceptRequest();
+  }
+  
+  private onDecline = () => {
+    this.props.remove(this.props.alert);
+    this.makeDeclineRequest();
+  }
+
+  private makeAcceptRequest = async () => {
     const { alert } = this.props;
     try {
       const res = await webAPI.SecureTradeAPI.AcceptInvite(
@@ -134,12 +136,9 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     } catch (e) {
       console.error('There was an unhandled error');
     }
-
-    // remove this alert from our ui
-    this.props.remove(alert);
   }
 
-  private onDecline = async () => {
+  private makeDeclineRequest = async () => {
     const { alert } = this.props;
     try {
       const res = await webAPI.SecureTradeAPI.RejectInvite(
@@ -149,6 +148,8 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
         client.characterID,
         alert.otherEntityID,
       );
+      // remove this alert from our ui
+      this.props.remove(alert);
       if (!res.ok) {
         const data = JSON.parse(res.data);
         if (data.FieldCodes && data.FieldCodes.length > 0) {
@@ -161,8 +162,5 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     } catch (e) {
       console.error('There was an unhandled error');
     }
-
-    // remove this alert from our ui
-    this.props.remove(alert);
   }
 }

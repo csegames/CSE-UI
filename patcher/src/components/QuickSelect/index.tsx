@@ -49,7 +49,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
     return(
       <div
         className={`QuickSelect ${this.props.containerClass || ''}`}
-        style={this.state.showList ? { zIndex: '1000' } : {}}>
+        style={this.state.showList ? { zIndex: 1000 } : {}}>
         <div
           className={`QuickSelect__outside ${this.state.showList ? '' : 'QuickSelect__outside--hidden'}`}
           onClick={(e) => {
