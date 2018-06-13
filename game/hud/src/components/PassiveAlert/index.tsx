@@ -57,10 +57,6 @@ export interface State {
 }
 
 class PassiveAlert extends React.Component<Props, State> {
-  public static defaultProps = {
-    fadeTimeSeconds: 3
-  };
-
   constructor(props: Props) {
     super(props);
     this.state = {
