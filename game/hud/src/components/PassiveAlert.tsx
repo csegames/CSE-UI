@@ -11,16 +11,9 @@ import styled, { keyframes } from 'react-emotion';
 const fadeTime = 3000;
 const maxNumAlerts = 5;
 
-const randomMessages = [
-  'You can\'t do that yet.',
-  'Out of range.',
-  'Target too close.',
-  'Can\'t attack that target.'
-];
-
 const fadeOut = keyframes`
-  from { opacity :1; }
-  to { opacity :0; }
+  from { -webkit-opacity :1; }
+  to { -webkit-opacity :0; }
 `;
 
 const PassiveAlertContainer = styled('div')`
@@ -40,6 +33,8 @@ const PassiveAlertItem = styled('li')`
   font-weight: medium;
   font-size: 13px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+  -webkit-animation: ${fadeOut} 500ms ease-in-out;
+  -webkit-animation-delay: ${fadeTime - 500}ms;
   animation: ${fadeOut} 500ms ease-in-out;
   animation-delay: ${fadeTime - 500}ms;
 `;
@@ -57,6 +52,7 @@ export interface State {
 }
 
 class PassiveAlert extends React.Component<Props, State> {
+  private passiveAlertListener: any;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -66,31 +62,28 @@ class PassiveAlert extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div>
-        <button onClick={() => this.testEventFire()}>Send event</button>
-        <PassiveAlertContainer>
-          <ul>
-            {this.state.alerts.map((passiveAlertMessage: Alert) =>
-              <PassiveAlertItem key={passiveAlertMessage.id}>
-                {passiveAlertMessage.message}
-              </PassiveAlertItem>)
-            }
-          </ul>
-        </PassiveAlertContainer>
-      </div>
+      <PassiveAlertContainer>
+        <ul>
+          {this.state.alerts.map((passiveAlertMessage: Alert) =>
+            <PassiveAlertItem key={passiveAlertMessage.id}>
+              {passiveAlertMessage.message}
+            </PassiveAlertItem>)
+          }
+        </ul>
+      </PassiveAlertContainer>
     );
   }
 
   public componentDidMount() {
-    events.on('passivealert--newmessage', this.addAlertMessage);
+    this.passiveAlertListener = events.on('passivealert--newmessage', this.addAlertMessage);
   }
 
-  private testEventFire = () => {
-    events.fire('passivealert--newmessage', randomMessages[Math.floor(Math.random() * (3+1))], true);
+  public componentWillUnmount() {
+    events.off(this.passiveAlertListener);
   }
 
   private removeAlertById = (id: string) => {
-    const tmpAlertArr = this.state.alerts.filter(alert => alert.id !== id)
+    const tmpAlertArr = this.state.alerts.filter(alert => alert.id !== id);
     this.setState({
       alerts: tmpAlertArr
     });
@@ -106,13 +99,16 @@ class PassiveAlert extends React.Component<Props, State> {
 
   private addAlertMessage = (message: string) => {
     const id = Math.random().toString().slice(2, 11);
-    this.setState({ alerts: [{ id, message }, ...this.state.alerts]});
+    this.setState({ alerts: [{ id, message: id }, ...this.state.alerts]});
+
+    // Set timer to remove the item by id
+    setTimeout(() => {
+      this.removeAlertById(id);
+    }, fadeTime);
+
+    // If the maximum of alerts is reached, remove the last item
     if (this.state.alerts.length >= maxNumAlerts) {
       this.removeLastAlert();
-    } else {
-      setTimeout(() => {
-        this.removeAlertById(id);
-      }, fadeTime);
     }
   }
 }
