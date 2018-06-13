@@ -37,6 +37,7 @@ import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { Tooltip } from '../Tooltip';
+import PassiveAlert from '../PassiveAlert';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -86,7 +87,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
 
         <InteractiveAlertView />
-
         <DevUI />
         <ScenarioPopup />
 
@@ -97,6 +97,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
         <ContextMenu />
         <Tooltip />
+        <PassiveAlert />
         <Watermark />
       </div>
     );
