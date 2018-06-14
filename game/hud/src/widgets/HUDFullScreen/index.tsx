@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { StyleDeclaration } from 'aphrodite';
 import { events, client, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -19,12 +18,12 @@ import TradeWindow from './components/TradeWindow';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { InventoryItemFragment } from '../../gqlInterfaces';
 
-export interface HUDFullScreenStyle extends StyleDeclaration {
+export interface HUDFullScreenStyle {
   hudFullScreen: React.CSSProperties;
   navigationContainer: React.CSSProperties;
   contentContainer: React.CSSProperties;
-  navTab: React.CSSProperties;
-  activeNavTab: React.CSSProperties;
+  navTab: any;
+  activeNavTab: any;
 }
 
 const Container = styled('div')`

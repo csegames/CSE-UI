@@ -5,21 +5,41 @@
  */
 
 import * as React from 'react';
-
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
-import styled from 'react-emotion';
+import * as classNames from 'classnames';
+import styled, { css } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
 import { colors } from '../../../lib/constants';
 
-export interface StatListItemStyles extends StyleDeclaration {
+export interface StatListItemStyles {
   statsListItem: React.CSSProperties;
   lightListItem: React.CSSProperties;
   statText: React.CSSProperties;
   statValue: React.CSSProperties;
   doesNotMatchSearch: React.CSSProperties;
 }
+
+const StatsListItem = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  cursor: default;
+  padding: 0 5px;
+  height: 25px;
+  background-color: rgba(55, 47, 45, 0.5);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  &:hover {
+    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  }
+`;
+
+const LightListItem = css`
+  background-color: ${colors.filterBackgroundColor};
+`;
 
 const StatText = styled('p')`
   display: inline-block;
@@ -30,45 +50,10 @@ const StatText = styled('p')`
   color: ${(props: any) => props.color ? props.color : utils.lightenColor(colors.filterBackgroundColor, 150)};
 `;
 
-const defaultStatListItemStyle: StatListItemStyles = {
-  statsListItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    position: 'relative',
-    cursor: 'default',
-    padding: '0 5px',
-    height: '25px',
-    backgroundColor: `rgba(55, 47, 45, 0.5)`,
-    boxShadow: 'inset 0px 0px 3px rgba(0,0,0,0.5)',
-    opacity: 0.8,
-    borderRight: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    ':hover': {
-      backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
-    },
-  },
-
-  lightListItem: {
-    backgroundColor: colors.filterBackgroundColor,
-  },
-
-  statText: {
-    display: 'inline-block',
-    fontSize: 16,
-    padding: 0,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    textOverflow: 'ellipsis',
-  },
-
-  statValue: {
-
-  },
-
-  doesNotMatchSearch: {
-    opacity: 0.2,
-    backgroundColor: `rgba(0,0,0,0.2)`,
-  },
-};
+const DoesNotMatchSearch = css`
+  opacity: 0.2;
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 
 export interface StatListItemProps {
   styles?: Partial<StatListItemStyles>;
@@ -82,8 +67,6 @@ export interface StatListItemProps {
 
 class StatListItem extends React.Component<StatListItemProps, {}> {
   public render() {
-    const ss = StyleSheet.create(defaultStatListItemStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const lightItem = this.props.index % 2 === 0;
     const searchIncludes = this.searchIncludesListItem(
       this.props.sectionTitle,
@@ -92,28 +75,19 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
     );
 
     return (
-      <div
-        className={css(
-          ss.statsListItem,
-          custom.statsListItem,
-          lightItem && ss.lightListItem,
-          lightItem && custom.lightListItem,
-          !searchIncludes && ss.doesNotMatchSearch,
-          !searchIncludes && custom.doesNotMatchSearch,
+      <StatsListItem
+        className={classNames(
+          lightItem ? LightListItem : '',
+          !searchIncludes ? DoesNotMatchSearch : '',
         )}>
         <StatText color={this.props.colorOfName}>{prettifyText(this.props.statName)}</StatText>
         {typeof this.props.statValue === 'function' ?
           this.props.statValue() :
           typeof this.props.statValue === 'number' || typeof this.props.statValue === 'string' ?
-            <span className={css(
-              ss.statText, custom.statText,
-              ss.statValue, custom.statValue,
-            )}>
-              {Number(Number(this.props.statValue).toFixed(2))}
-            </span> :
+            <StatText>{Number(Number(this.props.statValue).toFixed(2))}</StatText> :
             null
         }
-      </div>
+      </StatsListItem>
     );
   }
 

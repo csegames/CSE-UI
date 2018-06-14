@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
@@ -18,74 +18,56 @@ import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
-export interface PaperDollStyle extends StyleDeclaration {
-  paperDoll: React.CSSProperties;
-  paperdollContainer: React.CSSProperties;
-  backgroundImage: React.CSSProperties;
-  characterInfoContainer: React.CSSProperties;
-  itemSlotContainer: React.CSSProperties;
-  manIcon: React.CSSProperties;
-}
+const Container = styled('div')`
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+`;
 
-export const defaultPaperDollStyle: PaperDollStyle = {
-  paperDoll: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'stretch',
-    width: '100%',
-    height: '100%',
-  },
+const PaperdollContainer = styled('div')`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
 
-  paperdollContainer: {
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-  },
-  
-  backgroundImage: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
+const BackgroundImage = styled('img')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
 
-  characterInfoContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    flex: '0 0 auto',
-  },
+const CharacterInfoContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+`;
 
-  itemSlotContainer: {
-    display: 'flex',
-    margin: '5px',
-    cursor: 'pointer',
-  },
-
-  manIcon: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    margin: 'auto',
-    width: 'auto',
-    height: '650px',
-  },
-};
+const ManIcon = styled('img')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: auto;
+  height: 650px;
+`;
 
 export interface EquippedItemsMap {
   [slotName: string]: any;
 }
 
 export interface PaperDollProps extends GraphQLInjectedProps<any> {
-  styles?: Partial<PaperDollStyle>;
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
   equippedItems: EquippedItem[];
@@ -106,33 +88,31 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     };
   }
   public render() {
-    const ss = StyleSheet.create({ ...defaultPaperDollStyle, ...this.props.styles });
     const myOrder = this.props.graphql.data && this.props.graphql.data.myOrder;
     const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
 
     return (
-      <div className={css(ss.paperDoll)}>
-        <img className={css(ss.backgroundImage)} src={'images/paperdollbg.png'} />
-        <div className={css(ss.paperdollContainer)}>
-          <img
-            className={css(ss.manIcon)}
+      <Container>
+        <BackgroundImage src={'images/paperdollbg.png'} />
+        <PaperdollContainer>
+          <ManIcon
             src={myCharacter && paperDollIcons[`${myCharacter.gender}${myCharacter.race}`]}
           />
-          <div className={css(ss.characterInfoContainer)}>
+          <CharacterInfoContainer>
             <CharacterAndOrderName
               characterName={myCharacter && myCharacter.name}
               orderName={myOrder ? myOrder.name : ''}
             />
             <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
-          </div>
+          </CharacterInfoContainer>
           <EquipmentSlots
             inventoryItems={this.props.inventoryItems}
             equippedItems={this.props.equippedItems}
             onEquippedItemsChange={this.props.onEquippedItemsChange}
             myTradeState={this.props.myTradeState}
           />
-        </div>
-      </div>
+        </PaperdollContainer>
+      </Container>
     );
   }
 

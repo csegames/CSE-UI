@@ -19,11 +19,10 @@ const Container = styled('div')`
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  justify-content: center
+  justify-content: center;
   padding: 10px 10px 5px 10px;
   background: url(images/inventory/bag-bg.png);
   background-size: cover;
-  z-index: 10;
   &:before {
     content: '';
     position: absolute;

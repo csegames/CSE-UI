@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import InlineInputEdit, { InlineInputEditStyle, defaultInlineInputEditStyle } from './InlineInputEdit';
+import InlineInputEdit, { InlineInputEditStyle } from './InlineInputEdit';
 
 export interface InlineNumberInputEditProps {
   value: number;

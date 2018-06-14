@@ -106,7 +106,7 @@ export class ReconnectingWebSocket {
     this.socket.onmessage = this.message;
     this.socket.onclose = this.closed;
     this.socket.onopen = this.open;
-    this.connectTimeoutHandle = setTimeout(() => {
+    this.connectTimeoutHandle = window.setTimeout(() => {
       if (!this.isOpen) {
         this.socket.close();
         this.reconnect();

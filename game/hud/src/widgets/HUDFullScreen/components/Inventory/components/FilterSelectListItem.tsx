@@ -5,39 +5,32 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { CUIcon, utils } from '@csegames/camelot-unchained';
+import styled from 'react-emotion';
 import { colors, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
 
-export interface FilterSelectListItemStyle extends StyleDeclaration {
-  FilterSelectListItem: React.CSSProperties;
-}
-
-export const defaultFilterSelectListItemStyle: FilterSelectListItemStyle = {
-  FilterSelectListItem: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: '0 0 auto',
-    fontSize: '18px',
-    lineHeight: '18px',
-    padding: '2px 5px',
-    color: utils.lightenColor(colors.filterBackgroundColor, 100),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
-    ':hover': {
-      backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
-      cursor: 'pointer',
-    },
-    ':hover *': {
-      cursor: 'pointer',
-    },
-  },
-};
+const Container = styled('div')`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 18px;
+  padding: 2px 5px;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  &:hover {
+    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+    cursor: pointer;
+  }
+  &:hover * {
+    cursor: pointer;
+  }
+`;
 
 export interface FilterSelectListItemProps {
-  styles?: Partial<FilterSelectListItemStyle>;
   filterButton: FilterButtonInfo;
   active: boolean;
   onActivated: (filterButton: FilterButtonInfo) => void;
@@ -55,17 +48,14 @@ export class FilterSelectListItem extends React.Component<FilterSelectListItemPr
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultFilterSelectListItemStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div onClick={this.onCheckChange} className={css(ss.FilterSelectListItem, custom.FilterSelectListItem)}>
+      <Container onClick={this.onCheckChange}>
         <div>
           <input type='checkbox' checked={this.props.active} onChange={() => {}} />
           <label>{prettifyText(this.props.filterButton.name)}</label>
         </div>
         <CUIcon icon={this.props.filterButton.icon} iconStyle={{ position: 'relative' }} />
-      </div>
+      </Container>
     );
   }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css, StyleSheet } from 'aphrodite';
+import styled from 'react-emotion';
 
 // @ts-ignore
 import { client, webAPI, events } from '@csegames/camelot-unchained';
@@ -54,25 +54,20 @@ export interface RootPage extends Partial<Page> {
   showMaximizeButton?: boolean;
 }
 
-
-const buttonStyle: {
-  Button: React.CSSProperties;
-} = {
-  Button: {
-    cursor: 'pointer',
-    backgroundColor: '#555',
-    display: 'inline-block',
-    padding: '5px 15px',
-    margin: '5px',
-    textAlign: 'center',
-    ':hover': {
-      backgroundColor: '#777',
-    },
-    ':active': {
-      backgroundColor: '#999',
-    },
+const Button = styled('div')`
+  cursor: pointer;
+  background-color: #555;
+  display: inline-block;
+  padding: 5px 15px;
+  margin: 5px;
+  text-align: center;
+  &:hover {
+    background-color: #777;
+  }
+  &:active {
+    background-color: #999;
   },
-};
+`;
 
 function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface }) {
   // @ts-ignore: no-unused-locals
@@ -98,9 +93,8 @@ function parseTemplate(template: any,
 
 class DevUIButton extends React.PureComponent<Button> {
   public render() {
-    const style = StyleSheet.create(buttonStyle);
     return (
-      <div className={css(style.Button)}
+      <Button
           onClick={() => {
             if (this.props.command) {
               client.SendSlashCommand(this.props.command);
@@ -114,29 +108,24 @@ class DevUIButton extends React.PureComponent<Button> {
             }
           }}>
         {this.props.title}
-      </div>
+      </Button>
     );
   }
 }
 
-const contentStyle: {
-  Content: React.CSSProperties;
-} = {
-  Content: {
-    flex: '1 1 auto',
-  },
-};
+const Content = styled('div')`
+  flex: 1;
+`;
 
 class DevUIContent extends React.PureComponent<Partial<Page>> {
   public render() {
-    const style = StyleSheet.create(contentStyle);
     return (
-      <div className={css(style.Content)}>
+      <Content>
         {typeof this.props.content === 'string' ?
           <DevUIStringContent {...this.props} /> :
           <DevUIObjectContent {...this.props} />
         }
-      </div>
+      </Content>
     );
   }
 }
@@ -207,39 +196,34 @@ class DevUIObjectContent extends React.PureComponent<Partial<Page>> {
   }
 }
 
-const pageStyle: {
-  Page: React.CSSProperties;
-  pages: React.CSSProperties;
-  title: React.CSSProperties;
-} = {
-  Page: {
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '10px',
-    justifyContent: 'space-between',
-    color: '#ececec',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-  },
-  pages: {
-    flex: '1 1 auto',
-    display: 'flex',
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: '1.5em',
-    margin: '5px 0px',
-  },
-};
+const Page = styled('div')`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: space-between;
+  color: #ECECEC;
+  user-select: none;
+  -webkit-user-select: none;
+`;
+
+const Pages = styled('div')`
+  flex: 1;
+  display: flex;
+`;
+
+const Title = styled('div')`
+  font-weight: 700;
+  font-size: 1.5em;
+  margin: 5px 0;
+`;
 
 class DevUIPage extends React.PureComponent<Partial<Page>> {
   private tabPanel: any;
   public render(): JSX.Element {
-    const style = StyleSheet.create(pageStyle);
     return (
-      <div className={css(style.Page)}>
-        {this.props.title && <div className={css(style.title)}>{this.props.title}</div>}
+      <Page>
+        {this.props.title && <Title>{this.props.title}</Title>}
         {this.props.content &&
           <DevUIContent
             content={this.props.content}
@@ -249,7 +233,7 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
         }
         {this.props.buttons && <div>{this.props.buttons.map(b => <DevUIButton key={b.title} {...b} />)}</div>}
         {this.props.pages && (
-          <div className={css(style.pages)}>
+          <Pages>
             <TabPanel
               defaultTabIndex={this.props.activeTabIndex}
               ref={ref => this.tabPanel = ref}
@@ -291,8 +275,8 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
                   },
                 };
               })} />
-          </div>)}
-      </div>
+          </Pages>)}
+      </Page>
     );
   }
 

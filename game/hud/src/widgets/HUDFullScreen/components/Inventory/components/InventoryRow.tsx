@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import styled from 'react-emotion';
 import { ql } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -15,7 +15,6 @@ import { DrawerCurrentStats } from './Containers/Drawer';
 import CraftingContainer from './Containers/CraftingContainer';
 import ItemContainer from './Containers/ItemContainer';
 import { ContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
-import { colors } from '../../../lib/constants';
 import { hasViewContentPermissions } from '../../../lib/utils';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, SlotType } from '../../../lib/itemInterfaces';
@@ -23,28 +22,16 @@ import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlI
 
 declare const toastr: any;
 
-export interface InventoryRowStyle extends StyleDeclaration {
-  InventoryRow: React.CSSProperties;
-  openContainerItemSlot: React.CSSProperties;
-  row: React.CSSProperties;
-}
+const Container = styled('div')`
+  margin: auto;
+`;
 
-export const defaultInventoryRowStyle: InventoryRowStyle = {
-  InventoryRow: {
-    margin: 'auto',
-  },
-
-  openContainerItemSlot: {
-    border: `1px solid ${colors.inventoryContainerBackgroundColor}`,
-  },
-
-  row: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '5px',
-    flexWrap: 'wrap',
-  },
-};
+const Row = styled('div')`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+  flex-wrap: wrap;
+`;
 
 export interface ContainerInfo {
   // Containers can only go 1 container deep.
@@ -66,7 +53,6 @@ export interface InventoryRowProps {
   bodyWidth: number;
   myTradeState: SecureTradeState;
 
-  styles?: Partial<InventoryRowStyle>;
   containerID?: string[];
   drawerID?: string;
   equippedItems?: EquippedItemFragment[];
@@ -93,12 +79,10 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultInventoryRowStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { containersOpen } = this.state;
     return (
-      <div className={css(ss.InventoryRow, custom.InventoryRow)}>
-        <div className={css(ss.row, custom.row)}>
+      <Container>
+        <Row>
           {this.props.items.map((slotDef, index) => {
             const containerIsOpen = _.findIndex(containersOpen, _container => _container.itemIndex === index) !== -1;
             return (
@@ -120,13 +104,13 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
               />
             );
           })}
-        </div>
+        </Row>
         {containersOpen.length > 0 ? [...containersOpen].reverse().map((container) => {
           const itemDef = this.props.items[container.itemIndex];
           // Is a crafting container
           if (itemDef && itemDef.slotType === SlotType.CraftingContainer) {
             return (
-              <div key={container.itemIndex} className={css(ss.row, custom.row)}>
+              <Row key={container.itemIndex}>
                 <CraftingContainer
                   item={itemDef}
                   searchValue={''}
@@ -147,14 +131,14 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
                   myTradeState={this.props.myTradeState}
                 />
-              </div>
+              </Row>
             );
           }
 
           // Is an item container
           if (itemDef && itemDef.slotType === SlotType.Container) {
             return (
-              <div key={container.itemIndex} className={css(ss.row, custom.row)}>
+              <Row key={container.itemIndex}>
                 <ItemContainer
                   item={itemDef}
                   searchValue={''}
@@ -174,11 +158,11 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   bodyWidth={this.props.bodyWidth}
                   myTradeState={this.props.myTradeState}
                 />
-              </div>
+              </Row>
             );
           }
         }) : null}
-      </div>
+      </Container>
     );
   }
 

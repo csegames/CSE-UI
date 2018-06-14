@@ -7,10 +7,9 @@
 import * as React from 'react';
 import * as events  from '@csegames/camelot-unchained/lib/events';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
-import Trait, { TraitStyle } from './Trait';
+import Trait from './Trait';
 
 const Boon = (props: {
-  styles?: Partial<TraitStyle>;
   trait: BanesAndBoonsInfo;
   traits: TraitMap;
   allPrerequisites: TraitIdMap;
@@ -35,7 +34,6 @@ const Boon = (props: {
     allPrerequisites,
     allExclusives,
     addedBoons,
-    styles,
     maxPoints,
     boonPoints,
   } = props;
@@ -45,11 +43,7 @@ const Boon = (props: {
       events.fire('play-sound', 'boon-select');
     }
   };
-  const boonStyles = Object.assign(
-    {},
-    styles,
-    { trait: { marginRight: '10px', ...styles && styles.trait || {} } },
-  );
+
   return (
     <Trait
       type='Boon'
@@ -63,7 +57,6 @@ const Boon = (props: {
       allExclusives={allExclusives}
       addedTraits={addedBoons}
       primaryColor='#41ACE9'
-      styles={boonStyles}
       maxPoints={maxPoints}
       totalPoints={boonPoints}
       shouldBeDefault={props.shouldBeDefault}

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import styled, { css } from 'react-emotion';
 import { ql, utils, Tooltip } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
@@ -14,82 +14,58 @@ import StatListItem from '../StatListItem';
 import { colors, characterBodyPartIcons } from '../../../../lib/constants';
 import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 
-export interface BodyPartSectionStyles extends StyleDeclaration {
-  bodyPartSection: React.CSSProperties;
-  bodyPartSectionHeader: React.CSSProperties;
-  bodyPartTitle: React.CSSProperties;
-  statContainer: React.CSSProperties;
-  statListSection: React.CSSProperties;
-  doesNotMatchSearch: React.CSSProperties;
+const Container = styled('div')`
+  border-top: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+`;
 
-  listHeader: React.CSSProperties;
-  statValueContainer: React.CSSProperties;
-  valueText: React.CSSProperties;
-  listHeaderText: React.CSSProperties;
-}
+const SectionHeader = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  font-size: 18px;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+`;
 
-const defaultBodyPartSectionStyle: BodyPartSectionStyles = {
-  bodyPartSection: {
-    borderTop: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-  },
+const Title = styled('span')`
+  margin-left: 5px;
+`;
 
-  bodyPartSectionHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '5px',
-    fontSize: 18,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-  },
+const DoesNotMatchSearch = css`
+  opacity: 0.2;
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 
-  bodyPartTitle: {
-    marginLeft: '5px',
-  },
+const ListHeader = styled('div')`
+  display: flex;
+  justify-content: flex-end;
+  color: #C57C30;
+  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 10)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  padding-right: 5px;
+  cursor: default;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+`;
 
-  statContainer: {
-    display: 'flex',
-  },
+const StatValueContainer = styled('div')`
+  display: flex;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  font-size: 16px;
+`;
 
-  statListSection: {
-    flex: 1,
-  },
+const ValueText = styled('div')`
+  width: 40px;
+  border-left: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  margin-left: 5px;
+  text-align: right;
+`;
 
-  doesNotMatchSearch: {
-    opacity: 0.2,
-    backgroundColor: `rgba(0,0,0,0.2)`,
-  },
-
-  listHeader: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    color: '#C57C30',
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 10),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderRight: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    paddingRight: '5px',
-    cursor: 'default',
-    boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.5)',
-  },
-
-  statValueContainer: {
-    display: 'flex',
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    fontSize: 16,
-  },
-
-  valueText: {
-    width: '40px',
-    borderLeft: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    marginLeft: '5px',
-    textAlign: 'right',
-  },
-
-  listHeaderText: {
-    width: '40px',
-    marginLeft: '5px',
-    textAlign: 'right',
-  },
+const ListHeaderText: React.CSSProperties = {
+  width: '40px',
+  marginLeft: '5px',
+  textAlign: 'right',
 };
 
 export interface DefenseStatInterface {
@@ -108,16 +84,12 @@ export interface BodyPartStatInterface {
 }
 
 export interface BodyPartSectionProps {
-  styles?: Partial<BodyPartSectionStyles>;
   bodyPartStats: BodyPartStatInterface;
   name: string;
   searchValue: string;
 }
 
 const BodyPartSection = (props: BodyPartSectionProps) => {
-  const ss = StyleSheet.create(defaultBodyPartSectionStyle);
-  const custom = StyleSheet.create(props.styles || {});
-
   // Prettify name to match what is displayed to user
   const searchIncludes = props.searchValue !== '' ? searchIncludesSection(props.searchValue, props.name) : true;
 
@@ -142,22 +114,20 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
   const bodyPartName = props.name === '_BODY_BEGIN' ? 'Torso' : props.name;
 
   return (
-    <div className={css(ss.bodyPartSection, custom.bodyPartSection)}>
-      <header className={css(
-        ss.bodyPartSectionHeader,
-        custom.bodyPartSectionHeader,
-        !searchIncludes && ss.doesNotMatchSearch,
-        !searchIncludes && custom.doesNotMatchSearch,
-      )}>
+    <Container>
+      <SectionHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
         <div>
-          <span className={characterBodyPartIcons[bodyPartName]} style={{
-            transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-            webkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-          }} />
-          <span className={css(ss.bodyPartTitle, custom.bodyPartTitle)}>{prettifyText(bodyPartName)}</span>
+          <span
+            className={characterBodyPartIcons[bodyPartName]}
+            style={{
+              transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+              WebkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+            }}
+          />
+          <Title>{prettifyText(bodyPartName)}</Title>
         </div>
         <div>Armor Class: {Number(props.bodyPartStats['armorClass'].toFixed(2))}</div>
-      </header>
+      </SectionHeader>
       <GridStats
         statArray={statsArray}
         searchValue={props.searchValue}
@@ -165,19 +135,14 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
         howManyGrids={3}
         shouldRenderEmptyListItems={true}
         renderHeaderItem={() => (
-          <div className={css(
-            ss.listHeader,
-            custom.listHeader,
-            !searchIncludes && ss.doesNotMatchSearch,
-            !searchIncludes && custom.doesNotMatchSearch)}
-          >
-            <Tooltip content='Resistances' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+          <ListHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
+            <Tooltip content='Resistances' styles={{ Tooltip: ListHeaderText }}>
               R
             </Tooltip>
-            <Tooltip content='Mitigations' styles={{ Tooltip: defaultBodyPartSectionStyle.listHeaderText }}>
+            <Tooltip content='Mitigations' styles={{ Tooltip: ListHeaderText }}>
               M
             </Tooltip>
-          </div>
+          </ListHeader>
         )}
         renderListItem={(item: DefenseStatInterface, index: number) => {
           return (
@@ -187,18 +152,16 @@ const BodyPartSection = (props: BodyPartSectionProps) => {
               statName={item.name}
               sectionTitle={props.name}
               statValue={() => typeof item.mitigationsValue === 'number' && typeof item.resistancesValue === 'number' ?
-                <div className={css(ss.statValueContainer, custom.statValueContainer)}>
+                <StatValueContainer>
                   <div>{Math.round(item.resistancesValue * 100)}%</div>
-                  <div className={css(ss.valueText, custom.valueText)}>
-                    {Math.round(item.mitigationsValue * 100)}%
-                  </div>
-                </div> : null
+                  <ValueText>{Math.round(item.mitigationsValue * 100)}%</ValueText>
+                </StatValueContainer> : null
               }
             />
           );
         }}
       />
-    </div>
+    </Container>
   );
 };
 

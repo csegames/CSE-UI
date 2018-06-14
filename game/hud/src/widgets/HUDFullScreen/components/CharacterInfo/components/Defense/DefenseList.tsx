@@ -5,43 +5,26 @@
  */
 
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-import { ql, utils } from '@csegames/camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import * as events from '@csegames/camelot-unchained/lib/events';
+import { ql } from '@csegames/camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import styled from 'react-emotion';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
-import { colors } from '../../../../lib/constants';
 import eventNames from '../../../../lib/eventNames';
 
-export interface DefenseListStyle extends StyleDeclaration {
-  DefenseList: React.CSSProperties;
-  statSectionTitle: React.CSSProperties;
-}
-
-const defaultDefenseListStyle: DefenseListStyle = {
-  DefenseList: {
-    flex: 1,
-    height: '100%',
-    backgroundColor: 'rgba(75, 67, 65, 0.2)',
-  },
-
-  statSectionTitle: {
-    textAlign: 'center',
-    padding: '5px',
-    fontSize: 24,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
-  },
-};
+const Container = styled('div')`
+  flex: 1;
+  height: 100%;
+  background-color: rgba(75, 67, 65, 0.2);
+`;
 
 // This is the highest order data structure. We use an array of StatInfoSection's
 // to break up the ArmorStats (resistances, mitigations) into sections.
 
 export interface DefenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
-  styles?: Partial<DefenseListStyle>;
 }
 
 export interface DefenseListState {
@@ -49,8 +32,6 @@ export interface DefenseListState {
 }
 
 class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
-  private ss: DefenseListStyle;
-  private custom: Partial<DefenseListStyle>;
   private updateCharacterStatsListener: number;
 
   constructor(props: DefenseListProps) {
@@ -61,13 +42,11 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   }
 
   public render() {
-    const ss = this.ss =  StyleSheet.create(defaultDefenseListStyle);
-    const custom = this.custom = StyleSheet.create(this.props.styles || {});
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
     if (myEquippedItems && myEquippedItems.armorStats) {
       return (
-        <div className={css(ss.DefenseList, custom.DefenseList)}>
+        <Container>
           <StatListContainer
             searchValue={this.state.searchValue}
             onSearchChange={this.onSearchChange}
@@ -85,7 +64,7 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
               })}
             </div>
           )} />
-        </div>
+        </Container>
       );
     } else {
       return (

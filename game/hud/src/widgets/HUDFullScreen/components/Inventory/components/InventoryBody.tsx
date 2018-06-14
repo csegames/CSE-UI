@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 import { client, webAPI, Vec3F, Euler3f } from '@csegames/camelot-unchained';
 import { withGraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import * as events from '@csegames/camelot-unchained/lib/events';
@@ -23,7 +23,7 @@ import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
 
-export interface InventoryBodyStyles extends StyleDeclaration {
+export interface InventoryBodyStyles {
   inventoryBody: React.CSSProperties;
   inventoryBodyInnerContainer: React.CSSProperties;
   inventoryContent: React.CSSProperties;
@@ -33,77 +33,63 @@ export interface InventoryBodyStyles extends StyleDeclaration {
   refreshButton: React.CSSProperties;
 }
 
-export const defaultInventoryBodyStyles: InventoryBodyStyles = {
-  inventoryBody: {
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: '15px',
-  },
+const Container = styled('div')`
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+`;
 
-  inventoryBodyInnerContainer: {
-    flex: '1 1 auto',
-    webkitBackfaceVisibility: 'hidden',
-    overflow: 'auto',
-    '::-webkit-scrollbar': {
-      width: '5px',
-    },
-    position: 'relative',
-  },
+const InnerContainer = styled('div')`
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  -webkit-backface-visibility: hidden;
+  &::-webkit-scrollbar {
+    width: 15px;
+  }
+`;
 
-  inventoryContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    webkitBackfaceVisibility: 'hidden',
-    alignItems: 'center',
-    position: 'relative',
-  },
+const Content = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  -webkit-backface-visibility: hidden;
+  align-items: center;
+  position: relative;
+`;
 
-  backgroundImg: {
-    position: 'absolute',
-    pointerEvents: 'none',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    zIndex: 0,
-  },
+const RefreshContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  pointer-events: all;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
 
-  refreshContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'fixed',
-    pointerEvents: 'all',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    zIndex: 999,
-  },
+const RefreshTitle = styled('div')`
+  font-size: 35px;
+`;
 
-  refreshTitle: {
-    fontSize: '35px',
-  },
-
-  refreshButton: {
-    width: '50px',
-    height: '50px',
-    fontSize: '35px',
-    color: 'white',
-    cursor: 'pointer',
-    ':hover': {
-      color: 'rgba(255,255,255,0.7)',
-    },
-  },
-};
+const RefreshButton = styled('div')`
+  width: 50px;
+  height: 50px;
+  font-size: 35px;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+`;
 
 export interface InventoryBodyProps extends base.InventoryBaseWithQLProps {
   styles?: Partial<InventoryBodyStyles>;
@@ -137,8 +123,6 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
     };
   }
   public render() {
-    const ss = StyleSheet.create(defaultInventoryBodyStyles);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { rows, rowData } = base.createRowElements({
       state: this.state,
       props: this.props,
@@ -153,26 +137,23 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.state.heightOfBody));
     const { graphql } = this.props;
     return (
-      <div className={css(ss.inventoryBody, custom.inventoryBody)}>
+      <Container>
         {!this.props.graphql.data &&
-          <div className={css(ss.refreshContainer, custom.refreshContainer)}>
-            {!this.props.graphql.loading && <div className={css(ss.refreshTitle, custom.refreshTitle)}>
-              Could not retrieve items. Click to try again.
-            </div>}
-            <div
-              className={css(ss.refreshButton, custom.refreshButton)}
-              onClick={this.refetch}>
-                {this.props.graphql.loading ?
-                  <i className='fa fa-circle-o-notch loading-spin' /> : <i className='fa fa-refresh' />}
-            </div>
-          </div>
+          <RefreshContainer>
+            {!this.props.graphql.loading &&
+              <RefreshTitle>
+                Could not retrieve items. Click to try again.
+              </RefreshTitle>
+            }
+            <RefreshButton onClick={this.refetch}>
+              {this.props.graphql.loading ?
+                <i className='fa fa-circle-o-notch loading-spin' /> : <i className='fa fa-refresh' />}
+            </RefreshButton>
+          </RefreshContainer>
         }
-        <div ref={r => this.bodyRef = r} id='inventory-scroll-container'
-            className={css(ss.inventoryBodyInnerContainer, custom.inventoryBodyInnerContainer)}>
-          <div className={css(ss.inventoryContent, custom.inventoryContent)}>
-            {rows}
-          </div>
-        </div>
+        <InnerContainer innerRef={(r: HTMLDivElement) => this.bodyRef = r} id='inventory-scroll-container'>
+          <Content>{rows}</Content>
+        </InnerContainer>
         <InventoryFooter
           onAddRowClick={this.addRowOfSlots}
           onRemoveRowClick={() => this.removeRowOfSlots(rowData)}
@@ -183,7 +164,7 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
           itemCount={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.itemCount : 0}
           totalMass={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.totalMass : 0}
         />
-      </div>
+      </Container>
     );
   }
 
@@ -345,11 +326,11 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 
   private removeRowOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState((state, props) => base.removeRowOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState((state) => base.removeRowOfSlots(state, rowData, this.state.heightOfBody));
   }
 
   private pruneRowsOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState((state, props) => base.pruneRowsOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState((state) => base.pruneRowsOfSlots(state, rowData, this.state.heightOfBody));
   }
 
   private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {

@@ -222,7 +222,7 @@ export class SubscriptionManager {
       }
       case GQL_CONNECTION_KEEP_ALIVE: {
         clearTimeout(this.keepAliveTimeoutHandler);
-        this.keepAliveTimeoutHandler = setTimeout(() => {
+        this.keepAliveTimeoutHandler = window.setTimeout(() => {
           this.socket.refresh();
         }, 5000);
         this.send({

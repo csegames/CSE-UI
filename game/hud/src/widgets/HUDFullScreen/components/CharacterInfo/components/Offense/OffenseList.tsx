@@ -7,10 +7,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
+import styled from 'react-emotion';
 import { ql, utils } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import DescriptionItem from '../DescriptionItem';
@@ -21,37 +21,23 @@ import { colors } from '../../../../lib/constants';
 import { prettifyText } from '../../../../lib/utils';
 import eventNames from '../../../../lib/eventNames';
 
-export interface OffenseListStyles extends StyleDeclaration {
-  OffenseList: React.CSSProperties;
-  sectionTitleContainer: React.CSSProperties;
-  sectionTitle: React.CSSProperties;
-  doesNotMatchSearch: React.CSSProperties;
-}
+const Container = styled('div')`
+  flex: 1;
+  height: 100%;
+`;
 
-const defaultOffenseListStyle: OffenseListStyles = {
-  OffenseList: {
-    flex: 1,
-    height: '100%',
-  },
+const SectionTitleContainer = styled('header')`
+  display: flex;
+  padding: 5px;
+  font-size: 18px;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 15)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+`;
 
-  sectionTitleContainer: {
-    display: 'flex',
-    padding: '5px',
-    fontSize: 18,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 15),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-  },
-
-  sectionTitle: {
-    marginLeft: '5px',
-  },
-
-  doesNotMatchSearch: {
-    opacity: 0.2,
-    backgroundColor: `rgba(0,0,0,0.2)`,
-  },
-};
+const SectionTitle = styled('span')`
+  margin-left: 5px;
+`;
 
 const defaultStats = {
   piercingDamage: 0,
@@ -78,7 +64,6 @@ const defaultStats = {
 };
 
 export interface OffenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
-  styles?: Partial<OffenseListStyles>;
 }
 
 export interface OffenseListState {
@@ -97,14 +82,12 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultOffenseListStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
     if (myEquippedItems && myEquippedItems.items) {
       const weaponSlotArray = this.getWeaponSlotArray().sort((a, b) => a.name.localeCompare(b.name));
       return (
-        <div className={css(ss.OffenseList, custom.OffenseList)}>
+        <Container>
           <StatListContainer
             searchValue={this.state.searchValue}
             onSearchChange={this.onSearchChange}
@@ -112,14 +95,10 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
               <div>
                 {weaponSlotArray.map((weaponSlot: any, i: number) => (
                   <div key={i}>
-                    <header
-                      className={css(
-                      ss.sectionTitleContainer,
-                      custom.sectionTitleContainer,
-                    )}>
-                      <div className={'icon-filter-weapons'} />
-                      <span className={css(ss.sectionTitle, custom.sectioTitle)}>{prettifyText(weaponSlot.name)}</span>
-                    </header>
+                    <SectionTitleContainer>
+                      <span className={'icon-filter-weapons'} />
+                      <SectionTitle>{prettifyText(weaponSlot.name)}</SectionTitle>
+                    </SectionTitleContainer>
                     <GridStats
                       statArray={weaponSlot.statArray}
                       searchValue={this.state.searchValue}
@@ -145,7 +124,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
               </div>
             )}
           />
-        </div>
+        </Container>
       );
     } else {
       return (

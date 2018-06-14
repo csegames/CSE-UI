@@ -6,10 +6,9 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-
-export interface TabPanelStyle extends StyleDeclaration {
+export interface TabPanelStyle {
   tabPanel: React.CSSProperties;
   tabs: React.CSSProperties;
   tab: React.CSSProperties;
@@ -19,54 +18,52 @@ export interface TabPanelStyle extends StyleDeclaration {
   contentHidden: React.CSSProperties;
 }
 
-export const defaultTabPanelStyle: TabPanelStyle = {
-  tabPanel: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignContent: 'stretch',
-  },
+const Container = styled('div')`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+`;
 
-  tabs: {
-    flex: '0 0 auto',
-    display: 'flex',
-  },
+const Tabs = styled('div')`
+  flex: 0;
+  display: flex;
+`;
 
-  tab: {
-    flex: '0 0 auto',
-    '-webkit-user-select': 'none',
-    cursor: 'pointer',
-  },
+const Tab = styled('div')`
+  flex: 0;
+  -webkit-user-select: none;
+  cursor: pointer
+`;
 
-  activeTab: {
-    flex: '0 0 auto',
-    '-webkit-user-select': 'none',
-  },
+const ActiveTab = styled('div')`
+  flex: 0;
+  -webkit-user-select: none;
+`;
 
-  contentContainer: {
-    flex: '1',
-    position: 'relative',
-    height: 0,
-    overflow: 'hidden',
-  },
+const ContentContainer = styled('div')`
+  flex: 1;
+  position: relative;
+  height: 0;
+  overflow: hidden;
+`;
 
-  content: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    height: '100%',
-    width: '100%',
-  },
+const Content = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+`;
 
-  contentHidden: {
-    visibility: 'hidden',
-    '-webkit-user-select': 'none',
-    pointerEvents: 'none',
-  },
-};
+const ContentHidden = styled('div')`
+  visibility: hidden;
+  -webkit-user-select: none;
+  pointer-events: none;
+`;
 
 export interface TabItem {
   name?: string;
@@ -126,18 +123,17 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
   }
 
   public render() {
-    const style = StyleSheet.create(defaultTabPanelStyle);
-    const customStyle = StyleSheet.create(this.props.styles || {});
+    const customStyles = this.props.styles || {};
 
     return (
-      <div className={css(style.tabPanel, customStyle.tabPanel)}>
-        {this.renderTabs(style, customStyle)}
-        <div className={css(style.contentContainer, customStyle.contentContainer)}>
+      <Container style={customStyles.tabPanel}>
+        {this.renderTabs(customStyles)}
+        <ContentContainer style={customStyles.contentContainer}>
           {this.props.alwaysRenderContent
-            ? this.renderAllContent(style, customStyle)
-            : this.renderActiveContent(style, customStyle)}
-        </div>
-      </div>
+            ? this.renderAllContent(customStyles)
+            : this.renderActiveContent(customStyles)}
+        </ContentContainer>
+      </Container>
     );
   }
 
@@ -149,55 +145,46 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     this.didMount = false;
   }
 
-  private renderTabs = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderTabs = (customStyle: Partial<TabPanelStyle>) => {
     return (
-      <div className={css(style.tabs, customStyle.tabs)}>
+      <Tabs style={customStyle.tabs}>
         {this.props.tabs.map((tabItem, index) => {
           const selected = index === this.activeTabIndex;
           return (
             <div
-              className={css(
-                style.tab,
-                customStyle.tab,
-                selected && style.activeTab,
-                selected && customStyle.activeTab,
-              )}
-              onClick={() => this.selectIndex(index, tabItem.name)}
-              key={index}>
-              <tabItem.tab.render active={selected} {...tabItem.tab.props} />
+              key={index}
+              style={selected ? { ...customStyle.tab, ...customStyle.activeTab } : customStyle.tab}
+              onClick={() => this.selectIndex(index, tabItem.name)}>
+                <tabItem.tab.render active={selected} {...tabItem.tab.props} />
             </div>
           );
         })}
-      </div>
+      </Tabs>
     );
   }
 
   // Renders active content visibly, renders inactive content hidden
-  private renderAllContent = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderAllContent = (customStyles: Partial<TabPanelStyle>) => {
     return this.props.content.map((content, index) => {
       const active = this.props.tabs[this.activeTabIndex].rendersContent === content.name;
       return (
-        <div key={index}
-            className={css(
-              style.content,
-              customStyle.content,
-              !active && style.contentHidden,
-              !active && customStyle.contentHidden,
-            )}>
-          <content.content.render {...content.content.props} />
-        </div>
+        <Content
+          key={index}
+          style={!active ? { ...customStyles.content, ...customStyles.contentHidden } : customStyles.content}>
+            <content.content.render {...content.content.props} />
+        </Content>
       );
     });
   }
 
   // Render only the active content.
-  private renderActiveContent = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderActiveContent = (customStyles: Partial<TabPanelStyle>) => {
     const activeItem = _.find(this.props.content, content =>
       this.props.tabs[this.activeTabIndex].rendersContent === content.name);
     return (
-      <div className={css(style.content, customStyle.content)}>
+      <Content style={customStyles.content}>
         <activeItem.content.render {...activeItem.content.props} />
-      </div>
+      </Content>
     );
   }
 

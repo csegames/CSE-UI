@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
 import { Item, EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
@@ -47,16 +46,6 @@ import {
 } from '../../lib/utils';
 import { InventorySlotItemDef, CraftingSlotItemDef, ContainerSlotItemDef, SlotType } from '../../lib/itemInterfaces';
 
-export interface InventoryBaseStyle extends StyleDeclaration {
-  InventoryBase: React.CSSProperties;
-}
-
-export const defaultInventoryBaseStyle: InventoryBaseStyle = {
-  InventoryBase: {
-
-  },
-};
-
 export interface ContainerPermissionDef {
   userPermission: number;
   isParent: boolean;
@@ -74,7 +63,6 @@ export interface SlotNumberToItem {
 }
 
 export interface InventoryBaseProps {
-  styles?: Partial<InventoryBaseStyle>;
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
@@ -88,7 +76,6 @@ export interface InventoryBaseProps {
 }
 
 export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
-  styles?: Partial<InventoryBaseStyle>;
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
@@ -155,10 +142,8 @@ export interface InventoryBaseState {
 let stackGroupCounter = 0;
 
 export function renderSlots(state: InventoryBaseState, props: InventoryBaseProps) {
-  const ss = StyleSheet.create(defaultInventoryBaseStyle);
-  const custom = StyleSheet.create(props.styles || {});
   return (
-    <div className={css(ss.InventoryBase, custom.InventoryBase)}>
+    <div>
       Hello World!
     </div>
   );
@@ -1255,7 +1240,7 @@ export function removeRowOfSlots(state: InventoryBaseState,
       return {
         ...state,
         rowCount: state.rowCount - 1,
-        slotcount: state.slotCount - state.slotsPerRow,
+        slotCount: state.slotCount - state.slotsPerRow,
       };
     }
   }

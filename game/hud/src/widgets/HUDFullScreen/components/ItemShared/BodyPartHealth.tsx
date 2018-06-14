@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import * as classNames from 'classnames';
+import styled, { css } from 'react-emotion';
 import { characterBodyPartIcons } from '../../lib/constants';
 
-export interface BodyPartHealthStyles extends StyleDeclaration {
+export interface BodyPartHealthStyles {
   healthInfoContainer: React.CSSProperties;
   healthCompContainer: React.CSSProperties;
   healthCompInfo: React.CSSProperties;
@@ -20,46 +20,36 @@ export interface BodyPartHealthStyles extends StyleDeclaration {
   flipIcon: React.CSSProperties;
 }
 
-export const defaultBodyPartHealthStyle: BodyPartHealthStyles = {
-  healthInfoContainer: {
-    display: 'flex',
-  },
+const HealthInfoContainer = styled('div')`
+  display: flex;
+`;
 
-  healthCompContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: '25px',
-  },
+const HealthCompContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  margin-right: 25px;
+`;
 
-  healthCompInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
+const HealthCompInfo = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
 
-  healthCompPrimaryText: {
-    margin: '0 5px 0 0',
-    padding: 0,
-    color: '#6F7581',
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
+const HealthCompSecondaryText = styled('div')`
+  margin: 0;
+  padding: 0;
+  color: #6F7581;
+  font-size: 12px;
+`;
 
-  healthCompSecondaryText: {
-    margin: 0,
-    padding: 0,
-    color: '#6F7581',
-    fontSize: '12px',
-  },
+const Icon = styled('div')`
+  font-size: 24px;
+`;
 
-  icon: {
-    fontSize: '24px',
-  },
-
-  flipIcon: {
-    transform: 'scaleX(-1)',
-    webkitTransform: 'scaleX(-1)',
-  },
-};
+const FlipIcon = css`
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+`;
 
 export interface MaxHealthPartsInfo {
   [bodyPart: string]: number;
@@ -90,32 +80,23 @@ export const healthBodyParts = {
 
 class BodyPartHealth extends React.Component<BodyPartHealthProps, {}> {
   public render() {
-    const ss = StyleSheet.create(defaultBodyPartHealthStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div className={css(ss.healthInfoContainer, custom.healthInfoContainer)}>
+      <HealthInfoContainer>
         {Object.keys(healthBodyParts).map((healthComponent: string, i: number) => {
           const isRightPart = _.includes(healthComponent.toLowerCase(), 'right');
+          const name = healthComponent.substr(0).toUpperCase() + healthComponent.substr(1, healthComponent.length);
           return (
-            <div key={i} className={css(ss.healthCompContainer, custom.healthCompContainer)}>
-              <div className={`
-                ${css(
-                  ss.icon,
-                  custom.icon,
-                  isRightPart && ss.flipIcon,
-                  isRightPart && custom.flipIcon,
-                )}
-                ${characterBodyPartIcons[healthComponent]}`} />
-              <div className={css(ss.healthCompInfo, custom.healthCompInfo)}>
-                <p className={css(ss.healthCompSecondaryText, custom.healthCompSecondaryText)}>
+            <HealthCompContainer>
+              <Icon className={classNames(isRightPart ? FlipIcon : '', characterBodyPartIcons[name])} />
+              <HealthCompInfo>
+                <HealthCompSecondaryText>
                   hp {this.getMaxHealthForBodyPart(healthBodyParts[healthComponent]) || 'N/A'}
-                </p>
-              </div>
-            </div>
+                </HealthCompSecondaryText>
+              </HealthCompInfo>
+            </HealthCompContainer>
           );
         })}
-      </div>
+      </HealthInfoContainer>
     );
   }
 

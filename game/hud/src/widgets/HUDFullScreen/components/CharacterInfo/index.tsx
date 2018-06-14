@@ -21,13 +21,12 @@ export interface CharacterInfoStyle {
   tabPanelContentContainer: React.CSSProperties;
   tabPanelContent: React.CSSProperties;
   tabs: React.CSSProperties;
-  tab: React.CSSProperties;
+  tab: any;
   tabText: React.CSSProperties;
-  activeTab: React.CSSProperties;
+  activeTab: any;
 }
 
 const Container = styled('div')`
-  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;

@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import { ql, utils, webAPI, Race } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
 
@@ -24,72 +24,59 @@ const query = `
 }
 `;
 
-export interface GeneralInfoStyles extends StyleDeclaration {
-  GeneralInfo: React.CSSProperties;
-  avatarIconContainer: React.CSSProperties;
-  generalInfoHeader: React.CSSProperties;
-  characterName: React.CSSProperties;
-  characterNameText: React.CSSProperties;
-  otherInfoContainer: React.CSSProperties;
-  otherInfoText: React.CSSProperties;
-}
+const Container = styled('div')`
+  flex: 1;
+  height: 100%;
+  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 5)};
+  border: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  opacity: 0.8;
+`;
 
-const defaultGeneralInfoStyle: GeneralInfoStyles = {
-  GeneralInfo: {
-    flex: 1,
-    height: '100%',
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 5),
-    border: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    opacity: 0.8,
-  },
+const Header = styled('div')`
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
 
-  generalInfoHeader: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
+const AvatarIconContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  width: 150px;
+`;
 
-  avatarIconContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRight: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
-    width: '150px',
-  },
+const CharacterName = styled('div')`
+  flex: 1;
+  text-align: center;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+`;
 
-  characterName: {
-    flex: 1,
-    textAlign: 'center',
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
-  },
+const CharacterNameText = styled('p')`
+  font-size: 30px;
+  margin: 0;
+  padding: 0;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+`;
 
-  characterNameText: {
-    fontSize: '30px',
-    margin: 0,
-    padding: 0,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-  },
+const OtherInfoContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex: 2;
+  border-left: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+`;
 
-  otherInfoContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    flex: 2,
-    borderLeft: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
-  },
-
-  otherInfoText: {
-    fontSize: '20px',
-    margin: 0,
-    padding: 0,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-  },
-};
+const OtherInfoText = styled('p')`
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+`;
 
 export interface GeneralInfoProps {
-  styles?: Partial<GeneralInfoStyles>;
 }
 
 export interface GeneralInfoState {
@@ -105,8 +92,6 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultGeneralInfoStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     return (
       <GraphQL query={query}>
         {(graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
@@ -115,26 +100,22 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
             typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
 
           return (
-            <div className={css(ss.GeneralInfo, custom.GeneralInfo)}>
-              <div className={css(ss.generalInfoHeader, custom.generalInfoHeader)}>
-                <div className={css(ss.avatarIconContainer, custom.avatarIconContainer)}>
+            <Container>
+              <Header>
+                <AvatarIconContainer>
                   <img src={characterAvatarIcon[`${myCharacter.gender}${myCharacter.race}`]} />
-                </div>
-                <div className={css(ss.characterName, custom.characterName)}>
-                  <p className={css(ss.characterNameText, custom.characterNameText)}>{myCharacter.name}</p>
-                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>{myCharacter.faction}</p>
-                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>
-                    {myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}
-                  </p>
-                </div>
-                <div className={css(ss.otherInfoContainer, custom.otherInfoContainer)}>
+                </AvatarIconContainer>
+                <CharacterName>
+                  <CharacterNameText>{myCharacter.name}</CharacterNameText>
+                  <OtherInfoText>{myCharacter.faction}</OtherInfoText>
+                  <OtherInfoText>{myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}</OtherInfoText>
+                </CharacterName>
+                <OtherInfoContainer>
                   {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}
-                  <p className={css(ss.otherInfoText, custom.otherInfoText)}>
-                    The content of this box is TBD
-                  </p>
-                </div>
-              </div>
-            </div>
+                  <OtherInfoText>The content of this box is TBD</OtherInfoText>
+                </OtherInfoContainer>
+              </Header>
+            </Container>
           );
         }}
       </GraphQL>

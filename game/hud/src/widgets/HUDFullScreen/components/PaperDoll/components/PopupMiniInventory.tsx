@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 
 import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
-import { StyleDeclaration, css, StyleSheet } from 'aphrodite';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames, colors } from '../../../lib/constants';
@@ -21,59 +21,70 @@ const containerDimensions = {
   height: 225,
 };
 
-export interface PopupMiniInventoryStyle extends StyleDeclaration {
-  PopupMiniInventory: React.CSSProperties;
-  miniInventoryBox: React.CSSProperties;
-  headerContainer: React.CSSProperties;
-  controllerContainer: React.CSSProperties;
-  itemsContainer: React.CSSProperties;
-  itemSpacing: React.CSSProperties;
-  searchInput: React.CSSProperties;
-  slotNameText: React.CSSProperties;
-  pageNumberText: React.CSSProperties;
-  controllerButton: React.CSSProperties;
-  disabledControllerButton: React.CSSProperties;
-}
+const MiniInventoryBox = styled('div')`
+  position: fixed;
+  background: linear-gradient(rgba(74, 77, 84, 0.8), rgba(74, 77, 84, 0.4), rgba(74, 77, 84, 0.2));
+  width: ${containerDimensions.width}px;
+  height: ${containerDimensions.height}px;
+  overflow: hidden;
+  z-index: 10;
+`;
 
-export const defaultPopupMiniInventoryStyle: PopupMiniInventoryStyle = {
-  PopupMiniInventory: {
+const HeaderContainer = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+`;
 
-  },
+const ControllerContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 5px;
+  height: 15px;
+  background-color: rgba(74, 77, 84, 0.5);
+`;
 
-  miniInventoryBox: {
-    position: 'fixed',
-    background: 'linear-gradient(rgba(74, 77, 84, 0.8), rgba(74, 77, 84, 0.4), rgba(74, 77, 84, 0.2))',
-    width: `${containerDimensions.width}px`,
-    height: `${containerDimensions.height}px`,
-    overflow: 'hidden',
-    zIndex: 10,
-  },
+const ItemsContainer = styled('div')`
+  padding: 5px;
+  height: ${containerDimensions.height - 30}px;
+`;
 
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '5px',
-  },
+const ItemSpacing = styled('div')`
+  display: inline-block;
+  margin: 0.5px 2.5px;
+`;
 
-  controllerContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '2px 5px 2px',
-    height: '15px',
-    backgroundColor: 'rgba(74, 77, 84, 0.5)',
-  },
+const SlotNameText = styled('p')`
+  font-size: 18px;
+  color: #BCC1CB;
+  margin: 0;
+  padding: 0;
+`;
 
-  itemsContainer: {
-    padding: '5px',
-    height: `${containerDimensions.height - 30}px`,
-  },
+const PageNumberText = styled('p')`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  margin: 0 5px 0 0;
+`;
 
-  itemSpacing: {
-    display: 'inline-block',
-    margin: '0.5px 2.5px',
-  },
+const ControllerButton = styled('div')`
+  display: inline-block;
+  font-sizE: 15px;
+  color: ${colors.goldIcon};
+  &:active {
+    text-shadow: 2px 2px rgba(0, 0, 0, 0.9);
+  }
+`;
 
+const DisabledControllerButton = styled('div')`
+  color: white;
+`;
+
+
+export const defaultPopupMiniInventoryStyle = {
   searchInput: {
     height: '20px',
     backgroundColor: 'rgba(179, 183, 192, 0.3)',
@@ -83,34 +94,6 @@ export const defaultPopupMiniInventoryStyle: PopupMiniInventoryStyle = {
     '::-webkit-input-placeholder': {
       color: '#B7B8BC',
     },
-  },
-  slotNameText: {
-    fontSize: '18px',
-    color: '#BCC1CB',
-    margin: 0,
-    padding: 0,
-  },
-
-  pageNumberText: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    fontSize: '15px',
-    margin: '0 5px 0 0',
-  },
-
-  controllerButton: {
-    display: 'inline-block',
-    fontSize: '15px',
-    color: colors.goldIcon,
-    cursor: 'pointer',
-    ':active': {
-      textShadow: '2px 2px rgba(0,0,0,0.9)',
-    },
-  },
-
-  disabledControllerButton: {
-    color: 'white',
   },
 };
 
@@ -135,7 +118,6 @@ export enum Alignment {
 }
 
 export interface PopupMiniInventoryProps {
-  styles?: Partial<PopupMiniInventoryStyle>;
   align: Alignment;
   slotName: string;
   inventoryItems: InventoryItemFragment[];
@@ -164,9 +146,6 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultPopupMiniInventoryStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     const miniInventoryItems = _.filter(this.state.miniInventoryItems, (item) => {
       return _.includes(getItemDefinitionName(item), this.state.searchValue);
     });
@@ -191,23 +170,23 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     const pages: PageInfo<{active: boolean}>[] = arrayOfPages.map((items, index) => {
       return {
         render: () => (
-          <div className={css(ss.itemsContainer, custom.itemsContainer)}>
+          <ItemsContainer>
             {items.map((item) => {
               const gearSlots = item && _.find(item.staticDefinition.gearSlotSets, (gearSlotSet): any =>
                 _.find(gearSlotSet.gearSlots, gearSlot => gearSlot.id === this.props.slotName)).gearSlots;
               return (
-                <div key={item.id} className={css(ss.itemSpacing, custom.itemSpacing)}>
+                <ItemSpacing>
                   <PopupMiniInventorySlot item={item} gearSlots={gearSlots as any} />
-                </div>
+                </ItemSpacing>
               );
             })}
-          </div>
+          </ItemsContainer>
         ),
       };
     });
 
     return (
-      <div className={css(ss.PopupMiniInventory)}>
+      <div>
         <div
           id={this.props.slotName}
           onClick={this.toggleVisibility}
@@ -216,13 +195,12 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
           {this.props.children}
         </div>
         {this.props.visible &&
-        <div
-          className={css(ss.miniInventoryBox, custom.miniInventoryBox)}
+        <MiniInventoryBox
           style={{ top: this.state.top, left: this.state.left }}
           onMouseOver={() => this.mouseOver = true}
           onMouseLeave={() => this.mouseOver = false}>
-          <div className={css(ss.headerContainer, custom.headerContainer)}>
-            <p className={css(ss.slotNameText, custom.slotNameText)}>{displaySlotNames[this.props.slotName]}</p>
+          <HeaderContainer>
+            <SlotNameText>{displaySlotNames[this.props.slotName]}</SlotNameText>
             <Input
               placeholder={'Filter'}
               styles={{
@@ -231,36 +209,26 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
               onChange={this.onSearchChange}
               value={this.state.searchValue}
             />
-          </div>
+          </HeaderContainer>
           <PageController
             pages={pages}
             renderPageController={(state, props, onNextPageClick, onPrevPageClick) => {
               const moreNext = state.activePageIndex < pages.length - 1;
               const morePrev = state.activePageIndex > 0;
               return (
-                <div className={css(ss.controllerContainer, custom.controllerContainer)}>
-                  <div className={css(
-                    ss.controllerButton,
-                    custom.controllerButton,
-                    !morePrev && ss.disabledControllerButton,
-                    !morePrev && custom.disabledControllerButton,
-                  )}
-                  onClick={onPrevPageClick}>{'< Prev'}</div>
-                  <p className={css(ss.pageNumberText, custom.pageNumberText)}>
-                    {state.activePageIndex + 1} / {pages.length}
-                  </p>
-                  <div className={css(
-                    ss.controllerButton,
-                    custom.controllerButton,
-                    !moreNext && ss.disabledControllerButton,
-                    !moreNext && custom.disabledControllerButton,
-                  )}
-                  onClick={onNextPageClick}>{'Next >'}</div>
-                </div>
+                <ControllerContainer>
+                  <ControllerButton className={!morePrev ? DisabledControllerButton : ''} onClick={onPrevPageClick}>
+                    {'< Prev'}
+                  </ControllerButton>
+                  <PageNumberText>{state.activePageIndex + 1} / {pages.length}</PageNumberText>
+                  <ControllerButton className={!moreNext ? DisabledControllerButton : ''} onClick={onNextPageClick}>
+                    {'Next >'}
+                  </ControllerButton>
+                </ControllerContainer>
               );
             }}
           />
-        </div>
+        </MiniInventoryBox>
         }
       </div>
     );

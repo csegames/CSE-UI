@@ -5,9 +5,8 @@
  */
 
 import * as React from 'react';
-
+import styled, { css } from 'react-emotion';
 import { Tooltip, events } from '@csegames/camelot-unchained';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
 import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
 import { getEquippedDataTransfer } from '../../../lib/utils';
@@ -16,7 +15,7 @@ import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
-export interface EquippedItemSlotStyle extends StyleDeclaration {
+export interface EquippedItemSlotStyle {
   equippedItemSlot: React.CSSProperties;
   itemIcon: React.CSSProperties;
   popupMiniInventoryVisible: React.CSSProperties;
@@ -24,38 +23,22 @@ export interface EquippedItemSlotStyle extends StyleDeclaration {
   highlightSlotContainer: React.CSSProperties;
 }
 
-export const defaultEquippedItemSlotStyle: EquippedItemSlotStyle = {
-  equippedItemSlot: {
-    width: '70px',
-    height: '70px',
-    border: '1px solid #AAACB1',
-    cursor: 'pointer',
-    fontSize: '55px',
-    lineHeight: '55px',
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    textAlign: 'center',
-  },
+const Container = styled('div')`
+  width: 70px;
+  height: 70px;
+  border: 1px solid #AAACB1;
+  cursor: pointer;
+  font-size: 55px;
+  line-height: 55px;
+  background-color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+`;
 
-  itemIcon: {
-    width: '70px',
-    height: '70px',
-  },
-
-  popupMiniInventoryVisible: {
-    border: '1px solid yellow',
-  },
-
-  itemContainer: {
-    position: 'relative',
-  },
-
-  highlightSlotContainer: {
-    border: '1px solid yellow',
-  },
-};
+const HighlightSlotContainer = css`
+  border: 1px solid yellow;
+`;
 
 export interface EquippedItemSlotProps {
-  styles?: Partial<EquippedItemSlotStyle>;
   tooltipDisabled: boolean;
   providedEquippedItem: EquippedItemFragment;
   slot: { slotName: string, openingSide: Alignment };
@@ -81,8 +64,6 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   }
 
   public render() {
-    const style = StyleSheet.create(defaultEquippedItemSlotStyle);
-    const customStyle = StyleSheet.create(this.props.styles || {});
     const equippedItem = this.props.providedEquippedItem;
     const showTooltip = !this.props.tooltipDisabled &&
                         !this.state.itemMenuVisible &&
@@ -98,13 +79,8 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
           instructions='Right click to unequip'
         />
       }>
-          <div
-            className={css(
-              style.equippedItemSlot,
-              customStyle.equippedItemSlot,
-              this.state.itemMenuVisible && style.highlightSlotContainer,
-              this.state.itemMenuVisible && customStyle.highlightSlotContainer,
-            )}
+          <Container
+            className={this.state.itemMenuVisible ? HighlightSlotContainer : ''}
             onMouseOver={this.onMouseOverItemSlot}
             onMouseLeave={this.onMouseLeave}
             onContextMenu={this.unequipItem}>
@@ -113,7 +89,7 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
                 slotName={this.props.slot.slotName}
                 equippedItem={this.props.providedEquippedItem}
               />
-          </div>
+          </Container>
       </Tooltip>
     );
   }

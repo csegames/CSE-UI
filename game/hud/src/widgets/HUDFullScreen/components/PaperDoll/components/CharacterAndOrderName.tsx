@@ -5,33 +5,25 @@
  */
 
 import * as React from 'react';
-import { css, StyleDeclaration, StyleSheet } from 'aphrodite';
+import styled from 'react-emotion';
 
-export interface OrderNameStyles extends StyleDeclaration {
-  characterAndOrderName: React.CSSProperties;
-}
-
-export const defaultOrderNameStyles: OrderNameStyles = {
-  characterAndOrderName: {
-    margin: 0,
-    padding: 0,
-    color: '#6F7581',
-    fontSize: '26px',
-    fontWeight: 'bold',
-  },
-};
+const Text = styled('p')`
+  margin: 0;
+  padding: 0;
+  color: #6F7581;
+  font-size: 26px;
+  font-weight: bold;
+`;
 
 export interface CharacterNameProps {
-  styles?: Partial<OrderNameStyles>;
   characterName: string;
   orderName: string;
 }
 
 const CharacterAndOrderName = (props: CharacterNameProps) => {
-  const ss = StyleSheet.create({ ...defaultOrderNameStyles, ...props.styles });
   const { characterName, orderName } = props;
   return (
-    <p className={css(ss.characterAndOrderName)}>{characterName} {orderName && `<${orderName}>`}</p>
+    <Text>{characterName} {orderName && `<${orderName}>`}</Text>
   );
 };
 

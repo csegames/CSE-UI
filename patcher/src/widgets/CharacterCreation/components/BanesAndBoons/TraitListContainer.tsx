@@ -93,8 +93,6 @@ export interface TraitListContainerProps {
   onSelectRankBane: (bane: BanesAndBoonsInfo) => void;
   onCancelRankBoon: (boon: BanesAndBoonsInfo) => void;
   onCancelRankBane: (bane: BanesAndBoonsInfo) => void;
-  boonStyles: any;
-  baneStyles: any;
 }
 
 class TraitListContainer extends React.Component<TraitListContainerProps> {
@@ -130,7 +128,6 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
                       allExclusives={this.props.allExclusives}
                       onSelectRankBoon={this.props.onSelectRankBoon}
                       onCancelRankBoon={this.props.onCancelRankBoon}
-                      styles={this.props.boonStyles}
                       maxPoints={this.props.maxPoints}
                     /> :
                       <Bane
@@ -144,7 +141,6 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
                         allExclusives={this.props.allExclusives}
                         onSelectRankBane={this.props.onSelectRankBane}
                         onCancelRankBane={this.props.onCancelRankBane}
-                        styles={this.props.baneStyles}
                         maxPoints={this.props.maxPoints}
                       />
                   }

@@ -1,4 +1,4 @@
-/*
+  /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -19,41 +19,38 @@
  * 
  */
 import * as React from 'react';
-import * as _ from 'lodash';
+import styled, { css } from 'react-emotion';
 
 import { Quadrant, windowQuadrant } from '../utils';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-export const defaultToolTipStyle: ToolTipStyle = {
-  Tooltip: {
-    display: 'inline-block',
-    position: 'relative',
-  },
+const Container = styled('div')`
+  display: inline-block;
+  position: relative;
+`;
 
-  tooltip: {
-    position: 'fixed',
-    backgroundColor: '#444',
-    border: '1px solid #4A4A4A',
-    color: '#ececec',
-    padding: '2px 5px',
-    maxWidth: '200px',
-    zIndex: 10,
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  },
+const TooltipView = styled('div')`
+  position: fixed;
+  background-color: #444;
+  border: 1px solid #4A4A4A;
+  color: #ECECEC;
+  padding: 2px 5px;
+  max-width: 200px;
+  z-index: 10;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+`;
 
-  tooltipFixed: {
-    position: 'fixed',
-    backgroundColor: '#444',
-    border: '1px solid #4A4A4A',
-    color: '#ececec',
-    padding: '2px 5px',
-    maxWidth: '200px',
-    zIndex: 10,
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  },
-};
+const TooltipFixedView = styled('div')`
+  position: fixed;
+  background-color: #444;
+  border: 1px solid #4A4A4A;
+  color: #ECECEC;
+  padding: 2px 5px;
+  max-width: 200px;
+  z-index: 10;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+`;
 
-export interface ToolTipStyle extends StyleDeclaration {
+export interface ToolTipStyle {
   Tooltip: React.CSSProperties;
   tooltip: React.CSSProperties;
   tooltipFixed: React.CSSProperties;
@@ -105,13 +102,12 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultToolTipStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
+    const customStyles = this.props.styles || {};
     const showTooltip = typeof this.props.show !== 'undefined' ? this.props.show : this.state.show;
 
     const fixed = this.props.fixedMode || false;
     return (
-      <div className={css(ss.Tooltip, custom.Tooltip)}>
+      <Container style={customStyles.Tooltip}>
         <div
           ref={ref => this.childRef = ref}
           onMouseEnter={this.onMouseEnter}
@@ -121,17 +117,22 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         </div>
         {
           showTooltip ?
-            <div
-              ref={ref => this.tooltipRef = ref}
-              className={css(!fixed && ss.tooltip,
-                !fixed && custom.tooltip,
-                fixed && ss.tooltipFixed,
-                fixed && custom.tooltipFixed)}>
-              {typeof this.props.content === 'string' ? this.props.content :
-                <this.props.content {...this.props.contentProps} />}
-            </div> : null
+            !fixed ?
+              <TooltipView
+                innerRef={ref => this.tooltipRef = ref}
+                style={customStyles.tooltip}>
+                  {typeof this.props.content === 'string' ? this.props.content :
+                    <this.props.content {...this.props.contentProps} />
+                  }
+              </TooltipView> :
+              <TooltipFixedView
+                innerRef={ref => this.tooltipRef = ref}
+                style={customStyles.tooltipFixed}>
+                    {typeof this.props.content === 'string' ? this.props.content :
+                  <this.props.content {...this.props.contentProps} />}
+              </TooltipFixedView> : null
         }
-      </div>
+      </Container>
     );
   }
 

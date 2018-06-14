@@ -926,7 +926,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightLight),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShoulderLeftLight: {
@@ -938,7 +938,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightLight),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   HandLeftLight: {
@@ -950,7 +950,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightLight),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShinsLight: {
@@ -1003,7 +1003,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightMedium),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShoulderLeftMedium: {
@@ -1015,7 +1015,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightMedium),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   HandLeftMedium: {
@@ -1027,7 +1027,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightMedium),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShinsMedium: {
@@ -1080,7 +1080,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightHeavy),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShoulderLeftHeavy: {
@@ -1092,7 +1092,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightHeavy),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   HandLeftHeavy: {
@@ -1104,7 +1104,7 @@ export const inventoryFilterButtons: {
     filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightHeavy),
     style: {
       transform: 'scaleX(-1)',
-      webkitTransform: 'scaleX(-1)',
+      WebkitTransform: 'scaleX(-1)',
     },
   },
   ShinsHeavy: {

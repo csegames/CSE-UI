@@ -6,33 +6,33 @@
 
 import * as React from 'react';
 import { utils, Input } from '@csegames/camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
 import { colors } from '../../../lib/constants';
 
-export interface StatListContainerStyles extends StyleDeclaration {
+export interface StatListContainerStyles {
   StatListContainer: React.CSSProperties;
   statListContainerContent: React.CSSProperties;
   searchInput: React.CSSProperties;
 }
 
-const defaultStatListContainerStyle: StatListContainerStyles = {
-  StatListContainer: {
-    flex: 1,
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    borderLeft: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderRight: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderBottom: `2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-  },
+const Container = styled('div')`
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  border-left: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-right: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-bottom: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+`;
 
-  statListContainerContent: {
-    flex: 1,
-    overflow: 'auto',
-  },
+const StatListContainerContent = styled('div')`
+  flex: 1;
+  overflow: auto;
+  height: calc(100% - 42px);
+`;
 
-  searchInput: {
+const InputStyle = {
+  input: {
     fontSize: '20px',
   },
 };
@@ -45,22 +45,16 @@ export interface StatListContainerProps {
 }
 
 const StatListContainer = (props: StatListContainerProps) => {
-  const ss = StyleSheet.create(defaultStatListContainerStyle);
-  const custom = StyleSheet.create(props.styles || {});
   return (
-    <div className={css(ss.StatListContainer, custom.StatListContainer)}>
+    <Container>
       <Input
         placeholder='Filter'
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onSearchChange(e.target.value)}
         value={props.searchValue}
-        styles={{
-          input: defaultStatListContainerStyle.searchInput,
-        }}
+        styles={InputStyle}
       />
-      <div className={css(ss.statListContainerContent, custom.statListContainerContent)}>
-        {props.renderContent()}
-      </div>
-    </div>
+      <StatListContainerContent>{props.renderContent()}</StatListContainerContent>
+    </Container>
   );
 };
 

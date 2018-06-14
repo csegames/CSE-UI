@@ -5,61 +5,48 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import { ql, Tooltip } from '@csegames/camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
 import TooltipContent, { defaultTooltipStyle } from '../Tooltip';
 import { placeholderIcon } from '../../lib/constants';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
-export interface ItemStyles extends StyleDeclaration {
-  ItemSlot: React.CSSProperties;
-  EmptyItemSlot: React.CSSProperties;
-  slotOverlay: React.CSSProperties;
-  slotText: React.CSSProperties;
-}
+const Container = styled('div')`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border: 1px solid #AAACB1;
+  cursor: pointer;
+`;
 
-export const defaultItemStyles: ItemStyles = {
-  ItemSlot: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '65px',
-    height: '65px',
-    border: '1px solid #AAACB1',
-    cursor: 'pointer',
-  },
-  EmptyItemSlot: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '65px',
-    height: '65px',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    border: '1px solid #AAACB1',
-    cursor: 'pointer',
-  },
-  slotOverlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    ':active': {
-      boxShadow: 'inset 0 0 20px 3px black',
-    },
-  },
-  slotText: {
-    fontSize: '8px',
-    color: 'white',
-    textAlign: 'center',
-  },
-};
+const EmptySlot = styled('div')`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #AAACB1;
+  cursor: pointer;
+`;
+
+const SlotOverlay = styled('div')`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  &:active {
+    box-shadow: inset 0 0 20px 3px black;
+  }
+`;
 
 export interface ItemSlotProps {
-  styles?: Partial<ItemStyles>;
   slotName?: string;
   gearSlots?: ql.schema.GearSlotDefRef;
   onClick?: () => void;
@@ -75,7 +62,6 @@ export interface ItemSlotProps {
 }
 
 const ItemSlot = (props: ItemSlotProps) => {
-  const ss = StyleSheet.create({ ...defaultItemStyles, ...props.styles });
   const {
     item,
     iconUrl,
@@ -93,27 +79,25 @@ const ItemSlot = (props: ItemSlotProps) => {
       content={() =>
         <TooltipContent isVisible={showTooltip} item={item} />
       }>
-        <div
-          className={css(ss.ItemSlot)}
+        <Container
           onDoubleClick={onDoubleClick}
           onClick={onClick}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         >
           <img src={iconUrl || placeholderIcon} width='100%' height='100%' />
-          <div className={css(ss.slotOverlay)} />
+          <SlotOverlay />
           {props.children}
-        </div>
+        </Container>
       </Tooltip>
   ) : (
-    <div
-      className={css(ss.EmptyItemSlot)}
+    <EmptySlot
       onClick={onClick}
     >
       {useFontIcon ? <i className={iconUrl} /> : <img src={iconUrl} width='100%' height='100%' />}
-      <div className={css(ss.slotOverlay)} />
+      <SlotOverlay />
       {props.children}
-    </div>
+    </EmptySlot>
   );
 };
 

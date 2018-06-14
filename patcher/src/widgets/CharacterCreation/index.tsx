@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { StyleDeclaration } from 'aphrodite';
 import { events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
@@ -109,10 +108,6 @@ export interface CharacterCreationState {
   checkingApiServer: boolean;
 }
 
-export interface ContainerStyles extends StyleDeclaration {
-  closeButton: React.CSSProperties;
-}
-
 declare const toastr: any;
 
 class CharacterCreation extends React.Component<CharacterCreationProps, CharacterCreationState> {
@@ -199,9 +194,6 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
             playerClass={playerClassesState}
             banesAndBoons={banesAndBoonsState}
             dispatch={dispatch}
-            baneStyles={{}}
-            boonStyles={{}}
-            traitSummaryStyles={{}}
           />
         );
         break;

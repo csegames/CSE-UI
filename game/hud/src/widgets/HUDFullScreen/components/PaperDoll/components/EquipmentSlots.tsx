@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
-import * as events from '@csegames/camelot-unchained/lib/events';
+import * as classNames from 'classnames';
+import styled, { css } from 'react-emotion';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
@@ -23,91 +23,71 @@ import eventNames, {
 } from '../../../lib/eventNames';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 
-export interface EquipmentSlotsStyles extends StyleDeclaration {
-  equipmentSlots: React.CSSProperties;
-  armorSlotsContainer: React.CSSProperties;
-  loadingContainer: React.CSSProperties;
-  toggleContainer: React.CSSProperties;
-  toggleOn: React.CSSProperties;
-  toggleText: React.CSSProperties;
-  outerToggle: React.CSSProperties;
-  underToggle: React.CSSProperties;
-  itemSlotSpacing: React.CSSProperties;
-  equippedWeaponSlots: React.CSSProperties;
-  weaponSpacing: React.CSSProperties;
-}
+const Container = styled('div')`
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`;
 
-export const defaultEquipmentSlotsStyle: EquipmentSlotsStyles = {
-  equipmentSlots: {
-    flex: '1 1 auto',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-  },
-  armorSlotsContainer: {
-    flex: '1 1 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    userSelect: 'none',
-    height: '100%',
-    padding: '0 45px',
-    alignItems: 'center',
-  },
+const ArmorSlotsContainer = styled('div')`
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+  height: 100%;
+  padding: 0 45px;
+  align-items: center;
+`;
 
-  loadingContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
-  },
-
-  toggleContainer: {
-    justifyContent: 'center',
-    fontSize: '24px',
-    color: '#FDD30D',
-  },
-
-  toggleOn: {
-    color: '#FDD30D',
-    borderBottom: '1px solid #FDD30D',
-  },
-
-  toggleText: {
-    display: 'inline',
-    fontSize: '24px',
-    color: '#85661B',
-    webkitUserSelect: 'none',
-    userSelect: 'none',
-  },
-
-  outerToggle: {
-    paddingRight: '10px',
-    cursor: 'pointer',
-  },
-
-  underToggle: {
-    paddingLeft: '10px',
-    cursor: 'pointer',
-  },
-
-  itemSlotSpacing: {
-    marginBottom: '15px',
-  },
-
-  equippedWeaponSlots: {
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '-webkit-fit-content',
-    margin: '0 auto',
-    bottom: '40px',
-    left: 0,
-    right: 0,
-  },
-  weaponSpacing: {
-    marginRight: '15px',
-  },
+const ToggleContainer = {
+  justifyContent: 'center',
+  fontSize: '24px',
+  color: '#FDD30D',
 };
+
+const ToggleOn = css`
+  color: #FDD30D !important;
+  border-bottom: 1px solid #FDD30D;
+`;
+
+const ToggleText = css`
+  display: inline;
+  font-size: 24px;
+  color: #85661B;
+  -webkit-user-select: none;
+  user-select: none;
+`;
+
+const OuterToggle = css`
+  padding-right: 10px;
+  cursor: pointer;
+`;
+
+const UnderToggle = css`
+  padding-left: 10px;
+  cursor: pointer;
+`;
+
+const EquippedWeaponSlots = styled('div')`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: -webkit-fit-content;
+  margin: 0 auto;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+`;
+
+const ItemSlotSpacing = css`
+  margin-bottom: 15px;
+`;
+
+const WeaponSpacing = css`
+  margin-right: 15px;
+`;
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
   { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
@@ -153,7 +133,6 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
 ];
 
 export interface EquipmentSlotsProps {
-  styles?: Partial<EquipmentSlotsStyles>;
   equippedItems: EquippedItemFragment[];
   inventoryItems: InventoryItemFragment[];
   onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
@@ -171,8 +150,6 @@ export interface EquipmentSlotsState {
 }
 
 class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
-  private style: EquipmentSlotsStyles;
-  private customStyle: Partial<EquipmentSlotsStyles>;
   private equipItemListener: number;
   private onUnequipItemListener: number;
 
@@ -185,20 +162,10 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   public render() {
-    const style = this.style = StyleSheet.create(defaultEquipmentSlotsStyle);
-    const customStyle = this.customStyle = StyleSheet.create(this.props.styles || {});
     const { showUnder } = this.state;
 
-    const outerToggleClass = css(
-      style.toggleText, customStyle.toggleText,
-      style.outerToggle, customStyle.outerToggle,
-      !showUnder && style.toggleOn, !showUnder && customStyle.toggleOn,
-    );
-    const innerToggleClass = css(
-      style.toggleText, customStyle.toggleText,
-      style.underToggle, customStyle.underToggle,
-      showUnder && style.toggleOn, showUnder && customStyle.toggleOn,
-    );
+    const outerToggleClass = classNames(ToggleText, OuterToggle, !showUnder ? ToggleOn : '');
+    const innerToggleClass = classNames(ToggleText, UnderToggle, showUnder ? ToggleOn : '');
 
     const tabs: TabItem[] = [
       {
@@ -232,20 +199,16 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
       },
     ];
     return (
-      <div className={css(style.equipmentSlots, customStyle.equipmentSlots)}>
+      <Container>
         <TabPanel
           defaultTabIndex={0}
           tabs={tabs}
           content={content}
-          styles={{
-            tabs: defaultEquipmentSlotsStyle.toggleContainer,
-          }}
+          styles={{ tabs: ToggleContainer }}
           alwaysRenderContent={true}
         />
-        <div className={css(style.equippedWeaponSlots, customStyle.equippedweaponSlots)}>
-          {this.renderEquipmentSlotSection(weaponSlots)}
-        </div>
-      </div>
+        <EquippedWeaponSlots>{this.renderEquipmentSlotSection(weaponSlots)}</EquippedWeaponSlots>
+      </Container>
     );
   }
 
@@ -325,8 +288,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
 
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
     const equippedItems = this.props.equippedItems;
-    const style = this.style;
-    const customStyle = this.customStyle;
     return (
       equipmentSlots.map((slot) => {
         const equippedItem = _.find(equippedItems, (eItem): any => {
@@ -344,11 +305,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
             onVisibilityChange={this.onToggleItemMenuVisibility}>
           <div
             key={slot.slotName}
-            className={css(
-              !isWeapon && style.itemSlotSpacing,
-              !isWeapon && customStyle.itemSlotSpacing,
-              isWeapon && style.weaponSpacing,
-              isWeapon && customStyle.weaponSpacing,
+            className={classNames(
+              !isWeapon && ItemSlotSpacing,
+              isWeapon && WeaponSpacing,
             )}>
             <EquippedItemSlot
               tooltipDisabled={slotVisible}
@@ -364,24 +323,20 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 
   private renderInnerSlots = () => {
-    const ss = this.style;
-    const customStyle = this.customStyle;
     return (
-      <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
+      <ArmorSlotsContainer>
         <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
         <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
-      </div>
+      </ArmorSlotsContainer>
     );
   }
 
   private renderOuterSlots = () => {
-    const ss = this.style;
-    const customStyle = this.customStyle;
     return (
-      <div className={css(ss.armorSlotsContainer, customStyle.armorSlotsContainer)}>
+      <ArmorSlotsContainer>
         <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(0, 8))}</div>
         <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}</div>
-      </div>
+      </ArmorSlotsContainer>
     );
   }
 

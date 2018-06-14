@@ -5,37 +5,31 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import { Spinner } from '@csegames/camelot-unchained';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
 
-export interface LoadingContainerStyles extends StyleDeclaration {
-  loadingContainer: React.CSSProperties;
-}
-
-export const defaultLoadingContainerStyle: LoadingContainerStyles = {
-  loadingContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    zIndex: 10,
-  },
-};
+const Container = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+`;
 
 export interface LoadingContainerProps {
-  styles?: Partial<LoadingContainerStyles>;
 }
 
 const LoadingContainer = (props: LoadingContainerProps) => {
-  const ss = StyleSheet.create({ ...defaultLoadingContainerStyle, ...props.styles });
   return (
-    <div className={css(ss.loadingContainer)}><Spinner /></div>
+    <Container>
+      <Spinner />
+    </Container>
   );
 };
 

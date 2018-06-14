@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import { utils } from '../';
 
-export interface Style extends StyleDeclaration {
+export interface Style {
   MOTD: React.CSSProperties;
   header: React.CSSProperties;
   content: React.CSSProperties;
@@ -17,73 +17,71 @@ export interface Style extends StyleDeclaration {
   close: React.CSSProperties;
 }
 
-export const defaultStyle: Style = {
-  MOTD: {
-    pointerEvents: 'all',
-    userSelect: 'none',
-    webkitUserSelect: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    width: '800px',
-    height: '450px',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    border: `1px solid ${utils.lightenColor('#202020', 30)}`,
-    position: 'relative',
-  },
+const Container = styled('div')`
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 800px;
+  height: 450px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid ${utils.lightenColor('#202020', 30)};
+  position: relative;
+`;
 
-  header: {
-    width: '100%',
-    padding: '5px 0',
-    textAlign: 'center',
-    color: 'white',
-    backgroundColor: '#202020',
-    borderBottom: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
+const Header = styled('div')`
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
+  color: white;
+  background-color: #202020;
+  border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+`;
 
-  content: {
-    flex: 1,
-    color: 'white',
-    padding: '5px',
-    overflow: 'auto',
-    '::-webkit-scrollbar-track': {
-      backgroundColor: 'transparent',
-    },
-    '::-webkit-scrollbar': {
-      width: '5px',
-      backgroundColor: '#111',
-    },
-    '::-webkit-scrollbar-thumb': {
-      backgroundColor: '#666',
-      borderRadius: '5px',
-    },
-  },
+const Content = styled('div')`
+  flex: 1;
+  color: white;
+  padding: 5px;
+  overflow: auto;
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: #111;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 5px;
+  }
+`;
 
-  footer: {
-    padding: '5px 0',
-    backgroundColor: '#202020',
-    textAlign: 'center',
-    borderTop: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
+const Footer = styled('div')`
+  padding: 5px 0;
+  background-color: #202020;
+  text-align: center;
+  border-top: 1px solid ${utils.lightenColor('#202020', 30)};
+`;
 
-  dismiss: {
-    cursor: 'pointer',
-  },
+const Dismiss = styled('div')`
+  cursor: pointer;
+`;
 
-  close: {
-    position: 'absolute',
-    top: 2,
-    right: 5,
-    color: '#cdcdcd',
-    fontSize: '20px',
-    marginRight: '5px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    ':hover': {
-      color: '#bbb',
-    },
-  },
-};
+const Close = styled('div')`
+  position: absolute;
+  top: 2;
+  right: 5;
+  color: #CDCDCD;
+  font-size: 20px;
+  margin-right: 5px;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: #BBB;
+  }
+`;
 
 export interface Props {
   styles?: Partial<Style>;
@@ -93,23 +91,22 @@ export interface Props {
 }
 
 export const MOTD = (props: Props) => {
-  const ss = StyleSheet.create(defaultStyle);
-  const custom = StyleSheet.create(props.styles || {});
+  const customStyles = props.styles || {};
   return (
-    <div className={css(ss.MOTD, custom.MOTD)}>
-      <div className={css(ss.header, custom.header)}>
+    <Container style={customStyles.MOTD}>
+      <Header style={customStyles.header}>
         <div className=''>Welcome to Camelot Unchained</div>
-        <div className={css(ss.close, custom.close)} onClick={props.onClose}>
+        <Close style={customStyles.close} onClick={props.onClose}>
           <i className='fa fa-times click-effect'></i>
-        </div>
-      </div>
-      <div className={css(ss.content, custom.content)}>
+        </Close>
+      </Header>
+      <Content style={customStyles.content}>
         {props.children}
-      </div>
-      <div className={css(ss.footer, custom.footer)}>
-        <a className={css(ss.dismiss, custom.dismiss)} onClick={props.onDismiss24}>Dismiss For 24h</a>
-      </div>
-    </div>
+      </Content>
+      <Footer style={customStyles.footer}>
+        <Dismiss style={customStyles.dismiss} onClick={props.onDismiss24}>Dismiss For 24h</Dismiss>
+      </Footer>
+    </Container>
   );
 };
 

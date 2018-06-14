@@ -48,7 +48,7 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   client.OnInitialized(() => {
     initialize();
     ReactDom.render(
-      <ErrorBoundary reloadUIOnError outputErrorToConsole>
+      <ErrorBoundary outputErrorToConsole>
         <ApolloProvider store={store} client={apollo}>
           <HUD />
         </ApolloProvider>
@@ -58,7 +58,7 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
 } else {
   initialize();
   ReactDom.render(
-    <ErrorBoundary reloadUIOnError outputErrorToConsole>
+    <ErrorBoundary outputErrorToConsole>
       <ApolloProvider store={store} client={apollo}>
         <HUD />
       </ApolloProvider>

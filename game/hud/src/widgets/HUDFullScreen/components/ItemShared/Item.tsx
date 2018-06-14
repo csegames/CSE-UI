@@ -5,25 +5,17 @@
  */
 
 import * as React from 'react';
-
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-
+import styled from 'react-emotion';
 import ItemIcon from './ItemIcon';
 
-export interface ItemStyle extends StyleDeclaration {
-  Item: React.CSSProperties;
-}
-
-export const defaultItemStyle: ItemStyle = {
-  Item: {
-    width: '100%',
-    height: '100%',
-    cursor: 'pointer',
-  },
-};
+const Container = styled('div')`
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+`;
 
 export interface ItemProps {
-  styles?: Partial<ItemStyle>;
+  styles: any;
   useFontIcon?: boolean;
   id: string;
   icon: string;
@@ -40,12 +32,10 @@ export class Item extends React.Component<ItemProps, ItemState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultItemStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     return (
-      <div className={css(ss.Item, custom.Item)}>
+      <Container style={this.props.styles}>
         <ItemIcon useFontIcon={this.props.useFontIcon} url={this.props.icon} />
-      </div>
+      </Container>
     );
   }
 }

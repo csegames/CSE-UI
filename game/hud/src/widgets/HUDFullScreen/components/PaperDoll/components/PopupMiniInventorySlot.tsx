@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import { ql, client, events, Tooltip } from '@csegames/camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -22,20 +22,21 @@ export const itemDimensions = {
   width: 70,
 };
 
-export interface PopupMiniInventorySlotStyles extends StyleDeclaration {
-  PopupMiniInventorySlot: React.CSSProperties;
-}
+const Slot = styled('div')`
+  width: ${itemDimensions.width}px;
+  height: ${itemDimensions.height}px;
+  border: 1px solid white;
+`;
 
-const defaultPopupMiniInventorySlotStyles: PopupMiniInventorySlotStyles = {
-  PopupMiniInventorySlot: {
-    width: `${itemDimensions.width}px`,
-    height: `${itemDimensions.height}px`,
+const SlotStyle = {
+  Item: {
+    width: itemDimensions.width,
+    height: itemDimensions.height,
     border: '1px solid white',
   },
 };
 
 export interface PopupMiniInventorySlotProps {
-  styles?: Partial<PopupMiniInventorySlotStyles>;
   item: InventoryItemFragment;
   gearSlots: ql.schema.GearSlotDefRef[];
 }
@@ -52,8 +53,6 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultPopupMiniInventorySlotStyles);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { item } = this.props;
     return item ? (
       <Tooltip styles={defaultTooltipStyle} content={() =>
@@ -66,14 +65,13 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
           <ItemComponent
             id={item.id}
             icon={item.staticDefinition.iconUrl}
-            styles={{
-              Item: defaultPopupMiniInventorySlotStyles.PopupMiniInventorySlot,
-            }} />
+            styles={SlotStyle}
+          />
         </div>
       </Tooltip>
-    ) : <div className={css(ss.PopupMiniInventorySlot, custom.PopupMiniInventorySlot)}>
+    ) : <Slot>
           <EmptyItem />
-        </div>;
+        </Slot>;
   }
 
   private onEquipItem = () => {

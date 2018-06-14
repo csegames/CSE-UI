@@ -5,40 +5,31 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import ItemIcon from '../../ItemShared/ItemIcon';
 
-export interface CraftingItemStyle extends StyleDeclaration {
-  CraftingItem: React.CSSProperties;
-}
-
-export const defaultCraftingItemStyle: CraftingItemStyle = {
-  CraftingItem: {
-    width: '60px',
-    height: '60px',
-    position: 'relative',
-    cursor: 'pointer',
-  },
-};
+const Container = styled('div')`
+  width: 60px;
+  height: 60px;
+  position: relative;
+  cursor: pointer;
+`;
 
 export interface CraftingItemProps {
-  styles?: Partial<CraftingItemStyle>;
   icon: string;
   count: number;
   quality: number;
 }
 
 export const CraftingItem = (props: CraftingItemProps) => {
-  const ss = StyleSheet.create(defaultCraftingItemStyle);
-  const custom = StyleSheet.create(props.styles || {});
   return (
-    <div className={css(ss.CraftingItem, custom.CraftingItem)}>
+    <Container>
       <ItemIcon
         url={props.icon}
         textBottom={props.count.toString()}
         textTop={typeof props.quality === 'number' ? `${props.quality.toString()}%` : ''}
       />
-    </div>
+    </Container>
   );
 };
 

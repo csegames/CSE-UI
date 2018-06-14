@@ -6,64 +6,59 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
 import { Input, IconButton, utils, events } from '@csegames/camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
 import FilterSelectListItem from './FilterSelectListItem';
 import { colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
-
-export interface FilterSelectMenuStyle extends StyleDeclaration {
-  FilterSelectMenu: React.CSSProperties;
-  menuContainer: React.CSSProperties;
-  headerContainer: React.CSSProperties;
-  buttonsContainer: React.CSSProperties;
-  searchInput: React.CSSProperties;
-  buttonSpacing: React.CSSProperties;
-}
 
 const containerDimensions = {
   width: 300,
   height: 500,
 };
 
-export const defaultFilterSelectMenuStyle: FilterSelectMenuStyle = {
-  FilterSelectMenu: {
-    position: 'relative',
-    display: 'inline-block',
-  },
+const Container = styled('div')`
+  position: relative;
+  display: inline-block;
+`;
 
-  menuContainer: {
-    position: 'absolute',
-    top: -5,
-    left: -containerDimensions.width - 5, // position left of containerDimension + padding and add small margin of 5
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#18130E',
-    width: `${containerDimensions.width}px`,
-    height: `${containerDimensions.height}px`,
-    border: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
-    zIndex: 9999,
-  },
+const MenuContainer = styled('div')`
+  position: absolute;
+  top: -5px;
+  left: -${containerDimensions.width}px;
+  display: flex;
+  flex-direction: column;
+  background-color: #18130E;
+  width: ${containerDimensions.width}px;
+  height: ${containerDimensions.height}px;
+  border: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  z-index: 9999;
+`;
 
-  headerContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: '0 0 auto',
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
-    padding: '2px',
-  },
+const HeaderContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  padding: 2px;
+`;
 
-  buttonsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    flex: '1 1 auto',
-    overflow: 'auto',
-  },
+const ButtonsContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  overflow: auto;
+`;
 
-  searchInput: {
+const HeaderText = styled('header')`
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  font-size: 18px;
+`;
+
+const InputStyle = {
+  input: {
     height: '20px',
     backgroundColor: 'rgba(179, 183, 192, 0.3)',
     border: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
@@ -73,19 +68,9 @@ export const defaultFilterSelectMenuStyle: FilterSelectMenuStyle = {
       color: utils.lightenColor(colors.filterBackgroundColor, 100),
     },
   },
-
-  headerText: {
-    color: utils.lightenColor(colors.filterBackgroundColor, 100),
-    fontSize: '18px',
-  },
-
-  buttonSpacing: {
-    marginRight: '5px',
-  },
 };
 
 export interface FilterSelectMenuProps {
-  styles?: Partial<FilterSelectMenuStyle>;
   onFilterButtonAdded: (filterButton: FilterButtonInfo) => void;
   onFilterButtonRemoved: (filterButton: FilterButtonInfo) => void;
   selectedFilterButtons: FilterButtonInfo[];
@@ -108,17 +93,14 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultFilterSelectMenuStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const filteredFilterButtons = _.filter(inventoryFilterButtons, (filterButton) => {
       return _.includes(filterButton.name.toLowerCase(), this.state.searchValue.toLowerCase());
     });
 
     return (
-      <div
+      <Container
         onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
-        className={css(ss.FilterSelectMenu, custom.FilterSelectMenu)}>
+        onMouseLeave={this.onMouseLeave}>
         <IconButton
           iconClass={'fa-bars'}
           active={this.state.menuVisible}
@@ -132,19 +114,19 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
           }}
         />
         {this.state.menuVisible &&
-          <div className={css(ss.menuContainer, custom.menuContainer)}>
-            <div className={css(ss.headerContainer, custom.headerContainer)}>
-              <header className={css(ss.headerText, custom.headerText)}>Edit Filters</header>
+          <MenuContainer>
+            <HeaderContainer>
+              <HeaderText>Edit Filters</HeaderText>
               <Input
                 onFocus={this.onInputFocus}
                 onBlur={this.onInputBlur}
                 onChange={this.onSearchChange}
                 placeholder={'Search'}
                 value={this.state.searchValue}
-                styles={{ input: defaultFilterSelectMenuStyle.searchInput }}
+                styles={InputStyle}
               />
-            </div>
-            <div className={css(ss.buttonsContainer, custom.buttonsContainer)}>
+            </HeaderContainer>
+            <ButtonsContainer>
               {filteredFilterButtons.map((filterButton) => {
                 const active = _.findIndex(this.props.selectedFilterButtons, activeButton =>
                   activeButton.name === filterButton.name) !== -1;
@@ -157,10 +139,10 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
                     onDeactivated={filterButton => this.props.onFilterButtonRemoved(filterButton)} />
                 );
               })}
-            </div>
-          </div>
+            </ButtonsContainer>
+          </MenuContainer>
         }
-      </div>
+      </Container>
     );
   }
 

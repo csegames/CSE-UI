@@ -194,8 +194,8 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
             height: '100%',
             width: '100%',
             opacity: this.state.opacity,
-            visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
-            display: `${this.state.visible ? 'block' : 'none'}`,
+            visibility: this.state.visible ? 'visible' : 'hidden',
+            display: this.state.visible ? 'block' : 'none',
           }} >
             {this.props.render(clone(this.state))}
           </div>

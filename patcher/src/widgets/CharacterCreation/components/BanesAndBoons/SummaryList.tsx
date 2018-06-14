@@ -9,7 +9,7 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import * as events  from '@csegames/camelot-unchained/lib/events';
 
-import TraitSummary, { TraitSummaryStyle } from './TraitSummary';
+import TraitSummary from './TraitSummary';
 import SummaryListHeader from './SummaryListHeader';
 import ResetAlert from './ResetAlert';
 import { colors } from '../../styleConstants';
@@ -54,7 +54,6 @@ export interface SummaryListProps {
   minPoints: number;
   maxPoints: number;
   totalPoints: number;
-  traitSummaryStyles: Partial<TraitSummaryStyle>;
 
   showResetAllAlertDialog: boolean;
   showResetBoonAlertDialog: boolean;
@@ -109,7 +108,6 @@ class SummaryList extends React.Component<SummaryListProps, SummaryListState> {
                   onCancelClick={this.props.onCancelBoonClick}
                   onCancelRankTrait={this.props.onCancelRankBoon}
                   type='Boon'
-                  styles={this.props.traitSummaryStyles}
                 />
               </div>
             ))}
@@ -122,7 +120,6 @@ class SummaryList extends React.Component<SummaryListProps, SummaryListState> {
                 onCancelClick={this.props.onCancelBaneClick}
                 onCancelRankTrait={this.props.onCancelRankBoon}
                 type='Bane'
-                styles={this.props.traitSummaryStyles}
               />
             ))}
           </AddedBaneSummaryWrapper>

@@ -6,28 +6,21 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
-
-export interface GridStatsStyles extends StyleDeclaration {
+export interface GridStatsStyles {
   statContainer: React.CSSProperties;
   statListSection: React.CSSProperties;
   listItemContainer: React.CSSProperties;
 }
 
-const defaultGridStatsStyle: GridStatsStyles = {
-  statContainer: {
-    display: 'flex',
-  },
+const StatContainer = styled('div')`
+  display: flex;
+`;
 
-  statListSection: {
-    flex: 1,
-  },
-
-  listItemContainer: {
-    
-  },
-};
+const StatListSection = styled('div')`
+  flex: 1;
+`;
 
 export interface GridStatsProps {
   styles?: Partial<GridStatsStyles>;
@@ -41,9 +34,7 @@ export interface GridStatsProps {
 }
 
 export const GridStats = (props: GridStatsProps) => {
-  const ss = StyleSheet.create(defaultGridStatsStyle);
-  const custom = StyleSheet.create(props.styles || {});
-
+  const customStyles = props.styles || {};
   const statArray = props.statArray;
   const numberOfItemsInGrid = Math.ceil((statArray.length) / props.howManyGrids);
   const emptyListItems: any[] = props.shouldRenderEmptyListItems ?
@@ -63,23 +54,21 @@ export const GridStats = (props: GridStatsProps) => {
   });
 
   return (
-    <div className={css(ss.statContainer, custom.statContainer)}>
+    <StatContainer style={customStyles.statContainer}>
       {arrayOfGrids.map((grid, index) => {
         return (
-          <div key={index} className={css(ss.statListSection, custom.statListSection)}>
+          <StatListSection key={index} style={customStyles.statListSection}>
             {props.renderHeaderItem && props.renderHeaderItem()}
             {grid.map((item, i) => {
               return (
-                <div
-                  key={i}
-                  className={css(ss.listItemContainer, custom.listItemContainer)}>
-                    {props.renderListItem(item, i)}
+                <div key={i} style={customStyles.listItemContainer}>
+                  {props.renderListItem(item, i)}
                 </div>
               );
             })}
-          </div>
+          </StatListSection>
         );
       })}
-    </div>
+    </StatContainer>
   );
 };

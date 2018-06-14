@@ -5,31 +5,25 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
+import styled from 'react-emotion';
 
-import Card, { CardLevel, CardStyle, defaultCardStyle } from './Card';
-
+import Card, { CardLevel } from './Card';
 export { CardLevel } from './Card';
 
-export const defaultTitleCardStyle: TitleCardStyle = {
-  ...defaultCardStyle,
+const Title = styled('div')`
+  font-size: 1.2em;
+  color: #AAA;
+  width: 100%;
+`;
 
-  title: {
-    fontSize: '1.2em',
-    color: '#AAA',
-    width: '100%',
-  },
+const Date = styled('div')`
+  font-size: 0.8em;
+  color: #777;
+  text-align: right;
+`;
 
-  date: {
-    fontSize: '0.8em',
-    color: '#777',
-    textAlign: 'right',
-  },
-
-};
-
-export interface TitleCardStyle extends CardStyle {
+export interface TitleCardStyle {
   title: React.CSSProperties;
   date: React.CSSProperties;
 }
@@ -41,19 +35,17 @@ export const TitleCard = (props: {
   level?: CardLevel;
   children?: React.ReactNode;
 }) => {
-  const ss = StyleSheet.create(defaultTitleCardStyle);
-  const custom = StyleSheet.create(props.styles || {});
   return (
     <Card {...props} >
-      <div className={css(ss.title, custom.title)}>
+      <Title>
         {props.title}
-      </div>
+      </Title>
       {props.children}
       {
         props.date ? (
-          <div className={css(ss.date, custom.date)}>
+          <Date>
             {moment(props.date).fromNow()}
-          </div>
+          </Date>
         ) : null
       }
     </Card>

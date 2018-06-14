@@ -9,8 +9,6 @@ import BanesAndBoons from '../../components/BanesAndBoons';
 import { RacesState } from '../../services/session/races';
 import { FactionsState } from '../../services/session/factions';
 import { PlayerClassesState } from '../../services/session/playerClasses';
-import { TraitSummaryStyle } from '../BanesAndBoons/TraitSummary';
-import { TraitStyle } from '../BanesAndBoons/Trait';
 import { Race, Faction, Archetype } from '@csegames/camelot-unchained';
 import {
   BanesAndBoonsInfo,
@@ -32,9 +30,6 @@ export interface BanesAndBoonsContainerProps {
   race: RacesState;
   faction: FactionsState;
   playerClass: PlayerClassesState;
-  traitSummaryStyles: Partial<TraitSummaryStyle>;
-  baneStyles: Partial<TraitStyle>;
-  boonStyles: Partial<TraitStyle>;
   dispatch: any;
 }
 
@@ -65,7 +60,7 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
       minPoints,
       maxPoints,
     } = this.props.banesAndBoons;
-    const { traitSummaryStyles, baneStyles, boonStyles, dispatch } = this.props;
+    const { dispatch } = this.props;
     return (
       <BanesAndBoons
         generalBoons={generalBoons}
@@ -93,9 +88,6 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
         onSelectRankBane={(bane: BanesAndBoonsInfo) => dispatch(onSelectRankBane({ bane }))}
         onCancelRankBoon={(boon: BanesAndBoonsInfo) => dispatch(onCancelRankBoon({ boon }))}
         onCancelRankBane={(bane: BanesAndBoonsInfo) => dispatch(onCancelRankBane({ bane }))}
-        traitSummaryStyles={traitSummaryStyles}
-        baneStyles={baneStyles}
-        boonStyles={boonStyles}
       />
     );
   }

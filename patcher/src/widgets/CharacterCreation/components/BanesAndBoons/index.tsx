@@ -7,9 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-import { TraitStyle } from './Trait';
 import SummaryList from './SummaryList';
-import { TraitSummaryStyle } from './TraitSummary';
 import TraitListContainer from './TraitListContainer';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 
@@ -41,9 +39,6 @@ export interface BanesAndBoonsProps {
   allPrerequisites: TraitIdMap;
   allExclusives: TraitIdMap;
   totalPoints: number;
-  traitSummaryStyles: Partial<TraitSummaryStyle>;
-  baneStyles: Partial<TraitStyle>;
-  boonStyles: Partial<TraitStyle>;
   minPoints: number;
   maxPoints: number;
   onReset: (initType: 'banes' | 'boons' | 'both') => void;
@@ -120,8 +115,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           onSelectRankBane={this.props.onSelectRankBane}
           onCancelRankBoon={this.props.onCancelRankBoon}
           onCancelRankBane={this.props.onCancelRankBane}
-          boonStyles={this.props.boonStyles}
-          baneStyles={this.props.baneStyles}
         />
         <SummaryList
           traits={traits}
@@ -137,7 +130,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           totalPoints={this.props.totalPoints}
           flexOfBoonBar={this.state.flexOfBoonBar}
           flexOfBaneBar={this.state.flexOfBaneBar}
-          traitSummaryStyles={this.props.traitSummaryStyles}
           onHideAllAlertDialog={this.onHideAllAlertDialog}
           onCancelBoonClick={this.props.onCancelBoonClick}
           onCancelBaneClick={this.props.onCancelBaneClick}
@@ -167,8 +159,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
           onSelectRankBane={this.props.onSelectRankBane}
           onCancelRankBoon={this.props.onCancelRankBoon}
           onCancelRankBane={this.props.onCancelRankBane}
-          boonStyles={this.props.boonStyles}
-          baneStyles={this.props.baneStyles}
         />
       </Container>
     );
