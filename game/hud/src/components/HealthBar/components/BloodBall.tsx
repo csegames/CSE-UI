@@ -12,10 +12,6 @@ import { getBloodPercent } from '../lib/healthFunctions';
 
 const Container = styled('div')`
   position: absolute;
-  left: 30px;
-  bottom: 25px;
-  width: 105px;
-  height: 105px;
   border-radius: 52.5px;
   background: #440000;
 `;
@@ -48,14 +44,33 @@ const Ball = styled('div')`
 
 export interface BloodBallProps {
   playerState: PlayerState;
+  scale?: number;
 }
 
-class BloodBall extends React.Component<BloodBallProps> {
+export interface BloodBallState {
+  scale: number;
+}
+
+class BloodBall extends React.Component<BloodBallProps, BloodBallState> {
+
   private lastUpdatedBloodPercent: number;
+
+  constructor(props: BloodBallProps) {
+    super(props);
+    this.state = {
+      scale: props.scale || 1,
+    };
+  }
+
   public render() {
     const bloodPercent = getBloodPercent(this.props.playerState);
     return (
-      <Container>
+      <Container style={{
+        left: this.state.scale * 30 + 'px',
+        bottom: this.state.scale * 25 + 'px',
+        width: this.state.scale * 105 + 'px',
+        height: this.state.scale * 105 + 'px',
+      }}>
         <Ball
           style={{
             WebkitMaskImage: `linear-gradient(to top, black ${bloodPercent}%, transparent ${bloodPercent}%)`,

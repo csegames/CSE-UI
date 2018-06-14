@@ -12,9 +12,9 @@ import { BodyParts } from '../../../lib/PlayerStatus';
 
 const Container = styled('div')`
   position: absolute;
-  right: ${(props: any) => props.right}px;
+  right: ${(props: any) => props.right.toFixed(1)}px;
   top: 86px;
-  height: ${(props: any) => props.height}px;
+  height: ${(props: any) => props.height.toFixed(1)}px;
   width: 71px;
   background: url(images/healthbar/regular/slide_out.png);
 `;
@@ -24,9 +24,9 @@ const ValuesContainer = styled('div')`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: ${(props: any) => props.height}px;
+  height: ${(props: any) => props.height.toFixed(1)}px;
   width: 50px;
-  margin-left: ${(props: any) => props.marginLeft}px;
+  margin-left: ${(props: any) => props.marginLeft.toFixed(1)}px;
 `;
 
 const Value = styled('div')`
