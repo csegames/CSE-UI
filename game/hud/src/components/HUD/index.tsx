@@ -35,6 +35,7 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
+import { ContextMenu } from '../ContextMenu';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -90,10 +91,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <ScenarioResults />
         <HUDFullScreen />
-        <Watermark />
         <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
           <SkillBar />
         </div>
+        <ContextMenu />
+        <Watermark />
       </div>
     );
   }

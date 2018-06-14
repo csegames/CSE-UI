@@ -13,6 +13,12 @@ import styled from 'react-emotion';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
 import WarbandMemberDisplay from './WarbandMemberDisplay';
+import {
+  setActiveWarbandID,
+  getActiveWarbandID,
+  onWarbandMemberUpdate,
+  onWarbandMemberRemoved,
+} from '../../services/actions/warband';
 
 const Container = styled('div')`
   user-select: none;
@@ -48,6 +54,7 @@ export interface WarbandDisplayState {
 export class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplayState> {
 
   private eventHandles: number[] = [];
+  private receivedMemberUpdate: boolean = false;
 
   constructor(props: WarbandDisplayProps) {
     super(props);
@@ -75,6 +82,25 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
 
   public componentWillUnmount() {
     this.unregisterWarbandEvents();
+  }
+
+
+  public shouldComponentUpdate(nextProps: Readonly<WarbandDisplayProps>, nextState: Readonly<WarbandDisplayState>) {
+
+    if (this.props.isMini !== nextProps.isMini) {
+      return true;
+    }
+
+    if (this.state.warbandID !== nextState.warbandID) {
+      return true;
+    }
+
+    if (this.receivedMemberUpdate) {
+      this.receivedMemberUpdate = false;
+      return true;
+    }
+
+    return false;
   }
 
   private static emptyWarband() {
@@ -112,7 +138,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     }
   }
 
-  private static deserializeMember(memberJSON: string) {
+  private static deserializeMember(memberJSON: string): GroupMemberState {
     try {
       const member = JSON.parse(memberJSON);
       member.avatar = WarbandDisplay.getAvatar(member.gender, member.race);
@@ -143,15 +169,24 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
 
   private onWarbandJoined = (id: string) => {
     events.fire('chat-show-room', id);
-    this.setState(WarbandDisplay.emptyWarband());
+    this.setState({
+      ...(WarbandDisplay.emptyWarband()),
+      warbandID: id,
+    });
+    setActiveWarbandID(id);
   }
 
   private onWarbandQuit = (id: string) => {
     events.fire('chat-leave-room', id);
+
+    if (getActiveWarbandID() === id) {
+      setActiveWarbandID(null);
+    }
+
     this.setState((state) => {
       if (state.warbandID !== id) return state;
+      console.log('warband quit!!');
       return {
-        ...state,
         ...(WarbandDisplay.emptyWarband()),
       };
     });
@@ -160,6 +195,8 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   private onWarbandMemberJoined = (memberJSON: string) => {
     const member = WarbandDisplay.deserializeMember(memberJSON);
     if (!member) return;
+    onWarbandMemberUpdate(member);
+    this.receivedMemberUpdate = true;
     this.setState((state) => {
       return {
         ...state,
@@ -169,9 +206,11 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandMemberUpdated = (memberJSON: string) => {
+    if (!this.state.warbandID) return;
     const member = WarbandDisplay.deserializeMember(memberJSON);
     if (!member) return;
-
+    onWarbandMemberUpdate(member);
+    this.receivedMemberUpdate = true;
     this.setState((state) => {
       return {
         ...state,
@@ -181,10 +220,16 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandMemberRemoved = (characterID: string) => {
+    if (characterID === client.characterID) {
+      this.onWarbandQuit(this.state.warbandID);
+      return;
+    }
+    onWarbandMemberRemoved(characterID);
+    this.receivedMemberUpdate = true;
     this.setState((state) => {
       const removeResult = removeWhere(state.activeMembers, m => m.id === characterID);
       if (removeResult.removed.length > 0) {
-        events.fire('system', `${removeResult.removed[0].name} has left your warband.`);
+        events.fire('system_message', `${removeResult.removed[0].name} has left your warband.`);
       }
       return {
         ...state,

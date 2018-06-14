@@ -10,6 +10,7 @@ import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
 import HealthBar from '../HealthBar';
+import { showFriendlyTargetContextMenu } from '../../services/actions/contextMenu';
 
 const Container = styled('div')`
   margin-bottom: 10px;
@@ -34,14 +35,29 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   public render() {
     if (!this.props.member) return null;
     return (
-      <Container key={this.props.member.id} onClick={this.targetMember}>
+      <Container
+        key={this.props.member.id}
+        onClick={this.onClickContainer}
+        onContextMenu={this.handleContextMenu}>
         <HealthBar type='mini' playerState={this.props.member as any} />
       </Container>
     );
   }
 
-  public targetMember = () => {
+  private onClickContainer = (event: MouseEvent) => {
+    // if right click, return
+    if (event.button === 2) return;
+
+    event.preventDefault();
     client.RequestFriendlyTargetEntityID(this.props.member.entityID);
+  }
+
+  private handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    showFriendlyTargetContextMenu({
+      id: this.props.member.entityID,
+      name: this.props.member.name,
+    }, event);
   }
 }
 
