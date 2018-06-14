@@ -19,7 +19,7 @@ const fadeOut = keyframes`
 const PassiveAlertContainer = styled('div')`
   display: block;
   position: fixed;
-  top: 15%;
+  top: 12%;
   left: 20px;
   right: 0;
   margin: 0 auto;
