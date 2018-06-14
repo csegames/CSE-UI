@@ -78,10 +78,6 @@ export function showEnemyTargetContextMenu(state: ContextMenuState, event: Mouse
 
 export function getSelfMenuItems({ id, name }: ContextMenuState) {
   const items: MenuItem[] = [
-    {
-      title: 'Invite to Trade',
-      onSelected: () => alert('invite to trade'),
-    },
   ];
 
   if (hasActiveWarband()) {
@@ -96,10 +92,6 @@ export function getSelfMenuItems({ id, name }: ContextMenuState) {
 
 export function getFriendlyTargetMenuItems({ id, name }: ContextMenuState) {
   const items: MenuItem[] = [
-    {
-      title: 'Invite to Trade',
-      onSelected: () => alert('invite to trade'),
-    },
   ];
 
   if (hasActiveWarband() && !isEntityIDInWarband(id)) {
