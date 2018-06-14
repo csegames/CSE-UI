@@ -20,7 +20,7 @@ const PassiveAlertContainer = styled('div')`
   display: block;
   position: fixed;
   top: 15%;
-  left: 0;
+  left: 20px;
   right: 0;
   margin: 0 auto;
   display: flex;
@@ -99,7 +99,7 @@ class PassiveAlert extends React.Component<Props, State> {
 
   private addAlertMessage = (message: string) => {
     const id = Math.random().toString().slice(2, 11);
-    this.setState({ alerts: [{ id, message: id }, ...this.state.alerts]});
+    this.setState({ alerts: [{ id, message }, ...this.state.alerts]});
 
     // Set timer to remove the item by id
     setTimeout(() => {
