@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState } from '@csegames/camelot-unchained';
+import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
 import { BodyParts } from '../../../lib/PlayerStatus';
@@ -15,6 +15,7 @@ import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFun
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
+import { LeaderIcon } from './LeaderIcon';
 
 const Container = styled('div')`
   position: relative;
@@ -51,6 +52,16 @@ const Name = styled('div')`
 const ContainerOverlay = styled('div')`
   position: absolute;
   background: url(images/healthbar/mini/main_frame_compact.png);
+  background-size: contain;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
+const LeaderContainerOverlay = styled('div')`
+  position: absolute;
+  background: url(images/healthbar/mini/main-frame-compact-crown.png);
   background-size: contain;
   top: 0;
   right: 0;
@@ -134,7 +145,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
 }
 
 export interface HealthBarViewState {
@@ -148,10 +159,12 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
     const staminaPercent = getStaminaPercent(playerState);
     const faction = getFaction(playerState);
     const scale = 0.33;
+
+    const isLeader = !!(this.props.playerState as GroupMemberState).isLeader;
     return (
       <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
         <NameContainer scale={scale}>
-          <Name scale={scale}>{playerState.name}</Name>
+          <Name scale={scale}>{playerState.name}{isLeader && <LeaderIcon />}</Name>
         </NameContainer>
         <ClassIndicator scale={scale} top={15 * scale} left={115 * scale} width={55 * scale}
           height={55 * scale} borderRadius={27.5 * scale} faction={faction} />
@@ -178,7 +191,9 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
           </SmallHealthPillsContainer>
           <StaminaBar percent={staminaPercent} scale={scale}/>
         </HealthBars>
-        <ContainerOverlay />
+        {
+          isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
+        }
       </Container>
     );
   }

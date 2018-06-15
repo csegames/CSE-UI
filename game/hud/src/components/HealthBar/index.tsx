@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { PlayerState, damageTypes } from '@csegames/camelot-unchained';
+import { PlayerState, damageTypes, GroupMemberState } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../../lib/playerStateEqual';
@@ -40,7 +40,7 @@ export type HealthBarType = 'full' | 'compact' | 'mini';
 
 export interface HealthBarProps {
   type: HealthBarType;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
   target?: 'enemy' | 'friendly';
 }
 
@@ -82,20 +82,20 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
         {this.props.type === 'compact' &&
           <div>
             <HealthBarViewCompact shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses : null} />
+            <Status statuses={playerState ? playerState.statuses as any : null} />
           </div>
         }
         {this.props.type === 'full' &&
           <div>
             <HealthBarViewFull shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses : null} />
+            <Status statuses={playerState ? playerState.statuses as any : null} />
           </div>
         }
         {
           this.props.type === 'mini' &&
           <div>
             <HealthBarViewMini shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses : null} />
+            <Status statuses={playerState ? playerState.statuses as any : null} />
           </div>
         }
         {target && <DistanceText targetType={target} />}

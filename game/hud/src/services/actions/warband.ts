@@ -146,8 +146,8 @@ export function setActiveWarbandID(id: string) {
 
 export function onWarbandMemberUpdate(member: GroupMemberState) {
   getStateObject().membersMap[member.id] = member;
-  if (member.entityID) {
-    getStateObject().membersEntityIDMap[member.entityID] = member;
+  if (member.id) {
+    getStateObject().membersEntityIDMap[member.id] = member;
   }
 }
 
@@ -155,7 +155,7 @@ export function onWarbandMemberRemoved(characterID: string) {
   const m = getStateObject().membersMap[characterID];
   if (m) {
     delete getStateObject().membersMap[characterID];
-    delete getStateObject().membersEntityIDMap[m.entityID];
+    delete getStateObject().membersEntityIDMap[m.id];
   }
 }
 

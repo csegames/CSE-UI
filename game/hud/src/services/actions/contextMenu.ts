@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from '@csegames/camelot-unchained';
+import { events, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { getPlayerEntityID } from './player';
 
@@ -54,12 +54,7 @@ export function offHideContextMenu(handle: number) {
 
 // SPECIFIC CONTEXT MENUS
 
-export type ContextMenuState = {
-  id: string; // entity ID
-  name: string; // character name
-};
-
-export function showFriendlyTargetContextMenu(state: ContextMenuState, event: MouseEvent) {
+export function showFriendlyTargetContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
   // is friendly target self?
   if (getPlayerEntityID() === state.id) {
     showSelfContextMenu(state, event);
@@ -68,17 +63,17 @@ export function showFriendlyTargetContextMenu(state: ContextMenuState, event: Mo
   }
 }
 
-export function showSelfContextMenu(state: ContextMenuState, event: MouseEvent) {
+export function showSelfContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
   showContextMenu(getSelfMenuItems(state), event);
 }
 
-export function showEnemyTargetContextMenu(state: ContextMenuState, event: MouseEvent) {
+export function showEnemyTargetContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
   showContextMenu(getEnemyTargetMenuItems(state), event);
 }
 
 // CONTEXT MENU GENERATION
 
-export function getSelfMenuItems({ id, name }: ContextMenuState) {
+export function getSelfMenuItems({ id, name }: PlayerState | GroupMemberState) {
   const items: MenuItem[] = [
   ];
 
@@ -92,36 +87,40 @@ export function getSelfMenuItems({ id, name }: ContextMenuState) {
   return items;
 }
 
-export function getFriendlyTargetMenuItems({ id, name }: ContextMenuState) {
+export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState) {
   const items: MenuItem[] = [
-    { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
+    { title: 'Invite to Trade', onSelected: () => inviteToTrade(state.id) },
   ];
 
-  if (hasActiveWarband() && !isEntityIDInWarband(id)) {
+  if (hasActiveWarband() && !isEntityIDInWarband(state.id)) {
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(name, getActiveWarbandID()),
     });
   }
 
-  if (hasActiveWarband() && isEntityIDInWarband(id)) {
+  if (hasActiveWarband() && isEntityIDInWarband(state.id)) {
+
     items.push({
       title: 'Kick from Warband',
-      onSelected: () => kickFromWarbandByEntityID(id, getActiveWarbandID()),
+      onSelected: () => kickFromWarbandByEntityID(state.id, getActiveWarbandID()),
     });
+
   }
 
   if (!hasActiveWarband()) {
+
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(name, ''),
     });
+
   }
 
   return items;
 }
 
-export function getEnemyTargetMenuItems({ id, name }: ContextMenuState) {
+export function getEnemyTargetMenuItems({ id, name }: PlayerState | GroupMemberState) {
   const items: MenuItem[] = [
   ];
   return items;

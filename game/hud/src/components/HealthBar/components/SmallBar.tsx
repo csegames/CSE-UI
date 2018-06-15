@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, PlayerState } from '@csegames/camelot-unchained';
+import { utils, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 import { BodyParts } from '../../../lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 
@@ -65,7 +65,7 @@ const WoundPill = styled('div')`
 export interface SmallBarProps {
   height: number;
   bodyPart: BodyParts;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
   scale: number;
 }
 
