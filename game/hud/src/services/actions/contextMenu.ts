@@ -14,6 +14,7 @@ import {
   isEntityIDInWarband,
   getActiveWarbandID,
   quitWarband,
+  kickFromWarbandByEntityID,
  } from './warband';
 
 // BASIC MANAGEMENT
@@ -98,6 +99,13 @@ export function getFriendlyTargetMenuItems({ id, name }: ContextMenuState) {
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(name, getActiveWarbandID()),
+    });
+  }
+
+  if (hasActiveWarband() && isEntityIDInWarband(id)) {
+    items.push({
+      title: 'Kick from Warband',
+      onSelected: () => kickFromWarbandByEntityID(id, getActiveWarbandID()),
     });
   }
 

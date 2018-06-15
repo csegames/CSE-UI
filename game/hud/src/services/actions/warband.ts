@@ -52,6 +52,45 @@ export function inviteToWarbandByName(characterName: string, warbandID: string) 
   return inviteToWarband('', characterName, warbandID);
 }
 
+async function kickFromWarband(targetEntityID: string, targetCharacterID: string,
+  targetName: string, warbandID: string) {
+  try {
+    const result = await GroupsAPI.KickV1(
+      defaultConfig,
+      client.loginToken,
+      client.shardID,
+      client.characterID,
+      warbandID,
+      targetEntityID,
+      targetCharacterID,
+      targetName,
+    );
+
+    if (result.ok) {
+      sendSystemMessage(`Kicked!`);
+      return;
+    }
+
+    sendSystemMessage(`Failed to kick.`);
+    console.error('Failed to kick.\n' + JSON.stringify(result.data));
+
+  } catch (error) {
+    // failed!!
+    console.error('Failed to kick.\n' + error);
+  }
+}
+
+export function kickFromWarbandByName(targetName: string, warbandID: string) {
+  return kickFromWarband(null, null, targetName, warbandID);
+}
+
+export function kickFromWarbandByCharacterID(characterID: string, warbandID: string) {
+  return kickFromWarband(null, characterID, null, warbandID);
+}
+
+export function kickFromWarbandByEntityID(entityID: string, warbandID: string) {
+  return kickFromWarband(entityID, null, null, warbandID);
+}
 
 export async function quitWarband() {
   try {

@@ -8,8 +8,8 @@ import * as React from 'react';
 import {
   // ql,
   ConfirmDialog,
-  webAPI,
-  client,
+  // webAPI,
+  // client,
 } from '@csegames/camelot-unchained';
 import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
@@ -39,17 +39,17 @@ export interface MemberListMenuStyle extends StyleDeclaration {
 }
 
 async function kickMember(m: {id: string}, groupId: string, onSuccess: () => void) {
-  const res = await webAPI.GroupsAPI.KickV1(
-    webAPI.defaultConfig,
-    client.loginToken,
-    client.shardID,
-    client.characterID,
-    groupId,
-    m.id,
-  );
-  if (res.ok) {
-    onSuccess();
-  }
+  // const res = await webAPI.GroupsAPI.KickV1(
+  //   webAPI.defaultConfig,
+  //   client.loginToken,
+  //   client.shardID,
+  //   client.characterID,
+  //   groupId,
+  //   m.id,
+  // );
+  // if (res.ok) {
+  //   onSuccess();
+  // }
 }
 
 
