@@ -35,7 +35,6 @@ import { ZoneName } from '../ZoneName';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
-import PassiveAlert from '../PassiveAlert';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -85,7 +84,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
         </div>
 
         <InteractiveAlertView />
-        <PassiveAlert />
         <DevUI />
         <ScenarioPopup />
 
