@@ -73,7 +73,7 @@ export function showEnemyTargetContextMenu(state: PlayerState | GroupMemberState
 
 // CONTEXT MENU GENERATION
 
-export function getSelfMenuItems({ id, name }: PlayerState | GroupMemberState) {
+export function getSelfMenuItems(state: PlayerState | GroupMemberState) {
   const items: MenuItem[] = [
   ];
 
@@ -95,7 +95,7 @@ export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState
   if (hasActiveWarband() && !isEntityIDInWarband(state.id)) {
     items.push({
       title: 'Invite to Warband',
-      onSelected: () => inviteToWarbandByName(name, getActiveWarbandID()),
+      onSelected: () => inviteToWarbandByName(state.name, getActiveWarbandID()),
     });
   }
 
@@ -112,7 +112,7 @@ export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState
 
     items.push({
       title: 'Invite to Warband',
-      onSelected: () => inviteToWarbandByName(name, ''),
+      onSelected: () => inviteToWarbandByName(state.name, ''),
     });
 
   }
@@ -120,7 +120,7 @@ export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState
   return items;
 }
 
-export function getEnemyTargetMenuItems({ id, name }: PlayerState | GroupMemberState) {
+export function getEnemyTargetMenuItems(state: PlayerState | GroupMemberState) {
   const items: MenuItem[] = [
   ];
   return items;

@@ -113,7 +113,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private static memberCompare(a: GroupMemberState, b: GroupMemberState): boolean {
-    return a.id === b.id;
+    return a.characterID === b.characterID;
   }
 
   private static getAvatar(gender: Gender, race: Race) {
@@ -227,7 +227,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     onWarbandMemberRemoved(characterID);
     this.receivedMemberUpdate = true;
     this.setState((state) => {
-      const removeResult = removeWhere(state.activeMembers, m => m.id === characterID);
+      const removeResult = removeWhere(state.activeMembers, m => m.characterID === characterID);
       if (removeResult.removed.length > 0) {
         events.fire('system_message', `${removeResult.removed[0].name} has left your warband.`);
       }

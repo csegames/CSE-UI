@@ -145,7 +145,7 @@ export function setActiveWarbandID(id: string) {
 }
 
 export function onWarbandMemberUpdate(member: GroupMemberState) {
-  getStateObject().membersMap[member.id] = member;
+  getStateObject().membersMap[member.characterID] = member;
   if (member.id) {
     getStateObject().membersEntityIDMap[member.id] = member;
   }
