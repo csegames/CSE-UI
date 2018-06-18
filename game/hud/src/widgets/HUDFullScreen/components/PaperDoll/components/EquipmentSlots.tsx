@@ -40,12 +40,6 @@ const ArmorSlotsContainer = styled('div')`
   align-items: center;
 `;
 
-const ToggleContainer = {
-  justifyContent: 'center',
-  fontSize: '24px',
-  color: '#FDD30D',
-};
-
 const ToggleOn = css`
   color: #FDD30D !important;
   border-bottom: 1px solid #FDD30D;
@@ -204,7 +198,13 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           defaultTabIndex={0}
           tabs={tabs}
           content={content}
-          styles={{ tabs: ToggleContainer }}
+          styles={{
+            tabs: {
+              justifyContent: 'center',
+              fontSize: '24px',
+              color: '#FDD30D',
+            },
+          }}
           alwaysRenderContent={true}
         />
         <EquippedWeaponSlots>{this.renderEquipmentSlotSection(weaponSlots)}</EquippedWeaponSlots>

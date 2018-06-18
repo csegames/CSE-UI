@@ -32,12 +32,6 @@ const ListItemsContainerStyle = css`
   overflow: hidden;
 `;
 
-const SearchInputStyle = {
-  input: {
-    overflow: 'hidden',
-  }
-};
-
 export interface KeyBindingsProps {
   styles?: Partial<KeyBindingsStyle>;
   activeConfigIndex: number;
@@ -76,7 +70,7 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
       <Container>
         <Input
           placeholder={'Search'}
-          styles={SearchInputStyle}
+          styles={{ input: { overflow: 'hidden' } }}
           onChange={this.onSearchChange}
           value={this.state.searchValue}
         />
