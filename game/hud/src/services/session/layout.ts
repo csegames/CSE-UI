@@ -24,6 +24,7 @@ import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
+import Progression from './layoutItems/Progression';
 import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
@@ -36,7 +37,7 @@ import Options from './layoutItems/Options';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.4'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.7.5'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -147,6 +148,9 @@ function initialState(): LayoutState {
     ],
     [
       'plotControl', cloneDeep(PlotControl),
+    ],
+    [
+      'progression', cloneDeep(Progression),
     ],
     [
       'announcement', cloneDeep(Announcement),

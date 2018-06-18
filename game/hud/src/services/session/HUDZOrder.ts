@@ -18,6 +18,7 @@ enum HUDZOrder {
   ReleaseControl,
   Respawn,
   MOTD,
+  Progression,
   Options,
   EnemyTargetSiegeHealth,
   FriendlyTargetSiegeHealth,

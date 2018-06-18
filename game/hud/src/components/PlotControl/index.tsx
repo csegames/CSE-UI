@@ -185,7 +185,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         if (blueprint.subName === '') {
           renderedBlueprint = (
               <li className='blueprint'>
-                {blueprint.name}
+                {blueprint['name']}
                 {timeRemaining}
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}
@@ -196,7 +196,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
         } else {
           renderedBlueprint = (
               <li className='matBlueprint'>
-                {blueprint.name}
+                {blueprint['name']}
                 {timeRemaining}
                 <progress value={blueprint.percentComplete.toString()} max='1'></progress>
                 {upArrow}

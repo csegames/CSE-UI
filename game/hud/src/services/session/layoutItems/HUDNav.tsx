@@ -238,6 +238,21 @@ export default {
           events.fire('hudnav--navigate', 'scenario-results');
         },
       },
+      {
+        name: 'progression',
+        tooltip: 'Progression',
+        iconClass: 'fa-line-chart',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-line-chart fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'progression');
+        },
+      },
       // {
       //   name: 'chat',
       //   tooltip: 'Show/Hide Chat',
