@@ -153,6 +153,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
   private onActionClick = (action: ItemActionDefGQL) => {
     if (action.uIReaction === 'PlacementMode') {
       this.onDeployItem(action);
+      this.closeInventory();
     } else {
       this.makeItemActionRequest(action);
     }
@@ -204,7 +205,7 @@ class ContextMenuContent extends React.Component<ContextMenuContentCompProps> {
   }
 
   private closeInventory = () => {
-    events.fire(eventNames.onCloseInventory);
+    events.fire('hudnav--navigate', 'inventory');
   }
 
   private openMiniMap = () => {
