@@ -5,30 +5,31 @@
  */
 
 enum HUDZOrder {
-  ErrorMessages,
   Building,
+  ErrorMessages,
+  SkillQueue,
+  FriendlyTargetSiegeHealth,
+  EnemyTargetSiegeHealth,
+  PlayerSiegeHealth,
+  FriendlyTarget,
+  EnemyTarget,
+  PlayerHealth,
   Warband,
   Chat,
   Compass,
   Crafting,
   Announcement,
-  HUDNav,
-  Inventory,
   PlotControl,
   ReleaseControl,
-  Respawn,
-  MOTD,
-  Options,
-  EnemyTargetSiegeHealth,
-  FriendlyTargetSiegeHealth,
-  PlayerSiegeHealth,
-  PlayerHealth,
-  FriendlyTarget,
-  EnemyTarget,
   Progression,
+
+  // Widgets above all else
+  MOTD,
   Scoreboard,
-  SkillQueue,
+  Respawn,
+  HUDNav,
   RefillAmmo,
+  Options,
 }
 
 export default HUDZOrder;

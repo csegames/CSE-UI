@@ -190,51 +190,50 @@ class Progression extends React.Component<Props, State> {
           <Spinner />
         </LoadingContainer>
       );
-    } else {
-      return (
-        <GraphQL query={query} onQueryResult={this.handleQueryResult}>
-          {(graphql: GraphQLResult<QueryType>) => {
-            if (graphql.lastError && graphql.lastError !== 'OK') {
-              return (
-                <LoadingContainer>
-                  <CloseButton onClick={this.onCloseClick} />
-                  <div>{graphql.lastError}</div>
-                </LoadingContainer>
-              );
-            }
-
-            if (graphql.loading || !graphql.data || !graphql.data.myprogression) {
-              return (
-                <LoadingContainer>
-                  <CloseButton onClick={this.onCloseClick} />
-                  <div>Loading...</div>
-                  <Spinner />
-                </LoadingContainer>
-              );
-            }
-
-            if (this.state.collected || isEmpty(graphql.data.myprogression.unCollectedDayLogs)) {
-              return (
-                <LoadingContainer>
-                  <CloseButton onClick={this.onCloseClick} />
-                  <div>All progression packages have been collected</div>
-                </LoadingContainer>
-              );
-            }
-
-            return (
-              <Container>
-                <CloseButton onClick={this.onCloseClick} />
-                <ObjectDisplayContainer>
-                  <ObjectDisplay data={graphql.data.myprogression} skipFunctions />
-                </ObjectDisplayContainer>
-                <button onClick={this.onCollectClick}>Collect All</button>
-              </Container>
-            );
-          }}
-        </GraphQL>
-      );
     }
+    return (
+      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
+        {(graphql: GraphQLResult<QueryType>) => {
+          if (graphql.lastError && graphql.lastError !== 'OK') {
+            return (
+              <LoadingContainer>
+                <CloseButton onClick={this.onCloseClick} />
+                <div>{graphql.lastError}</div>
+              </LoadingContainer>
+            );
+          }
+
+          if (graphql.loading || !graphql.data || !graphql.data.myprogression) {
+            return (
+              <LoadingContainer>
+                <CloseButton onClick={this.onCloseClick} />
+                <div>Loading...</div>
+                <Spinner />
+              </LoadingContainer>
+            );
+          }
+
+          if (this.state.collected || isEmpty(graphql.data.myprogression.unCollectedDayLogs)) {
+            return (
+              <LoadingContainer>
+                <CloseButton onClick={this.onCloseClick} />
+                <div>All progression packages have been collected</div>
+              </LoadingContainer>
+            );
+          }
+
+          return (
+            <Container>
+              <CloseButton onClick={this.onCloseClick} />
+              <ObjectDisplayContainer>
+                <ObjectDisplay data={graphql.data.myprogression} skipFunctions />
+              </ObjectDisplayContainer>
+              <button onClick={this.onCollectClick}>Collect All</button>
+            </Container>
+          );
+        }}
+      </GraphQL>
+    );
   }
 
   public componentDidMount() {
