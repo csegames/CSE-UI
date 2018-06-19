@@ -99,14 +99,14 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
             body: {
               transition: '0.5s ease',
             },
-            CollapsingList: {
+            container: {
               marginBottom: 145,
             },
           } : index === 0 ? {
             body: {
               transition: '0.5s ease',
             },
-            CollapsingList: {
+            container: {
               marginTop: 15,
             },
           } : {
