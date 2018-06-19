@@ -114,7 +114,11 @@ export default function reducer(state: CharacterState = initialState, action: an
       });
     case CREATE_CHARACTER_FAILED:
       const errors: any =  action.error.Errors;
-      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
+      if (!errors) {
+        toastr.error('An unexpected error occured! Try restarting your patcher', 'Oh No!!', { timeout: 5000 });
+      } else {
+        errors.forEach((e: string) => toastr.error(e, 'Oh No!!', { timeout: 5000 }));
+      }
       return Object.assign({}, state, {
         isFetching: false,
         error: action.error,

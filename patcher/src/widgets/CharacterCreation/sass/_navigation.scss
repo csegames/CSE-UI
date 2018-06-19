@@ -27,8 +27,9 @@
 .cu-character-creation__name {
   position: absolute;
   bottom: 75px;
-  width: calc(100% - 280px);
   right: 0;
+  left: 0;
+  margin: 0;
   z-index: 20;
   opacity: .7;
   transition: opacity .2s ease-in-out;

@@ -24,6 +24,7 @@ const TraitView = styled('div')`
   margin-right: 0;
   margin-left: 0;
   user-select: none;
+  border: ${(props: any) => `3px solid ${props.traitColor}`};
 `;
 
 const SelectedTrait = css`
@@ -260,8 +261,9 @@ class Trait extends React.Component<TraitProps, {}> {
             trait.selected && !shouldBeDefault ? SelectedTrait : '',
             shouldBeDisabled && !shouldBeDefault && DisabledTrait,
           )}
+          traitColor={traitColor}
           onClick={shouldBeDisabled ? () => {} : trait.ranks ? this.onRankClick : this.onTraitClick}
-          style={{ border: `3px solid ${traitColor}`, background: `url(${trait.icon}) no-repeat`, backgroundSize: 'cover' }}>
+          style={{ background: `url(${trait.icon}) no-repeat`, backgroundSize: 'cover' }}>
             <PointsCircle>
               {type === 'Bane' ? trait.points * -1 : trait.points}
             </PointsCircle>

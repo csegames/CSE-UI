@@ -28,6 +28,7 @@ const InnerSummaryWrapper = styled('div')`
   height: calc(100% - 120px);
   background-color: ${colors.transparentBg};
   overflow: auto;
+  padding: 0 15px;
   &::-webkit-scrollbar: {
     width: 5px;
     border-radius: 2px;
@@ -36,11 +37,11 @@ const InnerSummaryWrapper = styled('div')`
 
 const AddedBoonSummaryWrapper = styled('div')`
   flex: 1;
-  margin-left: 15px;
 `;
 
 const AddedBaneSummaryWrapper = styled('div')`
   flex: 1;
+  margin-left: 15px;
 `;
 
 export interface SummaryListProps {
