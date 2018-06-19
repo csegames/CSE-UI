@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import Progression from '../../../components/Progression';
+import Progression from '../../../components/Progression/index';
 import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 

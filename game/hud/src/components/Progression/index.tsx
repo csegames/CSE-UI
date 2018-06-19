@@ -6,12 +6,11 @@
  */
 
 import * as React from 'react';
-import { isEqual, isEmpty } from 'lodash';
-import styled from 'react-emotion';
-import { events, client, webAPI, Spinner } from '@csegames/camelot-unchained';
+import { isEqual } from 'lodash';
+import { events, client, webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { CharacterProgressionData } from '@csegames/camelot-unchained/lib/graphql/schema';
-import ObjectDisplay from './ObjectDisplay';
+import ProgressionView from './ProgressionView';
 
 declare const toastr: any;
 
@@ -111,50 +110,6 @@ type QueryType = {
   myprogression: CharacterProgressionData;
 };
 
-const Container = styled('div')`
-  position: relative;
-  pointer-events: all;
-  width: 500px;
-  height: 400px;
-  padding: 20px;
-  background-color: gray;
-  color: white;
-`;
-
-const LoadingContainer = styled('div')`
-  position: relative;
-  pointer-events: all;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 500px;
-  height: 400px;
-  padding: 20px;
-  background-color: gray;
-  color: white;
-`;
-
-const ObjectDisplayContainer = styled('div')`
-  height: 90%;
-`;
-
-const CloseButton = styled('div')`
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 12px;
-  height: 12px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
-  }
-  &:active {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
-  }
-`;
-
 export interface Props {
 
 }
@@ -182,54 +137,18 @@ class Progression extends React.Component<Props, State> {
       return null;
     }
 
-    if (this.state.collecting) {
-      return (
-        <LoadingContainer>
-          <CloseButton onClick={this.onCloseClick} />
-          <div>Collecting...</div>
-          <Spinner />
-        </LoadingContainer>
-      );
-    }
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<QueryType>) => {
-          if (graphql.lastError && graphql.lastError !== 'OK') {
-            return (
-              <LoadingContainer>
-                <CloseButton onClick={this.onCloseClick} />
-                <div>{graphql.lastError}</div>
-              </LoadingContainer>
-            );
-          }
-
-          if (graphql.loading || !graphql.data || !graphql.data.myprogression) {
-            return (
-              <LoadingContainer>
-                <CloseButton onClick={this.onCloseClick} />
-                <div>Loading...</div>
-                <Spinner />
-              </LoadingContainer>
-            );
-          }
-
-          if (this.state.collected || isEmpty(graphql.data.myprogression.unCollectedDayLogs)) {
-            return (
-              <LoadingContainer>
-                <CloseButton onClick={this.onCloseClick} />
-                <div>All progression packages have been collected</div>
-              </LoadingContainer>
-            );
-          }
-
           return (
-            <Container>
-              <CloseButton onClick={this.onCloseClick} />
-              <ObjectDisplayContainer>
-                <ObjectDisplay data={graphql.data.myprogression} skipFunctions />
-              </ObjectDisplayContainer>
-              <button onClick={this.onCollectClick}>Collect All</button>
-            </Container>
+            <ProgressionView
+              graphql={graphql}
+              logIDs={this.state.logIDs}
+              collected={this.state.collected}
+              collecting={this.state.collecting}
+              onCloseClick={this.onCloseClick}
+              onCollectClick={this.onCollectClick}
+            />
           );
         }}
       </GraphQL>

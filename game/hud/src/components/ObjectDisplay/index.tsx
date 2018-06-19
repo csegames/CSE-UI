@@ -63,7 +63,7 @@ const Row = styled('div')`
 `;
 
 const Content = styled('div')`
-  height: 100%;
+  max-height: 100%;
   overflow-x: hidden;
 `;
 
