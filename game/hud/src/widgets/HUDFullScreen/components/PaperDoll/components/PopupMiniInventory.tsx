@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 
 import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
 
@@ -79,7 +79,7 @@ const ControllerButton = styled('div')`
   }
 `;
 
-const DisabledControllerButton = styled('div')`
+const DisabledControllerButton = css`
   color: white;
 `;
 
