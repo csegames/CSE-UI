@@ -440,11 +440,16 @@ const devClientInterface: clientInterface = {
 
   CancelItemPlacement: (): void => {},
 
-  SendCommitItemRequest: (callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void => {},
+  SendCommitItemRequest: (callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void)
+  : void => {},
+
+  /* Target */
+  RequestFriendlyTargetEntityID: (entityID:string): void => {},
+  RequestEnemyTargetEntityID: (entityID:string): void => {},
 
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',
-  debug: true,
+  debug: false,
   signalRHost: 'https://api.camelotunchained.com/signalr',
   shardID: 1,
 };

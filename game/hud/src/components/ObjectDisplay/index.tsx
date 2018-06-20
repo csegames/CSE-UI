@@ -63,6 +63,7 @@ const Row = styled('div')`
 `;
 
 const Content = styled('div')`
+  max-height: 100%;
   overflow-x: hidden;
 `;
 
@@ -103,14 +104,16 @@ class StatusItems extends React.Component<Props, undefined> {
           }
 
           if (value && Array.isArray(value)) {
-            return <CollapsibleList
-              data={value}
-              keyName={key}
-              fullKey={this.props.parentKey === '' ? key : this.props.parentKey + '.' + key}
-              key={key}
-              dataMapping={this.props.dataMapping}
-              statusMapper={this.props.statusMapper}
-            />;
+            return (
+              <CollapsibleList
+                data={value}
+                keyName={key}
+                fullKey={this.props.parentKey === '' ? key : this.props.parentKey + '.' + key}
+                key={key}
+                dataMapping={this.props.dataMapping}
+                statusMapper={this.props.statusMapper}
+              />
+            );
           }
 
           if (this.props.dataMapping) {

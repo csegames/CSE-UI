@@ -29,7 +29,6 @@ const Title = styled('div')`
 
 const Content = styled('div')(
   {
-    overflowY: 'auto',
     '::-webkit-scrollbar': {
       width: '5px',
       backgroundColor: '#111',
@@ -44,9 +43,13 @@ const Content = styled('div')(
   },
   (props: { collapsed: boolean }) => {
     if (props.collapsed) {
-      return { maxHeight: 0 };
+      return {
+        display: 'none',
+      };
     } else {
-      return { maxHeight: '400px' };
+      return {
+        display: 'block',
+      };
     }
   },
 );

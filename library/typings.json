@@ -10,6 +10,7 @@
     "fuzzysearch": "github:cumodsquad/Typings/fuzzysearch/fuzzysearch.d.ts",
     "intro.js-react": "github:cumodsquad/Typings/intro.js-react/introjs-react.d.ts",
     "emotion": "github:cumodsquad/Typings/emotion/emotion.d.ts",
-    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts"
+    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts",
+    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts"
   }
 }

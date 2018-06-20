@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
-export interface PageControllerStyle extends StyleDeclaration {
+export interface PageControllerStyle {
   PageController: React.CSSProperties;
   controllerContainer: React.CSSProperties;
   contentContainer: React.CSSProperties;
@@ -16,27 +16,17 @@ export interface PageControllerStyle extends StyleDeclaration {
   pageNumberText: React.CSSProperties;
 }
 
-export const defaultPageControllerStyle: PageControllerStyle = {
-  PageController: {},
+const ControllerButton = styled('button')`
+  display: inline-block;
+  cursor: pointer;
+  &:active {
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.7);
+  }
+`;
 
-  controllerContainer: {},
-
-  contentContainer: {},
-
-  controllerButton: {
-    display: 'inline-block',
-    cursor: 'pointer',
-    ':active': {
-      textShadow: '1px 1px rgba(0,0,0,0.7)',
-    },
-  },
-
-  disabledControllerButton: {},
-
-  pageNumberText: {
-    margin: 0,
-  },
-};
+const PageNumberText = styled('div')`
+  margin: 0;
+`;
 
 export interface PageInfo<T> {
   render: (props: T) => JSX.Element;
@@ -71,16 +61,14 @@ export class PageController extends React.Component<PageControllerProps, PageCon
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultPageControllerStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
+    const customStyles = this.props.styles || {};
     const activeContent = this.props.pages[this.state.activePageIndex];
     const { renderHeaderContainer, renderPageController } = this.props;
     return (
-      <div className={css(ss.PageController, custom.PageController)}>
+      <div style={customStyles.PageController}>
         {renderHeaderContainer && renderHeaderContainer(this.state, this.props)}
         {renderPageController ? renderPageController(this.state, this.props, this.onNextPage, this.onPrevPage) :
-          this.renderPageController(ss, custom)}
+          this.renderPageController(customStyles)}
         {activeContent && <activeContent.render {...activeContent.props} />}
       </div>
     );
@@ -93,32 +81,26 @@ export class PageController extends React.Component<PageControllerProps, PageCon
     }
   }
 
-  private renderPageController = (ss: PageControllerStyle, custom: Partial<PageControllerStyle>) => {
+  private renderPageController = (customStyles: Partial<PageControllerStyle>) => {
     const moreNext = this.state.activePageIndex < this.props.pages.length - 1;
     const morePrev = this.state.activePageIndex > 0;
     return (
-      <div className={css(ss.controllerContainer, custom.controllerContainer)}>
-        <div className={css(
-          ss.controllerButton,
-          custom.controllerButton,
-          !morePrev && ss.disabledControllerButton,
-          !morePrev && custom.disabledControllerButton,
-        )}
-             onClick={this.onPrevPage}>
-          {this.props.prevButtonText || '<Prev'}
-        </div>
-        <p className={css(ss.pageNumberText, custom.pageNumberText)}>
+      <div style={customStyles.controllerContainer}>
+        <ControllerButton
+          style={!morePrev ?
+            {...customStyles.controllerButton, ...customStyles.disabledControllerButton} : customStyles.controllerButton}
+          onClick={this.onPrevPage}>
+            {this.props.prevButtonText || '<Prev'}
+        </ControllerButton>
+        <p style={customStyles.pageNumberText}>
           {this.state.activePageIndex + 1} / {this.props.pages.length}
         </p>
-        <div className={css(
-          ss.controllerButton,
-          custom.controllerButton,
-          !moreNext && ss.disabledControllerButton,
-          !moreNext && custom.disabledControllerButton,
-        )}
-             onClick={this.onNextPage}>
+        <ControllerButton
+          style={!moreNext ?
+            { ...customStyles.controllerButton, ...customStyles.disabledControllerButton } : customStyles.controllerButton}
+            onClick={this.onNextPage}>
           {this.props.nextButtonText || 'Next>'}
-        </div>
+        </ControllerButton>
       </div>
     );
   }

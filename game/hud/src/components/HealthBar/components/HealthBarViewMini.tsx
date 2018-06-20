@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState } from '@csegames/camelot-unchained';
+import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
 import { BodyParts } from '../../../lib/PlayerStatus';
@@ -15,11 +15,12 @@ import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFun
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
+import { LeaderIcon } from './LeaderIcon';
 
 const Container = styled('div')`
   position: relative;
-  height: ${({ scale }: {scale: number}) => 242 * scale}px;
-  width: ${({ scale }: {scale: number}) => 392 * scale}px;
+  height: ${({ scale }: {scale: number}) => (242 * scale).toFixed(1)}px;
+  width: ${({ scale }: {scale: number}) => (392 * scale).toFixed(1)}px;
   -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
   animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
@@ -28,22 +29,22 @@ const Container = styled('div')`
 
 const NameContainer = styled('div')`
   position: absolute;
-  top: ${({ scale }: {scale: number}) => 7 * scale}px;
-  left: ${({ scale }: {scale: number}) => 155 * scale}px;
+  top: ${({ scale }: {scale: number}) => (7 * scale).toFixed(1)}px;
+  left: ${({ scale }: {scale: number}) => (155 * scale).toFixed(1)}px;
   display: flex;
   align-items: center;
-  height: ${({ scale }: {scale: number}) => 64 * scale}px;
-  width: ${({ scale }: {scale: number}) => 404 * scale}px;
+  height: ${({ scale }: {scale: number}) => (64 * scale).toFixed(1)}px;
+  width: ${({ scale }: {scale: number}) => (404 * scale).toFixed(1)}px;
   background: url(images/healthbar/mini/name-bg.png) no-repeat;
   background-size: contain;
 `;
 
 const Name = styled('div')`
   color: white;
-  max-width: ${({ scale }: {scale: number}) => 375 * scale}px;
-  font-size: ${({ scale }: {scale: number}) => 32 * scale}px;
-  line-height: ${({ scale }: {scale: number}) => 32 * scale}px;
-  margin-left: ${({ scale }: {scale: number}) => 50 * scale}px;
+  max-width: ${({ scale }: {scale: number}) => (375 * scale).toFixed(1)}px;
+  font-size: ${({ scale }: {scale: number}) => (32 * scale).toFixed(1)}px;
+  line-height: ${({ scale }: {scale: number}) => (32 * scale).toFixed(1)}px;
+  margin-left: ${({ scale }: {scale: number}) => (50 * scale).toFixed(1)}px;
   overflow: hidden;
   word-wrap: break-word;
 `;
@@ -58,13 +59,19 @@ const ContainerOverlay = styled('div')`
   left: 0;
 `;
 
+const LeaderContainerOverlay = styled('div')`
+  position: absolute;
+  background: url(images/healthbar/mini/main-frame-compact-crown.png);
+  background-size: contain;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
 const BloodBall = styled('div')`
   position: absolute;
-  left: ${({ scale }: {scale: number}) => 25 * scale}px;
-  bottom: ${({ scale }: {scale: number}) => 20 * scale}px;
-  width: ${({ scale }: {scale: number}) => 85 * scale}px;
-  height: ${({ scale }: {scale: number}) => 85 * scale}px;
-  border-radius: ${({ scale }: {scale: number}) => 42.5 * scale}px;
+  border-radius: 42.5px;
   background: #440000;
 
   &:after {
@@ -72,10 +79,10 @@ const BloodBall = styled('div')`
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: ${({ scale }: {scale: number}) => 52.5 * scale}px;
+    border-radius: 52.5px;
     background: #E30000;
-    -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent}%,
-      transparent ${(props: any) => props.percent}%);
+    -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent.toFixed(1)}%,
+      transparent ${(props: any) => props.percent.toFixed(1)}%);
     -webkit-mask-size: 100% 100%;
   }
 `;
@@ -96,27 +103,27 @@ const BloodBall = styled('div')`
 
 const HealthBars = styled('div')`
   position: absolute;
-  top: ${({ scale }: {scale: number}) => 74 * scale}px;
-  left: ${({ scale }: {scale: number}) => 118 * scale}px;
+  top: ${({ scale }: {scale: number}) => (74 * scale).toFixed(1)}px;
+  left: ${({ scale }: {scale: number}) => (118 * scale).toFixed(1)}px;
   display: flex:
   flex-direction: column;
 `;
 
 const SmallHealthPillsContainer = styled('div')`
   position: relative;
-  left: ${({ scale }: {scale: number}) => 5 * scale}px;
-  width: ${({ scale }: {scale: number}) => 253 * scale}px;
+  left: ${({ scale }: {scale: number}) => (5 * scale).toFixed(1)}px;
+  width: ${({ scale }: {scale: number}) => (253 * scale).toFixed(1)}px;
 `;
 
 const BigHealthPillsContainer = styled('div')`
-  width: ${({ scale }: {scale: number}) => 264 * scale}px;
+  width: ${({ scale }: {scale: number}) => (264 * scale).toFixed(1)}px;
 `;
 
 const StaminaBar = styled('div')`
   position: relative;
   width: 103%;
-  height: ${({ scale }: {scale: number}) => 15 * scale}px;
-  left: ${({ scale }: {scale: number}) => -15 * scale}px;
+  height: ${({ scale }: {scale: number}) => (15 * scale).toFixed(1)}px;
+  left: ${({ scale }: {scale: number}) => (-15 * scale).toFixed(1)}px;
   background: linear-gradient(to top, #303030, #1D1D1D);
   -webkit-mask-image: url(images/healthbar/regular/stamina_mask.png);
   -webkit-mask-size: 100% 100%;
@@ -128,7 +135,7 @@ const StaminaBar = styled('div')`
     right: 0;
     bottom: 0;
     left: 0;
-    width: ${(props: any) => props.percent}%;
+    width: ${(props: any) => props.percent.toFixed(1)}%;
     transition: width 0.1s;
     -webkit-transition: width 0.1s;
     height: 100%;
@@ -138,7 +145,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
 }
 
 export interface HealthBarViewState {
@@ -152,14 +159,21 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
     const staminaPercent = getStaminaPercent(playerState);
     const faction = getFaction(playerState);
     const scale = 0.33;
+
+    const isLeader = !!(this.props.playerState as GroupMemberState).isLeader;
     return (
       <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
         <NameContainer scale={scale}>
-          <Name scale={scale}>{playerState.name}</Name>
+          <Name scale={scale}>{playerState.name}{isLeader && <LeaderIcon />}</Name>
         </NameContainer>
         <ClassIndicator scale={scale} top={15 * scale} left={115 * scale} width={55 * scale}
           height={55 * scale} borderRadius={27.5 * scale} faction={faction} />
-        <BloodBall percent={bloodPercent} scale={scale}>
+        <BloodBall percent={bloodPercent} style={{
+          left: scale * 25 + 'px',
+          bottom: scale * 20 + 'px',
+          width: scale * 85 + 'px',
+          height: scale * 85 + 'px',
+        }}>
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
         </BloodBall>
         <HealthBars scale={scale}>
@@ -177,7 +191,9 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
           </SmallHealthPillsContainer>
           <StaminaBar percent={staminaPercent} scale={scale}/>
         </HealthBars>
-        <ContainerOverlay />
+        {
+          isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
+        }
       </Container>
     );
   }

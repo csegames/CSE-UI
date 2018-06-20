@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState } from '@csegames/camelot-unchained';
+import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
 import { BodyParts } from '../../../lib/PlayerStatus';
@@ -81,8 +81,8 @@ const BloodBall = styled('div')`
     height: 100%;
     border-radius: 52.5px;
     background: #E30000;
-    -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent}%,
-      transparent ${(props: any) => props.percent}%);
+    -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent.toFixed(1)}%,
+      transparent ${(props: any) => props.percent.toFixed(1)}%);
     -webkit-mask-size: 100% 100%;
   }
 `;
@@ -135,7 +135,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
 }
 
 export interface HealthBarViewState {

@@ -14,15 +14,15 @@ const Container = styled('div')`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: ${(props: any) => props.top}px;
-  left: ${(props: any) => props.left}px;
+  top: ${(props: any) => props.top.toFixed(1)}px;
+  left: ${(props: any) => props.left.toFixed(1)}px;
   background: url(${(props: any) => props.backgroundImg}) no-repeat;
   background-size: cover;
   color: white;
-  width: ${(props: any) => props.width}px;
-  height: ${(props: any) => props.height}px;
-  border-radius: ${(props: any) => props.borderRadius}px;
-  font-size: ${({ scale }: {scale: number}) => 30 * scale}px;
+  width: ${(props: any) => props.width.toFixed(1)}px;
+  height: ${(props: any) => props.height.toFixed(1)}px;
+  border-radius: ${(props: any) => props.borderRadius.toFixed(1)}px;
+  font-size: ${({ scale }: {scale: number}) => (30 * scale).toFixed(1)}px;
 `;
 
 export interface ClassIndicatorProps {

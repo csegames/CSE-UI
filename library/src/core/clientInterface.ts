@@ -507,6 +507,10 @@ interface clientInterface {
 
   SendCommitItemRequest(callback: (itemInstanceIDString: string, position: any, rotation: any,
     arbitraryString?: string) => void): void;
+
+  /* Target */
+  RequestFriendlyTargetEntityID(entityID:string): void;
+  RequestEnemyTargetEntityID(entityID:string): void;
 }
 
 export default clientInterface;

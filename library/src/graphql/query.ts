@@ -70,6 +70,10 @@ function errorResult(msg: string) {
   };
 }
 
+function getMessage(obj: { message: string }) {
+  return obj.message;
+}
+
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>) {
 
   const q = withDefaults(query, defaultQuery);
@@ -95,10 +99,11 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       },
     );
     if (response.ok) {
+      const result = JSON.parse(response.data);
       return {
-        data: JSON.parse(response.data).data as T,
-        ok: true,
-        statusText: 'OK',
+        data: result.data as T,
+        ok: result.data !== undefined,
+        statusText: result.errors === undefined ? 'OK' : result.errors.map(getMessage).join(' '),
       };
     }
 

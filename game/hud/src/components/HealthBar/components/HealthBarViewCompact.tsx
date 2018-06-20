@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction, PlayerState } from '@csegames/camelot-unchained';
+import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { getFaction } from '../lib/healthFunctions';
 import { isEqualPlayerState } from '../../../lib/playerStateEqual';
@@ -73,6 +73,15 @@ const ContainerOverlay = styled('div')`
   left: 0;
 `;
 
+const LeaderContainerOverlay = styled('div')`
+  position: absolute;
+  background: url(images/healthbar/regular/main-frame-compact-crown.png);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
 const HealthPillsContainer = styled('div')`
   position: absolute;
   top: 87px;
@@ -83,7 +92,7 @@ const HealthPillsContainer = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
 }
 
 export interface HealthBarViewState {
@@ -116,6 +125,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
             bodyPartsCurrentHealth={this.props.bodyPartsCurrentHealth}
           />
         */}
+
         <HealthPillsContainer>
           <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
@@ -125,7 +135,10 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
-        <ContainerOverlay />
+
+        {
+          (this.props.playerState as GroupMemberState).isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
+        }
       </Container>
     );
   }

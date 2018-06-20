@@ -5,53 +5,49 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled, { keyframes } from 'react-emotion';
 
-export interface SpinnerStyle extends StyleDeclaration {
+export interface SpinnerStyle {
   spinner: React.CSSProperties;
 }
 
-const spin = {
+const spin = keyframes`
   from: {
-    transform: 'rotate(0deg)',
-  },
+    transform: rotate(0deg);
+  }
   to: {
-    transform: 'rotate(360deg)',
-  },
-};
+    transform: rotate(360deg)
+  }
+`;
 
-
-export const defaultSpinnerStyle: SpinnerStyle = {
-  spinner: {
-    borderRadius: '50%',
-    display: 'inline-block',
-    width: '1em',
-    height: '1em',
-    border: '.25rem solid rgba(255, 255, 255, 0.2)',
-    borderTopColor: '#ececec',
-    transition: 'all .3s',
-    animationName: spin,
-    WebkitAnimationName: spin,
-    animationDuration: '1s',
-    WebkitAnimationDuration: '1s',
-    animationIterationCount: 'infinite',
-    WebkitAnimatiionIterationCount: 'infinite',
-    WebkitBackfaceVisibility: 'hidden',
-    ':hover': {
-      borderTopColor: '#3fd0b0',
-    },
-  },
-};
+const SpinnerView = styled('div')`
+  border-radius: 50%;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 0.25rem solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ECECEC;
+  transition: all 0.3s;
+  animation-name: ${spin};
+  -webkkit-animation-name: ${spin};
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-backface-visibility: hidden;
+  &:hover {
+    border-top-color: #3FD0B0;
+  }
+`;
 
 export interface SpinnerProps {
   styles?: Partial<SpinnerStyle>;
 }
 
 export const Spinner = (props: SpinnerProps) => {
-  const ss = StyleSheet.create(defaultSpinnerStyle);
-  const custom = StyleSheet.create(props.styles || {});
+  const customStyles = props.styles || {};
   return (
-    <div className={css(ss.spinner, custom.spinner)}></div>
+    <SpinnerView style={customStyles.spinner} />
   );
 };
 

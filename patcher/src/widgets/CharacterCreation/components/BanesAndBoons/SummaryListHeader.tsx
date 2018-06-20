@@ -8,7 +8,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { Tooltip } from '@csegames/camelot-unchained';
-import { styleConstants, colors } from '../../styleConstants';
+import { colors } from '../../styleConstants';
 
 const PointsContainer = styled('div')`
   display: flex;
@@ -109,7 +109,7 @@ class SummaryListHeader extends React.Component<SummaryListHeaderProps, SummaryL
               tooltip: {
                 backgroundColor: 'rgba(0,0,0,0.9)',
                 maxWidth: '200px',
-                ...styleConstants.direction.ltr,
+                direction: 'ltr',
               },
             }}
             content={() => (

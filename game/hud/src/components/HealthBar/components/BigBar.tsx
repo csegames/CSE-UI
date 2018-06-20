@@ -7,16 +7,16 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, PlayerState } from '@csegames/camelot-unchained';
+import { utils, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 import { BodyParts } from '../../../lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 
 const Container = styled('div')`
   position: relative;
-  left: ${(props: any) => props.left}px;
+  left: ${(props: any) => props.left.toFixed(1)}px;
   width: 100%;
-  height: ${(props: any) => props.height}px;
-  margin-bottom: ${({ scale }: {scale: number}) => 3 * scale}px;
+  height: ${(props: any) => props.height.toFixed(1)}px;
+  margin-bottom: ${({ scale }: {scale: number}) => (3 * scale).toFixed(1)}px;
 `;
 
 const BarContainer = styled('div')`
@@ -30,7 +30,7 @@ const BarContainer = styled('div')`
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #303030, #1D1D1D);
-  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 2 * scale}px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => (2 * scale).toFixed(1)}px rgba(0,0,0,0.8);
   -webkit-transition: width 0.2s;
 `;
 
@@ -42,7 +42,7 @@ const Bar = styled('div')`
   left: 0;
   height: 100%;
   background: linear-gradient(to bottom, #0068FF, #104489);
-  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => 5 * scale}px #3693FF;
+  box-shadow: inset 0 0 ${({ scale }: {scale: number}) => (5 * scale).toFixed(1)}px #3693FF;
 `;
 
 const WoundContainer = styled('div')`
@@ -50,16 +50,16 @@ const WoundContainer = styled('div')`
   align-items: center;
   justify-content: flex-end;
   position: absolute;
-  top: ${({ scale }: {scale: number}) => 5 * scale}px;
+  top: ${({ scale }: {scale: number}) => (5 * scale).toFixed(1)}px;
   right: 0;
   bottom: 0;
-  left: ${({ scale }: {scale: number}) => -1 * scale}px;
+  left: ${({ scale }: {scale: number}) => (-1 * scale).toFixed(1)}px;
   z-index: 10;
 `;
 
 const WoundPill = styled('div')`
-  width: ${({ scale }: {scale: number}) => 111 * scale}px;
-  height: ${({ scale }: {scale: number}) => 44 * scale}px;
+  width: ${({ scale }: {scale: number}) => (111 * scale).toFixed(1)}px;
+  height: ${({ scale }: {scale: number}) => (44 * scale).toFixed(1)}px;
   background: url(images/healthbar/regular/large_lock.png);
   background-size: contain;
 `;
@@ -68,7 +68,7 @@ export interface BigBarProps {
   left: number;
   height: number;
   bodyPart: BodyParts;
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
   scale: number;
 }
 

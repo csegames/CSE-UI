@@ -5,58 +5,53 @@
  */
 
 import client from '../../core/client';
-import * as events  from '../../events';
 import { SignalRHub } from '../SignalRHub';
 import { eventMapper, EventMap } from '../../utils/eventMapper';
 
 // UI EVENT NAMES
-export const GROUP_EVENTS_INVITE_RECEIVED = 'groups/inviteReceived';
-export const WARBAND_EVENTS_JOINED = 'warbands/joined';
-export const WARBAND_EVENTS_UPDATE = 'warbands/update';
-export const WARBAND_EVENTS_QUIT = 'warbands/quit';
-export const WARBAND_EVENTS_ABANDONED = 'warbands/abandoned';
-export const WARBAND_EVENTS_MEMBERJOINED = 'warbands/memberJoined';
-export const WARBAND_EVENTS_MEMBERUPDATE = 'warbands/memberUpdate';
-export const WARBAND_EVENTS_MEMBERREMOVED = 'warbands/memberRemoved';
-export const WARBAND_EVENTS_INVITERECEIVED = 'warbands/inviteReceived';
-
+export const hubEvents = {
+  joined: 'warbands/joined',
+  update: 'warbands/update',
+  quit: 'warbands/quit',
+  abandoned: 'warbands/abandoned',
+  memberJoined: 'warbands/memberJoined',
+  memberUpdate: 'warbands/memberUpdate',
+  memberRemoved: 'warbands/memberRemoved',
+  inviteReceived: 'warbands/inviteReceived',
+};
 
 const groupsHubEventsMap: EventMap[] = [
   {
-    receive: 'inviteReceived',
-    send: GROUP_EVENTS_INVITE_RECEIVED,
-  },
-  {
     receive: 'warbandJoined',
-    send: WARBAND_EVENTS_JOINED,
+    send: hubEvents.joined,
   },
   {
     receive: 'warbandUpdate',
-    send: WARBAND_EVENTS_UPDATE,
+    send: hubEvents.update,
   },
   {
     receive: 'warbandQuit',
-    send: WARBAND_EVENTS_QUIT,
+    send: hubEvents.quit,
   },
   {
     receive: 'warbandAbandoned',
-    send: WARBAND_EVENTS_ABANDONED,
+    send: hubEvents.abandoned,
   },
   {
     receive: 'warbandMemberJoined',
-    send: WARBAND_EVENTS_MEMBERJOINED,
+    send: hubEvents.memberJoined,
   },
   {
     receive: 'warbandMemberUpdated',
-    send: WARBAND_EVENTS_MEMBERUPDATE,
+    send: hubEvents.memberUpdate,
   },
   {
     receive: 'warbandMemberRemoved',
-    send: WARBAND_EVENTS_MEMBERREMOVED,
+    send: hubEvents.memberRemoved,
   },
   {
     receive: 'warbandInviteReceived',
-    send: WARBAND_EVENTS_INVITERECEIVED,
+    send: hubEvents.inviteReceived,
   },
 ];
 
@@ -81,5 +76,3 @@ function onConnected(hub: SignalRHub) {
 }
 
 groupsHub.addEventHandler('connected', onConnected);
-
-export default groupsHub;

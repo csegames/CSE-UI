@@ -107,23 +107,6 @@ class News extends React.Component<NewsProps, NewsState> {
 
   public render() {
 
-    let spinner: any = <div />;
-    if (this.state.isFetching) {
-      spinner = (
-        <div className='preloader-wrapper small active'>
-          <div className='spinner-layer spinner-yellow-only'>
-            <div className='circle-clipper left'>
-              <div className='circle'></div>
-            </div><div className='gap-patch'>
-              <div className='circle'></div>
-            </div><div className='circle-clipper right'>
-              <div className='circle'></div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
     const newsItems = this.state.posts.map(this.renderNewsItem);
     return (
       <div className='News'>

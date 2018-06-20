@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, PlayerState } from '@csegames/camelot-unchained';
+import { utils, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 import { getStaminaPercent } from '../lib/healthFunctions';
 
 const Container = styled('div')`
@@ -30,7 +30,7 @@ const Bar = styled('div')`
 `;
 
 export interface StaminaBarProps {
-  playerState: PlayerState;
+  playerState: PlayerState | GroupMemberState;
 }
 
 class StaminaBar extends React.Component<StaminaBarProps> {

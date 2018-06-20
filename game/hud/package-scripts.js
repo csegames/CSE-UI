@@ -190,11 +190,11 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u @csegames/camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -u ol -t [ envify --NODE_ENV production ]',
+          script: 'mkdirp build/js && browserify tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE -t [ envify --NODE_ENV production ]',
           hiddenFromHelp: true,
         },
         lib: {
-          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r @csegames/camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
+          script: '',//mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
         }
       },
@@ -210,10 +210,6 @@ module.exports = {
         script: 'nps report.start && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify,report.browserify,build.sass,clean.temps,report.success,copy.dev',
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
-      },
-      fledgling: {
-        script: 'nps build,clean.fledgling,copy.fledgling',
-        description: 'Builds the module and copies to the Fledling (30) UI override directory.',
       },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
@@ -235,6 +231,10 @@ module.exports = {
         script: 'nps build,clean.nuadaPrep,copy.nuadaPrep',
         description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
       },
+      wolfhere: {
+        script: 'nps build,clean.wolfhere,copy.wolfhere',
+        description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
+      },
       cube: {
         script: 'nps build,clean.cube,copy.cube',
         description: 'Builds the module and copies to the CUBE (27) UI override directory',
@@ -247,17 +247,25 @@ module.exports = {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
-      ignoreLintNuada: {
-        script: 'nps build.ignoreLint,clean.nuada,copy.nuada',
-        description: 'Builds the module and copies to the Nuada (1300) UI override directory',
+      ignoreLintWyrmling: {
+        script: 'nps build.ignoreLint,clean.wyrmling,copy.wyrmling',
+        description: 'Builds the module and copies to the Wyrmling (10) UI override directory',
+      },
+      ignoreLintWyrmlingPrep: {
+        script: 'nps build.ignoreLint,clean.wyrmlingPrep,copy.wyrmlingPrep',
+        description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
+      },
+      ignoreLintFledgling: {
+        script: 'nps build.ignoreLint,clean.fledgling,copy.fledgling',
+        description: 'Builds the module and copies to the Fledling (30) UI override directory.',
+      },
+      ignoreLintWolfhere: {
+        script: 'nps build.ignoreLint,clean.wolfhere,copy.wolfhere',
+        description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
       },
       ignoreLintNuadaPrep: {
         script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',
-        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory.',
-      },
-      wolfhere: {
-        script: 'nps build,clean.wolfhere,copy.wolfhere',
-        description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
+        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
       },
     },
     report: {

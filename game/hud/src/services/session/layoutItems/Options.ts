@@ -25,7 +25,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.Inventory,
+    zOrder: HUDZOrder.Options,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

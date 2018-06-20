@@ -23,7 +23,7 @@ import { InvitesState, initializeInvites } from '../../services/session/invites'
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import Watermark from '../Watermark';
-import HUDFullScreen from '../HUDFullScreen';
+import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
 import ScenarioPopup from '../ScenarioPopup';
@@ -33,8 +33,9 @@ import { ZoneName } from '../ZoneName';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
-
 import Console from '../Console';
+import { InteractiveAlertView } from '../InteractiveAlert';
+import { ContextMenu } from '../ContextMenu';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -83,15 +84,18 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <HUDNav.component {...HUDNav.props} />
         </div>
 
+        <InteractiveAlertView />
+
         <DevUI />
         <ScenarioPopup />
 
         <ScenarioResults />
         <HUDFullScreen />
-        <Watermark />
         <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
           <SkillBar />
         </div>
+        <ContextMenu />
+        <Watermark />
       </div>
     );
   }

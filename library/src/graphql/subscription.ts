@@ -4,10 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as _ from 'lodash';
 import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
-
+import client from '../core/client';
 
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
@@ -18,12 +19,20 @@ export interface Options<DataType> extends WebSocketOptions {
   onClosed: () => void;
 }
 
+
+const subscriptionUrl =  `${client.apiHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
+const subscriptionInitPayload = {
+  shardID: client.shardID,
+  loginToken: client.loginToken,
+  characterID: client.characterID,
+};
+
 export const defaultSubscriptionOpts: Options<any> = {
-  url: '/graphql',
+  url: subscriptionUrl,
   protocols: 'graphql-ws',
-  reconnectInterval: 5000,
+  reconnectInterval: 1000,
   connectTimeout: 2000,
-  initPayload: {},
+  initPayload: subscriptionInitPayload,
   debug: false,
   onDataReceived: data => console.log(data),
   onError: e => console.error(e),
@@ -56,6 +65,7 @@ export interface OperationMessage {
 
 export interface SubscriptionResult<T> {
   data: T;
+  ok: boolean;
   errors?: Error[];
 }
 
@@ -84,6 +94,16 @@ export const defaultSubscription: Subscription = {
   variables: null,
 };
 
+function getFrameIdentifier(frame: OperationMessage | string) {
+  const { id, type, payload } = typeof frame === 'string' ? JSON.parse(frame) : frame;
+  const operationName = payload && payload.operationName;
+  if (operationName) {
+    return `${type}${operationName}`;
+  } else {
+    return `${type}${id}`;
+  }
+}
+
 export class SubscriptionManager {
   private socket: ReconnectingWebSocket;
   private idCounter = 0;
@@ -94,7 +114,7 @@ export class SubscriptionManager {
   private messageQueue: string[] = [];
 
   constructor(options: Partial<Options<any>>) {
-    this.debug = options.debug;
+    this.debug = options.debug || false;
     if (this.debug) {
       this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
     }
@@ -135,9 +155,9 @@ export class SubscriptionManager {
   }
 
   public stop = (id: string) => {
-    if (this.debug) {
+    // if (this.debug) {
       this.log(`stop => ${id}`);
-    }
+    // }
 
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
@@ -170,19 +190,39 @@ export class SubscriptionManager {
     }
     switch (op.type) {
       case GQL_CONNECTION_ACK: {
-        Object.values(this.subscriptions).forEach(s => this.send(s.start));
+        // Use lodash for version
+        _.values(this.subscriptions).forEach(s => {
+          // Check to see if the message has already been added to the messageQueue
+          const inMessageQueue = _.findIndex(this.messageQueue, (message: string) => {
+            const messageIdentifier = getFrameIdentifier(message);
+            return getFrameIdentifier(message) === getFrameIdentifier(s.start);
+          }) !== -1;
+          if (!inMessageQueue) {
+            this.send(s.start);
+          }
+        });
         break;
       }
       case GQL_DATA: {
         const subscription = this.subscriptions[op.id];
         if (subscription && subscription.onData) {
-          subscription.onData(op.payload);
+          let data = null;
+          try {
+            data = JSON.parse(op.payload.data).data;
+          } catch (e) {
+          }
+          const result = {
+            data,
+            ok: op.payload.errors === null,
+            errors: op.payload.errors,
+          };
+          subscription.onData(result);
         }
         break;
       }
       case GQL_CONNECTION_KEEP_ALIVE: {
         clearTimeout(this.keepAliveTimeoutHandler);
-        this.keepAliveTimeoutHandler = setTimeout(() => {
+        this.keepAliveTimeoutHandler = window.setTimeout(() => {
           this.socket.refresh();
         }, 5000);
         this.send({
@@ -234,9 +274,11 @@ export class SubscriptionManager {
     }
     if (this.socket.isOpen) {
       this.socket.send(JSON.stringify(op));
-    } else if (this.debug) {
+    } else {
       this.messageQueue.push(JSON.stringify(op));
-      this.log('op message queued due to socket not open');
+      if (this.debug) {
+        this.log('op message queued due to socket not open');
+      }
     }
   }
 

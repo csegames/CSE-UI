@@ -7,10 +7,9 @@
 import * as React from 'react';
 import * as events  from '@csegames/camelot-unchained/lib/events';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
-import Trait, { TraitStyle } from './Trait';
+import Trait from './Trait';
 
 const Bane = (props: {
-  styles?: Partial<TraitStyle>;
   trait: BanesAndBoonsInfo;
   traits: TraitMap;
   allPrerequisites: TraitIdMap;
@@ -35,7 +34,6 @@ const Bane = (props: {
     allPrerequisites,
     allExclusives,
     addedBanes,
-    styles,
     maxPoints,
     banePoints,
   } = props;
@@ -45,11 +43,6 @@ const Bane = (props: {
       events.fire('play-sound', 'bane-select');
     }
   };
-  const baneStyles = Object.assign(
-    {},
-    { trait: { marginLeft: '10px', ...styles && styles.trait || {} } },
-    styles,
-  );
   return (
     <Trait
       type='Bane'
@@ -63,7 +56,6 @@ const Bane = (props: {
       allExclusives={allExclusives}
       addedTraits={addedBanes}
       primaryColor='#E85143'
-      styles={baneStyles}
       maxPoints={maxPoints}
       totalPoints={banePoints}
       shouldBeDefault={props.shouldBeDefault}

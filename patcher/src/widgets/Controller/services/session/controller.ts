@@ -178,12 +178,12 @@ export const initialize = module.createAction({
   action: () => {
     client.loginToken = patcher.getLoginToken();
     return (dispatch: (action: ControllerAction) => any) => {
-      dispatch(reset());
-      dispatch(initSignalR());
+      dispatch(reset() as ControllerAction);
+      dispatch(initSignalR() as ControllerAction);
       try {
         // Connect to main signalr patcher hub
         signalr.patcherHub.start(() => {
-          dispatch(initSignalRSuccess());
+          dispatch(initSignalRSuccess() as ControllerAction);
           registerPatcherHubEvents(dispatch);
           dispatch(getChannels());
           // update channel info on a timer...
@@ -193,7 +193,7 @@ export const initialize = module.createAction({
         });
       } catch (e) {
         console.error(e);
-        dispatch(initSignalRFailed());
+        dispatch(initSignalRFailed() as ControllerAction);
       }
 
         // Connect to all server's patcher hubs

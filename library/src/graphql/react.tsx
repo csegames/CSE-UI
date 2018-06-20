@@ -123,10 +123,12 @@ export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfi
   subsConf = withDefaults(subscriptionConfig, subsConf);
 }
 
+export type GraphQLQueryOptions = Partial<GraphQLQuery> &  Partial<GraphQLOptions>;
+export type GraphQLSubscriptionOptions<DataType> = Partial<Subscription> & Partial<SubscriptionOptions<DataType>>;
 
 export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
-  query?: string | (Partial<GraphQLQuery> &  Partial<GraphQLOptions>);
-  subscription?: string | (Partial<Subscription> & Partial<SubscriptionOptions<SubscriptionDataType>>);
+  query?: string | GraphQLQueryOptions;
+  subscription?: string | GraphQLSubscriptionOptions<SubscriptionDataType>;
   initialData?: QueryDataType;
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
@@ -190,7 +192,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   public shouldComponentUpdate(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>,
-     nextState: GraphQLState<QueryDataType>) {
+      nextState: GraphQLState<QueryDataType>) {
     if (!_.isEqual(this.state.data, nextState.data)) return true;
     if (!_.isEqual(this.props, nextProps)) return true;
     return false;
@@ -206,6 +208,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (this.props.subscription) {
       const result = subscribe(this.subscription, this.subscriptionHandler,
         this.subscriptionOptions, this.subscriptionError);
+      this.subscriptionID = result.id;
+      this.subscriptionManager = result.subscriptions;
     }
   }
 
@@ -220,6 +224,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (this.pollingTimeout) {
       clearTimeout(this.pollingTimeout);
       this.pollingTimeout = null;
+    }
+
+    if (this.subscriptionManager) {
+      this.subscriptionManager.stop(this.subscriptionID);
     }
   }
 
@@ -262,7 +270,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   private pollingRefetch = async () => {
     await this.refetch();
-    this.pollingTimeout = setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
+    this.pollingTimeout = window.setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
   }
 }
 

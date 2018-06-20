@@ -5,11 +5,10 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import Spinner from './Spinner';
 import { merge } from 'lodash';
 
-export interface FloatSpinnerStyle extends StyleDeclaration {
+export interface FloatSpinnerStyle {
   spinner: React.CSSProperties;
 }
 

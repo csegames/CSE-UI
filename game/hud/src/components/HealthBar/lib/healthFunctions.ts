@@ -5,10 +5,10 @@
  *
  */
 
-import { PlayerState, Faction } from '@csegames/camelot-unchained';
+import { PlayerState, Faction, GroupMemberState } from '@csegames/camelot-unchained';
 import { BodyParts } from '../../../lib/PlayerStatus';
 
-export function getHealthPercent(playerState: PlayerState, bodyPart: BodyParts) {
+export function getHealthPercent(playerState: PlayerState | GroupMemberState, bodyPart: BodyParts) {
   if (!playerState || !playerState.health || !playerState.health[bodyPart]) {
     return 0;
   }
@@ -17,7 +17,7 @@ export function getHealthPercent(playerState: PlayerState, bodyPart: BodyParts) 
   return (bodyPartHealth.current / bodyPartHealth.max) * 100;
 }
 
-export function getWoundsForBodyPart(playerState: PlayerState, bodyPart: BodyParts) {
+export function getWoundsForBodyPart(playerState: PlayerState | GroupMemberState, bodyPart: BodyParts) {
   if (!playerState || !playerState.health || !playerState.health[bodyPart]) {
     return 0;
   }
@@ -25,7 +25,7 @@ export function getWoundsForBodyPart(playerState: PlayerState, bodyPart: BodyPar
   return playerState.health[bodyPart].wounds;
 }
 
-export function getBloodPercent(playerState: PlayerState) {
+export function getBloodPercent(playerState: PlayerState | GroupMemberState) {
   if (!playerState || !playerState.blood) {
     return 0;
   }
@@ -33,7 +33,7 @@ export function getBloodPercent(playerState: PlayerState) {
   return (playerState.blood.current / playerState.blood.max) * 100;
 }
 
-export function getStaminaPercent(playerState: PlayerState) {
+export function getStaminaPercent(playerState: PlayerState | GroupMemberState) {
   if (!playerState || !playerState.stamina) {
     return 0;
   }
@@ -41,7 +41,7 @@ export function getStaminaPercent(playerState: PlayerState) {
   return (playerState.stamina.current / playerState.stamina.max) * 100;
 }
 
-export function getFaction(playerState: PlayerState) {
+export function getFaction(playerState: PlayerState | GroupMemberState) {
   if (!playerState || !playerState.faction) {
     return Faction.Factionless;
   }

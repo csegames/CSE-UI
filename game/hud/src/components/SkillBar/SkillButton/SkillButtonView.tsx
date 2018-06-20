@@ -132,7 +132,6 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
             minWidth: '200px',
             maxWidth: '300px',
             maxHeight: '750px',
-            whiteSpace: 'wrap',
           },
         }}
         content={() => (

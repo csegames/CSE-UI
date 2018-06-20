@@ -9,9 +9,9 @@ import { eventMapper, EventMap } from '../utils/eventMapper';
 
 declare const $: any;
 
-function signalRToEvents(recieve: string, send: string, hub: any, hubName: string, debug: boolean) {
+function signalRToEvents(receive: string, send: string, hub: any, hubName: string, debug: boolean) {
   if (!hub) return;
-  hub.on(recieve, (...params: any[]) => {
+  hub.on(receive, (...params: any[]) => {
     events.fire(send, ...params);
   });
 }
@@ -52,7 +52,7 @@ export class SignalRHub {
   private hub: any;
   private signalRHost: string;
   private debug: boolean;
-  private conn: any;
+  private conn: any = null;
   public reconnectOnDisconnect: boolean = true;
   private wantStop: boolean = false;
   private tryingToReconnect: boolean = false;
@@ -125,6 +125,8 @@ export class SignalRHub {
       this.debug = options.debug || false;
       this.reconnectOnDisconnect = options.reconnectOnDisconnect || true;
     }
+
+    this.addEventHandler = this.addEventHandler.bind(this);
   }
 
 
@@ -147,6 +149,8 @@ export class SignalRHub {
               ((hub: SignalRHub, data: any) => void) |
               ((hub: SignalRHub, error: string) => void) |
               ((hub: SignalRHub) => void)) {
+    
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | addEventHandler(event: '${event}')`);
 
     const handler = {
       callback,
@@ -168,17 +172,22 @@ export class SignalRHub {
     return handler.id;
   }
 
-  public removeEventHandler(id: number) {
+  public removeEventHandler = (id: number) => {
     const event = this.handlerIDMap[id];
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | removeEventHandler(id: '${id}') [${event}]`);
     if (!event) return;
     const handlers = this.eventHandlers[event];
     this.eventHandlers[event] = handlers.filter(h => h.id !== id);
     delete this.handlerIDMap[id];
   }
 
-  public start(onStart?: (hub: SignalRHub) => void, options?: {
+  public start = (onStart?: (hub: SignalRHub) => void, options?: {
     host: string;
-  }) {
+  }) => {
+    if (this.conn !== null) {
+      return;
+    }
+
     if (options) {
       if (options.host) {
         this.signalRHost = options.host;
@@ -212,11 +221,11 @@ export class SignalRHub {
     });
   }
 
-  public stop() {
+  public stop = () => {
     this.conn.stop();
   }
 
-  public invoke(method: string, ...params: any[]): DeferredObjectInfo {
+  public invoke = (method: string, ...params: any[]): DeferredObjectInfo => {
     return this.hub.invoke(method, ...params);
   }
 
@@ -224,7 +233,8 @@ export class SignalRHub {
   // lifetime events
   ////////////////////////////////////
 
-  private fireEvent(event: hubEvents, ...params: any[]) {
+  private fireEvent = (event: hubEvents, ...params: any[]) => {
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | fireEvent(event: '${event}')`);
     const handlers = this.eventHandlers[event];
     if (handlers) {
       handlers.forEach(h => h.callback(this, ...params));
@@ -268,6 +278,7 @@ export class SignalRHub {
 
   // Raised when the connection has disconnected
   private internalOnDisconnected = () => {
+    this.conn = null;
     // try to reconnect again in 5 seconds.
     if (this.reconnectOnDisconnect) {
       setTimeout(() => {
@@ -289,11 +300,11 @@ export class SignalRHub {
   // map to event emitters
   ////////////////////////////////////
 
-  private registerEvents() {
+  private registerEvents = () => {
     eventMapper(this.eventMaps, signalRToEvents, this.hub, this.hubName, this.debug);
   }
 
-  private unregisterEvents() {
+  private unregisterEvents = () => {
     if (this.hub) {
       this.eventMaps.map((evt) => {
         this.hub.off(evt.receive);

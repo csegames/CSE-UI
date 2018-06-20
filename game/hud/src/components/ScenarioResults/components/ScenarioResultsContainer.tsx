@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, client, soundEvents, Faction } from '@csegames/camelot-unchained';
+import { ql, events, client, soundEvents } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
 
@@ -31,7 +31,6 @@ export interface ScenarioResultsContainerState {
 
 class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerProps, ScenarioResultsContainerState> {
   private pollingInterval: any;
-  private visibilityTimeout: any;
 
   constructor(props: ScenarioResultsContainerProps) {
     super(props);
@@ -83,7 +82,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
       nextProps.graphql.data.scenariosummary.teamOutcomes;
     if ((!prevTeamOutcome || _.isEmpty(prevTeamOutcome)) && (nextTeamOutcome && !_.isEmpty(nextTeamOutcome))) {
       if (!this.state.visible && !nextState.visible) {
-        this.fireVisibility(nextProps);
+        this.toggleVisibility();
       }
     }
 
@@ -101,22 +100,6 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
     if (this.pollingInterval) {
       clearInterval(this.pollingInterval);
       this.pollingInterval = null;
-    }
-
-    if (this.visibilityTimeout) {
-      clearTimeout(this.visibilityTimeout);
-      this.visibilityTimeout = null;
-    }
-  }
-
-  private fireVisibility = (nextProps?: ScenarioResultsContainerProps) => {
-    if (nextProps) {
-      this.playScenarioEndSound(nextProps);
-
-      // We do the timeout to match the animation with the sound.
-      this.visibilityTimeout = setTimeout(() => events.fire('hudnav--navigate', 'scenario-results'), 2000);
-    } else {
-      events.fire('hudnav--navigate', 'scenario-results');
     }
   }
 
@@ -144,52 +127,6 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
         participants,
         teams,
       };
-    }
-  }
-
-  private playScenarioEndSound = (nextProps: ScenarioResultsContainerProps) => {
-    if (nextProps.graphql && nextProps.graphql.data && nextProps.graphql.data.scenariosummary) {
-      const winningTeam = _.find(nextProps.graphql.data.scenariosummary.teamOutcomes,
-        teamOutcome => teamOutcome.outcome === 'Win');
-      switch (winningTeam.teamID) {
-        case 'Tuatha': {
-          if (client.playerState.faction === Faction.TDD) {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-          } else {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
-          }
-          break;
-        }
-
-        case 'Arthurian': {
-          if (client.playerState.faction === Faction.Arthurian) {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-          } else {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
-          }
-          break;
-        }
-
-        case 'Viking': {
-          if (client.playerState.faction === Faction.Viking) {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-          } else {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
-          }
-          break;
-        }
-
-        default: {
-          // Teams theoretically won't always be one of these Factions, so handle that case.
-          const me = _.find(winningTeam.participants, particapant => particapant.displayName === client.playerState.name);
-          if (me) {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
-          } else {
-            client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
-          }
-          break;
-        }
-      }
     }
   }
 }

@@ -20,62 +20,59 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import styled from 'react-emotion';
 import { merge } from 'lodash';
 
-const defaultStyles: ConfirmDialogStyle = {
+const Container = styled('div')`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0.4);
+`;
 
-  container: {
-    position: 'fixed',
-    top: '0',
-    bottom: '0',
-    left: '0',
-    right: '0',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'default',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  },
+const Dialog = styled('div')`
+  background-color: #444;
+  min-width: 250px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+`;
 
-  dialog: {
-    backgroundColor: '#444',
-    minWidth: '250px',
-    minHeight: '100px',
-    display: 'flex',
-    flexDirection: 'column',
-  },
+const Content = styled('div')`
+  padding: 10px;
+  flex: 1;
+`;
 
-  content: {
-    padding: '10px',
-    flex: '1 1 auto',
-  },
+const Buttons = styled('div')`
+  display: flex;
+  flex: 0;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+`;
 
-  buttons: {
-    display: 'flex',
-    flex: '0 0 auto',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '100%',
-    padding: '10px 20px',
-  },
+const ConfirmButton = styled('div')`
+  padding: 5px 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+`;
 
-  confirmButton: {
-    padding: '5px 10px',
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-  },
-
-  cancelButton: {
-    padding: '5px 10px',
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-  },
-};
+const CancelButton = styled('div')`
+  padding: 5px 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+`;
 
 export interface ConfirmDialogStyle {
   container: React.CSSProperties;
@@ -92,7 +89,7 @@ export interface ConfirmDialogProps<ContentProps> {
   content: (props: ContentProps) => JSX.Element;
   cancelOnClickOutside?: boolean;
   contentProps?: ContentProps;
-  style?: Partial<ConfirmDialogStyle>;
+  styles?: Partial<ConfirmDialogStyle>;
   confirmButtonContent?: JSX.Element | string;
   cancelButtonContent?: JSX.Element | string;
 }
@@ -116,27 +113,27 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
   }
 
   public render() {
-    const ss = StyleSheet.create(merge(defaultStyles, this.props.style || {}));
+    const customStyles = this.props.styles || {};
     return (
       <div onClick={this.clicked} style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :
-            <div className={css(ss.container)}>
-              <div className={css(ss.dialog)} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave}>
-                <div className={css(ss.content)}>
+            <Container style={customStyles.container}>
+              <Dialog style={customStyles.dialog} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave}>
+                <Content style={customStyles.content}>
                   <this.props.content {...this.props.contentProps} />
-                </div>
-                <div className={css(ss.buttons)}>
-                  <div className={css(ss.confirmButton)} onClick={this.confirm}>
+                </Content>
+                <Buttons style={customStyles.buttons}>
+                  <ConfirmButton style={customStyles.confirmButton} onClick={this.confirm}>
                     {this.props.confirmButtonContent || 'Confirm'}
-                  </div>
-                  <div className={css(ss.cancelButton)} onClick={this.cancel}>
+                  </ConfirmButton>
+                  <CancelButton style={customStyles.cancelButton} onClick={this.cancel}>
                     {this.props.cancelButtonContent || 'Cancel'}
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </CancelButton>
+                </Buttons>
+              </Dialog>
+            </Container>
         }
       </div>
     );

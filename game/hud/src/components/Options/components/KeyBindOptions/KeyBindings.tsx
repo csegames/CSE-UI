@@ -6,37 +6,31 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled, { css } from 'react-emotion';
 import { client, Input } from '@csegames/camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 
 import SearchableList from '../../../SearchableList';
 import { ConfigIndex, ConfigInfo } from '../../OptionsMain';
 import KeyBindWarningModal, { WarningModalInfo } from './KeyBindWarningModal';
 import KeyBindingsListItem from './KeyBindingsListItem';
 
-export interface KeyBindingsStyle extends StyleDeclaration {
+export interface KeyBindingsStyle {
   KeyBindings: React.CSSProperties;
   listContainer: React.CSSProperties;
   searchInput: React.CSSProperties;
 }
 
-export const defaultKeyBindingsStyle: KeyBindingsStyle = {
-  KeyBindings: {
-    height: '100%',
-  },
+const Container = styled('div')`
+  height: 100%;
+`;
 
-  listContainer: {
-    height: '289px',
-  },
+const ListContainerStyle = css`
+  height: '289px',
+`;
 
-  listItemsContainer: {
-    overflow: 'hidden',
-  },
-
-  searchInput: {
-    backgroundColor: 'rgba(0,0,0,0.9)',
-  },
-};
+const ListItemsContainerStyle = css`
+  overflow: hidden;
+`;
 
 export interface KeyBindingsProps {
   styles?: Partial<KeyBindingsStyle>;
@@ -72,23 +66,18 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultKeyBindingsStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div className={css(ss.KeyBindings, custom.KeyBindings)}>
+      <Container>
         <Input
           placeholder={'Search'}
-          styles={{
-            input: defaultKeyBindingsStyle.searchInput,
-          }}
+          styles={{ input: { overflow: 'hidden' } }}
           onChange={this.onSearchChange}
           value={this.state.searchValue}
         />
         <SearchableList
           getRef={r => this.listRef = r}
-          containerClass={css(ss.listContainer)}
-          listItemsContainerClass={css(ss.listItemsContainer)}
+          containerClass={ListContainerStyle}
+          listItemsContainerClass={ListItemsContainerStyle}
           listItemsData={this.state.keyBindings}
           listItemHeight={40}
           listHeight={289}
@@ -112,7 +101,7 @@ export class KeyBindings extends React.Component<KeyBindingsProps, KeyBindingsSt
           onCancelPress={this.onCancelModalPress}
           warningModalInfo={this.state.warningModalInfo}
         />
-      </div>
+      </Container>
     );
   }
 

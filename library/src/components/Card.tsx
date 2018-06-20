@@ -5,51 +5,40 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled, { css } from 'react-emotion';
 
-export const defaultCardStyle: CardStyle = {
-  card: {
-    backgroundColor: '#3c3c3c',
-    color: '#ececec',
-    padding: '10px',
-    margin: '1em',
-    borderRadius: '2px',
-  },
+const Container = styled('div')`
+  background-color: #3C3C3C;
+  color: #ECECEC;
+  padding: 10px;
+  margin: 1em;
+  border-radius: 2px;
+`;
 
-  levelOne: {
-    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-  },
+const LevelOne = css`
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+`;
 
-  levelTwo: {
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-  },
+const LevelTwo = css`
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+`;
 
-  levelThree: {
-    boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-  },
+const LevelThree = css`
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+`;
 
-  levelFour: {
-    boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-  },
+const LevelFour = css`
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+`;
 
-  levelFive: {
-    boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-  },
-};
-
-export interface CardStyle extends StyleDeclaration {
-  card: React.CSSProperties;
-  levelOne: React.CSSProperties;
-  levelTwo: React.CSSProperties;
-  levelThree: React.CSSProperties;
-  levelFour: React.CSSProperties;
-  levelFive: React.CSSProperties;
-}
+const LevelFive = css`
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+`;
 
 export enum CardLevel {
   One,
@@ -60,37 +49,29 @@ export enum CardLevel {
 }
 
 export const Card = (props: {
-  styles?: Partial<CardStyle>;
   level?: CardLevel;
   children?: React.ReactNode;
 }) => {
-  const ss = StyleSheet.create(defaultCardStyle);
-  const custom = StyleSheet.create(props.styles || {});
   const level = props.level || CardLevel.One;
-  let levelCSS = ss.levelOne;
-  let customLevelCSS = custom.levelOne;
+  let levelCSS = LevelOne;
   switch (level) {
     case CardLevel.Two:
-      levelCSS = ss.levelTwo;
-      customLevelCSS = custom.levelTwo;
+      levelCSS = LevelTwo;
       break;
     case CardLevel.Three:
-      levelCSS = ss.levelThree;
-      customLevelCSS = custom.levelThree;
+      levelCSS = LevelThree;
       break;
     case CardLevel.Four:
-      levelCSS = ss.levelFour;
-      customLevelCSS = custom.levelFour;
+      levelCSS = LevelFour;
       break;
     case CardLevel.Five:
-      levelCSS = ss.levelFive;
-      customLevelCSS = custom.levelFive;
+      levelCSS = LevelFive;
       break;
   }
   return (
-    <div className={css(ss.card, levelCSS, custom.card, customLevelCSS)}>
+    <Card className={levelCSS}>
       {props.children}
-    </div>
+    </Card>
   );
 };
 

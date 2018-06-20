@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import { Race, Gender, Archetype } from '@csegames/camelot-unchained';
 
 import { AttributeInfo } from '../../services/session/attributes';
@@ -15,46 +15,36 @@ import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
 import { CharacterState } from '../../services/session/character';
 import LeftInfoPanel from './components/LeftInfoPanel';
 
-export interface CharacterSummaryStyle extends StyleDeclaration {
-  CharacterSummary: React.CSSProperties;
-  characterContainer: React.CSSProperties;
-  standingCharacter: React.CSSProperties;
-  characterNameInputContainer: React.CSSProperties;
-}
+const Container = styled('div')`
+  height: calc(100% - 30px);
+  display: flex;
+  padding: 15px;
+`;
 
-export const defaultCharacterSummaryStyle: CharacterSummaryStyle = {
-  CharacterSummary: {
-    height: 'calc(100% - 30px)',
-    display: 'flex',
-    padding: '15px',
-  },
+const CharacterContainer = styled('div')`
+  height: 100%;
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 
-  characterContainer: {
-    height: '100%',
-    flex: 1.5,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
+const StandingCharacter = styled('div')`
+  position: relative;
+  background-size: contain;
+  max-height: 80%;
+  height: 70vh;
+  width: 100%;
+`;
 
-  standingCharacter: {
-    position: 'relative',
-    backgroundSize: 'contain',
-    maxHeight: '80%',
-    height: '70vh',
-    width: '100%',
-  },
-
-  characterNameInputContainer: {
-    position: 'relative',
-    width: 'auto',
-    bottom: '55px',
-  },
-};
+const CharacterNameInputContainer = styled('div')`
+  position: relative;
+  width: auto;
+  bottom: 55px;
+`;
 
 
 export interface CharacterSummaryProps {
-  styles?: Partial<CharacterSummaryStyle>;
   attributes: AttributeInfo[];
   attributeOffsets: AttributeOffsetInfo[];
   selectedRace: Race;
@@ -77,11 +67,8 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultCharacterSummaryStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-    
     return (
-      <div className={css(ss.CharacterSummary, custom.CharacterSummary)}>
+      <Container>
         <LeftInfoPanel
           attributes={this.props.attributes}
           attributeOffsets={this.props.attributeOffsets}
@@ -91,11 +78,9 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
           remainingPoints={this.props.remainingPoints}
           banesAndBoonsState={this.props.banesAndBoonsState}
         />
-        <div className={css(ss.characterContainer, custom.characterContainer)}>
-          <div className={css(ss.standingCharacter, custom.standingCharacter) +
-            ` standing__${Race[this.props.selectedRace]}--${Gender[this.props.selectedGender]}`} />
-          <div className={css(ss.characterNameInputContainer, custom.characterNameInputContainer) +
-            ' cu-character-creation__name'}>
+        <CharacterContainer>
+          <StandingCharacter className="standing__${Race[this.props.selectedRace]}--${Gender[this.props.selectedGender]}" />
+          <CharacterNameInputContainer className="cu-character-creation__name">
             <input
               id='create-character-name-input'
               autoFocus
@@ -103,9 +88,9 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
               ref={this.props.inputRef}
               placeholder='Enter A Name Here'
             />
-          </div>
-        </div>
-      </div>
+          </CharacterNameInputContainer>
+        </CharacterContainer>
+      </Container>
     );
   }
 }

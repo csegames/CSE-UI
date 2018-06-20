@@ -417,7 +417,6 @@ export const outputItems: OutputItemsStyles = {
   outputItems: {
     flex: '0 1 120px',
     display: 'flex',
-    flexAlign: 'bottom',
     flexDirection: 'column',
     minHeight: opts.output.MIN_HEIGHT,
     maxHeight: opts.output.MAX_HEIGHT,
@@ -749,9 +748,9 @@ export interface SelectStyles {
   active: React.CSSProperties;
   list: React.CSSProperties;
   listHidden: React.CSSProperties;
-  listItem: React.CSSProperties;
+  listItem: any;
   listItemSelected: React.CSSProperties;
-  arrow: React.CSSProperties;
+  arrow: any;
 }
 
 export const select: SelectStyles = {

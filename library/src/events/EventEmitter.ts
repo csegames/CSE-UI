@@ -44,8 +44,10 @@ function addListener(em: InternalEmitter, topic: string, once: boolean = false, 
   const listener: Listener = createListener(topic, once, callback);
   const i: number = listeners.indexOf(null);
   if (i === -1) {
+    em._listenersById[listener.id] = listener;
     listeners.push(listener);
   } else {
+    em._listenersById[listener.id] = listener;
     listeners[i] = listener;
   }
   return listener.id;
@@ -62,12 +64,14 @@ function removeListener(em: InternalEmitter, handle: number) {
   const listeners: Listener[] = em._events[listener.topic];
   if (listeners && listeners.length) {
     for (let i = 0; i < listeners.length; i++) {
-      const l = listeners[i];
-      if (l[i] && l[i].id === listener.id) {
+      const _listener = listeners[i];
+      if (_listener && _listener.id === listener.id) {
         listeners[i] = null;
-        return;
+        break;
       }
     }
+
+    em._events[listener.topic] = listeners;
   }
 }
 

@@ -53,15 +53,10 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
   public render() {
     if (!this.props.races) return <div>loading races</div>;
 
-    let view: any = null;
     let text: any = null;
     let name: any = null;
     if (this.props.selectedRace) {
       name = <h2 className='display-name'>{this.props.selectedRace.name}</h2>;
-      view = <div
-        key={`${Race[this.props.selectedRace.id]}--${Gender[this.props.selectedGender]}`}
-        className={`standing__${Race[this.props.selectedRace.id]}--${Gender[this.props.selectedGender]}`}>
-      </div>;
       text = <div className='selection-description'>{raceText[Race[this.props.selectedRace.id]]}</div>;
     }
     return (
