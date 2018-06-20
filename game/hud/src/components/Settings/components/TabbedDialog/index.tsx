@@ -121,7 +121,6 @@ const DialogNavigation = styled('div')`
   position: relative;
   box-sizing: border-box!important;
   margin-bottom: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
   z-index: 1;
   box-shadow: inset 0 0 60px rgba(0,0,0,0.8);
 `;
