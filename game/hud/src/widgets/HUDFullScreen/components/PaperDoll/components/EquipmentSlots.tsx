@@ -83,6 +83,12 @@ const WeaponSpacing = css`
   margin-right: 15px;
 `;
 
+const Tabs = css`
+  justify-content: center;
+  font-size: 24px;
+  color: #FDD30D;
+`;
+
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
   { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
   { slotName: gearSlots.Face, openingSide: Alignment.ATopRight },
@@ -198,13 +204,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
           defaultTabIndex={0}
           tabs={tabs}
           content={content}
-          styles={{
-            tabs: {
-              justifyContent: 'center',
-              fontSize: '24px',
-              color: '#FDD30D',
-            },
-          }}
+          styles={{ tabs: Tabs }}
           alwaysRenderContent={true}
         />
         <EquippedWeaponSlots>{this.renderEquipmentSlotSection(weaponSlots)}</EquippedWeaponSlots>

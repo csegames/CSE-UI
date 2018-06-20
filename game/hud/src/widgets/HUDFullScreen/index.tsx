@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { events, client, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -19,11 +19,11 @@ import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { InventoryItemFragment } from '../../gqlInterfaces';
 
 export interface HUDFullScreenStyle {
-  hudFullScreen: React.CSSProperties;
-  navigationContainer: React.CSSProperties;
-  contentContainer: React.CSSProperties;
-  navTab: any;
-  activeNavTab: any;
+  hudFullScreen: string;
+  navigationContainer: string;
+  contentContainer: string;
+  navTab: string;
+  activeNavTab: string;
 }
 
 const Container = styled('div')`
@@ -55,46 +55,46 @@ const Close = styled('div')`
 `;
 
 const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
-  hudFullScreen: {
-    width: '50%',
-    height: '100%',
-  },
-  navigationContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    height: '35px',
-    width: '100%',
-    backgroundColor: '#151515',
-    zIndex: 10,
-  },
-  contentContainer: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#333333',
-  },
-  navTab: {
-    minWidth: '100px',
-    color: '#4C4C4C',
-    borderRight: '1px solid #4C4C4C',
-    textAlign: 'center',
-    cursor: 'pointer',
-    ':hover': {
-      color: 'white',
-    },
-    ':active': {
-      textShadow: '0px 0px 5px #fff',
-    },
-  },
-  activeNavTab: {
-    minWidth: '100px',
-    color: '#E5E5E5',
-    borderRight: '1px solid #4C4C4C',
-    textAlign: 'center',
-    cursor: 'pointer',
-    ':hover': {
-      color: 'white',
-    },
-  },
+  hudFullScreen: css`
+    width: 50%;
+    height: 100%;
+  `,
+  navigationContainer: css`
+    display: flex;
+    align-items: center;
+    height: 35px;
+    width: 100%;
+    background-color: #151515;
+    z-index: 10;
+  `,
+  contentContainer: css`
+    height: 100%;
+    width: 100%;
+    background-color: #333333;
+  `,
+  navTab: css`
+    min-width: 100px;
+    color: #4C4C4C;
+    border-right: 1px solid #4C4C4C;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: white;
+    }
+    &:active {
+      text-shadow: 0px 0px 5px #fff;
+    }
+  `,
+  activeNavTab: css`
+    min-width: 100px;
+    color: #E5E5E5;
+    border-right: 1px solid #4C4C4C;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: white;
+    }
+  `,
 };
 
 export interface FullScreenNavState {

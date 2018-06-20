@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import * as classNames from 'classnames';
-import styled, { css } from 'react-emotion';
+import styled, { cx, css } from 'react-emotion';
 
 import Slider from './Slider';
 
@@ -19,9 +18,7 @@ export interface ListItemStyles {
 const Container = styled('div')`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  height: 35px;
-  padding: 0 5px;
+  padding: 5px;
   cursor: pointer;
   -webkit-user-select: none;
   user-select: none;
@@ -73,7 +70,7 @@ const ListItem = (props: ListItemProps) => {
   if (props.sliderItemInfo) {
     return (
       <Container
-        className={classNames(
+        className={cx(
           SliderItem,
           props.isOddItem ? OddColorBackground : '',
           props.searchIncludes === false ? SearchDoesNotInclude : '',
@@ -89,7 +86,7 @@ const ListItem = (props: ListItemProps) => {
     return (
       <Container
         onClick={props.onClick}
-        className={classNames(
+        className={cx(
           props.isOddItem ? OddColorBackground : '',
           props.searchIncludes === false ? SearchDoesNotInclude : '',
         )}>

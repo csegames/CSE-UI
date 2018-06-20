@@ -6,16 +6,16 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css, cx } from 'react-emotion';
 
 export interface TabPanelStyle {
-  tabPanel: React.CSSProperties;
-  tabs: React.CSSProperties;
-  tab: React.CSSProperties;
-  activeTab: React.CSSProperties;
-  contentContainer: React.CSSProperties;
-  content: React.CSSProperties;
-  contentHidden: React.CSSProperties;
+  tabPanel: string;
+  tabs: string;
+  tab: string;
+  activeTab: string;
+  contentContainer: string;
+  content: string;
+  contentHidden: string;
 }
 
 const Container = styled('div')`
@@ -27,19 +27,14 @@ const Container = styled('div')`
 `;
 
 const Tabs = styled('div')`
-  flex: 0;
+  flex: 0 0 auto;
   display: flex;
 `;
 
 const Tab = styled('div')`
-  flex: 0;
+  flex: 0 0 auto;
   -webkit-user-select: none;
-  cursor: pointer
-`;
-
-const ActiveTab = styled('div')`
-  flex: 0;
-  -webkit-user-select: none;
+  cursor: pointer;
 `;
 
 const ContentContainer = styled('div')`
@@ -59,7 +54,7 @@ const Content = styled('div')`
   width: 100%;
 `;
 
-const ContentHidden = styled('div')`
+const ContentHidden = css`
   visibility: hidden;
   -webkit-user-select: none;
   pointer-events: none;
@@ -126,9 +121,9 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     const customStyles = this.props.styles || {};
 
     return (
-      <Container style={customStyles.tabPanel}>
+      <Container className={customStyles.tabPanel}>
         {this.renderTabs(customStyles)}
-        <ContentContainer style={customStyles.contentContainer}>
+        <ContentContainer className={customStyles.contentContainer}>
           {this.props.alwaysRenderContent
             ? this.renderAllContent(customStyles)
             : this.renderActiveContent(customStyles)}
@@ -147,16 +142,16 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
 
   private renderTabs = (customStyle: Partial<TabPanelStyle>) => {
     return (
-      <Tabs style={customStyle.tabs}>
+      <Tabs className={customStyle.tabs}>
         {this.props.tabs.map((tabItem, index) => {
           const selected = index === this.activeTabIndex;
           return (
-            <div
+            <Tab
               key={index}
-              style={selected ? { ...customStyle.tab, ...customStyle.activeTab } : customStyle.tab}
+              className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
               onClick={() => this.selectIndex(index, tabItem.name)}>
                 <tabItem.tab.render active={selected} {...tabItem.tab.props} />
-            </div>
+            </Tab>
           );
         })}
       </Tabs>
@@ -170,7 +165,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
       return (
         <Content
           key={index}
-          style={!active ? { ...customStyles.content, ...customStyles.contentHidden } : customStyles.content}>
+          className={!active ? cx(customStyles.content, ContentHidden, customStyles.contentHidden) : customStyles.content}>
             <content.content.render {...content.content.props} />
         </Content>
       );
@@ -182,7 +177,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     const activeItem = _.find(this.props.content, content =>
       this.props.tabs[this.activeTabIndex].rendersContent === content.name);
     return (
-      <Content style={customStyles.content}>
+      <Content className={customStyles.content}>
         <activeItem.content.render {...activeItem.content.props} />
       </Content>
     );

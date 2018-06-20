@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { utils, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 
 import GeneralInfo from './components/GeneralInfo';
 import GeneralStats from './components/GeneralStats/GeneralStats';
@@ -17,13 +17,13 @@ import Session from './components/Session/Session';
 import { colors } from '../../lib/constants';
 
 export interface CharacterInfoStyle {
-  tabPanelContainer: React.CSSProperties;
-  tabPanelContentContainer: React.CSSProperties;
-  tabPanelContent: React.CSSProperties;
-  tabs: React.CSSProperties;
-  tab: any;
-  tabText: React.CSSProperties;
-  activeTab: any;
+  tabPanelContainer: string;
+  tabPanelContentContainer: string;
+  tabPanelContent: string;
+  tabs: string;
+  tab: string;
+  tabText: string;
+  activeTab: string;
 }
 
 const Container = styled('div')`
@@ -52,59 +52,59 @@ const TabText = styled('span')`
 `;
 
 export const defaultCharacterInfoStyle: CharacterInfoStyle = {
-  tabPanelContainer: {
-    height: '100%',
-  },
+  tabPanelContainer: css`
+    height: 100%;
+  `,
 
-  tabPanelContentContainer: {
-    paddingBottom : '10px',
-    height: '100%',
-    width: '100%',
-  },
+  tabPanelContentContainer: css`
+    padding-bottom: 10px;
+    height: 100%;
+    width: 100%;
+  `,
 
-  tabPanelContent: {
-    display: 'flex',
-    height: '100%',
-  },
+  tabPanelContent: css`
+    display: flex;
+    height: 100%;
+  `,
 
-  tabs: {
-    backgroundColor: colors.primaryTabPanelColor,
-  },
+  tabs: css`
+    background-color: ${colors.primaryTabPanelColor};
+  `,
 
-  tab: {
-    flex: 1,
-    fontSize: '18px',
-    padding: '2px 5px',
-    color: colors.tabColorRed,
-    backgroundColor: colors.tabColorGray,
-    borderRight: `1px solid ${utils.darkenColor(colors.tabColorGray, 30)}`,
-    textAlign: 'center',
-    ':hover': {
-      backgroundColor: colors.tabHoverColorGray,
-    },
-    ':active': {
-      backgroundColor: colors.tabClickColorGray,
-    },
-  },
+  tab: css`
+    flex: 1;
+    font-size: 18px;
+    padding: 2px 5px;
+    color: ${colors.tabColorRed};
+    background-color: ${colors.tabColorGray};
+    border-right: 1px solid ${utils.darkenColor(colors.tabColorGray, 30)};
+    text-align: center;
+    &:hover {
+      background-color: ${colors.tabHoverColorGray};
+    }
+    &:active {
+      background-color: ${colors.tabClickColorGray};
+    }
+  `,
 
-  tabText: {
-    fontSize: 18,
-    margin: 0,
-    padding: 0,
-  },
+  tabText: css`
+    font-size: 18;
+    margin: 0;
+    padding: 0;
+  `,
 
-  activeTab: {
-    flex: 1,
-    padding: '2px 5px',
-    color: colors.tabColorGray,
-    backgroundColor: colors.tabColorRed,
-    ':hover': {
-      backgroundColor: colors.tabHoverColorRed,
-    },
-    ':active': {
-      backgroundColor: colors.tabClickColorRed,
-    },
-  },
+  activeTab: css`
+    flex: 1;
+    padding: 2px 5px;
+    color: ${colors.tabColorGray};
+    background-color: ${colors.tabColorRed};
+    &:hover {
+      background-color: ${colors.tabHoverColorRed};
+    }
+    &:active {
+      background-color: ${colors.tabClickColorRed};
+    }
+  `,
 };
 
 export interface CharacterInfoProps {

@@ -1,6 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ */
+
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 
 // @ts-ignore
 import { client, webAPI, events } from '@csegames/camelot-unchained';
@@ -238,26 +245,26 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
               defaultTabIndex={this.props.activeTabIndex}
               ref={ref => this.tabPanel = ref}
               styles={{
-                contentContainer: {
-                  height: 'auto',
-                },
-                content: {
-                  position: 'relative',
-                },
-                tabPanel: {
-                  flex: '1 1 auto',
-                  width: 'initial',
-                  height: 'initial',
-                },
-                tab: {
-                  padding: '2px 10px',
-                  background: '#444',
-                  borderBottom: '1px solid transparent',
-                },
-                activeTab: {
-                  background: '#777',
-                  borderBottom: '1px solid orange',
-                },
+                contentContainer: css`
+                  height: auto;
+                `,
+                content: css`
+                  position: relative;
+                `,
+                tabPanel: css`
+                  flex: 1 1 auto;
+                  width: initial;
+                  height: initial;
+                `,
+                tab: css`
+                  padding: 2px 10px;
+                  background: #444;
+                  border-bottom: 1px solid transparent;
+                `,
+                activeTab: css`
+                  background: #777;
+                  border-bottom: 1px solid orange;
+                `,
               }}
               tabs={this.props.pages.map((p, index) => {
                 return {

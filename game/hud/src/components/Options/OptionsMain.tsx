@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { client, utils, events, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 
 import ActionButtons from './components/ActionButtons';
@@ -20,64 +20,59 @@ export const OptionDimensions = {
 };
 
 interface OptionsTabPanelStyles {
-  tabPanelContainer: React.CSSProperties;
-  tabs: React.CSSProperties;
-  tab: any;
-  activeTab: any;
-  tabPanelContentContainer: React.CSSProperties;
-  tabPanelContent: React.CSSProperties;
+  tabPanelContainer: string;
+  tabs: string;
+  tab: string;
+  activeTab: string;
+  tabPanelContentContainer: string;
 }
 
 const customTabPanelStyles: OptionsTabPanelStyles = {
-  tabPanelContainer: {
-    height: 'calc(100% - 75px)',
-    flexDirection: 'row',
-  },
+  tabPanelContainer: css`
+    height: calc(100% - 75px);
+    flex-direction: row;
+  `,
 
-  tabs: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '220px',
-    padding: '10px 10px 0 10px',
-    borderRight: '1px solid #454545',
-  },
+  tabs: css`
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    padding: 10px 10px 0 10px;
+    border-right: 1px solid #454545;
+  `,
 
-  tab: {
-    fontSize: '18px',
-    padding: '2px 5px',
-    color: 'white',
-    backgroundColor: '#454545',
-    textAlign: 'center',
-    borderBottom: '1px solid black',
-    ':hover': {
-      backgroundColor: utils.lightenColor('#454545', 10),
+  tab: css`
+    font-size: 18px;
+    padding: 2px 5px;
+    color: white;
+    background-color: #454545;
+    text-align: center;
+    border-bottom: 1px solid black;
+    &:hover {
+      background-color: ${utils.lightenColor('#454545', 10)};
+    }
+    &:active {
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
+      background-color: ${utils.lightenColor('#454545', 10)};
     },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.9)',
-      backgroundColor: utils.lightenColor('#454545', 10),
+  `,
+
+  activeTab: css`
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
+    background-color: ${utils.lightenColor('#454545', 30)};
+    &:hover {
+      background-color: ${utils.lightenColor('#454545', 30)};
+    }
+    &:active {
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
+      background-color: ${utils.lightenColor('#454545', 30)};
     },
-  },
+  `,
 
-  activeTab: {
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.7)',
-    backgroundColor: utils.lightenColor('#454545', 30),
-    ':hover': {
-      backgroundColor: utils.lightenColor('#454545', 30),
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.7)',
-      backgroundColor: utils.lightenColor('#454545', 30),
-    },
-  },
-
-  tabPanelContentContainer: {
-    height: 'auto',
-    overflow: 'visible',
-  },
-
-  tabPanelContent: {
-
-  },
+  tabPanelContentContainer: css`
+    height: auto;
+    overflow: visible;
+  `,
 };
 
 
@@ -236,7 +231,6 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
             tab: customTabPanelStyles.tab,
             activeTab: customTabPanelStyles.activeTab,
             contentContainer: customTabPanelStyles.tabPanelContentContainer,
-            content: customTabPanelStyles.tabPanelContent,
           }}
         />
         <LoadSaveText>{this.state.loadSaveText}</LoadSaveText>

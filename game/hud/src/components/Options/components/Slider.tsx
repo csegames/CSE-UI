@@ -27,8 +27,6 @@ const Label = styled('label')`
 const Input = styled('input')`
   -webkit-appearance: none;
   width: 100%;
-  margin: -5px;
-  padding: 5px;
   cursor: pointer;
   background: transparent;
 
@@ -44,6 +42,7 @@ const Input = styled('input')`
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
+    background-color: white;
     border: 1px solid #201F1F;
     height: 20px;
     width: 20px;
@@ -68,7 +67,7 @@ const Input = styled('input')`
 
 const MinMaxInfo = styled('div')`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 const MinMaxText = styled('div')`
