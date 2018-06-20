@@ -82,9 +82,6 @@ fragment damagePerTarget on CountPerTargetTypeDBModel {
         purifySummary {
           ...craftingJobSummary
         }
-        refineSummary {
-          ...craftingJobSummary
-        }
         repairSummary {
           ...craftingJobSummary
         }

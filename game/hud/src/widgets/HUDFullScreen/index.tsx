@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 import { events, client, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
-import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import Map from './components/Map';
 import Inventory from './components/Inventory';
@@ -16,7 +16,7 @@ import PaperDoll from './components/PaperDoll';
 import CharacterInfo from './components/CharacterInfo';
 import TradeWindow from './components/TradeWindow';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
-import { InventoryItemFragment } from '../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
@@ -102,7 +102,7 @@ export interface FullScreenNavState {
   visibleComponentRight: string;
   initial: boolean;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItem[];
+  equippedItems: EquippedItemFragment[];
   myTradeItems: InventoryItemFragment[];
   myTradeState: SecureTradeState;
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
@@ -127,7 +127,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       inventoryItems: null,
       equippedItems: null,
       myTradeItems: [],
-      myTradeState: 'ModifyingItems',
+      myTradeState: 'None',
       containerIdToDrawerInfo: {},
       stackGroupIdToItemIDs: {},
     };
@@ -420,7 +420,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     this.setVisibleComponent('');
   }
 
-  private onChangeEquippedItems = (equippedItems: EquippedItem[]) => {
+  private onChangeEquippedItems = (equippedItems: EquippedItemFragment[]) => {
     this.setState({ equippedItems });
   }
 

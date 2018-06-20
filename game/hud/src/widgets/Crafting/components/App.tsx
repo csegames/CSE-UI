@@ -317,7 +317,7 @@ class App extends React.Component<AppProps, AppState> {
       case 'shape':
         this.loadPossibleSlots();
         // nobreak
-      default:  // purify, refine, grind, shape, block, make
+      default:  // purify, grind, shape, block, make
         voxGetRecipesFor(job)
           .then((recipes: VoxRecipe[]) => {
             props.dispatch(gotVoxRecipes(job, recipes));

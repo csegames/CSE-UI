@@ -25,7 +25,13 @@ module.exports = {
       schema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+      default: 'nps gqlLocal.schema && nps gqlLocal.codegen && nps gqlLocal.collectAndConcat'
+    },
+    gqlLocalServer: {
+      schema: 'apollo-codegen introspect-schema http://localhost:8000/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gqlLocalServer.schema && nps gqlLocalServer.codegen && nps gqlLocalServer.collectAndConcat'
     },
     dev: {
       default: {

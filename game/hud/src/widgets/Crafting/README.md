@@ -16,8 +16,6 @@ Recipes often have ingredient requirements.
 
 - Purify - Each recipe specifies a single specific item as input and output
 
-- Refine - Each recipe specifies a single specific item as input and outputs that same item as a higher quality.
-
 - Repair - Takes any item that has a less then max durability.
 
 I recommend running the "/cr list <recipetypes>" commands - you can see some of the ingredient details for the various crafting types.  Not as good as an API, but it might help give a better picture of what I listed above.

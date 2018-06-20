@@ -13,7 +13,6 @@ export function slash(command: string, callback?: (response: any) => void) {
     if (callback) listen(callback);
     client.SendSlashCommand(command);
   } else {
-    console.log('CRAFTING: would have sent ' + command + ' to server');
     if (callback) callback({ type: 'complete', complete: 'Simulated completion' });
   }
 }

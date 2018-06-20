@@ -6,38 +6,12 @@
  */
 
 export const SubstanceStatsFragment = `
-  hardness
-  impactToughness
-  fractureChance
-  malleability
-  massPCF
-  density
-  meltingPoint
-  thermConductivity
-  slashingResistance
-  piercingResistance
-  crushingResistance
-  acidResistance
-  poisonResistance
-  diseaseResistance
-  earthResistance
-  waterResistance
-  fireResistance
-  airResistance
-  lightningResistance
-  frostResistance
-  lifeResistance
-  mindResistance
-  spiritResistance
-  radiantResistance
-  deathResistance
-  shadowResistance
-  chaosResistance
-  voidResistance
-  arcaneResistance
+  unitHealth
   magicalResistance
-  hardnessFactor
-  strengthFactor
-  fractureFactor
+  meltingPoint
   massFactor
+  hardnessFactor
+  elasticity
+  fractureChance
+  unitMass
 `;

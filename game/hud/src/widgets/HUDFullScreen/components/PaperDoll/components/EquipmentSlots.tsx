@@ -6,8 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as classNames from 'classnames';
-import styled, { css } from 'react-emotion';
+import styled, { css, cx } from 'react-emotion';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import * as events from '@csegames/camelot-unchained/lib/events';
@@ -164,8 +163,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   public render() {
     const { showUnder } = this.state;
 
-    const outerToggleClass = classNames(ToggleText, OuterToggle, !showUnder ? ToggleOn : '');
-    const innerToggleClass = classNames(ToggleText, UnderToggle, showUnder ? ToggleOn : '');
+    const outerToggleClass = cx(ToggleText, OuterToggle, !showUnder ? ToggleOn : '');
+    const innerToggleClass = cx(ToggleText, UnderToggle, showUnder ? ToggleOn : '');
 
     const tabs: TabItem[] = [
       {
@@ -305,9 +304,9 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
             onVisibilityChange={this.onToggleItemMenuVisibility}>
           <div
             key={slot.slotName}
-            className={classNames(
-              !isWeapon && ItemSlotSpacing,
-              isWeapon && WeaponSpacing,
+            className={cx(
+              !isWeapon ? ItemSlotSpacing : '',
+              isWeapon ? WeaponSpacing : '',
             )}>
             <EquippedItemSlot
               tooltipDisabled={slotVisible}
