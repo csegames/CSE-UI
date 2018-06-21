@@ -11,6 +11,8 @@ import { webAPI } from '@csegames/camelot-unchained';
 
 import Login from '../../Login';
 import Alerts from '../../Alerts';
+import PatcherError from '../../PatcherError';
+import FatalError from '../../FatalError';
 import PatchButton from '../../PatchButton';
 import CharacterSelect from '../../CharacterSelect';
 import ProgressBar from '../../ProgressBar';
@@ -59,6 +61,7 @@ export interface ControllerDisplayViewProps {
   selectCharacter: (character: webAPI.SimpleCharacter) => void;
   selectServer: (server: PatcherServer) => void;
   selectServerType: (serverType: ServerType) => void;
+  onClearError: () => void;
 }
 
 export interface ControllerDisplayViewState {
@@ -75,17 +78,26 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
 
   public render() {
     const { activeRoute } = this.props;
-    const { alerts, servers, characters } = this.props.controllerState;
+    const { alerts, servers, characters, errors } = this.props.controllerState;
     const selectedServer = this.props.selectedServer ? servers[this.props.selectedServer.name] : null;
     const selectedCharacter = this.props.selectedCharacter ? characters[this.props.selectedCharacter.id] : null;
     const alertArray: webAPI.PatcherAlert[] = [];
     for (const key in alerts) alertArray.push(alerts[key]);
+
+    if (errors && errors.length) {
+      for (let i = 0; i < errors.length; i++) {
+        if (errors[i].fatal) {
+          return <FatalError errors={errors}/>;
+        }
+      }
+    }
 
     if (!patcher.hasLoginToken()) {
       return (
         <Container>
           <Login onLogin={this.props.onLogin} />
           <Alerts alerts={alertArray} />
+          <PatcherError errors={errors} onClear={this.props.onClearError}/>
         </Container>
       );
     }
@@ -132,6 +144,8 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
           servers={this.props.controllerState.servers}
           selectedServer={selectedServer}
         />
+        <Alerts alerts={alertArray} />
+        <PatcherError errors={errors} onClear={this.props.onClearError}/>
       </Container>
     );
   }
@@ -140,7 +154,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
     if (this.state.initialCharSelectOpen && !this.props.charSelectVisible && nextProps.charSelectVisible) {
       this.setState({ initialCharSelectOpen: false });
     }
-  } 
+  }
 }
 
 export default ControllerDisplayView;
