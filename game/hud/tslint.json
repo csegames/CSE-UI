@@ -31,7 +31,7 @@
       "check-branch",
       "check-decl",
       "check-operator",
-      "check-separator",
+      "(causes-stack-overflow):check-separator",
       "check-rest-spread",
       "check-type",
       "check-typecast",
