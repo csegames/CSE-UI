@@ -27,7 +27,7 @@ import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
 type QueryType = {
   secureTrade: SecureTradeStatus;
-}
+};
 
 const tradeQuery = `
   {

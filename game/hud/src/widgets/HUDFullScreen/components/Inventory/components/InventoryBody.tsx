@@ -326,11 +326,11 @@ class InventoryBody extends React.Component<InventoryBodyProps, InventoryBodySta
   }
 
   private removeRowOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState((state) => base.removeRowOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState(state => base.removeRowOfSlots(state, rowData, this.state.heightOfBody));
   }
 
   private pruneRowsOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState((state) => base.pruneRowsOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState(state => base.pruneRowsOfSlots(state, rowData, this.state.heightOfBody));
   }
 
   private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {

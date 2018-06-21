@@ -76,7 +76,7 @@ export const gotVoxRecipes = module.createAction({
       }
     }
     console.error('CRAFTING: illegal recipe type ' + type);
-    
+
     return {};
   },
 });

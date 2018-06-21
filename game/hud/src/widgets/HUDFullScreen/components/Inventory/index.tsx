@@ -54,7 +54,7 @@ export interface InventoryProps {
   myTradeItems: InventoryItemFragment[];
   myTradeState: SecureTradeState;
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]}
+  stackGroupIdToItemIDs: {[id: string]: string[]};
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;

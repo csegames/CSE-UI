@@ -117,7 +117,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
         <CancelButton onClick={this.onCancelClick}>Cancel</CancelButton>
         <TabHeader title='TRADE' />
         <TradeWindowSubHeader
-          text="Your Offer"
+          text='Your Offer'
           borderColor={'rgba(217, 188, 141, 0.2)'}
           backgroundColor={'rgba(217, 188, 141, 0.3)'}
           borderBackgroundColor={'rgba(217, 188, 141, 0.3)'}
@@ -143,7 +143,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
           onTheirTradeStateChanged={this.props.onTheirTradeStateChange}
         />
         <TradeWindowSubHeader
-          text="You will receive"
+          text='You will receive'
           useGrayBG={true}
           borderColor={'rgba(223, 223, 223, 0.2)'}
           backgroundColor={'rgba(223, 223, 223, 0.3)'}
@@ -190,7 +190,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
   }
 
   private setDropContainerDimensions = () => {
-    const { clientWidth, clientHeight } = this.tradeDropContainerRef; 
+    const { clientWidth, clientHeight } = this.tradeDropContainerRef;
     if (clientWidth !== this.state.dropContainerWidth || clientHeight !== this.state.dropContainerHeight) {
       this.setState({ dropContainerWidth: clientWidth, dropContainerHeight: clientHeight });
     }
@@ -220,7 +220,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh no!!', { timeout: 2500 });
     }
   }
@@ -229,7 +229,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     const items = this.props.theirTradeItems;
     const containerItems: InventoryItemFragment[] = [];
     const theirStackGroupIdToItemIDs: {[id: string]: string[]} = {};
-    
+
     items.forEach((item) => {
       if (isContainerItem(item)) {
         containerItems.push(item);
@@ -263,7 +263,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
           ...state,
           theirStackGroupIdToItemIDs,
           theirContainerIdToDrawerInfo,
-        }
+        };
       });
     }
   }
