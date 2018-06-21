@@ -91,7 +91,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <ScenarioResults />
         <HUDFullScreen />
-        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
+        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10, pointerEvents: 'none' }}>
           <SkillBar />
         </div>
         <ContextMenu />

@@ -133,7 +133,7 @@ class RewardsView extends React.Component<Props, State> {
               <LoadingContainer>
                 <div>{graphql.lastError}</div>
               </LoadingContainer>
-            )
+            );
           }
           if (graphql.loading || !graphql.data || !graphql.data.myprogression) {
             return (

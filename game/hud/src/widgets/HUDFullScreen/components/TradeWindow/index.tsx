@@ -27,7 +27,7 @@ import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
 type QueryType = {
   secureTrade: SecureTradeStatus;
-}
+};
 
 const tradeQuery = `
   {
@@ -154,9 +154,9 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
 
     if (resultData && resultData.secureTrade) {
       this.props.onMyTradeStateChange(resultData.secureTrade.myState);
-      this.props.onMyTradeItemsChange(resultData.secureTrade.myItems || []);
+      this.props.onMyTradeItemsChange((resultData.secureTrade.myItems || []) as any);
       this.onTheirTradeStateChange(resultData.secureTrade.theirState);
-      this.onTheirTradeItemsChange(resultData.secureTrade.theirItems);
+      this.onTheirTradeItemsChange((resultData.secureTrade.theirItems) as any);
     }
   }
 
@@ -170,7 +170,7 @@ class TradeWindow extends React.Component<TradeWindowProps, TradeWindowState> {
         break;
       }
       case 'ItemUpdate': {
-        this.onTheirTradeItemsChange(resultData.secureTradeUpdates.otherEntityItems);
+        this.onTheirTradeItemsChange(resultData.secureTradeUpdates.otherEntityItems as any[]);
         break;
       }
       case 'Complete': {

@@ -6,14 +6,14 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -50,11 +50,11 @@ const BackgroundImage = styled('img')`
 export interface InventoryProps {
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItem[];
+  equippedItems: EquippedItemFragment[];
   myTradeItems: InventoryItemFragment[];
   myTradeState: SecureTradeState;
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]}
+  stackGroupIdToItemIDs: {[id: string]: string[]};
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;

@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 
 import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
-import { Item, EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../lib/constants';
@@ -21,7 +21,7 @@ import eventNames, {
 } from '../../lib/eventNames';
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
-import { InventoryBaseQuery, InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryBaseQuery, InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 import {
   createMoveItemRequestToInventoryPosition,
   createMoveItemRequestToWorldPosition,
@@ -86,7 +86,7 @@ export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<Inventory
   inventoryItems?: InventoryItemFragment[];
   myTradeItems?: InventoryItemFragment[];
   myTradeState: SecureTradeState;
-  equippedItems?: EquippedItem[];
+  equippedItems?: EquippedItemFragment[];
 }
 
 export interface ItemIDToInfo {
@@ -848,7 +848,7 @@ export function distributeItemsNoFilter(slotsData: {
 export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment[],
                                             containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                             moveRequests?: MoveItemRequest[]) {
-  const newContainerIdToDrawerInfo = {...containerIdToDrawerInfo};
+  const newContainerIdToDrawerInfo = { ...containerIdToDrawerInfo };
   const newMoveRequests = moveRequests && [...moveRequests];
 
   containerItems.forEach((_containerItem) => {
@@ -894,7 +894,7 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
               createMoveItemRequestToContainerPosition(
                 getInventoryDataTransfer({
                   slotType: SlotType.Standard,
-                  item: _item as Item,
+                  item: _item,
                   position: _item.location.inContainer.position,
                   location: 'inContainer',
                   containerID: [_containerItem.id],
@@ -902,7 +902,7 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
                 }),
                 getInventoryDataTransfer({
                   slotType: SlotType.Standard,
-                  item: _item as Item,
+                  item: _item,
                   position: openSlotNum,
                   location: 'inContainer',
                   containerID: [_containerItem.id],
@@ -930,7 +930,7 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
   return {
     newContainerIdToDrawerInfo,
     newMoveRequests,
-  }
+  };
 }
 
 // we're filtering items here, put items into slots without regard to position
@@ -1041,8 +1041,8 @@ export function partitionItems(items: InventoryItemFragment[]) {
       // Find nested containers
       item.containerDrawers.forEach((drawers) => {
         drawers.containedItems.forEach((_item) => {
-          if (isContainerItem(_item as Item)) {
-            containerItems.push(_item as Item);
+          if (isContainerItem(_item as InventoryItemFragment)) {
+            containerItems.push(_item as InventoryItemFragment);
           }
         });
       });
@@ -1555,7 +1555,7 @@ function removeItemInContainer(item: InventoryItemFragment,
 
 export async function equipItemRequest(item: InventoryItemFragment,
                             gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                            equippedItem: EquippedItem,
+                            equippedItem: EquippedItemFragment,
                             equipToSlotNumber: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const inventoryItemPosition = getItemInventoryPosition(item);

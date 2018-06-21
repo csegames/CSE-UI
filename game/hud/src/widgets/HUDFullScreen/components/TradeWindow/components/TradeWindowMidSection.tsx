@@ -162,7 +162,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh no!!', { timeout: 2500 });
     }
   }
@@ -185,7 +185,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh no!!', { timeout: 2500 });
     }
   }
@@ -205,7 +205,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh no!!', { timeout: 2500 });
     }
   }
@@ -225,7 +225,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh no!!', { timeout: 2500 });
     }
   }

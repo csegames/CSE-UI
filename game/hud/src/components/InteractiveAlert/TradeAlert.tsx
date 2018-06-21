@@ -13,12 +13,12 @@ import { IInteractiveAlert, TradeAlert } from '@csegames/camelot-unchained/lib/g
 
 // Utility Functions
 export function removeTradeInvite(alertsList: IInteractiveAlert[], toRemove: TradeAlert) {
-  const alerts = _.filter([...alertsList], a => {
+  const alerts = _.filter([...alertsList], (a) => {
     return !(a.category === 'Trade' && (a as TradeAlert).otherName === toRemove.otherName);
   });
   return {
     alerts,
-  }
+  };
 }
 
 function openTradeWindow() {
@@ -105,7 +105,7 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     this.props.remove(this.props.alert);
     this.makeAcceptRequest();
   }
-  
+
   private onDecline = () => {
     this.props.remove(this.props.alert);
     this.makeDeclineRequest();

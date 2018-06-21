@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, webAPI, client } from '@csegames/camelot-unchained'
+import { ql, webAPI, client } from '@csegames/camelot-unchained';
 
 import LockedOverlay from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
@@ -230,7 +230,7 @@ class TradeContainer extends React.Component<TradeDropContainerProps, TradeDropC
           const parsedRes = webAPI.parseResponseData(res);
           toastr.error(parsedRes.FieldCodes[0].Message, parsedRes.Message, { timeout: 2500 });
         }
-      } catch(err) {
+      } catch (err) {
         toastr.error('There was an error!', 'Oh No!!', { timeout: 2500 });
       }
     }
@@ -275,7 +275,7 @@ class TradeContainer extends React.Component<TradeDropContainerProps, TradeDropC
           }
         });
       });
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh No!!', { timeout: 2500 });
     }
   }
@@ -299,7 +299,7 @@ class TradeContainer extends React.Component<TradeDropContainerProps, TradeDropC
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
       }
-    } catch(err) {
+    } catch (err) {
       toastr.error('There was an error!', 'Oh No!!', { timeout: 2500 });
     }
   }
@@ -394,7 +394,7 @@ const TradeDropContainer = withDragAndDrop<TradeDropContainerProps>(
       dataKey: 'inventory-items',
       dropTarget: props.tradeState !== 'Locked' && props.tradeState !== 'None' && props.id === 'myItems',
       disableDrag: true,
-    }
+    };
   },
 )(TradeContainer);
 

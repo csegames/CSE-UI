@@ -25,7 +25,7 @@ export async function inviteToTrade(targetID: string) {
         toastr.error(resultData.FieldCodes[0].Message, 'Oh No!!', { timeout: 3000 });
       }
     }
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 }

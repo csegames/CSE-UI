@@ -9,14 +9,14 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import { EquippedItem, SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -70,8 +70,8 @@ export interface EquippedItemsMap {
 export interface PaperDollProps extends GraphQLInjectedProps<any> {
   visibleComponent: string;
   inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItem[];
-  onEquippedItemsChange: (equippedItems: EquippedItem[]) => void;
+  equippedItems: EquippedItemFragment[];
+  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
   myTradeState: SecureTradeState;
 }
 

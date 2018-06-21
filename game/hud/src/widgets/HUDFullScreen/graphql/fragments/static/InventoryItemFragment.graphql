@@ -19,6 +19,7 @@ fragment InventoryItem on Item {
   }
   staticDefinition {
     id
+    numericItemDefID
     description
     name
     iconUrl

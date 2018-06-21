@@ -22,6 +22,7 @@ const Container = styled('div')`
 `;
 
 const CharacterContainer = styled('div')`
+  position: relative;
   height: 100%;
   flex: 1.5;
   display: flex;
@@ -30,8 +31,8 @@ const CharacterContainer = styled('div')`
 `;
 
 const StandingCharacter = styled('div')`
-  position: relative;
-  background-size: contain;
+  position: relative !important;
+  background-size: contain !important;
   max-height: 80%;
   height: 70vh;
   width: 100%;
@@ -79,7 +80,9 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
           banesAndBoonsState={this.props.banesAndBoonsState}
         />
         <CharacterContainer>
-          <StandingCharacter className="standing__${Race[this.props.selectedRace]}--${Gender[this.props.selectedGender]}" />
+          <StandingCharacter
+            className={`standing__${Race[this.props.selectedRace]}--${Gender[this.props.selectedGender]}`}
+          />
           <CharacterNameInputContainer className="cu-character-creation__name">
             <input
               id='create-character-name-input'

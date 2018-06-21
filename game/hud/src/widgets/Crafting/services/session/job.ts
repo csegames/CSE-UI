@@ -89,11 +89,6 @@ export const addIngredient = module.createAction({
   reducer: (s, a) => {
     const ingredients = [...s.ingredients];
     const qty = a.qty;
-    if (a.movedTo) {
-      console.log('ADD INGREDIENT: MOVED TO ' + a.movedTo);
-    } else {
-      console.log('ADD INGREDIENT: ID ' + a.ingredient.id);
-    }
     // Update existing ingredient
     let i;
     for (i = 0; i < ingredients.length; i++) {
@@ -102,13 +97,11 @@ export const addIngredient = module.createAction({
         ingredients[i] = Object.assign({}, ingredient, {
           qty: ingredient.qty + qty,
         });
-        console.log('ADD INGREDIENT: UPDATE INGREDIENT ' + ingredient.id + ' BY ' + qty + ' TO ' + ingredient[i].qty);
         break;
       }
     }
     if (i === ingredients.length) {
       // or add new one
-      console.log('ADD INGREDIENT: ADD NEW INGREDIENT ' + a.ingredient.id + ' BY ' + qty);
       ingredients.push(Object.assign({}, a.ingredient, {
         id: a.movedTo || a.ingredient.id,
         qty: a.qty,
@@ -239,11 +232,13 @@ export const gotVoxPossibleIngredientsForSlot = module.createAction({
     ingredients,
     slot,
   }),
-  reducer: (s, a) => ({
-    possibleIngredientsForSlot: a.ingredients
-      && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
-    slot: a.slot,
-  }),
+  reducer: (s, a) => {
+    return {
+      possibleIngredientsForSlot: a.ingredients
+        && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
+      slot: a.slot,
+    };
+  },
 });
 
 function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {

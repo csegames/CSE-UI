@@ -54,7 +54,6 @@ export const JobType = (props: JobTypeProps) => {
       craftingButtons = (
         <div className={css(ss.jobButtons)}>
           {button('purify')}
-          {button('refine')}
           {button('grind')}
           {button('shape')}
           {button('block')}

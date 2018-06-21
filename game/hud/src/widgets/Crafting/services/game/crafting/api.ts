@@ -23,14 +23,11 @@ function run(startRequest: () => any) {
         try {
           const data = response.json();
           if (response.ok) {
-            console.log('RESPONSE OK: ', data);
             resolve(data);
           } else {
-            console.log('REJECT: ', data);
             reject(data);
           }
         } catch (e) {
-          console.log('EXCEPTION: ', e);
           reject({ Code: e.number, Message: e.message });
         }
       })

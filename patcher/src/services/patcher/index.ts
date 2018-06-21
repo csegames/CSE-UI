@@ -95,6 +95,7 @@ export class PatcherAPI {
         UninstallChannel: () => {},
         LaunchChannel: () => {},
         MarkFAQAsRead: () => {},
+        OnPatcherError: (callback: (alert: string, isFatal: bool) => void) => {},
       };
     }
   }
@@ -210,6 +211,12 @@ export class PatcherAPI {
   public markFAQAsRead() {
     this._hasReadFAQ = true;
     this._api.MarkFAQAsRead();
+  }
+
+  public OnPatcherError = (callback: (alert: string, isFatal: boolean) => void) => {
+    if (this._api.OnPatcherError) {
+      this._api.OnPatcherError(callback);
+    }
   }
 
   /**
