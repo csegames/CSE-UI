@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, utils, client } from '@csegames/camelot-unchained';
+
+import { ql, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 const query = {
@@ -26,55 +27,152 @@ export interface WelcomeStyles {
 }
 
 const Container = styled('div')`
+  position: relative;
+`;
+
+const InnerContainer = styled('div')`
+  position: relative;
   pointer-events: all;
-  user-select: none;
-  -webkit-user-select: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 450px;
-  background-color: rgba(0, 0, 0, 0.8);
-  border: 1px solid ${utils.lightenColor('#202020', 30)};
-`;
-
-const Header = styled('div')`
-  width: 100%;
-  padding: 5px 0;
-  text-align: center;
+  width: 800px;
+  height: 400px;
+  padding: 0px;
+  margin:0 auto;
+  background-color: gray;
   color: white;
-  background-color: #202020;
-  border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+  background: url("images/motd/motd-bg-grey.png") no-repeat;
+  z-index: 1;
+  border: 1px solid #6e6c6c;
+  box-shadow: 0 0 30px 0 #000;
 `;
 
-const Content = styled('div')`
-  flex: 1;
-  color: white;
-  padding: 5px;
-  overflow: auto;
-`;
-
-const Footer = styled('div')`
-  padding: 5px 0;
-  background-color: #202020;
+const MOTDTitle = styled('div')`
   text-align: center;
-  border-top: 1px solid ${utils.lightenColor('#202020', 30)};
+  background: url("images/motd/motd-top-title.png") center top no-repeat;
+  margin: 0 auto -9px auto;
+  position: relative;
+  z-index: 999;
+  width: 319px;
+  height: 23px;
+  h6 {
+    color: #848484;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 7px 0 0 0;
+    margin: 0 0 0 0;
+    font-family: 'Caudex', serif;
+  }
 `;
 
-const DismissButton = styled('a')`
-  cursor: pointer;
-`;
-
-const Close = styled('div')`
+const MOTDCorner = styled('div')`
   position: absolute;
-  top: 2px;
-  right: 5px;
-  color: #CDCDCD;
-  font-size: 20px;
-  margin-right: 5px;
+  min-width: 800px;
+  min-height: 400px;
+  background:
+  url("images/motd/motd-ornament-top-left.png") left 0 top 0 no-repeat,
+  url("images/motd/motd-ornament-top-right.png") right 0 top 0 no-repeat,
+  url("images/motd/motd-ornament-bottom-left.png") left 0 bottom 0 no-repeat,
+  url("images/motd/motd-ornament-bottom-right.png") right 0 bottom 0 no-repeat;
+  z-index: 1;
+`;
+const MOTDMotdTitle = styled('div')`
+  height: 40px;
+  h4 {
+    color: #cebd9d;
+    line-height: 40px;
+    margin-left: 20px;
+  }
+`;
+const MOTDContent = styled('div')`
+  height: 285px;
+  margin-top: 0px;
+  max-height: 295px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-top: 1px solid #3b3634;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  width: calc(100% - 40px);
+  position: absolute;
+`;
+
+const MOTDFooter = styled('div')`
+  position: absolute;
+  min-width: 800px;
+  height: 55px;
+  bottom: 0;
+  left: 0;
+  background: rgba(55, 52, 51, 0.3);
+  border-top: 1px solid #3b3634;
+  z-index: 11;
+`;
+
+const MOTDButton = styled('div')`
+  &.btn {
+    background: url("images/motd/button-off.png") no-repeat;
+    width: 95px;
+    height: 30px;;
+    border: none;
+    margin: 12px 16px 0 16px;
+    cursor: pointer;
+    color: #848484;
+    font-family: 'Caudex', serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 30px;
+    &:hover {
+      background: url("images/motd/button-on.png") no-repeat;
+      color: #fff;
+    }
+  }
+`;
+
+const MOTDFooterBorder = styled('div')`
+  position: absolute;
+  border: 1px solid #2e2b28;
+  margin: 7px 10px 0;
+  display: block;
+  width: 780px;
+  height: 40px;
+  z-index: 3;
+`;
+
+const MOTDFooterOuter = styled('div')` {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+const MOTDFooterLeft = styled('div')` {
+  background: url("images/motd/motd-botnav-left-ornament.png") no-repeat;
+  height: 55px;
+  width: 75px
+`;
+
+const MOTDFooterRight = styled('div')` {
+  background: url("images/motd/motd-botnav-right-ornament.png") no-repeat;
+  height: 55px;
+  width: 75px
+`;
+
+const CloseButton = styled('div')`
+  position: absolute;
+  z-index: 11;
+  top: 6px;
+  right: 7px;
+  width: 12px;
+  height: 12px;
+  background: url(images/inventory/close-button-grey.png) no-repeat;
   cursor: pointer;
-  user-select: none;
   &:hover {
-    color: #BBB;
+    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
+  }
+  &:active {
+    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
   }
 `;
 
@@ -111,27 +209,36 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
 
           return (
             <Container>
-              <Header>
-                <div className=''>
-                  { gqlData && gqlData.motd && gqlData.motd[0]
+              <MOTDTitle><h6>MOTD</h6></MOTDTitle>
+              <InnerContainer>
+                <CloseButton onClick={this.hide} />
+                <MOTDCorner />
+                <MOTDMotdTitle>
+                  <h4>{ gqlData && gqlData.motd && gqlData.motd[0]
                     ? gqlData.motd[0].title
                     : 'Welcome to Camelot Unchained'
-                  }
-                </div>
-                <Close onClick={this.hide}>
-                  <i className='fa fa-times click-effect'></i>
-                </Close>
-              </Header>
-              <Content>
-              {
-                gqlData && gqlData.motd && gqlData.motd[0]
-                ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
-                : this.defaultMessage
-              }
-              </Content>
-              <Footer>
-                <DismissButton onClick={this.hideDelay}>Dismiss For 24h</DismissButton>
-              </Footer>
+                  }</h4>
+                </MOTDMotdTitle>
+                <MOTDContent>
+                      {
+                        gqlData && gqlData.motd && gqlData.motd[0]
+                        ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
+                        : this.defaultMessage
+                      }
+                </MOTDContent>
+                <MOTDFooter>
+                  <MOTDFooterBorder />
+                  <MOTDFooterOuter>
+                      <MOTDFooterLeft />
+                      <MOTDButton
+                        className="btn"
+                        onClick={this.hideDelay}>
+                        Dismiss for 24h
+                      </MOTDButton>
+                      <MOTDFooterRight />
+                  </MOTDFooterOuter>
+                </MOTDFooter>
+              </InnerContainer>
             </Container>
           );
         }}
