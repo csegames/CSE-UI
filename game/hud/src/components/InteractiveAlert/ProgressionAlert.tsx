@@ -13,12 +13,12 @@ import { ProgressionAlert, IInteractiveAlert } from '@csegames/camelot-unchained
 
 // Utility Functions
 export function removeProgressionAlert(alertsList: IInteractiveAlert[], toRemove: ProgressionAlert) {
-  const alerts = filter([...alertsList], a => {
+  const alerts = filter([...alertsList], (a) => {
     return !(a.category === 'Progression' && (a as ProgressionAlert).when === toRemove.when);
   });
   return {
     alerts,
-  }
+  };
 }
 
 const Container = styled('div')`

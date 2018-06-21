@@ -848,7 +848,7 @@ export function distributeItemsNoFilter(slotsData: {
 export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment[],
                                             containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                             moveRequests?: MoveItemRequest[]) {
-  const newContainerIdToDrawerInfo = {...containerIdToDrawerInfo};
+  const newContainerIdToDrawerInfo = { ...containerIdToDrawerInfo };
   const newMoveRequests = moveRequests && [...moveRequests];
 
   containerItems.forEach((_containerItem) => {
@@ -930,7 +930,7 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
   return {
     newContainerIdToDrawerInfo,
     newMoveRequests,
-  }
+  };
 }
 
 // we're filtering items here, put items into slots without regard to position

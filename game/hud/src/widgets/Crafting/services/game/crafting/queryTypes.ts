@@ -80,7 +80,7 @@ interface VoxRecipe {
     isVox: boolean;
     itemType: string;
     name: string;
-  }
+  };
   outputItem: {
     name: string;
     iconUrl: string;

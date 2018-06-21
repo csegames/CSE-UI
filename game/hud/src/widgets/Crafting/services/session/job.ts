@@ -237,7 +237,7 @@ export const gotVoxPossibleIngredientsForSlot = module.createAction({
       possibleIngredientsForSlot: a.ingredients
         && mapVoxIngredientsToIngredients(a.ingredients).sort((a, b) => a.name.localeCompare(b.name)),
       slot: a.slot,
-    }
+    };
   },
 });
 

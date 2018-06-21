@@ -127,7 +127,7 @@ class Progression extends React.Component<Props, State> {
       collecting: false,
       collected: false,
       logIDs: [],
-    }
+    };
   }
   public render() {
     if (!this.state.visible) {
@@ -207,13 +207,13 @@ class Progression extends React.Component<Props, State> {
     this.setState({ collecting: true });
     this.collectCharacterDayProgression(0);
   }
-  
+
   private collectCharacterDayProgression = async (logIDIndex: number) => {
     if (!this.state.logIDs[logIDIndex]) {
       // set a timeout for the api server to update
       this.setState({ collecting: false, collected: true });
       return;
-    };
+    }
     try {
       const res = await webAPI.ProgressionAPI.CollectCharacterDayProgression(
         webAPI.defaultConfig,
@@ -231,7 +231,7 @@ class Progression extends React.Component<Props, State> {
 
       // Recursively collect next days character progression
       this.collectCharacterDayProgression(logIDIndex + 1);
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
   }

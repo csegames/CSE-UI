@@ -67,7 +67,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
                   return <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />;
                 }
                 case 'Progression': {
-                  return <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />
+                  return <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />;
                 }
               }
               return null;
