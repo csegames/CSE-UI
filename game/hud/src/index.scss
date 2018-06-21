@@ -30,7 +30,6 @@ body {
   @import './_font.scss';
 
   // components
-  @import './components/PlayerStatusComponent/index';
   @import './components/HUD/index';
   @import './components/HUDDrag/index';
   @import './components/Respawn/index';
@@ -41,9 +40,8 @@ body {
   @import './components/DevUI/index';
   // widgets
   @import './widgets/Building/index';
-  @import './widgets/Social/index';
   // external scss
-  @import 'cu-xmpp-chat/lib/index.scss';
+  @import '@csegames/cu-xmpp-chat/lib/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;

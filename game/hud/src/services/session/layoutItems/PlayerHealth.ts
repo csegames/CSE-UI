@@ -10,18 +10,18 @@ import HUDZOrder from '../HUDZOrder';
 export default {
   position: {
     x: {
-      anchor: 3,
+      anchor: 2,
       offset: 0,
     },
     y: {
-      anchor: 7,
-      offset: 0,
+      anchor: 5,
+      offset: -100,
     },
     size: {
       width: 300,
-      height: 180,
+      height: 140,
     },
-    scale: 0.6,
+    scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: HUDZOrder.PlayerHealth,

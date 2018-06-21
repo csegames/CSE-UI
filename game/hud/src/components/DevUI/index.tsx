@@ -1,14 +1,21 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ */
+
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css, StyleSheet } from 'aphrodite';
+import styled, { css } from 'react-emotion';
 
 // @ts-ignore
-import { client, webAPI, events } from 'camelot-unchained';
-import { TabPanel } from 'camelot-unchained/lib/components';
-import { ObjectMap } from 'camelot-unchained/lib/graphql/utils';
-import { QuickQLQuery } from 'camelot-unchained/lib/graphql/query';
-import { GraphQL, GraphQLData } from 'camelot-unchained/lib/graphql/react';
-import ClientInterface from 'camelot-unchained/lib/core/clientInterface';
+import { client, webAPI, events } from '@csegames/camelot-unchained';
+import { TabPanel } from '@csegames/camelot-unchained/lib/components';
+import { ObjectMap } from '@csegames/camelot-unchained/lib/utils/ObjectMap';
+import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
+import ClientInterface from '@csegames/camelot-unchained/lib/core/clientInterface';
 
 type Content = string | ObjectMap<any>;
 
@@ -38,7 +45,7 @@ export interface Page {
   pages: Partial<Page>[] | undefined;
   buttons: Button[] | undefined;
   data: ObjectMap<any> | undefined;
-  query: string | Partial<QuickQLQuery> | undefined;
+  query: string | Partial<GraphQLQuery> | undefined;
   activeTabIndex: number | undefined;
 }
 
@@ -48,29 +55,26 @@ export interface RootPage extends Partial<Page> {
   x: number;
   y: number;
   visible: boolean;
+  maximized: boolean;
   background?: string;
   showCloseButton?: boolean;
+  showMaximizeButton?: boolean;
 }
 
-
-const buttonStyle: {
-  Button: React.CSSProperties;
-} = {
-  Button: {
-    cursor: 'pointer',
-    backgroundColor: '#555',
-    display: 'inline-block',
-    padding: '5px 15px',
-    margin: '5px',
-    textAlign: 'center',
-    ':hover': {
-      backgroundColor: '#777',
-    },
-    ':active': {
-      backgroundColor: '#999',
-    },
+const Button = styled('div')`
+  cursor: pointer;
+  background-color: #555;
+  display: inline-block;
+  padding: 5px 15px;
+  margin: 5px;
+  text-align: center;
+  &:hover {
+    background-color: #777;
+  }
+  &:active {
+    background-color: #999;
   },
-};
+`;
 
 function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface }) {
   // @ts-ignore: no-unused-locals
@@ -96,9 +100,8 @@ function parseTemplate(template: any,
 
 class DevUIButton extends React.PureComponent<Button> {
   public render() {
-    const style = StyleSheet.create(buttonStyle);
     return (
-      <div className={css(style.Button)}
+      <Button
           onClick={() => {
             if (this.props.command) {
               client.SendSlashCommand(this.props.command);
@@ -112,29 +115,24 @@ class DevUIButton extends React.PureComponent<Button> {
             }
           }}>
         {this.props.title}
-      </div>
+      </Button>
     );
   }
 }
 
-const contentStyle: {
-  Content: React.CSSProperties;
-} = {
-  Content: {
-    flex: '1 1 auto',
-  },
-};
+const Content = styled('div')`
+  flex: 1;
+`;
 
 class DevUIContent extends React.PureComponent<Partial<Page>> {
   public render() {
-    const style = StyleSheet.create(contentStyle);
     return (
-      <div className={css(style.Content)}>
+      <Content>
         {typeof this.props.content === 'string' ?
           <DevUIStringContent {...this.props} /> :
           <DevUIObjectContent {...this.props} />
         }
-      </div>
+      </Content>
     );
   }
 }
@@ -205,39 +203,34 @@ class DevUIObjectContent extends React.PureComponent<Partial<Page>> {
   }
 }
 
-const pageStyle: {
-  Page: React.CSSProperties;
-  pages: React.CSSProperties;
-  title: React.CSSProperties;
-} = {
-  Page: {
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '10px',
-    justifyContent: 'space-between',
-    color: '#ececec',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-  },
-  pages: {
-    flex: '1 1 auto',
-    display: 'flex',
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: '1.5em',
-    margin: '5px 0px',
-  },
-};
+const Page = styled('div')`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: space-between;
+  color: #ECECEC;
+  user-select: none;
+  -webkit-user-select: none;
+`;
+
+const Pages = styled('div')`
+  flex: 1;
+  display: flex;
+`;
+
+const Title = styled('div')`
+  font-weight: 700;
+  font-size: 1.5em;
+  margin: 5px 0;
+`;
 
 class DevUIPage extends React.PureComponent<Partial<Page>> {
   private tabPanel: any;
   public render(): JSX.Element {
-    const style = StyleSheet.create(pageStyle);
     return (
-      <div className={css(style.Page)}>
-        {this.props.title && <div className={css(style.title)}>{this.props.title}</div>}
+      <Page>
+        {this.props.title && <Title>{this.props.title}</Title>}
         {this.props.content &&
           <DevUIContent
             content={this.props.content}
@@ -247,31 +240,31 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
         }
         {this.props.buttons && <div>{this.props.buttons.map(b => <DevUIButton key={b.title} {...b} />)}</div>}
         {this.props.pages && (
-          <div className={css(style.pages)}>
+          <Pages>
             <TabPanel
               defaultTabIndex={this.props.activeTabIndex}
               ref={ref => this.tabPanel = ref}
               styles={{
-                contentContainer: {
-                  height: 'auto',
-                },
-                content: {
-                  position: 'relative',
-                },
-                tabPanel: {
-                  flex: '1 1 auto',
-                  width: 'initial',
-                  height: 'initial',
-                },
-                tab: {
-                  padding: '2px 10px',
-                  background: '#444',
-                  borderBottom: '1px solid transparent',
-                },
-                activeTab: {
-                  background: '#777',
-                  borderBottom: '1px solid orange',
-                },
+                contentContainer: css`
+                  height: auto;
+                `,
+                content: css`
+                  position: relative;
+                `,
+                tabPanel: css`
+                  flex: 1 1 auto;
+                  width: initial;
+                  height: initial;
+                `,
+                tab: css`
+                  padding: 2px 10px;
+                  background: #444;
+                  border-bottom: 1px solid transparent;
+                `,
+                activeTab: css`
+                  background: #777;
+                  border-bottom: 1px solid orange;
+                `,
               }}
               tabs={this.props.pages.map((p, index) => {
                 return {
@@ -289,8 +282,8 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
                   },
                 };
               })} />
-          </div>)}
-      </div>
+          </Pages>)}
+      </Page>
     );
   }
 
@@ -345,13 +338,16 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
       <div>
         {keys.map((k) => {
           const page = this.state[k];
+          const isMaximized = page.maximized;
           if (!page) return null;
           return (
             <div style={{
-              width: `${page.width}px`,
-              height: `${page.height}px`,
-              left: `${page.x}px`,
-              top: `${page.y}px`,
+              width: isMaximized ? `100%` : `${page.width}px`,
+              height: isMaximized ? `100%` : `${page.height}px`,
+              top: isMaximized ? 0 : page.y,
+              right: isMaximized ? 0 : 'default',
+              left: isMaximized ? 0 : page.x,
+              bottom: isMaximized ? 0 : 'default',
               position: 'fixed',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
@@ -372,6 +368,20 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                       visible: false,
                     },
                   })}>X</a> : null}
+                {page.showMaximizeButton ?
+                  <a
+                    href={'#'}
+                    style={{
+                      position: 'absolute',
+                      right: '50px',
+                      top: '0px',
+                    }}
+                    onClick={() => this.setState({
+                      [k]: {
+                        ...page,
+                        maximized: isMaximized ? false : true,
+                      },
+                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</a> : null }
               </div>
               <div
                 key={k}

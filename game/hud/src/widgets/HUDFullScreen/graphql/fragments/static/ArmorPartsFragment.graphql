@@ -1,0 +1,16 @@
+fragment ArmorParts on ArmorStatSet {
+  statsPerSlot {
+    gearSlot {
+      ...GearSlotDefRef
+    }
+    stats {
+      armorClass
+    }
+    resistances {
+      ...DamageTypeValues
+    }
+    mitigations {
+      ...DamageTypeValues
+    }
+  }
+}

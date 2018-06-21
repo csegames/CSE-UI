@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from 'camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 import { generateID } from 'redux-typed-modules';
 
 import { SoundsState } from '../../services/session/sounds';

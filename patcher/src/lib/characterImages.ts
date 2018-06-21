@@ -5,7 +5,7 @@
  *
  */
 
-import { webAPI, Race, Gender } from 'camelot-unchained';
+import { webAPI, Race, Gender } from '@csegames/camelot-unchained';
 
 export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
   return (character.race === Race.HumanMaleA && character.gender === Gender.Female) ||
@@ -14,18 +14,18 @@ export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
 }
 
 const characterImages = {
-  LuchorpanMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-m.png',
-  LuchorpanFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-f.png',
-  ValkyrieMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-m.png',
-  ValkyrieFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png',
-  PictMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png',
-  PictFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png',
-  HumanMaleVMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-vik.png',
-  HumanMaleAMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-art.png',
-  HumanMaleTMale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-tdd.png',
-  HumanMaleVFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-vik.png',
-  HumanMaleAFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-art.png',
-  HumanMaleTFemale: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png',
+  LuchorpanMale: 'images/races/standing/luchorpan-m.png',
+  LuchorpanFemale: 'images/races/standing/luchorpan-f.png',
+  ValkyrieMale: 'images/races/standing/valkyrie-m.png',
+  ValkyrieFemale: 'images/races/standing/valkyrie-f.png',
+  PictMale: 'images/races/standing/pict-m.png',
+  PictFemale: 'images/races/standing/pict-f.png',
+  HumanMaleVMale: 'images/races/standing/humans-m-vik.png',
+  HumanMaleAMale: 'images/races/standing/humans-m-art.png',
+  HumanMaleTMale: 'images/races/standing/humans-m-tdd.png',
+  HumanMaleVFemale: 'images/races/standing/humans-f-vik.png',
+  HumanMaleAFemale: 'images/races/standing/humans-f-art.png',
+  HumanMaleTFemale: 'images/races/standing/humans-f-tdd.png',
 };
 
 export default characterImages;

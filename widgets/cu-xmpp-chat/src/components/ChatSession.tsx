@@ -13,7 +13,7 @@ import ChatClient from '../lib/ChatClient';
 import messageType from '../lib/messageType';
 import { chatConfig, ChatConfig } from './ChatConfig';
 import { chatState } from './ChatState';
-import {events} from 'camelot-unchained';
+import {events} from '@csegames/camelot-unchained';
 
 interface LoginInfo {
   username?: string;

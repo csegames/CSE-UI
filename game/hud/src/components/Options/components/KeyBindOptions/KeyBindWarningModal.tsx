@@ -5,76 +5,64 @@
  */
 
 import * as React from 'react';
-import { utils, client } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
+import { utils, client } from '@csegames/camelot-unchained';
 import { ConfigInfo } from '../../OptionsMain';
 
-export interface KeyBindWarningModalStyle extends StyleDeclaration {
-  KeyBindWarningModal: React.CSSProperties;
-  exclamationTriangle: React.CSSProperties;
-  dialogText: React.CSSProperties;
-  importantText: React.CSSProperties;
-  buttonContainer: React.CSSProperties;
-  button: React.CSSProperties;
-  close: React.CSSProperties;
-}
+const Container = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: #454545;
+  color: ${utils.lightenColor('#454545', 100)};
+  height: 100%;
+  width: 100%;
+`;
 
-export const defaultKeyBindWarningModalStyle: KeyBindWarningModalStyle = {
-  KeyBindWarningModal: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    margin: 'auto',
-    backgroundColor: '#454545',
-    color: utils.lightenColor('#454545', 100),
-    height: '100%',
-    width: '100%',
-  },
+const ExclamationTriangle = styled('div')`
+  font-size: 50px;
+  margin-bottom: 15px;
+`;
 
-  exclamationTriangle: {
-    fontSize: '50px',
-    marginBottom: '15px',
-  },
+const DialogText = styled('div')`
+  text-align: center;
+  font-size: 22px;
+  margin: 0;
+  padding: 0;
+`;
 
-  dialogText: {
-    textAlign: 'center',
-    fontSize: '22px',
-    margin: 0,
-    padding: 0,
-  },
+const ImportantText = styled('div')`
+  color: white;
+`;
 
-  importantText: {
-    color: 'white',
-  },
+const ButtonContainer = styled('div')`
+  display: flex;
+`;
 
-  buttonContainer: {
-    display: 'flex',
-  },
+const Button = styled('div')`
+  color: ${utils.lightenColor('#454545', 100)};
+`;
 
-  button: {
-    color: utils.lightenColor('#454545', 100),
-  },
-
-  close: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    color: '#cdcdcd',
-    fontSize: '20px',
-    marginRight: '5px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    ':hover': {
-      color: '#bbb',
-    },
-  },
-};
+const Close = styled('div')`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #CDCDCD;
+  font-size: 20px;
+  margin-right: 5px;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: #BBB;
+  }
+`;
 
 export interface WarningModalInfo {
   currentKeyBind: ConfigInfo;
@@ -82,7 +70,6 @@ export interface WarningModalInfo {
 }
 
 export interface KeyBindWarningModalProps {
-  styles?: Partial<KeyBindWarningModalStyle>;
   warningModalInfo: WarningModalInfo;
   onCancelPress: () => void;
   onConfirmPress: (warningModalInfo: WarningModalInfo) => void;
@@ -99,35 +86,29 @@ export class KeyBindWarningModal extends React.Component<KeyBindWarningModalProp
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultKeyBindWarningModalStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const currentKeyBind = this.props.warningModalInfo && this.props.warningModalInfo.currentKeyBind;
 
     return this.props.warningModalInfo ? (
-      <div className={css(ss.KeyBindWarningModal, custom.KeyBindWarningModal)}>
-        <div className={css(ss.close, custom.close)} onClick={this.props.onCancelPress}>
+      <Container>
+        <Close onClick={this.props.onCancelPress}>
           <i className='fa fa-times click-effect'></i>
-        </div>
-        <div className={`${css(ss.exclamationTriangle, custom.exclamationTriangle)} fa fa-exclamation-triangle`} />
-        <p className={css(ss.dialogText, custom.dialogText)}>
-          <span className={css(ss.importantText, custom.importantText)}>{currentKeyBind.name}&nbsp;</span>
+        </Close>
+        <ExclamationTriangle className='fa fa-exclamation-triangle' />
+        <DialogText>
+          <ImportantText>{currentKeyBind.name}&nbsp;</ImportantText>
           is already using the key bind
-          <span className={css(ss.importantText, custom.importantText)}>
-            &nbsp;{currentKeyBind.value}
-          </span>
-        </p>
-        <p className={css(ss.dialogText, custom.dialogText)}>Are you sure you want to override it?</p>
-        <div className={css(ss.buttonContainer, custom.buttonContainer)}>
-          <button
-            onClick={() => this.props.onConfirmPress(this.props.warningModalInfo)}
-            className={css(ss.button, custom.button, ss.overrideButton, custom.overrideButton)}>
+          <ImportantText>&nbsp;{currentKeyBind.value}</ImportantText>
+        </DialogText>
+        <DialogText>Are you sure you want to override it?</DialogText>
+        <ButtonContainer>
+          <Button onClick={() => this.props.onConfirmPress(this.props.warningModalInfo)}>
             Override
-          </button>
-          <button onClick={this.onCancelPress} className={css(ss.button, custom.button)}>
+          </Button>
+          <Button onClick={this.onCancelPress}>
             Cancel
-          </button>
-        </div>
-      </div>
+          </Button>
+        </ButtonContainer>
+      </Container>
     ) : null;
   }
 

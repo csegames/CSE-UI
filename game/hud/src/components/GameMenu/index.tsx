@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import { client, events, utils } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { client, events, utils } from '@csegames/camelot-unchained';
+import styled, { css } from 'react-emotion';
 
-export interface GameMenuStyle extends StyleDeclaration {
+export interface GameMenuStyle {
   GameMenu: React.CSSProperties;
   gameMenuHeader: React.CSSProperties;
   gameMenuBody: React.CSSProperties;
@@ -17,65 +17,62 @@ export interface GameMenuStyle extends StyleDeclaration {
   closeButton: React.CSSProperties;
 }
 
+const Container = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: all;
+  width: 300px;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid ${utils.lightenColor('#202020', 30)};
+`;
+
+const Header = styled('div')`
+  padding: 5px 0;
+  text-align: center;
+  background-color: #202020;
+  color: white;
+  border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+`;
+
+const Body = styled('div')`
+  padding: 5px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Footer = styled('div')`
+  display: flex;
+  justify-content: center;
+  padding: 5px 0;
+  background-color: #202020;
+  color: white;
+  border-top: 1px solid ${utils.lightenColor('#202020', 30)}
+`;
+
+const MenuButton = styled('button')`
+  margin: 0;
+  height: 30px;
+  font-size: 17px;
+`;
+
+const OptionsButton = css`
+  margin: 0 0 5px 0;
+`;
+
+const CloseButton = styled('button')`
+  margin: 0;
+`;
+
 export const GameMenuDimensions = {
   width: 300,
   height: 200,
 };
 
-export const defaultGameMenuStyle: GameMenuStyle = {
-  GameMenu: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    pointerEvents: 'all',
-    width: '300px',
-    height: '200px',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    border: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
-
-  gameMenuHeader: {
-    padding: '5px 0',
-    textAlign: 'center',
-    backgroundColor: '#202020',
-    color: 'white',
-    borderBottom: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
-
-  gameMenuBody: {
-    padding: '5px',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-
-  gameMenuFooter: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '5px 0',
-    backgroundColor: '#202020',
-    color: 'white',
-    borderTop: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
-
-  menuButton: {
-    margin: '0',
-    height: '30px',
-    fontSize: '17px',
-  },
-
-  optionsButton: {
-    margin: '0 0 5px 0',
-  },
-
-  closeButton: {
-    margin: 0,
-  },
-};
-
 export interface GameMenuProps {
-  styles?: Partial<GameMenuStyle>;
 }
 
 export interface GameMenuState {
@@ -92,29 +89,23 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultGameMenuStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     return this.state.visible ? (
-      <div className={css(ss.GameMenu, custom.GameMenu)}>
-        <div className={css(ss.GameMenu, custom.GameMenu)}>
-          <div className={css(ss.gameMenuHeader, custom.gameMenuHeader)}>
-            MENU
-          </div>
-          <div className={css(ss.gameMenuBody, custom.gameMenuBody)}>
-            <button
-              className={css(ss.menuButton, custom.menuButton, ss.optionsButton, custom.optionsButton)}
-              onClick={this.onOptionsClick}>
-              OPTIONS
-            </button>
-            <button className={css(ss.menuButton, custom.menuButton)} onClick={this.onQuitGameClick}>QUIT GAME</button>
-          </div>
-          <div className={css(ss.gameMenuFooter, custom.gameMenuFooter)}>
-            <button className={css(ss.closeButton, custom.closeButton)} onClick={this.fireVisibilityEvent}>
-              CLOSE MENU
-            </button>
-          </div>
-        </div>
-      </div>
+      <Container>
+        <Header>
+          MENU
+        </Header>
+        <Body>
+          <MenuButton
+            className={OptionsButton}
+            onClick={this.onOptionsClick}>
+            OPTIONS
+          </MenuButton>
+          <MenuButton onClick={this.onQuitGameClick}>QUIT GAME</MenuButton>
+        </Body>
+        <Footer>
+          <CloseButton onClick={this.fireVisibilityEvent}>CLOSE MENU</CloseButton>
+        </Footer>
+      </Container>
     ) : null;
   }
 

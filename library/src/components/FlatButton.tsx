@@ -5,27 +5,25 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
-export interface FlatButtonStyle extends StyleDeclaration {
+export interface FlatButtonStyle {
   button: React.CSSProperties;
 }
 
-export const defaultFlatButtonStyle: FlatButtonStyle = {
-  button: {
-    padding: '5px 15px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    webkitUserSelect: 'none',
-    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-    ':active': {
-      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    },
-  },
-};
+const Button = styled('div')`
+  padding: 5px 15px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
 
 export interface FlatButtonProps {
   styles?: Partial<FlatButtonStyle>;
@@ -35,12 +33,11 @@ export interface FlatButtonProps {
 }
 
 export const FlatButton = (props: FlatButtonProps) => {
-  const ss = StyleSheet.create(defaultFlatButtonStyle);
-  const custom = StyleSheet.create(props.styles || {});
+  const customStyles = props.styles || {};
   return (
-    <div className={css(ss.button, custom.button)} {...props}>
+    <Button {...props} style={customStyles.button}>
       {props.children}
-    </div>
+    </Button>
   );
 };
 

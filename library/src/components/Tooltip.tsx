@@ -1,4 +1,4 @@
-/*
+  /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -19,41 +19,38 @@
  * 
  */
 import * as React from 'react';
-import * as _ from 'lodash';
+import styled, { css } from 'react-emotion';
 
 import { Quadrant, windowQuadrant } from '../utils';
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
 
-export const defaultToolTipStyle: ToolTipStyle = {
-  Tooltip: {
-    display: 'inline-block',
-    position: 'relative',
-  },
+const Container = styled('div')`
+  display: inline-block;
+  position: relative;
+`;
 
-  tooltip: {
-    position: 'fixed',
-    backgroundColor: '#444',
-    border: '1px solid #4A4A4A',
-    color: '#ececec',
-    padding: '2px 5px',
-    maxWidth: '200px',
-    zIndex: 10,
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  },
+const TooltipView = styled('div')`
+  position: fixed;
+  background-color: #444;
+  border: 1px solid #4A4A4A;
+  color: #ECECEC;
+  padding: 2px 5px;
+  max-width: 200px;
+  z-index: 10;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+`;
 
-  tooltipFixed: {
-    position: 'fixed',
-    backgroundColor: '#444',
-    border: '1px solid #4A4A4A',
-    color: '#ececec',
-    padding: '2px 5px',
-    maxWidth: '200px',
-    zIndex: 10,
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  },
-};
+const TooltipFixedView = styled('div')`
+  position: fixed;
+  background-color: #444;
+  border: 1px solid #4A4A4A;
+  color: #ECECEC;
+  padding: 2px 5px;
+  max-width: 200px;
+  z-index: 10;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+`;
 
-export interface ToolTipStyle extends StyleDeclaration {
+export interface ToolTipStyle {
   Tooltip: React.CSSProperties;
   tooltip: React.CSSProperties;
   tooltipFixed: React.CSSProperties;
@@ -83,12 +80,13 @@ export interface TooltipState {
   offsetRight: number;
   offsetTop: number;
   offsetBottom: number;
-  tooltipDimensions: { width: number, height: number };
 }
 
 export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   private childRef: HTMLDivElement;
   private tooltipRef: HTMLDivElement;
+  private windowDimensions: { innerHeight: number, innerWidth: number };
+  private tooltipDimensions: { width: number, height: number };
 
   constructor(props: TooltipProps) {
     super(props);
@@ -100,18 +98,16 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       offsetTop: this.props.offsetTop || 10,
       offsetRight: this.props.offsetRight || 5,
       offsetBottom: this.props.offsetBottom || 5,
-      tooltipDimensions: null,
     };
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultToolTipStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
+    const customStyles = this.props.styles || {};
     const showTooltip = typeof this.props.show !== 'undefined' ? this.props.show : this.state.show;
 
     const fixed = this.props.fixedMode || false;
     return (
-      <div className={css(ss.Tooltip, custom.Tooltip)}>
+      <Container style={customStyles.Tooltip}>
         <div
           ref={ref => this.childRef = ref}
           onMouseEnter={this.onMouseEnter}
@@ -121,27 +117,45 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         </div>
         {
           showTooltip ?
-            <div
-              ref={ref => this.tooltipRef = ref}
-              className={css(!fixed && ss.tooltip,
-                !fixed && custom.tooltip,
-                fixed && ss.tooltipFixed,
-                fixed && custom.tooltipFixed)}>
-              {typeof this.props.content === 'string' ? this.props.content :
-                <this.props.content {...this.props.contentProps} />}
-            </div> : null
+            !fixed ?
+              <TooltipView
+                innerRef={ref => this.tooltipRef = ref}
+                style={customStyles.tooltip}>
+                  {typeof this.props.content === 'string' ? this.props.content :
+                    <this.props.content {...this.props.contentProps} />
+                  }
+              </TooltipView> :
+              <TooltipFixedView
+                innerRef={ref => this.tooltipRef = ref}
+                style={customStyles.tooltipFixed}>
+                    {typeof this.props.content === 'string' ? this.props.content :
+                  <this.props.content {...this.props.contentProps} />}
+              </TooltipFixedView> : null
         }
-      </div>
+      </Container>
     );
   }
 
+  public componentDidMount() {
+    this.initWindowDimensions();
+    window.addEventListener('resize', this.initWindowDimensions);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('resize', this.initWindowDimensions);
+  }
+
+  private initWindowDimensions = () => {
+    this.windowDimensions = { innerHeight: window.innerHeight, innerWidth: window.innerWidth };
+  }
+
   private onMouseMove = (e: React.MouseEvent<any>) => {
-    if (this.props.fixedMode && !this.state.tooltipDimensions) {
-      this.setState({ tooltipDimensions: this.tooltipRef.getBoundingClientRect() });
+    if (!this.tooltipDimensions && this.tooltipRef) {
+      this.tooltipDimensions = this.tooltipRef.getBoundingClientRect();
     }
 
     let computedStyle;
-    if (this.props.fixedMode && this.state.tooltipDimensions) {
+    if (this.props.fixedMode && this.tooltipDimensions) {
       const { top, left } = this.childRef.getBoundingClientRect();
       computedStyle = this.computeStyle(
         left,
@@ -165,10 +179,28 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
 
     if (this.tooltipRef && computedStyle) {
-      this.tooltipRef.style.left = computedStyle.left ? computedStyle.left : 'auto';
-      this.tooltipRef.style.right = computedStyle.right ? computedStyle.right : 'auto';
-      this.tooltipRef.style.bottom = computedStyle.bottom ? computedStyle.bottom : 'auto';
-      this.tooltipRef.style.top = computedStyle.top ? computedStyle.top : 'auto';
+      if (computedStyle.bottom) {
+        const topScreenOverflow = e.clientY - this.tooltipDimensions.height;
+        if (topScreenOverflow < 0) {
+          // Tooltip is overflowing the top of the viewport
+          this.tooltipRef.style.bottom = `${computedStyle.bottom + topScreenOverflow}px`;
+        } else {
+          this.tooltipRef.style.bottom = `${computedStyle.bottom}px`;
+        }
+      }
+
+      if (computedStyle.top) {
+        const bottomScreenOverflow = this.windowDimensions.innerHeight - (e.clientY + this.tooltipDimensions.height);
+        if (bottomScreenOverflow < 0) {
+          // Tooltip is overflowing the bottom of the viewport
+          this.tooltipRef.style.top = `${computedStyle.top + bottomScreenOverflow}px`;
+        } else {
+          this.tooltipRef.style.top = `${computedStyle.top}px`;
+        }
+      }
+
+      this.tooltipRef.style.left = computedStyle.left ? `${computedStyle.left}px` : 'auto';
+      this.tooltipRef.style.right = computedStyle.right ? `${computedStyle.right}px` : 'auto';
     }
   }
 
@@ -195,9 +227,9 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
                           offsetTop: number,
                           offsetRight: number,
                           offsetBottom: number) => {
-    const { top, left, width, height } = this.childRef.getBoundingClientRect();
     const wndRegion = typeof this.props.wndRegion === 'number' ? this.props.wndRegion : this.state.wndRegion;
-    if (this.props.fixedMode && this.state.tooltipDimensions) {
+    if (this.props.fixedMode && this.tooltipDimensions) {
+      const { top, left, width, height } = this.childRef.getBoundingClientRect();
       switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
@@ -206,41 +238,41 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
           };
         case Quadrant.TopRight:
           return {
-            left: x - this.state.tooltipDimensions.width + width + offsetRight,
+            left: x - this.tooltipDimensions.width + width + offsetRight,
             top: y + height + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
             left: x + offsetLeft,
-            top: y - this.state.tooltipDimensions.height + offsetBottom,
+            top: y - this.tooltipDimensions.height + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            left: x - this.state.tooltipDimensions.width + width + offsetRight,
-            top: y - this.state.tooltipDimensions.height + offsetBottom,
+            left: x - this.tooltipDimensions.width + width + offsetRight,
+            top: y - this.tooltipDimensions.height + offsetBottom,
           };
       }
     } else {
       switch (wndRegion) {
         case Quadrant.TopLeft:
           return {
-            left: `${x + offsetLeft}px`,
-            top: `${y + offsetTop}px`,
+            left: x + offsetLeft,
+            top: y + offsetTop,
           };
         case Quadrant.TopRight:
           return {
-            right: `${window.window.innerWidth - x + offsetRight}px`,
-            top: `${y + offsetTop}px`,
+            right: this.windowDimensions.innerWidth - x + offsetRight,
+            top: y + offsetTop,
           };
         case Quadrant.BottomLeft:
           return {
-            left: `${x + offsetLeft}px`,
-            bottom: `${window.window.innerHeight - y + offsetBottom}px`,
+            left: x + offsetLeft,
+            bottom: this.windowDimensions.innerHeight - y + offsetBottom,
           };
         case Quadrant.BottomRight:
           return {
-            right: `${window.window.innerWidth - x + offsetRight}px`,
-            bottom: `${window.window.innerHeight - y + offsetBottom}px`,
+            right: this.windowDimensions.innerWidth - x + offsetRight,
+            bottom: this.windowDimensions.innerHeight - y + offsetBottom,
           };
       }
     }

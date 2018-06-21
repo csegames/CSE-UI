@@ -6,145 +6,100 @@
  */
 
 import * as React from 'react';
-import { utils, Tooltip } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled, { css } from 'react-emotion';
+import { utils, Tooltip } from '@csegames/camelot-unchained';
 import { CharacterCreationPage } from '../index';
 
-export interface NavigationStyle extends StyleDeclaration {
-  Navigation: React.CSSProperties;
-  section: React.CSSProperties;
-  cancelHelpContainer: React.CSSProperties;
-  middleNavContainer: React.CSSProperties;
-  createContainer: React.CSSProperties;
-  progressContainer: React.CSSProperties;
-  progressImage: React.CSSProperties;
-  navProgressSection: React.CSSProperties;
-  navButton: React.CSSProperties;
-  navConnector: React.CSSProperties;
-  navConnectorCompleted: React.CSSProperties;
-  navArrow: React.CSSProperties;
-  otherActionButton: React.CSSProperties;
-  createButton: React.CSSProperties;
-  disabled: React.CSSProperties;
-}
+const Container = styled('div')`
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #0D0D0D;
+  height: 50px;
+  padding: 0 10px;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
+`;
 
-export const defaultNavigationStyle: NavigationStyle = {
-  Navigation: {
-    display: 'flex',
-    position: 'absolute',
-    left: '0',
-    right: '0',
-    bottom: '0',
-    backgroundColor: '#0D0D0D',
-    height: '50px',
-    padding: '0 10px',
-    zIndex: 10,
-    userSelect: 'none',
-    webkitUserSelect: 'none',
-  },
+const Section = css`
+  flex: 1;
+`;
 
-  section: {
-    flex: 1,
-  },
+const MiddleNavContainer = styled('div')`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
-  middleNavContainer: {
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+const CreateContainer = styled('div')`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
 
-  cancelHelpContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+const ProgressContainer = styled('div')`
+  display: flex;
+  align-items: center;
+`;
 
-  createContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
+const ProgressImage = styled('img')`
+  cursor: pointer;
+  width: 55px;
+  height: 55px;
+  margin: 5px 0 0 0;
+`;
 
-  progressContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+const NavProgressSection = styled('div')`
+  display: flex;
+  align-items: center;
+  flex: 1;
+`;
 
-  progressImage: {
-    cursor: 'pointer',
-    width: '55px',
-    height: '55px',
-    margin: '5px 0px 0px 0px',
-  },
+const NavButton = styled('button')`
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  color: #D6B597;
+  background-color: transparent;
+  border: 0px;
+  outline: none;
+  padding: 20px;
+  width: 100px;
+  &:hover {
+    color: ${utils.lightenColor('#D6B597', 25)};
+  }
+`;
 
-  navProgressSection: {
-    display: 'flex',
-    alignItems: 'center',
-    flex: 1,
-  },
+const NavConnector = styled('div')`
+  height: 2px;
+  width: 30px;
+  margin: 0px -5px;
+  background-color: ${utils.lightenColor('#2F2C29', 20)};
+`;
 
-  navButton: {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    letterSpacing: '0.1px',
-    cursor: 'pointer',
-    color: '#D6B597',
-    backgroundColor: 'transparent',
-    border: '0px',
-    outline: 'none',
-    padding: '20px',
-    width: '100px',
-    ':hover': {
-      color: utils.lightenColor('#D6B597', 25),
-    },
-  },
+const NavConnectorCompleted = css`
+  background-color: #D2B59D;
+`;
 
-  navConnector: {
-    height: '2px ',
-    width: '30px',
-    margin: '0px -5px',
-    backgroundColor: utils.lightenColor('#2F2C29', 20),
-  },
+const NavArrow = styled('span')`
+  margin: 0 2px;
+`;
 
-  navConnectorCompleted: {
-    backgroundColor: '#D2B59D',
-  },
+const CreateButton = css`
+  color: #F2F2C6;
+`;
 
-  navArrow: {
-    margin: '0 2px',
-  },
-
-  completedNavConnector: {
-    backgroundColor: '#D2B59D',
-  },
-
-  otherActionButton: {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    letterSpacing: '0.1px',
-    cursor: 'pointer',
-    color: '#A1A1A1',
-    backgroundColor: 'transparent',
-    border: '0px',
-    outline: 'none',
-    marginRight: '15px',
-    ':hover': {
-      color: utils.lightenColor('#A1A1A1', 35),
-    },
-  },
-
-
-  createButton: {
-    color: '#F2F2C6',
-  },
-
-  disabled: {
-    color: '#454545',
-    ':hover': {
-      color: '#454545',
-    },
-  },
-};
+const Disabled = css`
+  color: #454545;
+  &:hover {
+    color: #454545;
+  }
+`;
 
 export interface NavigationPageInfo {
   pageNumber: CharacterCreationPage;
@@ -154,7 +109,6 @@ export interface NavigationPageInfo {
 }
 
 export interface NavigationProps {
-  styles?: Partial<NavigationStyle>;
   onNextClick: () => void;
   onBackClick: () => void;
   onCancelClick: () => void;
@@ -182,28 +136,21 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultNavigationStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const nextDisabled = this.props.currentPage === this.props.pages.length - 1;
     const backDisabled = this.props.currentPage === 0;
     
     return (
-      <div className={css(ss.Navigation, custom.Navigation)}>
-        <div className={css(ss.section, custom.section)} />
-        <div className={css(ss.middleNavContainer, custom.middleNavContainer, ss.section, custom.section)}>
-          <button
+      <Container>
+        <div className={Section} />
+        <MiddleNavContainer className={Section}>
+          <NavButton
             disabled={backDisabled}
-            className={css(
-              ss.navButton,
-              custom.navButton,
-              backDisabled && ss.disabled,
-              backDisabled && custom.disabled,
-            )}
+            className={backDisabled ? Disabled : ''}
             onClick={this.props.onBackClick}>
-            <span className={`fa fa-angle-left ${css(ss.navArrow, custom.navArrow)}`} />
+            <NavArrow className="fa fa-angle-left" />
             BACK
-          </button>
-          <div className={css(ss.progressContainer, custom.progressContainer)}>
+          </NavButton>
+          <ProgressContainer>
             {this.props.pages.map((page, i) => {
               const imageSource = page.pageNumber === this.props.currentPage ? navImages.current :
                 page.pageComplete ? navImages.done :
@@ -211,7 +158,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                 !page.pageVisited && !page.pageComplete && navImages.empty;
               const pageName = CharacterCreationPage[page.pageNumber];
               return (
-                <div key={i} className={css(ss.navProgressSection, custom.navProgressSection)}>
+                <NavProgressSection key={i}>
                   <Tooltip
                     styles={{
                       tooltip: {
@@ -219,51 +166,32 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                       },
                     }}
                   content={pageName}>
-                    <img
-                      className={css(ss.progressImage, custom.progressImage)}
-                      src={imageSource}
-                      onClick={!this.props.disableNavButtons ? page.onClick : () => {}}
-                    />
+                    <ProgressImage src={imageSource} onClick={!this.props.disableNavButtons ? page.onClick : () => {}} />
                   </Tooltip>
                   {i < this.props.pages.length - 1 &&
-                    <div className={css(
-                      ss.navConnector,
-                      custom.navConnector,
-                      page.pageComplete && ss.navConnectorCompleted,
-                      page.pageComplete && custom.navConnectorCompleted,
-                    )} />
+                    <NavConnector className={page.pageComplete ? NavConnectorCompleted : ''} />
                   }
-                </div>
+                </NavProgressSection>
               );
             })}
-          </div>
-          <button
+          </ProgressContainer>
+          <NavButton
             id='cu-char-creation-next'
             disabled={nextDisabled}
-            className={css(
-              ss.navButton,
-              custom.navButton,
-              nextDisabled && ss.disabled,
-              nextDisabled && custom.disabled,
-            )}
+            className={nextDisabled ? Disabled : ''}
             onClick={this.props.onNextClick}>
             NEXT
-            <span className={`fa fa-angle-right ${css(ss.navArrow, custom.navArrow)}`} />
-          </button>
-        </div>
-        <div className={css(ss.createContainer, custom.createContainer, ss.section, custom.section)}>
+            <NavArrow className="fa fa-angle-right" />
+          </NavButton>
+        </MiddleNavContainer>
+        <CreateContainer className={Section}>
           {nextDisabled &&
-            <button
-              className={css(
-                ss.createButton, custom.createButton,
-                ss.navButton, custom.navButton,
-              )}
-              onClick={this.props.onNextClick}>
+            <NavButton className={CreateButton} onClick={this.props.onNextClick}>
               CREATE
-            </button>
+            </NavButton>
           }
-        </div>
-      </div>
+        </CreateContainer>
+      </Container>
     );
   }
 }

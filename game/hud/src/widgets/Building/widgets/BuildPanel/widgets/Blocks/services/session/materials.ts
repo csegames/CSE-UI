@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, BuildingBlock, BuildingMaterial, buildUIMode } from 'camelot-unchained';
+import { events, BuildingBlock, BuildingMaterial, buildUIMode } from '@csegames/camelot-unchained';
 
 import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
 import * as assign from 'object-assign';

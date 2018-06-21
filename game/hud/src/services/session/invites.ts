@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, IGroupInvite, signalr, events } from 'camelot-unchained';
+import { client, IGroupInvite } from '@csegames/camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -31,9 +31,9 @@ const DECLINE_INVITE = 'hud/invites/DECLINE_INVITE';
  * Helper methods
  */
 
-function registerInviteEvents(dispatch: (action: InvitesAction) => any) {
-  events.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: IGroupInvite) => dispatch(inviteReceived(invite)));
-}
+// function registerInviteEvents(dispatch: (action: InvitesAction) => any) {
+//   // events.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: IGroupInvite) => dispatch(inviteReceived(invite)));
+// }
 
 export interface InvitesAction extends BaseAction {
   error?: string;
@@ -52,12 +52,12 @@ function initSignalR(): InvitesAction {
   };
 }
 
-function initSignalRSuccess(): InvitesAction {
-  return {
-    type: INITIALIZE_SIGNALR_SUCCESS,
-    when: new Date(),
-  };
-}
+// function initSignalRSuccess(): InvitesAction {
+//   return {
+//     type: INITIALIZE_SIGNALR_SUCCESS,
+//     when: new Date(),
+//   };
+// }
 
 function initSignalRFailed(): InvitesAction {
   return {
@@ -90,13 +90,13 @@ function fetchInvitesFailed(error?: string): InvitesAction {
   };
 }
 
-function inviteReceived(invite: IGroupInvite): InvitesAction {
-  return {
-    type: INVITE_RECEIVED,
-    when: new Date(),
-    invite,
-  };
-}
+// function inviteReceived(invite: IGroupInvite): InvitesAction {
+//   return {
+//     type: INVITE_RECEIVED,
+//     when: new Date(),
+//     invite,
+//   };
+// }
 
 /**
  * EXTERNAL ACTIONS
@@ -109,10 +109,10 @@ export function initializeInvites(): AsyncAction<InvitesAction> {
 
     try {
       if (client.debug) console.log('initializeInvites called');
-      signalr.groupsHub.start(() => {
-        dispatch(initSignalRSuccess());
-        registerInviteEvents(dispatch);
-      });
+      // signalr.groupsHub.start(() => {
+      //   dispatch(initSignalRSuccess());
+      //   registerInviteEvents(dispatch);
+      // });
     } catch (e) {
       console.log(e);
       dispatch(initSignalRFailed());

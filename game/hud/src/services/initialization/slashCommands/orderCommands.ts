@@ -12,7 +12,7 @@ export default (): any => null;
 //   registerSlashCommand,
 //   webAPI,
 //   utils,
-// } from 'camelot-unchained';
+// } from '@csegames/camelot-unchained';
 // import { systemMessage } from './utils';
 
 // export default () => {

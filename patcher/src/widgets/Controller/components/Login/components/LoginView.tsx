@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
 
 import { LoginStatus } from '../index';
+import Link from './LoginLink';
 import LoginButton from './LoginButton';
+import LoginPrivacyModal from './LoginPrivacyModal';
 
 const Container = styled('div')`
   display: flex;
@@ -45,19 +46,6 @@ const Input = styled('input')`
   }
 `;
 
-const Link = styled('a')`
-  margin: -5px 0 0 10px;
-  text-decoration: none;
-  color: ${utils.darkenColor('#d7bb4d', 10)};
-  transition: all 0.3s;
-  font-size: 0.9em;
-  display: block;
-  text-align: left;
-  &:hover {
-    color: ${utils.lightenColor('#d7bb4d', 10)};
-  }
-`;
-
 const RememberMeContainer = styled('div')`
   flex: none;
   text-align: left;
@@ -79,6 +67,7 @@ export interface LoginViewProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onRememberMe: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onPasswordChanged: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onPrivacyClick: () => void;
   onLogin: () => void;
   emailRef: (ref: HTMLInputElement) => void;
   rememberRef: (ref: HTMLInputElement) => void;
@@ -90,6 +79,7 @@ class LoginView extends React.Component<LoginViewProps> {
     const disableInput = this.props.status !== LoginStatus.IDLE && this.props.status !== LoginStatus.INVALIDINPUT;
     return (
       <Container>
+        {this.props.status === LoginStatus.PRIVACYERROR && <LoginPrivacyModal onClick={this.props.onPrivacyClick} />}
         <div>
           <Input
             placeholder='Your Email'
@@ -129,13 +119,15 @@ class LoginView extends React.Component<LoginViewProps> {
             disabled={disableInput}
             required
           />
-          <Link href='https://api.citystateentertainment.com/Account/ForgottenPassword' target='_blank'>
+          <Link href='https://api.citystateentertainment.com/Account/ForgottenPassword' margin={'-5px 0 0 10px'}>
             Forgot your password?
           </Link>
         </div>
         <div>
           <LoginButton status={this.props.status} onClick={this.props.onLogin} />
-          <Link href='https://api.citystateentertainment.com/Account/Login' target='_blank'>Create a new account.</Link>
+          <Link href='https://api.citystateentertainment.com/Account/Login' margin={'-5px 0 0 10px'}>
+            Create a new account.
+          </Link>
         </div>
       </Container>
     );

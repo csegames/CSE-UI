@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from 'camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import { Routes } from '../../services/session/routes';
 import { patcher } from '../../services/patcher';

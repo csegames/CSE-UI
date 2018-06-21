@@ -38,7 +38,7 @@ export * from './groups';
 
 export * from './building';
 
-import events from './events';
+import * as events from './events';
 
 import * as signalr from './signalR';
 
@@ -112,10 +112,10 @@ export {
 
   // libraries
   core,
-  events,
 
   // misc
   signalr,
+  events,
 
   ql,
 };

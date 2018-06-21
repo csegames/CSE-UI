@@ -3,15 +3,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import events from '../events';
+import * as events  from '../events';
 import client from '../core/client';
 import { eventMapper, EventMap } from '../utils/eventMapper';
 
 declare const $: any;
 
-function signalRToEvents(recieve: string, send: string, hub: any, hubName: string, debug: boolean) {
+function signalRToEvents(receive: string, send: string, hub: any, hubName: string, debug: boolean) {
   if (!hub) return;
-  hub.on(recieve, (...params: any[]) => {
+  hub.on(receive, (...params: any[]) => {
     events.fire(send, ...params);
   });
 }
@@ -28,6 +28,8 @@ export enum ConnectionState {
   Disconnected = 4,
 }
 
+export type SignalRHubEvents = 'connected' | 'starting';
+
 export interface DeferredObjectInfo {
   done: (...params: any[]) => DeferredObjectInfo;
   fail: (...params: any[]) => DeferredObjectInfo;
@@ -40,6 +42,9 @@ export interface DeferredObjectInfo {
   then: (...params: any[]) => DeferredObjectInfo;
 }
 
+type hubEvents = 'connected' | 'starting' | 'connectionslow' | 'reconnecting' | 'reconnected' | 'disconnected' |
+'error' | 'received' | 'statechanged';
+
 export class SignalRHub {
 
   private hubName: string;
@@ -47,10 +52,19 @@ export class SignalRHub {
   private hub: any;
   private signalRHost: string;
   private debug: boolean;
-  private conn: any;
+  private conn: any = null;
   public reconnectOnDisconnect: boolean = true;
   private wantStop: boolean = false;
   private tryingToReconnect: boolean = false;
+  private eventHandlers: {
+    [event: string]: {
+      id: number;
+      callback: ((...params: any[]) => void);
+    }[];
+  } = {};
+  private handlerIDMap: { [id: number]: hubEvents; } = {};
+
+  private handlerIdGen = 0;
 
   public connectionState: ConnectionState = ConnectionState.Disconnected;
 
@@ -58,32 +72,44 @@ export class SignalRHub {
   // lifetime events
   ////////////////////////////////////
 
-  // Raised when the connection is connected
-  public onConnected: (hub: SignalRHub) => void;
+  public set onStateChanged(
+    callback: (hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void) {
+      this.addEventHandler('statechanged', callback);
+    }
 
-  // Raised before any data is sent over the connection
-  public onStarting: (hub: SignalRHub) => void;
+  public set onReceived(callback: (hub: SignalRHub, data: any) => void) {
+    this.addEventHandler('received', callback);
+  }
 
-  // Raised when any data is received on the connection. Provides the received data
-  public onReceived: (hub: SignalRHub, data: any) => void;
+  public set onError(callback: (hub: SignalRHub, error: string) => void) {
+    this.addEventHandler('error', callback);
+  }
 
-  // Raised when the client detecs a slow or frequently dropping connection
-  public onConnectionSlow: (hub: SignalRHub) => void;
+  public set onConnected(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('connected', callback);
+  }
 
-  // Raised when the underlying transport begins reconnecting
-  public onReconnecting: (hub: SignalRHub) => void;
+  public set onStarting(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('starting', callback);
+  }
 
-  // Raised when the underlying transport has reconnected
-  public onReconnected: (hub: SignalRHub) => void;
+  public set onConnectionSlow(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('connectionslow', callback);
+  }
 
-  // Raised when the connection state changes. Provides the old state and the new state 
-  // (Connecting, Connected, Reconnecting, or Disconnect)
-  public onStateChanged: (hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void;
+  public set onReconnecting(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('reconnecting', callback);
+  }
 
-  // Raised when the connection has disconnected
-  public onDisconnected: (hub: SignalRHub) => void;
+  public set onReconnected(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('reconnected', callback);
+  }
 
-  public onError: (hub: SignalRHub, error: string) => void;
+  public set onDisconnected(callback: (hub: SignalRHub) => void) {
+    this.addEventHandler('disconnected', callback);
+  }
+
+  
 
   constructor(
     hubName: string,
@@ -99,11 +125,69 @@ export class SignalRHub {
       this.debug = options.debug || false;
       this.reconnectOnDisconnect = options.reconnectOnDisconnect || true;
     }
+
+    this.addEventHandler = this.addEventHandler.bind(this);
   }
 
-  public start(onStart?: (hub: SignalRHub) => void, options?: {
+
+  public addEventHandler(
+    event: 'statechanged', 
+    callback: (hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void);
+  public addEventHandler(
+      event: 'received',
+      callback: (hub: SignalRHub, data: any) => void);
+  public addEventHandler(
+        event: 'error',
+        callback: (hub: SignalRHub, error: string) => void);
+  public addEventHandler(
+    event: 'connected' | 'starting' | 'connectionslow' | 'reconnecting' | 'reconnected' | 'disconnected',
+    callback: (hub: SignalRHub) => void);
+  public addEventHandler(
+    event: 'connected' | 'starting' | 'connectionslow' | 'reconnecting' | 'reconnected' | 'disconnected' |
+           'error' | 'received' | 'statechanged',
+    callback: ((hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void) |
+              ((hub: SignalRHub, data: any) => void) |
+              ((hub: SignalRHub, error: string) => void) |
+              ((hub: SignalRHub) => void)) {
+    
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | addEventHandler(event: '${event}')`);
+
+    const handler = {
+      callback,
+      id: ++this.handlerIdGen,
+    };
+    if (this.eventHandlers[event]) {
+      this.eventHandlers[event].push(handler);
+    } else {
+      this.eventHandlers[event] = [handler];
+    }
+    this.handlerIDMap[handler.id] = event;
+
+    // handle event registration after an event has occurred, ie: registering for connected when we're already connected
+    // in this case, we register, but also fire off the event now.
+    if (event === 'connected' && this.connectionState === ConnectionState.Connected) {
+      (callback as any)(this);
+    }
+
+    return handler.id;
+  }
+
+  public removeEventHandler = (id: number) => {
+    const event = this.handlerIDMap[id];
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | removeEventHandler(id: '${id}') [${event}]`);
+    if (!event) return;
+    const handlers = this.eventHandlers[event];
+    this.eventHandlers[event] = handlers.filter(h => h.id !== id);
+    delete this.handlerIDMap[id];
+  }
+
+  public start = (onStart?: (hub: SignalRHub) => void, options?: {
     host: string;
-  }) {
+  }) => {
+    if (this.conn !== null) {
+      return;
+    }
+
     if (options) {
       if (options.host) {
         this.signalRHost = options.host;
@@ -137,11 +221,11 @@ export class SignalRHub {
     });
   }
 
-  public stop() {
+  public stop = () => {
     this.conn.stop();
   }
 
-  public invoke(method: string, ...params: any[]): DeferredObjectInfo {
+  public invoke = (method: string, ...params: any[]): DeferredObjectInfo => {
     return this.hub.invoke(method, ...params);
   }
 
@@ -149,29 +233,37 @@ export class SignalRHub {
   // lifetime events
   ////////////////////////////////////
 
+  private fireEvent = (event: hubEvents, ...params: any[]) => {
+    if (this.debug) console.log(`SignalRHub [${this.hubName}] | fireEvent(event: '${event}')`);
+    const handlers = this.eventHandlers[event];
+    if (handlers) {
+      handlers.forEach(h => h.callback(this, ...params));
+    }
+  }
+
   // Raised before any data is sent over the connection
   private internalOnStarting = () => {
-    if (this.onStarting) this.onStarting(this);
+    this.fireEvent('starting');
   }
 
   // Raised when any data is received on the connection. Provides the received data
   private internalOnReceived = (data: any) => {
-    if (this.onReceived) this.onReceived(this, data);
+    this.fireEvent('received', data);
   }
 
   // Raised when the client detecs a slow or frequently dropping connection
   private internalOnConnectionSlow = () => {
-    if (this.onConnectionSlow) this.onConnectionSlow(this);
+    this.fireEvent('connectionslow');
   }
 
   // Raised when the underlying transport begins reconnecting
   private internalOnReconnecting = () => {
-    if (this.onReconnecting) this.onReconnecting(this);
+    this.fireEvent('reconnecting');
   }
 
   // Raised when the underlying transport has reconnected
   private internalOnReconnected = () => {
-    if (this.onReconnected) this.onReconnected(this);
+    this.fireEvent('reconnected');
   }
 
   // Raised when the connection state changes. Provides the old state and the new state
@@ -179,20 +271,21 @@ export class SignalRHub {
   private internalOnStateChanged = (state: { oldState: ConnectionState, newState: ConnectionState }) => {
     this.connectionState = state.newState;
     if (state.newState === ConnectionState.Connected) {
-      if (this.onConnected) this.onConnected(this);
+      this.fireEvent('connected');
     }
-    if (this.onStateChanged) this.onStateChanged(this, state);
+    this.fireEvent('statechanged', state);
   }
 
   // Raised when the connection has disconnected
   private internalOnDisconnected = () => {
+    this.conn = null;
     // try to reconnect again in 5 seconds.
     if (this.reconnectOnDisconnect) {
       setTimeout(() => {
         this.start();
       }, 5000);
     }
-    if (this.onDisconnected) this.onDisconnected(this);
+    this.fireEvent('disconnected');
   }
 
   ////////////////////////////////////
@@ -200,26 +293,21 @@ export class SignalRHub {
   ////////////////////////////////////
 
   private internalOnError = (error: string) => {
-    if (this.onError) this.onError(this, error);
+    this.fireEvent('error', error);
   }
 
   ////////////////////////////////////
   // map to event emitters
   ////////////////////////////////////
 
-  private registerEvents() {
+  private registerEvents = () => {
     eventMapper(this.eventMaps, signalRToEvents, this.hub, this.hubName, this.debug);
   }
 
-  private unregisterEvents() {
+  private unregisterEvents = () => {
     if (this.hub) {
-      this.eventMaps.map((evt: EventMap) => {
+      this.eventMaps.map((evt) => {
         this.hub.off(evt.receive);
-        events.off(evt.send);
-      });
-    } else {
-      this.eventMaps.map((evt: EventMap) => {
-        events.off(evt.send);
       });
     }
   }

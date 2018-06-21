@@ -19,13 +19,19 @@ module.exports = {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      default: '(nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat) || true'
+      default: '(nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat) || echo continuing...'
     },
     gqlLocal: {
       schema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output gql/schema.json',
       codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
       collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+      default: 'nps gqlLocal.schema && nps gqlLocal.codegen && nps gqlLocal.collectAndConcat'
+    },
+    gqlLocalServer: {
+      schema: 'apollo-codegen introspect-schema http://localhost:8000/graphql --output gql/schema.json',
+      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
+      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      default: 'nps gqlLocalServer.schema && nps gqlLocalServer.codegen && nps gqlLocalServer.collectAndConcat'
     },
     dev: {
       default: {
@@ -92,6 +98,14 @@ module.exports = {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/30/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      nuada: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1300/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      nuadaPrep: {
+        script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/1400/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       cube: {
         script: 'rimraf \"%localappdata%/CSE/CamelotUnchained/27/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -134,6 +148,14 @@ module.exports = {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/11/INTERFACE/hud\"',
         hiddenFromHelp: true,
       },
+      nuada: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1300/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
+      nuadaPrep: {
+        script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1400/INTERFACE/hud\"',
+        hiddenFromHelp: true,
+      },
       wolfhere: {
         script: 'copyup build/**/* \"%localappdata%/CSE/CamelotUnchained/1100/INTERFACE/hud\"',
         hiddenFromHelp: true,
@@ -174,11 +196,11 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'browserify tmpp/index.js -o build/js/hud.js --fast --noparse=FILE -u react -u react-dom -u jquery -u es6-promise -u camelot-unchained -u react-draggable -u react-redux -u react-select -u redux -u redux-thunk -u ol -t [ envify --NODE_ENV production ]',
+          script: 'mkdirp build/js && browserify tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE -t [ envify --NODE_ENV production ]',
           hiddenFromHelp: true,
         },
         lib: {
-          script: 'mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r camelot-unchained -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
+          script: '',//mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
         }
       },
@@ -195,10 +217,6 @@ module.exports = {
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
-      fledgling: {
-        script: 'nps build,clean.fledgling,copy.fledgling',
-        description: 'Builds the module and copies to the Fledling (30) UI override directory.',
-      },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
@@ -211,9 +229,17 @@ module.exports = {
         script: 'nps build,clean.wyrmlingPrep,copy.wyrmlingPrep',
         description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
       },
-      fledgling: {
-        script: 'nps build,clean.fledgling,copy.fledgling',
-        description: 'Builds the module and copies to the Fledgling (30) UI override directory',
+      nuada: {
+        script: 'nps build,clean.nuada,copy.nuada',
+        description: 'Builds the module and copies to the Nuada (1300) UI override directory',
+      },
+      nuadaPrep: {
+        script: 'nps build,clean.nuadaPrep,copy.nuadaPrep',
+        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
+      },
+      wolfhere: {
+        script: 'nps build,clean.wolfhere,copy.wolfhere',
+        description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
       },
       cube: {
         script: 'nps build,clean.cube,copy.cube',
@@ -227,9 +253,25 @@ module.exports = {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
-      wolfhere: {
-        script: 'nps build,clean.wolfhere,copy.wolfhere',
+      ignoreLintWyrmling: {
+        script: 'nps build.ignoreLint,clean.wyrmling,copy.wyrmling',
+        description: 'Builds the module and copies to the Wyrmling (10) UI override directory',
+      },
+      ignoreLintWyrmlingPrep: {
+        script: 'nps build.ignoreLint,clean.wyrmlingPrep,copy.wyrmlingPrep',
+        description: 'Builds the module and copies to the WyrmlingPrep (11) UI override directory',
+      },
+      ignoreLintFledgling: {
+        script: 'nps build.ignoreLint,clean.fledgling,copy.fledgling',
+        description: 'Builds the module and copies to the Fledling (30) UI override directory.',
+      },
+      ignoreLintWolfhere: {
+        script: 'nps build.ignoreLint,clean.wolfhere,copy.wolfhere',
         description: 'Builds the module and copies to the Wolfhere (1100) UI override directory',
+      },
+      ignoreLintNuadaPrep: {
+        script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',
+        description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
       },
     },
     report: {

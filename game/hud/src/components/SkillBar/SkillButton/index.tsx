@@ -12,7 +12,7 @@ import {
   SkillStateProgression,
   SkillStateStatusEnum,
   SkillStateTypeEnum,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import { cx } from 'react-emotion';
 
 import SkillButtonView from './SkillButtonView';
@@ -54,20 +54,20 @@ interface RingTimer {
     direction: number;
     clockwise: boolean;
   };
-  timer: any;
 }
 
 const INNER = 0;
 const OUTER = 1;
 const CLOCKWISE = true;
 
-class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState> {
-
+class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
   private rings: RingTimer[] = [undefined, undefined];
   private listener: any;
   private prevEvent: SkillStateInfo;
   private startCastTimeout: any;
   private hitTimeout: any;
+  private outerTimeout: any;
+  private innerTimeout: any;
 
   constructor(props: SkillButtonProps) {
     super(props);
@@ -170,6 +170,16 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     }
   }
 
+  public shouldComponentUpdate(nextProps: SkillButtonProps, nextState: SkillButtonState) {
+    return nextProps.index !== this.props.index ||
+      nextState.label !== this.state.label ||
+      nextState.inner.current !== this.state.inner.current ||
+      nextState.outer.current !== this.state.outer.current ||
+      !_.isEqual(nextProps.skillState, this.props.skillState) ||
+      nextState.startCast !== this.state.startCast ||
+      nextState.hit !== this.state.hit;
+  }
+
   public componentWillUnmount() {
     if (this.listener) {
       events.off(this.listener);
@@ -178,8 +188,7 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   }
 
   private performAbility = () => {
-    const hexId = this.props.skillState.id.toString(16);
-    client.Attack(hexId);
+    client.Attack(this.props.skillState.id);
   }
 
   private setTimerRing = (info: {
@@ -193,9 +202,14 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     let ring = this.rings[id];
 
     if (!ring || overrideCurrentTimer) {
+      if (id === OUTER) {
+        this.outerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+      }
+      if (id === INNER) {
+        this.innerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+      }
       ring = this.rings[id] = {
         event: { when: Date.now(), remaining: timer.end - timer.current, direction: 1, clockwise },
-        timer: setInterval(() => this.ringTimerTick(id, shouldPlayHit), 66),
       };
       this.setRingState(id, timer.end - timer.current);
     }
@@ -205,9 +219,14 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
     const { id, disruption, clockwise } = info;
     let ring = this.rings[id];
     if (!ring) {
+      if (id === OUTER) {
+        this.outerTimeout = disruption.end - disruption.current;
+      }
+      if (id === INNER) {
+        this.innerTimeout = disruption.end - disruption.current;
+      }
       ring = this.rings[id] = {
         event: { when: disruption.current, remaining: disruption.end - disruption.current, direction: 1, clockwise },
-        timer: disruption.end - disruption.current,
       };
     } else {
       ring.event = { when: Date.now(), remaining: disruption.current, direction: 1, clockwise };
@@ -229,24 +248,38 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
   }
 
   private ringTimerTick = (id: number, shouldPlayHit?: boolean) => {
-    const now = Date.now();
-    const ring = this.rings[id];
-    const elapsed = now - ring.event.when;
-    let current = ring.event.remaining - elapsed;
-    if (current < 0) {
-      current = 0;
-    }
-    this.setRingState(id, current);
-    if (current === 0) {
-      this.ringStop(id, shouldPlayHit);
+    if (this.rings[id]) {
+      const now = Date.now();
+      const ring = this.rings[id];
+      const elapsed = now - ring.event.when;
+      let current = ring.event.remaining - elapsed;
+      if (current < 0) {
+        current = 0;
+      }
+      this.setRingState(id, current);
+      if (current === 0) {
+        this.ringStop(id, shouldPlayHit);
+      } else {
+        if (this.innerTimeout && id === INNER) {
+          this.innerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+        }
+        if (this.outerTimeout && id === OUTER) {
+          this.outerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+        }
+      }
     }
   }
 
   private ringStop = (id: number, shouldPlayHit?: boolean) => {
-    const ring = this.rings[id];
-    if (ring && ring.timer) {
-      clearInterval(ring.timer);
-      ring.timer = null;
+    this.setState({ label: '' });
+    if (id === OUTER && this.outerTimeout) {
+      clearTimeout(this.outerTimeout);
+      this.outerTimeout = null;
+      this.rings[id] = undefined;
+    }
+    if (id === INNER && this.innerTimeout) {
+      clearTimeout(this.innerTimeout);
+      this.innerTimeout = null;
       this.rings[id] = undefined;
     }
     if (shouldPlayHit) {
@@ -323,6 +356,13 @@ class SkillButton extends React.PureComponent<SkillButtonProps, SkillButtonState
         this.runStartCastAnimation();
       }
       this.runTimerAnimation(event.timing, event.disruption, true, true);
+    }
+
+    // Unusable
+    if (event.status & SkillStateStatusEnum.Unusable) {
+      if (this.rings[INNER]) {
+        this.ringStop(INNER);
+      }
     }
 
     this.prevEvent = event;

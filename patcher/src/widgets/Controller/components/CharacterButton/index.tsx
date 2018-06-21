@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { webAPI } from 'camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
 import { patcher } from '../../../../services/patcher';

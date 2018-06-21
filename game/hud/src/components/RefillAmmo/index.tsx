@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import RefillButton from './components/RefillButton';
-import { client, hasClientAPI } from 'camelot-unchained';
+import { client, hasClientAPI } from '@csegames/camelot-unchained';
 
 const RefillAmmo = () => <RefillButton refill={() => {
   if (hasClientAPI()) {

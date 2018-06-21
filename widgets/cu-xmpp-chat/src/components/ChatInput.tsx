@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {client, events} from 'camelot-unchained';
+import {client, events} from '@csegames/camelot-unchained';
 
 import { UserInfo } from './User';
 import ChatSession from './ChatSession';

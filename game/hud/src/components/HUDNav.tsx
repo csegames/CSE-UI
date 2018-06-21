@@ -5,39 +5,30 @@
  */
 
 import * as React from 'react';
-import { Tooltip, utils } from 'camelot-unchained';
 import * as className from 'classnames';
-import { StyleSheet, css } from 'aphrodite';
-import { merge } from 'lodash';
+import styled, { css } from 'react-emotion';
+import { Tooltip, utils } from '@csegames/camelot-unchained';
 
-const defaultStyles: HUDNavStyle = {
-  list: {
-    margin: '0',
-    padding: '0',
-    listStyle: 'none',
-  },
+const List = styled('ul')`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
 
-  listHorizontal: {
-    float: 'left',
-  },
+const ListHorizontal = css`
+  float: left;
+`;
 
-  item: {
-    pointerEvents: 'all',
-    color: '#4d573e',
-    transition: 'all 0.2s',
-    animation: 'none',
-    ':hover': {
-      cursor: 'pointer',
-      color: 'lighten(#4d573e, 20%)',
-    },
-  },
-};
-
-export interface HUDNavStyle {
-  list: React.CSSProperties;
-  listHorizontal: React.CSSProperties;
-  item: React.CSSProperties;
-}
+const Item = styled('a')`
+  pointer-events: all;
+  color: #4D573E !important;
+  transition: all 0.2s;
+  animation: none;
+  &:hover {
+    cursor: pointer;
+    color: ${utils.lightenColor('#4D573E', 20)} !important;
+  }
+`;
 
 export interface HUDNavData {
   orientation: utils.Orientation;
@@ -55,7 +46,6 @@ export interface HUDNavItem {
 
 export interface HUDNavProps extends HUDNavData {
   containerClass?: string;
-  style?: Partial<HUDNavStyle>;
 }
 
 export interface HUDNavState {
@@ -71,10 +61,8 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(merge(defaultStyles, this.props.style || {}));
     return (
-      <ul className={css(ss.list)}>
-
+      <List>
         {
           this.state.collapsed ?
             (<Tooltip content='Show Quick Menu' styles={{
@@ -83,14 +71,14 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
               },
             }}>
               <li
-                className={className({ [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
+                className={this.props.orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}
                 onClick={this.show}>
-                <a href='#' className={className(css(ss.item), 'click-effect')}>
+                <Item href='#' className={'click-effect'}>
                   <span className='fa-stack click-effect'>
                     <i className='fa fa-square fa-stack-2x'></i>
                     <i className='fa fa-bars fa-stack-1x fa-inverse'></i>
                   </span>
-                </a>
+                </Item>
               </li>
             </Tooltip>) :
             (
@@ -103,17 +91,16 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                       },
                     }}>
                       <li
-                        className={className(
-                          { [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
-                          id={name}
-                          key={name}
-                          onClick={onClick}>
-                        <a href='#' className={className(css(ss.item), 'click-effect')}>
+                        className={this.props.orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}
+                        id={name}
+                        key={name}
+                        onClick={onClick}>
+                        <Item href='#' className={'click-effect'}>
                           {
                             typeof icon !== 'undefined' ? icon :
                               <i className={className('fa', 'fa-lg', iconClass, 'click-effect')}></i>
                           }
-                        </a>
+                        </Item>
                       </li>
                     </Tooltip>
                   );
@@ -125,34 +112,29 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                   },
                 }}>
                   <li
-                    className={className(
-                      { [css(ss.listHorizontal)]: this.props.orientation === utils.Orientation.HORIZONTAL })}
+                    className={this.props.orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}
                     onClick={this.hide}>
-                    <a href='#' className={className(css(ss.item), 'click-effect')}>
+                    <Item href='#' className={'click-effect'}>
                       <span className='fa-stack click-effect'>
                         <i className='fa fa-square fa-stack-2x'></i>
                         <i className='fa fa-caret-left fa-stack-1x fa-inverse'></i>
                       </span>
-                    </a>
+                    </Item>
                   </li>
                 </Tooltip>
               </div>
             )
         }
-      </ul>
+      </List>
     );
   }
 
   private show = () => {
-    this.setState({
-      collapsed: false,
-    });
+    this.setState({ collapsed: false });
   }
 
   private hide = () => {
-    this.setState({
-      collapsed: true,
-    });
+    this.setState({ collapsed: true });
   }
 }
 

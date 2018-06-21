@@ -6,67 +6,59 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled, { css, cx } from 'react-emotion';
 
-import { StyleDeclaration, StyleSheet, css } from 'aphrodite';
-
-export interface TabPanelStyle extends StyleDeclaration {
-  tabPanel: React.CSSProperties;
-  tabs: React.CSSProperties;
-  tab: React.CSSProperties;
-  activeTab: React.CSSProperties;
-  contentContainer: React.CSSProperties;
-  content: React.CSSProperties;
-  contentHidden: React.CSSProperties;
+export interface TabPanelStyle {
+  tabPanel: string;
+  tabs: string;
+  tab: string;
+  activeTab: string;
+  contentContainer: string;
+  content: string;
+  contentHidden: string;
 }
 
-export const defaultTabPanelStyle: TabPanelStyle = {
-  tabPanel: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignContent: 'stretch',
-  },
+const Container = styled('div')`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+`;
 
-  tabs: {
-    flex: '0 0 auto',
-    display: 'flex',
-  },
+const Tabs = styled('div')`
+  flex: 0 0 auto;
+  display: flex;
+`;
 
-  tab: {
-    flex: '0 0 auto',
-    '-webkit-user-select': 'none',
-    cursor: 'pointer',
-  },
+const Tab = styled('div')`
+  flex: 0 0 auto;
+  -webkit-user-select: none;
+  cursor: pointer;
+`;
 
-  activeTab: {
-    flex: '0 0 auto',
-    '-webkit-user-select': 'none',
-  },
+const ContentContainer = styled('div')`
+  flex: 1;
+  position: relative;
+  height: 0;
+  overflow: hidden;
+`;
 
-  contentContainer: {
-    flex: '1',
-    position: 'relative',
-    height: 0,
-    overflow: 'hidden',
-  },
+const Content = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+`;
 
-  content: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    height: '100%',
-    width: '100%',
-  },
-
-  contentHidden: {
-    visibility: 'hidden',
-    '-webkit-user-select': 'none',
-    pointerEvents: 'none',
-  },
-};
+const ContentHidden = css`
+  visibility: hidden;
+  -webkit-user-select: none;
+  pointer-events: none;
+`;
 
 export interface TabItem {
   name?: string;
@@ -126,18 +118,17 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
   }
 
   public render() {
-    const style = StyleSheet.create(defaultTabPanelStyle);
-    const customStyle = StyleSheet.create(this.props.styles || {});
+    const customStyles = this.props.styles || {};
 
     return (
-      <div className={css(style.tabPanel, customStyle.tabPanel)}>
-        {this.renderTabs(style, customStyle)}
-        <div className={css(style.contentContainer, customStyle.contentContainer)}>
+      <Container className={customStyles.tabPanel}>
+        {this.renderTabs(customStyles)}
+        <ContentContainer className={customStyles.contentContainer}>
           {this.props.alwaysRenderContent
-            ? this.renderAllContent(style, customStyle)
-            : this.renderActiveContent(style, customStyle)}
-        </div>
-      </div>
+            ? this.renderAllContent(customStyles)
+            : this.renderActiveContent(customStyles)}
+        </ContentContainer>
+      </Container>
     );
   }
 
@@ -149,55 +140,46 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     this.didMount = false;
   }
 
-  private renderTabs = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderTabs = (customStyle: Partial<TabPanelStyle>) => {
     return (
-      <div className={css(style.tabs, customStyle.tabs)}>
+      <Tabs className={customStyle.tabs}>
         {this.props.tabs.map((tabItem, index) => {
           const selected = index === this.activeTabIndex;
           return (
-            <div
-              className={css(
-                style.tab,
-                customStyle.tab,
-                selected && style.activeTab,
-                selected && customStyle.activeTab,
-              )}
-              onClick={() => this.selectIndex(index, tabItem.name)}
-              key={index}>
-              <tabItem.tab.render active={selected} {...tabItem.tab.props} />
-            </div>
+            <Tab
+              key={index}
+              className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
+              onClick={() => this.selectIndex(index, tabItem.name)}>
+                <tabItem.tab.render active={selected} {...tabItem.tab.props} />
+            </Tab>
           );
         })}
-      </div>
+      </Tabs>
     );
   }
 
   // Renders active content visibly, renders inactive content hidden
-  private renderAllContent = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderAllContent = (customStyles: Partial<TabPanelStyle>) => {
     return this.props.content.map((content, index) => {
       const active = this.props.tabs[this.activeTabIndex].rendersContent === content.name;
       return (
-        <div key={index}
-            className={css(
-              style.content,
-              customStyle.content,
-              !active && style.contentHidden,
-              !active && customStyle.contentHidden,
-            )}>
-          <content.content.render {...content.content.props} />
-        </div>
+        <Content
+          key={index}
+          className={!active ? cx(customStyles.content, ContentHidden, customStyles.contentHidden) : customStyles.content}>
+            <content.content.render {...content.content.props} />
+        </Content>
       );
     });
   }
 
   // Render only the active content.
-  private renderActiveContent = (style: TabPanelStyle, customStyle: Partial<TabPanelStyle>) => {
+  private renderActiveContent = (customStyles: Partial<TabPanelStyle>) => {
     const activeItem = _.find(this.props.content, content =>
       this.props.tabs[this.activeTabIndex].rendersContent === content.name);
     return (
-      <div className={css(style.content, customStyle.content)}>
+      <Content className={customStyles.content}>
         <activeItem.content.render {...activeItem.content.props} />
-      </div>
+      </Content>
     );
   }
 

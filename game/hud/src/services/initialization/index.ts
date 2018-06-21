@@ -15,7 +15,7 @@ import {
   skillTracks,
   resourceTypes,
   activeEffectActions,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {
@@ -135,6 +135,7 @@ export default () => {
 
     return output;
   }
+  combatLogToString(null);
 
   client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => events.fire('combatlog_message', combatLogToString(e))));
 };

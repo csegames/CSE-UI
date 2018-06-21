@@ -62,7 +62,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   const canStart = outputItems && outputItems.length && status === 'Configuring';
   const canCollect = status === 'Finished';
   const canCancel = status === 'Running';     // TODO: What is the actual status?
-  const canQuality = type === 'refine';
+  const canQuality = type === 'purify';
   const canQuantity = type === 'make';
 
   // If no vox type set yet...

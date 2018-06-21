@@ -39,101 +39,101 @@
 }
 
 .thumb__Pict--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_pict-m.png');
 }
 .thumb__Pict--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-f.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_pict-f.png');
   bottom: 30px!important;
   max-height: 85%!important;
 }
 
 .thumb__Luchorpan--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-m.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_luchorpan-m.png');
 }
 
 .thumb__Luchorpan--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_luchorpan-f.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_luchorpan-f.png');
 }
 
 .thumb__Valkyrie--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-m.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_valkyrie-m.png');
 }
 
 .thumb__Valkyrie--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_valkyrie-f.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_valkyrie-f.png');
 }
 
 .thumb__HumanMaleV--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-vik.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-vik.png');
 }
 
 .thumb__HumanMaleA--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-art.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-art.png');
 }
 
 .thumb__HumanMaleT--Male {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-m-tdd.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-tdd.png');
 }
 
 .thumb__HumanMaleV--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-vik.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-vik.png');
 }
 
 .thumb__HumanMaleA--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-art.png');
 }
 
 .thumb__HumanMaleT--Female {
-  @include selection-thumbnail('https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png');
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-tdd.png');
 }
 
 
 .standing__Luchorpan--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-m.png');
+  @include view-standing('../images/races/standing/luchorpan-m.png');
 }
 
 .standing__Luchorpan--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/luchorpan-f.png');
+  @include view-standing('../images/races/standing/luchorpan-f.png');
 }
 
 .standing__Valkyrie--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-m.png');
+  @include view-standing('../images/races/standing/valkyrie-m.png');
 }
 
 .standing__Valkyrie--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/valkyrie-f.png');
+  @include view-standing('../images/races/standing/valkyrie-f.png');
 }
 
 .standing__Pict--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-m.png');
+  @include view-standing('../images/races/standing/pict-m.png');
 }
 
 .standing__Pict--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/pict-f.png');
+  @include view-standing('../images/races/standing/pict-f.png');
 }
 
 .standing__HumanMaleV--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-vik.png');
+  @include view-standing('../images/races/standing/humans-m-vik.png');
 }
 
 .standing__HumanMaleA--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-art.png');
+  @include view-standing('../images/races/standing/humans-m-art.png');
 }
 
 .standing__HumanMaleT--Male {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-m-tdd.png');
+  @include view-standing('../images/races/standing/humans-m-tdd.png');
 }
 
 .standing__HumanMaleV--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-vik.png');
+  @include view-standing('../images/races/standing/humans-f-vik.png');
 }
 
 .standing__HumanMaleA--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-art.png');
+  @include view-standing('../images/races/standing/humans-f-art.png');
 }
 
 .standing__HumanMaleT--Female {
-  @include view-standing('https://s3.amazonaws.com/camelot-unchained/character-creation/character/humans-f-tdd.png');
+  @include view-standing('../images/races/standing/humans-f-tdd.png');
 }
 
 .race-btn {
@@ -321,12 +321,12 @@
 
   .base {
     z-index: 2;
-    background-position:55% bottom;
-    background-size:contain;
-    max-height:20%;
+    background-position: 55% bottom;
+    background-size: contain;
+    max-height: 20%;
     top: auto !important;
-    bottom:0px !important;
-    right:0px;
+    bottom: -10px !important;
+    right: 0px;
     &.char-select {
       background-position: 35% bottom;
     }

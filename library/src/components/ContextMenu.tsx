@@ -6,18 +6,16 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 
 import { Quadrant, windowQuadrant } from '../utils';
-import { StyleSheet, css } from 'aphrodite';
 
-const defaultStyles = {
-  contextMenu: {
-    backgroundColor: '#4d573e',
-    border: '1px solid darken(#4d573e, 20%)',
-    color: '#ececec',
-    'z-index': '9998',
-  },
-};
+const Container = styled('div')`
+  background-color: #4D573E;
+  border: 1px solid darken(#4D573E, 20%);
+  color: #ECECEC;
+  z-index: 9998;
+`;
 
 export interface ContextMenuContentProps {
   close: () => void;
@@ -65,25 +63,20 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
   }
 
   public render() {
-
-    const ss = StyleSheet.create({
-      contextMenu: {
-        ...defaultStyles.contextMenu,
-        ...(this.props.style || {}),
-      },
-    });
-
     const contentProps = this.props.contentProps || {};
 
     return (
-      <div onContextMenu={this.onContextMenu} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
-           style={{ display: 'inline-block' }}>
+      <div
+        onContextMenu={this.onContextMenu}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :
-            <div className={css(ss.contextMenu)} style={this.computeStyle()}>
+            <Container style={this.computeStyle()}>
               <this.props.content close={this.hide} {...contentProps}/>
-            </div>
+            </Container>
         }
       </div>
     );

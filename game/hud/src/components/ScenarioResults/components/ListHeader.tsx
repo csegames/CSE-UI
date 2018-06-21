@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { Name, KDAContainer, Divider, Kills, Deaths, Assists, Team } from './ListItem';
 import ListHeaderItem, { SortBy } from './ListHeaderItem';
 
@@ -64,7 +64,7 @@ class ListHeader extends React.PureComponent<ListHeaderProps> {
         </Name>
         <KDAContainer>
           <Kills>
-            <ListHeaderItem fullWidth text='K' sortBy={SortBy.Kills} {...this.props} />
+            <ListHeaderItem fullWidth text='K' sortBy={SortBy.PlayerKills} {...this.props} />
           </Kills>
           <Divider color='#7D7D7D'>/</Divider>
           <Deaths>
@@ -72,14 +72,15 @@ class ListHeader extends React.PureComponent<ListHeaderProps> {
           </Deaths>
           <Divider color='#7D7D7D'>/</Divider>
           <Assists>
-            <ListHeaderItem fullWidth text='A' sortBy={SortBy.Assists} {...this.props} />
+            <ListHeaderItem fullWidth text='A' sortBy={SortBy.PlayerAssists} {...this.props} />
           </Assists>
         </KDAContainer>
-        <ListHeaderItem fullWidth text='Healing Dealt' sortBy={SortBy.HealingDealt} {...this.props} />
+        <ListHeaderItem fullWidth text='NPC Kills' sortBy={SortBy.NPCKills} {...this.props} />
+        <ListHeaderItem fullWidth text='Damage Dealt' sortBy={SortBy.DamageDealt} {...this.props} />
         <ListHeaderItem fullWidth text='Damage Received' sortBy={SortBy.DamageReceived} {...this.props} />
+        <ListHeaderItem fullWidth text='Healing Dealt' sortBy={SortBy.HealingDealt} {...this.props} />
         <ListHeaderItem fullWidth text='Healing Received' sortBy={SortBy.HealingReceived} {...this.props} />
         <ListHeaderItem fullWidth text='Score' sortBy={SortBy.Score} {...this.props} />
-        <ListHeaderItem fullWidth text='Damage Dealt' sortBy={SortBy.DamageDealt} {...this.props} />
       </Container>
     );
   }

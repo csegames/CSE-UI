@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { client, Race, Gender, webAPI } from 'camelot-unchained';
+import { client, Race, Gender, webAPI } from '@csegames/camelot-unchained';
 
 export interface AttributeOffsetInfo {
   race: Race;
@@ -55,7 +55,7 @@ export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
 
 async function getAttributeOffsets(dispatch: (action: any) => any, shard: number, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1({ url: `${apiHost}/` }, shard);
+    const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1({ url: apiHost }, shard);
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchAttributeOffsetsSuccess(data) : fetchAttributeOffsetsFailed(data));
   } catch (err) {

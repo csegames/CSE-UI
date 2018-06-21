@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
 import { PatcherServer } from '../../services/session/controller';

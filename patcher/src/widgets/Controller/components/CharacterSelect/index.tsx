@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, events, jsKeyCodes } from 'camelot-unchained';
+import { webAPI, events, jsKeyCodes } from '@csegames/camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
 import CharacterSelectList from './components/CharacterSelectList';

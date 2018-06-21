@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { BuildingBlueprint } from 'camelot-unchained';
+import { BuildingBlueprint } from '@csegames/camelot-unchained';
 
 export interface BlueprintListProps {
   blueprints: BuildingBlueprint[];

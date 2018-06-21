@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import {utils} from 'camelot-unchained';
+import {utils} from '@csegames/camelot-unchained';
 
 enum emojis {
   ANGRY,

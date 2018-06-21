@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import { clone } from '../../lib/reduxUtils';
 
 export enum LayoutMode {
@@ -102,7 +103,6 @@ export interface HUDDragProps extends HUDDragOptions {
   gridDivisions: number; // how divided is the grid (we divide the height and width by this number)
 }
 
-
 export interface HUDDragState {
   height: number;
   width: number;
@@ -128,6 +128,13 @@ export interface HUDDragState {
   // controls
   mode: EditMode;
   layoutMode: LayoutMode;
+}
+
+export interface HUDDragDefaultPosition {
+  defaultX: number;
+  defaultY: number;
+  defaultXAnchor: number;
+  defaultYAnchor: number;
 }
 
 class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
@@ -187,8 +194,8 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
             height: '100%',
             width: '100%',
             opacity: this.state.opacity,
-            visibility: `${this.state.visible ? 'visible' : 'hidden'}`,
-            display: `${this.state.visible ? 'block' : 'none'}`,
+            visibility: this.state.visible ? 'visible' : 'hidden',
+            display: this.state.visible ? 'block' : 'none',
           }} >
             {this.props.render(clone(this.state))}
           </div>
@@ -207,64 +214,77 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     window.addEventListener('mousemove', this.onMouseMove);
   }
 
-  public componentWillReceiveProps(props: HUDDragProps) {
-
-    if (this.state.mode === EditMode.NONE) {
-      this.setState({
-        height: props.defaultHeight,
-        width: props.defaultWidth,
-        scale: props.defaultScale,
-        opacity: props.defaultOpacity,
-        x: props.defaultX,
-        y: props.defaultY,
-        xAnchor: props.defaultXAnchor,
-        yAnchor: props.defaultYAnchor,
-        visible: props.defaultVisible || true,
-
-        minHeight: props.minHeight || props.defaultHeight / 4,
-        maxHeight: props.maxHeight || props.defaultHeight * 5,
-        minWidth: props.minWidth || props.defaultWidth / 4,
-        maxWidth: props.maxWidth || props.defaultWidth * 5,
-        minScale: props.minScale || 0.5,
-        maxScale: props.maxScale || 3,
-
-        scaleFactor: props.scaleFactor || 0.01,
-
-        mode: EditMode.NONE,
-        layoutMode: props.defaultMode || LayoutMode.GRID,
-      });
-    }
-
-    if (this.state.layoutMode === LayoutMode.EDGESNAP) {
-      const fixedPos = this.getPosition();
-      const pos = HUDDrag.fixedToEdgeSnap(fixedPos.x, fixedPos.y, this.state.height, this.state.width);
-      this.setState(pos as any);
-    }
+  public componentWillReceiveProps(nextProps: HUDDragProps) {
+    // update positions
+    this.setPosition(nextProps);
 
     // update min & max height if needed
     const stateUpdate: any = {};
 
-    if (this.props.minHeight !== props.minHeight) {
-      stateUpdate.minHeight = props.minHeight || props.defaultHeight / 4;
+    if (this.props.minHeight !== nextProps.minHeight) {
+      stateUpdate.minHeight = nextProps.minHeight || nextProps.defaultHeight / 4;
     }
 
-    if (this.props.maxHeight !== props.maxHeight) {
-      stateUpdate.maxHeight = props.maxHeight || props.defaultHeight * 5;
+    if (this.props.maxHeight !== nextProps.maxHeight) {
+      stateUpdate.maxHeight = nextProps.maxHeight || nextProps.defaultHeight * 5;
     }
 
-    if (this.props.minWidth !== props.minWidth) {
-      stateUpdate.minWidth = props.minWidth || props.defaultWidth / 4;
+    if (this.props.minWidth !== nextProps.minWidth) {
+      stateUpdate.minWidth = nextProps.minWidth || nextProps.defaultWidth / 4;
     }
 
-    if (this.props.maxWidth !== props.maxWidth) {
-      stateUpdate.maxWidth = props.maxWidth || props.defaultWidth * 5;
+    if (this.props.maxWidth !== nextProps.maxWidth) {
+      stateUpdate.maxWidth = nextProps.maxWidth || nextProps.defaultWidth * 5;
     }
 
-    if (this.props.defaultVisible !== props.defaultVisible) {
-      stateUpdate.visible = props.defaultVisible;
+    if (this.props.defaultVisible !== nextProps.defaultVisible) {
+      stateUpdate.visible = nextProps.defaultVisible;
     }
 
-    if (stateUpdate !== {}) this.setState(stateUpdate);
+    if (!_.isEmpty(stateUpdate)) {
+      this.setState(stateUpdate);
+    }
+  }
+
+  private setPosition = (nextProps: HUDDragProps) => {
+    let posStateUpdate = null;
+    if (this.state.layoutMode === LayoutMode.EDGESNAP) {
+      // Check and update edge snap widgets position
+      const fixedPos = this.getPosition();
+      const pos = HUDDrag.fixedToEdgeSnap(
+        fixedPos.x,
+        fixedPos.y,
+        this.state.height * this.state.scale,
+        this.state.width * this.state.scale,
+      );
+      posStateUpdate = pos;
+    }
+
+    if (this.props.defaultX !== nextProps.defaultX ||
+        this.props.defaultY !== nextProps.defaultY ||
+        this.props.defaultHeight !== nextProps.defaultHeight ||
+        this.props.defaultWidth !== nextProps.defaultWidth ||
+        this.props.defaultVisible !== nextProps.defaultVisible ||
+        this.props.defaultScale !== nextProps.defaultScale ||
+        this.props.defaultOpacity !== nextProps.defaultOpacity) {
+      // We reached this because of a RESET
+      posStateUpdate = {
+        x: nextProps.defaultX,
+        y: nextProps.defaultY,
+        width: nextProps.defaultWidth,
+        height: nextProps.defaultHeight,
+        xAnchor: nextProps.defaultXAnchor,
+        yAnchor: nextProps.defaultYAnchor,
+        scale: nextProps.defaultScale,
+        opacity: nextProps.defaultOpacity,
+        visible: nextProps.defaultVisible,
+      };
+    }
+
+    // If there are actual updates to positions, then update local state.
+    if (posStateUpdate) {
+      this.setState(posStateUpdate as any);
+    }
   }
 
   private setMode = (m: EditMode) => {
@@ -305,15 +325,13 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
               {
                 const pos = HUDDrag.fixedToEdgeSnap(
                 fixedPos.x + deltaX, fixedPos.y + deltaY,
-                this.state.height,
-                this.state.width,
+                this.state.height * this.state.scale,
+                this.state.width * this.state.scale,
               );
                 this.setState(pos as any);
               }
               break;
           }
-
-
         }
         break;
       case EditMode.SIZEX:
@@ -415,8 +433,22 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     this.didUpdate = true;
   }
 
-  private setVisible = (v: boolean) => {
-    this.setState({ visible: v } as any);
+  private toggleVisibility = () => {
+    this.setState((state, props) => {
+      if (state.visible) {
+        // Hide
+        this.props.save({ ...this.state, visibility: false } as any);
+        return {
+          visible: false,
+        };
+      }
+
+      this.props.save({ ...this.state, visibility: true } as any);
+      // Show
+      return {
+        visible: true,
+      };
+    });
     this.didUpdate = true;
   }
 
@@ -483,7 +515,6 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     }
   }
 
-
   private static gridToFixed(x: number, y: number, xGrid: number, yGrid: number, divisions: number) {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -515,13 +546,13 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   private static fixedToEdgeSnap(x: number, y: number, h: number, w: number) {
     const s = { w: window.innerWidth, h: window.innerHeight };
 
-    const left = y < (s.w - (y - w));
-    const top = x < (s.h - (x - h));
+    const left = x < (s.w - (x + w));
+    const top = y < (s.h - (y + h));
 
     return {
-      x: left ? x : s.w - x + w,
+      x: left ? x : s.w - (x + w),
       xAnchor: left ? Edge.LEFT : Edge.RIGHT,
-      y: top ? y : s.h - y + h,
+      y: top ? y : s.h - (y + h),
       yAnchor: top ? Edge.TOP : Edge.BOTTOM,
     };
   }
@@ -563,7 +594,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
                    >
                 <a href='#'>
                   <i className={`fa ${this.state.visible ? 'fa-eye' : 'fa-eye-slash'}`}
-                     onClick={() => this.setVisible(!this.state.visible)}></i>
+                     onClick={this.toggleVisibility}></i>
                 </a>
               </div>
           }

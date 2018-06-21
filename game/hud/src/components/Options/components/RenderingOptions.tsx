@@ -7,23 +7,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import ListItem from './ListItem';
 import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 
-export interface RenderingOptionsStyle extends StyleDeclaration {
-  RenderingOptions: React.CSSProperties;
-}
-
-export const defaultRenderingOptionsStyle: RenderingOptionsStyle = {
-  RenderingOptions: {
-
-  },
-};
-
 export interface RenderingOptionsProps {
-  styles?: Partial<RenderingOptionsStyle>;
   activeConfigIndex: number;
   renderingConfigs: ConfigInfo[];
   onRenderConfigsChange: (renderingConfigs: ConfigInfo[]) => void;
@@ -38,11 +26,8 @@ export class RenderingOptions extends React.Component<RenderingOptionsProps, {}>
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultRenderingOptionsStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div className={css(ss.RenderingOptions, custom.RenderingOptions)}>
+      <div>
         {this.props.renderingConfigs.map((config, index) => {
           const isOddItem = index % 2 !== 0;
           if (parseInt(config.value, 10) || config.value === '0') {

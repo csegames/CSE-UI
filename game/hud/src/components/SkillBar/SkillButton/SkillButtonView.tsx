@@ -6,8 +6,10 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { Tooltip, SkillStateStatusEnum } from 'camelot-unchained';
+import { Tooltip, SkillStateStatusEnum } from '@csegames/camelot-unchained';
+import { overlayPseudo } from './lib/styles';
 
 import { SkillStateInfo } from './lib';
 
@@ -30,7 +32,7 @@ const Button = styled('div')`
   }
 
   &:after {
-    content: attr(data-keybind);
+    content: "${(props: any) => props.keybind}";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -66,6 +68,17 @@ const Button = styled('div')`
     z-index: 1;
     pointer-events: none;
   }
+`;
+
+const TimingOverlay = styled('div')`
+  ${overlayPseudo};
+  display: flex;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 2em;
+  text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000;
+  color: white;
+  filter: brightness(120%);
 `;
 
 const QueuedStateTick = styled('div')`
@@ -119,7 +132,6 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
             minWidth: '200px',
             maxWidth: '300px',
             maxHeight: '750px',
-            whiteSpace: 'wrap',
           },
         }}
         content={() => (
@@ -133,8 +145,7 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
           id={skillState.id}
           className={this.props.classNames}
           style={icon}
-          data-keybind={skillState.info.keybind}
-          data-timer={this.props.timer}
+          keybind={skillState.info.keybind}
           onClick={this.props.onSkillClick}
         >
           {skillState.status & SkillStateStatusEnum.Queued ? <QueuedStateTick /> : null}
@@ -148,9 +159,24 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
             <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner-blur'></path>
             <path d={this.props.innerPath} fill='none' strokeWidth='3px' className='inner'></path>
           </svg>
+          {Number(this.props.timer) !== 0 &&
+            <TimingOverlay className='skill-timing-overlay'>
+              {this.props.timer}
+            </TimingOverlay>
+          }
         </Button>
       </Tooltip>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: SkillButtonViewProps) {
+    return nextProps.timer !== this.props.timer ||
+      nextProps.inner !== this.props.inner ||
+      nextProps.innerPath !== this.props.innerPath ||
+      nextProps.outer !== this.props.outer ||
+      nextProps.outerPath !== this.props.outerPath ||
+      !_.isEqual(nextProps.skillState, this.props.skillState) ||
+      nextProps.classNames !== this.props.classNames;
   }
 }
 

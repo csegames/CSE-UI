@@ -13,7 +13,10 @@ export * from './compare';
 export * from './colorManipulation';
 export * from './searchUtils';
 export * from './textUtils';
-export * from './injectedProps';
+// export * from './injectedProps';
+export * from './distance';
+export * from './compareNumbers';
+export * from './time';
 
 import * as KeyCodes from './keyCodes';
 

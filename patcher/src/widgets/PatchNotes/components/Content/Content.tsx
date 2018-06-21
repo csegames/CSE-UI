@@ -8,8 +8,8 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import styled from 'react-emotion';
-import { utils, LoadingContainer } from 'camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from 'camelot-unchained/lib/graphql/react';
+import { utils, LoadingContainer } from '@csegames/camelot-unchained';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import Animate from '../../../../lib/Animate';
 
 const Wrapper = styled('div')`
@@ -97,21 +97,23 @@ class Content extends React.Component<ContentProps, ContentState> {
   }
 }
 
-const ContentWithQL = withGraphQL<ContentProps>((props: ContentProps) => ({
-  query: `
-    query Content($id: String!) {
-      patchNote(id: $id) {
-        id
-        htmlContent
-        utcDisplayStart
-        patchNumber
-        title
+const ContentWithQL = withGraphQL<ContentProps>((props: ContentProps) => {
+  return {
+    query: `
+      query Content($id: String!) {
+        patchNote(id: $id) {
+          id
+          htmlContent
+          utcDisplayStart
+          patchNumber
+          title
+        }
       }
-    }
-  `,
-  variables: {
-    id: props.patchNoteId,
-  },
-}))(Content);
+    `,
+    variables: {
+      id: props.patchNoteId,
+    },
+  };
+})(Content);
 
 export default ContentWithQL;

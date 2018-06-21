@@ -12,7 +12,6 @@ export interface RecipesState {
   updating: number;
   purify: Recipe[];
   grind: Recipe[];
-  refine: Recipe[];
   shape: Recipe[];
   block: Recipe[];
 }
@@ -22,7 +21,6 @@ export const initialState = (): RecipesState => {
     updating: 0,
     purify: [],
     grind: [],
-    refine: [],
     shape: [],
     block: [],
   };
@@ -45,24 +43,40 @@ function mapVoxRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
   });
 }
 
+function mapPurifyRecipesToRecipes(voxRecipes: VoxRecipe[]): Recipe[] {
+  return voxRecipes.map((r: VoxRecipe) => {
+    const item: any = r.ingredientItem || { name: r.id };
+    return {
+      id: r.id,
+      name: item.name,
+      icon: item.iconUrl,
+      description: item.description,
+    };
+  });
+}
+
 export const gotVoxRecipes = module.createAction({
   type: 'crafting/recipes/got-recipes',
   action: (recipeType: string, recipes: VoxRecipe[]) => ({
     recipeType,
-    recipes: mapVoxRecipesToRecipes(recipes),
+    recipes,
   }),
   reducer: (s, a) => {
     const type = a.recipeType;
     switch (type) {
-      case 'purify':
-      case 'refine':
       case 'grind':
       case 'shape':
       case 'block':
       case 'make':
-        return { [type]: a.recipes.sort((a, b) => a.name.localeCompare(b.name)) };
+        const mappedVoxRecipes = mapVoxRecipesToRecipes(a.recipes);
+        return { [type]: mappedVoxRecipes.sort((a, b) => a.name.localeCompare(b.name)) };
+      case 'purify': {
+        const mappedPurifyRecipes = mapPurifyRecipesToRecipes(a.recipes);
+        return { [type]: mappedPurifyRecipes.sort((a, b) => a.name.localeCompare(b.name)) };
+      }
     }
     console.error('CRAFTING: illegal recipe type ' + type);
+
     return {};
   },
 });

@@ -5,13 +5,87 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { merge, clone, cloneDeep } from 'lodash';
+import styled, { css } from 'react-emotion';
+
 import Flyout from './Flyout';
 import RaisedButton from './RaisedButton';
 import { ql } from '..';
 
-export interface GridViewStyle extends StyleDeclaration {
+const Container = styled('div')`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+`;
+
+const Header = styled('div')`
+  display: flex;
+  color: #777;
+  font-weight: bold;
+  min-height: 2em;
+  padding: 5px;
+`;
+
+const HeaderItem = styled('div')`
+  user-select: none;
+  cursor: default;
+  flex: 1;
+  margin: 0 5px;
+`;
+
+const SortableHeaderItem = css`
+  cursor: pointer;
+`;
+
+const Grid = styled('div')`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overfloy-y: auto;
+  padding-top: 10px;
+`;
+
+const GridItem = styled('span')`
+  flex: 1;
+  margin: 0 5px;
+  min-width: 0;
+  display: flex;
+`;
+
+const Row = styled('div')`
+  display: flex;
+  flex: 0;
+  padding: 5px;
+  &:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const RowMenu = styled('span')`
+  min-width: 10px;
+  max-width: 10px;
+  width: 10px;
+  cursor: pointer;
+  flex: 0;
+`;
+
+const Pagination = styled('div')`
+  display: flex;
+  align-self: center;
+  flex: 0;
+  align-content: center;
+  justify-content: center;
+`;
+
+const PageButton = styled('div')`
+  flex: 0;
+  font-size: 0.8em;
+`;
+
+export interface GridViewStyle {
   container: React.CSSProperties;
   header: React.CSSProperties;
   headerItem: React.CSSProperties;
@@ -23,81 +97,6 @@ export interface GridViewStyle extends StyleDeclaration {
   pagination: React.CSSProperties;
   pageButton: React.CSSProperties;
 }
-
-export const defaultGridViewStyle: GridViewStyle = {
-  container: {
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-
-  header: {
-    display: 'flex',
-    color: '#777',
-    fontWeight: 'bold',
-    minHeight: '2em',
-    padding: '5px',
-  },
-
-  headerItem: {
-    userSelect: 'none',
-    cursor: 'default',
-    flex: '1 1 auto',
-    margin: '0 5px',
-  },
-
-  sortableHeaderItem: {
-    cursor: 'pointer',
-  },
-
-  grid: {
-    display: 'flex',
-    flex: '1 1 auto',
-    flexDirection: 'column',
-    flexWrap: 'nowrap',
-    overflowY: 'auto',
-    paddingTop: '10px',
-  },
-
-  gridItem: {
-    flex: '1 1 auto',
-    margin: '0 5px',
-    minWidth: '0',
-    display: 'flex',
-  },
-
-  row: {
-    display: 'flex',
-    flex: '0 0 auto',
-    padding: '5px',
-    ':nth-child(even)': {
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    },
-  },
-
-  rowMenu: {
-    minWidth: '10px',
-    maxWidth: '10px',
-    width: '10px',
-    cursor: 'pointer',
-    flex: '0 0 auto',
-  },
-
-  pagination: {
-    display: 'flex',
-    alignSelf: 'center',
-    flex: '0 0 auto',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-
-  pageButton: {
-    flex: '0 0 auto',
-    fontSize: '.8em',
-  },
-};
 
 export interface SortFunc<T> {
   (a: T, b: T): number;
@@ -166,16 +165,15 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultGridViewStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
+    const customStyles = this.props.styles || {};
     return (
-      <div className={css(ss.container, custom.container)}>
-        <div className={css(ss.header, custom.header)}>
-          {this.renderHeaderItems(ss, custom)}
-        </div>
-        {this.renderGrid(ss, custom)}
-        {this.renderPagination(ss, custom)}
-      </div>
+      <Container style={customStyles.container}>
+        <Header style={customStyles.header}>
+          {this.renderHeaderItems(customStyles)}
+        </Header>
+        {this.renderGrid(customStyles)}
+        {this.renderPagination(customStyles)}
+      </Container>
     );
   }
 
@@ -240,7 +238,7 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
    * RENDERING
    */
 
-  private renderHeaderItems = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
+  private renderHeaderItems = (customStyles: Partial<GridViewStyle>) => {
     const headerItems: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
       const def = this.props.columnDefinitions[index];
@@ -250,33 +248,33 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
       // if (def.viewPermission && ql.hasPermission(this.props.userPermissions, def.viewPermission) === false) return;
 
       headerItems.push((
-        <div key={index} className={def.sortable
-          ? css(ss.headerItem, custom.headerItem, ss.sortableHeaderItem, custom.sortableHeaderItem)
-          : css(ss.headerItem, custom.headerItem)}
-             style={def.style}
-             onClick={def.sortable ? () => {
-               switch (sorted) {
-                 case GridViewSort.None:
-                 case GridViewSort.Down:
-                   this.setSort(index, GridViewSort.Up);
-                   return;
-                 case GridViewSort.Up:
-                   this.setSort(index, GridViewSort.Down);
-                   return;
-               }
-             } : null}>
+        <HeaderItem
+          key={index}
+          className={def.sortable ? SortableHeaderItem : ''}
+          style={def.style}
+          onClick={def.sortable ? () => {
+            switch (sorted) {
+              case GridViewSort.None:
+              case GridViewSort.Down:
+                this.setSort(index, GridViewSort.Up);
+                return;
+              case GridViewSort.Up:
+                this.setSort(index, GridViewSort.Down);
+                return;
+            }
+          } : null}>
           {def.title}&nbsp;
           {
             sorted === GridViewSort.None ? null :
               <i className={`fa fa-caret-${sorted === GridViewSort.Up ? 'up' : 'down'}`}></i>
           }
-        </div>
+        </HeaderItem>
       ));
     });
     return headerItems;
   }
 
-  private renderRow = (item: any, rowKey: number, ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
+  private renderRow = (item: any, rowKey: number, customStyles: Partial<GridViewStyle>) => {
 
     const items: JSX.Element[] = [];
     this.props.columnDefinitions.forEach((pdef, index) => {
@@ -287,67 +285,64 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
       if (def.renderItem) {
         items.push(
           (
-            <span key={index}
-                  className={css(ss.gridItem, custom.gridItem)}
-                  style={def.style}>
-              {def.renderItem(item, this.props.renderData)}
-            </span>
+            <GridItem
+              key={index}
+              style={{ ...customStyles.gridItem,...def.style }}>
+                {def.renderItem(item, this.props.renderData)}
+            </GridItem>
           ));
         return;
       }
 
       items.push(
         (
-          <span key={index}
-                className={css(ss.gridItem, custom.gridItem)}
-                style={def.style}>
-            {def.key(item)}
-          </span>
+          <GridItem
+            key={index}
+            style={{ ...customStyles.gridItem, ...def.style }}>
+              {def.key(item)}
+          </GridItem>
         ));
     });
 
     if (this.props.rowMenu) {
       items.push(
         (
-          <span key={'menu'} className={css(ss.rowMenu, custom.rowMenu)}>
+          <RowMenu key={'menu'} style={customStyles.rowMenu}>
             <Flyout
               content={(props: any) => this.props.rowMenu(item, props.close)}
               style={this.props.rowMenuStyle}>
               <i className='fa fa-ellipsis-v click-effect'></i>
             </Flyout>
-          </span>
+          </RowMenu>
         ),
       );
     }
 
 
     return (
-      <div key={rowKey} className={css(ss.row, custom.row)}>
-        {items}
-      </div>
+      <Row key={rowKey} style={customStyles.row}>{items}</Row>
     );
   }
 
-  private renderGrid = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
+  private renderGrid = (customStyles: Partial<GridViewStyle>) => {
     const state = this.state as S;
     const startIndex = state.page * state.itemsPerPage;
     const rows: JSX.Element[] = [];
 
     for (let index = startIndex;
-         (index - startIndex) < state.itemsPerPage
-         && index < state.sortedItems.length;
-         ++index) {
-      rows.push(this.renderRow(state.sortedItems[index], index, ss, custom));
+        (index - startIndex) < state.itemsPerPage && index < state.sortedItems.length;
+        ++index) {
+      rows.push(this.renderRow(state.sortedItems[index], index, customStyles));
     }
 
     return (
-      <div className={css(ss.grid, custom.grid)}>
+      <Grid style={customStyles.grid}>
         {rows}
-      </div>
+      </Grid>
     );
   }
 
-  private renderPagination = (ss: GridViewStyle, custom: Partial<GridViewStyle>) => {
+  private renderPagination = (customStyles: Partial<GridViewStyle>) => {
     const state = this.state as S;
     const itemCount = this.getItemCount();
     const itemsPerPage = this.getItemsPerPage();
@@ -373,9 +368,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                           margin: '5px',
                         },
                       }}>
-          <div className={css(ss.pageButton, custom.pageButton)}>
+          <PageButton style={customStyles.pageButton}>
             <i className='fa fa-backward'></i>
-          </div>
+          </PageButton>
         </RaisedButton>
       ),
     );
@@ -393,9 +388,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                           margin: '5px',
                         },
                       }}>
-          <div className={css(ss.pageButton, custom.pageButton)}>
+          <PageButton style={customStyles.pageButton}>
             <i className='fa fa-step-backward'></i>
-          </div>
+          </PageButton>
         </RaisedButton>
       ),
     );
@@ -420,9 +415,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                               margin: '5px',
                             },
                           }}>
-              <div className={css(ss.pageButton, custom.pageButton)}>
+              <PageButton style={customStyles.pageButton}>
                 {i + 1}
-              </div>
+              </PageButton>
             </RaisedButton>
           ),
         );
@@ -439,9 +434,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                             margin: '5px',
                           },
                         }}>
-            <div className={css(ss.pageButton, custom.pageButton)}>
+            <PageButton style={customStyles.pageButton}>
               {i + 1}
-            </div>
+            </PageButton>
           </RaisedButton>
         ),
       );
@@ -460,9 +455,9 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                           margin: '5px',
                         },
                       }}>
-          <div className={css(ss.pageButton, custom.pageButton)}>
+          <PageButton style={customStyles.pageButton}>
             <i className='fa fa-step-forward'></i>
-          </div>
+          </PageButton>
         </RaisedButton>
       ),
     );
@@ -480,17 +475,15 @@ export class GridViewImpl<P extends GridViewProps, S extends GridViewState> exte
                           margin: '5px',
                         },
                       }}>
-          <div className={css(ss.pageButton, custom.pageButton)}>
+          <PageButton style={customStyles.pageButton}>
             <i className='fa fa-forward'></i>
-          </div>
+          </PageButton>
         </RaisedButton>
       ),
     );
 
     return (
-      <div className={css(ss.pagination, custom.pagination)}>
-        {pages}
-      </div>
+      <Pagination style={customStyles.pagination}>{pages}</Pagination>
     );
   }
 }

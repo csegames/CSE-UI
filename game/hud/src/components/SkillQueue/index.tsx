@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, client, restAPI, SkillStateStatusEnum, SkillStateTrackEnum } from 'camelot-unchained';
+import { events, client, restAPI, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
 
 import { ApiSkillInfo } from '../SkillBar';
 import { SkillStateInfo } from '../SkillBar/SkillButton/lib';
@@ -45,7 +45,7 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
   }
 
   private handleSkillQueueEvent = (skill: SkillStateInfo) => {
-    const queuedSkills = this.state.queuedSkills;
+    const queuedSkills = { ...this.state.queuedSkills };
     const tracks = this.getTracks(skill.track);
     tracks.forEach((track) => {
       const activeOrQueued = skill.status & SkillStateStatusEnum.Queued ||

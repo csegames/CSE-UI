@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI } from 'camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { Promise } from 'es6-promise';
 
 export interface VoxResponse {
@@ -23,14 +23,11 @@ function run(startRequest: () => any) {
         try {
           const data = response.json();
           if (response.ok) {
-            console.log('RESPONSE OK: ', data);
             resolve(data);
           } else {
-            console.log('REJECT: ', data);
             reject(data);
           }
         } catch (e) {
-          console.log('EXCEPTION: ', e);
           reject({ Code: e.number, Message: e.message });
         }
       })

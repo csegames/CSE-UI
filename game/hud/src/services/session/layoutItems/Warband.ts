@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import Warband from '../../../widgets/Warband';
+import { WarbandDisplay } from '../../../components/WarbandDisplay';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
@@ -11,19 +11,19 @@ export default {
   position: {
     x: {
       anchor: Edge.LEFT,
-      offset: -40,
+      offset: 0,
     },
     y: {
       anchor: Edge.TOP,
-      offset: -150,
+      offset: 50,
     },
     size: {
-      width: 200,
-      height: 700,
+      width: 150,
+      height: 500,
     },
-    scale: 0.6,
+    scale: 1,
     opacity: 1,
-    visibility: false,
+    visibility: true,
     zOrder: HUDZOrder.Warband,
     layoutMode: LayoutMode.EDGESNAP,
   },
@@ -31,6 +31,6 @@ export default {
     lockHeight: true,
     lockWidth: true,
   },
-  component: Warband,
+  component: WarbandDisplay,
   props: {},
 };

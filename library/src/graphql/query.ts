@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as _ from 'lodash';
 import { request as httpRequest, RequestOptions } from '../utils/request';
-import { ObjectMap, withDefaults } from './utils';
+import { withDefaults } from '../utils/withDefaults';
+import { ObjectMap } from '../utils/ObjectMap';
 
 // Query Definition as defined by apollo-codegen
 export interface GraphQLQueryDefinition {
@@ -37,14 +37,14 @@ export const defaultQueryOpts: QueryOptions = {
   stringifyVariables: false,
 };
 
-export interface QuickQLQuery {
+export interface GraphQLQuery {
   operationName: string | null;
   namedQuery: string | null;
   query: string | { definitions: GraphQLQueryDefinition[]; };
   variables: ObjectMap<any> | null;
 }
 
-export const defaultQuickQLQuery: QuickQLQuery = {
+export const defaultQuery: GraphQLQuery = {
   operationName: null,
   namedQuery: null,
   query: '{}',
@@ -70,9 +70,13 @@ function errorResult(msg: string) {
   };
 }
 
-export async function query<T>(query: QuickQLQuery, options?: Partial<QueryOptions>) {
+function getMessage(obj: { message: string }) {
+  return obj.message;
+}
 
-  const q = withDefaults(query, defaultQuickQLQuery);
+export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>) {
+
+  const q = withDefaults(query, defaultQuery);
   const opts = withDefaults(options, defaultQueryOpts);
 
   try {
@@ -95,10 +99,11 @@ export async function query<T>(query: QuickQLQuery, options?: Partial<QueryOptio
       },
     );
     if (response.ok) {
+      const result = JSON.parse(response.data);
       return {
-        data: JSON.parse(response.data).data as T,
-        ok: true,
-        statusText: 'OK',
+        data: result.data as T,
+        ok: result.data !== undefined,
+        statusText: result.errors === undefined ? 'OK' : result.errors.map(getMessage).join(' '),
       };
     }
 

@@ -6,8 +6,9 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import { utils } from 'camelot-unchained';
-import { setDragStoreInfo, getDragStore } from './DragStore';
+import { setDragStoreInfo, getDragStore, defaultDragStoreState } from './DragStore';
+
+import { Omit } from '@csegames/camelot-unchained/lib/utils/typeUtils';
 
 export interface PositionInformation {
   top: number;
@@ -110,6 +111,9 @@ export interface DraggableOptions {
 
   // Disables drag. If dropTarget is set to true, acts as only a drop zone.
   disableDrag?: boolean;
+
+  // Sets container of D&D item to flex 1 width 100% and height 100%
+  fullDimensions?: boolean;
 }
 
 export interface DraggableData {
@@ -125,26 +129,28 @@ export interface DragAndDropState extends DragAndDropInjectedProps {
 }
 
 function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref: any) => any }>(
-  options: DraggableOptions | ((props: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) => DraggableOptions),
+  options: DraggableOptions | ((props: Omit<PropsTypes, keyof DragAndDropInjectedProps>) => DraggableOptions),
 ) {
   return (WrappedComponent: React.ComponentClass<PropsTypes> | React.StatelessComponent<PropsTypes>) => {
     return class DragAndDrop extends React.Component<
-      utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>,
+      Omit<PropsTypes, keyof DragAndDropInjectedProps>,
       DragAndDropState
     > {
+      public mounted: boolean;
       private ref: HTMLDivElement;
       private draggableRef: any;
 
       private mouseDownTimeout: any;
       private initTimeout: any;
       private initialPosition: PositionInformation;
+      private dimensions: { height: number; width: number; top: number; left: number; };
       private onScroll = _.throttle(() => {
         // This inits position after throttled through scroll if a scrollById is provided.
         this.initPosition();
       }, 50);
       private options: DraggableOptions;
 
-      constructor(props: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
+      constructor(props: Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
         super(props);
 
         this.options = options ? typeof options === 'function' ? options(props) : options : null;
@@ -159,6 +165,8 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         return (
           <div
             ref={ref => this.ref = ref}
+            id={'drag-and-drop-item-container'}
+            style={this.options.fullDimensions ? { flex: '1', width: '100%', height: '100%' } : {}}
             onMouseMove={this.onMouseEnter}
             onMouseLeave={this.onMouseLeave}
             onMouseDown={this.onMouseDown}
@@ -175,6 +183,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       public componentDidMount() {
         // Init position of items
         this.initPosition();
+        this.mounted = true;
 
         // onResize re init position of items
         window.addEventListener('resize', this.initPosition);
@@ -188,7 +197,13 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         }
       }
 
-      public componentWillReceiveProps(nextProps: utils.Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
+      public shouldComponentUpdate(nextProps: any, nextState: DragAndDropState) {
+        return !_.isEqual(nextState.draggingPosition, this.state.draggingPosition) ||
+          nextState.dragItemIsOver !== this.state.dragItemIsOver ||
+          !_.isEqual(nextProps, this.props);
+      }
+
+      public componentWillReceiveProps(nextProps: Omit<PropsTypes, keyof DragAndDropInjectedProps>) {
         if (!_.isEqual(this.props, nextProps)) {
           if (this.state.dragItemIsOver) {
             this.setState({ dragItemIsOver: false });
@@ -198,10 +213,14 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         }
       }
 
-      public componentDidUpdate() {
-        if (!this.ref) return;
-
-        const dimensions = this.ref.getBoundingClientRect();
+      public componentDidUpdate(prevProps: any, prevState: DragAndDropState) {
+        if (!this.ref || !this.dimensions) return;
+        const dimensions = {
+          width: this.dimensions.width,
+          height: this.dimensions.height,
+          top: this.dimensions.top,
+          left: this.dimensions.left,
+        };
         const positionHasChanged = dimensions && this.initialPosition &&
           (dimensions.width !== this.initialPosition.width || dimensions.height !== this.initialPosition.height ||
           dimensions.top !== this.initialPosition.top || dimensions.left !== this.initialPosition.left);
@@ -213,6 +232,9 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       public componentWillUnmount() {
         // Clear initPosition timeout
+        this.mounted = false;
+        setDragStoreInfo(defaultDragStoreState);
+
         clearTimeout(this.initTimeout);
         clearTimeout(this.mouseDownTimeout);
 
@@ -229,26 +251,33 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private initPosition = () => {
-        this.initTimeout = setTimeout(() => {
-          const dimensions = this.ref && this.ref.getBoundingClientRect();
-          if (dimensions) {
-            const { top, left, width, height } = dimensions;
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
-              this.initialPosition = { top, left, width, height };
-              if (!this.state.draggingPosition ||
-                  this.state.draggingPosition.width !== width ||
-                  this.state.draggingPosition.height !== height) {
-                this.setState({ draggingPosition: this.initialPosition });
+        // Only initialize position if the item actually does anything with dragging/dropping
+        if (!this.options.disableDrag || this.options.dropTarget) {
+          this.initTimeout = setTimeout(() => {
+            if (this.mounted) {
+              if (!this.dimensions) {
+                this.dimensions = this.ref && this.ref.getBoundingClientRect();
+              }
+              if (this.dimensions) {
+                const { top, left, width, height } = this.dimensions;
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
+                  this.initialPosition = { top, left, width, height };
+                  if (!this.state.draggingPosition ||
+                      this.state.draggingPosition.width !== width ||
+                      this.state.draggingPosition.height !== height) {
+                    this.setState({ draggingPosition: this.initialPosition });
+                  }
+                }
               }
             }
-          }
-        }, 50);
+          }, 50);
+        }
       }
 
       private onMouseEnter = (e: any) => {
-        if (!this.state.dragItemIsOver) {
+        if (this.mounted && this.options.dropTarget && !this.state.dragItemIsOver) {
           const dragStore = getDragStore();
           if (dragStore.isDragging && !_.isEqual(dragStore.draggableRef, this.draggableRef) &&
               dragStore.dataKey === this.options.dataKey) {
@@ -269,7 +298,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       }
 
       private onMouseLeave = (e: any) => {
-        if (this.state.dragItemIsOver) {
+        if (this.mounted && this.options.dropTarget && this.state.dragItemIsOver) {
           this.setState({ dragItemIsOver: false });
 
           setDragStoreInfo({ dropTargetRef: null });
@@ -283,7 +312,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.button === 2) return;
-        if (!this.options.disableDrag && this.initialPosition) {
+        if (this.mounted && !this.options.disableDrag && this.initialPosition) {
           this.mouseDownTimeout = setTimeout(() => {
             // Call onDragStart if it is defined
             setDragStoreInfo({

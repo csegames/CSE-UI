@@ -6,24 +6,12 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 import ListItem from './ListItem';
 
-export interface AudioOptionsStyle extends StyleDeclaration {
-  AudioOptions: React.CSSProperties;
-}
-
-export const defaultAudioOptionsStyle: AudioOptionsStyle = {
-  AudioOptions: {
-
-  },
-};
-
 export interface AudioOptionsProps {
-  styles?: Partial<AudioOptionsStyle>;
   activeConfigIndex: number;
   audioConfigs: ConfigInfo[];
   onAudioConfigsChange: (audioConfigs: ConfigInfo[]) => void;
@@ -40,10 +28,8 @@ export class AudioOptions extends React.Component<AudioOptionsProps, AudioOption
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultAudioOptionsStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     return (
-      <div className={css(ss.AudioOptions, custom.AudioOptions)}>
+      <div>
         {this.props.audioConfigs.map((config, i) => {
           if (parseInt(config.value, 10) || config.value === '0') {
             // Number value so use slider

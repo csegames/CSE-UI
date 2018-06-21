@@ -5,13 +5,13 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import { Input, InputProps, utils } from '..';
 import { cloneDeep } from 'lodash';
 
 const { KeyCodes } = utils;
 
-export interface MultiSelectStyle extends StyleDeclaration {
+export interface MultiSelectStyle {
   container: React.CSSProperties;
   input: React.CSSProperties;
   list: React.CSSProperties;
@@ -23,77 +23,73 @@ export interface MultiSelectStyle extends StyleDeclaration {
   selectedItemList: React.CSSProperties;
 }
 
-export const defaultMultiSelectStyle: MultiSelectStyle = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignContent: 'stretch',
-    position: 'relative',
-  },
+const Container = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  position: relative;
+`;
 
-  input: {
-    flex: '0 0 auto',
-  },
+const InputView = styled('input')`
+  flex: 0;
+`;
 
-  list: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flex: '1 1 auto',
-    position: 'relative',
-    minHeight: '0px',
-    maxHeight: '300px',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    userSelect: 'none',
-    backgroundColor: '#444',
-  },
+const List = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  user-select: none;
+  background-color: #444;
+`;
 
-  listItem: {
-    flex: '1 1 auto',
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-  },
+const ListItem = styled('div')`
+  flex: 1;
+  cursor: pointer;
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+`;
 
-  highlightItem: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-  },
+const HighlightItem = styled('div')`
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 
-  selectedItem: {},
+const SelectedItemList = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  user-select: none;
+  background-color: #777;
+  position: relative;
+`;
 
-  selectedItemList: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    userSelect: 'none',
-    backgroundColor: '#777',
-    position: 'relative',
-  },
+const Selected = styled('div')`
+  display: flex;
+  flex: 0;
+  background-color: #222;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #555;
+  }
+`;
 
-  selected: {
-    display: 'flex',
-    flex: '0 0 auto',
-    backgroundColor: '#222',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: '#555',
-    },
-  },
-
-  removeSelected: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '2px',
-    fontSize: '0.8em',
-    cursor: 'pointer',
-    ':hover': {
-      color: 'darkred',
-    },
-  },
-};
+const RemoveSelected = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-size: 0.8em;
+  cursor: pointer;
+  &:hover {
+    color: darkred;
+  }
+`;
 
 export interface MultiSelectProps {
   items: any[];
@@ -120,7 +116,7 @@ export interface MultiSelectState {
 
 export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectState> {
 
-  private inputRef: HTMLInputElement = null;
+  private inputRef: HTMLInputElement;
 
   constructor(props: MultiSelectProps) {
     super(props);
@@ -139,55 +135,53 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultMultiSelectStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
+    const customStyles = this.props.styles || {};
     return (
-      <div className={css(ss.container, custom.container)}>
-        <Input inputRef={r => this.inputRef = r}
-               onChange={this.onInputChanged}
-               onKeyDown={this.onKeyDown}
-               {...this.props.inputProps} />
+      <Container style={customStyles.container}>
+        <Input
+          inputRef={r => this.inputRef = r}
+          onChange={this.onInputChanged}
+          onKeyDown={this.onKeyDown}
+          {...this.props.inputProps}
+        />
         <div style={{ position: 'relative' }}>
           <div style={{ position: 'absolute', width: '100%', zIndex: 1 }}>
-            <div className={css(ss.selectedItemList, custom.selectedItemList)}>
+            <SelectedItemList style={customStyles.selectedItemList}>
               {
                 this.state.selectedItems.map((i) => {
                   return (
-                    <div className={css(ss.selected, custom.selected)} onClick={() => this.unselectItem(i)}>
-                      <div className={css(ss.selectedItem, custom.selectedItem)}>
+                    <Selected style={customStyles.selected} onClick={() => this.unselectItem(i)}>
+                      <div style={customStyles.selectedItem}>
                         {this.props.renderSelectedItem(i, this.props.renderData)}
                       </div>
-                      <div className={css(ss.removeSelected, custom.removeSelected)}>
+                      <RemoveSelected style={customStyles.removeSelected}>
                         <i className='fa fa-times'></i>
-                      </div>
-                    </div>
+                      </RemoveSelected>
+                    </Selected>
                   );
                 })
               }
-            </div>
-            <div className={css(ss.list, custom.list)}>
+            </SelectedItemList>
+            <List style={customStyles.list}>
               {
                 this.state.filteredItems.map((item, index) => {
                   if (utils.findIndexWhere(this.state.selectedItems, i => this.props.itemComparison(i, item)) > -1)
                     return null;
                   return (
-                    <div key={index}
-                         className={
-                           this.state.keyboardIndex === index ?
-                             css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                             css(ss.listItem, custom.listItem)
-                         }
-                         onClick={() => this.selectItem(item)}>
-                      {this.props.renderListItem(item, this.props.renderData)}
+                    <div
+                      key={index}
+                      style={this.state.keyboardIndex === index ?
+                        {...customStyles.listItem, ...customStyles.highlightItem} : customStyles.listItem}
+                      onClick={() => this.selectItem(item)}>
+                        {this.props.renderListItem(item, this.props.renderData)}
                     </div>
                   );
                 })
               }
-            </div>
+            </List>
           </div>
         </div>
-      </div>
+      </Container>
     );
   }
 

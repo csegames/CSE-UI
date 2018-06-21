@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 
-import { events } from 'camelot-unchained';
 
+import * as events from '@csegames/camelot-unchained/lib/events';
 import Blocks from '../../widgets/Blocks';
 import RecentSelections from '../../widgets/RecentSelections';
 import DropLight from '../../widgets/DropLight';
@@ -26,6 +26,8 @@ export interface BuildPanelState {
 }
 
 class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
+  private activateListener: number;
+  private deactivateListener: number;
 
   constructor(props: BuildPanelProps) {
     super(props);
@@ -52,14 +54,15 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
     );
   }
 
+
   public componentDidMount() {
-    events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
-    events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
+    this.activateListener = events.addListener(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
+    this.deactivateListener = events.addListener(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
   }
 
   public componentWillUnmount() {
-    events.removeListener(this.materialSelectorActivated);
-    events.removeListener(this.materialSelectorDeactivated);
+    events.removeListener(this.activateListener);
+    events.removeListener(this.deactivateListener);
   }
 
   private materialSelectorActivated = () => {

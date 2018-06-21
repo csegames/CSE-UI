@@ -6,12 +6,12 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, events } from 'camelot-unchained';
-import { useConfig } from 'camelot-unchained/lib/graphql/react';
-import DragStore from '../DragAndDrop/DragStore';
+import { client, events, PlayerState } from '@csegames/camelot-unchained';
+import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 // import { graphql } from 'react-apollo';
-import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
+import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
+import DragStore from '../DragAndDrop/DragStore';
 import {
   LayoutState,
   setPosition,
@@ -22,10 +22,8 @@ import {
 import { InvitesState, initializeInvites } from '../../services/session/invites';
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
-
-import InteractiveAlert from '../InteractiveAlert';
 import Watermark from '../Watermark';
-import HUDFullScreen from '../HUDFullScreen';
+import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
 import SkillBar from '../SkillBar';
 import ScenarioPopup from '../ScenarioPopup';
@@ -35,8 +33,9 @@ import { ZoneName } from '../ZoneName';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
-
 import Console from '../Console';
+import { InteractiveAlertView } from '../InteractiveAlert';
+import { ContextMenu } from '../ContextMenu';
 
 useConfig({
   url: `${client.apiHost}/graphql`,
@@ -46,6 +45,13 @@ useConfig({
       shardID: `${client.shardID}`,
       characterID: client.characterID,
     },
+  },
+}, {
+  url: client.apiHost.replace('http', 'ws') + '/graphql',
+  initPayload: {
+    shardID: client.shardID,
+    loginToken: client.loginToken,
+    characterID: client.characterID,
   },
 });
 
@@ -78,18 +84,18 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <HUDNav.component {...HUDNav.props} />
         </div>
 
+        <InteractiveAlertView />
+
         <DevUI />
         <ScenarioPopup />
 
         <ScenarioResults />
-
-        <InteractiveAlert dispatch={this.props.dispatch}
-          invites={this.props.invites.invites} />
         <HUDFullScreen />
-        <Watermark />
-        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10 }}>
+        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10, pointerEvents: 'none' }}>
           <SkillBar />
         </div>
+        <ContextMenu />
+        <Watermark />
       </div>
     );
   }
@@ -98,9 +104,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
 
-    if (client && client.OnCharacterHealthChanged) {
+    if (client && client.OnPlayerStateChanged) {
 
-      client.OnCharacterAliveOrDead((alive: boolean) => {
+      client.OnPlayerStateChanged((playerState: PlayerState) => {
+        const alive = playerState.isAlive;
         const respawn = this.props.layout.widgets.get('respawn');
         if (!alive && respawn && !respawn.position.visibility) {
           this.setVisibility('respawn', true);
@@ -150,10 +157,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
       props = props();
     }
     return (
-      <ErrorBoundary>
+      <ErrorBoundary key={widget.position.zOrder}>
         <HUDDrag
           name={type}
-          key={widget.position.zOrder}
           defaultHeight={widget.position.size.height}
           defaultWidth={widget.position.size.width}
           defaultScale={widget.position.scale}
@@ -176,7 +182,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                 size: { width: s.width, height: s.height },
                 scale: s.scale,
                 opacity: s.opacity,
-                visibility: widget.position.visibility,
+                visibility: s.visible,
                 zOrder: widget.position.zOrder,
                 layoutMode: widget.position.layoutMode,
               },

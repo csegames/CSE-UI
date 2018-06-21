@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
-
-import { Race, Faction, Gender, Archetype } from 'camelot-unchained';
+import { client, webAPI, Race, Faction, Gender, Archetype } from '@csegames/camelot-unchained';
 
 export interface CharacterCreationModel {
   name: string;
@@ -44,17 +42,25 @@ export function createCharacter(model: CharacterCreationModel,
                                 apiVersion: number = 1) {
   return async (dispatch: (action: any) => any) => {
     await dispatch(createCharacterStarted());
-    const res = await webAPI.CharactersAPI.CreateCharacterV1(
-      webAPI.defaultConfig,
-      client.loginToken,
-      shard,
-      model as any,
-    );
-    if (res.ok) {
-      dispatch(createCharacterSuccess(model));
-      return;
+    try {
+      const res = await webAPI.CharactersAPI.CreateCharacterV1(
+        { url: apiUrl },
+        client.loginToken,
+        shard,
+        model,
+      );
+      if (res.ok) {
+        dispatch(createCharacterSuccess(model));
+        return;
+      }
+      const errorData = JSON.parse(res.data);
+      const error = errorData.FieldCodes && errorData.FieldCodes[0] ? errorData.FieldCodes[0].Message :
+        errorData.Message ? errorData.Message : 'There was an error with character creation!';
+      dispatch(createCharacterFailed(error));
+    } catch (e) {
+      dispatch(createCharacterFailed('There was an unexpected error!'));
     }
-    dispatch(createCharacterFailed(JSON.parse(res.data).FieldCodes[0].Message));
+
   };
 }
 
@@ -108,7 +114,11 @@ export default function reducer(state: CharacterState = initialState, action: an
       });
     case CREATE_CHARACTER_FAILED:
       const errors: any =  action.error.Errors;
-      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
+      if (!errors) {
+        toastr.error('An unexpected error occured! Try restarting your patcher', 'Oh No!!', { timeout: 5000 });
+      } else {
+        errors.forEach((e: string) => toastr.error(e, 'Oh No!!', { timeout: 5000 }));
+      }
       return Object.assign({}, state, {
         isFetching: false,
         error: action.error,

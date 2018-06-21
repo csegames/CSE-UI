@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { StyleSheet, css, merge, input, InputStyles } from '../styles';
 
 interface InputProps {
@@ -114,12 +114,10 @@ class Input extends React.Component<InputProps, InputState> {
   }
 
   private onClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log('CRAFTING: REQUEST INPUT OWNERSHIP - ALL YOUR INPUTZ BELONGZ TO US!!!');
     client.RequestInputOwnership();
   }
 
   private onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    console.log('CRAFTING: RELEASE INPUT OWNERSHIP :(');
     client.ReleaseInputOwnership();
     if (this.state.changed) {
       this.delayedOnChange(0);

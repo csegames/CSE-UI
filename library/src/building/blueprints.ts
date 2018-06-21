@@ -5,7 +5,7 @@
  */
 import BuildingBlueprint from './classes/BuildingBlueprint';
 import client from '../core/client';
-import events from '../events';
+import * as events  from '../events';
 import * as restApi from '../restapi';
 
 let blueprintsLoaded: boolean = false;

@@ -4,12 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI } from 'camelot-unchained';
 import 'isomorphic-fetch';
+import { client, webAPI, Archetype, Faction } from '@csegames/camelot-unchained';
 
 import ResponseError from '../../lib/ResponseError';
-
-import { Archetype, Faction } from 'camelot-unchained';
 
 export interface PlayerClassInfo {
   name: string;
@@ -60,7 +58,7 @@ export function resetClass() {
 }
 
 async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
-  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: `${apiHost}/` });
+  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: apiHost });
   const data = JSON.parse(res.data);
   if (res.ok) {
     dispatch(fetchPlayerClassesSuccess(data));

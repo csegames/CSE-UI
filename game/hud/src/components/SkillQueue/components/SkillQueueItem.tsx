@@ -6,8 +6,9 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
-import { events, SkillStateStatusEnum } from 'camelot-unchained';
+import { events, SkillStateStatusEnum } from '@csegames/camelot-unchained';
 import { SkillStateInfo, skillStateColors, makeGlowPathFor } from '../../SkillBar/SkillButton/lib';
 
 const Container = styled('div')`
@@ -51,6 +52,7 @@ export interface SkillQueueItemState {
 
 class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItemState> {
   private timerListener: any;
+  private mounted: boolean;
 
   constructor(props: SkillQueueItemProps) {
     super(props);
@@ -92,12 +94,21 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
   }
 
   public componentDidMount() {
+    this.mounted = true;
     this.timerListener = events.on(`skill-button-timer-${this.props.skill.id}`, (current: number) => {
-      this.setState({ current });
+      if (this.mounted) {
+        this.setState({ current });
+      }
     });
   }
 
+  public shouldComponentUpdate(nextProps: SkillQueueItemProps, nextState: SkillQueueItemState) {
+    return nextState.current !== this.state.current ||
+      !_.isEqual(nextProps.skill, this.props.skill);
+  }
+
   public componentWillUnmount() {
+    this.mounted = false;
     events.off(this.timerListener);
   }
 }

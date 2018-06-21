@@ -1,0 +1,10 @@
+fragment SubstanceStats on SubstanceStat_Single {
+  unitHealth
+  magicalResistance
+  meltingPoint
+  massFactor
+  hardnessFactor
+  elasticity
+  fractureChance
+  unitMass
+}

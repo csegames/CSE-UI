@@ -7,10 +7,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
-import { utils } from 'camelot-unchained';
+import styled, { css } from 'react-emotion';
 
-import { FactionColors } from '../constants';
+import { FactionColors } from '../../../lib/factionColors';
+import SearchableList from '../../SearchableList';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';
 import ListItem from './ListItem';
@@ -28,11 +28,8 @@ const Container = styled('div')`
   -webkit-mask-repeat: no-repeat;
 `;
 
-const ListContainer = styled('div')`
-  overflow: auto;
+const ListContainer = css`
   height: 500px;
-  padding: 0px 5px 0px 5px;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%);
   &::-webkit-scrollbar {
     width: 7px !important;
   }
@@ -45,8 +42,9 @@ const ListContainer = styled('div')`
   }
 `;
 
-const ItemSpacing = styled('div')`
-  margin-bottom: 3px;
+const ListItemsContainer = css`
+  padding: 0px 5px 0px 5px;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%);
 `;
 
 const NoDataText = styled('div')`
@@ -64,6 +62,7 @@ export interface ListProps {
   scenarioID: string;
   teams: TeamInterface[];
   players: TeamPlayer[];
+  visible: boolean;
   status: {
     loading: boolean;
     lastError: string;
@@ -88,29 +87,35 @@ class List extends React.Component<ListProps, ListState> {
   }
 
   public render() {
-    const { players, teams, status } = this.props;
+    const { players, teams, status, visible } = this.props;
     if (!_.isEmpty(players) && !_.isEmpty(teams) && !status.loading && status.lastError === 'OK') {
       const displayedPlayers = this.getDisplayedPlayers();
       return (
         <Container>
           <TeamScore teams={this.props.teams} scenarioID={this.props.scenarioID} />
           <ListHeader onSearchChange={this.onSearchChange} onSortClick={this.onSortClick} {...this.state} />
-          <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>
-            {displayedPlayers.map((player: any, i) => {
+          <SearchableList
+            visible={visible}
+            containerClass={ListContainer}
+            listItemsContainerClass={ListItemsContainer}
+            searchValue={this.state.searchValue}
+            searchKey={'displayName'}
+            listItemsData={displayedPlayers}
+            listItemHeight={40}
+            extraItemsRendered={10}
+            renderListItem={(player: any, searchIncludes, isVisible, i) => {
               const colors = FactionColors[player.teamID];
               return (
-                <ItemSpacing key={i}>
-                  <ListItem
-                    player={player}
-                    searchIncludes={utils.doesSearchInclude(this.state.searchValue, player.displayName)}
-                    backgroundColor={colors ? colors.backgroundColor : 'transparent'}
-                    scrollTop={this.listRef.scrollTop}
-                    listHeight={this.listRef.clientHeight}
-                  />
-                </ItemSpacing>
+                <ListItem
+                  key={i}
+                  player={player}
+                  searchIncludes={searchIncludes}
+                  isVisible={isVisible}
+                  backgroundColor={colors ? colors.backgroundColor : 'transparent'}
+                />
               );
-            })}
-          </ListContainer>
+            }}>
+          </SearchableList>
         </Container>
       );
     } else if (status.loading) {
@@ -149,55 +154,60 @@ class List extends React.Component<ListProps, ListState> {
       this.state.leastToGreatest !== nextState.leastToGreatest ||
       this.state.searchValue !== nextState.searchValue ||
       !_.isEqual(this.props.players, nextProps.players) ||
-      !_.isEqual(this.props.teams, nextProps.teams);
-  }
-
-  private getSearchPlayers = () => {
-    const players = [...this.props.players];
-    const matchingPlayers: TeamPlayer[] = [];
-    players.forEach((player, i) => {
-      if (utils.doesSearchInclude(this.state.searchValue, player.displayName)) {
-        matchingPlayers.push(player);
-        players[i] = null;
-      }
-    });
-
-    return [...matchingPlayers, ..._.compact(players)];
+      !_.isEqual(this.props.teams, nextProps.teams) ||
+      this.props.visible !== nextProps.visible;
   }
 
   private getDisplayedPlayers = () => {
     const players = [...this.props.players];
-    const sortedPlayers = this.state.searchValue === '' ? this.state.selectedSortBy !== SortBy.None ?
-      players.sort((a: TeamPlayer, b: TeamPlayer) => this.sortPlayersByStat(a, b, this.state)) :
-        players : this.getSearchPlayers();
+    const sortedPlayers = this.state.selectedSortBy !== SortBy.None ?
+      players.sort((a: TeamPlayer, b: TeamPlayer) => this.sortPlayersByStat(a, b, this.state)) : players;
     return sortedPlayers;
   }
 
   private sortPlayersByStat = (a: TeamPlayer, b: TeamPlayer, state: ListState) => {
-    if (state.selectedSortBy === SortBy.Name) {
-      // sorting by name
-      if (state.leastToGreatest) {
-        return b.displayName.localeCompare(a.displayName);
-      }
-      return a.displayName.localeCompare(b.displayName);
-    } else if (state.selectedSortBy === SortBy.Faction) {
-      if (state.leastToGreatest) {
-        return b.teamID.localeCompare(a.teamID);
-      }
-      return a.teamID.localeCompare(b.teamID);
-    } else {
-      // sorting by numberz
-      if (a && a.damage[state.selectedSortBy] && b && b.damage[state.selectedSortBy]) {
+    switch (state.selectedSortBy) {
+      case SortBy.Name: {
         if (state.leastToGreatest) {
-          return a.damage[state.selectedSortBy].anyCharacter -
-            b.damage[state.selectedSortBy].anyCharacter;
+          return b.displayName.localeCompare(a.displayName);
         }
-        return b.damage[state.selectedSortBy].anyCharacter - a.damage[state.selectedSortBy].anyCharacter;
-      } else if (state.selectedSortBy === SortBy.Score) {
+        return a.displayName.localeCompare(b.displayName);
+      }
+      case SortBy.Faction: {
+        if (state.leastToGreatest) {
+          return b.teamID.localeCompare(a.teamID);
+        }
+        return a.teamID.localeCompare(b.teamID);
+      }
+      case SortBy.PlayerKills: {
+        if (state.leastToGreatest) {
+          return a.damage.killCount.playerCharacter - b.damage.killCount.playerCharacter;
+        }
+        return b.damage.killCount.playerCharacter - a.damage.killCount.playerCharacter;
+      }
+      case SortBy.PlayerAssists: {
+        if (state.leastToGreatest) {
+          return a.damage.killAssistCount.playerCharacter - b.damage.killAssistCount.playerCharacter;
+        }
+        return b.damage.killAssistCount.playerCharacter - a.damage.killAssistCount.playerCharacter;
+      }
+      case SortBy.NPCKills: {
+        if (state.leastToGreatest) {
+          return a.damage.killCount.nonPlayerCharacter - b.damage.killCount.nonPlayerCharacter;
+        }
+        return b.damage.killCount.nonPlayerCharacter - a.damage.killCount.nonPlayerCharacter;
+      }
+      case SortBy.Score: {
         if (state.leastToGreatest) {
           return a.score - b.score;
         }
         return b.score - a.score;
+      }
+      default: {
+        if (state.leastToGreatest) {
+          return a.damage[state.selectedSortBy].anyCharacter - b.damage[state.selectedSortBy].anyCharacter;
+        }
+        return b.damage[state.selectedSortBy].anyCharacter - a.damage[state.selectedSortBy].anyCharacter;
       }
     }
   }

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { BuildingBlock } from 'camelot-unchained';
+import { BuildingBlock } from '@csegames/camelot-unchained';
 
 export interface ShapesViewProps {
   minimized: boolean;

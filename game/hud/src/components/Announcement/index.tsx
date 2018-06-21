@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, core } from 'camelot-unchained';
+import { events, core } from '@csegames/camelot-unchained';
 import * as React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
 

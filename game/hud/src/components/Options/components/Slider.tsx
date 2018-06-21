@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { utils } from '@csegames/camelot-unchained';
+import styled from 'react-emotion';
 
-export interface SliderStyle extends StyleDeclaration {
+export interface SliderStyle {
   Slider: React.CSSProperties;
   label: React.CSSProperties;
   input: React.CSSProperties;
@@ -16,60 +16,64 @@ export interface SliderStyle extends StyleDeclaration {
   minMaxText: React.CSSProperties;
 }
 
-export const defaultSliderStyle: SliderStyle = {
-  Slider: {
-    width: '100%',
-  },
+const Container = styled('div')`
+  width: 100%;
+`;
 
-  label: {
-    color: 'white',
-  },
+const Label = styled('label')`
+  color: white;
+`;
 
-  input: {
-    webkitAppearance: 'none',
-    width: '100%',
-    margin: '-5px',
-    padding: '5px',
-    cursor: 'pointer',
-    background: 'transparent',
-    ':focus': {
-      outline: 'none',
-    },
-    '::-webkit-slider-runnable-track': {
-      width: '100%',
-      height: '5px',
-      backgroundColor: '#454545',
-    },
-    '::-webkit-slider-thumb': {
-      webkitAppearance: 'none',
-      border: '1px solid #201f1f',
-      height: '20px',
-      width: '20px',
-      borderRadius: '7px',
-      cursor: 'pointer',
-      marginTop: '-10px',
-    },
-    ':active::-webkit-slider-thumb': {
-      boxShadow: 'inset 0 0 1px rgba(0,0,0,0.8)',
-    },
-    ':hover::-webkit-slider-thumb': {
-      backgroundColor: 'white',
-    },
-    ':hover::-webkit-slider-runnable-track': {
-      backgroundColor: utils.lightenColor('#454545', 30),
-    },
-  },
+const Input = styled('input')`
+  -webkit-appearance: none;
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
 
-  minMaxInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
+  &:focus: {
+    outline: none;
+  }
 
-  minMaxText: {
-    fontSize: '12px',
-    color: 'rgba(100,100,100,1)',
-  },
-};
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 5px;
+    background-color: #454545;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: white;
+    border: 1px solid #201F1F;
+    height: 20px;
+    width: 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-top: -10px;
+  }
+
+  &:active::-webkit-slider-thumb {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.8);
+  }
+
+  &:hover::-webkit-slider-thumb {
+    background-color: white;
+  }
+
+  &:hover::-webkit-slider-runnable-track {
+    background-color: ${utils.lightenColor('#454545', 30)};
+  }
+`;
+
+
+const MinMaxInfo = styled('div')`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const MinMaxText = styled('div')`
+  font-size: 12px;
+  color: rgba(100, 100, 100, 1);
+`;
 
 export interface SliderProps {
   styles?: Partial<SliderStyle>;
@@ -93,26 +97,22 @@ export class Slider extends React.Component<SliderProps, SliderState> {
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultSliderStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div className={css(ss.Slider, custom.Slider)}>
-        {this.props.label && <label className={css(ss.label, custom.label)}>{this.props.label}</label>}
-        <input
+      <Container>
+        {this.props.label && <Label>{this.props.label}</Label>}
+        <Input
           type='range'
-          className={css(ss.input, custom.input)}
           onChange={this.onInputChange}
           value={this.props.value}
           min={this.props.min}
           max={this.props.max}
         />
-        <div className={css(ss.minMaxInfo, custom.minMaxInfo)}>
-          <span className={css(ss.minMaxText, custom.minMaxText)}>{this.props.min || 0}</span>
+        <MinMaxInfo>
+          <MinMaxText>{this.props.min || 0}</MinMaxText>
           <span>{this.props.value}</span>
-          <span className={css(ss.minMaxText, custom.minMaxText)}>{this.props.max || 100}</span>
-        </div>
-      </div>
+          <MinMaxText>{this.props.max || 100}</MinMaxText>
+        </MinMaxInfo>
+      </Container>
     );
   }
 

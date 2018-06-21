@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as moment from 'moment';
-import { webAPI, events, utils } from 'camelot-unchained';
+import { webAPI, events, utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
@@ -215,6 +215,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       }
       
       launchString += ' autoconnect=1';
+      console.log(launchString);
     }
 
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

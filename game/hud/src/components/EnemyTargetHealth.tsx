@@ -5,17 +5,24 @@
  */
 
 import * as React from 'react';
-import { client, PlayerState } from 'camelot-unchained';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { client, PlayerState } from '@csegames/camelot-unchained';
+
+import { isEqualPlayerState } from '../lib/playerStateEqual';
+import HealthBar from './HealthBar';
+import { showEnemyTargetContextMenu } from '../services/actions/contextMenu';
 
 const Container = styled('div')`
-  width: 415px;
-  height: 248.3px;
+  transform: scale(0.45);
+  -webkit-transform: scale(0.45);
+  margin-left: -125px;
+  margin-top: -80px;
+  pointer-events: auto;
 `;
 
-import PlayerStatusComponent from './PlayerStatusComponent';
-
 export interface PlayerHealthProps {
+
 }
 
 export interface PlayerHealthState {
@@ -28,16 +35,15 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     this.state = {
       playerState: null,
     };
+    this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
 
   public render() {
-    if (!this.state.playerState) return null;
+    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
+
     return (
-      <Container>
-        <PlayerStatusComponent
-          containerClass='TargetHealth'
-          playerState={this.state.playerState}
-        />
+      <Container onContextMenu={this.handleContextMenu}>
+        <HealthBar type='compact' target='enemy' playerState={this.state.playerState} />
       </Container>
     );
   }
@@ -47,11 +53,16 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return true;
+    return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
   private setPlayerState = (playerState: PlayerState) => {
     this.setState({ playerState });
+  }
+
+  private handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    showEnemyTargetContextMenu(this.state.playerState, event);
   }
 }
 

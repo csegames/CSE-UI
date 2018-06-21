@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, utils, signalr, events, webAPI } from 'camelot-unchained';
-import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
+import { client, utils, signalr, events, webAPI } from '@csegames/camelot-unchained';
 import { Module } from 'redux-typed-modules';
+import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
 
 export interface ControllerState {
   isInitializing: boolean;
@@ -178,12 +178,12 @@ export const initialize = module.createAction({
   action: () => {
     client.loginToken = patcher.getLoginToken();
     return (dispatch: (action: ControllerAction) => any) => {
-      dispatch(reset());
-      dispatch(initSignalR());
-
+      dispatch(reset() as ControllerAction);
+      dispatch(initSignalR() as ControllerAction);
       try {
+        // Connect to main signalr patcher hub
         signalr.patcherHub.start(() => {
-          dispatch(initSignalRSuccess());
+          dispatch(initSignalRSuccess() as ControllerAction);
           registerPatcherHubEvents(dispatch);
           dispatch(getChannels());
           // update channel info on a timer...
@@ -193,8 +193,22 @@ export const initialize = module.createAction({
         });
       } catch (e) {
         console.error(e);
-        dispatch(initSignalRFailed());
+        dispatch(initSignalRFailed() as ControllerAction);
       }
+
+        // Connect to all server's patcher hubs
+        webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
+          if (res.ok) {
+            const servers = JSON.parse(res.data);
+            servers.forEach((server) => {
+              try {
+                signalr.createPatcherHub(server.apiHost + '/signalr').start();
+              } catch (e) {
+                console.error(e);
+              }
+            });
+          }
+        });
     };
   },
 });

@@ -10,15 +10,15 @@ import { Promise } from 'es6-promise';
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
 import client, { hasClientAPI } from '../core/client';
-import events from '../events';
+import { emitter }  from '../events/EventEmitter';
 import * as RestUtil from './RestUtil';
 
 // TODO remove this when the API's are updated
 
 // TODO: I wanted this to extend CoreSettings but CoreSettings
-// won't allow super to access its memebers, or pass anything
+// won't allow super to access its members, or pass anything
 // but a default CoreSettings object to its constructor, so
-// you can't customise the settings at all (e.g. like define
+// you can't customize the settings at all (e.g. like define
 // the api key or current channel)
 
 class Settings {
@@ -52,7 +52,7 @@ class Settings {
 // default to Hatchery
 let settings = new Settings(4);
 if (hasClientAPI()) {
-  events.on('init', () => {
+  emitter.on('init', () => {
     settings = new Settings(client.patchResourceChannel);
   });
 }

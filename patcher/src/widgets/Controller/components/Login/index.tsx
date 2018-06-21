@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events } from 'camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import LoginView from './components/LoginView';
 import { patcher } from '../../../../services/patcher';
@@ -20,6 +20,7 @@ export enum LoginStatus {
   WORKING,
   SUCCESS,
   FAILED,
+  PRIVACYERROR,
 }
 
 export interface LoginState {
@@ -66,6 +67,7 @@ class Login extends React.Component<LoginProps, LoginState> {
         password={this.state.password}
         rememberMe={this.state.rememberMe}
         status={this.state.status}
+        onPrivacyClick={this.onPrivacyClick}
         onEmailChanged={this.onEmailChanged}
         onKeyDown={this.onKeyDown}
         onPasswordChanged={this.onPasswordChanged}
@@ -93,6 +95,10 @@ class Login extends React.Component<LoginProps, LoginState> {
     });
   }
 
+  private onPrivacyClick = () => {
+    this.setState({ status: LoginStatus.IDLE });
+  }
+
   private onPasswordChanged = (evt: any) => {
     this.setState({
       password: evt.target.value,
@@ -107,6 +113,8 @@ class Login extends React.Component<LoginProps, LoginState> {
     if (newRememberMe === false) {
       // clear email addr from client's storage too
       patcher.login({email: null, password: null, rememberMe: false});
+      // Resets form fields when remember me is unchecked
+      this.setState({email: null, password: null});
     }
     events.fire('play-sound', 'select');
   }
@@ -131,9 +139,18 @@ class Login extends React.Component<LoginProps, LoginState> {
       events.fire('logged-in');
       return;
     } else if (waitTime > 5000 || patcher.hasLoginError()) {
-      this.setState({ status: LoginStatus.FAILED } as any);
-      setTimeout(() => this.setState({status: this.passwordRef.validity.valid && this.emailRef.validity.valid ?
-        LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
+      switch (patcher.getLoginError()) {
+        case 'privacyError': {
+          this.setState({ status: LoginStatus.PRIVACYERROR });
+          break;
+        }
+        default: {
+          this.setState({ status: LoginStatus.FAILED } as any);
+          setTimeout(() => this.setState({status: this.passwordRef.validity.valid && this.emailRef.validity.valid ?
+            LoginStatus.IDLE : LoginStatus.INVALIDINPUT} as any), 1000);
+          break;
+        }
+      }
       return;
     }
     setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);

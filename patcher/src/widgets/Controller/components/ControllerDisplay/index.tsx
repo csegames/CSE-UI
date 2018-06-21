@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
-import { events, webAPI } from 'camelot-unchained';
+import { events, webAPI } from '@csegames/camelot-unchained';
 
 import ControllerDisplayView from './components/ControllerDisplayView';
 

@@ -5,21 +5,30 @@
  */
 
 import * as React from 'react';
-import { client, PlayerState } from 'camelot-unchained';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
 
-const Container = styled('div')`
-  width: 415px;
-  height: 248.3px;
-`;
+import { isEqualPlayerState } from '../lib/playerStateEqual';
+import { client, PlayerState } from '@csegames/camelot-unchained';
+import HealthBar from './HealthBar';
+import { showFriendlyTargetContextMenu } from '../services/actions/contextMenu';
 
-import PlayerStatusComponent from './PlayerStatusComponent';
+const Container = styled('div')`
+  cursor: pointer;
+  pointer-events: all;
+  transform: scale(0.45);
+  -webkit-transform: scale(0.45);
+  margin-left: -125px;
+  margin-top: -80px;
+  pointer-events: auto;
+`;
 
 export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
   playerState: PlayerState;
+  showContextMenu: boolean;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
@@ -27,17 +36,17 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     super(props);
     this.state = {
       playerState: null,
+      showContextMenu: false,
     };
+    this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
 
   public render() {
-    if (!this.state.playerState) return null;
+    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
+
     return (
-      <Container>
-        <PlayerStatusComponent
-          containerClass='TargetHealth'
-          playerState={this.state.playerState}
-        />
+      <Container onContextMenu={this.handleContextMenu}>
+        <HealthBar type='compact' target='friendly' playerState={this.state.playerState} />
       </Container>
     );
   }
@@ -47,11 +56,17 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return true;
+    return !isEqualPlayerState(nextState.playerState, this.state.playerState) ||
+      nextState.showContextMenu !== this.state.showContextMenu;
   }
 
   private setPlayerState = (playerState: PlayerState) => {
     this.setState({ playerState });
+  }
+
+  private handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    showFriendlyTargetContextMenu(this.state.playerState, event);
   }
 }
 

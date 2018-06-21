@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { webAPI, events, client } from 'camelot-unchained';
+import { webAPI, events, client } from '@csegames/camelot-unchained';
 import CharacterDeleteModalView from './components/CharacterDeleteModalView';
 import { PatcherServer } from '../../services/session/controller';
 

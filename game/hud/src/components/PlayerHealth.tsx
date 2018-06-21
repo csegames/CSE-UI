@@ -5,15 +5,22 @@
  */
 
 import * as React from 'react';
-import { client, PlayerState } from 'camelot-unchained';
+import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { client, PlayerState } from '@csegames/camelot-unchained';
+
+import { isEqualPlayerState } from '../lib/playerStateEqual';
+import HealthBar from './HealthBar';
+import { showSelfContextMenu } from '../services/actions/contextMenu';
+import { setPlayerState } from '../services/actions/player';
 
 const Container = styled('div')`
-  width: 415px;
-  height: 248.3px;
+  transform: scale(0.45);
+  -webkit-transform: scale(0.45);
+  margin-left: -125px;
+  margin-top: -80px;
+  pointer-events: auto;
 `;
-
-import PlayerStatusComponent from './PlayerStatusComponent';
 
 export interface PlayerHealthProps {
 }
@@ -28,16 +35,14 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     this.state = {
       playerState: null,
     };
+    this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
 
   public render() {
-    if (!this.state.playerState) return null;
+    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
     return (
-      <Container>
-        <PlayerStatusComponent
-          containerClass='PlayerHealth'
-          playerState={this.state.playerState}
-        />
+      <Container onContextMenu={this.handleContextMenu}>
+        <HealthBar type='compact' playerState={this.state.playerState} />
       </Container>
     );
   }
@@ -47,11 +52,17 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
-    return true;
+    return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
   private setPlayerState = (playerState: PlayerState) => {
+    setPlayerState(playerState);
     this.setState({ playerState });
+  }
+
+  private handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    showSelfContextMenu(this.state.playerState, event);
   }
 }
 

@@ -6,9 +6,10 @@
  */
 
 import * as React from 'react';
-import { utils } from 'camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
 import { LoginStatus } from '../index';
+import GenericButton from '../../../../GenericButton';
 
 const waveTextAnimation = keyframes`
   0% {
@@ -72,38 +73,6 @@ const WaveText = styled('span')`
       animation-delay: 0.1s * $i;
       -webkit-animation-delay: 0.1s * $i;
     }
-  }
-`;
-
-const Button = styled('div')`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 170px;
-  height: 50px;
-  margin: 5px;
-  text-align: center;
-  font-family:"caudex";
-  border-image: linear-gradient(180deg,#e2cb8e,#8e6d27) stretch;
-  border-style: solid;
-  border-width: 3px 1px;
-  transition: background-color .3s;
-  background-color: rgba(17, 17, 17, 0.8);
-  border-image-slice: 1;
-  color: #b89969;
-  cursor: pointer;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  -webkit-mask-image: url(images/controller/button-mask.png);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: cover;
-  transition: all ease .2s;
-  &:hover {
-    background-color: rgba(36, 28, 28, 0.8);
-    border-image-slice: 1;
-    color: #ffd695;
   }
 `;
 
@@ -173,22 +142,24 @@ class LoginButton extends React.Component<LoginButtonProps> {
   public render() {
     switch (this.props.status) {
       case LoginStatus.INVALIDINPUT:
-        return <Button onClick={this.props.onClick}>Login</Button>;
+        return <GenericButton text='Login' onClick={this.props.onClick} />;
       case LoginStatus.IDLE:
-        return <Button tabIndex={4} onClick={this.props.onClick}>Login</Button>;
+        return <GenericButton text='Login' onClick={this.props.onClick} />;
       case LoginStatus.WORKING:
-        return <Button onClick={e => e.preventDefault()}>
+        return <GenericButton onClick={e => e.preventDefault()}>
           <WaveText>
             <i>V</i><i>e</i><i>r</i><i>i</i><i>f</i><i>y</i><i>i</i><i>n</i><i>g</i><i>.</i><i>.</i><i>.</i>
           </WaveText>
           <HorizontalBorderShine />
           <VerticalBorderShine />
           <ButtonGlow />
-        </Button>;
+        </GenericButton>;
       case LoginStatus.SUCCESS:
-        return <Button>Success!</Button>;
+        return <GenericButton text='Success' onClick={() => {}} />;
       case LoginStatus.FAILED:
-        return <Button className={FailedButton}>Login Failed</Button>;
+        return <GenericButton text='Login Failed' className={FailedButton} onClick={() => {}} />;
+      case LoginStatus.PRIVACYERROR:
+        return <GenericButton text='Login Failed' className={FailedButton} onClick={() => {}} />;
     }
   }
 }

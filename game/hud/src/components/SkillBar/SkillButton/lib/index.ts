@@ -11,11 +11,11 @@ import {
   SkillStateReasonEnum,
   SkillStateProgression,
   SkillStateTrackEnum,
-} from 'camelot-unchained';
+} from '@csegames/camelot-unchained';
 export * from './styles';
 
 export interface SkillStateInfo {
-  id: number;
+  id: string;
   info: {
     type: SkillStateTypeEnum;
     icon: string;

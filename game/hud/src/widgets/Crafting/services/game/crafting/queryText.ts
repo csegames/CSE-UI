@@ -50,7 +50,6 @@ const TYPES: any = {
   'voxStatus.outputItems': FIELD_LISTS.ITEM,
   blockRecipes: FIELD_LISTS.RECIPE,
   shapeRecipes: FIELD_LISTS.RECIPE,
-  refineRecipes: FIELD_LISTS.RECIPE,
   grindRecipes: FIELD_LISTS.RECIPE,
   purifyRecipes: FIELD_LISTS.RECIPE,
   makeRecipes: FIELD_LISTS.RECIPE,
@@ -118,10 +117,6 @@ const QUERY_GRIND_RECIPES = GetQueryText('GrindRecipes', {
   crafting: { grindRecipes: { outputItem: true, ingredientItem: true } },
 });
 
-const QUERY_REFINE_RECIPES = GetQueryText('RefineRecipes', {
-  crafting: { refineRecipes: { ingredientItem: true } },
-});
-
 const QUERY_SHAPE_RECIPES = GetQueryText('ShapeRecipes', {
   crafting: { shapeRecipes: { outputItem: true, ingredients: { ingredient: true } } },
 });
@@ -144,7 +139,6 @@ export const QUERIES = {
   QUERY_POSSIBLE_ITEMSLOTS,
   QUERY_PURIFY_RECIPES,
   QUERY_GRIND_RECIPES,
-  QUERY_REFINE_RECIPES,
   QUERY_SHAPE_RECIPES,
   QUERY_BLOCK_RECIPES,
   QUERY_MAKE_RECIPES,

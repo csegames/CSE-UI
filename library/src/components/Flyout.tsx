@@ -5,17 +5,15 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import styled from 'react-emotion';
 import { Quadrant, windowQuadrant } from '../utils';
 
-const defaultStyles = {
-  flyout: {
-    backgroundColor: '#4d573e',
-    border: '1px solid darken(#4d573e, 20%)',
-    color: '#ececec',
-    'z-index': '9998',
-  },
-};
+const FlyoutView = styled('div')`
+  background-color: #4D573E;
+  border: 1px solid darken(#4D573E, 20%);
+  color: #ECECEC;
+  z-index: 9998;
+`;
 
 export interface FlyoutContentProps {
   close: () => void;
@@ -60,22 +58,19 @@ export class Flyout extends React.Component<FlyoutProps, FlyoutState> {
   }
 
   public render() {
-    const ss = StyleSheet.create({
-      Flyout: {
-        ...defaultStyles.flyout,
-        ...(this.props.style || {}),
-      },
-    });
     const contentProps = this.props.contentProps || {};
     return (
-      <div onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
-           style={{ display: 'inline-block' }}>
+      <div
+        onClick={this.onClick}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :
-            <div className={css(ss.Flyout)} style={this.computeStyle()}>
+            <FlyoutView style={this.computeStyle()}>
               <this.props.content close={this.hide} {...contentProps}/>
-            </div>
+            </FlyoutView>
         }
       </div>
     );

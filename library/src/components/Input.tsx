@@ -5,45 +5,43 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import client from '../core/client';
 
-export interface InputStyle extends StyleDeclaration {
+export interface InputStyle {
   inputWrapper: React.CSSProperties;
   input: React.CSSProperties;
   label: React.CSSProperties;
 }
 
-export const defaultInputStyle: InputStyle = {
-  inputWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
+const InputWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
 
-  input: {
-    flex: '1 1 auto',
-    padding: '5px 15px',
-    backgroundColor: 'transparent',
-    background: 'rgba(0, 0, 0, 0.1)',
-    border: 'solid 1px rgba(255, 255, 255, 0.2)',
-    color: '#8f8f8f',
-    fontSize: '1em',
-    lineHeight: '1em',
-    boxShadow: 'inset 0px 0px 2px 0px rgba(200,200,200,.1)',
-    '::-webkit-input-placeholder': {
-      fontSize: '1em',
-      lineHeight: '1em',
-    },
-    '::placeholder': {
-      fontSize: '1em',
-      lineHeight: '1em',
-    },
-  },
+const InputView = styled('input')`
+  flex: 1;
+  padding: 5px 15px;
+  background-color: transparent;
+  background: rgba(0, 0, 0, 0.1);
+  border: solid 1px rgba(255, 255, 255, 0.2);
+  color: #8F8F8F;
+  font-size: 1em;
+  line-height: 1em;
+  box-shadow: inset 0px 0px 2px 0px rgba(200, 200, 200, 0.1);
+  &::-webkit-input-placeholder {
+    font-size: 1em;
+    line-height: 1em;
+  }
+  &::placeholder {
+    font-size: 1em;
+    line-height: 1em;
+  }
+`;
 
-  label: {
-    flex: '1 1 auto',
-  },
-};
+const Label = styled('label')`
+  flex: 1;
+`;
 
 export interface InputProps {
   styles?: Partial<InputStyle>;
@@ -55,20 +53,19 @@ export interface InputProps {
 }
 
 export const Input = (props: Partial<InputProps>) => {
-  const ss = StyleSheet.create(defaultInputStyle);
   const { styles, ...inputProps } = props;
-  const custom = StyleSheet.create(styles || {});
+  const customStyles = props.styles || {};
   return (
-    <div className={css(ss.inputWrapper, custom.inputWrapper)}>
-      {props.label ? <label className={css(ss.label, custom.label)}>{props.label}</label> : null}
-      <input
-        ref={r => props.inputRef ? props.inputRef(r) : null}
+    <InputWrapper style={customStyles.inputWrapper}>
+      {props.label ? <Label style={customStyles.label}>{props.label}</Label> : null}
+      <InputView
+        innerRef={r => props.inputRef ? props.inputRef(r) : null}
         onClick={() => client.RequestInputOwnership()}
         onBlur={() => client.ReleaseInputOwnership()}
-        className={css(ss.input, custom.input)}
+        style={styles.input}
         {...inputProps}
       />
-    </div>
+    </InputWrapper>
   );
 };
 

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events } from 'camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
 
 export interface PositionInformation {
   top: number;
@@ -33,7 +33,7 @@ export interface DragStoreState {
   dragRender: JSX.Element;
 }
 
-const defaultDragStoreState: DragStoreState = {
+export const defaultDragStoreState: DragStoreState = {
   isDragging: false,
   dataKey: '',
   draggableRef: null,

@@ -7,9 +7,25 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { restAPI, client } from 'camelot-unchained';
+import { client, ClientSkillBarItem } from '@csegames/camelot-unchained';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import styled from 'react-emotion';
 import SkillButton from './SkillButton';
+
+const query = `
+  {
+    myCharacter {
+      skills {
+        id
+        name
+        icon
+        notes
+        tracks
+      }
+    }
+  }
+`;
 
 const Container = styled('div')`
   display: flex;
@@ -35,87 +51,76 @@ export interface SkillBarProps {
 }
 
 export interface SkillBarState {
-  skills: ApiSkillInfo[];
+  apiSkills: ApiSkillInfo[];
+  clientSkills: ClientSkillBarItem[];
 }
 
 export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
+  private graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>;
   constructor(props: {}) {
     super(props);
     this.state = {
-      skills: [],
+      apiSkills: [],
+      clientSkills: [],
     };
   }
 
   public render() {
+    const { apiSkills, clientSkills } = this.state;
     return (
       <Container>
-        {this.state.skills.map((state: ApiSkillInfo, index: number) => (
-          <SkillButton key={index} skillInfo={state} index={index + 1} />
-        ))}
+        <GraphQL query={query} onQueryResult={this.handleQueryResult} />
+        {clientSkills.map((clientSkill: ClientSkillBarItem, index: number) => {
+          const skillInfo = {
+            ..._.find(apiSkills, (s: ApiSkillInfo) => s.id === clientSkill.id),
+            ...clientSkill,
+          };
+
+          return skillInfo ? (
+            <SkillButton key={index} skillInfo={skillInfo} index={index + 1} />
+          ) : null;
+        })}
       </Container>
     );
   }
 
   public componentDidMount() {
-    this.initializeSkills();
-    client.OnAbilityCreated(this.onSkillCreated);
-    client.OnAbilityDeleted(this.onSkillDeleted);
+    client.OnSkillBarChanged(this.updateSkills);
   }
 
-  private initializeSkills = async () => {
-    const res = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
-    const skills = this.updateSkills(res);
-    this.setState({ skills });
+  public shouldComponentUpdate(nextProps: SkillBarProps, nextState: SkillBarState) {
+    return !_.isEqual(nextState.clientSkills, this.state.clientSkills) ||
+      !_.isEqual(nextState.apiSkills, this.state.apiSkills);
   }
 
-  private updateSkills = (skills: any[]) => {
+  private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>) => {
+    this.graphql = graphql;
+
+    if (graphql.loading || !graphql.data) {
+      return;
+    }
+
+    const myCharacter = typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
+
+    if (myCharacter && myCharacter.skills && !_.isEqual(this.state.apiSkills, myCharacter.skills)) {
+      this.setState({ apiSkills: myCharacter.skills });
+    }
+  }
+
+  private updateSkills = (skills: ClientSkillBarItem[]) => {
     const sortedSkills = skills.sort(this.sortBySkillID);
-    sortedSkills.forEach((skill: ApiSkillInfo) => this.registerSkill(skill));
-    return sortedSkills;
+
+    this.setState({ clientSkills: sortedSkills });
+
+    if (this.graphql) {
+      setTimeout(() => this.graphql.refetch(), 50);
+    }
   }
 
-  private sortBySkillID = (a: ApiSkillInfo, b: ApiSkillInfo) => {
+  private sortBySkillID = (a: ClientSkillBarItem, b: ClientSkillBarItem) => {
     const aID = !_.isNumber(a.id) ? parseInt(a.id, 16) : a.id;
     const bID = !_.isNumber(b.id) ? parseInt(b.id, 16) : b.id;
     return aID - bID;
-  }
-
-  private onSkillCreated = (abilityId: string, ability: string) => {
-    const newSkills = [...this.state.skills, JSON.parse(ability)];
-    const skills = this.updateSkills(newSkills);
-    this.setState({ skills });
-  }
-
-  private onSkillDeleted = (abilityId: string) => {
-    const newSkills = _.filter(this.state.skills, (ability) => {
-      const hexId = ability.id.toString(16);
-      return hexId !== abilityId;
-    });
-    const skills = this.updateSkills(newSkills);
-    this.setState({ skills });
-  }
-
-  private getPrimaryComponent = (ability: any) => {
-    if (ability) {
-      return ability.rootComponentSlot;
-    }
-  }
-
-  private getSecondaryComponent = (ability: any) => {
-    if (ability && ability.rootComponentSlot && ability.rootComponentSlot.children) {
-      return ability.rootComponentSlot.children[0];
-    }
-  }
-
-  private registerSkill = (ability: any) => {
-    const abilityID = _.isNumber(ability.id) ? ability.id.toString(16) : ability.id;
-    const primaryComponent = this.getPrimaryComponent(ability);
-    const primaryComponentBaseID = primaryComponent && primaryComponent.baseComponentID ?
-      primaryComponent.baseComponentID.toString(16) : '';
-    const secondaryComponent = this.getSecondaryComponent(ability);
-    const secondaryComponentBaseID = secondaryComponent && secondaryComponent.baseComponentID ?
-      secondaryComponent.baseComponentID.toString(16) : '';
-    client.RegisterAbility(abilityID, primaryComponentBaseID, secondaryComponentBaseID);
   }
 }
 

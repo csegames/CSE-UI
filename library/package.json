@@ -1,10 +1,11 @@
 {
-  "name": "@cse/camelot-unchained",
-  "version": "0.1.1",
+  "name": "@csegames/camelot-unchained",
+  "version": "0.1.40",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
+  "private": false,
   "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
   "contributors": [
     "JB (codecorsair) <jb@codecorsair.com>",
@@ -56,7 +57,7 @@
   "dependencies": {
     "aphrodite": "^1.2.3",
     "cwd-in-node-modules": "^1.0.1",
-    "emotion": "^8.0.8",
+    "emotion": "^9.2.3",
     "es6-promise": "^3.0.2",
     "fuzzysearch": "^1.0.3",
     "graphql-tag": "^1.2.4",
@@ -64,9 +65,11 @@
     "jquery": "^3.0.0",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-emotion": "^8.0.8",
+    "node-xmpp-client": "2.1.0",
+    "randomstring": "^1.1.5",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-emotion": "^9.2.3",
     "react-transition-group": "1.x",
     "redux-typed-modules": "^2.2.1"
   },
@@ -74,9 +77,9 @@
     "@types/aphrodite": "^0.5.5",
     "@types/isomorphic-fetch": "^0.0.34",
     "@types/jest": "^19.2.2",
-    "@types/lodash": "4.14.56",
-    "@types/react": "^16.0.5",
-    "@types/react-dom": "^15.5.5",
+    "@types/lodash": "^4.14.109",
+    "@types/react": "^16.3.17",
+    "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^4.4.46",
     "@types/react-test-renderer": "^15.5.0",
     "@types/react-transition-group": "1.x",
@@ -91,7 +94,7 @@
     "download-cli": "^1.0.5",
     "graphql-code-generator": "^0.5.2",
     "jest": "^19.0.2",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.9.0",
     "npm-watch": "^0.1.4",
     "nps": "^5.0.5",
     "react-test-renderer": "^15.5.4",
@@ -100,7 +103,7 @@
     "tslint": "^5.8.0",
     "tslint-config-airbnb": "^5.4.2",
     "tslint-eslint-rules": "^4.0.0",
-    "typescript": "^2.4.1",
+    "typescript": "^2.9.1",
     "typings": "^1.3.2"
   }
 }

@@ -9,8 +9,8 @@ import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { client } from 'camelot-unchained';
-import { ErrorBoundary } from 'camelot-unchained/lib/components/ErrorBoundary';
+import { client } from '@csegames/camelot-unchained';
+import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
 import initialize from './services/initialization';
 import HUD from './components/HUD';
@@ -22,12 +22,13 @@ import { ApolloProvider } from 'react-apollo';
 // if (client.debug) {
 //   // tslint:disable
 //   {
-//       let createClass = React.createClass;
-//       Object.defineProperty(React, 'createClass', {
-//         set: (nextCreateClass) => {
-//           createClass = nextCreateClass;
-//         }
-//       });
+//     // @ts-ignore
+//     let createClass = React.createClass;
+//     Object.defineProperty(React, 'createClass', {
+//       set: (nextCreateClass) => {
+//         createClass = nextCreateClass;
+//       }
+//     });
 //   }
 //   const {whyDidYouUpdate} = require('why-did-you-update');
 //   whyDidYouUpdate(React);
@@ -47,7 +48,7 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
   client.OnInitialized(() => {
     initialize();
     ReactDom.render(
-      <ErrorBoundary reloadUIOnError outputErrorToConsole>
+      <ErrorBoundary outputErrorToConsole>
         <ApolloProvider store={store} client={apollo}>
           <HUD />
         </ApolloProvider>
@@ -57,7 +58,7 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
 } else {
   initialize();
   ReactDom.render(
-    <ErrorBoundary reloadUIOnError outputErrorToConsole>
+    <ErrorBoundary outputErrorToConsole>
       <ApolloProvider store={store} client={apollo}>
         <HUD />
       </ApolloProvider>

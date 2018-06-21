@@ -1,3 +1,0 @@
-fragment GearSlotDefRef on GearSlotDefRef {
-  id
-}

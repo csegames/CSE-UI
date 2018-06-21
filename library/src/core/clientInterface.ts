@@ -106,6 +106,11 @@ export interface ClientSkillState {
   disruption?: SkillStateProgression;
 }
 
+export interface ClientSkillBarItem {
+  id: number;
+  keybind: number;
+}
+
 export interface SiegeState extends EntityState {
   type: 'siege';
   health: {
@@ -186,9 +191,10 @@ interface clientInterface {
   signalRHost?: string;
   shardID?: number;
 
-  OnInitialized(c: () => void): number;
+  /* player state object */
+  playerState: PlayerState;
 
-  CancelOnInitialized(c: number): void;
+  OnInitialized(c: () => void): number;
 
   // Everything else only exists after this.initialized is set and the
   // OnInitialized callbacks are invoked.
@@ -200,8 +206,6 @@ interface clientInterface {
   ResetLights(): void;
 
   OnServerConnected(c: (isConnected: boolean) => void): number;
-
-  CancelOnServerConnected(c: number): void;
 
   PlaySoundEvent(id: number): void;
 
@@ -221,8 +225,6 @@ interface clientInterface {
 
   ToggleUIVisibility(name: string): void;
 
-  FocusUI(name: string): void;
-
   RequestInputOwnership(): void;
 
   ReleaseInputOwnership(): void;
@@ -230,8 +232,6 @@ interface clientInterface {
   Quit(): void;
 
   CrashTheGame(): void;
-
-  OnUpdateNameplate(c: (cell: number, colorMod: number, name: string, gtag: string, title: string) => void): void;
 
   OnOpenUI(callback: (name: string) => void): void;
 
@@ -241,42 +241,16 @@ interface clientInterface {
 
   OnHideUI(callback: (name: string) => void): void;
 
-  Listen(event: string): void;
-
-  Ignore(event: string): void;
-
-  Fire(event: string, ...args: any[]): void;
-
-  OnEvent(callback: (event: string, ...args: any[]) => void): void;
-
   /* Respawn */
   Respawn(id: string): void;
 
   /* Skills */
-  SetSkillRunning(callback: (abilityId: string, isRunning: boolean) => void): void;
-
-  SetSkillQueued(callback: (abilityId: string, isQueued: boolean) => void): void;
-
-  UpdateSkillCooldown(callback: (abilityId: string, started: number, duration: number) => void): void;
-
-  OnSkillError(callback: (abilityId: string) => void):void;
-
   OnSkillStateChanged(callback: (skillState: ClientSkillState) => void): void;
 
+  OnSkillBarChanged(callback: (newSkillBar: ClientSkillBarItem[]) => void): void;
+
   /* Abilities */
-
-  OnAbilityNumbersChanged(callback: (abilityNumbers: string[]) => void): void;
-
   Attack(abilityID: string): void;
-
-  OnAbilityCooldown(c: (cooldownID: number, timeStarted: number, duration: number) => void): number;
-
-  CancelOnAbilityCooldown(c: number): void;
-
-  OnAbilityActive(c: (currentAbility: string, timeStarted: number,
-                      timeTriggered: number, queuedAbility: string) => any): number;
-
-  CancelOnAbilityActive(c: number): void;
 
   OnAbilityError(c: (message: string) => void): void;
 
@@ -304,12 +278,6 @@ interface clientInterface {
   EquipItem(itemID: string): void;
 
   DropItem(itemID: string): void;
-
-  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void;
-
-  CommitPlacedItem(callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void;
-
-  CancelPlacingItem(): void;
 
   /* Config */
 
@@ -476,76 +444,9 @@ interface clientInterface {
 
   /* Character */
 
-  OnCharacterIDChanged(c: (id: string) => void): void;
-
-  OnCharacterZoneChanged(c: (id: string) => void): void;
-
-  OnCharacterFactionChanged(c: (faction: Faction) => void): void;
-
-  OnCharacterRaceChanged(c: (race: Race) => void): void;
-
-  OnCharacterGenderChanged(c: (gender: Gender) => void): void;
-
-  OnCharacterNameChanged(c: (name: string) => void): void;
-
-  OnCharacterHealthChanged(c: (health: number, maxHealth: number) => void): void;
-
-  OnCharacterStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
-
-  OnCharacterEffectsChanged(c: (effects: string) => void): void;
-
-  OnCharacterInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
-
-  OnCharacterAliveOrDead(c: (alive: boolean) => void): void;
-
-  OnCharacterPositionChanged(c: (x: number, y: number, z: number) => void): void;
+  OnCharacterZoneChanged(c: (zoneID: string) => void): void;
 
   OnCharacterCanReleaseControlChanged(c: (canRelease: boolean) => void): void;
-
-  /* Enemy Target */
-
-  OnEnemyTargetFactionChanged(c: (faction: Faction) => void): void;
-
-  OnEnemyTargetRaceChanged(c: (race: Race) => void): void;
-
-  OnEnemyTargetGenderChanged(c: (gender: Gender) => void): void;
-
-  OnEnemyTargetNameChanged(c: (name: string) => void): void;
-
-  OnEnemyTargetHealthChanged(c: (health: number, maxHealth: number) => void): void;
-
-  OnEnemyTargetStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
-
-  OnEnemyTargetEffectsChanged(c: (effects: string) => void): void;
-
-  OnEnemyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
-
-  OnEnemyTargetAliveOrDead(c: (alive: boolean) => void): void;
-
-  OnEnemyTargetPositionChanged(c: (x: number, y: number, z: number) => void): void;
-
-
-  /* Friendly Target */
-
-  OnFriendlyTargetFactionChanged(c: (faction: Faction) => void): void;
-
-  OnFriendlyTargetRaceChanged(c: (race: Race) => void): void;
-
-  OnFriendlyTargetGenderChanged(c: (gender: Gender) => void): void;
-
-  OnFriendlyTargetNameChanged(c: (name: string) => void): void;
-
-  OnFriendlyTargetHealthChanged(c: (health: number, maxHealth: number) => void): void;
-
-  OnFriendlyTargetStaminaChanged(c: (stamina: number, maxStamina: number) => void): void;
-
-  OnFriendlyTargetEffectsChanged(c: (effects: string) => void): void;
-
-  OnFriendlyTargetInjuriesChanged(c: (part: number, health: number, maxHealth: number, wounds: number) => void): void;
-
-  OnFriendlyTargetAliveOrDead(c: (alive: boolean) => void): void;
-
-  OnFriendlyTargetPositionChanged(c: (x: number, y: number, z: number) => void): void;
 
   /* Chat */
 
@@ -555,24 +456,12 @@ interface clientInterface {
 
   SendChat(type: number, to: string, body: string): void;
 
-  JoinMUC(room: string): void;
-
-  LeaveMUC(room: string): void;
-
   // SendSlashCommand(command: string, parameters: string): void;
   Stuck(): void;
 
   ChangeZone(zoneID: number): void;
 
   /* Ability Crafting */
-
-  ShowAbility(abilityID: string): void;
-
-  OnShowAbility(callback: (abilityID: string) => void): void;
-
-  EditAbility(abilityID: string): void;
-
-  OnEditAbility(callback: (abilityID: string) => void): void;
 
   AbilityCreated(abilityID: string, primaryBaseComponentID: string, secondaryBaseComponentID: string, ability: string): void;
 
@@ -594,10 +483,6 @@ interface clientInterface {
 
   SendSlashCommand(command: string): void;
 
-  /* Login */
-
-  Connect(host: string, port: string, character: string, webAPIHost: string): void;
-
   /* Logging */
   OnLogMessage(c: (category: string, level: number, time: string,
                    process: number, thread: number, message: string) => void): void;
@@ -610,6 +495,22 @@ interface clientInterface {
 
   /* Scenarios */
   ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
+
+  /* Deployable Items */
+  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any, abitraryString?: string): void;
+
+  ResetItemPlacement(): void;
+
+  CommitItemPlacement(): void;
+
+  CancelItemPlacement(): void;
+
+  SendCommitItemRequest(callback: (itemInstanceIDString: string, position: any, rotation: any,
+    arbitraryString?: string) => void): void;
+
+  /* Target */
+  RequestFriendlyTargetEntityID(entityID:string): void;
+  RequestEnemyTargetEntityID(entityID:string): void;
 }
 
 export default clientInterface;

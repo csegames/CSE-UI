@@ -4,14 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import events from '../events';
+import * as events  from '../events';
 
 export interface SlashCommand {
   command: string;
   helpText: string;
 }
 
-const registry: SlashCommand[] = [];
+if (!window['cu']) window['cu'] = {};
+window['cu'].slashCommandRegistry = [];
 
 function prefix(command: string): string {
   return `slash_${command}`;
@@ -24,13 +25,13 @@ function prefix(command: string): string {
 export function registerSlashCommand(command: string, helpText: string, callback: (args: string) => void) {
   const cmd = command.toLowerCase();
   let found = false;
-  for (let i = 0; i < registry.length; ++i) {
-    if (registry[i].command === cmd) {
+  for (let i = 0; i < window['cu'].slashCommandRegistry.length; ++i) {
+    if (window['cu'].slashCommandRegistry[i].command === cmd) {
       found = true;
       break;
     }
   }
-  if (!found) registry.push({ helpText, command: cmd });
+  if (!found) window['cu'].slashCommandRegistry.push({ helpText, command: cmd });
   events.on(prefix(cmd), callback);
 }
 
@@ -42,14 +43,13 @@ export function registerSlashCommand(command: string, helpText: string, callback
 export function unregisterSlashCommand(command: string) {
   const cmd = command.toLowerCase();
   let index = -1;
-  for (let i = 0; i < registry.length; ++i) {
-    if (registry[i].command === cmd) {
-      events.off(prefix(cmd));
+  for (let i = 0; i < window['cu'].slashCommandRegistry.length; ++i) {
+    if (window['cu'].slashCommandRegistry[i].command === cmd) {
       index = i;
       break;
     }
   }
-  if (index >= 0) registry.slice(index, 1);
+  if (index >= 0) window['cu'].slashCommandRegistry.slice(index, 1);
 }
 
 
@@ -64,8 +64,8 @@ export function parseMessageForSlashCommand(command: string): boolean {
   const split = command.split(/ (.+)/);
   const cmd = split[0].toLowerCase();
   let found = false;
-  for (let i = 0; i < registry.length; ++i) {
-    if (registry[i].command === cmd.toLowerCase()) {
+  for (let i = 0; i < window['cu'].slashCommandRegistry.length; ++i) {
+    if (window['cu'].slashCommandRegistry[i].command === cmd.toLowerCase()) {
       events.fire(prefix(cmd), split[1]);
       found = true;
       break;
@@ -75,5 +75,5 @@ export function parseMessageForSlashCommand(command: string): boolean {
 }
 
 export function getSlashCommands(): SlashCommand[] {
-  return registry.slice(0);
+  return window['cu'].slashCommandRegistry.slice(0);
 }

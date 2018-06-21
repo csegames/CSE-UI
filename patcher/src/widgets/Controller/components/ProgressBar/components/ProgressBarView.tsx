@@ -34,26 +34,24 @@ const BarContainer = styled('div')`
   border-right: 0px solid #f0F;
   border-bottom: 2px solid #1b1b1b;
   border-left: 0px solid  #09f;
+`;
 
-  &:before {
-    content: "${props => props.progress}%";
-    font-size: 9px;
-    padding: 3px 10px;
-    color: #c3c3c3;
-    background: url(images/controller/loading-percent.png);
-    display: block;
-    position: absolute;
-    top: -2px;
-    left:-2px;
-    width: 50px;
-    height: 9px;
-    z-index: 1;
-  }
+const ProgressText = styled('div')`
+  font-size: 9px;
+  padding: 3px 10px;
+  color: #c3c3c3;
+  background: url(images/controller/loading-percent.png);
+  display: block;
+  position: absolute;
+  top: -2px;
+  left:-2px;
+  width: 50px;
+  height: 9px;
+  z-index: 1;
 `;
 
 const Bar = styled('div')`
   position: relative;
-  left: ${props => -(100 - props.progress)}%;
   display: flex;
   width: 100%;
   transition: all linear .5s;
@@ -99,7 +97,8 @@ class ProgressBarView extends React.Component<ProgressBarViewProps> {
   public render() {
     return (
       <BarContainer progress={this.props.progress}>
-        <Bar progress={this.props.progress} />
+        <ProgressText>{this.props.progress}%</ProgressText>
+        <Bar style={{ left: `${-(100 - this.props.progress)}%` }} />
         {this.props.progress === 100 && <ButtonShine />}
       </BarContainer>
     );

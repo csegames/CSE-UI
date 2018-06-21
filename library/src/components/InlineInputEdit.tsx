@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 import {
   FloatSpinner,
   Tooltip,
@@ -14,7 +14,7 @@ import {
 } from '..';
 import { generateID } from 'redux-typed-modules';
 
-export interface InlineInputEditStyle extends StyleDeclaration {
+export interface InlineInputEditStyle {
   defaultView: React.CSSProperties;
   editModeInputContainer: React.CSSProperties;
   editModeButtons: React.CSSProperties;
@@ -23,44 +23,33 @@ export interface InlineInputEditStyle extends StyleDeclaration {
   error: React.CSSProperties;
 }
 
-export const defaultInlineInputEditStyle: InlineInputEditStyle = {
-  defaultView: {
-    position: 'relative',
-    flex: '1 1 auto',
-    cursor: 'pointer',
-    padding: '5px',
-  },
+const DefaultView = styled('div')`
+  position: relative;
+  flex: 1;
+  cursor: pointer;
+  padding: 5px;
+`;
 
-  editModeInputContainer: {
-    position: 'relative',
-    flex: '1 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    minWidth: '0',
-  },
+const EditModeInputContainer = styled('div')`
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+`;
 
-  editModeButtons: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    position: 'absolute',
-    top: '-1em',
-    right: '0',
-  },
+const EditModeButtons = styled('div')`
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: -1em;
+  right: 0;
+`;
 
-  editButton: {
-    position: 'absolute',
-    right: '0px',
-    bottom: '0px',
-    fontSize: '0.7em',
-  },
-
-  saveButton: {},
-
-  error: {
-    color: 'darkred',
-    fontSize: '0.9em',
-  },
-};
+const Error = styled('div')`
+  color: darkred;
+  font-size: 0.9em;
+`;
 
 export interface InlineInputEditProps {
   value: any;
@@ -97,70 +86,64 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultInlineInputEditStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
+    const customStyles = this.props.styles || {};
     if (this.state.editMode) {
       return (
-        <div className={css(ss.editModeInputContainer, custom.editModeInputContainer)}>
+        <EditModeInputContainer style={customStyles.editModeInputContainer}>
           {
             this.state.errors ?
               (
-                <div className={css(ss.error, custom.error)}>
+                <Error style={customStyles.error}>
                   <Tooltip content={() => <span>{this.state.errors}</span>}>
                     <i className='fa fa-exclamation-circle'></i> Save failed.
                   </Tooltip>
-                </div>
+                </Error>
               ) : null
           }
-          <Input type={this.props.type}
-                 defaultValue={this.props.value}
-                 inputRef={r => this.inputRef = r}
-                 styles={{
-                   inputWrapper: {
-                     flex: '1 1 auto',
-                   },
-                   input: {
-                     padding: '1px 10px',
-                   },
-                 }}
-                 onKeyDown={this.onKeyDown}
-                 {...this.props.inputProps} />
+          <Input
+            type={this.props.type}
+            defaultValue={this.props.value}
+            inputRef={r => this.inputRef = r}
+            styles={{
+              inputWrapper: {
+                flex: '1 1 auto',
+              },
+              input: {
+                padding: '1px 10px',
+              },
+            }}
+            onKeyDown={this.onKeyDown}
+            {...this.props.inputProps}
+          />
           {
             this.state.saving ? <FloatSpinner styles={{ spinner: { position: 'absolute' } }}/> : null
           }
-          <div className={css(ss.editModeButtons, custom.editModeButtons)}>
-            <a style={{
-              marginLeft: '4px',
-              fontSize: '0.8em',
-            }
-            }
-               onClick={this.deactivateEditMode}>cancel</a>
-            <a style={{
-              marginLeft: '4px',
-              fontSize: '0.8em',
-            }
-            }
-               onClick={this.doSave}>save</a>
-
-          </div>
-        </div>
+          <EditModeButtons style={customStyles.editModeButtons}>
+            <a
+              style={{ marginLeft: '4px', fontSize: '0.8em' }}
+              onClick={this.deactivateEditMode}>cancel</a>
+            <a
+              style={{ marginLeft: '4px', fontSize: '0.8em' }}
+              onClick={this.doSave}>save</a>
+          </EditModeButtons>
+        </EditModeInputContainer>
       );
     }
     return (
-      <div className={css(ss.defaultView, custom.defaultView)}
-           onMouseEnter={this.showEditButton}
-           onMouseOver={this.showEditButton}
-           onMouseLeave={this.onMouseleave}
-           onClick={this.activateEditMode}>
+      <DefaultView
+        style={customStyles.defaultView}
+        onMouseEnter={this.showEditButton}
+        onMouseOver={this.showEditButton}
+        onMouseLeave={this.onMouseleave}
+        onClick={this.activateEditMode}>
         {this.props.value}
         {this.state.showEditButton ?
           (
-            <div className={css(ss.editButton, custom.editButton)}>
+            <div style={customStyles.editButton}>
               <i className='fa fa-pencil'></i>
             </div>
           ) : null}
-      </div>
+      </DefaultView>
     );
   }
 

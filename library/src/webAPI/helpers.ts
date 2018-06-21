@@ -6,6 +6,22 @@
 
 import * as def from './definitions';
 
+export function parseResponseData(res: any) {
+  if (!res.data) {
+    return res;
+  }
+
+  if (typeof res.data === 'string') {
+    const newRes = {
+      ...res,
+      data: JSON.parse(res.data),
+    };
+    return newRes;
+  }
+
+  return res;
+}
+
 export function accessLevelString(access: def.AccessType) {
   switch (access) {
     case def.AccessType.Public:

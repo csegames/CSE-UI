@@ -5,35 +5,26 @@
  */
 
 import * as React from 'react';
+import { css } from 'react-emotion';
 import { Archetype } from '../';
 import SVGSprite from './SVGSprite';
-import { StyleSheet, css } from 'aphrodite';
-import { merge } from 'lodash';
 
-const defaultStyle: ClassIconStyle = {
-  icon: {
-    fill: 'white',
-    height: '100%',
-    width: '100%',
-  },
-};
-
-export interface ClassIconStyle {
-  icon: React.CSSProperties;
-}
+const Icon = css`
+  fill: white;
+  height: 100%;
+  width: 100%;
+`;
 
 export const ClassIcon = (props: {
   playerClass: Archetype;
-  style?: Partial<ClassIconStyle>;
 }) => {
-  const ss = StyleSheet.create(merge(defaultStyle, props.style || {}));
-  switch (this.props.playerClass) {
+  switch (props.playerClass) {
     case Archetype.Blackguard:
-      return <SVGSprite sprite='images/class-icons.svg#archer-class-icon' svgClass={css(ss.icon)}/>;
+      return <SVGSprite sprite='images/class-icons.svg#archer-class-icon' svgClass={Icon}/>;
     case Archetype.BlackKnight:
-      return <SVGSprite sprite='images/class-icons.svg#heavy-class-icon' svgClass={css(ss.icon)}/>;
+      return <SVGSprite sprite='images/class-icons.svg#heavy-class-icon' svgClass={Icon}/>;
     case Archetype.Empath:
-      return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={css(ss.icon)}/>;
+      return <SVGSprite sprite='images/class-icons.svg#heal-class-icon' svgClass={Icon}/>;
     default:
       return <h1>Invalid Class</h1>;
   }

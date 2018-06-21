@@ -11,8 +11,9 @@ export const SVGSprite = (props: {
   svgClass?: string;
 }) => {
   return (
-    <svg className={this.props.svgClass || ''}
-         dangerouslySetInnerHTML={{ __html: `<use xlink:href=${this.props.sprite}></use>` }}>
+    <svg
+      className={this.props.svgClass || ''}
+      dangerouslySetInnerHTML={{ __html: `<use xlink:href=${this.props.sprite}></use>` }}>
     </svg>
   );
 };

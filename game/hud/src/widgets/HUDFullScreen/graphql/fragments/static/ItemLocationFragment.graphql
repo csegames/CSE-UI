@@ -1,0 +1,13 @@
+fragment ItemLocation on ItemLocationDescription {
+  inContainer {
+    position
+  }
+  inventory {
+    position
+  }
+  equipped {
+    gearSlots {
+      id
+    }
+  }
+}

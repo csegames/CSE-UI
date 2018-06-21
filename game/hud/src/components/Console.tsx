@@ -9,49 +9,60 @@ import {
   Input,
   jsKeyCodes,
   parseMessageForSlashCommand,
-  events,
-} from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+} from '@csegames/camelot-unchained';
 
-export interface ConsoleStyle extends StyleDeclaration {
-  container: React.CSSProperties;
-  input: React.CSSProperties;
-  consoleMessages: React.CSSProperties;
-  line: React.CSSProperties;
-}
+import * as events from '@csegames/camelot-unchained/lib/events';
 
-export const defaultConsoleStyle: ConsoleStyle = {
-  container: {
-    position: 'fixed',
-    flexDirection: 'column',
-    top: '0px',
-    left: '0px',
-    right: '0px',
-    display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
+import styled from 'react-emotion';
 
-  input: {
-    flex: '0 0 auto',
-    borderTop: '1px solid rgba(255, 255, 255, 0.7)',
-  },
+import ObjectDisplay from './ObjectDisplay';
 
-  consoleMessages: {
-    display: 'flex',
-    flex: '1 1 auto',
-    flexDirection: 'column-reverse',
-    overflowY: 'scroll',
-    height: '350px',
-  },
+const Container = styled('div')`
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  max-height: 400px;
+`;
 
-  line: {
-    flex: '0 0 auto',
-    color: '#ececec',
-  },
-};
+const InfoWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 450px;
+  overflow-y: auto;
+  color: #ececec;
+  user-select: all;
+`;
+
+const ConsoleWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+`;
+
+const InputWrapper = styled('div')`
+  flex: 0 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+`;
+
+const Messages = styled('div')`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
+  height: 350px;
+`;
+
+const Line = styled('div')`
+  flex: 0 0 auto;
+  color: #ececec;
+`;
+
 
 export interface ConsoleProps {
-  styles?: Partial<ConsoleStyle>;
 }
 
 export interface ConsoleState {
@@ -85,7 +96,6 @@ class CircularArray<T> {
 }
 
 export class Console extends React.Component<ConsoleProps, ConsoleState> {
-
   private inputRef: HTMLInputElement = null;
 
   constructor(props: ConsoleProps) {
@@ -96,43 +106,57 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       textLines: new CircularArray<string>(250),
       show: false,
     };
+
+    events.on('system_message', this.onConsoleText);
+    events.on('hudnav--navigate', this.handleHUDNavNavigate);
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultConsoleStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     if (!this.state.show) return null;
 
     return (
-      <div className={css(ss.container, custom.container)}>
-        <div className={css(ss.consoleMessages, custom.consoleMessages)}>
-          {this.renderTextLines(ss, custom)}
-        </div>
-        <div className={css(ss.input, custom.input)}>
-          <Input type='text'
-                 styles={{
-                   input: {
-                     border: '1px solid rgba(255, 255, 255, 0.8)',
-                     color: '#00cccc',
-                   },
-                 }}
-                 inputRef={r => this.inputRef = r}
-                 onClick={() => client.RequestInputOwnership()}
-                 onBlur={() => client.ReleaseInputOwnership()}
-                 onMouseEnter={() => client.RequestInputOwnership()}
-                 onMouseLeave={() => {
-                   client.ReleaseInputOwnership();
-                 }}
-                 onKeyDown={this.onKeyDown} />
-        </div>
-      </div>
+      <Container>
+        <ConsoleWrapper>
+          <Messages>
+            {this.renderTextLines()}
+          </Messages>
+          <InputWrapper>
+            <Input type='text'
+                   styles={{
+                     input: {
+                       border: '1px solid rgba(255, 255, 255, 0.8)',
+                       color: '#00cccc',
+                     },
+                   }}
+                   inputRef={r => this.inputRef = r}
+                   onClick={() => client.RequestInputOwnership()}
+                   onBlur={() => client.ReleaseInputOwnership()}
+                   onMouseEnter={() => client.RequestInputOwnership()}
+                   onMouseLeave={() => {
+                     client.ReleaseInputOwnership();
+                   }}
+                   onKeyDown={this.onKeyDown} />
+          </InputWrapper>
+        </ConsoleWrapper>
+
+        <InfoWrapper onClick={() => client.RequestInputOwnership()}
+                   onBlur={() => client.ReleaseInputOwnership()}
+                   onMouseEnter={() => client.RequestInputOwnership()}
+                   onMouseLeave={() => {
+                     client.ReleaseInputOwnership();
+                   }}>
+          <ObjectDisplay data={Console.getAPIData()} skipFunctions />
+        </InfoWrapper>
+      </Container>
     );
   }
 
-  public componentWillMount() {
-    events.on('system_message', this.onConsoleText);
-    events.on('hudnav--navigate', this.handleHUDNavNavigate);
+  public shouldComponentUpdate() {
+    return true;
+  }
+
+  private static getAPIData() {
+    return (window as any).cuAPI;
   }
 
   private onConsoleText = (s: string) => {
@@ -166,13 +190,13 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
     }
   }
 
-  private renderTextLines = (ss: ConsoleStyle, custom: Partial<ConsoleStyle>) => {
+  private renderTextLines = () => {
     const lines: JSX.Element[] = [];
     for (let i = 0; i < this.state.textLines.length; ++i) {
       lines.push((
-        <div key={i} className={css(ss.line, custom.line)}>
+        <Line key={i}>
           {this.state.textLines.get(i)}
-        </div>
+        </Line>
       ));
     }
     return lines.reverse();

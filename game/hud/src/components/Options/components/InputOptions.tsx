@@ -6,24 +6,12 @@
 
 import * as React from 'react';
 
-import { client } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import { client } from '@csegames/camelot-unchained';
 
 import { ConfigIndex, ConfigInfo } from '../OptionsMain';
 import ListItem from './ListItem';
 
-export interface InputOptionsStyle extends StyleDeclaration {
-  InputOptions: React.CSSProperties;
-}
-
-export const defaultInputOptionsStyle: InputOptionsStyle = {
-  InputOptions: {
-
-  },
-};
-
 export interface InputOptionsProps {
-  styles?: Partial<InputOptionsStyle>;
   inputConfigs: ConfigInfo[];
   onInputConfigsChange: (inputConfigs: ConfigInfo[]) => void;
   activeConfigIndex: number;
@@ -40,11 +28,8 @@ export class InputOptions extends React.Component<InputOptionsProps, InputOption
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultInputOptionsStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
-      <div className={css(ss.InputOptions, custom.InputOptions)}>
+      <div>
         {this.props.inputConfigs.map((config, i) => {
           const val = config.value === 'true' ? 'Enabled' : 'Disabled';
           const isOdd = i % 2 !== 0;

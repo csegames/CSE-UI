@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
-interface RefillButtonStyle extends StyleDeclaration {
+interface RefillButtonStyle {
   container: React.CSSProperties;
 }
 
@@ -17,39 +17,32 @@ interface RefillButtonProps {
   refill: () => void;
 }
 
-export const defaultRefillButtonStyle: RefillButtonStyle = {
-  container: {
-    width: '120px',
-    height: '35px',
-    lineHeight: '35px',
-    color: 'white',
-    textAlign: 'center',
-    backgroundColor: '#444',
-    cursor: 'pointer',
-    opacity: 0.7,
-    userSelect: 'none',
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    pointerEvents: 'auto',
-    ':hover': {
-      backgroundColor: '#888',
-      transform: 'ease .2s',
-    },
-    ':active': {
-      backgroundColor: '#0c0',
-      transform: 'ease',
-    },
-  },
-};
+const Container = styled('div')`
+  width: 120px;
+  height: 35px;
+  line-height: 35px;
+  color: white;
+  text-align: center;
+  background-color: #444;
+  cursor: pointer;
+  opacity: 0.7;
+  user-select: none;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  &:hover {
+    background-color: #888;
+    transform: ease 0.2s;
+  }
+  &:active {
+    background-color: #0C0;
+    transform: ease;
+  }
+`;
 
 const RefillButton = (props: RefillButtonProps) => {
-
-  const ss = StyleSheet.create(defaultRefillButtonStyle);
-  const custom = StyleSheet.create(props.styles || {});
-
   return (
-    <div className={[css(ss.container, custom.container), props.className].join(' ')} onClick={() => props.refill()}>
+    <Container className={props.className} onClick={() => props.refill()}>
       <i className='fa fa-bullseye fa-inverse'/> Refill Ammo
-    </div>
+    </Container>
   );
 };
 

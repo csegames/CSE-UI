@@ -5,10 +5,32 @@
  */
 
 import * as React from 'react';
-import { client } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
+import { client } from '@csegames/camelot-unchained';
 
-interface ReleaseControlButtonStyle extends StyleDeclaration {
+const Container = styled('div')`
+  width: 140px;
+  height: 35px;
+  line-height: 35px;
+  color: white;
+  text-align: center;
+  background-color: #444;
+  cursor: pointer;
+  opacity: 0.7;
+  user-select: none;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  pointer-events: auto;
+  &:hover {
+    background-color: #888;
+    transform: ease 0.2s;
+  },
+  &:active {
+    background-color: #0C0;
+    transform: ease;
+  },
+`;
+
+interface ReleaseControlButtonStyle {
   container: React.CSSProperties;
 }
 export interface ReleaseControlButtonProps {
@@ -20,30 +42,6 @@ export interface ReleaseControlButtonState {
   visible: boolean;
 }
 
-export const defaultReleaseControlButtonStyle: ReleaseControlButtonStyle = {
-  container: {
-    width: '140px',
-    height: '35px',
-    lineHeight: '35px',
-    color: 'white',
-    textAlign: 'center',
-    backgroundColor: '#444',
-    cursor: 'pointer',
-    opacity: 0.7,
-    userSelect: 'none',
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    pointerEvents: 'auto',
-    ':hover': {
-      backgroundColor: '#888',
-      transform: 'ease .2s',
-    },
-    ':active': {
-      backgroundColor: '#0c0',
-      transform: 'ease',
-    },
-  },
-};
-
 class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseControlButtonState> {
 
   constructor(props: ReleaseControlButtonProps) {
@@ -54,14 +52,11 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultReleaseControlButtonStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     if (this.state.visible) {
       return (
-        <div className={[css(ss.container, custom.container), this.props.className].join(' ')}  onClick={this.sendCommand}>
+        <Container className={this.props.className} onClick={this.sendCommand}>
           Exit Siege Engine
-        </div>
+        </Container>
       );
     } else { return null; }
   }

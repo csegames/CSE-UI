@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import { events } from 'camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 import reducer from './services/session/reducer';
 import { initialize } from './services/session/materials';
 import { BuildPaneProps, DEACTIVATE_MATERIAL_SELECTOR } from '../../lib/BuildPane';

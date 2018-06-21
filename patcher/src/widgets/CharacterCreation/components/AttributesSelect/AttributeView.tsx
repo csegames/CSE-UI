@@ -6,129 +6,76 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { utils } from 'camelot-unchained';
-import { Tooltip } from 'camelot-unchained/lib/components';
+import styled, { css } from 'react-emotion';
+import { utils } from '@csegames/camelot-unchained';
+import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import { AttributeInfo } from '../../services/session/attributes';
-import { GridStats } from 'camelot-unchained/lib/components';
 
 export const colors = {
   filterBackgroundColor: '#372F2D',
 };
 
-export interface AttributeViewStyle extends StyleDeclaration {
-  AttributeView: React.CSSProperties;
-  listHeader: React.CSSProperties;
-  statValueContainer: React.CSSProperties;
-  valueText: React.CSSProperties;
-  listHeaderText: React.CSSProperties;
-  statsListItem: React.CSSProperties;
-  lightListItem: React.CSSProperties;
-  statText: React.CSSProperties;
-  statValue: React.CSSProperties;
-  doesNotMatchSearch: React.CSSProperties;
-  sectionTitleContainer: React.CSSProperties;
+export interface AttributeViewStyle {
   tooltip: React.CSSProperties;
-  tooltipContent: React.CSSProperties;
 }
 
+const StatsListItem = styled('div')`
+  width: calc(100% - 5px);
+  display: flex;
+  position: relative;
+  cursor: default;
+  padding: 0 0 0 5px;
+  height: 25px;
+  background-color: rgba(55, 47, 45, 0.5);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  &:hover {
+    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  }
+`;
+
+const LightListItem = css`
+  background-color: ${colors.filterBackgroundColor};
+`;
+
+const StatText = styled('span')`
+  flex: 1;
+  display: inline-block;
+  font-size: 16px;
+  padding: 0;
+  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const StatValue = css`
+  padding-left: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #D2D2D2;
+`;
+
+const SectionTitleContainer = styled('span')`
+  font-size: 18px;
+  font-weight: bold;
+  color: #CCC;
+`;
+
+const TooltipContent = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const defaultAttributeViewStyle: AttributeViewStyle = {
-  AttributeView: {
-    
-  },
-
-  listHeader: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    color: '#C57C30',
-    backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 10),
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderRight: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    paddingRight: '5px',
-    cursor: 'default',
-    boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.5)',
-  },
-
-  statValueContainer: {
-    display: 'flex',
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    fontSize: 16,
-  },
-  
-  valueText: {
-    width: '40px',
-    borderLeft: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    marginLeft: '5px',
-    textAlign: 'right',
-  },
-
-  listHeaderText: {
-    width: '40px',
-    marginLeft: '5px',
-    textAlign: 'right',
-  },
-
-  statsListItem: {
-    width: 'calc(100% - 5px)',
-    display: 'flex',
-    position: 'relative',
-    cursor: 'default',
-    padding: '0 0 0 5px',
-    height: '25px',
-    backgroundColor: `rgba(55, 47, 45, 0.5)`,
-    boxShadow: 'inset 0px 0px 3px rgba(0,0,0,0.5)',
-    opacity: 0.8,
-    borderRight: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    borderBottom: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)}`,
-    ':hover': {
-      backgroundColor: utils.lightenColor(colors.filterBackgroundColor, 20),
-    },
-  },
-
-  lightListItem: {
-    backgroundColor: colors.filterBackgroundColor,
-  },
-
-  statText: {
-    flex: 1,
-    display: 'inline-block',
-    fontSize: 16,
-    padding: 0,
-    color: utils.lightenColor(colors.filterBackgroundColor, 150),
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-
-  statValue: {
-    paddingLeft: '5px',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    color: '#d2d2d2',
-  },
-
-  doesNotMatchSearch: {
-    opacity: 0.2,
-    backgroundColor: `rgba(0,0,0,0.2)`,
-  },
-
-  sectionTitleContainer: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ccc',
-  },
-
   tooltip: {
     border: '1px solid #352A22',
     boxShadow: 'inset 0 0 10px 2px rgba(40, 32, 20, 0.2)',
     background: 'black',
     maxWidth: '300px',
     minWidth: '200px',
-  },
-
-  tooltipContent: {
-    display: 'flex',
-    flexDirection: 'column',
   },
 };
 
@@ -138,7 +85,6 @@ export interface AttributeObjectInfo {
 }
 
 export interface AttributeViewProps {
-  styles?: Partial<AttributeViewStyle>;
   howManyGrids?: number;
   statArray: AttributeObjectInfo[];
   title: string;
@@ -155,14 +101,11 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultAttributeViewStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
     return (
       <div className='row'>
-        <span id={this.props.title} className={css(ss.sectionTitleContainer, custom.sectionTitleContainer)}>
+        <SectionTitleContainer id={this.props.title}>
           {this.props.title}
-        </span>
+        </SectionTitleContainer>
         <GridStats
           statArray={this.props.statArray}
           howManyGrids={this.props.howManyGrids || 3}
@@ -184,51 +127,27 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                     tooltip: defaultAttributeViewStyle.tooltip,
                   }}
                   content={() => a.attributeInfo &&
-                    <div className={css(ss.tooltipContent, custom.tooltipContent)}>
+                    <TooltipContent>
                       <div>{a.attributeInfo.name} {a.value}</div>
                       <div>{a.attributeInfo.description}</div>
-                    </div>
+                    </TooltipContent>
                   }>
-                  <div id={a.attributeInfo.name} className={css(
-                    ss.statsListItem,
-                    custom.statsListItem,
-                    isOdd && ss.lightListItem,
-                    isOdd && custom.lightListItem,
-                  )}>
-                    <span
-                      id={`${a.attributeInfo.name}-title`}
-                      className={css(ss.statText, custom.statText)}>
+                  <StatsListItem id={a.attributeInfo.name} className={isOdd ? LightListItem : ''}>
+                    <StatText id={`${a.attributeInfo.name}-title`}>
                       {a.attributeInfo && a.attributeInfo.name}
-                    </span>
-                    <span
-                      id={`${a.attributeInfo.name}-value`}
-                      className={css(
-                        ss.statText,
-                        custom.statText,
-                        a.value && ss.statValue,
-                        a.value && custom.statValue,
-                      )}>
+                    </StatText>
+                    <StatText id={`${a.attributeInfo.name}-value`} className={a.value ? StatValue : ''}>
                       {a.value ? parseFloat(a.value.toFixed(2)) : ''}
-                    </span>
-                  </div>
+                    </StatText>
+                  </StatsListItem>
                 </Tooltip>
               );
             } else {
               return (
-                <div className={css(
-                  ss.statsListItem,
-                  custom.statsListItem,
-                  isOdd && ss.lightListItem,
-                  isOdd && custom.lightListItem,
-                )}>
-                  <span className={css(ss.statText, custom.statText)}>{a.attributeInfo && a.attributeInfo.name}</span>
-                  <span className={css(
-                    ss.statText,
-                    custom.statText,
-                    a.value && ss.statValue,
-                    a.value && custom.statValue,
-                  )}>{a.value ? parseFloat(a.value.toFixed(2)) : ''}</span>
-                </div>
+                <StatsListItem className={isOdd ? LightListItem : ''}>
+                  <StatText>{a.attributeInfo && a.attributeInfo.name}</StatText>
+                  <StatText className={a.value ? StatValue : ''}>{a.value ? parseFloat(a.value.toFixed(2)) : ''}</StatText>
+                </StatsListItem>
               );
             }
           }}

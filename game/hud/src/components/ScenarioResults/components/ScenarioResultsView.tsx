@@ -111,13 +111,13 @@ export interface ScenarioResultsViewProps {
 
 class ScenarioResultsView extends React.Component<ScenarioResultsViewProps> {
   public render() {
-    const { participants, teams, status, scenarioID } = this.props;
+    const { visible, participants, teams, status, scenarioID } = this.props;
     return (
       <Container display={this.props.visible ? 'block' : 'none'}>
         <LeftOrnament />
         <CloseOrnament />
         <CloseButton onClick={this.props.onCloseClick} />
-        <List players={participants} teams={teams} status={status} scenarioID={scenarioID} />
+        <List visible={visible} players={participants} teams={teams} status={status} scenarioID={scenarioID} />
       </Container>
     );
   }

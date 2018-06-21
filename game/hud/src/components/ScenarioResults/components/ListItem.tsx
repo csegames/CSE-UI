@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { FactionColors } from '../constants';
+import { FactionColors } from '../../../lib/factionColors';
 import { TeamPlayer } from './ScenarioResultsContainer';
 
 const HOVER_EFFECT_TIME = 0.4;
@@ -35,7 +35,10 @@ const Container = styled('div')`
   position: relative;
   display: flex;
   justify-content: space-around;
-  padding: 5px 25px;
+  align-items: center;
+  padding: 0 20px;
+  height: 34px;
+  margin-bottom: 3px;
   color: white;
   cursor: pointer;
   pointer-events: all;
@@ -149,12 +152,15 @@ export const DamageDealt = styled('div')`
   flex: 1;
 `;
 
+export const NPCKills = styled('div')`
+  flex: 1;
+`;
+
 export interface ListItemProps {
   player: TeamPlayer;
+  isVisible: boolean;
   searchIncludes: boolean;
   backgroundColor: string;
-  scrollTop: number;
-  listHeight: number;
 }
 
 class ListItem extends React.Component<ListItemProps> {
@@ -175,29 +181,24 @@ class ListItem extends React.Component<ListItemProps> {
         <Team color={colors.textColor}>{teamString && teamString.substr(0, 1)}</Team>
         <Name>{player.displayName}</Name>
         <KDAContainer>
-          <Kills>{player.damage.killCount.anyCharacter}</Kills>
+          <Kills>{player.damage.killCount.playerCharacter}</Kills>
           <Divider>/</Divider>
           <Deaths>{player.damage.deathCount.anyCharacter}</Deaths>
           <Divider>/</Divider>
-          <Assists>{player.damage.killAssistCount.anyCharacter}</Assists>
+          <Assists>{player.damage.killAssistCount.playerCharacter}</Assists>
         </KDAContainer>
-        <HealingDealt>{player.damage.healingApplied.anyCharacter}</HealingDealt>
+        <NPCKills>{player.damage.killCount.nonPlayerCharacter}</NPCKills>
+        <DamageDealt>{player.damage.damageApplied.anyCharacter} </DamageDealt>
         <DamageReceived>{player.damage.damageReceived.anyCharacter}</DamageReceived>
+        <HealingDealt>{player.damage.healingApplied.anyCharacter}</HealingDealt>
         <HealingReceived>{player.damage.healingReceived.anyCharacter}</HealingReceived>
         <Score>{player.score}</Score>
-        <DamageDealt>{player.damage.damageApplied.anyCharacter}</DamageDealt>
       </Container>
     );
   }
 
   public shouldComponentUpdate(nextProps: ListItemProps) {
-    return (
-      this.props.searchIncludes !== nextProps.searchIncludes ||
-      this.props.backgroundColor !== nextProps.backgroundColor ||
-      this.props.player.displayName !== nextProps.player.displayName ||
-      this.props.scrollTop !== nextProps.scrollTop ||
-      this.props.listHeight !== nextProps.listHeight
-    );
+    return nextProps.isVisible;
   }
 }
 

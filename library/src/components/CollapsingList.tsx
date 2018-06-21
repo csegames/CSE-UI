@@ -6,10 +6,35 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
-export interface CollapsingListStyle extends StyleDeclaration {
-  CollapsingList: React.CSSProperties;
+const Container = styled('div')`
+  height: 100%;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: all;
+  color: white;
+`;
+
+
+const Title = styled('span')`
+  cursor: pointer;
+`;
+
+const CollapseButton = styled('div')`
+  display: inline-block;
+  color: white;
+  width: 15px;
+`;
+
+const ListItem = styled('div')`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+`;
+
+export interface CollapsingListStyle {
+  container: React.CSSProperties;
   title: React.CSSProperties;
   collapseButton: React.CSSProperties;
   body: React.CSSProperties;
@@ -18,48 +43,10 @@ export interface CollapsingListStyle extends StyleDeclaration {
   listItem: React.CSSProperties;
 }
 
-export const defaultCollapsingListStyle: CollapsingListStyle = {
-  CollapsingList: {
-    height: '100%',
-    webkitUserSelect: 'none',
-    userSelect: 'none',
-    pointerEvents: 'all',
-    color: 'white',
-  },
-
-  title: {
-    cursor: 'pointer',
-  },
-
-  collapseButton: {
-    display: 'inline-block',
-    color: 'white',
-    width: '15px',
-  },
-  
-  body: {
-
-  },
-
-  listContainer: {
-    
-  },
-
-  listFooter: {
-
-  },
-
-  listItem: {
-    display: 'flex',
-    alignItems: 'center',    
-    marginLeft: '10px',
-  },
-};
 
 export interface CollapsingListProps {
-  styles?: Partial<CollapsingListStyle>;
-
   // Defaults to false (Not collapsed)
+  styles?: Partial<CollapsingListStyle>;
   defaultCollapsed?: boolean;
   collapsed?: boolean;
   onToggleCollapse?: (collapsed: boolean) => void;
@@ -86,49 +73,47 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultCollapsingListStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-    const animationClass = this.props.animationClass && StyleSheet.create(this.props.animationClass(this.props.collapsed));
     const collapsed = typeof(this.props.collapsed) === 'boolean' ? this.props.collapsed : this.state.collapsed;
+    const animationClass = this.props.animationClass && this.props.animationClass(collapsed);
+    const customStyle = this.props.styles || {};
     return (
-      <div className={css(ss.CollapsingList, custom.CollapsingList)}>
-        <div className={css(ss.titleContainer, custom.titleContainer)}>
+      <Container style={customStyle.container}>
+        <div>
           {typeof this.props.title === 'string' ?
-            <span className={css(ss.title, custom.title)} onClick={this.onToggleCollapse}>
-              <div className={css(ss.collapseButton, custom.collapseButton)}>{this.props.collapsed ? '+' : '-'}</div>
+            <Title style={customStyle.title} onClick={this.onToggleCollapse}>
+              <CollapseButton style={customStyle.collapseButton}>{collapsed ? '+' : '-'}</CollapseButton>
               {this.props.title}
-            </span> :
-              <span className={css(ss.title, custom.title)} onClick={this.onToggleCollapse}>
-                {this.props.title(this.props.collapsed)}
-              </span>
+            </Title> :
+              <Title style={customStyle.title} onClick={this.onToggleCollapse}>
+                {this.props.title(collapsed)}
+              </Title>
           }
         </div>
-        <div className={css(ss.body, custom.body, animationClass && animationClass.anim)}
-          style={!animationClass ? (this.props.collapsed ? { display: 'none' } : {}) : {}}>
+        <div style={!animationClass ? (this.props.collapsed ? { display: 'none' } : {}) : {}}>
           {this.props.renderListHeader &&
-            <div className={css(ss.listHeader, custom.listHeader)}>{this.props.renderListHeader()}</div>
+            <div>{this.props.renderListHeader()}</div>
           }
-          <div className={css(ss.listContainer, custom.listContainer)}>
+          <div style={customStyle.listContainer}>
             {this.props.items.map((item, i) => {
               if (!this.props.renderListItem) {
                 if (typeof item === 'string') {
-                  return <div key={i} className={css(ss.listItem, custom.listItem)}>{item}</div>;
+                  return <ListItem key={i}>{item}</ListItem>;
                 }
 
                 return (
-                  <div key={i} className={css(ss.listItem, custom.listItem)}>
+                  <ListItem key={i} style={customStyle.listItem}>
                     {Object.keys(item).map(key => <div key={key}>{item[key]}</div>)}
-                  </div>
+                  </ListItem>
                 );
               }
               return this.props.renderListItem(item, i);
             })}
           </div>
           {this.props.renderListFooter &&
-            <div className={css(ss.listFooter, custom.listFooter)}>{this.props.renderListFooter()}</div>
+            <div style={customStyle.listFooter}>{this.props.renderListFooter()}</div>
           }
         </div>
-      </div>
+      </Container>
     );
   }
 

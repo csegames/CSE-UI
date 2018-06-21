@@ -6,7 +6,7 @@
 
 import 'isomorphic-fetch';
 import { Promise } from 'es6-promise';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 export function gql({ query, variables }: { query: string, variables?: any }) {
   const url = client.apiHost + '/graphql';
@@ -20,12 +20,10 @@ export function gql({ query, variables }: { query: string, variables?: any }) {
   return new Promise((resolve, reject) => {
     fetch(url, { method: 'post', headers, body } as any).then((response: any) => {
       response.json().then((data: any) => {
-        console.log('gql: response.status ' + response.status);
         if (response.status === 200 && data.data) {
           resolve(data.data);
           return;
         }
-        console.log('gql: reject status: ' + response.status + ' message: ' + data.Message);
         reject({ status: response.status, message: data.Message });
       });
     })

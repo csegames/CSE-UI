@@ -1,0 +1,49 @@
+fragment InventoryItem on Item {
+  id
+  givenName
+  stackHash
+  containerColor {
+    ...ContainerColor
+  }
+  location {
+    ...ItemLocation
+  }
+  actions {
+    ...ItemActions
+  }
+  stats {
+    ...ItemStats
+  }
+  equiprequirement {
+    ...EquipRequirement
+  }
+  staticDefinition {
+    id
+    numericItemDefID
+    description
+    name
+    iconUrl
+    itemType
+    defaultResourceID
+    deploySettings {
+      resourceID
+      isDoor
+      snapToGround
+      rotateYaw
+      rotatePitch
+      rotateRoll
+    }
+    gearSlotSets {
+      gearSlots {
+        ...GearSlotDefRef
+      }
+    }
+    isVox
+  }
+  containerDrawers {
+    ...ContainerDrawers
+  }
+  permissibleHolder {
+    ...PermissibleHolder
+  }
+}

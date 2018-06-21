@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { events, BuildingMaterial } from 'camelot-unchained';
+import { events, BuildingMaterial } from '@csegames/camelot-unchained';
 import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 
 import { GlobalState } from '../../services/session/reducer';

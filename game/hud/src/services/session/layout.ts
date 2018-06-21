@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import { client, events, RUNTIME_ASSERT } from 'camelot-unchained';
+import { client, events, RUNTIME_ASSERT } from '@csegames/camelot-unchained';
 
 import { cloneDeep } from 'lodash';
 import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
@@ -24,6 +24,7 @@ import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
+import Progression from './layoutItems/Progression';
 import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
@@ -36,7 +37,7 @@ import Options from './layoutItems/Options';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.1'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.7.5'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -147,6 +148,9 @@ function initialState(): LayoutState {
     ],
     [
       'plotControl', cloneDeep(PlotControl),
+    ],
+    [
+      'progression', cloneDeep(Progression),
     ],
     [
       'announcement', cloneDeep(Announcement),
@@ -289,7 +293,7 @@ export function initialize() {
     dispatch(init());
     window.onresize = () => {
       if (window.innerWidth >= 640 && window.innerHeight >= 480) {
-        // dispatch(resize());
+        dispatch(resize());
       }
     };
 
@@ -371,7 +375,10 @@ export const resetHUD = module.createAction({
   action: () => {
     return {};
   },
-  reducer: (s, a) => initialState(),
+  reducer: (s, a) => {
+    localStorage.setItem(localStorageKey, null);
+    return initialState();
+  },
 });
 
 
@@ -403,11 +410,11 @@ export const resize = module.createAction({
     return {};
   },
   reducer: (s, a) => {
-    RUNTIME_ASSERT(a.screen.width >= 640 && a.screen.height >= 480, 'ignoring resize event for small window');
-    const onScreenWidgets = Map<string, Widget<any>>();
+    RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
+    let onScreenWidgets = Map<string, Widget<any>>();
     s.widgets.forEach((value, key) => {
-      onScreenWidgets.set(key, {
-        position: forceOnScreen(value.position, a.screen),
+      onScreenWidgets = onScreenWidgets.set(key, {
+        position: forceOnScreen(value.position, screen),
         dragOptions: value.dragOptions,
         component: value.component,
         props: value.props,

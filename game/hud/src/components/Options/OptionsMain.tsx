@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { client, utils, events, TabPanel, TabItem, ContentItem } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled, { css } from 'react-emotion';
+import { client, utils, events, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
 
 import ActionButtons from './components/ActionButtons';
 import KeyBindings from './components/KeyBindOptions/KeyBindings';
@@ -14,135 +14,118 @@ import InputOptions from './components/InputOptions';
 import AudioOptions from './components/AudioOptions';
 import RenderingOptions from './components/RenderingOptions';
 
-export interface OptionsStyle extends StyleDeclaration {
-  Options: React.CSSProperties;
-  optionsHeader: React.CSSProperties;
-  tabPanelContainer: React.CSSProperties;
-  tabs: React.CSSProperties;
-  tab: React.CSSProperties;
-  activeTab: React.CSSProperties;
-  tabPanelContentContainer: React.CSSProperties;
-  tabPanelContent: React.CSSProperties;
-  tabText: React.CSSProperties;
-  contentPadding: React.CSSProperties;
-  contentOverflowContainer: React.CSSProperties;
-  close: React.CSSProperties;
-  loadSaveText: React.CSSProperties;
-}
-
 export const OptionDimensions = {
   width: 650,
   height: 400,
 };
 
-export const defaultOptionsStyle: OptionsStyle = {
-  Options: {
-    pointerEvents: 'all',
-    width: `${OptionDimensions.width}px`,
-    height: `${OptionDimensions.height}px`,
-    backgroundColor: 'rgba(10,10,10,0.8)',
-    color: 'white',
-    border: `1px solid ${utils.lightenColor('#202020', 30)}`,
-  },
+interface OptionsTabPanelStyles {
+  tabPanelContainer: string;
+  tabs: string;
+  tab: string;
+  activeTab: string;
+  tabPanelContentContainer: string;
+}
 
-  optionsHeader: {
-    position: 'relative',
-    width: '100%',
-    padding: '5px 0',
-    textAlign: 'center',
-    backgroundColor: '#202020',
-    borderBottom: `1px solid ${utils.lightenColor('#202020', 30)}`,
-    color: 'white',
-  },
+const customTabPanelStyles: OptionsTabPanelStyles = {
+  tabPanelContainer: css`
+    height: calc(100% - 75px);
+    flex-direction: row;
+  `,
 
-  tabPanelContainer: {
-    height: 'calc(100% - 75px)',
-    flexDirection: 'row',
-  },
+  tabs: css`
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    padding: 10px 10px 0 10px;
+    border-right: 1px solid #454545;
+  `,
 
-  tabs: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '220px',
-    padding: '10px 10px 0 10px',
-    borderRight: '1px solid #454545',
-  },
-
-  tab: {
-    fontSize: '18px',
-    padding: '2px 5px',
-    color: 'white',
-    backgroundColor: '#454545',
-    textAlign: 'center',
-    borderBottom: '1px solid black',
-    ':hover': {
-      backgroundColor: utils.lightenColor('#454545', 10),
+  tab: css`
+    font-size: 18px;
+    padding: 2px 5px;
+    color: white;
+    background-color: #454545;
+    text-align: center;
+    border-bottom: 1px solid black;
+    &:hover {
+      background-color: ${utils.lightenColor('#454545', 10)};
+    }
+    &:active {
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
+      background-color: ${utils.lightenColor('#454545', 10)};
     },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.9)',
-      backgroundColor: utils.lightenColor('#454545', 10),
+  `,
+
+  activeTab: css`
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
+    background-color: ${utils.lightenColor('#454545', 30)};
+    &:hover {
+      background-color: ${utils.lightenColor('#454545', 30)};
+    }
+    &:active {
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
+      background-color: ${utils.lightenColor('#454545', 30)};
     },
-  },
+  `,
 
-  activeTab: {
-    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.7)',
-    backgroundColor: utils.lightenColor('#454545', 30),
-    ':hover': {
-      backgroundColor: utils.lightenColor('#454545', 30),
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.7)',
-      backgroundColor: utils.lightenColor('#454545', 30),
-    },
-  },
-
-  tabPanelContentContainer: {
-    height: 'auto',
-    overflow: 'visible',
-  },
-
-  tabPanelContent: {
-
-  },
-
-  tabText: {
-    cursor: 'pointer',
-  },
-
-  contentOverflowContainer: {
-    height: '100%',
-    overflow: 'auto',
-  },
-
-  contentPadding: {
-    padding: '10px',
-    height: '100%',
-  },
-
-  close: {
-    position: 'absolute',
-    top: 2,
-    right: 5,
-    color: '#cdcdcd',
-    fontSize: '20px',
-    marginRight: '5px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    ':hover': {
-      color: '#bbb',
-    },
-  },
-
-  loadSaveText: {
-    position: 'absolute',
-    left: 10,
-    bottom: 45,
-    color: 'white',
-  },
+  tabPanelContentContainer: css`
+    height: auto;
+    overflow: visible;
+  `,
 };
 
+
+const Container = styled('div')`
+  pointer-events: all;
+  width: ${OptionDimensions.width}px;
+  height: ${OptionDimensions.height}px;
+  background-color: rgba(10, 10, 10, 0.8);
+  color: white;
+  border: 1px solid ${utils.lightenColor('#202020', 30)};
+`;
+
+const Header = styled('div')`
+  position: relative;
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
+  background-color: #202020;
+  border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+  color: white;
+`;
+
+const ContentOverflowContainer = styled('div')`
+  height: 100%;
+  overflow: auto;
+`;
+
+const Close = styled('div')`
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  color: #CDCDCD;
+  font-size: 20px;
+  margin-right: 5px;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: #BBB;
+  }
+`;
+
+const LoadSaveText = styled('span')`
+  position: absolute;
+  left: 10px;
+  bottom: 45px;
+  color: white;
+`;
+
+const TabText = styled('div')`
+  cursor: pointer;
+`;
+
 export interface OptionsProps {
-  styles?: Partial<OptionsStyle>;
 }
 
 export const ConfigIndex = {
@@ -168,9 +151,6 @@ export interface OptionsState {
 }
 
 export class Options extends React.Component<OptionsProps, OptionsState> {
-  private ss: OptionsStyle;
-  private custom: Partial<OptionsStyle>;
-
   constructor(props: OptionsProps) {
     super(props);
     this.state = {
@@ -185,35 +165,32 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
   }
 
   public render() {
-    const ss = this.ss = StyleSheet.create(defaultOptionsStyle);
-    const custom = this.custom = StyleSheet.create(this.props.styles || {});
-
     const tabs: TabItem[] = [
       {
         name: 'KEYBIND',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>KEY BINDINGS</span>,
+          render: () => <TabText>KEY BINDINGS</TabText>,
         },
         rendersContent: 'KeyBindings',
       },
       {
         name: 'INPUT',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>INPUT</span>,
+          render: () => <TabText>INPUT</TabText>,
         },
         rendersContent: 'Input',
       },
       {
         name: 'AUDIO',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>AUDIO</span>,
+          render: () => <TabText>AUDIO</TabText>,
         },
         rendersContent: 'Audio',
       },
       {
         name: 'RENDERING',
         tab: {
-          render: () => <span className={css(ss.tabText, custom.tabText)}>GRAPHICS</span>,
+          render: () => <TabText>GRAPHICS</TabText>,
         },
         rendersContent: 'Graphics',
       },
@@ -239,34 +216,31 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
     ];
 
     return this.state.visible ? (
-      <div className={css(ss.Options, custom.Options)}>
-        <div className={css(ss.optionsHeader, custom.optionsHeader)}>
+      <Container>
+        <Header>
           OPTIONS
-          <div className={css(ss.close, custom.close)} onClick={this.close}>
-            <i className='fa fa-times click-effect'></i>
-          </div>
-        </div>
+          <Close onClick={this.close}><i className='fa fa-times click-effect'></i></Close>
+        </Header>
         <TabPanel
           tabs={tabs}
           content={content}
           onActiveTabChanged={this.onActiveTabChanged}
           styles={{
-            tabPanel: defaultOptionsStyle.tabPanelContainer,
-            tabs: defaultOptionsStyle.tabs,
-            tab: defaultOptionsStyle.tab,
-            activeTab: defaultOptionsStyle.activeTab,
-            contentContainer: defaultOptionsStyle.tabPanelContentContainer,
-            content: defaultOptionsStyle.tabPanelContent,
+            tabPanel: customTabPanelStyles.tabPanelContainer,
+            tabs: customTabPanelStyles.tabs,
+            tab: customTabPanelStyles.tab,
+            activeTab: customTabPanelStyles.activeTab,
+            contentContainer: customTabPanelStyles.tabPanelContentContainer,
           }}
         />
-        <span className={css(ss.loadSaveText, custom.loadSaveText)}>{this.state.loadSaveText}</span>
+        <LoadSaveText>{this.state.loadSaveText}</LoadSaveText>
         <ActionButtons
           onSaveDiskClick={this.onSaveDiskClick}
           onLoadDiskClick={this.onLoadDiskClick}
           keyBindings={this.state.keyBindConfigs}
           activeConfigIndex={this.state.activeConfigIndex}
         />
-      </div>
+      </Container>
     ) : null;
   }
 
@@ -347,13 +321,13 @@ export class Options extends React.Component<OptionsProps, OptionsState> {
 
   private renderGraphics = () => {
     return (
-      <div className={css(this.ss.contentOverflowContainer, this.custom.contentOverflowContainer)}>
+      <ContentOverflowContainer>
         <RenderingOptions
           renderingConfigs={this.state.renderConfigs}
           onRenderConfigsChange={renderConfigs => this.setState({ renderConfigs })}
           activeConfigIndex={this.state.activeConfigIndex}
         />
-      </div>
+      </ContentOverflowContainer>
     );
   }
 

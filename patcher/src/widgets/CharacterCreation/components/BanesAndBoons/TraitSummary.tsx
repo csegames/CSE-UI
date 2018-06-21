@@ -5,165 +5,129 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
+import * as events  from '@csegames/camelot-unchained/lib/events';
+
 import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
-import { events } from 'camelot-unchained';
-import { styleConstants, colors } from '../../styleConstants';
+import { colors } from '../../styleConstants';
 
 const BANE = 'Bane';
 const BOON = 'Boon';
-
-export interface TraitSummaryStyle extends StyleDeclaration {
-  addedSummaryContainer: React.CSSProperties;
-  traitName: React.CSSProperties;
-  traitPoints: React.CSSProperties;
-  titleContainer: React.CSSProperties;
-  traitDescription: React.CSSProperties;
-  traitCategory: React.CSSProperties;
-  traitIcon: React.CSSProperties;
-  cancelTrait: React.CSSProperties;
-  additionalInfoContainer: React.CSSProperties;
-  divider: React.CSSProperties;
-  removeButton: React.CSSProperties;
-}
 
 export interface TraitSummaryProps {
   trait: BanesAndBoonsInfo;
   onCancelClick: Function;
   type: 'Bane' | 'Boon';
   onCancelRankTrait: Function;
-  styles: Partial<TraitSummaryStyle>;
 }
 
-export const defaultTraitSummaryStyles: TraitSummaryStyle = {
-  addedSummaryContainer: {
-    position: 'relative',
-    padding: '10px',
-    marginTop: '15px',
-    marginBottom: '15px',
-    backgroundColor: 'rgba(49,49,49,0.7)',
-    ...styleConstants.marginRight,
-  },
+const AddedSummaryContainer = styled('div')`
+  position: relative;
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: rgba(49, 49, 49, 0.7);
+`;
 
-  traitName: {
-    fontSize: '1.1em',
-    lineHeight: '1.1em',
-    marginBottom: '5px',
-    marginTop: 0,
-  },
+const Name = styled('div')`
+  font-size: 1.1em;
+  line-height: 1.1em;
+  margin-bottom: 5px;
+  margin-top: 0;
+`;
 
-  traitPoints: {
-    margin: 0,
-    color: 'orange',
-    marginLeft: '5px',
-  },
+const Points = styled('div')`
+  margin: 0;
+  color: orange;
+  margin-left: 5px;
+`;
 
-  titleContainer: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  },
+const TitleContainer = styled('div')`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+`;
 
-  traitDescription: {
-    color: '#CCC',
-    marginBottom: 0,
-  },
+const Description = styled('div')`
+  color: #CCC;
+  margin-bottom: 0;
+`;
 
-  traitCategory: {
-    marginTop: 0,
-    marginBottom: 0,
-    marginRight: '5px',
-  },
+const Category = styled('div')`
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 5px;
+`;
 
-  traitIcon: {
-    width: '60px',
-    height: '60px',
-  },
+const Icon = styled('img')`
+  width: 60px;
+  height: 60px;
+`;
 
-  cancelTrait: {
-    cursor: 'pointer',
-    border: '1px solid #595959',
-    padding: '2px 5px',
-    textAlign: 'center',
-    backgroundColor: 'rgba(49,49,49,0.7)',
-    transition: 'background-color 0.5s',
-    ':hover': {
-      backgroundColor: '#a0241b',
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.5)',
-    },
-  },
+const AdditionalInfoContainer = styled('div')`
+  display: flex;
+  align-items: center;
+`;
 
-  additionalInfoContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+const Divider = styled('div')`
+  font-size: 1em;
+  margin: 0;
+  color: #8F8F8F;
+`;
 
-  divider: {
-    fontSize: '1em',
-    margin: 0,
-    color: '#8f8f8f',
-  },
-
-  removeButton: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: '-5px',
-    right: '-5px',
-    width: '20px',
-    height: '20px',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(0,0,0,0.9)',
-    color: 'white',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-    ':hover': {
-      backgroundColor: colors.banePrimary,
-    },
-  },
-};
+const RemoveButton = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: ${colors.banePrimary};
+  }
+`;
 
 class TraitSummary extends React.Component<TraitSummaryProps, {}> {
 
   public render() {
-    const { trait, type, styles } = this.props;
-    const ss = StyleSheet.create(defaultTraitSummaryStyles);
-    const custom = StyleSheet.create(styles || {});
+    const { trait, type } = this.props;
 
     const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
-     colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
+      colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
 
     return (
-      <div
-        id={trait.required ? 'required-trait' : ''} className={css(ss.addedSummaryContainer, custom.addedSummaryContainer)}>
+      <AddedSummaryContainer id={trait.required ? 'required-trait' : ''}>
         {!trait.required &&
-        <div className={css(ss.removeButton, custom.removeButton)} onClick={this.onCancelClick}>
+        <RemoveButton onClick={this.onCancelClick}>
           X
-        </div>
+        </RemoveButton>
         }
-        <div className={css(ss.titleContainer, custom.titleContainer)}>
+        <TitleContainer>
           <div>
-            <p className={css(ss.traitName, custom.traitName)}
-             style={{ color: type === BOON ? colors.boonPrimary : colors.banePrimary }}>
+            <Name style={{ color: type === BOON ? colors.boonPrimary : colors.banePrimary }}>
               {trait.name}
-            </p>
-            <div className={css(ss.additionalInfoContainer)}>
-              <p className={css(ss.traitCategory, custom.traitCategory)} style={{ color: traitColor }}>
+            </Name>
+            <AdditionalInfoContainer>
+              <Category style={{ color: traitColor }}>
                 {trait.required ? 'Required' : trait.category ? trait.category : 'General'} {type}
-              </p>
-              <p className={css(ss.divider, custom.divider)}>|</p>
-              <p className={css(ss.traitPoints, custom.traitPoints)}>
+              </Category>
+              <Divider>|</Divider>
+              <Points>
                 Value: {type === BANE ? trait.points * -1 : trait.points}
-              </p>
-            </div>
+              </Points>
+            </AdditionalInfoContainer>
           </div>
-          <img className={css(ss.traitIcon, custom.traitIcon)} src={trait.icon} />
-        </div>
-        <p className={css(ss.traitDescription, custom.traitDescription)}>{trait.description}</p>
-      </div>
+          <Icon src={trait.icon} />
+        </TitleContainer>
+        <Description>{trait.description}</Description>
+      </AddedSummaryContainer>
     );
   }
   

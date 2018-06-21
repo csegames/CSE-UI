@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import clientInterface, { PlayerState, AnyEntityState, ClientSkillState } from './clientInterface';
+import clientInterface, { PlayerState, AnyEntityState, ClientSkillState, ClientSkillBarItem } from './clientInterface';
 import configGroup from './config/configGroup';
 import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
@@ -15,9 +15,6 @@ const devClientInterface: clientInterface = {
     c();
     return -1;
   },
-  CancelOnInitialized: (c: number) => {
-  },
-
   /* Client Options */
   muteVolume: false,
   mainVolume: 1,
@@ -32,6 +29,25 @@ const devClientInterface: clientInterface = {
   serverURL: '',
   serverTime: 1,
   vsync: 1,
+  playerState: {
+    id: 'TestPlayer',
+    name: 'CSEaj',
+    type: 'player',
+    isAlive: true,
+    race: 2,
+    faction: 1,
+    gender: 1,
+    health: [
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+      { current: 500, max: 500, wounds: 0 },
+    ],
+    stamina: { current: 500, max: 1000 },
+    blood: { current: 500, max: 1000 },
+  },
 
   FOV: (degrees: number) => {
   },
@@ -43,8 +59,6 @@ const devClientInterface: clientInterface = {
   OnServerConnected: (c: (isConnected: boolean) => void): number => {
     c(false);
     return -1;
-  },
-  CancelOnServerConnected: (c: number): void => {
   },
   PlaySoundEvent: (id: number): void => {
   },
@@ -64,8 +78,6 @@ const devClientInterface: clientInterface = {
   },
   ToggleUIVisibility: (name: string): void => {
   },
-  FocusUI: (name: string): void => {
-  },
   RequestInputOwnership: (): void => {
   },
   ReleaseInputOwnership: (): void => {
@@ -73,8 +85,6 @@ const devClientInterface: clientInterface = {
   Quit: (): void => {
   },
   CrashTheGame: (): void => {
-  },
-  OnUpdateNameplate: (c: (cell: number, colorMod: number, name: string, gtag: string, title: string) => void): void => {
   },
   OnOpenUI: (callback: (name: string) => void): void => {
   },
@@ -85,49 +95,19 @@ const devClientInterface: clientInterface = {
   OnHideUI: (callback: (name: string) => void): void => {
   },
 
-  Listen: (event: string): void => {
-  },
-  Ignore: (event: string): void => {
-  },
-  Fire: (event: string, ...args: any[]): void => {
-  },
-  OnEvent: (callback: (event: string, ...args: any[]) => void): void => {
-  },
-
   /* Respawn */
   Respawn: (id: string): void => {
   },
 
   /* Skills */
-  SetSkillRunning: (callback: (abilityId: string, isRunning: boolean) => void): void => {},
-
-  SetSkillQueued: (callback: (abilityId: string, isQueued) => void): void => {},
-
-  UpdateSkillCooldown: (callback: (abilityId: string, started: number, duration: number) => void): void => {},
-
-  OnSkillError: (callback: (abilityId: string) => void): void => {},
 
   OnSkillStateChanged: (callback: (skillState: ClientSkillState) => void): void => {},
 
+  OnSkillBarChanged: (callback: (newSkillBar: ClientSkillBarItem[]) => void): void => {},
+
   /* Abilities */
 
-  OnAbilityNumbersChanged: (callback: (abilityNumbers: string[]) => void): void => {
-  },
-
   Attack: (abilityID: string): void => {
-  },
-
-  OnAbilityCooldown: (c: (cooldownID: number, timeStarted: number, duration: number) => void): number => {
-    return -1;
-  },
-  CancelOnAbilityCooldown: (c: number): void => {
-  },
-
-  OnAbilityActive: (c: (currentAbility: string, timeStarted: number, timeTriggered: number, queuedAbility: string)
-    => any): number => {
-    return -1;
-  },
-  CancelOnAbilityActive: (c: number): void => {
   },
 
   OnAbilityError: (c: (message: string) => void): void => {
@@ -163,12 +143,6 @@ const devClientInterface: clientInterface = {
 
   DropItem: (itemID: string): void => {
   },
-
-  StartPlacingItem: (resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void => {},
-
-  CommitPlacedItem: (callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void): void => {},
-
-  CancelPlacingItem: (): void => {},
 
   /* Config */
 
@@ -345,82 +319,15 @@ const devClientInterface: clientInterface = {
 
   /* Character */
 
-  OnCharacterIDChanged: (c: (id: string) => void): void => {
+  OnCharacterZoneChanged: (c: (zoneID: string) => void): void => {
   },
-  OnCharacterZoneChanged: (c: (id: string) => void): void => {
-  },
-  OnCharacterFactionChanged: (c: (faction: Faction) => void): void => {
-  },
-  OnCharacterRaceChanged: (c: (race: Race) => void): void => {
-  },
-  OnCharacterGenderChanged: (c: (gender: Gender) => void): void => {
-  },
-  OnCharacterNameChanged: (c: (name: string) => void): void => {
-  },
-  OnCharacterHealthChanged: (c: (health: number, maxHealth: number) => void): void => {
-  },
-  OnCharacterStaminaChanged: (c: (stamina: number, maxStamina: number) => void): void => {
-  },
-  OnCharacterEffectsChanged: (c: (effects: string) => void): void => {
-  },
-  OnCharacterInjuriesChanged: (c: (part: number, health: number, maxHealth: number, wounds: number) => void): void => {
-  },
-  OnCharacterAliveOrDead: (c: (alive: boolean) => void): void => {
-  },
-  OnCharacterPositionChanged: (c: (x: number, y: number, z: number) => void): void => {
-  },
+
   OnCharacterCanReleaseControlChanged: (c: (canRelease: boolean) => void): void => {
   },
 
   /* EMOTE */
 
   Emote: (emote: number): void => {
-  },
-
-  /* Enemy Target */
-
-  OnEnemyTargetFactionChanged: (c: (faction: Faction) => void): void => {
-  },
-  OnEnemyTargetRaceChanged: (c: (race: Race) => void): void => {
-  },
-  OnEnemyTargetGenderChanged: (c: (gender: Gender) => void): void => {
-  },
-  OnEnemyTargetNameChanged: (c: (name: string) => void): void => {
-  },
-  OnEnemyTargetHealthChanged: (c: (health: number, maxHealth: number) => void): void => {
-  },
-  OnEnemyTargetStaminaChanged: (c: (stamina: number, maxStamina: number) => void): void => {
-  },
-  OnEnemyTargetEffectsChanged: (c: (effects: string) => void): void => {
-  },
-  OnEnemyTargetInjuriesChanged: (c: (part: number, health: number, maxHealth: number, wounds: number) => void): void => {
-  },
-  OnEnemyTargetAliveOrDead: (c: (alive: boolean) => void): void => {
-  },
-  OnEnemyTargetPositionChanged: (c: (x: number, y: number, z: number) => void): void => {
-  },
-
-  /* Friendly Target */
-
-  OnFriendlyTargetFactionChanged: (c: (faction: Faction) => void): void => {
-  },
-  OnFriendlyTargetRaceChanged: (c: (race: Race) => void): void => {
-  },
-  OnFriendlyTargetGenderChanged: (c: (gender: Gender) => void): void => {
-  },
-  OnFriendlyTargetNameChanged: (c: (name: string) => void): void => {
-  },
-  OnFriendlyTargetHealthChanged: (c: (health: number, maxHealth: number) => void): void => {
-  },
-  OnFriendlyTargetStaminaChanged: (c: (stamina: number, maxStamina: number) => void): void => {
-  },
-  OnFriendlyTargetEffectsChanged: (c: (effects: string) => void): void => {
-  },
-  OnFriendlyTargetInjuriesChanged: (c: (part: number, health: number, maxHealth: number, wounds: number) => void): void => {
-  },
-  OnFriendlyTargetAliveOrDead: (c: (alive: boolean) => void): void => {
-  },
-  OnFriendlyTargetPositionChanged: (c: (x: number, y: number, z: number) => void): void => {
   },
 
   /* Chat */
@@ -431,26 +338,12 @@ const devClientInterface: clientInterface = {
   },
   SendChat: (type: number, to: string, body: string): void => {
   },
-  JoinMUC: (room: string): void => {
-  },
-  LeaveMUC: (room: string): void => {
-  },
   Stuck: (): void => {
   },
   ChangeZone: (zoneID: number): void => {
   },
 
   /* Ability Crafting */
-
-  ShowAbility: (abilityID: string): void => {
-  },
-  OnShowAbility: (callback: (abilityID: string) => void): void => {
-  },
-
-  EditAbility: (abilityID: string): void => {
-  },
-  OnEditAbility: (callback: (abilityID: string) => void): void => {
-  },
 
   AbilityCreated: (abilityID: string, primaryBaseComponentID: string,
                    secondaryBaseComponentID: string, ability: string): void => {
@@ -517,11 +410,6 @@ const devClientInterface: clientInterface = {
   SendSlashCommand: (command: string): void => {
   },
 
-  /* Login */
-
-  Connect: (host: string, port: string, character: string, webAPIHost: string): void => {
-  },
-
   /* Logging */
   OnLogMessage: (c: (category: string,
                      level: number,
@@ -543,9 +431,25 @@ const devClientInterface: clientInterface = {
   ScenarioRoundEnded: (c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void => {
   },
 
+  /* Deployable Items */
+  StartPlacingItem: (resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void => {},
+
+  ResetItemPlacement: (): void => {},
+
+  CommitItemPlacement: (): void => {},
+
+  CancelItemPlacement: (): void => {},
+
+  SendCommitItemRequest: (callback: (itemINstanceIDString: string, position: any, rotation: any, scale: any) => void)
+  : void => {},
+
+  /* Target */
+  RequestFriendlyTargetEntityID: (entityID:string): void => {},
+  RequestEnemyTargetEntityID: (entityID:string): void => {},
+
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',
-  debug: true,
+  debug: false,
   signalRHost: 'https://api.camelotunchained.com/signalr',
   shardID: 1,
 };

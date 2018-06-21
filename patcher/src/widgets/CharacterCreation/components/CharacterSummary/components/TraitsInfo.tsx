@@ -6,70 +6,57 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
 import Boon from '../../BanesAndBoons/Boon';
 import Bane from '../../BanesAndBoons/Bane';
 import { BanesAndBoonsState } from '../../../services/session/banesAndBoons';
 import { colors } from '../../../styleConstants';
 
-export interface TraitsSummaryStyle extends StyleDeclaration {
-  TraitsSummary: React.CSSProperties;
-  boonsContainer: React.CSSProperties;
-  banesContainer: React.CSSProperties;
-  boonsHeader: React.CSSProperties;
-  banesHeader: React.CSSProperties;
-  boons: React.CSSProperties;
-  banes: React.CSSProperties;
-}
+const Container = styled('div')`
+  display: flex;
+  justify-content: space-between;
+`;
 
-export const defaultTraitsSummaryStyle: TraitsSummaryStyle = {
-  TraitsSummary: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
+const BoonsContainer = styled('div')`
+  flex: 1;
+  padding-right: 10px;
+`;
 
-  boonsContainer: {
-    flex: 1,
-    paddingRight: '10px',
-  },
+const BanesContainer = styled('div')`
+  direction: rtl;
+  flex: 1;
+  padding-left: 10px;
+`;
 
-  banesContainer: {
-    direction: 'rtl',
-    flex: 1,
-    paddingLeft: '10px',
-  },
+const BoonsHeader = styled('header')`
+  font-size: 22px;
+  font-weight: bold;
+  color: ${colors.boonPrimary};
+  border-bottom: 1px solid ${colors.boonPrimary};
+  margin-bottom: 5px;
+`;
 
-  boonsHeader: {
-    fontSize: '22px',
-    fontWeight: 'bold',
-    color: colors.boonPrimary,
-    borderBottom: `1px solid ${colors.boonPrimary}`,
-    marginBottom: '5px',
-  },
+const BanesHeader = styled('header')`
+  font-size: 22px;
+  font-weight: bold;
+  color: ${colors.banePrimary};
+  border-bottom: 1px solid ${colors.banePrimary};
+  margin-bottom: 5px;
+  text-align: right;
+`;
 
-  banesHeader: {
-    fontSize: '22px',
-    fontWeight: 'bold',
-    color: colors.banePrimary,
-    borderBottom: `1px solid ${colors.banePrimary}`,
-    marginBottom: '5px',
-    textAlign: 'right',
-  },
+const Boons = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
-  boons: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-
-  banes: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-};
+const Banes = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 export interface TraitsSummaryProps {
-  styles?: Partial<TraitsSummaryStyle>;
   banesAndBoonsState: BanesAndBoonsState;
 }
 
@@ -84,43 +71,43 @@ export class TraitsSummary extends React.Component<TraitsSummaryProps, TraitsSum
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultTraitsSummaryStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     const { addedBoons, addedBanes, traits } = this.props.banesAndBoonsState;
 
     return (
-      <div className={css(ss.TraitsSummary, custom.TraitsSummary)}>
-        <div className={css(ss.boonsContainer, custom.boonsContainer)}>
-          <header className={css(ss.boonsHeader, custom.boonsHeader)}>BOONS</header>
-          <div className={css(ss.boons, custom.boons)}>
+      <Container>
+        <BoonsContainer>
+          <BoonsHeader>BOONS</BoonsHeader>
+          <Boons>
             {Object.keys(addedBoons).map((id) => {
               return (
                 <Boon
                   key={id}
                   shouldBeDefault
                   trait={traits[id]}
+                  boonPoints={0}
                   {...this.props.banesAndBoonsState}
                 />
               );
             })}
-          </div>
-        </div>
-        <div className={css(ss.banesContainer, custom.banesContainer)}>
-          <header className={css(ss.banesHeader, custom.banesHeader)}>BANES</header>
-          <div className={css(ss.banes, custom.banes)}>
+          </Boons>
+        </BoonsContainer>
+        <BanesContainer>
+          <BanesHeader>BANES</BanesHeader>
+          <Banes>
             {Object.keys(addedBanes).map((id) => {
               return (
                 <Bane
                   key={id}
                   shouldBeDefault
                   trait={traits[id]}
+                  banePoints={0}
                   {...this.props.banesAndBoonsState}
                 />
               );
             })}
-          </div>
-        </div>
-      </div>
+          </Banes>
+        </BanesContainer>
+      </Container>
     );
   }
 }

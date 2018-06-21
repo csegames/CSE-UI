@@ -12,8 +12,8 @@ import { Provider } from 'react-redux';
 import { thunkMiddleware } from './lib/reduxUtils';
 import reducer from './services/session';
 import PatcherApp from './components/App';
-import { client } from 'camelot-unchained';
-import { useConfig } from 'camelot-unchained/lib/graphql/react';
+import { client } from '@csegames/camelot-unchained';
+import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
@@ -27,7 +27,7 @@ useConfig({
       characterID: client.characterID,
     },
   },
-});
+}, {});
 
 ReactDom.render(
   <Provider store={store}>

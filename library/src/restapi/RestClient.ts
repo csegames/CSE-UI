@@ -10,7 +10,7 @@ import { Promise } from 'es6-promise';
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
 import client, { hasClientAPI } from '../core/client';
-import events from '../events';
+import { emitter }  from '../events/EventEmitter';
 import * as RestUtil from './RestUtil';
 
 class Settings {
@@ -24,8 +24,8 @@ class Settings {
   constructor(channel: channelId) {
     this.core = new CoreSettings();
     this.timeout = 2000;
-    if (hasClientAPI() && events) {
-      events.on('init', () => {
+    if (hasClientAPI()) {
+      emitter.on('init', () => {
         this.apiToken = client.loginToken;
         this.channelId = client.patchResourceChannel;
         this.determineApiDetails();

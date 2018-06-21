@@ -93,7 +93,6 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
     let addIngredients;
     if (!props.possibleSlots) {
-      console.log('INGREDIENTS: RENDER: WAITING FOR SLOTS TO LOAD...');
       // If no recipe selected, thats why we have no slots, so only
       // display loading message if we have a recipe selected.
       if (props.recipe) {
@@ -106,20 +105,15 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       }
     } else {
       let possible;
-      console.log('INGREDIENTS: RENDER: SLOTS LOADED');
-      console.log('INGREDIENTS: RENDER: possibleSlots: ' + props.possibleSlots.join(','));
       if (!props.possibleIngredients) {
-        console.log('INGREDIENTS: RENDER: NO POSSIBLE INGREDIENTS YET');
         if (props.selectedSlot) {
           // no ingredients, but slot selected, ingredients are being loaded
-          console.log('INGREDIENTS: RENDER: SELECTED SLOT IS ' + props.selectedSlot);
           possible = (
             <div className={css(ss.message) + ' ingredients-searching'}>
               Searching bags for possible ingredients ...
             </div>
           );
         } else {
-          console.log('INGREDIENTS: RENDER: WAITING FOR USET TO PICK A SLOT...');
           possible = (
             <div className={css(ss.message) + ' ingredients-pick-a-slot'}>
               { '<< pick a slot' }
@@ -127,9 +121,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
           );
         }
       } else {
-        console.log('INGREDIENTS: RENDER: POSSIBLE INGREDIENTS LEN=' + props.possibleIngredients.length);
         if (props.possibleIngredients.length) {
-          console.log('INGREDIENTS: RENDER: SHOW POSSIBLE INGREDIENTS');
           possible = (
             <div className={css(ss.ingredient) + ' ingredients-select-ingredient'}>
               <PossibleIngredients
@@ -152,7 +144,6 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
             </div>
           );
         } else {
-          console.log('INGREDIENTS: RENDER: DONT HAVE ANY INGREDIENTS');
           props.dispatch(setMessage({ type: 'error', message: 'could not find any suitable ingredients for this slot' }));
         }
       }
@@ -201,7 +192,6 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
   private selectSlot = (slot: string) => {
     // Selected slot.  Selecting a slot first clears the current ingredients
-    console.log('INGREDIENTS: SELECT SLOT ' + slot);
     this.props.selectSlot(slot);
   }
 

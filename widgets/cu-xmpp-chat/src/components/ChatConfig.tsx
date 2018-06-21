@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events} from 'camelot-unchained';
+import {events} from '@csegames/camelot-unchained';
 import {prefixes, display} from './settings/chat-defaults';
 
 export class ChatConfig {

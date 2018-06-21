@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
-import { client, AnyEntityState, SiegeState, PlayerState } from 'camelot-unchained';
+import styled, { css } from 'react-emotion';
+import { client, AnyEntityState, SiegeState, PlayerState } from '@csegames/camelot-unchained';
 import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
@@ -52,49 +52,38 @@ const CenteredTextOverlay = (props: {text: string, textStyle: any, children: any
   );
 };
 
-interface SiegeButtonStyle extends StyleDeclaration {
-  button: React.CSSProperties;
-  buttonEnabled: React.CSSProperties;
-  buttonDisabled: React.CSSProperties;
-}
+const Button = styled('div')`
+  position: relative;
+  display: inline-block;
+  border: 1px solid rgba(220, 220, 220, 0.5);
+  padding: 2px 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: all;
+  background: rgba(0, 0 ,0, 0.5);
+`;
 
-const deaultSiegeButtonStyle: SiegeButtonStyle = {
-  button: {
-    position: 'relative',
-    display: 'inline-block',
-    border: '1px solid rgba(220, 220, 220, 0.5)',
-    padding: '2px 8px',
-    userSelect: 'none',
-    '-webkit-user-select': 'none',
-    pointerEvents: 'all',
-    background: 'rgba(0, 0, 0, 0.5)',
-  },
-  buttonEnabled: {
-    cursor: 'pointer',
-    ':hover': {
-      background: 'red',
-    },
-  },
-  buttonDisabled: {
-    cursor: 'default',
-  },
-};
+const ButtonEnabled = css`
+  cursor: pointer;
+  &:hover {
+    background: red;
+  }
+`;
+
+const ButtonDisabled = css`
+  cursor: default;
+`;
 
 const SiegeButton = (props: {
   enabled: boolean,
-  styles?: SiegeButtonStyle,
   onClick?: () => void;
   children: any,
 }) => {
-  const ss = StyleSheet.create(deaultSiegeButtonStyle);
-  const custom = StyleSheet.create((props.styles || {}) as SiegeButtonStyle);
   return (
-    <div className={css(ss.button, custom.button,
-                    props.enabled ? ss.buttonEnabled : ss.buttonDisabled,
-                    props.enabled ? custom.buttonEnabled : custom.buttonDisabled)}
+    <Button className={props.enabled ? ButtonDisabled : props.enabled ? ButtonEnabled : ''}
         onClick={props.onClick}>
       {props.children}
-    </div>
+    </Button>
   );
 };
 
@@ -117,18 +106,21 @@ export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string |
       margin: 'auto',
       color: '#ececec',
       userSelect: 'none',
-      '-webkit-user-select': 'none',
+      WebkitUserSelect: 'none',
     }}>
       <div>{props.controlledBy === null ? props.state.name : `${props.state.name} (${props.controlledBy})`}</div>
-      <CenteredTextOverlay text={props.state.health.current + '/' + props.state.health.max}
-                           textStyle={{ color: '#ececec', fontWeight: '700' }}>
+      <CenteredTextOverlay
+        text={props.state.health.current + '/' + props.state.health.max}
+        textStyle={{ color: '#ececec', fontWeight: '700' }}>
         <div style={{
           width: '200px',
           height: '20px',
           border: '2px solid rgba(220, 220, 220, 0.75)',
         }}>
-          <ProgressBar current={props.state.health.current} max={props.state.health.max}
-                       foreground={'red'} background={'#333'} />
+          <ProgressBar
+            current={props.state.health.current} max={props.state.health.max}
+            foreground={'red'} background={'#333'}
+          />
         </div>
       </CenteredTextOverlay>
 
@@ -230,14 +222,22 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       case 'player': {
         const controlled = this.state.entity.controllingEntityState;
         if (!controlled || controlled.type !== 'siege') return null;
-        return <SiegeHealthBar state={(controlled || null) as any}
-                               controlledBy={this.state.entity.name}
-                               showExit={this.props.for === HealthFor.Self} />;
+        return (
+          <SiegeHealthBar
+            state={(controlled || null) as any}
+            controlledBy={this.state.entity.name}
+            showExit={this.props.for === HealthFor.Self}
+          />
+        );
       }
       case 'siege': {
-        return <SiegeHealthBar state={this.state.entity}
-                                           controlledBy={null}
-                                           showExit={false}/>;
+        return (
+          <SiegeHealthBar
+            state={this.state.entity}
+            controlledBy={null}
+            showExit={false}
+          />
+        );
       }
     }
   }

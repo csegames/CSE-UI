@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 // Ahh... input owenrship
 //

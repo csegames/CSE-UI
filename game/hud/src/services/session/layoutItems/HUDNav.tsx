@@ -5,7 +5,9 @@
  */
 
 import * as React from 'react';
-import { events, client, utils, soundEvents } from 'camelot-unchained';
+import { client, utils, soundEvents } from '@csegames/camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
+
 import HUDNav from '../../../components/HUDNav';
 import { LayoutMode } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
@@ -76,22 +78,6 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'gamemenu'),
-          hideClientControlledUI();
-        },
-      },
-      {
-        name: 'character',
-        tooltip: 'Character',
-        iconClass: 'fa-user',
-        icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
-            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'character');
           hideClientControlledUI();
         },
       },
@@ -187,7 +173,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'inventory');
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
         },
       },
       {
@@ -202,7 +189,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'equippedgear');
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
         },
       },
       {
@@ -248,6 +236,21 @@ export default {
         hidden: false,
         onClick: () => {
           events.fire('hudnav--navigate', 'scenario-results');
+        },
+      },
+      {
+        name: 'progression',
+        tooltip: 'Progression',
+        iconClass: 'fa-line-chart',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-line-chart fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'progression');
         },
       },
       // {

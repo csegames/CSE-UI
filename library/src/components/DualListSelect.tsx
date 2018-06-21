@@ -5,13 +5,14 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
 import { merge, clone } from 'lodash';
+import styled, { css } from 'react-emotion';
+
 import RaisedButton from './RaisedButton';
 import Input from './Input';
 
 
-export interface DualListSelectStyle extends StyleDeclaration {
+export interface DualListSelectStyle {
   container: React.CSSProperties;
   listSection: React.CSSProperties;
   listBox: React.CSSProperties;
@@ -22,54 +23,50 @@ export interface DualListSelectStyle extends StyleDeclaration {
   filter: React.CSSProperties;
 }
 
-export const defaultDualListSelectStyle: DualListSelectStyle = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
+const Container = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+`;
 
-  listSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: '1 1 auto',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-  },
+const ListSection = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: stretch;
+  align-content: stretch;
+`;
 
-  listBox: {
-    flex: '1 1 auto',
-    border: 'solid 1px rgba(255, 255, 255, 0.2)',
-    borderTop: '0',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-  },
+const ListBox = styled('div')`
+  cursor: pointer;
+  user-select: none;
+  padding: 1px 15px;
+`;
 
-  listItem: {
-    cursor: 'pointer',
-    userSelect: 'none',
-    padding: '1px 15px',
-  },
+const ListItem = styled('div')`
+  cursor: pointer;
+  user-select: none;
+  padding: 1px 15px;
+`;
 
-  selectedListItem: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-  },
+const SelectedListItem = css`
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 
-  buttons: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '10px',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+const Buttons = styled('div')`
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+`;
 
-  button: {
-    margin: '10px',
-  },
+const Filter = styled('div')`
+  flex: 0;
+`;
 
-  filter: {
-    flex: '0 0 auto',
-  },
+const defaultButtonStyle = {
+  margin: 10,
 };
 
 export interface DualListSelectItems {
@@ -114,74 +111,67 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultDualListSelectStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
+    const customStyle = this.props.styles || {};
     return (
-      <div className={css(ss.container, custom.container)}>
+      <Container style={customStyle.container}>
 
-        <div className={css(ss.listSection, custom.listSection)}>
-          <div className={css(ss.filter, custom.filter)}>
-            <Input type='text'
-                   label={this.props.labelLeft || ''}
-                   inputRef={(r: HTMLInputElement) => this.leftInputRef = r}
-                   placeholder={'Filter'}
-                   onChange={this.onLeftFilterTextChanged}></Input>
-          </div>
-          <div className={css(ss.listBox, custom.listBox)}>
-            {this.renderLeftItems(ss, custom)}
-          </div>
-        </div>
+        <ListSection style={customStyle.listSection}>
+          <Filter style={customStyle.filter}>
+            <Input
+              type='text'
+              label={this.props.labelLeft || ''}
+              inputRef={(r: HTMLInputElement) => this.leftInputRef = r}
+              placeholder={'Filter'}
+              onChange={this.onLeftFilterTextChanged}>
+            </Input>
+          </Filter>
+          <ListBox style={customStyle.listBox}>
+            {this.renderLeftItems(customStyle)}
+          </ListBox>
+        </ListSection>
 
-        <div className={css(ss.buttons, custom.buttons)}>
+        <Buttons>
           <RaisedButton
             styles={{
               button:
-                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
+                merge({  }, this.props.styles ? this.props.styles.button : null || {}),
             }}
             onClick={this.selectAll}>
             <i className='fa fa-angle-double-right'></i>
           </RaisedButton>
           <RaisedButton
-            styles={{
-              button:
-                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
-            }}
+            styles={{ button: merge(defaultButtonStyle, this.props.styles ? this.props.styles.button : null || {}) }}
             onClick={() => this.selectItem()}>
             <i className='fa fa-angle-right'></i>
           </RaisedButton>
           <RaisedButton
-            styles={{
-              button:
-                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
-            }}
+            styles={{ button: merge(defaultButtonStyle, this.props.styles ? this.props.styles.button : null || {}) }}
             onClick={() => this.removeItem()}>
             <i className='fa fa-angle-left'></i>
           </RaisedButton>
           <RaisedButton
-            styles={{
-              button:
-                merge(defaultDualListSelectStyle.button, this.props.styles ? this.props.styles.button : null || {}),
-            }}
+            styles={{ button: merge(defaultButtonStyle, this.props.styles ? this.props.styles.button : null || {}) }}
             onClick={this.removeAll}>
             <i className='fa fa-angle-double-left'></i>
           </RaisedButton>
-        </div>
+        </Buttons>
 
-        <div className={css(ss.listSection, custom.listSection)}>
-          <div className={css(ss.filter, custom.filter)}>
-            <Input type='text'
-                   label={this.props.labelRight || ''}
-                   inputRef={(r: HTMLInputElement) => this.rightInputRef = r}
-                   placeholder={'Filter'}
-                   onChange={this.onRightFilterTextChanged}></Input>
-          </div>
-          <div className={css(ss.listBox, custom.listBox)}>
-            {this.renderRightItems(ss, custom)}
-          </div>
-        </div>
+        <ListSection style={customStyle.listSection}>
+          <Filter style={customStyle.filter}>
+            <Input
+              type='text'
+              label={this.props.labelRight || ''}
+              inputRef={(r: HTMLInputElement) => this.rightInputRef = r}
+              placeholder={'Filter'}
+              onChange={this.onRightFilterTextChanged}>
+            </Input>
+          </Filter>
+          <ListBox style={customStyle.listBox}>
+            {this.renderRightItems(customStyle)}
+          </ListBox>
+        </ListSection>
 
-      </div>
+      </Container>
     );
   }
 
@@ -341,35 +331,37 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
     });
   }
 
-  private renderLeftItems = (ss: DualListSelectStyle, custom: Partial<DualListSelectStyle>) => {
+  private renderLeftItems = (customStyle: Partial<DualListSelectStyle>) => {
     const items: JSX.Element[] = [];
     for (const key in this.state.filteredLeftItems) {
       items.push((
-        <div key={key}
-             className={key === this.state.leftSelectedItemKey ?
-               css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
-               css(ss.listItem, custom.listItem)}
-             onClick={() => this.setState({ leftSelectedItemKey: key })}
-             onDoubleClick={() => this.selectItem(key)}>
-          {this.state.filteredLeftItems[key]}
-        </div>
+        <ListItem
+          key={key}
+          style={key === this.state.leftSelectedItemKey ?
+            {...customStyle.listItem, ...customStyle.selectedListItem} : customStyle.listItem}
+          className={key === this.state.leftSelectedItemKey ? SelectedListItem : ''}
+          onClick={() => this.setState({ leftSelectedItemKey: key })}
+          onDoubleClick={() => this.selectItem(key)}>
+            {this.state.filteredLeftItems[key]}
+        </ListItem>
       ));
     }
     return items;
   }
 
-  private renderRightItems = (ss: DualListSelectStyle, custom: Partial<DualListSelectStyle>) => {
+  private renderRightItems = (customStyle: Partial<DualListSelectStyle>) => {
     const items: JSX.Element[] = [];
     for (const key in this.state.filteredRightItems) {
       items.push((
-        <div key={key}
-             className={key === this.state.rightSelectedItemKey ?
-               css(ss.listItem, ss.selectedListItem, custom.listItem, custom.selectedListItem) :
-               css(ss.listItem, custom.listItem)}
-             onClick={() => this.setState({ rightSelectedItemKey: key })}
-             onDoubleClick={() => this.removeItem(key)}>
-          {this.state.filteredRightItems[key]}
-        </div>
+        <ListItem
+          key={key}
+          style={key === this.state.rightSelectedItemKey ?
+            {...customStyle.listItem, ...customStyle.selectedListItem} : customStyle.listItem}
+          className={key === this.state.rightSelectedItemKey ? SelectedListItem : ''}
+          onClick={() => this.setState({ rightSelectedItemKey: key })}
+          onDoubleClick={() => this.removeItem(key)}>
+            {this.state.filteredRightItems[key]}
+        </ListItem>
       ));
     }
     return items;

@@ -18,47 +18,45 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
 
-export interface DialogStyle extends StyleDeclaration {
+const Container = styled('div')`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+`;
+
+const DialogContainer = styled('div')`
+  background-color: #444;
+  min-width: 250px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ContentWrapper = styled('div')`
+  flex: 1;
+`;
+
+export interface DialogStyle {
   container: React.CSSProperties;
   dialog: React.CSSProperties;
   contentWrapper: React.CSSProperties;
 }
 
-export const defaultDialogStyle: DialogStyle = {
-  container: {
-    position: 'fixed',
-    top: '0',
-    bottom: '0',
-    left: '0',
-    right: '0',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'default',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    zIndex: 99999,
-  },
-
-  dialog: {
-    backgroundColor: '#444',
-    minWidth: '250px',
-    minHeight: '100px',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  contentWrapper: {
-    flex: '1 1 auto',
-  },
-};
-
 export interface DialogProps<ContentProps> {
   content: (props: ContentProps) => JSX.Element;
   closeOnClickOutside?: boolean;
   contentProps?: ContentProps;
-  style?: Partial<DialogStyle>;
+  styles?: Partial<DialogStyle>;
 }
 
 export interface DialogState {
@@ -80,23 +78,22 @@ export class Dialog<ContentProps> extends React.Component<DialogProps<ContentPro
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultDialogStyle);
-    const custom = StyleSheet.create(this.props.style || {});
+    const customStyle = this.props.styles || {};
     return (
       <div onClick={this.clicked} style={{ display: 'inline-block' }}>
         {this.props.children}
         {
           this.state.hidden ? null :
-            <div className={css(ss.container, custom.container)}>
-              <div
-                className={css(ss.dialog, custom.dialog)}
+            <Container style={customStyle.container}>
+              <DialogContainer
+                style={customStyle.dialog}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseleave}>
-                <div className={css(ss.contentWrapper, custom.contentWrapper)}>
+                <ContentWrapper style={customStyle.contentWrapper}>
                   <this.props.content {...this.props.contentProps} />
-                </div>
-              </div>
-            </div>
+                </ContentWrapper>
+              </DialogContainer>
+            </Container>
         }
       </div>
     );

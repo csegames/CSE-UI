@@ -5,53 +5,50 @@
  */
 
 import * as React from 'react';
-import { css, StyleSheet, StyleDeclaration } from 'aphrodite';
+import styled, { cx, css } from 'react-emotion';
 
 import Slider from './Slider';
 
-export interface ListItemStyles extends StyleDeclaration {
-  ListItem: React.CSSProperties;
+export interface ListItemStyles {
   sliderItem: React.CSSProperties;
   oddColorBackground: React.CSSProperties;
   searchDoesNotInclude: React.CSSProperties;
 }
 
-const defaultListItemStyle: ListItemStyles = {
-  ListItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '5px',
-    cursor: 'pointer',
-    webkitUserSelect: 'none',
-    userSelect: 'none',
-    borderBottom: '1px solid #454545',
-    backgroundColor: 'rgba(20,20,20,0.75)',
-    ':hover': {
-      backgroundColor: 'rgba(30,30,30,0.75)',
-    },
-    ':active': {
-      boxShadow: 'inset 0 0 5px rgba(0,0,0,0.9)',
-    },
-  },
+const Container = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  border-bottom: 1px solid #454545;
+  background-color: rgba(20, 20, 20, 0.75);
+  &:hover {
+    background-color: rgba(30, 30, 30, 0.75);
+  }
+  &:active {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+  }
+`;
 
-  sliderItem: {
-    cursor: 'default',
-    ':hover': {
-      backgroundColor: 'rgba(20,20,20,0.75)',
-    },
-    ':active': {
-      boxShadow: 'none',
-    },
-  },
+const SliderItem = css`
+  cursor: default;
+  &:hover {
+    background-color: rgba(20, 20, 20, 0.75);
+  }
+  &:active {
+    box-shadow: none;
+  }
+`;
 
-  oddColorBackground: {
-    backgroundColor: 'rgba(10,10,10,0.75)',
-  },
+const OddColorBackground = css`
+  background-color: rgba(10, 10, 10, 0.75);
+`;
 
-  searchDoesNotInclude: {
-    opacity: 0.4,
-  },
-};
+const SearchDoesNotInclude = css`
+  opacity: 0.4;
+`;
 
 export interface SliderListItem {
   onChange: (val: number) => void;
@@ -70,44 +67,32 @@ export interface ListItemProps {
 }
 
 const ListItem = (props: ListItemProps) => {
-  const ss = StyleSheet.create(defaultListItemStyle);
-  const custom = StyleSheet.create(props.styles || {});
-
   if (props.sliderItemInfo) {
     return (
-      <div
-        className={css(
-          ss.ListItem,
-          custom.ListItem,
-          ss.sliderItem,
-          custom.sliderItem,
-          props.isOddItem && ss.oddColorBackground,
-          props.isOddItem && custom.oddColorBackground,
-          props.searchIncludes === false && ss.searchDoesNotInclude,
-          props.searchIncludes === false && custom.searchDoesNotInclude,
+      <Container
+        className={cx(
+          SliderItem,
+          props.isOddItem ? OddColorBackground : '',
+          props.searchIncludes === false ? SearchDoesNotInclude : '',
         )}>
         <Slider
           {...props.sliderItemInfo}
           label={props.name}
           value={parseInt(props.value, 10)}
         />
-      </div>
+      </Container>
     );
   } else {
     return (
-      <div
+      <Container
         onClick={props.onClick}
-        className={css(
-          ss.ListItem,
-          custom.ListItem,
-          props.isOddItem && ss.oddColorBackground,
-          props.isOddItem && custom.oddColorBackground,
-          props.searchIncludes === false && ss.searchDoesNotInclude,
-          props.searchIncludes === false && custom.searchDoesNotInclude,
-      )}>
+        className={cx(
+          props.isOddItem ? OddColorBackground : '',
+          props.searchIncludes === false ? SearchDoesNotInclude : '',
+        )}>
           <span>{props.name}</span>
           <span>{props.value}</span>
-      </div>
+      </Container>
     );
   }
 };

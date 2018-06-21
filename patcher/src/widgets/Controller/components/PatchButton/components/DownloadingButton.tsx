@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { events } from 'camelot-unchained';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled, { keyframes } from 'react-emotion';
 import { ButtonText, PatchButtonStyle } from '../styles';
 

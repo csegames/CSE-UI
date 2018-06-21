@@ -10,7 +10,7 @@ import invites, { InvitesState } from './invites';
 import { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
 import { ApolloClient } from 'react-apollo';
 import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
-import { client } from 'camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 // Apollo Setup
 
 // define network address

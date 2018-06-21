@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
+import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled, { keyframes, css } from 'react-emotion';
-import { events } from 'camelot-unchained';
 
 import { patcher } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
@@ -132,7 +132,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
   private onClick = (isOnline?: boolean) => {
     events.fire('view-content', view.CHARACTERCREATION, {
       selectedServer: this.props.server.name,
-      apiHost: this.props.server.apiHost,
+      apiHost: this.props.server.apiHost + '/',
       apiVersion: 1,
       shard: this.props.server.shardID,
       apiKey: patcher.getLoginToken(),

@@ -19,7 +19,7 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib
 // interface for window cuAPI
-import { events } from 'camelot-unchained';
+import { on } from '@csegames/camelot-unchained/lib/events';
 interface WindowInterface extends Window {
   cuAPI: any;
   opener: WindowInterface;
@@ -56,7 +56,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
+    on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {
           if (state.visible) return { visible: false };

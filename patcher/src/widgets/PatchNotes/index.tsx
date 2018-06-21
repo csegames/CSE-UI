@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { ql } from 'camelot-unchained';
 import styled from 'react-emotion';
+import { ql } from '@csegames/camelot-unchained';
 import Content from './components/Content/Content';
 import SideBar from './components/SideBar/SideBar';
 

@@ -7,11 +7,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { keyframes, css } from 'react-emotion';
-import { events, webAPI, Gender, Archetype, Race, Spinner } from 'camelot-unchained';
+import styled, { keyframes } from 'react-emotion';
+import { events, webAPI, Gender, Archetype, Race, Spinner } from '@csegames/camelot-unchained';
 
 import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';
+
+import PlayerCounts from './PlayerCounts';
 
 declare const toastr: any;
 
@@ -179,19 +181,11 @@ const CharMask = styled('div')`
   }
 `;
 
-const InitialCharMaskAnim = css`
-  
-`;
-
 const InfoContainer = styled('div')`
   opacity: 1;
   background-size: 280%;
   background-position: 52% 23%;
   transition: opacity 1s ease;
-`;
-
-const CharacterInfoContainer = styled('div')`
-  
 `;
 
 const CharacterName = styled('div')`
@@ -229,10 +223,13 @@ const ServerInfoContainer = styled('div')`
 `;
 
 const ServerName = styled('div')`
+  display: inline;
   margin-left: -20px;
 `;
 
 const AccessLevel = styled('div')`
+  display: inline;
+  margin-left: 30px;
   font-size: 12px;
   color: gray;
 `;
@@ -296,16 +293,14 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
             image={CharacterImages[`${Race[character.race]}${Gender[character.gender]}`]}
             maleLuchorpan={character.race === Race.Luchorpan && character.gender === Gender.Male}
             flipImage={flipImage}
-            className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}>
+            className='character-button-char-mask'>
             <InfoContainer className='character-button-info'>
-              <CharacterInfoContainer>
-                <CharacterName longName={isLongName}>
-                  {character.name}
-                  <CharacterMetaInfo>
-                    {Archetype[character.archetype]} - {webAPI.raceString(character.race)}
-                  </CharacterMetaInfo>
-                </CharacterName>
-              </CharacterInfoContainer>
+              <CharacterName longName={isLongName}>
+                {character.name}
+                <CharacterMetaInfo>
+                  {Archetype[character.archetype]} - {webAPI.raceString(character.race)}
+                </CharacterMetaInfo>
+              </CharacterName>
               {selectedServer &&
                 <ServerInfoContainer longName={isLongName}>
                   <ServerName>
@@ -319,6 +314,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                   <AccessLevel>
                     {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
                   </AccessLevel>
+                  <PlayerCounts server={selectedServer.name} />
                 </ServerInfoContainer>
               }
             </InfoContainer>
@@ -331,22 +327,19 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           className='character-button-char-container'
           onClick={this.props.hasAccessToServers ? onNavigateToCharacterSelect : this.noAccessError}>
           <CharPic
-            className={'character-button-char-pic'}
+            className='character-button-char-pic'
             image={'images/controller/no-character-shadow.png'}>
             {this.state.isLoading && <SpinnerContainer><Spinner /></SpinnerContainer>}
           </CharPic>
           <CharMask
-            className={(this.state.initial ? InitialCharMaskAnim : '') + ' character-button-char-mask'}
+            className='character-button-char-mask'
             image={'images/controller/no-character-shadow.png'}>
             {!this.state.isLoading &&
               <InfoContainer className='character-button-info'>
-                
-                <CharacterInfoContainer>
                 <CharacterName>
                   {this.props.hasAccessToServers ? 'No Character Selected' : 'There are no servers available'}
                   {this.props.hasAccessToServers && <CharacterMetaInfo>Click to select character</CharacterMetaInfo>}
                 </CharacterName>
-              </CharacterInfoContainer>
                 {selectedServer &&
                   <ServerInfoContainer>
                     <ServerName>
@@ -357,6 +350,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                       </ServerActiveIcon>
                       {selectedServer.name}
                     </ServerName>
+                    <PlayerCounts server={selectedServer.name} />
                     <AccessLevel>
                       {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
                     </AccessLevel>

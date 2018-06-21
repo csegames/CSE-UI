@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Gender, Race } from 'camelot-unchained';
+import { Gender, Race } from '@csegames/camelot-unchained';
 
 import VisualEffects from '../../../../../components/VisualEffects/VisualEffects';
 import dustParticles from '../../../../CharacterCreation/particles/dustParticles';

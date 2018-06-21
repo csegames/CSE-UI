@@ -5,63 +5,56 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled, { css } from 'react-emotion';
 import { Input } from './Input';
 import { cloneDeep } from 'lodash';
 
-export interface FilterSelectStyle extends StyleDeclaration {
+export interface FilterSelectStyle {
   container: React.CSSProperties;
-  input: React.CSSProperties;
   list: React.CSSProperties;
   listItem: React.CSSProperties;
   selectedItem: React.CSSProperties;
   highlightItem: React.CSSProperties;
 }
 
-export const defaultFilterSelectStyle: FilterSelectStyle = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignContent: 'stretch',
-    position: 'relative',
-  },
+const Container = styled('div')`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+`;
 
-  input: {
-    flex: '0 0 auto',
-  },
+const List = styled('div')`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+  position: absolute;
+  min-height: 0px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  user-select: none;
+  background-color: #444;
+  z-index: 8888;
+`;
 
-  list: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    flex: '1 1 auto',
-    position: 'absolute',
-    minHeight: '0px',
-    maxHeight: '300px',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    userSelect: 'none',
-    backgroundColor: '#444',
-    zIndex: 8888,
-  },
+const ListItem = styled('div')`
+  flex: 1;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+`;
 
-  listItem: {
-    flex: '1 1 auto',
-    cursor: 'pointer',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-  },
+const HighlightItem = css`
+  background-color: rgba(0, 0, 0, 0.2);
+`;
 
-  highlightItem: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-  },
-
-  selectedItem: {
-    backgroundColor: 'rgba(220, 255, 230, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-  },
-};
+const SelectedItem = styled('div')`
+  background-color: rgba(220, 255, 230, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
 
 export interface FilterSelectProps {
   items: any[];
@@ -99,44 +92,42 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultFilterSelectStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
-
+    const customStyles = this.props.styles || {};
     return (
-      <div className={css(ss.container, custom.container)}>
-        <Input inputRef={r => this.inputRef = r}
-               onChange={this.onInputChanged}
-               onKeyDown={this.onKeyDown}/>
+      <Container style={customStyles.container}>
+        <Input
+          inputRef={r => this.inputRef = r}
+          onChange={this.onInputChanged}
+          onKeyDown={this.onKeyDown}
+        />
         <div>
           {
             this.state.selectedItem == null ? null :
               (
-                <div className={css(ss.selectedItem, custom.selectedItem)}>
+                <SelectedItem>
                   {this.props.renderItem(this.state.selectedItem, this.props.renderData)}
-                </div>
+                </SelectedItem>
               )
           }
-          <div className={css(ss.list, custom.list)}>
+          <List>
 
             {
               this.state.filteredItems.map((item, index) => {
                 if (item === this.state.selectedItem) return null;
                 return (
-                  <div key={index}
-                       className={
-                         this.state.keyboardIndex === index ?
-                           css(ss.listItem, ss.highlightItem, custom.listItem, custom.highlightItem) :
-                           css(ss.listItem, custom.listItem)
-                       }
-                       onClick={() => this.selectItem(item)}>
-                    {this.props.renderItem(item, this.props.renderData)}
-                  </div>
+                  <ListItem
+                    key={index}
+                    style={this.state.keyboardIndex === index ?
+                      {...customStyles.listItem, ...customStyles.highlightItem} : customStyles.listItem}
+                    onClick={() => this.selectItem(item)}>
+                      {this.props.renderItem(item, this.props.renderData)}
+                  </ListItem>
                 );
               })
             }
-          </div>
+          </List>
         </div>
-      </div>
+      </Container>
     );
   }
 

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, hasClientAPI } from 'camelot-unchained';
+import { client, hasClientAPI } from '@csegames/camelot-unchained';
 
 export function slash(command: string, callback?: (response: any) => void) {
   if (hasClientAPI()) {
@@ -13,7 +13,6 @@ export function slash(command: string, callback?: (response: any) => void) {
     if (callback) listen(callback);
     client.SendSlashCommand(command);
   } else {
-    console.log('CRAFTING: would have sent ' + command + ' to server');
     if (callback) callback({ type: 'complete', complete: 'Simulated completion' });
   }
 }

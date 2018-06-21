@@ -11,17 +11,17 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: 0,
+      offset: 100,
     },
     y: {
       anchor: 6,
-      offset: 150,
+      offset: 0,
     },
     size: {
       width: 300,
-      height: 180,
+      height: 140,
     },
-    scale: 0.6,
+    scale: 1,
     opacity: 1,
     visibility: true,
     zOrder: HUDZOrder.FriendlyTarget,

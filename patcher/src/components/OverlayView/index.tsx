@@ -5,14 +5,16 @@
  */
 
 import * as React from 'react';
-import { events, ql } from 'camelot-unchained';
+import * as events from '@csegames/camelot-unchained/lib/events';
+
+import { ql } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
 
 // views
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
 import PatchNotes from '../../widgets/PatchNotes';
-import Chat from 'cu-xmpp-chat';
+import Chat from '@csegames/cu-xmpp-chat';
 
 export interface OverlayViewProps {
 }
@@ -40,7 +42,8 @@ export enum view {
 }
 
 class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
-
+  private patcherSelectListener: number;
+  private viewContentListener: number;
   constructor(props: OverlayViewProps) {
     super(props);
     this.state = {
@@ -78,10 +81,10 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentDidMount() {
-    events.on('patcher--select-server', (server) => {
+    this.patcherSelectListener = events.on('patcher--select-server', (server) => {
       this.setState({ selectedServer: server });
     });
-    events.on('view-content', (v: view, props: any) => {
+    this.viewContentListener = events.on('view-content', (v: view, props: any) => {
       if (v === this.state.currentView) return;
       if (v === view.NONE) {
         events.fire('resume-videos');
@@ -105,7 +108,8 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentWillUnmount() {
-    events.off('view-content');
+    events.off(this.patcherSelectListener);
+    events.off(this.viewContentListener);
   }
 
   private renderView = (current: boolean): JSX.Element => {

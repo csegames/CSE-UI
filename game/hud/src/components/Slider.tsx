@@ -19,63 +19,60 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { spring, TransitionMotion } from 'react-motion';
-import { merge } from 'lodash';
 import * as className from 'classnames';
+import styled, { css } from 'react-emotion';
+import { spring, TransitionMotion } from 'react-motion';
 
-const defaultStyles: SliderStyle = {
-  container: {
-    overflow: 'hidden',
-    position: 'relative',
-    height: '100%',
-    width: '100%',
-  },
+const Container = styled('div')`
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+`;
 
-  items: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
+const Items = styled('div')`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
 
-  item: {
-    width: '100%',
-    height: '100%',
-  },
+const Item = styled('div')`
+  width: 100%;
+  height: 100%;
+`;
 
-  counter: {
-    color: 'white',
-    fontSize: '0.8em',
-    position: 'absolute',
-    right: '10px',
-    bottom: '10px',
-  },
+const Counter = styled('div')`
+  position: absolute;
+  color: white;
+  font-size: 0.8em;
+  right: 10px;
+  bottom: 10px;
+`;
 
-  arrow: {
-    position: 'absolute',
-    top: '50%',
-    marginTop: '-7.5px',
-    height: '15px',
-    width: '15px',
-    border: '1px solid white',
-    borderWidth: '2px 2px 0 0',
-  },
+const Arrow = styled('a')`
+  position: absolute;
+  top: 50%;
+  margin-top: -7.5px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid white;
+  border-width: 2px 2px 0 0;
+`;
 
-  arrowRight: {
-    right: '10px',
-    transform: 'rotate(45deg)',
-  },
+const ArrowRight = css`
+  right: 10px;
+  transform: rotate(45deg);
+`;
 
-  arrowLeft: {
-    left: '10px',
-    transform: 'rotate(-135deg) translateX(-2px)',
-  },
+const ArrowLeft = css`
+  left: 10px;
+  transform: rotate(-135deg) translateX(-2px);
+`;
 
-  arrowDisabled: {
-    border: '1px solid #eee',
-    cursor: 'default !important',
-  },
-};
+const ArrowDisabled = styled('div')`
+  border: 1px solid #EEE;
+  cursor: default !important;
+`;
 
 export interface SliderStyle {
   container: React.CSSProperties;
@@ -117,21 +114,16 @@ class Slider extends React.Component<SliderProps, SliderState> {
   }
 
   public render() {
-
-    const ss = StyleSheet.create(merge(defaultStyles, this.props.style));
-
     if (this.state.single) {
       return (
-        <div className={css(ss.container)}>
-          {this.props.children}
-        </div>
+        <Container>{this.props.children}</Container>
       );
     }
 
     const items = this.props.children.slice(this.state.index, this.state.index + 1) as any;
 
     return (
-      <div className={css(ss.container)}>
+      <Container>
         <TransitionMotion willLeave={this.slideWillLeave}
           willEnter={this.slideWillEnter}
           styles={items.map((item: any) => ({
@@ -140,37 +132,32 @@ class Slider extends React.Component<SliderProps, SliderState> {
             style: { opacity: spring(1, { stiffness: 50, damping: 15, precision: 0.01 }) },
           }))}>
           {(interpolatedStyles: any) =>
-            <div className={css(ss.items)}>
+            <Items>
               {interpolatedStyles.map((slide: any) => {
                 return (
-                  <div
+                  <Item
                     key={slide.key}
-                    className={css(ss.item)}
                     style={{ position: 'absolute', top: 0, opacity: slide.style.opacity }}>
                     {slide.data}
-                  </div>
+                  </Item>
                 );
               })}
-              <div className={css(ss.counter)}>
+              <Counter>
                 {this.state.index + 1} / {this.props.children.length}
-              </div>
-            </div>
+              </Counter>
+            </Items>
           }
         </TransitionMotion>
-        <a className={className(
-          css(ss.arrow),
-          css(ss.arrowLeft),
-          { [css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 })}
+        <Arrow className={className(ArrowRight,
+          { [ArrowDisabled]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 })}
           onClick={() => this.prev()}>
-        </a>
-        <a className={className(
-          css(ss.arrow),
-          css(ss.arrowLeft),
-          { [css(ss.arrowDisabled)]: (this.props.children.length === 1 || !this.props.loop) &&
-           this.state.index === this.props.children.length - 1 })}
+        </Arrow>
+        <Arrow className={className(ArrowLeft,
+          { [ArrowDisabled]: (this.props.children.length === 1 || !this.props.loop) &&
+            this.state.index === this.props.children.length - 1 })}
           onClick={() => this.next()}>
-        </a>
-      </div>
+        </Arrow>
+      </Container>
     );
   }
 

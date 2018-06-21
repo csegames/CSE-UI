@@ -1,15 +1,8 @@
 {
   "name": "cu-xmpp-chat",
-  "dependencies": {
-    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7",
-    "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",
-    "redux": "github:andrew-w-ross/typings-redux#2e0b57e18c6240d17fde045573d74e649762437b",
-    "redux-thunk": "github:andrew-w-ross/typings-redux-thunk#11edd7b7e5add9721b60bcf6994e814b0eeaa3f6"
-  },
   "globalDependencies": {
-    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
+    "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts",
     "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
-    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
-    "node": "registry:dt/node#6.0.0+20160621231320"
+    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts"
   }
 }

@@ -73,6 +73,14 @@ interface VoxStatus {
 
 interface VoxRecipe {
   id: string;
+  ingredientItem: {
+    description: string;
+    iconUrl: string;
+    id: string;
+    isVox: boolean;
+    itemType: string;
+    name: string;
+  };
   outputItem: {
     name: string;
     iconUrl: string;

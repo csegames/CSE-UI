@@ -6,31 +6,29 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { utils, client } from 'camelot-unchained';
-import { StyleSheet, css, StyleDeclaration } from 'aphrodite';
+import styled from 'react-emotion';
+import { utils, client } from '@csegames/camelot-unchained';
 
 import { ConfigInfo, ConfigIndex } from '../OptionsMain';
 
-export interface ActionButtonsStyle extends StyleDeclaration {
+export interface ActionButtonsStyle {
   ActionButtons: React.CSSProperties;
   button: React.CSSProperties;
 }
 
-export const defaultActionButtonsStyle: ActionButtonsStyle = {
-  ActionButtons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '5px 10px',
-    backgroundColor: '#202020',
-    borderTop: `1px solid ${utils.lightenColor('#202020', 30)}`,
-    borderBottom: `1px solid ${utils.lightenColor('#202020', 30)}`,
-    color: 'white',
-  },
+const Container = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: #202020;
+  border-top: 1px solid ${utils.lightenColor('#202020', 30)};
+  border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+  color: white;
+`;
 
-  button: {
-    color: utils.lightenColor('#454545', 100),
-  },
-};
+const Button = styled('button')`
+  color: ${utils.lightenColor('#454545', 100)};
+`;
 
 export interface ActionButtonsProps {
   styles?: Partial<ActionButtonsStyle>;
@@ -51,19 +49,17 @@ export class ActionButtons extends React.Component<ActionButtonsProps, ActionBut
   }
 
   public render() {
-    const ss = StyleSheet.create(defaultActionButtonsStyle);
-    const custom = StyleSheet.create(this.props.styles || {});
     return (
-      <div className={css(ss.ActionButtons, custom.ActionButtons)}>
+      <Container>
         <div>
-          <button className={css(ss.button, custom.button)} onClick={this.onSaveDiskClick}>SAVE</button>
-          <button className={css(ss.button, custom.button)} onClick={this.onLoadDiskClick}>LOAD</button>
+          <Button onClick={this.onSaveDiskClick}>SAVE</Button>
+          <Button onClick={this.onLoadDiskClick}>LOAD</Button>
         </div>
         <div>
-          <button className={css(ss.button, custom.button)} onClick={this.onDefaultsClick}>DEFAULTS</button>
-          <button className={css(ss.button, custom.button)} onClick={this.onCancelClick}>CANCEL</button>
+          <Button onClick={this.onDefaultsClick}>DEFAULTS</Button>
+          <Button onClick={this.onCancelClick}>CANCEL</Button>
         </div>
-      </div>
+      </Container>
     );
   }
 

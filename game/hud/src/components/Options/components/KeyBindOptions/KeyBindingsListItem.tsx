@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { getVirtualKeyCode, vkKeyCodes } from 'camelot-unchained';
+import { getVirtualKeyCode, vkKeyCodes } from '@csegames/camelot-unchained';
 
 import ListItem from '../ListItem';
 import { ConfigInfo } from '../../OptionsMain';
@@ -17,6 +17,7 @@ export interface KeyBindingsListItemProps {
   onToggleListeningMode: (keyBinding: ConfigInfo) => void;
   handleKeyEvent: (keyBinding: ConfigInfo, keyCode: number) => void;
   isOddItem: boolean;
+  isVisible: boolean;
 }
 
 export interface KeyBindingsListItemState {
@@ -47,6 +48,10 @@ export class KeyBindingsListItem extends React.Component<KeyBindingsListItemProp
 
   public componentDidMount() {
     window.addEventListener('keydown', this.handleKeyEvent);
+  }
+
+  public shouldComponentUpdate(nextProps: KeyBindingsListItemProps) {
+    return nextProps.isVisible;
   }
 
   public componentWillUnmount() {

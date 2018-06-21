@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, Faction, hasClientAPI } from 'camelot-unchained';
 import * as React from 'react';
+import { client, Faction, hasClientAPI, PlayerState } from '@csegames/camelot-unchained';
 import RespawnLocation from './RespawnLocation';
 
 export interface RespawnProps {
@@ -51,8 +51,8 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
 
     if (!hasClientAPI()) return;
 
-    client.OnCharacterFactionChanged((cf: number) => {
-      switch (cf) {
+    client.OnPlayerStateChanged((playerState: PlayerState) => {
+      switch (playerState.faction) {
         case Faction.Arthurian: this.faction = 'A'; break;
         case Faction.TDD: this.faction = 'T'; break;
         case Faction.Viking: this.faction = 'V'; break;

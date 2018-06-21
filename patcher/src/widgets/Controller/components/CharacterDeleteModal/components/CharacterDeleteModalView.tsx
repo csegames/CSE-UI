@@ -6,24 +6,28 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
-import { Tooltip, Spinner } from 'camelot-unchained';
+import styled, { css } from 'react-emotion';
+import { Tooltip, Spinner } from '@csegames/camelot-unchained';
+import PatcherModal from '../../../../PatcherModal';
+import GenericButton from '../../../../GenericButton';
 
 const Container = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
   left: 50%;
   top: 50%;
   margin: 0 auto;
   position: fixed;
-  width: 400px;
-  height: 200px;
   margin-left: -200px;
   margin-top: -100px;
   z-index: 99999;
-  background: linear-gradient(#131313, rgba(16, 16, 16, 0.9));
+`;
+
+const Modal = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 400px;
+  height: 200px;
   padding: 1em;
 `;
 
@@ -37,6 +41,7 @@ const Input = styled('input')`
   box-shadow: none;
   color: #8f8f8f;
   box-shadow: inset 0px 0px 2px 0px rgba(200,200,200,.1);
+  -webkit-mask-image: none !important;
   &:focus {
     outline: 0;
     border: solid .5px #3fd0b0;
@@ -49,38 +54,17 @@ const Label = styled('label')`
 `;
 
 const Title = styled('div')`
-  font-size: 2em;
+  font-size: 24px;
   font-weight: 500;
-  color: #3fd0b0;
+  color: #FFD9D2;
+  text-transform: uppercase;
+  font-family: Caudex;
+  letter-spacing: 5px;
 `;
 
 const Text = styled('div')`
-  font-size: .9em;
-  font-weight: 200;
-  color: #3fd0b0;
-`;
-
-const Button = styled('div')`
-  margin: 5px;
-  padding: 11px;
-  color: ${props => props.disabled ? 'rgba(255, 255, 255, 0.2)' : '#ececec'};
-  background-color: #1a1a1a;
-  transition: all 0.3s;
-  text-align: center;
-  font-size: 1.3em;
-  font-weight: 200;
-  box-shadow: ${props => props.disabled ? 'inset 0px 0px 3px 0px rgba(100,100,100,.1)' :
-    'inset 0px 0px 3px 0px rgba(200,200,200,.1)'};
-  border: 1px solid #1a1a1a;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  &:hover {
-    border: ${props => props.disabled ? '1px solid #1a1a1a' : '1px solid #3fd0b0'};
-    color: ${props => props.disabled ? 'rgba(255, 255, 255, 0.2)' : '#3fd0b0'};
-  }
-
-  &:focus {
-    outline: 0;
-  }
+  font-size: 1em;
+  color: rgb(255,95,76);
 `;
 
 const ModalError = styled('div')`
@@ -93,6 +77,26 @@ const ModalSuccess = styled('div')`
 
 const ButtonContainer = styled('div')`
   display: flex;
+`;
+
+const FailedButton = css`
+  background-color: rgba(112, 21, 30, 0.4);
+  border-image: linear-gradient(180deg, #ff5f4c, #d13b29) stretch;
+  border-image-slice: 1;
+  a {
+    color: #ff5f4c;
+  }
+`;
+
+const ButtonGlow = styled('div')`
+  position: absolute;
+  right: 0;
+  left: 10%;
+  bottom: -60%;
+  width: 80%;
+  height: 60%;
+  border-radius: 60%;
+  box-shadow: 0 0 60px 20px rgba(184, 153, 105, 0.3);
 `;
 
 
@@ -111,45 +115,54 @@ class CharacterDeleteModalView extends React.Component<CharacterDeleteModalViewP
   public render() {
     return (
       <Container>
-        <Title>Delete character?</Title>
-        <Text>Warning! This cannot be undone.</Text>
-        <Label>Enter character name to confirm</Label>
-        <Input id='name' innerRef={ref => this.nameInput = ref} type='text' onChange={this.props.onChange} />
-        {
-          this.props.error ?
-            <ModalError>
-              <Tooltip content={() => <span>{'An unknown error occurred.'}</span>}>
-                  <i className='fa fa-exclamation-circle'></i> Delete failed.
-                </Tooltip>
-            </ModalError> :
-            null
-        }
+        <PatcherModal
+          accentColor='rgb(255,95,76)'
+          highlightColorStrong='rgba(255, 95, 76, 0.7)'
+          highlightColorWeak='rgba(255, 95, 76, 0.1)'>
+          <Modal>
+            <Title>Delete character?</Title>
+            <Text>Warning! This cannot be undone.</Text>
+            <Label>Enter character name to confirm</Label>
+            <Input id='name' innerRef={ref => this.nameInput = ref} type='text' onChange={this.props.onChange} />
+            {
+              this.props.error ?
+                <ModalError>
+                  <Tooltip content={() => <span>{'An unknown error occurred.'}</span>}>
+                      <i className='fa fa-exclamation-circle'></i> Delete failed.
+                    </Tooltip>
+                </ModalError> :
+                null
+            }
 
-        {
-          this.props.success ?
-            <ModalSuccess>
-              <Tooltip
-                content={() => <span>{`Character was deleted.`}</span>}
-                styles={{ tooltip: { maxWidth: '400px' }}}>
-                  <i className='fa fa-info-circle'></i> Success!
-              </Tooltip>
-            </ModalSuccess> :
-            null
-        }
-        <ButtonContainer>
-          {
-            this.props.deleting ?
-              <Button>
-                <Spinner />
-              </Button> :
-              <Button
-                disabled={!this.props.deleteEnabled}
-                onClick={this.props.deleteEnabled ? this.props.onDeleteCharacter : () => {}}>
-                Delete
-              </Button>
-          }
-          <Button onClick={this.props.onCancelDelete}>Cancel</Button>
-        </ButtonContainer>
+            {
+              this.props.success ?
+                <ModalSuccess>
+                  <Tooltip
+                    content={() => <span>{`Character was deleted.`}</span>}
+                    styles={{ tooltip: { maxWidth: '400px' }}}>
+                      <i className='fa fa-info-circle'></i> Success!
+                  </Tooltip>
+                </ModalSuccess> :
+                null
+            }
+            <ButtonContainer>
+              {
+                this.props.deleting ?
+                  <GenericButton>
+                    <Spinner />
+                  </GenericButton> :
+                  <GenericButton
+                    className={FailedButton}
+                    disabled={!this.props.deleteEnabled}
+                    onClick={this.props.deleteEnabled ? this.props.onDeleteCharacter : () => {}}>
+                      Delete
+                    <ButtonGlow />
+                  </GenericButton>
+              }
+              <GenericButton onClick={this.props.onCancelDelete}>Cancel</GenericButton>
+            </ButtonContainer>
+          </Modal>
+        </PatcherModal>
       </Container>
     );
   }

@@ -5,7 +5,7 @@
  *
  */
 
-import { SkillStateStatusEnum, SkillStateReasonEnum, SkillStateTypeEnum } from 'camelot-unchained';
+import { SkillStateStatusEnum, SkillStateReasonEnum, SkillStateTypeEnum } from '@csegames/camelot-unchained';
 import { css, keyframes } from 'react-emotion';
 import { SkillStateInfo } from './index';
 
@@ -88,18 +88,6 @@ export const pulsingBackground = css`
   background: ${skillStateColors.runningColor};
   animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
   -webkit-animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
-`;
-
-export const timingPseudo = css`
-  ${overlayPseudo};
-  content: attr(data-timer);
-  display: flex;
-  justify-content: center;
-  font-size: 1em;
-  line-height: 2em;
-  text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000;
-  color: white;
-  filter: brightness(120%);
 `;
 
 export const ReadyState = css`
@@ -204,8 +192,7 @@ export const CooldownState = css`
     stroke: ${skillStateColors.cooldownColor};
     opacity: .5;
   }
-  &:before {
-    ${timingPseudo};
+  .skill-timing-overlay {
     background: rgba(0, 0, 0, 0.6);
   }
   &.hold:before {
@@ -234,8 +221,7 @@ export const ErrorState = css`
 
 export const ChannelState = css`
   filter: brightness(125%);
-  &:before {
-    ${timingPseudo};
+  .skill-timing-overlay {
     color: ${skillStateColors.channelColor};
     background: ${skillStateColors.channelColor};
   }
@@ -257,8 +243,7 @@ export const ChannelState = css`
 `;
 
 export const RecoveryState = css`
-  &:before {
-    ${timingPseudo};
+  .skill-timing-overlay {
     animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
     -webkit-animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
   }
@@ -275,8 +260,7 @@ export const RecoveryState = css`
 
 export const PreparationState = css`
   filter: brightness(125%);
-  &:before {
-    ${timingPseudo};
+  .skill-timing-overlay {
     animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
     -webkit-animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
   }

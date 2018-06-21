@@ -6,7 +6,7 @@
 'use strict';
 
 import BuildingEventTopics from './BuildingEventTopics';
-import EventEmitter from '../../events/EventEmitter';
+import { EventEmitter } from '../../events/EventEmitter';
 import client from '../../core/client';
 
 function run(emitter: EventEmitter, topic: string) {
@@ -17,7 +17,7 @@ function run(emitter: EventEmitter, topic: string) {
   }
 }
 
-export default class BlockSelectListener {
+export default class BlueprintCopyListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintCopy;

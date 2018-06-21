@@ -14,8 +14,8 @@ module.exports = {
     },
     babel: 'babel tmp -d tmpp',
     browserify: {
-      default: 'mkdirp dist/ui/js && browserify tmpp/index.js -o dist/ui/js/%npm_package_config_name%.js --fast --noparse=FILE -u camelot-unchained -u es6-promise -u eventemitter3 -u isomorphic-fetch -u moment -u node-xmpp-client -u normalizr -u react -u react-dom  -u react-redux -u react-tap-event-plugin -u redux -u redux-thunk -u reflux',
-      lib: 'mkdirp dist/ui/js && browserify -r camelot-unchained -r es6-promise -r eventemitter3 -r isomorphic-fetch -r moment -r node-xmpp-client -r normalizr -r react -r react-dom  -r react-redux -r react-tap-event-plugin -r redux -r redux-thunk -r reflux > dist/ui/js/lib.js'
+      default: 'mkdirp dist/ui/js && browserify tmpp/index.js -o dist/ui/js/%npm_package_config_name%.js --fast --noparse=FILE -u @csegames/camelot-unchained -u es6-promise -u eventemitter3 -u isomorphic-fetch -u moment -u node-xmpp-client -u normalizr -u react -u react-dom  -u react-redux -u react-tap-event-plugin -u redux -u redux-thunk -u reflux',
+      lib: 'mkdirp dist/ui/js && browserify -r @csegames/camelot-unchained -r es6-promise -r eventemitter3 -r isomorphic-fetch -r moment -r node-xmpp-client -r normalizr -r react -r react-dom  -r react-redux -r react-tap-event-plugin -r redux -r redux-thunk -r reflux > dist/ui/js/lib.js'
     },
     build: {
       sass: 'node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js',
