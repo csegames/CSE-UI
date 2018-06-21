@@ -33,7 +33,10 @@ export class SettingsPanel extends React.PureComponent<SettingsPanelProps, Setti
   }
   public render() {
     return (
-      <SettingsPanelContainer className="cse-ui-scroller-thumbonly" data-id='settings-panel-container' style={this.props.style}>
+      <SettingsPanelContainer
+        className='cse-ui-scroller-thumbonly'
+        data-id='settings-panel-container'
+        style={this.props.style}>
         {this.props.children}
       </SettingsPanelContainer>
     );

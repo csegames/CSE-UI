@@ -157,6 +157,17 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
     }
   }
 
+  public render() {
+    const { keybinds } = this.state;
+    const keys = keybinds && Object.keys(keybinds);
+    return (
+      <SettingsPanel style={{ padding: 0 }}>
+        { keys && keys.length > 10 ? this.renderSearchBar() : null }
+        { keys ? this.renderKeyBinds(keys) : null }
+      </SettingsPanel>
+    );
+  }
+
   private renderSearchBar() {
     return (
       <KeyBindsSearchBar>
@@ -189,28 +200,17 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
     return (
       <KeyBindsContainer>
         { keys && keys.map((key) => {
-              if (clash && key === clash.name) {
-                return <Clashes key={clash.name} clash={clash} onResolve={this.onResolveClash}/>;
-              }
-              if (search && key.toLowerCase().indexOf(search) === -1) return null;
-              return (
-                <KeyBind key={key} name={key} binds={keybinds[key]}
-                    listening={listening && listening.name === key ? listening : null}
-                    toggleRebind={this.toggleRebind}/>
-              );
+          if (clash && key === clash.name) {
+            return <Clashes key={clash.name} clash={clash} onResolve={this.onResolveClash}/>;
+          }
+          if (search && key.toLowerCase().indexOf(search) === -1) return null;
+          return (
+            <KeyBind key={key} name={key} binds={keybinds[key]}
+              listening={listening && listening.name === key ? listening : null}
+              toggleRebind={this.toggleRebind}/>
+          );
         })}
       </KeyBindsContainer>
-    )
-  }
-
-  public render() {
-    const { keybinds } = this.state;
-    const keys = keybinds && Object.keys(keybinds);
-    return (
-      <SettingsPanel style={{ padding: 0 }}>
-        { keys && keys.length > 10 ? this.renderSearchBar() : null }
-        { keys ? this.renderKeyBinds(keys) : null }
-      </SettingsPanel>
     );
   }
 
