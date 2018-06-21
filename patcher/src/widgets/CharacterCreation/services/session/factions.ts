@@ -5,7 +5,8 @@
  */
 
 import 'isomorphic-fetch';
-import { webAPI } from '@csegames/camelot-unchained';
+import { client, webAPI, RequestConfig } from '@csegames/camelot-unchained';
+import { patcher } from '../../../../services/patcher';
 
 declare const toastr: any;
 
@@ -58,7 +59,13 @@ export function selectFaction(selected: FactionInfo) {
 
 async function getFactions(dispatch: (action: any) => any, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetFactionInfoV1({ url: apiHost });
+    const config: RequestConfig = () => ({
+      url: apiHost,
+      headers: {
+        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+      },
+    })
+    const res = await webAPI.GameDataAPI.GetFactionInfoV1(config);
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchFactionsSuccess(data) : fetchFactionsFailed(data));
     if (!res.ok) {

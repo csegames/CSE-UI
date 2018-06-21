@@ -58,7 +58,7 @@ const groupsHubEventsMap: EventMap[] = [
 export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: client.debug });
 
 function invokeIdentify(hub: SignalRHub) {
-  hub.invoke('identify', client.loginToken, client.shardID, client.characterID)
+  hub.invoke('identify', client.accessToken, client.shardID, client.characterID)
   .done((success: boolean) => {
     if (!success) {
       if (client.debug) console.log(`groupsHub identify failed.`);

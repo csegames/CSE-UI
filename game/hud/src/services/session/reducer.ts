@@ -36,7 +36,7 @@ const authHeaders = {
     if (!req.options.headers) {
       req.options.headers = {};
     }
-    req.options.headers['loginToken'] = client.loginToken;
+    req.options.headers['accessToken'] = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
     req.options.headers['shardID'] = client.shardID;
     req.options.headers['characterID'] = client.characterID;
     next();

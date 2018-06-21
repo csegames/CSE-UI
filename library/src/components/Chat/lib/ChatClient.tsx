@@ -93,7 +93,7 @@ class ChatClient {
     this.emitter.removeListener(id);
   }
 
-  public connectWithToken(loginToken: string, nick: string = "", rooms: RoomId[] = DEFAULT_ROOM_LIST) {
+  public connectWithToken(accessToken: string, nick: string = "", rooms: RoomId[] = DEFAULT_ROOM_LIST) {
     if (this.chat) {
       console.warn('ChatClient:connect() called when already connected.');
       return;
@@ -101,7 +101,7 @@ class ChatClient {
     // this._fire('connecting');
     this.connected = false;
     this.updated = 0;
-    this.config = new Config('', loginToken, nick);
+    this.config = new Config('', accessToken, nick);
     this.internalConnect(rooms);
   }
 

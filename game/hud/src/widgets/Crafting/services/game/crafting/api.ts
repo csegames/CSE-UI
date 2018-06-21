@@ -40,7 +40,6 @@ function run(startRequest: () => any) {
 export function setVoxJob(type: any) {
   return run(() => webAPI.CraftingAPI.SetVoxJob(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     type,
@@ -50,7 +49,6 @@ export function setVoxJob(type: any) {
 export function startVoxJob() {
   return run(() => webAPI.CraftingAPI.StartVoxJob(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
   ));
@@ -59,7 +57,6 @@ export function startVoxJob() {
 export function collectVoxJob() {
   return run(() => webAPI.CraftingAPI.CollectFinishedVoxJob(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
   ));
@@ -68,7 +65,6 @@ export function collectVoxJob() {
 export function clearVoxJob() {
   return run(() => webAPI.CraftingAPI.ClearVoxJob(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
   ));
@@ -77,7 +73,6 @@ export function clearVoxJob() {
 export function cancelVoxJob() {
   return run(() => webAPI.CraftingAPI.CancelVoxJob(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
   ));
@@ -86,7 +81,6 @@ export function cancelVoxJob() {
 export function setVoxQuality(quality: number) {
   return run(() => webAPI.CraftingAPI.SetQuality(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     (quality / 100),
@@ -96,7 +90,6 @@ export function setVoxQuality(quality: number) {
 export function setVoxItemCount(count: number) {
   return run(() => webAPI.CraftingAPI.SetVoxItemCount(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     count,
@@ -106,7 +99,6 @@ export function setVoxItemCount(count: number) {
 export function setVoxName(name: string) {
   return run(() => webAPI.CraftingAPI.SetCustomItemName(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     name,
@@ -116,7 +108,6 @@ export function setVoxName(name: string) {
 export function setVoxRecipe(id: string) {
   return run(() => webAPI.CraftingAPI.SetRecipeID(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     id,
@@ -126,7 +117,6 @@ export function setVoxRecipe(id: string) {
 export function addVoxIngredient(id: string, qty: number, slot: number = 0) {
   return run(() => webAPI.CraftingAPI.AddIngredient(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     id,
@@ -138,7 +128,6 @@ export function addVoxIngredient(id: string, qty: number, slot: number = 0) {
 export function removeVoxIngredient(id: string, qty: number) {
   return run(() => webAPI.CraftingAPI.RemoveVoxIngredient(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     id,

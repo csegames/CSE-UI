@@ -58,7 +58,6 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
     try {
       const res = await webAPI.GroupsAPI.JoinV1(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         alert.forGroup,

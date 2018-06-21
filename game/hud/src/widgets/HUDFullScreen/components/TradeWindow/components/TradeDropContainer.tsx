@@ -219,7 +219,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: item.id, UnitCount: item.stats.item.unitCount };
         const res = await webAPI.SecureTradeAPI.RemoveItem(
           webAPI.defaultConfig,
-          client.loginToken,
           client.shardID,
           client.characterID,
           tradeItem.ItemID,
@@ -262,7 +261,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: _tradeItem.id, UnitCount: _tradeItem.stats.item.unitCount };
         const res = webAPI.SecureTradeAPI.AddItem(
           webAPI.defaultConfig,
-          client.loginToken,
           client.shardID,
           client.characterID,
           tradeItem.ItemID,
@@ -288,7 +286,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
       const tradeItem = { ItemID: e.dataTransfer.item.id, UnitCount: e.dataTransfer.item.stats.item.unitCount };
       const res = await webAPI.SecureTradeAPI.AddItem(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         tradeItem.ItemID,

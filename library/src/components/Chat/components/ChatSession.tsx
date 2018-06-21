@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { find } from 'lodash';
 import { Room } from '../lib/CSEChat';
 import { ChatMessage, chatType } from './ChatMessage';
 import { UserInfo } from './User';
@@ -20,7 +19,7 @@ import { isArray } from 'util';
 interface LoginInfo {
   username?: string;
   password?: string;
-  loginToken?: string;
+  accessToken?: string;
 }
 
 class ChatSession {
@@ -68,12 +67,39 @@ class ChatSession {
     // });
   }
 
-  public connect(username: string, password: string) {
-    this.internalConnect({ username, password });
+  private internalConnect(login: LoginInfo) {
+    events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
+    events.on('combatlog_message', (msg: string) => this.onchat({type: messageType.COMBAT_LOG, message: msg}));
+
+    if (!this.client) {
+      this.client = new ChatClient();
+      this.client.on('connect', this.onconnect);
+      this.client.on('connectfailed', this.onconnectfailed);
+      this.client.on('ping', this.onping);
+      this.client.on('presence', this.onchat);
+      this.client.on('message', this.onchat);
+      this.client.on('groupmessage', this.onchat);
+      this.client.on('disconnect', this.ondisconnect);
+      this.client.on('rooms', this.onrooms);
+      
+      // if (!patcher.hasRealApi()) {
+      //   if (username === "") username = window.prompt('username?');
+      //   if (password === "###") password = window.prompt('password?');
+      // }
+      if (login.accessToken) {
+        this.client.connectWithToken(login.accessToken);
+      } else {
+        this.client.connect(login.username, login.password);
+      }
+    }
   }
 
-  public connectWithToken(loginToken: string) {
-    this.internalConnect({ loginToken });
+  connect(username: string, password: string) {
+    this.internalConnect({ username: username, password: password });
+  }
+
+  connectWithToken(accessToken: string) {
+    this.internalConnect({ accessToken });
   }
 
   public onping(ping: any) {
@@ -347,33 +373,6 @@ class ChatSession {
       });
     });
     return allUsers;
-  }
-
-  private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string | string[]) => this.onchat({ type: messageType.SYSTEM, message: msg }));
-    events.on('combatlog_message', (msg: string | string[]) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
-
-    if (!this.client) {
-      this.client = new ChatClient();
-      this.client.on('connect', this.onconnect);
-      this.client.on('connectfailed', this.onconnectfailed);
-      this.client.on('ping', this.onping);
-      this.client.on('presence', this.onchat);
-      this.client.on('message', this.onchat);
-      this.client.on('groupmessage', this.onchat);
-      this.client.on('disconnect', this.ondisconnect);
-      this.client.on('rooms', this.onrooms);
-      
-      // if (!patcher.hasRealApi()) {
-      //   if (username === "") username = window.prompt('username?');
-      //   if (password === "###") password = window.prompt('password?');
-      // }
-      if (login.loginToken) {
-        this.client.connectWithToken(login.loginToken);
-      } else {
-        this.client.connect(login.username, login.password);
-      }
-    }
   }
 }
 

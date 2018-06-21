@@ -48,6 +48,7 @@ if (!client.apiVersion) client.apiVersion = 1;
 if (!client.shardID) client.shardID = 1;
 if (!client.characterID) client.characterID = 'Q3jItAvTU93AzbMFcCL200';
 client.signalRHost = `${client.apiHost}/signalr`;
+client.ACCESS_TOKEN_PREFIX = 'Bearer';
 
 if (window.patcherAPI) {
   client = merge(client, window.patcherAPI);

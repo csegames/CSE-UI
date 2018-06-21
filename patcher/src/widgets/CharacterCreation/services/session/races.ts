@@ -5,7 +5,8 @@
  */
 
 import 'isomorphic-fetch';
-import { Race, Faction, webAPI } from '@csegames/camelot-unchained';
+import { client, RequestConfig, Race, Faction, webAPI } from '@csegames/camelot-unchained';
+import { patcher } from '../../../../services/patcher';
 
 export interface RaceInfo {
   name: string;
@@ -57,7 +58,13 @@ export function resetRace() {
 
 async function getRaces(dispatch: (action: any) => any, apiHost: string) {
   try {
-    const res = await webAPI.GameDataAPI.GetRacesV1({ url: apiHost });
+    const config: RequestConfig = () => ({
+      url: apiHost,
+      headers: {
+        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+      },
+    });
+    const res = await webAPI.GameDataAPI.GetRacesV1(config);
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchRacesSuccess(data) : fetchRacesFailed(data));
   } catch (err) {

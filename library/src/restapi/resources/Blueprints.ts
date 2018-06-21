@@ -16,14 +16,14 @@ export function getBlueprintIcon(id: number): Promise<string> {
 export function getBlueprints(charId: string): Promise<any> {
   return RestClientLegacy.getJSON('blueprint', true, {
     characterID: charId,
-    loginToken: client.loginToken,
+    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
   });
 }
 
 export function addBlueprint(charId: string, name: string, data: any): Promise<any> {
   return RestClientLegacy.getJSON('blueprint/add', true, {
     characterID: charId,
-    loginToken: client.loginToken,
+    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
     newBlueprintName: name,
     newBlueprintData: data,
   });

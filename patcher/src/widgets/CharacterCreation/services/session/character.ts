@@ -5,7 +5,7 @@
  */
 
 import 'isomorphic-fetch';
-import { client, webAPI, Race, Faction, Gender, Archetype } from '@csegames/camelot-unchained';
+import { client, webAPI, Race, Faction, Gender, Archetype, RequestConfig } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 
 export interface CharacterCreationModel {
@@ -44,12 +44,13 @@ export function createCharacter(model: CharacterCreationModel,
   return async (dispatch: (action: any) => any) => {
     await dispatch(createCharacterStarted());
     try {
-      const res = await webAPI.CharactersAPI.CreateCharacterV1(
-        { url: apiUrl },
-        patcher.getLoginToken(),
-        shard,
-        model,
-      );
+      const config: RequestConfig = () => ({
+        url: apiUrl,
+        headers: {
+          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        },
+      });
+      const res = await webAPI.CharactersAPI.CreateCharacterV2(config, shard, model);
       if (res.ok) {
         dispatch(createCharacterSuccess(model));
         return;

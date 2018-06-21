@@ -306,10 +306,17 @@ function updatePatcherHubCache(apiHost: string, hub: signalr.SignalRHub) {
 export const initialize = module.createAction({
   type: 'controller/initialize',
   action: () => {
-    client.loginToken = patcher.getLoginToken();
+    Object.defineProperty(client, 'accessToken', { get: function() { return patcher.getAccessToken() } });
     return (dispatch: (action: ControllerAction) => any) => {
       dispatch(reset() as ControllerAction);
       dispatch(initSignalR() as ControllerAction);
+      registerPatcherHubEvents(dispatch);
+      dispatch(getChannels());
+      // update channel info on a timer...
+      if (channelUpdateInterval === null) {
+        channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
+      }
+
       try {
         // Connect to patcher api server signalr patcher hub
         startPatcherSignalR(dispatch).then((ok) => {

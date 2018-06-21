@@ -26,20 +26,20 @@ class Settings {
     this.timeout = 2000;
     if (hasClientAPI()) {
       emitter.on('init', () => {
-        this.apiToken = client.loginToken;
+        this.apiToken = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
         this.channelId = client.patchResourceChannel;
         this.determineApiDetails();
       });
     } else if ('patcherAPI' in window) {
-      // running under the patcher, loginToken is not yet available, so
-      // define apiToken as a getter and fetch loginToken when we actually
+      // running under the patcher, accessToken is not yet available, so
+      // define apiToken as a getter and fetch accessToken when we actually
       // need it.
       const patcherAPI: any = (window as any).patcherAPI;
       this.url = 'https://api.camelotunchained.com';
       this.port = 443;
       Object.defineProperty(this, 'apiToken', {
         get: () => {
-          return patcherAPI.loginToken;
+          return `${client.ACCESS_TOKEN_PREFIX} ${patcherAPI.accessToken}`;
         },
       });
     }
@@ -83,8 +83,8 @@ function addDefaultHeaders(headers: any, requireAuth: boolean, version: number =
 }
 
 function addDefaultQueryParameters(query: any, requireAuth: boolean): any {
-  if (requireAuth && query.hasOwnProperty('loginToken') === false) {
-    query.loginToken = settings.apiToken;
+  if (requireAuth && query.hasOwnProperty('accessToken') === false) {
+    query.accessToken = settings.apiToken;
   }
 }
 

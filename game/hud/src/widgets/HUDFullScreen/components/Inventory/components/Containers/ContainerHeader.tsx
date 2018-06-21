@@ -194,7 +194,6 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
     const { containerItem } = this.props;
     webAPI.ItemAPI.RenameItem(
       webAPI.defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       containerItem.id,

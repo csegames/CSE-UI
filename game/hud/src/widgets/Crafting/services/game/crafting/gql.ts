@@ -12,7 +12,7 @@ export function gql({ query, variables }: { query: string, variables?: any }) {
   const url = client.apiHost + '/graphql';
   const headers: any = {};
   headers['api-version'] = client.apiVersion;
-  headers['loginToken'] = client.loginToken;
+  headers['Authorization'] = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
   headers['characterId'] = client.characterID;
   headers['shardId'] = client.shardID;
   headers['Accept'] = headers['Content-Type'] = 'application/json';

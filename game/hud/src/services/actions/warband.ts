@@ -22,7 +22,6 @@ async function inviteToWarband(characterID: string, characterName: string, warba
   try {
     const result = await GroupsAPI.InviteV1(
       defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       warbandID,
@@ -57,7 +56,6 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       warbandID,
@@ -96,7 +94,6 @@ export async function quitWarband() {
   try {
     const result = await GroupsAPI.QuitV1(
       defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       getStateObject().id,

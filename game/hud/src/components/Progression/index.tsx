@@ -224,7 +224,6 @@ class Progression extends React.Component<Props, State> {
     try {
       const res = await webAPI.ProgressionAPI.CollectCharacterDayProgression(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         this.state.logIDs[logIDIndex],

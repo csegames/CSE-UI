@@ -454,7 +454,6 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
 
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       moveRequests,

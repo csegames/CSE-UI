@@ -12,7 +12,7 @@ import { InteractiveAlertSubscriptionGQL } from 'gql/interfaces';
 const url =  (client.apiHost + '/graphql').replace('http', 'ws');
 const initPayload = {
   shardID: client.shardID,
-  loginToken: client.loginToken,
+  Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
   characterID: client.characterID,
 };
 

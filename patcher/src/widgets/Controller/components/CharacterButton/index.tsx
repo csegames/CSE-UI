@@ -50,7 +50,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
   constructor(props: CharacterButtonProps) {
     super(props);
     this.state = {
-      hasAccess: true,
+      hasAccess: false,
     };
   }
 
@@ -119,6 +119,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
         values.push(servers[key]);
       }
     });
+
     if (values.length === 0) {
       this.setState({ hasAccess: false });
       this.props.selectServer(null);

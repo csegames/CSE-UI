@@ -854,7 +854,12 @@ export function distributeItemsNoFilter(args: {
   }
   // batch move all items with no position
   if (moveRequests.length > 0) {
-    webAPI.ItemAPI.BatchMoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveRequests);
+    webAPI.ItemAPI.BatchMoveItems(
+      webAPI.defaultConfig,
+      client.shardID,
+      client.characterID,
+      moveRequests,
+    );
   }
 
   return {
@@ -1614,7 +1619,6 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       request as any,
@@ -1657,7 +1661,6 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     request as any,
@@ -1694,7 +1697,6 @@ export async function dropItemRequest(item: InventoryItem.Fragment) {
   });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     request as any,
@@ -1707,7 +1709,12 @@ export async function dropItemRequest(item: InventoryItem.Fragment) {
 
 export function onCommitPlacedItem(item: InventoryItem.Fragment, position: Vec3F, rotation: Euler3f) {
   const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
-  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveItemReq as any);
+  webAPI.ItemAPI.MoveItems(
+    webAPI.defaultConfig,
+    client.shardID,
+    client.characterID,
+    moveItemReq as any,
+  );
 }
 
 export function onMoveInventoryItem(args: {
@@ -1771,7 +1778,6 @@ function moveInventoryItemToEmptySlot(args: {
   const moveItemReq = createMoveItemRequestToInventoryPosition(dragItem, dropZoneData.position);
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     moveItemReq as any,
@@ -1833,7 +1839,7 @@ function moveInventoryItemToEmptySlot(args: {
 
         webAPI.ItemAPI.BatchMoveItems(
           webAPI.defaultConfig,
-          client.loginToken,
+  
           client.shardID,
           client.characterID,
           moveRequests,
@@ -2049,7 +2055,6 @@ function swapInventoryItems(args: {
   // Make move item requests to save the swapped positions to database
   webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    client.loginToken,
     client.shardID,
     client.characterID,
     moveItemRequests,
@@ -2117,7 +2122,7 @@ export function onMoveStack(args: {
 
   // Make request to api server
   const moveReq = createMoveItemRequestToInventoryPosition(item, newPos, amount);
-  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveReq);
+  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.shardID, client.characterID, moveReq);
 
   const originalItem: InventoryItem.Fragment = {
     ...item,

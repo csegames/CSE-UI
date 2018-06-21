@@ -39,7 +39,6 @@ import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { Tooltip } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
-
 import { HUDContext, HUDContextState, defaultContextState, fetchSkills, fetchStatuses } from './context';
 
 const HUDNavContainer = styled('div')`

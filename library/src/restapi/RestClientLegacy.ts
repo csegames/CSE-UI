@@ -43,7 +43,7 @@ class Settings {
 
   public getApiKey() {
     if (!this.apiKey) {
-      this.apiKey = client.loginToken;		// in fake API will prompt for token
+      this.apiKey = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`; // in fake API will prompt for token
     }
     return this.apiKey;
   }
@@ -70,7 +70,7 @@ export function getJSON(endpoint: string, useHttps: boolean = false, query: any 
     .then(RestUtil.parseJSON);
 }
 
-// old API requires loginToken to be in the data object
+// old API requires accessToken to be in the data object
 export function postJSON(endpoint: string,
                          useHttps: boolean = false,
                          requireAuth: boolean = false,
@@ -82,7 +82,7 @@ export function postJSON(endpoint: string,
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'api-version': `${version}`,
-      loginToken: client.loginToken,
+      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
     },
     body: JSON.stringify(data),
   } as any)

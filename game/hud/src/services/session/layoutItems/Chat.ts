@@ -30,6 +30,6 @@ export default {
   dragOptions: {},
   component: Chat,
   props: {
-    loginToken: client.loginToken,
+    accessToken: client.accessToken,
   },
 };

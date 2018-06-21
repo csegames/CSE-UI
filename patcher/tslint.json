@@ -16,7 +16,7 @@
     "quotemark": [
       true,
       "single",
-      "jsx-single",
+      "jsx-double",
       "avoid-escape"
     ],
     "variable-name": false,

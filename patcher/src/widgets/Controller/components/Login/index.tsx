@@ -132,7 +132,7 @@ class Login extends React.Component<LoginProps, LoginState> {
   }
 
   private checkLoginStatus = (waitTime: number) => {
-    if (patcher.hasLoginToken()) {
+    if (patcher.hasAccessToken()) {
       // success! notify, then trigger switch
       setTimeout(() => this.props.onLogin(), 1000);
       this.setState({ status: LoginStatus.SUCCESS } as any);

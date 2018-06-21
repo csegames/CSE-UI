@@ -151,7 +151,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Lock(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
       );
@@ -171,7 +170,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Unlock(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
       );
@@ -194,7 +192,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Confirm(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
       );
@@ -214,7 +211,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.CancelTradeConfirmation(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
       );

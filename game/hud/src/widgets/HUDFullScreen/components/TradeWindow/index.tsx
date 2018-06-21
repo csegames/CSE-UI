@@ -69,7 +69,7 @@ const subscriptionQuery = gql`
 const subscriptionUrl =  `${client.apiHost}/graphql`.replace('http', 'ws');
 const subscriptionInitPayload = {
   shardID: client.shardID,
-  loginToken: client.loginToken,
+  Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
   characterID: client.characterID,
 };
 

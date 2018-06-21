@@ -77,7 +77,7 @@ export function createPatcherHub(opts?: { hostName?: string, isMainPatcherHub?: 
   let reconnectTries = 0;
 
   function invokeIdentify(hub: SignalRHub) {
-    hub.invoke('identify', client.loginToken)
+    hub.invoke('identify', client.accessToken)
       .done((success: boolean) => {
         if (!success) {
           if (client.debug) console.log('PatcherHub identify failed.');

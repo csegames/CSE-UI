@@ -22,7 +22,7 @@ useConfig({
   url: `https://hatcheryapi.camelotunchained.com/graphql`,
   requestOptions: {
     headers: {
-      loginToken: client.loginToken,
+      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
       shardID: `${client.shardID}`,
       characterID: client.characterID,
     },

@@ -7,6 +7,9 @@
 import { RequestConfig } from './definitions';
 import client from '../core/client';
 
-export const defaultConfig: RequestConfig = {
+export const defaultConfig: RequestConfig = () => ({
   url: client.apiHost + '/',
-};
+  headers: {
+    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
+  },
+});

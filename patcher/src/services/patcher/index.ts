@@ -79,14 +79,13 @@ export class PatcherAPI {
       this._api = {
         userEmail: '',
         userPass: '###',
-        loginToken: '',
+        accessToken: '',
         permissions: -1,
         screenName: '###',
         loginError: '',
         apiHost: 'https://api.camelotunchained.com',
         channelData: [
           { channelID: 4, channelName: 'Hatchery', channelStatus: ChannelStatus.Ready },
-          { channelID: 10, channelName: 'Wyrmling', channelStatus: ChannelStatus.Ready },
           { channelID: 5, channelName: 'Editor', channelStatus: ChannelStatus.Ready },
         ],
         patcherState: 1,
@@ -120,12 +119,12 @@ export class PatcherAPI {
     const email = this.getUserEmail();
     return email && email.length > 0;
   }
-  public getLoginToken() :string {
-    return this._api.loginToken;
+  public getAccessToken() :string {
+    return this._api.accessToken;
   }
-  public hasLoginToken() :boolean {
-    const loginToken = this.getLoginToken();
-    return loginToken && loginToken.length > 0;
+  public hasAccessToken() :boolean {
+    const token = this.getAccessToken();
+    return token && token.length > 0;
   }
   public getScreenName() :string {
     return this._api.screenName;

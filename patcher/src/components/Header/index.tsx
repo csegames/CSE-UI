@@ -41,7 +41,7 @@ class Header extends React.Component<HeaderProps, {}> {
           <div className='Header__menu__item' onClick={() => this.externalLink('https://store.camelotunchained.com/')}>
               CSE Store &nbsp;<i className='fa fa-external-link' aria-hidden='true'></i>
           </div>
-          {patcher.hasLoginToken() ?
+          {patcher.hasAccessToken() ?
             <div
               className={`Header__menu__item ${this.props.activeRoute === Routes.CHAT ? 'active' : ''}`}
               onClick={() => this.internalLink(Routes.CHAT)}>Chat</div> : null}

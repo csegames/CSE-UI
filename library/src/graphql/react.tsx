@@ -95,12 +95,20 @@ function getQueryOptions() {
   };
 }
 
+function setQueryOptions(queryOptions: QueryOptions) {
+  queryConf = queryOptions;
+}
+
 let subsConf = withDefaults(null, defaultSubscriptionOpts);
 function getSubscriptionOptions() {
   return {
     ...defaultSubscriptionOpts,
     ...subsConf,
   };
+}
+
+function setSubscriptionOptions(subscriptionOptions: SubscriptionOptions<any>) {
+  subsConf = subscriptionOptions;
 }
 
 export interface GraphQLData<T> {
@@ -124,6 +132,7 @@ export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfi
   subsConf = withDefaults(subscriptionConfig, subsConf);
 }
 
+
 export type GraphQLQueryOptions = Partial<GraphQLQuery> &  Partial<GraphQLOptions>;
 export type GraphQLSubscriptionOptions<DataType> = Partial<Subscription> & Partial<SubscriptionOptions<DataType>>;
 
@@ -133,6 +142,7 @@ export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
   initialData?: QueryDataType;
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
+  useConfig?: () => { queryConf: QueryOptions, subsConf: SubscriptionOptions<any> };
 }
 
 export interface GraphQLState<T> extends GraphQLData<T> {
@@ -172,6 +182,13 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       }
       this.query = withDefaults(q, defaultQuery);
       const qp = typeof props.query === 'string' ? {} : props.query;
+
+      if (typeof props.useConfig === 'function') {
+        const config = props.useConfig();
+        setQueryOptions(config.queryConf);
+        setSubscriptionOptions(config.subsConf);
+      }
+
       this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
 
       this.client = new GraphQLClient({
@@ -270,12 +287,16 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   private refetch = async () => {
     if (!this.query) return;
+    const query = await this.updateConfig();
+    this.refetchQuery(query);
+  }
+
+  private refetchQuery = async (query?: GraphQLQuery | undefined) => {
     if (this.state.loading === false) {
-      this.setState({
-        loading: true,
-      });
+      this.setState({ loading: true });
     }
-    const result = await this.client.query(this.query);
+
+    const result = await this.client.query(query || this.query);
     const state = {
       data: result.data as QueryDataType,
       loading: false,
@@ -293,6 +314,41 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private pollingRefetch = async () => {
     await this.refetch();
     this.pollingTimeout = window.setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
+  }
+
+  private updateConfig = (): Promise<GraphQLQuery | undefined> => {
+    return new Promise((resolve) => {
+      if (typeof this.props.useConfig === 'function') {
+        const config = this.props.useConfig();
+        const queryConfChanged = !_.isEqual(config.queryConf, queryConf);
+        const subsConfChanged = !_.isEqual(config.subsConf, subsConf);
+        if (queryConfChanged || subsConfChanged) {
+          if (queryConfChanged) {
+            // Only set query options if there is a difference
+            setQueryOptions(config.queryConf);
+            this.queryOptions = getQueryOptions();
+          }
+
+          if (subsConfChanged) {
+            // Only set subscription options if there is a difference
+            setSubscriptionOptions(config.subsConf);
+            this.subscriptionOptions = getSubscriptionOptions();
+          }
+
+          // Update graphql client
+          this.client = new GraphQLClient({
+            url: this.queryOptions.url,
+            requestOptions: this.queryOptions.requestOptions,
+            stringifyVariables: this.queryOptions.stringifyVariables,
+          });
+
+          const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
+          this.query = withDefaults(q, defaultQuery);
+        }
+      }
+
+      resolve(this.query);
+    });
   }
 }
 

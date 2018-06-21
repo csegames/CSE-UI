@@ -6,7 +6,8 @@
 
 import * as _ from 'lodash';
 import { Module } from 'redux-typed-modules';
-import { webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI, client, RequestConfig } from '@csegames/camelot-unchained';
+import { patcher } from '../../../../services/patcher';
 
 export interface BanesAndBoonsInfo {
   id: any;
@@ -66,7 +67,13 @@ export interface FetchTraitInterface {
 }
 
 async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInterface) {
-  const res = await webAPI.TraitsAPI.GetTraitsV1({ url: payload.apiHost }, client.shardID);
+  const config: RequestConfig = () => ({
+    url: payload.apiHost,
+    headers: {
+      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+    },
+  });
+  const res = await webAPI.TraitsAPI.GetTraitsV1(config, client.shardID);
   if (res.ok) {
     const data = JSON.parse(res.data);
     dispatch(onInitializeTraits({
@@ -101,7 +108,13 @@ export const fetchTraits = (payload: FetchTraitInterface) => {
 
 export const resetBaneOrBoon = (payload: FetchTraitInterface) => {
   return (dispatch: (action: any) => any) => {
-    return webAPI.TraitsAPI.GetTraitsV1({ url: payload.apiHost }, client.shardID)
+    const config: RequestConfig = () => ({
+      url: payload.apiHost,
+      headers: {
+        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+      },
+    });
+    return webAPI.TraitsAPI.GetTraitsV1(config, client.shardID)
       .then((result) => {
         const data = JSON.parse(result.data);
         if (result.ok) {

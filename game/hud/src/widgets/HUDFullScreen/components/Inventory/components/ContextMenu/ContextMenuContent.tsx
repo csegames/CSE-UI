@@ -176,7 +176,6 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         this.props.item.id,

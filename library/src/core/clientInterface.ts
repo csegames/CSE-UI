@@ -160,6 +160,8 @@ interface clientInterface {
 
   patchResourceChannel: number;
   loginToken: string;
+  accessToken: string;
+  ACCESS_TOKEN_PREFIX: string;
   pktHash: string;
   webAPIHost: string;
   apiHost: string;

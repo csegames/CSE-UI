@@ -25,7 +25,7 @@ export interface ChatState {
 }
 
 export interface ChatProps {
-  loginToken: string;
+  accessToken: string,
   hideChat?: () => void;
 }
 
@@ -51,7 +51,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
 
   public componentWillMount() : void {
     // hook up to chat
-    this.state.chat.connectWithToken(this.props.loginToken);
+    this.state.chat.connectWithToken(this.props.accessToken);
   }
 
   public componentDidMount() : void {

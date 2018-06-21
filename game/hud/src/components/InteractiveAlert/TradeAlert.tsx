@@ -92,7 +92,6 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     try {
       const res = await webAPI.SecureTradeAPI.AcceptInvite(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         alert.otherEntityID,
@@ -119,7 +118,6 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     try {
       const res = await webAPI.SecureTradeAPI.RejectInvite(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         alert.otherEntityID,

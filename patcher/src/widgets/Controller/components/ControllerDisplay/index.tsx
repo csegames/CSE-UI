@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
-import { events, webAPI } from '@csegames/camelot-unchained';
+import { client, events, webAPI, RequestConfig } from '@csegames/camelot-unchained';
 
 import ControllerDisplayView from './components/ControllerDisplayView';
 
@@ -22,6 +22,7 @@ import {
   listenForErrors,
   clearError,
 } from '../../services/session/controller';
+import { patcher } from '../../../../services/patcher';
 
 export interface APIServerStatus {
   [apiHost: string]: 'Online' | 'Offline';
@@ -103,7 +104,13 @@ class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, Cont
     const { servers } = this.props.ControllerState;
     const apiServerStatus = {};
     Object.keys(servers).forEach((_key) => {
-      webAPI.ServersAPI.GetServersV1({ url: servers[_key].apiHost + '/' })
+      const config: RequestConfig = () => ({
+        url: servers[_key].apiHost + '/',
+        headers: {
+          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        },
+      });
+      webAPI.ServersAPI.GetServersV1(config)
         .then((_res) => {
           if (_res.ok) {
             apiServerStatus[servers[_key].apiHost] = 'Online';

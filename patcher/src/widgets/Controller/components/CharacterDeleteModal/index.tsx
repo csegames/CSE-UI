@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { webAPI, events } from '@csegames/camelot-unchained';
+import { webAPI, events, client, RequestConfig } from '@csegames/camelot-unchained';
 import CharacterDeleteModalView from './components/CharacterDeleteModalView';
 import { PatcherServer } from '../../services/session/controller';
 import { patcher } from '../../../../services/patcher';
@@ -63,12 +63,13 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
 
     const character = this.props.character;
     try {
-      const res = await webAPI.CharactersAPI.DeleteCharacterV1(
-        { url: _.values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/' },
-        patcher.getLoginToken(),
-        character.shardID,
-        character.id,
-      );
+      const config: RequestConfig = () => ({
+        url: _.values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/',
+        headers: {
+          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        },
+      });
+      const res = await webAPI.CharactersAPI.DeleteCharacterV1(config, character.shardID, character.id);
       const data = JSON.parse(res.data);
       if (res.ok) {
         // success

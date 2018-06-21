@@ -5,9 +5,10 @@
  */
 
 import 'isomorphic-fetch';
-import { client, webAPI, Archetype, Faction } from '@csegames/camelot-unchained';
+import { client, webAPI, RequestConfig, Archetype, Faction } from '@csegames/camelot-unchained';
 
 import ResponseError from '../../lib/ResponseError';
+import { patcher } from '../../../../services/patcher';
 
 export interface PlayerClassInfo {
   name: string;
@@ -58,7 +59,13 @@ export function resetClass() {
 }
 
 async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
-  const res = await webAPI.GameDataAPI.GetArchetypesV1({ url: apiHost });
+  const config: RequestConfig = () => ({
+    url: apiHost,
+    headers: {
+      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+    },
+  });
+  const res = await webAPI.GameDataAPI.GetArchetypesV1(config);
   const data = JSON.parse(res.data);
   if (res.ok) {
     dispatch(fetchPlayerClassesSuccess(data));

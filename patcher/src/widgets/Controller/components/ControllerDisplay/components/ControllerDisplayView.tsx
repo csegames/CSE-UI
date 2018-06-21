@@ -92,7 +92,7 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
       }
     }
 
-    if (!patcher.hasLoginToken() && activeRoute !== Routes.NEWS) {
+    if (!patcher.hasAccessToken() && activeRoute !== Routes.NEWS) {
       return (
         <Container style={{ pointerEvents: 'none' }}>
           <Login onLogin={this.props.onLogin} />

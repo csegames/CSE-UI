@@ -15,7 +15,7 @@ export const HUDGraphQLQueryConfig = {
   url: client.apiHost + '/graphql',
   requestOptions: {
     headers: {
-      loginToken: client.loginToken,
+      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
       shardID: `${client.shardID}`,
       characterID: client.characterID,
     },
@@ -26,7 +26,7 @@ export const HUDGraphQLSubscriptionConfig = {
   url: client.apiHost.replace('http', 'ws') + '/graphql',
   initPayload: {
     shardID: client.shardID,
-    loginToken: client.loginToken,
+    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
     characterID: client.characterID,
   },
 };

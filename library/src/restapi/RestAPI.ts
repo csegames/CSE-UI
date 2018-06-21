@@ -13,9 +13,9 @@ export function getMessageOfTheDay() {
 }
 
 // TODO update this to use new Rest Client
-export function getCraftedAbilities(loginToken: string, characterID: string) {
+export function getCraftedAbilities(accessToken: string, characterID: string) {
   return RestClientLegacy.getJSON('craftedabilities', true, {
-    loginToken,
+    Authorization: accessToken,
     characterID,
   });
 }

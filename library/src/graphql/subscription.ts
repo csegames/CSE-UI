@@ -25,7 +25,7 @@ export interface Options<DataType> extends WebSocketOptions {
 const subscriptionUrl =  `${client.apiHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
 const subscriptionInitPayload = {
   shardID: client.shardID,
-  loginToken: client.loginToken,
+  token: client.accessToken,
   characterID: client.characterID,
 };
 

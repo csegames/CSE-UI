@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
+import { client, events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -57,6 +57,7 @@ import {
   resetBanesAndBoons,
   fetchTraits,
 } from './services/session/banesAndBoons';
+import { patcher } from '../../services/patcher';
 
 export { CharacterCreationModel } from './services/session/character';
 
@@ -576,7 +577,13 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private isApiServerOnline = async () => {
-    const res = await webAPI.ServersAPI.GetServersV1({ url: this.props.apiHost });
+    const config = () => ({
+      url: this.props.apiHost,
+      headers: {
+        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+      }
+    });
+    const res = await webAPI.ServersAPI.GetServersV1(config);
     this.setState({ checkingApiServer: false });
     return res;
   }

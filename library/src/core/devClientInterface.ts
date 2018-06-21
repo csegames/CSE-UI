@@ -31,6 +31,8 @@ const devClientInterface: clientInterface = {
 
   patchResourceChannel: 4,
   loginToken: 'developer',
+  accessToken: 'developer',
+  ACCESS_TOKEN_PREFIX: 'Bearer',
   pktHash: '0000',
   webAPIHost: 'hatcheryd.camelotunchained.com',
   apiHost: 'https://api.camelotunchained.com',

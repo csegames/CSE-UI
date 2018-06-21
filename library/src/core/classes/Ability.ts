@@ -36,8 +36,8 @@ class Ability {
     this.abilityComponents = ability.abilityComponents || <AbilityComponent[]>[];
   }
 
-  public static getAllAbilities(loginToken: string, characterID: string, callback: (abilities: Ability[]) => void) {
-    getCraftedAbilities(loginToken, characterID)
+  public static getAllAbilities(accessToken: string, characterID: string, callback: (abilities: Ability[]) => void) {
+    getCraftedAbilities(accessToken, characterID)
       .then((data: Object[]) => {
         if (callback) {
           callback(data.map(o => new Ability(<Ability>o)));

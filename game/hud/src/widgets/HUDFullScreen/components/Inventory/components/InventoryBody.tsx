@@ -277,7 +277,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
         itemId,

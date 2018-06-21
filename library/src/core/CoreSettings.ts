@@ -23,7 +23,7 @@ const defaults = {
   wyrmlingApiPort: 8000,
 
   // SAMPLE API TOKEN
-  // TODO: replace loginToken with API KEY system
+  // TODO: replace accessToken with API KEY system
   apiToken: '1234567890',
 
   // Working Channel - defaults to hatchery

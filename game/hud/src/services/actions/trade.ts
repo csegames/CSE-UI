@@ -13,7 +13,6 @@ export async function inviteToTrade(targetID: string) {
   try {
     const res = await webAPI.SecureTradeAPI.Invite(
       webAPI.defaultConfig,
-      client.loginToken,
       client.shardID,
       client.characterID,
       targetID,

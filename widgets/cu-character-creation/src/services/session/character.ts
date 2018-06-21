@@ -64,9 +64,9 @@ export function createCharacter(model: CharacterCreationModel,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'api-version': apiVersion,
-          'loginToken': apiKey
-        }
+          'api-version': apiVersion.toString(),
+          Authorization: apiKey,
+        } as { 'Accept': string; 'Content-Type': string; 'api-version': string; Authorization: string; },
       })
       .then(checkStatus).then(() => dispatch(createCharacterSuccess(model)) )
       .catch((error: ResponseError) => (error as any).response.json().then((error: any) => dispatch(createCharacterFailed(error))))

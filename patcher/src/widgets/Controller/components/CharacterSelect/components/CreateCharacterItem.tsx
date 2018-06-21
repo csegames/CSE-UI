@@ -141,7 +141,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
       apiHost: this.props.server.apiHost + '/',
       apiVersion: 1,
       shard: this.props.server.shardID,
-      apiKey: patcher.getLoginToken(),
+      apiKey: patcher.getAccessToken(),
       created: (c) => {
         events.fire('character-created', c.name);
         events.fire('view-content', view.NONE);

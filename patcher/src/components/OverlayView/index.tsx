@@ -69,13 +69,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         {this.renderView(false)}
         {this.renderView(true)}
 
-        {patcher.hasLoginToken() ?
+        {patcher.hasAccessToken() ?
         <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
-          <Chat loginToken={patcher.getLoginToken()} />
+          <Chat accessToken={patcher.getAccessToken()} />
         </div>
         : null }
 
-        {patcher.hasLoginToken() ?
+        {patcher.hasAccessToken() ?
           <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>
             <CharacterCreation {...this.state.currentProps} />
           </div>

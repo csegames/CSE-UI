@@ -193,7 +193,6 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     try {
       const res = await webAPI.SecureTradeAPI.AbortSecureTrade(
         webAPI.defaultConfig,
-        client.loginToken,
         client.shardID,
         client.characterID,
       );
