@@ -76,7 +76,7 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
   private onToggle = (id: string) => {
     const { inputs } = this.state;
     const on = inputs[id] === 'true' ? 'false' : 'true';
-    console.log(`graphic set ${id} = ${on}`);
+    if (client.debug) console.log(`graphic set ${id} = ${on}`);
     client.ChangeConfigVar(id, on);
     client.SaveConfigChanges();
     this.setState({ inputs: Object.assign({}, inputs, { [id]: on }) });

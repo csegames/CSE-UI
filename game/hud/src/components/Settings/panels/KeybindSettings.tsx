@@ -261,14 +261,14 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
       const keyCode = getVirtualKeyCode(e.keyCode);
       const name = listening.name;
       const which = listening.which;
-      console.log(`keyCode = ${keyCode} name=${name} which=${which}`);
+      if (client.debug) console.log(`keyCode = ${keyCode} name=${name} which=${which}`);
 
       // Clear listening state
       this.dontListen();
 
       // Find other keys using this binding
       const same = sameBinds(this.state.keybinds, keyCode);
-      console.log(JSON.stringify(same));
+      if (client.debug) console.log(JSON.stringify(same));
       if (same.length) {
         this.setState({ clash: { sameAs: same, name, which, keyCode } });
       } else {
@@ -281,7 +281,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
     const config = `${name}_${which + 1}`;
 
     // Actually change mapping
-    console.log(`keybind set ${config} = ${keyCode}`);
+    if (client.debug) console.log(`keybind set ${config} = ${keyCode}`);
     client.ChangeConfigVar(config, `${keyCode}`);
     client.SaveConfigChanges();
 
@@ -298,7 +298,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
     if (resolved) {
       clash.sameAs.forEach((item: ClashKey) => {
         const config = `${item.name}_${item.which + 1}`;
-        console.log(`clear key ${config}`);
+        if (client.debug) console.log(`clear key ${config}`);
         client.ChangeConfigVar(config, '');
       });
       this.bind(clash.name, clash.which, clash.keyCode);

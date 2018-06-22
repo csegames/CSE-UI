@@ -90,7 +90,7 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
 
   private onChange = (id: string, value: number) => {
     const { graphics } = this.state;
-    console.log(`graphic set ${id} = ${value}`);
+    if (client.debug) console.log(`graphic set ${id} = ${value}`);
     client.ChangeConfigVar(id, `${value}`);
     client.SaveConfigChanges();
     this.setState({ graphics: Object.assign({}, graphics, { [id]: `${value}` }) });

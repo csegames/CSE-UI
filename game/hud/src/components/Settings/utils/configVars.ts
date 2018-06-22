@@ -35,19 +35,19 @@ function processQueue() {
       if (isNotClient()) {
         switch (config.type) {
           case ConfigIndex.AUDIO:
-            console.warn('emulating audio settings');
+            if (client.debug) console.warn('emulating audio settings');
             setTimeout(() => onReceiveConfigVars(JSON.stringify(audio)), 1);
             break;
           case ConfigIndex.KEYBIND:
-            console.warn('emulating keybind settings');
+            if (client.debug) console.warn('emulating keybind settings');
             setTimeout(() => onReceiveConfigVars(JSON.stringify(keybinds)), 100);
             break;
           case ConfigIndex.INPUT:
-            console.warn('emulating input settings');
+            if (client.debug) console.warn('emulating input settings');
             setTimeout(() => onReceiveConfigVars(JSON.stringify(input)), 1);
             break;
           case ConfigIndex.RENDERING:
-            console.warn('emulating graphics settings');
+            if (client.debug) console.warn('emulating graphics settings');
             setTimeout(() => onReceiveConfigVars(JSON.stringify(graphics)), 2);
             break;
         }
@@ -85,27 +85,27 @@ function onReceiveConfigVars(configs: string) {
 client.OnReceiveConfigVars(onReceiveConfigVars);
 
 export function getKeyBinds(onconfig: (configs: string, type: ConfigIndex) => void) {
-  console.log('get keybind settings');
+  if (client.debug) console.log('get keybind settings');
   addQueue({ type: ConfigIndex.KEYBIND, onconfig });
 }
 
 export function getInputConfig(onconfig: (configs: string, type: ConfigIndex) => void) {
-  console.log('get input settings');
+  if (client.debug) console.log('get input settings');
   addQueue({ type: ConfigIndex.INPUT, onconfig });
 }
 
 export function getAudioConfig(onconfig: (configs: string, type: ConfigIndex) => void) {
-  console.log('get audio settings');
+  if (client.debug) console.log('get audio settings');
   addQueue({ type: ConfigIndex.AUDIO, onconfig });
 }
 
 export function getGraphicsConfig(onconfig: (configs: string, type: ConfigIndex) => void) {
-  console.log('get graphics settings');
+  if (client.debug) console.log('get graphics settings');
   addQueue({ type: ConfigIndex.RENDERING, onconfig });
 }
 
 export function cancel(config: ConfigIndex) {
-  console.log('cancel loading config type ' + config);
+  if (client.debug) console.log('cancel loading config type ' + config);
   // we can't cancel a config request, so we just clear its callback
   // which will be removed from the queue eventually
   if (currentTask && currentTask.type === config) {

@@ -81,7 +81,7 @@ export class AudioSettings extends React.PureComponent<AudioSettingsProps, Audio
 
   private onChange = (id: string, value: number) => {
     const { audio } = this.state;
-    console.log(`audio set ${id} = ${value}`);
+    if (client.debug) console.log(`audio set ${id} = ${value}`);
     client.ChangeConfigVar(id, `${value}`);
     client.SaveConfigChanges();
     this.setState({ audio: Object.assign({}, audio, { [id]: `${value}` }) });
