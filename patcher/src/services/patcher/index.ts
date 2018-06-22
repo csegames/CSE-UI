@@ -95,7 +95,7 @@ export class PatcherAPI {
         UninstallChannel: () => {},
         LaunchChannel: () => {},
         MarkFAQAsRead: () => {},
-        OnPatcherError: (callback: (alert: string, isFatal: bool) => void) => {},
+        OnPatcherError: (callback: (alert: string, isFatal: boolean) => void) => {},
       };
     }
   }
