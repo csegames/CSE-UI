@@ -205,6 +205,8 @@ interface clientInterface {
 
   ResetLights(): void;
 
+  RemoveLight(): void;
+
   OnServerConnected(c: (isConnected: boolean) => void): number;
 
   PlaySoundEvent(id: number): void;

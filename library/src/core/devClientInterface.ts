@@ -55,6 +55,8 @@ const devClientInterface: clientInterface = {
   },
   ResetLights: () => {
   },
+  RemoveLight: () => {
+  },
 
   OnServerConnected: (c: (isConnected: boolean) => void): number => {
     c(false);
