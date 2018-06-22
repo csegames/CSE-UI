@@ -18,7 +18,7 @@ const Watermark = styled('i')`
   color: #FFF;
   font-size: 13px;
   font-family: 'Merriweather Sans', sans-serif;
-  fotn-weight: bold;
+  font-weight: bold;
   text-align: right;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   -webkit-touch-callout: none;
