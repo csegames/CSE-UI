@@ -12,15 +12,15 @@ export default {
   position: {
     x: {
       anchor: 5,
-      offset: -400,
+      offset: -500,
     },
     y: {
       anchor: 5,
-      offset: -400,
+      offset: -300,
     },
     size: {
-      width: 500,
-      height: 400,
+      width: 1000,
+      height: 600,
     },
     scale: 1,
     opacity: 1,

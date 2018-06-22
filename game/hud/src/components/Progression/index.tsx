@@ -29,6 +29,13 @@ fragment damagePerTarget on CountPerTargetTypeDBModel {
   item
   resourceNode
 }
+
+fragment SkillPartDefinition on SkillPartDef {
+  icon
+  id
+  name
+}
+
 {
   myprogression {
     unCollectedDayLogs {
@@ -41,6 +48,9 @@ fragment damagePerTarget on CountPerTargetTypeDBModel {
         skillPartID
         usedInCombatCount
         usedNonCombatCount
+        skillPartDef {
+          ...SkillPartDefinition
+        }
       }
       damage {
         healingApplied {
