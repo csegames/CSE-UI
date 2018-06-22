@@ -158,14 +158,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    const deploySettingsWithNumericID = {
-      ...staticDefinition.deploySettings,
-      numericItemDefID: staticDefinition.numericItemDefID,
-    };
-
-    const _resourceID = staticDefinition.deploySettings.resourceID !== '0' ?
-      staticDefinition.deploySettings.resourceID : staticDefinition.defaultResourceID;
-    client.StartPlacingItem(_resourceID, id, deploySettingsWithNumericID, action ? action.id : null);
+    client.StartPlacingItemByID(staticDefinition.numericItemDefID, id, action ? action.id : null);
   }
 
   private onActionClick = (action: ItemActionDefGQL) => {

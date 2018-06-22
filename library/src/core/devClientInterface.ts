@@ -434,7 +434,7 @@ const devClientInterface: clientInterface = {
   },
 
   /* Deployable Items */
-  StartPlacingItem: (resourceID: string, itemInstanceIDString: string, rulesOrSettings: any): void => {},
+  StartPlacingItemByID: (numericItemDefID: number, itemInstanceID: string, extraParameters?: string): void => {},
 
   ResetItemPlacement: (): void => {},
 

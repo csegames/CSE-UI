@@ -499,7 +499,7 @@ interface clientInterface {
   ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 
   /* Deployable Items */
-  StartPlacingItem(resourceID: string, itemInstanceIDString: string, rulesOrSettings: any, abitraryString?: string): void;
+  StartPlacingItemByID(numbericItemDefID: number, itemInstanceID: string, extraParameters?: string): void;
 
   ResetItemPlacement(): void;
 
