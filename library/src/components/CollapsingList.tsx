@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { cx, css } from 'react-emotion';
 
 const Container = styled('div')`
   height: 100%;
@@ -15,7 +15,6 @@ const Container = styled('div')`
   pointer-events: all;
   color: white;
 `;
-
 
 const Title = styled('span')`
   cursor: pointer;
@@ -33,14 +32,18 @@ const ListItem = styled('div')`
   margin-left: 10px;
 `;
 
+const Collapsed = css`
+  display: none;
+`;
+
 export interface CollapsingListStyle {
-  container: React.CSSProperties;
-  title: React.CSSProperties;
-  collapseButton: React.CSSProperties;
-  body: React.CSSProperties;
-  listContainer: React.CSSProperties;
-  listFooter: React.CSSProperties;
-  listItem: React.CSSProperties;
+  container: string;
+  title: string;
+  collapseButton: string;
+  body: string;
+  listContainer: string;
+  listFooter: string;
+  listItem: string;
 }
 
 
@@ -54,7 +57,7 @@ export interface CollapsingListProps {
   renderListFooter?: () => JSX.Element;
   renderListHeader?: () => JSX.Element;
 
-  animationClass?: (collapsed: boolean) => { anim: {[id: string]: any}};
+  animationClass?: (collapsed: boolean) => { anim: string};
   
   title: string | ((collapsed: boolean) => JSX.Element);
   items: any[];
@@ -73,27 +76,28 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   }
 
   public render() {
-    const collapsed = typeof(this.props.collapsed) === 'boolean' ? this.props.collapsed : this.state.collapsed;
+    const collapsed = typeof this.props.collapsed === 'boolean' ? this.props.collapsed : this.state.collapsed;
     const animationClass = this.props.animationClass && this.props.animationClass(collapsed);
     const customStyle = this.props.styles || {};
     return (
-      <Container style={customStyle.container}>
+      <Container className={customStyle.container}>
         <div>
           {typeof this.props.title === 'string' ?
-            <Title style={customStyle.title} onClick={this.onToggleCollapse}>
-              <CollapseButton style={customStyle.collapseButton}>{collapsed ? '+' : '-'}</CollapseButton>
+            <Title className={customStyle.title} onClick={this.onToggleCollapse}>
+              <CollapseButton className={customStyle.collapseButton}>{collapsed ? '+' : '-'}</CollapseButton>
               {this.props.title}
             </Title> :
-              <Title style={customStyle.title} onClick={this.onToggleCollapse}>
+              <Title className={customStyle.title} onClick={this.onToggleCollapse}>
                 {this.props.title(collapsed)}
               </Title>
           }
         </div>
-        <div style={!animationClass ? (this.props.collapsed ? { display: 'none' } : {}) : {}}>
+        <div className={!animationClass ? (collapsed ? cx(customStyle.body, Collapsed) : customStyle.body) :
+            cx(customStyle.body, animationClass.anim)}>
           {this.props.renderListHeader &&
             <div>{this.props.renderListHeader()}</div>
           }
-          <div style={customStyle.listContainer}>
+          <div className={customStyle.listContainer}>
             {this.props.items.map((item, i) => {
               if (!this.props.renderListItem) {
                 if (typeof item === 'string') {
@@ -101,7 +105,7 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
                 }
 
                 return (
-                  <ListItem key={i} style={customStyle.listItem}>
+                  <ListItem key={i} className={customStyle.listItem}>
                     {Object.keys(item).map(key => <div key={key}>{item[key]}</div>)}
                   </ListItem>
                 );
@@ -110,7 +114,7 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
             })}
           </div>
           {this.props.renderListFooter &&
-            <div style={customStyle.listFooter}>{this.props.renderListFooter()}</div>
+            <div className={customStyle.listFooter}>{this.props.renderListFooter()}</div>
           }
         </div>
       </Container>

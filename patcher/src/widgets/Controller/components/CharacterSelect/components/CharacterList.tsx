@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { webAPI, events, CollapsingList } from '@csegames/camelot-unchained';
 
 import { PatcherServer } from '../../../services/session/controller';
@@ -20,6 +20,7 @@ const Server = styled('div')`
   display: block;
   height: 55px;
   width: 407px;
+  background: url(images/controller/server-name-bg.png) no-repeat;
   &:hover {
     filter: brightness(140%);
   }
@@ -36,7 +37,6 @@ const ServerTitle = styled('div')`
   font-size: 16px;
   letter-spacing: 1px;
   text-transform: capitalize;
-  background: url(images/controller/server-name-bg.png) no-repeat;
   div {
     display: inline;
     text-align: left;
@@ -52,7 +52,6 @@ const ServerInfo = styled('div')`
   height: 20px;
   width: 407px;
   margin-left: -33px;
-  background: url(images/controller/server-name-bg.png) no-repeat;
   font-size: 12px;
   p {
     display: inline;
@@ -121,23 +120,23 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
           onToggleCollapse={this.onToggleCollapse}
           animationClass={this.handleAnimationClass}
           styles={index === sortedServers.length - 1 ? {
-            body: {
-              transition: '0.5s ease',
-            },
-            container: {
-              marginBottom: 145,
-            },
+            body: css`
+              transition: 0.5s ease;
+            `,
+            container: css`
+              margin-bottom: 145px;
+            `,
           } : index === 0 ? {
-            body: {
-              transition: '0.5s ease',
-            },
-            container: {
-              marginTop: 15,
-            },
+            body: css`
+              transition: 0.5s ease;
+            `,
+            container: css`
+              margin-top: 15px;
+            `,
           } : {
-            body: {
-              transition: '0.5s ease',
-            },
+            body: css`
+              transition: 0.5s ease;
+            `,
           }}
           title={(collapsed: boolean) =>
             <Server>
@@ -218,21 +217,21 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
   private handleAnimationClass = (collapsed: boolean) => {
     if (!collapsed) {
       return {
-        anim: {
-          opacity: 1,
-          visibility: 'visible',
-          height: this.state.initialHeight ? `${this.state.initialHeight}px` : '100%',
-          overflow: 'hidden',
-        },
+        anim: css`
+          opacity: 1;
+          visibility: visible;
+          height: ${this.state.initialHeight ? `${this.state.initialHeight}px` : '100%'};
+          overflow: hidden;
+        `,
       };
     } else {
       return {
-        anim: {
-          opacity: 0,
-          visibility: 'hidden',
-          height: '0px',
-          overflow: 'hidden',
-        },
+        anim: css`
+          opacity: 0;
+          visibility: hidden;
+          height: 0px;
+          overflow: hidden;
+        `,
       };
     }
   }
