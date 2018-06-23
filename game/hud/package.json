@@ -79,7 +79,6 @@
   },
   "dependencies": {
     "@csegames/camelot-unchained": "^0.1.49",
-    "@csegames/cu-xmpp-chat": "^0.1.4",
     "@types/ol": "^4.6.1",
     "@types/openlayers": "^4.6.2",
     "aliasify": "^2.1.0",

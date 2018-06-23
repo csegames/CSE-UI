@@ -7,14 +7,13 @@
 import * as React from 'react';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
-import { ql } from '@csegames/camelot-unchained';
+import { ql, Chat } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
 
 // views
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
 import PatchNotes from '../../widgets/PatchNotes';
-import Chat from '@csegames/cu-xmpp-chat';
 
 export interface OverlayViewProps {
 }

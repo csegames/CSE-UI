@@ -41,7 +41,7 @@ body {
   // widgets
   @import './widgets/Building/index';
   // external scss
-  @import '@csegames/cu-xmpp-chat/lib/index.scss';
+  @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;
