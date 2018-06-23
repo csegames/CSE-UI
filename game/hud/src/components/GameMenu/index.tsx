@@ -98,7 +98,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
           <MenuButton
             className={OptionsButton}
             onClick={this.onOptionsClick}>
-            OPTIONS
+            SETTINGS
           </MenuButton>
           <MenuButton onClick={this.onQuitGameClick}>QUIT GAME</MenuButton>
         </Body>
@@ -116,7 +116,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private onOptionsClick = () => {
-    events.fire('hudnav--navigate', 'options');
+    events.fire('hudnav--navigate', 'settings');
     events.fire('hudnav--navigate', 'gamemenu');
   }
 

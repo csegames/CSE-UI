@@ -222,7 +222,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   public componentWillUnmount() {
     if (this.pollingTimeout) {
-      clearTimeout(this.pollingTimeout);
+      window.clearTimeout(this.pollingTimeout);
       this.pollingTimeout = null;
     }
 

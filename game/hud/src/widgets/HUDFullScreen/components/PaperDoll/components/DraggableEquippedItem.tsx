@@ -146,6 +146,16 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     this.onDehighlightListener = events.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
   }
 
+  public componentDidUpdate(prevProps: DraggableEquippedItemProps) {
+    const prevEquippedItem = prevProps.equippedItem && prevProps.equippedItem.item;
+    const equippedItem = this.props.equippedItem && this.props.equippedItem.item;
+    if ((!prevEquippedItem && equippedItem && this.state.backgroundColor !== 'transparent') ||
+        (prevEquippedItem && equippedItem && prevEquippedItem.id !== equippedItem.id &&
+          this.state.backgroundColor !== 'transparent')) {
+      this.setState({ backgroundColor: 'transparent' });
+    }
+  }
+
   public componentWillUnmount() {
     events.off(this.onHighlightListener);
     events.off(this.onDehighlightListener);

@@ -30,6 +30,10 @@ export default () => {
     events.fire('hudnav--navigate', name);
   });
 
+  client.OnCharacterZoneChanged((id: string) => {
+    window['zoneID'] = id;
+  });
+
   function combatLogToString(log: CombatLog): string {
     // fromName (fromFaction) > toName
     // (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}

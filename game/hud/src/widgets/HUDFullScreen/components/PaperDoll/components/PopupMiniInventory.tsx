@@ -13,7 +13,7 @@ import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames, colors } from '../../../lib/constants';
-import { getItemDefinitionName } from '../../../lib/utils';
+import { getItemDefinitionName, requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 const containerDimensions = {
@@ -58,7 +58,7 @@ const ItemSpacing = styled('div')`
 const SlotNameText = styled('p')`
   font-size: 18px;
   color: #BCC1CB;
-  margin: 0;
+  margin: 0 !important;
   padding: 0;
 `;
 
@@ -67,7 +67,7 @@ const PageNumberText = styled('p')`
   align-items: center;
   justify-content: space-between;
   font-size: 15px;
-  margin: 0 5px 0 0;
+  margin: 0 5px 0 0 !important;
 `;
 
 const ControllerButton = styled('div')`
@@ -86,6 +86,7 @@ const DisabledControllerButton = css`
 
 export const defaultPopupMiniInventoryStyle = {
   searchInput: {
+    flex: '0 0 auto',
     height: '20px',
     backgroundColor: 'rgba(179, 183, 192, 0.3)',
     border: '1px solid #B7B8BC',
@@ -206,6 +207,8 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
               styles={{
                 input: defaultPopupMiniInventoryStyle.searchInput,
               }}
+              onClick={() => requestUIKeydown()}
+              onBlur={() => releaseUIKeydown()}
               onChange={this.onSearchChange}
               value={this.state.searchValue}
             />

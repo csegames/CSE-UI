@@ -95,7 +95,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
       });
       this.setState({ serverListHelper });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

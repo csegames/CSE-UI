@@ -47,6 +47,13 @@ export default () => {
     });
 
   /**
+   * Remove the closest dropped light to the player
+   */
+  registerSlashCommand('removelight', 'removes the closest dropped light to the player', (params: string = '') => {
+      client.RemoveLight();
+  });
+
+  /**
    * Remove all lights placed with the drop light command
    */
   registerSlashCommand('resetlights', 'removes all dropped lights from the world', (params: string = '') => {

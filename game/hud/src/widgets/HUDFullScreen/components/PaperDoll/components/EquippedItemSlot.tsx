@@ -6,13 +6,14 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { Tooltip, events } from '@csegames/camelot-unchained';
+import { events } from '@csegames/camelot-unchained';
 
 import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
+import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
 import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquippedItemSlotStyle {
@@ -64,33 +65,18 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   }
 
   public render() {
-    const equippedItem = this.props.providedEquippedItem;
-    const showTooltip = !this.props.tooltipDisabled &&
-                        !this.state.itemMenuVisible &&
-                        this.state.isMouseOver;
-
-    const itemId = equippedItem && equippedItem.item.id;
     return (
-      <Tooltip show={itemId ? showTooltip : false}
-        styles={defaultTooltipStyle} content={() =>
-        <TooltipContent
-          isVisible={showTooltip}
-          item={equippedItem.item}
-          instructions='Right click to unequip'
-        />
-      }>
-          <Container
-            className={this.state.itemMenuVisible ? HighlightSlotContainer : ''}
-            onMouseOver={this.onMouseOverItemSlot}
-            onMouseLeave={this.onMouseLeave}
-            onContextMenu={this.unequipItem}>
-              <DraggableEquippedItem
-                disableDrag={this.props.disableDrag}
-                slotName={this.props.slot.slotName}
-                equippedItem={this.props.providedEquippedItem}
-              />
-          </Container>
-      </Tooltip>
+      <Container
+        className={this.state.itemMenuVisible ? HighlightSlotContainer : ''}
+        onMouseOver={this.onMouseOverItemSlot}
+        onMouseLeave={this.onMouseLeave}
+        onContextMenu={this.unequipItem}>
+          <DraggableEquippedItem
+            disableDrag={this.props.disableDrag}
+            slotName={this.props.slot.slotName}
+            equippedItem={this.props.providedEquippedItem}
+          />
+      </Container>
     );
   }
 
@@ -109,17 +95,22 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     events.fire(eventNames.onUnequipItem, payload);
   }
 
-  private onMouseOverItemSlot = () => {
-    this.setState({ isMouseOver: true });
-    if (this.state.itemMenuVisible || this.props.tooltipDisabled) {
-      this.setState({ showTooltip: false });
-    } else {
-      this.setState({ showTooltip: true });
+  private onMouseOverItemSlot = (event: MouseEvent) => {
+    const equippedItem = this.props.providedEquippedItem;
+    const itemId = equippedItem && equippedItem.item.id;
+    const shouldShowTooltip = !this.props.tooltipDisabled && !this.state.itemMenuVisible && itemId;
+    if (shouldShowTooltip) {
+      const content = <TooltipContent
+        item={this.props.providedEquippedItem.item}
+        instructions='Right click to unequip'
+      />;
+      showTooltip({ content, event, styles: defaultTooltipStyle });
     }
   }
 
   private onMouseLeave = () => {
     this.setState({ isMouseOver: false, showTooltip: false });
+    hideTooltip();
   }
 }
 

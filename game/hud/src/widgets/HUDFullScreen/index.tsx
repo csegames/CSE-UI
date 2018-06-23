@@ -6,379 +6,188 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
-import { events, client, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
+import { events, client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
-import Map from './components/Map';
-import Inventory from './components/Inventory';
-import PaperDoll from './components/PaperDoll';
-import CharacterInfo from './components/CharacterInfo';
-import TradeWindow from './components/TradeWindow';
+import HudFullScreenView from './HUDFullScreenView';
+import { FullScreenNavState, FullScreenContext, HUDFullScreenTabData, defaultFullScreenState } from './lib/utils';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
 
-export interface HUDFullScreenStyle {
-  hudFullScreen: string;
-  navigationContainer: string;
-  contentContainer: string;
-  navTab: string;
-  activeNavTab: string;
-}
-
-const Container = styled('div')`
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  user-select: none;
-  -webkit-user-select: none;
-  z-index: 9998;
-`;
-
-const Close = styled('div')`
-  position: fixed;
-  top: 5px;
-  right: 5px;
-  color: #CDCDCD;
-  font-size: 20px;
-  margin-right: 5px;
-  cursor: pointer;
-  user-select: none;
-  z-index: 9999;
-  &:hover: {
-    color: #BBB,
-  }
-`;
-
-const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
-  hudFullScreen: css`
-    width: 50%;
-    height: 100%;
-  `,
-  navigationContainer: css`
-    display: flex;
-    align-items: center;
-    height: 35px;
-    width: 100%;
-    background-color: #151515;
-    z-index: 10;
-  `,
-  contentContainer: css`
-    height: 100%;
-    width: 100%;
-    background-color: #333333;
-  `,
-  navTab: css`
-    min-width: 100px;
-    color: #4C4C4C;
-    border-right: 1px solid #4C4C4C;
-    text-align: center;
-    cursor: pointer;
-    &:hover {
-      color: white;
-    }
-    &:active {
-      text-shadow: 0px 0px 5px #fff;
-    }
-  `,
-  activeNavTab: css`
-    min-width: 100px;
-    color: #E5E5E5;
-    border-right: 1px solid #4C4C4C;
-    text-align: center;
-    cursor: pointer;
-    &:hover {
-      color: white;
-    }
-  `,
-};
-
-export interface FullScreenNavState {
-  visibleComponentLeft: string;
-  visibleComponentRight: string;
-  initial: boolean;
-  inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItemFragment[];
-  myTradeItems: InventoryItemFragment[];
-  myTradeState: SecureTradeState;
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
+export interface ITemporaryTab {
+  name: string;
+  tab: {
+    title: string;
+    [key: string]: any;
+    temporary: boolean;
+    onTemporaryTabClose: () => void;
+  };
+  rendersContent: string;
 }
 
 export interface FullScreenNavProps {
-  styles?: Partial<HUDFullScreenStyle>;
 }
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: number;
-  private tabPanelLeftRef: TabPanel;
-  private tabPanelRightRef: TabPanel;
+  private shouldKeydownListener: number;
+  private tabPanelLeftRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
+  private tabPanelRightRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      visibleComponentLeft: '',
-      visibleComponentRight: '',
-      initial: true,
-      inventoryItems: null,
-      equippedItems: null,
-      myTradeItems: [],
-      myTradeState: 'None',
-      containerIdToDrawerInfo: {},
-      stackGroupIdToItemIDs: {},
-    };
+    this.state = {...defaultFullScreenState};
   }
 
   public render() {
-    const tabsLeft: TabItem[] = [
-      { name: 'equippedgear-left', tab: { render: () => <span>Equipped</span> }, rendersContent: 'Equipped Gear' },
-      { name: 'inventory-left', tab: { render: () => <span>Inventory</span> }, rendersContent: 'Inventory' },
-      { name: 'character-stats-left', tab: { render: () => <span>Stats</span> }, rendersContent: 'CharacterStats' },
-      { name: 'map-left', tab: { render: () => <span>Map</span> }, rendersContent: 'Map' },
-      // { name: 'social-left', tab: { render: () => <span>Social</span> }, rendersContent: 'Social' },
-      { name: 'trade-left', tab: { render: () => <span>Trade</span> }, rendersContent: 'Trade' },
-    ];
-
-    const tabsRight: TabItem[] = [
-      { name: 'equippedgear-right', tab: { render: () => <span>Equipped</span> }, rendersContent: 'Equipped Gear' },
-      { name: 'inventory-right', tab: { render: () => <span>Inventory</span> }, rendersContent: 'Inventory' },
-      { name: 'character-stats-right', tab: { render: () => <span>Stats</span> }, rendersContent: 'CharacterStats' },
-      { name: 'map-right', tab: { render: () => <span>Map</span> }, rendersContent: 'Map' },
-      // { name: 'social-right', tab: { render: () => <span>Social</span> }, rendersContent: 'Social' },
-      // { name: 'trade-right', tab: { render: () => <span>Trade</span> }, rendersContent: 'Trade' },
-    ];
-
-    const content: ContentItem[] = [
-      { name: 'Equipped Gear', content: { render: this.renderEquipped } },
-      { name: 'Inventory', content: { render: this.renderInventory } },
-      { name: 'CharacterStats', content: { render: this.renderCharacterStats } },
-      { name: 'Map', content: { render: this.renderMap } },
-      { name: 'Trade', content: { render: this.renderTrade } },
-    ];
-
-    const { visibleComponentLeft, visibleComponentRight } = this.state;
     return (
-      <div style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
-        <Container>
-          <TabPanel
-            ref={ref => this.tabPanelLeftRef = ref}
-            tabs={tabsLeft}
-            content={content}
-            styles={{
-              tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-              tabs: defaultHUDFullScreenStyle.navigationContainer,
-              tab: defaultHUDFullScreenStyle.navTab,
-              activeTab: defaultHUDFullScreenStyle.activeNavTab,
-              content: defaultHUDFullScreenStyle.contentContainer,
-            }}
-            onActiveTabChanged={this.onActiveTabChanged}
-          />
-          <TabPanel
-            ref={ref => this.tabPanelRightRef = ref}
-            tabs={tabsRight}
-            content={content}
-            styles={{
-              tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-              tabs: defaultHUDFullScreenStyle.navigationContainer,
-              tab: defaultHUDFullScreenStyle.navTab,
-              activeTab: defaultHUDFullScreenStyle.activeNavTab,
-              content: defaultHUDFullScreenStyle.contentContainer,
-            }}
-            onActiveTabChanged={this.onActiveTabChanged}
-          />
-        </Container>
-        <Close onClick={() => this.onCloseFullScreen()}>
-          <i className='fa fa-times click-effect'></i>
-        </Close>
-      </div>
+      <FullScreenContext.Provider value={this.state}>
+        <HudFullScreenView
+          getLeftRef={r => this.tabPanelLeftRef = r}
+          getRightRef={r => this.tabPanelRightRef = r}
+          onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+          onCloseFullScreen={this.onCloseFullScreen}
+          onChangeInventoryItems={this.onChangeInventoryItems}
+          onChangeEquippedItems={this.onChangeEquippedItems}
+          onChangeMyTradeItems={this.onChangeMyTradeItems}
+          onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
+          onChangeStackGroupIdToItemIDs={this.onChangeStackGroupIdToItemIDs}
+          onChangeMyTradeState={this.onChangeMyTradeState}
+        />
+      </FullScreenContext.Provider>
     );
   }
 
   public componentDidMount() {
-    this.navigateListener = events.on('hudnav--navigate', this.handleNavigation);
+    this.navigateListener = events.on('hudnav--navigate', this.handleNavEvent);
+    this.shouldKeydownListener = events.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
     this.tabPanelRightRef.activeTabIndex = 1;
-    client.OnOpenUI((name: string) => {
-      // a VERY hacky way to close widget with ESC. focus() does not work
-      // and window doesn't pick up keydown events unless window is focused.
-      // will need to change this one day
-      if (name === 'gamemenu' && (this.state.visibleComponentLeft !== '' || this.state.visibleComponentRight !== '')) {
-        events.fire('hudnav--navigate', 'gamemenu');
-        this.onCloseFullScreen();
-      }
-    });
+  }
+
+  public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
+    if ((prevState.visibleComponentLeft === '' && this.state.visibleComponentLeft !== '') ||
+        (prevState.visibleComponentRight === '' && this.state.visibleComponentRight !== '')) {
+      window.addEventListener('keydown', this.handleKeydownEvent);
+    }
   }
 
   public componentWillUnmount() {
     events.off(this.navigateListener);
+    events.off(this.shouldKeydownListener);
   }
 
-  private renderInventory = () => {
-    return (
-      <Inventory
-        inventoryItems={this.state.inventoryItems}
-        equippedItems={this.state.equippedItems}
-        myTradeItems={this.state.myTradeItems}
-        containerIdToDrawerInfo={this.state.containerIdToDrawerInfo}
-        stackGroupIdToItemIDs={this.state.stackGroupIdToItemIDs}
-        onChangeInventoryItems={this.onChangeInventoryItems}
-        onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
-        onChangeStackGroupIdToItemIDs={this.onChangeStackGroupIdToItemIDs}
-        visibleComponent={this.state.visibleComponentRight}
-        myTradeState={this.state.myTradeState}
-      />
-    );
+  private handleKeydownEvent = (e: KeyboardEvent) => {
+    switch(e.keyCode) {
+      case jsKeyCodes.ESC: {
+        // Close full screen UI
+        this.onCloseFullScreen();
+        break;
+      }
+      case jsKeyCodes.I: {
+        // Open/Close inventory
+        events.fire('hudnav--navigate', 'inventory');
+        break;
+      }
+      case jsKeyCodes.C: {
+        // Open/Close paperdoll
+        events.fire('hudnav--navigate', 'equippedgear');
+        break;
+      }
+      default: break;
+    }
   }
 
-  private renderEquipped = () => {
-    return (
-      <PaperDoll
-        inventoryItems={this.state.inventoryItems}
-        equippedItems={this.state.equippedItems}
-        onEquippedItemsChange={this.onChangeEquippedItems}
-        visibleComponent={this.state.visibleComponentLeft}
-        myTradeState={this.state.myTradeState}
-      />
-    );
+  private handleShouldKeydownEvent = (shouldListen: boolean) => {
+    if (shouldListen) {
+      window.addEventListener('keydown', this.handleKeydownEvent);
+    } else {
+      window.removeEventListener('keydown', this.handleKeydownEvent);
+    }
   }
 
-  private renderCharacterStats = () => {
-    return (
-      <CharacterInfo />
-    );
-  }
-
-  private renderMap = (prop: { active: boolean }) => {
-    return <Map />;
-  }
-
-  private renderTrade = () => {
-    return (
-      <TradeWindow
-        isVisible={_.includes(this.state.visibleComponentLeft, 'trade') ||
-          _.includes(this.state.visibleComponentRight, 'trade')}
-        inventoryItems={this.state.inventoryItems}
-        containerIdToDrawerInfo={this.state.containerIdToDrawerInfo}
-        stackGroupIdToItemIDs={this.state.stackGroupIdToItemIDs}
-        myTradeItems={this.state.myTradeItems}
-        onMyTradeItemsChange={this.onMyTradeItemsChange}
-        onCloseFullScreen={this.onCloseFullScreen}
-        myTradeState={this.state.myTradeState}
-        onMyTradeStateChange={this.onMyTradeStateChange}
-      />
-    );
-  }
-
-  private handleNavigation = (name: string, shouldOpen?: boolean) => {
+  private handleNavEvent = (name: string, shouldOpen?: boolean) => {
     if (name === 'inventory' || name === 'equippedgear' || name === 'character') {
       if (_.includes(this.state.visibleComponentLeft, name) || _.includes(this.state.visibleComponentRight, name)) {
         this.onCloseFullScreen();
       } else {
-        this.setActiveTabIndex(0, 'left');
-        this.setActiveTabIndex(1, 'right');
-        this.setVisibleComponent('equippedgear-left');
-        this.setVisibleComponent('inventory-right');
+        this.setActiveTab(0, 'equippedgear-left');
+        this.setActiveTab(1, 'inventory-right');
       }
       return;
     }
 
     if (name === 'trade' && typeof shouldOpen === 'boolean') {
+      const tradeTab = {
+        name: 'trade-left',
+        tab: {
+          title: 'Trade',
+          temporary: true,
+        },
+        rendersContent: 'Trade',
+      };
       if (shouldOpen) {
-        this.setActiveTabIndex(1, 'right');
-        this.setVisibleComponent('inventory-right');
-        this.setActiveTabIndex(4, 'left');
-        this.setVisibleComponent('trade-left');
+        this.setActiveTab(1, 'inventory-right');
+        this.handleTemporaryTab({
+          ...tradeTab,
+          tab: {
+            ...tradeTab.tab,
+            onTemporaryTabClose: () => events.fire('hudnav--navigate', 'trade', false),
+          },
+        }, 'left', shouldOpen);
       } else {
         this.onCloseFullScreen();
+        this.handleTemporaryTab(tradeTab as any, 'left', false);
       }
       return;
     }
 
-    switch (name) {
-      case 'equippedgear-left': {
-        this.setActiveTabIndex(0, 'left');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'inventory-left': {
-        this.setActiveTabIndex(1, 'left');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'character-stats-left': {
-        this.setActiveTabIndex(2, 'left');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'map-left': {
-        this.setActiveTabIndex(3, 'left');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'trade-left': {
-        this.setActiveTabIndex(4, 'left');
-        this.setVisibleComponent(name);
-        break;
-      }
-      // case 'social-left': {
-      //   this.setActiveTabIndex(4, 'left');
-      //   this.setVisibleComponent(name);
-      //   break;
-      // }
-
-      case 'equippedgear-right': {
-        this.setActiveTabIndex(0, 'right');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'inventory-right': {
-        this.setActiveTabIndex(1, 'right');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'character-stats-right': {
-        this.setActiveTabIndex(2, 'right');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'map-right': {
-        this.setActiveTabIndex(3, 'right');
-        this.setVisibleComponent(name);
-        break;
-      }
-      case 'trade-right': {
-        this.setActiveTabIndex(4, 'right');
-        this.setVisibleComponent(name);
-        break;
-      }
-      // case 'social-right': {
-      //   this.setActiveTabIndex(4, 'right');
-      //   this.setVisibleComponent(name);
-      //   break;
-      // }
-    }
+    this.handleTabChange(name);
   }
 
-  private onActiveTabChanged = (tabIndex: number, name: string) => {
-    events.fire('hudnav--navigate', name);
-  }
-
-  private setVisibleComponent = (name: string) => {
+  private handleTabChange = (name: string) => {
+    // We do this to validate that no two windows are open at the same time
+    const { tabsRight, tabsLeft } = this.state;
     const side = _.includes(name, 'right') ? 'right' : 'left';
-    if (this.state.initial) {
-      this.setState({ initial: false });
+    const tabs = side === 'right' ? tabsRight : tabsLeft;
+    const otherTabs = side === 'right' ? tabsLeft : tabsRight;
+    const nextTabIndex = _.findIndex(tabs, tab => tab.name === name);
+    const prevTabIndex = side === 'right' ? this.tabPanelRightRef.activeTabIndex :
+      this.tabPanelLeftRef.activeTabIndex;
+    const otherActiveIndex = side === 'right' ? this.tabPanelLeftRef.activeTabIndex :
+      this.tabPanelRightRef.activeTabIndex;
+
+    if (nextTabIndex !== -1) {
+      if (nextTabIndex === otherActiveIndex) {
+        // Swap windows
+        const otherPrevWindowIndex = _.findIndex(otherTabs, tab => {
+          return this.normalizeName(tab.name) === this.normalizeName(tabs[prevTabIndex].name)
+        });
+        if (otherPrevWindowIndex !== -1) {
+          this.setActiveTab(nextTabIndex, name);
+          this.setActiveTab(otherPrevWindowIndex, otherTabs[otherPrevWindowIndex].name);
+        }
+      }
+      this.setActiveTab(nextTabIndex, name);
     }
-    if (name !== '') {
+  }
+
+  private setActiveTab = (tabIndex: number, name: string) => {
+    const side = _.includes(name, 'right') ? 'right' : 'left';
+    const visibleComponent = side === 'right' ? this.state.visibleComponentRight : this.state.visibleComponentLeft;
+
+    if (name !== '' && !_.includes(visibleComponent, name)) {
+      window.addEventListener('keydown', this.handleKeydownEvent);
+      client.RequestInputOwnership();
       this.setState((state, props) => {
         if (side === 'right') {
+          this.tabPanelRightRef.activeTabIndex = tabIndex;
           return {
             ...state,
             visibleComponentRight: name,
+
           };
         } else {
+          this.tabPanelLeftRef.activeTabIndex = tabIndex;
           return {
             ...state,
             visibleComponentLeft: name,
@@ -399,25 +208,68 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     }
   }
 
-  private setActiveTabIndex = (tabIndex: number, side: 'left' | 'right') => {
-    if (this.state.initial) {
-      if (side === 'left') {
-        setTimeout(() => this.tabPanelLeftRef.activeTabIndex = tabIndex, 10);
+  private handleTemporaryTab = (tab: ITemporaryTab, side: 'left' | 'right', shouldOpen: boolean) => {
+    if (side === 'left') {
+      let tabsLeft = [...this.state.tabsLeft];
+      if (shouldOpen) {
+        // Only add temporary tab if there is no temporary tab existing
+        if (_.findIndex(tabsLeft, tabInfo => tabInfo.name === tab.name) === -1) {
+          tabsLeft.push(tab);
+          this.setTabsLeft(tabsLeft).then(() => this.setActiveTab(tabsLeft.length - 1, tab.name));
+          return;
+        }
       } else {
-        setTimeout(() => this.tabPanelRightRef.activeTabIndex = tabIndex, 10);
+        tabsLeft = _.filter(tabsLeft, tabInfo => tabInfo.name !== tab.name);
+        this.setActiveTab(0, 'equipped-left');
+        setTimeout(() => this.setTabsLeft(tabsLeft), 50);
       }
-    } else {
-      if (side === 'left') {
-        this.tabPanelLeftRef.activeTabIndex = tabIndex;
-      } else {
-        this.tabPanelRightRef.activeTabIndex = tabIndex;
-      }
+
+      return;
     }
+
+    if (side === 'right') {
+      let tabsRight = [...this.state.tabsRight];
+      if (shouldOpen) {
+        // Only add temporary tab if there is no temporary tab existing
+        if (_.findIndex(tabsRight, tabInfo => tabInfo.name === tab.name) === -1) {
+          tabsRight.push(tab);
+          this.setTabsRight(tabsRight).then(() => this.setActiveTab(tabsRight.length - 1, tab.name));
+        }
+      } else {
+        tabsRight = _.filter(tabsRight, tabInfo => tabInfo.name !== tab.name);
+        this.setActiveTab(0, 'equipped-right');
+        setTimeout(() => this.setTabsRight(tabsRight), 50);
+      }
+      return;
+    }
+  }
+
+  private setTabsLeft = async (newTabsLeft: TabItem<any>[]) => {
+    return await new Promise((resolve) => this.setState({ tabsLeft: newTabsLeft }, () => resolve()));
+  }
+
+  private setTabsRight = async (newTabsRight: TabItem<any>[]) => {
+    return await new Promise((resolve) => this.setState({ tabsRight: newTabsRight }, () => resolve()));
+  }
+
+  private normalizeName = (name: string) => {
+    let newName = name;
+    if (_.includes(name, 'right')) {
+      newName = name.replace('-right', '');
+    }
+
+    if (_.includes(name, 'left')) {
+      newName = name.replace('-left', '');
+    }
+
+    return newName;
   }
 
   private onCloseFullScreen = (visibleComp?: string) => {
     events.fire('hudnav--navigate', '');
-    this.setVisibleComponent('');
+    this.setActiveTab(0, '');
+    window.removeEventListener('keydown', this.handleKeydownEvent);
+    client.ReleaseInputOwnership();
   }
 
   private onChangeEquippedItems = (equippedItems: EquippedItemFragment[]) => {
@@ -436,11 +288,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     this.setState({ stackGroupIdToItemIDs });
   }
 
-  private onMyTradeItemsChange = (myTradeItems: InventoryItemFragment[]) => {
+  private onChangeMyTradeItems = (myTradeItems: InventoryItemFragment[]) => {
     this.setState({ myTradeItems });
   }
 
-  private onMyTradeStateChange = (myTradeState: SecureTradeState) => {
+  private onChangeMyTradeState = (myTradeState: SecureTradeState) => {
     this.setState({ myTradeState });
   }
 }

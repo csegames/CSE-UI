@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 import { colors } from '../../../lib/constants';
+import { requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
 
 const Container = styled('div')`
   position: relative;
@@ -68,8 +68,8 @@ class FilterInput extends React.Component<FilterInputProps> {
         <InputBackground />
         <InputOverlay />
         <Input
-          onClick={() => client.RequestInputOwnership()}
-          onBlur={() => client.ReleaseInputOwnership()}
+          onClick={() => requestUIKeydown()}
+          onBlur={() => releaseUIKeydown()}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onFilterChanged(e.target.value)}
           value={this.props.filterText}
           placeholder={'Filter'}

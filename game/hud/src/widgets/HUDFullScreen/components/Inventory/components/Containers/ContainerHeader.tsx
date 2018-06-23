@@ -11,7 +11,7 @@ import styled from 'react-emotion';
 import { client, webAPI } from '@csegames/camelot-unchained';
 
 import { nullVal } from '../../../../lib/constants';
-import { getContainerColor } from '../../../../lib/utils';
+import { getContainerColor, requestUIKeydown, releaseUIKeydown } from '../../../../lib/utils';
 import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
 
 const Container = styled('div')`
@@ -170,6 +170,7 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
   }
 
   private turnOnEditMode = () => {
+    requestUIKeydown();
     this.setState({ editModeOn: true });
   }
 
@@ -179,6 +180,7 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
 
   private turnOffEditMode = () => {
     const { containerItem } = this.props;
+    releaseUIKeydown();
     this.setState({ editModeOn: false });
     this.makeRenameRequest(this.state.containerNameValue);
     if (this.state.containerNameValue === '') {

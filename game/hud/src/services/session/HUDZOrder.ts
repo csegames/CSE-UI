@@ -29,7 +29,8 @@ enum HUDZOrder {
   Respawn,
   HUDNav,
   RefillAmmo,
-  Options,
+  GameMenu,
+  Settings,
 }
 
 export default HUDZOrder;

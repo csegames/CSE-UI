@@ -89,7 +89,7 @@ function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>
 
 // @ts-ignore: no-unused-locals
 function parseTemplate(template: any,
-   namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface  }) {
+    namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface  }) {
   const ctx = evalContext(namespaces);
 
   // Replace statements wrapped with %% with their retrieved data ex.) %% graphql.data.myCharacter.name %%
@@ -269,11 +269,13 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
               tabs={this.props.pages.map((p, index) => {
                 return {
                   tab: {
-                    render: () => <span>{p.tabTitle || p.title}</span>,
+                    tabTitle: p.tabTitle,
+                    title: p.title,
                   },
                   rendersContent: index.toString(),
                 };
               })}
+              renderTab={(tab: { tabTitle?: string, title?: string }) => <span>{tab.tabTitle || tab.title}</span>}
               content={this.props.pages.map((p, index) => {
                 return {
                   name: index.toString(),

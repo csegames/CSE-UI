@@ -5,15 +5,15 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { cx } from 'react-emotion';
 
 export interface PageControllerStyle {
-  PageController: React.CSSProperties;
-  controllerContainer: React.CSSProperties;
-  contentContainer: React.CSSProperties;
-  controllerButton: React.CSSProperties;
-  disabledControllerButton: React.CSSProperties;
-  pageNumberText: React.CSSProperties;
+  PageController: string;
+  controllerContainer: string;
+  contentContainer: string;
+  controllerButton: string;
+  disabledControllerButton: string;
+  pageNumberText: string;
 }
 
 const ControllerButton = styled('button')`
@@ -65,7 +65,7 @@ export class PageController extends React.Component<PageControllerProps, PageCon
     const activeContent = this.props.pages[this.state.activePageIndex];
     const { renderHeaderContainer, renderPageController } = this.props;
     return (
-      <div style={customStyles.PageController}>
+      <div className={customStyles.PageController}>
         {renderHeaderContainer && renderHeaderContainer(this.state, this.props)}
         {renderPageController ? renderPageController(this.state, this.props, this.onNextPage, this.onPrevPage) :
           this.renderPageController(customStyles)}
@@ -85,19 +85,19 @@ export class PageController extends React.Component<PageControllerProps, PageCon
     const moreNext = this.state.activePageIndex < this.props.pages.length - 1;
     const morePrev = this.state.activePageIndex > 0;
     return (
-      <div style={customStyles.controllerContainer}>
+      <div className={customStyles.controllerContainer}>
         <ControllerButton
-          style={!morePrev ?
-            {...customStyles.controllerButton, ...customStyles.disabledControllerButton} : customStyles.controllerButton}
+          className={!morePrev ?
+            cx(customStyles.controllerButton, customStyles.disabledControllerButton) : customStyles.controllerButton}
           onClick={this.onPrevPage}>
             {this.props.prevButtonText || '<Prev'}
         </ControllerButton>
-        <p style={customStyles.pageNumberText}>
+        <p className={customStyles.pageNumberText}>
           {this.state.activePageIndex + 1} / {this.props.pages.length}
         </p>
         <ControllerButton
-          style={!moreNext ?
-            { ...customStyles.controllerButton, ...customStyles.disabledControllerButton } : customStyles.controllerButton}
+          className={!moreNext ?
+            cx(customStyles.controllerButton, customStyles.disabledControllerButton) : customStyles.controllerButton}
             onClick={this.onNextPage}>
           {this.props.nextButtonText || 'Next>'}
         </ControllerButton>

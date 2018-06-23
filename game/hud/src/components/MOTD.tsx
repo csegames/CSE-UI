@@ -16,11 +16,11 @@ const query = {
   },
 };
 
-export interface WelcomeStyles {
-  Welcome: React.CSSProperties;
-  welcomeHeader: React.CSSProperties;
-  welcomeContent: React.CSSProperties;
-  welcomeFooter: React.CSSProperties;
+export interface MOTDStyles {
+  MOTD: React.CSSProperties;
+  MOTDHeader: React.CSSProperties;
+  MOTDContent: React.CSSProperties;
+  MOTDFooter: React.CSSProperties;
   dismissButton: React.CSSProperties;
   close: React.CSSProperties;
 }
@@ -78,25 +78,25 @@ const Close = styled('div')`
   }
 `;
 
-export interface WelcomeProps {
-  styles?: Partial<WelcomeStyles>;
+export interface MOTDProps {
+  styles?: Partial<MOTDStyles>;
   setVisibility: (vis: boolean) => void;
 }
 
-export interface WelcomeState {
+export interface MOTDState {
 }
 
-export interface WelcomeData {
+export interface MOTDData {
   id: string;
   message: string;
   duration: number;
 }
 
-class Welcome extends React.Component<WelcomeProps, WelcomeState> {
-  public name: string = 'Welcome';
+class MOTD extends React.Component<MOTDProps, MOTDState> {
+  public name: string = 'MOTD';
   private defaultMessage: JSX.Element[] = [<div key='0'>Loading...</div>];
 
-  constructor(props: WelcomeProps) {
+  constructor(props: MOTDProps) {
     super(props);
     this.state = {
     };
@@ -115,7 +115,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                 <div className=''>
                   { gqlData && gqlData.motd && gqlData.motd[0]
                     ? gqlData.motd[0].title
-                    : 'Welcome to Camelot Unchained'
+                    : 'MOTD to Camelot Unchained'
                   }
                 </div>
                 <Close onClick={this.hide}>
@@ -145,8 +145,8 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   private hideDelay = (): void => {
     this.hide();
     const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
+    localStorage.setItem('cse-MOTD-hide-start', JSON.stringify(hideDelayStart));
   }
 }
 
-export default Welcome;
+export default MOTD;

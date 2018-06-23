@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css, cx } from 'react-emotion';
+import styled, { cx, css } from 'react-emotion';
 
 export interface TabPanelStyle {
   tabPanel: string;
@@ -60,10 +60,10 @@ const ContentHidden = css`
   pointer-events: none;
 `;
 
-export interface TabItem {
+export interface TabItem<T> {
   name?: string;
-  tab: RenderItem<Partial<{ active: boolean }>>;
   rendersContent: string;
+  tab: T;
 }
 
 export interface ContentItem {
@@ -76,11 +76,12 @@ export interface RenderItem<T> {
   props?: any;
 }
 
-export interface TabPanelProps {
+export interface TabPanelProps<T> {
   styles?: Partial<TabPanelStyle>;
 
   // Array of tabs that reference content
-  tabs: TabItem[];
+  tabs: TabItem<T>[];
+  renderTab: (tab: T, active?: boolean) => JSX.Element;
 
   // Array of content that gets referenced by rendersContent field of tabs prop
   content: ContentItem[];
@@ -97,7 +98,7 @@ export interface TabPanelState {
   activeIndex: number;
 }
 
-export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
+export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, TabPanelState> {
   private didMount: boolean;
 
   public get activeTabIndex(): number {
@@ -110,7 +111,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
   }
 
 
-  constructor(props: TabPanelProps) {
+  constructor(props: TabPanelProps<any>) {
     super(props);
     this.state = {
       activeIndex: props.defaultTabIndex || 0,
@@ -121,9 +122,9 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
     const customStyles = this.props.styles || {};
 
     return (
-      <Container className={customStyles.tabPanel}>
+      <Container className={cx(customStyles.tabPanel)}>
         {this.renderTabs(customStyles)}
-        <ContentContainer className={customStyles.contentContainer}>
+        <ContentContainer className={cx(customStyles.contentContainer)}>
           {this.props.alwaysRenderContent
             ? this.renderAllContent(customStyles)
             : this.renderActiveContent(customStyles)}
@@ -150,7 +151,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
               key={index}
               className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
               onClick={() => this.selectIndex(index, tabItem.name)}>
-                <tabItem.tab.render active={selected} {...tabItem.tab.props} />
+                {this.props.renderTab(tabItem.tab, selected)}
             </Tab>
           );
         })}
@@ -174,7 +175,7 @@ export class TabPanel extends React.Component<TabPanelProps, TabPanelState> {
 
   // Render only the active content.
   private renderActiveContent = (customStyles: Partial<TabPanelStyle>) => {
-    const activeItem = _.find(this.props.content, content =>
+    const activeItem: ContentItem = _.find(this.props.content, content =>
       this.props.tabs[this.activeTabIndex].rendersContent === content.name);
     return (
       <Content className={customStyles.content}>

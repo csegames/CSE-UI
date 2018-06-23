@@ -8,6 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
+import { showTooltip, hideTooltip } from '../../../services/actions/tooltips';
 
 const Container = styled('div')`
   position: relative;
@@ -32,29 +33,22 @@ const Icon = styled('div')`
 const TooltipContainer = styled('div')`
   display: flex;
   flex-direction: column;
-  visibility: ${(props: any) => props.showTooltip ? 'visible' : 'hidden'};
-  opacity: ${(props: any) => props.showTooltip ? 1 : 0};
-  position: absolute;
-  top: 0;
-  left: 60px;
-  width: 500px;
   white-space: wrap;
-  margin-top: -10px;
-  margin-bottom: -10px;
-  padding: 0 15px;
+  max-width: 200px;
+  margin-bottom: -15px;
+  padding: 0 5px;
   background-color: #000;
   color: white;
   z-index: 9999;
 `;
 
-const TooltipHeader = styled('header')`
-  font-size: 2.5em;
+const TooltipHeader = styled('div')`
+  font-size: 16px;
   font-weight: bold;
 `;
 
 const TooltipDescription = styled('p')`
-  font-size: 30px;
-  line-height: 30px;
+  font-size: 12px;
 `;
 
 export interface StatusIconProps {
@@ -67,17 +61,9 @@ export interface StatusIconProps {
 }
 
 export interface StatusIconState {
-  showTooltip: boolean;
 }
 
 class StatusIcon extends React.Component<StatusIconProps, StatusIconState> {
-  constructor(props: StatusIconProps) {
-    super(props);
-    this.state = {
-      showTooltip: false,
-    };
-  }
-
   public render() {
     const { status } = this.props;
     if (status) {
@@ -88,10 +74,6 @@ class StatusIcon extends React.Component<StatusIconProps, StatusIconState> {
             onMouseLeave={this.onHideTooltip}
             style={{ backgroundImage: `url(${status.iconURL}), url(images/unknown-item.jpg)` }}
           />
-          <TooltipContainer showTooltip={this.state.showTooltip}>
-            <TooltipHeader>{status.name}</TooltipHeader>
-            <TooltipDescription>{status.description}</TooltipDescription>
-          </TooltipContainer>
         </Container>
       );
     } else {
@@ -100,15 +82,21 @@ class StatusIcon extends React.Component<StatusIconProps, StatusIconState> {
   }
 
   public shouldComponentUpdate(nextProps: StatusIconProps, nextState: StatusIconState) {
-    return !_.isEqual(nextProps.status, this.props.status) || this.state.showTooltip !== nextState.showTooltip;
+    return !_.isEqual(nextProps.status, this.props.status);
   }
 
-  private onShowTooltip = () => {
-    this.setState({ showTooltip: true });
+  private onShowTooltip = (event: MouseEvent) => {
+    const content =
+      <TooltipContainer>
+        <TooltipHeader>{this.props.status.name}</TooltipHeader>
+        <TooltipDescription>{this.props.status.description}</TooltipDescription>
+      </TooltipContainer>;
+    
+    showTooltip({ content, event });
   }
 
   private onHideTooltip = () => {
-    this.setState({ showTooltip: false });
+    hideTooltip();
   }
 }
 

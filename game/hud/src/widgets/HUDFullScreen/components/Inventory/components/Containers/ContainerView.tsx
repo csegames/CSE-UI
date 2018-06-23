@@ -58,7 +58,7 @@ export const CloseButton = styled('div')`
 export interface ContainerViewProps {
   containerColor?: ContainerColorFragment;
   headerContent: () => JSX.Element;
-  mainContent: () => JSX.Element;
+  mainContent: () => JSX.Element | JSX.Element[];
   footerContent: () => JSX.Element;
   contentRef?: (ref: HTMLDivElement) => void;
 }

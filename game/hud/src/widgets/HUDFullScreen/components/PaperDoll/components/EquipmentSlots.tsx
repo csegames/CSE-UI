@@ -14,7 +14,7 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
-import { getEquippedDataTransfer } from '../../../lib/utils';
+import { getEquippedDataTransfer, FullScreenContext } from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
@@ -52,6 +52,12 @@ const ToggleText = css`
   user-select: none;
 `;
 
+const Tabs = css`
+  justify-content: center;
+  font-size: 24px;
+  color: #FDD30D;
+`;
+
 const OuterToggle = css`
   padding-right: 10px;
   cursor: pointer;
@@ -80,12 +86,6 @@ const ItemSlotSpacing = css`
 
 const WeaponSpacing = css`
   margin-right: 15px;
-`;
-
-const Tabs = css`
-  justify-content: center;
-  font-size: 24px;
-  color: #FDD30D;
 `;
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
@@ -131,12 +131,17 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
   { slotName: gearSlots.SecondaryHandWeapon, openingSide: Alignment.WTopLeft },
 ];
 
-export interface EquipmentSlotsProps {
+export interface EquipmentSlotsInjectedProps {
   equippedItems: EquippedItemFragment[];
   inventoryItems: InventoryItemFragment[];
-  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
   myTradeState: SecureTradeState;
 }
+
+export interface EquipmentSlotsProps {
+  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
+}
+
+export type EquipmentSlotsComponentProps = EquipmentSlotsInjectedProps & EquipmentSlotsProps;
 
 export interface EquipmentSlotsAndInfo {
   slotName: string;
@@ -148,11 +153,17 @@ export interface EquipmentSlotsState {
   slotNameItemMenuVisible: string;
 }
 
-class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlotsState> {
+interface EquipmentSlotsTabData {
+  title: string;
+  onClick: () => void;
+  className: string;
+}
+
+class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
   private equipItemListener: number;
   private onUnequipItemListener: number;
 
-  constructor(props: EquipmentSlotsProps) {
+  constructor(props: EquipmentSlotsComponentProps) {
     super(props);
     this.state = {
       showUnder: false,
@@ -166,42 +177,30 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
     const outerToggleClass = cx(ToggleText, OuterToggle, !showUnder ? ToggleOn : '');
     const innerToggleClass = cx(ToggleText, UnderToggle, showUnder ? ToggleOn : '');
 
-    const tabs: TabItem[] = [
+    const tabs: TabItem<EquipmentSlotsTabData>[] = [
       {
         name: 'OUTER',
-        tab: {
-          render: () => <p onClick={this.toggleOuter} className={outerToggleClass}>Outer</p>,
-        },
+        tab: { title: 'Outer', onClick: this.toggleOuter, className: outerToggleClass },
         rendersContent: 'outer',
       },
       {
         name: 'INNER',
-        tab: {
-          render: () => <p onClick={this.toggleUnder} className={innerToggleClass}>Under</p>,
-        },
+        tab: { title: 'Inner', onClick: this.toggleUnder, className: innerToggleClass },
         rendersContent: 'inner',
       },
     ];
 
     const content: ContentItem[] = [
-      {
-        name: 'outer',
-        content: {
-          render: this.renderOuterSlots,
-        },
-      },
-      {
-        name: 'inner',
-        content: {
-          render: this.renderInnerSlots,
-        },
-      },
+      { name: 'outer', content: { render: this.renderOuterSlots } },
+      { name: 'inner', content: { render: this.renderInnerSlots } },
     ];
     return (
       <Container>
         <TabPanel
           defaultTabIndex={0}
           tabs={tabs}
+          renderTab={(tab: EquipmentSlotsTabData) =>
+            <span onClick={tab.onClick} className={tab.className}>{tab.title}</span>}
           content={content}
           styles={{ tabs: Tabs }}
           alwaysRenderContent={true}
@@ -356,4 +355,23 @@ class EquipmentSlots extends React.Component<EquipmentSlotsProps, EquipmentSlots
   }
 }
 
-export default EquipmentSlots;
+class EquipmentSlotsWithInjectedContext extends React.Component<EquipmentSlotsProps> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ equippedItems, inventoryItems, myTradeState }) => {
+          return (
+            <EquipmentSlots
+              {...this.props}
+              equippedItems={equippedItems}
+              inventoryItems={inventoryItems}
+              myTradeState={myTradeState}
+            />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default EquipmentSlotsWithInjectedContext;

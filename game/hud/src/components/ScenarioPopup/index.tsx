@@ -41,7 +41,7 @@ export interface ScenarioPopupState {
 
 class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupState> {
   private scenarioNoneTimeout: any;
-  private visibilityTimeout: any;
+
   constructor(props: ScenarioPopupProps) {
     super(props);
     this.state = {
@@ -84,11 +84,6 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
   }
 
   public componentWillUnmount() {
-    if (this.visibilityTimeout) {
-      clearTimeout(this.visibilityTimeout);
-      this.visibilityTimeout = null;
-    }
-
     if (this.scenarioNoneTimeout) {
       clearTimeout(this.scenarioNoneTimeout);
       this.scenarioNoneTimeout = null;
@@ -101,20 +96,21 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
       if (didWin) {
         this.playSound('victory');
         // Add delay so widget can match up with music
-        this.visibilityTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.Victory }), 2000);
+        this.setState({ type: ScenarioPopupType.Victory });
+        this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
       } else {
         this.playSound('defeat');
         // Add delay so widget can match up with music
-        this.visibilityTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.Defeat }), 2000);
+        this.setState({ type: ScenarioPopupType.Defeat });
+        this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
       }
     } else {
       // Just show round over
       client.ReleaseInputOwnership();
       this.playSound('roundover');
       this.setState({ type: ScenarioPopupType.RoundOver });
+      this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
     }
-
-    this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
   }
 
   private playSound = (sound: 'victory' | 'defeat' | 'roundover') => {

@@ -109,6 +109,10 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
     this.selectLightAsBuildingItem(light);
   }
 
+  private triggerRemove = () => {
+    client.RemoveLight();
+  }
+
   private triggerClear = () => {
     client.ResetLights();
   }
@@ -153,7 +157,8 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
     return (
       <div className='drop-buttons'>
         <button onClick={() => this.triggerDrop(light) } >Drop</button>
-        <button onClick={this.triggerClear} >Clear</button>
+        <button onClick={this.triggerRemove}>Remove</button>
+        <button onClick={this.triggerClear}>Clear All</button>
       </div>
     );
   }

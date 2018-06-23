@@ -8,15 +8,14 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react'
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import queries from '../../../../gqlDocuments';
 import { paperDollIcons } from '../../lib/constants';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import { EquippedItemFragment } from '../../../../gqlInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -68,11 +67,7 @@ export interface EquippedItemsMap {
 }
 
 export interface PaperDollProps extends GraphQLInjectedProps<any> {
-  visibleComponent: string;
-  inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItemFragment[];
   onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
-  myTradeState: SecureTradeState;
 }
 
 export interface PaperDollState {
@@ -105,12 +100,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
             />
             <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
           </CharacterInfoContainer>
-          <EquipmentSlots
-            inventoryItems={this.props.inventoryItems}
-            equippedItems={this.props.equippedItems}
-            onEquippedItemsChange={this.props.onEquippedItemsChange}
-            myTradeState={this.props.myTradeState}
-          />
+          <EquipmentSlots onEquippedItemsChange={this.props.onEquippedItemsChange} />
         </PaperdollContainer>
       </Container>
     );
@@ -153,4 +143,4 @@ const PaperDollWithQL = withGraphQL<PaperDollProps>(
   { query: queries.PaperDollContainer },
 )(PaperDoll);
 
-export default PaperDollWithQL as any;
+export default PaperDollWithQL;
