@@ -10,11 +10,11 @@ import { PatcherError } from '../../../../services/patcher';
 
 const Alert = styled('div')`
   overflow: hidden;
-  background-color: orange;
+  background: repeating-linear-gradient(45deg, darkorange, orange 2px, orange 1px, darkorange 4px);
   color: black;
   padding: 3px 15px;
   position: relative;
-  pointer-events: bounding-box;
+  pointer-events: all;
   cursor: pointer;
   ::after {
     content: 'X';
@@ -28,7 +28,7 @@ const Alert = styled('div')`
 
 export interface PatcherErrorProps {
   errors: PatcherError[];
-  onClear?: any;
+  onClear?: () => void;
 }
 
 /* tslint:disable:function-name */
