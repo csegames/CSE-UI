@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CONFIG from '../config';
-import * as CSS from '../utils/css-helper';
+import * as CONFIG from './config';
+import * as CSS from '../../lib/css-helper';
 
 const Outer = styled('div')`
   ${CSS.DONT_GROW} ${CSS.IS_ROW}

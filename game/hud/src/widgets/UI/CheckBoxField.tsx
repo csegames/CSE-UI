@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../utils/css-helper';
+import * as CSS from '../../lib/css-helper';
 import { Box } from './Box';
 import { Field } from './Field';
 
@@ -47,6 +47,7 @@ const CheckBoxContainer = styled('div')`
     background-color: ${CHECK_BG_COLOR};
     transform: scale(1.5) rotate(45deg);
     z-index: 1;
+    box-sizing: content-box!important;
   }
   &.on {
     ::after {
@@ -68,7 +69,7 @@ export function CheckBox(props: CheckBoxProps) {
 }
 
 interface CheckBoxFieldProps {
-  id: string;
+  id?: string;
   label: string;
   on: boolean;
   onToggle?: (id: string) => void;

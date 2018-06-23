@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../utils/css-helper';
+import * as CSS from '../../lib/css-helper';
 import { Box } from './Box';
 import { Field } from './Field';
 
@@ -47,6 +47,7 @@ const SliderHandle = styled('div')`
   border: 3px inset ${HANDLE_BG_COLOR};
   pointer-events: none;
   margin-left: -8px;
+  box-sizing: content-box!important;
 `;
 
 const Counter = styled('div')`
@@ -81,11 +82,11 @@ interface SliderFieldProps {
   label: string;
   min: number;
   max: number;
-  step: number;
+  step?: number;
   current: number;
   logrithmic?: boolean;
   updateInterval?: number;
-  onChange: (id: string, value: number) => void;
+  onChange?: (id: string, value: number) => void;
 }
 
 interface SliderFieldState {
@@ -172,7 +173,7 @@ export class SliderField extends React.PureComponent<SliderFieldProps, SliderFie
         current = Math.round(logslider(position, min, max));
       }
       this.setState({ position, current });
-      this.onChange(this.props.id, current);
+      if (this.onChange) this.onChange(this.props.id, current);
     }
   }
 

@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import { CheckBoxField } from '../components/CheckBoxField';
-import { SliderField } from '../components/SliderField';
-import { SettingsHeading } from '../components/SettingsHeading';
+import { CheckBoxField } from '../../../widgets/UI/CheckBoxField';
+import { SliderField } from '../../../widgets/UI/SliderField';
+import { SubHeading } from '../../../widgets/UI/SubHeading';
 
 interface Setting {
   type: React.Component | Function;
@@ -36,8 +36,8 @@ export function settingsRenderer(props: RenderSettingsProps) {
       { Object.keys(settings).map((key) => {
         const setting = settings[key];
         switch (setting.type) {
-          case SettingsHeading:
-            return <SettingsHeading key={headingKey++} text={key}/>;
+          case SubHeading:
+            return <SubHeading key={headingKey++}>{key}</SubHeading>;
           default:
             if (config[key]) {    // ignore options that don't exist
               switch (setting.type) {

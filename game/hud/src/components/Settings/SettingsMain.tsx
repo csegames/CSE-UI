@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
 
-import { TabbedDialog, DialogButton } from './components/TabbedDialog/index';
+import { TabbedDialog, DialogButton } from '../../widgets/UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
 import { InterfaceSettings } from './tabs/Interface';
 import { AddonSettings } from './tabs/Addon';
@@ -60,7 +60,7 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
   }
   public render() {
     return this.state.visible ? (
-      <TabbedDialog title='Settings' tabs={tabs} onClose={this.onClose}>
+      <TabbedDialog name='settings' title='Settings' tabs={tabs} onClose={this.onClose}>
         {this.renderTab}
       </TabbedDialog>
     ) : null;
@@ -76,7 +76,7 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
     }
   }
 
-  private renderTab(tab: DialogButton) {
+  private renderTab = (tab: DialogButton) => {
     switch (tab) {
       case TAB_GENERAL:
         return <GeneralSettings onCancel={this.onClose}/>;

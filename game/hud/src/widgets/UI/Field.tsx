@@ -5,7 +5,7 @@
  */
 
 import styled from 'react-emotion';
-import * as CSS from '../utils/css-helper';
+import * as CSS from '../../lib/css-helper';
 
 export const Field = styled('div')`
   position: relative;
@@ -14,6 +14,9 @@ export const Field = styled('div')`
   }
   &.half-width {
     width: 50%;
+  }
+  &.quarter-width {
+    width: 25%;
   }
   &.expand {
     ${CSS.EXPAND_TO_FIT}

@@ -6,26 +6,31 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CONFIG from '../config';
+import * as CONFIG from './config';
+import { DIALOG_FONT } from './TabbedDialog/config';
 
-export const Heading = styled('div')`
+export const H1 = styled('div')`
   font-size: 12px;
-  ${CONFIG.DIALOG_FONT};
+  ${DIALOG_FONT};
   color: ${CONFIG.NORMAL_TEXT_COLOR};
   text-transform: uppercase;
   border-bottom: 1px solid ${CONFIG.NORMAL_TEXT_COLOR};
-  border-bottom-image: linear-gradient(to right, ${CONFIG.NORMAL_TEXT_COLOR} 10%, black 0%);
   border-image: linear-gradient(to right,${CONFIG.NORMAL_TEXT_COLOR} 0%, rgba(0,0,0,0) 75%) 0 0 1 0;
   margin: 20px 0 6px 0;
+  min-height: 16px;
+  box-sizing: content-box!important;
+  &:first-child {
+    margin-top: 10px;
+  }
 `;
 
-interface SettingsHeadingProps {
-  text?: string;
+interface SubHeadingProps {
+  children?: any;
 }
 
 /* tslint:disable:function-name */
-export function SettingsHeading(props: SettingsHeadingProps) {
+export function SubHeading(props: SubHeadingProps) {
   return (
-    <Heading>{props.text}</Heading>
+    <H1>{props.children}</H1>
   );
 }

@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../utils/css-helper';
+import * as CSS from '../../../lib/css-helper';
 
 const SettingsPanelContainer = styled('div')`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
@@ -34,7 +34,6 @@ export class SettingsPanel extends React.PureComponent<SettingsPanelProps, Setti
   public render() {
     return (
       <SettingsPanelContainer
-        className='cse-ui-scroller-thumbonly'
         data-id='settings-panel-container'
         style={this.props.style}>
         {this.props.children}

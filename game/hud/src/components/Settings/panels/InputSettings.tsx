@@ -7,18 +7,18 @@
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { cancel, getInputConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
-import { CheckBoxField } from '../components/CheckBoxField';
-import { SettingsHeading } from '../components/SettingsHeading';
+import { CheckBoxField } from '../../../widgets/UI/CheckBoxField';
+import { SubHeading } from '../../../widgets/UI/SubHeading';
 import { client, events } from '@csegames/camelot-unchained';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
 
 const settings: Settings = {
-  'Graphics Settings': { type: SettingsHeading },
+  'Graphics Settings': { type: SubHeading },
   'Invert Right Stick Y': { type: CheckBoxField },
   'Invert Right Stick X': { type: CheckBoxField },
   'Invert Left Stick Y': { type: CheckBoxField },
   'Invert Left Stick X': { type: CheckBoxField },
-  'Camera Settings': { type: SettingsHeading },
+  'Camera Settings': { type: SubHeading },
   'Invert Camera Mouse Y': { type: CheckBoxField },
   'Invert Camera Mouse X': { type: CheckBoxField },
 };

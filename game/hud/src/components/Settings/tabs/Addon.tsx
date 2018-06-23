@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { DialogTab, DialogButton } from '../components/TabbedDialog/index';
-import { SideMenu, MenuOption } from '../components/SideMenu';
+import { DialogTab, DialogButton } from '../../../widgets/UI/TabbedDialog';
+import { SideMenu, MenuOption } from '../../../widgets/UI/SideMenu';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 
@@ -21,7 +21,7 @@ interface AddonsSettingsProps {
 export function AddonSettings(props: AddonsSettingsProps) {
   return (
     <DialogTab buttons={buttons}>
-      <SideMenu persist='addons' options={options}>{
+      <SideMenu name='settings' id='addons' options={options}>{
         (option: MenuOption) => {
           return <ComingSoon/>;
         }

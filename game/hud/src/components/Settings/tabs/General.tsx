@@ -7,8 +7,8 @@
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
 import { ConfigIndex } from '../utils/configVars';
-import { DialogTab, DialogButton } from '../components/TabbedDialog/index';
-import { SideMenu, MenuOption } from '../components/SideMenu';
+import { DialogTab, DialogButton } from '../../../widgets/UI/TabbedDialog';
+import { SideMenu, MenuOption } from '../../../widgets/UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
 import { InputSettings } from '../panels/InputSettings';
 import { GraphicSettings } from '../panels/GraphicSettings';
@@ -62,7 +62,7 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
     const buttons = getButtonsForOption(option);
     return (
       <DialogTab buttons={buttons} onAction={this.onButton}>
-        <SideMenu persist='general' options={options}>{
+        <SideMenu name='settings' id='general' options={options}>{
           (option: MenuOption) => {
             switch (option) {
               case OPTION.KEYS:

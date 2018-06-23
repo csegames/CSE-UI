@@ -6,9 +6,21 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../../utils/css-helper';
-import * as CONFIG from '../../config';
+import * as CSS from '../../../lib/css-helper';
+import * as CONFIG from '../config';
 import { NavButton, NavButtonLabel } from './NavButton';
+
+import {
+  DIALOG_FONT,
+  DIALOG_SHADOW,
+  DIALOG_BACKGROUND,
+  DIALOG_HEADING_HEIGHT,
+  DIALOG_FOOTER_HEIGHT,
+  DIALOG_BORDER,
+  FOOTER_BORDER_COLOR_RGB,
+  FOOTER_BUTTON_WIDTH,
+  FOOTER_BUTTON_HEIGHT,
+} from './config';
 
 /* Dialog Container */
 const DialogContainer = styled('div')`
@@ -18,7 +30,7 @@ const DialogContainer = styled('div')`
   &.has-title {
     ::before {
       ${CSS.DONT_GROW}
-      ${CONFIG.DIALOG_FONT}
+      ${DIALOG_FONT}
       content: '';
       height: 23px;
       width: 100%;
@@ -49,7 +61,7 @@ const DialogTitle = styled('div')`
 // we move the dialog-window up 17px (top: -17px) which also moves the
 // bottom up, we need to stretch that back down by 17px (margin-bottom: -17px)
 const DialogWindow = styled('div')`
-  ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT} ${CONFIG.DIALOG_SHADOW} ${CONFIG.DIALOG_BORDER}
+  ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT} ${DIALOG_SHADOW} ${DIALOG_BORDER}
   position: relative;
   top: -17px;
   margin-bottom: -17px;
@@ -84,7 +96,7 @@ const CloseIcon = styled('span')`
   display: inline-block;
   text-align: center;
   cursor: pointer;
-  pointer-events: bounding-box;
+  pointer-events: all;
   background-image: url(images/settings/close-button-grey.png);
   background-position: center;
   background-repeat: no-repeat;
@@ -112,7 +124,7 @@ const OrnamentBottomRight = styled('div')`
 const DialogNavigation = styled('div')`
   ${CSS.DONT_GROW} ${CSS.IS_ROW} ${CSS.CENTERED}
   width: 100%;
-  height: ${CONFIG.DIALOG_HEADING_HEIGHT}px;
+  height: ${DIALOG_HEADING_HEIGHT}px;
   background-image: url(images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
@@ -123,6 +135,9 @@ const DialogNavigation = styled('div')`
   margin-bottom: 10px;
   z-index: 1;
   box-shadow: inset 0 0 60px rgba(0,0,0,0.8);
+  &.bar-only {
+    height: 28px;
+  }
 `;
 
 const DialogNavInnerBorder = styled('div')`
@@ -144,15 +159,31 @@ const DialogNavInnerBorder = styled('div')`
       rgba(0,0,0,0.0), rgba(101,100,98,1), rgba(0,0,0,0.0)
     ) 1;
   }
+  &.no-bottom-border::before {
+    border-bottom: 0;
+  }
+  &.bar-only {
+    height: 32px;
+  }
+`;
+
+const DialogNavigationTabs = styled('div')`
+  position: absolute;
+  ${CSS.IS_ROW} ${CSS.EXPAND_TO_FIT}
+  width: 100%;
+  top: 10px;
+  justify-content: center;
+  left: 0;
 `;
 
 /* Dialog Content */
 const DialogTabContent = styled('div')`
-  ${CONFIG.DIALOG_BACKGROUND}
+  ${DIALOG_BACKGROUND}
   ${CSS.IS_COLUMN}
   ${CSS.EXPAND_TO_FIT}
   margin-top: -10px;
   padding-top: 10px;
+  color: white;
 `;
 
 const DialogContent = styled('div')`
@@ -164,7 +195,7 @@ const DialogContent = styled('div')`
 /* Dialog Footer */
 const DialogFooter = styled('div')`
   ${CSS.DONT_GROW} ${CSS.IS_ROW} ${CSS.CENTERED}
-  height: ${CONFIG.DIALOG_FOOTER_HEIGHT}px;
+  height: ${DIALOG_FOOTER_HEIGHT}px;
   position: relative;
   background-image: url(images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
@@ -201,14 +232,14 @@ const DialogFooterInnerBorder = styled('div')`
   box-sizing: border-box!important;
   ::before {
     content: '';
-    border: 1px solid rgba(${CONFIG.FOOTER_BORDER_COLOR_RGB},0.8);
+    border: 1px solid rgba(${FOOTER_BORDER_COLOR_RGB},0.8);
     ${CSS.IS_ROW} ${CSS.EXPAND_TO_FIT}
     height: 100%;
     border-image: linear-gradient(
       to right,
-      rgba(${CONFIG.FOOTER_BORDER_COLOR_RGB},0.2),
-      rgba(${CONFIG.FOOTER_BORDER_COLOR_RGB},0.8),
-      rgba(${CONFIG.FOOTER_BORDER_COLOR_RGB},0.2)
+      rgba(${FOOTER_BORDER_COLOR_RGB},0.2),
+      rgba(${FOOTER_BORDER_COLOR_RGB},0.8),
+      rgba(${FOOTER_BORDER_COLOR_RGB},0.2)
     ) 1;
   }
 
@@ -216,16 +247,16 @@ const DialogFooterInnerBorder = styled('div')`
 
 const DialogFooterButton = styled('div')`
   ${CSS.ALLOW_MOUSE}
-  width: ${CONFIG.FOOTER_BUTTON_WIDTH}px;
-  height: ${CONFIG.FOOTER_BUTTON_HEIGHT}px;
-  line-height: ${CONFIG.FOOTER_BUTTON_HEIGHT}px;
+  width: ${FOOTER_BUTTON_WIDTH}px;
+  height: ${FOOTER_BUTTON_HEIGHT}px;
+  line-height: ${FOOTER_BUTTON_HEIGHT}px;
   text-align: center;
   text-transform: uppercase;
   color: ${CONFIG.NORMAL_TEXT_COLOR};
   margin: 0 3px;
   font-size: 9px;
   background-image: url(images/settings/button-off.png);
-  ${CONFIG.DIALOG_FONT}
+  ${DIALOG_FONT}
   letter-spacing: 2px;
   position: relative;
   &:hover {
@@ -243,15 +274,30 @@ const DialogFooterButton = styled('div')`
   }
 `;
 
+export const DialogHeading = styled('div')`
+  ${CSS.DONT_GROW} ${CSS.IS_ROW}
+  ${DIALOG_FONT}
+  font-size: 18px;
+  color: ${CONFIG.NORMAL_TEXT_COLOR};
+  text-transform: uppercase;
+  line-height: 40px;
+  margin-left: 20px;
+  text-align: center;
+`;
+
 export interface DialogButton {
   label: string;
 }
 
 interface DialogProps {
+  name?: string;               // dialog name (used for serialisation)
   title: string;
-  tabs: DialogButton[];
   onClose: () => void;
-  children?: (tab: DialogButton) => JSX.Element;
+  heading?: boolean;
+  tabs?: DialogButton[];
+  renderNav?: () => any;
+  renderHeader?: () => any;
+  children?: (tab: DialogButton) => any;
 }
 
 interface DialogState {
@@ -283,55 +329,86 @@ interface DialogState {
       return the JSX content for that tab.
 */
 
-const PERSIST_KEY = 'cse-settings-current-tab';
+const persistKey = (name: string) => `cse-${name}-current-tab`;
 
 export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> {
   constructor(props: DialogProps) {
     super(props);
     this.state = { activeTab: undefined };
   }
-  public componentDidMount() {
-    this.selectTab(localStorage[PERSIST_KEY] | 0);
+  public componentWillMount() {
+    this.restoreTab(this.props);
   }
-  public selectTab = (index: number) => {
-    this.setState({ activeTab: this.props.tabs[index] });
-    localStorage.setItem(PERSIST_KEY, `${index}`);
+  public componentWillReceiveProps(next: DialogProps) {
+    this.restoreTab(next);
   }
   public render() {
-    const { tabs } = this.props;
-    const activeTab = this.state.activeTab || tabs[0];
+    const { tabs, children, renderNav, renderHeader, heading } = this.props;
+    const activeTab = this.state.activeTab || (tabs && tabs[0]);
+    const cls = [];
+    const clsInner = [];
+    if (heading === false) {
+      cls.push('bar-only');
+      clsInner.push('bar-only');
+    }
+    if (renderHeader) clsInner.push('no-bottom-border');
     return (
-      <DialogContainer className={`has-title`} data-id='dialog-container'>
+      <DialogContainer className={`has-title cse-ui-scroller-thumbonly`} data-id='dialog-container'>
         <DialogTitle>{this.props.title}</DialogTitle>
         <DialogWindow data-id='dialog-window'>
           <OrnamentTopLeft/>
           <OrnamentTopRight>
-            <CloseIcon onClick={(e: React.MouseEvent<HTMLSpanElement>) => {
-              this.props.onClose();
-              e.preventDefault();
-            }}/>
+          <CloseIcon onClick={(e: React.MouseEvent<HTMLSpanElement>) => {
+            this.props.onClose();
+            e.preventDefault();
+          }}/>
           </OrnamentTopRight>
-          <DialogNavigation data-id='dialog-heading'>
-            <DialogNavInnerBorder/>
-            { tabs.map((item, index) => (
-              <NavButton key={index} className={activeTab === item && 'selected'}
-                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                  this.selectTab(index);
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}>
-                <NavButtonLabel>
-                  {item.label}
-                </NavButtonLabel>
-              </NavButton>
-            ))}
+          <DialogNavigation className={cls.join()} data-id='dialog-heading'>
+            <DialogNavInnerBorder className={clsInner.join()}/>
+            { renderHeader && renderHeader() || (
+                heading !== false && (
+                  <DialogNavigationTabs>
+                  { renderNav && renderNav() || this.renderTabs(activeTab) }
+                  </DialogNavigationTabs>
+                )
+              )
+            }
           </DialogNavigation>
-          {this.props.children(activeTab)}
+          { children && children(activeTab) }
           <OrnamentBottomLeft/>
           <OrnamentBottomRight/>
         </DialogWindow>
       </DialogContainer>
     );
+  }
+
+  private selectTab = (tab: DialogButton, index: number, key?: string) => {
+    this.setState({ activeTab: tab });
+    localStorage.setItem(key, `${index}`);
+  }
+
+  private restoreTab(props: DialogProps) {
+    const { name, tabs } = this.props;
+    if (name && tabs && tabs.length) {
+      const index = localStorage[persistKey(name)] | 0;
+      this.selectTab(tabs[index], index);
+    }
+  }
+
+  private renderTabs = (activeTab: DialogButton) => {
+    const { name, tabs } = this.props;
+    return tabs && tabs.map((item, index) => (
+      <NavButton key={index} className={activeTab === item && 'selected'}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          this.selectTab(tabs[index], index, persistKey(name));
+          e.stopPropagation();
+          e.preventDefault();
+        }}>
+        <NavButtonLabel>
+          {item.label}
+        </NavButtonLabel>
+      </NavButton>
+    ));
   }
 }
 
@@ -356,6 +433,7 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
 
 interface DialogTabProps {
   buttons?: DialogButton[];
+  renderFooter?: (props: DialogTabProps) => JSX.Element;
   onAction?: (button: DialogButton) => void;
   children?: any;
 }
@@ -368,19 +446,22 @@ export function DialogTab(props: DialogTabProps) {
       <DialogContent data-id='dialog-content'>
         {props.children}
       </DialogContent>
-      <DialogFooter data-id='dialog-footer'>
-        <DialogFooterInnerBorder/>
-        { buttons && buttons.map(button => (
-          <DialogFooterButton key={button.label}
-            onClick={props.onAction && ((e: React.MouseEvent<HTMLDivElement>) => {
-              props.onAction(button);
-              e.stopPropagation();
-              e.preventDefault();
-            })}>
-            {button.label}
-          </DialogFooterButton>
-        ))}
-      </DialogFooter>
+      { props.renderFooter && props.renderFooter(props) }
+      { !props.renderFooter && props.buttons && props.buttons.length &&
+        <DialogFooter data-id='dialog-footer'>
+          <DialogFooterInnerBorder/>
+          { buttons && buttons.map(button => (
+            <DialogFooterButton key={button.label}
+              onClick={props.onAction && ((e: React.MouseEvent<HTMLDivElement>) => {
+                props.onAction(button);
+                e.stopPropagation();
+                e.preventDefault();
+              })}>
+              {button.label}
+            </DialogFooterButton>
+          ))}
+        </DialogFooter>
+      }
     </DialogTabContent>
   );
 }

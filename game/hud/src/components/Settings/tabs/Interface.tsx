@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { DialogTab, DialogButton } from '../components/TabbedDialog/index';
-import { SideMenu, MenuOption } from '../components/SideMenu';
+import { DialogTab, DialogButton } from '../../../widgets/UI/TabbedDialog';
+import { SideMenu, MenuOption } from '../../../widgets/UI/SideMenu';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
@@ -22,7 +22,7 @@ interface InterfaceSettingsProps {
 export function InterfaceSettings(props: InterfaceSettingsProps) {
   return (
     <DialogTab buttons={buttons}>
-      <SideMenu persist='interface' options={options}>{
+      <SideMenu name='settings' id='interface' options={options}>{
         (option: MenuOption) => {
           return <ComingSoon/>;
         }

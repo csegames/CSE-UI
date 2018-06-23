@@ -5,27 +5,31 @@
  */
 
 import styled from 'react-emotion';
-import * as CONFIG from '../../config';
+import * as CONFIG from '../config';
+import { DIALOG_FONT, FOOTER_BORDER_COLOR_RGB } from './config';
+
+const NAV_BUTTON_WIDTH = 147;
+const NAV_BUTTON_HEIGHT = 45;
 
 const NavButtonLabel = styled('span')`
   position: absolute;
-  line-height: ${CONFIG.NAV_BUTTON_HEIGHT - 5}px;
+  line-height: ${NAV_BUTTON_HEIGHT - 5}px;
   text-align: center;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 2px;
   width: 100%;
 `;
 
 const NavButton = styled('div')`
-  width: ${CONFIG.NAV_BUTTON_WIDTH}px;
-  height: ${CONFIG.NAV_BUTTON_HEIGHT}px;
-  line-height: ${CONFIG.NAV_BUTTON_HEIGHT - 5}px;
+  width: ${NAV_BUTTON_WIDTH}px;
+  height: ${NAV_BUTTON_HEIGHT}px;
+  x-line-height: ${NAV_BUTTON_HEIGHT - 5}px;
   overflow: visible;
-  ${CONFIG.DIALOG_FONT}
+  ${DIALOG_FONT}
   position: relative;
   cursor: pointer;
-  pointer-events: bounding-box;
+  pointer-events: all;
 
   /* Normal Nav Button, with arrow pointing up */
   color: ${CONFIG.NAV_NORMAL_TEXT_COLOR};
@@ -49,7 +53,7 @@ const NavButton = styled('div')`
     border: 1px solid rgba(255,255,255,0.5);
     border-image: linear-gradient(
       to top,
-      rgb(${CONFIG.FOOTER_BORDER_COLOR_RGB}) 0%,
+      rgb(${FOOTER_BORDER_COLOR_RGB}) 0%,
       rgba(0,0,0,0) 60%,
       rgba(0,0,0,0) 80%
     ) 0 1 1 1;
@@ -58,7 +62,6 @@ const NavButton = styled('div')`
   &:hover {
     background-color: rgba(39,39,39,0.6);
     height: 41px;
-    top: -2px;
   }
 
   &.selected {
@@ -77,7 +80,6 @@ const NavButton = styled('div')`
 
     background: black;
     height: 42px;
-    top: -2px;
 
     /* Border */
     border: ${CONFIG.NAV_BUTTON_BORDER_WIDTH}px rgb(${CONFIG.HIGHLIGHTED_BUTTON_BORDER}) solid;
