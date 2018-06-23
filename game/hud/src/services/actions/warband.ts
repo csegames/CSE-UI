@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
+import { client, events } from '@csegames/camelot-unchained';
 import { defaultConfig } from '@csegames/camelot-unchained/lib/webAPI/config';
 import { GroupsAPI, GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 
@@ -139,6 +139,14 @@ export function getActiveWarbandID() {
 }
 
 export function setActiveWarbandID(id: string) {
+  const stateObjectID = getStateObject().id;
+  if (stateObjectID) {
+    events.fire('chat-leave-room', stateObjectID);
+  }
+
+  if (typeof id === 'string') {
+    events.fire('chat-show-room', id, 'Warband');
+  }
   getStateObject().id = id;
   getStateObject().membersMap = {};
   getStateObject().membersEntityIDMap = {};

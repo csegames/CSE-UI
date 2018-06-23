@@ -126,8 +126,9 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     this.state.chat.leaveRoom(roomId);
   }
 
-  private joinRoom = (roomName: string) : void => {
-    this.state.chat.joinRoom(new RoomId(roomName, chatType.GROUP));
+  private joinRoom = (roomName: string, displayName?: string) : void => {
+    const roomId = new RoomId(roomName, chatType.GROUP, displayName);
+    this.state.chat.joinRoom(roomId);
   }
 
   private slashCommand = (command: string) : boolean => {

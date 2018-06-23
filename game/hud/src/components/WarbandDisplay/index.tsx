@@ -168,7 +168,6 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandJoined = (id: string) => {
-    events.fire('chat-show-room', id);
     this.setState({
       ...(WarbandDisplay.emptyWarband()),
       warbandID: id,
@@ -177,8 +176,6 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandQuit = (id: string) => {
-    events.fire('chat-leave-room', id);
-
     if (getActiveWarbandID() === id) {
       setActiveWarbandID(null);
     }

@@ -9,10 +9,12 @@ import { chatType } from './ChatMessage';
 class RoomId {
   public type: chatType;
   public name: string;
+  public displayName: string;
 
-  constructor(name: string, type: chatType) {
+  constructor(name: string, type: chatType, displayName?: string) {
     this.type = type;
-    this.name = name.toLowerCase();
+    this.name = typeof name === 'string' ? name.toLowerCase() : '';
+    this.displayName = typeof displayName === 'string' ? displayName.toLowerCase() : '';
   }
 
   public same(roomId: RoomId) : boolean {

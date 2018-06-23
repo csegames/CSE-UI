@@ -34,7 +34,7 @@ class Room extends React.Component<RoomProps, RoomState> {
       <div className={classes.join(' ')} onClick={this.select}>
         <div className='chat-room-close' onClick={this.leave}></div>
         <ul>
-          <li className='chat-room-name'>{this.props.roomId.name}</li>
+          <li className="chat-room-name">{this.props.roomId.displayName || this.props.roomId.name}</li>
           {players}
         </ul>
         <div className={this.props.unread ? 'chat-unread' : 'chat-hidden'}>{this.props.unread}</div>

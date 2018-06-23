@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { find } from 'lodash';
 import { Room } from '../lib/CSEChat';
 import { ChatMessage, chatType } from './ChatMessage';
 import { UserInfo } from './User';
@@ -152,10 +153,10 @@ class ChatSession {
     this.reconnecting = true;
 
     // Build list of rooms to re-connect to
-    const rooms : string[] = [];
+    const rooms : RoomId[] = [];
     for (let i = 0; i < this.rooms.length; i++) {
       if (this.rooms[i].roomId.type === chatType.GROUP) {
-        rooms.push(this.rooms[i].roomId.name);
+        rooms.push(this.rooms[i].roomId);
         this.rooms[i].players = 0;
       }
     }
@@ -216,8 +217,10 @@ class ChatSession {
     if (message.type === chatType.PRIVATE && message.nick === 'chat.camelotunchained.com/warning') {
       this.broadcast(message);
     } else {
-      const roomId = new RoomId(message.roomName, message.type);
-      const room : ChatRoomInfo = this.getRoom(roomId);
+      const tempRoomId = new RoomId(message.roomName, message.type);
+      const room = this.getRoom(tempRoomId);
+      const roomId = room.roomId;
+
       room.push(message);  // increments unread
       if (!this.currentRoom) {
         this.currentRoom = roomId;
@@ -233,7 +236,7 @@ class ChatSession {
   public presence(type: number, user: UserInfo) : void {
     // find the room this user is in, don't create room unless this is an available presence
     const roomId = new RoomId(user.roomName, chatType.GROUP);
-    const room : ChatRoomInfo = this.getRoom(roomId, type === messageType.AVAILIBLE);
+    const room: ChatRoomInfo = this.getRoom(roomId, type === messageType.AVAILIBLE);
     if (room) {
       // enter or leave
       if (type === messageType.AVAILIBLE) {
@@ -298,12 +301,17 @@ class ChatSession {
 
   public joinRoom(roomId: RoomId) : void {
     if (!this.findRoom(roomId)) {
-      this.client.joinRoom(roomId.name);
+      const room: ChatRoomInfo = this.getRoom(roomId, true);
+      this.client.joinRoom(room.roomId);
+      room.seen();
+      room.startScrollback();
+      this.setCurrentRoom(room.roomId);
+      return;
     }
     const room: ChatRoomInfo = this.getRoom(roomId);
     room.seen();
     room.startScrollback();
-    this.setCurrentRoom(roomId);
+    this.setCurrentRoom(room.roomId);
   }
 
   public leaveRoom(roomId: RoomId) : void {
