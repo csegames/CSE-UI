@@ -233,17 +233,6 @@ export class PatcherAPI {
   }
 
   public onError(handler: (error: PatcherError) => void) {
-    /*
-    function fakeIt() {
-      if (Date.now() % 10 < 9) {
-        handler({ message: 'Test non-fatal message', fatal: false });
-      } else {
-        handler({ message: 'Test fatal message', fatal: true });
-      }
-      setTimeout(fakeIt, 10000);
-    }
-    setTimeout(fakeIt, 10000);
-    */
     if (this._api.OnPatcherError) this._api.OnPatcherError(handler);
   }
 
