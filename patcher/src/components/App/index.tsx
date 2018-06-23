@@ -16,6 +16,7 @@ import { NewsState, fetchPage } from '../../services/session/news';
 import { SoundsState, muteMusic, unMuteMusic, muteSounds, unMuteSounds } from '../../services/session/sounds';
 import { ChatState, showChat } from '../../services/session/chat';
 import { TopVeil, TopLeftVeil, BottomVeil, BottomLeftVeil, BottomRightVeil } from '../Viels';
+import GettingStarted from '../GettingStarted';
 
 // Components
 import Hero from '../Hero';
@@ -63,6 +64,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
           <Hero isFetching={this.props.heroContentState.isFetching}
                 lastUpdated={this.props.heroContentState.lastFetchSuccess}
                 items={this.props.heroContentState.items} />
+
+          <GettingStarted />
         </div>
 
         <Controller onLogIn={this.onLogIn} activeRoute={this.props.currentRoute} />
