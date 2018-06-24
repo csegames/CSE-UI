@@ -5,7 +5,26 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import { client, webAPI } from '@csegames/camelot-unchained';
+
+const ZoneNameContainer = styled('div')`
+  margin-top: 40px;
+  height: 32px;
+  min-width: 234px;
+  background: url("images/zone/zonename-background.png") no-repeat;
+  border-left: 3px solid #3b3634;
+  h3 {
+    font-family: 'Caudex', serif;
+    color: #968876;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    line-height: 32px;
+    margin-left: 10px;
+    text-shadow: 1px 1px 1px #000000;
+  }
+`;
 
 export interface ZoneNameState {
   name: string;
@@ -44,8 +63,10 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
   }
 
   public render() {
-    return <div style={{ marginTop: '30px' }}>
-      <h1>ZONE: {this.state.name}</h1>
-    </div>;
+    return (
+      <ZoneNameContainer>
+        <h3>ZONE: {this.state.name}</h3>
+      </ZoneNameContainer>
+    )
   }
 }
