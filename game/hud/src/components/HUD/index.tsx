@@ -73,7 +73,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     const locked = this.props.layout.locked;
     const renderWidgets = widgets
                     .sort((a, b) => a.widget.position.zOrder - b.widget.position.zOrder)
-                    .map((w, idx) => 
+                    .map((w, idx) =>
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
@@ -120,15 +120,15 @@ class HUD extends React.Component<HUDProps, HUDState> {
       });
     }
 
-    // manage visibility of welcome widget based on localStorage
-    this.setVisibility('welcome', true);
+    // manage visibility of motd widget based on localStorage
+    this.setVisibility('motd', true);
     try {
       const delayInMin: number = 24 * 60;
-      const savedDelay = localStorage.getItem('cse-welcome-hide-start');
+      const savedDelay = localStorage.getItem('cse-MOTD-hide-start');
       const currentDate: Date = new Date();
       const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
       savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
-      if (currentDate < savedDelayDate) this.setVisibility('welcome', false);
+      if (currentDate < savedDelayDate) this.setVisibility('motd', false);
     } catch (error) {
       console.log(error);
     }
