@@ -228,6 +228,51 @@ export default {
         },
       },
       {
+        name: 'scenario',
+        tooltip: 'Scenario Management',
+        iconClass: 'fa-gamepad',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('showscenarioui');
+        },
+      },
+      {
+        name: 'nearby-plot',
+        tooltip: 'Nearby Plot',
+        iconClass: 'fa-building',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-building fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --nearby');
+        },
+      },
+      {
+        name: 'owned-plot',
+        tooltip: 'Owned Plot',
+        iconClass: 'fa-home',
+        icon: (
+          <span className='fa-stack click-effect'>
+            <i className='fa fa-square fa-stack-2x'></i>
+            <i className='fa fa-home fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --owned');
+        },
+      },
+      {
         name: 'scenario-results',
         tooltip: 'Scenario Results',
         iconClass: 'fa-star',
