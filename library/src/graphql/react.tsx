@@ -199,7 +199,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   public componentDidMount() {
-    if (this.queryOptions.pollInterval > 0) {
+    if (this.queryOptions && this.queryOptions.pollInterval > 0) {
       this.pollingRefetch();
     } else if (this.state.data === null) {
       this.refetch();

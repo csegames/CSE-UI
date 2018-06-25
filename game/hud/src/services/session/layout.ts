@@ -14,7 +14,7 @@ import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';
-import Welcome from './layoutItems/Welcome';
+import MOTD from './layoutItems/MOTD';
 import Warband from './layoutItems/Warband';
 // import Respawn from './layoutItems/Respawn';
 import Compass from './layoutItems/Compass';
@@ -120,7 +120,7 @@ function initialState(): LayoutState {
     //   'hudNav', HUDNav
     // ],
     [
-      'welcome', cloneDeep(Welcome),
+      'motd', cloneDeep(MOTD),
     ],
     [
       'compass', cloneDeep(Compass),
