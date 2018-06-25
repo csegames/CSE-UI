@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { keyframes } from 'react-emotion';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { remove } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
@@ -22,20 +22,76 @@ import { subscription, SubscriptionData } from './graphql/subscription';
 import { TradeAlertView, handleNewTradeAlert, removeTradeInvite } from './TradeAlert';
 import { GroupAlertView, handleNewGroupAlert } from './GroupAlert';
 import { ProgressionAlertView } from './ProgressionAlert';
-
+const slideIn = keyframes`
+  0% {
+      height: 0px;
+  }
+  100% {
+      height: 140px;
+  }
+`;
+const slideOut = keyframes`
+  0% {
+      height: 140px;
+  }
+  100% {
+      height: 0px;
+  }
+`;
 const Container = styled('div')`
+  border-image-slice: 1;
+  background: url(images/ui/interactive-alert/alert-bg.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   position: fixed;
-  top: 0;
-  width: 500px;
-  height: 100px;
-  margin-left: -250px;
+  top: -2px;
+  width: 700px;
+  height: 140px;
   left: 50%;
+  margin-left: -350px;
+  animation: ${(props: any) => (props.isOpen) ? slideIn : slideOut} 2s ease;
+  transform-origin: center bottom;
+  &:before {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    content: '';
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    top: 0;
+    height: 10px;
+    background-image: url(images/ui/interactive-alert/divider-top.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+  &:after {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    content: '';
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    bottom: -2px;
+    height: 10px;
+    background-image: url(images/ui/interactive-alert/divider-bottom.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
 `;
 
 export interface Props {
+  isOpen: boolean;
 }
 
 export interface State {
+  isOpen: boolean;
   alerts: IInteractiveAlert[];
 }
 
@@ -44,6 +100,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     super(props);
     this.state = {
       alerts: [],
+      isOpen: true,
     };
   }
 
@@ -56,7 +113,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
         subscriptionHandler={this.handleSubscription}
       >
         {() =>
-        <Container>
+        <Container isOpen={this.state.isOpen}>
           {!_.isEmpty(this.state.alerts) ? (
             this.state.alerts.map((a, i) => {
               switch (a.category) {
@@ -79,16 +136,22 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     );
   }
 
+  public toggleOpen = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  }
+
   private removeAlert = (alert: IInteractiveAlert) => {
     let alerts = [...this.state.alerts];
     switch (alert.category) {
       case 'Trade': {
         alerts = removeTradeInvite(this.state.alerts, alert as TradeAlert).alerts;
+        this.toggleOpen();
         break;
       }
 
       default: {
         alerts = remove(alerts, alert);
+        this.toggleOpen();
         break;
       }
     }

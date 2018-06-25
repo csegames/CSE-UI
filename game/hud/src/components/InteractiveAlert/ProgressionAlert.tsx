@@ -10,6 +10,7 @@ import styled from 'react-emotion';
 import { filter } from 'lodash';
 import { events } from '@csegames/camelot-unchained';
 import { ProgressionAlert, IInteractiveAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
+import * as CONFIG from '../Settings/config';
 
 // Utility Functions
 export function removeProgressionAlert(alertsList: IInteractiveAlert[], toRemove: ProgressionAlert) {
@@ -22,23 +23,49 @@ export function removeProgressionAlert(alertsList: IInteractiveAlert[], toRemove
 }
 
 const Container = styled('div')`
-  background: #646464;
+    margin-top: 20px;
+    height: 100px;
+    text-align: center;
+    color: #FFFFFF;
+`;
+
+const InputContainer = styled('div')`
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    position: absolute;
+    bottom: 20px;
+    left: 250px;
 `;
 
 const Button = styled('div')`
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  width: 120px;
-  height: 32px;
-  line-height: 32px;
-  border-radius: 2px;
-  font-size: 0.9em;
-  background-color: #fff;
-  color: #646464;
-  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: 0.2s;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    width: ${CONFIG.ACTION_BUTTON_WIDTH}px;
+    height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
+    line-height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
+    text-align: center;
+    text-transform: uppercase;
+    color: ${CONFIG.NORMAL_TEXT_COLOR};
+    margin: 0 3px;
+    font-size: 9px;
+    background-image: url(images/settings/button-off.png);
+    ${CONFIG.INTERACTIVE_FONT}
+    letter-spacing: 2px;
+    position: relative;
+    &:hover {
+    color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
+    background-image: url(images/settings/button-on.png);
+    ::before {
+      content: '';
+      position: absolute;
+      background-image: url(images/settings/button-glow.png);
+      width: 93px;
+      height: 30px;
+      left: 1px;
+      background-size: cover;
+    }
+    }
 `;
 
 export interface Props {
@@ -55,8 +82,10 @@ export class ProgressionAlertView extends React.Component<Props, State> {
     return (
       <Container>
         <h6>A new progression report is available!  Would you like to view it now and collect your rewards?</h6>
-        <Button onClick={this.onOpenProgressionClick}>Yes</Button>
-        <Button onClick={this.onDismissClick}>No</Button>
+        <InputContainer>
+            <Button onClick={this.onOpenProgressionClick}>Yes</Button>
+            <Button onClick={this.onDismissClick}>No</Button>
+        </InputContainer>
       </Container>
     );
   }
