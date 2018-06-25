@@ -10,7 +10,7 @@ import styled, { css } from 'react-emotion';
 import { Tooltip, utils } from '@csegames/camelot-unchained';
 
 const List = styled('ul')`
-  margin: 0;
+  margin: 0 0 0 10px !important;
   padding: 0;
   list-style: none;
 `;
@@ -22,11 +22,29 @@ const ListHorizontal = css`
 const Item = styled('a')`
   pointer-events: all;
   color: #4D573E !important;
-  transition: all 0.2s;
-  animation: none;
+  background: url(images/hudnav/flag_off.png) no-repeat;
+  width: 32px;
+  height: 42px;
+  text-align: center;
+  display: block;
   &:hover {
-    cursor: pointer;
-    color: ${utils.lightenColor('#4D573E', 20)} !important;
+    background: url(images/hudnav/flag_on.png) no-repeat;
+    i {
+      font-size: 14px;
+      color: #d9d6cd;
+    }
+  }
+  span {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 42px;
+    line-height: 36px;
+    vertical-align: middle;
+    i {
+      color: #aba9a2;
+      font-size: 14px;
+    }
   }
 `;
 
@@ -67,15 +85,14 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
           this.state.collapsed ?
             (<Tooltip content='Show Quick Menu' styles={{
               tooltip: {
-                backgroundColor: '#4d573e',
+                backgroundColor: '#3e3e3e',
               },
             }}>
               <li
                 className={this.props.orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}
                 onClick={this.show}>
-                <Item href='#' className={'click-effect'}>
-                  <span className='fa-stack click-effect'>
-                    <i className='fa fa-square fa-stack-2x'></i>
+                <Item href='#'>
+                  <span>
                     <i className='fa fa-bars fa-stack-1x fa-inverse'></i>
                   </span>
                 </Item>
@@ -87,7 +104,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                   return (
                     <Tooltip key={name} content={tooltip} styles={{
                       tooltip: {
-                        backgroundColor: '#4d573e',
+                        backgroundColor: '#3e3e3e',
                       },
                     }}>
                       <li
@@ -95,7 +112,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                         id={name}
                         key={name}
                         onClick={onClick}>
-                        <Item href='#' className={'click-effect'}>
+                        <Item href='#'>
                           {
                             typeof icon !== 'undefined' ? icon :
                               <i className={className('fa', 'fa-lg', iconClass, 'click-effect')}></i>
@@ -108,15 +125,14 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
 
                 <Tooltip content='Collapse Quick Menu' styles={{
                   tooltip: {
-                    backgroundColor: '#4d573e',
+                    backgroundColor: '#3e3e3e',
                   },
                 }}>
                   <li
                     className={this.props.orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}
                     onClick={this.hide}>
-                    <Item href='#' className={'click-effect'}>
-                      <span className='fa-stack click-effect'>
-                        <i className='fa fa-square fa-stack-2x'></i>
+                    <Item href='#'>
+                      <span>
                         <i className='fa fa-caret-left fa-stack-1x fa-inverse'></i>
                       </span>
                     </Item>
