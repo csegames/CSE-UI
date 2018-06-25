@@ -6,12 +6,13 @@
 
 import { client, utils, signalr, events, webAPI } from '@csegames/camelot-unchained';
 import { Module } from 'redux-typed-modules';
-import { patcher, Channel, ChannelStatus } from '../../../../services/patcher';
+import { patcher, Channel, ChannelStatus, PatcherError } from '../../../../services/patcher';
 
 export interface ControllerState {
   isInitializing: boolean;
   signalRInitialized: boolean;
   alerts: utils.Dictionary<webAPI.PatcherAlert>;
+  errors: PatcherError[];
   characters: utils.Dictionary<webAPI.SimpleCharacter>;
   servers: utils.Dictionary<PatcherServer>;
   connectionSlow: boolean;
@@ -22,6 +23,7 @@ function initialState(): ControllerState {
     isInitializing: false,
     signalRInitialized: false,
     alerts: {},
+    errors: [],
     characters: {},
     servers: {},
     connectionSlow: false,
@@ -31,6 +33,7 @@ function initialState(): ControllerState {
 export interface ControllerAction extends utils.BaseAction {
   id?: string;
   alert?: webAPI.PatcherAlert;
+  patcherError?: PatcherError;
   server?: webAPI.ServerModel;
   character?: webAPI.SimpleCharacter;
   channels?: Channel[];
@@ -167,6 +170,28 @@ const module = new Module({
   },
 });
 
+export const listenForErrors = module.createAction({
+  type: 'controller/listen-for-errors',
+  action: () => {
+    return (dispatch: (action: ControllerAction) => void) => {
+      // Listen for patcher errors
+      patcher.onError((error: PatcherError) => {
+        dispatch(gotPatcherError(error));
+      });
+    };
+  },
+});
+
+export const clearError = module.createAction({
+  type: 'controller/clear-error',
+  action: () => {
+    return {};
+  },
+  reducer: (s) => {
+    return { errors: s.errors.slice(1) };
+  },
+});
+
 export const reset = module.createAction({
   type: 'controller/reset',
   action: () => null,
@@ -210,6 +235,16 @@ export const initialize = module.createAction({
           }
         });
     };
+  },
+});
+
+export const gotPatcherError = module.createAction({
+  type: 'controllers/gotPatcherError',
+  action: (patcherError: PatcherError) => {
+    return { patcherError };
+  },
+  reducer: (s, a) => {
+    return { errors: s.errors.concat(a.patcherError) };
   },
 });
 

@@ -19,6 +19,8 @@ import {
   ServerType,
   initialize,
   characterRemoved,
+  listenForErrors,
+  clearError,
 } from '../../services/session/controller';
 
 export interface APIServerStatus {
@@ -73,6 +75,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
         onChooseCharacter={this.onChooseCharacter}
         onToggleCharacterSelect={this.toggleCharacterSelect}
         onDeleteCharacterSuccess={this.onDeleteCharacterSuccess}
+        onClearError={this.onClearError}
         selectCharacter={this.selectCharacter}
         selectServer={this.selectServer}
         selectServerType={this.selectServerType}
@@ -83,6 +86,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
 
   public componentDidMount() {
     this.getServers();
+    this.props.dispatch(listenForErrors());
   }
 
   private getServers = async () => {
@@ -101,6 +105,10 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
 
   private onLogin = () => {
     this.props.dispatch(initialize());
+  }
+
+  private onClearError = () => {
+    this.props.dispatch(clearError());
   }
 
   private toggleCharacterSelect = () => {
