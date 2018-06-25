@@ -6,6 +6,9 @@
 
 import * as React from 'react';
 import { events } from '@csegames/camelot-unchained';
+import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
+import { PassiveAlert as IPassiveAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import styled, { keyframes } from 'react-emotion';
 
 const fadeTime = 3000;
@@ -39,6 +42,7 @@ const PassiveAlertItem = styled('li')`
   animation-delay: ${fadeTime - 500}ms;
 `;
 
+
 export interface Alert {
   id: string;
   message: string;
@@ -49,6 +53,19 @@ export interface Props {
 
 export interface State {
   alerts: Alert[];
+}
+
+const subscription = `
+  subscription {
+    passiveAlerts {
+      targetID
+      message
+    }
+  }
+`;
+
+type SubscriptionType = {
+  passiveAlerts: Pick<IPassiveAlert, 'message'>;
 }
 
 class PassiveAlert extends React.Component<Props, State> {
@@ -70,6 +87,7 @@ class PassiveAlert extends React.Component<Props, State> {
             </PassiveAlertItem>)
           }
         </ul>
+        <GraphQL subscription={subscription} subscriptionHandler={this.handleSubscription} />
       </PassiveAlertContainer>
     );
   }
@@ -80,6 +98,12 @@ class PassiveAlert extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     events.off(this.passiveAlertListener);
+  }
+
+  private handleSubscription = (result: SubscriptionResult<SubscriptionType>) => {
+    if (!result.data || !result.data.passiveAlerts) return;
+
+    this.addAlertMessage(result.data.passiveAlerts.message);
   }
 
   private removeAlertById = (id: string) => {
@@ -98,7 +122,7 @@ class PassiveAlert extends React.Component<Props, State> {
   }
 
   private addAlertMessage = (message: string) => {
-    const id = Math.random().toString().slice(2, 11);
+    const id = this.createAlertID();
     this.setState({ alerts: [{ id, message }, ...this.state.alerts]});
 
     // Set timer to remove the item by id
@@ -110,6 +134,11 @@ class PassiveAlert extends React.Component<Props, State> {
     if (this.state.alerts.length >= maxNumAlerts) {
       this.removeLastAlert();
     }
+  }
+
+  private createAlertID = () => {
+    const id = Math.random().toString().slice(2, 11);
+    return id;
   }
 }
 

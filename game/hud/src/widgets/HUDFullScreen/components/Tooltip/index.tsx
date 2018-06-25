@@ -22,9 +22,11 @@ import {
   isArmorItem,
   isWeaponItem,
   getTooltipColor,
+  isAlloyItem,
 } from '../../lib/utils';
 import { SlotType } from '../../lib/itemInterfaces';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import TooltipAlloyInfo from './components/TooltipAlloyInfo';
 
 export const defaultTooltipStyle: { tooltip: string } = {
   tooltip: css`
@@ -93,6 +95,7 @@ class TooltipContent extends React.Component<TooltipContentProps> {
         {isWeaponItem(item) && <TooltipWeaponInfo item={item} equippedItems={equippedItems} />}
         {isContainerItem(item) && <TooltipContainerInfo item={item} />}
         {isSubstanceItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipSubstanceInfo item={item} />}
+        {isAlloyItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipAlloyInfo item={item} />}
         {isBuildingBlockItem(item) && <TooltipBuildingBlockInfo item={item} />}
         <TooltipFooter item={item} slotType={slotType} />
       </Container>

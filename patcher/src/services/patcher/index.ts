@@ -59,6 +59,11 @@ export interface Channel {
   lastUpdated: number;
 }
 
+export interface PatcherError {
+  message: string;
+  fatal: boolean;
+}
+
 const API : string = 'patcherAPI';
 
 // Define patcher class
@@ -233,6 +238,11 @@ export class PatcherAPI {
   public maximizeWindow() {
     this._api.maxmizeWindow();
   }
+
+  public onError(handler: (error: PatcherError) => void) {
+    if (this._api.OnPatcherError) this._api.OnPatcherError(handler);
+  }
+
   private getChannelValue(channel:Channel) : number {
     // force sort order to Hatchery, Wyrmling, Other Channels, and Editor last
     if (channel.channelID === 4) return 0; // Hatchery
