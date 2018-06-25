@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { cancel, getGraphicsConfig, ConfigIndex } from '../utils/configVars';
+import { cancel, getGraphicsConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from '../components/CheckBoxField';
 import { SliderField } from '../components/SliderField';
 import { client, events } from '@csegames/camelot-unchained';
@@ -91,6 +91,7 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
   private onChange = (id: string, value: number) => {
     const { graphics } = this.state;
     if (client.debug) console.log(`graphic set ${id} = ${value}`);
+    sendConfigVarChangeMessage(id, value);
     client.ChangeConfigVar(id, `${value}`);
     client.SaveConfigChanges();
     this.setState({ graphics: Object.assign({}, graphics, { [id]: `${value}` }) });

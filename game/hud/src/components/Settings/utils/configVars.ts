@@ -9,6 +9,7 @@ import keybinds from './samples/keybindsConfig';
 import input from './samples/inputConfig';
 import audio from './samples/audioConfig';
 import graphics from './samples/graphicsConfig';
+import { sendSystemMessage } from '../../../services/actions/system';
 
 function isNotClient() {
   return !!(window['cuOverrides']);
@@ -116,4 +117,14 @@ export function cancel(config: ConfigIndex) {
       configQueue[i].onconfig = null;
     }
   }
+}
+
+window['cu'].configVarAlertMessage = null;
+export function sendConfigVarChangeMessage(id: string, value: string | number) {
+  if (window['cu'].configVarAlertMessage) {
+    clearTimeout(window['cu'].configVarAlertMessage);
+    window['cu'].configVarAlertMessage = null;
+  }
+
+  window['cu'].configVarAlertMessage = window.setTimeout(() => sendSystemMessage(`${id} has been changed to ${value}`), 200);
 }

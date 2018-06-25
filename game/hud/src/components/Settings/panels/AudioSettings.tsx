@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { cancel, getAudioConfig, ConfigIndex } from '../utils/configVars';
+import { cancel, getAudioConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from '../components/CheckBoxField';
 import { SliderField } from '../components/SliderField';
 import { client, events } from '@csegames/camelot-unchained';
@@ -82,9 +82,9 @@ export class AudioSettings extends React.PureComponent<AudioSettingsProps, Audio
   private onChange = (id: string, value: number) => {
     const { audio } = this.state;
     if (client.debug) console.log(`audio set ${id} = ${value}`);
+    sendConfigVarChangeMessage(id, value);
     client.ChangeConfigVar(id, `${value}`);
     client.SaveConfigChanges();
     this.setState({ audio: Object.assign({}, audio, { [id]: `${value}` }) });
   }
-
 }
