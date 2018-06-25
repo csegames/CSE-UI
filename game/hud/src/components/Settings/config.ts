@@ -21,6 +21,11 @@ export const CONTENT_BORDER_COLOR_RGB = '64,64,64';
 export const NAV_NORMAL_TEXT_COLOR = 'rgb(119,119,119)';
 export const NAV_HIGHLIGHT_TEXT_COLOR = 'rgb(255,234,194)';
 
+/* Interactive Alert UI */
+export const INTERACTIVE_FONT = `font-family: 'Caudex', serif;`;
+export const ACTION_BUTTON_WIDTH = 95;
+export const ACTION_BUTTON_HEIGHT = 30;
+
 /* Tabbed Dialog UI */
 export const DIALOG_FONT = `font-family: 'Caudex', serif;`;
 export const DIALOG_BACKGROUND = 'background-image: url(images/ui/modal-bg.png); background-size: cover;';
