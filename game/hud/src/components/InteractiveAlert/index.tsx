@@ -32,7 +32,7 @@ const Container = styled('div')`
   position: fixed;
   top: -2px;
   width: 700px;
-  height: ${(props: any) => props.height.toFixed(1)}px;
+  height: 140px;
   left: 50%;
   margin-left: -350px;
   -webkit-transition: height 1s;
@@ -92,10 +92,6 @@ export class InteractiveAlertView extends React.Component<Props, State> {
   }
 
   public render() {
-    // const testAlert: IInteractiveAlert = {'category':'Group' ,'targetID':'579ki4wcch6N5CCiJFc100','kind':'WarbandInvite',
-    //     'fromName':'Mavelys','fromID':'OPQPO06qZq9BzYjw0iJ200',
-    //     'forGroup':'Km2i2ZeGJFHqr1AVoyp000','forGroupName':'','code':'cTekaIRDE6JcWelIBXH100'} as any;
-    // const alertsWithTest: IInteractiveAlert[] = [...this.state.alerts, testAlert];
     return (
       <GraphQL
         query={query}
@@ -133,26 +129,27 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     );
   }
 
-  public shouldComponentUpdate(nextProps: Props) {
-    return !_.isEqual(nextProps.height, this.props.height);
-  }
-
-  public toggleShown = () => {
-    this.setState(prevState => ({ shown: !prevState.shown }));
-  }
+  // Comments are for animations in progress
+  // public shouldComponentUpdate(nextProps: Props) {
+  //   return !_.isEqual(nextProps.height, this.props.height);
+  // }
+  //
+  // public toggleShown = () => {
+  //   this.setState(prevState => ({ shown: !prevState.shown }));
+  // }
 
   private removeAlert = (alert: IInteractiveAlert) => {
     let alerts = [...this.state.alerts];
     switch (alert.category) {
       case 'Trade': {
         alerts = removeTradeInvite(this.state.alerts, alert as TradeAlert).alerts;
-        this.toggleShown();
+        // this.toggleShown();
         break;
       }
 
       default: {
         alerts = remove(alerts, alert);
-        this.toggleShown();
+        // this.toggleShown();
         break;
       }
     }
