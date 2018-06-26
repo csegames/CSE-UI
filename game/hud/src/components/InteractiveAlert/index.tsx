@@ -32,9 +32,11 @@ const Container = styled('div')`
   position: fixed;
   top: -2px;
   width: 700px;
-  height: 140px;
+  height: ${(props: any) => props.height.toFixed(1)}px;
   left: 50%;
   margin-left: -350px;
+  -webkit-transition: height 1s;
+  transition: height 1s;
   &:before {
     position: relative;
     display: flex;
@@ -69,7 +71,10 @@ const Container = styled('div')`
 }
 `;
 
+
+
 export interface Props {
+  height: number;
 }
 
 export interface State {
@@ -99,7 +104,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
         subscriptionHandler={this.handleSubscription}
       >
         {() =>
-        <Container className={this.state.shown ? 'slideIn' : 'slideOut'}>
+        <Container height={this.state.shown ? '140' : '0'}>
           {!_.isEmpty(this.state.alerts) ? (
             this.state.alerts.map((a, i) => {
               switch (a.category) {
@@ -126,6 +131,10 @@ export class InteractiveAlertView extends React.Component<Props, State> {
         }
       </GraphQL>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: Props) {
+    return !_.isEqual(nextProps.height, this.props.height);
   }
 
   public toggleShown = () => {
