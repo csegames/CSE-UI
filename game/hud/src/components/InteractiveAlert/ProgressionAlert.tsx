@@ -28,7 +28,8 @@ const Container = styled('div')`
     text-align: center;
     color: #baa892;
     ${CONFIG.INTERACTIVE_FONT}
-    font-size: 14px;
+    font-size: 20px;
+    margin: 30px 150px 0px 150px;
 `;
 
 const InputContainer = styled('div')`
@@ -48,7 +49,6 @@ const Button = styled('div')`
     line-height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
     text-align: center;
     text-transform: uppercase;
-    color: ${CONFIG.NORMAL_TEXT_COLOR};
     margin: 0 3px;
     font-size: 9px;
     background-image: url(images/settings/button-off.png);
@@ -69,6 +69,18 @@ const Button = styled('div')`
     }
 `;
 
+const ButtonOverlay = styled('div')`
+    color: ${CONFIG.NORMAL_TEXT_COLOR};
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(images/ui/interactive-alert/button-texture.png);
+    padding-left: 2px;
+    padding-right: 2px;
+`;
+
 export interface Props {
   alert: ProgressionAlert;
   remove: (alert: IInteractiveAlert) => void;
@@ -84,8 +96,8 @@ export class ProgressionAlertView extends React.Component<Props, State> {
       <Container>
         <h6>A new progression report is available!  Would you like to view it now and collect your rewards?</h6>
         <InputContainer>
-            <Button onClick={this.onOpenProgressionClick}>Yes</Button>
-            <Button onClick={this.onDismissClick}>No</Button>
+            <Button onClick={this.onOpenProgressionClick}><ButtonOverlay>Yes</ButtonOverlay></Button>
+            <Button onClick={this.onDismissClick}><ButtonOverlay>No</ButtonOverlay></Button>
         </InputContainer>
       </Container>
     );

@@ -63,7 +63,10 @@ const Container = styled('div')`
     margin-top: 20px;
     height: 100px;
     text-align: center;
-    color: #FFFFFF;
+    color: #baa892;
+    ${CONFIG.INTERACTIVE_FONT}
+    font-size: 20px;
+    margin: 30px 150px 0px 150px;
 `;
 
 const InputContainer = styled('div')`
@@ -83,11 +86,9 @@ const Button = styled('div')`
     line-height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
     text-align: center;
     text-transform: uppercase;
-    color: ${CONFIG.NORMAL_TEXT_COLOR};
     margin: 0 3px;
     font-size: 9px;
     background-image: url(images/settings/button-off.png);
-    ${CONFIG.INTERACTIVE_FONT}
     letter-spacing: 2px;
     position: relative;
     &:hover {
@@ -105,6 +106,18 @@ const Button = styled('div')`
     }
 `;
 
+const ButtonOverlay = styled('div')`
+    color: ${CONFIG.NORMAL_TEXT_COLOR};
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(images/ui/interactive-alert/button-texture.png);
+    padding-left: 2px;
+    padding-right: 2px;
+`;
+
 export interface TradeAlertProps {
   alert: TradeAlert;
   remove: (alert: IInteractiveAlert) => void;
@@ -117,8 +130,8 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
       <Container>
         <h6>{alert.otherName || 'Unknown'} has invited you to a {alert.category}</h6>
         <InputContainer>
-          <Button onClick={this.onAccept}>Accept</Button>
-          <Button onClick={this.onDecline}>Decline</Button>
+            <Button onClick={this.onAccept}><ButtonOverlay>Accept</ButtonOverlay></Button>
+            <Button onClick={this.onDecline}><ButtonOverlay>Decline</ButtonOverlay></Button>
         </InputContainer>
       </Container>
     );
