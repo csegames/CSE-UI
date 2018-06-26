@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import styled from 'react-emotion';
 import { client, events, PlayerState } from '@csegames/camelot-unchained';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 // import { graphql } from 'react-apollo';
@@ -57,6 +58,30 @@ useConfig({
   },
 });
 
+const HUDNavContainer = styled('div')`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 900px;
+  height: 200px;
+  pointer-events: none;
+`;
+
+const ZoneNameContainer = styled('div')`
+  position: fixed;
+  top: 50px;
+  left: 0;
+`;
+
+const SkillBarContainer = styled('div')`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  margin: 0 auto;
+  pointer-events: none;
+`;
+
 export interface HUDProps {
   dispatch: (action: any) => void;
   layout: LayoutState;
@@ -79,12 +104,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {renderWidgets}
         <DragStore />
-        <ZoneName />
+        <ZoneNameContainer>
+          <ZoneName />
+        </ZoneNameContainer>
         <Console />
 
-        <div style={{ position: 'fixed', left: '0px', top: '0px', width: '900px', height: '200px', pointerEvents: 'none' }}>
+        <HUDNavContainer>
           <HUDNav.component {...HUDNav.props} />
-        </div>
+        </HUDNavContainer>
 
         <InteractiveAlertView />
         <DevUI />
@@ -92,9 +119,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
         <ScenarioResults />
         <HUDFullScreen />
-        <div style={{ position: 'fixed', left: 0, right: 0, margin: '0 auto', bottom: 10, pointerEvents: 'none' }}>
+        <SkillBarContainer>
           <SkillBar />
-        </div>
+        </SkillBarContainer>
         <ContextMenu />
         <Tooltip />
         <PassiveAlert />
