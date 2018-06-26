@@ -35,9 +35,6 @@ const Container = styled('div')`
   height: 140px;
   left: 50%;
   margin-left: -350px;
-  transform: translateY(-140px);
-  transition: transform 400ms ease-in;
-  transform-origin: center top;
   &:before {
     position: relative;
     display: flex;
@@ -99,7 +96,6 @@ export class InteractiveAlertView extends React.Component<Props, State> {
       >
         {() =>
         <Container className={this.state.shown ? 'slideIn' : 'slideOut'}>
-          <div className={this.state.shown ? 'fadeIn' : 'fadeOut'}>
           {!_.isEmpty(this.state.alerts) ? (
             this.state.alerts.map((a, i) => {
               switch (a.category) {
@@ -122,7 +118,6 @@ export class InteractiveAlertView extends React.Component<Props, State> {
               return null;
             })
           ) : null}
-          </div>
         </Container>
         }
       </GraphQL>
