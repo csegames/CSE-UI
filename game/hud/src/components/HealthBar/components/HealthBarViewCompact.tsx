@@ -18,6 +18,7 @@ import BigBar from './BigBar';
 import StaminaBar from './StaminaBar';
 import BloodBall from './BloodBall';
 import HealthSlideOut from './HealthSlideOut';
+import Status from './Status';
 
 const Container = styled('div')`
   position: relative;
@@ -126,13 +127,15 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
         </NameContainer>
         <ClassIndicator scale={1} top={15} left={140} width={75} height={75} borderRadius={37.5} faction={faction} />
         <BloodBall playerState={playerState} />
-          <HealthSlideOut
-            right={this.state.mouseOver ? -50 : -20}
-            valueOpacity={this.state.mouseOver ? 1 : 0}
-            height={208}
-            currentStamina={playerState.stamina.current}
-            bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
-          />
+        <Status statuses={playerState ? playerState.statuses as any : null} />
+        <HealthSlideOut
+          isVisible={this.state.mouseOver}
+          right={this.state.mouseOver ? -50 : -20}
+          valueOpacity={this.state.mouseOver ? 1 : 0}
+          height={208}
+          currentStamina={playerState.stamina.current}
+          bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
+        />
         <HealthPillsContainer>
           <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />

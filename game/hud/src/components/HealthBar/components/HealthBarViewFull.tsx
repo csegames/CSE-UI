@@ -16,6 +16,7 @@ import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
 import HealthSlideOut from './HealthSlideOut';
+import Status from './Status';
 
 const Container = styled('div')`
   position: relative;
@@ -169,7 +170,9 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <BloodBall percent={bloodPercent}>
             {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
           </BloodBall>
+          <Status statuses={playerState ? playerState.statuses as any : null} />
           <HealthSlideOut
+            isVisible={this.state.mouseOver}
             valueOpacity={this.state.mouseOver ? 1 : 0}
             right={this.state.mouseOver ? 70 : 100}
             height={208}

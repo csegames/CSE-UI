@@ -41,6 +41,7 @@ const Value = styled('div')`
 `;
 
 export interface HealthSlideOutProps {
+  isVisible: boolean;
   height: number;
   right: number;
   bodyPartsCurrentHealth: number[];
@@ -79,8 +80,10 @@ class HealthSlideOut extends React.Component<HealthSlideOutProps, HealthSlideOut
   }
 
   public shouldComponentUpdate(nextProps: HealthSlideOutProps) {
-    return !_.isEqual(nextProps.bodyPartsCurrentHealth, this.props.bodyPartsCurrentHealth) ||
-      nextProps.currentStamina !== this.props.currentStamina || nextProps.right !== this.props.right;
+    return this.props.isVisible || nextProps.isVisible && (
+      !_.isEqual(nextProps.bodyPartsCurrentHealth, this.props.bodyPartsCurrentHealth) ||
+      nextProps.currentStamina !== this.props.currentStamina || nextProps.right !== this.props.right
+    );
   }
 }
 

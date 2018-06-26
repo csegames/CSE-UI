@@ -21,7 +21,7 @@ const StatusContainer = styled('div')`
   display: inline-block;
   flex-wrap: wrap;
   position: absolute;
-  left: 515px;
+  left: 540px;
   top: 95px;
   width: fit-content;
   width: 168px;

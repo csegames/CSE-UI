@@ -14,7 +14,6 @@ import HealthBarViewCompact from './components/HealthBarViewCompact';
 import HealthBarViewFull from './components/HealthBarViewFull';
 import HealthBarViewMini from './components/HealthBarViewMini';
 import DistanceText from './components/DistanceText';
-import Status from './components/Status';
 
 const Container = styled('div')`
 `;
@@ -79,25 +78,9 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
 
     return (
       <Container>
-        {this.props.type === 'compact' &&
-          <div>
-            <HealthBarViewCompact shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses as any : null} />
-          </div>
-        }
-        {this.props.type === 'full' &&
-          <div>
-            <HealthBarViewFull shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses as any : null} />
-          </div>
-        }
-        {
-          this.props.type === 'mini' &&
-          <div>
-            <HealthBarViewMini shouldShake={false} playerState={playerState} />
-            <Status statuses={playerState ? playerState.statuses as any : null} />
-          </div>
-        }
+        {this.props.type === 'compact' && <HealthBarViewCompact shouldShake={false} playerState={playerState} />}
+        {this.props.type === 'full' && <HealthBarViewFull shouldShake={false} playerState={playerState} />}
+        {this.props.type === 'mini' && <HealthBarViewMini shouldShake={false} playerState={playerState} />}
         {target && <DistanceText targetType={target} />}
       </Container>
     );

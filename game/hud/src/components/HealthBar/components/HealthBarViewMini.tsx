@@ -15,6 +15,7 @@ import { getBloodPercent, getStaminaPercent, getFaction } from '../lib/healthFun
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
+import Status from './Status';
 import { LeaderIcon } from './LeaderIcon';
 
 const Container = styled('div')`
@@ -176,6 +177,7 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
         }}>
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
         </BloodBall>
+        <Status statuses={playerState ? playerState.statuses as any : null} />
         <HealthBars scale={scale}>
           <SmallHealthPillsContainer scale={scale}>
             <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.RightArm} playerState={playerState} />
