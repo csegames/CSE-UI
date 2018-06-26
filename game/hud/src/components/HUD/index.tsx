@@ -82,7 +82,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <ZoneName />
         <Console />
 
-        <div style={{ position: 'fixed', left: '2px', top: '2px', width: '900px', height: '200px', pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', left: '0px', top: '0px', width: '900px', height: '200px', pointerEvents: 'none' }}>
           <HUDNav.component {...HUDNav.props} />
         </div>
 
