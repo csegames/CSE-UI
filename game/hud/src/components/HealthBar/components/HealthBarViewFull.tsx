@@ -64,6 +64,7 @@ const ContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const BloodBall = styled('div')`
@@ -108,6 +109,8 @@ const HealthPillsContainer = styled('div')`
   left: 163px;
   width: 333px;
   height: 185px;
+  pointer-events: all;
+  cursor: pointer;
 `;
 
 const StaminaBar = styled('div')`
@@ -159,9 +162,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
     return (
       <Container
       shouldShake={this.props.shouldShake}
-      isAlive={playerState.isAlive}
-      onMouseOver={this.handleMouseOver}
-      onMouseLeave={this.handleMouseOut}>
+      isAlive={playerState.isAlive}>
         <ContentContainer>
           <NameContainer>
             <Name>{playerState.name}</Name>
@@ -179,7 +180,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
             currentStamina={playerState.stamina.current}
             bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
           />
-          <HealthPillsContainer>
+          <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>
             <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
             <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
             <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />

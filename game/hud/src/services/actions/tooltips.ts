@@ -19,7 +19,7 @@ export interface ToolTipStyle {
 }
 
 export interface ShowTooltipPayload {
-  content: JSX.Element | JSX.Element[];
+  content: JSX.Element | JSX.Element[] | string;
   event: MouseEvent | React.MouseEvent;
   styles?: Partial<ToolTipStyle>;
 }

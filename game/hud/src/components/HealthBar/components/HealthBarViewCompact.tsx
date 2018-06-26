@@ -72,6 +72,7 @@ const ContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const LeaderContainerOverlay = styled('div')`
@@ -81,6 +82,7 @@ const LeaderContainerOverlay = styled('div')`
   right: 0;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const HealthPillsContainer = styled('div')`
@@ -89,6 +91,8 @@ const HealthPillsContainer = styled('div')`
   left: 163px;
   width: 333px;
   height: 185px;
+  pointer-events: all;
+  cursor: pointer;
 `;
 
 export interface HealthBarViewProps {
@@ -117,11 +121,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
     };
     const faction = getFaction(playerState);
     return (
-      <Container shouldShake={this.props.shouldShake}
-        isAlive={this.props.playerState.isAlive}
-        onMouseOver={this.handleMouseOver}
-        onMouseLeave={this.handleMouseOut}
-        >
+      <Container shouldShake={this.props.shouldShake} isAlive={this.props.playerState.isAlive}>
         <NameContainer factionColor={factionColor[faction]}>
           <Name>{this.props.playerState.name}</Name>
         </NameContainer>
@@ -136,7 +136,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           currentStamina={playerState.stamina.current}
           bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
         />
-        <HealthPillsContainer>
+        <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>
           <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
           <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
@@ -145,7 +145,6 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
-
         {
           (this.props.playerState as GroupMemberState).isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
         }

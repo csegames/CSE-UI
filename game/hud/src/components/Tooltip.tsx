@@ -38,7 +38,7 @@ export interface TooltipState {
   offsetRight: number;
   offsetTop: number;
   offsetBottom: number;
-  content: JSX.Element | JSX.Element[];
+  content: JSX.Element | JSX.Element[] | string;
   styles?: Partial<ToolTipStyle>;
 }
 
