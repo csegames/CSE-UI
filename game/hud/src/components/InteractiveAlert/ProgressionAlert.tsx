@@ -26,7 +26,9 @@ const Container = styled('div')`
     margin-top: 20px;
     height: 100px;
     text-align: center;
-    color: #FFFFFF;
+    color: #baa892;
+    ${CONFIG.INTERACTIVE_FONT}
+    font-size: 14px;
 `;
 
 const InputContainer = styled('div')`
@@ -50,7 +52,6 @@ const Button = styled('div')`
     margin: 0 3px;
     font-size: 9px;
     background-image: url(images/settings/button-off.png);
-    ${CONFIG.INTERACTIVE_FONT}
     letter-spacing: 2px;
     position: relative;
     &:hover {

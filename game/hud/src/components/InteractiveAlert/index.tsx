@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { keyframes } from 'react-emotion';
+import styled from 'react-emotion';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { remove } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
@@ -22,22 +22,7 @@ import { subscription, SubscriptionData } from './graphql/subscription';
 import { TradeAlertView, handleNewTradeAlert, removeTradeInvite } from './TradeAlert';
 import { GroupAlertView, handleNewGroupAlert } from './GroupAlert';
 import { ProgressionAlertView } from './ProgressionAlert';
-const slideIn = keyframes`
-  0% {
-      height: 0px;
-  }
-  100% {
-      height: 140px;
-  }
-`;
-const slideOut = keyframes`
-  0% {
-      height: 140px;
-  }
-  100% {
-      height: 0px;
-  }
-`;
+
 const Container = styled('div')`
   border-image-slice: 1;
   background: url(images/ui/interactive-alert/alert-bg.png);
@@ -50,8 +35,9 @@ const Container = styled('div')`
   height: 140px;
   left: 50%;
   margin-left: -350px;
-  animation: ${(props: any) => (props.isOpen) ? slideIn : slideOut} 2s ease;
-  transform-origin: center bottom;
+  transform: translateY(-140px);
+  transition: transform 400ms ease-in;
+  transform-origin: center top;
   &:before {
     position: relative;
     display: flex;
@@ -87,12 +73,11 @@ const Container = styled('div')`
 `;
 
 export interface Props {
-  isOpen: boolean;
 }
 
 export interface State {
-  isOpen: boolean;
   alerts: IInteractiveAlert[];
+  shown: boolean;
 }
 
 export class InteractiveAlertView extends React.Component<Props, State> {
@@ -100,7 +85,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     super(props);
     this.state = {
       alerts: [],
-      isOpen: true,
+      shown: true,
     };
   }
 
@@ -113,31 +98,39 @@ export class InteractiveAlertView extends React.Component<Props, State> {
         subscriptionHandler={this.handleSubscription}
       >
         {() =>
-        <Container isOpen={this.state.isOpen}>
+        <Container className={this.state.shown ? 'slideIn' : 'slideOut'}>
+          <div className={this.state.shown ? 'fadeIn' : 'fadeOut'}>
           {!_.isEmpty(this.state.alerts) ? (
             this.state.alerts.map((a, i) => {
               switch (a.category) {
                 case 'Trade': {
-                  return <TradeAlertView key={i} alert={a as TradeAlert} remove={this.removeAlert} />;
+                  return <TradeAlertView key={i}
+                                         alert={a as TradeAlert}
+                                         remove={this.removeAlert} />;
                 }
                 case 'Group': {
-                  return <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />;
+                  return <GroupAlertView key={i}
+                                         alert={a as GroupAlert}
+                                         remove={this.removeAlert} />;
                 }
                 case 'Progression': {
-                  return <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />;
+                  return <ProgressionAlertView key={i}
+                                               alert={a as ProgressionAlert}
+                                               remove={this.removeAlert} />;
                 }
               }
               return null;
             })
           ) : null}
-          </Container>
+          </div>
+        </Container>
         }
       </GraphQL>
     );
   }
 
-  public toggleOpen = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+  public toggleShown = () => {
+    this.setState(prevState => ({ shown: !prevState.shown }));
   }
 
   private removeAlert = (alert: IInteractiveAlert) => {
@@ -145,13 +138,13 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     switch (alert.category) {
       case 'Trade': {
         alerts = removeTradeInvite(this.state.alerts, alert as TradeAlert).alerts;
-        this.toggleOpen();
+        this.toggleShown();
         break;
       }
 
       default: {
         alerts = remove(alerts, alert);
-        this.toggleOpen();
+        this.toggleShown();
         break;
       }
     }
