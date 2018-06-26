@@ -87,10 +87,10 @@ export class InteractiveAlertView extends React.Component<Props, State> {
   }
 
   public render() {
-    const testAlert: IInteractiveAlert = {'category':'Group' ,'targetID':'579ki4wcch6N5CCiJFc100','kind':'WarbandInvite',
-        'fromName':'Mavelys','fromID':'OPQPO06qZq9BzYjw0iJ200',
-        'forGroup':'Km2i2ZeGJFHqr1AVoyp000','forGroupName':'','code':'cTekaIRDE6JcWelIBXH100'} as any;
-    const alertsWithTest: IInteractiveAlert[] = [...this.state.alerts, testAlert];
+    // const testAlert: IInteractiveAlert = {'category':'Group' ,'targetID':'579ki4wcch6N5CCiJFc100','kind':'WarbandInvite',
+    //     'fromName':'Mavelys','fromID':'OPQPO06qZq9BzYjw0iJ200',
+    //     'forGroup':'Km2i2ZeGJFHqr1AVoyp000','forGroupName':'','code':'cTekaIRDE6JcWelIBXH100'} as any;
+    // const alertsWithTest: IInteractiveAlert[] = [...this.state.alerts, testAlert];
     return (
       <GraphQL
         query={query}
@@ -100,8 +100,8 @@ export class InteractiveAlertView extends React.Component<Props, State> {
       >
         {() =>
         <Container className={this.state.shown ? 'slideIn' : 'slideOut'}>
-          {!_.isEmpty(alertsWithTest) ? (
-            alertsWithTest.map((a, i) => {
+          {!_.isEmpty(this.state.alerts) ? (
+            this.state.alerts.map((a, i) => {
               switch (a.category) {
                 case 'Trade': {
                   return <TradeAlertView key={i}
