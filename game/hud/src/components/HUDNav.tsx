@@ -10,9 +10,13 @@ import styled, { css } from 'react-emotion';
 import { Tooltip, utils } from '@csegames/camelot-unchained';
 
 const List = styled('ul')`
-  margin: 0 0 0 10px !important;
-  padding: 0;
+  margin: 0 0 0 0;
+  padding: 0 60px 0 6px !important;
   list-style: none;
+  background: url(images/hudnav/hudnav_background.png) right top no-repeat;
+  height: 45px;
+  width: fit-content;
+  min-width: 40px;
 `;
 
 const ListHorizontal = css`
@@ -21,23 +25,22 @@ const ListHorizontal = css`
 
 const Item = styled('a')`
   pointer-events: all;
-  color: #4D573E !important;
-  background: url(images/hudnav/flag_off.png) no-repeat;
-  width: 32px;
+  color: #e0ddd3 !important;
+  width: 26px;
   height: 42px;
   text-align: center;
   display: block;
+  text-shadow: 1px 1px 0px #242424;
   &:hover {
-    background: url(images/hudnav/flag_on.png) no-repeat;
     i {
       font-size: 14px;
-      color: #d9d6cd;
+      color: #efefe6;
     }
   }
   span {
     position: relative;
     display: inline-block;
-    width: 32px;
+    width: 26px;
     height: 42px;
     line-height: 36px;
     vertical-align: middle;
@@ -85,7 +88,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
           this.state.collapsed ?
             (<Tooltip content='Show Quick Menu' styles={{
               tooltip: {
-                backgroundColor: '#3e3e3e',
+                backgroundColor: '#020405',
               },
             }}>
               <li
@@ -104,7 +107,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
                   return (
                     <Tooltip key={name} content={tooltip} styles={{
                       tooltip: {
-                        backgroundColor: '#3e3e3e',
+                        backgroundColor: '#020405',
                       },
                     }}>
                       <li
@@ -125,7 +128,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
 
                 <Tooltip content='Collapse Quick Menu' styles={{
                   tooltip: {
-                    backgroundColor: '#3e3e3e',
+                    backgroundColor: '#020405',
                   },
                 }}>
                   <li
