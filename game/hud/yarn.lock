@@ -17,7 +17,7 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@csegames/camelot-unchained@^0.1.45":
+"@csegames/camelot-unchained@^0.1.31", "@csegames/camelot-unchained@^0.1.45":
   version "0.1.45"
   resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.45.tgz#95fd4929397f8d0e9feff4a539f0f242cfa652ef"
   dependencies:
