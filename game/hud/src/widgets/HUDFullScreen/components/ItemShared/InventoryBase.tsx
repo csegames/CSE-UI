@@ -437,7 +437,7 @@ export function createRowElements(payload: {
         const stackId = getItemMapID(itemDef.item);
         rowItems.push({
           slotType: SlotType.CraftingContainer,
-          icon: state.itemIdToInfo[stackId].icon,
+          icon: getIcon(itemDef.item),
           groupStackHashID: itemDef.id,
           stackedItems: payload.stackGroupIdToItemIDs[stackId] ?
             payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [itemDef.item],
@@ -453,7 +453,7 @@ export function createRowElements(payload: {
         const stackId = getItemMapID(itemDef.item);
         rowItems.push({
           slotType: SlotType.Stack,
-          icon: state.itemIdToInfo[stackId].icon,
+          icon: getIcon(itemDef.item),
           itemID: itemDef.id,
           item: itemDef.item,
           slotIndex: { position: slotIndex - 1, location: 'inventory' },
