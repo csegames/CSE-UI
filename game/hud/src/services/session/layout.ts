@@ -25,7 +25,7 @@ import FriendlyTarget from './layoutItems/FriendlyTarget';
 import ErrorMessages from './layoutItems/ErrorMessages';
 import PlotControl from './layoutItems/PlotControl';
 import Progression from './layoutItems/Progression';
-import RefillAmmo from './layoutItems/RefillAmmo';
+// import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
 import ReleaseControl from './layoutItems/ReleaseControl';
@@ -143,9 +143,9 @@ function initialState(): LayoutState {
     [
       'errorMessages', cloneDeep(ErrorMessages),
     ],
-    [
-      'refillAmmo', cloneDeep(RefillAmmo),
-    ],
+    // [
+    //   'refillAmmo', cloneDeep(RefillAmmo),
+    // ],
     [
       'plotControl', cloneDeep(PlotControl),
     ],

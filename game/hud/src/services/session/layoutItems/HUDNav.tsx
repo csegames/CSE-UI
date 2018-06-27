@@ -232,8 +232,7 @@ export default {
         tooltip: 'Scenario Management',
         iconClass: 'fa-gamepad',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -247,8 +246,7 @@ export default {
         tooltip: 'Nearby Plot',
         iconClass: 'fa-building',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-building fa-stack-1x fa-inverse'></i>
           </span>
         ),
@@ -262,8 +260,7 @@ export default {
         tooltip: 'Owned Plot',
         iconClass: 'fa-home',
         icon: (
-          <span className='fa-stack click-effect'>
-            <i className='fa fa-square fa-stack-2x'></i>
+          <span>
             <i className='fa fa-home fa-stack-1x fa-inverse'></i>
           </span>
         ),
