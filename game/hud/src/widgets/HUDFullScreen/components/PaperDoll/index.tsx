@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react'
+import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';

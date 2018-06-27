@@ -194,7 +194,7 @@ class CraftingContainerWithInjectedContext extends React.Component<CraftingConta
               inventoryItems={inventoryItems}
               stackGroupIdToItemIDs={stackGroupIdToItemIDs}
             />
-          )
+          );
         }}
       </FullScreenContext.Consumer>
     );
