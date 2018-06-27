@@ -25,7 +25,7 @@ const Container = styled('div')` {
   position: relative;
   pointer-events: all;
   width: 320px;
-  height: 200px;
+  height: 152px;
   padding: 0px;
   margin:0 auto;
   background-color: gray;
@@ -41,15 +41,16 @@ const MenuTitle = styled('div')` {
   background: url(images/gamemenu/gamemenu-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
-  z-index: 999;
+  z-index: 89;
   width: 319px;
   height: 23px;
   h6 {
-    color: #848484;
-    font-size: 10px;
+    color: rgb(132,132,132);
+    font-size: 9px;
     text-transform: uppercase;
-    padding: 7px 0 0 0;
+    padding: 8px 0 0 0;
     margin: 0 0 0 0;
+    letter-spacing: 2px;
     font-family: 'Caudex', serif;
   }
 `;
@@ -57,13 +58,30 @@ const MenuTitle = styled('div')` {
 const MenuCorner = styled('div')` {
   position: absolute;
   min-width: 320px;
-  min-height: 200px;
+  min-height: 152px;
   background:
   url(images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
   url(images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
   url(images/gamemenu/gamemenu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
   url(images/gamemenu/gamemenu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
+`;
+
+const MenuCloseButton = styled('div')`
+  position: absolute;
+  z-index: 99;
+  top: 6px;
+  right: 7px;
+  width: 12px;
+  height: 12px;
+  background: url(images/inventory/close-button-grey.png) no-repeat;
+  cursor: pointer;
+  &:hover {
+    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
+  }
+  &:active {
+    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
+  }
 `;
 
 const MenuContent = styled('div')` {
@@ -73,94 +91,46 @@ const MenuContent = styled('div')` {
   padding: 10px 20px;
   box-sizing: border-box;
   overflow: hidden;
-  z-index: 99;
+  z-index: 50;
   position: absolute;
   width: 100%;
   width: calc(100% - 40px);
 `;
 const MenuButton = styled('div')`
   background: url(images/gamemenu/button-big-off.png) no-repeat;
+  height: 30px;
   width: 200px;
-  height: 30px;;
-  border: none;
   margin: 12px 16px 0 16px;
+  border: none;
   cursor: pointer;
-  color: #848484;
-  font-family: 'Caudex', serif;
-  font-size: 12px;
+  color: rgb(132,132,132);
+  font-family: 'Caudex',serif;
+  letter-spacing: 2px;
+  font-size: 9px;
   text-transform: uppercase;
   margin: 0 auto 20px;
   display: block;
   line-height: 30px;
   text-align: center;
   &:hover {
-    color: #968876;
+    color: rgb(204,204,204);
     background: url(images/gamemenu/button-big-on.png) no-repeat;
+    &::before {
+      content: '';
+      position: absolute;
+      background-image: url(images/gamemenu/button-glow.png);
+      width: 198px;
+      height: 30px;
+      left: 61px;
+      background-size: cover;
+    }
   }
 `;
 
-const MenuFooter = styled('div')` {
-  position: absolute;
-  min-width: 320px;
-  height: 55px;
-  bottom: 0;
-  left: 0;
-  background: rgba(55, 52, 51, 0.3);
-  border-top: 1px solid #3b3634;
-`;
-
-const MenuFooterButton = styled('div')`
-  background: url(images/gamemenu/button-off.png) no-repeat;
-  width: 95px;
-  height: 30px;;
-  border: none;
-  margin: 12px 16px 0 16px;
-  cursor: pointer;
-  color: #848484;
-  font-family: 'Caudex', serif;
-  font-size: 12px;
-  text-transform: uppercase;
-  line-height: 30px;
-  text-align: center;
-  &:hover {
-    color: #968876;
-    background: url(images/gamemenu/button-on.png) no-repeat;
-  }
-`;
-
-const MenuFooterBorder = styled('div')` {
-  position: absolute;
-  border: 1px solid #2e2b28;
-  margin: 7px 10px 0;
-  display: block;
-  width: 300px;
-  height: 40px;
-  z-index: 3;
-`;
-
-const MenuButtonOuter = styled('div')` {
-  position: absolute;
-  width: 100%;
-  z-index: 4;
-  display: flex;
-  justify-content: center;
-`;
-
-const MenuButtonLeft = styled('div')` {
-  background: url(images/gamemenu/gamemenu-botnav-left-ornament.png) no-repeat;
-  height: 55px;
-  width: 75px
-`;
-
-const MenuButtonRight = styled('div')` {
-  background: url(images/gamemenu/gamemenu-botnav-right-ornament.png) no-repeat;
-  height: 55px;
-  width: 75px
-`;
 
 export const GameMenuDimensions = {
-  width: 300,
-  height: 200,
+  width: 320,
+  height: 152,
 };
 
 export interface GameMenuProps {
@@ -183,8 +153,8 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
     return this.state.visible ? (
       <OuterContainer>
         <MenuTitle><h6>Menu</h6></MenuTitle>
-        <MenuCorner />
         <Container>
+          <MenuCloseButton onClick={this.fireVisibilityEvent} />
           <MenuCorner />
           <MenuContent>
               <MenuButton
@@ -196,17 +166,6 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
                   Quit game
               </MenuButton>
           </MenuContent>
-          <MenuFooter>
-              <MenuFooterBorder />
-              <MenuButtonOuter>
-                  <MenuButtonLeft />
-                    <MenuFooterButton
-                      onClick={this.fireVisibilityEvent}>
-                      Close menu
-                    </MenuFooterButton>
-                  <MenuButtonRight />
-              </MenuButtonOuter>
-          </MenuFooter>
         </Container>
       </OuterContainer>
 
