@@ -16,7 +16,7 @@ export default {
     },
     y: {
       anchor: Edge.BOTTOM,
-      offset: 50,
+      offset: 80,
     },
     size: {
       width: 480,

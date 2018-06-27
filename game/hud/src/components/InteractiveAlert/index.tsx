@@ -71,10 +71,7 @@ const Container = styled('div')`
 }
 `;
 
-
-
 export interface Props {
-  height: number;
 }
 
 export interface State {
@@ -87,7 +84,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     super(props);
     this.state = {
       alerts: [],
-      shown: true,
+      shown: false,
     };
   }
 
@@ -100,43 +97,37 @@ export class InteractiveAlertView extends React.Component<Props, State> {
         subscriptionHandler={this.handleSubscription}
       >
         {() =>
-        <Container height={this.state.shown ? '140' : '0'}>
-          {!_.isEmpty(this.state.alerts) ? (
+          !_.isEmpty(this.state.alerts) ? (
             this.state.alerts.map((a, i) => {
               switch (a.category) {
                 case 'Trade': {
-                  return <TradeAlertView key={i}
-                                         alert={a as TradeAlert}
-                                         remove={this.removeAlert} />;
+                  return (
+                    <Container>
+                      <TradeAlertView key={i} alert={a as TradeAlert} remove={this.removeAlert} />
+                    </Container>
+                  );
                 }
                 case 'Group': {
-                  return <GroupAlertView key={i}
-                                         alert={a as GroupAlert}
-                                         remove={this.removeAlert} />;
+                  return (
+                    <Container>
+                      <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />
+                    </Container>
+                  );
                 }
                 case 'Progression': {
-                  return <ProgressionAlertView key={i}
-                                               alert={a as ProgressionAlert}
-                                               remove={this.removeAlert} />;
+                  return (
+                    <Container>
+                      <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />
+                    </Container>
+                  );
                 }
               }
               return null;
             })
           ) : null}
-        </Container>
-        }
       </GraphQL>
     );
   }
-
-  // Comments are for animations in progress
-  // public shouldComponentUpdate(nextProps: Props) {
-  //   return !_.isEqual(nextProps.height, this.props.height);
-  // }
-  //
-  // public toggleShown = () => {
-  //   this.setState(prevState => ({ shown: !prevState.shown }));
-  // }
 
   private removeAlert = (alert: IInteractiveAlert) => {
     let alerts = [...this.state.alerts];

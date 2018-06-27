@@ -81,6 +81,7 @@ const InputContainer = styled('div')`
 `;
 
 const Button = styled('div')`
+    cursor: pointer;
     width: ${CONFIG.ACTION_BUTTON_WIDTH}px;
     height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
     line-height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
