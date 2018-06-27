@@ -5,24 +5,23 @@
  */
 
 import * as React from 'react';
-import { DialogTab, DialogButton } from '../../../widgets/UI/TabbedDialog';
-import { SideMenu, MenuOption } from '../../../widgets/UI/SideMenu';
+import { DialogTab, DialogButton } from '../../../components/UI/TabbedDialog';
+import { SideMenu, MenuOption } from '../../../components/UI/SideMenu';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
-import * as OPTION from './options';
 
-const options: MenuOption[] = [OPTION.SKILLS, OPTION.CHAT];
+const options: MenuOption[] = [];
 const buttons: DialogButton[] = [BUTTON.APPLY, BUTTON.CANCEL];
 
-interface InterfaceSettingsProps {
+interface AddonsSettingsProps {
   onCancel: () => void;
 }
 
 /* tslint:disable:function-name */
-export function InterfaceSettings(props: InterfaceSettingsProps) {
+export function AddonSettings(props: AddonsSettingsProps) {
   return (
     <DialogTab buttons={buttons}>
-      <SideMenu name='settings' id='interface' options={options}>{
+      <SideMenu name='settings' id='addons' options={options}>{
         (option: MenuOption) => {
           return <ComingSoon/>;
         }
@@ -31,4 +30,4 @@ export function InterfaceSettings(props: InterfaceSettingsProps) {
   );
 }
 
-export default InterfaceSettings;
+export default AddonSettings;

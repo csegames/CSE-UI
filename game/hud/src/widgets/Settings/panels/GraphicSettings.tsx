@@ -7,8 +7,8 @@
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { cancel, getGraphicsConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
-import { CheckBoxField } from '../../../widgets/UI/CheckBoxField';
-import { SliderField } from '../../../widgets/UI/SliderField';
+import { CheckBoxField } from '../../../components/UI/CheckBoxField';
+import { SliderField } from '../../../components/UI/SliderField';
 import { client, events } from '@csegames/camelot-unchained';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
 

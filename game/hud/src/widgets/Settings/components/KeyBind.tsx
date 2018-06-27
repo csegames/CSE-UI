@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import * as CSS from '../../../lib/css-helper';
-import { Box } from '../../../widgets/UI/Box';
+import { Box } from '../../../components/UI/Box';
 import { Key } from './Key';
 
 function spacify(s: string) {

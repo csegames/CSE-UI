@@ -39,36 +39,6 @@ export const FOOTER_BUTTON_WIDTH = 95;
 export const FOOTER_BUTTON_HEIGHT = 30;
 export const FOOTER_BORDER_COLOR_RGB = '68,64,61';
 
-/* Side Menu UI */
-export const SIDE_MENU_WIDTH = 200;
-export const SIDE_MENU_BORDER = `
-  border-top: 1px solid rgba(0,0,0,0);
-  border-bottom: 1px solid ${MENU_BORDER_COLOR};
-`;
-export const SIDE_MENU_HIGHLIGHT = `
-  border-top: 1px solid ${MENU_HIGHLIGHT_BORDER_COLOR};
-  border-bottom: 1px solid ${MENU_HIGHLIGHT_BORDER_COLOR};
-  background: linear-gradient(
-    to right,
-    ${MENU_HIGHLIGHT_BACKGROUND_COLOR} 20%,
-    rgba(0,0,0,0) 40%
-  );
-  border-image: linear-gradient(
-    to right,
-    ${MENU_HIGHLIGHT_BORDER_COLOR} 20%,
-    rgba(${HIGHLIGHTED_BUTTON_BORDER}, 0) 80%
-  ) 1 0 1 0;
-`;
-export const SIDE_OPTION_HEIGHT = 30;
-export const SIDE_CONTENT_BORDER_GRADIENT =
-  `border-image: linear-gradient(
-    to bottom,
-    ${CONTENT_BORDER_COLOR} 20%,
-    rgba(0,0,0,0) 80%
-  ) 1 0 0 1;`;
-
-/* Settings Panel UI */
-
 /* UI Widgets */
 export const BOX_BACKGROUND_COLOR = 'rgba(31,31,31,1)';
 export const BOX_BORDER_INNER_COLOR = 'rgba(53,53,53,1)';

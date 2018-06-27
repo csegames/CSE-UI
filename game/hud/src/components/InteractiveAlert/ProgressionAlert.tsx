@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { filter } from 'lodash';
 import { events } from '@csegames/camelot-unchained';
 import { ProgressionAlert, IInteractiveAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
-import * as CONFIG from '../Settings/config';
+import * as CONFIG from '../../widgets/Settings/config';
 
 // Utility Functions
 export function removeProgressionAlert(alertsList: IInteractiveAlert[], toRemove: ProgressionAlert) {

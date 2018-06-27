@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import {  client, webAPI } from '@csegames/camelot-unchained';
 import { IInteractiveAlert, GroupAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { InteractiveAlertView } from './index';
-import * as CONFIG from '../Settings/config';
+import * as CONFIG from '../../widgets/Settings/config';
 
 // Utility Functions
 export function groupInviteID(alert: GroupAlert) {

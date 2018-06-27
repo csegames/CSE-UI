@@ -11,11 +11,11 @@ import { getKeyBinds, cancel, ConfigIndex, sendConfigVarChangeMessage } from '..
 import { KeyBind, Listening } from '../components/KeyBind';
 import { keyBinds2KeyConfig, getKeyLabel, KeyBinds } from '../utils/keyboard';
 import { client, events, getVirtualKeyCode } from '@csegames/camelot-unchained';
-import { Box } from '../../../widgets/UI/Box';
-import { Field } from '../../../widgets/UI/Field';
+import { Box } from '../../../components/UI/Box';
+import { Field } from '../../../components/UI/Field';
 import { Key } from '../components/Key';
 import * as CSS from '../../../lib/css-helper';
-import * as CONFIG from '../../../widgets/UI/config';
+import * as CONFIG from '../../../components/UI/config';
 
 interface ClashKey {
   name: string;

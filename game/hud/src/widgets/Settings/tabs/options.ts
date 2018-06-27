@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { MenuOption } from '../../../widgets/UI/SideMenu';
+import { MenuOption } from '../../../components/UI/SideMenu';
 
 export const SKILLS: MenuOption = { label: 'Skill Buttons' };
 export const CHAT: MenuOption = { label: 'Chat' };

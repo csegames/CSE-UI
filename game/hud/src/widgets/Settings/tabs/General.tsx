@@ -7,8 +7,8 @@
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
 import { ConfigIndex } from '../utils/configVars';
-import { DialogTab, DialogButton } from '../../../widgets/UI/TabbedDialog';
-import { SideMenu, MenuOption } from '../../../widgets/UI/SideMenu';
+import { DialogTab, DialogButton } from '../../../components/UI/TabbedDialog';
+import { SideMenu, MenuOption } from '../../../components/UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
 import { InputSettings } from '../panels/InputSettings';
 import { GraphicSettings } from '../panels/GraphicSettings';
