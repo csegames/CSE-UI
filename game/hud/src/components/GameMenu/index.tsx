@@ -24,9 +24,8 @@ const OuterContainer = styled('div')`
 const Container = styled('div')` {
   position: relative;
   pointer-events: all;
-  width: 320px;
+  width: 257px;
   height: 152px;
-  padding: 0px;
   margin:0 auto;
   background-color: gray;
   color: white;
@@ -57,8 +56,8 @@ const MenuTitle = styled('div')` {
 
 const MenuCorner = styled('div')` {
   position: absolute;
-  min-width: 320px;
-  min-height: 152px;
+  width: 100%;
+  height: 100%;
   background:
   url(images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
   url(images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
@@ -97,6 +96,7 @@ const MenuContent = styled('div')` {
   width: calc(100% - 40px);
 `;
 const MenuButton = styled('div')`
+  position: relative;
   background: url(images/gamemenu/button-big-off.png) no-repeat;
   height: 30px;
   width: 200px;
@@ -119,9 +119,8 @@ const MenuButton = styled('div')`
       content: '';
       position: absolute;
       background-image: url(images/gamemenu/button-glow.png);
-      width: 198px;
-      height: 30px;
-      left: 61px;
+      width: 100%;
+      height: 100%;
       background-size: cover;
     }
   }
