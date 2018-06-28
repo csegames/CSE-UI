@@ -167,8 +167,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         <BackgroundImage
           src={useGrayBG ? 'images/inventory/bag-bg-grey.png' : 'images/inventory/bag-bg.png'} />
         <Content innerRef={getRef}>
-          {(tradeState === 'Locked' || tradeState === 'Confirmed' ||
-            tradeState === 'Transferring' || tradeState === 'None') &&
+          {(tradeState === 'Locked' || tradeState === 'Confirmed' || tradeState === 'None') &&
             <LockedContainer>
               <LockedOverlay state={tradeState} />
             </LockedContainer>

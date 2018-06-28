@@ -189,7 +189,6 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     this.onTheirTradeItemsChange([]);
 
     events.fire('hudnav--navigate', 'trade', false);
-    this.props.onCloseFullScreen();
   }
 
   private onTheirTradeStateChange = (newTradeState: SecureTradeState) => {

@@ -33,17 +33,11 @@ const Container = styled('div')`
 `;
 
 export interface ApiSkillInfo {
-  characterID: string;
-  duration: number;
-  icon: string;
   id: number;
   name: string;
+  icon: string;
   notes: string;
-  preparationTime: number;
-  shardID: number;
-  cooldowns: any;
-  rootComponentSlot: any;
-  stats: any;
+  tracks: any;
 }
 
 export interface SkillBarProps {

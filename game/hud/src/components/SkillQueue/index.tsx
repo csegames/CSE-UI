@@ -7,11 +7,27 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, client, restAPI, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
+import { events, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { CUCharacter } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import { ApiSkillInfo } from '../SkillBar';
 import { SkillStateInfo } from '../SkillBar/SkillButton/lib';
 import SkillQueueList, { QueuedSkills } from './components/SkillQueueList';
+
+const query = `
+{
+  myCharacter {
+    skills {
+      id
+      name
+      icon
+      notes
+      tracks
+    }
+  }
+}
+`;
 
 export interface SkillQueueProps {
 
@@ -22,6 +38,7 @@ export interface SkillQueueState {
 }
 
 class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
+  private initialized: boolean = false;
   constructor(props: SkillQueueProps) {
     super(props);
     this.state = {
@@ -31,17 +48,22 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
 
   public render() {
     return (
-      <SkillQueueList queuedSkills={this.state.queuedSkills} />
+      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
+        {() => {
+          return <SkillQueueList queuedSkills={this.state.queuedSkills} />;
+        }}
+      </GraphQL>
     );
   }
 
-  public componentDidMount() {
-    this.init();
-  }
+  private handleQueryResult = (result: GraphQLResult<{ myCharacter: Partial<CUCharacter> }>) => {
+    if (this.initialized || !result || !result.data) return;
 
-  private init = async () => {
-    const skills = await restAPI.legacyAPI.getCraftedAbilities(client.loginToken, client.characterID);
-    skills.forEach((skill: ApiSkillInfo) => events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent));
+    const mySkills = result.data.myCharacter && result.data.myCharacter.skills;
+    if (mySkills) {
+      mySkills.forEach((skill: ApiSkillInfo) => events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent));
+      this.initialized = true;
+    }
   }
 
   private handleSkillQueueEvent = (skill: SkillStateInfo) => {

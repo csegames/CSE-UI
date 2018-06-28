@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { getKeyBinds, cancel, ConfigIndex } from '../utils/configVars';
+import { getKeyBinds, cancel, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { KeyBind, Listening } from '../components/KeyBind';
 import { keyBinds2KeyConfig, getKeyLabel, KeyBinds } from '../utils/keyboard';
 import { client, events, getVirtualKeyCode } from '@csegames/camelot-unchained';
@@ -272,6 +272,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
       if (same.length) {
         this.setState({ clash: { sameAs: same, name, which, keyCode } });
       } else {
+        sendConfigVarChangeMessage(name, which)
         this.bind(name, which, keyCode);
       }
     }

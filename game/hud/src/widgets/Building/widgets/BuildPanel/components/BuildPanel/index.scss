@@ -65,7 +65,8 @@
     height: 25px;
     background-color:rgba(75,70,66,0.20);
     .tab {
-      margin: 0;
+      display: inline-block;
+      margin: 0 2px 0 0;
       height: 25px;
       line-height: 25px;
       font-size: 11px;
