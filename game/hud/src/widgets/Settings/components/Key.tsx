@@ -5,7 +5,7 @@
  */
 
 import styled from 'react-emotion';
-import * as CSS from '../../../lib/css-helper';
+import * as CSS from 'lib/css-helper';
 
 export const Key = styled('span')`
   width: fit-content;

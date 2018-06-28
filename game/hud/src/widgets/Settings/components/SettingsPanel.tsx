@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../../../lib/css-helper';
+import * as CSS from 'lib/css-helper';
 
 const SettingsPanelContainer = styled('div')`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
