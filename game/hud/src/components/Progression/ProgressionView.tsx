@@ -292,10 +292,16 @@ class ProgressionView extends React.Component<Props, State> {
               skillDetails.push(
                 <li key={skillPartUsed.skillPartID}>
                   <div className='ProgressionLabel'>
-                    <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />
-                    &nbsp;Skill Used ({skillPartUsed.skillPartDef.name}):
+                    <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />&nbsp;
+                    { skillPartUsed.skillPartDef.name }
                   </div>
-                  <div className='ProgressionValue'>
+                  <div className='ProgressionValue3'>
+                    { skillPartUsed.usedInCombatCount }
+                  </div>
+                  <div className='ProgressionValue3'>
+                    { skillPartUsed.usedNonCombatCount }
+                  </div>
+                  <div className='ProgressionValue3'>
                     { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
                   </div>
                 </li>
@@ -348,11 +354,16 @@ class ProgressionView extends React.Component<Props, State> {
                   ) : null }
                   { skillDetails.length > 0 ? (
                     <ul>
-                      <h3>Skill Details</h3>
+                      <h3>Skill Component Usage</h3>
+                      <li>
+                          <div className='ProgressionLabelHeader'>Component Name</div>
+                          <div className='ProgressionValue3Header'>In-Combat</div>
+                          <div className='ProgressionValue3Header'>Non-Combat</div>
+                          <div className='ProgressionValue3Header'>Total</div>
+                      </li>
                       {skillDetails}
                     </ul>
                   ) : null }
-                  <h3 className='RewardHeadline'>Rewards</h3>
                   <RewardsView key={uncollectedDay.id} logID={uncollectedDay.id} />
                 </div>
               </div>

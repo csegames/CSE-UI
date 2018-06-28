@@ -92,6 +92,16 @@ export const ProgressionContent = styled('div')`
         display: inline-block;
         padding: 5px 10px;
       }
+      div.ProgressionLabelHeader {
+        width: calc(40% - 25px);
+        background: #141414;
+        border-left: 5px solid #3b3634;
+        color: #706764;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
       div.ProgressionLabel {
         width: calc(40% - 25px);
         background: #141414;
@@ -110,11 +120,66 @@ export const ProgressionContent = styled('div')`
           margin-right: 5px;
         }
       }
+      div.ProgressionValue2Header {
+        width: calc(30% - 20px);
+        background: #191919;
+        color: #706764;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
+      div.ProgressionValue2 {
+        width: calc(30% - 20px);
+        background: #191919;
+        color: #93866c;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
+      div.ProgressionValue3Header {
+        width: calc(20% - 20px);
+        background: #191919;
+        color: #706764;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
+      div.ProgressionValue3 {
+        width: calc(20% - 20px);
+        background: #191919;
+        color: #93866c;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
+      div.RewardLabelHeader {
+        width: calc(40% - 25px);
+        background: #101010;
+        border-left: 5px solid #322e2c;
+        color: #706764;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
       div.RewardLabel {
         width: calc(40% - 25px);
         background: #101010;
         border-left: 5px solid #322e2c;
         color: #7e7a7a;
+        img {
+          vertical-align: sub !important;
+          margin-right: 5px;
+        }
+      }
+      div.RewardValueHeader {
+        width: calc(60% - 20px);
+        background: #161616;
+        color: #706764;
         img {
           vertical-align: sub !important;
           margin-right: 5px;
@@ -138,6 +203,14 @@ export const ProgressionContent = styled('div')`
           border-left: 5px solid #3b3634;
         }
         div.ProgressionValue {
+          background: #93866c;
+          color: #fff;
+        }
+        div.ProgressionValue2 {
+          background: #93866c;
+          color: #fff;
+        }
+        div.ProgressionValue3 {
           background: #93866c;
           color: #fff;
         }
