@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { keyframes } from 'react-emotion';
+import styled, { keyframes, css } from 'react-emotion';
+import { CloseButton } from 'UI/CloseButton';
 
 import List from './List';
 import { TeamInterface, TeamPlayer } from './ScenarioResultsContainer';
@@ -77,24 +78,11 @@ const CloseOrnament = styled('div')`
   z-index: 10;
 `;
 
-const CloseButton = styled('div')`
+const CloseButtonPosition = css`
   position: absolute;
   text-align:center;
-  top: -6px;
-  right: 0px;
-  color: #5D5D5D;
-  cursor: pointer;
-  pointer-events: all;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  z-index: 10;
-  opacity: 0.8;
-  background: url(images/close_button_grey.png) no-repeat center 40%;
-
-  &:hover {
-    opacity: 1;
-  }
+  top: 1px;
+  right: -9px;
 `;
 
 export interface ScenarioResultsViewProps {
@@ -116,7 +104,7 @@ class ScenarioResultsView extends React.Component<ScenarioResultsViewProps> {
       <Container display={this.props.visible ? 'block' : 'none'}>
         <LeftOrnament />
         <CloseOrnament />
-        <CloseButton onClick={this.props.onCloseClick} />
+        <CloseButton width={30} height={30} className={CloseButtonPosition} onClick={this.props.onCloseClick} />
         <List visible={visible} players={participants} teams={teams} status={status} scenarioID={scenarioID} />
       </Container>
     );

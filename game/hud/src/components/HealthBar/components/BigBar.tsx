@@ -16,7 +16,7 @@ const Container = styled('div')`
   left: ${(props: any) => props.left.toFixed(1)}px;
   width: 100%;
   height: ${(props: any) => props.height.toFixed(1)}px;
-  margin-bottom: ${({ scale }: {scale: number}) => (3 * scale).toFixed(1)}px;
+  margin-bottom: ${({ scale }: { scale: number }) => (3 * scale).toFixed(1)}px;
 `;
 
 const BarContainer = styled('div')`

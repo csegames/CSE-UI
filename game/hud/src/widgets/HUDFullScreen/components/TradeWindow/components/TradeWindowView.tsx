@@ -16,6 +16,7 @@ import TabHeader from '../../TabHeader';
 import TradeWindowSubHeader from './TradeWindowSubHeader';
 import TradeWindowMidSection from './TradeWindowMidSection';
 import TradeDropContainer from './TradeDropContainer';
+import { SlotItemDefType } from '../../../lib/itemInterfaces';
 import { isStackedItem, isCraftingItem, isContainerItem, getItemMapID } from '../../../lib/utils';
 import { ContainerIdToDrawerInfo, getContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
@@ -86,6 +87,8 @@ export interface TradeWindowViewProps {
   myTradeItems: InventoryItemFragment[];
   theirTradeItems: InventoryItemFragment[];
   onMyTradeItemsChange: (items: InventoryItemFragment[]) => void;
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
 }
 
 export interface TradeWindowViewState {
@@ -128,6 +131,8 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
             getRef={this.setTradeDropRef}
             bodyWidth={this.state.dropContainerWidth}
             bodyHeight={this.state.dropContainerHeight}
+            showTooltip={this.props.showTooltip}
+            hideTooltip={this.props.hideTooltip}
           />
         </TradeSection>
         <TradeWindowMidSection
@@ -151,6 +156,8 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
             tradeState={this.props.theirTradeState}
             bodyHeight={this.state.dropContainerHeight}
             bodyWidth={this.state.dropContainerWidth}
+            showTooltip={this.props.showTooltip}
+            hideTooltip={this.props.hideTooltip}
           />
         </TradeSection>
       </Container>

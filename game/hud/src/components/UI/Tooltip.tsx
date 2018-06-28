@@ -14,7 +14,7 @@ import {
   offHideTooltip,
   ShowTooltipPayload,
   ToolTipStyle,
-} from '../services/actions/tooltips';
+} from 'actions/tooltips';
 
 const Container = styled('div')`
   display: inline-block;
@@ -93,6 +93,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
   private initWindowDimensions = () => {
     this.windowDimensions = { innerHeight: window.innerHeight, innerWidth: window.innerWidth };
+    this.handleHideTooltip();
   }
 
   private onMouseMove = (e: MouseEvent) => {

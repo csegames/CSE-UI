@@ -37,7 +37,7 @@ import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
-import { Tooltip } from '../Tooltip';
+import { Tooltip } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 
 useConfig({

@@ -5,9 +5,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { ql, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { CloseButton } from 'UI/CloseButton';
 
 const query = {
   namedQuery: 'motd',
@@ -149,21 +150,10 @@ const MOTDFooterRight = styled('div')` {
   width: 75px
 `;
 
-const CloseButton = styled('div')`
+const CloseButtonPosition = css`
   position: absolute;
-  z-index: 11;
   top: 6px;
   right: 7px;
-  width: 12px;
-  height: 12px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
-  }
-  &:active {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
-  }
 `;
 
 export interface WelcomeProps {
@@ -201,7 +191,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
             <Container>
               <MOTDTitle><h6>MOTD</h6></MOTDTitle>
               <InnerContainer className='cse-ui-scroller-thumbonly'>
-                <CloseButton onClick={this.hide} />
+                <CloseButton onClick={this.hide} className={CloseButtonPosition} />
                 <MOTDCorner />
                 <MOTDMotdTitle>
                   <h4>{ latestMotd ? latestMotd.title : 'Welcome to Camelot Unchained' }</h4>

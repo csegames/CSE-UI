@@ -89,3 +89,5 @@ export interface ContainerSlotItemDef {
   disableCraftingContainer?: boolean;
   disabled?: boolean;
 }
+
+export type SlotItemDefType = InventorySlotItemDef & CraftingSlotItemDef & ContainerSlotItemDef;

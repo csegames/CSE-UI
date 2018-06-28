@@ -6,16 +6,8 @@
 
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
-import styled from 'react-emotion';
-
-export interface GameMenuStyle {
-  GameMenu: React.CSSProperties;
-  gameMenuHeader: React.CSSProperties;
-  gameMenuBody: React.CSSProperties;
-  menuButton: React.CSSProperties;
-  optionsButton: React.CSSProperties;
-  closeButton: React.CSSProperties;
-}
+import styled, { css } from 'react-emotion';
+import { CloseButton } from 'UI/CloseButton';
 
 const OuterContainer = styled('div')`
   position: relative;
@@ -66,21 +58,10 @@ const MenuCorner = styled('div')` {
   z-index: 1;
 `;
 
-const MenuCloseButton = styled('div')`
+const CloseButtonPosition = css`
   position: absolute;
-  z-index: 99;
   top: 6px;
   right: 7px;
-  width: 12px;
-  height: 12px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
-  }
-  &:active {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
-  }
 `;
 
 const MenuContent = styled('div')` {
@@ -155,7 +136,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
       <OuterContainer>
         <MenuTitle><h6>Menu</h6></MenuTitle>
         <Container>
-          <MenuCloseButton onClick={this.fireVisibilityEvent} />
+          <CloseButton onClick={this.fireVisibilityEvent} className={CloseButtonPosition} />
           <MenuCorner />
           <MenuContent>
               <MenuButton

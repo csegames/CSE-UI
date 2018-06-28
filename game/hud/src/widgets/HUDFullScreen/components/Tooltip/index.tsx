@@ -85,7 +85,7 @@ export interface TooltipContentProps {
 
 class TooltipContent extends React.Component<TooltipContentProps> {
   public render() {
-    const { item, equippedItems, slotType, stackedItems } = this.props;
+    const { item, slotType, equippedItems, stackedItems } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (

@@ -23,6 +23,7 @@ import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subs
 
 import TradeWindowView from './components/TradeWindowView';
 import { FullScreenContext } from '../../lib/utils';
+import { SlotItemDefType } from '../../lib/itemInterfaces';
 import { InventoryItemFragment as ItemQueryFragment } from '../../graphql/fragments/strings/InventoryItemFragment';
 import { InventoryItemFragment } from '../../../../gqlInterfaces';
 
@@ -87,6 +88,8 @@ export interface InjectedTradeWindowProps {
 }
 
 export interface TradeWindowProps {
+  showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideItemTooltip: () => void;
   onMyTradeItemsChange: (myTradeItems: InventoryItemFragment[]) => void;
   onMyTradeStateChange: (tradeState: SecureTradeState) => void;
   onCloseFullScreen: () => void;
@@ -129,6 +132,8 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
               theirTradeItems={this.state.theirTradeItems}
               theirTradeState={this.state.theirTradeState}
               onTheirTradeStateChange={this.onTheirTradeStateChange}
+              showTooltip={this.props.showItemTooltip}
+              hideTooltip={this.props.hideItemTooltip}
             />
           );
         }}

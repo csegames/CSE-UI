@@ -11,15 +11,13 @@ import { ql, ContextMenu, events } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
-import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
-import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
-import { hasEquipmentPermissions, getInventoryDataTransfer } from '../../../lib/utils';
+import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
+import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } from '../../../lib/utils';
 import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
-import { SlotType, InventorySlotItemDef, CraftingSlotItemDef, ContainerSlotItemDef } from '../../../lib/itemInterfaces';
+import { SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
 
 declare const toastr: any;
 
@@ -45,13 +43,15 @@ const ItemWrapper = styled('div')`
 
 export interface InventorySlotProps {
   filtering: boolean;
-  item: InventorySlotItemDef & CraftingSlotItemDef & ContainerSlotItemDef;
+  item: SlotItemDefType;
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onMoveStack: (item: InventoryItemFragment, amount: number) => void;
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
   onRightClick?: (item: InventoryItemFragment) => void;
-  equippedItems?: EquippedItemFragment[];
   showGraySlots?: boolean;
   containerIsOpen?: boolean;
   drawerMaxStats?: ql.schema.ContainerDefStat_Single;
@@ -105,7 +105,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
                 item={item}
                 filtering={this.props.filtering}
                 onDrop={this.props.onDropOnZone}
-                onDragStart={hideTooltip}
+                onDragStart={this.props.hideTooltip}
                 onDragEnd={() => this.mouseOver = false}
                 containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
                 drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
@@ -133,22 +133,13 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       </ItemWrapper>;
   }
 
-  public componentDidMount() {
-    window.addEventListener('resize', hideTooltip);
-  }
-
   public shouldComponentUpdate(nextProps: InventorySlotProps, nextState: InventorySlotState) {
     return this.state.contextMenuVisible !== nextState.contextMenuVisible ||
     this.props.itemIndex !== nextProps.itemIndex ||
     this.props.containerIsOpen !== nextProps.containerIsOpen ||
-    this.props.equippedItems !== nextProps.equippedItems ||
     !_.isEqual(this.props.drawerMaxStats, nextProps.drawerMaxStats) ||
     !_.isEqual(this.props.drawerCurrentStats, nextProps.drawerCurrentStats) ||
     !_.isEqual(this.props.item, nextProps.item);
-  }
-
-  public componentWillUnmount() {
-    window.removeEventListener('resize', hideTooltip);
   }
 
   private onRightClick = () => {
@@ -178,25 +169,15 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     if (!this.mouseOver) {
       this.mouseOver = true;
       if (!this.state.contextMenuVisible && !getDragStore().isDragging) {
-        const { item, equippedItems } = this.props;
-        const content = <TooltipContent
-          item={item.item || (item.stackedItems && item.stackedItems[0])}
-          slotType={item.slotType}
-          stackedItems={item.stackedItems}
-          equippedItems={equippedItems}
-          instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
-            'Double click to equip or right click to open context menu' : ''}
-        />;
-        showTooltip({ content, event, styles: defaultTooltipStyle });
+        this.props.showTooltip(this.props.item, event);
       }
       const item = this.props.item.item;
       if (!getDragStore().isDragging && item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
         const { gearSlotSets } = item.staticDefinition;
-        if ((gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots)) ||
-          (this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
-          this.isRightOrLeftItem(gearSlotSets[1].gearSlots))) {
+        if ((gearSlotSets.length === 1 && isRightOrLeftItem(gearSlotSets[0].gearSlots)) ||
+          (isRightOrLeftItem(gearSlotSets[0].gearSlots) && isRightOrLeftItem(gearSlotSets[1].gearSlots))) {
 
-          this.rightOrLeftItemAction((gearSlots) => {
+          this.props.onRightOrLeftItemAction(item, (gearSlots) => {
             events.fire(eventNames.onHighlightSlots, gearSlots);
           });
         } else {
@@ -208,43 +189,8 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
   private onMouseLeave = () => {
     this.mouseOver = false;
-    hideTooltip();
+    this.props.hideTooltip();
     events.fire(eventNames.onDehighlightSlots);
-  }
-
-  private rightOrLeftItemAction = (action: (gearSlots: GearSlotDefRefFragment[]) => void) => {
-    const { gearSlotSets } = this.props.item.item.staticDefinition && this.props.item.item.staticDefinition;
-    if (gearSlotSets) {
-      // Dealing with a right or left weapon/piece of armor
-      const equippedItemFirstSlot = _.find(this.props.equippedItems, (item) => {
-        return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
-          gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
-      });
-      const equippedItemSecondSlot = _.find(this.props.equippedItems, (item) => {
-        return item.gearSlots && this.isRightOrLeftItem(item.gearSlots) &&
-          gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
-      });
-
-      if (gearSlotSets.length === 2 &&
-        equippedItemFirstSlot && !equippedItemSecondSlot && !_.isEqual(equippedItemFirstSlot, equippedItemSecondSlot)) {
-        action(gearSlotSets[1].gearSlots);
-        return;
-      } else {
-        action(gearSlotSets[0].gearSlots);
-        return;
-      }
-    }
-  }
-
-  private isRightOrLeftItem = (gearSlots: GearSlotDefRefFragment[]) => {
-    if (gearSlots.length === 1) {
-      const firstGearSlotId = gearSlots[0].id;
-      return _.includes(firstGearSlotId.toLowerCase(), 'right') ||
-      _.includes(firstGearSlotId.toLowerCase(), 'left') ||
-      _.includes(firstGearSlotId.toLowerCase(), 'primary') ||
-      _.includes(firstGearSlotId.toLowerCase(), 'secondary');
-    }
-    return false;
   }
 
   private onEquipItem = () => {
@@ -258,7 +204,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     });
 
     // Hide tooltip
-    hideTooltip();
+    this.props.hideTooltip();
 
     // Left or Right item
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
@@ -274,12 +220,11 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       }
       const { gearSlotSets } = this.props.item.item.staticDefinition;
       if (gearSlotSets.length === 2 &&
-          this.isRightOrLeftItem(gearSlotSets[0].gearSlots) &&
-          this.isRightOrLeftItem(gearSlotSets[1].gearSlots) ||
-          (gearSlotSets.length === 1 && this.isRightOrLeftItem(gearSlotSets[0].gearSlots))) {
+          isRightOrLeftItem(gearSlotSets[0].gearSlots) && isRightOrLeftItem(gearSlotSets[1].gearSlots) ||
+          (gearSlotSets.length === 1 && isRightOrLeftItem(gearSlotSets[0].gearSlots))) {
 
         // Is a right or left item. If there is already an item equipped in one, then try to equip to the other.
-        this.rightOrLeftItemAction((gearSlots) => {
+        this.props.onRightOrLeftItemAction(item, (gearSlots) => {
           const payload: EquipItemPayload = {
             inventoryItem: inventoryItemDataTransfer,
             willEquipTo: gearSlots,

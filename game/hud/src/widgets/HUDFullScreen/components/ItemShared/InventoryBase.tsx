@@ -21,7 +21,12 @@ import eventNames, {
 } from '../../lib/eventNames';
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
-import { InventoryBaseQuery, InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import {
+  InventoryBaseQuery,
+  InventoryItemFragment,
+  EquippedItemFragment,
+  GearSlotDefRefFragment,
+} from '../../../../gqlInterfaces';
 import {
   createMoveItemRequestToInventoryPosition,
   createMoveItemRequestToWorldPosition,
@@ -44,7 +49,13 @@ import {
   shouldShowItem,
   createMoveItemRequestToContainerPosition,
 } from '../../lib/utils';
-import { InventorySlotItemDef, CraftingSlotItemDef, ContainerSlotItemDef, SlotType } from '../../lib/itemInterfaces';
+import {
+  InventorySlotItemDef,
+  CraftingSlotItemDef,
+  ContainerSlotItemDef,
+  SlotType,
+  SlotItemDefType,
+} from '../../lib/itemInterfaces';
 
 export interface ContainerPermissionDef {
   userPermission: number;
@@ -65,6 +76,9 @@ export interface SlotNumberToItem {
 export interface InventoryBaseProps {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
@@ -73,6 +87,9 @@ export interface InventoryBaseProps {
 export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
@@ -222,6 +239,9 @@ export function createRowElementsForCraftingItems(payload: {
         onChangeInventoryItems={props.onChangeInventoryItems}
         onContainerIdToDrawerInfoChange={props.onChangeContainerIdToDrawerInfo}
         onChangeStackGroupIdToItemIDs={props.onChangeStackGroupIdToItemIDs}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         onMoveStack={onMoveStack}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
@@ -374,6 +394,9 @@ export function createRowElementsForContainerItems(payload: {
         onMoveStack={onMoveStack}
         onDropOnZone={onDropOnZone}
         onChangeInventoryItems={props.onChangeInventoryItems}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
         drawerCurrentStats={drawerCurrentStats}
@@ -486,6 +509,9 @@ export function createRowElements(payload: {
         onContainerIdToDrawerInfoChange={props.onChangeContainerIdToDrawerInfo}
         onChangeStackGroupIdToItemIDs={props.onChangeStackGroupIdToItemIDs}
         onMoveStack={onMoveStack}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
       />
