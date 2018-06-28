@@ -241,7 +241,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   private hideDelay = (): void => {
     this.hide();
     const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
+    localStorage.setItem('cse-MOTD-hide-start', JSON.stringify(hideDelayStart));
   }
 }
 
