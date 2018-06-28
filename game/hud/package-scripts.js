@@ -247,6 +247,7 @@ module.exports = {
       },
       ignoreLint: {
         script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        localServer: 'nps report.start && nps report.gql && nps gqlLocalServer && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build module without running lint',
       },
       ignoreLintHatchery: {
@@ -272,6 +273,10 @@ module.exports = {
       ignoreLintNuadaPrep: {
         script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',
         description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
+      },
+      ignoreLintLocalServer: {
+        script: 'nps build.ignoreLint.localServer,clean.hatchery,copy.hatchery',
+        description: 'Builds the module and copies to the Hatchery (4) UI override directory',
       },
     },
     report: {
