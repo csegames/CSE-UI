@@ -91,7 +91,7 @@ class StatusIcon extends React.Component<StatusIconProps, StatusIconState> {
         <TooltipHeader>{this.props.status.name}</TooltipHeader>
         <TooltipDescription>{this.props.status.description}</TooltipDescription>
       </TooltipContainer>;
-    
+
     showTooltip({ content, event });
   }
 

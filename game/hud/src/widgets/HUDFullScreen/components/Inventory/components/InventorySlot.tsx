@@ -186,7 +186,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           equippedItems={equippedItems}
           instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
             'Double click to equip or right click to open context menu' : ''}
-        />
+        />;
         showTooltip({ content, event, styles: defaultTooltipStyle });
       }
       const item = this.props.item.item;

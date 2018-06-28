@@ -50,5 +50,5 @@ export function getFaction(playerState: PlayerState | GroupMemberState) {
 }
 
 export function getBodyPartsCurrentHealth(playerState: PlayerState | GroupMemberState) {
-  return playerState.health.map(bodypart => bodypart.current)
+  return playerState.health.map(bodypart => bodypart.current);
 }

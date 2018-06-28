@@ -499,19 +499,19 @@ export function createRowElements(payload: {
 }
 
 export function distributeItems(args: {
-                                  slotsData: {
-                                    slotsPerRow: number,
-                                    rowCount: number,
-                                    slotCount: number,
-                                  },
-                                  itemData: {
-                                    items: InventoryItemFragment[],
-                                  },
-                                  inventoryItems: InventoryItemFragment[],
-                                  stackGroupIdToItemIDs: {[id: string]: string[]},
-                                  state: InventoryBaseState,
-                                  props: Partial<InventoryBaseWithQLProps>
-                                }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  inventoryItems: InventoryItemFragment[],
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  state: InventoryBaseState,
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { itemData, slotsData, inventoryItems, state, props } = args;
   if (!itemData || !itemData.items) {
     return {
@@ -550,16 +550,16 @@ export function initializeSlotsData(slotsData: { slotsPerRow: number, rowCount: 
 
 // we are not filtering items here, put items based on slot position
 export function distributeItemsNoFilter(args: {
-                                          slotsData: {
-                                            slotsPerRow: number,
-                                            rowCount: number,
-                                            slotCount: number,
-                                          },
-                                          itemData: {
-                                            items: InventoryItemFragment[],
-                                          },
-                                          props: Partial<InventoryBaseWithQLProps>
-                                        }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { slotsData, itemData, props } = args;
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem: SlotNumberToItem = {};
@@ -933,18 +933,18 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
 // we're filtering items here, put items into slots without regard to position
 // defined on the item
 export function distributeFilteredItems(args: {
-                                          slotsData: {
-                                            slotsPerRow: number,
-                                            rowCount: number,
-                                            slotCount: number,
-                                          },
-                                          itemData: {
-                                            items: InventoryItemFragment[],
-                                          },
-                                          stackGroupIdToItemIDs: {[id: string]: string[]},
-                                          state: InventoryBaseState,
-                                          props: Partial<InventoryBaseWithQLProps>
-                                        }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  state: InventoryBaseState,
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { slotsData, itemData, state, props } = args;
   const oldItemIdToInfo = _.merge({}, state.itemIdToInfo);
   const oldSlotNumberToItem = Object.assign({}, state.slotNumberToItem);
@@ -1278,13 +1278,13 @@ export function pruneRowsOfSlots(state: InventoryBaseState,
 // This function is responsible for updating the inventory whenever something
 // fires off the updateInventoryItems event. Generally, EQUIP, UNEQUIP, and DROP
 export function onUpdateInventoryItemsHandler(args: {
-                                                state: InventoryBaseState,
-                                                props: InventoryBaseProps,
-                                                stackGroupIdToItemIDs: {[id: string]: string[]},
-                                                inventoryItems: InventoryItemFragment[],
-                                                containerIdToDrawerInfo: ContainerIdToDrawerInfo,
-                                                payload: UpdateInventoryItemsPayload
-                                              }) {
+  state: InventoryBaseState,
+  props: InventoryBaseProps,
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  inventoryItems: InventoryItemFragment[],
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo,
+  payload: UpdateInventoryItemsPayload,
+}) {
   // This updates slotNumberToItem and itemIdToInfo when an item is equipped
   const { state, props, payload } = args;
   const itemIdToInfo = { ...state.itemIdToInfo };
@@ -2084,7 +2084,7 @@ export function onMoveStack(args: {
                               stackGroupIdToItemIDs: {[id: string]: string[]},
                               inventoryItems: InventoryItemFragment[],
                             }) {
-  const { state, props, item, amount } = args; 
+  const { state, props, item, amount } = args;
   const slotNumberToItem = {...state.slotNumberToItem};
   const itemIdToInfo = {...state.itemIdToInfo};
   const stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};

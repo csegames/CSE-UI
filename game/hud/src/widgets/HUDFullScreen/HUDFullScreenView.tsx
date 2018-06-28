@@ -182,7 +182,6 @@ export interface Props {
 }
 
 export interface State {
-  
 }
 
 class HUDFullScreenView extends React.Component<Props, State> {

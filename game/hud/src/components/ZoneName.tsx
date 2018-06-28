@@ -80,6 +80,6 @@ export class ZoneName extends React.Component<{}, ZoneNameState> {
         </ZoneNameContainer>
         <ZoneNameEnd />
       </ZoneContainer>
-    )
+    );
   }
 }

@@ -61,7 +61,6 @@ export interface Props {
 }
 
 export interface State {
-  
 }
 
 class HUDNavButton extends React.Component<Props, State> {
