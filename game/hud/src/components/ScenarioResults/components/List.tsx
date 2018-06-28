@@ -126,7 +126,7 @@ class List extends React.Component<ListProps, ListState> {
           </ListContainer>
         </Container>
       );
-    } else if (status.lastError !== 'OK') {
+    } else if (this.props.scenarioID !== '' && status.lastError !== 'OK') {
       return (
         <Container>
           <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>

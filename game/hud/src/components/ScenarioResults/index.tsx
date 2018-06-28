@@ -15,6 +15,7 @@ const query = (scenarioID: string): Partial<GraphQLQuery> => ({
   namedQuery: 'scenarioSummary',
   variables: {
     scenarioID,
+    shardID: client.shardID,
   },
 });
 
