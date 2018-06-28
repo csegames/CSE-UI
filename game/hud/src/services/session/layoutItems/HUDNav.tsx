@@ -184,70 +184,13 @@ export default {
           events.fire('hudnav--navigate', 'crafting');
         },
       },
-      // {
-      //   name: 'plotcontrol',
-      //   tooltip: 'Plot Controller',
-      //   iconClass: 'fa-map-signs',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
-      //   hidden: true,
-      //   onClick: () => {
-      //     events.fire('hudnav--navigate', 'plotcontrol');
-      //   },
-      // },
-      // {
-      //   name: 'social',
-      //   tooltip: 'Social',
-      //   iconClass: 'fa-users',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
-      //   hidden: false,
-      //   onClick: () => {
-      //     events.fire('hudnav--navigate', 'social');
-      //     hideClientControlledUI();
-      //   },
-      // },
-      {
-        name: 'map',
-        tooltip: 'World Map',
-        iconClass: 'fa-map',
-        icon: (
-          <span>
-            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'map');
-        },
-      },
-      {
-        name: 'scenario',
-        tooltip: 'Scenario Management',
-        iconClass: 'fa-gamepad',
-        icon: (
-          <span>
-            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          client.SendSlashCommand('showscenarioui');
-        },
-      },
       {
         name: 'nearby-plot',
         tooltip: 'Nearby Plot',
-        iconClass: 'fa-building',
+        iconClass: 'fa-map-signs',
         icon: (
           <span>
-            <i className='fa fa-building fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -267,6 +210,63 @@ export default {
         hidden: false,
         onClick: () => {
           client.SendSlashCommand('plot showui --owned');
+        },
+      },
+      {
+        name: 'map',
+        tooltip: 'World Map',
+        iconClass: 'fa-map',
+        icon: (
+          <span>
+            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'map');
+        },
+      },
+      // {
+      //   name: 'social',
+      //   tooltip: 'Social',
+      //   iconClass: 'fa-users',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'social');
+      //     hideClientControlledUI();
+      //   },
+      // },
+      // {
+      //   name: 'plotcontrol',
+      //   tooltip: 'Plot Controller',
+      //   iconClass: 'fa-map-signs',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: true,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'plotcontrol');
+      //   },
+      // },
+      {
+        name: 'scenario',
+        tooltip: 'Scenario Management',
+        iconClass: 'fa-gamepad',
+        icon: (
+          <span>
+            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('showscenarioui');
         },
       },
       {
