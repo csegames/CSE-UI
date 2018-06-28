@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
 
-import { TabbedDialog, DialogButton } from '../../components/UI/TabbedDialog';
+import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
 import { InterfaceSettings } from './tabs/Interface';
 import { AddonSettings } from './tabs/Addon';

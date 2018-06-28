@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import { CheckBoxField } from '../../../components/UI/CheckBoxField';
-import { SliderField } from '../../../components/UI/SliderField';
-import { SubHeading } from '../../../components/UI/SubHeading';
+import { CheckBoxField } from 'UI/CheckBoxField';
+import { SliderField } from 'UI/SliderField';
+import { SubHeading } from 'UI/SubHeading';
 
 interface Setting {
   type: React.Component | Function;

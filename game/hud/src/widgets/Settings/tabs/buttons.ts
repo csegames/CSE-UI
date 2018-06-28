@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { DialogButton } from '../../../components/UI/TabbedDialog';
+import { DialogButton } from 'components/UI/TabbedDialog';
 
 export const APPLY: DialogButton = { label: 'Apply' };
 export const DEFAULT: DialogButton = { label: 'Default' };

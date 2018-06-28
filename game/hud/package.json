@@ -54,6 +54,8 @@
       }
     }
   },
+  "browserify": { "transform": [ "aliasify" ] },
+  "aliasify": "./aliasify.config.js",
   "jest": {
     "transform": {
       ".(ts|tsx)": "<rootDir>/../node_modules/ts-jest/preprocessor.js"
@@ -76,6 +78,7 @@
     "@csegames/cu-xmpp-chat": "^0.1.3",
     "@types/ol": "^4.6.1",
     "@types/openlayers": "^4.6.2",
+    "aliasify": "^2.1.0",
     "aphrodite": "^1.1.0",
     "apisauce": "0.3.1",
     "apollo": "^0.2.2",

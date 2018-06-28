@@ -7,8 +7,8 @@
 import * as React from 'react';
 import { client, events } from '@csegames/camelot-unchained';
 import { ConfigIndex } from '../utils/configVars';
-import { DialogTab, DialogButton } from '../../../components/UI/TabbedDialog';
-import { SideMenu, MenuOption } from '../../../components/UI/SideMenu';
+import { DialogTab, DialogButton } from 'UI/TabbedDialog';
+import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
 import { InputSettings } from '../panels/InputSettings';
 import { GraphicSettings } from '../panels/GraphicSettings';
@@ -16,7 +16,7 @@ import { AudioSettings } from '../panels/AudioSettings';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
-import { sendSystemMessage } from '../../../services/actions/system';
+import { sendSystemMessage } from 'services/actions/system';
 
 const options: MenuOption[] = [
   OPTION.KEYS,

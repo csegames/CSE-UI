@@ -9,7 +9,7 @@ import keybinds from './samples/keybindsConfig';
 import input from './samples/inputConfig';
 import audio from './samples/audioConfig';
 import graphics from './samples/graphicsConfig';
-import { sendSystemMessage } from '../../../services/actions/system';
+import { sendSystemMessage } from 'services/actions/system';
 
 function isNotClient() {
   return !!(window['cuOverrides']);

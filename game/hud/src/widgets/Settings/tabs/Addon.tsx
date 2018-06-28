@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { DialogTab, DialogButton } from '../../../components/UI/TabbedDialog';
-import { SideMenu, MenuOption } from '../../../components/UI/SideMenu';
+import { DialogTab, DialogButton } from 'UI/TabbedDialog';
+import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 
