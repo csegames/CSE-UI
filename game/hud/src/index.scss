@@ -170,19 +170,19 @@ body {
 /* CSE_Koo scroll bars */
 
 #hud .cse-ui-scroller-full {
-  div::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  div::-webkit-scrollbar-button:vertical:increment:start {
+  ::-webkit-scrollbar-button:vertical:increment:start {
     width: 8px; height: 10px;
     background: url(../images/settings/scrollbar-top-arrow.png);
   }
-  div::-webkit-scrollbar-button:vertical:decrement:end {
+  ::-webkit-scrollbar-button:vertical:decrement:end {
     width: 8px; height: 10px;
     background: url(../images/settings/scrollbar-bot-arrow.png);
   }
-  div::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     box-shadow: none;
     background: none;
     background: transparent;
@@ -190,7 +190,7 @@ body {
     background-repeat: vertical;
     background-size: 8px;
   }
-  div::-webkit-scrollbar-thumb:vertical {
+  ::-webkit-scrollbar-thumb:vertical {
     box-shadow: none;
     background-color: transparent;
     background-image: url(../images/settings/scrollbar-thumb.png);
@@ -199,18 +199,17 @@ body {
   }
 }
 
-
 #hud .cse-ui-scroller-thumbonly {
-  div::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  div::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     box-shadow: none;
     background: none;
     background: transparent;
   }
-  div::-webkit-scrollbar-thumb:vertical {
+  ::-webkit-scrollbar-thumb:vertical {
     border: 35px solid rgb(64,64,64);
     border-width: 35px 4px 35px 4px;
     border-image: url(../images/settings/scrollbar-thumb-ends.png);

@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, client, webAPI } from '@csegames/camelot-unchained';
 import { IInteractiveAlert, TradeAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
-import * as CONFIG from '../Settings/config';
+import * as CONFIG from '../../widgets/Settings/config';
 
 // Utility Functions
 export function removeTradeInvite(alertsList: IInteractiveAlert[], toRemove: TradeAlert) {

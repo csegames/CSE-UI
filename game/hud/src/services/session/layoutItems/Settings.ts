@@ -5,7 +5,7 @@
  */
 
 import { LayoutMode } from '../../../components/HUDDrag';
-import Settings, { SettingsDimensions } from '../../../components/Settings/SettingsMain';
+import Settings, { SettingsDimensions } from '../../../widgets/Settings/SettingsMain';
 import HUDZOrder from '../HUDZOrder';
 
 export default {
