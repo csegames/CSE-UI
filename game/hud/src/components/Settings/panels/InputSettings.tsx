@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { cancel, getInputConfig, ConfigIndex } from '../utils/configVars';
+import { cancel, getInputConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from '../components/CheckBoxField';
 import { SettingsHeading } from '../components/SettingsHeading';
 import { client, events } from '@csegames/camelot-unchained';
@@ -77,6 +77,7 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
     const { inputs } = this.state;
     const on = inputs[id] === 'true' ? 'false' : 'true';
     if (client.debug) console.log(`graphic set ${id} = ${on}`);
+    sendConfigVarChangeMessage(id, on);
     client.ChangeConfigVar(id, on);
     client.SaveConfigChanges();
     this.setState({ inputs: Object.assign({}, inputs, { [id]: on }) });

@@ -16,6 +16,7 @@ import { AudioSettings } from '../panels/AudioSettings';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
+import { sendSystemMessage } from '../../../services/actions/system';
 
 const options: MenuOption[] = [
   OPTION.KEYS,
@@ -39,7 +40,7 @@ function getButtonsForOption(option: MenuOption) {
     case OPTION.INPUT:
     case OPTION.GRAPHICS:
     case OPTION.KEYS:
-      return [BUTTON.DEFAULT, BUTTON.CANCEL];
+      return [BUTTON.DEFAULT, BUTTON.APPLY, BUTTON.CANCEL];
   }
   return [BUTTON.CANCEL];
 }
@@ -93,6 +94,10 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
           client.SaveConfigChanges();
           events.fire('settings--reload', config);
         }
+        break;
+      case BUTTON.APPLY:
+        client.SaveConfigChanges();
+        sendSystemMessage('All configurations have been applied');
         break;
       case BUTTON.CANCEL:
         this.props.onCancel();

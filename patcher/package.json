@@ -30,7 +30,7 @@
     "postinstall": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
-    "@csegames/camelot-unchained": "^0.1.45",
+    "@csegames/camelot-unchained": "^0.1.47",
     "@csegames/cu-xmpp-chat": "^0.1.2",
     "aphrodite": "^1.1.0",
     "apisauce": "^0.3.1",

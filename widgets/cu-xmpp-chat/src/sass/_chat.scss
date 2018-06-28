@@ -257,6 +257,7 @@
         /* wrap at character level */
         overflow-wrap: break-word;
         white-space: pre-wrap;
+        overflow: hidden;
         .chat-line-nick {
           color: $chat-line-nick-color;
           cursor: pointer;

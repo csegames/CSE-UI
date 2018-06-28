@@ -228,6 +228,48 @@ export default {
         },
       },
       {
+        name: 'scenario',
+        tooltip: 'Scenario Management',
+        iconClass: 'fa-gamepad',
+        icon: (
+          <span>
+            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('showscenarioui');
+        },
+      },
+      {
+        name: 'nearby-plot',
+        tooltip: 'Nearby Plot',
+        iconClass: 'fa-building',
+        icon: (
+          <span>
+            <i className='fa fa-building fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --nearby');
+        },
+      },
+      {
+        name: 'owned-plot',
+        tooltip: 'Owned Plot',
+        iconClass: 'fa-home',
+        icon: (
+          <span>
+            <i className='fa fa-home fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('plot showui --owned');
+        },
+      },
+      {
         name: 'scenario-results',
         tooltip: 'Scenario Results',
         iconClass: 'fa-fort-awesome',

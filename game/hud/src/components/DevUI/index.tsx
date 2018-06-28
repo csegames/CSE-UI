@@ -327,7 +327,6 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 // };
 
 class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
-
   constructor(props: {}) {
     super(props);
     this.state = null;
@@ -407,21 +406,21 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
 
   public componentDidMount() {
     events.on('hudnav--navigate', this.onToggleUIVisibility);
-
-    client.OnUpdateDevUI((id: string, rootPage: any) => {
-      let page = rootPage;
-      if (typeof page === 'string') {
-        page = JSON.parse(page);
-      }
-      this.setState({
-        [id]: page,
-      });
-    });
+    client.OnUpdateDevUI(this.handleUpdateDevUI);
   }
 
   public componentDidCatch(error: any, info: any) {
     console.log(error);
     console.log(info);
+  }
+
+  private handleUpdateDevUI = (id: string, rootPage: any) => {
+    let page = rootPage;
+    if (typeof page === 'string') {
+      page = JSON.parse(page);
+    }
+
+    this.setState({ [id]: page });
   }
 
   private onToggleUIVisibility = (name: string) => {

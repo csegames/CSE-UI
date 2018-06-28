@@ -1,6 +1,6 @@
 {
   "name": "@csegames/cu-xmpp-chat",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Camelot Unchained XMPP Chat",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -35,7 +35,7 @@
     "react-dom": "^16.3.0"
   },
   "dependencies": {
-    "@csegames/camelot-unchained": "^0.1.31",
+    "@csegames/camelot-unchained": "^0.1.46",
     "aphrodite": "^2.2.2",
     "cwd-in-node-modules": "^1.0.1",
     "es6-promise": "^3.1.2",
