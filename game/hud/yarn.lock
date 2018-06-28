@@ -306,6 +306,12 @@ ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
+aliasify@^2.1.0:
+  version "2.1.0"
+  resolved "http://registry.camelotunchained.com/aliasify/-/aliasify-2.1.0.tgz#7c30825b9450b9e6185ba27533eaf6e2067d4b42"
+  dependencies:
+    browserify-transform-tools "~1.7.0"
+
 align-text@^0.1.1, align-text@^0.1.3:
   version "0.1.4"
   resolved "http://registry.camelotunchained.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
@@ -1344,7 +1350,7 @@ browserify-sign@^4.0.0:
     inherits "^2.0.1"
     parse-asn1 "^5.0.0"
 
-browserify-transform-tools@^1.4.2:
+browserify-transform-tools@^1.4.2, browserify-transform-tools@~1.7.0:
   version "1.7.0"
   resolved "http://registry.camelotunchained.com/browserify-transform-tools/-/browserify-transform-tools-1.7.0.tgz#83e277221f63259bed2e7eb2a283a970a501f4c4"
   dependencies:
