@@ -272,7 +272,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
       if (same.length) {
         this.setState({ clash: { sameAs: same, name, which, keyCode } });
       } else {
-        sendConfigVarChangeMessage(name, which)
+        sendConfigVarChangeMessage(name, which);
         this.bind(name, which, keyCode);
       }
     }
