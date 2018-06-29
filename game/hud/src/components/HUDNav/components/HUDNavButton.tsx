@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as className from 'classnames';
 import styled, { css } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
-import { showTooltip, hideTooltip, ShowTooltipPayload } from '../../../services/actions/tooltips';
+import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 
 const Item = styled('a')`
   pointer-events: all;

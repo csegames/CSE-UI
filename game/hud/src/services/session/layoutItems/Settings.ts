@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode } from '../../../components/HUDDrag';
-import Settings, { SettingsDimensions } from '../../../widgets/Settings/SettingsMain';
+import { LayoutMode } from 'components/HUDDrag';
+import Settings, { SettingsDimensions } from 'widgets/Settings/SettingsMain';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

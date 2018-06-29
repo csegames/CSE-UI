@@ -12,7 +12,7 @@ import { ql, ContextMenu, events } from '@csegames/camelot-unchained';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
-import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';

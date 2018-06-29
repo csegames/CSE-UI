@@ -13,7 +13,7 @@ import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/
 import ItemComponent from '../../ItemShared/Item';
 import EmptyItem from '../../ItemShared/EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
-import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;

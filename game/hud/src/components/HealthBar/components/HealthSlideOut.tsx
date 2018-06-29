@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { BodyParts } from 'lib/PlayerStatus';
 
 const Container = styled('div')`
   position: absolute;

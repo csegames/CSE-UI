@@ -13,7 +13,7 @@ import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
-import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquippedItemSlotStyle {

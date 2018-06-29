@@ -19,7 +19,8 @@
     ],
     "baseUrl": "src",
     "paths": {
-      "UI/*": [ "components/UI/*" ]
+      "UI/*": [ "components/UI/*" ],
+      "actions/*": [ "services/actions/*" ]
     }
   },
   "compileOnSave": false,

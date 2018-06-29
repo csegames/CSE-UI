@@ -11,7 +11,7 @@ import { client, PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
-import { showEnemyTargetContextMenu } from '../services/actions/contextMenu';
+import { showEnemyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled('div')`
   transform: scale(0.45);

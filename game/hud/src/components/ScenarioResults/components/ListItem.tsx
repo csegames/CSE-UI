@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { FactionColors } from '../../../lib/factionColors';
+import { FactionColors } from 'lib/factionColors';
 import { TeamPlayer } from './ScenarioResultsContainer';
 
 const HOVER_EFFECT_TIME = 0.4;
