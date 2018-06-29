@@ -131,7 +131,10 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
       return canAccessChannel(patcher.getPermissions(), server.channelPatchPermissions);
     });
     const sortedServers = selectedServer ?
-      _.sortBy(serversForPermission, server => server.shardID === selectedServer.shardID ? -1 : 0) :
+      _.sortBy(serversForPermission, [
+        server => server.available ? -1 : 0,
+        server => server.shardID === selectedServer.shardID ? -1 : 0
+      ]) :
       _.values(serversForPermission);
     return sortedServers;
   }
