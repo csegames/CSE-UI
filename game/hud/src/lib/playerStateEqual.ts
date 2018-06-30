@@ -61,15 +61,19 @@ export function isEqualPlayerState(a: PlayerState | GroupMemberState, b: PlayerS
 
   if (a.health) {
     for (let i = 0; i < BodyParts.Count; ++i) {
-      if (a.health[i].wounds !== b.health[i].wounds) {
-        return false;
-      }
+      if (a.health[i] && b.health[i]) {
+        if (a.health[i].wounds !== b.health[i].wounds) {
+          return false;
+        }
 
-      if (!numEqualsCloseEnough(a.health[i].current, b.health[i].current)) {
-        return false;
-      }
+        if (!numEqualsCloseEnough(a.health[i].current, b.health[i].current)) {
+          return false;
+        }
 
-      if (!numEqualsCloseEnough(a.health[i].max, b.health[i].max)) {
+        if (!numEqualsCloseEnough(a.health[i].max, b.health[i].max)) {
+          return false;
+        }
+      } else {
         return false;
       }
     }
