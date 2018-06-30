@@ -34,8 +34,6 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
 
   public render() {
     if (!this.props.member) return null;
-    if (this.props.member.isLeader) console.log(this.props.member.name + 'Is leader');
-    console.log(JSON.stringify(this.props.member));
     return (
       <Container
         key={this.props.member.id}

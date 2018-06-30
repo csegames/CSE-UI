@@ -54,7 +54,11 @@
       }
     }
   },
-  "browserify": { "transform": [ "aliasify" ] },
+  "browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
   "aliasify": "./aliasify.config.js",
   "jest": {
     "transform": {

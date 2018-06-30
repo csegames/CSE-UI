@@ -20,6 +20,11 @@ export function groupInviteID(alert: GroupAlert) {
 export function handleNewGroupAlert(ia: InteractiveAlertView, alert: GroupAlert) {
   ia.setState((state) => {
     const alerts = state.alerts.slice();
+
+    if (alerts.findIndex(a => groupInviteID(a as GroupAlert) === groupInviteID(alert)) !== -1) {
+      return state;
+    }
+
     alerts.push(alert);
     return {
       ...state,
@@ -96,7 +101,6 @@ export interface GroupAlertProps {
 export class GroupAlertView extends React.Component<GroupAlertProps> {
   public render() {
     const { alert } = this.props;
-    console.log(`GroupAlertView | render()`);
     return (
       <Container>
         <h6>
