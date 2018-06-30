@@ -101,6 +101,7 @@ export interface HUDDragProps extends HUDDragOptions {
   // general settings
   locked: boolean;  // is the ui locked for editing?
   gridDivisions: number; // how divided is the grid (we divide the height and width by this number)
+  zOrder: number;
 }
 
 export interface HUDDragState {
@@ -190,6 +191,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           left: `${position.x}px`,
           top: `${position.y}px`,
           pointerEvents: 'none',
+          zIndex: this.props.zOrder,
           ...scale,
         }}>
           <div style={{

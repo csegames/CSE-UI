@@ -326,6 +326,11 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //   ,
 // };
 
+const Container = styled('div')`
+  position: relative;
+  z-index: 16;
+`;
+
 class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   constructor(props: {}) {
     super(props);
@@ -336,7 +341,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
     return (
-      <div>
+      <Container>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
@@ -349,7 +354,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               right: isMaximized ? 0 : 'default',
               left: isMaximized ? 0 : page.x,
               bottom: isMaximized ? 0 : 'default',
-              position: 'fixed',
+              position: 'absolute',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
             }}>
@@ -400,7 +405,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
             </div>
           );
         })}
-      </div>
+      </Container>
     );
   }
 

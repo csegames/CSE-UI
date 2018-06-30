@@ -200,6 +200,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           defaultOpacity={widget.position.opacity}
           defaultMode={widget.position.layoutMode}
           defaultVisible={widget.position.visibility}
+          zOrder={widget.position.zOrder}
           gridDivisions={10}
           locked={this.props.layout.locked}
           save={(s: HUDDragState) => {
