@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { cx } from 'react-emotion';
 import * as CONFIG from './config';
 import * as CSS from '../../lib/css-helper';
 
@@ -71,6 +71,7 @@ interface BoxProps {
   children?: any;
   padding?: boolean;                // inner padding
   style?: any;                      // outer custom styles
+  innerClassName?: string;
   onClick?: (id: string) => void;
 }
 
@@ -88,7 +89,7 @@ export function Box(props: BoxProps) {
       }
     }}>
       <Border>
-        <Inner className={cls.join(' ')}
+        <Inner className={cx(cls.join(' '), props.innerClassName)}
           align={props.align}
           justify={props.justify}>
           {props.children}

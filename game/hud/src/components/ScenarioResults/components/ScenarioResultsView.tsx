@@ -12,6 +12,7 @@ import { CloseButton } from 'UI/CloseButton';
 
 import List from './List';
 import { TeamInterface, TeamPlayer } from './ScenarioResultsContainer';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 const slideIn = keyframes`
   from {
@@ -37,6 +38,7 @@ const Container = styled('div')`
   pointer-events: all;
   -webkit-animation: ${slideIn} 0.5s ease forwards;
   animation: ${slideIn} 0.5s ease forwards;
+  z-index: ${HUDZOrder.Scoreboard};
   &:before {
     content: '';
     position: absolute;

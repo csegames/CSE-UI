@@ -5,12 +5,29 @@
  */
 
 import * as React from 'react';
+import { isEqual } from 'lodash';
+import { client, events, DisplayModeConfig } from '@csegames/camelot-unchained';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { cancel, getGraphicsConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SliderField } from 'UI/SliderField';
-import { client, events } from '@csegames/camelot-unchained';
+import { DropDownField } from 'UI/DropdownField';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
+import {
+  cancel,
+  getGraphicsConfig,
+  ConfigIndex,
+  sendConfigVarChangeMessage,
+  SELECT_RESOLUTION_ID,
+  FULL_SCREEN_WIDTH_ID,
+  FULL_SCREEN_HEIGHT_ID,
+  FULL_SCREEN_TOGGLE_ID,
+} from '../utils/configVars';
+import { SelectedDisplayMode } from '../tabs/General';
+
+function getResolutionString(displayModeConfig: DisplayModeConfig) {
+  if (!displayModeConfig || !displayModeConfig.width || !displayModeConfig.height) return 'Not Selected';
+  return `${displayModeConfig.width}x${displayModeConfig.height}`;
+}
 
 const settings: Settings = {
   'Render Draw Distance':
@@ -27,24 +44,41 @@ const settings: Settings = {
     { type: SliderField, min: 0, max: 2, step: 1 },
   'Shader Quality':
     { type: SliderField, min: 0, max: 2, step: 1 },
+  'Full screen':
+    { type: CheckBoxField },
+  [SELECT_RESOLUTION_ID]:
+    { type: DropDownField },
 };
 
 interface GraphicSettingsProps {
+  selectedDisplayMode: SelectedDisplayMode;
+  onSelectedDisplayModeChange: (selectedDisplayMode: SelectedDisplayMode) => void;
 }
 interface GraphicSettingsState {
   graphics: any;
+  displayModes: DisplayModeConfig[];
 }
 
-export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, GraphicSettingsState> {
+export class GraphicSettings extends React.Component<GraphicSettingsProps, GraphicSettingsState> {
   private evh: number;
   constructor(props: GraphicSettingsProps) {
     super(props);
-    this.state = { graphics: null };
+    this.state = {
+      graphics: null,
+      displayModes: [],
+    };
   }
 
   public componentDidMount() {
     this.evh = events.on('settings--reload', this.reload);
     this.loadSettings();
+    client.RequestDisplayModes();
+    client.OnDisplayModesChanged(this.handleDisplayModesChanged);
+  }
+
+  public shouldComponentUpdate(nextProps: GraphicSettingsProps, nextState: GraphicSettingsState) {
+    return !isEqual(this.props.selectedDisplayMode, nextProps.selectedDisplayMode) ||
+      !isEqual(this.state, nextState);
   }
 
   public componentWillUnmount() {
@@ -61,6 +95,9 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
           settings,
           onToggle: this.onToggle,
           onChange: this.onChange,
+          dropDownItemsDictionary: this.getDropDownItemsDictionary(),
+          selectedDropDownItemDictionary: this.getSelectedDropDownItemDictionary(),
+          onSelectDropdownItem: this.onSelectDropdownItem,
         })}
       </SettingsPanel>
     );
@@ -69,7 +106,17 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
   private loadSettings() {
     getGraphicsConfig((graphics: any, type: ConfigIndex) => {
       if (type === ConfigIndex.RENDERING) {
-        this.setState({ graphics });
+        // Manually add set resolution config
+        const allGraphicConfigs = {
+          ...graphics,
+          [SELECT_RESOLUTION_ID]: 'Select Resolution',
+        };
+        const width = graphics[FULL_SCREEN_WIDTH_ID] && parseInt(graphics[FULL_SCREEN_WIDTH_ID]);
+        const height = graphics[FULL_SCREEN_HEIGHT_ID] && parseInt(graphics[FULL_SCREEN_HEIGHT_ID]);
+        const fullScreen = graphics[FULL_SCREEN_TOGGLE_ID] === 'true';
+
+        this.props.onSelectedDisplayModeChange({ width, height, fullScreen });
+        this.setState({ graphics: allGraphicConfigs });
       }
     });
   }
@@ -83,6 +130,15 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
   private onToggle = (id: string) => {
     const { graphics } = this.state;
     const on = graphics[id] === 'true' ? 'false' : 'true';
+
+    if (id === FULL_SCREEN_TOGGLE_ID) {
+      const width = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.width :
+        parseInt(graphics[FULL_SCREEN_WIDTH_ID]);
+      const height = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.height :
+        parseInt(graphics[FULL_SCREEN_HEIGHT_ID]);
+      this.props.onSelectedDisplayModeChange({ width, height, fullScreen: on === 'true' });
+    }
+    
     client.ChangeConfigVar(id, on);
     client.SaveConfigChanges();
     this.setState({ graphics: Object.assign({}, graphics, { [id]: on }) });
@@ -94,7 +150,51 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
     sendConfigVarChangeMessage(id, value);
     client.ChangeConfigVar(id, `${value}`);
     client.SaveConfigChanges();
-    this.setState({ graphics: Object.assign({}, graphics, { [id]: `${value}` }) });
+    const allGraphicConfigs = {
+      ...graphics,
+      [SELECT_RESOLUTION_ID]: 'Select Resolution',
+    };
+    this.setState({ graphics: Object.assign({}, allGraphicConfigs, { [id]: `${value}` }) });
   }
 
+  private handleDisplayModesChanged = (displayModes: DisplayModeConfig[]) => {
+    this.setState(() => {
+      return {
+        displayModes,
+      };
+    });
+  }
+
+  private getDropDownItemsDictionary = () => {
+    const dropDownItems = {
+      [SELECT_RESOLUTION_ID]: this.state.displayModes.map((config) => getResolutionString(config)),
+    };
+
+    return dropDownItems;
+  }
+
+  private getSelectedDropDownItemDictionary = () => {
+    const selectedDropDownItem = {
+      [SELECT_RESOLUTION_ID]: getResolutionString(this.props.selectedDisplayMode),
+    };
+    return selectedDropDownItem;
+  }
+
+  private onSelectDropdownItem = (dropdownItem: { configKey: string, item: string }) => {
+    const { configKey, item } = dropdownItem;
+    switch (configKey) {
+      case SELECT_RESOLUTION_ID: {
+        const resolutionValues = item.split('x');
+        const width = parseInt(resolutionValues[0]);
+        const height = parseInt(resolutionValues[1]);
+        const fullScreen = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.fullScreen :
+          this.state.graphics[FULL_SCREEN_TOGGLE_ID] === 'true';
+        client.ChangeConfigVar(FULL_SCREEN_WIDTH_ID, resolutionValues[0]);
+        client.ChangeConfigVar(FULL_SCREEN_HEIGHT_ID, resolutionValues[1]);
+        client.SaveConfigChanges();
+        this.props.onSelectedDisplayModeChange({ width, height, fullScreen });
+        break;
+      }
+    }
+  }
 }

@@ -65,6 +65,7 @@ const HUDNavContainer = styled('div')`
   width: 900px;
   height: 200px;
   pointer-events: none;
+  z-index: 999;
 `;
 
 const ZoneNameContainer = styled('div')`
@@ -118,6 +119,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <ScenarioPopup />
 
         <ScenarioResults />
+
         <HUDFullScreen />
         <SkillBarContainer>
           <SkillBar />

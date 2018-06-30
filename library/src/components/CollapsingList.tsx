@@ -16,7 +16,7 @@ const Container = styled('div')`
   color: white;
 `;
 
-const Title = styled('span')`
+const Title = styled('div')`
   cursor: pointer;
 `;
 
