@@ -195,6 +195,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
         {(graphql: GraphQLResult<{ motd: ql.schema.MessageOfTheDay }>) => {
           const gqlData = typeof graphql.data === 'string' ? JSON.parse(graphql.data) : graphql.data;
           if (graphql.loading || !gqlData) return null;
+          const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
 
           return (
             <Container>
@@ -203,15 +204,11 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                 <CloseButton onClick={this.hide} />
                 <MOTDCorner />
                 <MOTDMotdTitle>
-                  <h4>{ gqlData && gqlData.motd && gqlData.motd[0]
-                    ? gqlData.motd[0].title
-                    : 'Welcome to Camelot Unchained'
-                  }</h4>
+                  <h4>{ latestMotd ? latestMotd.title : 'Welcome to Camelot Unchained' }</h4>
                 </MOTDMotdTitle>
                 <MOTDContent>
                       {
-                        gqlData && gqlData.motd && gqlData.motd[0]
-                        ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
+                        latestMotd ? <div key='100' dangerouslySetInnerHTML={{ __html: latestMotd.htmlContent }} />
                         : this.defaultMessage
                       }
                 </MOTDContent>
