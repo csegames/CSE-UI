@@ -245,6 +245,9 @@
         margin: 0.2em;
         opacity: 0.7;
         line-height: 1.3em;
+        &.cse-chat-line {
+          background-color: #223333;
+        }
         &.chat-lazyload {
           /* This is an approximation only.  We don't actually know each */
           /* line height, it varies depending on type of message and message */
@@ -274,7 +277,7 @@
             width: 20px;
             display: inline-block;
             margin: -6px 5px 0px -2px;
-            top: 6px;
+            top: 4px;
             position: relative;
           }
         }
