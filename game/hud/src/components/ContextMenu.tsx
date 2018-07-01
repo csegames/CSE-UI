@@ -17,7 +17,7 @@ const Container = styled('div')`
   right: 0;
   top: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: 10000;
 `;
 
 const Menu = styled('ol')`
@@ -112,11 +112,14 @@ export class ContextMenu extends React.Component<Props, State> {
     if (this.state.show === false) return null;
 
     return (
-      <Container onClick={this.hide} onKeyDown={this.hide}>
+      <Container onMouseDown={this.hide} onKeyDown={this.hide}>
         <Menu style={this.state.styledPosition}>
           {
             this.state.items &&
               this.state.items.map(item => <Item key={item.title}
+                onMouseDown={(event: MouseEvent) => {
+                  event.stopPropagation();
+                }}
                 onClick={(event: MouseEvent) => {
                   event.stopPropagation();
                   this.hide();
