@@ -10,6 +10,9 @@ import clientInterface, {
   ClientSkillState,
   ClientSkillBarItem,
   DisplayModeConfig,
+  Bindable,
+  Binding,
+  Keybind,
 } from './clientInterface';
 import configGroup from './config/configGroup';
 import Item from './classes/Item';
@@ -460,6 +463,15 @@ const devClientInterface: clientInterface = {
   /* Target */
   RequestFriendlyTargetEntityID: (entityID:string): void => {},
   RequestEnemyTargetEntityID: (entityID:string): void => {},
+
+  /* Keybind API */
+  OnKeybindRecorded: (callback: (keybind: Keybind) => void) => {},
+  OnAllKeybindsRequested: (callback: (bindables: Bindable[], bindings: Binding[]) => void) => {},
+  RequestAllKeybinds: () => {},
+  StartRecordingKeybind: (button: number, alias: number) => {},
+  SetKeybind: (button: number, alias: number, boundKeyValue: number) => {},
+  CancelRecordingKeybind: () => {},
+  ClearKeybind: (button: number, alias: number) => {},
 
   apiVersion: 1,
   characterID: 'AABBCCDDEEFFGG',

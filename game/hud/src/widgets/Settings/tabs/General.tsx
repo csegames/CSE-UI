@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import { isEqual } from 'lodash';
-import { client, events, DisplayModeConfig } from '@csegames/camelot-unchained';
+import { events, DisplayModeConfig } from '@csegames/camelot-unchained';
 import { DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
@@ -16,8 +15,6 @@ import { AudioSettings } from '../panels/AudioSettings';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
-import { sendSystemMessage } from 'services/actions/system';
-import { ConfigIndex } from '../utils/configVars';
 
 const options: MenuOption[] = [
   OPTION.KEYS,
@@ -26,22 +23,14 @@ const options: MenuOption[] = [
   OPTION.GRAPHICS,
 ];
 
-function getConfigForOption(option: MenuOption) {
-  switch (option) {
-    case OPTION.AUDIO: return ConfigIndex.AUDIO;
-    case OPTION.INPUT: return ConfigIndex.INPUT;
-    case OPTION.GRAPHICS: return ConfigIndex.RENDERING;
-    case OPTION.KEYS: return ConfigIndex.KEYBIND;
-  }
-}
-
 function getButtonsForOption(option: MenuOption) {
   switch (option) {
     case OPTION.AUDIO:
     case OPTION.INPUT:
     case OPTION.GRAPHICS:
-    case OPTION.KEYS:
       return [BUTTON.DEFAULT, BUTTON.APPLY, BUTTON.CANCEL];
+    case OPTION.KEYS:
+      return [BUTTON.DEFAULT, BUTTON.APPLY, BUTTON.CANCEL, BUTTON.SAVEAS, BUTTON.LOAD];
   }
   return [BUTTON.CANCEL];
 }
@@ -55,15 +44,15 @@ interface GeneralSettingsProps {
 }
 interface GeneralSettingsState {
   option: MenuOption;
-  selectedDisplayMode: SelectedDisplayMode;
+  saveAs: boolean;
 }
 
-export class GeneralSettings extends React.Component<GeneralSettingsProps, GeneralSettingsState> {
+export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, GeneralSettingsState> {
   constructor(props: GeneralSettingsProps) {
     super(props);
     this.state = {
       option: null,
-      selectedDisplayMode: null,
+      saveAs: false,
     };
   }
   public render() {
@@ -71,28 +60,18 @@ export class GeneralSettings extends React.Component<GeneralSettingsProps, Gener
     const buttons = getButtonsForOption(option);
     return (
       <DialogTab buttons={buttons} onAction={this.onButton}>
-        <SideMenu name='settings' id='general' options={options}>{
+        <SideMenu name='settings' id='general' options={options} onSelectOption={this.selectOption}>{
           (option: MenuOption) => {
             switch (option) {
               case OPTION.KEYS:
-                this.setState({ option });
-                return <KeybindSettings/>;
+                return <KeybindSettings onCancel={this.cancel}/>;
               case OPTION.INPUT:
-                this.setState({ option });
-                return <InputSettings/>;
+                return <InputSettings onCancel={this.cancel}/>;
               case OPTION.GRAPHICS:
-                this.setState({ option });
-                return (
-                  <GraphicSettings
-                    selectedDisplayMode={this.state.selectedDisplayMode}
-                    onSelectedDisplayModeChange={this.onSelectedDisplayModeChange}
-                  />
-                );
+                return <GraphicSettings onCancel={this.cancel}/>;
               case OPTION.AUDIO:
-                this.setState({ option });
-                return <AudioSettings/>;
+                return <AudioSettings onCancel={this.cancel}/>;
             }
-            this.setState({ option: null });
             return <ComingSoon/>;
           }
         }</SideMenu>
@@ -100,40 +79,34 @@ export class GeneralSettings extends React.Component<GeneralSettingsProps, Gener
     );
   }
 
-  public shouldComponentUpdate(nextProps: GeneralSettingsProps, nextState: GeneralSettingsState) {
-    return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
+  private selectOption = (option: MenuOption) => {
+    this.setState({ option });
   }
 
   private onButton = (button: DialogButton) => {
+    let action;
     switch (button) {
       case BUTTON.DEFAULT:
-        const config: any = getConfigForOption(this.state.option);
-        if (config !== undefined) {
-          client.RestoreConfigDefaults(config);
-          client.SaveConfigChanges();
-          events.fire('settings--reload', config);
-        }
+        action = { id: 'default' };
         break;
       case BUTTON.APPLY:
-        this.setDisplayMode();
-        client.SaveConfigChanges();
-        sendSystemMessage('All configurations have been applied');
+        action = { id: 'apply' };
         break;
       case BUTTON.CANCEL:
-        this.props.onCancel();
+        action = { id: 'cancel' };
+        break;
+      case BUTTON.SAVEAS:
+        action = { id: 'save' };
+        break;
+      case BUTTON.LOAD:
+        action = { id: 'load' };
         break;
     }
+    events.fire('settings--action', action);
   }
 
-  private setDisplayMode = () => {
-    if (!this.state.selectedDisplayMode) return;
-
-    const { fullScreen, width, height } = this.state.selectedDisplayMode;
-    client.SetDisplayMode(fullScreen, width, height);
-  }
-
-  private onSelectedDisplayModeChange = (selectedDisplayMode: SelectedDisplayMode) => {
-    this.setState({ selectedDisplayMode });
+  private cancel = () => {
+    this.props.onCancel();
   }
 }
 

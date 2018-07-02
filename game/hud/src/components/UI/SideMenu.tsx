@@ -159,6 +159,7 @@ interface SideMenuProps {
   id?: string;
   options?: MenuOption[];
   children?: (option: MenuOption) => any;
+  onSelectOption?: (option: MenuOption) => any;
 }
 
 /* This component tracks the currently selected menu option */
@@ -230,6 +231,7 @@ export class SideMenu extends React.PureComponent<SideMenuProps, SideMenuState> 
   }
   private selectOption = (option: MenuOption, index: number, key?: string) => {
     this.setState({ activeOption: option });
+    if (this.props.onSelectOption) this.props.onSelectOption(option);
     if (key) localStorage.setItem(key, `${index}`);
   }
   private restoreOption(props: SideMenuProps) {

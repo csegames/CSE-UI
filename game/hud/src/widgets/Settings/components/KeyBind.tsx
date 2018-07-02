@@ -9,8 +9,9 @@ import styled from 'react-emotion';
 import * as CSS from 'lib/css-helper';
 import { Box } from 'UI/Box';
 import { Key } from './Key';
+import { Bind, BoundKey } from '../utils/keyboard';
 
-function spacify(s: string) {
+export function spacify(s: string) {
   return s
     .replace(/([^A-Z])([A-Z]+)+/g, '$1 $2')
     .replace(/([^0-9])([0-9]+)/g, '$1 $2')
@@ -28,38 +29,30 @@ const Bind = styled('div')`
   flex-direction: row;
   justify-content: center;
 `;
-export interface Listening {
-  name: string;
-  which: number;
-}
 
 interface KeyBindProps {
   name: string;
-  binds: any[];
-  listening: Listening;
-  toggleRebind?: (name: string, which: number) => void;
+  bind: Bind;
+  toggleRebind?: (keybind: Bind, alias: number) => void;
 }
 
 /* tslint:disable:function-name */
 export function KeyBind(props: KeyBindProps) {
-  const { binds, listening } = props;
+  const { bind } = props;
   let i = 0;
   return (
     <Box style={{ minHeight: '45px' }}>
-      { binds.map((bind: any) => {
-        const which = i++;
+      { bind.boundKeys.map((bind: BoundKey) => {
+        const alias = i++;
         return (
           <Bind key={i}
             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              props.toggleRebind(props.name, which);
+              props.toggleRebind(props.bind, alias);
               e.stopPropagation();
               e.preventDefault();
             }}>
-            <Key className={bind.code ? 'assigned' : 'unassigned'}>
-              { listening && listening.which === which
-                ? 'Press a key'
-                : bind.label || ' '
-              }
+            <Key className={bind.value ? 'assigned' : 'unassigned'}>
+              { bind.name || ' ' }
             </Key>
           </Bind>
         );

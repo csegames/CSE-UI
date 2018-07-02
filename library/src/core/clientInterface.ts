@@ -20,7 +20,7 @@ export interface EntityState {
     y: number;
     z: number;
   };
-  
+
   // status -- null / undefined if no status on entity
   statuses?: {
     id: number;
@@ -123,6 +123,22 @@ export interface SiegeState extends EntityState {
 export interface DisplayModeConfig {
   width: number;
   height: number;
+}
+
+export interface Bindable {
+  id: number;
+  name: string;
+}
+
+export interface Binding {
+  alias: number;
+  boundKeyName: string;
+  boundKeyValue: number;
+  id: number;       // of Bindable this binding applies to
+}
+
+export interface Keybind extends Binding{
+  name: string;
 }
 
 interface clientInterface {
@@ -525,6 +541,18 @@ interface clientInterface {
   /* Target */
   RequestFriendlyTargetEntityID(entityID:string): void;
   RequestEnemyTargetEntityID(entityID:string): void;
+
+  /* Keybind API */
+  // new call from client -> UI
+  OnKeybindRecorded(c: (keybind: Keybind) => void): void;
+  OnAllKeybindsRequested(c: (bindables: Bindable[], bindings: Binding[]) => void): void;
+
+  // new calls from UI -> client
+  RequestAllKeybinds(): void;
+  StartRecordingKeybind(button: number, alias: number): void;
+  CancelRecordingKeybind(): void;
+  SetKeybind(button: number, alias: number, boundKeyValue: number);
+  ClearKeybind(button: number, alias: number): void;
 }
 
 export default clientInterface;

@@ -33,7 +33,8 @@ const DialogContainer = styled('div')`
       ${DIALOG_FONT}
       content: '';
       height: 23px;
-      width: 100%;
+      width: calc(100% - 50px);
+      left: 25px;
       background-image: url(images/settings/settings-top-title.png);
       background-position: center top;
       background-repeat: no-repeat;
@@ -382,9 +383,10 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
     );
   }
 
-  private selectTab = (tab: DialogButton, index: number, key?: string) => {
+  private selectTab = (tab: DialogButton, index: number, name?: string) => {
+    const { tabs } = this.props;
     this.setState({ activeTab: tab });
-    if (key) localStorage.setItem(key, `${index}`);
+    if (name && tabs && tabs.length) localStorage.setItem(persistKey(name), `${index}`);
   }
 
   private restoreTab(props: DialogProps) {
@@ -400,7 +402,7 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
     return tabs && tabs.map((item, index) => (
       <NavButton key={index} className={activeTab === item && 'selected'}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-          this.selectTab(tabs[index], index, persistKey(name));
+          this.selectTab(tabs[index], index, name);
           e.stopPropagation();
           e.preventDefault();
         }}>

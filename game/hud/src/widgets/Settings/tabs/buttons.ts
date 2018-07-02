@@ -9,3 +9,5 @@ import { DialogButton } from 'components/UI/TabbedDialog';
 export const APPLY: DialogButton = { label: 'Apply' };
 export const DEFAULT: DialogButton = { label: 'Default' };
 export const CANCEL: DialogButton = { label: 'Cancel' };
+export const SAVEAS: DialogButton = { label: 'Save As..' };
+export const LOAD: DialogButton = { label: 'Load' };

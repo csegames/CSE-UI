@@ -76,11 +76,11 @@ interface CheckBoxFieldProps {
 }
 
 export function CheckBoxField(props: CheckBoxFieldProps) {
-  const cls = 'fixed-height half-width';
+  const cls = 'fixed-height';
   return (
     <Box onClick={() => props.onToggle(props.id)}>
-      <Field className={cls}>{props.label}</Field>
-      <Field className={`${cls}  right-align`}>
+      <Field className={`${cls} expand ellipsis`}>{props.label}</Field>
+      <Field className={`${cls} right-align`} style={{ width: '100px' }}>
         <CheckBox on={props.on}/>
       </Field>
     </Box>

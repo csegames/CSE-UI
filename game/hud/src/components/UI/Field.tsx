@@ -21,6 +21,11 @@ export const Field = styled('div')`
   &.expand {
     ${CSS.EXPAND_TO_FIT}
   }
+  &.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   &.fixed-height {
     height: 33px;
     min-height: 33px;

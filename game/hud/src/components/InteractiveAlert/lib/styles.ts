@@ -6,7 +6,7 @@
  */
 
 import styled from 'react-emotion';
-import * as CONFIG from '../../../widgets/Settings/config';
+import * as CONFIG from 'UI/config';
 
 export const Container = styled('div')`
   margin-top: 20px;

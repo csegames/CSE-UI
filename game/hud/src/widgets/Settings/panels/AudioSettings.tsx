@@ -20,6 +20,7 @@ const settings: Settings = {
 };
 
 interface AudioSettingsProps {
+  onCancel: () => void;
 }
 interface AudioSettingsState {
   audio: any;
@@ -34,7 +35,7 @@ export class AudioSettings extends React.PureComponent<AudioSettingsProps, Audio
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--reload', this.reload);
+    this.evh = events.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
@@ -65,9 +66,21 @@ export class AudioSettings extends React.PureComponent<AudioSettingsProps, Audio
     });
   }
 
-  private reload = (type: ConfigIndex) => {
-    if (type === ConfigIndex.AUDIO) {
-      this.loadSettings();
+  private onAction = (args: any) => {
+    const type: any = ConfigIndex.AUDIO;
+    switch (args.id) {
+      case 'apply':
+        client.SaveConfigChanges();
+        break;
+      case 'cancel':
+        client.CancelAllConfigChanges(type);
+        this.props.onCancel();
+        break;
+      case 'default':
+        client.RestoreConfigDefaults(type);
+        client.SaveConfigChanges();
+        this.loadSettings();
+        break;
     }
   }
 

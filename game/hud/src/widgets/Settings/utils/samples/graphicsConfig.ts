@@ -15,6 +15,6 @@ export default {
   "Shader Quality" : "2",
   'Full screen': "false",
   'Select Resolution': "yes",
-  'Full Screen Resolution Widgth': "1920",
-  'Full Screen Resolution Height': "1080",
+  'Full Screen Resolution Width': "1920",
+  'Full Screen  Resolution Height': "1080",       // extra space is currently a bug in the client
 };

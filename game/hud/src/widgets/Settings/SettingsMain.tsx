@@ -11,12 +11,16 @@ import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
 import { InterfaceSettings } from './tabs/Interface';
 import { AddonSettings } from './tabs/Addon';
+import { restoreKeybinds } from './utils/keyboard';
 
 const SETTINGS_DIALOG_WIDTH = 1040;
 const SETTINGS_DIALOG_HEIGHT = 710;
 
 const HUDNAV_NAVIGATE = 'hudnav--navigate';
 const ME = 'settings';
+
+// as we are loading, restore previously saved keybinds
+restoreKeybinds();
 
 interface Size {
   width: number;

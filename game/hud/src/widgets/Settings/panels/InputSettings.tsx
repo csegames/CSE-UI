@@ -24,6 +24,7 @@ const settings: Settings = {
 };
 
 interface InputSettingsProps {
+  onCancel: () => void;
 }
 interface InputSettingsState {
   inputs: any;
@@ -37,7 +38,7 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--reload', this.reload);
+    this.evh = events.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
@@ -67,9 +68,21 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
     });
   }
 
-  private reload = (type: ConfigIndex) => {
-    if (type === ConfigIndex.INPUT) {
-      this.loadSettings();
+  private onAction = (args: any) => {
+    const type: any = ConfigIndex.INPUT;
+    switch (args.id) {
+      case 'apply':
+        client.SaveConfigChanges();
+        break;
+      case 'cancel':
+        client.CancelAllConfigChanges(type);
+        this.props.onCancel();
+        break;
+      case 'default':
+        client.RestoreConfigDefaults(type);
+        client.SaveConfigChanges();
+        this.loadSettings();
+        break;
     }
   }
 
