@@ -47,9 +47,6 @@ export const patcherEventsMap: EventMap[] = [
   },
 ];
 
-
-
-
 export function createPatcherHub(hostName?: string): SignalRHub {
   const newPatcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug }, hostName);
 

@@ -268,7 +268,6 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
 
   public render() {
     const { character, selectedServer, onNavigateToCharacterSelect } = this.props;
-
     if (character) {
       const isLongName = character.name.length > 17;
       let flipImage = false;

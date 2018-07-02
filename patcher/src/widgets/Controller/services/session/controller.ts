@@ -227,7 +227,9 @@ export const initialize = module.createAction({
             const servers = JSON.parse(res.data);
             servers.forEach((server) => {
               try {
-                signalr.createPatcherHub(server.apiHost + '/signalr').start();
+                signalr.createPatcherHub(server.apiHost + '/signalr').start(() => {
+                  registerPatcherHubEvents(dispatch);
+                });
               } catch (e) {
                 console.error(e);
               }
