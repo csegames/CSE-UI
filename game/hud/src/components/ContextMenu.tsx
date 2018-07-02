@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import { isEmpty } from 'lodash';
 
 import * as actions from '../services/actions/contextMenu';
 
@@ -16,6 +17,7 @@ const Container = styled('div')`
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 9999;
 `;
 
 const Menu = styled('ol')`
@@ -140,6 +142,8 @@ export class ContextMenu extends React.Component<Props, State> {
   }
 
   private onShowContextMenu = (items: MenuItem[], event: MouseEvent) => {
+    // If there are no items, dont show context menu
+    if (isEmpty(items)) return;
 
     let styledPosition: StylePosition = {};
 

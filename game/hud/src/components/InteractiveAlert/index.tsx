@@ -37,6 +37,7 @@ const Container = styled('div')`
   margin-left: -350px;
   -webkit-transition: height 1s;
   transition: height 1s;
+  z-index: 16;
   &:before {
     position: relative;
     display: flex;
