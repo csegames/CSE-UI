@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { client, soundEvents } from '@csegames/camelot-unchained';
 import { GlobalState } from '../services/session/reducer';
 import { Ingredient, Recipe } from '../services/types';
 import { setMessage } from '../services/session/job';
@@ -169,7 +170,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
             ? <Button
                 style={{ button: ingredientsStyles.remove }}
                 disabled={!configuring}
-                onClick={() => props.remove(last)}
+                onClick={() => this.removeIngredient(last)}
               >
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>
@@ -181,8 +182,14 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
   private addIngredient = () => {
     const { selectedIngredient, qty } = this.state;
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_ADDINGREDIENT);
     this.props.add(selectedIngredient, qty);
     this.setState({ selectedIngredient: null, qty: 1 });
+  }
+
+  private removeIngredient = (last: Ingredient) => {
+    this.props.remove(last);
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_REMOVELAST);
   }
 
   private select = (ingredient: Ingredient) => {

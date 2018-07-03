@@ -83,8 +83,6 @@ export function voxGetRecipesFor(type: string) {
   return new Promise((resolve, reject) => {
     runQuery(QUERIES[`QUERY_${uType}_RECIPES`], lType + 'Recipes')
       .then((recipes: VoxRecipe[]) => {
-        console.log('GOT THE RECIPES');
-        console.log(recipes);
         resolve(recipes);
       })
       .catch(() => {

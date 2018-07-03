@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, jsKeyCodes } from '@csegames/camelot-unchained';
+import { client, jsKeyCodes, soundEvents } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
 import { expandError } from '../services/game/crafting/errors';
 import * as events  from '@csegames/camelot-unchained/lib/events';
@@ -181,6 +181,7 @@ class App extends React.Component<AppProps, AppState> {
         { status === 'Configuring' && outputItems && outputItems.length
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.startJob}>
                 Start
               </Button>
@@ -189,6 +190,7 @@ class App extends React.Component<AppProps, AppState> {
         { status === 'Running'
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.cancelJob}>
                 Cancel
               </Button>
@@ -197,6 +199,7 @@ class App extends React.Component<AppProps, AppState> {
         { status === 'Finished'
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.collectJob}>
                 Collect
               </Button>
@@ -291,6 +294,8 @@ class App extends React.Component<AppProps, AppState> {
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
 
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+
     setVoxJob(type)
       .then((resonse: any) => {
         props.dispatch(setJobType(type));
@@ -302,6 +307,39 @@ class App extends React.Component<AppProps, AppState> {
         this.handleError(error);
         props.dispatch(setLoading(false));
       });
+  }
+
+  private playTypeSound = (type: string) => {
+    switch (type) {
+      case 'grind': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_GRIND);
+        break;
+      }
+      case 'purify': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_PURIFY);
+        break;
+      }
+      case 'shape': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SHAPE);
+        break;
+      }
+      case 'block': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_BLOCK);
+        break;
+      }
+      case 'make': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_MAKE);
+        break;
+      }
+      case 'repair': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_REPAIR);
+        break;
+      }
+      case 'salvage': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SALVAGE);
+        break;
+      }
+    }
   }
 
   private loadLists = (job: string, refresh?: boolean) => {
@@ -425,6 +463,7 @@ class App extends React.Component<AppProps, AppState> {
   private startJob = () => {
     const props = this.props;
     if (this.updating) return;
+    this.playTypeSound(this.props.job.type);
     props.dispatch(setRemaining(this.props.job.totalCraftingTime));
     this.api(startVoxJob, 'Job Started', () => {
       this.checkJobStatus();      // pretend will take 5 seconds (debug mode)
@@ -435,6 +474,7 @@ class App extends React.Component<AppProps, AppState> {
   private collectJob = () => {
     const props = this.props;
     const type = props.job.type;
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_COLLECT);
     this.api(collectVoxJob, 'Job Collected', () => {
       // automatally start same job type
       setVoxJob(type)
@@ -449,7 +489,8 @@ class App extends React.Component<AppProps, AppState> {
 
   // Clear current crafting job
   private clearJob = () => {
-    this.api(clearVoxJob, 'Job Clearaed', () => {
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_CLEAR);
+    this.api(clearVoxJob, 'Job Cleared', () => {
       this.checkJobStatus();
       return clearJob();
     });

@@ -43,6 +43,7 @@ export const JobType = (props: JobTypeProps) => {
     return (
         <Button style={style}
           disabled={job && job !== 'invalid' && job !== type}
+          disableSound={true}
           onClick={() => props.changeType(type)}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>

@@ -6,6 +6,7 @@
 
 
 import * as React from 'react';
+import { client, soundEvents } from '@csegames/camelot-unchained';
 import { StyleSheet, css, merge, button, ButtonStyles } from '../styles';
 
 interface ButtonProps {
@@ -13,12 +14,22 @@ interface ButtonProps {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   style?: Partial<ButtonStyles>;
   children?: any;
+  disableSound?: boolean;
 }
 
 export const Button = (props: ButtonProps) => {
   const ss = StyleSheet.create(merge({}, button, props.style));
   return (
-    <button disabled={props.disabled} className={css(ss.button)} onClick={props.onClick}>
+    <button
+      disabled={props.disabled}
+      className={css(ss.button)}
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!props.disableSound) {
+          client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+        }
+        props.onClick(e);
+      }}
+    >
       {props.children}
     </button>
   );
