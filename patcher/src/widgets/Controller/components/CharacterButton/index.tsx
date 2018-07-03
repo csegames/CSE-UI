@@ -111,10 +111,6 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     console.log(info);
   }
 
-  public componentWillUpdate(nextProps: CharacterButtonProps) {
-    
-  }
-
   private initializeSelectedServer = (props: CharacterButtonProps) => {
     const values = [];
     const servers = props.servers;

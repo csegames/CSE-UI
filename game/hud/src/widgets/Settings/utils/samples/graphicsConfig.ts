@@ -13,4 +13,8 @@ export default {
   "Shadows Enabled" : "true",
   "Texture Quality" : "2",
   "Shader Quality" : "2",
+  'Full screen': "false",
+  'Select Resolution': "yes",
+  'Full Screen Resolution Widgth': "1920",
+  'Full Screen Resolution Height': "1080",
 };

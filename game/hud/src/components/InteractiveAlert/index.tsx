@@ -25,7 +25,7 @@ import { ProgressionAlertView } from './ProgressionAlert';
 
 const Container = styled('div')`
   border-image-slice: 1;
-  background: url(images/ui/interactive-alert/alert-bg.png);
+  background: url(images/interactive-alert/alert-bg.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -37,6 +37,7 @@ const Container = styled('div')`
   margin-left: -350px;
   -webkit-transition: height 1s;
   transition: height 1s;
+  z-index: 16;
   &:before {
     position: relative;
     display: flex;
@@ -48,7 +49,7 @@ const Container = styled('div')`
     right: 50px;
     top: 0;
     height: 10px;
-    background-image: url(images/ui/interactive-alert/divider-top.png);
+    background-image: url(images/interactive-alert/divider-top.png);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -64,7 +65,7 @@ const Container = styled('div')`
     right: 50px;
     bottom: -2px;
     height: 10px;
-    background-image: url(images/ui/interactive-alert/divider-bottom.png);
+    background-image: url(images/interactive-alert/divider-bottom.png);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

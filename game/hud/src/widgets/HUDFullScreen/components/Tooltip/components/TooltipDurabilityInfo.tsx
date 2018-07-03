@@ -74,7 +74,7 @@ class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoPro
             <ItemContainer>
               <StatItem showBorder fontSize={12}>
                 <div>Health Loss Per Use</div>
-                <StatValue>{durability.healthLossPerUse}</StatValue>
+                <StatValue>{durability.healthLossPerUse.toFixed(0)}</StatValue>
               </StatItem>
             </ItemContainer>
           }

@@ -904,3 +904,14 @@ export function releaseUIKeydown() {
   const shouldFullscreenListen = true;
   events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
+
+export function isRightOrLeftItem(gearSlots: GearSlotDefRefFragment[]) {
+  if (gearSlots.length === 1) {
+    const firstGearSlotId = gearSlots[0].id;
+    return _.includes(firstGearSlotId.toLowerCase(), 'right') ||
+    _.includes(firstGearSlotId.toLowerCase(), 'left') ||
+    _.includes(firstGearSlotId.toLowerCase(), 'primary') ||
+    _.includes(firstGearSlotId.toLowerCase(), 'secondary');
+  }
+  return false;
+}

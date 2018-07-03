@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { getKeyBinds, cancel, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { KeyBind, Listening } from '../components/KeyBind';
@@ -13,6 +13,7 @@ import { keyBinds2KeyConfig, getKeyLabel, KeyBinds } from '../utils/keyboard';
 import { client, events, getVirtualKeyCode } from '@csegames/camelot-unchained';
 import { Box } from 'UI/Box';
 import { Field } from 'UI/Field';
+import { CloseButton } from 'UI/CloseButton';
 import { Key } from '../components/Key';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from 'components/UI/config';
@@ -70,14 +71,10 @@ const SearchBox = styled('input')`
   }
 `;
 
-const ClearSearch = styled('span')`
+const CloseButtonPosition = css`
   position: absolute;
-  content: '';
   right: 0px;
-  width: 25px;
-  height: 25px;
-  line-height: 25px;
-  color: ${CONFIG.NAV_HIGHLIGHT_TEXT_COLOR};
+  top: 3px;
 `;
 
 const ClashContent = styled('div')`
@@ -184,8 +181,14 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
               }}
             />
             { this.state.search.length
-              ? <ClearSearch onClick={() => this.setState({ search: '' })}>X</ClearSearch>
-              : null
+              ? (
+                <CloseButton
+                  onClick={() => this.setState({ search: '' })}
+                  width={25}
+                  height={25}
+                  className={CloseButtonPosition}
+                />
+              ) : null
             }
           </Box>
         </Field>

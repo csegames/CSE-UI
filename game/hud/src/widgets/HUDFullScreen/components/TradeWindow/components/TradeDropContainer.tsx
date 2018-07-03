@@ -13,7 +13,7 @@ import { ql, webAPI, client } from '@csegames/camelot-unchained';
 import LockedOverlay from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import InventoryRow from '../../Inventory/components/InventoryRow';
-import { SlotType, InventorySlotItemDef } from '../../../lib/itemInterfaces';
+import { SlotType, InventorySlotItemDef, SlotItemDefType } from '../../../lib/itemInterfaces';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 import {
@@ -125,6 +125,8 @@ export interface TradeDropContainerProps extends DragAndDropInjectedProps {
   bodyHeight: number;
   bodyWidth: number;
   onTradeItemsChange?: (items: InventoryItemFragment[]) => void;
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
   useGrayBG?: boolean;
   getRef?: (ref: HTMLDivElement) => void;
 }
@@ -176,13 +178,16 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
           <InventoryRow
             items={rowItems || []}
             bodyWidth={bodyWidth}
+            showTooltip={this.props.showTooltip}
+            hideTooltip={this.props.hideTooltip}
+            onRightClickItem={this.onRightClick}
             onContainerIdToDrawerInfoChange={() => {}}
             onChangeStackGroupIdToItemIDs={() => {}}
-            onRightClickItem={this.onRightClick}
             onChangeInventoryItems={() => {}}
             onDropOnZone={() => {}}
             onMoveStack={() => {}}
             syncWithServer={() => {}}
+            onRightOrLeftItemAction={() => {}}
           />
         </Content>
         <Footer useGrayBG={useGrayBG}>

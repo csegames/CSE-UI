@@ -215,7 +215,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       }
       
       launchString += ' autoconnect=1';
-      console.log(launchString);
     }
 
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

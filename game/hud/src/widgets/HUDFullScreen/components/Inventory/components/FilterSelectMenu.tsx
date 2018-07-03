@@ -20,6 +20,7 @@ const containerDimensions = {
 const Container = styled('div')`
   position: relative;
   display: inline-block;
+  z-index: 9999;
 `;
 
 const MenuContainer = styled('div')`
@@ -32,7 +33,6 @@ const MenuContainer = styled('div')`
   width: ${containerDimensions.width}px;
   height: ${containerDimensions.height}px;
   border: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
-  z-index: 9999;
 `;
 
 const HeaderContainer = styled('div')`

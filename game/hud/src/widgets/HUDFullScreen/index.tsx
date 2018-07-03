@@ -8,11 +8,20 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { events, client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 import HudFullScreenView from './HUDFullScreenView';
-import { FullScreenNavState, FullScreenContext, HUDFullScreenTabData, defaultFullScreenState } from './lib/utils';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
-import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
+import { SlotItemDefType } from './lib/itemInterfaces';
+import TooltipContent, { defaultTooltipStyle } from './components/Tooltip';
+import {
+  FullScreenNavState,
+  FullScreenContext,
+  HUDFullScreenTabData,
+  defaultFullScreenState,
+  isRightOrLeftItem,
+} from './lib/utils';
 
 /* tslint:disable:interface-name */
 export interface ITemporaryTab {
@@ -47,6 +56,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           getLeftRef={r => this.tabPanelLeftRef = r}
           getRightRef={r => this.tabPanelRightRef = r}
           onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+          onRightOrLeftItemAction={this.onRightOrLeftItemAction}
+          showItemTooltip={this.showItemTooltip}
+          hideItemTooltip={this.hideItemTooltip}
           onCloseFullScreen={this.onCloseFullScreen}
           onChangeInventoryItems={this.onChangeInventoryItems}
           onChangeEquippedItems={this.onChangeEquippedItems}
@@ -107,42 +119,61 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private handleNavEvent = (name: string, shouldOpen?: boolean) => {
-    if (name === 'inventory' || name === 'equippedgear' || name === 'character') {
-      if (_.includes(this.state.visibleComponentLeft, name) || _.includes(this.state.visibleComponentRight, name)) {
-        this.onCloseFullScreen();
-      } else {
-        this.setActiveTab(0, 'equippedgear-left');
-        this.setActiveTab(1, 'inventory-right');
+    switch (name) {
+      case 'inventory':
+      case 'equippedgear':
+      case 'character': {
+        if (this.isAlreadyOpen(name)) {
+          this.onCloseFullScreen();
+        } else {
+          this.setActiveTab(0, 'equippedgear-left');
+          this.setActiveTab(1, 'inventory-right');
+        }
+        break;
       }
-      return;
-    }
 
-    if (name === 'trade' && typeof shouldOpen === 'boolean') {
-      const tradeTab = {
-        name: 'trade-left',
-        tab: {
-          title: 'Trade',
-          temporary: true,
-        },
-        rendersContent: 'Trade',
-      };
-      if (shouldOpen) {
-        this.setActiveTab(1, 'inventory-right');
-        this.handleTemporaryTab({
-          ...tradeTab,
-          tab: {
-            ...tradeTab.tab,
-            onTemporaryTabClose: () => events.fire('hudnav--navigate', 'trade', false),
-          },
-        }, 'left', shouldOpen);
-      } else {
-        this.handleTemporaryTab(tradeTab as any, 'left', false);
-        this.onCloseFullScreen();
+      case 'map': {
+        if (this.isAlreadyOpen(name)) {
+          this.onCloseFullScreen();
+        } else {
+          this.setActiveTab(3, 'map-left');
+          this.setActiveTab(1, 'inventory-right');
+        }
+        break;
       }
-      return;
-    }
 
-    this.handleTabChange(name);
+      case 'trade': {
+        if (typeof shouldOpen === 'boolean') {
+          const tradeTab = {
+            name: 'trade-left',
+            tab: {
+              title: 'Trade',
+              temporary: true,
+            },
+            rendersContent: 'Trade',
+          };
+          if (shouldOpen) {
+            this.setActiveTab(1, 'inventory-right');
+            this.handleTemporaryTab({
+              ...tradeTab,
+              tab: {
+                ...tradeTab.tab,
+                onTemporaryTabClose: () => events.fire('hudnav--navigate', 'trade', false),
+              },
+            }, 'left', shouldOpen);
+          } else {
+            this.handleTemporaryTab(tradeTab as any, 'left', false);
+            this.onCloseFullScreen();
+          }
+          break;
+        }
+      }
+
+      default: {
+        this.handleTabChange(name);
+        break;
+      }
+    }
   }
 
   private handleTabChange = (name: string) => {
@@ -275,6 +306,52 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     this.setActiveTab(0, '');
     window.removeEventListener('keydown', this.handleKeydownEvent);
     client.ReleaseInputOwnership();
+    hideTooltip();
+  }
+
+  private isAlreadyOpen = (name: string) => {
+    const { visibleComponentLeft, visibleComponentRight } = this.state;
+    return _.includes(visibleComponentLeft, name) || _.includes(visibleComponentRight, name);
+  }
+
+  private onRightOrLeftItemAction = (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => {
+    const { gearSlotSets } = item.staticDefinition;
+    if (gearSlotSets) {
+      // Dealing with a right or left weapon/piece of armor
+      const equippedItemFirstSlot = _.find(this.state.equippedItems, (item) => {
+        return item.gearSlots && isRightOrLeftItem(item.gearSlots) &&
+          gearSlotSets[0].gearSlots[0].id === item.gearSlots[0].id;
+      });
+      const equippedItemSecondSlot = _.find(this.state.equippedItems, (item) => {
+        return item.gearSlots && isRightOrLeftItem(item.gearSlots) &&
+          gearSlotSets[1] && gearSlotSets[1].gearSlots[0].id === item.gearSlots[0].id;
+      });
+
+      if (gearSlotSets.length === 2 &&
+        equippedItemFirstSlot && !equippedItemSecondSlot && !_.isEqual(equippedItemFirstSlot, equippedItemSecondSlot)) {
+        action(gearSlotSets[1].gearSlots);
+        return;
+      } else {
+        action(gearSlotSets[0].gearSlots);
+        return;
+      }
+    }
+  }
+
+  private showItemTooltip = (item: SlotItemDefType, event: MouseEvent) => {
+    const content = <TooltipContent
+      item={item.item || (item.stackedItems && item.stackedItems[0])}
+      slotType={item.slotType}
+      stackedItems={item.stackedItems}
+      equippedItems={this.state.equippedItems}
+      instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
+        'Double click to equip or right click to open context menu' : ''}
+    />;
+    showTooltip({ content, event, styles: defaultTooltipStyle });
+  }
+
+  private hideItemTooltip = () => {
+    hideTooltip();
   }
 
   private onChangeEquippedItems = (equippedItems: EquippedItemFragment[]) => {

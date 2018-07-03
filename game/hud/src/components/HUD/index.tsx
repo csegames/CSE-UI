@@ -37,7 +37,7 @@ import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
-import { Tooltip } from '../Tooltip';
+import { Tooltip } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 
 useConfig({
@@ -65,6 +65,7 @@ const HUDNavContainer = styled('div')`
   width: 900px;
   height: 200px;
   pointer-events: none;
+  z-index: 999;
 `;
 
 const ZoneNameContainer = styled('div')`
@@ -118,6 +119,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <ScenarioPopup />
 
         <ScenarioResults />
+
         <HUDFullScreen />
         <SkillBarContainer>
           <SkillBar />
@@ -200,6 +202,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           defaultOpacity={widget.position.opacity}
           defaultMode={widget.position.layoutMode}
           defaultVisible={widget.position.visibility}
+          zOrder={widget.position.zOrder}
           gridDivisions={10}
           locked={this.props.layout.locked}
           save={(s: HUDDragState) => {

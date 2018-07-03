@@ -70,22 +70,19 @@ const LeaderContainerOverlay = styled('div')`
   left: 0;
 `;
 
-const BloodBall = styled('div')`
+const BloodBallContainer = styled('div')`
   position: absolute;
   border-radius: 42.5px;
   background: #440000;
+`;
 
-  &:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 52.5px;
-    background: #E30000;
-    -webkit-mask-image: linear-gradient(to top, black ${(props: any) => props.percent.toFixed(1)}%,
-      transparent ${(props: any) => props.percent.toFixed(1)}%);
-    -webkit-mask-size: 100% 100%;
-  }
+const BloodBall = styled('div')`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 52.5px;
+  background: #E30000;
+  -webkit-mask-size: 100% 100%;
 `;
 
 // const BloodCount = styled('div')`
@@ -120,7 +117,7 @@ const BigHealthPillsContainer = styled('div')`
   width: ${({ scale }: {scale: number}) => (264 * scale).toFixed(1)}px;
 `;
 
-const StaminaBar = styled('div')`
+const StaminaBarContainer = styled('div')`
   position: relative;
   width: 103%;
   height: ${({ scale }: {scale: number}) => (15 * scale).toFixed(1)}px;
@@ -128,20 +125,18 @@ const StaminaBar = styled('div')`
   background: linear-gradient(to top, #303030, #1D1D1D);
   -webkit-mask-image: url(images/healthbar/regular/stamina_mask.png);
   -webkit-mask-size: 100% 100%;
+`;
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: ${(props: any) => props.percent.toFixed(1)}%;
-    transition: width 0.1s;
-    -webkit-transition: width 0.1s;
-    height: 100%;
-    background: linear-gradient(to top, #C2FFC8, #4CB856);
-  }
+const StaminaBar = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: width 0.1s;
+  -webkit-transition: width 0.1s;
+  height: 100%;
+  background: linear-gradient(to top, #C2FFC8, #4CB856);
 `;
 
 export interface HealthBarViewProps {
@@ -169,14 +164,19 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
         </NameContainer>
         <ClassIndicator scale={scale} top={15 * scale} left={115 * scale} width={55 * scale}
           height={55 * scale} borderRadius={27.5 * scale} faction={faction} />
-        <BloodBall percent={bloodPercent} style={{
+        <BloodBallContainer style={{
           left: scale * 25 + 'px',
           bottom: scale * 20 + 'px',
           width: scale * 85 + 'px',
           height: scale * 85 + 'px',
         }}>
+          <BloodBall
+            style={{
+              WebkitMaskImage: `linear-gradient(to top, black ${bloodPercent.toFixed(1)}%,
+                transparent ${bloodPercent.toFixed(1)}%)`
+            }} />
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
-        </BloodBall>
+        </BloodBallContainer>
         <Status statuses={playerState ? playerState.statuses as any : null} />
         <HealthBars scale={scale}>
           <SmallHealthPillsContainer scale={scale}>
@@ -191,7 +191,9 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
             <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.RightLeg} playerState={playerState} />
             <SmallBar height={14 * scale} scale={scale} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           </SmallHealthPillsContainer>
-          <StaminaBar percent={staminaPercent} scale={scale}/>
+          <StaminaBarContainer scale={scale}>
+            <StaminaBar style={{ width: staminaPercent.toFixed(1) }} />
+          </StaminaBarContainer>
         </HealthBars>
         {
           isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />

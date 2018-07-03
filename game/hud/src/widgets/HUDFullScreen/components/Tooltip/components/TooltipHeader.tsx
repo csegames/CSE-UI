@@ -124,7 +124,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps> {
           </ItemStatInfo>
           <ItemStatInfo color={item.location.equipped ? 'red' : '#555'}>
             <Icon flip className={'icon-ui-weight'}></Icon>
-            +{item.stats.item.encumbrance}%
+            +{item.stats.item.encumbrance.toFixed(3)}%
           </ItemStatInfo>
         </SubContainer>
       </Container>

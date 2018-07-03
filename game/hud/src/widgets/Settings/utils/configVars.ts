@@ -22,6 +22,11 @@ interface Task {
 const configQueue: Task[] = [];
 let currentTask: Task;
 
+export const SELECT_RESOLUTION_ID = 'Select Resolution';
+export const FULL_SCREEN_WIDTH_ID = 'Full Screen Resolution Width';
+export const FULL_SCREEN_HEIGHT_ID = 'Full Screen Resolution Height';
+export const FULL_SCREEN_TOGGLE_ID = 'Full screen'
+
 export enum ConfigIndex {
   KEYBIND = 2,
   RENDERING = 3,

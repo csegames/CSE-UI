@@ -119,6 +119,11 @@ export interface SiegeState extends EntityState {
   };
 }
 
+export interface DisplayModeConfig {
+  width: number;
+  height: number;
+}
+
 interface clientInterface {
   // These are the only things that are guaranteed to exist from the time
   // the page is created. Everything else will be constructed over the course
@@ -304,6 +309,12 @@ interface clientInterface {
   GetConfigVars(tag: configGroup): void;
 
   GetConfigVar(variable: string): void;
+
+  RequestDisplayModes(): void;
+
+  OnDisplayModesChanged(c: (displayModes: DisplayModeConfig[]) => void): void;
+
+  SetDisplayMode(wantFullScreen: boolean, width: number, height: number): void;
 
   /* Building | CUBE */
   OnBuildingModeChanged(c: (buildingMode: number) => void): void;

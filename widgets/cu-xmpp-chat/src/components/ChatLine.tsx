@@ -42,8 +42,9 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       nick += ':';
       elements = [ <span key="0" className="chat-line-message">{parser.parse(text)}</span> ];
     }
+    const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
     return (
-      <div className={'chat-line' + (classes ? ' ' + classes : '') }>
+      <div className={chatLineClassName + (classes ? ' ' + classes : '') }>
             {timestamp}
             <span className={`chat-line-nick ${this.props.message.isCSE ? 'cse' : ''}`} onClick={this.PM.bind(this) }>{nick}</span>
             {elements}
@@ -54,11 +55,12 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
     if (this.props.message.text === null) return null;
     let element: JSX.Element = null;
     let timestamp : JSX.Element = chatConfig.TIMESTAMPS ? <span className="chat-timestamp">{ this.timestamp(this.props.message) }</span> : null;
+    const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
     switch(this.props.message.type) {
       case chatType.AVAILABLE:
         if (!chatConfig.JOIN_PARTS) break;
         element = (
-          <div className="chat-line">
+          <div className={chatLineClassName}>
             <span className="chat-line-entry">{this.props.message.nick} entered the room</span>
           </div>
         );
@@ -66,7 +68,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.UNAVAILABLE:
         if (!chatConfig.JOIN_PARTS) break;
         element = (
-          <div className="chat-line">
+          <div className={chatLineClassName}>
             <span className="chat-line-exit">{this.props.message.nick} left the room</span>
           </div>
         );
@@ -80,7 +82,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.COMBAT:
         const cbparser = new CombatLogParser();
         element = (
-          <div className='chat-line'>
+          <div className={chatLineClassName}>
             {timestamp}
             <span key="0" className="chat-line-message">{cbparser.parse(this.props.message.text)}</span>
           </div>
@@ -89,7 +91,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.SYSTEM:
       case chatType.BROADCAST:
         element = (
-          <div className="chat-line">
+          <div className={chatLineClassName}>
             {timestamp}
             <span className="chat-line-system">{this.props.message.text}</span>
           </div>
@@ -97,7 +99,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         break;
       default:
         element = (
-          <div className="chat-line">
+          <div className={chatLineClassName}>
             {timestamp}
             <span className="chat-line-system">[ Unrecognised chat message type ]</span>
             <span className="chat-line-message">{JSON.stringify(this.props.message)}</span>

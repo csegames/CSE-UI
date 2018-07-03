@@ -221,19 +221,27 @@ export const initialize = module.createAction({
         dispatch(initSignalRFailed() as ControllerAction);
       }
 
-        // Connect to all server's patcher hubs
-        webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
-          if (res.ok) {
-            const servers = JSON.parse(res.data);
-            servers.forEach((server) => {
-              try {
-                signalr.createPatcherHub(server.apiHost + '/signalr').start();
-              } catch (e) {
-                console.error(e);
-              }
-            });
-          }
-        });
+      // Connect to all server's patcher hubs
+      webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
+        if (res.ok) {
+          const servers = JSON.parse(res.data);
+          servers.forEach((server) => {
+            try {
+              signalr.createPatcherHub(server.apiHost + '/signalr').start(() => {
+                registerPatcherHubEvents(dispatch);
+                dispatch(initSignalRSuccess() as ControllerAction);
+                dispatch(getChannels());
+                // update channel info on a timer...
+                if (channelUpdateInterval === null) {
+                  channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
+                }
+              });
+            } catch (e) {
+              console.error(e);
+            }
+          });
+        }
+      });
     };
   },
 });

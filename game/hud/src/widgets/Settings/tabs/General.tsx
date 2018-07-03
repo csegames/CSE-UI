@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { client, events } from '@csegames/camelot-unchained';
-import { ConfigIndex } from '../utils/configVars';
+import { isEqual } from 'lodash';
+import { client, events, DisplayModeConfig } from '@csegames/camelot-unchained';
 import { DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
@@ -17,6 +17,7 @@ import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
 import { sendSystemMessage } from 'services/actions/system';
+import { ConfigIndex } from '../utils/configVars';
 
 const options: MenuOption[] = [
   OPTION.KEYS,
@@ -45,17 +46,25 @@ function getButtonsForOption(option: MenuOption) {
   return [BUTTON.CANCEL];
 }
 
+export interface SelectedDisplayMode extends DisplayModeConfig {
+  fullScreen: boolean;
+}
+
 interface GeneralSettingsProps {
   onCancel: () => void;
 }
 interface GeneralSettingsState {
   option: MenuOption;
+  selectedDisplayMode: SelectedDisplayMode;
 }
 
-export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, GeneralSettingsState> {
+export class GeneralSettings extends React.Component<GeneralSettingsProps, GeneralSettingsState> {
   constructor(props: GeneralSettingsProps) {
     super(props);
-    this.state = { option: null };
+    this.state = {
+      option: null,
+      selectedDisplayMode: null,
+    };
   }
   public render() {
     const { option } = this.state;
@@ -73,7 +82,12 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
                 return <InputSettings/>;
               case OPTION.GRAPHICS:
                 this.setState({ option });
-                return <GraphicSettings/>;
+                return (
+                  <GraphicSettings
+                    selectedDisplayMode={this.state.selectedDisplayMode}
+                    onSelectedDisplayModeChange={this.onSelectedDisplayModeChange}
+                  />
+                );
               case OPTION.AUDIO:
                 this.setState({ option });
                 return <AudioSettings/>;
@@ -85,6 +99,11 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
       </DialogTab>
     );
   }
+
+  public shouldComponentUpdate(nextProps: GeneralSettingsProps, nextState: GeneralSettingsState) {
+    return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
+  }
+
   private onButton = (button: DialogButton) => {
     switch (button) {
       case BUTTON.DEFAULT:
@@ -96,6 +115,7 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
         }
         break;
       case BUTTON.APPLY:
+        this.setDisplayMode();
         client.SaveConfigChanges();
         sendSystemMessage('All configurations have been applied');
         break;
@@ -103,6 +123,17 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
         this.props.onCancel();
         break;
     }
+  }
+
+  private setDisplayMode = () => {
+    if (!this.state.selectedDisplayMode) return;
+
+    const { fullScreen, width, height } = this.state.selectedDisplayMode;
+    client.SetDisplayMode(fullScreen, width, height);
+  }
+
+  private onSelectedDisplayModeChange = (selectedDisplayMode: SelectedDisplayMode) => {
+    this.setState({ selectedDisplayMode });
   }
 }
 

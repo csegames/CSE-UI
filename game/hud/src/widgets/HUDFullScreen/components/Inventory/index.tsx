@@ -12,7 +12,8 @@ import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../gqlInterfaces';
+import { SlotItemDefType } from '../../lib/itemInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -47,6 +48,9 @@ const BackgroundImage = styled('img')`
 `;
 
 export interface InventoryProps {
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideItemTooltip: () => void;
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
@@ -82,6 +86,9 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
           onFilterButtonDeactivated={this.onFilterButtonDeactivated}
         />
         <InventoryBody
+          onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+          showTooltip={this.props.showItemTooltip}
+          hideTooltip={this.props.hideItemTooltip}
           onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
           onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
           onChangeInventoryItems={this.props.onChangeInventoryItems}

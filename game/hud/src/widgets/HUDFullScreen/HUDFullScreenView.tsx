@@ -18,8 +18,9 @@ import CharacterInfo from './components/CharacterInfo';
 import TradeWindow from './components/TradeWindow';
 import { ITemporaryTab } from './index';
 import { HUDFullScreenTabData, FullScreenContext } from './lib/utils';
-import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
+import { SlotItemDefType } from './lib/itemInterfaces';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
@@ -173,6 +174,9 @@ export interface Props {
   onActiveTabChanged: (tabIndex: number, name: string) => void;
   onCloseFullScreen: () => void;
 
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideItemTooltip: () => void;
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeEquippedItems: (equippedItems: EquippedItemFragment[]) => void;
   onChangeMyTradeItems: (myTradeItems: InventoryItemFragment[]) => void;
@@ -260,6 +264,9 @@ class HUDFullScreenView extends React.Component<Props, State> {
   private renderInventory = () => {
     return (
       <Inventory
+        onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+        showItemTooltip={this.props.showItemTooltip}
+        hideItemTooltip={this.props.hideItemTooltip}
         onChangeInventoryItems={this.props.onChangeInventoryItems}
         onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
         onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
@@ -286,6 +293,8 @@ class HUDFullScreenView extends React.Component<Props, State> {
   private renderTrade = () => {
     return (
       <TradeWindow
+        showItemTooltip={this.props.showItemTooltip}
+        hideItemTooltip={this.props.hideItemTooltip}
         onMyTradeItemsChange={this.props.onChangeMyTradeItems}
         onCloseFullScreen={this.props.onCloseFullScreen}
         onMyTradeStateChange={this.props.onChangeMyTradeState}
