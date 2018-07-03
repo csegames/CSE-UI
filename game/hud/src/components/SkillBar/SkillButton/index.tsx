@@ -13,7 +13,6 @@ import {
   SkillStateStatusEnum,
   SkillStateTypeEnum,
 } from '@csegames/camelot-unchained';
-import { cx } from 'react-emotion';
 
 import SkillButtonView from './SkillButtonView';
 import skillStateConnector from './SkillStateConnector';
@@ -21,9 +20,7 @@ import {
   getClassNames,
   makeGlowPathFor,
   SkillStateInfo,
-  InterruptedState,
-  HitState,
-  StartCastState,
+  CLASS_NAMES,
 } from './lib';
 export * from './lib';
 
@@ -59,6 +56,12 @@ interface RingTimer {
 const INNER = 0;
 const OUTER = 1;
 const CLOCKWISE = true;
+const outer = 'M 29.999 6 A 25 25 0 1 0 30 6 Z';
+const inner = 'M 29.999 9 A 22 22 0 1 0 30 9 Z';
+const x = 30;
+const y = 30;
+const outerRadius = 25;
+const innerRadius = 22;
 
 class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
   private rings: RingTimer[] = [undefined, undefined];
@@ -89,16 +92,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
     if (props.skillState && props.skillState.info) {
       // extract button state from props
       const { timing, disruption } = props.skillState;
-
-      const outer = 'M 29.999 6 A 25 25 0 1 0 30 6 Z';
-      const inner = 'M 29.999 9 A 22 22 0 1 0 30 9 Z';
-
       const classNames: string[] = getClassNames(props.skillState);
-
-      const x = 30;
-      const y = 30;
-      const outerRadius = 25;
-      const innerRadius = 22;
       const outerDirection = this.rings[OUTER] && this.rings[OUTER].event.clockwise;
       const innerDirection = this.rings[INNER] && this.rings[INNER].event.clockwise;
 
@@ -114,7 +108,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
       if (disruption) {
         if (disruption.current >= disruption.end) {
-          classNames.push(InterruptedState);
+          classNames.push(CLASS_NAMES.INTERRUPTED_STATE);
           innerPath = makeGlowPathFor(500, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
         outerPath = makeGlowPathFor(disruption.end, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
@@ -129,7 +123,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
       if (this.state.hit) {
         outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
-        classNames.push(HitState);
+        classNames.push(CLASS_NAMES.HIT_STATE);
       } else if (this.hitTimeout && !this.state.hit) {
         clearTimeout(this.hitTimeout);
         this.hitTimeout = null;
@@ -137,7 +131,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
       if (this.state.startCast) {
         outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
-        classNames.push(StartCastState);
+        classNames.push(CLASS_NAMES.START_CAST_STATE);
       } else if (this.startCastTimeout && !this.state.startCast) {
         clearTimeout(this.startCastTimeout);
         this.startCastTimeout = null;
@@ -154,7 +148,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
           outerPath={outerPath || outer}
           inner={inner}
           innerPath={innerPath || inner}
-          classNames={cx(classNames)}
+          className={classNames.join(' ')}
           onSkillClick={this.performAbility}
         />
       );
@@ -203,9 +197,11 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
     if (!ring || overrideCurrentTimer) {
       if (id === OUTER) {
+        clearTimeout(this.outerTimeout);
         this.outerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
       }
       if (id === INNER) {
+        clearTimeout(this.innerTimeout);
         this.innerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
       }
       ring = this.rings[id] = {
@@ -219,12 +215,6 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
     const { id, disruption, clockwise } = info;
     let ring = this.rings[id];
     if (!ring) {
-      if (id === OUTER) {
-        this.outerTimeout = disruption.end - disruption.current;
-      }
-      if (id === INNER) {
-        this.innerTimeout = disruption.end - disruption.current;
-      }
       ring = this.rings[id] = {
         event: { when: disruption.current, remaining: disruption.end - disruption.current, direction: 1, clockwise },
       };
