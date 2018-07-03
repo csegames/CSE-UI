@@ -39,9 +39,9 @@
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
 
-"@csegames/cu-xmpp-chat@^0.1.3":
-  version "0.1.3"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.3.tgz#62293729f13885ae7d01fb6c702e1f48655edf11"
+"@csegames/cu-xmpp-chat@^0.1.4":
+  version "0.1.4"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.4.tgz#a3065c4ec29a7d0ed7db1e1918a9c47987373b80"
   dependencies:
     "@csegames/camelot-unchained" "^0.1.46"
     aphrodite "^2.2.2"

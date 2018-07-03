@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@csegames/camelot-unchained": "^0.1.48",
-    "@csegames/cu-xmpp-chat": "^0.1.2",
+    "@csegames/cu-xmpp-chat": "^0.1.4",
     "aphrodite": "^1.1.0",
     "apisauce": "^0.3.1",
     "babel-runtime": "^6.26.0",
