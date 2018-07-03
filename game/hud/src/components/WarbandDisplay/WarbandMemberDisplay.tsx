@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
 import HealthBar from '../HealthBar';
-import { showFriendlyTargetContextMenu } from '../../services/actions/contextMenu';
+import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled('div')`
   margin-bottom: 10px;

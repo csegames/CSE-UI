@@ -8,7 +8,7 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
 
-import * as actions from '../services/actions/contextMenu';
+import * as actions from 'actions/contextMenu';
 
 const Container = styled('div')`
   background: rgba(0, 0, 0, 0.01);

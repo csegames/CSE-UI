@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 import { SkillStateStatusEnum } from '@csegames/camelot-unchained';
 
-import { showTooltip, hideTooltip } from '../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { overlayPseudo } from './lib/styles';
 import { SkillStateInfo } from './lib';
 

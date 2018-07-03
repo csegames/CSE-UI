@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as CSS from '../../../lib/css-helper';
+import * as CSS from 'lib/css-helper';
 import * as CONFIG from '../config';
 import { NavButton, NavButtonLabel } from './NavButton';
 

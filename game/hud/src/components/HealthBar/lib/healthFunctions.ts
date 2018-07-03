@@ -6,7 +6,7 @@
  */
 
 import { PlayerState, Faction, GroupMemberState } from '@csegames/camelot-unchained';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { BodyParts } from 'lib/PlayerStatus';
 
 export function getHealthPercent(playerState: PlayerState | GroupMemberState, bodyPart: BodyParts) {
   if (!playerState || !playerState.health || !playerState.health[bodyPart]) {

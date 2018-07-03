@@ -8,8 +8,8 @@ import * as React from 'react';
 import { client, utils } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
-import HUDNav from '../../../components/HUDNav/index';
-import { LayoutMode } from '../../../components/HUDDrag';
+import HUDNav from 'components/HUDNav/index';
+import { LayoutMode } from 'components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 const { Orientation } = utils;

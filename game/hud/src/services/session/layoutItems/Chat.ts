@@ -5,7 +5,7 @@
  */
 import Chat from '@csegames/cu-xmpp-chat';
 import { client } from '@csegames/camelot-unchained';
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
+import { LayoutMode, Edge } from 'components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

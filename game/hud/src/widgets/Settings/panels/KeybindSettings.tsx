@@ -264,7 +264,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
       const keyCode = getVirtualKeyCode(e.keyCode);
       const name = listening.name;
       const which = listening.which;
-      if (client.debug) console.log(`keyCode = ${keyCode} name=${name} which=${which}`);
+      if (client.debug) console.log(`keyCode=${keyCode} name=${name} which=${which}`);
 
       // Clear listening state
       this.dontListen();

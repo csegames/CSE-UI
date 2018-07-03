@@ -10,8 +10,8 @@ import styled from 'react-emotion';
 import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
-import { isEqualPlayerState } from '../../../lib/playerStateEqual';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { isEqualPlayerState } from 'lib/playerStateEqual';
+import { BodyParts } from 'lib/PlayerStatus';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';

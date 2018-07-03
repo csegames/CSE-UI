@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 
-import { FactionColors } from '../../../lib/factionColors';
+import { FactionColors } from 'lib/factionColors';
 import SearchableList from '../../SearchableList';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';

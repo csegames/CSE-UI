@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import PlotControl from '../../../components/PlotControl';
+import { LayoutMode, Edge } from 'components/HUDDrag';
+import PlotControl from 'components/PlotControl';
 import HUDZOrder from '../HUDZOrder';
 
 export default {
