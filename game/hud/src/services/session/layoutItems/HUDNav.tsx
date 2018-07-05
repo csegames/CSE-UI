@@ -325,20 +325,20 @@ export default {
           events.fire('hudnav--navigate', 'ui');
         },
       },
-      {
-        name: 'reset',
-        tooltip: 'Reset UI layout',
-        iconClass: 'fa-retweet',
-        icon: (
-          <span>
-            <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'reset');
-        },
-      },
+      // {
+      //   name: 'reset',
+      //   tooltip: 'Reset UI layout',
+      //   iconClass: 'fa-retweet',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'reset');
+      //   },
+      // },
       {
         name: 'reloadui',
         tooltip: 'Reload UI',

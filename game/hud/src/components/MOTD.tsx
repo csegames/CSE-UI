@@ -221,6 +221,21 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
       </GraphQL>
     );
   }
+
+  public componentWillMount() {
+    // manage visibility based on localStorage
+    try {
+      const delayInMin: number = 24 * 60;
+      const savedDelay = localStorage.getItem('cse-MOTD-hide-start');
+      const currentDate: Date = new Date();
+      const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
+      savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
+      if (currentDate < savedDelayDate) this.props.setVisibility(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   private hide = (): void => {
     this.props.setVisibility(false);
   }

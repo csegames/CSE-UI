@@ -33,7 +33,7 @@ const MenuTitle = styled('div')` {
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 89;
-  width: 319px;
+  width: 256px;
   height: 23px;
   h6 {
     color: rgb(132,132,132);
@@ -111,8 +111,8 @@ const MenuButton = styled('div')`
 
 
 export const GameMenuDimensions = {
-  width: 320,
-  height: 152,
+  width: 257,
+  height: 168,
 };
 
 export interface GameMenuProps {
