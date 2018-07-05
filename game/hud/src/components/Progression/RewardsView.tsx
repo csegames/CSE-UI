@@ -237,42 +237,49 @@ class RewardsView extends React.Component<Props, State> {
             // New item was received
             rewardsList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='RewardLabel'>
-                  Received <img height='20px' width='20px' src={addItem.itemDef.iconUrl} />&nbsp;
-                  {addItem.staticDefinitionID} x {addItem.unitCount}
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Received <img height='20px' width='20px' src={addItem.itemDef.iconUrl} />&nbsp;
+                    {addItem.staticDefinitionID} x {addItem.unitCount}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
                 </div>
-                <div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           } else if (playerStat && playerStat.newBonus !== playerStat.previousBonus) {
             // New Attribute Bonus was received
             rewardsList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='RewardLabel'>
-                  Bonus +{playerStat.newBonus - playerStat.previousBonus} applied to {playerStat.playerStat}
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Bonus +{playerStat.newBonus - playerStat.previousBonus} applied to {playerStat.playerStat}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
                 </div>
-                <div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           } else if (skillNode) {
             // New Skill Node was applied
             rewardsList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='RewardLabel'>
-                  Skill Node Applied: {skillNode.skillNodePath}
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Skill Node Applied: {skillNode.skillNodePath}
+                  </div>
                 </div>
-                <div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           } else if (skillPart.newLevel !== skillPart.previousLevel) {
             // New Skill Component Level obtained
             rewardsList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='RewardLabel'>
-                  <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />&nbsp;
-                  Obtained Level {skillPart.newLevel} {skillPart.skillPartDef.name}
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />&nbsp;
+                    Obtained Level {skillPart.newLevel} {skillPart.skillPartDef.name}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
                 </div>
-                <div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           }
@@ -285,24 +292,28 @@ class RewardsView extends React.Component<Props, State> {
             // Character (Attribute) progression
             progressionList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='ProgressionLabel'>{playerStat.playerStat}</div>
-                <div className='ProgressionValue2'>
-                  {playerStat.newProgressionPoints - playerStat.previousProgressionPoints}
+                <div className='ProgressionInfo'>
+                  <div className='ProgressionLabel'>{playerStat.playerStat}</div>
+                  <div className='ProgressionValue2'>
+                    {playerStat.newProgressionPoints - playerStat.previousProgressionPoints}
+                  </div>
+                  <div className='ProgressionValue2'>{reasonDescription}</div>
                 </div>
-                <div className='ProgressionValue2'>{reasonDescription}</div>
               </li>
             ,);
           } else if (skillPart && skillPart.newProgressPoints - skillPart.previousProgressionPoints > 0) {
             // Skill Component progression
             progressionList.push(
               <li key={'adj' + adjustmentID}>
-                <div className='ProgressionLabel'>
-                  <img height='20px' width='20px' src={skillPart.skillPartDef.icon} /> {skillPart.skillPartDef.name}
+                <div className='ProgressionInfo'>
+                  <div className='ProgressionLabel'>
+                    <img height='20px' width='20px' src={skillPart.skillPartDef.icon} /> {skillPart.skillPartDef.name}
+                  </div>
+                  <div className='ProgressionValue2'>
+                    {skillPart.newProgressPoints - skillPart.previousProgressionPoints}
+                  </div>
+                  <div className='ProgressionValue2'>{reasonDescription}</div>
                 </div>
-                <div className='ProgressionValue2'>
-                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints}
-                </div>
-                <div className='ProgressionValue2'>{reasonDescription}</div>
               </li>
             ,);
           }
@@ -314,7 +325,7 @@ class RewardsView extends React.Component<Props, State> {
           { progressionList.length > 0 ?
             <ul>
               <h3>Progression</h3>
-              <li>
+              <li className='ProgressHeader'>
                 <div className='ProgressionLabelHeader'>Component / Attribute</div>
                 <div className='ProgressionValue2Header'>Points Obtained</div>
                 <div className='ProgressionValue2Header'>Reason</div>
@@ -324,8 +335,8 @@ class RewardsView extends React.Component<Props, State> {
           : null }
           { rewardsList.length > 0 ?
             <ul>
-              <h3>Rewards</h3>
-              <li>
+              <h3 className='RewardHeadline'>Rewards</h3>
+              <li className='ProgressHeader'>
                 <div className='RewardLabelHeader'>Reward</div>
                 <div className='RewardValueHeader'>Reason</div>
               </li>

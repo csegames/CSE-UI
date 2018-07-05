@@ -30,10 +30,6 @@ const Container = styled('div')`
 `;
 
 const ProgressionBorder = styled('div')`
-  background: url(images/progression/progression-daily-item-top.png) center bottom no-repeat;
-  width: 108px;
-  height: 9px;
-  margin: 0 auto -4px;
 }
 `;
 
@@ -211,14 +207,16 @@ class ProgressionView extends React.Component<Props, State> {
                 if (damage[damageKey][damageType] > 0) {
                   damageDetails.push(
                     <li key={damageKey + damageType}>
-                      <div className='ProgressionLabel'>
-                        {toSentenceCase(damageKey)} ({
-                          damageType === 'playerCharacter' ? 'Player' :
-                          damageType === 'nonPlayerCharacter' ? 'NPC' :
-                          toSentenceCase(damageType)
-                        }):
+                      <div className='ProgressionInfo'>
+                        <div className='ProgressionLabel'>
+                          {toSentenceCase(damageKey)} ({
+                            damageType === 'playerCharacter' ? 'Player' :
+                            damageType === 'nonPlayerCharacter' ? 'NPC' :
+                            toSentenceCase(damageType)
+                          }):
+                        </div>
+                        <div className='ProgressionValue'>{damage[damageKey][damageType]}</div>
                       </div>
-                      <div className='ProgressionValue'>{damage[damageKey][damageType]}</div>
                     </li>
                   ,);
                 }
@@ -230,8 +228,10 @@ class ProgressionView extends React.Component<Props, State> {
               if (plots[plotKey] > 0) {
                 plotDetails.push(
                   <li key={plotKey}>
-                    <div className='ProgressionLabel'>{toSentenceCase(plotKey)}: </div>
-                    <div className='ProgressionValue'>{plots[plotKey]}</div>
+                    <div className='ProgressionInfo'>
+                      <div className='ProgressionLabel'>{toSentenceCase(plotKey)}: </div>
+                      <div className='ProgressionValue'>{plots[plotKey]}</div>
+                    </div>
                   </li>
                 ,);
               }
@@ -243,10 +243,12 @@ class ProgressionView extends React.Component<Props, State> {
                 if (crafting[craftingKey][craftingType] > 0) {
                   craftingDetails.push(
                     <li key={craftingKey + craftingType}>
-                      <div className='ProgressionLabel'>
-                        {toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}):
+                      <div className='ProgressionInfo'>
+                        <div className='ProgressionLabel'>
+                          {toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}):
+                        </div>
+                        <div className='ProgressionValue'>{crafting[craftingKey][craftingType]}</div>
                       </div>
-                      <div className='ProgressionValue'>{crafting[craftingKey][craftingType]}</div>
                     </li>
                   ,);
                 }
@@ -265,24 +267,30 @@ class ProgressionView extends React.Component<Props, State> {
             if (scenariosWon > 0) {
               scenarioDetails.push(
                 <li key='scenarioswon'>
-                  <div className='ProgressionLabel'>Scenarios Won: </div>
-                  <div className='ProgressionValue'>{scenariosWon}</div>
+                  <div className='ProgressionInfo'>
+                    <div className='ProgressionLabel'>Scenarios Won: </div>
+                    <div className='ProgressionValue'>{scenariosWon}</div>
+                  </div>
                 </li>
               ,);
             }
             if (scenariosLost > 0) {
               scenarioDetails.push(
                 <li key='scenarioslost'>
-                  <div className='ProgressionLabel'>Scenarios Lost: </div>
-                  <div className='ProgressionValue'>{scenariosLost}</div>
+                  <div className='ProgressionInfo'>
+                    <div className='ProgressionLabel'>Scenarios Lost: </div>
+                    <div className='ProgressionValue'>{scenariosLost}</div>
+                  </div>
                 </li>
               ,);
             }
             if (scenariosTied > 0) {
               scenarioDetails.push(
                 <li key='scenariostied'>
-                  <div className='ProgressionLabel'>Scenarios Tied: </div>
-                  <div className='ProgressionValue'>{scenariosTied}</div>
+                  <div className='ProgressionInfo'>
+                    <div className='ProgressionLabel'>Scenarios Tied: </div>
+                    <div className='ProgressionValue'>{scenariosTied}</div>
+                  </div>
                 </li>
               ,);
             }
@@ -291,18 +299,20 @@ class ProgressionView extends React.Component<Props, State> {
             skillPartsUsed.forEach((skillPartUsed) => {
               skillDetails.push(
                 <li key={skillPartUsed.skillPartID}>
-                  <div className='ProgressionLabel'>
-                    <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />&nbsp;
-                    { skillPartUsed.skillPartDef.name }
-                  </div>
-                  <div className='ProgressionValue3'>
-                    { skillPartUsed.usedInCombatCount }
-                  </div>
-                  <div className='ProgressionValue3'>
-                    { skillPartUsed.usedNonCombatCount }
-                  </div>
-                  <div className='ProgressionValue3'>
-                    { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
+                  <div className='ProgressionInfo'>
+                    <div className='ProgressionLabel'>
+                      <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />&nbsp;
+                      { skillPartUsed.skillPartDef.name }
+                    </div>
+                    <div className='ProgressionValue3'>
+                      { skillPartUsed.usedInCombatCount }
+                    </div>
+                    <div className='ProgressionValue3'>
+                      { skillPartUsed.usedNonCombatCount }
+                    </div>
+                    <div className='ProgressionValue3'>
+                      { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
+                    </div>
                   </div>
                 </li>
               ,);
@@ -317,14 +327,18 @@ class ProgressionView extends React.Component<Props, State> {
                     <h3>General Details</h3>
                     { secondsActive ? (
                       <li>
-                        <div className='ProgressionLabel'>Time Active: </div>
-                        <div className='ProgressionValue'>{moment.duration(secondsActive, 'seconds').humanize()}</div>
+                        <div className='ProgressionInfo'>
+                          <div className='ProgressionLabel'>Time Active: </div>
+                          <div className='ProgressionValue'>{moment.duration(secondsActive, 'seconds').humanize()}</div>
+                        </div>
                       </li>
                     ) : null }
                     { distanceMoved ? (
                       <li>
-                        <div className='ProgressionLabel'>Distance Traveled: </div>
-                        <div className='ProgressionValue'>{distanceMoved} meters</div>
+                        <div className='ProgressionInfo'>
+                          <div className='ProgressionLabel'>Distance Traveled: </div>
+                          <div className='ProgressionValue'>{distanceMoved} meters</div>
+                        </div>
                       </li>
                     ) : null }
                   </ul>
@@ -355,7 +369,7 @@ class ProgressionView extends React.Component<Props, State> {
                   { skillDetails.length > 0 ? (
                     <ul>
                       <h3>Skill Component Usage</h3>
-                      <li>
+                      <li className='ProgressHeader'>
                           <div className='ProgressionLabelHeader'>Component Name</div>
                           <div className='ProgressionValue3Header'>In-Combat</div>
                           <div className='ProgressionValue3Header'>Non-Combat</div>
