@@ -17,9 +17,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@csegames/camelot-unchained@^0.1.46":
-  version "0.1.48"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.48.tgz#781a6a70d5fbcdb949840561e07ef8be8d3e44e5"
+"@csegames/camelot-unchained@^0.1.50":
+  version "0.1.50"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.50.tgz#166390c3ed48df045d260e5687d6e593dc54e94b"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
@@ -38,44 +38,6 @@
     react-emotion "^9.2.3"
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
-
-"@csegames/camelot-unchained@^0.1.49":
-  version "0.1.49"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.49.tgz#6b228f91f26d4ca093bdd62630dda97a3acd3993"
-  dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    emotion "^9.2.3"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    node-xmpp-client "2.1.0"
-    randomstring "^1.1.5"
-    react "^16.4.1"
-    react-dom "^16.4.1"
-    react-emotion "^9.2.3"
-    react-transition-group "1.x"
-    redux-typed-modules "^2.2.1"
-
-"@csegames/cu-xmpp-chat@^0.1.4":
-  version "0.1.4"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.4.tgz#a3065c4ec29a7d0ed7db1e1918a9c47987373b80"
-  dependencies:
-    "@csegames/camelot-unchained" "^0.1.46"
-    aphrodite "^2.2.2"
-    cwd-in-node-modules "^1.0.1"
-    es6-promise "^3.1.2"
-    node-xmpp-client "^2.1.0"
-    normalizr "^2.0.0"
-    randomstring "^1.1.5"
-    react-redux "^5.0.5"
-    react-transition-group "1.x"
-    redux "^3.7.2"
-    redux-thunk "^2.2.0"
 
 "@emotion/babel-utils@^0.5.3":
   version "0.5.3"
@@ -377,14 +339,6 @@ aphrodite@^1.2.3:
   dependencies:
     asap "^2.0.3"
     inline-style-prefixer "^3.0.1"
-    string-hash "^1.1.3"
-
-aphrodite@^2.2.2:
-  version "2.2.2"
-  resolved "http://registry.camelotunchained.com/aphrodite/-/aphrodite-2.2.2.tgz#1292a6c67f5c35f8855f3f61475fe530d903bdd1"
-  dependencies:
-    asap "^2.0.3"
-    inline-style-prefixer "^4.0.0"
     string-hash "^1.1.3"
 
 apisauce@0.3.1:
@@ -1226,10 +1180,6 @@ bowser@^1.6.0:
   version "1.7.0"
   resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.7.0.tgz#169de4018711f994242bff9a8009e77a1f35e003"
 
-bowser@^1.7.3:
-  version "1.9.3"
-  resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.9.3.tgz#6643ae4d783f31683f6d23156976b74183862162"
-
 boxen@^0.6.0:
   version "0.6.0"
   resolved "http://registry.camelotunchained.com/boxen/-/boxen-0.6.0.tgz#8364d4248ac34ff0ef1b2f2bf49a6c60ce0d81b6"
@@ -1939,13 +1889,6 @@ css-in-js-utils@^1.0.3:
   dependencies:
     hyphenate-style-name "^1.0.2"
 
-css-in-js-utils@^2.0.0:
-  version "2.0.1"
-  resolved "http://registry.camelotunchained.com/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
-  dependencies:
-    hyphenate-style-name "^1.0.2"
-    isobject "^3.0.1"
-
 css-select@~1.2.0:
   version "1.2.0"
   resolved "http://registry.camelotunchained.com/css-select/-/css-select-1.2.0.tgz#2b3a110539c5355f1cd8d314623e870b121ec858"
@@ -2322,7 +2265,7 @@ es-to-primitive@^1.1.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.1"
 
-es6-promise@^3.0.2, es6-promise@^3.1.2, es6-promise@^3.2.1:
+es6-promise@^3.0.2, es6-promise@^3.2.1:
   version "3.3.1"
   resolved "http://registry.camelotunchained.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
 
@@ -3159,13 +3102,6 @@ inline-style-prefixer@^3.0.1:
     bowser "^1.6.0"
     css-in-js-utils "^1.0.3"
 
-inline-style-prefixer@^4.0.0:
-  version "4.0.2"
-  resolved "http://registry.camelotunchained.com/inline-style-prefixer/-/inline-style-prefixer-4.0.2.tgz#d390957d26f281255fe101da863158ac6eb60911"
-  dependencies:
-    bowser "^1.7.3"
-    css-in-js-utils "^2.0.0"
-
 insert-module-globals@^7.0.0:
   version "7.0.1"
   resolved "http://registry.camelotunchained.com/insert-module-globals/-/insert-module-globals-7.0.1.tgz#c03bf4e01cb086d5b5e5ace8ad0afe7889d638c3"
@@ -3416,10 +3352,6 @@ isobject@^2.0.0, isobject@^2.1.0:
   resolved "http://registry.camelotunchained.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
   dependencies:
     isarray "1.0.0"
-
-isobject@^3.0.1:
-  version "3.0.1"
-  resolved "http://registry.camelotunchained.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
 isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
@@ -4256,7 +4188,7 @@ lodash@4.12.0:
   version "4.12.0"
   resolved "http://registry.camelotunchained.com/lodash/-/lodash-4.12.0.tgz#2bd6dc46a040f59e686c972ed21d93dc59053258"
 
-lodash@4.17.4, lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.4:
+lodash@4.17.4, lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.4:
   version "4.17.4"
   resolved "http://registry.camelotunchained.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4679,12 +4611,6 @@ normalize-path@^2.0.1:
   resolved "http://registry.camelotunchained.com/normalize-path/-/normalize-path-2.1.1.tgz#1ab28b556e198363a8c1a6f7e6fa20137fe6aed9"
   dependencies:
     remove-trailing-separator "^1.0.1"
-
-normalizr@^2.0.0:
-  version "2.3.1"
-  resolved "http://registry.camelotunchained.com/normalizr/-/normalizr-2.3.1.tgz#ac12d771ce1fe6a43094c3d828caada4ed9a4540"
-  dependencies:
-    lodash "^4.17.2"
 
 "npmlog@0 || 1 || 2 || 3 || 4", npmlog@^4.0.0, npmlog@^4.0.2:
   version "4.1.2"
