@@ -27,7 +27,7 @@ const DropdownItem = styled('div')`
   padding: 2px 5px;
   color: white;
   background-color: rgba(31, 31, 31, 1);
-  
+
   &:hover {
     background-color: rgba(31, 31, 31, 0.6);
   }
@@ -52,10 +52,9 @@ const CollapsingListStyles = {
   collapseButton: css`
     float: right;
   `,
-}
+};
 
 const BoxInnerContainer = css`
-  
 `;
 
 export class DropDownField extends React.Component<DropDownFieldProps, DropDownFieldState> {
@@ -78,7 +77,7 @@ export class DropDownField extends React.Component<DropDownFieldProps, DropDownF
               );
             }}
             renderListItem={(item) => {
-              return <DropdownItem onClick={() => onSelectDropdownItem({ configKey: label, item })}>{item}</DropdownItem>
+              return <DropdownItem onClick={() => onSelectDropdownItem({ configKey: label, item })}>{item}</DropdownItem>;
             }}
           />
         </Field>

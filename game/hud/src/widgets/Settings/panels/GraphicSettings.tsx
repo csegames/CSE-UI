@@ -111,8 +111,8 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
           ...graphics,
           [SELECT_RESOLUTION_ID]: 'Select Resolution',
         };
-        const width = graphics[FULL_SCREEN_WIDTH_ID] && parseInt(graphics[FULL_SCREEN_WIDTH_ID]);
-        const height = graphics[FULL_SCREEN_HEIGHT_ID] && parseInt(graphics[FULL_SCREEN_HEIGHT_ID]);
+        const width = graphics[FULL_SCREEN_WIDTH_ID] && graphics[FULL_SCREEN_WIDTH_ID] | 0;
+        const height = graphics[FULL_SCREEN_HEIGHT_ID] && graphics[FULL_SCREEN_HEIGHT_ID] | 0;
         const fullScreen = graphics[FULL_SCREEN_TOGGLE_ID] === 'true';
 
         this.props.onSelectedDisplayModeChange({ width, height, fullScreen });
@@ -133,12 +133,12 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
 
     if (id === FULL_SCREEN_TOGGLE_ID) {
       const width = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.width :
-        parseInt(graphics[FULL_SCREEN_WIDTH_ID]);
+        graphics[FULL_SCREEN_WIDTH_ID] | 0;
       const height = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.height :
-        parseInt(graphics[FULL_SCREEN_HEIGHT_ID]);
+        graphics[FULL_SCREEN_HEIGHT_ID] | 0;
       this.props.onSelectedDisplayModeChange({ width, height, fullScreen: on === 'true' });
     }
-    
+
     client.ChangeConfigVar(id, on);
     client.SaveConfigChanges();
     this.setState({ graphics: Object.assign({}, graphics, { [id]: on }) });
@@ -167,7 +167,7 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
 
   private getDropDownItemsDictionary = () => {
     const dropDownItems = {
-      [SELECT_RESOLUTION_ID]: this.state.displayModes.map((config) => getResolutionString(config)),
+      [SELECT_RESOLUTION_ID]: this.state.displayModes.map(config => getResolutionString(config)),
     };
 
     return dropDownItems;
@@ -185,8 +185,8 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
     switch (configKey) {
       case SELECT_RESOLUTION_ID: {
         const resolutionValues = item.split('x');
-        const width = parseInt(resolutionValues[0]);
-        const height = parseInt(resolutionValues[1]);
+        const width = parseInt(resolutionValues[0], 10);
+        const height = parseInt(resolutionValues[1], 10);
         const fullScreen = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.fullScreen :
           this.state.graphics[FULL_SCREEN_TOGGLE_ID] === 'true';
         client.ChangeConfigVar(FULL_SCREEN_WIDTH_ID, resolutionValues[0]);

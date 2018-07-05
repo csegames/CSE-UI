@@ -173,7 +173,7 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
           <BloodBall
             style={{
               WebkitMaskImage: `linear-gradient(to top, black ${bloodPercent.toFixed(1)}%,
-                transparent ${bloodPercent.toFixed(1)}%)`
+                transparent ${bloodPercent.toFixed(1)}%)`,
             }} />
           {/* <BloodCount>{this.props.currentBlood}</BloodCount> */}
         </BloodBallContainer>
