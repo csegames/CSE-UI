@@ -130,9 +130,12 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     const serversForPermission = _.values(servers).filter((server) => {
       return canAccessChannel(patcher.getPermissions(), server.channelPatchPermissions);
     });
-    const sortedServers = selectedServer ?
-      _.sortBy(serversForPermission, server => server.shardID === selectedServer.shardID ? -1 : 0) :
-      _.values(serversForPermission);
+    const localLastPlay = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
+    const sortedServers = _.sortBy(serversForPermission, [
+        localLastPlay ? server => server.name === localLastPlay.serverName ? -1 : 0 : null,
+        server => server.available ? -1 : 0,
+        selectedServer ? server => server.shardID === selectedServer.shardID ? -1 : 0 : null
+      ,]);
     return sortedServers;
   }
 
