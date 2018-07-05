@@ -5,7 +5,7 @@
  */
 
 export class ChatState {
-  state: any = {};
+  public state: any = {};
   public set = (name: string, value: any) : void => {
     this.state[name] = value;
   }

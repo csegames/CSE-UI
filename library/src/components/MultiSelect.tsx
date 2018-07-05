@@ -171,7 +171,7 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
                     <div
                       key={index}
                       style={this.state.keyboardIndex === index ?
-                        {...customStyles.listItem, ...customStyles.highlightItem} : customStyles.listItem}
+                        { ...customStyles.listItem, ...customStyles.highlightItem } : customStyles.listItem}
                       onClick={() => this.selectItem(item)}>
                         {this.props.renderListItem(item, this.props.renderData)}
                     </div>

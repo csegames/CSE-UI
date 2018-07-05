@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {events} from '../../../';
+import { events } from '../../../';
 import * as React from 'react';
 import { chatType, ChatMessage } from './ChatMessage';
 import ChatLineParser from './ChatLineParser';
@@ -27,14 +27,15 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
   public render() {
     if (this.props.message.text === null) return null;
     let element: JSX.Element = null;
-    let timestamp : JSX.Element = chatConfig.TIMESTAMPS ? <span className="chat-timestamp">{ this.timestamp(this.props.message) }</span> : null;
+    const timestamp : JSX.Element = chatConfig.TIMESTAMPS ?
+      <span className='chat-timestamp'>{ this.timestamp(this.props.message) }</span> : null;
     const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
-    switch(this.props.message.type) {
+    switch (this.props.message.type) {
       case chatType.AVAILABLE:
         if (!chatConfig.JOIN_PARTS) break;
         element = (
           <div className={chatLineClassName}>
-            <span className="chat-line-entry">{this.props.message.nick} entered the room</span>
+            <span className='chat-line-entry'>{this.props.message.nick} entered the room</span>
           </div>
         );
         break;
@@ -42,7 +43,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         if (!chatConfig.JOIN_PARTS) break;
         element = (
           <div className={chatLineClassName}>
-            <span className="chat-line-exit">{this.props.message.nick} left the room</span>
+            <span className='chat-line-exit'>{this.props.message.nick} left the room</span>
           </div>
         );
         break;
@@ -57,7 +58,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         element = (
           <div className={chatLineClassName}>
             {timestamp}
-            <span key="0" className="chat-line-message">{cbparser.parse(this.props.message.text)}</span>
+            <span key='0' className='chat-line-message'>{cbparser.parse(this.props.message.text)}</span>
           </div>
         );
         break;
@@ -66,7 +67,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         element = (
           <div className={chatLineClassName}>
             {timestamp}
-            <span className="chat-line-system">{this.props.message.text}</span>
+            <span className='chat-line-system'>{this.props.message.text}</span>
           </div>
         );
         break;
@@ -74,8 +75,8 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
         element = (
           <div className={chatLineClassName}>
             {timestamp}
-            <span className="chat-line-system">[ Unrecognised chat message type ]</span>
-            <span className="chat-line-message">{JSON.stringify(this.props.message)}</span>
+            <span className='chat-line-system'>[ Unrecognised chat message type ]</span>
+            <span className='chat-line-message'>{JSON.stringify(this.props.message)}</span>
           </div>
         );
     }
@@ -83,9 +84,9 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
   }
 
   private timestamp = (message: ChatMessage): string => {
-    let s: string = "";
+    let s: string = '';
     const d: Date = message.when;
-    if (message.isNewDay()) s += d.toLocaleDateString() + " ";
+    if (message.isNewDay()) s += d.toLocaleDateString() + ' ';
     s += d.toLocaleTimeString();
     return s;
   }
@@ -99,13 +100,15 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       elements = parser.parseAction(text);
     } else {
       nick += ':';
-      elements = [ <span key="0" className="chat-line-message">{parser.parse(text)}</span> ];
+      elements = [<span key='0' className='chat-line-message'>{parser.parse(text)}</span>];
     }
     const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
     return (
       <div className={chatLineClassName + (classes ? ' ' + classes : '') }>
             {timestamp}
-            <span className={`chat-line-nick ${this.props.message.isCSE ? 'cse' : ''}`} onClick={this.PM.bind(this) }>{nick}</span>
+            <span className={`chat-line-nick ${this.props.message.isCSE ? 'cse' : ''}`} onClick={this.PM.bind(this) }>
+              {nick}
+            </span>
             {elements}
       </div>
     );

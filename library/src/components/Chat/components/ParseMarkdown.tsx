@@ -14,9 +14,8 @@ function fromText(text: string, keygen: () => number, match: RegExpExecArray, pa
     const matchText: string = match[2] ? matchBeginChar + match[3] + matchEndChar : matchBeginChar + match[5] + matchEndChar;
     if (matchCount === 1) {
       return [<i key={keygen()}>{parser.parse(matchText)}</i>];
-    } else {
-      return [<b key={keygen()}>{parser.parse(matchText)}</b>];
     }
+    return [<b key={keygen()}>{parser.parse(matchText)}</b>];
   }
 }
 
@@ -26,5 +25,5 @@ function createRegExp() : RegExp {
 
 export default {
   fromText,
-  createRegExp
-}
+  createRegExp,
+};

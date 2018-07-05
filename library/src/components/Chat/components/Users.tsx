@@ -7,9 +7,10 @@
 import * as React from 'react';
 import ChatRoomInfo from './ChatRoomInfo';
 
-export class UsersState {
+export interface UsersState {
 }
-export class UsersProps {
+
+export interface UsersProps {
   key: string;
   room: ChatRoomInfo;
 }
@@ -17,7 +18,7 @@ export class UsersProps {
 class Users extends React.Component<UsersProps, UsersState> {
   public render() {
     return (
-      <div className="chat-tab-content chat-users">
+      <div className='chat-tab-content chat-users'>
         {this.props.room.users}
       </div>
     );

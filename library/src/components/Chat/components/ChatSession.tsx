@@ -11,7 +11,7 @@ import ChatRoomInfo from './ChatRoomInfo';
 import RoomId from './RoomId';
 import ChatClient from '../lib/ChatClient';
 import messageType from '../lib/messageType';
-import { chatConfig, ChatConfig } from './ChatConfig';
+import { chatConfig } from './ChatConfig';
 import { chatState } from './ChatState';
 import { events } from '../../../';
 
@@ -22,33 +22,32 @@ interface LoginInfo {
 }
 
 class ChatSession {
+  public rooms: ChatRoomInfo[] = [];
+  public currentRoom: RoomId = undefined;
+  public reconnecting: boolean = false;
+  public connected: boolean = false;
+  public client: ChatClient = null;
+  public me: string = 'me';
+  public latency: number;
+  public windowActive = true;
 
-  SCROLLBACK_THRESHOLD : number = 50;
-  SCROLLBACK_PAGESIZE : number = 100;
-
-  rooms: ChatRoomInfo[] = [];
-  currentRoom: RoomId = undefined;
-  reconnecting: boolean = false;
-  connected: boolean = false;
-  client: ChatClient = null;
-  me: string = "me";
-  latency: number;
-  windowActive = true;
+  private SCROLLBACK_THRESHOLD : number = 50;
+  private SCROLLBACK_PAGESIZE : number = 100;
 
   constructor() {
-      this.onconnect = this.onconnect.bind(this);
-      this.onconnectfailed = this.onconnectfailed.bind(this);
-      this.onping = this.onping.bind(this);
-      this.onchat = this.onchat.bind(this);
-      this.ondisconnect = this.ondisconnect.bind(this);
-      this.onrooms = this.onrooms.bind(this);
+    this.onconnect = this.onconnect.bind(this);
+    this.onconnectfailed = this.onconnectfailed.bind(this);
+    this.onping = this.onping.bind(this);
+    this.onchat = this.onchat.bind(this);
+    this.ondisconnect = this.ondisconnect.bind(this);
+    this.onrooms = this.onrooms.bind(this);
 
-      window.onblur = () => this.windowActive = false;
-      window.onfocus = () => {
-        this.windowActive = true;
-        var room = this.getRoom(this.currentRoom);
-        if (room) room.seen();
-      }
+    window.onblur = () => this.windowActive = false;
+    window.onfocus = () => {
+      this.windowActive = true;
+      const room = this.getRoom(this.currentRoom);
+      if (room) room.seen();
+    };
   }
 
   public diagnostics = () : void => {
@@ -67,45 +66,18 @@ class ChatSession {
     // });
   }
 
-  private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
-    events.on('combatlog_message', (msg: string) => this.onchat({type: messageType.COMBAT_LOG, message: msg}));
-
-    if (!this.client) {
-      this.client = new ChatClient();
-      this.client.on('connect', this.onconnect);
-      this.client.on('connectfailed', this.onconnectfailed);
-      this.client.on('ping', this.onping);
-      this.client.on('presence', this.onchat);
-      this.client.on('message', this.onchat);
-      this.client.on('groupmessage', this.onchat);
-      this.client.on('disconnect', this.ondisconnect);
-      this.client.on('rooms', this.onrooms);
-      
-      // if (!patcher.hasRealApi()) {
-      //   if (username === "") username = window.prompt('username?');
-      //   if (password === "###") password = window.prompt('password?');
-      // }
-      if (login.loginToken) {
-        this.client.connectWithToken(login.loginToken);
-      } else {
-        this.client.connect(login.username, login.password);
-      }
-    }
-  }
-
   public connect(username: string, password: string) {
-    this.internalConnect({ username: username, password: password });
+    this.internalConnect({ username, password });
   }
 
   public connectWithToken(loginToken: string) {
-    this.internalConnect({ loginToken: loginToken });
+    this.internalConnect({ loginToken });
   }
 
   public onping(ping: any) {
     this.latency = (Date.now() - ping.now);
     events.fire('chat-session-update', this);
-    //this.diagnostics();
+    // this.diagnostics();
   }
 
   public onconnect(): void {
@@ -153,8 +125,8 @@ class ChatSession {
             args.sender.sender,
             args.message,
             args.sender.isCSE,
-            args.time
-          )
+            args.time,
+          ),
         );
         break;
       case messageType.NONE:
@@ -208,7 +180,7 @@ class ChatSession {
   // Receive a message from a room or user.
   public recv(message: ChatMessage) : void {
     // check for a broadcast message (private message sent by "")
-    if (message.type === chatType.PRIVATE && message.nick === "chat.camelotunchained.com/warning") {
+    if (message.type === chatType.PRIVATE && message.nick === 'chat.camelotunchained.com/warning') {
       this.broadcast(message);
     } else {
       const roomId = new RoomId(message.roomName, message.type);
@@ -261,7 +233,7 @@ class ChatSession {
       room = new ChatRoomInfo(
         roomId,
         this.SCROLLBACK_THRESHOLD,
-        this.SCROLLBACK_PAGESIZE
+        this.SCROLLBACK_PAGESIZE,
       );
       this.rooms.push(room);
     }
@@ -304,7 +276,7 @@ class ChatSession {
   public leaveRoom(roomId: RoomId) : void {
     const room = this.deleteRoom(roomId);
     if (room) {
-      switch(roomId.type) {
+      switch (roomId.type) {
         case chatType.GROUP:
           this.client.leaveRoom(roomId.name);
           break;
@@ -334,6 +306,33 @@ class ChatSession {
       });
     });
     return allUsers;
+  }
+
+  private internalConnect(login: LoginInfo) {
+    events.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    events.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
+
+    if (!this.client) {
+      this.client = new ChatClient();
+      this.client.on('connect', this.onconnect);
+      this.client.on('connectfailed', this.onconnectfailed);
+      this.client.on('ping', this.onping);
+      this.client.on('presence', this.onchat);
+      this.client.on('message', this.onchat);
+      this.client.on('groupmessage', this.onchat);
+      this.client.on('disconnect', this.ondisconnect);
+      this.client.on('rooms', this.onrooms);
+      
+      // if (!patcher.hasRealApi()) {
+      //   if (username === "") username = window.prompt('username?');
+      //   if (password === "###") password = window.prompt('password?');
+      // }
+      if (login.loginToken) {
+        this.client.connectWithToken(login.loginToken);
+      } else {
+        this.client.connect(login.username, login.password);
+      }
+    }
   }
 }
 

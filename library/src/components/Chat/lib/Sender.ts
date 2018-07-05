@@ -4,10 +4,10 @@
  */
 
 class Sender {
-  id: number;
-  sender: string;
-  senderName: string;
-  isCSE: boolean;
+  public id: number;
+  public sender: string;
+  public senderName: string;
+  public isCSE: boolean;
 
   constructor(id: number, sender: string, senderName: string, isCSE: boolean) {
     this.id = id;

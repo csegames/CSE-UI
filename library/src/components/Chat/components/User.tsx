@@ -7,9 +7,9 @@ import { events } from '../../../';
 import * as React from 'react';
 
 export class UserInfo {
-  roomName: string;
-  name: string;
-  isCSE: string;
+  public roomName: string;
+  public name: string;
+  public isCSE: string;
   constructor(roomName: string, name: string, isCSE: string) {
     this.roomName = roomName;
     this.name = name;
@@ -19,6 +19,7 @@ export class UserInfo {
 
 export interface UserState {
 }
+
 export interface UserProps {
   info: UserInfo;
   key: number;
@@ -27,7 +28,7 @@ export interface UserProps {
 
 class User extends React.Component<UserProps, UserState> {
   public render() {
-    let classes : string[] = [ 'chat-info-user' ];
+    const classes : string[] = ['chat-info-user'];
     if (this.props.selected) classes.push('chat-info-user-selected');
     if (this.props.info.isCSE) classes.push('chat-info-cseuser');
     return (

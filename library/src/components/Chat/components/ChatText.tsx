@@ -18,10 +18,10 @@ export interface ChatTextProps {
 const AUTOSCROLL_FUZZYNESS : number = 12;
 
 class ChatText extends React.Component<ChatTextProps, ChatTextState> {
-  SCROLLBACK_PAGESIZE: number = 50;
-  autoScroll: boolean = true;
-  lazyLoadTop: HTMLElement = null;
-  currentRoom: RoomId;
+  public SCROLLBACK_PAGESIZE: number = 50;
+  public autoScroll: boolean = true;
+  public lazyLoadTop: HTMLElement = null;
+  public currentRoom: RoomId;
   constructor(props: ChatTextProps) {
     super(props);
     this.state = new ChatTextState();
@@ -58,21 +58,20 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
   public render() {
     const room : ChatRoomInfo = this.props.room;
     let messages : JSX.Element[];
-    let content : JSX.Element = undefined;
     let lazy : JSX.Element = undefined;
     if (room) {
       if (!this.currentRoom || !room.roomId.same(this.currentRoom)) {
         this.newRoom();
       }
       if (room.scrollback > 0) {
-        lazy = <div ref="lazyload" className="chat-lazyload" style={{ height: (room.scrollback * 1.7) + 'em' }}></div>;
+        lazy = <div ref='lazyload' className='chat-lazyload' style={{ height: (room.scrollback * 1.7) + 'em' }}></div>;
       }
       if (room.messages) {
         messages = room.messages.slice(room.scrollback);
       }
     }
     return (
-      <div ref="chatbox" className="chat-text allow-select-text">
+      <div ref='chatbox' className='chat-text allow-select-text'>
       {lazy}
       {messages}
       </div>
@@ -81,14 +80,14 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
 
   private registerEvents = () => {
     const el: HTMLDivElement = this.refs['chatbox'] as HTMLDivElement;
-    el.addEventListener("scroll", this.handleScroll);
-    el.addEventListener("auto-scroll", this.handleAutoScroll);
+    el.addEventListener('scroll', this.handleScroll);
+    el.addEventListener('auto-scroll', this.handleAutoScroll);
   }
 
   private unregisterEvents = () => {
     const el: HTMLElement = this.refs['chatbox'] as HTMLElement;
-    el.removeEventListener("scroll", this.handleScroll);
-    el.removeEventListener("auto-scroll", this.handleAutoScroll);
+    el.removeEventListener('scroll', this.handleScroll);
+    el.removeEventListener('auto-scroll', this.handleAutoScroll);
   }
 
   private handleScroll = (e: MouseEvent) => {

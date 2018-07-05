@@ -7,12 +7,12 @@ import Sender from './Sender';
 import messageType from './messageType';
 
 class Message {
-  id: number;
-  time: Date;
-  message: string;
-  roomName: string;
-  type: messageType;
-  sender: Sender;
+  public id: number;
+  public time: Date;
+  public message: string;
+  public roomName: string;
+  public type: messageType;
+  public sender: Sender;
 
   constructor(id: number, time: Date, message: string, roomName: string, type: messageType, sender: Sender) {
     this.id = id;

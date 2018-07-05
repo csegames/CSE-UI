@@ -9,10 +9,10 @@ import Room from './Room';
 import ChatRoomInfo from './ChatRoomInfo';
 import RoomId from './RoomId';
 
-export class RoomsState {
+export interface RoomsState {
 }
 
-export class RoomsProps {
+export interface RoomsProps {
   key: string;
   rooms: ChatRoomInfo[];
   current: RoomId;      // current room
@@ -37,14 +37,14 @@ class Rooms extends React.Component<RoomsProps, RoomsState> {
           selected={rooms[i].roomId.same(this.props.current)}
           select={this.props.select}
           leave={this.props.leave}
-        />
+        />,
       );
     }
 
     // update title to display unread
     document.title = unreadTotal > 0 ? `(${unreadTotal}) Camelot Unchained` : 'Camelot Unchained';
     return (
-      <div className="chat-tab-content chat-rooms">
+      <div className='chat-tab-content chat-rooms'>
         {content}
       </div>
     );

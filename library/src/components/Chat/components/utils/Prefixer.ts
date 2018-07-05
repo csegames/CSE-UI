@@ -6,5 +6,7 @@
 
 export default class Prefixer {
   constructor(private pfx: string) {}
-  public prefix = (s: string) => { return `${this.pfx}${s}`}
+  public prefix = (s: string) => {
+    return `${this.pfx}${s}`;
+  }
 }

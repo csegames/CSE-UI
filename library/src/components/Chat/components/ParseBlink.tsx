@@ -16,23 +16,26 @@ function fromText(text: string, keygen: () => number, match: RegExpExecArray, pa
   
   if (chatConfig.SHOW_COLORS) {
     return [
-      <span key={keygen()} dangerouslySetInnerHTML={{__html: animationStyle(textColor1, textColor2, bgColor1, bgColor2, id)}} />,
-      <span key={keygen()} className={`blink-${id}`}>{parser.parse(matchText)}</span>
-      ];
-  } else {
-    return [<span key={keygen()}>{this.parse(matchText)}</span>];
+      <span
+        key={keygen()}
+        dangerouslySetInnerHTML={{ __html: animationStyle(textColor1, textColor2, bgColor1, bgColor2, id) }}
+      />,
+      <span key={keygen()} className={`blink-${id}`}>{parser.parse(matchText)}</span>,
+    ];
   }
+
+  return [<span key={keygen()}>{this.parse(matchText)}</span>];
 }
 
-const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 function makeid() {
-    var text = "";
-    for( var i=0; i < 5; i++ ) text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
+  let text = '';
+  for (let i = 0; i < 5; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
 }
 
 function animationStyle(textColor1: string, textColor2: string, bgColor1: string, bgColor2: string, id: string) {
-  return `<style type="text/css" scoped>
+  return `<style type='text/css' scoped>
     @keyframes blink-${id} {
       from { color: ${textColor1}; background-color: ${bgColor1}; }
       to { color: ${textColor2}; background-color: ${bgColor2}; }
@@ -50,6 +53,7 @@ function animationStyle(textColor1: string, textColor2: string, bgColor1: string
 }
 
 // ^:textcolor-fadetocolor:bgcolor-fadetocolor:^ text and stuff
+// tslint:disable
 function createRegExp() : RegExp {
   return /(?=\^::?#?[A-Za-z0-9]+-)\^:(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:?(?:([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})-([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6}))?:\^([\S\s]+)$/g;
 }

@@ -5,19 +5,20 @@
  */
 
 interface ChatTextParserToken {
-  expr: RegExp,
+  expr: RegExp;
   token: number;
 }
 
 class ChatTextParser {
-  static TEXT: number = 0;
-  tokens: ChatTextParserToken[];
+  public static TEXT: number = 0;
+  public tokens: ChatTextParserToken[];
 
   constructor(tokens: ChatTextParserToken[]) {
     this.tokens = tokens;
   }
 
-  public parse(text: string, callback: (token: number, text: string, match: RegExpExecArray) => JSX.Element[], index: number = 0): JSX.Element[] {
+  public parse(text: string, callback: (token: number, text: string, match: RegExpExecArray) =>
+    JSX.Element[], index: number = 0): JSX.Element[] {
     if (!text) {
       return null;
     }
@@ -75,6 +76,7 @@ class ChatTextParser {
 
 export {
   ChatTextParserToken,
-  ChatTextParser
+  ChatTextParser,
 };
+
 export default ChatTextParser;

@@ -31,19 +31,19 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
   public initialState(): JoinRoomModalState {
     return {
       rooms: [],
-      filter: ""
-    }
+      filter: '',
+    };
   }
 
   public render() {
     return (
-      <div className="modal-dialog join-room-modal">
-        <div className="input-field">
-          <input id="room" type="text" ref="roomInput" placeholder='Room Name'/>
+      <div className='modal-dialog join-room-modal'>
+        <div className='input-field'>
+          <input id='room' type='text' ref='roomInput' placeholder='Room Name'/>
           <JoinRoomList rooms={this.state.rooms} filter={this.state.filter} selectRoom={this.selectRoom}/>
         </div>
-        <button className="wave-effects btn-flat" onClick={this.joinRoom} ref="join">JOIN ROOM</button>
-        <button className="wave-effects btn-flat" onClick={this.props.closeModal} >CANCEL</button>
+        <button className='wave-effects btn-flat' onClick={this.joinRoom} ref='join'>JOIN ROOM</button>
+        <button className='wave-effects btn-flat' onClick={this.props.closeModal} >CANCEL</button>
       </div>
     );
   }
@@ -61,7 +61,7 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
       if (input.value.length > 0 && ev.keyCode === 13) {
         this.props.joinRoom(input.value);
       } else {
-        this.setState({ filter: input.value } as any);
+        this.setState({ filter: input.value });
       }
     });
     this.getRooms();
@@ -73,11 +73,11 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
   }
 
   private gotRooms = (rooms: Room[]) : void => {
-    this.setState({ rooms: rooms } as any);
+    this.setState({ rooms });
   }
 
   private joinRoom = () => {
-    var input : HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
+    const input : HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
     this.props.joinRoom(input.value);
   }
 

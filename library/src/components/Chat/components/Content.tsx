@@ -7,9 +7,7 @@
 import * as React from 'react';
 import ChatText from './ChatText';
 import ChatInput from './ChatInput';
-import ChatLine from './ChatLine';
 import ChatRoomInfo from './ChatRoomInfo';
-import { ChatMessage } from './ChatMessage';
 import RoomId from './RoomId';
 
 export interface ContentState {
@@ -21,6 +19,15 @@ export interface ContentProps {
 }
 
 class Content extends React.Component<ContentProps, ContentState> {
+  public render() {
+    return (
+      <div className='chat-content'>
+        <ChatText ref='text' room={this.props.room}/>
+        <ChatInput label='SEND' send={this.send} slashCommand={this.props.slashCommand} scroll={this.scroll}/>
+      </div>
+    );
+  }
+
   private send = (text: string): void => {
     this.props.send(this.props.room.roomId, text);
   }
@@ -28,15 +35,6 @@ class Content extends React.Component<ContentProps, ContentState> {
   private scroll = (): void => {
     const text: ChatText = (this.refs['text'] as ChatText);
     text.autoScrollToBottom();
-  }
-
-  render() {
-    return (
-      <div className="chat-content">
-        <ChatText ref="text" room={this.props.room}/>
-        <ChatInput label="SEND" send={this.send} slashCommand={this.props.slashCommand} scroll={this.scroll}/>
-      </div>
-    );
   }
 }
 

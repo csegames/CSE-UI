@@ -5,23 +5,22 @@
  */
 
 class Config {
+  public address: string;
+  public username: string | (() => string);
+  public resource: string;
+  public service: string;
+  public rooms: string[];
+  public nick: string;
+  public port: number;
+  public endpoint: string;
+  public serviceAddress: string;
+  public websocketUrl: string;
+  private password: string | (() => string);
 
-  address: string;
-  username: string | (() => string);
-  password: string | (() => string);
-  resource: string;
-  service: string;
-  rooms: string[];
-  nick: string;
-  port: number;
-  endpoint: string;
-  serviceAddress: string;
-  websocketUrl: string;
-
-  constructor(username: string|(()=>string), password: string|(()=>string), nick: string = "",
-    address: string = "chat.camelotunchained.com",
-    port: number = 8222, endpoint: string = "/api/chat",
-    resource: string = undefined, service: string = "conference") {
+  constructor(username: string | (() => string), password: string | (() => string), nick: string = '',
+    address: string = 'chat.camelotunchained.com',
+    port: number = 8222, endpoint: string = '/api/chat',
+    resource: string = undefined, service: string = 'conference') {
     this.address = address;
     this.username = username;
     this.password = password;
@@ -34,16 +33,16 @@ class Config {
     this.service = service;
   }
 
-  init() {
+  public init() {
     if (!this.serviceAddress) {
       this.serviceAddress = '@' + this.service + '.' + this.address;
       this.websocketUrl = 'ws://' + this.address + ':' + this.port + this.endpoint;
     }
   }
 
-  getPassword() : string {
+  public getPassword() : string {
     if (typeof this.password === 'function') {
-      this.password = (<()=>string>this.password)();
+      this.password = (<() => string>this.password)();
     }
     return <string>this.password;
   }

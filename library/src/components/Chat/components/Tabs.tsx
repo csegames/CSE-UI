@@ -7,9 +7,9 @@
 import * as React from 'react';
 import Tab from './Tab';
 
-export class TabsState {
+export interface TabsState {
 }
-export class TabsProps {
+export interface TabsProps {
   current: string;
   select: (tab: string) => void;
 }
@@ -19,10 +19,10 @@ class Tabs extends React.Component<TabsProps, TabsState> {
     const content : JSX.Element[] = [];
     const tabs = ['rooms', 'users', 'settings'];
     for (let i = 0; i < tabs.length; i++) {
-      content.push(<Tab key={tabs[i]} id={tabs[i]} select={this.props.select} selected={this.props.current === tabs[i]}/>)
+      content.push(<Tab key={tabs[i]} id={tabs[i]} select={this.props.select} selected={this.props.current === tabs[i]}/>);
     }
     return (
-      <ul className="chat-tabs">
+      <ul className='chat-tabs'>
         {content}
       </ul>
     );

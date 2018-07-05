@@ -7,7 +7,7 @@
 import * as React from 'react';
 import Prefixer from '../utils/Prefixer';
 import BooleanOption from './BooleanOption';
-import {display, prefixes} from './chat-defaults';
+import { display, prefixes } from './chat-defaults';
 import { chatConfig } from '../ChatConfig';
 
 const pre = new Prefixer(prefixes.display);
@@ -24,54 +24,16 @@ export interface ChatDisplayState {
 }
 
 class ChatDisplay extends React.Component<ChatDisplayProps, ChatDisplayState> {
-
   constructor(props: ChatDisplayProps) {
     super(props);
     this.state = this.initializeState();
   }
 
-  // initialize state from local storage
-  initializeState = (): ChatDisplayState =>  {
-    let state: any = {};
-    for (let key in display) {
-      let option = (display as any)[key];
-      let val = JSON.parse(localStorage.getItem(pre.prefix(option.key)));
-      state[option.key] = val == null ? option.default : val;
-    }
-    return state;
-  }
-
-  updateItem = (key: string, value: any) => {
-    localStorage.setItem(pre.prefix(key), value);
-    chatConfig.refresh();
-    this.setState(this.initializeState())
-  }
-
-  setDefaults = () => {
-    localStorage.setItem('embed-images', 'True');
-
-    return {
-
-    }
-  }
-
-  generateBooleanOption = (option: any) => {
-    let state: any = this.state;
-    return <BooleanOption key={option.key}
-          optionKey={option.key}
-          title={option.title}
-          description={option.description}
-          isChecked={state[option.key]}
-          onChecked={this.updateItem}
-          />;
-  }
-
-  render() {
-
-    let options = new Array();
-    for (let key in display) {
-      let option = (display as any)[key];
-      switch(option.type) {
+  public render() {
+    const options = [];
+    for (const key in display) {
+      const option = display[key];
+      switch (option.type) {
         case 'boolean':
           options.push(this.generateBooleanOption(option));
           break;
@@ -83,7 +45,38 @@ class ChatDisplay extends React.Component<ChatDisplayProps, ChatDisplayState> {
       <div>
         {options}
       </div>
-    )
+    );
+  }
+
+  // initialize state from local storage
+  private initializeState = (): ChatDisplayState =>  {
+    const state = {} as ChatDisplayState;
+    for (const key in display) {
+      const option = (display)[key];
+      const val = JSON.parse(localStorage.getItem(pre.prefix(option.key)));
+      state[option.key] = val == null ? option.default : val;
+    }
+    return state;
+  }
+
+  private updateItem = (key: string, value: any) => {
+    localStorage.setItem(pre.prefix(key), value);
+    chatConfig.refresh();
+    this.setState(this.initializeState());
+  }
+
+  private generateBooleanOption = (option: any) => {
+    const state = this.state;
+    return (
+      <BooleanOption
+        key={option.key}
+        optionKey={option.key}
+        title={option.title}
+        description={option.description}
+        isChecked={state[option.key]}
+        onChecked={this.updateItem}
+      />
+    );
   }
 }
 

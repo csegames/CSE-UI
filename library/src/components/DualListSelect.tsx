@@ -338,7 +338,7 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
         <ListItem
           key={key}
           style={key === this.state.leftSelectedItemKey ?
-            {...customStyle.listItem, ...customStyle.selectedListItem} : customStyle.listItem}
+            { ...customStyle.listItem, ...customStyle.selectedListItem } : customStyle.listItem}
           className={key === this.state.leftSelectedItemKey ? SelectedListItem : ''}
           onClick={() => this.setState({ leftSelectedItemKey: key })}
           onDoubleClick={() => this.selectItem(key)}>
@@ -356,7 +356,7 @@ export class DualListSelect extends React.Component<DualListSelectProps, DualLis
         <ListItem
           key={key}
           style={key === this.state.rightSelectedItemKey ?
-            {...customStyle.listItem, ...customStyle.selectedListItem} : customStyle.listItem}
+            { ...customStyle.listItem, ...customStyle.selectedListItem } : customStyle.listItem}
           className={key === this.state.rightSelectedItemKey ? SelectedListItem : ''}
           onClick={() => this.setState({ rightSelectedItemKey: key })}
           onDoubleClick={() => this.removeItem(key)}>

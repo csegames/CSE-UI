@@ -100,7 +100,7 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
         />
         <CharacterContainer>
           <StandingCharacter className={`char standing__${race}_${Gender[selectedGender]}_${Archetype[selectedClass]}`} />
-          <CharacterNameInputContainer className="cu-character-creation__name">
+          <CharacterNameInputContainer className='cu-character-creation__name'>
             <input
               id='create-character-name-input'
               autoFocus

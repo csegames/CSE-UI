@@ -15,17 +15,15 @@ import parseLinks from './ParseLinks';
 import parseHighlight from './ParseHighlight';
 
 class CombatLogParser {
+  public static LINK: number = ChatTextParser.TEXT + 1;
+  public static MARKDOWN: number = ChatTextParser.TEXT + 3;
+  public static COLOR: number = ChatTextParser.TEXT + 4;
+  public static BLINK: number = ChatTextParser.TEXT + 5;
+  public static HIGHLIGHT: number = ChatTextParser.TEXT + 7;
+  public _key: number = 1;
 
-  _key: number = 1;
-
-  static LINK: number = ChatTextParser.TEXT + 1;
-  static MARKDOWN: number = ChatTextParser.TEXT + 3;
-  static COLOR: number = ChatTextParser.TEXT + 4;
-  static BLINK: number = ChatTextParser.TEXT + 5;
-  static HIGHLIGHT: number = ChatTextParser.TEXT + 7;
-
-  public _parseText(text: string): JSX.Element[] {
-    return [ <span key={this._key++}>{text}</span> ];
+  public parseText(text: string): JSX.Element[] {
+    return [<span key={this._key++}>{text}</span>];
   }
 
   public parseAction(text: string): JSX.Element[] {
@@ -34,7 +32,7 @@ class CombatLogParser {
     }
     const html: JSX.Element[] = [];
     const content : JSX.Element[] = this.parse(text.substr(4).trim());
-    html.push(<span key={this._key++} className="chat-line-action">&lt;{content}&gt;</span>);
+    html.push(<span key={this._key++} className='chat-line-action'>&lt;{content}&gt;</span>);
     return html;
   }
 
@@ -65,7 +63,7 @@ class CombatLogParser {
     // Run through each parser
     const parser : ChatTextParser = new ChatTextParser(tokens);
     return parser.parse(text, (token: number, text: string, match: RegExpExecArray) => {
-      switch(token) {
+      switch (token) {
         case CombatLogParser.COLOR: return parseColors.fromText(text, keygen, match, this);
         case CombatLogParser.BLINK: return parseBlink.fromText(text, keygen, match, this);
         case CombatLogParser.MARKDOWN: return parseMarkdown.fromText(text, keygen, match, this);
@@ -73,7 +71,7 @@ class CombatLogParser {
         case CombatLogParser.HIGHLIGHT: return parseHighlight.fromText(text, keygen);
       }
       // treat everything else as just text
-      return this._parseText(text);
+      return this.parseText(text);
     });
   }
 

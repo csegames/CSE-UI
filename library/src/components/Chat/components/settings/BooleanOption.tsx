@@ -20,21 +20,18 @@ export interface BooleanOptionState {
 }
 
 class BooleanOption extends React.Component<BooleanOptionProps, BooleanOptionState> {
-  clicked = () => {
-    this.props.onChecked(this.props.optionKey, !this.props.isChecked);
-  }
-  render() {
+  public render() {
     return (
       <div className='row'>
           <div className='col s6'>
             {this.props.title}
           </div>
           <div className='col s6'>
-            <div className="switch">
+            <div className='switch'>
               <label>
                 No
                 <input type='checkbox' defaultChecked={this.props.isChecked} onClick={this.clicked}/> 
-                <span className="lever"></span>
+                <span className='lever'></span>
                 Yes
               </label>
             </div>
@@ -43,7 +40,11 @@ class BooleanOption extends React.Component<BooleanOptionProps, BooleanOptionSta
             <i>{this.props.description}</i>
           </div>
         </div>
-    )
+    );
+  }
+
+  private clicked = () => {
+    this.props.onChecked(this.props.optionKey, !this.props.isChecked);
   }
 }
 

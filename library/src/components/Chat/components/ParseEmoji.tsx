@@ -84,7 +84,7 @@ const emojiNames = Object.keys(emojis).map(k => (emojis as any)[k]).filter(v => 
 function emojiNameFromText(text:string): string {
 
   // parse symbol emoji -- like :D 
-  switch(text) {
+  switch (text) {
     case ':D': case ':-D':
       return 'GRIN';
     case '-_-zzZ': case '(-_-)zzZ': case ':zzz:':
@@ -116,7 +116,7 @@ function emojiNameFromText(text:string): string {
       return 'WINK';
   }
 
-  var upper = text.replace(/:/g, '').toUpperCase();
+  const upper = text.replace(/:/g, '').toUpperCase();
   return utils.findIndexWhere(emojiNames, n => n === upper) ? upper : null;
 }
 
@@ -133,5 +133,5 @@ function createRegExp() : RegExp {
 
 export default {
   fromText,
-  createRegExp
-}
+  createRegExp,
+};

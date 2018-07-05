@@ -15,21 +15,21 @@ export interface ChatInputState {
   atUsers: string[];
   atUsersIndex: number;
   expanded: boolean;
-};
+}
 
 export interface ChatInputProps {
   label: string;
   send: (text: string) => void;
   slashCommand: (command: string) => void;
   scroll: (extra?:number) => void;
-};
+}
 
 class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
-  _privateMessageHandler: any;
-  tabUserList: string[] = [];
-  tabUserIndex: number = null;
-  sentMessages: string[] = [];
-  sentMessageIndex: number = null;
+  private _privateMessageHandler: any;
+  private tabUserList: string[] = [];
+  private tabUserIndex: number = null;
+  private sentMessages: string[] = [];
+  private sentMessageIndex: number = null;
   constructor(props: ChatInputProps) {
     super(props);
     this.state = this.initialState();
@@ -42,8 +42,8 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     return {
       atUsers: [],
       atUsersIndex: 0,
-      expanded: false
-    }
+      expanded: false,
+    };
   }
 
   public componentDidMount() {
@@ -65,15 +65,15 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     const inputClass: string[] = [
       'chat-input',
       'input-field',
-      'chat-' + (this.state.expanded ? 'expanded' : 'normal')
+      'chat-' + (this.state.expanded ? 'expanded' : 'normal'),
     ];
     return (
       <div className={inputClass.join(' ')}>
         <AtUserList users={this.state.atUsers} selectedIndex={this.state.atUsersIndex} selectUser={this.selectAtUser}/>
-        <textarea className="materialize-textarea"
-                  id="chat-text"
-                  ref="new-text"
-                  placeholder="Say something!"
+        <textarea className='materialize-textarea'
+                  id='chat-text'
+                  ref='new-text'
+                  placeholder='Say something!'
                   onBlur={() => client.ReleaseInputOwnership()}
                   onClick={() => client.RequestInputOwnership()}
                   onKeyDown={this.keyDown}
@@ -89,7 +89,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     const lastWord: RegExpMatchArray = input.value.match(/@([\S]*)$/);
     input.value = input.value.substring(0, lastWord.index + 1) + user + ' ';
     input.focus();
-    this.setState({ atUsers: [], atUsersIndex: 0 } as any);
+    this.setState({ atUsers: [], atUsersIndex: 0 });
   }
 
   private getInputNode = (): HTMLInputElement => {
@@ -118,15 +118,16 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
           this.tabUserList = matchingUsers;
           this.tabUserIndex = 0;
           textArea.value += matchingUsers[0].substring(lastWord.length) + endChar;
-          this.setState({ atUsers: [], atUsersIndex: 0 } as any);
+          this.setState({ atUsers: [], atUsersIndex: 0 });
         }
       } else {
         const oldTabIndex: number = this.tabUserIndex;
         const newTabIndex: number = oldTabIndex + 1 > this.tabUserList.length - 1 ? 0 : oldTabIndex + 1;
         const endChar: string = value.slice(-2) === ': ' ? ': ' : ' ';
-        textArea.value = value.replace(new RegExp(this.tabUserList[oldTabIndex] + ':? $'), this.tabUserList[newTabIndex]) + endChar;
+        textArea.value = value.replace(new RegExp(this.tabUserList[oldTabIndex] + ':? $'),
+          this.tabUserList[newTabIndex]) + endChar;
         this.tabUserIndex = newTabIndex;
-        this.setState({ atUsers: [], atUsersIndex: 0 } as any);
+        this.setState({ atUsers: [], atUsersIndex: 0 });
       }
     } else {
       this.tabUserList = [];
@@ -138,8 +139,9 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       e.preventDefault();
       if (this.state.atUsers.length > 0) {
         // If list of @users is displayed, arrow keys should navigate that list
-        const newIndex: number = this.state.atUsersIndex - 1 === -1 ? this.state.atUsers.length - 1 : this.state.atUsersIndex - 1;
-        this.setState({ atUsers: this.state.atUsers, atUsersIndex: newIndex  } as any);
+        const newIndex: number = this.state.atUsersIndex - 1 === -1 ?
+          this.state.atUsers.length - 1 : this.state.atUsersIndex - 1;
+        this.setState({ atUsers: this.state.atUsers, atUsersIndex: newIndex  });
       } else {
         // No lists are visible, arrow keys should navigate sent message history
         if (this.sentMessages.length > 0) {
@@ -158,12 +160,14 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       e.preventDefault();
       if (this.state.atUsers.length > 0) {
         // If list of @users is displayed, arrow keys should navigate that list
-        const newIndex: number = this.state.atUsersIndex + 1 > this.state.atUsers.length - 1 ? 0 : this.state.atUsersIndex + 1;
-        this.setState({ atUsers: this.state.atUsers, atUsersIndex: newIndex } as any);
+        const newIndex: number = this.state.atUsersIndex + 1 > this.state.atUsers.length - 1 ?
+          0 : this.state.atUsersIndex + 1;
+        this.setState({ atUsers: this.state.atUsers, atUsersIndex: newIndex });
       } else {
         // No lists are visible, arrow keys should navigate sent message history
         if (this.sentMessageIndex !== null) {
-          this.sentMessageIndex = this.sentMessageIndex + 1 > this.sentMessages.length - 1 ? null : this.sentMessageIndex + 1;
+          this.sentMessageIndex = this.sentMessageIndex + 1 > this.sentMessages.length - 1 ?
+            null : this.sentMessageIndex + 1;
         }
         textArea.value = this.sentMessageIndex ? this.sentMessages[this.sentMessageIndex] : '';
       }
@@ -174,8 +178,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       if (e.shiftKey) {
         // Shift+ENTER = insert ENTER into text, and expand text area
         this.expand(e.target as HTMLTextAreaElement);
-      }
-      else if (!e.ctrlKey && !e.altKey) {
+      } else if (!e.ctrlKey && !e.altKey) {
         // just ENTER
         e.preventDefault();
         if (this.state.atUsers.length > 0) {
@@ -223,13 +226,13 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       });
       userList.sort();
     }
-    this.setState({ atUsers: userList, atUsersIndex: this.state.atUsersIndex} as any);
+    this.setState({ atUsers: userList, atUsersIndex: this.state.atUsersIndex });
   }
 
   private expand = (input: HTMLTextAreaElement): void => {
     if (!this.state.expanded) {
       const was: number = input.offsetHeight;
-      this.setState({ expanded: true } as any);
+      this.setState({ expanded: true });
       setTimeout(() => {
         // pass height of growth of input area as extra consideration for scroll logic
         this.props.scroll(input.offsetHeight - was);
@@ -238,7 +241,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   }
 
   private collapse = (): void => {
-    this.setState({ expanded: false } as any);
+    this.setState({ expanded: false });
   }
 
   private send = (): void => {
@@ -246,7 +249,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     let value: string = input.value;
     // remove leading space (not newline) and trailing white space
     while (value[0] === ' ') value = value.substr(1);
-    while (value[value.length-1] === '\n') value = value.substr(0,value.length-1);
+    while (value[value.length - 1] === '\n') value = value.substr(0, value.length - 1);
     if (value[0] !== '/' || !this.props.slashCommand(value.substr(1))) {
       // not a recognised / command, send it
       this.props.send(value);

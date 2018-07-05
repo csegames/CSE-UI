@@ -8,8 +8,8 @@ import * as React from 'react';
 import AtUserListItem from './AtUserListItem';
 
 export interface AtUserListProps {
-  users: string[],
-  selectedIndex: number,
+  users: string[];
+  selectedIndex: number;
   selectUser: (user: string) => void;
 }
 
@@ -27,7 +27,7 @@ class AtUserList extends React.Component<AtUserListProps, AtUserListState> {
       this.props.users.forEach((user: string, index: number) => {
         const selected: boolean = this.props.selectedIndex === index ? true : false;
         nameList.push(
-          <AtUserListItem user={user} key={index} selected={selected} selectUser={this.props.selectUser}/>
+          <AtUserListItem user={user} key={index} selected={selected} selectUser={this.props.selectUser}/>,
         );
       });
     }

@@ -27,10 +27,10 @@ class JoinRoomButton extends React.Component<JoinRoomButtonProps, JoinRoomButton
   }
 
   public render() {
-    let modal = this.state.showJoinRoomModal ? this.generateJoinRoomModal() : null;
+    const modal = this.state.showJoinRoomModal ? this.generateJoinRoomModal() : null;
     return (
       <div>
-        <div className="chat-room-join-button" onClick={this.showModal}>+ Join Room</div>
+        <div className='chat-room-join-button' onClick={this.showModal}>+ Join Room</div>
         {modal}
       </div>
     );

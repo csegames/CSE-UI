@@ -13,11 +13,11 @@ function fromText(text: string, keygen: () => number, match: RegExpExecArray, pa
   const matchText: string = match[3];
   if (chatConfig.SHOW_COLORS) {
     return [<span key={keygen()} style={{ color: textColor, backgroundColor: bgColor }}>{parser.parse(matchText)}</span>];
-  } else {
-    return [<span key={keygen()}>{parser.parse(matchText)}</span>];
   }
+  return [<span key={keygen()}>{parser.parse(matchText)}</span>];
 }
 
+// tslint:disable
 function createRegExp() : RegExp {
   //return /::([A-Za-z]+|#[A-Fa-f0-9]{3,6})::([\S\s]+)$/g;
   return /(?=:::?#?[A-Za-z0-9]+)::([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})?:?([A-Za-z]+|#[A-Fa-f0-9]{3}|#[A-Fa-f0-9]{6})?::([\S\s]+)$/g;
@@ -26,4 +26,4 @@ function createRegExp() : RegExp {
 export default {
   fromText,
   createRegExp,
-}
+};

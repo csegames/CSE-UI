@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 export interface AtUserListItemProps {
-  user: string,
+  user: string;
   selectUser: (user: string) => void;
   selected?: boolean;
 }
@@ -21,9 +21,17 @@ class AtUserListItem extends React.Component<AtUserListItemProps, AtUserListItem
   }
 
   public render() {
-    const classes: string[] = [ 'atuser-name' ];
+    const classes: string[] = ['atuser-name'];
     if (this.props.selected) classes.push('atuser-name-selected');
-    return ( <div className={classes.join(' ')} ref={ this.props.selected ? (div) => { if (div) div.scrollIntoView(); } : undefined } onClick={this.selectUser}>{this.props.user}</div> );
+    return (
+      <div
+        className={classes.join(' ')}
+        ref={ this.props.selected ? (div) => { if (div) div.scrollIntoView(); } : undefined }
+        onClick={this.selectUser}
+      >
+          {this.props.user}
+      </div>
+    );
   }
 
   private selectUser = () => {

@@ -9,8 +9,8 @@ import JoinRoomListItem from './JoinRoomListItem';
 import { Room } from '../lib/CSEChat';
 
 export interface JoinRoomListProps {
-  rooms: Room[],
-  filter: string,
+  rooms: Room[];
+  filter: string;
   selectRoom: (room: Room) => void;
 }
 
@@ -32,7 +32,7 @@ class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomListState>
           const name : string = room.jid.split('@')[0];
           if (filter.length === 0 || name.toLowerCase().indexOf(filter) !== -1) {
             names.push(
-              <JoinRoomListItem room={room} key={index} selectRoom={this.props.selectRoom}/>
+              <JoinRoomListItem room={room} key={index} selectRoom={this.props.selectRoom}/>,
             );
           }
         });
@@ -40,18 +40,18 @@ class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomListState>
     }
 
     return (
-      <div className="room-list-anchor" ref="anchor" style={{ display: names.length ? 'block' : 'none' }}>
-        <div className="room-list">{names}</div>
+      <div className='room-list-anchor' ref='anchor' style={{ display: names.length ? 'block' : 'none' }}>
+        <div className='room-list'>{names}</div>
       </div>
     );
   }
 
   public componentDidMount() : void {
-    document.addEventListener("mousedown", this.onmousedown, true);
+    document.addEventListener('mousedown', this.onmousedown, true);
   }
 
   public componentWillUnmount() : void {
-    document.removeEventListener("mousedown", this.onmousedown, true);
+    document.removeEventListener('mousedown', this.onmousedown, true);
   }
 
   private onmousedown = (e: MouseEvent) => {

@@ -36,54 +36,51 @@ export interface AnimateProps {
   component?: string;
 }
 
-class Animate extends React.Component<AnimateProps, {}> {
-  renderStyle = (animationEnter: string, animationLeave: string, durationEnter: number, durationLeave: number) => {
+function renderStyle(animationEnter: string, animationLeave: string, durationEnter: number, durationLeave: number) {
+  return (
+    `
+    .default-enter {
+      opacity: 0;
+    }
+    .default-enter.${animationEnter} {
+      animation-duration: ${durationEnter / 1000}s;
+      animation-fill-mode: both;
+      opacity: 1;
+    }
+    .default-leave {
+      opacity: 1;
+    }
+    .default-leave.${animationLeave} {
+      animation-duration: ${durationLeave / 1000}s;
+      animation-fill-mode: both;
+    }
+    `
+  );
+}
+
+class Animate extends React.Component<AnimateProps> {
+  public render() {
+    const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props;
+
     return (
-        `
-        .default-enter {
-          opacity: 0;
-        }
-        .default-enter.${animationEnter} {
-          animation-duration: ${durationEnter / 1000}s;
-          animation-fill-mode: both;
-          opacity: 1;
-        }
-        .default-leave {
-          opacity: 1;
-        }
-        .default-leave.${animationLeave} {
-          animation-duration: ${durationLeave / 1000}s;
-          animation-fill-mode: both;
-        }
-        `
-    )
-  }
-
-  render() {
-    const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props
-
-    return (
-
-
-          <CSSTransitionGroup
-              key={this.props.key}
-              component={this.props.component ? this.props.component : 'div'}
-              transitionName={ {
-                enter: 'default-enter',
-                enterActive: animationEnter,
-                leave: 'default-leave',
-                leaveActive: animationLeave
-              } }
-              transitionEnterTimeout={durationEnter}
-              transitionLeaveTimeout={durationLeave}
-              className={`${this.props.className ? this.props.className : ''}`}>
-            <style dangerouslySetInnerHTML={ { __html: this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
-
-            {children}
-
-          </CSSTransitionGroup>
-
-    )
+      <CSSTransitionGroup
+        key={this.props.key}
+        component={this.props.component ? this.props.component : 'div'}
+        transitionName={{
+          enter: 'default-enter',
+          enterActive: animationEnter,
+          leave: 'default-leave',
+          leaveActive: animationLeave,
+        }}
+        transitionEnterTimeout={durationEnter}
+        transitionLeaveTimeout={durationLeave}
+        className={`${this.props.className ? this.props.className : ''}`}>
+        <style dangerouslySetInnerHTML={{
+          __html: renderStyle(animationEnter, animationLeave, durationEnter, durationLeave),
+        }} />
+        {children}
+      </CSSTransitionGroup>
+    );
   }
 }
 

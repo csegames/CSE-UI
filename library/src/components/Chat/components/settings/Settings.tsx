@@ -6,12 +6,10 @@
 
 import * as React from 'react';
 import Animate from '../../lib/Animate';
-
-import BooleanOption from './BooleanOption';
 import ChatDisplay from './ChatDisplay';
 
 export interface SettingsProps {
-    key: string;
+  key: string;
 }
 
 export interface SettingsState {
@@ -21,40 +19,17 @@ export interface SettingsState {
 }
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
-  
   constructor(props: SettingsProps) {
     super(props);
     this.state = {
       section: null,
       sectionName: '',
-      checked: true
-    }
+      checked: true,
+    };
   }
-  
-  generateSection = (sectionName: string) => {
-    if (sectionName == '') return null;
-    return <div key={sectionName} className='fly-out'><ChatDisplay /></div>
-  }
-  
-  navigate = (sectionName: string) => {
-    let name = this.state.sectionName == sectionName ? '' : sectionName;
-    this.setState({
-      section: this.generateSection(name),
-      sectionName: name,
-      checked: this.state.checked
-    });
-  }
-  
-  onChecked = (id: string) => {
-    this.setState({
-      section: this.state.section,
-      sectionName: this.state.sectionName,
-      checked: !this.state.checked
-    });
-  }
-  
-  render() {
-    let flyout = this.state.section;
+
+  public render() {
+    const flyout = this.state.section;
     return (
       <div className='chat-settings-menu'>
         <ul className='chat-settings-list'>
@@ -73,6 +48,20 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         </Animate>
       </div>
     );
+  }
+
+  private generateSection = (sectionName: string) => {
+    if (sectionName === '') return null;
+    return <div key={sectionName} className='fly-out'><ChatDisplay /></div>;
+  }
+
+  private navigate = (sectionName: string) => {
+    const name = this.state.sectionName === sectionName ? '' : sectionName;
+    this.setState({
+      section: this.generateSection(name),
+      sectionName: name,
+      checked: this.state.checked,
+    });
   }
 }
 

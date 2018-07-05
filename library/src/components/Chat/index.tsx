@@ -25,12 +25,12 @@ export interface ChatState {
 }
 
 export interface ChatProps {
-  loginToken: string,
+  loginToken: string;
   hideChat?: () => void;
 }
 
 export class Chat extends React.Component<ChatProps, ChatState> {
-  _eventHandlers: any[] = [];
+  private _eventHandlers: number[] = [];
   constructor(props: ChatProps) {
     super(props);
     this.state = this.initialState();
@@ -41,7 +41,8 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     // handle updates to chat session
     this._eventHandlers.push(events.on('chat-session-update', this.update));
     this._eventHandlers.push(events.on('chat-show-room', this.joinRoom));
-    this._eventHandlers.push(events.on('chat-leave-room', (name: string) =>  this.leaveRoom(new RoomId(name, chatType.GROUP))));
+    this._eventHandlers.push(events.on('chat-leave-room', (name: string) =>
+      this.leaveRoom(new RoomId(name, chatType.GROUP))));
     this._eventHandlers.push(events.on('chat-options-update', this.optionsUpdated));
 
     // Initialize chat settings in localStorage
@@ -71,8 +72,8 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     const current : RoomId = this.state.chat.currentRoom;
     const room : ChatRoomInfo = current ? this.state.chat.getRoom(current) : undefined;
     return (
-      <div className="cse-chat no-select">
-        <div className="chat-frame">
+      <div className='cse-chat no-select'>
+        <div className='chat-frame'>
           <Info
             chat={this.state.chat}
             currentRoom={this.state.chat.currentRoom}
@@ -91,15 +92,10 @@ export class Chat extends React.Component<ChatProps, ChatState> {
 
   private initialState(): ChatState {
     return {
-      chat: (window as any)['_cse_chat_session'] || new ChatSession(),
+      chat: (window)['_cse_chat_session'] || new ChatSession(),
       now: 0,
-      config: chatConfig
-    }
-  }
-
-  // Get current tab
-  private getCurrentRoom = () : ChatRoomInfo => {
-    return this.state.chat.getRoom(this.state.chat.currentRoom);
+      config: chatConfig,
+    };
   }
 
   // Send a message to the current room, named room (not implemented) or user (not implemneted)
@@ -115,11 +111,11 @@ export class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private update = (chat : ChatSession) : void => {
-    this.setState({ chat: chat, now: Date.now() } as any);
+    this.setState({ chat, now: Date.now() });
   }
 
   private optionsUpdated = (config: ChatConfig) : void => {
-    this.setState({ config: config, now: Date.now() } as any);
+    this.setState({ config, now: Date.now() });
   }
 
   private selectRoom = (roomId: RoomId) : void => {
@@ -143,7 +139,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private close = () : void => {
-    (window as any)["_cse_chat_session"] = this.state.chat;
+    (window)['_cse_chat_session'] = this.state.chat;
     this.props.hideChat();
   }
 

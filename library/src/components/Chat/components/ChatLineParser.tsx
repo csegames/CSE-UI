@@ -19,25 +19,25 @@ import parseNicks from './ParseNicks';
 
 class ChatLineParser {
 
-  _key: number = 1;
+  private static LINK: number = ChatTextParser.TEXT + 1;
+  private static EMOJI: number = ChatTextParser.TEXT + 2;
+  private static MARKDOWN: number = ChatTextParser.TEXT + 3;
+  private static COLOR: number = ChatTextParser.TEXT + 4;
+  private static BLINK: number = ChatTextParser.TEXT + 5;
+  private static ROOM: number = ChatTextParser.TEXT + 6;
+  private static HIGHLIGHT: number = ChatTextParser.TEXT + 7;
+  private static NICK: number = ChatTextParser.TEXT + 8;
 
-  static LINK: number = ChatTextParser.TEXT + 1;
-  static EMOJI: number = ChatTextParser.TEXT + 2;
-  static MARKDOWN: number = ChatTextParser.TEXT + 3;
-  static COLOR: number = ChatTextParser.TEXT + 4;
-  static BLINK: number = ChatTextParser.TEXT + 5;
-  static ROOM: number = ChatTextParser.TEXT + 6;
-  static HIGHLIGHT: number = ChatTextParser.TEXT + 7;
-  static NICK: number = ChatTextParser.TEXT + 8;
+  private _key: number = 1;
 
-  public _parseText(text: string): JSX.Element[] {
-    return [ <span key={this._key++}>{text}</span> ];
+  public parseText(text: string): JSX.Element[] {
+    return [<span key={this._key++}>{text}</span>];
   }
 
   public parseAction(text: string): JSX.Element[] {
     const html: JSX.Element[] = [];
     const content : JSX.Element[] = this.parse(text.substr(4).trim());
-    html.push(<span key={this._key++} className="chat-line-action">&lt;{content}&gt;</span>);
+    html.push(<span key={this._key++} className='chat-line-action'>&lt;{content}&gt;</span>);
     return html;
   }
 
@@ -72,7 +72,7 @@ class ChatLineParser {
     // Run through each parser
     const parser : ChatTextParser = new ChatTextParser(tokens);
     return parser.parse(text, (token: number, text: string, match: RegExpExecArray) => {
-      switch(token) {
+      switch (token) {
         case ChatLineParser.COLOR: return parseColors.fromText(text, keygen, match, this);
         case ChatLineParser.BLINK: return parseBlink.fromText(text, keygen, match, this);
         case ChatLineParser.MARKDOWN: return parseMarkdown.fromText(text, keygen, match, this);
@@ -83,7 +83,7 @@ class ChatLineParser {
         case ChatLineParser.NICK: return parseNicks.fromText(text, keygen);
       }
       // treat everything else as just text
-      return this._parseText(text);
+      return this.parseText(text);
     });
   }
 

@@ -8,16 +8,16 @@ import { events } from '../../../';
 import { prefixes, display } from './settings/chat-defaults';
 
 export class ChatConfig {
-  SCROLLBACK_BUFFER_SIZE: number = 1024;
-  SHOW_COLORS: boolean = false;
-  SHOW_EMOTICONS: boolean = false;
-  SHOW_MARKDOWN: boolean = false;
-  EMBED_IMAGES: boolean = false;
-  EMBED_VIDEOS: boolean = false;
-  JOIN_PARTS: boolean = false;
-  TIMESTAMPS: boolean = false;
-  NICK: string = '';
-  HIGHLIGHTS: string[] = ['alpha','beta','CSE'];
+  public SCROLLBACK_BUFFER_SIZE: number = 1024;
+  public SHOW_COLORS: boolean = false;
+  public SHOW_EMOTICONS: boolean = false;
+  public SHOW_MARKDOWN: boolean = false;
+  public EMBED_IMAGES: boolean = false;
+  public EMBED_VIDEOS: boolean = false;
+  public JOIN_PARTS: boolean = false;
+  public TIMESTAMPS: boolean = false;
+  public NICK: string = '';
+  public HIGHLIGHTS: string[] = ['alpha','beta','CSE'];
 
   constructor() {
     this.refresh();
@@ -34,7 +34,7 @@ export class ChatConfig {
   public refresh = () : void => {
     const LOAD = (option: any) : any => {
       return JSON.parse(localStorage.getItem(`${prefixes.display}${option.key}`));
-    }
+    };
     this.SHOW_COLORS    = LOAD(display.showColors);
     this.SHOW_EMOTICONS = LOAD(display.showEmoticons);
     this.SHOW_MARKDOWN  = LOAD(display.showMarkdown);

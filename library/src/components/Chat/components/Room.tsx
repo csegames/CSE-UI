@@ -23,18 +23,18 @@ export interface RoomProps {
 class Room extends React.Component<RoomProps, RoomState> {
   public render() {
     let players : JSX.Element = undefined;
-    const classes : string[] = [ 'chat-room' ];
+    const classes : string[] = ['chat-room'];
     if (this.props.selected) classes.push('chat-room-selected');
     if (this.props.roomId.type === chatType.GROUP) {
-      players = <li className="chat-room-players">{this.props.players} players</li>;
+      players = <li className='chat-room-players'>{this.props.players} players</li>;
     } else {
-      players = <li className="chat-room-players">(private)</li>;
+      players = <li className='chat-room-players'>(private)</li>;
     }
     return (
       <div className={classes.join(' ')} onClick={this.select}>
-        <div className="chat-room-close" onClick={this.leave}></div>
+        <div className='chat-room-close' onClick={this.leave}></div>
         <ul>
-          <li className="chat-room-name">{this.props.roomId.name}</li>
+          <li className='chat-room-name'>{this.props.roomId.name}</li>
           {players}
         </ul>
         <div className={this.props.unread ? 'chat-unread' : 'chat-hidden'}>{this.props.unread}</div>

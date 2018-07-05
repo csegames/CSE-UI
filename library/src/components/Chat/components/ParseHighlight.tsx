@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 function fromText(text: string, keygen: () => number) : JSX.Element[] {
-  //events.fire('chat-play-sound-highlight');
+  // events.fire('chat-play-sound-highlight');
   return [<span key={keygen()} className={'chat-room-highlight'}>{text}</span>];
 }
 
@@ -25,5 +25,5 @@ function createRegExp(highlight: string[]) : RegExp {
 
 export default {
   fromText,
-  createRegExp
-}
+  createRegExp,
+};

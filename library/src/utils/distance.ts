@@ -5,7 +5,7 @@
  *
  */
 
-import { Vec2f, Vec3f } from '../webAPI/definitions'
+import { Vec2f, Vec3f } from '../webAPI/definitions';
 
 export function distanceVec2(positionOne: Vec2f, positionTwo: Vec2f) {
   if (!positionOne || !positionTwo) return;

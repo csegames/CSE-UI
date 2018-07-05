@@ -9,54 +9,50 @@ import Whitelist from './URLWhitelist';
 import URLRegExp from './URLRegExp';
 import { chatConfig } from './ChatConfig';
 
-function _fixupLink(url: string) : string {
-  if (url.indexOf('www.') == 0) {
-    url = 'http://' + url;
+function fixupLink(url: string) : string {
+  let newUrl = url;
+  if (url.indexOf('www.') === 0) {
+    newUrl = 'http://' + url;
   }
-  return url;
+  return newUrl;
 }
 
-function _triggerAutoScroll() {
+function triggerAutoScroll() {
   const event = new Event('auto-scroll');
   window.dispatchEvent(event);
 }
 
+// tslint:disable
 function fromText(text: string, keygen:() => number) : JSX.Element[] {
 
   const videoMatch: string = chatConfig.EMBED_VIDEOS ? Whitelist.isVideo(text) : null;
   const vineMatch: string = chatConfig.EMBED_VIDEOS ? Whitelist.isVine(text) : null;
-  const href : string = _fixupLink(text);
+  const href : string = fixupLink(text);
 
   // Video link (youtube)
   if (videoMatch) {
     return [
-      <a key={keygen()} className="chat-line-message" target="_blank" href={href}>
+      <a key={keygen()} className='chat-line-message' target='_blank' href={href}>
         <iframe className='chat-line-video' src={videoMatch} allowFullScreen></iframe>
-      </a>
+      </a>,
     ];
-  }
-  
-  // Vine link (vine)
-  else if (vineMatch) {
+  } else if (vineMatch) { // Vine link (vine)
     return [
-      <a key={keygen()} className="chat-line-message" target="_blank" href={href}>
+      <a key={keygen()} className='chat-line-message' target='_blank' href={href}>
         <iframe className='chat-line-vine' src={vineMatch}></iframe>
-        <script src="https://platform.vine.co/static/scripts/embed.js"></script>
-      </a>
+        <script src='https://platform.vine.co/static/scripts/embed.js'></script>
+      </a>,
     ];
-  } 
-
-  // Image link (whitelisted)
-  else if (chatConfig.EMBED_IMAGES && Whitelist.isImage(text) && Whitelist.ok(text)) {
+  } else if (chatConfig.EMBED_IMAGES && Whitelist.isImage(text) && Whitelist.ok(text)) { // Image link (whitelisted)
     return [
-      <a key={keygen()} className="chat-line-message" target="_blank" href={href}>
-        <img className='chat-line-image' onLoad={_triggerAutoScroll} src={text} title={text}/>
-      </a>
+      <a key={keygen()} className='chat-line-message' target='_blank' href={href}>
+        <img className='chat-line-image' onLoad={triggerAutoScroll} src={text} title={text}/>
+      </a>,
     ];
   } 
 
   // all other links
-  return [ <a key={keygen()} className="chat-line-message" target="_blank" href={href}>{text}</a> ];
+  return [<a key={keygen()} className='chat-line-message' target='_blank' href={href}>{text}</a>];
 }
 
 function createRegExp() : RegExp {
@@ -65,5 +61,5 @@ function createRegExp() : RegExp {
 
 export default {
   fromText,
-  createRegExp
-}
+  createRegExp,
+};

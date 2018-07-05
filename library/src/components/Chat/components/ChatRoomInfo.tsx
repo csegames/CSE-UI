@@ -6,22 +6,22 @@
 
 import * as React from 'react';
 import ChatLine from './ChatLine';
-import User, {UserInfo} from './User';
-import {ChatMessage, chatType} from './ChatMessage';
-import {chatConfig} from './ChatConfig';
+import User, { UserInfo } from './User';
+import { ChatMessage, chatType } from './ChatMessage';
+import { chatConfig } from './ChatConfig';
 import RoomId from './RoomId';
 
 class ChatRoomInfo {
-  messages: JSX.Element[] = [];
-  users: JSX.Element[] = [];
-  key: number = 0;
-  roomId: RoomId;
-  type: chatType;
-  players: number = 0;
-  unread: number = 0;
-  scrollback: number = 0;
-  scrollbackPageSize: number;
-  scrollbackThreshold: number;
+  public messages: JSX.Element[] = [];
+  public users: JSX.Element[] = [];
+  public key: number = 0;
+  public roomId: RoomId;
+  public type: chatType;
+  public players: number = 0;
+  public unread: number = 0;
+  public scrollback: number = 0;
+  public scrollbackPageSize: number;
+  public scrollbackThreshold: number;
 
   constructor(roomId: RoomId, scrollbackThreshold: number = 50, scrollbackPageSize: number = 50) {
     this.roomId = roomId;
@@ -34,7 +34,7 @@ class ChatRoomInfo {
       + ' Players: ' + this.players
       + ' Unread: ' + this.unread
       + ' Messages: ' + this.messages.length
-      + ' ScrollBack: ' + this.scrollback
+      + ' ScrollBack: ' + this.scrollback,
     );
   }
 
@@ -71,7 +71,7 @@ class ChatRoomInfo {
 
   public add = (message: ChatMessage) : void => {
     this.messages.push(
-      <ChatLine key={this.key++} message={message}/>
+      <ChatLine key={this.key++} message={message}/>,
     );
     message.checkIsNewDay(this.messages.length > 1 ? this.messages[this.messages.length - 2].props.message.when : undefined);
     // manage scrollback buffer size

@@ -15,16 +15,16 @@ class SlashCommand {
 
   constructor(command: string) {
     this.name = command.split(' ')[0];
-    this.args = command.substr(this.name.length+1);
+    this.args = command.substr(this.name.length + 1);
     this.argv = this.args.length ? this.args.split(' ') : [];
   }
 
   public exec(session : ChatSession) : boolean {
-    switch(this.name) {
+    switch (this.name) {
       case 'w': case 't': case 'tell': case 'pm': case 'msg':  // which?
         if (this.argv.length > 1) {
           const user = this.argv[0];
-          const message = this.args.substr(user.length+1).trim();
+          const message = this.args.substr(user.length + 1).trim();
           session.sendMessage(message, user);
         }
         return true;

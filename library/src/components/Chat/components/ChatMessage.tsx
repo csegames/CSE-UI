@@ -23,7 +23,8 @@ class ChatMessage {
   public when: Date;
   private _newDay: boolean;
 
-  constructor(type: number, roomName: string, nick: string = null, text: string = null, isCSE: boolean = false, time: Date = new Date()) {
+  constructor(type: number, roomName: string, nick: string = null,
+      text: string = null, isCSE: boolean = false, time: Date = new Date()) {
     this.type = type;
     this.roomName = roomName.toLowerCase();
     this.nick = nick.toLowerCase();
@@ -48,5 +49,5 @@ class ChatMessage {
 
 export {
   ChatMessage,
-  chatType
-}
+  chatType,
+};

@@ -11,7 +11,14 @@ import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
 
 function fromText(text: string, keygen: () => number) : JSX.Element[] {
-  return [<span key={ keygen() } className='chat-nickname' onClick={ () => { events.fire('cse-chat-private-message', text); } }>{ text }</span >];
+  return [
+    <span
+      key={ keygen() }
+      className='chat-nickname'
+      onClick={ () => { events.fire('cse-chat-private-message', text); } }>
+        { text }
+    </span>,
+  ];
 }
 
 function createRegExp() : RegExp {
@@ -29,5 +36,5 @@ function createRegExp() : RegExp {
 
 export default {
   fromText,
-  createRegExp
-}
+  createRegExp,
+};

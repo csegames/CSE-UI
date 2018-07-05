@@ -6,8 +6,9 @@
 
 import * as React from 'react';
 
-export class TabState {
+export interface TabState {
 }
+
 export interface TabProps {
   key: string;
   id: string;
@@ -17,8 +18,8 @@ export interface TabProps {
 
 class Tab extends React.Component<TabProps, TabState> {
   public render() {
-    const classes : string[] = [ "chat-tab" ];
-    if (this.props.selected) classes.push("chat-tab-selected");
+    const classes : string[] = ['chat-tab'];
+    if (this.props.selected) classes.push('chat-tab-selected');
     classes.push('chat-' + this.props.id);
     return (
       <li className={ classes.join(' ') } onClick={this.select}></li>
