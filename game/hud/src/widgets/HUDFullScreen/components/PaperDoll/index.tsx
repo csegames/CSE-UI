@@ -6,15 +6,16 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { bodyParts, client, events, Gender, Race } from '@csegames/camelot-unchained';
-import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import { bodyParts, client, events } from '@csegames/camelot-unchained';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
+import { getPaperDollBG } from '../../lib/utils';
 import queries from '../../../../gqlDocuments';
-import { paperDollIcons } from '../../lib/constants';
 import { EquippedItemFragment } from '../../../../gqlInterfaces';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
 
 const Container = styled('div')`
   position: relative;
@@ -22,6 +23,28 @@ const Container = styled('div')`
   align-items: stretch;
   width: 100%;
   height: 100%;
+  background: url(${(props: { backgroundImg: string }) => props.backgroundImg}) no-repeat;
+  background-size: cover;
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65%;
+    background: url(images/paperdoll/bg/bg-veil.png) no-repeat;
+    background-size: cover;
+  }
+`;
+
+const NameBackground = styled('div')`
+  position: absolute;
+  top: -23px;
+  left: 0;
+  height: 167px;
+  width: 400px;
+  background: url(images/paperdoll/name-bg-splash.png) no-repeat;
+  background-size: contain;
 `;
 
 const PaperdollContainer = styled('div')`
@@ -33,39 +56,19 @@ const PaperdollContainer = styled('div')`
   height: 100%;
 `;
 
-const BackgroundImage = styled('img')`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
-
 const CharacterInfoContainer = styled('div')`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  flex: 0 0 auto;
-`;
-
-const ManIcon = styled('img')`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  width: auto;
-  height: 650px;
+  justify-content: space-between;
+  height: 50px;
+  margin-top: 20px;
 `;
 
 export interface EquippedItemsMap {
   [slotName: string]: any;
 }
 
-export interface PaperDollProps extends GraphQLInjectedProps<any> {
+export interface PaperDollProps {
   onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
 }
 
@@ -74,26 +77,36 @@ export interface PaperDollState {
 }
 
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
-  private refetchListener: any;
+  private refetchListener: number;
+  private paperdollBG: string;
+  private graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>;
   constructor(props: PaperDollProps) {
     super(props);
     this.state = {
       maxHealthParts: {},
     };
+
+    this.paperdollBG = getPaperDollBG(client.playerState.faction);
   }
   public render() {
     return (
-      <Container>
-        <BackgroundImage src={'images/paperdollbg.png'} />
-        <PaperdollContainer>
-          <ManIcon src={paperDollIcons[`${Gender[client.playerState.gender]}${Race[client.playerState.race]}`]} />
-          <CharacterInfoContainer>
-            <CharacterAndOrderName characterName={client.playerState.name} />
-            <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
-          </CharacterInfoContainer>
-          <EquipmentSlots onEquippedItemsChange={this.props.onEquippedItemsChange} />
-        </PaperdollContainer>
-      </Container>
+      <GraphQL query={{ query: queries.PaperDollContainer }} onQueryResult={this.handleQueryResult}>
+        {(graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>) => {
+          this.graphql = graphql;
+          return (
+            <Container backgroundImg={this.paperdollBG}>
+              <NameBackground />
+              <PaperdollContainer>
+                <CharacterInfoContainer>
+                  <CharacterAndOrderName characterName={client.playerState.name} />
+                  <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
+                </CharacterInfoContainer>
+                <EquipmentSlots onEquippedItemsChange={this.props.onEquippedItemsChange} />
+              </PaperdollContainer>
+            </Container>
+          );
+        }}
+      </GraphQL>
     );
   }
 
@@ -102,21 +115,20 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     this.refetchListener = events.on('refetch-character-info', this.refetch);
   }
 
-  public componentWillReceiveProps(nextProps: PaperDollProps) {
-    const graphqlData = this.props.graphql && this.props.graphql.data;
-    const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
-    if (nextGraphqlData && nextGraphqlData.myEquippedItems && (!graphqlData || !graphqlData.myEquippedItems)) {
-      this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
-    }
-  }
-
   public componentWillUnmount() {
     events.off(this.refetchListener);
   }
 
+  private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>) => {
+    if (graphql.loading || !graphql.data || !graphql.data.myEquippedItems) return graphql;
+
+    this.props.onEquippedItemsChange(graphql.data.myEquippedItems.items);
+    return graphql;
+  }
+
   private refetch = () => {
-    if (this.props.graphql) {
-      this.props.graphql.refetch();
+    if (this.graphql) {
+      this.graphql.refetch();
     }
   }
 
@@ -130,8 +142,4 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
 }
 
-const PaperDollWithQL = withGraphQL<PaperDollProps>(
-  { query: queries.PaperDollContainer },
-)(PaperDoll);
-
-export default PaperDollWithQL;
+export default PaperDoll;

@@ -48,7 +48,6 @@ const Container = styled('div')`
 
 const Divider = styled('div')`
   position: relative;
-  background-color: #434240;
   height: 100%;
   width: 3px;
   &:before {
@@ -74,15 +73,29 @@ const Divider = styled('div')`
 `;
 
 const DividerMidSection = styled('div')`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -2.5px;
-  margin: auto;
-  width: 9px;
-  height: 100%;
-  background: url(images/tabs/divider-ornament-middle.png);
-  z-index: 2;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1px;
+    margin: auto;
+    width: 5px;
+    background: url(images/tabs/divider-ornament-middle-base.png);
+    z-index: 2;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -3px;
+    margin: auto;
+    width: 9px;
+    height: 365px;
+    background: url(images/tabs/divider-ornament-middle.png);
+    z-index: 2;
+  }
 `;
 
 const Close = styled('div')`

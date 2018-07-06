@@ -12,8 +12,11 @@ const Watermark = styled('i')`
   height: 20px;
   line-height: 20px;
   position: fixed;
-  left: 5px;
-  top: 55px;
+  margin: auto;
+  left: 50%;
+  top: 15px;
+  text-align: center;
+  transform: translateX(-50%);
   color: #FFF;
   font-size: 13px;
   font-family: 'Merriweather Sans', sans-serif;

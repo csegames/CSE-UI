@@ -300,8 +300,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     if (!this.bodyRef || !this.graphql || !this.props.invBodyDimensions.height || !this.props.invBodyDimensions.width) {
       return;
     }
-    const itemCount =
-      (this.graphql.data && this.graphql.data.myInventory && this.graphql.data.myInventory.itemCount) || 0;
+    const itemCount = this.props.inventoryItems && this.props.inventoryItems.length;
     const rowsAndSlots = calcRowAndSlots(
       { height: this.props.invBodyDimensions.height, width: this.props.invBodyDimensions.width },
       slotDimensions,

@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as events from '@csegames/camelot-unchained/lib/events';
 import { ql } from '@csegames/camelot-unchained';
-
 import styled, { css } from 'react-emotion';
+
 import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -14,16 +14,14 @@ declare const toastr: any;
 
 const Container = styled('div')`
   position: relative;
-  overflow: hidden;
-  width: 70px;
-  height: 70px;
+  width: 100%;
+  height: 100%;
   opacity: ${(props: any) => props.opacity};
 `;
 
 const ItemIcon = styled('img')`
-  overflow: hidden;
-  width: 69px;
-  height: 70px;
+  width: 100%;
+  height: 100%;
 `;
 
 const SlotOverlay = styled('div')`
@@ -34,27 +32,39 @@ const SlotOverlay = styled('div')`
   left: 0;
   background-color: ${(props: any) => props.backgroundColor};
   box-shadow: ${(props: any) => props.boxShadow};
+  border: 1px solid transparent;
   &:hover {
     box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
-  };
+  }
   &:active {
     box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
-  };
+  }
+  &.highlight-slot {
+    box-shadow: inset 0 0 10px 2px rgba(255, 218, 148, 0.7);
+    border: 1px solid rgba(255, 218, 148, 1);
+  }
+  &.item-menu-visible {
+    border: 1px solid #e1b96d;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+  }
 `;
 
 const defaultIconStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.3;
+  opacity: 0.15;
   width: 100%;
   height: 100%;
+  color: #CFD0CB;
+  font-size: 35px;
 `;
 
 export interface DraggableEquippedItemProps extends DragAndDropInjectedProps {
   slotName: string;
-  equippedItem: EquippedItemFragment;
   disableDrag: boolean;
+  itemMenuVisible: boolean;
+  equippedItem: EquippedItemFragment;
 }
 
 export interface DraggableEquippedItemState {
@@ -130,7 +140,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public render() {
-    const { equippedItem, slotName } = this.props;
+    const { equippedItem, slotName, itemMenuVisible } = this.props;
     const iconUrl = (equippedItem && equippedItem.item.staticDefinition && equippedItem.item.staticDefinition.iconUrl) ||
       `${defaultSlotIcons[slotName]} \ ${defaultIconStyle}`;
     const isRightSlot = _.includes(slotName.toLowerCase(), 'right');
@@ -140,8 +150,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
         {this.props.equippedItem ? <ItemIcon style={flipIcon} src={iconUrl || placeholderIcon} /> :
           <div style={flipIcon} className={`${iconUrl}`} />}
         <SlotOverlay
+          className={`${itemMenuVisible ? 'item-menu-visible' : ''} ${this.state.highlightSlot ? 'highlight-slot' : ''}`}
           backgroundColor={this.state.backgroundColor}
-          boxShadow={this.state.highlightSlot ? 'inset 0 0 15px 5px yellow' : 'none'}
         />
       </Container>
     );

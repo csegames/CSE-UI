@@ -19,6 +19,11 @@ export const LESS_THAN_STAT_COLOR = '#AA9B81';
 
 export const TOOLTIP_PADDING = '10px';
 
+export const SLOT_DIMENSIONS = {
+  WIDTH: 80,
+  HEIGHT: 80,
+};
+
 export const tradeActionButtonIcons = {
   GOLD_BUTTON: 'images/trade/gold-button.png',
   GREY_BUTTON: 'images/trade/grey-button.png',
@@ -88,21 +93,6 @@ export const colors = {
   tooltipViking: 'rgba(35, 155, 242, 0.25)',
   tooltipArt: 'rgba(247, 33, 33, 0.25)',
   tooltipTDD: 'rgba(196, 216, 1, 0.25)',
-};
-
-export const paperDollIcons = {
-  MaleHumanMaleA: 'images/paperdoll/standing/humans-m-art.png',
-  FemaleHumanMaleA: 'images/paperdoll/standing/humans-f-art.png',
-  MaleHumanMaleV: 'images/paperdoll/standing/humans-m-vik.png',
-  FemaleHumanMaleV: 'images/paperdoll/standing/humans-f-vik.png',
-  MaleHumanMaleT: 'images/paperdoll/standing/humans-m-tdd.png',
-  FemaleHumanMaleT: 'images/paperdoll/standing/humans-f-tdd.png',
-  MaleLuchorpan: 'images/paperdoll/standing/luchorpan-m.png',
-  FemaleLuchorpan: 'images/paperdoll/standing/luchorpan-f.png',
-  MaleValkyrie: 'images/paperdoll/standing/valkyrie-m.png',
-  FemaleValkyrie: 'images/paperdoll/standing/valkyrie-f.png',
-  MalePict: 'images/paperdoll/standing/pict-m.png',
-  FemalePict: 'images/paperdoll/standing/pict-f.png',
 };
 
 export const characterAvatarIcon = {

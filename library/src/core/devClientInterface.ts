@@ -41,6 +41,7 @@ const devClientInterface: clientInterface = {
     isAlive: true,
     race: 2,
     faction: 1,
+    class: 9,
     gender: 1,
     health: [
       { current: 500, max: 500, wounds: 0 },

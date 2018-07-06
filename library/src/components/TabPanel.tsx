@@ -92,6 +92,9 @@ export interface TabPanelProps<T> {
 
   // Should this component render all tab content hidden. (default false)
   alwaysRenderContent?: boolean;
+
+  // Render a divider between tabs. OPTIONAL (default null)
+  renderTabDivider?: () => JSX.Element;
 }
 
 export interface TabPanelState {
@@ -146,14 +149,26 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
       <Tabs className={customStyle.tabs}>
         {this.props.tabs.map((tabItem, index) => {
           const selected = index === this.activeTabIndex;
-          return (
-            <Tab
-              key={index}
-              className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
-              onClick={() => this.selectIndex(index, tabItem.name)}>
-                {this.props.renderTab(tabItem.tab, selected)}
-            </Tab>
-          );
+          if (typeof this.props.renderTabDivider === 'function') {
+            return [
+              <Tab
+                key={index}
+                className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
+                onClick={() => this.selectIndex(index, tabItem.name)}>
+                  {this.props.renderTab(tabItem.tab, selected)}
+              </Tab>,
+              index !== this.props.tabs.length - 1 ? this.props.renderTabDivider() : null,
+            ];
+          } else {
+            return (
+              <Tab
+                key={index}
+                className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
+                onClick={() => this.selectIndex(index, tabItem.name)}>
+                  {this.props.renderTab(tabItem.tab, selected)}
+              </Tab>
+            );
+          }
         })}
       </Tabs>
     );

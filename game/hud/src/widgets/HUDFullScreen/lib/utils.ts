@@ -6,8 +6,21 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, client, utils, events, TabItem, Faction, Vec3F, Euler3f, ItemPermissions } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import {
+  ql,
+  client,
+  utils,
+  events,
+  TabItem,
+  Faction,
+  Vec3F,
+  Euler3f,
+  Race,
+  Gender,
+  Archetype,
+  ItemPermissions,
+} from '@csegames/camelot-unchained';
 
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
@@ -921,4 +934,57 @@ export function isRightOrLeftItem(gearSlots: GearSlotDefRefFragment[]) {
     _.includes(firstGearSlotId.toLowerCase(), 'secondary');
   }
   return false;
+}
+
+export function getPaperDollBG(faction: Faction) {
+  let paperdollBG = '';
+  switch (faction) {
+    case Faction.Arthurian: {
+      paperdollBG = 'bg-art';
+      break;
+    }
+    case Faction.TDD: {
+      paperdollBG = 'bg-tdd';
+      break;
+    }
+    case Faction.Viking: {
+      paperdollBG = 'bg-vik';
+      break;
+    }
+  }
+
+  return `images/paperdoll/bg/${paperdollBG}.png`;
+}
+
+export function getPaperDollIcon(gender: Gender, race: Race, playerClass: Archetype) {
+  const formatGender = gender === Gender.Male ? 'm' : 'f';
+  let formatRace = Race[race].toLowerCase();
+  if (_.includes(formatRace, 'human')) {
+    formatRace = 'human';
+  }
+  const formatPlayerClass = Archetype[playerClass].toLowerCase();
+  return `images/paperdoll/standing/${formatRace}-${formatGender}-${formatPlayerClass}.png`;
+}
+
+export function getPaperDollBaseIcon(faction: Faction) {
+  let formatFaction = '';
+  switch (faction) {
+    case Faction.Arthurian: {
+      formatFaction = 'art';
+      break;
+    }
+    case Faction.TDD: {
+      formatFaction = 'tdd';
+      break;
+    }
+    case Faction.Viking: {
+      formatFaction = 'vik';
+      break;
+    }
+    default: {
+      formatFaction = 'art';
+      break;
+    }
+  }
+  return `images/paperdoll/base/${formatFaction}-base.png`;
 }

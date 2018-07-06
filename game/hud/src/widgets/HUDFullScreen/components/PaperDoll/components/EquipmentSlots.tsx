@@ -7,14 +7,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css, cx } from 'react-emotion';
-import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
+import { client, ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
-import { getEquippedDataTransfer, FullScreenContext } from '../../../lib/utils';
+import { getEquippedDataTransfer, FullScreenContext, getPaperDollBaseIcon, getPaperDollIcon } from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
@@ -23,7 +23,11 @@ import eventNames, {
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
 import { hideTooltip } from 'actions/tooltips';
 
+const ARMOR_ORNAMENT_OPACITY = 0.3;
+const WEAPON_ORNAMENT_OPACITY = 0.8;
+
 const Container = styled('div')`
+  position: relative;
   flex: 1;
   width: 100%;
   height: 100%;
@@ -36,37 +40,157 @@ const ArmorSlotsContainer = styled('div')`
   justify-content: space-between;
   user-select: none;
   height: 100%;
-  padding: 0 45px;
+  padding: 0 15px;
   align-items: center;
 `;
 
-const ToggleOn = css`
-  color: #FDD30D !important;
-  border-bottom: 1px solid #FDD30D;
+const LeftArmorSlots = styled('div')`
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -70px;
+    left: -3px;
+    width: 72px;
+    height: 67px;
+    background: url(images/paperdoll/ornament-slot-left-top.png) no-repeat;
+    background-size: contain;
+    opacity: ${ARMOR_ORNAMENT_OPACITY};
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -58px;
+    left: -3px;
+    width: 72px;
+    height: 67px;
+    background: url(images/paperdoll/ornament-slot-left-bot.png) no-repeat;
+    background-size: contain;
+    opacity: ${ARMOR_ORNAMENT_OPACITY};
+  }
 `;
 
-const ToggleText = css`
-  display: inline;
-  font-size: 24px;
-  color: #85661B;
+const LeftSideOrnament = styled('div')`
+  position: absolute;
+  left: -3px;
+  top: -5px;
+  height: 100%;
+  background: url(images/paperdoll/ornament-slot-left-mid.png) repeat;
+  background-size: contain;
+  width: 8px;
+  opacity: ${ARMOR_ORNAMENT_OPACITY};
+`;
+
+const RightArmorSlots = styled('div')`
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -70px;
+    right: -3px;
+    width: 72px;
+    height: 67px;
+    background: url(images/paperdoll/ornament-slot-right-top.png) no-repeat;
+    background-size: contain;
+    opacity: ${ARMOR_ORNAMENT_OPACITY};
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -58px;
+    right: -3px;
+    width: 72px;
+    height: 67px;
+    background: url(images/paperdoll/ornament-slot-right-bot.png) no-repeat;
+    background-size: contain;
+    opacity: ${ARMOR_ORNAMENT_OPACITY};
+  }
+`;
+
+const RightSideOrnament = styled('div')`
+  position: absolute;
+  right: -3px;
+  top: -5px;
+  height: 100%;
+  background: url(images/paperdoll/ornament-slot-right-mid.png) repeat;
+  background-size: contain;
+  width: 8px;
+  opacity: ${ARMOR_ORNAMENT_OPACITY};
+`;
+
+const TabDivider = styled('div')`
+  background: url(images/paperdoll/ornament-gear-select.png);
+  background-size: contain;
+  width: 2px;
+  height: 42px;
+  margin-top: -10px;
+`;
+
+const ToggleTab = styled('div')`
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: Caudex;
+  color: #9E5631;
+  letter-spacing: 0.5px;
   -webkit-user-select: none;
   user-select: none;
+  width: 78px;
+  text-transform: uppercase;
+  -webkit-text-transform: uppercase;
+  z-index: 1;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+  &.isInactive:hover {
+    filter: brightness(130%);
+    -webkit-filter: brightness(130%);
+  }
+  &.isActive {
+    color: #F4EBAD;
+    &:before {
+      background: url(images/paperdoll/outer-hover-button.png) no-repeat;
+      background-size: contain;
+    }
+  }
+  &.outer-toggle {
+    justify-content: flex-end;
+    padding-right: 5px;
+    &.isInactive:before {
+      transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+    }
+    i {
+      margin-right: 5px;
+    }
+  }
+  &.inner-toggle {
+    justify-content: flex-start;
+    padding-left: 5px;
+    &.isActive:before {
+      transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+    }
+    i {
+      margin-left: 5px;
+    }
+  }
 `;
 
 const Tabs = css`
   justify-content: center;
-  font-size: 24px;
-  color: #FDD30D;
-`;
-
-const OuterToggle = css`
-  padding-right: 10px;
-  cursor: pointer;
-`;
-
-const UnderToggle = css`
-  padding-left: 10px;
-  cursor: pointer;
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
 `;
 
 const EquippedWeaponSlots = styled('div')`
@@ -76,17 +200,87 @@ const EquippedWeaponSlots = styled('div')`
   justify-content: center;
   width: -webkit-fit-content;
   margin: 0 auto;
-  bottom: 40px;
+  bottom: 22px;
   left: 0;
   right: 0;
+  width: 100%;
+  padding: 5px 0;
+  &:before {
+    content: '';
+    position: absolute;
+    background: url(images/paperdoll/ornament-slot-bot-mid.png) no-repeat;
+    background-size: contain;
+    background-position-x: center;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    opacity: ${WEAPON_ORNAMENT_OPACITY};
+  }
+`;
+
+const WeaponSlotOrnaments = styled('div')`
+  position: relative;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -105px;
+    bottom: 0;
+    width: 97px;
+    background: url(images/paperdoll/ornament-slot-bot-left.png) no-repeat;
+    background-size: contain;
+    opacity: ${WEAPON_ORNAMENT_OPACITY};
+    z-index: 0;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -88px;
+    bottom: 0;
+    width: 97px;
+    background: url(images/paperdoll/ornament-slot-bot-right.png) no-repeat;
+    background-size: contain;
+    opacity: ${WEAPON_ORNAMENT_OPACITY};
+    z-index: 0;
+  }
 `;
 
 const ItemSlotSpacing = css`
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 `;
 
 const WeaponSpacing = css`
   margin-right: 15px;
+`;
+
+const PaperdollIcon = styled('img')`
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 115px;
+  margin: auto;
+  max-width: 100%;
+  width: auto;
+  height: 80%;
+`;
+
+const PaperdollBase = styled('img')`
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  bottom: 115px;
+  margin: auto;
+  width: auto;
+  height: 20%;
+  object-fit: contain;
 `;
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
@@ -150,7 +344,6 @@ export interface EquipmentSlotsAndInfo {
 }
 
 export interface EquipmentSlotsState {
-  showUnder: boolean;
   slotNameItemMenuVisible: string;
 }
 
@@ -163,30 +356,29 @@ interface EquipmentSlotsTabData {
 class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
   private equipItemListener: number;
   private onUnequipItemListener: number;
+  private paperdollIcon: string;
+  private paperdollBaseIcon: string;
 
   constructor(props: EquipmentSlotsComponentProps) {
     super(props);
     this.state = {
-      showUnder: false,
       slotNameItemMenuVisible: '',
     };
+
+    this.paperdollIcon = getPaperDollIcon(client.playerState.gender, client.playerState.race, client.playerState.class);
+    this.paperdollBaseIcon = getPaperDollBaseIcon(client.playerState.faction);
   }
 
   public render() {
-    const { showUnder } = this.state;
-
-    const outerToggleClass = cx(ToggleText, OuterToggle, !showUnder ? ToggleOn : '');
-    const innerToggleClass = cx(ToggleText, UnderToggle, showUnder ? ToggleOn : '');
-
     const tabs: TabItem<EquipmentSlotsTabData>[] = [
       {
         name: 'OUTER',
-        tab: { title: 'Outer', onClick: this.toggleOuter, className: outerToggleClass },
+        tab: { title: 'Outer', onClick: () => {}, className: 'outer-toggle' },
         rendersContent: 'outer',
       },
       {
         name: 'INNER',
-        tab: { title: 'Inner', onClick: this.toggleUnder, className: innerToggleClass },
+        tab: { title: 'Inner', onClick: () => {}, className: 'inner-toggle' },
         rendersContent: 'inner',
       },
     ];
@@ -197,16 +389,28 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
     ];
     return (
       <Container>
+        <PaperdollBase src={this.paperdollBaseIcon} />
+        <PaperdollIcon src={this.paperdollIcon} />
         <TabPanel
           defaultTabIndex={0}
           tabs={tabs}
-          renderTab={(tab: EquipmentSlotsTabData) =>
-            <span onClick={tab.onClick} className={tab.className}>{tab.title}</span>}
+          renderTabDivider={() => <TabDivider />}
+          renderTab={(tab: EquipmentSlotsTabData, active: boolean) =>
+            <ToggleTab onClick={tab.onClick} className={`${active ? 'isActive' : 'isInactive'} ${tab.className}`}>
+              {tab.title === 'Outer' && <i className='icon-filter-armor'></i>}
+              {tab.title}
+              {tab.title === 'Inner' && <i className='icon-filter-underlayer'></i>}
+            </ToggleTab>
+          }
           content={content}
           styles={{ tabs: Tabs }}
           alwaysRenderContent={true}
         />
-        <EquippedWeaponSlots>{this.renderEquipmentSlotSection(weaponSlots)}</EquippedWeaponSlots>
+        <EquippedWeaponSlots>
+          <WeaponSlotOrnaments>
+            {this.renderEquipmentSlotSection(weaponSlots)}
+          </WeaponSlotOrnaments>
+        </EquippedWeaponSlots>
       </Container>
     );
   }
@@ -309,7 +513,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
                 isWeapon ? WeaponSpacing : '',
               )}>
               <EquippedItemSlot
-                tooltipDisabled={slotVisible}
+                itemMenuVisible={slotVisible}
                 slot={slot}
                 providedEquippedItem={equippedItem}
                 disableDrag={this.props.myTradeState !== 'None'}
@@ -324,8 +528,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   private renderInnerSlots = () => {
     return (
       <ArmorSlotsContainer>
-        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}</div>
-        <div>{this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}</div>
+        <LeftArmorSlots>
+          <LeftSideOrnament />
+          {this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}
+        </LeftArmorSlots>
+        <RightArmorSlots>
+          <RightSideOrnament />
+          {this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}
+        </RightArmorSlots>
       </ArmorSlotsContainer>
     );
   }
@@ -333,8 +543,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   private renderOuterSlots = () => {
     return (
       <ArmorSlotsContainer>
-        <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(0, 8))}</div>
-        <div>{this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}</div>
+        <LeftArmorSlots>
+          <LeftSideOrnament />
+          {this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(0, 8))}
+        </LeftArmorSlots>
+        <RightArmorSlots>
+          <RightSideOrnament />
+          {this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}
+        </RightArmorSlots>
       </ArmorSlotsContainer>
     );
   }
@@ -346,14 +562,6 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
       hideTooltip();
       this.setState({ slotNameItemMenuVisible: slotName });
     }
-  }
-
-  private toggleOuter = () => {
-    this.setState({ showUnder: false });
-  }
-
-  private toggleUnder = () => {
-    this.setState({ showUnder: true });
   }
 }
 

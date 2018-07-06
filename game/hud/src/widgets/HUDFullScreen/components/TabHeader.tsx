@@ -15,11 +15,15 @@ export const HeaderFoundation = css`
   justify-content: space-between;
   background: url(images/inventory/title-bg.png);
   background-size: cover;
-  padding: 0 20px;
+  padding: 20px 20px;
   z-index: 1;
   -webkit-mask-image: url(images/inventory/title-mask.png);
   -webkit-mask-size: cover;
-  box-shadow: inset 0 0px 67px rgba(0,0,0,0.6);
+  box-shadow: inset 0px 0px 60px rgba(0,0,0,0.8);
+  font-family: Caudex;
+  color: #FFE7BB;
+  font-size: 18px;
+  letter-spacing: 5px;
 `;
 
 export const HeaderBorderFoundation = css`
@@ -38,10 +42,8 @@ export const HeaderBorderFoundation = css`
 
 const Container = styled('div')`
   ${HeaderFoundation}
-  max-height: 50px;
-  min-height: 50px;
   z-index: 2;
-  background: linear-gradient(to right,rgba(189,121,75,0.6),transparent),
+  background: linear-gradient(to right,rgba(220,141,88,0.6),transparent),
     url(images/inventory/title-bg.png) no-repeat;
   &:before {
     content: '';
@@ -64,8 +66,8 @@ const HeaderOrnament = styled('div')`
   top: 0px;
   left: 0px;
   bottom: 0px;
-  height: 50px;
   width: 45px;
+  padding: 20px 0;
   background: url(images/inventory/title-ornament.png) no-repeat;
   background-size: contain;
   z-index: 2;
