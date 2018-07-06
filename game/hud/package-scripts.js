@@ -44,6 +44,10 @@ module.exports = {
         script: 'nps clean,build.devWebpack,dev.livereload,dev.watch.webpack,dev.serve',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
+      production: {
+        script: 'nps clean,build.browserify.lib,build.devProduction,dev.livereload,dev.watch,dev.serve',
+        description: 'Development Production mode will start an http server with live reload that will watch and build whenever a file change is detected using a production environment variable.'
+      },
       start: {
       },
       serve: {

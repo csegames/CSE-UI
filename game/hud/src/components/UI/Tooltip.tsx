@@ -98,7 +98,10 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
   private onMouseMove = (e: MouseEvent) => {
     if (!this.tooltipDimensions && this.tooltipRef) {
-      this.tooltipDimensions = this.tooltipRef.getBoundingClientRect();
+      this.tooltipDimensions = {
+        height: this.tooltipRef.clientHeight,
+        width: this.tooltipRef.clientWidth,
+      };
     }
 
     let computedStyle;

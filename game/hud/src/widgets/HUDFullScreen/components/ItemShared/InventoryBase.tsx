@@ -631,7 +631,6 @@ export function distributeItemsNoFilter(args: {
         if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
           // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
           stackGroupIdToItemIDs[id].push(item.id);
-          moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
           return;
         }
 
@@ -679,7 +678,6 @@ export function distributeItemsNoFilter(args: {
       if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
         // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
         stackGroupIdToItemIDs[id].push(item.id);
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
         return;
       }
 
@@ -1441,7 +1439,7 @@ export function onUpdateInventoryItemsHandler(args: {
       icon: payload.equippedItem.item.staticDefinition.iconUrl,
     };
     if (payload.type === 'Unequip') {
-      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumberToItem);
+      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumber);
     }
   }
 
@@ -1634,7 +1632,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
 
 export async function unequipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                                slotNumberToItem: SlotNumberToItem) {
+                                toSlot: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const request = {
     moveItemID: item.id,
@@ -1643,7 +1641,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     to: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: firstAvailableSlot(0, slotNumberToItem),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs: [] as any,
       location: 'Inventory',
@@ -1652,7 +1650,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     from: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: getItemInventoryPosition(item),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs,
       location: 'Equipment',
@@ -2213,4 +2211,6 @@ function createStackMoveItemRequests(args: {
     });
     return moveItemRequests;
   }
+
+  return [];
 }

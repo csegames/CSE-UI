@@ -180,8 +180,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'equippedgear-left');
-          events.fire('hudnav--navigate', 'inventory-right');
+          events.fire('hudnav--navigate', 'inventory');
         },
       },
       {
@@ -195,8 +194,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          events.fire('hudnav--navigate', 'equippedgear-left');
-          events.fire('hudnav--navigate', 'inventory-right');
+          events.fire('hudnav--navigate', 'equippedgear');
         },
       },
       // {

@@ -100,17 +100,20 @@ export interface InjectedInventoryBodyProps {
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   visibleComponentRight: string;
   visibleComponentLeft: string;
+  invBodyDimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 export interface InventoryBodyProps {
   styles?: Partial<InventoryBodyStyles>;
+  onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
 
 export type InventoryBodyComponentProps = InjectedInventoryBodyProps & InventoryBodyProps & base.InventoryBaseWithQLProps;
 
 export interface InventoryBodyState extends base.InventoryBaseState {
-  heightOfBody: number;
-  widthOfBody: number;
 }
 
 class InventoryBody extends React.Component<InventoryBodyComponentProps, InventoryBodyState> {
@@ -128,8 +131,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     super(props);
     this.state = {
       ...base.defaultInventoryBaseState(),
-      heightOfBody: 0,
-      widthOfBody: 0,
     };
   }
   public render() {
@@ -140,21 +141,21 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       onDropOnZone: this.onDropOnZone,
       onMoveStack: this.onMoveStack,
       syncWithServer: this.refetch,
-      bodyWidth: this.state.widthOfBody,
+      bodyWidth: this.props.invBodyDimensions.width,
       myTradeItems: this.props.myTradeItems,
       myTradeState: this.props.myTradeState,
       stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
     });
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
-      base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.state.heightOfBody));
+      base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.props.invBodyDimensions.height));
     return (
       <GraphQL query={{ query: queries.InventoryBase }} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           this.graphql = graphql;
           return (
             <Container>
-              {graphql.loading || graphql.lastError !== 'OK' &&
+              {graphql.loading || (graphql.lastError && graphql.lastError !== 'OK') &&
                 <RefreshContainer>
                   {!graphql.loading &&
                     <RefreshTitle>
@@ -188,7 +189,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
 
   public componentDidMount() {
     setTimeout(() => this.initializeBodyDimensions(), 1);
-    window.addEventListener('resize', this.initializeBodyDimensions);
+    window.addEventListener('resize', () => this.initializeBodyDimensions(true));
     this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
     this.dropItemHandler = events.on(eventNames.onDropItem, (payload: DropItemPayload) =>
       base.dropItemRequest(payload.inventoryItem.item));
@@ -203,6 +204,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
 
     if (onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
       this.setState(() => this.internalInit(this.state, this.props));
+      return;
     }
 
     const inventoryWasOpened = (this.props.visibleComponentLeft === 'inventory-left' &&
@@ -210,22 +212,28 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
         prevProps.visibleComponentRight === '');
     if (inventoryWasOpened) {
       this.refetch();
+      return;
     }
 
-    if (this.state.widthOfBody !== prevState.widthOfBody || this.state.heightOfBody !== prevState.heightOfBody) {
+    if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions)) {
       this.initializeInventory();
+      return;
     }
   }
 
   public componentWillUnmount() {
     events.off(this.updateInventoryItemsHandler);
     events.off(this.dropItemHandler);
-    window.removeEventListener('resize', this.initializeBodyDimensions);
+    window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
   }
 
   private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
     if (!result || result.loading || result.lastError !== 'OK') return result;
-    this.props.onChangeInventoryItems(result.data.myInventory.items);
+    if (!_.isEqual(result.data.myInventory.items, this.props.inventoryItems)) {
+      this.props.onChangeInventoryItems(result.data.myInventory.items);
+    } else {
+      this.setState(() => this.internalInit(this.state, this.props));
+    }
     return result;
   }
 
@@ -278,18 +286,22 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     this.setState((state, props) => this.internalInit(state, props));
   }
 
-  private initializeBodyDimensions = () => {
-    const { clientHeight, clientWidth } = this.bodyRef;
-    this.setState({ heightOfBody: clientHeight, widthOfBody: clientWidth });
+  private initializeBodyDimensions = (override?: boolean) => {
+    if (!this.props.invBodyDimensions.width || !this.props.invBodyDimensions.height || override) {
+      const { clientHeight, clientWidth } = this.bodyRef;
+      this.props.onChangeInvBodyDimensions({ height: clientHeight, width: clientWidth });
+    }
   }
 
   // should not be called outside of initializeInventory
   private internalInit = (state: InventoryBodyState, props: InventoryBodyComponentProps) => {
-    if (!this.bodyRef || !this.graphql) return;
+    if (!this.bodyRef || !this.graphql || !this.props.invBodyDimensions.height || !this.props.invBodyDimensions.width) {
+      return;
+    }
     const itemCount =
       (this.graphql.data && this.graphql.data.myInventory && this.graphql.data.myInventory.itemCount) || 0;
     const rowsAndSlots = calcRowAndSlots(
-      { height: this.state.heightOfBody, width: this.state.widthOfBody },
+      { height: this.props.invBodyDimensions.height, width: this.props.invBodyDimensions.width },
       slotDimensions,
       Math.max(InventoryBody.minSlots, itemCount),
     );
@@ -297,6 +309,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       ...this.graphql.data.myInventory,
       items: this.graphql.data.myInventory.items as any,
     };
+
     return base.distributeItems({
       slotsData: rowsAndSlots,
       itemData: inventory,
@@ -328,11 +341,11 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   }
 
   private removeRowOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState(state => base.removeRowOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState(state => base.removeRowOfSlots(state, rowData, this.props.invBodyDimensions.height));
   }
 
   private pruneRowsOfSlots = (rowData: InventorySlotItemDef[][]) => {
-    this.setState(state => base.pruneRowsOfSlots(state, rowData, this.state.heightOfBody));
+    this.setState(state => base.pruneRowsOfSlots(state, rowData, this.props.invBodyDimensions.height));
   }
 
   private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {
@@ -374,6 +387,7 @@ class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProp
             containerIdToDrawerInfo,
             visibleComponentLeft,
             visibleComponentRight,
+            invBodyDimensions,
           }) => {
           return (
             <InventoryBody
@@ -385,6 +399,7 @@ class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProp
               containerIdToDrawerInfo={containerIdToDrawerInfo}
               visibleComponentLeft={visibleComponentLeft}
               visibleComponentRight={visibleComponentRight}
+              invBodyDimensions={invBodyDimensions}
             />
           );
         }}

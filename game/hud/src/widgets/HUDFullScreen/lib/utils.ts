@@ -845,6 +845,7 @@ export function isCraftingSlotVerified(dragDataTransfer: InventoryDataTransfer,
 }
 
 export interface FullScreenNavState {
+  initial: boolean;
   visibleComponentLeft: string;
   visibleComponentRight: string;
   inventoryItems: InventoryItemFragment[];
@@ -855,6 +856,10 @@ export interface FullScreenNavState {
   stackGroupIdToItemIDs: {[id: string]: string[]};
   tabsLeft: TabItem<{ title: string }>[];
   tabsRight: TabItem<{ title: string }>[];
+  invBodyDimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 export interface HUDFullScreenTabData {
@@ -881,6 +886,7 @@ export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
 ];
 
 export const defaultFullScreenState: FullScreenNavState = {
+  initial: true,
   visibleComponentLeft: '',
   visibleComponentRight: '',
   inventoryItems: null,
@@ -891,6 +897,7 @@ export const defaultFullScreenState: FullScreenNavState = {
   myTradeState: 'None',
   tabsLeft: defaultTabsLeft,
   tabsRight: defaultTabsRight,
+  invBodyDimensions: { width: 0, height: 0 },
 };
 
 export const FullScreenContext = React.createContext(defaultFullScreenState);

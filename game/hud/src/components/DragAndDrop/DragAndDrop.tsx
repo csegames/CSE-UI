@@ -182,7 +182,6 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       public componentDidMount() {
         // Init position of items
-        this.initPosition();
         this.mounted = true;
 
         // onResize re init position of items
@@ -256,7 +255,12 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
           this.initTimeout = setTimeout(() => {
             if (this.mounted) {
               if (!this.dimensions) {
-                this.dimensions = this.ref && this.ref.getBoundingClientRect();
+                this.dimensions = this.ref && {
+                  top: this.ref.clientTop,
+                  left: this.ref.clientLeft,
+                  height: this.ref.clientHeight,
+                  width: this.ref.clientWidth,
+                };
               }
               if (this.dimensions) {
                 const { top, left, width, height } = this.dimensions;
@@ -272,11 +276,14 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
                 }
               }
             }
-          }, 50);
+          }, 1);
         }
       }
 
       private onMouseEnter = (e: any) => {
+        if (!this.dimensions) {
+          this.initPosition();
+        }
         if (this.mounted && this.options.dropTarget && !this.state.dragItemIsOver) {
           const dragStore = getDragStore();
           if (dragStore.isDragging && !_.isEqual(dragStore.draggableRef, this.draggableRef) &&

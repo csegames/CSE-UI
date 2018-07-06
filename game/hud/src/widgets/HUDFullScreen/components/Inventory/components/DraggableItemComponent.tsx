@@ -314,8 +314,8 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       id,
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
-      dropTarget: !props.item.disabled || !props.item.disableDrop ||
-        item.slotType !== SlotType.CraftingItem || props.filtering ? false : true,
+      dropTarget: !props.item.disabled && !props.item.disableDrop &&
+        item.slotType !== SlotType.CraftingItem && !props.filtering,
       disableDrag: props.item.disabled || props.item.disableDrag || props.filtering ||
         (props.containerPermissions && (_.isArray(props.containerPermissions) ?
           // if container permissions is an array, search parent containers and this container
