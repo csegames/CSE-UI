@@ -252,6 +252,7 @@ export interface CharacterInfoProps {
 export interface CharacterInfoState {
   initial: boolean;
   isLoading: boolean;
+  playAnimation: boolean;
 }
 
 class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoState> {
@@ -263,6 +264,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
     this.state = {
       initial: true,
       isLoading: true,
+      playAnimation: true,
     };
   }
 
@@ -279,10 +281,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
       return (
         <Container
           className='character-button-char-container'
-          onMouseEnter={this.playSound}
+          onMouseEnter={this.handleMouseOver}
           onClick={onNavigateToCharacterSelect}
         >
-          <IdleShine />
+        {this.state.playAnimation && <IdleShine /> }
           <CharPic
             className='character-button-char-pic'
             flipImage={flipImage}
@@ -393,6 +395,21 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
 
   private noAccessError = () => {
     toastr.error('You do not have access to any servers', 'Oh No!!', {timeOut: 5000});
+  }
+
+  private updateAnimation = () => {
+    this.setState({
+      playAnimation: false,
+    }, () => {
+      this.setState({
+        playAnimation: true,
+      });
+    });
+  }
+
+  private handleMouseOver = () => {
+    this.playSound();
+    this.updateAnimation();
   }
 }
 
