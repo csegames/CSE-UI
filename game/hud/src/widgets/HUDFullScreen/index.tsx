@@ -13,7 +13,7 @@ import { showTooltip, hideTooltip } from 'actions/tooltips';
 import HudFullScreenView from './HUDFullScreenView';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
-import { SlotItemDefType } from './lib/itemInterfaces';
+import { SlotItemDefType, SlotType } from './lib/itemInterfaces';
 import TooltipContent, { defaultTooltipStyle } from './components/Tooltip';
 import {
   FullScreenNavState,
@@ -339,13 +339,19 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private showItemTooltip = (item: SlotItemDefType, event: MouseEvent) => {
+    let instructions = 'Right click item for more actions';
+    if (item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0) {
+      instructions = 'Double click to equip | Right click item for more actions';
+    } else if (item.slotType === SlotType.CraftingContainer || item.slotType === SlotType.Container) {
+      instructions = 'Left click to open container | Right click item for more actions';
+    }
+
     const content = <TooltipContent
       item={item.item || (item.stackedItems && item.stackedItems[0])}
       slotType={item.slotType}
       stackedItems={item.stackedItems}
       equippedItems={this.state.equippedItems}
-      instructions={item.item && item.item.staticDefinition && item.item.staticDefinition.gearSlotSets.length > 0 ?
-        'Double click to equip or right click to open context menu' : ''}
+      instructions={instructions}
     />;
     showTooltip({ content, event, styles: defaultTooltipStyle });
   }
