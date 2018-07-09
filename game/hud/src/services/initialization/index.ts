@@ -141,5 +141,21 @@ export default () => {
   }
   combatLogToString(null);
 
-  client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => events.fire('combatlog_message', combatLogToString(e))));
+  let combatLogTimeout: number = null;
+  let batchedCombatLogs: string[] = [];
+  client.OnCombatLogEvent((logs: CombatLog[]) => {
+    const combatLogs = logs.map(combatLogToString);
+    if (combatLogTimeout) {
+      clearTimeout(combatLogTimeout);
+      batchedCombatLogs = batchedCombatLogs.concat(combatLogs);
+      combatLogTimeout = window.setTimeout(() => {
+        events.fire('combatlog_message', batchedCombatLogs);
+        batchedCombatLogs = [];
+        combatLogTimeout = null;
+      }, 500);
+    }
+    combatLogTimeout = window.setTimeout(() => {
+      events.fire('combatlog_message', combatLogs);
+    }, 500);
+  });
 };
