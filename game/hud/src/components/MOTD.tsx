@@ -8,7 +8,10 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { ql, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { CUQuery, MessageOfTheDay } from '@csegames/camelot-unchained/lib/graphql';
 import { CloseButton } from 'UI/CloseButton';
+
+const STORAGE_PREFIX = 'cse-MOTD-hide-start';
 
 const query = {
   namedQuery: 'motd',
@@ -161,6 +164,8 @@ export interface WelcomeProps {
 }
 
 export interface WelcomeState {
+  visible: boolean;
+  storageInvalidate: string;
 }
 
 export interface WelcomeData {
@@ -176,15 +181,17 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   constructor(props: WelcomeProps) {
     super(props);
     this.state = {
+      visible: false,
+      storageInvalidate: null,
     };
   }
 
   public render() {
     return (
-      <GraphQL query={query}>
+      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<{ motd: ql.schema.MessageOfTheDay }>) => {
           const gqlData = typeof graphql.data === 'string' ? JSON.parse(graphql.data) : graphql.data;
-          if (graphql.loading || !gqlData) return null;
+          if (graphql.loading || !gqlData || !this.state.visible) return null;
           const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
 
           return (
@@ -208,7 +215,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                       <MOTDFooterLeft />
                       <MOTDButton
                         className='btn'
-                        onClick={this.hideDelay}>
+                        onClick={() => this.onHideDelayClick(latestMotd)}>
                         Dismiss for 24h
                       </MOTDButton>
                       <MOTDFooterRight />
@@ -222,15 +229,36 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     );
   }
 
-  public componentDidMount() {
-    // manage visibility based on localStorage
+  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'motd'>>) => {
+    const gqlData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+    const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
+    this.initMotd(latestMotd);
+  }
+
+  private initMotd = (motd: MessageOfTheDay) => {
+    // manage visibility of motd widget based on localStorage
     try {
       const delayInMin: number = 24 * 60;
-      const savedDelay = localStorage.getItem('cse-MOTD-hide-start');
-      const currentDate: Date = new Date();
-      const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
-      savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
-      if (currentDate < savedDelayDate) this.props.setVisibility(false);
+      const motdStoragePayload = localStorage.getItem(`${STORAGE_PREFIX}-${client.characterID}`);
+      if (motdStoragePayload) {
+        const { hideDelayStart, storageInvalidate } = JSON.parse(motdStoragePayload);
+
+        if (motd && storageInvalidate !== motd.id) {
+          // Message of the day has changed, override the 24h dismiss to show the new message
+          this.setState({ visible: true });
+          return;
+        }
+
+        const currentDate: Date = new Date();
+        const savedDelayDate: Date = new Date(hideDelayStart);
+        savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
+        if (currentDate > savedDelayDate) {
+          // It has been longer than 24h since last dismiss. Show the motd.
+          this.setState({ visible: true });
+        }
+      } else {
+        this.setState({ visible: true });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -240,10 +268,14 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     this.props.setVisibility(false);
   }
 
-  private hideDelay = (): void => {
+  private onHideDelayClick = (motd: MessageOfTheDay): void => {
     this.hide();
     const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-MOTD-hide-start', JSON.stringify(hideDelayStart));
+    const motdStoragePayload = {
+      hideDelayStart,
+      storageInvalidate: motd ? motd.id : '',
+    };
+    localStorage.setItem(`${STORAGE_PREFIX}-${client.characterID}`, JSON.stringify(motdStoragePayload));
   }
 }
 
