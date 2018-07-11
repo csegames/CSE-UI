@@ -132,15 +132,16 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
     const on = graphics[id] === 'true' ? 'false' : 'true';
 
     if (id === FULL_SCREEN_TOGGLE_ID) {
+      // Dont call ChangeConfigVar for configs related to Full screen,
+      // these will eventually be updated through client.SetDisplayMode
       const width = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.width :
         graphics[FULL_SCREEN_WIDTH_ID] | 0;
       const height = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.height :
         graphics[FULL_SCREEN_HEIGHT_ID] | 0;
       this.props.onSelectedDisplayModeChange({ width, height, fullScreen: on === 'true' });
+    } else {
+      client.ChangeConfigVar(id, on);
     }
-
-    client.ChangeConfigVar(id, on);
-    client.SaveConfigChanges();
     this.setState({ graphics: Object.assign({}, graphics, { [id]: on }) });
   }
 
@@ -149,7 +150,6 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
     if (client.debug) console.log(`graphic set ${id} = ${value}`);
     sendConfigVarChangeMessage(id, value);
     client.ChangeConfigVar(id, `${value}`);
-    client.SaveConfigChanges();
     const allGraphicConfigs = {
       ...graphics,
       [SELECT_RESOLUTION_ID]: 'Select Resolution',
@@ -187,12 +187,15 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
         const resolutionValues = item.split('x');
         const width = parseInt(resolutionValues[0], 10);
         const height = parseInt(resolutionValues[1], 10);
-        const fullScreen = this.props.selectedDisplayMode ? this.props.selectedDisplayMode.fullScreen :
-          this.state.graphics[FULL_SCREEN_TOGGLE_ID] === 'true';
-        client.ChangeConfigVar(FULL_SCREEN_WIDTH_ID, resolutionValues[0]);
-        client.ChangeConfigVar(FULL_SCREEN_HEIGHT_ID, resolutionValues[1]);
-        client.SaveConfigChanges();
-        this.props.onSelectedDisplayModeChange({ width, height, fullScreen });
+
+        // Automagically toggle full screen if changing selected resolution
+        this.setState({
+          graphics: {
+            ...this.state.graphics,
+            [FULL_SCREEN_TOGGLE_ID]: 'true',
+          },
+        });
+        this.props.onSelectedDisplayModeChange({ width, height, fullScreen: true });
         break;
       }
     }
