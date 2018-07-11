@@ -122,6 +122,9 @@ const HUDEditorContainer = styled('div')`
 
 const HUDEditorTitle = styled('div')`
   padding-left: 4px;
+  div.editorDragHandle {
+    cursor: move;
+  }
   div.resetHUDButton {
     position: absolute;
     top: 4px;
@@ -156,6 +159,8 @@ const HUDEditorList = styled('div')`
   position: relative;
   box-shadow: 0 0 30px 0 #000;
   margin-bottom: 4px;
+  font-family: 'Caudex', serif;
+  font-size: .85em;
   ul {
     li {
       background: #191919;
@@ -417,9 +422,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           top: `${this.state.editorPosition.y}px`,
         }}>
         <HUDEditorTitle>
-          <b
-            onMouseDown={e => this.onMouseDown(e, EditMode.MOVEEDITOR)}
-          >UI Widgets</b>
+          <div className='editorDragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVEEDITOR)}>
+            <b>UI Widgets</b>
+          </div>
           <a href='#' onClick={ () => events.fire('hudnav--navigate', 'reset') }>
             <div className='resetHUDButton'><b>Reset All</b></div>
           </a>
