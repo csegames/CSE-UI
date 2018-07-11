@@ -218,25 +218,26 @@ const ServerActiveIcon = styled('i')`
 `;
 
 const ServerInfoContainer = styled('div')`
+  display: flex;
   font-family: "Titillium Web";
   color: white;
   font-size: 14px;
   font-weight: normal;
-  padding: ${props => props.padding ? props.padding : '8px 0 0 120px'};
+  padding: ${props => props.padding ? props.padding : '8px 0 0 140px'};
   white-space: nowrap;
   pointer-events: none;
 `;
 
 const ServerName = styled('div')`
-  display: inline;
   margin-left: -20px;
 `;
 
 const AccessLevel = styled('div')`
-  display: inline;
   margin-left: 30px;
   font-size: 12px;
   color: gray;
+  white-space: normal;
+  width: 130px;
 `;
 
 const SpinnerContainer = styled('div')`
@@ -329,11 +330,11 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                       color={selectedServer.available ? 'green' : 'red'}>
                     </ServerActiveIcon>
                     {selectedServer.name}
+                    <PlayerCounts server={selectedServer.name} />
                   </ServerName>
                   <AccessLevel>
                     {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
                   </AccessLevel>
-                  <PlayerCounts server={selectedServer.name} />
                 </ServerInfoContainer>
               }
             </InfoContainer>
@@ -368,8 +369,8 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                         color={selectedServer.available ? 'green' : 'red'}>
                       </ServerActiveIcon>
                       {selectedServer.name}
+                      <PlayerCounts server={selectedServer.name} />
                     </ServerName>
-                    <PlayerCounts server={selectedServer.name} />
                     <AccessLevel>
                       {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
                     </AccessLevel>

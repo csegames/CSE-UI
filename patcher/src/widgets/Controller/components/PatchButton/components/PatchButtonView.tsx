@@ -20,6 +20,7 @@ export interface ButtonProps {
   onInstallClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onPlayClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onPlayOfflineClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onNoAccessClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onPauseMusic: (shouldPause?: boolean) => void;
   shouldPauseMusic: () => boolean;
 }
@@ -63,7 +64,6 @@ class Button extends React.Component<ButtonProps, ButtonState> {
         }
 
         const permissions = patcher.getPermissions();
-
         if (selectedServer.type === ServerType.CUGAME) {
           if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) === 0) {
             return (
@@ -76,6 +76,11 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           } else if (!selectedServer.characterCount || !this.props.selectedCharacter) {
             return (
               <DisabledButton text='No Character Selected' fontSize={'1.1em'} />
+            );
+          } else if ((permissions & webAPI.accessLevelToPatchPermission(selectedServer.accessLevel)) === 0) {
+            // Server is online but player does not have permissions
+            return (
+              <DisabledButton text='No Access' onClick={this.props.onNoAccessClick} />
             );
           } else {
             return (

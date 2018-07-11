@@ -241,7 +241,15 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
       case 'HumanMaleForestStalker':
       case 'LuchorpanMaleForestStalker':
       case 'LuchorpanFemaleForestStalker': {
-        return <LuchorpanArcherClass style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+        return (
+          <LuchorpanArcherClass
+            style={{
+              backgroundImage: `url(${classImg})`,
+              transform: 'scale(-1, 1)',
+              backgroundSize: charIdentifier === 'LuchorpanMaleForestStalker' ? '290%' : '340%',
+            }}
+          />
+        );
       }
 
       case 'LuchorpanMaleEmpath':
@@ -275,19 +283,24 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
       case 'HumanFemalePhysician':
       case 'PictMalePhysician':
       case 'PictFemalePhysician':
-      case 'HumanMaleBlackguard':
       case 'HumanFemaleBlackguard':
       case 'PictMaleBlackguard':
       case 'PictFemaleBlackguard':
       case 'HumanMaleStonehealer':
-      case 'HumanFemaleStonehealer':
       case 'ValkyrieMaleStonehealer':
       case 'ValkyrieFemaleStonehealer': {
         return <Class style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
       }
 
       default: {
-        return <Class style={{ backgroundImage: `url(${classImg})` }} />;
+        return (
+          <Class
+            style={{
+              backgroundImage: `url(${classImg})`,
+              backgroundSize: charIdentifier === 'HumanMaleMjolnir' ? '400%' : '340%',
+            }}
+          />
+        );
       }
     }
   }
