@@ -6,31 +6,17 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
+import { findIndex, isEmpty } from 'lodash';
 import { events, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { CUCharacter } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { Skill } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 
 import { ApiSkillInfo } from '../SkillBar';
 import { SkillStateInfo } from '../SkillBar/SkillButton/lib';
 import SkillQueueList, { QueuedSkills } from './components/SkillQueueList';
 
-const query = `
-{
-  myCharacter {
-    skills {
-      id
-      name
-      icon
-      notes
-      tracks
-    }
-  }
-}
-`;
-
 export interface SkillQueueProps {
-
+  skills: HUDGraphQLQueryResult<Skill[]>;
 }
 
 export interface SkillQueueState {
@@ -38,7 +24,6 @@ export interface SkillQueueState {
 }
 
 class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
-  private initialized: boolean = false;
   constructor(props: SkillQueueProps) {
     super(props);
     this.state = {
@@ -48,21 +33,15 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
 
   public render() {
     return (
-      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
-        {() => {
-          return <SkillQueueList queuedSkills={this.state.queuedSkills} />;
-        }}
-      </GraphQL>
+      <SkillQueueList queuedSkills={this.state.queuedSkills} />
     );
   }
 
-  private handleQueryResult = (result: GraphQLResult<{ myCharacter: Partial<CUCharacter> }>) => {
-    if (this.initialized || !result || !result.data) return;
-
-    const mySkills = result.data.myCharacter && result.data.myCharacter.skills;
-    if (mySkills) {
-      mySkills.forEach((skill: ApiSkillInfo) => events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent));
-      this.initialized = true;
+  public componentDidUpdate(prevProps: SkillQueueProps) {
+    if (isEmpty(prevProps.skills.data) && !isEmpty(this.props.skills.data)) {
+      this.props.skills.data.forEach((skill: ApiSkillInfo) => {
+        events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent);
+      });
     }
   }
 
@@ -75,7 +54,7 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
       skill.status & SkillStateStatusEnum.Held;
 
       if (activeOrQueued) {
-        const skillIndex = _.findIndex(queuedSkills[track], queuedSkill => queuedSkill.id === skill.id);
+        const skillIndex = findIndex(queuedSkills[track], queuedSkill => queuedSkill.id === skill.id);
         if (skillIndex > -1) {
           queuedSkills[track][skillIndex] = skill;
         } else {
@@ -113,4 +92,18 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
   }
 }
 
-export default SkillQueue;
+class SkillQueueWithInjectedContext extends React.Component<{}> {
+  public render() {
+    return (
+      <HUDContext.Consumer>
+        {({ skills }) => {
+          return (
+            <SkillQueue skills={skills} />
+          );
+        }}
+      </HUDContext.Consumer>
+    );
+  }
+}
+
+export default SkillQueueWithInjectedContext;

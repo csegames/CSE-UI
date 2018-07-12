@@ -8,8 +8,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
 import { client, events, PlayerState } from '@csegames/camelot-unchained';
-import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
-// import { graphql } from 'react-apollo';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 import { hot } from 'react-hot-loader';
 
@@ -42,23 +40,7 @@ import { ContextMenu } from '../ContextMenu';
 import { Tooltip } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 
-useConfig({
-  url: `${client.apiHost}/graphql`,
-  requestOptions: {
-    headers: {
-      loginToken: client.loginToken,
-      shardID: `${client.shardID}`,
-      characterID: client.characterID,
-    },
-  },
-}, {
-  url: client.apiHost.replace('http', 'ws') + '/graphql',
-  initPayload: {
-    shardID: client.shardID,
-    loginToken: client.loginToken,
-    characterID: client.characterID,
-  },
-});
+import { HUDContext, HUDContextState, defaultContextState, fetchSkills, fetchStatuses } from './context';
 
 const HUDNavContainer = styled('div')`
   position: fixed;
@@ -97,7 +79,7 @@ export interface HUDProps {
   data?: any;
 }
 
-export interface HUDState {
+export interface HUDState extends HUDContextState {
   selectedWidget: HUDWidget | null;
 }
 
@@ -106,9 +88,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
     super(props);
     this.state = {
       selectedWidget: null,
+      ...defaultContextState,
     };
   }
-
   public render() {
     const widgets = this.props.layout.widgets.map((widget, name) => ({ widget, name })).toArray();
     const locked = this.props.layout.locked;
@@ -118,41 +100,43 @@ class HUD extends React.Component<HUDProps, HUDState> {
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
 
     return (
-      <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-        {renderWidgets}
-        <DragStore />
-        <ZoneNameContainer>
-          <ZoneName />
-        </ZoneNameContainer>
-        <Console />
+      <HUDContext.Provider value={this.state}>
+        <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          {renderWidgets}
+          <DragStore />
+          <ZoneNameContainer>
+            <ZoneName />
+          </ZoneNameContainer>
+          <Console />
 
-        <HUDNavContainer>
-          <HUDNav.component {...HUDNav.props} />
-        </HUDNavContainer>
+          <HUDNavContainer>
+            <HUDNav.component {...HUDNav.props} />
+          </HUDNavContainer>
 
-        <InteractiveAlertView />
-        <DevUI />
-        <ScenarioPopup />
+          <InteractiveAlertView />
+          <DevUI />
+          <ScenarioPopup />
 
-        <ScenarioResults />
+          <ScenarioResults />
 
-        <HUDFullScreen />
-        <SkillBarContainer>
-          <SkillBar />
-        </SkillBarContainer>
-        <ContextMenu />
-        <Tooltip />
-        <PassiveAlert />
-        { locked ? null :
-          <HUDEditor
-            widgets={widgets}
-            selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
-            dispatch={this.props.dispatch}
-            setSelectedWidget={this.setSelectedWidget}
-          />
-        }
-        <Watermark />
-      </div>
+          <HUDFullScreen />
+          <SkillBarContainer>
+            <SkillBar />
+          </SkillBarContainer>
+          <ContextMenu />
+          <Tooltip />
+          <PassiveAlert />
+          { locked ? null :
+            <HUDEditor
+              widgets={widgets}
+              selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+              dispatch={this.props.dispatch}
+              setSelectedWidget={this.setSelectedWidget}
+            />
+          }
+          <Watermark />
+        </div>
+      </HUDContext.Provider>
     );
   }
 
@@ -162,6 +146,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
+    this.initGraphQLContext();
 
     if (client && client.OnPlayerStateChanged) {
 
@@ -195,6 +180,17 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   private setSelectedWidget = (selectedWidget: HUDWidget) => {
     this.setState({ selectedWidget });
+  }
+
+  private initGraphQLContext = async () => {
+    const skills = await fetchSkills();
+    const statuses = await fetchStatuses();
+    this.setState(() => {
+      return {
+        skills,
+        statuses,
+      };
+    });
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {
@@ -255,8 +251,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
 }
 
-const HUDWithQL: any = HUD; // graphql(ql.queries.MySocial)(HUD);
-
 function select(state: SessionState) {
   return {
     layout: state.layout,
@@ -264,4 +258,4 @@ function select(state: SessionState) {
   };
 }
 
-export default hot(module)(connect(select)(HUDWithQL));
+export default hot(module)(connect(select)(HUD));

@@ -9,13 +9,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { ql } from '@csegames/camelot-unchained';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { StatusDef } from '@csegames/camelot-unchained/lib/graphql';
+import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 import StatusIcon from './StatusIcon';
-
-const query = {
-  namedQuery: 'statusEffects',
-};
 
 const StatusContainer = styled('div')`
   display: inline-block;
@@ -28,18 +24,20 @@ const StatusContainer = styled('div')`
   height: 35px;
 `;
 
-export interface StatusProps {
+export interface InjectedStatusProps {
+  statusEffects: HUDGraphQLQueryResult<StatusDef[]>;
+}
+
+export interface StatusComponentProps {
   statuses: {
     id: number;
     duration: number;
   }[];
 }
 
-export interface StatusState {
-  statusEffects: ql.schema.StatusDef[];
-}
+export type StatusProps = InjectedStatusProps & StatusComponentProps;
 
-class Status extends React.Component<StatusProps, StatusState> {
+class Status extends React.Component<StatusProps> {
   constructor(props: StatusProps) {
     super(props);
     this.state = {
@@ -48,37 +46,26 @@ class Status extends React.Component<StatusProps, StatusState> {
   }
   public render() {
     return (
-      this.props.statuses && this.state.statusEffects ?
-        <StatusContainer>
-          <div>
+      <StatusContainer>
+        <div>
           {this.props.statuses.map((status, index) => {
             const statusInfo = this.getStatusInfo(status.id);
             return (
               <StatusIcon key={`${index}-${status.id}`} status={statusInfo} />
             );
           })}
-          </div>
-        </StatusContainer> : <GraphQL query={query} onQueryResult={this.handleQueryResult} />
+        </div>
+      </StatusContainer>
     );
   }
 
-  public shouldComponentUpdate(nextProps: StatusProps, nextState: StatusState) {
-    return !_.isEqual(nextState.statusEffects, this.state.statusEffects) ||
-      !_.isEqual(nextProps.statuses, this.props.statuses);
-  }
-
-  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'status'>>) => {
-    const resultData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
-
-    if (resultData && resultData.status && resultData.status.statuses &&
-        !_.isEqual(resultData.status.statuses, this.state.statusEffects)) {
-      this.setState({ statusEffects: resultData.status.statuses });
-    }
+  public shouldComponentUpdate(nextProps: StatusProps) {
+    return !_.isEqual(nextProps.statuses, this.props.statuses);
   }
 
   private getStatusInfo = (id: number) => {
     const status = _.find(
-      this.state.statusEffects,
+      this.props.statusEffects.data,
       (statusEffect: ql.schema.StatusDef) => statusEffect.numericID === id);
     if (status) {
       return {
@@ -91,4 +78,16 @@ class Status extends React.Component<StatusProps, StatusState> {
   }
 }
 
-export default Status;
+class StatusWithInjectedContext extends React.Component<StatusComponentProps> {
+  public render() {
+    return (
+      <HUDContext.Consumer>
+        {({ statuses }) => {
+          return <Status {...this.props} statusEffects={statuses} />;
+        }}
+      </HUDContext.Consumer>
+    );
+  }
+}
+
+export default StatusWithInjectedContext;

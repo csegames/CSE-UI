@@ -64,6 +64,7 @@ module.exports = function (e, rawArgv) {
         lib: path.resolve(__dirname, 'src/lib'),
         services: path.resolve(__dirname, 'src/services'),
         widgets: path.resolve(__dirname, 'src/widgets'),
+        HUDContext: path.resolve(__dirname, 'src/components/HUD/context'),
       },
       extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },

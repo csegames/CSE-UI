@@ -20,6 +20,7 @@
     "baseUrl": "src",
     "paths": {
       "UI/*": [ "components/UI/*" ],
+      "HUDContext": [ "components/HUD/context.ts" ],
       "actions/*": [ "services/actions/*" ]
     }
   },

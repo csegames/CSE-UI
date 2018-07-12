@@ -8,24 +8,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import { client, ClientSkillBarItem } from '@csegames/camelot-unchained';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import styled from 'react-emotion';
+import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 import SkillButton from './SkillButton';
-
-const query = `
-  {
-    myCharacter {
-      skills {
-        id
-        name
-        icon
-        notes
-        tracks
-      }
-    }
-  }
-`;
 
 const Container = styled('div')`
   display: flex;
@@ -41,32 +26,29 @@ export interface ApiSkillInfo {
 }
 
 export interface SkillBarProps {
-
+  apiSkills: HUDGraphQLQueryResult<ApiSkillInfo[]>;
 }
 
 export interface SkillBarState {
-  apiSkills: ApiSkillInfo[];
   clientSkills: ClientSkillBarItem[];
 }
 
 export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
-  private graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>;
-  constructor(props: {}) {
+  constructor(props: SkillBarProps) {
     super(props);
     this.state = {
-      apiSkills: [],
       clientSkills: [],
     };
   }
 
   public render() {
-    const { apiSkills, clientSkills } = this.state;
+    const { apiSkills } = this.props;
+    const { clientSkills } = this.state;
     return (
       <Container>
-        <GraphQL query={query} onQueryResult={this.handleQueryResult} />
         {clientSkills.map((clientSkill: ClientSkillBarItem, index: number) => {
           const skillInfo = {
-            ..._.find(apiSkills, (s: ApiSkillInfo) => s.id === clientSkill.id),
+            ..._.find(apiSkills.data, (s: ApiSkillInfo) => s.id === clientSkill.id),
             ...clientSkill,
           };
 
@@ -84,21 +66,7 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
 
   public shouldComponentUpdate(nextProps: SkillBarProps, nextState: SkillBarState) {
     return !_.isEqual(nextState.clientSkills, this.state.clientSkills) ||
-      !_.isEqual(nextState.apiSkills, this.state.apiSkills);
-  }
-
-  private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>) => {
-    this.graphql = graphql;
-
-    if (graphql.loading || !graphql.data) {
-      return;
-    }
-
-    const myCharacter = typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
-
-    if (myCharacter && myCharacter.skills && !_.isEqual(this.state.apiSkills, myCharacter.skills)) {
-      this.setState({ apiSkills: myCharacter.skills });
-    }
+      !_.isEqual(nextProps.apiSkills, this.props.apiSkills);
   }
 
   private updateSkills = (skills: ClientSkillBarItem[]) => {
@@ -106,8 +74,8 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
 
     this.setState({ clientSkills: sortedSkills });
 
-    if (this.graphql) {
-      setTimeout(() => this.graphql.refetch(), 50);
+    if (this.props.apiSkills.refetch()) {
+      setTimeout(() => this.props.apiSkills.refetch(), 50);
     }
   }
 
@@ -118,4 +86,18 @@ export class SkillBar extends React.Component<SkillBarProps, SkillBarState> {
   }
 }
 
-export default SkillBar;
+class SkillBarWithInjectedContext extends React.Component<{}> {
+  public render() {
+    return (
+      <HUDContext.Consumer>
+        {({ skills }) => {
+          return (
+            <SkillBar apiSkills={skills} />
+          );
+        }}
+      </HUDContext.Consumer>
+    );
+  }
+}
+
+export default SkillBarWithInjectedContext;
