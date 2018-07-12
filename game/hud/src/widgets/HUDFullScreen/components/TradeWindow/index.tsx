@@ -194,6 +194,20 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     this.onTheirTradeItemsChange([]);
 
     events.fire('hudnav--navigate', 'trade', false);
+    this.sendCompleteMessage(reason);
+  }
+
+  private sendCompleteMessage = (reason: SecureTradeDoneReason) => {
+    switch (reason) {
+      case 'Completed': {
+        events.fire('passivealert--newmessage', 'Trade Complete');
+        break;
+      }
+      case 'Canceled': {
+        events.fire('passivealert--newmessage', 'Trade Canceled');
+        break;
+      }
+    }
   }
 
   private onTheirTradeStateChange = (newTradeState: SecureTradeState) => {

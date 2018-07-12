@@ -8,62 +8,53 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { HeaderBorderFoundation } from '../../TabHeader';
+import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql';
 
 const SubHeaderContainer = styled('div')`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: url(${(props: any) => props.grayBG ? 'images/inventory/title-bg-grey.png' : 'images/inventory/title-bg.png' });
-  background-size: cover;
-  -webkit-mask-image: url(images/inventory/title-mask.png);
-  -webkit-mask-size: cover;
   padding: 0 20px;
   height: 35px;
-  color: ${(props: any) => props.grayBG ? '#DFDFDF' : '#D9BC8D'};
+  background: linear-gradient(to right, rgba(188, 163, 143, 0.6), transparent), url(images/inventory/title-bg.png);
+  background-size: cover;
+  color: white;
   z-index: 1;
   text-transform: uppercase;
   font-family: Caudex;
   letter-spacing: 3px;
   box-shadow: inset 0 0 67px rgba(0, 0, 0, 0.6);
+  border: 1px black solid;
+  &.gray-bg {
+    background: linear-gradient(to right,rgba(200, 200, 200, 0.5), transparent ), url(images/inventory/title-bg-grey.png);
+    &:before {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.40);
+    }
+  }
+  &.confirmed {
+    background: linear-gradient(to right,rgba(255, 203, 77, 0.7), transparent ), url(images/inventory/title-bg.png);
+  }
   &:before {
     content: '';
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
-    border-image: ${(props: any) => `linear-gradient(to right, ${props.borderColor}, transparent 70%) 10% 1%`};
+    border-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent 70%) 10% 1%;
     ${HeaderBorderFoundation}
-  }
-  &:after {
-    content: '';
-    background: ${(props: any) => `linear-gradient(to right, ${props.backgroundColor}, transparent 70%)`};
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
   }
 `;
 
 export interface TradeWindowSubHeaderProps {
   text: string;
-  borderColor: string;
-  backgroundColor: string;
-  borderBackgroundColor: string;
+  tradeState: SecureTradeState;
   useGrayBG?: boolean;
 }
 
 class TradeWindowSubHeader extends React.Component<TradeWindowSubHeaderProps> {
   public render() {
-    const { useGrayBG, borderColor, backgroundColor, borderBackgroundColor } = this.props;
+    const { tradeState, useGrayBG, text } = this.props;
+    const className = `${useGrayBG ? 'gray-bg' : ''} ${tradeState === 'Confirmed' ? 'confirmed' : ''}`;
     return (
-      <SubHeaderContainer
-        grayBG={useGrayBG}
-        borderColor={borderColor}
-        backgroundColor={backgroundColor}
-        borderBackgroundColor={borderBackgroundColor}
-      >
-        {this.props.text}
-      </SubHeaderContainer>
+      <SubHeaderContainer className={className}>{text}</SubHeaderContainer>
     );
   }
 }

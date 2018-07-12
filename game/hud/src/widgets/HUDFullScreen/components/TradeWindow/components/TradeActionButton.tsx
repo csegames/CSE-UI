@@ -22,6 +22,7 @@ const ActionButton = styled('div')`
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  font-weight: bold;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 1px;
@@ -40,6 +41,7 @@ const ActionButton = styled('div')`
   }
   &:active {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    -webkit-filter: brightness(150%);
   }
   &:before {
     content: '${(props: any) => props.text}';

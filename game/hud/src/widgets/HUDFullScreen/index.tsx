@@ -183,7 +183,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
               ...tradeTab,
               tab: {
                 ...tradeTab.tab,
-                onTemporaryTabClose: () => events.fire('hudnav--navigate', 'trade', false),
+                onTemporaryTabClose: () => this.onCloseFullScreen(),
               },
             }, 'left', shouldOpen);
           } else {
@@ -332,6 +332,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     window.removeEventListener('keydown', this.handleKeydownEvent);
     client.ReleaseInputOwnership();
     hideTooltip();
+
+    if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {
+      events.fire('cancel-trade');
+    }
   }
 
   private isAlreadyOpen = (name: string) => {

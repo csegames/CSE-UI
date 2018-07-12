@@ -13,6 +13,10 @@ const Container = styled('div')`
   position: relative;
   width: 100%;
   height: 100%;
+  &.locked {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+  }
 `;
 
 const BlackOverlay = styled('div')`
@@ -51,7 +55,7 @@ const Lock = styled('div')`
     background-size: cover;
     width: 68px;
     height: 60px;
-    top: 74px;
+    top: 79px;
     left: 0;
     right: 0;
     margin: auto;
@@ -63,7 +67,7 @@ const Lock = styled('div')`
     background-size: cover;
     width: 103px;
     height: 97px;
-    top: 100px;
+    top: 105px;
     left: 0;
     right: 0;
     margin: auto;
@@ -128,6 +132,26 @@ const BottomLeftBorder = styled('div')`
   height: 95px;
 `;
 
+const AcceptedText = styled('div')`
+&:after {
+  content: 'ACCEPTED';
+  font-family: Caudex;
+  letter-spacing: 1px;
+  color: #A8936F;
+  text-align: center;
+  position: absolute;
+  background: url(images/trade/accepted-bg.png) no-repeat;
+  background-size: cover;
+  width: 238px;
+  height: 32px;
+  line-height: 32px;
+  top: 205px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+`;
+
 export interface LockedOverlayProps {
   state: ql.schema.SecureTradeState;
 }
@@ -135,7 +159,7 @@ export interface LockedOverlayProps {
 class LockedOverlay extends React.Component<LockedOverlayProps> {
   public render() {
     return (
-      <Container>
+      <Container className={this.props.state === 'Locked' ? 'locked' : ''}>
         <TopRightBorder />
         <TopMiddleBorder />
         <TopLeftBorder />
@@ -146,6 +170,7 @@ class LockedOverlay extends React.Component<LockedOverlayProps> {
         <BlackOverlay />
         <DiagnalGlare />
         <TopGlare />
+        {this.props.state === 'Confirmed' && <AcceptedText />}
       </Container>
     );
   }

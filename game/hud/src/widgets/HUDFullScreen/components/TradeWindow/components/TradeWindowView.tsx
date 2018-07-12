@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { fire, on, off } from '@csegames/camelot-unchained/lib/events';
 import styled from 'react-emotion';
 import { ql, webAPI, client } from '@csegames/camelot-unchained';
+import { fire, on, off } from '@csegames/camelot-unchained/lib/events';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import TabHeader from '../../TabHeader';
@@ -76,7 +76,7 @@ const TradeSection = styled('div')`
   display: flex;
   flex: 1;
   width: 100%;
-  height: calc(50% - 115px);
+  height: calc(50% - 110px);
 `;
 
 export interface TradeWindowViewProps {
@@ -116,12 +116,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
         <BackgroundImage src={'images/inventory/bag-bg.png'} />
         <CancelButton onClick={this.onCancelClick}>Cancel</CancelButton>
         <TabHeader title='TRADE' />
-        <TradeWindowSubHeader
-          text='Your Offer'
-          borderColor={'rgba(217, 188, 141, 0.2)'}
-          backgroundColor={'rgba(217, 188, 141, 0.3)'}
-          borderBackgroundColor={'rgba(217, 188, 141, 0.3)'}
-        />
+        <TradeWindowSubHeader text='Your Offer' tradeState={this.props.myTradeState} />
         <TradeSection>
           <TradeDropContainer
             id={'myItems'}
@@ -141,13 +136,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
           onMyTradeStateChanged={this.props.onMyTradeStateChange}
           onTheirTradeStateChanged={this.props.onTheirTradeStateChange}
         />
-        <TradeWindowSubHeader
-          text='You will receive'
-          useGrayBG={true}
-          borderColor={'rgba(223, 223, 223, 0.2)'}
-          backgroundColor={'rgba(223, 223, 223, 0.3)'}
-          borderBackgroundColor={'rgba(233, 233, 233, 0.3)'}
-        />
+        <TradeWindowSubHeader text='You will receive' useGrayBG={true} tradeState={this.props.theirTradeState} />
         <TradeSection>
           <TradeDropContainer
             id={'theirItems'}
@@ -165,7 +154,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
   }
 
   public componentDidMount() {
-    this.closeTradeListener = on('hudnav--navigate', this.handleTradeWindowClose);
+    this.closeTradeListener = on('cancel-trade', this.onCancelClick);
     window.addEventListener('resize', this.setDropContainerDimensions);
     setTimeout(() => {
       this.setDropContainerDimensions();
@@ -210,6 +199,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
       );
       if (res.ok) {
         // Handle aborting trade
+        fire('passivealert--newmessage', 'Trade Canceled');
         this.closeTradeWindow();
         this.props.onMyTradeStateChange('None');
         this.props.onMyTradeItemsChange([]);
@@ -263,12 +253,6 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
           theirContainerIdToDrawerInfo,
         };
       });
-    }
-  }
-
-  private handleTradeWindowClose = (name: string, shouldClose?: boolean) => {
-    if (this.props.myTradeState !== 'None' && ((name === 'trade' && shouldClose === false) || name === '')) {
-      this.onCancelClick();
     }
   }
 

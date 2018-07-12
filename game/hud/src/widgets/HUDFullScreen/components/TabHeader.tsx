@@ -13,7 +13,7 @@ export const HeaderFoundation = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: url(images/inventory/title-bg.png);
+  background: linear-gradient(to right,rgba(220, 141, 88, 0.60), transparent ), url(images/inventory/title-bg.png);
   background-size: cover;
   padding: 20px 20px;
   z-index: 1;
@@ -28,16 +28,15 @@ export const HeaderFoundation = css`
 
 export const HeaderBorderFoundation = css`
   position: absolute;
-  top: 6px;
-  left: 6px;
-  bottom: 6px;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
   width: 100%;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 1px;
   border-right-width: 0px;
   border-style: solid;
-  z-index: -1;
 `;
 
 const Container = styled('div')`
@@ -47,17 +46,9 @@ const Container = styled('div')`
     url(images/inventory/title-bg.png) no-repeat;
   &:before {
     content: '';
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-    border-image: linear-gradient(to right, rgba(222, 194, 146, 0.2), transparent) 10% 1%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    border-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent) 10% 1%;
     ${HeaderBorderFoundation}
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
   }
 `;
 
@@ -92,8 +83,8 @@ const HeaderOrnament = styled('div')`
 `;
 
 const HeaderTitle = styled('div')`
-  color: #DEC292;
-  font-size: 20px;
+  color: #ffe7bb;
+  font-size: 18px;
   font-family: Caudex;
   letter-spacing: 5px;
 `;
