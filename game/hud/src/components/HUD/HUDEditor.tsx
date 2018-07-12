@@ -93,10 +93,10 @@ class HUDEditor extends React.Component<Props, State> {
         <HUDEditorTitle>
           <div className='editorDragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVEEDITOR)}>
             <b>UI Widgets</b>
+            <a href='#' onClick={ () => events.fire('hudnav--navigate', 'reset') }>
+              <div className='resetHUDButton'><b>Reset All</b></div>
+            </a>
           </div>
-          <a href='#' onClick={ () => events.fire('hudnav--navigate', 'reset') }>
-            <div className='resetHUDButton'><b>Reset All</b></div>
-          </a>
         </HUDEditorTitle>
         <HUDEditorList>
           <ul>

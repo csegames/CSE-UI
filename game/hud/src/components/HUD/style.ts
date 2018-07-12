@@ -11,7 +11,7 @@ export const HUDEditorContainer = styled('div')`
   width: 200px;
   height: 400px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   color: white;
   background-color: gray;
   background: url(images/progression/progress-bg-grey.png) no-repeat;
@@ -21,8 +21,11 @@ export const HUDEditorContainer = styled('div')`
 `;
 
 export const HUDEditorTitle = styled('div')`
+  position: relative;
+  z-index: 1;
   padding-left: 4px;
   div.editorDragHandle {
+    width: 100%;
     cursor: move;
   }
   div.resetHUDButton {
