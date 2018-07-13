@@ -8,7 +8,7 @@ import * as React from 'react';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SliderField } from 'UI/SliderField';
 import { SubHeading } from 'UI/SubHeading';
-import { DropDownField } from 'UI/DropdownField';
+import { DropDownField, DropDownItem } from 'UI/DropDownField';
 
 interface Setting {
   type: React.Component | Function;
@@ -29,7 +29,7 @@ interface RenderSettingsProps {
   onChange?: (id: string, value: number) => void;
   dropDownItemsDictionary?: { [configKey: string]: string[] };
   selectedDropDownItemDictionary?: { [configKey: string]: string };
-  onSelectDropdownItem?: (dropdownItem: { configKey: string, item: string }) => void;
+  onSelectDropdownItem?: (item: DropDownItem) => void;
 }
 
 export function settingsRenderer(props: RenderSettingsProps) {
@@ -73,10 +73,11 @@ export function settingsRenderer(props: RenderSettingsProps) {
                   return (
                     <DropDownField
                       key={key}
+                      id={key}
                       label={key}
-                      selectedDropdownItem={props.selectedDropDownItemDictionary[key]}
-                      dropDownItems={props.dropDownItemsDictionary[key]}
-                      onSelectDropdownItem={props.onSelectDropdownItem}
+                      selectedItem={props.selectedDropDownItemDictionary[key]}
+                      items={props.dropDownItemsDictionary[key]}
+                      onSelectItem={props.onSelectDropdownItem}
                     />
                   );
               }

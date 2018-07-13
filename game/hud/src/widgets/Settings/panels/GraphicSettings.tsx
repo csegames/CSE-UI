@@ -10,7 +10,7 @@ import { client, events, DisplayModeConfig } from '@csegames/camelot-unchained';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SliderField } from 'UI/SliderField';
-import { DropDownField } from 'UI/DropdownField';
+import { DropDownField, DropDownItem } from 'UI/DropDownField';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
 import {
   cancel,
@@ -180,11 +180,11 @@ export class GraphicSettings extends React.Component<GraphicSettingsProps, Graph
     return selectedDropDownItem;
   }
 
-  private onSelectDropdownItem = (dropdownItem: { configKey: string, item: string }) => {
-    const { configKey, item } = dropdownItem;
-    switch (configKey) {
+  private onSelectDropdownItem = (dropdownItem: DropDownItem) => {
+    const { id, value } = dropdownItem;
+    switch (id) {
       case SELECT_RESOLUTION_ID: {
-        const resolutionValues = item.split('x');
+        const resolutionValues = value.split('x');
         const width = parseInt(resolutionValues[0], 10);
         const height = parseInt(resolutionValues[1], 10);
 
