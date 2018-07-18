@@ -23,9 +23,6 @@ export default () => {
 
   signalr.initializeSignalR();
 
-  // hook up for console messages to system messages
-  client.OnConsoleText((text: string) => events.fire('system_message', text));
-
   client.OnToggleHUDItem((name: string) => {
     events.fire('hudnav--navigate', name);
   });
@@ -156,6 +153,26 @@ export default () => {
     }
     combatLogTimeout = window.setTimeout(() => {
       events.fire('combatlog_message', combatLogs);
+    }, 500);
+  });
+
+
+  // hook up for console messages to system messages
+  let consoleLogTimeout: number = null;
+  let batchedConsoleLogs: string[] = [];
+  client.OnConsoleText((text: string) => {
+    if (consoleLogTimeout) {
+      clearTimeout(consoleLogTimeout);
+      batchedConsoleLogs = batchedConsoleLogs.concat(text);
+      consoleLogTimeout = window.setTimeout(() => {
+        events.fire('system_message', batchedConsoleLogs);
+        batchedConsoleLogs = [];
+        consoleLogTimeout = null;
+      }, 500);
+    }
+
+    consoleLogTimeout = window.setTimeout(() => {
+      events.fire('system_message', text);
     }, 500);
   });
 };

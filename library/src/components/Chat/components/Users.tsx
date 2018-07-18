@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import ChatRoomInfo from './ChatRoomInfo';
+import User from './User';
 
 export interface UsersState {
 }
@@ -19,7 +20,11 @@ class Users extends React.Component<UsersProps, UsersState> {
   public render() {
     return (
       <div className='chat-tab-content chat-users'>
-        {this.props.room.users}
+        {this.props.room.users.map((user, i) => {
+          return (
+            <User key={i} info={user.info} />
+          );
+        })}
       </div>
     );
   }

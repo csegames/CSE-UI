@@ -108,6 +108,12 @@ class ChatSession {
   public onchat(args: any): void {
     switch (args.type) {
       case messageType.SYSTEM:
+        if (isArray(args.message)) {
+          const arrayOfMessages = args.message.map(msg =>
+            new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
+          this.recv(arrayOfMessages);
+          return;
+        }
         this.recv(new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
         break;
       case messageType.COMBAT_LOG:
@@ -329,15 +335,15 @@ class ChatSession {
     const allUsers: string[] = [];
     this.rooms.forEach((room) => {
       room.users.forEach((user) => {
-        if (allUsers.indexOf(user.props.info.name) < 0) allUsers.push(user.props.info.name);
+        if (allUsers.indexOf(user.info.name) < 0) allUsers.push(user.info.name);
       });
     });
     return allUsers;
   }
 
   private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
-    events.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
+    events.on('system_message', (msg: string | string[]) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    events.on('combatlog_message', (msg: string | string[]) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
 
     if (!this.client) {
       this.client = new ChatClient();

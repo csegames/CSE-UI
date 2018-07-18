@@ -8,7 +8,7 @@ import { events } from '../../../';
 import { prefixes, display } from './settings/chat-defaults';
 
 export class ChatConfig {
-  public SCROLLBACK_BUFFER_SIZE: number = 1024;
+  public SCROLLBACK_BUFFER_SIZE: number = 100;
   public SHOW_COLORS: boolean = false;
   public SHOW_EMOTICONS: boolean = false;
   public SHOW_MARKDOWN: boolean = false;
