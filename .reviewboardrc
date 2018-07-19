@@ -1,4 +1,4 @@
 REVIEWBOARD_URL = 'http://cse-server/reviewboard/'
 REPOSITORY = 'Camelot Unchained UI'
 OPEN_BROWSER = True
-EXCLUDE_PATTERNS = [ r'**\*.js.map', r'**\*.js', r'**\*.png', r'**\*.gif', r'**\*.jpg', r'**\*.ogg', r'**\*.mov', r'**\*.svg', r'**\*.ttf',  r'**\*.otf', r'**\*.webfont', r'**\gql\**', r'**\gqlDocuments.ts', r'**\gqlInterfaces.ts', r'**\gqlPrepend.txt', r'**\yarn.lock' ]
+EXCLUDE_PATTERNS = [ r'**\*.js.map', r'**\*.png', r'**\*.gif', r'**\*.jpg', r'**\*.ogg', r'**\*.mov', r'**\*.svg', r'**\*.ttf',  r'**\*.otf', r'**\*.webfont', r'**\gql\**', r'**\gqlDocuments.ts', r'**\gqlInterfaces.ts', r'**\gqlPrepend.txt', r'**\yarn.lock' ]

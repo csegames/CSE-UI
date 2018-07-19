@@ -196,20 +196,24 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'mkdirp build/js && browserify tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE -t [ envify --NODE_ENV production ]',
+          script: 'mkdirp build/js && browserify -g [ envify --NODE_ENV development ] tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE',
           hiddenFromHelp: true,
         },
         lib: {
           script: '',//mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
-        }
+        },
+        production: {
+          script: 'mkdirp build/js && browserify -g [ envify --NODE_ENV production ] tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE',
+          hiddenFromHelp: true,
+        },
       },
       babel: {
         script: 'babel tmp -d tmpp -q',
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify.production,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
@@ -250,8 +254,14 @@ module.exports = {
         localServer: 'nps report.start && nps report.gql && nps gqlLocalServer && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build module without running lint',
       },
+      ignoreLintProduction: {
+        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify.production,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        localServer: 'nps report.start && nps report.gql && nps gqlLocalServer && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        description: 'Build module without running lint',
+      },
       ignoreLintHatchery: {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
+        production: 'nps build.ignoreLintProduction,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
       ignoreLintWyrmling: {
