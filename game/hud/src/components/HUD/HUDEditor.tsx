@@ -261,7 +261,7 @@ class HUDEditor extends React.Component<Props, State> {
     this.props.setSelectedWidget(null);
   }
 
-  public componentDidUnMount() {
+  public componentWillUnmount() {
     window.removeEventListener('mouseup', this.onMouseUp);
     window.removeEventListener('mousemove', this.onMouseMove);
   }

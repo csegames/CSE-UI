@@ -155,12 +155,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
     );
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     // Always load MOTD
     this.setVisibility('motd', true);
-  }
 
-  public componentDidMount() {
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
 

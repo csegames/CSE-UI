@@ -222,7 +222,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     );
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     // manage visibility based on localStorage
     try {
       const delayInMin: number = 24 * 60;
