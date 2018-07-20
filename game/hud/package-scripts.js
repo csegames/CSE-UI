@@ -5,9 +5,11 @@ module.exports = {
       description: 'Custom build script to make my life easier - JB',
     },
     lint: {
-      script: 'tslint -t stylish src/**/*.ts{,x}',
-      description: 'Run TS-Lint"',
-      hiddenFromHelp: true,
+      default: {
+        script: 'tslint -t stylish src/**/*.ts{,x}',
+        description: 'Run TS-Lint"',
+        hiddenFromHelp: true,
+      },
       fix: {
         script: 'tslint --fix src/**/*.ts{,x}',
         description: 'Fix TS-Lint errors',
@@ -38,8 +40,11 @@ module.exports = {
         script: 'nps clean,build.browserify.lib,build.dev,dev.livereload,dev.watch,dev.serve',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
+      webpack: {
+        script: 'nps clean,build.devWebpack,dev.livereload,dev.watch.webpack,dev.serve',
+        description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
+      },
       start: {
-
       },
       serve: {
         script: 'start http-server ./dist/ -p 9003 -o --cors -c-1',
@@ -50,6 +55,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       watch: {
+        webpack: {
+          script: 'start nps -p dev.watch.webpack.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
+          ts: 'webpack --mode development --watch',
+          hiddenFromHelp: true,
+        },
         default: {
           script: 'start nps -p dev.watch.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
           description: 'Runs watch scripts in parallel to build whenever a file change is detected.',
@@ -221,8 +231,27 @@ module.exports = {
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
+      webpack: {
+        default: {
+          script: 'nps report.start && nps copy,report.copy,build.webpack.production,build.sass,copy.dist,clean.temps,report.success',
+        },
+        development: {
+          script: 'webpack --mode development',
+          hiddenFromHelp: true,
+        },
+        production: {
+          script: 'webpack --mode production',
+          hiddenFromHelp: true,
+        },
+      },
+      devWebpack: {
+        script: 'nps report.start && nps copy,report.copy,build.webpack.development,build.sass,clean.temps,report.success,copy.dev',
+        description: 'build for dev watcher',
+        hiddenFromHelp: true,
+      },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
+        webpack: 'nps build.webpack,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
       wyrmling: {
