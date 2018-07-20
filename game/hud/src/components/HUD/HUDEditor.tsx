@@ -41,8 +41,8 @@ interface EditorPosition {
   y: number;
 }
 
-interface HUDWidget {
-  widget: Widget<any>;
+interface HUDWidget<T = any> {
+  widget: Widget<T>;
   name: string;
 }
 
@@ -126,11 +126,7 @@ class HUDEditor extends React.Component<Props, State> {
 
             { this.props.selectedWidget.widget.dragOptions.lockVisibility ? null :
               <HUDEditorToolbarItem
-                  onMouseOver={ (e: React.MouseEvent<HTMLElement>) => {
-                    this.tooltipMessage = 'Toggle Visibility';
-                    this.tooltipEvent = e;
-                    this.onMouseOver(e);
-                  } }
+                  onMouseOver={ this.onMouseOverToggleVisibility }
                   onMouseLeave={ this.onMouseLeave }
               >
                 <a href='#'><i
@@ -145,11 +141,7 @@ class HUDEditor extends React.Component<Props, State> {
 
             { this.props.selectedWidget.widget.dragOptions.lockOpacity ? null :
               <HUDEditorToolbarItem
-                onMouseOver={ (e: React.MouseEvent<HTMLElement>) => {
-                  this.tooltipMessage = 'Adjust Opacity';
-                  this.tooltipEvent = e;
-                  this.onMouseOver(e);
-                } }
+                onMouseOver={ this.onMouseOverAdjustOpacity }
                 onMouseLeave={ this.onMouseLeave }
               >
                 <a href='#'>
@@ -199,11 +191,7 @@ class HUDEditor extends React.Component<Props, State> {
 
             { this.props.selectedWidget.widget.dragOptions.lockScale ? null :
                 <HUDEditorToolbarItem
-                  onMouseOver={ (e: React.MouseEvent<HTMLElement>) => {
-                    this.tooltipMessage = 'Adjust Scale';
-                    this.tooltipEvent = e;
-                    this.onMouseOver(e);
-                  } }
+                  onMouseOver={ this.onMouseOverAdjustScale }
                   onMouseLeave={ this.onMouseLeave }
                 >
                   <a href='#'>
@@ -250,11 +238,7 @@ class HUDEditor extends React.Component<Props, State> {
             }
 
             <HUDEditorToolbarItem
-                onMouseOver={ (e: React.MouseEvent<HTMLElement>) => {
-                  this.tooltipMessage = 'Reset Widget';
-                  this.tooltipEvent = e;
-                  this.onMouseOver(e);
-                } }
+                onMouseOver={ this.onMouseOverResetWidget }
                 onMouseLeave={ this.onMouseLeave }
             >
               <a href='#'>
@@ -282,7 +266,7 @@ class HUDEditor extends React.Component<Props, State> {
     window.removeEventListener('mousemove', this.onMouseMove);
   }
 
-  private onMouseDown = (e: any, mode: EditMode) => {
+  private onMouseDown = (e: React.MouseEvent<HTMLDivElement>, mode: EditMode) => {
     // check if we can do this or not...
 
     // for now we always allow it
@@ -353,7 +337,7 @@ class HUDEditor extends React.Component<Props, State> {
   private setMode = (m: EditMode) => {
     this.setState({
       mode: m,
-    } as any);
+    });
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {
@@ -441,6 +425,30 @@ class HUDEditor extends React.Component<Props, State> {
         layoutMode: widget.position.layoutMode,
       },
     }));
+  }
+
+  private onMouseOverToggleVisibility = (e: React.MouseEvent<HTMLElement>) => {
+    this.tooltipMessage = 'Toggle Visibility';
+    this.tooltipEvent = e;
+    this.onMouseOver(e);
+  }
+
+  private onMouseOverAdjustOpacity = (e: React.MouseEvent<HTMLElement>) => {
+    this.tooltipMessage = 'Adjust Opacity';
+    this.tooltipEvent = e;
+    this.onMouseOver(e);
+  }
+
+  private onMouseOverAdjustScale = (e: React.MouseEvent<HTMLElement>) => {
+    this.tooltipMessage = 'Adjust Scale';
+    this.tooltipEvent = e;
+    this.onMouseOver(e);
+  }
+
+  private onMouseOverResetWidget = (e: React.MouseEvent<HTMLElement>) => {
+    this.tooltipMessage = 'Reset Widget';
+    this.tooltipEvent = e;
+    this.onMouseOver(e);
   }
 
   private onMouseOver = (event: React.MouseEvent<HTMLElement>) => {

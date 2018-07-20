@@ -84,8 +84,8 @@ const SkillBarContainer = styled('div')`
   pointer-events: none;
 `;
 
-interface HUDWidget {
-  widget: Widget<any>;
+interface HUDWidget<T = any> {
+  widget: Widget<T>;
   name: string;
 }
 
@@ -224,9 +224,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           zOrder={widget.position.zOrder}
           gridDivisions={10}
           locked={this.props.layout.locked}
-          selected={
-            this.state.selectedWidget && this.state.selectedWidget.name === type ? true : false
-          }
+          selected={this.state.selectedWidget && this.state.selectedWidget.name === type}
           save={(s: HUDDragState) => {
             this.props.dispatch(setPosition({
               name: type,
