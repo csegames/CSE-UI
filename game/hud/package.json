@@ -171,6 +171,7 @@
     "mkdirp": "^0.5.1",
     "node-sass": "^4.9.0",
     "p-s": "^3.1.0",
+    "react-hot-loader": "^4.3.3",
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
     "shelljs": "^0.7.8",
@@ -188,6 +189,7 @@
     "webpack": "^4.16.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.0",
+    "webpack-serve": "^2.0.2",
     "why-did-you-update": "0.0.8"
   }
 }

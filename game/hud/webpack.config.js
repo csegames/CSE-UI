@@ -4,7 +4,9 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
-module.exports = function (e, argv) {
+module.exports = function (e, rawArgv) {
+
+  const argv = rawArgv ? rawArgv : {};
 
   const mode = argv.mode ? argv.mode : 'development';
 
@@ -12,17 +14,17 @@ module.exports = function (e, argv) {
     NODE_ENV: process.env.NODE_ENV || mode,
   };
 
+  const outputPath = process.env.CUUI_DEV_OUTPUT_PATH ? process.env.CUUI_DEV_OUTPUT_PATH : argv.watch ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'build');
+
   const config = {
+    mode,
     entry: {
       hud: ['./src/index.tsx'],
     },
     output: {
-      path: argv.watch ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'build'), // existing dev server is reading from dist
+      path: outputPath,
       filename: 'js/[name].js',
       chunkFilename: 'js/[name].js',
-      // filename: 'js/[name].js',
-      // chunkFilename: 'js/[name].chunk.js',
-      // publicPath: '/',
     },
     optimization: {
       minimize: mode === 'production' ? false /* make this true if minimization is desired */ : false,

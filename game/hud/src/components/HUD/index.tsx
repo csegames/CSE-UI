@@ -11,6 +11,7 @@ import { client, events, PlayerState } from '@csegames/camelot-unchained';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 // import { graphql } from 'react-apollo';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
+import { hot } from 'react-hot-loader';
 
 import DragStore from '../DragAndDrop/DragStore';
 import {
@@ -244,4 +245,4 @@ function select(state: SessionState) {
   };
 }
 
-export default connect(select)(HUDWithQL);
+export default hot(module)(connect(select)(HUDWithQL));
