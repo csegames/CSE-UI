@@ -18,6 +18,7 @@ module.exports = function (e, rawArgv) {
 
   const config = {
     mode,
+    devtool: mode === 'development' ? 'eval-source-map' : 'source-map',
     entry: {
       hud: ['./src/index.tsx'],
     },
@@ -102,6 +103,9 @@ module.exports = function (e, rawArgv) {
                   options: {
                     transpileOnly: true,
                     happyPackMode: true,
+                    compilerOptions: {
+                      sourceMap: true,
+                    },
                   }
                 }
               ]
