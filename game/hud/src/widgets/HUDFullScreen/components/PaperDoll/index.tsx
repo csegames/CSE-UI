@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -114,7 +113,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   public componentWillReceiveProps(nextProps: PaperDollProps) {
     const graphqlData = this.props.graphql && this.props.graphql.data;
     const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
-    if (nextGraphqlData && !_.isEqual(nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
+    if (nextGraphqlData && nextGraphqlData.myEquippedItems && (!graphqlData || !graphqlData.myEquippedItems)) {
       this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
     }
   }

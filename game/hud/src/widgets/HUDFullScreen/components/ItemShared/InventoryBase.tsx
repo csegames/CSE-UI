@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -22,7 +21,6 @@ import eventNames, {
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
 import {
-  InventoryBaseQuery,
   InventoryItemFragment,
   EquippedItemFragment,
   GearSlotDefRefFragment,
@@ -84,7 +82,7 @@ export interface InventoryBaseProps {
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
 }
 
-export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
+export interface InventoryBaseWithQLProps {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
@@ -836,6 +834,9 @@ export function distributeItemsNoFilter(args: {
   }
 
   if (!_.isEmpty(stackGroupIdToItemIDs)) {
+    Object.keys(stackGroupIdToItemIDs).forEach((stackGroupId) => {
+      stackGroupIdToItemIDs[stackGroupId] = _.uniqBy(stackGroupIdToItemIDs[stackGroupId], itemId => itemId);
+    });
     props.onChangeStackGroupIdToItemIDs(stackGroupIdToItemIDs);
   }
 

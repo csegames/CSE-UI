@@ -74,7 +74,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   public componentDidMount() {
     this.navigateListener = events.on('hudnav--navigate', this.handleNavEvent);
     this.shouldKeydownListener = events.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
-    this.tabPanelRightRef.activeTabIndex = 1;
   }
 
   public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
@@ -356,6 +355,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     showTooltip({ content, event, styles: defaultTooltipStyle });
   }
 
+  private isVisible = () => {
+    return this.state.visibleComponentLeft !== '' || this.state.visibleComponentRight !== '';
+  }
+
   private hideItemTooltip = () => {
     hideTooltip();
   }
@@ -365,15 +368,21 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
-    this.setState({ inventoryItems });
+    if (this.isVisible()) {
+      this.setState({ inventoryItems });
+    }
   }
 
   private onChangeContainerIdToDrawerInfo = (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => {
-    this.setState({ containerIdToDrawerInfo });
+    if (this.isVisible()) {
+      this.setState({ containerIdToDrawerInfo });
+    }
   }
 
   private onChangeStackGroupIdToItemIDs = (stackGroupIdToItemIDs: {[id: string]: string[]}) => {
-    this.setState({ stackGroupIdToItemIDs });
+    if (this.isVisible()) {
+      this.setState({ stackGroupIdToItemIDs });
+    }
   }
 
   private onChangeMyTradeItems = (myTradeItems: InventoryItemFragment[]) => {

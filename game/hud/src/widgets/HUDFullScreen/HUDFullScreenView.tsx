@@ -206,43 +206,42 @@ class HUDFullScreenView extends React.Component<Props, State> {
       <FullScreenContext.Consumer>
         {(context) => {
           const { visibleComponentLeft, visibleComponentRight, tabsLeft, tabsRight } = context;
+          const shouldShow = visibleComponentLeft !== '' || visibleComponentRight !== '';
           return (
-            <div style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
-              <Container>
-                <TabPanel
-                  ref={this.props.getLeftRef}
-                  tabs={tabsLeft}
-                  renderTab={this.renderTab}
-                  content={this.content}
-                  styles={{
-                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                    tabs: defaultHUDFullScreenStyle.navigationContainer,
-                    tab: defaultHUDFullScreenStyle.navTab,
-                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                    content: defaultHUDFullScreenStyle.contentContainer,
-                  }}
-                  onActiveTabChanged={this.props.onActiveTabChanged}
-                />
-                <Divider>
-                  <DividerMidSection />
-                </Divider>
-                <TabPanel
-                  ref={this.props.getRightRef}
-                  tabs={tabsRight}
-                  renderTab={this.renderTab}
-                  content={this.content}
-                  styles={{
-                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                    tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
-                    tab: defaultHUDFullScreenStyle.navTab,
-                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                    content: defaultHUDFullScreenStyle.contentContainer,
-                  }}
-                  onActiveTabChanged={this.props.onActiveTabChanged}
-                />
-              </Container>
+            <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
+              <TabPanel
+                ref={this.props.getLeftRef}
+                tabs={tabsLeft}
+                renderTab={this.renderTab}
+                content={this.content}
+                styles={{
+                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+                  tabs: defaultHUDFullScreenStyle.navigationContainer,
+                  tab: defaultHUDFullScreenStyle.navTab,
+                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
+                  content: defaultHUDFullScreenStyle.contentContainer,
+                }}
+                onActiveTabChanged={this.props.onActiveTabChanged}
+              />
+              <Divider>
+                <DividerMidSection />
+              </Divider>
+              <TabPanel
+                ref={this.props.getRightRef}
+                tabs={tabsRight}
+                renderTab={this.renderTab}
+                content={this.content}
+                styles={{
+                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+                  tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
+                  tab: defaultHUDFullScreenStyle.navTab,
+                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
+                  content: defaultHUDFullScreenStyle.contentContainer,
+                }}
+                onActiveTabChanged={this.props.onActiveTabChanged}
+              />
               <Close onClick={this.props.onCloseFullScreen} />
-            </div>
+            </Container>
           );
         }}
       </FullScreenContext.Consumer>
