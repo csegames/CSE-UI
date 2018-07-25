@@ -17,9 +17,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@csegames/camelot-unchained@^0.1.52":
-  version "0.1.52"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.52.tgz#12679640ce8e383422c6442bf509366c272aac6b"
+"@csegames/camelot-unchained@^0.1.53":
+  version "0.1.53"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.53.tgz#5058ebdf13efd55b4315767c6df0724b40c23532"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
