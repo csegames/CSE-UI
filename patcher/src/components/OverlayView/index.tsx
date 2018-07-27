@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import * as events from '@csegames/camelot-unchained/lib/events';
+import styled from 'react-emotion';
 
 import { ql, Chat } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
@@ -13,7 +14,11 @@ import { patcher } from '../../services/patcher';
 // views
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
-import PatchNotes from '../../widgets/PatchNotes';
+
+const NewsContainer = styled('div')`
+  background: url(images/news/bg.png) no-repeat, black;
+  background-size: contain;
+`;
 
 export interface OverlayViewProps {
 }
@@ -125,20 +130,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
 
       case view.NEWS:
         return (
-          <div className={`View ${className}`}>
+          <NewsContainer className={`View ${className} cse-ui-scroller-grey`}>
             <News {...props} />
-          </div>
+          </NewsContainer>
         );
 
       case view.CHAT:
         return null;
-
-      case view.PATCHNOTES:
-        return (
-          <div className={`View ${className}`}>
-            <PatchNotes defaultServer={this.state.selectedServer} />
-          </div>
-        );
 
       // others later
     }

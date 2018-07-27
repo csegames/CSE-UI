@@ -14,6 +14,8 @@
 @import './sass/titilliumweb';
 @import './sass/animations';
 
+@import './_cu_icons';
+
 html,body, #Patcher {
   height: 100%;
   width: 100%;
@@ -105,6 +107,13 @@ input {
 }
 
 @font-face {
+  font-family: 'Caudex';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../font/Caudex/Caudex-Regular.ttf') format('truetype'),
+}
+
+@font-face {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
@@ -174,6 +183,50 @@ input {
   box-shadow: 0px 17px 17px -4px rgba(0,0,0,0.70);
 }
 
+.cse-ui-scroller-grey::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cse-ui-scroller-grey::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: none;
+  background: transparent;
+}
+
+.cse-ui-scroller-grey::-webkit-scrollbar-thumb:vertical {
+  border: 35px solid #404040;
+  border-width: 35px 4px 35px 4px;
+  border-image: url(../images/scrollbar-thumb-ends.png);
+  border-image-slice: 35 4 35 4;
+  min-height: 100px;
+  box-shadow: none;
+  background: none;
+}
+
+
+
+.cse-ui-scroller-brown::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cse-ui-scroller-brown::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: none;
+  background: transparent;
+}
+
+.cse-ui-scroller-brown::-webkit-scrollbar-thumb:vertical {
+  border: 35px solid #404040;
+  border-width: 35px 4px 35px 4px;
+  border-image: url(../images/scrollbar-thumb-ends-brown.png);
+  border-image-slice: 35 4 35 4;
+  min-height: 100px;
+  box-shadow: none;
+  background: none;
+}
+
 .quickselect-auto-width {
   width: 100%;
 }
@@ -223,4 +276,3 @@ input {
 
 // widgets
 @import './widgets/CharacterCreation/index';
-@import './widgets/News/index';

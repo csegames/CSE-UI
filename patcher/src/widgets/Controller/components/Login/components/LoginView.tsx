@@ -21,6 +21,7 @@ const Container = styled('div')`
   z-index: 1;
   transition: all ease-out .5s;
   padding: 0 10px;
+  pointer-events: all;
 `;
 
 const Input = styled('input')`
