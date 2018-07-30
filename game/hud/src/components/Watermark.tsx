@@ -33,5 +33,5 @@ export interface WatermarkStyle {
 export default (props: {
   style?: Partial<WatermarkStyle>;
 }) => {
-  return <Watermark>Engine/Tech Alpha - Do not stream or distribute.</Watermark>;
+  return <Watermark>Beta 1 - Do not stream or distribute.</Watermark>;
 };
