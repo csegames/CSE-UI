@@ -7,7 +7,11 @@
 
 import * as React from 'react';
 import { webAPI } from '@csegames/camelot-unchained';
-import { patcher, ChannelStatus, PatchPermissions } from '../../../../../services/patcher';
+import {
+  // patcher,
+  ChannelStatus,
+//  PatchPermissions
+} from '../../../../../services/patcher';
 import { ServerType, PatcherServer } from '../../../services/session/controller';
 import PlayNowButton from './PlayNowButton';
 import DisabledButton from './DisabledButton';
@@ -63,13 +67,14 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           videoElements[vid].play();
         }
 
-        const permissions = patcher.getPermissions();
+        // const permissions = patcher.getPermissions();
         if (selectedServer.type === ServerType.CUGAME) {
-          if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) === 0) {
-            return (
-              <DisabledButton text='Server Offline' />
-            );
-          } else if (!selectedServer.available) {
+          // if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) === 0) {
+          //   return (
+          //     <DisabledButton text='Server Offline' />
+          //   );
+          // } else 
+          if (!selectedServer.available) {
             return (
               <DisabledButton text='Play Offline' onClick={this.props.onPlayOfflineClick} />
             );
