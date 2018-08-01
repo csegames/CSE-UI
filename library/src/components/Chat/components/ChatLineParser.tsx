@@ -67,7 +67,10 @@ class ChatLineParser {
     if (highlights.length) {
       tokens.push({ token: ChatLineParser.HIGHLIGHT, expr: parseHighlight.createRegExp(highlights) });
     }
-    tokens.push({ token: ChatLineParser.NICK, expr: parseNicks.createRegExp() });
+    const nicks = parseNicks.createRegExp();
+    if (nicks) {
+      tokens.push({ token: ChatLineParser.NICK, expr: nicks });
+    }
 
     // Run through each parser
     const parser : ChatTextParser = new ChatTextParser(tokens);
