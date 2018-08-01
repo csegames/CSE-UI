@@ -77,11 +77,6 @@ class Button extends React.Component<ButtonProps, ButtonState> {
             return (
               <DisabledButton text='No Character Selected' fontSize={'1.1em'} />
             );
-          } else if ((permissions & webAPI.accessLevelToPatchPermission(selectedServer.accessLevel)) === 0) {
-            // Server is online but player does not have permissions
-            return (
-              <DisabledButton text='No Access' onClick={this.props.onNoAccessClick} />
-            );
           } else {
             return (
               <PlayNowButton text='Play Now' onClick={this.props.onPlayClick} />
@@ -121,3 +116,10 @@ class Button extends React.Component<ButtonProps, ButtonState> {
 }
 
 export default Button;
+
+          // else if ((permissions & webAPI.accessLevelToPatchPermission(selectedServer.accessLevel)) === 0) {
+          //   // Server is online but player does not have permissions
+          //   return (
+          //     <DisabledButton text='No Access' onClick={this.props.onNoAccessClick} />
+          //   );
+          // } 

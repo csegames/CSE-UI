@@ -64,13 +64,17 @@ class GettingStarted extends React.Component<Props, State> {
     return (
       <Container>
         <Dudes>
-          <Image src="images/getting-started/Animated-dudes.gif" />
+          <Image src='images/getting-started/Animated-dudes.gif' />
         </Dudes>
         <Anvil>
-          <Image src="images/getting-started/anvil-beta-is-here.png" />
+          <Image src='images/getting-started/anvil-beta-is-here.png' />
         </Anvil>
         <LinksContainer>
-          <Link target="_blank" href="http://camelotunchained.com/v3/camelot-unchained/">Getting Started</Link>
+          <Link 
+            target='_blank'
+            href='https://s3.amazonaws.com/camelot-unchained/docs/Beta-1-Players-Guide.pdf'>
+            Beta 1 Guide
+          </Link>
         </LinksContainer>
       </Container>
     );

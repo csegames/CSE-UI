@@ -19,11 +19,11 @@ const PlayerCount = styled('span')`
     : '#92E989'};
 `;
 
-function query(server: string) {
+function query(shard: number) {
   return `
       {
         metrics {
-          currentPlayerCount(server: "${server}") {
+          currentPlayerCount(shard: ${shard}) {
             arthurian
             tuatha
             viking
@@ -38,7 +38,8 @@ type QueryType = {
 };
 
 export interface PlayerCountsProps {
-  server: string;
+  shard: number;
+  host: string;
 }
 
 export interface PlayerCountsState {
@@ -64,8 +65,9 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
         <PlayerCount faction={Faction.TDD}>{this.state.playerCountT} T</PlayerCount>
         <PlayerCount faction={Faction.Viking}>{this.state.playerCountV} V</PlayerCount>
         <GraphQL query={{
-        query: query(this.props.server),
-        pollInterval: 30000,
+          query: query(this.props.shard),
+          pollInterval: 30000,
+          url: this.props.host + '/graphql',
         }} onQueryResult={this.handleQueryResult} />
       </div>
     );

@@ -8,6 +8,7 @@ import * as React from 'react';
 import * as events  from '@csegames/camelot-unchained/lib/events';
 import Animate from '../../lib/Animate';
 import { HeroContentItem } from '../../services/session/heroContent';
+import GettingStarted from '../GettingStarted';
 
 export interface HeroProps {
   isFetching: boolean;
@@ -56,6 +57,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
                 {index + 1}
             </div>)}
         </div>
+        <GettingStarted />
       </div>
     );
   }

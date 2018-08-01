@@ -330,7 +330,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                       color={selectedServer.available ? 'green' : 'red'}>
                     </ServerActiveIcon>
                     {selectedServer.name}
-                    <PlayerCounts server={selectedServer.name} />
+                    <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} />
                   </ServerName>
                   <AccessLevel>
                     {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
@@ -369,7 +369,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                         color={selectedServer.available ? 'green' : 'red'}>
                       </ServerActiveIcon>
                       {selectedServer.name}
-                      <PlayerCounts server={selectedServer.name} />
+                      <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} />
                     </ServerName>
                     <AccessLevel>
                       {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
