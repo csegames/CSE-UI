@@ -80,6 +80,21 @@ export default {
         },
       },
       {
+        name: 'building',
+        tooltip: 'Toggle Building Mode',
+        iconClass: 'fa-cube',
+        icon: (
+          <span>
+            <i className='fa fa-cube fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'building');
+          client.ToggleBuildingMode();
+        },
+      },
+      {
         name: 'character',
         tooltip: 'Character',
         iconClass: 'fa-user',
@@ -94,21 +109,36 @@ export default {
           hideClientControlledUI();
         },
       },
-      // {
-      //   name: 'social',
-      //   tooltip: 'Social',
-      //   iconClass: 'fa-users',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
-      //   hidden: false,
-      //   onClick: () => {
-      //     events.fire('hudnav--navigate', 'social');
-      //     hideClientControlledUI();
-      //   },
-      // },
+      {
+        name: 'equippedgear',
+        tooltip: 'Equipped Items',
+        iconClass: 'fa-shield',
+        icon: (
+          <span>
+            <i className='fa fa-shield fa-stack-1x'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
+        },
+      },
+      {
+        name: 'inventory',
+        tooltip: 'Inventory',
+        iconClass: 'fa-briefcase',
+        icon: (
+          <span>
+            <i className='fa fa-briefcase fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'equippedgear-left');
+          events.fire('hudnav--navigate', 'inventory-right');
+        },
+      },
       // {
       //   name: 'spellbook',
       //   tooltip: 'Spellbook',
@@ -141,27 +171,12 @@ export default {
       //   },
       // },
       {
-        name: 'building',
-        tooltip: 'Toggle Building Mode',
-        iconClass: 'fa-cube',
-        icon: (
-          <span>
-            <i className='fa fa-cube fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'building');
-          client.ToggleBuildingMode();
-        },
-      },
-      {
         name: 'crafting',
         tooltip: 'Crafting',
-        iconClass: 'fa-tasks',
+        iconClass: 'fa-flask',
         icon: (
           <span>
-            <i className='fa fa-tasks fa-rotate-270 fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-flask fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -170,82 +185,12 @@ export default {
         },
       },
       {
-        name: 'inventory',
-        tooltip: 'Inventory',
-        iconClass: 'fa-list',
-        icon: (
-          <span>
-            <i className='fa fa-list fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'inventory');
-        },
-      },
-      {
-        name: 'equippedgear',
-        tooltip: 'Equipped Items',
-        iconClass: 'fa-user',
-        icon: (
-          <span>
-            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'equippedgear');
-        },
-      },
-      // {
-      //   name: 'plotcontrol',
-      //   tooltip: 'Plot Controller',
-      //   iconClass: 'fa-map-signs',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
-      //   hidden: true,
-      //   onClick: () => {
-      //     events.fire('hudnav--navigate', 'plotcontrol');
-      //   },
-      // },
-      {
-        name: 'map',
-        tooltip: 'World Map',
-        iconClass: 'fa-map',
-        icon: (
-          <span>
-            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'map');
-        },
-      },
-      {
-        name: 'scenario',
-        tooltip: 'Scenario Management',
-        iconClass: 'fa-gamepad',
-        icon: (
-          <span>
-            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          client.SendSlashCommand('showscenarioui');
-        },
-      },
-      {
         name: 'nearby-plot',
         tooltip: 'Nearby Plot',
-        iconClass: 'fa-building',
+        iconClass: 'fa-map-signs',
         icon: (
           <span>
-            <i className='fa fa-building fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -268,12 +213,69 @@ export default {
         },
       },
       {
-        name: 'scenario-results',
-        tooltip: 'Scenario Results',
-        iconClass: 'fa-star',
+        name: 'map',
+        tooltip: 'World Map',
+        iconClass: 'fa-map',
         icon: (
           <span>
-            <i className='fa fa-star fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'map');
+        },
+      },
+      // {
+      //   name: 'social',
+      //   tooltip: 'Social',
+      //   iconClass: 'fa-users',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'social');
+      //     hideClientControlledUI();
+      //   },
+      // },
+      // {
+      //   name: 'plotcontrol',
+      //   tooltip: 'Plot Controller',
+      //   iconClass: 'fa-map-signs',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: true,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'plotcontrol');
+      //   },
+      // },
+      {
+        name: 'scenario',
+        tooltip: 'Scenario Management',
+        iconClass: 'fa-gamepad',
+        icon: (
+          <span>
+            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          client.SendSlashCommand('showscenarioui');
+        },
+      },
+      {
+        name: 'scenario-results',
+        tooltip: 'Scenario Results',
+        iconClass: 'fa-fort-awesome',
+        icon: (
+          <span>
+            <i className='fa fa-fort-awesome fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -326,10 +328,10 @@ export default {
       {
         name: 'reset',
         tooltip: 'Reset UI layout',
-        iconClass: 'fa-retweet',
+        iconClass: 'fa-clone',
         icon: (
           <span>
-            <i className='fa fa-retweet fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-clone fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
