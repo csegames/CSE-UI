@@ -29,6 +29,7 @@ const Container = styled('div')`
 `;
 
 const ItemWrapper = styled('div')`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,8 +38,16 @@ const ItemWrapper = styled('div')`
   width: ${slotDimensions}px;
   height: ${slotDimensions}px;
   margin: 0 2.5px;
-  background: url(${(props: any) => props.slotImage});
-  background-size: cover;
+`;
+
+const ItemImage = styled('img')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 `;
 
 export interface InventorySlotProps {
@@ -96,11 +105,13 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           }
         >
           <ItemWrapper
-            slotImage={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
             onClick={usesContainer ? this.onToggleContainer : null}
             onMouseOver={this.onMouseOver}
             onMouseLeave={this.onMouseLeave}
             onDoubleClick={!item.disableEquip && !item.disabled ? this.onEquipItem : () => {}}>
+              <ItemImage
+                src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
+              />
               <DraggableItemComponent
                 item={item}
                 filtering={this.props.filtering}
@@ -118,8 +129,10 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         </ContextMenu>
       </Container>
     ) :
-      <ItemWrapper
-        slotImage={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}>
+      <ItemWrapper>
+        <ItemImage
+          src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
+        />
         <EmptyItemDropZone
           slotType={this.props.item.slotType}
           disableDrop={this.props.item.disableDrop}
@@ -154,6 +167,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   private onContextMenuContentShow = () => {
+    this.props.hideTooltip();
     this.setState({ contextMenuVisible: true });
   }
 

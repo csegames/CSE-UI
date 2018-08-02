@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+.building {
+
 header {
   -webkit-user-select: none;
   cursor: default;
@@ -217,3 +219,5 @@ button {
 @import './widgets/DropLight/index';
 @import './widgets/Blueprints/index';
 @import './widgets/MaterialSelector/index';
+
+}

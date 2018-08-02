@@ -5,9 +5,8 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { bodyParts, client, events } from '@csegames/camelot-unchained';
+import { bodyParts, client, events, Gender, Race } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
@@ -83,21 +82,13 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     };
   }
   public render() {
-    const myOrder = this.props.graphql.data && this.props.graphql.data.myOrder;
-    const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
-
     return (
       <Container>
         <BackgroundImage src={'images/paperdollbg.png'} />
         <PaperdollContainer>
-          <ManIcon
-            src={myCharacter && paperDollIcons[`${myCharacter.gender}${myCharacter.race}`]}
-          />
+          <ManIcon src={paperDollIcons[`${Gender[client.playerState.gender]}${Race[client.playerState.race]}`]} />
           <CharacterInfoContainer>
-            <CharacterAndOrderName
-              characterName={myCharacter && myCharacter.name}
-              orderName={myOrder ? myOrder.name : ''}
-            />
+            <CharacterAndOrderName characterName={client.playerState.name} />
             <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
           </CharacterInfoContainer>
           <EquipmentSlots onEquippedItemsChange={this.props.onEquippedItemsChange} />
@@ -114,7 +105,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   public componentWillReceiveProps(nextProps: PaperDollProps) {
     const graphqlData = this.props.graphql && this.props.graphql.data;
     const nextGraphqlData = nextProps.graphql && nextProps.graphql.data;
-    if (nextGraphqlData && !_.isEqual(nextGraphqlData.myEquippedItems, graphqlData && graphqlData.myEquippedItems)) {
+    if (nextGraphqlData && nextGraphqlData.myEquippedItems && (!graphqlData || !graphqlData.myEquippedItems)) {
       this.props.onEquippedItemsChange(nextGraphqlData.myEquippedItems.items);
     }
   }

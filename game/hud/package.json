@@ -78,7 +78,7 @@
     "postinstall": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
-    "@csegames/camelot-unchained": "^0.1.52",
+    "@csegames/camelot-unchained": "^0.1.54",
     "@types/ol": "^4.6.1",
     "@types/openlayers": "^4.6.2",
     "aliasify": "^2.1.0",

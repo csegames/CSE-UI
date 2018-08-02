@@ -37,7 +37,7 @@ import Settings from './layoutItems/Settings';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.7'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.7.8'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -387,14 +387,11 @@ export const setPosition = module.createAction({
   type: 'layout/SET_POSITION',
   action: (a: { name: string, widget: Widget<any>, position: Position }) => a,
   reducer: (s, a) => {
-    // Save the position into local storage everytime position is changed
-    const widget = { ...a.widget, position: a.position };
-    saveState(s, widget, a.name);
-
     return {
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position = a.position;
+        saveState(s, v, a.name);
         return v;
       }),
     };
@@ -436,6 +433,7 @@ export const setVisibility = module.createAction({
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = a.visibility;
+        saveState(s, v, a.name);
         return v;
       }),
     };
@@ -454,6 +452,26 @@ export const toggleVisibility = module.createAction({
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = !v.position.visibility;
+        return v;
+      }),
+    };
+  },
+});
+
+export const resetHUDWidget = module.createAction({
+  type: 'layout/RESET_HUD_WIDGET',
+  action: (name: string) => {
+    return {
+      name,
+    };
+  },
+  reducer: (s, a) => {
+    const defaultWidgets = initialState().widgets;
+    return {
+      widgets: s.widgets.update(a.name, (v) => {
+        if (typeof v === 'undefined') return v;
+        v.position = defaultWidgets.get(a.name).position;
+        saveState(s, v, a.name);
         return v;
       }),
     };

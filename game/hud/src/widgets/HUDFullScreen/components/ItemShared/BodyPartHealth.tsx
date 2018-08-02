@@ -6,8 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as classNames from 'classnames';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { characterBodyPartIcons } from '../../lib/constants';
 
 export interface BodyPartHealthStyles {
@@ -44,11 +43,11 @@ const HealthCompSecondaryText = styled('div')`
 
 const Icon = styled('div')`
   font-size: 24px;
-`;
-
-const FlipIcon = css`
-  transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
+  color: #6F7581;
+  &.isRightPart {
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+  }
 `;
 
 export interface MaxHealthPartsInfo {
@@ -84,10 +83,11 @@ class BodyPartHealth extends React.Component<BodyPartHealthProps, {}> {
       <HealthInfoContainer>
         {Object.keys(healthBodyParts).map((healthComponent: string, i: number) => {
           const isRightPart = _.includes(healthComponent.toLowerCase(), 'right');
-          const name = healthComponent.substr(0).toUpperCase() + healthComponent.substr(1, healthComponent.length);
+          const name = healthComponent.substr(0, 1).toUpperCase() + healthComponent.substr(1, healthComponent.length);
+
           return (
             <HealthCompContainer key={i}>
-              <Icon className={classNames(isRightPart ? FlipIcon : '', characterBodyPartIcons[name])} />
+              <Icon className={(isRightPart ? 'isRightPart' : '') + ` ${characterBodyPartIcons[name]}`} />
               <HealthCompInfo>
                 <HealthCompSecondaryText>
                   hp {this.getMaxHealthForBodyPart(healthBodyParts[healthComponent]) || 'N/A'}

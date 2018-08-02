@@ -13,7 +13,7 @@ interface VoxStaticDefinition {
 
 interface VoxStatsItem {
   quality: number;
-  mass: number;
+  selfMass: number;
   unitCount: number;
 }
 

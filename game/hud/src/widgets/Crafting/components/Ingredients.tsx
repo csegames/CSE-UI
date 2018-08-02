@@ -100,7 +100,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         // waiting for slots to load
         addIngredients = (
           <div className={css(ss.addIngredient)}>
-            ... loading recipe details
+            {/* loading possible ingredients... */}
           </div>
         );
       }
@@ -111,7 +111,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
           // no ingredients, but slot selected, ingredients are being loaded
           possible = (
             <div className={css(ss.message) + ' ingredients-searching'}>
-              Searching bags for possible ingredients ...
+              {/* Searching bags for possible ingredients ... */}
             </div>
           );
         } else {
@@ -149,14 +149,17 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         }
       }
       addIngredients = (
-        <div className={css(ss.addIngredient) + ' ingredients-add'}>
-          <PossibleSlots
-            dispatch={this.props.dispatch}
-            disabled={!configuring}
-            selectedItem={props.selectedSlot}
-            onSelect={this.selectSlot}
-          />
-          {possible}
+        <div className={css(ss.addIngredientWrapper)}>
+          <div>Select ingredients to load into Vox</div>
+          <div className={css(ss.addIngredient) + ' ingredients-add'}>
+            <PossibleSlots
+              dispatch={this.props.dispatch}
+              disabled={!configuring}
+              selectedItem={props.selectedSlot}
+              onSelect={this.selectSlot}
+            />
+            {possible}
+          </div>
         </div>
       );
     }
@@ -165,6 +168,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       <div className={css(ss.ingredients) + ' ingredients'}>
         {addIngredients}
         <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
+          <div>Loaded Ingredients</div>
           <div>{loaded}</div>
           { last
             ? <Button

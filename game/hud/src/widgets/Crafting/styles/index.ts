@@ -13,16 +13,23 @@ import opts from './opts';
  */
 
 export interface ButtonStyles {
-  button: React.CSSProperties;
+  button: React.CSSProperties | any;
 }
 
 export const button: ButtonStyles = {
   button: {
+    fontFace: 'TitilliumWeb',
     pointerEvents: 'auto',
     marginRight: opts.SPACE_BETWEEN_FIELDS,
     fontSize: opts.buttons.FONT_SIZE,
     minWidth: opts.buttons.MIN_WIDTH,
-    padding: 0,
+    padding: '5px',
+    background: '#415A77',
+    color: 'white',
+    border: '1px solid #1B263B',
+    ':hover': {
+      '-webkit-filter': 'brightness(1.2)',
+    },
   },
 };
 
@@ -99,7 +106,7 @@ export const input: InputStyles = {
   button: {
     cursor: 'pointer',
     height: '12px',
-    fontSize: '10px',
+    // fontSize: '10px',
     width: '8px',
     textAlign: 'center',
     lineHeight: '10px',
@@ -123,10 +130,11 @@ export interface AppStyles {
 export const app: AppStyles = {
   app: {              // main UI window (App)
     pointerEvents: 'auto',
-    backgroundImage: 'url(images/crafting/crafting-bg.png)',
+    // backgroundImage: 'url(images/crafting/crafting-bg.png)',
+    background: '#2E2C2F',
     color: 'white',
-    width: opts.ui.WIDTH,
-    height: opts.ui.HEIGHT,
+    width: '100%',
+    height: '100%',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
@@ -141,15 +149,16 @@ export const app: AppStyles = {
     background: 'rgba(0,0,0,0.7)',
   },
   minimizedIcons: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: '40px',
-    height: '17px',
+    // position: 'absolute',
+    // top: 0,
+    // right: 0,
+    // width: '40px',
+    // height: '17px',
     margin: '2px',
+    textAlign: 'right',
   },
   minimizedButton: {
-    fontSize: '10px',
+    // fontSize: '10px',
     width: '30px',
     display: 'inline-block',
     margin: '2px',
@@ -185,7 +194,7 @@ export interface VoxInfoStyles {
 
 export const voxInfo: VoxInfoStyles = {
   voxInfo: {
-    fontSize: '8px',
+    // fontSize: '8px',
     color: 'silver',
     margin: '0 ' + opts.ui.PADDING,
     position: 'absolute',
@@ -202,6 +211,7 @@ export interface JobTypeStyles {
   jobButtons: React.CSSProperties;
   button: React.CSSProperties;
   buttonSelected: React.CSSProperties;
+  buttonDisabled: React.CSSProperties;
   refresh: React.CSSProperties;
   tools: React.CSSProperties;
   crafting: React.CSSProperties;
@@ -219,12 +229,14 @@ export const jobType: JobTypeStyles = {
   button: {
     fontSize: opts.job.BUTTON_FONT_SIZE,
     minWidth: opts.job.BUTTON_WIDTH,
-    letterSpacing: opts.job.BUTTON_LETTER_SPACING,
     marginRight: opts.job.BUTTON_SPACING,
   },
   buttonSelected: {
-    fontWeight: 'bold',
-    color: opts.job.HIGHLIGHT,
+    // color: opts.job.HIGHLIGHT,
+    background: '#415A77',
+  },
+  buttonDisabled: {
+    background: '#1B263B',
   },
   refresh: {
     minWidth: '20px',
@@ -249,12 +261,14 @@ export const voxMessage: VoxMessageStyles = {
   voxMessage: {
     margin: '0px',
     flex: '0 1 auto',
-    fontSize: '14px',
+    // fontSize: '14px',
     position: 'relative',
     height: '20px',
+    background: '#222',
+    padding: opts.ui.PADDING,
   },
   success: {
-    color: 'lime',
+    color: '#02C966',
   },
   error: {
     color: 'red',
@@ -281,7 +295,7 @@ export const tools: ToolsStyles = {
   },
   sectionHeading: {
     marginTop: '0.5em',
-    fontSize: '100%',
+    // fontSize: '100%',
     borderBottom: opts.ui.BOTTOM_BORDER,
   },
   button: {
@@ -350,7 +364,7 @@ export const possibleIngredients: PossibleIngredientsStyles = {
     marginLeft: 0,
   },
   name: {
-    flex: '2 1 ' + opts.ingredients.NAME_WIDTH,
+    flex: '2 1 auto',
     overflow: 'hidden',
     height: '100%',
   },
@@ -463,6 +477,7 @@ export interface IngredientsStyles {
   loadedIngredients: React.CSSProperties;
   remove: React.CSSProperties;
   addIngredient: React.CSSProperties;
+  addIngredientWrapper: React.CSSProperties;
   ingredient: React.CSSProperties;
   times: React.CSSProperties;
   add: React.CSSProperties;
@@ -487,7 +502,7 @@ export const ingredients: IngredientsStyles = {
   },
   remove: {
     flex: '0 0 auto',
-    fontSize: '10px',
+    // fontSize: '10px',
     color: 'deepskyblue',
     minHeight: '20px',
   },
@@ -495,6 +510,9 @@ export const ingredients: IngredientsStyles = {
   addIngredient: {
     flex: '0 0 auto',
     display: 'flex',
+  },
+  addIngredientWrapper: {
+    flex: '0 0 auto',
     borderBottom: opts.ui.BOTTOM_BORDER,
     paddingBottom: '0.5em',
   },
@@ -546,12 +564,11 @@ export const ingredientItem: IngredientItemStyles = {
     margin: opts.ingredients.ICON_VERTICAL_SPACING + ' ' + opts.ingredients.ICON_HORIZONTAL_SPACING,
   },
   slot: {
-    flex: '0 0 50px',
-    width: '50px',
+    flex: '1 1 50px',
+    textOverflow: 'ellipsis',
   },
   qty: {
-    flex: '0 0 50px',
-    width: '50px',
+    flex: '1 0 50px',
     textAlign: 'right',
   },
   times: {
@@ -559,14 +576,13 @@ export const ingredientItem: IngredientItemStyles = {
     margin: '0 0.5em',
   },
   name: {
-    flex: '1 1 auto',
+    flex: '1 1 120px',
     minWidth: '120px',
   },
   pcnt: {
     flex: '0 0 50px',
     width: '50px',
     margin: '0 0.5em 0 0.2em',
-    color: 'rgba(255,255,255,0.3)',
   },
 };
 
@@ -620,18 +636,19 @@ export interface JobDetailsStyles {
 export const jobDetails: JobDetailsStyles = {
   jobDetails: {
     flex: '1 1 auto',
-    margin: opts.ui.PADDING,
     display: 'flex',
     flexDirection: 'column',
   },
   properties: {
     display: 'block',
     flex: '0 0 auto',
+    padding: opts.ui.PADDING,
   },
   ingredients: {
     display: 'flex',
-    flex: '0 0 290px',
+    flex: '1 0 290px',
     flexDirection: 'column',
+    padding: opts.ui.PADDING,
   },
   input: {
     height: opts.input.HEIGHT,
@@ -643,6 +660,11 @@ export const jobDetails: JobDetailsStyles = {
     display: 'flex',
     flexDirection: 'row',
     marginTop: opts.SPACE_BETWEEN_FIELDS,
+    justifyContent: 'space-between',
+    paddingBottom: '10px',
+    marginBottom: '10px',
+    borderBottom: opts.ui.BOTTOM_BORDER,
+    padding: opts.ui.PADDING,
   },
   button: {
     flex: '0 0 auto',
@@ -764,7 +786,7 @@ export const select: SelectStyles = {
     position: 'relative',
     display: 'inline-flex',
     flexDirection: 'row',
-    backgroundColor: opts.input.BACKGROUND,
+    backgroundColor: '#0D1B2A',
     pointerEvents: 'auto',
   },
   outside: {
@@ -800,7 +822,7 @@ export const select: SelectStyles = {
     cursor: 'pointer',
     overflow: 'auto',
     overflowX: 'hidden',
-    maxHeight: opts.ingredients.DROPDOWN_HEIGHT,
+    maxHeight: '270px',
     transition: 'max-height .1s ease-out',
   },
   listItem: {
@@ -811,7 +833,7 @@ export const select: SelectStyles = {
     color: '#ececec',
     borderBottom: '1px solid #0a0a0a',
     ':hover': {
-      backgroundColor: 'lighten(#3a3a3a, 10%)',
+      backgroundColor: '#4a4a4a',
     },
   },
   listItemSelected: {
@@ -847,7 +869,8 @@ export const progressBar: ProgressBarStyles = {
     backgroundColor: 'lime',
     height: '21px',
     position: 'absolute',
-    bottom: 0,
+    left: '10px',
+    bottom: '10px',
     opacity: 0.4,
     transition: 'all 1s linear',
   },

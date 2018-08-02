@@ -174,7 +174,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
 
   public componentWillReceiveProps(nextProps: InventoryRowProps) {
     // If item is moved away and container is open, then close the container.
-    if (!_.isEqual(nextProps.items, this.props.items)) {
+    if (!_.isEqual(nextProps.items, this.props.items) && !_.isEmpty(this.state.containersOpen)) {
       const containersOpen = [...this.state.containersOpen];
       this.state.containersOpen.forEach((container, i) => {
         const nextItemSlot = nextProps.items[container.itemIndex];

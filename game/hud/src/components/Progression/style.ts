@@ -64,97 +64,201 @@ export const ProgressionContent = styled('div')`
   overflow-x: hidden;
   overflow-y: auto;
   border-top: 1px solid #3b3634;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   z-index: 10;
   width: calc(100% - 40px);
   position: absolute;
   h2 {
-    font-family: 'Caudex', serif;
-    font-size: 18px;
+    color: #f0f0f0;
+    font-size: 14px;
+    font-family: 'Caudex',serif;
+    text-transform: uppercase;
+    font-weight: initial;
   }
   h3 {
-    font-size: 18px;
-    color: #706764;
+    color: #dcdcdc;
+    font-size: 14px;
+    font-family: 'Caudex',serif;
     text-transform: uppercase;
-    border-bottom: 1px solid #706764;
+    font-weight: initial;
+    border-bottom: 1px solid #313131;
   }
   h3.RewardHeadline {
     color: #93866c;
     border-bottom: 1px solid #93866c;
   }
   ul {
-    margin-bottom: 20px !important;
     li {
-      background: #191919;
-      margin-bottom: 4px;
       -webkit-transition: all 0.5s ease;
+      background: #1f1f1f;
+      margin-bottom: 4px;
+      &:last-of-type {
+        margin-bottom: 20px;
+      }
       div {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 0;
+      }
+      div.ProgressionInfo {
+        border: 1px solid #313131;
+        margin: 5px;
+        width: calc(100% - 12px);
+        -webkit-transition: all 0.5s ease;
       }
       div.ProgressionLabel {
-        width: calc(40% - 25px);
-        background: #141414;
-        border-left: 5px solid #3b3634;
+        -webkit-transition: all 0.5s ease;
+        width: calc(40% - 10px);
+        color: #ccc;
+        font-size: 15px;
+        padding: 10px 5px;
         img {
           vertical-align: sub !important;
-          margin-right: 5px;
+          margin-right: 4px;
         }
       }
       div.ProgressionValue {
-        width: calc(60% - 20px);
-        background: #191919;
-        color: #93866c;
+        width: calc(60% - 10px);
+        color: #777777;
+        padding: 10px 5px;
+        background-color: #1c1c1c;
+        -webkit-transition: all 0.5s ease;
+        img {
+          margin-right: 4px;
+          vertical-align: sub !important;
+        }
+      }
+      div.ProgressionValue2 {
+        width: calc(30% - 20px);
+        color: #777777;
+        padding: 10px 5px;
+        background-color: #1c1c1c;
+        -webkit-transition: all 0.5s ease;
         img {
           vertical-align: sub !important;
-          margin-right: 5px;
+          margin-right: 4px;
+        }
+      }
+      div.ProgressionValue3 {
+        width: calc(20% - 10px);
+        background: #1c1c1c;
+        color: #777777;
+        padding: 10px 5px;
+        -webkit-transition: all 0.5s ease;
+        img {
+          vertical-align: sub !important;
+          margin-right: 4px;
         }
       }
       div.RewardLabel {
-        width: calc(40% - 25px);
-        background: #101010;
-        border-left: 5px solid #322e2c;
-        color: #7e7a7a;
+        -webkit-transition: all 0.5s ease;
+        width: calc(40% - 10px);
+        color: #ccc;
+        font-size: 15px;
+        padding: 10px 5px;
         img {
           vertical-align: sub !important;
-          margin-right: 5px;
+          margin-right: 4px;
         }
       }
       div.RewardValue {
-        width: calc(60% - 20px);
-        background: #161616;
-        color: #93866c;
+        width: calc(60% - 10px);
+        color: #777777;
+        padding: 10px 5px;
+        background-color: #1c1c1c;
+        -webkit-transition: all 0.5s ease;
         img {
+          margin-right: 4px;
           vertical-align: sub !important;
-          margin-right: 5px;
         }
       }
       &:hover {
-        background: #191919;
+        -webkit-box-shadow: 0 0 20px 0 #000;
+        box-shadow: 0 0 20px 0 #000;
         -webkit-transition: all 0.5s ease;
+        div.ProgressionInfo {
+          width: calc(100% - 12px);
+          border: 1px solid #93866c;
+          -webkit-transition: all 0.5s ease;
+        }
         div.ProgressionLabel {
-          width: calc(40% - 25px);
-          background: #3b3634;
-          border-left: 5px solid #3b3634;
+          color: #93866c;
+          -webkit-transition: all 0.5s ease;
         }
         div.ProgressionValue {
-          background: #93866c;
+          -webkit-transition: all 0.5s ease;
           color: #fff;
+        }
+        div.ProgressionValue2 {
+          color: #fff;
+        }
+        div.ProgressionValue3 {
+          color: #fff;
+          -webkit-transition: all 0.5s ease;
         }
         div.RewardLabel {
-          width: calc(40% - 25px);
-          background: #322e2c;
-          border-left: 5px solid #322e2c;
+          color: #93866c;
+          -webkit-transition: all 0.5s ease;
         }
         div.RewardValue {
-          background: #897c63;
           color: #fff;
+          -webkit-transition: all 0.5s ease;
         }
+      }
+    }
+    li.ProgressHeader {
+      background: none;
+      div.ProgressionLabelHeader {
+        color: #989898;
+        font-size: 14px;
+        font-family: 'Caudex',serif;
+        text-transform: inherit;
+        font-weight: initial;
+        border-bottom: 1px solid #313131;
+        width: calc(40% - 7px);
+        padding-left: 7px;
+      }
+      div.RewardLabelHeader {
+        width: calc(40% - 7px);
+        color: #989898;
+        font-size: 14px;
+        font-family: 'Caudex',serif;
+        text-transform: inherit;
+        font-weight: initial;
+        border-bottom: 1px solid #313131;
+        padding-left: 7px;
+      }
+      div.RewardValueHeader {
+        width: calc(60% - 0px);
+        color: #989898;
+        font-size: 14px;
+        font-family: 'Caudex',serif;
+        text-transform: inherit;
+        font-weight: initial;
+        border-bottom: 1px solid #313131;
+      }
+      div.ProgressionValue2Header {
+        width: calc(30% - 10px);
+        color: #989898;
+        font-size: 14px;
+        font-family: 'Caudex',serif;
+        text-transform: inherit;
+        font-weight: initial;
+        border-bottom: 1px solid #313131;
+      }
+      div.ProgressionValue3Header {
+        width: calc(20% - 0px);
+        color: #989898;
+        font-size: 14px;
+        font-family: 'Caudex',serif;
+        text-transform: inherit;
+        font-weight: initial;
+        border-bottom: 1px solid #313131;
+        padding-left: 0px;
       }
     }
   }
   .ProgressList {
-    background-color: rgba(24, 24, 24, 0.35);
+    background-color: #0f0f0e;
     margin-bottom: 30px;
     border: 1px solid #313131;
     border-left: none;
@@ -167,6 +271,7 @@ export const ProgressionContent = styled('div')`
     border-left: 5px solid #3b3634;
     padding: 5px 10px;
   }
+}
 `;
 
 export const ProgressionLoading = styled('div')`

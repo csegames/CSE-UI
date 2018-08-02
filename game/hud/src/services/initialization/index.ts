@@ -150,9 +150,11 @@ export default () => {
         batchedCombatLogs = [];
         combatLogTimeout = null;
       }, 500);
+      return;
     }
     combatLogTimeout = window.setTimeout(() => {
       events.fire('combatlog_message', combatLogs);
+      combatLogTimeout = null;
     }, 500);
   });
 
@@ -169,10 +171,12 @@ export default () => {
         batchedConsoleLogs = [];
         consoleLogTimeout = null;
       }, 500);
+      return;
     }
 
     consoleLogTimeout = window.setTimeout(() => {
       events.fire('system_message', text);
+      consoleLogTimeout = null;
     }, 500);
   });
 };

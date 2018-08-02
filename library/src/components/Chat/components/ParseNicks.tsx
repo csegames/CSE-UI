@@ -24,14 +24,17 @@ function fromText(text: string, keygen: () => number) : JSX.Element[] {
 function createRegExp() : RegExp {
   let regex: string;
   const chat: ChatSession = chatState.get('chat');
-  chat.getAllUsers().forEach((u: string) => {
-    if (!regex) {
-      regex = '\\b' + u + '\\b';
-    } else {
-      regex += '|\\b' + u + '\\b';
-    }
-  });
-  return new RegExp(regex, 'g');
+  const allUsers = chat.getAllUsers();
+  if (allUsers.length) {
+    allUsers.forEach((u: string) => {
+      if (!regex) {
+        regex = '\\b' + u + '\\b';
+      } else {
+        regex += '|\\b' + u + '\\b';
+      }
+    });
+    return new RegExp(regex, 'g');
+  }
 }
 
 export default {

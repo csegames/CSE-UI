@@ -244,10 +244,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
   }
 
   public shouldComponentUpdate(nextProps: PopupMiniInventoryProps, nextState: PopupMiniInventoryState) {
-    return nextProps.align !== this.props.align ||
-      nextProps.slotName !== this.props.slotName ||
-      nextProps.inventoryItems !== this.props.inventoryItems ||
-      nextProps.visible !== this.props.visible ||
+    return !_.isEqual(nextProps, this.props) ||
       !_.isEqual(nextState, this.state);
   }
 
@@ -325,7 +322,6 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
         }
       }
     });
-
   }
 
   private toggleVisibility = () => {

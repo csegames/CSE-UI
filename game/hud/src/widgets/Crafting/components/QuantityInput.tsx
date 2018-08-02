@@ -34,13 +34,13 @@ const select = (state: GlobalState, props: QuantityInputProps): QuantityInputRed
 const QuantityInput = (props: QuantityInputProps) => {
   const ss = StyleSheet.create(merge({}, quantityInput, props.style));
   return (
-    <div className={css(ss.quantityInput)} style={ props.disabled ? { opacity: 0.1 } : {} }>
+    <div className={css(ss.quantityInput)} style={ props.disabled ? { opacity: 0.3 } : {} }>
       <Label style={{ label: quantityInput.label }}>Quantity</Label>
       <Input
         name='quantity'
         style={{ input: quantityInput.input }}
         disabled={props.disabled}
-        numeric={true} min={1} max={20}
+        numeric={true} min={1} max={99}
         size={2}
         onChange={(value: string) => props.onChange((value as any) | 0)}
         value={props.count ? props.count.toString() : ''}

@@ -15,15 +15,48 @@
   right: 0;
   user-select: none !important;
   -webkit-user-drag: none !important;
-  z-index: 100;
-  border: 1px dashed rgba(255, 255, 255, 0.5);
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.HUDDrag__controlsSelected {
+  @-webkit-keyframes pulseBorder {
+    0%,100% {
+      box-shadow: 0px 0px 0px 3px rgba(145, 116, 58, 1);
+    }
+    50% {
+      box-shadow: 0px 0px 0px 3px rgba(145, 116, 58, 0.4);
+    }
+  }
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
   pointer-events: all;
+  -webkit-animation: pulseBorder 2s infinite ease-in-out;
 }
 
 .HUDDrag__controls__name {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(75, 75, 75, 0.8);
   color: white;
   padding: 2px 5px;
+}
+
+.HUDDrag__controls__nameSelected {
+  @-webkit-keyframes pulseBackground {
+    0%,100% {
+      background: rgba(145, 116, 58, 1);
+    }
+    50% {
+      background: rgba(145, 116, 58, 0.4);
+    }
+  }
+  color: white;
+  padding: 2px 5px;
+  -webkit-animation: pulseBackground 2s infinite ease-in-out;
 }
 
 .HUDDrag__controls__dragHandle {
@@ -56,7 +89,7 @@
   position: absolute;
   width: 100%;
   height: 10px;
-  cursor: ns-resize !important;  
+  cursor: ns-resize !important;
   margin: -20px 0px 0px 0px;
 }
 
@@ -72,7 +105,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  cursor: nwse-resize !important;  
+  cursor: nwse-resize !important;
   margin: -20px 0px 0px 0px;
   bottom: -5px;
   right: -5px;
@@ -158,13 +191,10 @@
 }
 
 .HUDDrag__controls__scaleText {
-  position: absolute;
-  right: 50px;
-  top: 50%;
-  margin-top: -25px;
-  padding: 5px;
-  text-align: right;
-  background: rgba(0, 0, 0, .75);
+  position: relative;
+  top: 28px;
+  padding: 2px;
+  text-align: center;
   color: white;
   font-size: .5em;
   border-radius: 15px;
@@ -172,13 +202,14 @@
 }
 
 .HUDDrag__controls__toolbar {
-  position: absolute;
+  position: fixed;
   right: 0px;
-  top: 20px;
-  width: 50px;
-  color: #236EFA;
+  top: 50px;
+  width: 140px;
+  color: #93866c;
+  z-index: 9999 !important;
   a {
-    color: #236EFA;
+    color: #93866c;
     text-decoration: none;
     -webkit-transition: all 0.5s;
     transition: all 0.5s;
@@ -194,21 +225,21 @@
 
 .HUDDrag__controls__toolbar__scale {
   position: relative;
-  width: 50px;
+  display: inline-block;
+  width: 70px;
   height: 50px;
-  font-size: 2rem;
+  font-size: 1.2rem;
   text-align: center;
-  margin-bottom: 10px;
+  // margin-bottom: 10px;
   i {
     position: relative;
-    top: -5px;
   }
 }
 
 .HUDDrag__controls__toolbar__dragControl {
   position: absolute;
   width: 100%;
-  height: 30px;
+  height: 25px;
   top: 0;
   left: 0;
   cursor: row-resize !important;
@@ -233,14 +264,16 @@
 
 .HUDDrag__controls__toolbar__visibility {
   position: relative;
+  display: inline-block;
   width: 50px;
-  height: 40px;
-  font-size: 2rem;
+  height: 50px;
+  font-size: 1.5rem;
   text-align: center;
+  padding-top: 20px;
+  padding-left: 20px;
   margin-bottom: 10px;
   i {
     position: relative;
-    top: -5px;
     cursor: pointer !important;
   }
 }

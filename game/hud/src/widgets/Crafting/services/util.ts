@@ -24,3 +24,11 @@ export function craftingTimeToString(sec: number, short: boolean = false) {
   if (sec) r += space() + sec + ' ' + plaural(short ? 'sec' : 'second', sec);
   return r;
 }
+
+export function qualityToPercent(value: number) {
+  return Math.round(value * 100);
+}
+
+export function roundedMass(value: number) {
+  return Math.round(value * 1000) / 1000;
+}

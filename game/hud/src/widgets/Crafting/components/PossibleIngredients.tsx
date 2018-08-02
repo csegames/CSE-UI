@@ -11,6 +11,7 @@ import Select from './Select';
 import { Ingredient, InventoryItem } from '../services/types';
 import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../styles';
 import Icon from './Icon';
+import { qualityToPercent, roundedMass } from '../services/util';
 
 interface PossibleIngredientsReduxProps {
   possibleIngredients?: InventoryItem[];
@@ -46,8 +47,9 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
         <Icon className={css(ss.span, ss.icon)} src={item.static.icon}/>
         <span className={css(ss.span, ss.name)}>{item.name}</span>
         { isRepair || <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span> }
-        { isRepair || <span className={css(ss.span, ss.quality)}>@ {(item.stats.quality * 100) | 0}%</span> }
-        { isRepair || <span className={css(ss.span, ss.weight)}>{item.stats.weight}KG</span> }
+        { isRepair || <span className={css(ss.span, ss.quality)}>@ {qualityToPercent(item.stats.quality) | 0}%</span> }
+        { isRepair || <span className={css(ss.span, ss.weight)}>
+          {Number(roundedMass(item.stats.weight).toFixed(3))}kg</span> }
         { isRepair && <span className={css(ss.span, ss.durability)}>{item.stats.durability.current} dur</span> }
         { isRepair && <span className={css(ss.span, ss.points)}>{item.stats.durability.currentPoints} pts</span> }
       </div>

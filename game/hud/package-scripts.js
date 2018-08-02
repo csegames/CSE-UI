@@ -70,6 +70,10 @@ module.exports = {
           script: 'cross-env CUUI_DEV_OUTPUT_PATH=%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud nps -p dev.webpack.watchWebpack,dev.webpack.watchGraphql,dev.webpack.watchSass,dev.webpack.watchMisc',
         },
       },
+      production: {
+        script: 'nps clean,build.browserify.lib,build.devProduction,dev.livereload,dev.watch,dev.serve',
+        description: 'Development Production mode will start an http server with live reload that will watch and build whenever a file change is detected using a production environment variable.'
+      },
       start: {
       },
       serve: {

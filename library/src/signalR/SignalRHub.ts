@@ -283,7 +283,7 @@ export class SignalRHub {
     if (this.reconnectOnDisconnect) {
       setTimeout(() => {
         this.start();
-      }, 5000);
+      }, 15000);
     }
     this.fireEvent('disconnected');
   }

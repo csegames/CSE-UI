@@ -19,7 +19,7 @@ export default {
     },
     size: {
       width: 800,
-      height: 600,
+      height: 416,
     },
     scale: 1,
     opacity: 1,

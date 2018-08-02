@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -22,7 +21,6 @@ import eventNames, {
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
 import {
-  InventoryBaseQuery,
   InventoryItemFragment,
   EquippedItemFragment,
   GearSlotDefRefFragment,
@@ -84,7 +82,7 @@ export interface InventoryBaseProps {
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
 }
 
-export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
+export interface InventoryBaseWithQLProps {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
@@ -633,7 +631,6 @@ export function distributeItemsNoFilter(args: {
         if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
           // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
           stackGroupIdToItemIDs[id].push(item.id);
-          moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
           return;
         }
 
@@ -681,7 +678,6 @@ export function distributeItemsNoFilter(args: {
       if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
         // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
         stackGroupIdToItemIDs[id].push(item.id);
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
         return;
       }
 
@@ -836,6 +832,9 @@ export function distributeItemsNoFilter(args: {
   }
 
   if (!_.isEmpty(stackGroupIdToItemIDs)) {
+    Object.keys(stackGroupIdToItemIDs).forEach((stackGroupId) => {
+      stackGroupIdToItemIDs[stackGroupId] = _.uniqBy(stackGroupIdToItemIDs[stackGroupId], itemId => itemId);
+    });
     props.onChangeStackGroupIdToItemIDs(stackGroupIdToItemIDs);
   }
 
@@ -1440,7 +1439,7 @@ export function onUpdateInventoryItemsHandler(args: {
       icon: payload.equippedItem.item.staticDefinition.iconUrl,
     };
     if (payload.type === 'Unequip') {
-      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumberToItem);
+      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumber);
     }
   }
 
@@ -1633,7 +1632,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
 
 export async function unequipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                                slotNumberToItem: SlotNumberToItem) {
+                                toSlot: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const request = {
     moveItemID: item.id,
@@ -1642,7 +1641,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     to: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: firstAvailableSlot(0, slotNumberToItem),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs: [] as any,
       location: 'Inventory',
@@ -1651,7 +1650,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     from: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: getItemInventoryPosition(item),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs,
       location: 'Equipment',
@@ -2212,4 +2211,6 @@ function createStackMoveItemRequests(args: {
     });
     return moveItemRequests;
   }
+
+  return [];
 }

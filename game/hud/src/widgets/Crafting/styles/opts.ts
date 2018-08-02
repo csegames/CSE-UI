@@ -14,22 +14,21 @@
 
 export const opts = {
   ui: {
-    WIDTH: '600px',
-    HEIGHT: '450px',
+    WIDTH: '700px',
+    HEIGHT: '550px',
     MINIMIZED_HEIGHT: '21px',
     MINIMIZED_POSITION: '0px',
     PADDING: '12px',
     BOTTOM_BORDER: '1px solid rgba(255,255,255,0.1)',
   },
   buttons: {
-    FONT_SIZE: '12px',
+    FONT_SIZE: '1em',
     MIN_WIDTH: '50px',
   },
   job: {
-    HIGHLIGHT: 'green',
+    HIGHLIGHT: '#02C966',
     BUTTON_WIDTH: '45px',
-    BUTTON_FONT_SIZE: '12px',
-    BUTTON_LETTER_SPACING: '-1px',
+    BUTTON_FONT_SIZE: '1em',
     BUTTON_SPACING: '5px',
   },
   properties: {
@@ -48,7 +47,7 @@ export const opts = {
     WEIGHT_WIDTH: '15%',
     DURABILITY_WIDTH: '15%',
     POINTS_WIDTH: '15%',
-    STATS_COLUMN_FONT_SIZE: '10px',
+    STATS_COLUMN_FONT_SIZE: '1em',
     STATS_COLUMN_SPACING: '2px',
     DROPDOWN_HEIGHT: '270px',
   },
@@ -59,7 +58,7 @@ export const opts = {
   input: {
     HEIGHT: '24px',
     COLOR: 'white',
-    BACKGROUND: 'rgba(40,40,40,0.5)',
+    BACKGROUND: '#0D1B2A',
   },
   SPACE_BETWEEN_FIELDS: '5px',
 };
