@@ -320,6 +320,12 @@
     &.standing__WintersShadow {
       max-height: 65%;
     }
+    &.standing__Valkyrie--Male,
+    &.standing__Valkyrie--Female,
+    &.standing__HumanMaleV--Male,
+    &.standing__HumanMaleV--Female {
+      bottom: -50px;
+    }
   }
 
   .base {

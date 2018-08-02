@@ -14,6 +14,7 @@ import messageType from '../lib/messageType';
 import { chatConfig } from './ChatConfig';
 import { chatState } from './ChatState';
 import { events } from '../../../';
+import { isArray } from 'util';
 
 interface LoginInfo {
   username?: string;
@@ -107,9 +108,21 @@ class ChatSession {
   public onchat(args: any): void {
     switch (args.type) {
       case messageType.SYSTEM:
+        if (isArray(args.message)) {
+          const arrayOfMessages = args.message.map(msg =>
+            new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
+          this.recv(arrayOfMessages);
+          return;
+        }
         this.recv(new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
         break;
       case messageType.COMBAT_LOG:
+        if (isArray(args.message)) {
+          const arrayOfMessages = args.message.map(msg =>
+            new ChatMessage(chatType.COMBAT, 'combat', '', msg, false, new Date()));
+          this.recv(arrayOfMessages);
+          return;
+        }
         this.recv(new ChatMessage(chatType.COMBAT, 'combat', '', args.message, false, new Date()));
         break;
       case messageType.AVAILIBLE:
@@ -178,7 +191,27 @@ class ChatSession {
   }
 
   // Receive a message from a room or user.
-  public recv(message: ChatMessage) : void {
+  public recv(message: ChatMessage | ChatMessage[]) : void {
+    if (isArray(message)) {
+      message.forEach((m) => {
+        // check for a broadcast message (private message sent by "")
+        if (m.type === chatType.PRIVATE && m.nick === 'chat.camelotunchained.com/warning') {
+          this.broadcast(m);
+        } else {
+          const roomId = new RoomId(m.roomName, m.type);
+          const room : ChatRoomInfo = this.getRoom(roomId);
+          room.push(m);  // increments unread
+          if (!this.currentRoom) {
+            this.currentRoom = roomId;
+          }
+          if (this.windowActive && this.currentRoom.same(roomId)) {
+            room.seen();
+          }
+        }
+      });
+      events.fire('chat-session-update', this);
+      return;
+    }
     // check for a broadcast message (private message sent by "")
     if (message.type === chatType.PRIVATE && message.nick === 'chat.camelotunchained.com/warning') {
       this.broadcast(message);
@@ -302,15 +335,15 @@ class ChatSession {
     const allUsers: string[] = [];
     this.rooms.forEach((room) => {
       room.users.forEach((user) => {
-        if (allUsers.indexOf(user.props.info.name) < 0) allUsers.push(user.props.info.name);
+        if (allUsers.indexOf(user.info.name) < 0) allUsers.push(user.info.name);
       });
     });
     return allUsers;
   }
 
   private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
-    events.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
+    events.on('system_message', (msg: string | string[]) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    events.on('combatlog_message', (msg: string | string[]) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
 
     if (!this.client) {
       this.client = new ChatClient();

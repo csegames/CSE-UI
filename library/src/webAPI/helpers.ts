@@ -22,6 +22,25 @@ export function parseResponseData(res: any) {
   return res;
 }
 
+export function accessLevelToPatchPermission(access: def.AccessType) {
+  switch(access) {
+    case def.AccessType.Public:
+      return def.PatchPermissions.Public;
+    case def.AccessType.Beta3:
+      return def.PatchPermissions.Beta3;
+    case def.AccessType.Beta2:
+      return def.PatchPermissions.Beta2;
+    case def.AccessType.Beta1:
+      return def.PatchPermissions.Beta1;
+    case def.AccessType.Alpha:
+      return def.PatchPermissions.Alpha;
+    case def.AccessType.InternalTest:
+      return def.PatchPermissions.InternalTest;
+    case def.AccessType.Employees:
+      return def.PatchPermissions.Development;
+  }
+}
+
 export function accessLevelString(access: def.AccessType) {
   switch (access) {
     case def.AccessType.Public:

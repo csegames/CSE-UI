@@ -16,6 +16,8 @@ import client from '@csegames/camelot-unchained/lib/core/client';
 declare const ol: typeof OL;
 
 const Container = styled('div')`
+  background: url(images/map/map_bg.jpg);
+  background-size: cover;
 `;
 
 const query = `

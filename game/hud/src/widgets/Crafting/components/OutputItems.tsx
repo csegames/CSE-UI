@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import { InventoryItem } from '../services/types';
-import { craftingTimeToString } from '../services/util';
+import { craftingTimeToString, qualityToPercent, roundedMass } from '../services/util';
 import Icon from './Icon';
 
 import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../styles';
@@ -35,7 +35,7 @@ const OutputItems = (props: OutputItemsProps) => {
   return (
     <div className={css(ss.outputItems)}>
       <div className={css(ss.title)}>
-        <span>Output Info:-</span>
+        <span>Output Info:</span>
         <span className={css(ss.craftingTime)}>
           Crafting Time: {craftingTimeToString(props.totalCraftingTime, true)}
         </span>
@@ -45,10 +45,13 @@ const OutputItems = (props: OutputItemsProps) => {
           return (
             <div key={item.id} className={css(ss.item)}>
               <Icon className={css(ss.icon)} src={item.static.icon}/>
+              <span className={css(ss.name)}>{item.name}</span>
               <span className={css(ss.qty)}>{item.stats.unitCount}</span>
-              <span className={css(ss.times)}>x</span>
+              <span className={css(ss.times)}>
+                ({Number(roundedMass(item.stats.weight).toFixed(3))}kg)
+              </span>
               <span className={css(ss.name)}>
-                {item.name} @ {(item.stats.quality * 100) | 0}% {item.stats.weight}KG
+                @ {qualityToPercent(item.stats.quality) | 0}%
               </span>
             </div>
           );

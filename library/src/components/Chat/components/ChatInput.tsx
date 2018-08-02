@@ -10,6 +10,7 @@ import { client, events } from '../../../';
 import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
 import AtUserList from './AtUserList';
+import { ChatRoomInfoUser } from './ChatRoomInfo';
 
 export interface ChatInputState {
   atUsers: string[];
@@ -109,9 +110,9 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
         const lastWord: string = value.match(/\b([\S]+)$/)[1];
         const endChar: string = lastWord === value ? ': ' : ' ';
         const matchingUsers: string[] = [];
-        chat.getRoom(chat.currentRoom).users.forEach((u: JSX.Element) => {
-          if (u.props.info.name.substring(0, lastWord.length) === lastWord) {
-            matchingUsers.push(u.props.info.name);
+        chat.getRoom(chat.currentRoom).users.forEach((u: ChatRoomInfoUser) => {
+          if (u.info.name.substring(0, lastWord.length) === lastWord) {
+            matchingUsers.push(u.info.name);
           }
         });
         if (matchingUsers.length) {
@@ -219,9 +220,9 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     const userFilter: string = lastWord && lastWord[1] ? lastWord[1] : '';
     if (lastWord) {
       const chat: ChatSession = chatState.get('chat');
-      chat.getRoom(chat.currentRoom).users.forEach((u: JSX.Element) => {
-        if (userFilter.length === 0 || u.props.info.name.toLowerCase().indexOf(userFilter.toLowerCase()) !== -1) {
-          userList.push(u.props.info.name);
+      chat.getRoom(chat.currentRoom).users.forEach((u: ChatRoomInfoUser) => {
+        if (userFilter.length === 0 || u.info.name.toLowerCase().indexOf(userFilter.toLowerCase()) !== -1) {
+          userList.push(u.info.name);
         }
       });
       userList.sort();

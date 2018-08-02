@@ -8,6 +8,7 @@ import * as React from 'react';
 import { Ingredient } from '../services/types';
 import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../styles';
 import Icon from './Icon';
+import { qualityToPercent, roundedMass } from '../services/util';
 
 export interface IngredientItemProps {
   ingredient: Ingredient;
@@ -19,15 +20,17 @@ export interface IngredientItemProps {
 export const IngredientItem = (props: IngredientItemProps) => {
   const ss = StyleSheet.create(merge({}, ingredientItem, props.style));
   const { name, stats } = props.ingredient;
-  const pcnt = props.total && (props.qty / props.total * 100).toFixed(1);
+  // const pcnt = props.total && (props.qty / props.total * 100).toFixed(0);
+  const slot = props.ingredient.slot && props.ingredient.slot.replace('Ingredient', '').replace('NonRecipe', '');
   return (
     <div className={css(ss.ingredientItem)}>
       <Icon className={css(ss.icon)} src={props.ingredient.static.icon}/>
-      <span className={css(ss.slot)}>{props.ingredient.slot}</span>
+      <span className={css(ss.name)}>{name}</span>
+      <span className={css(ss.slot)}>{slot}</span>
       <span className={css(ss.qty)}>{props.qty}</span>
-      <span className={css(ss.pcnt)}>({pcnt}%)</span>
-      <span className={css(ss.times)}>x</span>
-      <span className={css(ss.name)}>{name} @ {stats ? (stats.quality * 100) | 0 : 0}% {stats.weight}KG</span>
+      {/* <span className={css(ss.pcnt)}></span> */}
+      <span className={css(ss.times)}>({Number(roundedMass(stats.weight).toFixed(3))}kg)</span>
+      <span className={css(ss.name)}>@ {stats ? qualityToPercent(stats.quality) | 0 : NaN}%</span>
     </div>
   );
 };

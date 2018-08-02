@@ -4,16 +4,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
-import ChatLine from './ChatLine';
-import User, { UserInfo } from './User';
+import { UserInfo } from './User';
 import { ChatMessage, chatType } from './ChatMessage';
 import { chatConfig } from './ChatConfig';
 import RoomId from './RoomId';
 
+export interface ChatRoomInfoMessage {
+  key: number;
+  message: ChatMessage;
+}
+
+export interface ChatRoomInfoUser {
+  key: number;
+  info: UserInfo;
+}
+
 class ChatRoomInfo {
-  public messages: JSX.Element[] = [];
-  public users: JSX.Element[] = [];
+  public messages: ChatRoomInfoMessage[] = [];
+  public users: ChatRoomInfoUser[] = [];
   public key: number = 0;
   public roomId: RoomId;
   public type: chatType;
@@ -42,26 +50,26 @@ class ChatRoomInfo {
     let sortIndex: number = this.users.length;
     for (let i = 0; i < this.users.length; i++) {
       if (user.isCSE) {
-        if (! this.users[i].props.info.isCSE) {
+        if (! this.users[i].info.isCSE) {
           sortIndex = i - 1 > -1 ? i-- : 0;
           break;
         }
-      } else if (this.users[i].props.info.isCSE) {
+      } else if (this.users[i].info.isCSE) {
         continue;
       }
-      if (this.users[i].props.info.name > user.name) {
+      if (this.users[i].info.name > user.name) {
         sortIndex = i;
         break;
       }
     }
-    this.users.splice(sortIndex, 0, <User key={this.key++} info={user}/>);
+    this.users.splice(sortIndex, 0, { key: this.key++, info: user });
     this.players ++;
   }
 
   public removeUser = (user: UserInfo) : void => {
-    const users: JSX.Element[] = this.users;
+    const users: ChatRoomInfoUser[] = this.users;
     for (let i = 0; i < users.length; i++) {
-      if (users[i].props.info.name === user.name) {
+      if (users[i].info.name === user.name) {
         users.splice(i,1);
         this.players --;
         break;
@@ -70,13 +78,27 @@ class ChatRoomInfo {
   }
 
   public add = (message: ChatMessage) : void => {
-    this.messages.push(
-      <ChatLine key={this.key++} message={message}/>,
-    );
-    message.checkIsNewDay(this.messages.length > 1 ? this.messages[this.messages.length - 2].props.message.when : undefined);
+    message.checkIsNewDay(this.messages.length > 1 ? this.messages[this.messages.length - 2].message.when : undefined);
     // manage scrollback buffer size
     if (this.messages.length > chatConfig.SCROLLBACK_BUFFER_SIZE) {
-      this.messages.shift();
+      this.messages[0] = null;
+      this.messages = this.messages.map((_message, i) => {
+        if (this.messages[i + 1]) {
+          const newMessage = {
+            ...this.messages[i + 1],
+            key: i,
+          };
+          return newMessage;
+        }
+
+        return { key: i, message };
+      });
+    } else {
+      
+      this.messages.push({
+        key: this.messages.length - 1,
+        message,
+      });
     }
   }
 
@@ -91,11 +113,11 @@ class ChatRoomInfo {
 
   public countVisibleMessages = () : number => {
     let count: number = 0;
-    this.messages.forEach((message: JSX.Element) : void => {
+    this.messages.forEach((message: ChatRoomInfoMessage) : void => {
       if (!chatConfig.JOIN_PARTS) {
         // not showing JOIN/PARTS so don't count these message types
-        if (message.props['message'].type === chatType.AVAILABLE) return;
-        if (message.props['message'].type === chatType.UNAVAILABLE) return;
+        if (message.message.type === chatType.AVAILABLE) return;
+        if (message.message.type === chatType.UNAVAILABLE) return;
       }
       count ++;
     });

@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import styled from 'react-emotion';
 import { events, client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
@@ -38,6 +39,25 @@ export interface ITemporaryTab {
 export interface FullScreenNavProps {
 }
 
+const BackgroundImage = styled('div')`
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  z-index: 99;
+  box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
+  background: url(images/inventory/bag-bg.png) repeat-x, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  &.left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+  }
+  &.right {
+    top: 0;
+    left: 50%;
+    bottom: 0;
+  }
+`;
+
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: number;
   private shouldKeydownListener: number;
@@ -50,23 +70,29 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   public render() {
+    const { visibleComponentLeft, visibleComponentRight } = this.state;
     return (
       <FullScreenContext.Provider value={this.state}>
-        <HudFullScreenView
-          getLeftRef={r => this.tabPanelLeftRef = r}
-          getRightRef={r => this.tabPanelRightRef = r}
-          onActiveTabChanged={(i, name) => this.handleTabChange(name)}
-          onRightOrLeftItemAction={this.onRightOrLeftItemAction}
-          showItemTooltip={this.showItemTooltip}
-          hideItemTooltip={this.hideItemTooltip}
-          onCloseFullScreen={this.onCloseFullScreen}
-          onChangeInventoryItems={this.onChangeInventoryItems}
-          onChangeEquippedItems={this.onChangeEquippedItems}
-          onChangeMyTradeItems={this.onChangeMyTradeItems}
-          onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
-          onChangeStackGroupIdToItemIDs={this.onChangeStackGroupIdToItemIDs}
-          onChangeMyTradeState={this.onChangeMyTradeState}
-        />
+        <div style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
+          <BackgroundImage className={'left'} />
+          <BackgroundImage className={'right'} />
+          <HudFullScreenView
+            getLeftRef={r => this.tabPanelLeftRef = r}
+            getRightRef={r => this.tabPanelRightRef = r}
+            onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+            onRightOrLeftItemAction={this.onRightOrLeftItemAction}
+            showItemTooltip={this.showItemTooltip}
+            hideItemTooltip={this.hideItemTooltip}
+            onCloseFullScreen={this.onCloseFullScreen}
+            onChangeInventoryItems={this.onChangeInventoryItems}
+            onChangeEquippedItems={this.onChangeEquippedItems}
+            onChangeMyTradeItems={this.onChangeMyTradeItems}
+            onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
+            onChangeStackGroupIdToItemIDs={this.onChangeStackGroupIdToItemIDs}
+            onChangeMyTradeState={this.onChangeMyTradeState}
+            onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
+          />
+        </div>
       </FullScreenContext.Provider>
     );
   }
@@ -74,7 +100,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   public componentDidMount() {
     this.navigateListener = events.on('hudnav--navigate', this.handleNavEvent);
     this.shouldKeydownListener = events.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
-    this.tabPanelRightRef.activeTabIndex = 1;
   }
 
   public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
@@ -356,6 +381,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     showTooltip({ content, event, styles: defaultTooltipStyle });
   }
 
+  private isVisible = () => {
+    return this.state.visibleComponentLeft !== '' || this.state.visibleComponentRight !== '';
+  }
+
   private hideItemTooltip = () => {
     hideTooltip();
   }
@@ -365,15 +394,21 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
-    this.setState({ inventoryItems });
+    if (this.isVisible()) {
+      this.setState({ inventoryItems });
+    }
   }
 
   private onChangeContainerIdToDrawerInfo = (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => {
-    this.setState({ containerIdToDrawerInfo });
+    if (this.isVisible()) {
+      this.setState({ containerIdToDrawerInfo });
+    }
   }
 
   private onChangeStackGroupIdToItemIDs = (stackGroupIdToItemIDs: {[id: string]: string[]}) => {
-    this.setState({ stackGroupIdToItemIDs });
+    if (this.isVisible()) {
+      this.setState({ stackGroupIdToItemIDs });
+    }
   }
 
   private onChangeMyTradeItems = (myTradeItems: InventoryItemFragment[]) => {
@@ -382,6 +417,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private onChangeMyTradeState = (myTradeState: SecureTradeState) => {
     this.setState({ myTradeState });
+  }
+
+  private onChangeInvBodyDimensions = (invBodyDimensions: { width: number; height: number; }) => {
+    this.setState({ invBodyDimensions });
   }
 }
 

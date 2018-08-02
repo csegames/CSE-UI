@@ -69,7 +69,7 @@ export const JobDetails = (props: JobDetailsProps) => {
   if (!type || type === 'invalid') {
     return (
       <div className={css(ss.jobDetails)}>
-        <div>Select a Job Type!</div>
+        <div className={css(ss.ingredients) + ' job-details-ingredients'}>Select a job above</div>
         <VoxMessage/>
       </div>
     );
@@ -81,6 +81,15 @@ export const JobDetails = (props: JobDetailsProps) => {
         {type === 'make' && <NameInput onChange={props.setName}/>}
         <RecipeSelect dispatch={props.dispatch} onSelect={props.setRecipe}/>
       </div>
+      <div className={css(ss.buttons) + ' job-details-footer'}>
+        <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
+        <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
+        <div>
+          <Button style={buttonStyle} disabled={!canStart} onClick={props.start}>Start</Button>
+          <Button style={buttonStyle} disabled={!canCollect} onClick={props.collect}>Collect</Button>
+          <Button style={buttonStyle} disabled={!canCancel} onClick={props.cancel}>Cancel</Button>
+        </div>
+      </div>
       <div className={css(ss.ingredients) + ' job-details-ingredients'}>
         <Ingredients
           add={props.addIngredient}
@@ -91,13 +100,6 @@ export const JobDetails = (props: JobDetailsProps) => {
         <OutputItems/>
       </div>
       <VoxMessage/>
-      <div className={css(ss.buttons) + ' job-details-footer'}>
-        <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
-        <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
-        <Button style={buttonStyle} disabled={!canStart} onClick={props.start}>Start</Button>
-        <Button style={buttonStyle} disabled={!canCollect} onClick={props.collect}>Collect</Button>
-        <Button style={buttonStyle} disabled={!canCancel} onClick={props.cancel}>Cancel</Button>
-      </div>
     </div>
   );
 };

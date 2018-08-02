@@ -258,7 +258,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
         stats: {
           quality: item.quality,
           unitCount: item.unitCount,
-          weight: item.mass,
+          weight: item.selfMass,
           durability: {
             current: vis[i].stats.durability.currentDurability,
             currentPoints: vis[i].stats.durability.currentRepairPoints,
@@ -310,7 +310,7 @@ function mapVoxItemsToInventoryItems(vis: VoxItem[]): InventoryItem[] {
         stats: {
           quality: item.quality,
           unitCount: item.unitCount,
-          weight: item.mass,
+          weight: item.selfMass,
           durability: {
             current: vis[i].stats.durability.currentDurability,
             currentPoints: vis[i].stats.durability.currentRepairPoints,

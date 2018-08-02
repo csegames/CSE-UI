@@ -13,7 +13,7 @@ import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
 import { patcher, permissionsString } from '../../../../../services/patcher';
 
-const imageShine = keyframes`
+const idleShine = keyframes`
   0% {
     left: -115px;
     opacity: 0;
@@ -25,6 +25,17 @@ const imageShine = keyframes`
   100% {
     left: 100%;
     opacity: 1;
+  }
+`;
+
+const shine = keyframes`
+  from {
+    left: 0px;
+    opacity: 1;
+  }
+  to {
+    left: 80%;
+    opacity: 0;
   }
 `;
 
@@ -46,21 +57,64 @@ const GameMask = styled('div')`
   border: 1px solid #535353;
   border-left: 0px;
 
+  &:hover {
+    -webkit-filter: brightness(150%);
+  }
+
+  &:hover:before {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    opacity: 0;
+    height: 110%;
+    width: 70px;
+    z-index: 10;
+    background: linear-gradient(transparent, rgba(255,255,255,0.2));
+    clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
+    -webkit-clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
+    -webkit-animation: ${shine} 0.5s ease forwards;
+    animation: ${shine} 0.5s ease forwards;
+    animation-delay: 0.3s;
+    -webkit-animation-delay: 0.3s;
+  }
+
+  &:hover:after {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    opacity: 0;
+    height: 110%;
+    width: 70px;
+    z-index: 10;
+    background: linear-gradient(transparent, rgba(255,255,255,0.2));
+    clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
+    -webkit-clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
+    -webkit-animation: ${shine} 0.5s ease forwards;
+    animation: ${shine} 0.5s ease forwards;
+  }
+
   &:hover ~ .hover-area {
     z-index: 1;
   }
+`;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0px;
-    left: -100px;
-    width: 100px;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3) 60%, transparent);
-    -webkit-animation: ${imageShine} 10s ease infinite;
-    animation: ${imageShine} 10s ease infinite;
-  }
+const IdleShine = styled('div')`
+  position: absolute;
+  top: 0px;
+  left: -100px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.3) 60%, transparent);
+  -webkit-animation: ${idleShine} 5s ease infinite;
+  animation: ${idleShine} 5s ease infinite;
 `;
 
 const PopupContainer = styled('div')`
@@ -110,6 +164,7 @@ export interface GameSelectState {
   instant: boolean;
   isOpen: boolean;
   popupHeight: number;
+  playAnimation: boolean;
 }
 
 class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
@@ -122,6 +177,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
       instant: false,
       isOpen: false,
       popupHeight: 0,
+      playAnimation: true,
     };
   }
   public render() {
@@ -138,12 +194,13 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
           className='character-button-game-mask'
           width={175}
           isCUGame={serverType === ServerType.CUGAME}
+          onMouseEnter={this.handleMouseOver}
+          onMouseLeave={this.close}
         >
+          { this.state.playAnimation && <IdleShine /> }
           <SelectedGame
             key={serverType}
             img={serverTypeToIcon(serverType)}
-            onMouseEnter={this.open}
-            onMouseLeave={this.close}
           />
         </GameMask>
         <PopupContainer
@@ -207,6 +264,21 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     }
 
     return serverTypes;
+  }
+
+  private updateAnimation = () => {
+    this.setState({
+      playAnimation: false,
+    }, () => {
+      this.setState({
+        playAnimation: true,
+      });
+    });
+  }
+
+  private handleMouseOver = () => {
+    this.open();
+    this.updateAnimation();
   }
 }
 

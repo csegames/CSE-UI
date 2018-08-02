@@ -183,132 +183,169 @@ class RewardsView extends React.Component<Props, State> {
               </LoadingContainer>
             );
           }
-          return (
-            <ul>{ this.showRewards(graphql.data.myprogression) }</ul>
-          );
+          return this.showRewards(graphql.data.myprogression);
         }}
       </GraphQL>
     );
   }
 
   private showRewards(progressionData: CharacterProgressionData) {
-    const adjustmentsElement: JSX.Element[] = [];
     if (!progressionData.adjustmentsByDayLogID || progressionData.adjustmentsByDayLogID.length === 0) {
-      adjustmentsElement.push(<li key='noreward'><div className='NoReward'>No new rewards.</div></li>);
+      return null;
     } else {
-      let keyCounter = 0;
+      const rewardsList: JSX.Element[] = [];
+      const progressionList: JSX.Element[] = [];
+
       progressionData.adjustmentsByDayLogID.forEach((adjustment: CharacterAdjustmentDBModel, adjustmentID: number) => {
         const { addItem, playerStat, skillNode, skillPart } = adjustment.adjustment;
         const { skillPartLevel, useSkillPart, useSkills, adminGrant } = adjustment.reason;
+
         let reasonDescription: JSX.Element = null;
         if (skillPartLevel) {
           // Reason is skill level up
           reasonDescription =
             <span>
-              <img height='20px' width='20px' src={skillPartLevel.skillPartDef.icon} />
-              Obtained Level {skillPartLevel.skillPartLevel}
-              &nbsp;{skillPartLevel.skillPartDef.name}
+              Obtained Level {skillPartLevel.skillPartLevel} {skillPartLevel.skillPartDef.name}
             </span>;
         } else if (useSkillPart) {
           // Reason is individual skill usage
           reasonDescription =
             <span>
-              <img height='20px' width='20px' src={useSkillPart.skillPartDef.icon} />
-              Used &nbsp;{useSkillPart.skillPartDef.name}: {useSkillPart.inCombatCount + useSkillPart.nonCombatCount}
+              Used {useSkillPart.skillPartDef.name} {useSkillPart.inCombatCount + useSkillPart.nonCombatCount}&nbsp;
+              time{useSkillPart.inCombatCount + useSkillPart.nonCombatCount > 1 ? 's' : null}
             </span>;
         } else if (useSkills) {
-          // Reason is any skill usage
+          // Reason is related skill usage
           reasonDescription =
             <span>
-              Any Skill Used: {useSkills.inCombatCount + useSkills.nonCombatCount}
+              Used related skill {useSkills.inCombatCount + useSkills.nonCombatCount}&nbsp;
+              time{useSkills.inCombatCount + useSkills.nonCombatCount > 1 ? 's' : null}
             </span>;
         } else if (adminGrant) {
-          // Given by administrator
+          // Given by Administrator
           reasonDescription = <span>Granted by Administrator</span>;
         }
 
-        const adjustmentDescription: JSX.Element[] = [];
-        if (addItem) {
-          // Adjustment is a new item
-          adjustmentDescription.push(
-            <li key={++keyCounter}>
-              <div className='ProgressionLabel'>Item{addItem.unitCount > 1 ? 's' : null} Received:</div>
-              <div className='ProgressionValue'>
-                <img height='20px' width='20px' src={addItem.itemDef.iconUrl} />
-                &nbsp;{addItem.unitCount}x {addItem.staticDefinitionID}
-              </div>
-              <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
-            </li>
-          ,);
-        } else if (playerStat) {
-          // Adjustment is stat progression
-          if (playerStat.newBonus !== playerStat.previousBonus) {
-            adjustmentDescription.push(
-              <li key={++keyCounter}>
-                <div className='ProgressionLabel'>Attribute Bonus Applied:</div>
-                <div className='ProgressionValue'>
-                  +{playerStat.newBonus - playerStat.previousBonus} to {playerStat.playerStat}
+        if (
+          // Adjustment is a reward - add to rewardsList
+          addItem
+          || (playerStat && playerStat.newBonus !== playerStat.previousBonus)
+          || skillNode
+          || (skillPart && skillPart.newLevel !== skillPart.previousLevel)
+        ) {
+          if (addItem) {
+            // New item was received
+            rewardsList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Received <img height='20px' width='20px' src={addItem.itemDef.iconUrl} />&nbsp;
+                    {addItem.staticDefinitionID} x {addItem.unitCount}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
                 </div>
-                <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
+              </li>
+            ,);
+          } else if (playerStat && playerStat.newBonus !== playerStat.previousBonus) {
+            // New Attribute Bonus was received
+            rewardsList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Bonus +{playerStat.newBonus - playerStat.previousBonus} applied to {playerStat.playerStat}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
+                </div>
+              </li>
+            ,);
+          } else if (skillNode) {
+            // New Skill Node was applied
+            rewardsList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    Skill Node Applied: {skillNode.skillNodePath}
+                  </div>
+                </div>
+              </li>
+            ,);
+          } else if (skillPart.newLevel !== skillPart.previousLevel) {
+            // New Skill Component Level obtained
+            rewardsList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='RewardLabel'>
+                    <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />&nbsp;
+                    Obtained Level {skillPart.newLevel} {skillPart.skillPartDef.name}
+                  </div>
+                  <div className='RewardValue'>{reasonDescription}</div>
+                </div>
               </li>
             ,);
           }
-          if (playerStat.newProgressionPoints - playerStat.previousProgressionPoints > 0) {
-            adjustmentDescription.push(
-              <li key={++keyCounter}>
-                <div className='ProgressionLabel'>Attribute Progression Increase:</div>
-                <div className='ProgressionValue'>
-                {playerStat.newProgressionPoints - playerStat.previousProgressionPoints} points for {playerStat.playerStat}
+        } else if (
+          // Adjustment is a progression point increasion - add to progressionList
+          (playerStat && playerStat.newProgressionPoints - playerStat.previousProgressionPoints > 0)
+          || (skillPart && skillPart.newProgressPoints - skillPart.previousProgressionPoints > 0)
+        ) {
+          if (playerStat && playerStat.newProgressionPoints - playerStat.previousProgressionPoints > 0) {
+            // Character (Attribute) progression
+            progressionList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='ProgressionLabel'>{playerStat.playerStat}</div>
+                  <div className='ProgressionValue2'>
+                    {playerStat.newProgressionPoints - playerStat.previousProgressionPoints}
+                  </div>
+                  <div className='ProgressionValue2'>{reasonDescription}</div>
                 </div>
-                <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
-          }
-        } else if (skillNode) {
-          // Adjustment is a skill node
-          adjustmentDescription.push(
-            <li key={++keyCounter}>
-              <div className='ProgressionLabel'>Skill Node Applied:</div>
-              <div className='ProgressionValue'>{skillNode.skillNodePath}</div>
-              <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
-            </li>
-          ,);
-        } else if (skillPart) {
-          // Adjustment is skill progression
-          if (skillPart.newLevel !== skillPart.previousLevel) {
-            adjustmentDescription.push(
-              <li key={++keyCounter}>
-                <div className='ProgressionLabel'>New Skill Level Obtained:</div>
-                <div className='ProgressionValue'>
-                  <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />
-                  Level {skillPart.newLevel} {skillPart.skillPartDef.name}
+          } else if (skillPart && skillPart.newProgressPoints - skillPart.previousProgressionPoints > 0) {
+            // Skill Component progression
+            progressionList.push(
+              <li key={'adj' + adjustmentID}>
+                <div className='ProgressionInfo'>
+                  <div className='ProgressionLabel'>
+                    <img height='20px' width='20px' src={skillPart.skillPartDef.icon} /> {skillPart.skillPartDef.name}
+                  </div>
+                  <div className='ProgressionValue2'>
+                    {skillPart.newProgressPoints - skillPart.previousProgressionPoints}
+                  </div>
+                  <div className='ProgressionValue2'>{reasonDescription}</div>
                 </div>
-                <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
-              </li>
-            ,);
-          }
-          if (skillPart.newProgressPoints - skillPart.previousProgressionPoints > 0) {
-            adjustmentDescription.push(
-              <li key={++keyCounter}>
-                <div className='ProgressionLabel'>Skill Progression Increase:</div>
-                <div className='ProgressionValue'>
-                  <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />
-                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints} points for
-                  &nbsp;{skillPart.skillPartDef.name}
-                </div>
-                <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           }
         }
-
-        adjustmentDescription.forEach((adjustment) => {
-          adjustmentsElement.push(adjustment);
-        });
-
       });
+
+      return (
+        <div>
+          { progressionList.length > 0 ?
+            <ul>
+              <h3>Progression</h3>
+              <li className='ProgressHeader'>
+                <div className='ProgressionLabelHeader'>Component / Attribute</div>
+                <div className='ProgressionValue2Header'>Points Obtained</div>
+                <div className='ProgressionValue2Header'>Reason</div>
+              </li>
+              { progressionList }
+            </ul>
+          : null }
+          { rewardsList.length > 0 ?
+            <ul>
+              <h3 className='RewardHeadline'>Rewards</h3>
+              <li className='ProgressHeader'>
+                <div className='RewardLabelHeader'>Reward</div>
+                <div className='RewardValueHeader'>Reason</div>
+              </li>
+              { rewardsList }
+            </ul>
+          : null }
+        </div>
+      );
     }
-    return adjustmentsElement;
   }
 }
 

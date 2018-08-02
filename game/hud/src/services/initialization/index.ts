@@ -23,9 +23,6 @@ export default () => {
 
   signalr.initializeSignalR();
 
-  // hook up for console messages to system messages
-  client.OnConsoleText((text: string) => events.fire('system_message', text));
-
   client.OnToggleHUDItem((name: string) => {
     events.fire('hudnav--navigate', name);
   });
@@ -141,5 +138,45 @@ export default () => {
   }
   combatLogToString(null);
 
-  client.OnCombatLogEvent((logs: CombatLog[]) => logs.map(e => events.fire('combatlog_message', combatLogToString(e))));
+  let combatLogTimeout: number = null;
+  let batchedCombatLogs: string[] = [];
+  client.OnCombatLogEvent((logs: CombatLog[]) => {
+    const combatLogs = logs.map(combatLogToString);
+    if (combatLogTimeout) {
+      clearTimeout(combatLogTimeout);
+      batchedCombatLogs = batchedCombatLogs.concat(combatLogs);
+      combatLogTimeout = window.setTimeout(() => {
+        events.fire('combatlog_message', batchedCombatLogs);
+        batchedCombatLogs = [];
+        combatLogTimeout = null;
+      }, 500);
+      return;
+    }
+    combatLogTimeout = window.setTimeout(() => {
+      events.fire('combatlog_message', combatLogs);
+      combatLogTimeout = null;
+    }, 500);
+  });
+
+
+  // hook up for console messages to system messages
+  let consoleLogTimeout: number = null;
+  let batchedConsoleLogs: string[] = [];
+  client.OnConsoleText((text: string) => {
+    if (consoleLogTimeout) {
+      clearTimeout(consoleLogTimeout);
+      batchedConsoleLogs = batchedConsoleLogs.concat(text);
+      consoleLogTimeout = window.setTimeout(() => {
+        events.fire('system_message', batchedConsoleLogs);
+        batchedConsoleLogs = [];
+        consoleLogTimeout = null;
+      }, 500);
+      return;
+    }
+
+    consoleLogTimeout = window.setTimeout(() => {
+      events.fire('system_message', text);
+      consoleLogTimeout = null;
+    }, 500);
+  });
 };

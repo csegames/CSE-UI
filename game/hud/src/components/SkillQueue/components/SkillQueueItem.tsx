@@ -16,15 +16,9 @@ const Container = styled('div')`
   width: 30px;
   height: 30px;
   border-radius: 15px;
-  background-image: url(${(props: any) => props.backgroundImage});
   background-size: cover;
   background-repeat: no-repeat;
   margin-right: 5px;
-
-  .inner,
-  .inner-blur {
-    stroke: ${(props: any) => props.strokeColor};
-  }
 
   .inner-bg {
     stroke: #000;
@@ -79,15 +73,14 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
       isQueued = true;
     }
 
+    const strokeColor = skill.status & SkillStateStatusEnum.Preparation ? 'yellow' : skillStateColors.queuedColor;
     return (
-      <Container
-        backgroundImage={skill.info.icon}
-        strokeColor={skill.status & SkillStateStatusEnum.Preparation ? 'yellow' : skillStateColors.queuedColor}>
+      <Container style={{ backgroundImage: `url(${skill.info.icon})` }}>
         <svg width='30px' height='30px'>
           <path d={defaultPath} fill='none' strokeWidth='3px' className='inner-bg-blur'></path>
           <path d={defaultPath} fill='none' strokeWidth='3px' className={isQueued ? queuedPathStyle : 'inner-bg'}></path>
-          <path d={timerPath} fill='none' strokeWidth='3px' className='inner-blur'></path>
-          <path d={timerPath} fill='none' strokeWidth='3px' className='inner'></path>
+          <path d={timerPath} fill='none' strokeWidth='3px' className='inner-blur' style={{ stroke: strokeColor }}></path>
+          <path d={timerPath} fill='none' strokeWidth='3px' className='inner' style={{ stroke: strokeColor }}></path>
         </svg>
       </Container>
     );

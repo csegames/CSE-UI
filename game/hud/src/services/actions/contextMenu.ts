@@ -29,7 +29,7 @@ export type MenuItem = {
 };
 
 export function showContextMenu(items: MenuItem[], event: MouseEvent) {
-  events.fire(ACTIVATE_CONTEXT_MENU, items, event);
+  if (items.length) events.fire(ACTIVATE_CONTEXT_MENU, items, event);
 }
 
 export function onShowContextMenu(callback: (items: MenuItem[], event: MouseEvent) => void) {

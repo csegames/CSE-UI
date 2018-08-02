@@ -21,6 +21,7 @@ import eventNames, {
   UpdateInventoryItemsPayload,
 } from '../../../lib/eventNames';
 import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import { hideTooltip } from 'actions/tooltips';
 
 const Container = styled('div')`
   flex: 1;
@@ -301,19 +302,19 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
             slotName={slot.slotName}
             visible={slotVisible}
             onVisibilityChange={this.onToggleItemMenuVisibility}>
-          <div
-            key={slot.slotName}
-            className={cx(
-              !isWeapon ? ItemSlotSpacing : '',
-              isWeapon ? WeaponSpacing : '',
-            )}>
-            <EquippedItemSlot
-              tooltipDisabled={slotVisible}
-              slot={slot}
-              providedEquippedItem={equippedItem}
-              disableDrag={this.props.myTradeState !== 'None'}
-            />
-          </div>
+            <div
+              key={slot.slotName}
+              className={cx(
+                !isWeapon ? ItemSlotSpacing : '',
+                isWeapon ? WeaponSpacing : '',
+              )}>
+              <EquippedItemSlot
+                tooltipDisabled={slotVisible}
+                slot={slot}
+                providedEquippedItem={equippedItem}
+                disableDrag={this.props.myTradeState !== 'None'}
+              />
+            </div>
           </PopupMiniInventory>
         );
       })
@@ -342,6 +343,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
     if (slotName === this.state.slotNameItemMenuVisible) {
       this.setState({ slotNameItemMenuVisible: '' });
     } else {
+      hideTooltip();
       this.setState({ slotNameItemMenuVisible: slotName });
     }
   }

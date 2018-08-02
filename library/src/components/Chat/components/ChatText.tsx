@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import RoomId from './RoomId';
-import ChatRoomInfo from './ChatRoomInfo';
+import ChatRoomInfo, { ChatRoomInfoMessage } from './ChatRoomInfo';
+import ChatLine from './ChatLine';
 
 export class ChatTextState {
 }
@@ -57,7 +58,7 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
 
   public render() {
     const room : ChatRoomInfo = this.props.room;
-    let messages : JSX.Element[];
+    let messages : ChatRoomInfoMessage[];
     let lazy : JSX.Element = undefined;
     if (room) {
       if (!this.currentRoom || !room.roomId.same(this.currentRoom)) {
@@ -73,7 +74,9 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
     return (
       <div ref='chatbox' className='chat-text allow-select-text'>
       {lazy}
-      {messages}
+      {messages && messages.map((msg, i) => {
+        return <ChatLine key={i} message={msg.message} />
+      })}
       </div>
     );
   }
