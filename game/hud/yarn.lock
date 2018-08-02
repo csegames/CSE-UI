@@ -692,7 +692,7 @@ append-transform@^0.4.0:
   dependencies:
     default-require-extensions "^1.0.0"
 
-aproba@^1.0.3, aproba@^1.1.1:
+aproba@^1.0.3:
   version "1.1.2"
   resolved "http://registry.camelotunchained.com/aproba/-/aproba-1.1.2.tgz#45c6629094de4e96f693ef7eab74ae079c240fc1"
 
@@ -2491,7 +2491,7 @@ cryptiles@2.x.x:
   dependencies:
     boom "2.x.x"
 
-crypto-browserify@^3.0.0, crypto-browserify@^3.11.0:
+crypto-browserify@^3.0.0:
   version "3.11.0"
   resolved "http://registry.camelotunchained.com/crypto-browserify/-/crypto-browserify-3.11.0.tgz#3652a0906ab9b2a7e0c3ce66a408e957a2485522"
   dependencies:
@@ -2795,10 +2795,6 @@ dom-serializer@0, dom-serializer@~0.1.0:
 dom-walk@^0.1.0:
   version "0.1.1"
   resolved "http://registry.camelotunchained.com/dom-walk/-/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
-
-domain-browser@^1.1.1:
-  version "1.2.0"
-  resolved "http://registry.camelotunchained.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
 
 domain-browser@^1.1.1, domain-browser@~1.1.0:
   version "1.1.7"
@@ -7098,6 +7094,10 @@ process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "http://registry.camelotunchained.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
 
+process-nextick-args@~2.0.0:
+  version "2.0.0"
+  resolved "http://registry.camelotunchained.com/process-nextick-args/-/process-nextick-args-2.0.0.tgz#a37d732f4271b4ab1ad070d35508e8290788ffaa"
+
 process@^0.11.10, process@~0.11.0:
   version "0.11.10"
   resolved "http://registry.camelotunchained.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
@@ -7271,9 +7271,22 @@ randombytes@^2.0.0, randombytes@^2.0.1:
   dependencies:
     safe-buffer "^5.1.0"
 
+randombytes@^2.0.5:
+  version "2.0.6"
+  resolved "http://registry.camelotunchained.com/randombytes/-/randombytes-2.0.6.tgz#d302c522948588848a8d300c932b44c24231da80"
+  dependencies:
+    safe-buffer "^5.1.0"
+
 randomcolor@^0.5.3:
   version "0.5.3"
   resolved "http://registry.camelotunchained.com/randomcolor/-/randomcolor-0.5.3.tgz#7f90f2f2a7f6d5a52232161eeaeeaea9ac3b5815"
+
+randomfill@^1.0.3:
+  version "1.0.4"
+  resolved "http://registry.camelotunchained.com/randomfill/-/randomfill-1.0.4.tgz#c92196fc86ab42be983f1bf31778224931d61458"
+  dependencies:
+    randombytes "^2.0.5"
+    safe-buffer "^5.1.0"
 
 randomstring@^1.1.5:
   version "1.1.5"
@@ -7576,7 +7589,7 @@ read-pkg@^3.0.0:
     normalize-package-data "^2.3.2"
     path-type "^3.0.0"
 
-"readable-stream@1 || 2", readable-stream@^2.0.4, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6:
+"readable-stream@1 || 2", readable-stream@^2.0.4, readable-stream@^2.3.3:
   version "2.3.6"
   resolved "http://registry.camelotunchained.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   dependencies:
@@ -7886,13 +7899,7 @@ resolve@1.1.7, resolve@1.1.x:
   version "1.1.7"
   resolved "http://registry.camelotunchained.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
-resolve@^1.1.3, resolve@^1.1.6, resolve@^1.2.0, resolve@^1.3.2, resolve@^1.5.0:
-  version "1.8.1"
-  resolved "http://registry.camelotunchained.com/resolve/-/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
-  dependencies:
-    path-parse "^1.0.5"
-
-resolve@^1.5.0, resolve@^1.6.0:
+resolve@^1.1.3, resolve@^1.1.4, resolve@^1.1.6, resolve@^1.2.0, resolve@^1.3.2, resolve@^1.5.0, resolve@^1.6.0:
   version "1.8.1"
   resolved "http://registry.camelotunchained.com/resolve/-/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
   dependencies:
@@ -8515,6 +8522,12 @@ string_decoder@^1.0.0, string_decoder@~1.0.3:
 string_decoder@~0.10.0, string_decoder@~0.10.x:
   version "0.10.31"
   resolved "http://registry.camelotunchained.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
+
+string_decoder@~1.1.1:
+  version "1.1.1"
+  resolved "http://registry.camelotunchained.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
+  dependencies:
+    safe-buffer "~5.1.0"
 
 stringstream@~0.0.4:
   version "0.0.5"
