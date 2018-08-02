@@ -5,17 +5,17 @@
  */
 
 import * as React from 'react';
-import { Gender, Race } from '@csegames/camelot-unchained';
+import { Faction, Race, Archetype } from '@csegames/camelot-unchained';
 
 import VisualEffects from '../../../../../components/VisualEffects/VisualEffects';
-import dustParticles from '../../../../CharacterCreation/particles/dustParticles';
-import snowParticles from '../../../../CharacterCreation/particles/snowParticles';
-import glowOrbsParticles from '../../../../CharacterCreation/particles/glowyOrbsParticles';
+import snowParticles from '../../../../../widgets/CharacterCreation/particles/snowParticles';
+import glowyOrbsParticles from '../../../../../widgets/CharacterCreation/particles/glowyOrbsParticles';
+import dustParticles from '../../../../../widgets/CharacterCreation/particles/dustParticles';
 
 export interface CharacterSelectEffectsProps {
-  selectedRace: any;
-  selectedFaction: any;
-  selectedGender: Gender;
+  selectedRace: { id: Race };
+  selectedFaction: { id: Faction };
+  selectedClass: { id: Archetype };
   hidden: boolean;
   effectsOff?: boolean;
 }
@@ -27,25 +27,25 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
   public render() {
     const { selectedRace, hidden } = this.props;
     const arthurianLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian',resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian',resistance: 90 },
+      { id: 'bg', extraClass: 'arthurian', resistance: 120 },
+      { id: 'layer1', extraClass: 'arthurian',resistance: 90},
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian',resistance: 40 },
       { id: 'ray2', extraClass: 'arthurian',resistance: -15 },
       { id: 'ray3', extraClass: 'arthurian', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian', resistance: 10 },
+      { id: 'veil', extraClass: 'arthurian' },
       { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const arthurianPictLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian-pict', resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian-pict', resistance: 90 },
+      { id: 'bg', extraClass: 'arthurian-pict',resistance: 120 },
+      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90},
       { id: 'dust', particleEffect: dustParticles },
-      { id: 'ray1', extraClass: 'arthurian pict', resistance: 40 },
-      { id: 'ray2', extraClass: 'arthurian pict', resistance: -15 },
+      { id: 'ray1', extraClass: 'arthurian pict',resistance: 40 },
+      { id: 'ray2', extraClass: 'arthurian pict',resistance: -15 },
       { id: 'ray3', extraClass: 'arthurian pict', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian', resistance: 10 },
+      { id: 'veil', extraClass: 'arthurian' },
       { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
@@ -59,7 +59,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
       { id: 'ray2', extraClass: 'viking', resistance: -15 },
       { id: 'ray3', extraClass: 'viking', resistance: -60 },
       { id: 'veil', extraClass: 'viking', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'viking', resistance: 200 },
+      { id: 'veil2', extraClass: 'viking' },
       { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
@@ -79,25 +79,25 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
     const tddLayerInfo = [
       { id: 'bg', extraClass: 'tdd', resistance: 70 },
       { id: 'layer3', extraClass: 'tdd', resistance: 80 },
-      { id: 'glowOrbs', particleEffect: glowOrbsParticles },
+      { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
       { id: 'layer2', extraClass: 'tdd', resistance: 100 },
       { id: 'ray1', extraClass: 'tdd', resistance: 40 },
       { id: 'ray2', extraClass: 'tdd', resistance: -15 },
       { id: 'ray3', extraClass: 'tdd', resistance: -60 },
       { id: 'veil', extraClass: 'tdd', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd', resistance: 10 },
+      { id: 'veil2', extraClass: 'tdd' },
     ];
 
     const tddHumanLayerInfo = [
       { id: 'bg', extraClass: 'tdd-human', resistance: 70 },
       { id: 'layer2', extraClass: 'tdd-human', resistance: 80 },
-      { id: 'glowOrbs', particleEffect: glowOrbsParticles },
+      { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
       { id: 'layer1', extraClass: 'tdd-human', resistance: 100 },
       { id: 'ray1', extraClass: 'tdd', resistance: 40 },
       { id: 'ray2', extraClass: 'tdd', resistance: -15 },
       { id: 'ray3', extraClass: 'tdd', resistance: -60 },
       { id: 'veil', extraClass: 'tdd-human', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd', resistance: 10 },
+      { id: 'veil2', extraClass: 'tdd' },
     ];
 
     let layerInfo;

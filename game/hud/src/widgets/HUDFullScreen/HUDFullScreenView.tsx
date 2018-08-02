@@ -18,8 +18,9 @@ import CharacterInfo from './components/CharacterInfo';
 import TradeWindow from './components/TradeWindow';
 import { ITemporaryTab } from './index';
 import { HUDFullScreenTabData, FullScreenContext } from './lib/utils';
-import { InventoryItemFragment, EquippedItemFragment } from '../../gqlInterfaces';
+import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
+import { SlotItemDefType } from './lib/itemInterfaces';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
@@ -41,7 +42,6 @@ const Container = styled('div')`
   width: 100%;
   height: 100%;
   user-select: none;
-  background-color: #444;
   -webkit-user-select: none;
   z-index: 9998;
 `;
@@ -80,9 +80,9 @@ const DividerMidSection = styled('div')`
   left: -2.5px;
   margin: auto;
   width: 9px;
-  height: 365px;
+  height: 100%;
   background: url(images/tabs/divider-ornament-middle.png);
-  z-index: 1;
+  z-index: 2;
 `;
 
 const Close = styled('div')`
@@ -153,7 +153,6 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
   contentContainer: css`
     height: 100%;
     width: 100%;
-    backgroundColor: #333333;
   `,
   navTab: css`
     height: 100%;
@@ -173,16 +172,19 @@ export interface Props {
   onActiveTabChanged: (tabIndex: number, name: string) => void;
   onCloseFullScreen: () => void;
 
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideItemTooltip: () => void;
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeEquippedItems: (equippedItems: EquippedItemFragment[]) => void;
   onChangeMyTradeItems: (myTradeItems: InventoryItemFragment[]) => void;
   onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
   onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void;
   onChangeMyTradeState: (myTradeState: SecureTradeState) => void;
+  onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
 
 export interface State {
-  
 }
 
 class HUDFullScreenView extends React.Component<Props, State> {
@@ -203,43 +205,44 @@ class HUDFullScreenView extends React.Component<Props, State> {
       <FullScreenContext.Consumer>
         {(context) => {
           const { visibleComponentLeft, visibleComponentRight, tabsLeft, tabsRight } = context;
+          const shouldShow = visibleComponentLeft !== '' || visibleComponentRight !== '';
           return (
-            <div style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
-              <Container>
-                <TabPanel
-                  ref={this.props.getLeftRef}
-                  tabs={tabsLeft}
-                  renderTab={this.renderTab}
-                  content={this.content}
-                  styles={{
-                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                    tabs: defaultHUDFullScreenStyle.navigationContainer,
-                    tab: defaultHUDFullScreenStyle.navTab,
-                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                    content: defaultHUDFullScreenStyle.contentContainer,
-                  }}
-                  onActiveTabChanged={this.props.onActiveTabChanged}
-                />
-                <Divider>
-                  <DividerMidSection />
-                </Divider>
-                <TabPanel
-                  ref={this.props.getRightRef}
-                  tabs={tabsRight}
-                  renderTab={this.renderTab}
-                  content={this.content}
-                  styles={{
-                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                    tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
-                    tab: defaultHUDFullScreenStyle.navTab,
-                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                    content: defaultHUDFullScreenStyle.contentContainer,
-                  }}
-                  onActiveTabChanged={this.props.onActiveTabChanged}
-                />
-              </Container>
+            <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
+              <TabPanel
+                ref={this.props.getLeftRef}
+                tabs={tabsLeft}
+                renderTab={this.renderTab}
+                content={this.content}
+                defaultTabIndex={0}
+                styles={{
+                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+                  tabs: defaultHUDFullScreenStyle.navigationContainer,
+                  tab: defaultHUDFullScreenStyle.navTab,
+                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
+                  content: defaultHUDFullScreenStyle.contentContainer,
+                }}
+                onActiveTabChanged={this.props.onActiveTabChanged}
+              />
+              <Divider>
+                <DividerMidSection />
+              </Divider>
+              <TabPanel
+                ref={this.props.getRightRef}
+                tabs={tabsRight}
+                renderTab={this.renderTab}
+                content={this.content}
+                defaultTabIndex={1}
+                styles={{
+                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+                  tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
+                  tab: defaultHUDFullScreenStyle.navTab,
+                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
+                  content: defaultHUDFullScreenStyle.contentContainer,
+                }}
+                onActiveTabChanged={this.props.onActiveTabChanged}
+              />
               <Close onClick={this.props.onCloseFullScreen} />
-            </div>
+            </Container>
           );
         }}
       </FullScreenContext.Consumer>
@@ -261,9 +264,13 @@ class HUDFullScreenView extends React.Component<Props, State> {
   private renderInventory = () => {
     return (
       <Inventory
+        onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+        showItemTooltip={this.props.showItemTooltip}
+        hideItemTooltip={this.props.hideItemTooltip}
         onChangeInventoryItems={this.props.onChangeInventoryItems}
         onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
         onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
+        onChangeInvBodyDimensions={this.props.onChangeInvBodyDimensions}
       />
     );
   }
@@ -287,6 +294,8 @@ class HUDFullScreenView extends React.Component<Props, State> {
   private renderTrade = () => {
     return (
       <TradeWindow
+        showItemTooltip={this.props.showItemTooltip}
+        hideItemTooltip={this.props.hideItemTooltip}
         onMyTradeItemsChange={this.props.onChangeMyTradeItems}
         onCloseFullScreen={this.props.onCloseFullScreen}
         onMyTradeStateChange={this.props.onChangeMyTradeState}

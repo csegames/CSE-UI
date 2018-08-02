@@ -1,0 +1,480 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.chat-frame {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  .chat-info {
+    width: 150px;
+    background-color: rgba(#222222,1);
+    flex-grow: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    .chat-tabs {
+      /* Tab bar (rooms, users and settings) */
+      min-height: 45px;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      margin: 0;
+      flex-grow: 0;
+      /* Basic tab style */
+      .chat-tab {
+        color: white;
+        background-color: rgba(0,0,0,1);
+        flex-grow: 1;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.5;
+        cursor: pointer;
+        background-size: 50%;
+      }
+      /* Selected tab style */
+      .chat-tab.chat-tab-selected {
+        background-color: transparent;
+        color: white;
+        opacity: 1;
+      }
+      /* Tab Icons */
+      .chat-tab.chat-rooms {
+        background-image: url('../images/chat/chats.png');
+      }
+      .chat-tab.chat-users {
+        background-image: url('../images/chat/users.png');
+      }
+      .chat-tab.chat-settings {
+        background-image: url('../images/chat/settings.png');
+      }
+    }
+    .fly-out {
+      position: absolute;
+      top: 0px;
+      left: 150px;
+      background-color: #222222;
+      color: white;
+      height: 100%;
+      min-width: 300px;
+      z-index: 7;
+      padding: 5px;
+      overflow-y: auto;
+      .row {
+        border-bottom: 0.5px #333 solid;
+        padding: 10px 5px;
+        margin: 0;
+      }
+    }
+    .chat-settings-menu {
+      position: relative;
+      flex-grow: 1;
+      i {
+        font-size: 12px;
+        color: darken(white, 20%);
+      }
+    }
+    .chat-settings-list {
+      position: absolute;
+      top: 0px;
+      height: 100%;
+      width: 100%;
+      z-index: 8;
+      margin: 0;
+      background-color: rgba(#222222,1);
+      padding: 0;
+      list-style: none;
+      li {
+        font-size: 18px;
+        padding: 10px;
+        color: white;
+        cursor: pointer !important;
+        border-bottom: 0.5px #333 solid;
+        &:hover {
+          background-color: lighten(#222222, 10%);
+        }
+      }
+    }
+    .chat-tab-content.chat-rooms::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-tab-content.chat-rooms::-webkit-scrollbar-thumb {
+      background-color: rgba(128,128,128,0.1);
+    }
+    .chat-tab-content.chat-rooms {
+      flex-grow: 1;
+      overflow-y: overlay;
+      overflow-x: hidden;
+      .chat-room:hover .chat-room-close {
+        background-image: url('../images/chat/x.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+      }
+      /* Room Details (in Rooms list) */
+      .chat-room {
+        height: 42px;
+        display: flex;
+        cursor: pointer;
+        position: relative;
+        .chat-room-close {
+          position: absolute;
+          height: 15px;
+          width: 15px;
+          right: 0px;
+          top: 0px;
+          opacity: 0.7;
+        }
+        ul {
+          /* Room Name & Player Count */
+          flex-grow: 1;
+          width: 1px;        /* grow to max avail width */
+          text-align: left;
+          list-style: none;
+          padding: 0 5px;
+          margin: 6px 0;
+          .chat-room-name {
+            color: #BDBDBD;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+          }
+          .chat-room-players {
+            color: rgb(128,128,128);
+            font-size: 12px;
+            padding-top: 4px;
+          }
+        }
+        .chat-hidden {
+          flex-grow: 0;
+          width: 0px;
+        }
+        .chat-unread {
+          flex-grow: 0;
+          background-color: #b40000;
+          border-radius: 10px;
+          height: 16px;
+          margin: 13px 5px;
+          padding: 1px 5px;
+          color: white;
+          font-size: 10px;
+          position: relative;
+          text-align: center;
+          min-width: 2em;
+        }
+      }
+      .chat-room-selected, .chat-room:hover {
+        background-color: $chat-info-selected-bgc;
+      }
+    }
+    .chat-room-join-button {
+      flex-grow: 0;
+      margin: 1em 1.5em;
+      color: #909090;
+      cursor: pointer;
+    }
+  }
+  /* User Entry (In Users List) */
+  .chat-tab-content.chat-users {
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-grow: 1;
+    margin: 0.5em 0;
+    .chat-info-user {
+      color: white;
+      padding: 0.5em;
+      cursor: pointer;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+    }
+    .chat-info-cseuser {
+      color: #FF5E44;
+      padding: 0.5em;
+      cursor: pointer;
+      &:before {
+        content: '';
+        background: url('../images/chat/chat-icon-cse.png') ;
+        background-size: contain;
+        height: 20px;
+        width: 20px;
+        display: inline-block;
+        margin: -4px 5px 0px -4px;
+        top: 6px;
+        position: relative;
+      }
+    }
+    .chat-info-user:hover {
+      background-color: $chat-info-selected-bgc;
+    }
+  }
+  .chat-content {
+    /* Chat Content */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+      /* ^^^
+       * without this, content will expand to fit the chat lines if chat contains long words
+       * such as urls.  100px is arbitrarily small, flex-grow: 1 will expand it to fit the
+       * available space.  There may be an official flex way of specifying this.
+       */
+    //display: flex;
+    //flex-flow: column nowrap;
+    //justify-content: space-between;
+    position: relative;
+    height: 100%;
+    background-color: rgba(64,64,64,0.1);
+    .chat-text::-webkit-scrollbar-thumb {
+      background: rgba(128, 128, 128, 0.3);
+    }
+    .chat-text::-webkit-scrollbar {
+      width: 16px;
+    }
+    .chat-text {
+      margin: 0 0.5em;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: visible;
+      height: 100px;
+      .chat-line {
+        text-align: left;
+        margin: 0.2em;
+        opacity: 0.7;
+        line-height: 1.3em;
+        &.cse-chat-line {
+          background-color: #223333;
+        }
+        &.chat-lazyload {
+          /* This is an approximation only.  We don't actually know each */
+          /* line height, it varies depending on type of message and message */
+          /* content.  It doesn't really matter though.  21px is the height of */
+          /* a chat line that includes an emoji.  We just need something to */
+          /* make the user think he can keep scrolling back to trigger the */
+          /* lazy load. */
+          font-size: 21px;
+        }
+        /* wrap at character level */
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
+        overflow: hidden;
+        .chat-line-nick {
+          color: $chat-line-nick-color;
+          cursor: pointer;
+          margin-right: 0.5em;
+        }
+        .cse {
+          color: #FF5E44;
+          padding: 2px;
+          &:before {
+            content: '';
+            background: url('../images/chat/chat-icon-cse.png') ;
+            background-size: contain;
+            height: 20px;
+            width: 20px;
+            display: inline-block;
+            margin: -6px 5px 0px -2px;
+            top: 4px;
+            position: relative;
+          }
+        }
+        .chat-line-message {
+          color: $chat-line-message-color;
+        }
+        a.chat-line-message {
+          color: $chat-line-message-link-color;
+        }
+        a.chat-line-message:hover {
+          color: $chat-line-message-link-hover-color;
+        }
+        .chat-line-entry {
+          color: $chat-line-entry-color;
+        }
+        .chat-line-exit {
+          color: $chat-line-exit-color;
+        }
+        .chat-line-system {
+          color: $chat-line-system-color;
+        }
+        .chat-line-image {
+          min-height: 10px;
+          min-width: 10px;
+          max-height: 100px;
+          max-width: 400px;
+        }
+        .chat-line-video {
+          width: 480px;
+          height: 385px;
+          border-width: 1px;
+          border-color: #039be5;
+        }
+        .chat-line-vine {
+          width: 400px;
+          height: 400px;
+          border-width: 1px;
+          border-color: #039be5;
+        }
+        .chat-line-action {
+          font-style: italic;
+          color: $chat-line-action-color;
+          .chat-line-message {
+            color: $chat-line-action-color;
+          }
+        }
+        .chat-timestamp {
+          color: $chat-line-timestamp-color;
+          margin-right: 0.5em;
+          font-size: 80%;
+        }
+        .chat-nickname {
+          cursor: pointer;
+        }
+        .chat-room-link {
+          color: #D4BD7F;
+          cursor: pointer;
+          border: 1px #695D3F solid;
+          background: #272213;
+          padding: 0px 5px;
+          font-size: 0.75em;
+          transition: all .25s ease-in-out;
+          &:hover {
+            background-color: #584C2B;
+            color: #FFE294;
+            border: 1px #D2BC82 solid;
+          }
+        }
+        .chat-room-highlight {
+          color: #FFE457;
+        }
+      }
+    }
+    .chat-input {
+      height: 45px;
+      padding-top: 5px;
+      margin: 0 5px;
+      display: flex;
+      &.chat-expanded {
+        height: 70px;             /* (3 x 16) + 11 + 11 */
+      }
+      textarea {
+        box-sizing: border-box;
+        height: 100%!important;     /* override materialize-textarea annoying behaviour of setting textarea to height of contained text */
+        background-color: rgba(128,128,128,0.2);
+        border: 0;
+        color: silver;
+        font-size: 16px;
+        line-height: 16px;
+        min-height: 16px;
+        resize: none;
+        outline: none;
+        padding: 11px 10px;         /* 11px = (height-fontsize)/2 */
+        margin: 0;
+        flex: 1 1 auto;
+      }
+      input:focus, button:focus {
+        outline-width: 0;
+      }
+      label {
+        color: #909090;
+      }
+      label.active {
+        display: none;
+      }
+      .atuser-list-anchor {
+        position: relative;
+        bottom: 0px;
+        .atuser-list {
+          position: absolute;
+          bottom: 1px;
+          background-color: #222;
+          z-index: 1;
+          border: 1px solid rgba(0,0,0,0.5);
+          max-height: 15em;
+          overflow: auto;
+          &::-webkit-scrollbar {
+            width: 6px;
+          }
+          &::-webkit-scrollbar-thumb {
+            background-color: rgba(128,128,128,0.1);
+          }
+          .atuser-name {
+            color: #FFCC3C;
+            padding: 1em;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            &:hover {
+              background-color: #444;
+            }
+          }
+          .atuser-name-selected {
+            background-color: #444;
+          }
+        }
+      }
+    }
+  }
+}
+.chat-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-image: url('../images/chat/x.png');
+  background-size: contain;
+  height: 16px;
+  background-position: left center;
+  background-repeat: no-repeat;
+  width: 70px;
+  margin-top: 35px;
+  padding-left: 18px;
+  cursor: pointer;
+  color: white;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+  background-color: #FFCC3C;
+}
+
+.switch label input[type=checkbox]:checked+.lever {
+  background-color: #776329;
+}
+
+.join-room-modal {
+
+  width: 400px;
+  height: 165px;
+  margin-left: -200px;
+  margin-top: -100px;
+
+  .room-list-anchor {
+    position: relative;
+    top: -13px;     /* input element bottom margin (15px) - 2px for underline and a 1px gap */
+    .room-list {
+      position: absolute;
+      background-color: #222;
+      z-index: 1;
+      border: 1px solid rgba(0,0,0,0.5);
+      width: 100%;
+      max-height: 15em;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(128,128,128,0.1);
+      }
+      .room-name {
+        color: #FFCC3C;
+        padding: 1em;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0,0,0,0.2);
+        &:hover {
+          background-color: #444;
+        }
+      }
+    }
+  }
+
+}

@@ -144,7 +144,7 @@ export class SignalRHub {
     callback: (hub: SignalRHub) => void);
   public addEventHandler(
     event: 'connected' | 'starting' | 'connectionslow' | 'reconnecting' | 'reconnected' | 'disconnected' |
-           'error' | 'received' | 'statechanged',
+            'error' | 'received' | 'statechanged',
     callback: ((hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void) |
               ((hub: SignalRHub, data: any) => void) |
               ((hub: SignalRHub, error: string) => void) |
@@ -283,7 +283,7 @@ export class SignalRHub {
     if (this.reconnectOnDisconnect) {
       setTimeout(() => {
         this.start();
-      }, 5000);
+      }, 15000);
     }
     this.fireEvent('disconnected');
   }

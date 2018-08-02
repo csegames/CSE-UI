@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 
 import HealthBar from '../HealthBar';
-import { showFriendlyTargetContextMenu } from '../../services/actions/contextMenu';
+import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled('div')`
   margin-bottom: 10px;
@@ -34,8 +34,6 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
 
   public render() {
     if (!this.props.member) return null;
-    if (this.props.member.isLeader) console.log(this.props.member.name + 'Is leader');
-    console.log(JSON.stringify(this.props.member));
     return (
       <Container
         key={this.props.member.id}

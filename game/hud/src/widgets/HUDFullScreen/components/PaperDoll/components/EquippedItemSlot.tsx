@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
+import { isEqual } from 'lodash';
 import { events } from '@csegames/camelot-unchained';
 
 import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
@@ -13,7 +14,7 @@ import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
-import { showTooltip, hideTooltip } from '../../../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { EquippedItemFragment } from '../../../../../gqlInterfaces';
 
 export interface EquippedItemSlotStyle {
@@ -53,7 +54,7 @@ export interface EquippedItemSlotState {
   itemIsOverBGColor: string;
 }
 
-export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps, EquippedItemSlotState> {
+export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
   constructor(props: EquippedItemSlotProps) {
     super(props);
     this.state = {
@@ -80,6 +81,10 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     );
   }
 
+  public shouldComponentUpdate(nextProps: EquippedItemSlotProps, nextState: EquippedItemSlotState) {
+    return !isEqual(this.state, nextState) || !isEqual(this.props, nextProps);
+  }
+
   private unequipItem = () => {
     // Fires off onUnequipItem event
     const equippedItem = this.props.providedEquippedItem;
@@ -92,6 +97,7 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     const payload: UnequipItemPayload = {
       item: equippedItemDataTransfer,
     };
+    hideTooltip();
     events.fire(eventNames.onUnequipItem, payload);
   }
 

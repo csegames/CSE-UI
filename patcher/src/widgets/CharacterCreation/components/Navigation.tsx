@@ -147,7 +147,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             disabled={backDisabled}
             className={backDisabled ? Disabled : ''}
             onClick={this.props.onBackClick}>
-            <NavArrow className="fa fa-angle-left" />
+            <NavArrow className='fa fa-angle-left' />
             BACK
           </NavButton>
           <ProgressContainer>
@@ -181,7 +181,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             className={nextDisabled ? Disabled : ''}
             onClick={this.props.onNextClick}>
             NEXT
-            <NavArrow className="fa fa-angle-right" />
+            <NavArrow className='fa fa-angle-right' />
           </NavButton>
         </MiddleNavContainer>
         <CreateContainer className={Section}>

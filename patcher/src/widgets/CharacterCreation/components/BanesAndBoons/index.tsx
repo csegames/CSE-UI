@@ -15,6 +15,7 @@ const Container = styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background: url(../images/bg.jpg) repeat-x top center fixed;
   background-color: rgba(49, 49, 49, 0.3);
   position: absolute;
   top: 0;

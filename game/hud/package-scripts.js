@@ -5,9 +5,11 @@ module.exports = {
       description: 'Custom build script to make my life easier - JB',
     },
     lint: {
-      script: 'tslint -t stylish src/**/*.ts{,x}',
-      description: 'Run TS-Lint"',
-      hiddenFromHelp: true,
+      default: {
+        script: 'tslint -t stylish src/**/*.ts{,x}',
+        description: 'Run TS-Lint"',
+        hiddenFromHelp: true,
+      },
       fix: {
         script: 'tslint --fix src/**/*.ts{,x}',
         description: 'Fix TS-Lint errors',
@@ -38,8 +40,15 @@ module.exports = {
         script: 'nps clean,build.browserify.lib,build.dev,dev.livereload,dev.watch,dev.serve',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
+      webpack: {
+        script: 'nps clean,build.devWebpack,dev.livereload,dev.watch.webpack,dev.serve',
+        description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
+      },
+      production: {
+        script: 'nps clean,build.browserify.lib,build.devProduction,dev.livereload,dev.watch,dev.serve',
+        description: 'Development Production mode will start an http server with live reload that will watch and build whenever a file change is detected using a production environment variable.'
+      },
       start: {
-
       },
       serve: {
         script: 'start http-server ./dist/ -p 9003 -o --cors -c-1',
@@ -50,6 +59,11 @@ module.exports = {
         hiddenFromHelp: true,
       },
       watch: {
+        webpack: {
+          script: 'start nps -p dev.watch.webpack.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
+          ts: 'webpack --mode development --watch',
+          hiddenFromHelp: true,
+        },
         default: {
           script: 'start nps -p dev.watch.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
           description: 'Runs watch scripts in parallel to build whenever a file change is detected.',
@@ -196,20 +210,24 @@ module.exports = {
       },
       browserify: {
         default: {
-          script: 'mkdirp build/js && browserify tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE -t [ envify --NODE_ENV production ]',
+          script: 'mkdirp build/js && browserify -g [ envify --NODE_ENV development ] tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE',
           hiddenFromHelp: true,
         },
         lib: {
           script: '',//mkdirp build/js && browserify -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol > build/js/lib.js',
           hiddenFromHelp: true,
-        }
+        },
+        production: {
+          script: 'mkdirp build/js && browserify -g [ envify --NODE_ENV production ] tmpp/index.js -r react -r react-dom -r jquery -r es6-promise -r react-draggable -r react-redux -r react-select -r redux -r redux-thunk -r ol -o build/js/hud.js --fast --noparse=FILE',
+          hiddenFromHelp: true,
+        },
       },
       babel: {
         script: 'babel tmp -d tmpp -q',
         hiddenFromHelp: true,
       },
       default: {
-        script: 'nps report.start && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        script: 'nps report.start && tsc && nps lint && nps report.lint && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify.production,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build the module.',
       },
       dev: {
@@ -217,8 +235,27 @@ module.exports = {
         description: 'build for dev watcher, skips the browserify lib & sass',
         hiddenFromHelp: true,
       },
+      webpack: {
+        default: {
+          script: 'nps report.start && nps copy,report.copy,build.webpack.production,build.sass,copy.dist,clean.temps,report.success',
+        },
+        development: {
+          script: 'webpack --mode development',
+          hiddenFromHelp: true,
+        },
+        production: {
+          script: 'webpack --mode production',
+          hiddenFromHelp: true,
+        },
+      },
+      devWebpack: {
+        script: 'nps report.start && nps copy,report.copy,build.webpack.development,build.sass,clean.temps,report.success,copy.dev',
+        description: 'build for dev watcher',
+        hiddenFromHelp: true,
+      },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
+        webpack: 'nps build.webpack,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
       wyrmling: {
@@ -247,10 +284,17 @@ module.exports = {
       },
       ignoreLint: {
         script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        localServer: 'nps report.start && nps report.gql && nps gqlLocalServer && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        description: 'Build module without running lint',
+      },
+      ignoreLintProduction: {
+        script: 'nps report.start && nps report.gql && nps gql && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify.production,report.browserify,build.sass,copy.dist,clean.temps,report.success',
+        localServer: 'nps report.start && nps report.gql && nps gqlLocalServer && tsc && nps report.tsc,copy,report.copy,build.babel,report.babel,build.browserify.lib,build.browserify,report.browserify,build.sass,copy.dist,clean.temps,report.success',
         description: 'Build module without running lint',
       },
       ignoreLintHatchery: {
         script: 'nps build.ignoreLint,clean.hatchery,copy.hatchery',
+        production: 'nps build.ignoreLintProduction,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
       ignoreLintWyrmling: {
@@ -272,6 +316,10 @@ module.exports = {
       ignoreLintNuadaPrep: {
         script: 'nps build.ignoreLint,clean.nuadaPrep,copy.nuadaPrep',
         description: 'Builds the module and copies to the NuadaPrep (1400) UI override directory',
+      },
+      ignoreLintLocalServer: {
+        script: 'nps build.ignoreLint.localServer,clean.hatchery,copy.hatchery',
+        description: 'Builds the module and copies to the Hatchery (4) UI override directory',
       },
     },
     report: {

@@ -5,27 +5,64 @@
  *
  */
 
-import { webAPI, Race, Gender } from '@csegames/camelot-unchained';
+import { webAPI, Archetype } from '@csegames/camelot-unchained';
 
 export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
-  return (character.race === Race.HumanMaleA && character.gender === Gender.Female) ||
-  (character.race === Race.Valkyrie && character.gender === Gender.Male) ||
-  (character.race === Race.HumanMaleV && character.gender === Gender.Female);
+  return (character.archetype === Archetype.WintersShadow);
 }
 
 const characterImages = {
-  LuchorpanMale: 'images/races/standing/luchorpan-m.png',
-  LuchorpanFemale: 'images/races/standing/luchorpan-f.png',
-  ValkyrieMale: 'images/races/standing/valkyrie-m.png',
-  ValkyrieFemale: 'images/races/standing/valkyrie-f.png',
-  PictMale: 'images/races/standing/pict-m.png',
-  PictFemale: 'images/races/standing/pict-f.png',
-  HumanMaleVMale: 'images/races/standing/humans-m-vik.png',
-  HumanMaleAMale: 'images/races/standing/humans-m-art.png',
-  HumanMaleTMale: 'images/races/standing/humans-m-tdd.png',
-  HumanMaleVFemale: 'images/races/standing/humans-f-vik.png',
-  HumanMaleAFemale: 'images/races/standing/humans-f-art.png',
-  HumanMaleTFemale: 'images/races/standing/humans-f-tdd.png',
+  // Human Male
+  HumanMaleBlackKnight: 'images/character-select/human-m-blackknight-select.png',
+  HumanMaleBlackguard: 'images/character-select/human-m-blackguard-select.png',
+  HumanMalePhysician: 'images/character-select/human-m-physician-select.png',
+  HumanMaleFianna: 'images/character-select/human-m-fianna-select.png',
+  HumanMaleMjolnir: 'images/character-select/human-m-mjolnir-select.png',
+  HumanMaleEmpath: 'images/character-select/human-m-mystic-select.png',
+  HumanMaleStonehealer: 'images/character-select/human-m-stonehealer-select.png',
+  HumanMaleForestStalker: 'images/character-select/human-m-foreststalker-select.png',
+  HumanMaleWintersShadow: 'images/character-select/human-m-wintershadow-select.png',
+
+  // Human Female
+  HumanFemaleBlackKnight: 'images/character-select/human-f-blackknight-select.png',
+  HumanFemaleBlackguard: 'images/character-select/human-f-blackguard-select.png',
+  HumanFemalePhysician: 'images/character-select/human-f-physician-select.png',
+  HumanFemaleFianna: 'images/character-select/human-f-fianna-select.png',
+  HumanFemaleMjolnir: 'images/character-select/human-f-mjolnir-select.png',
+  HumanFemaleEmpath: 'images/character-select/human-f-mystic-select.png',
+  HumanFemaleStonehealer: 'images/character-select/human-f-stonehealer-select.png',
+  HumanFemaleForestStalker: 'images/character-select/human-f-foreststalker-select.png',
+  HumanFemaleWintersShadow: 'images/character-select/human-f-wintershadow-select.png',
+
+  // Pict Male
+  PictMaleBlackKnight: 'images/character-select/human-m-blackknight-select.png',
+  PictMaleBlackguard: 'images/character-select/pict-m-blackguard-select.png',
+  PictMalePhysician: 'images/character-select/pict-m-physician-select.png',
+
+  // Pict Female
+  PictFemaleBlackKnight: 'images/character-select/pict-f-blackknight-select.png',
+  PictFemaleBlackguard: 'images/character-select/pict-f-blackguard-select.png',
+  PictFemalePhysician: 'images/character-select/pict-f-physician-select.png',
+
+  // Valkyrie Male
+  ValkyrieMaleMjolnir: 'images/character-select/valk-m-mjolnir-select.png',
+  ValkyrieMaleStonehealer: 'images/character-select/valk-m-stonehealer-select.png',
+  ValkyrieMaleWintersShadow: 'images/character-select/valk-m-wintershadow-select.png',
+
+  // Valkyrie Female
+  ValkyrieFemaleMjolnir: 'images/character-select/valk-f-mjolnir-select.png',
+  ValkyrieFemaleStonehealer: 'images/character-select/valk-f-stonehealer-select.png',
+  ValkyrieFemaleWintersShadow: 'images/character-select/valk-f-wintershadow-select.png',
+
+  // Luchorpan Male
+  LuchorpanMaleFianna: 'images/character-select/luchorpan-m-fianna-select.png',
+  LuchorpanMaleEmpath: 'images/character-select/luchorpan-m-mystic-select.png',
+  LuchorpanMaleForestStalker: 'images/character-select/luchorpan-m-foreststalker-select.png',
+
+  // Luchorpan Female
+  LuchorpanFemaleFianna: 'images/character-select/luchorpan-f-fianna-select.png',
+  LuchorpanFemaleEmpath: 'images/character-select/luchorpan-f-mystic-select.png',
+  LuchorpanFemaleForestStalker: 'images/character-select/luchorpan-f-foreststalker-select.png',
 };
 
 export default characterImages;

@@ -16,7 +16,7 @@ const Container = styled('div')`
   color: white;
 `;
 
-const Title = styled('span')`
+const Title = styled('div')`
   cursor: pointer;
 `;
 
@@ -122,7 +122,7 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
   }
 
   private onToggleCollapse = () => {
-    if (typeof(this.props.collapsed) !== "boolean") {
+    if (typeof(this.props.collapsed) !== 'boolean') {
       this.setState((state, props) => {
         if (state.collapsed) {
           // Show

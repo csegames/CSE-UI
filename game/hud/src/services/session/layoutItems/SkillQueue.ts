@@ -5,8 +5,8 @@
  *
  */
 
-import { LayoutMode } from '../../../components/HUDDrag';
-import SkillQueue from '../../../components/SkillQueue';
+import { LayoutMode } from 'components/HUDDrag';
+import SkillQueue from 'components/SkillQueue';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

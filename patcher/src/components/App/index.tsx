@@ -58,7 +58,6 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
                 activeRoute={this.props.currentRoute}
                 openChat={this.showChat} />
 
-
         <div className='PatcherApp__content'>
           <Hero isFetching={this.props.heroContentState.isFetching}
                 lastUpdated={this.props.heroContentState.lastFetchSuccess}

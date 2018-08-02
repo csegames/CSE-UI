@@ -6,10 +6,18 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
+import { isEqual } from 'lodash';
 import styled, { css, keyframes } from 'react-emotion';
-import { FactionColors } from '../../../lib/factionColors';
+import { FactionColors } from 'lib/factionColors';
 import { TeamInterface } from './ScenarioResultsContainer';
+import {
+  getFilteredWinningTeams,
+  getMainWinningTeam,
+  getMyFactionTeam,
+  getOtherTeams,
+  hasMiscellaneousOutcome,
+  isMiscellaneousOutcome,
+} from '../utils';
 
 const WaitTillWidgetSlideIn = css`
   -webkit-animation-delay: 0.3s;
@@ -183,13 +191,13 @@ const BottomMidOrnament = styled('div')`
   z-index: 10;
 `;
 
-const VictoryTeamName = styled('div')`
+const OutcomeTeamName = styled('div')`
   margin-top: 10px;
   font-size: 26px;
   letter-spacing: 3px;
 `;
 
-const VictoryText = styled('div')`
+const OutcomeText = styled('div')`
   margin-top: -3px;
   font-size: 13px;
   letter-spacing: 2.5px;
@@ -201,7 +209,7 @@ const VictoryText = styled('div')`
 //   letter-spacing: 2px;
 // `;
 
-const VictoryContent = styled('div')`
+const OutcomeContent = styled('div')`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -221,17 +229,16 @@ export interface TeamScoreProps {
 
 class TeamScore extends React.Component<TeamScoreProps> {
   public render() {
-    const otherTeams = _.filter([...this.props.teams], _team => _team.outcome !== 'Win');
-    const winningTeam = _.find(this.props.teams, _team => _team.outcome === 'Win');
-    const sortedTeams = [otherTeams[0], winningTeam, otherTeams[1]];
+    const { sortedTeams, mainTeam } = this.getSortedTeams();
     return (
       <Container>
         <BottomMidOrnament />
         <Divider />
         {sortedTeams.map((team, i) => {
-          const isWinningTeam = team.teamID === winningTeam.teamID;
-          const colors = FactionColors[winningTeam.teamID];
-          if (isWinningTeam) {
+          const isMainTeam = team.teamID === mainTeam.teamID;
+          const colors = FactionColors[team.teamID];
+          const outcomeText = team.outcome === 'Win' ? 'Victory!' : `${team.outcome}!`;
+          if (isMainTeam) {
             return (
               <div key={i} style={{ position: 'relative' }}>
                 <LeftVictoryOrnament />
@@ -241,17 +248,17 @@ class TeamScore extends React.Component<TeamScoreProps> {
                   color={colors.textColor}
                   backgroundColor={colors.backgroundColor}
                 >
-                  <VictoryContent>
-                    <VictoryTeamName>{team.teamID}</VictoryTeamName>
-                    <VictoryText>Victory!</VictoryText>
-                    {/* <VictoryScore>{team.score}</VictoryScore> */}
-                  </VictoryContent>
+                  {(team.outcome === 'Win' || isMiscellaneousOutcome(team.outcome)) &&
+                    <OutcomeContent>
+                      <OutcomeTeamName>{team.teamID}</OutcomeTeamName>
+                      <OutcomeText>{outcomeText}</OutcomeText>
+                    </OutcomeContent>
+                  }
                 </VictoryTeamContainer>
                 <RightVictoryOrnament />
               </div>
             );
           } else {
-            const colors = FactionColors[team.teamID];
             const isLeft = i === 0;
             return (
               <TeamContainer
@@ -263,8 +270,15 @@ class TeamScore extends React.Component<TeamScoreProps> {
                   'polygon(20% 0%,100% 0%,100% 100%,0% 100%)'}
                 color={colors.textColor}
                 backgroundColor={colors.backgroundColor}>
-                <TeamName left={!isLeft ? '80px' : ''} right={isLeft ? '80px' : ''}>{team.teamID}</TeamName>
-                {/* <Score>{team.score}</Score> */}
+                {team.outcome !== 'Win' && !isMiscellaneousOutcome(team.outcome) &&
+                  <TeamName left={!isLeft ? '80px' : ''} right={isLeft ? '80px' : ''}>{team.teamID}</TeamName>
+                }
+                {(team.outcome === 'Win' || isMiscellaneousOutcome(team.outcome)) &&
+                  <OutcomeContent>
+                    <OutcomeTeamName>{team.teamID}</OutcomeTeamName>
+                    <OutcomeText>{outcomeText}</OutcomeText>
+                  </OutcomeContent>
+                }
               </TeamContainer>
             );
           }
@@ -275,7 +289,43 @@ class TeamScore extends React.Component<TeamScoreProps> {
 
   public shouldComponentUpdate(nextProps: TeamScoreProps) {
     return this.props.scenarioID !== nextProps.scenarioID ||
-      !_.isEqual(this.props.teams, nextProps.teams);
+      !isEqual(this.props.teams, nextProps.teams);
+  }
+
+  public componentDidCatch(error: Error, info: any) {
+    console.log(error);
+    console.log(info);
+  }
+
+  private getSortedTeams = () => {
+    const teams = [...this.props.teams];
+    if (hasMiscellaneousOutcome(teams)) {
+      return this.getSortedMiscOutcomeTeams(teams);
+    }
+
+    return this.getSortedNormalTeams(teams);
+  }
+
+  private getSortedMiscOutcomeTeams = (teams: TeamInterface[]) => {
+    const mainTeam = getMyFactionTeam(teams);
+    const sortedTeams = getOtherTeams(teams, mainTeam.teamID);
+    sortedTeams.splice(Math.floor(sortedTeams.length / 2), 0, mainTeam);
+    return {
+      sortedTeams,
+      mainTeam,
+    };
+  }
+
+  private getSortedNormalTeams = (teams: TeamInterface[]) => {
+    const filteredWinningTeams = getFilteredWinningTeams(teams);
+    const mainTeam = getMainWinningTeam(filteredWinningTeams);
+    const sortedTeams = getOtherTeams(teams, mainTeam.teamID);
+
+    sortedTeams.splice(Math.floor(sortedTeams.length / 2), 0, mainTeam);
+    return {
+      sortedTeams,
+      mainTeam,
+    };
   }
 }
 

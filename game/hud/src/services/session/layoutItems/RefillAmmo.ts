@@ -5,8 +5,8 @@
  */
 
 
-import { LayoutMode } from '../../../components/HUDDrag';
-import RefillAmmo from '../../../components/RefillAmmo';
+import { LayoutMode } from 'components/HUDDrag';
+import RefillAmmo from 'components/RefillAmmo';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

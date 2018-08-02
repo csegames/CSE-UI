@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import Building from '../../../widgets/Building';
+import { LayoutMode, Edge } from 'components/HUDDrag';
+import Building from 'widgets/Building';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

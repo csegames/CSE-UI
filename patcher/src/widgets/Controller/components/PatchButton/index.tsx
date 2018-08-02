@@ -94,6 +94,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
               onInstallClick={this.install}
               onPlayClick={this.playNow}
               onPlayOfflineClick={this.playOffline}
+              onNoAccessClick={this.noAccess}
               onPauseMusic={this.pauseMusic}
               shouldPauseMusic={this.shouldPauseMusic}
             />
@@ -143,6 +144,10 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     alert('Server is offline! - Hold alt + click Play Offline to pass command line arguments.');
   }
 
+  private noAccess = (evt: React.MouseEvent<HTMLDivElement>) => {
+    if (evt.altKey) return this.playNow(evt);
+  }
+
   private playNow = (evt: React.MouseEvent<HTMLDivElement>) => {
     const { selectedServer } = this.props;
 
@@ -158,7 +163,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     } else {
       this.commands = '';
     }
-
 
     // Save selected channel, server, and character
     const lastPlay = {
@@ -215,7 +219,6 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
       }
       
       launchString += ' autoconnect=1';
-      console.log(launchString);
     }
 
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);

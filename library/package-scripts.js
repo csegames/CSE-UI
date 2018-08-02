@@ -12,7 +12,7 @@ module.exports = {
     dev: 'start npm-watch',
     clean: 'rimraf tmp && rimraf lib',
     babel: 'babel tmp -d lib',
-    browserify: 'browserify lib/index.js > lib/camelot-unchained.js',
+    browserify: 'browserify -g [ envify --NODE_ENV production ] lib/index.js > lib/camelot-unchained.js',
     sass: 'node-sass src/ -o lib/ --importer src/third-party/sass-importer/sass-npm-importer.js',
     copy: {
       thirdParty: 'copyup src/third-party/**/* lib/',

@@ -49,7 +49,7 @@ class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoPro
           <ItemContainer>
             <StatItem fontSize={16}>
               <div>Durability</div>
-              <div>{durability.currentHealth} / {durability.maxHealth}</div>
+              <div>{durability.currentHealth.toFixed(0)} / {durability.maxHealth.toFixed(0)}</div>
             </StatItem>
           </ItemContainer>
         }
@@ -58,7 +58,7 @@ class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoPro
             <ItemContainer>
               <StatItem showBorder fontSize={12}>
                 <div>Fracture TH</div>
-                <StatValue>{durability.fractureThreshold}</StatValue>
+                <StatValue>{durability.fractureThreshold.toFixed(0)}</StatValue>
               </StatItem>
             </ItemContainer>
           }
@@ -66,7 +66,7 @@ class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoPro
             <ItemContainer>
               <StatItem showBorder fontSize={12}>
                 <div>Repair Points</div>
-                <StatValue>{durability.currentRepairPoints} / {durability.maxRepairPoints}</StatValue>
+                <StatValue>{durability.currentRepairPoints.toFixed(0)} / {durability.maxRepairPoints.toFixed(0)}</StatValue>
               </StatItem>
             </ItemContainer>
           }
@@ -74,7 +74,7 @@ class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoPro
             <ItemContainer>
               <StatItem showBorder fontSize={12}>
                 <div>Health Loss Per Use</div>
-                <StatValue>{durability.healthLossPerUse}</StatValue>
+                <StatValue>{durability.healthLossPerUse.toFixed(0)}</StatValue>
               </StatItem>
             </ItemContainer>
           }

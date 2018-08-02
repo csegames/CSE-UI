@@ -29,7 +29,7 @@ export interface RequestResult {
 }
 
 function queryParams(params: any = {}) {
-  return Object.keys(params).map(k => {
+  return Object.keys(params).map((k) => {
     const stringParam = typeof params[k] !== 'string' ? JSON.stringify(params[k]) : params[k];
     return encodeURIComponent(k) + '=' + encodeURIComponent(stringParam);
   }).join('&');

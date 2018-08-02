@@ -16,8 +16,8 @@ import ItemContainer from './Containers/ItemContainer';
 import { ContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
 import { hasViewContentPermissions } from '../../../lib/utils';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
-import { InventorySlotItemDef, SlotType } from '../../../lib/itemInterfaces';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import { InventorySlotItemDef, SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
+import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
 
 declare const toastr: any;
 
@@ -44,6 +44,9 @@ export interface InventoryRowProps {
   onMoveStack: (item: InventoryItemFragment, amount: number) => void;
   onContainerIdToDrawerInfoChange: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
   syncWithServer: () => void;
   bodyWidth: number;
 
@@ -88,6 +91,9 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 onToggleContainer={() => this.toggleContainer(index)}
                 onDropOnZone={this.props.onDropOnZone}
                 onMoveStack={this.props.onMoveStack}
+                onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+                showTooltip={this.props.showTooltip}
+                hideTooltip={this.props.hideTooltip}
                 showGraySlots={this.props.showGraySlots}
                 containerIsOpen={containerIsOpen}
                 drawerMaxStats={this.props.drawerMaxStats}
@@ -119,6 +125,9 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   containerID={this.props.containerID}
                   drawerID={this.props.drawerID}
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
+                  onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+                  showTooltip={this.props.showTooltip}
+                  hideTooltip={this.props.hideTooltip}
                 />
               </Row>
             );
@@ -141,6 +150,9 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
                   syncWithServer={this.props.syncWithServer}
                   bodyWidth={this.props.bodyWidth}
+                  onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+                  showTooltip={this.props.showTooltip}
+                  hideTooltip={this.props.hideTooltip}
                 />
               </Row>
             );
@@ -162,7 +174,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
 
   public componentWillReceiveProps(nextProps: InventoryRowProps) {
     // If item is moved away and container is open, then close the container.
-    if (!_.isEqual(nextProps.items, this.props.items)) {
+    if (!_.isEqual(nextProps.items, this.props.items) && !_.isEmpty(this.state.containersOpen)) {
       const containersOpen = [...this.state.containersOpen];
       this.state.containersOpen.forEach((container, i) => {
         const nextItemSlot = nextProps.items[container.itemIndex];

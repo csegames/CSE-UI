@@ -12,7 +12,8 @@ import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../gqlInterfaces';
+import { SlotItemDefType } from '../../lib/itemInterfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -21,35 +22,26 @@ const Container = styled('div')`
   user-select: none;
   width: 100%;
   height: 100%;
-
-  &:after {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 47px;
-    background: url(images/inventory/bag-left-bg.png);
-    background-size: cover;
-    z-index: 0;
-  }
 `;
 
-const BackgroundImage = styled('img')`
+const SideImage = styled('img')`
   position: absolute;
+  pointer-events: none;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 0;
+  width: 47px;
+  z-index: 0;
 `;
 
 export interface InventoryProps {
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideItemTooltip: () => void;
   onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
+  onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
 
 export interface ActiveFilters {
@@ -73,7 +65,6 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
   public render() {
     return (
       <Container>
-        <BackgroundImage src='images/inventory/bag-bg.png' />
         <TabHeader title={'INVENTORY'} />
         <InventoryHeader
           filterText={this.state.filterText}
@@ -82,12 +73,17 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
           onFilterButtonDeactivated={this.onFilterButtonDeactivated}
         />
         <InventoryBody
+          onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+          showTooltip={this.props.showItemTooltip}
+          hideTooltip={this.props.hideItemTooltip}
           onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
           onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
           onChangeInventoryItems={this.props.onChangeInventoryItems}
+          onChangeInvBodyDimensions={this.props.onChangeInvBodyDimensions}
           searchValue={this.state.filterText}
           activeFilters={this.state.activeFilters}
         />
+        <SideImage src='images/inventory/bag-left-bg.png' />
       </Container>
     );
   }

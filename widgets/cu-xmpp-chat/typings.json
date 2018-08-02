@@ -1,8 +1,0 @@
-{
-  "name": "cu-xmpp-chat",
-  "globalDependencies": {
-    "es6-promise": "github:CUModSquad/Typings/es6-promise/es6-promise.d.ts",
-    "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
-    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts"
-  }
-}

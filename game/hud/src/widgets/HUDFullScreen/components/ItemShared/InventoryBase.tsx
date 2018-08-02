@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
 import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -21,7 +20,11 @@ import eventNames, {
 } from '../../lib/eventNames';
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
-import { InventoryBaseQuery, InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import {
+  InventoryItemFragment,
+  EquippedItemFragment,
+  GearSlotDefRefFragment,
+} from '../../../../gqlInterfaces';
 import {
   createMoveItemRequestToInventoryPosition,
   createMoveItemRequestToWorldPosition,
@@ -44,7 +47,13 @@ import {
   shouldShowItem,
   createMoveItemRequestToContainerPosition,
 } from '../../lib/utils';
-import { InventorySlotItemDef, CraftingSlotItemDef, ContainerSlotItemDef, SlotType } from '../../lib/itemInterfaces';
+import {
+  InventorySlotItemDef,
+  CraftingSlotItemDef,
+  ContainerSlotItemDef,
+  SlotType,
+  SlotItemDefType,
+} from '../../lib/itemInterfaces';
 
 export interface ContainerPermissionDef {
   userPermission: number;
@@ -65,14 +74,20 @@ export interface SlotNumberToItem {
 export interface InventoryBaseProps {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
 }
 
-export interface InventoryBaseWithQLProps extends GraphQLInjectedProps<InventoryBaseQuery> {
+export interface InventoryBaseWithQLProps {
   searchValue: string;
   activeFilters: {[id: string]: InventoryFilterButton};
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
@@ -222,6 +237,9 @@ export function createRowElementsForCraftingItems(payload: {
         onChangeInventoryItems={props.onChangeInventoryItems}
         onContainerIdToDrawerInfoChange={props.onChangeContainerIdToDrawerInfo}
         onChangeStackGroupIdToItemIDs={props.onChangeStackGroupIdToItemIDs}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         onMoveStack={onMoveStack}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
@@ -374,6 +392,9 @@ export function createRowElementsForContainerItems(payload: {
         onMoveStack={onMoveStack}
         onDropOnZone={onDropOnZone}
         onChangeInventoryItems={props.onChangeInventoryItems}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
         drawerCurrentStats={drawerCurrentStats}
@@ -486,6 +507,9 @@ export function createRowElements(payload: {
         onContainerIdToDrawerInfoChange={props.onChangeContainerIdToDrawerInfo}
         onChangeStackGroupIdToItemIDs={props.onChangeStackGroupIdToItemIDs}
         onMoveStack={onMoveStack}
+        onRightOrLeftItemAction={props.onRightOrLeftItemAction}
+        showTooltip={props.showTooltip}
+        hideTooltip={props.hideTooltip}
         syncWithServer={syncWithServer}
         bodyWidth={bodyWidth}
       />
@@ -499,19 +523,19 @@ export function createRowElements(payload: {
 }
 
 export function distributeItems(args: {
-                                  slotsData: {
-                                    slotsPerRow: number,
-                                    rowCount: number,
-                                    slotCount: number,
-                                  },
-                                  itemData: {
-                                    items: InventoryItemFragment[],
-                                  },
-                                  inventoryItems: InventoryItemFragment[],
-                                  stackGroupIdToItemIDs: {[id: string]: string[]},
-                                  state: InventoryBaseState,
-                                  props: Partial<InventoryBaseWithQLProps>
-                                }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  inventoryItems: InventoryItemFragment[],
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  state: InventoryBaseState,
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { itemData, slotsData, inventoryItems, state, props } = args;
   if (!itemData || !itemData.items) {
     return {
@@ -550,16 +574,16 @@ export function initializeSlotsData(slotsData: { slotsPerRow: number, rowCount: 
 
 // we are not filtering items here, put items based on slot position
 export function distributeItemsNoFilter(args: {
-                                          slotsData: {
-                                            slotsPerRow: number,
-                                            rowCount: number,
-                                            slotCount: number,
-                                          },
-                                          itemData: {
-                                            items: InventoryItemFragment[],
-                                          },
-                                          props: Partial<InventoryBaseWithQLProps>
-                                        }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { slotsData, itemData, props } = args;
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem: SlotNumberToItem = {};
@@ -607,7 +631,6 @@ export function distributeItemsNoFilter(args: {
         if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
           // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
           stackGroupIdToItemIDs[id].push(item.id);
-          moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
           return;
         }
 
@@ -655,7 +678,6 @@ export function distributeItemsNoFilter(args: {
       if (slotNumberToItem[wantPosition] && slotNumberToItem[wantPosition].id === id) {
         // There is already an item to represent the stack, just add item to stackGroupIdToItemIDs.
         stackGroupIdToItemIDs[id].push(item.id);
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
         return;
       }
 
@@ -810,6 +832,9 @@ export function distributeItemsNoFilter(args: {
   }
 
   if (!_.isEmpty(stackGroupIdToItemIDs)) {
+    Object.keys(stackGroupIdToItemIDs).forEach((stackGroupId) => {
+      stackGroupIdToItemIDs[stackGroupId] = _.uniqBy(stackGroupIdToItemIDs[stackGroupId], itemId => itemId);
+    });
     props.onChangeStackGroupIdToItemIDs(stackGroupIdToItemIDs);
   }
 
@@ -933,18 +958,18 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
 // we're filtering items here, put items into slots without regard to position
 // defined on the item
 export function distributeFilteredItems(args: {
-                                          slotsData: {
-                                            slotsPerRow: number,
-                                            rowCount: number,
-                                            slotCount: number,
-                                          },
-                                          itemData: {
-                                            items: InventoryItemFragment[],
-                                          },
-                                          stackGroupIdToItemIDs: {[id: string]: string[]},
-                                          state: InventoryBaseState,
-                                          props: Partial<InventoryBaseWithQLProps>
-                                        }): InventoryBaseState {
+  slotsData: {
+    slotsPerRow: number,
+    rowCount: number,
+    slotCount: number,
+  },
+  itemData: {
+    items: InventoryItemFragment[],
+  },
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  state: InventoryBaseState,
+  props: Partial<InventoryBaseWithQLProps>,
+}): InventoryBaseState {
   const { slotsData, itemData, state, props } = args;
   const oldItemIdToInfo = _.merge({}, state.itemIdToInfo);
   const oldSlotNumberToItem = Object.assign({}, state.slotNumberToItem);
@@ -1278,13 +1303,13 @@ export function pruneRowsOfSlots(state: InventoryBaseState,
 // This function is responsible for updating the inventory whenever something
 // fires off the updateInventoryItems event. Generally, EQUIP, UNEQUIP, and DROP
 export function onUpdateInventoryItemsHandler(args: {
-                                                state: InventoryBaseState,
-                                                props: InventoryBaseProps,
-                                                stackGroupIdToItemIDs: {[id: string]: string[]},
-                                                inventoryItems: InventoryItemFragment[],
-                                                containerIdToDrawerInfo: ContainerIdToDrawerInfo,
-                                                payload: UpdateInventoryItemsPayload
-                                              }) {
+  state: InventoryBaseState,
+  props: InventoryBaseProps,
+  stackGroupIdToItemIDs: {[id: string]: string[]},
+  inventoryItems: InventoryItemFragment[],
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo,
+  payload: UpdateInventoryItemsPayload,
+}) {
   // This updates slotNumberToItem and itemIdToInfo when an item is equipped
   const { state, props, payload } = args;
   const itemIdToInfo = { ...state.itemIdToInfo };
@@ -1414,7 +1439,7 @@ export function onUpdateInventoryItemsHandler(args: {
       icon: payload.equippedItem.item.staticDefinition.iconUrl,
     };
     if (payload.type === 'Unequip') {
-      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumberToItem);
+      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumber);
     }
   }
 
@@ -1607,7 +1632,7 @@ export async function equipItemRequest(item: InventoryItemFragment,
 
 export async function unequipItemRequest(item: InventoryItemFragment,
                                 gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                                slotNumberToItem: SlotNumberToItem) {
+                                toSlot: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const request = {
     moveItemID: item.id,
@@ -1616,7 +1641,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     to: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: firstAvailableSlot(0, slotNumberToItem),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs: [] as any,
       location: 'Inventory',
@@ -1625,7 +1650,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
     from: {
       entityID: nullVal,
       characterID: client.characterID,
-      position: getItemInventoryPosition(item),
+      position: toSlot,
       containerID: nullVal,
       gearSlotIDs,
       location: 'Equipment',
@@ -2084,7 +2109,7 @@ export function onMoveStack(args: {
                               stackGroupIdToItemIDs: {[id: string]: string[]},
                               inventoryItems: InventoryItemFragment[],
                             }) {
-  const { state, props, item, amount } = args; 
+  const { state, props, item, amount } = args;
   const slotNumberToItem = {...state.slotNumberToItem};
   const itemIdToInfo = {...state.itemIdToInfo};
   const stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};
@@ -2186,4 +2211,6 @@ function createStackMoveItemRequests(args: {
     });
     return moveItemRequests;
   }
+
+  return [];
 }

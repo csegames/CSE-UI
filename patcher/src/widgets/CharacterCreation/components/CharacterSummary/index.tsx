@@ -6,8 +6,9 @@
  */
 
 import * as React from 'react';
+import { includes } from 'lodash';
 import styled from 'react-emotion';
-import { Race, Gender, Archetype } from '@csegames/camelot-unchained';
+import { webAPI, Race, Gender, Archetype } from '@csegames/camelot-unchained';
 
 import { AttributeInfo } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
@@ -33,9 +34,10 @@ const CharacterContainer = styled('div')`
 const StandingCharacter = styled('div')`
   position: relative !important;
   background-size: contain !important;
-  max-height: 80%;
-  height: 70vh;
-  width: 100%;
+  height: 120%;
+  width: 120%;
+  margin-top: -15%;
+  margin-left: -15%;
 `;
 
 const CharacterNameInputContainer = styled('div')`
@@ -44,6 +46,18 @@ const CharacterNameInputContainer = styled('div')`
   bottom: 55px;
 `;
 
+const VideoBG = styled('video')`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  background-size: cover;
+  z-index: -1;
+`;
 
 export interface CharacterSummaryProps {
   attributes: AttributeInfo[];
@@ -68,33 +82,50 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
   }
 
   public render() {
+    const { selectedRace, selectedClass, selectedGender, attributes,
+      attributeOffsets, remainingPoints, banesAndBoonsState, inputRef } = this.props;
+    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? webAPI.raceString(selectedRace) : Race[selectedRace];
+    const videoTitle = this.getVideoTitle();
     return (
       <Container>
+        <VideoBG src={`videos/${videoTitle}.webm`} poster={`videos/${videoTitle}.jpg`} autoPlay loop></VideoBG>
         <LeftInfoPanel
-          attributes={this.props.attributes}
-          attributeOffsets={this.props.attributeOffsets}
-          selectedRace={this.props.selectedRace}
-          selectedGender={this.props.selectedGender}
-          selectedClass={this.props.selectedClass}
-          remainingPoints={this.props.remainingPoints}
-          banesAndBoonsState={this.props.banesAndBoonsState}
+          attributes={attributes}
+          attributeOffsets={attributeOffsets}
+          selectedRace={selectedRace}
+          selectedGender={selectedGender}
+          selectedClass={selectedClass}
+          remainingPoints={remainingPoints}
+          banesAndBoonsState={banesAndBoonsState}
         />
         <CharacterContainer>
-          <StandingCharacter
-            className={`standing__${Race[this.props.selectedRace]}--${Gender[this.props.selectedGender]}`}
-          />
-          <CharacterNameInputContainer className="cu-character-creation__name">
+          <StandingCharacter className={`char standing__${race}_${Gender[selectedGender]}_${Archetype[selectedClass]}`} />
+          <CharacterNameInputContainer className='cu-character-creation__name'>
             <input
               id='create-character-name-input'
               autoFocus
               type='text'
-              ref={this.props.inputRef}
+              ref={inputRef}
               placeholder='Enter A Name Here'
             />
           </CharacterNameInputContainer>
         </CharacterContainer>
       </Container>
     );
+  }
+
+  private getVideoTitle = () => {
+    switch (this.props.selectedClass) {
+      case Archetype.WintersShadow: return 'class_archer';
+      case Archetype.ForestStalker: return 'class_archer';
+      case Archetype.Blackguard: return 'class_archer';
+      case Archetype.BlackKnight: return 'heavy';
+      case Archetype.Fianna: return 'heavy';
+      case Archetype.Mjolnir: return 'heavy';
+      case Archetype.Physician: return 'healers';
+      case Archetype.Empath: return 'healers';
+      case Archetype.Stonehealer: return 'healers';
+    }
   }
 }
 

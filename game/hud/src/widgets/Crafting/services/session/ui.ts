@@ -8,7 +8,6 @@ import { Module } from 'redux-typed-modules';
 
 export interface UIState {
   mode: string;
-  countdown: number;      // harvest countdown
   remaining: number;      // crafting timer
   minimized: boolean;     // minimized?
 }
@@ -16,7 +15,6 @@ export interface UIState {
 export const initialState = (): UIState => {
   return {
     mode: 'crafting',
-    countdown: 0,
     remaining: 0,
     minimized: false,
   };
@@ -38,16 +36,6 @@ export const setUIMode = module.createAction({
   },
   reducer: (s, a) => {
     return { mode: a.mode };
-  },
-});
-
-export const setCountdown = module.createAction({
-  type: 'crafting/ui/countdown',
-  action: (countdown: number) => {
-    return { countdown };
-  },
-  reducer: (s, a) => {
-    return { countdown: a.countdown };
   },
 });
 

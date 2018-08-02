@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { isEmpty } from 'lodash';
 import * as moment from 'moment';
 import { Spinner } from '@csegames/camelot-unchained';
@@ -23,6 +23,7 @@ import {
   ProgressionLoading,
   ProgressionFooter,
 } from './style';
+import { CloseButton } from 'UI/CloseButton';
 
 const Container = styled('div')`
   position: relative;
@@ -96,21 +97,11 @@ const ProgressionFooterRight = styled('div')` {
   width: 75px
 `;
 
-const CloseButton = styled('div')`
+const CloseButtonPosition = css`
   position: absolute;
   z-index: 11;
   top: 6px;
   right: 7px;
-  width: 12px;
-  height: 12px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
-  }
-  &:active {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
-  }
 `;
 
 export interface Props {
@@ -135,7 +126,7 @@ class ProgressionView extends React.Component<Props, State> {
           <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
           <InnerContainer>
             <ProgressionCorner />
-            <CloseButton onClick={this.props.onCloseClick} />
+            <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
             <ProgressionContent>
               <ProgressionLoading>
                 <div>Collecting...</div>
@@ -154,7 +145,7 @@ class ProgressionView extends React.Component<Props, State> {
           <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
           <InnerContainer>
             <ProgressionCorner />
-            <CloseButton onClick={this.props.onCloseClick} />
+            <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
             <ProgressionContent>
               <ProgressionLoading>
                 <div>{graphql.lastError}</div>
@@ -172,7 +163,7 @@ class ProgressionView extends React.Component<Props, State> {
           <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
           <InnerContainer>
             <ProgressionCorner />
-            <CloseButton onClick={this.props.onCloseClick} />
+            <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
             <ProgressionContent>
               <ProgressionLoading>
                 <div>Loading...</div>
@@ -191,7 +182,7 @@ class ProgressionView extends React.Component<Props, State> {
           <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
           <InnerContainer>
             <ProgressionCorner />
-            <CloseButton onClick={this.props.onCloseClick} />
+            <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
             <ProgressionContent>
               <ProgressionLoading>
                 <div>All progression packages have been collected</div>
@@ -207,7 +198,7 @@ class ProgressionView extends React.Component<Props, State> {
       <Container>
         <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
         <InnerContainer className='cse-ui-scroller-thumbonly'>
-          <CloseButton onClick={this.props.onCloseClick} />
+          <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
           <ProgressionCorner />
           <ProgressionContent>
 

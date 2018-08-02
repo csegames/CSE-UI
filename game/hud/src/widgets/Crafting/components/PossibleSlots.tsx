@@ -42,7 +42,7 @@ export class PossibleSlots extends React.Component<PossibleSlotsProps, PossibleS
     const ss = StyleSheet.create(merge({}, possibleSlots, this.props.style));
     const render = (slot: string) => slot && (
       <div className={css(ss.possibleSlots)}>
-        {slot}
+        {slot && slot.replace('NonRecipe', 'Any')}
       </div>
     );
     return (

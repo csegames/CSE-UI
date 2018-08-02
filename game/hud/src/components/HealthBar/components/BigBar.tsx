@@ -8,7 +8,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { utils, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { BodyParts } from 'lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 
 const Container = styled('div')`
@@ -16,7 +16,7 @@ const Container = styled('div')`
   left: ${(props: any) => props.left.toFixed(1)}px;
   width: 100%;
   height: ${(props: any) => props.height.toFixed(1)}px;
-  margin-bottom: ${({ scale }: {scale: number}) => (3 * scale).toFixed(1)}px;
+  margin-bottom: ${({ scale }: { scale: number }) => (3 * scale).toFixed(1)}px;
 `;
 
 const BarContainer = styled('div')`

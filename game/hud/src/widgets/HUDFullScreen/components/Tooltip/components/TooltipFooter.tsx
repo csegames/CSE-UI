@@ -13,7 +13,6 @@ import TooltipDurabilityInfo from './TooltipDurabilityInfo';
 import TooltipRequirementInfo from './TooltipRequirementInfo';
 import { hasDurabilityStats, hasItemRequirements } from '../../../lib/utils';
 import { defaultSlotIcons, TOOLTIP_PADDING } from '../../../lib/constants';
-import { SlotType } from '../../../lib/itemInterfaces';
 import { InventoryItemFragment } from '../../../../../gqlInterfaces';
 
 const Container = styled('div')`
@@ -120,12 +119,12 @@ const InstructionText = styled('div')`
 
 export interface TooltipFooterProps {
   item: InventoryItemFragment;
-  slotType?: SlotType;
+  instructions: string;
 }
 
 class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
   public render() {
-    const { item, slotType } = this.props;
+    const { item, instructions } = this.props;
     return (
       <Container>
         <FooterOverlay />
@@ -162,10 +161,7 @@ class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
             <TooltipRequirementInfo item={item} />
           </MidSectionContainer>
         }
-        <InstructionText>
-          {slotType === SlotType.CraftingContainer ? 'left click to open crafting container | ' : ''}
-          right click item for more actions
-        </InstructionText>
+        <InstructionText>{instructions}</InstructionText>
       </Container>
     );
   }

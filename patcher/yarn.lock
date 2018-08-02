@@ -2,27 +2,12 @@
 # yarn lockfile v1
 
 
-"@babel/helper-module-imports@7.0.0-beta.32":
-  version "7.0.0-beta.32"
-  resolved "http://registry.camelotunchained.com/@babel%2fhelper-module-imports/-/helper-module-imports-7.0.0-beta.32.tgz#8126fc024107c226879841b973677a4f4e510a03"
-  dependencies:
-    "@babel/types" "7.0.0-beta.32"
-    lodash "^4.2.0"
-
 "@babel/helper-module-imports@7.0.0-beta.40":
   version "7.0.0-beta.40"
   resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.0.0-beta.40.tgz#251cbb6404599282e8f7356a5b32c9381bef5d2d"
   dependencies:
     "@babel/types" "7.0.0-beta.40"
     lodash "^4.2.0"
-
-"@babel/types@7.0.0-beta.32":
-  version "7.0.0-beta.32"
-  resolved "http://registry.camelotunchained.com/@babel%2ftypes/-/types-7.0.0-beta.32.tgz#c317d0ecc89297b80bbcb2f50608e31f6452a5ff"
-  dependencies:
-    esutils "^2.0.2"
-    lodash "^4.2.0"
-    to-fast-properties "^2.0.0"
 
 "@babel/types@7.0.0-beta.40":
   version "7.0.0-beta.40"
@@ -32,31 +17,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@csegames/camelot-unchained@^0.1.31":
-  version "0.1.36"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.36.tgz#9eda17153fbc9a03ecdd85e2a59c390ce9400fdb"
-  dependencies:
-    aphrodite "^1.2.3"
-    cwd-in-node-modules "^1.0.1"
-    emotion "^8.0.8"
-    es6-promise "^3.0.2"
-    fuzzysearch "^1.0.3"
-    graphql-tag "^1.2.4"
-    isomorphic-fetch "^2.2.1"
-    jquery "^3.0.0"
-    lodash "^4.17.4"
-    moment "^2.17.1"
-    node-xmpp-client "2.1.0"
-    randomstring "^1.1.5"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-emotion "^8.0.8"
-    react-transition-group "1.x"
-    redux-typed-modules "^2.2.1"
-
-"@csegames/camelot-unchained@^0.1.47":
-  version "0.1.47"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.47.tgz#af20776dc328153c75f24067425f05e8aa243cc5"
+"@csegames/camelot-unchained@^0.1.53":
+  version "0.1.53"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.53.tgz#5058ebdf13efd55b4315767c6df0724b40c23532"
   dependencies:
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
@@ -75,22 +38,6 @@
     react-emotion "^9.2.3"
     react-transition-group "1.x"
     redux-typed-modules "^2.2.1"
-
-"@csegames/cu-xmpp-chat@^0.1.2":
-  version "0.1.2"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcu-xmpp-chat/-/cu-xmpp-chat-0.1.2.tgz#c87bb34a1767ff36163c68a3a6cb660869524722"
-  dependencies:
-    "@csegames/camelot-unchained" "^0.1.31"
-    aphrodite "^2.2.2"
-    cwd-in-node-modules "^1.0.1"
-    es6-promise "^3.1.2"
-    node-xmpp-client "^2.1.0"
-    normalizr "^2.0.0"
-    randomstring "^1.1.5"
-    react-redux "^5.0.5"
-    react-transition-group "1.x"
-    redux "^3.7.2"
-    redux-thunk "^2.2.0"
 
 "@emotion/babel-utils@^0.5.3":
   version "0.5.3"
@@ -272,14 +219,6 @@ aphrodite@^1.2.3:
   dependencies:
     asap "^2.0.3"
     inline-style-prefixer "^3.0.1"
-    string-hash "^1.1.3"
-
-aphrodite@^2.2.2:
-  version "2.2.2"
-  resolved "http://registry.camelotunchained.com/aphrodite/-/aphrodite-2.2.2.tgz#1292a6c67f5c35f8855f3f61475fe530d903bdd1"
-  dependencies:
-    asap "^2.0.3"
-    inline-style-prefixer "^4.0.0"
     string-hash "^1.1.3"
 
 apisauce@^0.3.1:
@@ -591,12 +530,6 @@ babel-macros@^1.0.2:
   version "1.0.2"
   resolved "http://registry.camelotunchained.com/babel-macros/-/babel-macros-1.0.2.tgz#04475889990243cc58a0afb5ea3308ec6b89e797"
 
-babel-macros@^1.2.0:
-  version "1.2.0"
-  resolved "http://registry.camelotunchained.com/babel-macros/-/babel-macros-1.2.0.tgz#39e47ed6d286d4a98f1948d8bab45dac17e4e2d4"
-  dependencies:
-    cosmiconfig "3.1.0"
-
 babel-messages@^6.23.0:
   version "6.23.0"
   resolved "http://registry.camelotunchained.com/babel-messages/-/babel-messages-6.23.0.tgz#f3cdf4703858035b2a2951c6ec5edf6c62f2630e"
@@ -608,19 +541,6 @@ babel-plugin-check-es2015-constants@^6.22.0:
   resolved "http://registry.camelotunchained.com/babel-plugin-check-es2015-constants/-/babel-plugin-check-es2015-constants-6.22.0.tgz#35157b101426fd2ffd3da3f75c7d1e91835bbf8a"
   dependencies:
     babel-runtime "^6.22.0"
-
-babel-plugin-emotion@^8.0.12:
-  version "8.0.12"
-  resolved "http://registry.camelotunchained.com/babel-plugin-emotion/-/babel-plugin-emotion-8.0.12.tgz#2ed844001416b0ae2ff787a06b1804ec5f531c89"
-  dependencies:
-    "@babel/helper-module-imports" "7.0.0-beta.32"
-    babel-macros "^1.2.0"
-    babel-plugin-syntax-jsx "^6.18.0"
-    convert-source-map "^1.5.0"
-    emotion-utils "^8.0.12"
-    find-root "^1.1.0"
-    source-map "^0.5.7"
-    touch "^1.0.0"
 
 babel-plugin-emotion@^8.0.4:
   version "8.0.4"
@@ -995,10 +915,6 @@ boom@2.x.x:
 bowser@^1.6.0:
   version "1.7.0"
   resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.7.0.tgz#169de4018711f994242bff9a8009e77a1f35e003"
-
-bowser@^1.7.3:
-  version "1.9.3"
-  resolved "http://registry.camelotunchained.com/bowser/-/bowser-1.9.3.tgz#6643ae4d783f31683f6d23156976b74183862162"
 
 boxen@^0.6.0:
   version "0.6.0"
@@ -1497,15 +1413,6 @@ corser@~2.0.0:
   version "2.0.1"
   resolved "http://registry.camelotunchained.com/corser/-/corser-2.0.1.tgz#8eda252ecaab5840dcd975ceb90d9370c819ff87"
 
-cosmiconfig@3.1.0:
-  version "3.1.0"
-  resolved "http://registry.camelotunchained.com/cosmiconfig/-/cosmiconfig-3.1.0.tgz#640a94bf9847f321800403cd273af60665c73397"
-  dependencies:
-    is-directory "^0.3.1"
-    js-yaml "^3.9.0"
-    parse-json "^3.0.0"
-    require-from-string "^2.0.1"
-
 cosmiconfig@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-4.0.0.tgz#760391549580bbd2df1e562bc177b13c290972dc"
@@ -1610,13 +1517,6 @@ css-in-js-utils@^1.0.3:
   resolved "http://registry.camelotunchained.com/css-in-js-utils/-/css-in-js-utils-1.0.3.tgz#9ac7e02f763cf85d94017666565ed68a5b5f3215"
   dependencies:
     hyphenate-style-name "^1.0.2"
-
-css-in-js-utils@^2.0.0:
-  version "2.0.1"
-  resolved "http://registry.camelotunchained.com/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
-  dependencies:
-    hyphenate-style-name "^1.0.2"
-    isobject "^3.0.1"
 
 csstype@^2.2.0, csstype@^2.5.2:
   version "2.5.3"
@@ -1803,18 +1703,9 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-emotion-utils@^8.0.12, emotion-utils@^8.0.2-7:
+emotion-utils@^8.0.2-7:
   version "8.0.12"
   resolved "http://registry.camelotunchained.com/emotion-utils/-/emotion-utils-8.0.12.tgz#5e0fd72db3008f26ce4f80b1972df08841df2168"
-
-emotion@^8.0.8:
-  version "8.0.12"
-  resolved "http://registry.camelotunchained.com/emotion/-/emotion-8.0.12.tgz#03de11ce26b1b2401c334b94d438652124c514c6"
-  dependencies:
-    babel-plugin-emotion "^8.0.12"
-    emotion-utils "^8.0.12"
-    stylis "^3.3.2"
-    stylis-rule-sheet "^0.0.5"
 
 emotion@^9.2.3:
   version "9.2.3"
@@ -1829,13 +1720,20 @@ encoding@^0.1.11:
   dependencies:
     iconv-lite "~0.4.13"
 
+envify@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/envify/-/envify-4.1.0.tgz#f39ad3db9d6801b4e6b478b61028d3f0b6819f7e"
+  dependencies:
+    esprima "^4.0.0"
+    through "~2.3.4"
+
 error-ex@^1.2.0, error-ex@^1.3.1:
   version "1.3.1"
   resolved "http://registry.camelotunchained.com/error-ex/-/error-ex-1.3.1.tgz#f855a86ce61adc4e8621c3cda21e7a7612c3a8dc"
   dependencies:
     is-arrayish "^0.2.1"
 
-es6-promise@^3.0.2, es6-promise@^3.1.2:
+es6-promise@^3.0.2:
   version "3.3.1"
   resolved "http://registry.camelotunchained.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
 
@@ -2482,13 +2380,6 @@ inline-style-prefixer@^3.0.1:
     bowser "^1.6.0"
     css-in-js-utils "^1.0.3"
 
-inline-style-prefixer@^4.0.0:
-  version "4.0.2"
-  resolved "http://registry.camelotunchained.com/inline-style-prefixer/-/inline-style-prefixer-4.0.2.tgz#d390957d26f281255fe101da863158ac6eb60911"
-  dependencies:
-    bowser "^1.7.3"
-    css-in-js-utils "^2.0.0"
-
 insert-module-globals@^7.0.0:
   version "7.0.1"
   resolved "http://registry.camelotunchained.com/insert-module-globals/-/insert-module-globals-7.0.1.tgz#c03bf4e01cb086d5b5e5ace8ad0afe7889d638c3"
@@ -2702,10 +2593,6 @@ isobject@^2.0.0, isobject@^2.1.0:
   resolved "http://registry.camelotunchained.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
   dependencies:
     isarray "1.0.0"
-
-isobject@^3.0.1:
-  version "3.0.1"
-  resolved "http://registry.camelotunchained.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
 isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
@@ -3545,12 +3432,6 @@ parse-json@^2.1.0, parse-json@^2.2.0:
   dependencies:
     error-ex "^1.2.0"
 
-parse-json@^3.0.0:
-  version "3.0.0"
-  resolved "http://registry.camelotunchained.com/parse-json/-/parse-json-3.0.0.tgz#fa6f47b18e23826ead32f263e744d0e1e847fb13"
-  dependencies:
-    error-ex "^1.3.1"
-
 parse-json@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/parse-json/-/parse-json-4.0.0.tgz#be35f5425be1f7f6c747184f98a788cb99477ee0"
@@ -3826,7 +3707,7 @@ rc@^1.0.1, rc@^1.1.5, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@^16.0.0, react-dom@^16.4.1:
+react-dom@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
   dependencies:
@@ -3834,13 +3715,6 @@ react-dom@^16.0.0, react-dom@^16.4.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
-
-react-emotion@^8.0.8:
-  version "8.0.12"
-  resolved "http://registry.camelotunchained.com/react-emotion/-/react-emotion-8.0.12.tgz#3dd94c151197e2e3399e34e3e118df141b5ebb7b"
-  dependencies:
-    babel-plugin-emotion "^8.0.12"
-    emotion-utils "^8.0.12"
 
 react-emotion@^9.2.3:
   version "9.2.3"
@@ -3876,7 +3750,7 @@ react-transition-group@1.x:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react@^16.0.0, react@^16.4.1:
+react@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:
@@ -4497,11 +4371,7 @@ stylis-rule-sheet@^0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.10.tgz#44e64a2b076643f4b52e5ff71efc04d8c3c4a430"
 
-stylis-rule-sheet@^0.0.5:
-  version "0.0.5"
-  resolved "http://registry.camelotunchained.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.5.tgz#ebae935cc1f6fb31b9b62dba47f2ea8b833dad9f"
-
-stylis@^3.3.2, stylis@^3.5.0:
+stylis@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-3.5.0.tgz#016fa239663d77f868fef5b67cf201c4b7c701e1"
 
@@ -4582,7 +4452,7 @@ through2@^2.0.0, through2@^2.0.1:
     readable-stream "^2.1.5"
     xtend "~4.0.1"
 
-through@2, "through@>=2.2.7 <3", through@~2.3, through@~2.3.1:
+through@2, "through@>=2.2.7 <3", through@~2.3, through@~2.3.1, through@~2.3.4:
   version "2.3.8"
   resolved "http://registry.camelotunchained.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 

@@ -43,7 +43,6 @@ export interface ControllerDisplayState {
   serverType: ServerType;
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
-  serverListHelper: {[shardId: string]: webAPI.ServerModel};
   apiServerStatus: APIServerStatus;
 }
 
@@ -57,7 +56,6 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
       serverType: ServerType.CUGAME,
       selectedServer: null,
       selectedCharacter: null,
-      serverListHelper: {},
       apiServerStatus: {},
     };
   }
@@ -85,22 +83,7 @@ class ControllerDisplay extends React.Component<ControllerDisplayProps, Controll
   }
 
   public componentDidMount() {
-    this.getServers();
     this.props.dispatch(listenForErrors());
-  }
-
-  private getServers = async () => {
-    try {
-      const res = await webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig);
-      const serverListHelper = {};
-      const data = JSON.parse(res.data);
-      data.forEach((server: webAPI.ServerModel) => {
-        serverListHelper[server.shardID] = server;
-      });
-      this.setState({ serverListHelper });
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   private onLogin = () => {

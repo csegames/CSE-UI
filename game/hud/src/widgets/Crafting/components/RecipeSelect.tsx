@@ -47,11 +47,12 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
     if (!this.props.items) return null;    // no items, don't render
     const i = this.props.selected ? this.props.items.findIndex((i: Recipe) => this.props.selected.id === i.id) : -1;
     const selectedItem = i > -1 ? this.props.items[i] : null;
-    const type = this.props.type;
+    // const type = this.props.type;
     return (
       <div className={css(ss.recipeSelect)}>
         <Label style={{ label: recipeSelect.label }}>
-          {type[0].toUpperCase() + type.substr(1)} Recipe
+          Select Desired Output
+          {/* {type[0].toUpperCase() + type.substr(1)} Recipe */}
         </Label>
         <Select
           disabled={!this.props.enabled || this.props.status !== 'Configuring'}

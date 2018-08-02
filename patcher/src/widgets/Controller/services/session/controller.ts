@@ -198,6 +198,16 @@ export const reset = module.createAction({
   reducer: () => initialState(),
 });
 
+export function onSignalRStart(dispatch: (action: ControllerAction) => any) {
+  registerPatcherHubEvents(dispatch);
+  dispatch(initSignalRSuccess() as ControllerAction);
+  dispatch(getChannels());
+  // update channel info on a timer...
+  if (channelUpdateInterval === null) {
+    channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
+  }
+}
+
 export const initialize = module.createAction({
   type: 'controller/initialize',
   action: () => {
@@ -208,32 +218,29 @@ export const initialize = module.createAction({
       try {
         // Connect to main signalr patcher hub
         signalr.patcherHub.start(() => {
-          dispatch(initSignalRSuccess() as ControllerAction);
-          registerPatcherHubEvents(dispatch);
-          dispatch(getChannels());
-          // update channel info on a timer...
-          if (channelUpdateInterval === null) {
-            channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
-          }
+          onSignalRStart(dispatch);
         });
       } catch (e) {
         console.error(e);
         dispatch(initSignalRFailed() as ControllerAction);
       }
 
-        // Connect to all server's patcher hubs
-        webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
-          if (res.ok) {
-            const servers = JSON.parse(res.data);
-            servers.forEach((server) => {
-              try {
-                signalr.createPatcherHub(server.apiHost + '/signalr').start();
-              } catch (e) {
-                console.error(e);
-              }
-            });
-          }
-        });
+      // Connect to all server's patcher hubs
+      webAPI.ServersAPI.GetServersV1(webAPI.defaultConfig).then((res) => {
+        if (res.ok) {
+          const servers: PatcherServer[] = JSON.parse(res.data);
+          servers.forEach((server) => {
+            try {
+              signalr.createPatcherHub(server.apiHost + '/signalr').start(() => {
+                onSignalRStart(dispatch);
+              });
+            } catch (e) {
+              console.error(e);
+              dispatch(initSignalRFailed() as ControllerAction);
+            }
+          });
+        }
+      });
     };
   },
 });

@@ -19,7 +19,6 @@ export interface Options<DataType> extends WebSocketOptions {
   onClosed: () => void;
 }
 
-
 const subscriptionUrl =  `${client.apiHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
 const subscriptionInitPayload = {
   shardID: client.shardID,
@@ -99,9 +98,8 @@ function getFrameIdentifier(frame: OperationMessage | string) {
   const operationName = payload && payload.operationName;
   if (operationName) {
     return `${type}${operationName}`;
-  } else {
-    return `${type}${id}`;
   }
+  return `${type}${id}`;
 }
 
 export class SubscriptionManager {
@@ -155,9 +153,9 @@ export class SubscriptionManager {
   }
 
   public stop = (id: string) => {
-    // if (this.debug) {
+    if (this.debug) {
       this.log(`stop => ${id}`);
-    // }
+    }
 
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
@@ -191,7 +189,7 @@ export class SubscriptionManager {
     switch (op.type) {
       case GQL_CONNECTION_ACK: {
         // Use lodash for version
-        _.values(this.subscriptions).forEach(s => {
+        _.values(this.subscriptions).forEach((s) => {
           // Check to see if the message has already been added to the messageQueue
           const inMessageQueue = _.findIndex(this.messageQueue, (message: string) => {
             const messageIdentifier = getFrameIdentifier(message);

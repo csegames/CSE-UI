@@ -77,15 +77,15 @@ const Container = styled('div')`
 
 export interface TooltipContentProps {
   item: InventoryItemFragment;
+  instructions: string;
   equippedItems?: EquippedItemFragment[];
-  instructions?: string;
   stackedItems?: InventoryItemFragment[];
   slotType?: SlotType;
 }
 
 class TooltipContent extends React.Component<TooltipContentProps> {
   public render() {
-    const { item, equippedItems, slotType, stackedItems } = this.props;
+    const { item, slotType, equippedItems, stackedItems, instructions } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
@@ -97,7 +97,7 @@ class TooltipContent extends React.Component<TooltipContentProps> {
         {isSubstanceItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipSubstanceInfo item={item} />}
         {isAlloyItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipAlloyInfo item={item} />}
         {isBuildingBlockItem(item) && <TooltipBuildingBlockInfo item={item} />}
-        <TooltipFooter item={item} slotType={slotType} />
+        <TooltipFooter item={item} instructions={instructions} />
       </Container>
     ) : <div>This item does not exist anymore.</div>;
   }

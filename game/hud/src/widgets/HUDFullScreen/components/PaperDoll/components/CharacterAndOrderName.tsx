@@ -17,13 +17,13 @@ const Text = styled('p')`
 
 export interface CharacterNameProps {
   characterName: string;
-  orderName: string;
+  // orderName: string;
 }
 
 const CharacterAndOrderName = (props: CharacterNameProps) => {
-  const { characterName, orderName } = props;
+  const { characterName } = props;
   return (
-    <Text>{characterName} {orderName && `<${orderName}>`}</Text>
+    <Text>{characterName}</Text>
   );
 };
 

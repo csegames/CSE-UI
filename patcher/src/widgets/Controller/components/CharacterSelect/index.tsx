@@ -116,7 +116,6 @@ export interface CharacterSelectProps {
 }
 
 export interface CharacterSelectState {
-  initial: boolean;
   showDeleteModal: boolean;
   selectedCharacter: webAPI.SimpleCharacter;
 }
@@ -126,7 +125,6 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   constructor(props: CharacterSelectProps) {
     super(props);
     this.state = {
-      initial: true,
       showDeleteModal: false,
       selectedCharacter: null,
     };

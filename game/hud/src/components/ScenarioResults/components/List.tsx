@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 
-import { FactionColors } from '../../../lib/factionColors';
+import { FactionColors } from 'lib/factionColors';
 import SearchableList from '../../SearchableList';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';
@@ -126,7 +126,7 @@ class List extends React.Component<ListProps, ListState> {
           </ListContainer>
         </Container>
       );
-    } else if (status.lastError !== 'OK') {
+    } else if (this.props.scenarioID !== '' && status.lastError !== 'OK') {
       return (
         <Container>
           <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>

@@ -16,7 +16,12 @@
     "experimentalDecorators": true,
     "plugins": [
       { "name": "tslint-language-service"}
-    ]
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "UI/*": [ "components/UI/*" ],
+      "actions/*": [ "services/actions/*" ]
+    }
   },
   "compileOnSave": false,
   "buildOnSave": false,

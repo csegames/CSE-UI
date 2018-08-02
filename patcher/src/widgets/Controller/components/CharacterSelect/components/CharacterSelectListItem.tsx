@@ -6,9 +6,10 @@
  */
 
 import * as React from 'react';
+import { includes } from 'lodash';
 import { webAPI, Race, Gender, Archetype, events } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
-import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
+import CharacterImages from '../../../../../lib/characterImages';
 
 const goldenColor = 'rgba(192, 173, 124, 0.4)';
 
@@ -79,8 +80,12 @@ const CharacterName = styled('div')`
   font-size: ${props => props.fontSize}px;
 `;
 
+const ClassMask = css`
+  -webkit-mask: url(images/controller/character-profile-mask.png) no-repeat;
+  -webkit-mask-size: 95% 100%;
+`;
+
 const Class = styled('div')`
-  background: url(${props => props.backgroundImage});
   transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
   display: block;
   position: absolute;
@@ -90,31 +95,57 @@ const Class = styled('div')`
   height: 70px;
   bottom: 5px;
   left: ${props => props.left ? props.left : -40}px;
+  ${ClassMask}
 `;
 
-const MaleTDDClass = styled('div')`
-  background: url(${props => props.backgroundImage});
+const ValkyrieWintersShadowClass = styled('div')`
+  transform: scale(-1, 1);
+  display: block;
+  position: absolute;
+  background-size: 295%;
+  background-position: 45% 24%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
+const TDDHumanArcherClass = styled('div')`
+  transform: none;
   display: block;
   position: absolute;
   background-size: 340%;
-  background-position: 48% 23%;
+  background-position: 50% 18%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
+const LuchorpanArcherClass = styled('div')`
+  display: block;
+  position: absolute;
+  background-size: 340%;
+  background-position: 50% 23%;
   width: 100px;
   height: 70px;
   bottom: 5px;
   left: -35px;
+  ${ClassMask}
 `;
 
-const FemalePictClass = styled('div')`
-  background: url(${props => props.backgroundImage});
+const LuchorpanClass = styled('div')`
   display: block;
   position: absolute;
-  background-size: 500%;
-  background-position: 49% 20%;
-  width: 80px;
+  background-size: 340%;
+  background-position: 50% 25%;
+  width: 100px;
   height: 70px;
   bottom: 5px;
-  left: -10px;
-  transform: scale(-1, 1);
+  left: -35px;
+  ${ClassMask}
 `;
 
 const DeleteButton = styled('div')`
@@ -161,12 +192,11 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
   }
   public render() {
     const { character } = this.props;
-    let flipImage;
-    if (shouldFlipCharImage(character)) {
-      flipImage = true;
-    }
+    const race = includes(Race[character.race].toLowerCase(), 'human') ? webAPI.raceString(character.race) :
+      Race[character.race];
 
-    const classImg = CharacterImages[`${Race[character.race]}${Gender[character.gender]}`];
+    const charIdentifier = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
+    const classImg = CharacterImages[`${race}${Gender[character.gender]}${Archetype[character.archetype]}`];
     return (
         <Container
           onClick={this.onClick}
@@ -176,16 +206,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
           marginBottom={!this.props.marginBottom ? '0px' : this.props.marginBottom}
           className={this.props.selected ? activeItem : ''}
           visible={this.props.charSelectVisible}>
-          {character.race === Race.Luchorpan && character.gender === Gender.Male ?
-            <MaleTDDClass backgroundImage={classImg} /> :
-          character.race === Race.Pict  && character.gender === Gender.Female ?
-            <FemalePictClass backgroundImage={classImg} /> :
-            <Class
-              flipImage={flipImage}
-              backgroundImage={classImg}
-              left={Gender.Female && (character.race === Race.HumanMaleV || character.race === Race.HumanMaleA) && -35}
-            />
-          }
+          {this.renderCharImg(charIdentifier, classImg)}
           <CharacterName fontSize={this.state.fontSize}>
             {character.name}
           </CharacterName>
@@ -213,6 +234,75 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
   private toggleDeleteModal = (e?: React.MouseEvent<HTMLDivElement>) => {
     if (e) e.stopPropagation();
     events.fire('character-select-show-delete');
+  }
+
+  private renderCharImg = (charIdentifier: string, classImg: string) => {
+    switch (charIdentifier) {
+      case 'HumanMaleForestStalker':
+      case 'LuchorpanMaleForestStalker':
+      case 'LuchorpanFemaleForestStalker': {
+        return (
+          <LuchorpanArcherClass
+            style={{
+              backgroundImage: `url(${classImg})`,
+              transform: 'scale(-1, 1)',
+              backgroundSize: charIdentifier === 'LuchorpanMaleForestStalker' ? '290%' : '340%',
+            }}
+          />
+        );
+      }
+
+      case 'LuchorpanMaleEmpath':
+      case 'LuchorpanFemaleEmpath':
+      case 'LuchorpanMaleFianna':
+      case 'LuchorpanFemaleFianna': {
+        const shouldFlip = includes(charIdentifier, 'Empath');
+        return (
+          <LuchorpanClass
+            style={{ backgroundImage: `url(${classImg})`, transform: shouldFlip ? 'scale(-1, 1)' : 'none' }}
+          />
+        );
+      }
+
+      case 'HumanFemaleForestStalker': {
+        return <TDDHumanArcherClass style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+      }
+
+      case 'ValkyrieMaleWintersShadow':
+      case 'ValkyrieFemaleWintersShadow':
+      case 'HumanMaleWintersShadow':
+      case 'HumanFemaleWintersShadow': {
+        return (
+          <ValkyrieWintersShadowClass style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />
+        );
+      }
+
+      case 'HumanMaleEmpath':
+      case 'HumanFemaleEmpath':
+      case 'HumanMalePhysician':
+      case 'HumanFemalePhysician':
+      case 'PictMalePhysician':
+      case 'PictFemalePhysician':
+      case 'HumanFemaleBlackguard':
+      case 'PictMaleBlackguard':
+      case 'PictFemaleBlackguard':
+      case 'HumanMaleStonehealer':
+      case 'ValkyrieMaleStonehealer':
+      case 'ValkyrieFemaleStonehealer': {
+        return <Class style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+      }
+
+      default: {
+        return (
+          <Class
+            style={{
+              backgroundImage: `url(${classImg})`,
+              backgroundSize: charIdentifier === 'HumanMaleMjolnir' ? '400%' : '340%',
+            }}
+          />
+        );
+      }
+    }
   }
 }
 

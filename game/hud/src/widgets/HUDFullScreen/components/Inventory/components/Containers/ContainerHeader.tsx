@@ -7,8 +7,9 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { client, webAPI } from '@csegames/camelot-unchained';
+import { CloseButton } from 'UI/CloseButton';
 
 import { nullVal } from '../../../../lib/constants';
 import { getContainerColor, requestUIKeydown, releaseUIKeydown } from '../../../../lib/utils';
@@ -58,12 +59,7 @@ const StaticDefName = styled('div')`
   width: fit-content;
 `;
 
-const CloseButton = styled('div')`
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-  background: url(images/inventory/close-button-grey.png);
-  background-size: cover;
+const CloseButtonPosition = css`
   margin-right: 10px;
 `;
 
@@ -136,7 +132,7 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
           </StaticDefName>
           <InvisiDiv innerRef={(r: HTMLDivElement) => this.invisibleDiv = r} />
         </ContainerName>
-        <CloseButton onClick={onCloseClick} />
+        <CloseButton width={18} height={18} onClick={onCloseClick} className={CloseButtonPosition} />
       </Container>
     );
   }

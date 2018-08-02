@@ -5,13 +5,15 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
-import { Tooltip } from '@csegames/camelot-unchained';
+import styled, { css } from 'react-emotion';
 
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
 
 const Container = styled('div')`
+  pointer-events: all;
+  display: inline-block;
   margin-right: 5px;
   margin-bottom: 5px;
 `;
@@ -26,6 +28,14 @@ const FilterIcon = styled('div')`
     -webkit-filter: brightness(120%);
   }
 `;
+
+const DefaultTooltipStyles = {
+  tooltip: css`
+    padding: 2px 5px;
+    background-color: rgba(0,0,0,0.9);
+    color: white;
+  `,
+};
 
 export interface InventoryFilterButtonProps {
   // The filter button defintiion object
@@ -76,17 +86,15 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
 
   public render() {
     return (
-      <Tooltip content={() => <div>{prettifyText(this.props.filterButton.name)}</div>}>
-        <Container>
-          <div style={this.props.filterButton.style || {}}>
-            <FilterIcon
-              active={this.state.activated}
-              onClick={this.onClicked}
-              className={this.props.filterButton.icon}
-            />
-          </div>
-        </Container>
-      </Tooltip>
+      <Container onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+        <div style={this.props.filterButton.style || {}}>
+          <FilterIcon
+            active={this.state.activated}
+            onClick={this.onClicked}
+            className={this.props.filterButton.icon}
+          />
+        </div>
+      </Container>
     );
   }
 
@@ -113,6 +121,15 @@ export class InventoryFilterButton extends React.Component<InventoryFilterButton
     }
 
     this.setState({ activated: !this.state.activated });
+  }
+
+  private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
+    const content = <div>{prettifyText(this.props.filterButton.name)}</div>;
+    showTooltip({ content, event, styles: DefaultTooltipStyles });
+  }
+
+  private onMouseLeave = () => {
+    hideTooltip();
   }
 }
 

@@ -11,8 +11,8 @@ import { client, PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
-import { showSelfContextMenu } from '../services/actions/contextMenu';
-import { setPlayerState } from '../services/actions/player';
+import { showSelfContextMenu } from 'actions/contextMenu';
+import { setPlayerState } from 'actions/player';
 
 const Container = styled('div')`
   transform: scale(0.45);

@@ -10,8 +10,8 @@ import styled from 'react-emotion';
 import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
-import { isEqualPlayerState } from '../../../lib/playerStateEqual';
-import { BodyParts } from '../../../lib/PlayerStatus';
+import { isEqualPlayerState } from 'lib/playerStateEqual';
+import { BodyParts } from 'lib/PlayerStatus';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
@@ -137,12 +137,12 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
         />
         <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>
-          <SmallBar height={21} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
-          <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
+          <SmallBar height={22} scale={1} bodyPart={BodyParts.RightArm} playerState={playerState} />
+          <SmallBar height={22} scale={1} bodyPart={BodyParts.LeftArm} playerState={playerState} />
           <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Head} playerState={playerState} />
           <BigBar left={5} height={41} scale={1} bodyPart={BodyParts.Torso} playerState={playerState} />
-          <SmallBar height={21} scale={1} bodyPart={BodyParts.RightLeg} playerState={playerState} />
-          <SmallBar height={21} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
+          <SmallBar height={22} scale={1} bodyPart={BodyParts.RightLeg} playerState={playerState} />
+          <SmallBar height={22} scale={1} bodyPart={BodyParts.LeftLeg} playerState={playerState} />
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
         {

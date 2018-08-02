@@ -66,14 +66,14 @@ const subscription = `
 
 type SubscriptionType = {
   passiveAlerts: Pick<IPassiveAlert, 'message'>;
-}
+};
 
 class PassiveAlert extends React.Component<Props, State> {
   private passiveAlertListener: any;
   constructor(props: Props) {
     super(props);
     this.state = {
-      alerts: []
+      alerts: [],
     };
   }
 
@@ -109,7 +109,7 @@ class PassiveAlert extends React.Component<Props, State> {
   private removeAlertById = (id: string) => {
     const tmpAlertArr = this.state.alerts.filter(alert => alert.id !== id);
     this.setState({
-      alerts: tmpAlertArr
+      alerts: tmpAlertArr,
     });
   }
 
@@ -117,13 +117,13 @@ class PassiveAlert extends React.Component<Props, State> {
     const tmpAlertArr = this.state.alerts;
     tmpAlertArr.splice(tmpAlertArr.length - 1, 1);
     this.setState({
-      alerts: tmpAlertArr
+      alerts: tmpAlertArr,
     });
   }
 
   private addAlertMessage = (message: string) => {
     const id = this.createAlertID();
-    this.setState({ alerts: [{ id, message }, ...this.state.alerts]});
+    this.setState({ alerts: [{ id, message }, ...this.state.alerts] });
 
     // Set timer to remove the item by id
     setTimeout(() => {

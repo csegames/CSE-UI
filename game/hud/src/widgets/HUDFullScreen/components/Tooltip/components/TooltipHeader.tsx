@@ -57,6 +57,11 @@ const HeaderOverlay = styled('div')`
   }
 `;
 
+const InfoContainer = styled('div')`
+  max-width: 300px;
+  margin-right: 5px;
+`;
+
 const SubContainer = styled('div')`
   display: flex;
   flex-direction: column;
@@ -96,7 +101,18 @@ export interface TooltipHeaderProps {
   stackedItems?: InventoryItemFragment[];
 }
 
-class TooltipHeader extends React.PureComponent<TooltipHeaderProps> {
+export interface TooltipHeaderState {
+  showAdminInfo: boolean;
+}
+
+class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeaderState> {
+  constructor(props: TooltipHeaderProps) {
+    super(props);
+    this.state = {
+      showAdminInfo: false,
+    };
+  }
+
   public render() {
     const { item, slotType, stackedItems } = this.props;
     const containerInfo = slotType && slotType === SlotType.CraftingContainer &&
@@ -108,12 +124,12 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps> {
     return (
       <Container>
         <HeaderOverlay factionColor={getTooltipColor(client.playerState.faction)} />
-        <SubContainer>
+        <InfoContainer>
           <ItemName>{itemInfo.name}</ItemName>
-          <ItemSubtitle>{item.id}</ItemSubtitle>
+          {this.state.showAdminInfo && <ItemSubtitle>{item.id}</ItemSubtitle>}
           {itemInfo.description && <ItemSubtitle>({itemInfo.description})</ItemSubtitle>}
           <ItemSubtitle>{itemInfo.itemType}</ItemSubtitle>
-        </SubContainer>
+        </InfoContainer>
         <SubContainer>
           <ItemStatInfo color={itemQuality < 30 ? '#E2392D' : '#5CF442'}>
             {itemQuality}%
@@ -124,7 +140,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps> {
           </ItemStatInfo>
           <ItemStatInfo color={item.location.equipped ? 'red' : '#555'}>
             <Icon flip className={'icon-ui-weight'}></Icon>
-            +{item.stats.item.encumbrance}%
+            +{item.stats.item.encumbrance.toFixed(3)}%
           </ItemStatInfo>
         </SubContainer>
       </Container>

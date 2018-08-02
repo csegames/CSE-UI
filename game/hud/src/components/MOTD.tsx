@@ -5,9 +5,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { ql, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { CloseButton } from 'UI/CloseButton';
 
 const query = {
   namedQuery: 'motd',
@@ -149,21 +150,10 @@ const MOTDFooterRight = styled('div')` {
   width: 75px
 `;
 
-const CloseButton = styled('div')`
+const CloseButtonPosition = css`
   position: absolute;
-  z-index: 11;
   top: 6px;
   right: 7px;
-  width: 12px;
-  height: 12px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  cursor: pointer;
-  &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
-  }
-  &:active {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
-  }
 `;
 
 export interface WelcomeProps {
@@ -195,23 +185,20 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
         {(graphql: GraphQLResult<{ motd: ql.schema.MessageOfTheDay }>) => {
           const gqlData = typeof graphql.data === 'string' ? JSON.parse(graphql.data) : graphql.data;
           if (graphql.loading || !gqlData) return null;
+          const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
 
           return (
             <Container>
               <MOTDTitle><h6>MOTD</h6></MOTDTitle>
               <InnerContainer className='cse-ui-scroller-thumbonly'>
-                <CloseButton onClick={this.hide} />
+                <CloseButton onClick={this.hide} className={CloseButtonPosition} />
                 <MOTDCorner />
                 <MOTDMotdTitle>
-                  <h4>{ gqlData && gqlData.motd && gqlData.motd[0]
-                    ? gqlData.motd[0].title
-                    : 'Welcome to Camelot Unchained'
-                  }</h4>
+                  <h4>{ latestMotd ? latestMotd.title : 'Welcome to Camelot Unchained' }</h4>
                 </MOTDMotdTitle>
                 <MOTDContent>
                       {
-                        gqlData && gqlData.motd && gqlData.motd[0]
-                        ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
+                        latestMotd ? <div key='100' dangerouslySetInnerHTML={{ __html: latestMotd.htmlContent }} />
                         : this.defaultMessage
                       }
                 </MOTDContent>
@@ -241,7 +228,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   private hideDelay = (): void => {
     this.hide();
     const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
+    localStorage.setItem('cse-MOTD-hide-start', JSON.stringify(hideDelayStart));
   }
 }
 

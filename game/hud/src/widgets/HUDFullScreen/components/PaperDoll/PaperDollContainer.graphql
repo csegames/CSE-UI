@@ -4,10 +4,4 @@ query PaperDollContainer {
       ...EquippedItem
     }
   }
-  myCharacter {
-    id
-    name
-    gender
-    race
-  }
 }

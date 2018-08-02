@@ -6,33 +6,23 @@
 
 import * as React from 'react';
 import { connect, DispatchProp } from 'react-redux';
-import { GlobalState } from '../services/session/reducer';
 import { StyleSheet, css, merge, tools, ToolsStyles } from '../styles';
 
 // Helpers
 import { slash } from '../services/game/slash';
 
 import { setMessage } from '../services/session/job';
-import { setCountdown } from '../services/session/ui';
 
 import Input from './Input';
 import Button from './Button';
 import VoxMessage from './VoxMessage';
-
-export interface ToolsPropsRedux {
-  countdown: number;
-}
 
 export interface ToolsOwnProps {
   style?: Partial<ToolsStyles>;
   refresh: () => void;
 }
 
-const select = (state: GlobalState, props: ToolsOwnProps): ToolsPropsRedux => {
-  return { countdown: state.ui.countdown };
-};
-
-export type ToolsProps = ToolsPropsRedux & DispatchProp<any> & ToolsOwnProps;
+export type ToolsProps = DispatchProp<any> & ToolsOwnProps;
 
 interface ToolsState {
   range: number;
@@ -104,15 +94,6 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
               change: (value: string) => this.setState({ range: (value as any) | 0 }),
               size: 4, numeric: true, min: 0, max: 1000,
             })}
-          </div>
-
-          <div>
-            { makeButton({
-              label: '/harvest' + (this.props.countdown ? ' [' + this.props.countdown + ']' : ''),
-              click: () => this.harvest(),
-              disabled: this.props.countdown > 0,
-            })}
-            Harvest nearby resources.
           </div>
         </div>
 
@@ -205,18 +186,6 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     });
   }
 
-  private harvest = () => {
-    this.slash('harvest', 'Check your Inventory!');
-    let countdown = 10;
-    const tick = () => {
-      this.props.dispatch(setCountdown(countdown));
-      if (countdown > 0) {
-        setTimeout(() => { countdown--; tick(); }, 1000);
-      }
-    };
-    tick();
-  }
-
   private forceFinish = () => {
     this.slash('cr vox forcefinish', 'Forced vox to finish');
     setTimeout(() => {
@@ -225,4 +194,4 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
   }
 }
 
-export default connect(select)(Tools);
+export default connect()(Tools);

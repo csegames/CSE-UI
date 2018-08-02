@@ -10,9 +10,28 @@ import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 import { SkillStateStatusEnum } from '@csegames/camelot-unchained';
 
-import { showTooltip, hideTooltip } from '../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { overlayPseudo } from './lib/styles';
-import { SkillStateInfo } from './lib';
+import {
+  SkillStateInfo,
+  ReadyState,
+  HeldState,
+  QueuedState,
+  RunningState,
+  CooldownState,
+  ErrorState,
+  ChannelState,
+  RecoveryState,
+  PreparationState,
+  StartCastState,
+  HitState,
+  InterruptedState,
+  ModalState,
+  UnavailableState,
+  NoAmmoState,
+  NoWeaponState,
+  CLASS_NAMES,
+} from './lib';
 
 const Button = styled('div')`
   position: relative;
@@ -33,26 +52,6 @@ const Button = styled('div')`
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
   }
 
-  &:after {
-    content: "${(props: any) => props.keybind}";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    color: #ececec;
-    text-align: center;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 5px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30px, rgba(0, 0, 0, 0) 30px);
-    border-radius: 0 0 600% 600%;
-    font-weight: 600;
-    text-shadow: -2px -2px 2px #000, 2px -2px 2px #000, -2px 2px 2px #000, 2px 2px 2px #000;
-    font-size: 0.6em;
-  }
-
   .inner-bg {
     stroke: transparent;
     transition: all 0.2s ease-in-out;
@@ -70,6 +69,89 @@ const Button = styled('div')`
     z-index: 1;
     pointer-events: none;
   }
+
+  &.${CLASS_NAMES.READY_STATE} {
+    ${ReadyState}
+  }
+
+  &.${CLASS_NAMES.HELD_STATE} {
+    ${HeldState}
+  }
+
+  &.${CLASS_NAMES.QUEUED_STATE} {
+    ${QueuedState}
+  }
+
+  &.${CLASS_NAMES.RUNNING_STATE} {
+    ${RunningState}
+  }
+
+  &.${CLASS_NAMES.COOLDOWN_STATE} {
+    ${CooldownState}
+  }
+
+  &.${CLASS_NAMES.ERROR_STATE} {
+    ${ErrorState}
+  }
+
+  &.${CLASS_NAMES.CHANNEL_STATE} {
+    ${ChannelState}
+  }
+
+  &.${CLASS_NAMES.RECOVERY_STATE} {
+    ${RecoveryState}
+  }
+
+  &.${CLASS_NAMES.PREPARATION_STATE} {
+    ${PreparationState}
+  }
+
+  &.${CLASS_NAMES.START_CAST_STATE} {
+    ${StartCastState}
+  }
+
+  &.${CLASS_NAMES.HIT_STATE} {
+    ${HitState}
+  }
+
+  &.${CLASS_NAMES.INTERRUPTED_STATE} {
+    ${InterruptedState}
+  }
+
+  &.${CLASS_NAMES.MODAL_STATE} {
+    ${ModalState}
+  }
+
+  &.${CLASS_NAMES.UNAVAILABLE_STATE} {
+    ${UnavailableState}
+  }
+
+  &.${CLASS_NAMES.NO_AMMO_STATE} {
+    ${NoAmmoState}
+  }
+
+  &.${CLASS_NAMES.NO_WEAPON_STATE} {
+    ${NoWeaponState}
+  }
+`;
+
+const KeybindInfo = styled('div')`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  color: #ececec;
+  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 5px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30px, rgba(0, 0, 0, 0) 30px);
+  border-radius: 0 0 600% 600%;
+  font-weight: 600;
+  text-shadow: -2px -2px 2px #000, 2px -2px 2px #000, -2px 2px 2px #000, 2px 2px 2px #000;
+  font-size: 0.6em;
 `;
 
 const TimingOverlay = styled('div')`
@@ -92,7 +174,7 @@ const QueuedStateTick = styled('div')`
   z-index: 3;
   border-radius: 0;
   box-shadow: initial;
-  background: url(http://i.imgur.com/U4GWSJN.png) no-repeat;
+  background: url(images/skills/queued-tick.png) no-repeat;
   background-size: 90%;
 `;
 
@@ -124,7 +206,7 @@ export interface SkillButtonViewProps {
   outerPath: string;
   inner: string;
   innerPath: string;
-  classNames: string;
+  className: string;
   onSkillClick: () => void;
 }
 
@@ -140,13 +222,13 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
     return (
       <Button
         id={skillState.id}
-        className={this.props.classNames}
+        className={this.props.className}
         style={icon}
-        keybind={skillState.info.keybind}
         onClick={this.props.onSkillClick}
         onMouseOver={this.onMouseOver}
         onMouseLeave={this.onMouseLeave}
       >
+        <KeybindInfo>{skillState.info.keybind}</KeybindInfo>
         {skillState.status & SkillStateStatusEnum.Queued ? <QueuedStateTick /> : null}
         <svg width='100' height='100'>
           <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg-blur'></path>
@@ -174,7 +256,7 @@ class SkillButtonView extends React.Component<SkillButtonViewProps, SkillButtonV
       nextProps.outer !== this.props.outer ||
       nextProps.outerPath !== this.props.outerPath ||
       !_.isEqual(nextProps.skillState, this.props.skillState) ||
-      nextProps.classNames !== this.props.classNames;
+      nextProps.className !== this.props.className;
   }
 
   private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {

@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { showTooltip, hideTooltip } from '../../../services/actions/tooltips';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 const Container = styled('div')`
   position: relative;
@@ -91,7 +91,7 @@ class StatusIcon extends React.Component<StatusIconProps, StatusIconState> {
         <TooltipHeader>{this.props.status.name}</TooltipHeader>
         <TooltipDescription>{this.props.status.description}</TooltipDescription>
       </TooltipContainer>;
-    
+
     showTooltip({ content, event });
   }
 

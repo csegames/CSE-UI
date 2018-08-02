@@ -14,7 +14,7 @@ import ItemStack from '../../ItemShared/ItemStack';
 import CraftingItem from './CraftingItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
-import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
+import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
 import eventNames, { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../lib/itemInterfaces';
@@ -314,8 +314,8 @@ const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
       id,
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
-      dropTarget: !props.item.disabled || !props.item.disableDrop ||
-        item.slotType !== SlotType.CraftingItem || props.filtering ? false : true,
+      dropTarget: !props.item.disabled && !props.item.disableDrop &&
+        item.slotType !== SlotType.CraftingItem && !props.filtering,
       disableDrag: props.item.disabled || props.item.disableDrag || props.filtering ||
         (props.containerPermissions && (_.isArray(props.containerPermissions) ?
           // if container permissions is an array, search parent containers and this container

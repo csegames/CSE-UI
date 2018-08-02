@@ -39,11 +39,20 @@ export const JobType = (props: JobTypeProps) => {
   const ss = StyleSheet.create(merge({}, jobType, props.style));
   const job = props.jobType;
   const button = (type: string) => {
-    const style = { button: merge({}, jobType.button, job === type ? jobType.buttonSelected : undefined) };
+    const disabled = job && job !== 'invalid' && job !== type;
+    const style = {
+      button: merge({},
+        jobType.button,
+        job === type ? jobType.buttonSelected : undefined,
+        disabled ? jobType.buttonDisabled : undefined,
+    )};
     return (
         <Button style={style}
           disabled={job && job !== 'invalid' && job !== type}
-          onClick={() => props.changeType(type)}>
+          disableSound={true}
+          onClick={() => {
+            props.changeType(type);
+          }}>
           {type[0].toUpperCase() + type.substr(1)}
         </Button>
     );

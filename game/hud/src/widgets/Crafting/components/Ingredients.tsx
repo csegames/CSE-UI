@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { client, soundEvents } from '@csegames/camelot-unchained';
 import { GlobalState } from '../services/session/reducer';
 import { Ingredient, Recipe } from '../services/types';
 import { setMessage } from '../services/session/job';
@@ -99,7 +100,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         // waiting for slots to load
         addIngredients = (
           <div className={css(ss.addIngredient)}>
-            ... loading recipe details
+            {/* loading possible ingredients... */}
           </div>
         );
       }
@@ -110,7 +111,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
           // no ingredients, but slot selected, ingredients are being loaded
           possible = (
             <div className={css(ss.message) + ' ingredients-searching'}>
-              Searching bags for possible ingredients ...
+              {/* Searching bags for possible ingredients ... */}
             </div>
           );
         } else {
@@ -148,14 +149,17 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         }
       }
       addIngredients = (
-        <div className={css(ss.addIngredient) + ' ingredients-add'}>
-          <PossibleSlots
-            dispatch={this.props.dispatch}
-            disabled={!configuring}
-            selectedItem={props.selectedSlot}
-            onSelect={this.selectSlot}
-          />
-          {possible}
+        <div className={css(ss.addIngredientWrapper)}>
+          <div>Select ingredients to load into Vox</div>
+          <div className={css(ss.addIngredient) + ' ingredients-add'}>
+            <PossibleSlots
+              dispatch={this.props.dispatch}
+              disabled={!configuring}
+              selectedItem={props.selectedSlot}
+              onSelect={this.selectSlot}
+            />
+            {possible}
+          </div>
         </div>
       );
     }
@@ -164,12 +168,13 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       <div className={css(ss.ingredients) + ' ingredients'}>
         {addIngredients}
         <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
+          <div>Loaded Ingredients</div>
           <div>{loaded}</div>
           { last
             ? <Button
                 style={{ button: ingredientsStyles.remove }}
                 disabled={!configuring}
-                onClick={() => props.remove(last)}
+                onClick={() => this.removeIngredient(last)}
               >
                 <i className='remove fa fa-times'></i> Remove Last
               </Button>
@@ -181,8 +186,14 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
 
   private addIngredient = () => {
     const { selectedIngredient, qty } = this.state;
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_ADDINGREDIENT);
     this.props.add(selectedIngredient, qty);
     this.setState({ selectedIngredient: null, qty: 1 });
+  }
+
+  private removeIngredient = (last: Ingredient) => {
+    this.props.remove(last);
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_REMOVELAST);
   }
 
   private select = (ingredient: Ingredient) => {

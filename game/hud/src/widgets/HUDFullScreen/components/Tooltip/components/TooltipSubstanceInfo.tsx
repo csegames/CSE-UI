@@ -27,7 +27,7 @@ class TooltipSubstanceInfo extends React.PureComponent<TooltipSubstanceInfoProps
     const { filteredResistances, filteredSubstanceStats } = this.getFilteredSubstanceStats();
     return (
       <Container>
-        <TooltipInfoSection useIcon turnValueToPercent name='Resistances' stats={filteredResistances} columnCount={7} />
+        <TooltipInfoSection useIcon turnValueToPercent name='Resistances' stats={filteredResistances} columnCount={2} />
         <TooltipInfoSection name='Substance Stats' stats={filteredSubstanceStats} columnCount={2} />
       </Container>
     );

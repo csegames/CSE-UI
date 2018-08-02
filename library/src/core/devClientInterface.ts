@@ -4,9 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import clientInterface, { PlayerState, AnyEntityState, ClientSkillState, ClientSkillBarItem } from './clientInterface';
+import clientInterface, {
+  PlayerState,
+  AnyEntityState,
+  ClientSkillState,
+  ClientSkillBarItem,
+  DisplayModeConfig,
+} from './clientInterface';
 import configGroup from './config/configGroup';
-import { Race, Gender, Faction } from '..';
 import Item from './classes/Item';
 
 const devClientInterface: clientInterface = {
@@ -169,6 +174,12 @@ const devClientInterface: clientInterface = {
   GetConfigVars: (tag: configGroup): void => {
   },
   GetConfigVar: (variable: string): void => {
+  },
+  RequestDisplayModes: (): void => {
+  },
+  OnDisplayModesChanged: (c: (displayModes: DisplayModeConfig[]) => void): void => {
+  },
+  SetDisplayMode: (wantFullScreen: boolean, width: number, height:  number): void => {
   },
 
   /* Building | CUBE */

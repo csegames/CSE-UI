@@ -65,6 +65,10 @@
   version "10.3.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.3.tgz#8798d9e39af2fa604f715ee6a6b19796528e46c3"
 
+"@types/randomstring@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/randomstring/-/randomstring-1.1.6.tgz#45cdc060a6f043d610bcd46503a6887db2a209c3"
+
 "@types/react-dom@^16.0.6":
   version "16.0.6"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.6.tgz#f1a65a4e7be8ed5d123f8b3b9eacc913e35a1a3c"
@@ -1855,6 +1859,13 @@ end-of-stream@^1.0.0:
   resolved "http://registry.camelotunchained.com/end-of-stream/-/end-of-stream-1.4.0.tgz#7a90d833efda6cfa6eac0f4949dbb0fad3a63206"
   dependencies:
     once "^1.4.0"
+
+envify@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/envify/-/envify-4.1.0.tgz#f39ad3db9d6801b4e6b478b61028d3f0b6819f7e"
+  dependencies:
+    esprima "^4.0.0"
+    through "~2.3.4"
 
 errno@^0.1.4:
   version "0.1.4"
@@ -5368,7 +5379,7 @@ through2@^2.0.0, through2@^2.0.1:
     readable-stream "^2.1.5"
     xtend "~4.0.1"
 
-through@2, "through@>=2.2.7 <3", through@^2.3.6, through@~2.3, through@~2.3.1:
+through@2, "through@>=2.2.7 <3", through@^2.3.6, through@~2.3, through@~2.3.1, through@~2.3.4:
   version "2.3.8"
   resolved "http://registry.camelotunchained.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 

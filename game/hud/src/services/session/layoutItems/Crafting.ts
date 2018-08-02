@@ -3,23 +3,23 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import Crafting from '../../../widgets/Crafting';
+import { LayoutMode } from 'components/HUDDrag';
+import Crafting from 'widgets/Crafting';
 import HUDZOrder from '../HUDZOrder';
 
 export default {
   position: {
     x: {
-      anchor: 5,
-      offset: -200,
+      anchor: 0,
+      offset: 20,
     },
     y: {
-      anchor: Edge.TOP,
-      offset: 120,
+      anchor: 0,
+      offset: 75,
     },
     size: {
-      width: 600,
-      height: 450,
+      width: 700,
+      height: 550,
     },
     scale: 1,
     opacity: 1,

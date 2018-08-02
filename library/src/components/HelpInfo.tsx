@@ -153,7 +153,7 @@ export class HelpInfo extends React.Component<HelpInfoProps, HelpInfoState> {
                     zIndex: 9999,
                     backgroundColor: 'rgba(0,0,0,0.9)',
                     padding: '5px',
-                  }
+                  },
                 }}>
                 <TooltipIcon top={top} left={left} width={width}>?</TooltipIcon>
               </Tooltip>

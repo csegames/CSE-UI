@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client, jsKeyCodes } from '@csegames/camelot-unchained';
+import { client, jsKeyCodes, soundEvents } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
 import { expandError } from '../services/game/crafting/errors';
 import * as events  from '@csegames/camelot-unchained/lib/events';
@@ -32,18 +32,22 @@ import {
   gotOutputItems, gotPossibleItemSlots, gotVoxPossibleIngredientsForSlot,
   removePossibleIngredientForSlot, restorePossibleIngredientForSlot,
 } from '../services/session/job';
-import { setUIMode, setRemaining, setMinimized } from '../services/session/ui';
+import {
+  setUIMode,
+  setRemaining,
+  // setMinimized
+} from '../services/session/ui';
 import { gotVoxRecipes } from '../services/session/recipes';
 
 
 // Components
 import JobType from './JobType';
 import JobDetails from './JobDetails';
-import VoxInfo from './VoxInfo';
+// import VoxInfo from './VoxInfo';
 import Tools from './Tools';
 import Close from './Close';
-import VoxMessage from './VoxMessage';
-import Minimize from './Minimize';
+// import VoxMessage from './VoxMessage';
+// import Minimize from './Minimize';
 import Button from './Button';
 
 // Styles
@@ -126,9 +130,9 @@ class App extends React.Component<AppProps, AppState> {
       <div ref='crafting' className={'cu-window ' + css(ss.app)}>
         <div className={css(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
-          <Minimize onMinimize={this.minimize} minimized={false}/>
+          {/* <Minimize onMinimize={this.minimize} minimized={false}/> */}
         </div>
-        <VoxInfo/>
+        {/* <VoxInfo/> */}
         <JobType
           mode={props.uiMode}
           changeType={this.selectType}
@@ -146,7 +150,11 @@ class App extends React.Component<AppProps, AppState> {
     switch (props.uiMode) {
       case 'crafting':
         if (props.job.loading) {
-          return <div className={css(ss.loading)}>Preparing for your performance ...</div>;
+          return (
+            <div className={css(ss.loading)}>
+              {/* Loading... */}
+            </div>
+          );
         }
         return (
           <JobDetails
@@ -173,14 +181,15 @@ class App extends React.Component<AppProps, AppState> {
     const { status, outputItems } = props.job;
     return (
       <div ref='crafting' className={'cu-window ' + css(ss.app, ss.minimized)}>
-        <VoxMessage/>
+        {/* <VoxMessage/> */}
         <div className={css(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
-          <Minimize onMinimize={this.minimize} minimized={true}/>
+          {/* <Minimize onMinimize={this.minimize} minimized={true}/> */}
         </div>
         { status === 'Configuring' && outputItems && outputItems.length
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.startJob}>
                 Start
               </Button>
@@ -189,6 +198,7 @@ class App extends React.Component<AppProps, AppState> {
         { status === 'Running'
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.cancelJob}>
                 Cancel
               </Button>
@@ -197,6 +207,7 @@ class App extends React.Component<AppProps, AppState> {
         { status === 'Finished'
           ? <Button
               style={{ button: app.minimizedButton }}
+              disableSound={true}
               onClick={this.collectJob}>
                 Collect
               </Button>
@@ -213,9 +224,9 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private minimize = () => {
-    this.props.dispatch(setMinimized(!this.props.minimized));
-  }
+  // private minimize = () => {
+  //   this.props.dispatch(setMinimized(!this.props.minimized));
+  // }
 
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.which === jsKeyCodes.ESC) {
@@ -291,6 +302,8 @@ class App extends React.Component<AppProps, AppState> {
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
 
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+
     setVoxJob(type)
       .then((resonse: any) => {
         props.dispatch(setJobType(type));
@@ -302,6 +315,39 @@ class App extends React.Component<AppProps, AppState> {
         this.handleError(error);
         props.dispatch(setLoading(false));
       });
+  }
+
+  private playTypeSound = (type: string) => {
+    switch (type) {
+      case 'grind': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_GRIND);
+        break;
+      }
+      case 'purify': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_PURIFY);
+        break;
+      }
+      case 'shape': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SHAPE);
+        break;
+      }
+      case 'block': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_BLOCK);
+        break;
+      }
+      case 'make': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_MAKE);
+        break;
+      }
+      case 'repair': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_REPAIR);
+        break;
+      }
+      case 'salvage': {
+        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SALVAGE);
+        break;
+      }
+    }
   }
 
   private loadLists = (job: string, refresh?: boolean) => {
@@ -425,6 +471,7 @@ class App extends React.Component<AppProps, AppState> {
   private startJob = () => {
     const props = this.props;
     if (this.updating) return;
+    this.playTypeSound(this.props.job.type);
     props.dispatch(setRemaining(this.props.job.totalCraftingTime));
     this.api(startVoxJob, 'Job Started', () => {
       this.checkJobStatus();      // pretend will take 5 seconds (debug mode)
@@ -435,6 +482,7 @@ class App extends React.Component<AppProps, AppState> {
   private collectJob = () => {
     const props = this.props;
     const type = props.job.type;
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_COLLECT);
     this.api(collectVoxJob, 'Job Collected', () => {
       // automatally start same job type
       setVoxJob(type)
@@ -449,7 +497,11 @@ class App extends React.Component<AppProps, AppState> {
 
   // Clear current crafting job
   private clearJob = () => {
-    this.api(clearVoxJob, 'Job Clearaed', () => {
+
+    if (!this.props.job || this.props.job.type === 'invalid') return;
+
+    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_CLEAR);
+    this.api(clearVoxJob, 'Job Cleared', () => {
       this.checkJobStatus();
       return clearJob();
     });
@@ -496,7 +548,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private setRecipe = (recipe: Recipe) => {
-    this.api(() => setVoxRecipe(recipe.id), 'Recipe set to: ' + recipe.name,
+    this.api(() => setVoxRecipe(recipe.id), 'Output set to: ' + recipe.name,
       () => {
         this.checkJobStatus();
         this.loadPossibleSlots();

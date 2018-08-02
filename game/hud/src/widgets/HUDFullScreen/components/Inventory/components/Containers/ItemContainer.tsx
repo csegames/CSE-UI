@@ -13,8 +13,8 @@ import * as base from '../../../ItemShared/InventoryBase';
 import Drawer from './Drawer';
 import ContainerHeader from './ContainerHeader';
 import { InventoryDataTransfer } from '../../../../lib/eventNames';
-import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
-import { ContainerDrawersFragment } from '../../../../../../gqlInterfaces';
+import { InventorySlotItemDef, SlotItemDefType } from '../../../../lib/itemInterfaces';
+import { ContainerDrawersFragment, InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../../gqlInterfaces';
 import {
   getContainerColor,
   hasViewContentPermissions,
@@ -79,6 +79,10 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
   slotsPerRow: number;
   onCloseClick: () => void;
   containerID: string[];
+  showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
+  hideTooltip: () => void;
+  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
   syncWithServer: () => void;
@@ -128,6 +132,9 @@ class ItemContainer extends React.Component<ItemContainerProps> {
               containerID={this.props.containerID ? this.props.containerID : [item.id]}
               onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
               onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
+              onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
+              showTooltip={this.props.showTooltip}
+              hideTooltip={this.props.hideTooltip}
               slotsPerRow={this.props.slotsPerRow}
               syncWithServer={this.props.syncWithServer}
               permissions={item.permissibleHolder}

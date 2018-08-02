@@ -118,7 +118,7 @@ export class FilterSelect extends React.Component<FilterSelectProps, FilterSelec
                   <ListItem
                     key={index}
                     style={this.state.keyboardIndex === index ?
-                      {...customStyles.listItem, ...customStyles.highlightItem} : customStyles.listItem}
+                      { ...customStyles.listItem, ...customStyles.highlightItem } : customStyles.listItem}
                     onClick={() => this.selectItem(item)}>
                       {this.props.renderItem(item, this.props.renderData)}
                   </ListItem>
