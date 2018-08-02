@@ -31,6 +31,7 @@ import ScenarioPopup from '../ScenarioPopup';
 import ScenarioResults from '../ScenarioResults';
 
 import { ZoneName } from '../ZoneName';
+import HUDEditor from './HUDEditor';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
@@ -83,6 +84,11 @@ const SkillBarContainer = styled('div')`
   pointer-events: none;
 `;
 
+interface HUDWidget<T = any> {
+  widget: Widget<T>;
+  name: string;
+}
+
 export interface HUDProps {
   dispatch: (action: any) => void;
   layout: LayoutState;
@@ -91,9 +97,17 @@ export interface HUDProps {
 }
 
 export interface HUDState {
+  selectedWidget: HUDWidget | null;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
+  constructor(props: HUDProps) {
+    super(props);
+    this.state = {
+      selectedWidget: null,
+    };
+  }
+
   public render() {
     const widgets = this.props.layout.widgets.map((widget, name) => ({ widget, name })).toArray();
     const locked = this.props.layout.locked;
@@ -101,6 +115,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
                     .sort((a, b) => a.widget.position.zOrder - b.widget.position.zOrder)
                     .map((w, idx) =>
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
+
     return (
       <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
         {renderWidgets}
@@ -127,12 +142,23 @@ class HUD extends React.Component<HUDProps, HUDState> {
         <ContextMenu />
         <Tooltip />
         <PassiveAlert />
+        { locked ? null :
+          <HUDEditor
+            widgets={widgets}
+            selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+            dispatch={this.props.dispatch}
+            setSelectedWidget={this.setSelectedWidget}
+          />
+        }
         <Watermark />
       </div>
     );
   }
 
   public componentDidMount() {
+    // Always load MOTD
+    this.setVisibility('motd', true);
+
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
 
@@ -147,19 +173,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
           this.setVisibility('respawn', false);
         }
       });
-    }
-
-    // manage visibility of motd widget based on localStorage
-    this.setVisibility('motd', true);
-    try {
-      const delayInMin: number = 24 * 60;
-      const savedDelay = localStorage.getItem('cse-MOTD-hide-start');
-      const currentDate: Date = new Date();
-      const savedDelayDate: Date = new Date(JSON.parse(savedDelay));
-      savedDelayDate.setTime(savedDelayDate.getTime() + (delayInMin * 60 * 1000));
-      if (currentDate < savedDelayDate) this.setVisibility('motd', false);
-    } catch (error) {
-      console.log(error);
     }
   }
 
@@ -177,6 +190,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
         events.fire('chat-show-room', props.data.myOrder.name);
       }
     }
+  }
+
+  private setSelectedWidget = (selectedWidget: HUDWidget) => {
+    this.setState({ selectedWidget });
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {
@@ -205,6 +222,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           zOrder={widget.position.zOrder}
           gridDivisions={10}
           locked={this.props.layout.locked}
+          selected={this.state.selectedWidget && this.state.selectedWidget.name === type}
           save={(s: HUDDragState) => {
             this.props.dispatch(setPosition({
               name: type,
@@ -233,6 +251,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       </ErrorBoundary>
     );
   }
+
 }
 
 const HUDWithQL: any = HUD; // graphql(ql.queries.MySocial)(HUD);

@@ -387,14 +387,11 @@ export const setPosition = module.createAction({
   type: 'layout/SET_POSITION',
   action: (a: { name: string, widget: Widget<any>, position: Position }) => a,
   reducer: (s, a) => {
-    // Save the position into local storage everytime position is changed
-    const widget = { ...a.widget, position: a.position };
-    saveState(s, widget, a.name);
-
     return {
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position = a.position;
+        saveState(s, v, a.name);
         return v;
       }),
     };
@@ -436,6 +433,7 @@ export const setVisibility = module.createAction({
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = a.visibility;
+        saveState(s, v, a.name);
         return v;
       }),
     };
@@ -454,6 +452,26 @@ export const toggleVisibility = module.createAction({
       widgets: s.widgets.update(a.name, (v) => {
         if (typeof v === 'undefined') return v;
         v.position.visibility = !v.position.visibility;
+        return v;
+      }),
+    };
+  },
+});
+
+export const resetHUDWidget = module.createAction({
+  type: 'layout/RESET_HUD_WIDGET',
+  action: (name: string) => {
+    return {
+      name,
+    };
+  },
+  reducer: (s, a) => {
+    const defaultWidgets = initialState().widgets;
+    return {
+      widgets: s.widgets.update(a.name, (v) => {
+        if (typeof v === 'undefined') return v;
+        v.position = defaultWidgets.get(a.name).position;
+        saveState(s, v, a.name);
         return v;
       }),
     };
