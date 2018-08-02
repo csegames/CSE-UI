@@ -41,8 +41,34 @@ module.exports = {
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
       },
       webpack: {
-        script: 'nps clean,build.devWebpack,dev.livereload,dev.watch.webpack,dev.serve',
-        description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.'
+        default: {
+          script: 'nps clean && nps gql.codegen && nps gql.collectAndConcat && nps build.sass,copy.dev,copy.dist && nps dev.webpack.watch',
+          description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.',
+        },
+        watch: {
+          script: 'nps -p dev.webpack.serveWebpack,dev.webpack.watchGraphql,dev.webpack.watchSass,dev.webpack.watchMisc',
+        },
+        serveWebpack: {
+          script: 'webpack-serve --content ./dist --open',
+        },
+        watchWebpack: {
+          script: 'webpack --mode development --watch',
+        },
+        watchGraphql: {
+          script: 'watch -p "src/**/*.graphql -c "nps gql.codegen && nps gql.collectAndConcat"',
+        },
+        watchSass: {
+          script: 'watch -p "src/**/*.scss" -c "nps build.sass"',
+        },
+        watchMisc: {
+          script: 'watch -p "src/**/*.html" -p "src/third-party/**/*" -p "src/font/**/*" -p "src/images/**/*" -p "src/**/*.ui" -p "src/**/*.ico" -p "src/**/*.config.js" -c "nps copy.dev,copy.dist"',
+        },
+        hatchery: {
+          script: 'nps clean && nps gql.codegen && nps gql.collectAndConcat && nps build.sass && nps copy && nps copy.dist && nps clean.hatchery && nps copy.hatchery && nps dev.webpack.watchHatchery',
+        },
+        watchHatchery: {
+          script: 'cross-env CUUI_DEV_OUTPUT_PATH=%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud nps -p dev.webpack.watchWebpack,dev.webpack.watchGraphql,dev.webpack.watchSass,dev.webpack.watchMisc',
+        },
       },
       production: {
         script: 'nps clean,build.browserify.lib,build.devProduction,dev.livereload,dev.watch,dev.serve',
@@ -59,11 +85,6 @@ module.exports = {
         hiddenFromHelp: true,
       },
       watch: {
-        webpack: {
-          script: 'start nps -p dev.watch.webpack.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
-          ts: 'webpack --mode development --watch',
-          hiddenFromHelp: true,
-        },
         default: {
           script: 'start nps -p dev.watch.ts,dev.watch.graphql,dev.watch.sass,dev.watch.misc',
           description: 'Runs watch scripts in parallel to build whenever a file change is detected.',
