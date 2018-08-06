@@ -79,6 +79,7 @@ const RefreshContainer = styled('div')`
 
 const RefreshTitle = styled('div')`
   font-size: 35px;
+  color: white;
 `;
 
 const RefreshButton = styled('div')`
@@ -153,18 +154,19 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       <GraphQL query={{ query: queries.InventoryBase }} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           this.graphql = graphql;
+          const showLoading = graphql.loading;
+          const showError = graphql.lastError && graphql.lastError !== 'OK';
           return (
             <Container>
-              {graphql.loading || (graphql.lastError && graphql.lastError !== 'OK') &&
+              {showLoading &&
                 <RefreshContainer>
-                  {!graphql.loading &&
-                    <RefreshTitle>
-                      Could not retrieve items. Click to try again.
-                    </RefreshTitle>
-                  }
-                  <RefreshButton onClick={this.refetch}>
-                    {graphql.loading ? 'Loading...' : <i className='fa fa-refresh' />}
-                  </RefreshButton>
+                  <RefreshTitle>Loading...</RefreshTitle>
+                </RefreshContainer>
+              }
+              {showError &&
+                <RefreshContainer>
+                  <RefreshTitle>Could not retrieve items. Click to try again.</RefreshTitle>
+                  <RefreshButton onClick={this.refetch}><i className='fa fa-refresh' /></RefreshButton>
                 </RefreshContainer>
               }
               <InnerContainer innerRef={(r: HTMLDivElement) => this.bodyRef = r} id='inventory-scroll-container'>
