@@ -131,6 +131,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         events.fire('hudnav--navigate', 'equippedgear');
         break;
       }
+      case jsKeyCodes.M: {
+        // Open/Close map
+        events.fire('hudnav--navigate', 'map');
+        break;
+      }
       default: break;
     }
   }
