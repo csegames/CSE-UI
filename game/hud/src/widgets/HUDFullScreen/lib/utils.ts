@@ -705,7 +705,9 @@ export function getContainerColor(item: InventoryItemFragment, alpha?: number) {
     }
   }
 
-  console.error('You provided an undefined item to getContainerColor() function');
+  if (!item) {
+    console.error('You provided an undefined item to getContainerColor() function');
+  }
 }
 
 export function getTooltipColor(faction: Faction) {

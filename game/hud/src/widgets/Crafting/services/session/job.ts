@@ -246,6 +246,7 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
   if (vis) {
     for (let i = 0; i < vis.length; i++) {
       const item = vis[i].stats.item;
+      const durability = vis[i].stats.durability;
       ingredients.push({
         id: vis[i].id,
         name: vis[i].givenName || vis[i].staticDefinition.name,
@@ -260,8 +261,8 @@ function mapVoxIngredientsToIngredients(vis: VoxIngredient[]): Ingredient[] {
           unitCount: item.unitCount,
           weight: item.selfMass,
           durability: {
-            current: vis[i].stats.durability.currentDurability,
-            currentPoints: vis[i].stats.durability.currentRepairPoints,
+            current: durability ? durability.currentDurability : 0,
+            currentPoints: durability ? durability.currentRepairPoints : 0,
           },
         },
         slot: vis[i].location && vis[i].location.inVox.itemSlot,
@@ -299,6 +300,7 @@ function mapVoxItemsToInventoryItems(vis: VoxItem[]): InventoryItem[] {
   if (vis) {
     for (let i = 0; i < vis.length; i++) {
       const item = vis[i].stats.item;
+      const durability = vis[i].stats.durability;
       items.push({
         id: vis[i].id,
         name: vis[i].staticDefinition.name,
@@ -312,8 +314,8 @@ function mapVoxItemsToInventoryItems(vis: VoxItem[]): InventoryItem[] {
           unitCount: item.unitCount,
           weight: item.selfMass,
           durability: {
-            current: vis[i].stats.durability.currentDurability,
-            currentPoints: vis[i].stats.durability.currentRepairPoints,
+            current: durability ? durability.currentDurability : 0,
+            currentPoints: durability ? durability.currentRepairPoints : 0,
           },
         },
       });
