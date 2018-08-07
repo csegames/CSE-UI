@@ -16,6 +16,7 @@ import { ObjectMap } from '@csegames/camelot-unchained/lib/utils/ObjectMap';
 import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
 import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
 import ClientInterface from '@csegames/camelot-unchained/lib/core/clientInterface';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 type Content = string | ObjectMap<any>;
 
@@ -328,7 +329,36 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 
 const Container = styled('div')`
   position: relative;
-  z-index: 16;
+  z-index: ${HUDZOrder.DevUI};
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+`;
+
+const CloseButton = styled('a')`
+  position: absolute;
+  right: 15px;
+  top: 0px;
+  display: flex;
+  color: #cccccc !important;
+  width: 18px;
+  height: 18px;
+  -webkit-transition: none !important;
+  transition: none !important;
+  &:hover {
+    color: white !important;
+    font-weight: bold;
+  }
+`;
+
+const MaximizeButton = styled('a')`
+  position: absolute;
+  right: 50px;
+  top: 0px;
+  color: #cccccc !important;
+  &:hover {
+    color: white !important;
+  }
 `;
 
 class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
@@ -340,8 +370,11 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   public render() {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
+    const anyMaximized = keys.reduce((p, k) => {
+      return (this.state[k].visible && this.state[k].maximized) ? true : p;
+    }, false);
     return (
-      <Container>
+      <Container style={{ zIndex: anyMaximized ? HUDZOrder.MaximizedDevUI : HUDZOrder.DevUI }}>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
@@ -357,25 +390,20 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               position: 'absolute',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
+              pointerEvents: 'auto',
             }}>
             <div style={{ position: 'relative' }}>
               {page.showCloseButton ?
-                <a
+                <CloseButton
                   href={'#'}
-                  style={{
-                    position: 'absolute',
-                    right: '15px',
-                    top: '0px',
-                    display: 'flex',
-                  }}
                   onClick={() => this.setState({
                     [k]: {
                       ...page,
                       visible: false,
                     },
-                  })}>X</a> : null}
+                  })}>✕</CloseButton> : null}
                 {page.showMaximizeButton ?
-                  <a
+                  <MaximizeButton
                     href={'#'}
                     style={{
                       position: 'absolute',
@@ -387,7 +415,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                         ...page,
                         maximized: isMaximized ? false : true,
                       },
-                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</a> : null }
+                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</MaximizeButton> : null }
               </div>
               <div
                 key={k}

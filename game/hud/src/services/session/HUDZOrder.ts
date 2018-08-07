@@ -22,6 +22,7 @@ enum HUDZOrder {
   PlotControl,
   ReleaseControl,
   Progression,
+  DevUI,
 
   // Widgets above all else
   MOTD,
@@ -29,6 +30,7 @@ enum HUDZOrder {
   Respawn,
   HUDNav,
   RefillAmmo,
+  MaximizedDevUI,
   GameMenu,
   Settings,
 }
