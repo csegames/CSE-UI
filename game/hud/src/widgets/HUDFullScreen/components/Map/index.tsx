@@ -12,12 +12,33 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
 import * as events from '@csegames/camelot-unchained/lib/events';
 import client from '@csegames/camelot-unchained/lib/core/client';
+import { FullScreenContext } from '../../lib/utils';
 
 declare const ol: typeof OL;
 
 const Container = styled('div')`
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: url(images/map/map_bg.jpg);
   background-size: cover;
+`;
+
+const LoadingContainer = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoadingText = styled('div')`
+  font-size: 22px;
+  color: white;
 `;
 
 const query = `
@@ -71,13 +92,13 @@ interface MapMetadata {
   ScalePxToM: number;
 }
 
-
 export interface Props {
-
+  visibleComponentLeft: string;
+  visibleComponentRight: string;
 }
 
 export interface State {
-  updateMap: boolean;
+  loading: boolean;
 }
 
 type Coord = [number, number];
@@ -97,16 +118,22 @@ export class GameMap extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      updateMap: false,
+      loading: true,
     };
   }
 
   public render() {
+    const { visibleComponentLeft, visibleComponentRight } = this.props;
     return (
       <Container style={{ position: 'relative' }}>
         <div id='worldmap' ref={r => this.mapRef = r} ></div>
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
-        {this.state.updateMap ?
+        {this.state.loading &&
+          <LoadingContainer>
+            <LoadingText>Fetching Map Data...</LoadingText>
+          </LoadingContainer>
+        }
+        {visibleComponentLeft === 'map-left' || visibleComponentRight === 'map-right' ?
           <GraphQL
             query={{
               query,
@@ -127,8 +154,6 @@ export class GameMap extends React.Component<Props, State> {
       this.zoneID = id;
       this.fetchMetaData();
     });
-
-    this.navigationEventHandle = events.on('hudnav--navigate', this.handleNavigationEvent);
   }
 
   public componentWillUnmount() {
@@ -146,23 +171,11 @@ export class GameMap extends React.Component<Props, State> {
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    if (this.state.updateMap !== nextState.updateMap) return true;
+    if (this.props.visibleComponentLeft !== nextProps.visibleComponentLeft) return true;
+    if (this.props.visibleComponentRight !== nextProps.visibleComponentRight) return true;
+    if (this.state.loading !== nextState.loading) return true;
     if (this.initialized) return false;
     return true;
-  }
-
-  private handleNavigationEvent = (name: string) => {
-    if (name === 'map') {
-      this.setState({
-        updateMap: true,
-      });
-    } else {
-      if (this.state.updateMap) {
-        this.setState({
-          updateMap: false,
-        });
-      }
-    }
   }
 
   private fetchMetaData = () => {
@@ -180,11 +193,17 @@ export class GameMap extends React.Component<Props, State> {
 
   private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
     if (!this.map || graphql.loading || !graphql.data) {
+      if (!this.state.loading) {
+        this.setState({ loading: true });
+      }
       return;
     }
 
     if (!graphql.data.world || !graphql.data.world.map) {
       // no map data, so nothing to do
+      if (!this.state.loading) {
+        this.setState({ loading: true });
+      }
       return;
     }
 
@@ -221,6 +240,10 @@ export class GameMap extends React.Component<Props, State> {
       if (features.length > 0) {
         this.dynamicVectorSource.clear();
         this.dynamicVectorSource.addFeatures(features);
+      }
+
+      if (this.state.loading) {
+        this.setState({ loading: false });
       }
     }
   }
@@ -304,4 +327,18 @@ export class GameMap extends React.Component<Props, State> {
   }
 }
 
-export default GameMap;
+class GameMapWithInjectedContext extends React.Component<{}> {
+  public render() {
+    return (
+      <FullScreenContext.Consumer>
+        {({ visibleComponentLeft, visibleComponentRight }) => {
+          return (
+            <GameMap visibleComponentLeft={visibleComponentLeft} visibleComponentRight={visibleComponentRight} />
+          );
+        }}
+      </FullScreenContext.Consumer>
+    );
+  }
+}
+
+export default GameMapWithInjectedContext;
