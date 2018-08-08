@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
+import { client, jsKeyCodes } from '@csegames/camelot-unchained';
 import { StyleSheet, css, merge, input, InputStyles } from '../styles';
 
 interface InputProps {
@@ -27,15 +27,20 @@ interface InputState {
 
 class Input extends React.Component<InputProps, InputState> {
 
-  private changeTimer: any;
-
   constructor(props: InputProps) {
     super(props);
     this.state = { changed: false, value: props.value };
   }
 
   public componentWillReceiveProps(props: InputProps) {
-    this.setState({ changed: false, value: props.value });
+    if (props.value !== this.state.value) {
+      this.setState({ changed: false, value: props.value });
+    }
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('mousedown', this.releaseOwnership);
+    client.ReleaseInputOwnership();
   }
 
   public render() {
@@ -60,7 +65,7 @@ class Input extends React.Component<InputProps, InputState> {
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
           onBlur={this.onBlur}
-          onClick={this.onClick}
+          onFocus={this.onFocus}
           value={this.state.value}
           />
         {adjuster}
@@ -68,78 +73,71 @@ class Input extends React.Component<InputProps, InputState> {
     );
   }
 
-  private delayedOnChange = (ms: number) => {
-    this.cancelOnChange();
-    this.changeTimer = setTimeout(() => {
-      this.changeTimer = null;
-      const el = this.refs['input'] as HTMLInputElement;
-      this.props.onChange(el.value);
-    }, ms);
-  }
-
-  private cancelOnChange = () => {
-    if (this.changeTimer) {
-      clearTimeout(this.changeTimer);
-      this.changeTimer = null;
-    }
+  private fireOnChange = () => {
+    const el = this.refs['input'] as HTMLInputElement;
+    this.props.onChange(el.value);
   }
 
   private increment = (e: React.MouseEvent<HTMLDivElement>) => {
     if (this.props.disabled) return;
-    this.cancelOnChange();
     const input = this.refs['input'] as HTMLInputElement;
     let value = ((input.value as any) | 0) + 1;
     const max = this.props.max;
     if (max !== undefined && value > max) value = max;
     input.value = value.toString();
     this.setState({ changed: true, value: value.toString() });
-    this.delayedOnChange(500);
+    this.fireOnChange();
   }
 
   private decrement = (e: React.MouseEvent<HTMLDivElement>) => {
     if (this.props.disabled) return;
-    this.cancelOnChange();
     const input = this.refs['input'] as HTMLInputElement;
     let value = ((input.value as any) | 0) - 1;
     const min = this.props.min;
     if (min !== undefined && value < min) value = min;
     input.value = value.toString();
     this.setState({ changed: true, value: value.toString() });
-    this.delayedOnChange(400);
+    this.fireOnChange();
   }
 
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO extend to support validation
     this.setState({ changed: true, value: e.target.value });
   }
 
-  private onClick = (e: React.MouseEvent<HTMLInputElement>) => {
+  private onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (client.debug) console.log(`Input: on focus ${this.props.name} grab ownership`);
     client.RequestInputOwnership();
+    window.addEventListener('mousedown', this.releaseOwnership);
+  }
+
+  private releaseOwnership = (e: MouseEvent) => {
+    if (e.srcElement !== this.refs['input'] as HTMLInputElement) {
+      if (client.debug) console.log(`Input: mousedown elsewhere ${this.props.name} release ownership`);
+      client.ReleaseInputOwnership();
+      window.removeEventListener('mousedown', this.releaseOwnership);
+    }
   }
 
   private onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    client.ReleaseInputOwnership();
+    if (client.debug) console.log(`Input: onBlur ${this.props.name}`);
     if (this.state.changed) {
-      this.delayedOnChange(0);
+      if (client.debug) console.log(`Input: fireOnChange ${this.props.name}`);
+      this.fireOnChange();
     }
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    this.cancelOnChange();
     if (this.props.numeric) {
-      if (e.keyCode > 47 && e.keyCode < 58) return;
-      if (e.keyCode === 8 || e.keyCode === 13) return;
+      if (e.keyCode >= jsKeyCodes.ZERO && e.keyCode <= jsKeyCodes.NINE) return;
+      if (e.keyCode === jsKeyCodes.BACKSPACE || e.keyCode === jsKeyCodes.ENTER) return;
       e.preventDefault();
     }
   }
 
   private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (this.state.changed) {
-      if (e.keyCode >= 32) {
-        this.delayedOnChange(500);
-      }
-      if (e.keyCode === 13) {
-        this.delayedOnChange(0);
+      if (e.keyCode >= jsKeyCodes.SPACE || e.keyCode === jsKeyCodes.ENTER) {
+        this.fireOnChange();
       }
     }
   }

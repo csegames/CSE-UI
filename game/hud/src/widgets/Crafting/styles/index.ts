@@ -14,6 +14,7 @@ import opts from './opts';
 
 export interface ButtonStyles {
   button: React.CSSProperties | any;
+  disabled: React.CSSProperties | any;
 }
 
 export const button: ButtonStyles = {
@@ -29,6 +30,12 @@ export const button: ButtonStyles = {
     border: '1px solid #1B263B',
     ':hover': {
       '-webkit-filter': 'brightness(1.2)',
+    },
+  },
+  disabled: {
+    color: '#444',
+    ':hover': {
+      '-webkit-filter': 'none',
     },
   },
 };
@@ -106,7 +113,7 @@ export const input: InputStyles = {
   button: {
     cursor: 'pointer',
     height: '12px',
-    // fontSize: '10px',
+    fontSize: '10px',
     width: '8px',
     textAlign: 'center',
     lineHeight: '10px',

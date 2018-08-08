@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { client, jsKeyCodes, soundEvents } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
@@ -517,7 +518,8 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   // Job properties
-  private setQuality = (quality: number) => {
+  /* tslint:disable:member-ordering */
+  private setQuality = _.debounce((quality: number) => {
     this.api(() => setVoxQuality(quality), 'Quality set to: ' + quality,
       () => {
         this.checkJobStatus();
@@ -525,9 +527,10 @@ class App extends React.Component<AppProps, AppState> {
       },
       () => setQuality(undefined),
     );
-  }
+  },600);
 
-  private setCount = (count: number) => {
+  /* tslint:disable:member-ordering */
+  private setCount = _.debounce((count: number) => {
     this.api(() => setVoxItemCount(count), 'Item Count set to: ' + count,
       () => {
         this.checkJobStatus();
@@ -535,7 +538,7 @@ class App extends React.Component<AppProps, AppState> {
       },
       () => setCount(undefined),
     );
-  }
+  },600);
 
   private setName = (name: string) => {
     this.api(() => setVoxName(name), 'Name set to: ' + name,

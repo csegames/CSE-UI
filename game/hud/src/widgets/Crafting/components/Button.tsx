@@ -22,7 +22,7 @@ export const Button = (props: ButtonProps) => {
   return (
     <button
       disabled={props.disabled}
-      className={css(ss.button)}
+      className={css(ss.button, props.disabled && ss.disabled)}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         if (!props.disableSound) {
           client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
