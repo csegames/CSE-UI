@@ -960,11 +960,12 @@ export function getPaperDollBG(faction: Faction) {
 
 export function getPaperDollIcon(gender: Gender, race: Race, playerClass: Archetype) {
   const formatGender = gender === Gender.Male ? 'm' : 'f';
-  let formatRace = Race[race].toLowerCase();
+  let formatRace = Race[race] ? Race[race].toLowerCase() : '';
+
   if (_.includes(formatRace, 'human')) {
     formatRace = 'human';
   }
-  const formatPlayerClass = Archetype[playerClass].toLowerCase();
+  const formatPlayerClass = Archetype[playerClass] ? Archetype[playerClass].toLowerCase() : '';
   return `images/paperdoll/standing/${formatRace}-${formatGender}-${formatPlayerClass}.png`;
 }
 
