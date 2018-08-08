@@ -67,7 +67,7 @@ module.exports = {
           script: 'nps clean && nps gql.codegen && nps gql.collectAndConcat && nps build.sass && nps copy && nps copy.dist && nps clean.hatchery && nps copy.hatchery && nps dev.webpack.watchHatchery',
         },
         watchHatchery: {
-          script: 'cross-env CUUI_DEV_OUTPUT_PATH=%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud nps -p dev.webpack.watchWebpack,dev.webpack.watchGraphql,dev.webpack.watchSass,dev.webpack.watchMisc',
+          script: 'cross-env CUUI_DEV_OUTPUT_PATH="%localappdata%/CSE/CamelotUnchained/4/INTERFACE/hud" nps -p dev.webpack.watchWebpack,dev.webpack.watchGraphql,dev.webpack.watchSass,dev.webpack.watchMisc',
         },
       },
       production: {
