@@ -7,17 +7,18 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { HeaderBorderFoundation } from '../../TabHeader';
-import { SecureTradeState } from 'gql/interfaces';
+import { HeaderBorderFoundation } from './TabHeader';
 
 const SubHeaderContainer = styled('div')`
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  height: 35px;
-  background: linear-gradient(to right, rgba(188, 163, 143, 0.6), transparent), url(images/inventory/title-bg.png);
+  height: 40px;
+  background: ${(props: { color: string }) =>
+    `linear-gradient(
+      to right,
+      ${props.color || 'rgba(188, 163, 143, 0.6)'},
+      transparent
+    ), url(images/inventory/title-bg.png);`
+  }
   background-size: cover;
   color: white;
   z-index: 1;
@@ -27,7 +28,13 @@ const SubHeaderContainer = styled('div')`
   box-shadow: inset 0 0 67px rgba(0, 0, 0, 0.6);
   border: 1px black solid;
   &.gray-bg {
-    background: linear-gradient(to right,rgba(200, 200, 200, 0.5), transparent ), url(images/inventory/title-bg-grey.png);
+    background: ${(props: { color: string }) =>
+    `linear-gradient(
+      to right,
+      ${props.color || 'rgba(141, 128, 119, 0.70)'},
+      transparent
+    ), url(images/inventory/title-bg-grey.png);`
+  }
     &:before {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.40);
     }
@@ -43,18 +50,29 @@ const SubHeaderContainer = styled('div')`
   }
 `;
 
+const Content = styled('div')`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  padding: 0 20px;
+`;
+
 export interface TradeWindowSubHeaderProps {
-  text: string;
-  tradeState: SecureTradeState;
+  text?: string;
+  className?: string;
+  contentClassName?: string;
   useGrayBG?: boolean;
+  color?: string;
 }
 
-class TradeWindowSubHeader extends React.Component<TradeWindowSubHeaderProps> {
+class TradeWindowSubHeader extends React.PureComponent<TradeWindowSubHeaderProps> {
   public render() {
-    const { tradeState, useGrayBG, text } = this.props;
-    const className = `${useGrayBG ? 'gray-bg' : ''} ${tradeState === 'Confirmed' ? 'confirmed' : ''}`;
+    const { useGrayBG, text, className, contentClassName, color } = this.props;
+    const containerClassName = `${useGrayBG ? 'gray-bg' : ''} ${className}`;
     return (
-      <SubHeaderContainer className={className}>{text}</SubHeaderContainer>
+      <SubHeaderContainer className={containerClassName} color={color}>
+        <Content className={contentClassName}>{text || this.props.children}</Content>
+      </SubHeaderContainer>
     );
   }
 }

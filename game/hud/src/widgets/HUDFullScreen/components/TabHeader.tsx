@@ -28,10 +28,10 @@ export const HeaderFoundation = css`
 
 export const HeaderBorderFoundation = css`
   position: absolute;
-  top: 5px;
-  left: 5px;
-  bottom: 5px;
-  width: 100%;
+  top: 3px;
+  left: 3px;
+  bottom: 3px;
+  right: 3px;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 1px;
@@ -90,7 +90,7 @@ const HeaderTitle = styled('div')`
 `;
 
 export interface TabHeaderProps {
-  title: string;
+  title?: string;
 }
 
 class TabHeader extends React.Component<TabHeaderProps> {
@@ -98,7 +98,7 @@ class TabHeader extends React.Component<TabHeaderProps> {
     return (
       <Container>
         <HeaderOrnament />
-        <HeaderTitle>{this.props.title}</HeaderTitle>
+        {this.props.title && <HeaderTitle>{this.props.title}</HeaderTitle>}
         {this.props.children}
       </Container>
     );

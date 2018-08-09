@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from '../config';
 import { NavButton, NavButtonLabel } from './NavButton';
@@ -21,6 +21,7 @@ import {
   FOOTER_BUTTON_WIDTH,
   FOOTER_BUTTON_HEIGHT,
 } from './config';
+import { CloseButton } from 'UI/CloseButton';
 
 /* Dialog Container */
 const DialogContainer = styled('div')`
@@ -87,20 +88,6 @@ const OrnamentTopRight = styled('div')`
   padding-left: 25px;
   box-sizing: border-box!important;
   z-index: 2;
-`;
-
-const CloseIcon = styled('span')`
-  position: relative;
-  left: -5px;
-  width: 30px;
-  height: 25px;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  pointer-events: all;
-  background-image: url(images/settings/close-button-grey.png);
-  background-position: center;
-  background-repeat: no-repeat;
 `;
 
 const OrnamentBottomLeft = styled('div')`
@@ -275,6 +262,12 @@ const DialogFooterButton = styled('div')`
   }
 `;
 
+const CloseButtonClass = css`
+  position: absolute;
+  top: 5px;
+  right: 7px;
+`;
+
 export const DialogHeading = styled('div')`
   ${CSS.DONT_GROW} ${CSS.IS_ROW}
   ${DIALOG_FONT}
@@ -359,7 +352,7 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
         <DialogWindow data-id='dialog-window'>
           <OrnamentTopLeft/>
           <OrnamentTopRight>
-          <CloseIcon onClick={(e: React.MouseEvent<HTMLSpanElement>) => {
+          <CloseButton className={CloseButtonClass} onClick={(e: React.MouseEvent<HTMLSpanElement>) => {
             this.props.onClose();
             e.preventDefault();
           }}/>

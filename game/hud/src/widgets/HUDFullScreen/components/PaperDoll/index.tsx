@@ -13,7 +13,7 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import { getPaperDollBG } from '../../lib/utils';
+import { getMyPaperDollBG } from '../../lib/utils';
 import { EquippedItem, PaperDollContainerGQL } from 'gql/interfaces';
 import { EquippedItemFragment } from 'gql/fragments/EquippedItemFragment';
 
@@ -97,7 +97,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
       maxHealthParts: {},
     };
 
-    this.paperdollBG = getPaperDollBG(client.playerState.faction);
+    this.paperdollBG = getMyPaperDollBG();
   }
   public render() {
     return (

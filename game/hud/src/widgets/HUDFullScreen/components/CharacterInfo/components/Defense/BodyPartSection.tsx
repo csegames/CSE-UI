@@ -7,26 +7,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
-import { utils, Tooltip } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';
+import TabSubHeader from '../../../TabSubHeader';
 import { colors, characterBodyPartIcons } from '../../../../lib/constants';
 import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 import { DamageType_Single } from 'gql/interfaces';
 
 const Container = styled('div')`
   border-top: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-`;
-
-const SectionHeader = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  padding: 5px;
-  font-size: 18px;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
-  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
 `;
 
 const Title = styled('span')`
@@ -41,10 +32,11 @@ const DoesNotMatchSearch = css`
 const ListHeader = styled('div')`
   display: flex;
   justify-content: flex-end;
-  color: #C57C30;
-  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 10)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  color: #C3A186;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
   padding-right: 5px;
   cursor: default;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
@@ -58,16 +50,21 @@ const StatValueContainer = styled('div')`
 
 const ValueText = styled('div')`
   width: 40px;
-  border-left: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-left: 1px solid black;
   margin-left: 5px;
   text-align: right;
 `;
 
-const ListHeaderText: React.CSSProperties = {
-  width: '40px',
-  marginLeft: '5px',
-  textAlign: 'right',
-};
+const SubHeaderContent = css`
+  justify-content: space-between;
+`;
+
+const ListHeaderText = styled('div')`
+  width: 40px;
+  margin-left: 5px;
+  text-align: right;
+  font-size: 12px;
+`;
 
 export interface DefenseStatInterface {
   name: string;
@@ -90,80 +87,94 @@ export interface BodyPartSectionProps {
   searchValue: string;
 }
 
-const BodyPartSection = (props: BodyPartSectionProps) => {
-  // Prettify name to match what is displayed to user
-  const searchIncludes = props.searchValue !== '' ? searchIncludesSection(props.searchValue, props.name) : true;
+class BodyPartSection extends React.PureComponent<BodyPartSectionProps> {
+  public render() {
+    const { searchValue, name, bodyPartStats } = this.props;
+    // Prettify name to match what is displayed to user
+    const bodyPartName = name === '_BODY_BEGIN' ? 'Torso' : name;
+    const searchIncludes = this.doesSearchInclude();
+    const statsArray = this.getStatsArray();
 
-  const statInfo: DefenseStatInterface = {} as any;
-  Object.keys(props.bodyPartStats).forEach((defenseType) => {
-    if (defenseType === 'mitigations' || defenseType === 'resistances') {
-      Object.keys(props.bodyPartStats[defenseType]).forEach((damageType) => {
-        statInfo[damageType] = {
-          ...statInfo[damageType] || {},
-          name: damageType,
-          [`${defenseType}Value`]: props.bodyPartStats[defenseType][damageType],
-        };
-      });
-      return;
-    }
-  });
-  const statsArray = [
-    ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
-      a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
-  ];
-
-  const bodyPartName = props.name === '_BODY_BEGIN' ? 'Torso' : props.name;
-
-  return (
-    <Container>
-      <SectionHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
-        <div>
-          <span
-            className={characterBodyPartIcons[bodyPartName]}
-            style={{
-              transform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-              WebkitTransform: _.includes(props.name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
-            }}
-          />
-          <Title>{prettifyText(bodyPartName)}</Title>
-        </div>
-        <div>Armor Class: {Number(props.bodyPartStats['armorClass'].toFixed(2))}</div>
-      </SectionHeader>
-      <GridStats
-        statArray={statsArray}
-        searchValue={props.searchValue}
-        sectionTitle={props.name}
-        howManyGrids={3}
-        shouldRenderEmptyListItems={true}
-        renderHeaderItem={() => (
-          <ListHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
-            <Tooltip content='Resistances' styles={{ Tooltip: ListHeaderText }}>
-              R
-            </Tooltip>
-            <Tooltip content='Mitigations' styles={{ Tooltip: ListHeaderText }}>
-              M
-            </Tooltip>
-          </ListHeader>
-        )}
-        renderListItem={(item: DefenseStatInterface, index: number) => {
-          return (
-            <StatListItem
-              index={index}
-              searchValue={props.searchValue}
-              statName={item.name}
-              sectionTitle={props.name}
-              statValue={() => typeof item.mitigationsValue === 'number' && typeof item.resistancesValue === 'number' ?
-                <StatValueContainer>
-                  <div>{Math.round(item.resistancesValue * 100)}%</div>
-                  <ValueText>{Math.round(item.mitigationsValue * 100)}%</ValueText>
-                </StatValueContainer> : null
-              }
+    return (
+      <Container>
+        <TabSubHeader useGrayBG className={!searchIncludes ? DoesNotMatchSearch : ''} contentClassName={SubHeaderContent}>
+          <div>
+            <span
+              className={characterBodyPartIcons[bodyPartName]}
+              style={{
+                transform: _.includes(name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+                WebkitTransform: _.includes(name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
+              }}
             />
-          );
-        }}
-      />
-    </Container>
-  );
-};
+            <Title>{prettifyText(bodyPartName)}</Title>
+          </div>
+          <div>Armor Class: {Number(bodyPartStats['armorClass'].toFixed(2))}</div>
+        </TabSubHeader>
+        <GridStats
+          statArray={statsArray}
+          searchValue={searchValue}
+          sectionTitle={name}
+          howManyGrids={3}
+          shouldRenderEmptyListItems={true}
+          styles={{
+            statListSection: {
+              margin: '0 1px',
+            },
+          }}
+          renderHeaderItem={() => (
+            <ListHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
+              <ListHeaderText>R</ListHeaderText>
+              <ListHeaderText>M</ListHeaderText>
+            </ListHeader>
+          )}
+          renderListItem={(item: DefenseStatInterface, index: number) => {
+            return (
+              <StatListItem
+                index={index}
+                searchValue={searchValue}
+                item={item}
+                statName={item.name}
+                sectionTitle={name}
+                statValue={() => typeof item.mitigationsValue === 'number' && typeof item.resistancesValue === 'number' ?
+                  <StatValueContainer>
+                    <div>{Math.round(item.resistancesValue * 100)}%</div>
+                    <ValueText>{Math.round(item.mitigationsValue * 100)}%</ValueText>
+                  </StatValueContainer> : null
+                }
+              />
+            );
+          }}
+        />
+      </Container>
+    );
+  }
+
+  private getStatsArray = () => {
+    const { bodyPartStats } = this.props;
+    const statInfo: DefenseStatInterface = {} as any;
+    Object.keys(bodyPartStats).forEach((defenseType) => {
+      if (defenseType === 'mitigations' || defenseType === 'resistances') {
+        Object.keys(bodyPartStats[defenseType]).forEach((damageType) => {
+          statInfo[damageType] = {
+            ...statInfo[damageType] || {},
+            name: damageType,
+            [`${defenseType}Value`]: bodyPartStats[defenseType][damageType],
+          };
+        });
+        return;
+      }
+    });
+    const statsArray = [
+      ..._.values(statInfo).sort((a: DefenseStatInterface, b: DefenseStatInterface) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+    ];
+    return statsArray;
+  }
+
+  private doesSearchInclude = () => {
+    const searchIncludes = this.props.searchValue !== '' ? searchIncludesSection(this.props.searchValue, name) : true;
+    return searchIncludes;
+  }
+}
 
 export default BodyPartSection;

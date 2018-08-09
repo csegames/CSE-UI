@@ -12,7 +12,7 @@ import { webAPI, client } from '@csegames/camelot-unchained';
 import { fire, on, off } from '@csegames/camelot-unchained/lib/events';
 
 import TabHeader from '../../TabHeader';
-import TradeWindowSubHeader from './TradeWindowSubHeader';
+import TabSubHeader from '../../TabSubHeader';
 import TradeWindowMidSection from './TradeWindowMidSection';
 import TradeDropContainer from './TradeDropContainer';
 import { SlotItemDefType } from '../../../lib/itemInterfaces';
@@ -110,12 +110,13 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     };
   }
   public render() {
+    const subHeaderClassName = this.props.myTradeState === 'Confirmed' ? 'confirmed' : '';
     return (
       <Container>
         <BackgroundImage src={'images/inventory/bag-bg.png'} />
         <CancelButton onClick={this.onCancelClick}>Cancel</CancelButton>
         <TabHeader title='TRADE' />
-        <TradeWindowSubHeader text='Your Offer' tradeState={this.props.myTradeState} />
+        <TabSubHeader text='Your Offer' className={subHeaderClassName} />
         <TradeSection>
           <TradeDropContainer
             id={'myItems'}
@@ -135,7 +136,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
           onMyTradeStateChanged={this.props.onMyTradeStateChange}
           onTheirTradeStateChanged={this.props.onTheirTradeStateChange}
         />
-        <TradeWindowSubHeader text='You will receive' useGrayBG={true} tradeState={this.props.theirTradeState} />
+        <TabSubHeader text='You will receive' useGrayBG={true} className={subHeaderClassName} />
         <TradeSection>
           <TradeDropContainer
             id={'theirItems'}

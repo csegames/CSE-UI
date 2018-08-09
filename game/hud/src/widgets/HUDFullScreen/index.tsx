@@ -77,7 +77,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     const { visibleComponentLeft, visibleComponentRight } = this.state;
     return (
       <FullScreenContext.Provider value={this.state}>
-        <div style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
+        <div
+          onMouseDown={() => client.RequestInputOwnership()}
+          style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
           <BackgroundImage className={'left'} />
           <BackgroundImage className={'right'} />
           <HudFullScreenView
@@ -154,14 +156,23 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private handleNavEvent = (name: string, shouldOpen?: boolean) => {
     switch (name) {
-      case 'inventory':
-      case 'equippedgear':
-      case 'character': {
+      case 'inventory': {
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTab(0, 'equippedgear-left');
-          this.setActiveTab(1, 'inventory-right');
+          this.setActiveTab('equippedgear-left');
+          this.setActiveTab('inventory-right');
+        }
+        break;
+      }
+
+      case 'character':
+      case 'equippedgear': {
+        if (this.isAlreadyOpen(name)) {
+          this.onCloseFullScreen();
+        } else {
+          this.setActiveTab('equippedgear-left');
+          this.setActiveTab('character-stats-right');
         }
         break;
       }
@@ -170,8 +181,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTab(3, 'map-left');
-          this.setActiveTab(1, 'inventory-right');
+          this.setActiveTab('map-left');
+          this.setActiveTab('inventory-right');
         }
         break;
       }
@@ -187,7 +198,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
             rendersContent: 'Trade',
           };
           if (shouldOpen) {
-            this.setActiveTab(1, 'inventory-right');
+            this.setActiveTab('inventory-right');
             this.handleTemporaryTab({
               ...tradeTab,
               tab: {
@@ -233,17 +244,18 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           return this.normalizeName(tab.name) === this.normalizeName(tabs[prevTabIndex].name);
         });
         if (otherPrevWindowIndex !== -1) {
-          this.setActiveTab(nextTabIndex, name);
-          this.setActiveTab(otherPrevWindowIndex, otherTabs[otherPrevWindowIndex].name);
+          this.setActiveTab(name);
+          this.setActiveTab(otherTabs[otherPrevWindowIndex].name);
         }
       }
-      this.setActiveTab(nextTabIndex, name);
+      this.setActiveTab(name);
     }
   }
 
-  private setActiveTab = (tabIndex: number, name: string) => {
+  private setActiveTab = (name: string) => {
     const side = _.includes(name, 'right') ? 'right' : 'left';
     const visibleComponent = side === 'right' ? this.state.visibleComponentRight : this.state.visibleComponentLeft;
+    const tabIndex = this.getTabIndex(name);
 
     if (name !== '' && !_.includes(visibleComponent, name)) {
       window.addEventListener('keydown', this.handleKeydownEvent);
@@ -285,12 +297,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         // Only add temporary tab if there is no temporary tab existing
         if (_.findIndex(tabsLeft, tabInfo => tabInfo.name === tab.name) === -1) {
           tabsLeft.push(tab);
-          this.setTabsLeft(tabsLeft).then(() => this.setActiveTab(tabsLeft.length - 1, tab.name));
+          this.setTabsLeft(tabsLeft).then(() => this.setActiveTab(tab.name));
           return;
         }
       } else {
         tabsLeft = _.filter(tabsLeft, tabInfo => tabInfo.name !== tab.name);
-        this.setActiveTab(0, 'equipped-left');
+        this.setActiveTab('equipped-left');
         setTimeout(() => this.setTabsLeft(tabsLeft), 50);
       }
 
@@ -303,11 +315,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         // Only add temporary tab if there is no temporary tab existing
         if (_.findIndex(tabsRight, tabInfo => tabInfo.name === tab.name) === -1) {
           tabsRight.push(tab);
-          this.setTabsRight(tabsRight).then(() => this.setActiveTab(tabsRight.length - 1, tab.name));
+          this.setTabsRight(tabsRight).then(() => this.setActiveTab(tab.name));
         }
       } else {
         tabsRight = _.filter(tabsRight, tabInfo => tabInfo.name !== tab.name);
-        this.setActiveTab(0, 'equipped-right');
+        this.setActiveTab('equipped-right');
         setTimeout(() => this.setTabsRight(tabsRight), 50);
       }
       return;
@@ -337,7 +349,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private onCloseFullScreen = () => {
     events.fire('hudnav--navigate', '');
-    this.setActiveTab(0, '');
+    this.setActiveTab('');
     window.removeEventListener('keydown', this.handleKeydownEvent);
     client.ReleaseInputOwnership();
     hideTooltip();
@@ -393,7 +405,21 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       equippedItems={this.state.equippedItems}
       instructions={instructions}
     />;
-    showTooltip({ content, event, styles: defaultTooltipStyle });
+    showTooltip({ content, event, styles: defaultTooltipStyle, shouldAnimate: true });
+  }
+
+  private getTabIndex = (tabName: string) => {
+    const side = _.includes(tabName, 'right') ? 'right' : 'left';
+    let tabIndex: number = 0;
+    if (side === 'right') {
+      tabIndex = _.findIndex(this.state.tabsRight, tab => tab.name === tabName);
+    }
+
+    if (side === 'left') {
+      tabIndex = _.findIndex(this.state.tabsLeft, tab => tab.name === tabName);
+    }
+
+    return tabIndex === -1 ? 0 : tabIndex;
   }
 
   private isVisible = () => {

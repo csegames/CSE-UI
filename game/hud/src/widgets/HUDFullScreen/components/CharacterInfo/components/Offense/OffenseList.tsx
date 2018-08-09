@@ -9,7 +9,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import * as events from '@csegames/camelot-unchained/lib/events';
@@ -18,24 +17,26 @@ import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
-import { colors } from '../../../../lib/constants';
 import { prettifyText } from '../../../../lib/utils';
 import eventNames from '../../../../lib/eventNames';
 import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
 import { OffenseListGQL } from 'gql/interfaces';
+import TabSubHeader from '../../../TabSubHeader';
 
 const Container = styled('div')`
   flex: 1;
   height: 100%;
 `;
 
-const SectionTitleContainer = styled('header')`
+const NoWeaponsContainer = styled('div')`
+  width: 100%;
+  height: 100%;
   display: flex;
-  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  color: #D6C4A2;
   font-size: 18px;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
-  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 15)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  font-family: Caudex;
 `;
 
 const SectionTitle = styled('span')`
@@ -67,46 +68,38 @@ const defaultStats = {
 };
 
 export interface OffenseListProps extends GraphQLInjectedProps<OffenseListGQL.Query> {
-}
-
-export interface OffenseListState {
   searchValue: string;
-
 }
 
-class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
+class OffenseList extends React.PureComponent<OffenseListProps> {
   private updateCharStatsListener: number;
-
-  constructor(props: OffenseListProps) {
-    super(props);
-    this.state = {
-      searchValue: '',
-    };
-  }
-
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
-
     if (myEquippedItems && myEquippedItems.items) {
       const weaponSlotArray = this.getWeaponSlotArray().sort((a, b) => a.name.localeCompare(b.name));
       return (
         <Container>
           <StatListContainer
-            searchValue={this.state.searchValue}
-            onSearchChange={this.onSearchChange}
             renderContent={() => (
+              weaponSlotArray.length === 0 ?
+              <NoWeaponsContainer>You do not have any weapons equipped</NoWeaponsContainer> :
               <div>
                 {weaponSlotArray.map((weaponSlot: any, i: number) => (
                   <div key={i}>
-                    <SectionTitleContainer>
+                    <TabSubHeader useGrayBG>
                       <span className={'icon-filter-weapons'} />
                       <SectionTitle>{prettifyText(weaponSlot.name)}</SectionTitle>
-                    </SectionTitleContainer>
+                    </TabSubHeader>
                     <GridStats
                       statArray={weaponSlot.statArray}
-                      searchValue={this.state.searchValue}
+                      searchValue={this.props.searchValue}
                       howManyGrids={2}
                       shouldRenderEmptyListItems={true}
+                      styles={{
+                        statListSection: {
+                          margin: '0 1px',
+                        },
+                      }}
                       renderHeaderItem={() => (
                         <DescriptionItem>
                           <header>Name</header>
@@ -116,9 +109,10 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
                       renderListItem={(item, index) => (
                         <StatListItem
                           index={index}
+                          item={item}
                           statName={item.name}
                           statValue={item.value}
-                          searchValue={this.state.searchValue}
+                          searchValue={this.props.searchValue}
                         />
                       )}
                     />
@@ -146,10 +140,6 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
 
   public componentWillUnmount() {
     events.off(this.updateCharStatsListener);
-  }
-
-  private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
   }
 
   private getWeaponSlotArray = () => {
@@ -206,7 +196,7 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
   }
 }
 
-const OffenseListWithQL = withGraphQL({
+const OffenseListWithQL = withGraphQL<OffenseListProps>({
   query: gql`
     query OffenseListGQL {
       myEquippedItems {

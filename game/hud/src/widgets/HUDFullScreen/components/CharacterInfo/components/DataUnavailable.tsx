@@ -13,6 +13,7 @@ const Container = styled('div')`
   flex: 1;
   justify-content: center;
   align-items: center;
+  color: #D6C4A2;
 `;
 
 export interface DataUnavailableProps {

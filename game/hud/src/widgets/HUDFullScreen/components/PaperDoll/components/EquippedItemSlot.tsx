@@ -155,7 +155,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
         item={this.props.providedEquippedItem.item}
         instructions='Right click to unequip'
       />;
-      showTooltip({ content, event, styles: defaultTooltipStyle });
+      showTooltip({ content, event, styles: defaultTooltipStyle, shouldAnimate: true });
     }
   }
 

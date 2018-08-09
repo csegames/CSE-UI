@@ -9,6 +9,7 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { TabPanel, ContentItem } from '@csegames/camelot-unchained';
 
+import { CloseButton } from 'UI/CloseButton';
 import Tab from './components/Tab';
 import Map from './components/Map';
 import Inventory from './components/Inventory';
@@ -102,23 +103,10 @@ const DividerMidSection = styled('div')`
   }
 `;
 
-const Close = styled('div')`
-  position: fixed;
+const CloseButtonClass = css`
+  position: absolute;
   top: 5px;
   right: 5px;
-  width: 15px;
-  height: 15px;
-  background: url(images/inventory/close-button-grey.png) no-repeat;
-  background-size: contain;
-  cursor: pointer;
-  user-select: none;
-  z-index: 9999;
-  &:hover: {
-    -webkit-filter: drop-shadow(5px 5px 2px #ccc);
-  }
-  &:active: {
-    -webkit-filter: drop-shadow(5px 5px 2px #fff);
-  }
 `;
 
 const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
@@ -258,7 +246,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
                 }}
                 onActiveTabChanged={this.props.onActiveTabChanged}
               />
-              <Close onClick={this.props.onCloseFullScreen} />
+              <CloseButton className={CloseButtonClass} onClick={this.props.onCloseFullScreen} />
             </Container>
           );
         }}

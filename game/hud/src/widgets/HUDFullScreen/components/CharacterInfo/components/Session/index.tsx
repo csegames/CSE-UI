@@ -8,73 +8,66 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import moment from 'moment';
+import styled, { css } from 'react-emotion';
 import * as events from '@csegames/camelot-unchained/lib/events';
-import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
+import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
+import TabSubHeader from '../../../TabSubHeader';
 import StatsListContainer from '../StatListContainer';
-import DescriptionItem from '../DescriptionItem';
-import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
+import SessionListItem from './SessionListItem';
 import { SessionGQL } from 'gql/interfaces';
 
 export interface SessionProps extends GraphQLInjectedProps<SessionGQL.Query> {
-
+  searchValue: string;
 }
 
 export interface SessionState {
   searchValue: string;
 }
 
-class Session extends React.Component<SessionProps, SessionState> {
-  private visibilityListener: number;
-  constructor(props: SessionProps) {
-    super(props);
-    this.state = {
-      searchValue: '',
-    };
-  }
+const HeaderContent = css`
+  display: flex;
+`;
 
+const HeaderSessionText = styled('header')`
+  flex: 2;
+  text-transform: uppercase;
+`;
+
+const HeaderTimesUsedText = styled('header')`
+  flex: 1;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+`;
+
+class Session extends React.Component<SessionProps> {
+  private visibilityListener: number;
   public render() {
     const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
     if (myCharacter && myCharacter.session) {
+      const sortedStats = myCharacter.session.skillPartsUsed &&
+        myCharacter.session.skillPartsUsed.sort((a, b) => b.timesUsed - a.timesUsed);
+      const { searchValue } = this.props;
       return (
         <StatsListContainer
-          onSearchChange={this.onSearchChange}
-          searchValue={this.state.searchValue}
           renderContent={() => (
             <GridStats
-              statArray={myCharacter.session.skillPartsUsed}
-              searchValue={this.state.searchValue}
+              statArray={sortedStats}
+              searchValue={this.props.searchValue}
               howManyGrids={1}
               shouldRenderEmptyListItems={true}
               renderHeaderItem={() => (
-                <DescriptionItem>
-                  <header>Name</header>
-                  <header>Session started {moment(myCharacter.session.sessionStartDate).fromNow()}</header>
-                  <header>Times used</header>
-                </DescriptionItem>
+                <TabSubHeader useGrayBG contentClassName={HeaderContent}>
+                  <HeaderSessionText>
+                    Session started {moment(myCharacter.session.sessionStartDate).fromNow()}
+                  </HeaderSessionText>
+                  <HeaderTimesUsedText>Times used</HeaderTimesUsedText>
+                </TabSubHeader>
               )}
-              renderListItem={(item, index) => {
-                return (
-                  <Tooltip
-                    styles={{
-                      Tooltip: {
-                        width: '100%',
-                      },
-                    }}
-                    content={() => (
-                      <img src={item.skillPart.icon} />
-                    )}>
-                    <StatListItem
-                      index={index}
-                      statName={item.skillPart.name}
-                      statValue={item.timesUsed}
-                      searchValue={this.state.searchValue}
-                    />
-                  </Tooltip>
-                );
-              }}
+              renderListItem={item => <SessionListItem skillPartUsed={item} searchValue={searchValue} />}
             />
           )}
         />
@@ -98,13 +91,9 @@ class Session extends React.Component<SessionProps, SessionState> {
   public componentWillUnmount() {
     events.off(this.visibilityListener);
   }
-
-  private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
-  }
 }
 
-const SessionWithQL = withGraphQL({
+const SessionWithQL = withGraphQL<SessionProps>({
   query: gql`
     query SessionGQL {
       myCharacter {
@@ -115,6 +104,7 @@ const SessionWithQL = withGraphQL({
               id
               icon
               name
+              description
             }
             timesUsed
           }

@@ -88,8 +88,6 @@ export const colors = {
   tabHoverColorRed: '#b09885',
   tabClickColorGray: '#8c8987',
   tabClickColorRed: '#c7a993',
-  boonPrimary: '#41ACE9',
-  banePrimary: '#E85143',
   tooltipViking: 'rgba(35, 155, 242, 0.25)',
   tooltipArt: 'rgba(247, 33, 33, 0.25)',
   tooltipTDD: 'rgba(196, 216, 1, 0.25)',

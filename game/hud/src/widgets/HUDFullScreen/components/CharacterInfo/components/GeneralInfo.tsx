@@ -4,78 +4,135 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, webAPI, Race } from '@csegames/camelot-unchained';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { client, webAPI, Faction, Gender, Race, Archetype } from '@csegames/camelot-unchained';
+import { getMyPaperDollBG, getMyPaperDollIcon } from '../../../lib/utils';
 
-import { characterAvatarIcon, colors } from '../../../lib/constants';
-import { GeneralInfoGQL } from 'gql/interfaces';
+interface ContainerProps {
+  characterImage: string;
+  backgroundImage: string;
+  shouldZoom: boolean;
+}
 
-const query = gql`
-  query GeneralInfoGQL {
-    myCharacter {
-      id
-      name
-      faction
-      race
-      gender
-      archetype
-    }
+const Container = styled('div')`
+  position: relative;
+  flex: 1;
+  height: 100%;
+  background: url(${(props: ContainerProps) => props.backgroundImage});
+  background-size: cover;
+  opacity: 0.8;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -100px;
+    width: 800px;
+    height: 800px;
+    background: url(${(props: ContainerProps) => props.characterImage});
+    background-size: cover;
+    -webkit-mask: linear-gradient(to right,transparent 35%, black 55%);
+    -webkit-mask-size: cover;
+    zoom: ${(props: ContainerProps) => props.shouldZoom ? '120%' : '100%'};
   }
 `;
 
-const Container = styled('div')`
-  flex: 1;
+const Border = styled('div')`
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  bottom: 7px;
+  left: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const TopLeftOrnament = styled('div')`
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 40px;
+  height: 26px;
+  background: url(images/character-stats/ornament-top-left-profile.png) no-repeat;
+  background-size: contain;
+`;
+
+const BottomLeftOrnament = styled('div')`
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  width: 40px;
+  height: 26px;
+  background: url(images/character-stats/ornament-bottom-left-profile.png) no-repeat;
+  background-size: contain;
+`;
+
+const TopRightOrnament = styled('div')`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 40px;
+  height: 26px;
+  background: url(images/character-stats/ornament-top-right-profile.png) no-repeat;
+  background-size: contain;
+`;
+
+const BottomRightOrnament = styled('div')`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 40px;
+  height: 26px;
+  background: url(images/character-stats/ornament-bottom-right-profile.png) no-repeat;
+  background-size: contain;
+`;
+
+const Content = styled('div')`
+  width: 100%;
   height: 100%;
-  background-color: ${utils.lightenColor(colors.filterBackgroundColor, 5)};
-  border: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  opacity: 0.8;
+  padding: 20px;
 `;
 
-const Header = styled('div')`
-  height: 100%;
+const Name = styled('div')`
+  color: white;
+  font-size: 24px;
+  font-family: Caudex;
+`;
+
+const InfoContainer = styled('div')`
   display: flex;
-  justify-content: space-between;
+  width: 50%;
 `;
 
-const AvatarIconContainer = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-  width: 150px;
+const InfoDivider = styled('div')`
+  position: absolute;
+  left: 155px;
+  height: 69px;
+  width: 9px;
+  background: url(images/character-stats/ornament-profile-content.png);
+  background-size: contain;
 `;
 
-const CharacterName = styled('div')`
-  flex: 1;
-  text-align: center;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+const CharacterInfo = styled('div')`
+  margin-top: 10px;
+  font-size: 14px;
+  width: 175px;
+  color: #CCC;
 `;
 
-const CharacterNameText = styled('p')`
-  font-size: 30px;
-  margin: 0;
-  padding: 0;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+// const InfoDivider = styled('div')`
+//   background: url(images/character-stats/ornament-profile-content.png)
+// `;
+
+const BiographyInfo = styled('div')`
+  margin-top: 10px;
+  font-size: 14px;
+  width: 300px;
+  color: #CCC;
 `;
 
-const OtherInfoContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  flex: 2;
-  border-left: 2px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-`;
-
-const OtherInfoText = styled('p')`
-  font-size: 20px;
-  margin: 0;
-  padding: 0;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+const Text = styled('div')`
+  font-family: Caudex;
 `;
 
 export interface GeneralInfoProps {
@@ -85,43 +142,55 @@ export interface GeneralInfoState {
 
 }
 
-class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
+class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState> {
+  private paperdollIcon: string;
+  private paperdollBG: string;
   constructor(props: GeneralInfoProps) {
     super(props);
-    this.state = {
-
-    };
+    this.paperdollIcon = getMyPaperDollIcon();
+    this.paperdollBG = getMyPaperDollBG();
   }
 
   public render() {
+    const shouldZoom = this.shouldZoom();
     return (
-      <GraphQL query={query}>
-        {(graphql: GraphQLResult<GeneralInfoGQL.Query>) => {
-          if (graphql.loading || !graphql.data) return null;
-          const myCharacter: GeneralInfoGQL.MyCharacter =
-            typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
-
-          return (
-            <Container>
-              <Header>
-                <AvatarIconContainer>
-                  <img src={characterAvatarIcon[`${myCharacter.gender}${myCharacter.race}`]} />
-                </AvatarIconContainer>
-                <CharacterName>
-                  <CharacterNameText>{myCharacter.name}</CharacterNameText>
-                  <OtherInfoText>{myCharacter.faction}</OtherInfoText>
-                  <OtherInfoText>{myCharacter.gender} {webAPI.raceString(Race[myCharacter.race])}</OtherInfoText>
-                </CharacterName>
-                <OtherInfoContainer>
-                  {/* We can add banners/faction emblem/general stats(agility, strength, etc) here*/}
-                  <OtherInfoText>The content of this box is TBD</OtherInfoText>
-                </OtherInfoContainer>
-              </Header>
-            </Container>
-          );
-        }}
-      </GraphQL>
+      <Container shouldZoom={shouldZoom} characterImage={this.paperdollIcon} backgroundImage={this.paperdollBG}>
+        <Border />
+        <TopLeftOrnament />
+        <BottomLeftOrnament />
+        <TopRightOrnament />
+        <BottomRightOrnament />
+        <Content>
+          <Name>{client.playerState.name}</Name>
+          <InfoContainer>
+            <CharacterInfo>
+              <Text>{Faction[client.playerState.faction]}</Text>
+              <Text>{Gender[client.playerState.gender]} {webAPI.raceString(client.playerState.race)}</Text>
+              <Text>{Archetype[client.playerState.class]}</Text>
+            </CharacterInfo>
+            <InfoDivider />
+            <BiographyInfo>
+              <Text>
+                Biography coming soon... Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Ut enim ad minim veniam, quis nostrud exercitation
+              </Text>
+            </BiographyInfo>
+          </InfoContainer>
+        </Content>
+      </Container>
     );
+  }
+
+  private shouldZoom = () => {
+    const race = client.playerState.race;
+    const archetype = client.playerState.class;
+
+    if (race === Race.Luchorpan || archetype === Archetype.WintersShadow) {
+      return false;
+    }
+
+    return true;
   }
 }
 

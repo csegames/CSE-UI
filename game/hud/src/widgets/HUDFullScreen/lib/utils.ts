@@ -958,6 +958,10 @@ export function getPaperDollBG(faction: Faction) {
   return `images/paperdoll/bg/${paperdollBG}.png`;
 }
 
+export function getMyPaperDollBG() {
+  return getPaperDollBG(client.playerState.faction);
+}
+
 export function getPaperDollIcon(gender: Gender, race: Race, playerClass: Archetype) {
   const formatGender = gender === Gender.Male ? 'm' : 'f';
   let formatRace = Race[race] ? Race[race].toLowerCase() : '';
@@ -967,6 +971,10 @@ export function getPaperDollIcon(gender: Gender, race: Race, playerClass: Archet
   }
   const formatPlayerClass = Archetype[playerClass] ? Archetype[playerClass].toLowerCase() : '';
   return `images/paperdoll/standing/${formatRace}-${formatGender}-${formatPlayerClass}.png`;
+}
+
+export function getMyPaperDollIcon() {
+  return getPaperDollIcon(client.playerState.gender, client.playerState.race, client.playerState.class);
 }
 
 export function getPaperDollBaseIcon(faction: Faction) {
@@ -990,4 +998,8 @@ export function getPaperDollBaseIcon(faction: Faction) {
     }
   }
   return `images/paperdoll/base/${formatFaction}-base.png`;
+}
+
+export function getMyPaperDollBaseIcon() {
+  return getPaperDollBaseIcon(client.playerState.faction);
 }

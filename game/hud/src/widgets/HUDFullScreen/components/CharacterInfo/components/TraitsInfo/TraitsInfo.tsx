@@ -7,15 +7,14 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { GridStats, Tooltip } from '@csegames/camelot-unchained/lib/components';
+import styled from 'react-emotion';
+import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
-import { colors } from '../../../../lib/constants';
 import StatListContainer from '../StatListContainer';
-import TraitSummary from './TraitSummary';
-import DescriptionItem from '../DescriptionItem';
-import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
+import TabSubHeader from '../../../TabSubHeader';
+import TraitListItem from './TraitListItem';
 import { TraitsInfoGQL } from 'gql/interfaces';
 
 const query = gql`
@@ -32,21 +31,19 @@ const query = gql`
   }
 `;
 
-export interface TraitsProps {
-}
+const Container = styled('div')`
+  display: flex;
+`;
 
-export interface TraitsState {
+const Section = styled('div')`
+  flex: 1;
+`;
+
+export interface TraitsProps {
   searchValue: string;
 }
 
-class Traits extends React.Component<TraitsProps, TraitsState> {
-  constructor(props: TraitsProps) {
-    super(props);
-    this.state = {
-      searchValue: '',
-    };
-  }
-
+class Traits extends React.Component<TraitsProps> {
   public render() {
     return (
       <GraphQL query={query}>
@@ -54,45 +51,37 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
           (graphql: GraphQLResult<TraitsInfoGQL.Query>) => {
             const myCharacter = graphql.data && graphql.data.myCharacter;
             if (myCharacter && myCharacter.traits) {
+              const { boons, banes } = this.getBanesAndBoons(myCharacter.traits);
+              const { searchValue } = this.props;
               return (
                 <StatListContainer
-                  onSearchChange={this.onSearchChange}
-                  searchValue={this.state.searchValue}
                   renderContent={() => (
-                    <GridStats
-                      statArray={graphql.data.myCharacter.traits}
-                      searchValue={this.state.searchValue}
-                      howManyGrids={1}
-                      shouldRenderEmptyListItems={true}
-                      renderHeaderItem={() => (
-                        <DescriptionItem>
-                          <header>Name</header>
-                          <header>Points</header>
-                        </DescriptionItem>
-                      )}
-                      renderListItem={(item, index) => item && (
-                        <Tooltip
-                          styles={{
-                            Tooltip: {
-                              width: '100%',
-                            },
-                            tooltip: {
-                              backgroundColor: 'rgba(0,0,0,0.9)',
-                              maxWidth: '500px',
-                            },
-                          }}
-                          content={() => <TraitSummary trait={item} />}
-                        >
-                          <StatListItem
-                            index={index}
-                            statName={item.name}
-                            statValue={item.points}
-                            searchValue={this.state.searchValue}
-                            colorOfName={item.points < 0 ? colors.banePrimary : colors.boonPrimary}
-                          />
-                        </Tooltip>
-                      )}
-                    />
+                    <Container>
+                      <Section style={{ marginRight: 5 }}>
+                        <GridStats
+                          statArray={boons}
+                          searchValue={this.props.searchValue}
+                          howManyGrids={1}
+                          shouldRenderEmptyListItems={true}
+                          renderHeaderItem={() => (
+                            <TabSubHeader useGrayBG color='rgba(65, 172, 233, 0.7)'>Boons</TabSubHeader>
+                          )}
+                          renderListItem={item => item && <TraitListItem trait={item} searchValue={searchValue} />}
+                        />
+                      </Section>
+                      <Section>
+                        <GridStats
+                          statArray={banes}
+                          searchValue={this.props.searchValue}
+                          howManyGrids={1}
+                          shouldRenderEmptyListItems={true}
+                          renderHeaderItem={() => (
+                            <TabSubHeader useGrayBG color='rgba(232, 81, 67, 0.7)'>Banes</TabSubHeader>
+                          )}
+                          renderListItem={item => item && <TraitListItem trait={item} searchValue={searchValue} />}
+                        />
+                      </Section>
+                    </Container>
                   )}
                 />
               );
@@ -109,8 +98,23 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
     );
   }
 
-  private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
+  private getBanesAndBoons = (traits: TraitsInfoGQL.Traits[]) => {
+    const boons: TraitsInfoGQL.Traits[] = [];
+    const banes: TraitsInfoGQL.Traits[] = [];
+
+    traits.forEach((trait) => {
+      if (trait.points > 0) {
+        boons.push(trait);
+      }
+      if (trait.points < 0) {
+        banes.push(trait);
+      }
+    });
+
+    return {
+      boons,
+      banes,
+    };
   }
 }
 

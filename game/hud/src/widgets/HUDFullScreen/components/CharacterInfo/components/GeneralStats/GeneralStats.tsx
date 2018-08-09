@@ -7,24 +7,34 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
+import styled from 'react-emotion';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
+import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 import DescriptionItem from '../DescriptionItem';
 import StatListContainer from '../StatListContainer';
 import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
-import { GeneralStatsGQL } from 'gql/interfaces';
+import { GeneralStatsGQL, CharacterStatField } from 'gql/interfaces';
 
 export interface GeneralProps extends GraphQLInjectedProps<GeneralStatsGQL.Query> {
 
 }
 
-export interface GeneralState {
+const Tooltip = styled('div')`
+  max-width: 300px;
+  min-width: 200px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+`;
+
+export interface GeneralProps extends GraphQLInjectedProps<GeneralStatsGQL.Query> {
   searchValue: string;
 }
 
-class General extends React.Component<GeneralProps, GeneralState> {
+class General extends React.PureComponent<GeneralProps> {
   constructor(props: GeneralProps) {
     super(props);
     this.state = {
@@ -37,12 +47,10 @@ class General extends React.Component<GeneralProps, GeneralState> {
     if (myCharacter && myCharacter.stats) {
       return (
         <StatListContainer
-          onSearchChange={this.onSearchChange}
-          searchValue={this.state.searchValue}
           renderContent={() => (
             <GridStats
               statArray={myCharacter.stats}
-              searchValue={this.state.searchValue}
+              searchValue={this.props.searchValue}
               howManyGrids={2}
               shouldRenderEmptyListItems={true}
               renderHeaderItem={() => (
@@ -54,9 +62,12 @@ class General extends React.Component<GeneralProps, GeneralState> {
               renderListItem={(item, index) => (
                 <StatListItem
                   index={index}
+                  item={item}
                   statName={item.stat}
                   statValue={item.value}
-                  searchValue={this.state.searchValue}
+                  searchValue={this.props.searchValue}
+                  onMouseOver={this.onMouseOver}
+                  onMouseLeave={this.onMouseLeave}
                 />
               )}
             />
@@ -72,12 +83,23 @@ class General extends React.Component<GeneralProps, GeneralState> {
     }
   }
 
-  public onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
+  private onMouseOver = (event: React.MouseEvent<HTMLDivElement>, item: CharacterStatField) => {
+    if (item.description) {
+      showTooltip({
+        content: <Tooltip>{item.description}</Tooltip>,
+        event,
+      });
+    }
+  }
+
+  private onMouseLeave = (e: React.MouseEvent<HTMLDivElement>, item: CharacterStatField) => {
+    if (item.description) {
+      hideTooltip();
+    }
   }
 }
 
-const GeneralWithQL = withGraphQL({
+const GeneralWithQL = withGraphQL<GeneralProps>({
   query: gql`
     query GeneralStatsGQL {
       myCharacter {
@@ -88,6 +110,7 @@ const GeneralWithQL = withGraphQL({
         stats {
           stat
           value
+          description
         }
       }
     }

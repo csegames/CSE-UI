@@ -6,8 +6,6 @@
  */
 
 import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
-import { colors } from '../../../lib/constants';
 
 const DescriptionItem = styled('div')`
   display: flex;
@@ -16,15 +14,15 @@ const DescriptionItem = styled('div')`
   cursor: default;
   padding: 0 5px;
   height: 25px;
-  background-color: rgba(55, 47, 45, 0.5);
-  box-shadow: inset 0px 0px 3px rgba(0,0,0,0.5);
+  line-height: 25px;
+  background-color: rgba(0, 0, 0, 0.5);
   opacity: 0.8;
-  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  color: #C57C30;
-  &:hover {
-    backgroundColor: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  }
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  color: #C3A186;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 `;
 
 export default DescriptionItem;

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { keyframes } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import {
   onShowTooltip,
@@ -16,6 +16,15 @@ import {
   ToolTipStyle,
 } from 'actions/tooltips';
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const Container = styled('div')`
   display: inline-block;
   position: relative;
@@ -24,6 +33,11 @@ const Container = styled('div')`
 const TooltipView = styled('div')`
   position: fixed;
   z-index: 9999;
+  &.should-animate {
+    opacity: 0;
+    animation: ${fadeIn} 0.15s forwards;
+    -webkit-animation: ${fadeIn} 0.15s forwards;
+  }
 `;
 
 export interface TooltipProps {
@@ -39,6 +53,7 @@ export interface TooltipState {
   offsetTop: number;
   offsetBottom: number;
   content: JSX.Element | JSX.Element[] | string;
+  shouldAnimate: boolean;
   styles?: Partial<ToolTipStyle>;
 }
 
@@ -60,6 +75,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       offsetRight: 5,
       offsetBottom: 5,
       content: null,
+      shouldAnimate: false,
       styles: {},
     };
   }
@@ -71,7 +87,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
       <Container className={customStyles.Tooltip}>
         <TooltipView
           innerRef={(ref: HTMLDivElement) => this.tooltipRef = ref}
-          className={customStyles.tooltip}>
+          className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
             {this.state.content}
         </TooltipView>
       </Container>
@@ -141,13 +157,14 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   }
 
   private handleShowTooltip = (payload: ShowTooltipPayload) => {
-    const { content, event, styles } = payload;
+    const { content, event, shouldAnimate, styles } = payload;
     window.addEventListener('mousemove', this.onMouseMove);
     this.setState({
       show: true,
       wndRegion: utils.windowQuadrant(event.clientX, event.clientY),
       content,
       styles,
+      shouldAnimate,
     });
   }
 

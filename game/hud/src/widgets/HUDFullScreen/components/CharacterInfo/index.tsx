@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils, TabPanel, TabItem, ContentItem } from '@csegames/camelot-unchained';
+import { TabPanel, TabItem, ContentItem, TabPanelStyle } from '@csegames/camelot-unchained';
 import styled, { css } from 'react-emotion';
 
 import GeneralInfo from './components/GeneralInfo';
@@ -13,112 +13,113 @@ import GeneralStats from './components/GeneralStats/GeneralStats';
 import DefenseInfo from './components/Defense/DefenseList';
 import OffenseInfo from './components/Offense/OffenseList';
 import TraitsInfo from './components/TraitsInfo/TraitsInfo';
-import Session from './components/Session/Session';
-import { colors } from '../../lib/constants';
-
-export interface CharacterInfoStyle {
-  tabPanelContainer: string;
-  tabPanelContentContainer: string;
-  tabPanelContent: string;
-  tabs: string;
-  tab: string;
-  tabText: string;
-  activeTab: string;
-}
+import Session from './components/Session';
+import SearchInput from './components/SearchInput';
 
 const Container = styled('div')`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: url(images/inventory/bag-bg.png);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0, 0, 0, 0.3)), url(images/inventory/bag-bg-grey.png), black;
 `;
 
 const GeneralInfoContainer = styled('div')`
   display: flex;
-  height: 150px;
+  height: 200px;
 `;
 
 const InfoContent = styled('div')`
   z-index: 1;
   flex: 1;
-  height: calc(100% - 150px);
+  height: calc(100% - 200px);
 `;
 
 const TabText = styled('span')`
-  font-size: 18;
+  font-size: 16px;
   margin: 0;
   padding: 0;
 `;
 
-export const defaultCharacterInfoStyle: CharacterInfoStyle = {
-  tabPanelContainer: css`
+export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
+  tabPanel: css`
     height: 100%;
   `,
 
-  tabPanelContentContainer: css`
+  contentContainer: css`
     padding-bottom: 10px;
     height: 100%;
     width: 100%;
   `,
 
-  tabPanelContent: css`
+  content: css`
     display: flex;
     height: 100%;
   `,
 
   tabs: css`
-    background-color: ${colors.primaryTabPanelColor};
+    background-color: rgba(0, 0, 0, 0.5);
   `,
 
   tab: css`
     flex: 1;
     font-size: 18px;
-    padding: 2px 5px;
-    color: ${colors.tabColorRed};
-    background-color: ${colors.tabColorGray};
-    border-right: 1px solid ${utils.darkenColor(colors.tabColorGray, 30)};
+    padding: 10px;
+    text-transform: uppercase;
+    font-family: Caudex;
+    letter-spacing: 1px;
+    color: #757575;
     text-align: center;
     &:hover {
-      background-color: ${colors.tabHoverColorGray};
+      color: #B3B3B3;
     }
     &:active {
-      background-color: ${colors.tabClickColorGray};
+      color: #D6C4A2;
     }
-  `,
-
-  tabText: css`
-    font-size: 18;
-    margin: 0;
-    padding: 0;
   `,
 
   activeTab: css`
+    position: relative;
     flex: 1;
-    padding: 2px 5px;
-    color: ${colors.tabColorGray};
-    background-color: ${colors.tabColorRed};
-    &:hover {
-      background-color: ${colors.tabHoverColorRed};
+    color: #D6C4A2;
+    &:after {
+      content: '';
+      position: absolute;
+      height: 6px;
+      left: 0;
+      right: 0;
+      bottom: 5px;
+      background: url(images/character-stats/ornament-nav.png) no-repeat;
+      background-size: contain;
+      background-position: center;
     }
-    &:active {
-      background-color: ${colors.tabClickColorRed};
+    &:hover {
+      color: #D6C4A2;
     }
   `,
 };
 
 export interface CharacterInfoProps {
-  styles?: Partial<CharacterInfoStyle>;
 }
 
-class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
+export interface CharacterInfoState {
+  searchValue: string;
+}
+
+class CharacterInfo extends React.PureComponent<CharacterInfoProps, CharacterInfoState> {
   private tabPanelRef: any;
+  constructor(props: CharacterInfoProps) {
+    super(props);
+    this.state = {
+      searchValue: '',
+    };
+  }
   public render() {
     const tabs: TabItem<{ title: string }>[] = [
       { name: 'general', tab: { title: 'General' }, rendersContent: 'General' },
       { name: 'defense', tab: { title: 'Defense' }, rendersContent: 'Defense' },
       { name: 'offense', tab: { title: 'Offense' }, rendersContent: 'Offense' },
-      { name: 'traits', tab: { title: 'Boons/Banes' }, rendersContent: 'TraitsInfo' },
+      { name: 'traits', tab: { title: 'Traits' }, rendersContent: 'TraitsInfo' },
       { name: 'session', tab: { title: 'Session' }, rendersContent: 'Session' },
     ];
     const content: ContentItem[] = [
@@ -137,18 +138,26 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
         <InfoContent>
           <TabPanel
             ref={ref => this.tabPanelRef = ref}
+            alwaysRenderContent
             defaultTabIndex={0}
             tabs={tabs}
             renderTab={(tab: { title: string }) => <TabText>{tab.title}</TabText>}
+            renderExtraTabItems={() => (
+              <SearchInput
+                searchValue={this.state.searchValue}
+                onSearchChange={this.onSearchChange}
+                placeholder='Filter'
+              />
+            )}
             onActiveTabChanged={() => {}}
             content={content}
             styles={{
-              tabPanel: defaultCharacterInfoStyle.tabPanelContainer,
+              tabPanel: defaultCharacterInfoStyle.tabPanel,
               tabs: defaultCharacterInfoStyle.tabs,
               tab: defaultCharacterInfoStyle.tab,
               activeTab: defaultCharacterInfoStyle.activeTab,
-              contentContainer: defaultCharacterInfoStyle.tabPanelContentContainer,
-              content: defaultCharacterInfoStyle.tabPanelContent,
+              contentContainer: defaultCharacterInfoStyle.contentContainer,
+              content: defaultCharacterInfoStyle.content,
             }}
           />
         </InfoContent>
@@ -161,11 +170,15 @@ class CharacterInfo extends React.Component<CharacterInfoProps, {}> {
     console.log(info);
   }
 
-  private renderGeneralInfo = () => <GeneralStats />;
-  private renderDefenseInfo = () => <DefenseInfo />;
-  private renderOffenseInfo = () => <OffenseInfo />;
-  private renderSessionInfo = () => <Session />;
-  private renderTraitsInfo = () => <TraitsInfo />;
+  private onSearchChange = (searchValue: string) => {
+    this.setState({ searchValue });
+  }
+
+  private renderGeneralInfo = () => <GeneralStats searchValue={this.state.searchValue} />;
+  private renderDefenseInfo = () => <DefenseInfo searchValue={this.state.searchValue} />;
+  private renderOffenseInfo = () => <OffenseInfo searchValue={this.state.searchValue} />;
+  private renderSessionInfo = () => <Session searchValue={this.state.searchValue} />;
+  private renderTraitsInfo = () => <TraitsInfo searchValue={this.state.searchValue} />;
 }
 
 export default CharacterInfo;

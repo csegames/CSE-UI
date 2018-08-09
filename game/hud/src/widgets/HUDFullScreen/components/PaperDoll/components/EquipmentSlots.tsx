@@ -7,13 +7,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css, cx } from 'react-emotion';
-import { client, ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
+import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
-import { getEquippedDataTransfer, FullScreenContext, getPaperDollBaseIcon, getPaperDollIcon } from '../../../lib/utils';
+import { getEquippedDataTransfer, FullScreenContext, getMyPaperDollBaseIcon, getMyPaperDollIcon } from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
@@ -208,6 +208,7 @@ const EquippedWeaponSlots = styled('div')`
   right: 0;
   width: 100%;
   padding: 5px 0;
+  pointer-events: none;
   &:before {
     content: '';
     position: absolute;
@@ -262,6 +263,7 @@ const ItemSlotSpacing = css`
 
 const WeaponSpacing = css`
   margin-right: 15px;
+  pointer-events: all;
 `;
 
 const PaperdollIcon = styled('img')`
@@ -368,8 +370,8 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
       slotNameItemMenuVisible: '',
     };
 
-    this.paperdollIcon = getPaperDollIcon(client.playerState.gender, client.playerState.race, client.playerState.class);
-    this.paperdollBaseIcon = getPaperDollBaseIcon(client.playerState.faction);
+    this.paperdollIcon = getMyPaperDollIcon();
+    this.paperdollBaseIcon = getMyPaperDollBaseIcon();
   }
 
   public render() {

@@ -10,12 +10,13 @@ import styled from 'react-emotion';
 
 const Button = styled('div')`
   z-index: 99;
-  width: ${(props: { width: number }) => props.width ? `${props.width}px` : '12px'};
-  height: ${(props: { height: number }) => props.height ? `${props.height}px` : '12px'};
-  background: url(images/inventory/close-button-grey.png) no-repeat;
+  pointer-events: all;
+  font-size: 14px;
+  color: #C3C3C3;
   cursor: pointer;
+  transition: color 0.2s;
   &:hover {
-    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 0.9));
+    color: white;
   }
   &:active {
     -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
@@ -33,7 +34,7 @@ export class CloseButton extends React.Component<CloseButtonProps> {
   public render() {
     return (
       <Button
-        className={this.props.className}
+        className={`icon-close ${this.props.className}`}
         width={this.props.width}
         height={this.props.height}
         onClick={this.props.onClick}

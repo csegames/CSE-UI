@@ -27,22 +27,15 @@ const Container = styled('div')`
 // to break up the ArmorStats (resistances, mitigations) into sections.
 
 export interface DefenseListProps extends GraphQLInjectedProps<DefenseListGQL.Query> {
+  searchValue: string;
 }
 
 export interface DefenseListState {
   searchValue: string;
 }
 
-class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
+class DefenseList extends React.PureComponent<DefenseListProps> {
   private updateCharacterStatsListener: number;
-
-  constructor(props: DefenseListProps) {
-    super(props);
-    this.state = {
-      searchValue: '',
-    };
-  }
-
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
@@ -50,8 +43,6 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
       return (
         <Container>
           <StatListContainer
-            searchValue={this.state.searchValue}
-            onSearchChange={this.onSearchChange}
             renderContent={() => (
             <div>
               {myEquippedItems.armorStats.map((bodyPartStats, i) => {
@@ -59,7 +50,7 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
                   <BodyPartSection
                     key={i}
                     name={bodyPartStats.subpartID}
-                    searchValue={this.state.searchValue}
+                    searchValue={this.props.searchValue}
                     bodyPartStats={bodyPartStats}
                   />
                 );
@@ -86,13 +77,9 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
   public componentWillUnmount() {
     events.off(this.updateCharacterStatsListener);
   }
-
-  private onSearchChange = (searchValue: string) => {
-    this.setState({ searchValue });
-  }
 }
 
-const DefenseListWithQL = withGraphQL({
+const DefenseListWithQL = withGraphQL<DefenseListProps>({
   query: gql`
     query DefenseListGQL {
       myEquippedItems {

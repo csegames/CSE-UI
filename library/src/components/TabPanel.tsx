@@ -95,6 +95,9 @@ export interface TabPanelProps<T> {
 
   // Render a divider between tabs. OPTIONAL (default null)
   renderTabDivider?: () => JSX.Element;
+
+  // Render extra items alongside the tabs e.g. Search Input. OPTIONAL (defualt null)
+  renderExtraTabItems?: () => JSX.Element;
 }
 
 export interface TabPanelState {
@@ -174,6 +177,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
             );
           }
         })}
+        {this.props.renderExtraTabItems && this.props.renderExtraTabItems()}
       </Tabs>
     );
   }

@@ -8,9 +8,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import styled, { css } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
-
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
-import { colors } from '../../../lib/constants';
 
 export interface StatListItemStyles {
   statsListItem: React.CSSProperties;
@@ -26,28 +24,32 @@ const StatsListItem = styled('div')`
   position: relative;
   cursor: default;
   padding: 0 5px;
-  height: 25px;
-  background-color: rgba(55, 47, 45, 0.5);
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  height: 30px;
+  line-height: 30px;
+  background-color: rgba(60, 60, 60, 0.3);
   opacity: 0.8;
-  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
   &:hover {
-    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+    filter: brightness(200%);
   }
 `;
 
 const LightListItem = css`
-  background-color: ${colors.filterBackgroundColor};
+  background-color: rgba(89, 89, 89, 0.3);
+  &:hover {
+    background-color: rgba(60, 60, 60, 0.3);
+    filter: brightness(200%);
+  }
 `;
 
 const StatText = styled('p')`
   display: inline-block;
-  font-size: 16;
+  font-size: 16px;
   margin: 0;
   padding: 0;
   text-overflow: ellipsis;
-  color: ${(props: any) => props.color ? props.color : utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #9B9B9B;
 `;
 
 const DoesNotMatchSearch = css`
@@ -57,12 +59,15 @@ const DoesNotMatchSearch = css`
 
 export interface StatListItemProps {
   styles?: Partial<StatListItemStyles>;
+  item: any;
   statName: string;
   statValue: any;
   index: number;
   searchValue: string;
   sectionTitle?: string;
   colorOfName?: string;
+  onMouseOver?: (e: React.MouseEvent<HTMLDivElement>, statValue: any) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>, statValue: any) => void;
 }
 
 class StatListItem extends React.Component<StatListItemProps, {}> {
@@ -76,6 +81,8 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
 
     return (
       <StatsListItem
+        onMouseOver={this.onMouseOver}
+        onMouseLeave={this.onMouseLeave}
         className={classNames(
           lightItem ? LightListItem : '',
           !searchIncludes ? DoesNotMatchSearch : '',
@@ -117,6 +124,14 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
     } else {
       return true;
     }
+  }
+
+  private onMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
+    this.props.onMouseOver(e, this.props.item);
+  }
+
+  private onMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    this.props.onMouseLeave(e, this.props.item);
   }
 }
 

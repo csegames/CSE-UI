@@ -30,7 +30,6 @@ const Container = styled('div')`
 `;
 
 const ProgressionBorder = styled('div')`
-}
 `;
 
 const CollectButton = styled('div')`
@@ -193,10 +192,10 @@ class ProgressionView extends React.Component<Props, State> {
     return (
       <Container>
         <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
-        <InnerContainer className='cse-ui-scroller-thumbonly'>
+        <InnerContainer>
           <CloseButton onClick={this.props.onCloseClick} className={CloseButtonPosition} />
           <ProgressionCorner />
-          <ProgressionContent>
+          <ProgressionContent className='cse-ui-scroller-thumbonly'>
 
           {graphql.data.myprogression.unCollectedDayLogs.map((uncollectedDay) => {
             const { secondsActive, distanceMoved, skillPartsUsed, damage, plots, crafting, scenarios } = uncollectedDay;

@@ -5,11 +5,9 @@
  */
 
 import * as React from 'react';
-import { utils, Input } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
-
 import { colors } from '../../../lib/constants';
-import { requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
 
 export interface StatListContainerStyles {
   StatListContainer: React.CSSProperties;
@@ -28,35 +26,21 @@ const Container = styled('div')`
 
 const StatListContainerContent = styled('div')`
   flex: 1;
-  overflow: auto;
-  height: calc(100% - 42px);
+  overflow-y: auto;
+  height: 100%;
 `;
-
-const InputStyle = {
-  input: {
-    fontSize: '20px',
-  },
-};
 
 export interface StatListContainerProps {
   styles?: Partial<StatListContainerStyles>;
   renderContent: () => JSX.Element;
-  searchValue: string;
-  onSearchChange: (searchValue: string) => void;
 }
 
 const StatListContainer = (props: StatListContainerProps) => {
   return (
     <Container>
-      <Input
-        placeholder='Filter'
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onSearchChange(e.target.value)}
-        onClick={() => requestUIKeydown()}
-        onBlur={() => releaseUIKeydown()}
-        value={props.searchValue}
-        styles={InputStyle}
-      />
-      <StatListContainerContent>{props.renderContent()}</StatListContainerContent>
+      <StatListContainerContent className='cse-ui-scroller-thumbonly'>
+        {props.renderContent()}
+      </StatListContainerContent>
     </Container>
   );
 };
