@@ -289,6 +289,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   }
 
   private initializeBodyDimensions = (override?: boolean) => {
+    if (!this.bodyRef) return;
     if (!this.props.invBodyDimensions.width || !this.props.invBodyDimensions.height || override) {
       const { clientHeight, clientWidth } = this.bodyRef;
       this.props.onChangeInvBodyDimensions({ height: clientHeight, width: clientWidth });

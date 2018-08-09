@@ -71,7 +71,7 @@ class TabbedPane extends React.Component<TabbedPaneProps, TabbedPaneState> {
     );
   }
 
-  private onTabSelect(index: number) {
+  private onTabSelect = (index: number) => {
     this.setState((state, props) => ({ selectedTabIndex: index }));
     this.props.onTabChange(index, this.props.tabs[index]);
   }

@@ -113,8 +113,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
             <HUDNav.component {...HUDNav.props} />
           </HUDNavContainer>
 
-          <InteractiveAlertView />
           <DevUI />
+          <InteractiveAlertView />
           <ScenarioPopup />
 
           <ScenarioResults />
