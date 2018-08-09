@@ -29,7 +29,7 @@ export default {
   },
   dragOptions: {
     lockHeight: true,
-    lockWidth: true,
+    lockWidth: false,
   },
   component: Compass,
   props: {},

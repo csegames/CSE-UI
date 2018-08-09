@@ -4,92 +4,74 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
 import * as React from 'react';
+import styled, { css } from 'react-emotion';
+import { CompassContextProvider } from './CompassContext';
+import CardinalDirections from './POI/CardinalDirections';
+import WarbandMembers from './POI/WarbandMembers';
 
-export interface CompassProps {
-  setVisibility: (vis: boolean) => void;
+export interface CompassProps {}
+
+export interface CompassState {}
+
+function compassContainerLineStyle(r: number, g: number, b: number) {
+  return css`
+    display: block;
+    width: 100%;
+    height: 2px;
+    line-height: 1px;
+    position: absolute;
+    content: linear-gradient(to right,
+      rgba(${r}, ${g}, ${b}, 0) 0%,
+      rgba(${r}, ${g}, ${b},.5) 50%,
+      rgba(${r}, ${g}, ${b}, 0) 100%);
+  `;
 }
 
-export interface CompassState {
-  facing: number;
-}
+const CompassContainer = styled('div')`
+  font-family: TitilliumBold;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  &:before {
+    top: 2px;
+    ${compassContainerLineStyle(0, 0, 0)}
+  }
+  &:after {
+    bottom: 0px;
+    ${compassContainerLineStyle(200, 200, 200)}
+  }
+`;
+
+const CompassTrack = styled('div')`
+  position: relative;
+  height: 38px;
+  line-height: 30px;
+  &:before {
+    top: 0px;
+    ${compassContainerLineStyle(200, 200, 200)}
+  }
+  &:after {
+    bottom: 2px;
+    ${compassContainerLineStyle(0, 0, 0)}
+  }
+`;
 
 class Compass extends React.Component<CompassProps, CompassState> {
   public name: string = 'Compass';
 
-  private updateSpeed: number = 25; // how often the compass updates
-  private intervalId: NodeJS.Timer; // id returned by the setInterval method
-
-  constructor(props: CompassProps) {
-    super(props);
-    this.state = {
-      facing: 0,
-    };
-  }
-
   public render() {
-    const facing: number = this.state.facing;
     return (
-      <div className='Compass'>
-        <div className='Compass__Cardinal-direction'>
-          <h1 className='Compass__Cardinal' style={this.position(facing, -360) }>E</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, -315) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, -270) }>N</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, -225) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, -180) }>W</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, -135) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, -90) }>S</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, -45) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, 0) }>E</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, 45) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, 90) }>N</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, 135) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, 180) }>W</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, 225) }>.</h1>
-          <h1 className='Compass__Cardinal' style={this.position(facing, 270) }>S</h1>
-          <h1 className='Compass__Cardinal dot' style={this.position(facing, 315) }>.</h1>
-        </div>
-      </div>
+      <CompassContextProvider degreesToShow={90}>
+        <CompassContainer>
+          <CompassTrack>
+            <CardinalDirections />
+            <WarbandMembers />
+          </CompassTrack>
+        </CompassContainer>
+      </CompassContextProvider>
     );
-  }
-
-  public componentWillMount() {
-    this.updateFacingFromClient();
-  }
-
-  public componentDidMount() {
-    this.updateFacingFromClient();
-    clearInterval(this.intervalId);
-    this.intervalId = setInterval(() => this.updateFacingFromClient(), this.updateSpeed);
-  }
-
-  public componentWillUnmount() {
-    clearInterval(this.intervalId);
-  }
-
-  private angleToPercentage = (facing: number, angle: number): number => {
-    let diff: number = angle - (facing % 360);
-    const fit = 0.75;
-    const half = 50;
-    if (angle >= facing) {
-      return half - diff * fit;
-    } else {
-      const d2: number = (facing % 360) - 360 - angle;
-      diff = (facing % 360) - angle;
-      return Math.abs(d2) < diff ? half + d2 * fit : half + diff * fit;
-    }
-  }
-
-  private updateFacingFromClient = () => {
-    const facing: number = client.facing;
-    if (this.state.facing !== facing) {
-      this.setState({ facing } as any);
-    }
-  }
-
-  private position(facing: number, angle: number) {
-    return { left: this.angleToPercentage(facing, angle) + '%' };
   }
 }
 
