@@ -137,11 +137,15 @@ class ChatClient {
 
 
   public getStoredRooms(): RoomId[] {
-    var storedRooms = localStorage.getItem("CSE_CHAT_Stored_channels");
-    if (storedRooms != null) {
-      return JSON.parse(storedRooms);
+    try {
+      var storedRooms = localStorage.getItem("CSE_CHAT_Stored_channels");
+      if (storedRooms) {
+        return JSON.parse(storedRooms);
+      }
+      return [];
+    } catch(err) {
+      return [];
     }
-    return [];
   }
   public removeFromStoredRooms(room: string): void {
       var storedRooms = this.getStoredRooms();
