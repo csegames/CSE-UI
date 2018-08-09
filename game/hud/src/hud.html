@@ -13,6 +13,22 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 </head>
 <body>
   <div id="hud"></div>
+  <script src=https://cdn.ravenjs.com/3.24.0/raven.min.js crossorigin=anonymous></script>
+  <script>
+    Raven.config('https://f7710348f19c4a0f8f8cd83ea0aa343f@sentry.io/1259561', {
+      release: '0-0-0',
+      environment: 'development-test',
+    }).install()
+
+    setTimeout(function() {
+      Raven.setTagsContext({
+        shard: cuAPI.shardID,
+      });
+      Raven.setUserContext({
+        id: cuAPI.characterID,
+      });
+    }, 1000);
+  </script>
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
   <script src="third-party/fontawesome.js"></script>
   <script src="third-party/object-assign-shim.js"></script>
