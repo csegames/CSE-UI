@@ -144,6 +144,8 @@ class ChatClient {
       }
       return [];
     } catch(err) {
+      // Just reset stored channels, there was some bad/old data in there.
+      localStorage.setItem("CSE_CHAT_Stored_channels", "");
       return [];
     }
   }

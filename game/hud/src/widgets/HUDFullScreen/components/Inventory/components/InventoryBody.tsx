@@ -307,7 +307,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       slotDimensions,
       Math.max(InventoryBody.minSlots, itemCount),
     );
-    const inventory = this.graphql.data && {
+    const inventory = this.graphql.data && this.graphql.data.myInventory && {
       ...this.graphql.data.myInventory,
       items: this.graphql.data.myInventory.items as any,
     };
