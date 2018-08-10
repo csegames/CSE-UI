@@ -88,6 +88,9 @@ export class CompassContextProvider extends React.Component<CompassContextProvid
     if (this.state.facing !== nextState.facing) {
       return true;
     }
+    if (this.state.facingNorth !== nextState.facingNorth) {
+      return true;
+    }
     if (
       nextState.position.x !== this.state.position.x ||
       nextState.position.y !== this.state.position.y ||

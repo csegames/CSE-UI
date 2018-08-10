@@ -31,7 +31,7 @@ const CardinalDot = styled('div')`
 `;
 
 
-export default class CardinalDirections extends React.Component<{}, {}> {
+export default class CardinalDirections extends React.PureComponent<{}, {}> {
   public render() {
     return (
       <CompassContextConsumer>

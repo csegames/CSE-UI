@@ -17,10 +17,11 @@ export function getCompassData() {
   if (facing < 0) {
     facing = 360 - Math.abs(facing);
   }
-  const facingNorth = (360 - (facing - 90)) % 360;
-  const x = client.locationX;
-  const y = client.locationY;
-  const z = client.locationZ;
+  facing = Math.round(facing);
+  const facingNorth = Math.round((360 - (facing - 90)) % 360);
+  const x = Math.round(client.locationX);
+  const y = Math.round(client.locationY);
+  const z = Math.round(client.locationZ);
   return {
     facing,
     facingNorth,

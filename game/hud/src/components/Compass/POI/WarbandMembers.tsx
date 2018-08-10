@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, events, GroupMemberState } from '@csegames/camelot-unchained';
+import { client, events, GroupMemberState, Vec3f } from '@csegames/camelot-unchained';
 import { CompassContextConsumer, CompassContext } from '../CompassContext';
 import CompassElevationSwitch from '../CompassElevationSwitch';
 import { hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
@@ -44,8 +44,15 @@ const MemberIcon = () => (
   </StyledSvg>
 );
 
+interface WarbandMemberData {
+  characterID: string;
+  name: string;
+  isAlive: boolean;
+  position: Vec3f;
+}
+
 export interface WarbandMembersState {
-  members: GroupMemberState[];
+  members: WarbandMemberData[];
 }
 
 export default class WarbandMembers extends React.Component<{}, WarbandMembersState> {
@@ -98,13 +105,37 @@ export default class WarbandMembers extends React.Component<{}, WarbandMembersSt
     events.off(this.eventRemovedHandle);
   }
 
+  public shouldComponentUpdate(nextProps: {}, nextState: WarbandMembersState) {
+    if (nextState.members.length !== this.state.members.length) {
+      return true;
+    }
+    for (let i = 0; i < this.state.members.length; i++) {
+      const memberA = this.state.members[i];
+      const memberB = nextState.members[i];
+      if (memberA.characterID !== memberB.characterID) {
+        return true;
+      }
+      if (memberA.isAlive !== memberB.isAlive) {
+        return true;
+      }
+      if (
+        memberA.position.x !== memberB.position.x ||
+        memberA.position.y !== memberB.position.y ||
+        memberA.position.z !== memberB.position.z
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public onWarbandMemberUpdated = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== client.characterID) {
       this.setState(state => ({
         members: state.members.map((member) => {
           if (member.characterID === newMemberState.characterID) {
-            return newMemberState;
+            return this.getWarbandMemberData(newMemberState);
           } else {
             return member;
           }
@@ -120,7 +151,7 @@ export default class WarbandMembers extends React.Component<{}, WarbandMembersSt
         return {
           members: state.members.filter((member) => {
             return member.characterID !== newMemberState.characterID;
-          }).concat([newMemberState]),
+          }).concat([this.getWarbandMemberData(newMemberState)]),
         };
       });
     }
@@ -139,5 +170,18 @@ export default class WarbandMembers extends React.Component<{}, WarbandMembersSt
         members: [],
       });
     }
+  }
+
+  private getWarbandMemberData = (state: GroupMemberState): WarbandMemberData => {
+    return {
+      characterID: state.characterID,
+      name: state.name,
+      isAlive: state.isAlive,
+      position: {
+        x: Math.round(state.position.x),
+        y: Math.round(state.position.y),
+        z: Math.round(state.position.z),
+      },
+    };
   }
 }

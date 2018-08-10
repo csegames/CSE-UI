@@ -16,7 +16,7 @@ export interface CompassElevationSwitchProps {
 
 export interface CompassElevationSwitchState {}
 
-class CompassElevationSwitch extends React.Component<CompassElevationSwitchProps, CompassElevationSwitchState> {
+class CompassElevationSwitch extends React.PureComponent<CompassElevationSwitchProps, CompassElevationSwitchState> {
 
   public static defaultProps: Partial<CompassElevationSwitchProps> = {
     bufferZone: 0,
