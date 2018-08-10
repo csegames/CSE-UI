@@ -156,7 +156,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                 </ServerOptionsButton>
               </ServerTitle>
               <ServerInfo>
-                <PlayerCounts server={server.name} />
+                <PlayerCounts shard={server.shardID} host={server.apiHost} />
                 <p>Accessible to {webAPI.accessLevelString(server.accessLevel)}</p>
               </ServerInfo>
             </Server>

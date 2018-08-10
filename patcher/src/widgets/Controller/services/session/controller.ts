@@ -98,7 +98,15 @@ function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
   });
 
   events.on(signalr.PATCHER_EVENTS_CHARACTERREMOVED, (id: string) => dispatch(characterRemoved(id)));
+}
 
+function registerOtherPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
+  events.on(signalr.PATCHER_EVENTS_CHARACTERUPDATED, (characterJSON: string) => {
+    const character = utils.tryParseJSON<webAPI.SimpleCharacter>(characterJSON, client.debug);
+    if (character !== null) dispatch(characterUpdate(character));
+  });
+
+  events.on(signalr.PATCHER_EVENTS_CHARACTERREMOVED, (id: string) => dispatch(characterRemoved(id)));
 }
 
 function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
@@ -198,7 +206,7 @@ export const reset = module.createAction({
   reducer: () => initialState(),
 });
 
-export function onSignalRStart(dispatch: (action: ControllerAction) => any) {
+function onPatcherSignalRStart(dispatch: (action: ControllerAction) => any) {
   registerPatcherHubEvents(dispatch);
   dispatch(initSignalRSuccess() as ControllerAction);
   dispatch(getChannels());
@@ -206,6 +214,11 @@ export function onSignalRStart(dispatch: (action: ControllerAction) => any) {
   if (channelUpdateInterval === null) {
     channelUpdateInterval = setInterval(() => dispatch(getChannels()), 500);
   }
+}
+
+function onOtherPatcherSignalRStart(dispatch: (action: ControllerAction) => any) {
+  registerOtherPatcherHubEvents(dispatch);
+  dispatch(initSignalRSuccess() as ControllerAction);
 }
 
 export const initialize = module.createAction({
@@ -218,7 +231,7 @@ export const initialize = module.createAction({
       try {
         // Connect to main signalr patcher hub
         signalr.patcherHub.start(() => {
-          onSignalRStart(dispatch);
+          onPatcherSignalRStart(dispatch);
         });
       } catch (e) {
         console.error(e);
@@ -232,7 +245,7 @@ export const initialize = module.createAction({
           servers.forEach((server) => {
             try {
               signalr.createPatcherHub(server.apiHost + '/signalr').start(() => {
-                onSignalRStart(dispatch);
+                onOtherPatcherSignalRStart(dispatch);
               });
             } catch (e) {
               console.error(e);
