@@ -92,7 +92,7 @@ class ContextMenuAction extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    clearTimeout(this.cooldownTimeout);
+    this.clearCooldownTimeout();
   }
 
   private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'item'>>) => {
@@ -134,7 +134,7 @@ class ContextMenuAction extends React.Component<Props, State> {
   }
 
   private startCooldown = (lastTimePerformed: string) => {
-    this.cooldownTimeout = this.updateCooldownSeconds(lastTimePerformed);
+    this.updateCooldownSeconds(lastTimePerformed);
   }
 
   private updateCooldownSeconds = (lastTimePerformed: string) => {
