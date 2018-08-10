@@ -34,11 +34,31 @@ const LoadingContainer = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
 
 const LoadingText = styled('div')`
   font-size: 22px;
   color: white;
+`;
+
+const RetryButton = styled('button')`
+  font-size: 22px;
+  display: block;
+  background: rgba(255,0,0,0.4);
+  border: none;
+  color: white !important;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 25px !important;
+  &:hover {
+    background: rgba(255,0,0,0.6);
+  }
+  &:focus {
+    outline: 0;
+    outline-color: transparent;
+    outline-style: none;
+  }
 `;
 
 const query = `
@@ -99,6 +119,7 @@ export interface Props {
 
 export interface State {
   loading: boolean;
+  failedToLoad: boolean;
 }
 
 type Coord = [number, number];
@@ -119,6 +140,7 @@ export class GameMap extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: true,
+      failedToLoad: false,
     };
   }
 
@@ -130,10 +152,17 @@ export class GameMap extends React.Component<Props, State> {
         <div id='maptooltip' className='map-tooltip' ref={r => this.tooltipRef = r}></div>
         {this.state.loading &&
           <LoadingContainer>
-            <LoadingText>Fetching Map Data...</LoadingText>
+            {this.state.failedToLoad ? (
+              <>
+                <LoadingText>Failed To Load Map Data</LoadingText>
+                <RetryButton onClick={this.fetchMetaData}>RELOAD</RetryButton>
+              </>
+            ) : (
+              <LoadingText>Fetching Map Data...</LoadingText>
+            )}
           </LoadingContainer>
         }
-        {visibleComponentLeft === 'map-left' || visibleComponentRight === 'map-right' ?
+        {this.metadata && (visibleComponentLeft === 'map-left' || visibleComponentRight === 'map-right') ?
           <GraphQL
             query={{
               query,
@@ -174,16 +203,21 @@ export class GameMap extends React.Component<Props, State> {
     if (this.props.visibleComponentLeft !== nextProps.visibleComponentLeft) return true;
     if (this.props.visibleComponentRight !== nextProps.visibleComponentRight) return true;
     if (this.state.loading !== nextState.loading) return true;
+    if (this.state.failedToLoad !== nextState.failedToLoad) return true;
     if (this.initialized) return false;
     return true;
   }
 
   private fetchMetaData = () => {
+    this.setState({
+      failedToLoad: false,
+    });
     request('get', `https://s3.amazonaws.com/camelot-unchained/map/zone/${this.zoneID}/metadata.json`)
       .then((result) => {
         if (!result.ok) {
-          console.error(result.statusText);
-          setTimeout(() => this.fetchMetaData(), 5000);
+          this.setState({
+            failedToLoad: true,
+          });
           return;
         }
         this.metadata = result.json();
