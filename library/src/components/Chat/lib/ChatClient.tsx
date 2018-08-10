@@ -241,7 +241,7 @@ class ChatClient {
     newRooms.forEach((room: RoomId) => {
       if (!joining[room.name]) {
         joining[room.name] = true;
-        this.chat.joinRoom(room + this.config.serviceAddress);
+        this.chat.joinRoom(room.name + this.config.serviceAddress);
       }
     });
   }
