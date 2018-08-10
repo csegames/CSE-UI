@@ -58,7 +58,7 @@ const CompassTrack = styled('div')`
   }
 `;
 
-class Compass extends React.Component<CompassProps, CompassState> {
+class Compass extends React.PureComponent<CompassProps, CompassState> {
   public name: string = 'Compass';
 
   public render() {
