@@ -276,7 +276,7 @@ module.exports = {
       },
       hatchery: {
         script: 'nps build,clean.hatchery,copy.hatchery',
-        webpack: 'nps build.webpack,clean.hatchery,copy.hatchery',
+        webpack: 'nps build.webpack.development,clean.hatchery,copy.hatchery',
         description: 'Builds the module and copies to the Hatchery (4) UI override directory.',
       },
       wyrmling: {

@@ -48,7 +48,7 @@ class Status extends React.Component<StatusProps> {
     return (
       <StatusContainer>
         <div>
-          {this.props.statuses.map((status, index) => {
+          {this.props.statuses && this.props.statuses.map((status, index) => {
             const statusInfo = this.getStatusInfo(status.id);
             return (
               <StatusIcon key={`${index}-${status.id}`} status={statusInfo} />
