@@ -157,7 +157,11 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
                 onClick={() => this.selectIndex(index, tabItem.name)}>
                   {this.props.renderTab(tabItem.tab, selected)}
               </Tab>,
-              index !== this.props.tabs.length - 1 ? this.props.renderTabDivider() : null,
+              index !== this.props.tabs.length - 1 ? (
+                <React.Fragment key={`tab-divider-${index}`}>
+                  {this.props.renderTabDivider()}
+                </React.Fragment>
+              ) : null,
             ];
           } else {
             return (
