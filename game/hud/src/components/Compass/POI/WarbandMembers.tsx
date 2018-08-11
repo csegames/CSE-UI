@@ -71,7 +71,7 @@ export default class WarbandMembers extends React.Component<{}, WarbandMembersSt
         {(compass: CompassContext) => (
           <>
             {this.state.members.filter(member => member.isAlive).map(member => (
-              <MemberPoi style={compass.getPoiPlacementStyle(member.position, 12.5)}>
+              <MemberPoi key={member.characterID} style={compass.getPoiPlacementStyle(member.position, 12.5)}>
                 <MemberIcon />
                 {Math.round(compass.getDistance(member.position))}
                 <CompassElevationSwitch bufferZone={1} target={member.position}>
