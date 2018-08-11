@@ -148,7 +148,7 @@ export interface HealthBarViewState {
 
 }
 
-class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarViewState> {
+class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewState> {
   public render() {
     const { playerState } = this.props;
     const bloodPercent = getBloodPercent(playerState);
@@ -203,7 +203,12 @@ class HealthBarView extends React.PureComponent<HealthBarViewProps, HealthBarVie
   }
 
   public shouldComponentUpdate(nextProps: HealthBarViewProps, nextState: HealthBarViewState) {
-    return !isEqualPlayerState(nextProps.playerState, this.props.playerState);
+    if (!isEqualPlayerState(nextProps.playerState, this.props.playerState)) {
+      return true;
+    } else if (nextProps.shouldShake !== this.props.shouldShake) {
+      return true;
+    }
+    return false;
   }
 }
 
