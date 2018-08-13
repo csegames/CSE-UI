@@ -24,7 +24,19 @@ export const PATCHER_LIFETIME_EVENT_DISCONNECTED = 'patcher/disconnected';
 export const PATCHER_LIFETIME_EVENT_IDENTIFIED = 'patcher/identified';
 export const PATCHER_LIFETIME_EVENT_STATECHANGED = 'patcher/statechanged';
 
+export const genericPatcherEventsMap: EventMap[] = [
+  {
+    receive: 'characterUpdated',
+    send: PATCHER_EVENTS_CHARACTERUPDATED,
+  },
+  {
+    receive: 'characterRemoved',
+    send: PATCHER_EVENTS_CHARACTERREMOVED,
+  },
+];
+
 export const patcherEventsMap: EventMap[] = [
+  ...genericPatcherEventsMap,
   {
     receive: 'serverUpdate',
     send: PATCHER_EVENTS_SERVERUPDATED,
@@ -37,18 +49,30 @@ export const patcherEventsMap: EventMap[] = [
     receive: 'patcherAlert',
     send: PATCHER_EVENTS_ALERT,
   },
-  {
-    receive: 'characterUpdated',
-    send: PATCHER_EVENTS_CHARACTERUPDATED,
-  },
-  {
-    receive: 'characterRemoved',
-    send: PATCHER_EVENTS_CHARACTERREMOVED,
-  },
 ];
 
-export function createPatcherHub(hostName?: string): SignalRHub {
-  const newPatcherHub = new SignalRHub('patcherHub', patcherEventsMap, { debug: client.debug }, hostName);
+export function getPatcherEventName(apiHostName: string, eventName: string) {
+  if (apiHostName === client.signalRHost) {
+    return eventName;
+  }
+
+  return `${apiHostName}-${eventName}`;
+}
+
+export function createPatcherHub(opts?: { hostName?: string, isMainPatcherHub?: boolean }): SignalRHub {
+  const hostName = opts.hostName || client.signalRHost;
+  const eventsMap = (opts.isMainPatcherHub ? patcherEventsMap : genericPatcherEventsMap).map((evtMap) => {
+    return {
+      ...evtMap,
+      send: getPatcherEventName(hostName, evtMap.send),
+    };
+  });
+  const newPatcherHub = new SignalRHub(
+    'patcherHub',
+    eventsMap,
+    { debug: client.debug },
+    hostName,
+  );
 
   let reconnectTries = 0;
 
@@ -83,42 +107,49 @@ export function createPatcherHub(hostName?: string): SignalRHub {
   ////////////////////////////////////
 
   newPatcherHub.onStarting = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_STARTING, hub);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_STARTING);
+    events.fire(evtName, hub);
   };
 
   newPatcherHub.onConnectionSlow = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_CONNECTIONSLOW);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_CONNECTIONSLOW);
+    events.fire(evtName);
   };
 
   newPatcherHub.onConnected = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_CONNECTED, hub);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_CONNECTED);
+    events.fire(evtName, hub);
     invokeIdentify(hub);
   };
 
   newPatcherHub.onReconnecting = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_RECONNECTING, hub);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_RECONNECTING);
+    events.fire(evtName, hub);
   };
 
   newPatcherHub.onReconnected = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_RECONNECTED, hub);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_RECONNECTED);
+    events.fire(evtName, hub);
   };
 
   newPatcherHub.onStateChanged = function(hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) {
-    events.fire(PATCHER_LIFETIME_EVENT_STATECHANGED, hub, state);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_STATECHANGED);
+    events.fire(evtName, hub, state);
     switch (state.newState) {
       case ConnectionState.Connecting:
-        events.fire(PATCHER_LIFETIME_EVENT_CONNECTING, hub);
+        events.fire(getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_CONNECTING), hub);
         break;
     }
   };
 
   newPatcherHub.onDisconnected = function(hub: SignalRHub) {
-    events.fire(PATCHER_LIFETIME_EVENT_DISCONNECTED, hub);
+    const evtName = getPatcherEventName(hostName, PATCHER_LIFETIME_EVENT_DISCONNECTED);
+    events.fire(evtName, hub);
   };
 
   return newPatcherHub;
 }
 
-export const patcherHub = createPatcherHub();
+export const patcherHub: SignalRHub = createPatcherHub({ isMainPatcherHub: true });
 
 export default patcherHub;

@@ -12,7 +12,7 @@ import { combineReducers } from 'redux';
 // import alertsReducer, {AlertsState} from './alerts';
 // let alerts = alertsReducer;
 
-import controllerReducer, {ControllerState} from './controller';
+import controllerReducer, { ControllerState } from './controller';
 const controller = controllerReducer;
 
 export default combineReducers({

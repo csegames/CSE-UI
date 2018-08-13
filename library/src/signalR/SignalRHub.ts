@@ -18,7 +18,6 @@ function signalRToEvents(receive: string, send: string, hub: any, hubName: strin
 
 export interface SignalRHubOptions {
   debug?: boolean;
-  reconnectOnDisconnect?: boolean;
 }
 
 export enum ConnectionState {
@@ -53,7 +52,6 @@ export class SignalRHub {
   private signalRHost: string;
   private debug: boolean;
   private conn: any = null;
-  public reconnectOnDisconnect: boolean = true;
   private wantStop: boolean = false;
   private tryingToReconnect: boolean = false;
   private eventHandlers: {
@@ -123,7 +121,6 @@ export class SignalRHub {
 
     if (options) {
       this.debug = options.debug || false;
-      this.reconnectOnDisconnect = options.reconnectOnDisconnect || true;
     }
 
     this.addEventHandler = this.addEventHandler.bind(this);
@@ -181,43 +178,42 @@ export class SignalRHub {
     delete this.handlerIDMap[id];
   }
 
-  public start = (onStart?: (hub: SignalRHub) => void, options?: {
-    host: string;
-  }) => {
-    if (this.conn !== null) {
-      return;
-    }
-
-    if (options) {
-      if (options.host) {
-        this.signalRHost = options.host;
+  public start = (shouldReconnect: boolean = true, options?: { host: string; }) => {
+    return new Promise((resolve) => {
+      if (this.conn !== null) {
+        resolve(this);
+        return;
       }
-    }
-    this.conn = ($ as any).hubConnection();
-    this.conn.url = this.signalRHost;
-    this.hub = this.conn.createHubProxy(this.hubName);
 
+      if (options) {
+        if (options.host) {
+          this.signalRHost = options.host;
+        }
+      }
+      this.conn = ($ as any).hubConnection();
+      this.conn.url = this.signalRHost;
+      this.hub = this.conn.createHubProxy(this.hubName);
 
-    // hook up lifetime events 
-    this.conn.starting(this.internalOnStarting);
-    this.conn.received(this.internalOnReceived);
-    this.conn.connectionSlow(this.internalOnConnectionSlow);
-    this.conn.reconnecting(this.internalOnReconnecting);
-    this.conn.reconnected(this.internalOnReconnected);
-    this.conn.stateChanged(this.internalOnStateChanged);
-    this.conn.disconnected(this.internalOnDisconnected);
+      // hook up lifetime events 
+      this.conn.starting(this.internalOnStarting);
+      this.conn.received(this.internalOnReceived);
+      this.conn.connectionSlow(this.internalOnConnectionSlow);
+      this.conn.reconnecting(this.internalOnReconnecting);
+      this.conn.reconnected(this.internalOnReconnected);
+      this.conn.stateChanged(this.internalOnStateChanged);
+      this.conn.disconnected(() => this.internalOnDisconnected(resolve, shouldReconnect));
 
-    // hoook up error handler
-    this.conn.error(this.internalOnError);
+      // hoook up error handler
+      this.conn.error(this.internalOnError);
 
-    if (client.debug) {
-      this.conn.logging = true;
-    }
+      if (client.debug) {
+        this.conn.logging = true;
+      }
 
-    this.registerEvents();
-
-    this.conn.start().done(() => {
-      if (onStart) onStart(this);
+      this.registerEvents();
+      this.conn.start().done(() => {
+        resolve(this);
+      });
     });
   }
 
@@ -277,10 +273,11 @@ export class SignalRHub {
   }
 
   // Raised when the connection has disconnected
-  private internalOnDisconnected = () => {
+  private internalOnDisconnected = (resolve: any, shouldReconnect: boolean) => {
     this.conn = null;
-    // try to reconnect again in 5 seconds.
-    if (this.reconnectOnDisconnect) {
+    resolve(null);
+    // try to reconnect again in 15 seconds.
+    if (shouldReconnect) {
       setTimeout(() => {
         this.start();
       }, 15000);

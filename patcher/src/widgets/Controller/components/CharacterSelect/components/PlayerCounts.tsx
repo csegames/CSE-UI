@@ -50,6 +50,7 @@ type QueryType = {
 export interface PlayerCountsProps {
   shard: number;
   host: string;
+  apiServerOnline: 'Online' | 'Offline' | undefined;
 }
 
 export interface PlayerCountsState {
@@ -75,14 +76,16 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
         <PlayerCount faction={Faction.Arthurian}>{this.state.playerCountA} A</PlayerCount>
         <PlayerCount faction={Faction.TDD}>{this.state.playerCountT} T</PlayerCount>
         <PlayerCount faction={Faction.Viking}>{this.state.playerCountV} V</PlayerCount>
-        <GraphQL
-          query={{
-            query: query(this.props.shard),
-            pollInterval: 30000,
-            url: this.props.host + '/graphql',
-          }}
-          onQueryResult={this.handleQueryResult}
-        />
+        {this.props.apiServerOnline === 'Online' &&
+          <GraphQL
+            query={{
+              query: query(this.props.shard),
+              pollInterval: 30000,
+              url: this.props.host + '/graphql',
+            }}
+            onQueryResult={this.handleQueryResult}
+          />
+        }
       </PlayerCountsContainer>
     );
   }
