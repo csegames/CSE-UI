@@ -220,6 +220,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   private onDeleteSuccess = (id: string) => {
     this.props.onDeleteCharacterSuccess(id);
     this.toggleModal();
+    this.setSelectedCharacter(this.props.characters[0]);
   }
 
   private handleEscKey = (e: KeyboardEvent) => {

@@ -150,8 +150,8 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
 
   public render() {
     const visualFXChar = this.state.visualFXChar || this.state.firstChar;
-    if (visualFXChar) {
-      const { selectedCharacter } = this.props;
+    const { selectedCharacter } = this.props;
+    if (visualFXChar && selectedCharacter) {
       const { faction, race, gender, archetype } = selectedCharacter;
       const raceString = includes(Race[race].toLowerCase(), 'human') ? webAPI.raceString(race) : Race[race];
       const charImgClass = [`bgelement char`];
@@ -209,6 +209,9 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
   }
 
   public componentWillReceiveProps(nextProps: CharacterSelectBGProps) {
+    if (!this.props.selectedCharacter && nextProps.selectedCharacter) {
+      this.updateVisualFXChar(nextProps.selectedCharacter);
+    }
     if (this.props.selectedCharacter && nextProps.selectedCharacter) {
       if (nextProps.selectedCharacter.name.length > 17) {
         this.setState({ characterNameFontSize: 1.5 });
