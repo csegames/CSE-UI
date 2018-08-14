@@ -42,12 +42,14 @@ export function TabbedDialogWithSideMenu(props: TabbedDialogWithSideMenuProps) {
           tabs
             ? tabs.filter(tabDef => tabDef.tab === tab).map(tabDef => (
                 <DialogTab buttons={tabDef.buttons} onAction={button => props.onAction(tab, button)}>
-                  <SideMenu name={name} id={`${tabDef.id}`}
-                    options={tabDef.options}>
-                    {option => children && children(option, tab)}
-                  </SideMenu>
+                  { tabDef.options
+                    ? <SideMenu name={name} id={`${tabDef.id}`} options={tabDef.options}>
+                        {option => children && children(option, tab)}
+                      </SideMenu>
+                    : (children && children(undefined, tab))
+                  }
                 </DialogTab>
-              ))
+              ))[0]
             : (
               <DialogTab buttons={buttons} onAction={button => props.onAction(undefined, button)}>
                 { children && children() }

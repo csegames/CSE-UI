@@ -384,7 +384,7 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
 
   private selectTab = (tab: DialogButton, index: number, key?: string) => {
     this.setState({ activeTab: tab });
-    localStorage.setItem(key, `${index}`);
+    if (key) localStorage.setItem(key, `${index}`);
   }
 
   private restoreTab(props: DialogProps) {

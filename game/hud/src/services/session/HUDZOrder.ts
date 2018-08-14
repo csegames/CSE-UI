@@ -33,6 +33,7 @@ enum HUDZOrder {
   MaximizedDevUI,
   GameMenu,
   Settings,
+  GameInfo,
 }
 
 export default HUDZOrder;

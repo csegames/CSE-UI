@@ -199,6 +199,20 @@ export default {
         },
       },
       {
+        name: 'gameinfo',
+        tooltip: 'Game Info',
+        iconClass: 'fa-tasks',
+        icon: (
+          <span>
+            <i className='fa fa-info fa-stack-1x'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          events.fire('hudnav--navigate', 'gameinfo');
+        },
+      },
+      {
         name: 'owned-plot',
         tooltip: 'Owned Plot',
         iconClass: 'fa-home',
