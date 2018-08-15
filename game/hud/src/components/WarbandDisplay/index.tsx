@@ -113,7 +113,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private static memberCompare(a: GroupMemberState, b: GroupMemberState): boolean {
-    return a.id === b.id || a.name === b.name || a.characterID === b.characterID;
+    return a.characterID === b.characterID;
   }
 
   private static getAvatar(gender: Gender, race: Race) {
