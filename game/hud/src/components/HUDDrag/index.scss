@@ -5,6 +5,7 @@
  */
 
 .HUDDrag {
+
 }
 
 .HUDDrag__controls {
@@ -20,6 +21,14 @@
 }
 
 .HUDDrag__controlsSelected {
+  @keyframes pulseBorder {
+    0%,100% {
+      box-shadow: 0px 0px 0px 3px rgba(145, 116, 58, 1);
+    }
+    50% {
+      box-shadow: 0px 0px 0px 3px rgba(145, 116, 58, 0.4);
+    }
+  }
   @-webkit-keyframes pulseBorder {
     0%,100% {
       box-shadow: 0px 0px 0px 3px rgba(145, 116, 58, 1);
@@ -46,6 +55,14 @@
 }
 
 .HUDDrag__controls__nameSelected {
+  @keyframes pulseBackground {
+    0%,100% {
+      background: rgba(145, 116, 58, 1);
+    }
+    50% {
+      background: rgba(145, 116, 58, 0.4);
+    }
+  }
   @-webkit-keyframes pulseBackground {
     0%,100% {
       background: rgba(145, 116, 58, 1);
@@ -109,171 +126,4 @@
   margin: -20px 0px 0px 0px;
   bottom: -5px;
   right: -5px;
-}
-
-
-.HUDDrag__controls__scaleHandle {
-  position: absolute;
-  width: 10px;
-  height: 20px;
-  right: 20px;
-  top: 50%;
-  margin-top: -30px;
-  cursor: zoom-in !important;
-  background: blue;
-  &:before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    top: -24px;
-    left: -5px;
-    border: 10px solid transparent;
-    border-bottom: 15px solid blue;
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    bottom: -24px;
-    left: -5px;
-    border: 10px solid transparent;
-    border-top: 15px solid blue;
-  }
-}
-
-.HUDDrag__controls__scaleHandle--up {
-  &:before {
-    content: '';
-    border-color:transparent;
-    border-style:solid;
-    position: absolute;
-    border: none;
-    background-color: cornflowerblue;
-    height: 50%;
-    width: 50%;
-    top: 25%;
-    left: 50%;
-    margin-left: -25%;
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid cornflowerblue;
-  }
-}
-
-.HUDDrag__controls__scaleHandle--down {
-  &:before {
-    content: '';
-    border-color:transparent;
-    border-style:solid;
-    position: absolute;
-    border: none;
-    background-color: cornflowerblue;
-    height: 50%;
-    width: 50%;
-    bottom: 25%;
-    left: 50%;
-    margin-left: -25%;
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid cornflowerblue;
-  }
-}
-
-.HUDDrag__controls__scaleText {
-  position: relative;
-  top: 28px;
-  padding: 2px;
-  text-align: center;
-  color: white;
-  font-size: .5em;
-  border-radius: 15px;
-  cursor: default !important;
-}
-
-.HUDDrag__controls__toolbar {
-  position: fixed;
-  right: 0px;
-  top: 50px;
-  width: 140px;
-  color: #93866c;
-  z-index: 9999 !important;
-  a {
-    color: #93866c;
-    text-decoration: none;
-    -webkit-transition: all 0.5s;
-    transition: all 0.5s;
-    -webkit-animation: none;
-    animation: none;
-    &:hover {
-      color: white;
-      -webkit-animation: glow 1.5s ease-in-out infinite alternate;
-      animation: glow 1.5s ease-in-out infinite alternate;
-    }
-  }
-}
-
-.HUDDrag__controls__toolbar__scale {
-  position: relative;
-  display: inline-block;
-  width: 70px;
-  height: 50px;
-  font-size: 1.2rem;
-  text-align: center;
-  // margin-bottom: 10px;
-  i {
-    position: relative;
-  }
-}
-
-.HUDDrag__controls__toolbar__dragControl {
-  position: absolute;
-  width: 100%;
-  height: 25px;
-  top: 0;
-  left: 0;
-  cursor: row-resize !important;
-}
-
-.HUDDrag__controls__toolbar__scale__controls {
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  width: 100%;
-  height: 15px;
-  div {
-    display: inline-block;
-    text-align: center;
-    width: 50%;
-    height: 15px;
-    font-size: 1em;
-    line-height: 15px;
-    cursor: pointer !important;
-  }
-}
-
-.HUDDrag__controls__toolbar__visibility {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
-  text-align: center;
-  padding-top: 20px;
-  padding-left: 20px;
-  margin-bottom: 10px;
-  i {
-    position: relative;
-    cursor: pointer !important;
-  }
 }

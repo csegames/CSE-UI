@@ -311,6 +311,7 @@ export function initialize() {
         case 'chat':
           return dispatch(toggleVisibility(name));
         case 'ui': return dispatch(toggleHUDLock(addEvent, removeEvent));
+        case 'lockui': return dispatch(lockHUD(removeEvent));
         case 'reset': return dispatch(resetHUD());
         default: return;
       }

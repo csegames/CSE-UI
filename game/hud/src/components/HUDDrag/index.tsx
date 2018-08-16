@@ -188,7 +188,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
           left: `${position.x}px`,
           top: `${position.y}px`,
           pointerEvents: 'none',
-          zIndex: this.props.zOrder,
+          zIndex: !this.props.locked && this.props.selected ? 999 : this.props.zOrder,
           ...scale,
         }}>
           <div style={{

@@ -9,7 +9,7 @@ import styled, { css } from 'react-emotion';
 export const HUDEditorContainer = styled('div')`
   position: fixed;
   width: 200px;
-  height: 400px;
+  height: 35%;
   overflow-x: hidden;
   overflow-y: hidden;
   color: white;
@@ -67,7 +67,7 @@ export const HUDEditorList = styled('div')`
   ul {
     li {
       background: #191919;
-      margin-bottom: 4px;
+      margin-bottom: 1px;
       margin-right: 20px;
       -webkit-transition: all 0.5s ease;
       div {
@@ -76,22 +76,23 @@ export const HUDEditorList = styled('div')`
         pointer-events: all;
       }
       div.HUDWidgetName {
-        background: #191919;
-        color: #93866c;
+        background: #120c08;
+        color: #a08f68;
+        border: 1px solid #000000;
         width: 100%;
         cursor: pointer;
       }
-      div.HUDWidgetNameSelected {
-        background: #191919;
-        background-color: #91743a;
+      div.hidden {
+        background: #15130c;
+        color: #564f40;
+      }
+      div.selected {
+        border: 1px solid #91743a;
         color: #fff;
-        width: 100%;
       }
       &:hover {
-        background: #191919;
-        -webkit-transition: all 0.5s ease;
         div.HUDWidgetName {
-          background: #93866c;
+          // border: 1px solid #93866c;
           color: #fff;
         }
       }

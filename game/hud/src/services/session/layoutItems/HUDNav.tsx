@@ -20,6 +20,7 @@ const hideClientControlledUI = () => {
   client.HideUI('inventory');
   client.HideUI('equippedgear');
   client.HideUI('plotcontrol');
+  events.fire('hudnav--navigate', 'lockui');
 };
 
 export default {
@@ -122,6 +123,7 @@ export default {
         onClick: () => {
           events.fire('hudnav--navigate', 'equippedgear-left');
           events.fire('hudnav--navigate', 'inventory-right');
+          hideClientControlledUI();
         },
       },
       {
@@ -137,6 +139,7 @@ export default {
         onClick: () => {
           events.fire('hudnav--navigate', 'equippedgear-left');
           events.fire('hudnav--navigate', 'inventory-right');
+          hideClientControlledUI();
         },
       },
       // {
@@ -339,20 +342,20 @@ export default {
           events.fire('hudnav--navigate', 'ui');
         },
       },
-      {
-        name: 'reset',
-        tooltip: 'Reset UI layout',
-        iconClass: 'fa-clone',
-        icon: (
-          <span>
-            <i className='fa fa-clone fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
-        hidden: false,
-        onClick: () => {
-          events.fire('hudnav--navigate', 'reset');
-        },
-      },
+      // {
+      //   name: 'reset',
+      //   tooltip: 'Reset UI layout',
+      //   iconClass: 'fa-clone',
+      //   icon: (
+      //     <span>
+      //       <i className='fa fa-clone fa-stack-1x fa-inverse'></i>
+      //     </span>
+      //   ),
+      //   hidden: false,
+      //   onClick: () => {
+      //     events.fire('hudnav--navigate', 'reset');
+      //   },
+      // },
       {
         name: 'reloadui',
         tooltip: 'Reload UI',

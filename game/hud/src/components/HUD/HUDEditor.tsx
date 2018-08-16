@@ -74,7 +74,7 @@ class HUDEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       mode: EditMode.NONE,
-      editorPosition: { x: 2, y: 300 },
+      editorPosition: { x: 35, y: 150 },
       minScale: 0.5,
       maxScale: 3,
       scaleFactor: 0.01,
@@ -85,7 +85,6 @@ class HUDEditor extends React.Component<Props, State> {
     const { widgets } = this.props;
     return (
       <HUDEditorContainer
-        className='cse-ui-scroller-thumbonly'
         style={{
           right: `${this.state.editorPosition.x}px`,
           top: `${this.state.editorPosition.y}px`,
@@ -98,20 +97,28 @@ class HUDEditor extends React.Component<Props, State> {
             </a>
           </div>
         </HUDEditorTitle>
-        <HUDEditorList>
+        <HUDEditorList className='cse-ui-scroller-thumbonly'>
           <ul>
             { _.sortBy(widgets, 'name').map((widget) => {
+              const isVisible = widget.widget.position.visibility;
+              const isSelected = this.props.selectedWidget && this.props.selectedWidget.name === widget.name;
+              const classes = `HUDWidgetName${ isVisible ? '' : ' hidden' }${ isSelected ? ' selected' : '' }`;
               return (widget.name === 'building' ? null : // building should be removed as HUDDrag item
                 <li
                   key={widget.name}
                   onClick={() => {
                     this.props.setSelectedWidget(widget);
                   }}>
-                  <div className={
-                    this.props.selectedWidget && this.props.selectedWidget.name === widget.name ?
-                      'HUDWidgetNameSelected' : 'HUDWidgetName'
-                  }>
+                  <div className={ classes }
+                    onMouseOver={ isVisible ? null : this.onMouseOverListVisibility }
+                    onMouseLeave={ isVisible ? null : this.onMouseLeave }
+                  >
                     { widget.name === 'motd' ? 'MOTD' : _.startCase(widget.name) }
+                    {/* { !isVisible &&
+                      <span>&nbsp;<i
+                        className={'fa fa-eye-slash'}
+                      ></i></span>
+                    } */}
                   </div>
                 </li>
               );
@@ -425,6 +432,12 @@ class HUDEditor extends React.Component<Props, State> {
         layoutMode: widget.position.layoutMode,
       },
     }));
+  }
+
+  private onMouseOverListVisibility = (e: React.MouseEvent<HTMLElement>) => {
+    this.tooltipMessage = 'Widget is Hidden';
+    this.tooltipEvent = e;
+    this.onMouseOver(e);
   }
 
   private onMouseOverToggleVisibility = (e: React.MouseEvent<HTMLElement>) => {
