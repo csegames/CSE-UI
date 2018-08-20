@@ -168,36 +168,6 @@ body {
 
 /* CSE_Koo scroll bars */
 
-#hud .cse-ui-scroller-full {
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-button:vertical:increment:start {
-    width: 8px; height: 10px;
-    background: url(../images/settings/scrollbar-top-arrow.png);
-  }
-  ::-webkit-scrollbar-button:vertical:decrement:end {
-    width: 8px; height: 10px;
-    background: url(../images/settings/scrollbar-bot-arrow.png);
-  }
-  ::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-    background: transparent;
-    background: url(../images/settings/scrollbar-track.png);
-    background-repeat: vertical;
-    background-size: 8px;
-  }
-  ::-webkit-scrollbar-thumb:vertical {
-    box-shadow: none;
-    background-color: transparent;
-    background-image: url(../images/settings/scrollbar-thumb.png);
-    background-repeat: vertical;
-    background-size: 8px;
-  }
-}
-
 #hud .cse-ui-scroller-thumbonly {
   ::-webkit-scrollbar {
     width: 8px;
