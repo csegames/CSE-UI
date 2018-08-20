@@ -247,7 +247,7 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
     let { search } = this.state;
     search = search.replace(/ /g, '').toLowerCase();
     return (
-      <KeyBindsContainer>
+      <KeyBindsContainer className='cse-ui-scroller-thumbonly'>
         { keybinds && Object.keys(keybinds).map((key) => {
           const keybind = keybinds[key];
           if (search && key.toLowerCase().indexOf(search) === -1) return null;

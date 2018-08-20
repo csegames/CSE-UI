@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import * as CSS from 'lib/css-helper';
 import { Box } from 'UI/Box';
 import { Key } from './Key';
@@ -20,14 +20,18 @@ export function spacify(s: string) {
 
 const Name = styled('div')`
   ${CSS.EXPAND_TO_FIT}
-  line-height: 27px;
 `;
 const Bind = styled('div')`
-  ${CSS.IS_ROW} ${CSS.DONT_GROW}
+  ${CSS.IS_ROW}
   width: 130px;
   display: flex;
   flex-direction: row;
   justify-content: center;
+`;
+
+const InnerClass = css`
+  display: flex;
+  align-items: center;
 `;
 
 interface KeyBindProps {
@@ -41,7 +45,7 @@ export function KeyBind(props: KeyBindProps) {
   const { bind } = props;
   let i = 0;
   return (
-    <Box style={{ minHeight: '45px' }}>
+    <Box innerClassName={InnerClass} style={{ minHeight: '45px' }}>
       { bind.boundKeys.map((bind: BoundKey) => {
         const alias = i++;
         return (

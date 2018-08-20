@@ -36,7 +36,7 @@ export function settingsRenderer(props: RenderSettingsProps) {
   const { config, settings, onToggle, onChange } = props;
   let headingKey: number = 0;
   return config && (
-    <div>
+    <div className='cse-ui-scroller-thumbonly'>
       { Object.keys(settings).map((key) => {
         const setting = settings[key];
         switch (setting.type) {

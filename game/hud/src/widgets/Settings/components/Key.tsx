@@ -8,16 +8,19 @@ import styled from 'react-emotion';
 import * as CSS from 'lib/css-helper';
 
 export const Key = styled('span')`
+  display: flex;
+  align-items: center;
   width: fit-content;
+  height: fit-content;
   background-color: rgb(7,7,7);
   background: radial-gradient(ellipse at center, rgba(12,12,12,1) 0%,rgba(7,7,7,1) 100%);
   text-align: center;
   padding: 0 12px;
-  height: 23px;
   margin: 2px 5px;
   min-width: 10px;
   font-size: 13px;
   ${CSS.ALLOW_MOUSE}
+  min-height: 23px;
   min-width: 35px;
   &.unassigned {
     color: rgb(32,32,32);
