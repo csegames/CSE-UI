@@ -157,12 +157,11 @@ export default class WarbandMembers extends React.Component<{}, WarbandMembersSt
     }
   }
 
-  public onWarbandMemberRemoved = (rawNewMemberState: string) => {
-    const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
-    if (newMemberState.characterID !== client.characterID) {
+  public onWarbandMemberRemoved = (characterID: string) => {
+    if (characterID !== client.characterID) {
       this.setState(state => ({
         members: state.members.filter((member) => {
-          return member.characterID !== newMemberState.characterID;
+          return member.characterID !== characterID;
         }),
       }));
     } else {
