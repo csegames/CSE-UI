@@ -22,7 +22,6 @@ import { slotDimensions } from '../Inventory/components/InventorySlot';
 import {
   InventoryItem,
   GearSlotDefRef,
-  EquippedItem,
   ContainerDefStat_Single,
   SecureTradeState,
 } from 'gql/interfaces';
@@ -193,8 +192,8 @@ export function createRowElementsForCraftingItems(payload: {
     const rowItems: CraftingSlotItemDef[] = [];
     for (let i = 0; i < state.slotsPerRow; ++i) {
       const item = itemData.items[slotIndex];
-      const location = containerItem.location.inContainer ? 'container' : 'inventory';
-      const position = location === 'container' ?
+      const location = containerItem.location.inContainer ? 'inContainer' : 'inventory';
+      const position = location === 'inContainer' ?
         containerItem.location.inContainer ? containerItem.location.inContainer.position :
         containerItem.location.inventory ? containerItem.location.inventory.position : -1 : -1;
 
@@ -1363,7 +1362,7 @@ export function onUpdateInventoryItemsHandler(args: {
       };
       delete itemIdToInfo[payload.inventoryItem.item.id];
       if (payload.type === 'Equip') {
-        equipItemRequest(payload.inventoryItem.item, payload.willEquipTo, equippedItem, slot);
+        equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
       }
     });
   } else if (payload.inventoryItem && !payload.inventoryItem.containerID) {
@@ -1411,7 +1410,7 @@ export function onUpdateInventoryItemsHandler(args: {
     }
 
     if (payload.type === 'Equip') {
-      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo, null, slotNumber);
+      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
     }
 
   } else if (payload.equippedItem && !_.isArray(payload.equippedItem) && !itemIdToInfo[payload.equippedItem.item.id]) {
@@ -1459,7 +1458,7 @@ export function onUpdateInventoryItemsHandler(args: {
     containerIdToDrawerInfo = { ...removeResults.containerIDToDrawerInfo };
 
     if (payload.type === 'Equip') {
-      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo, null, 0);
+      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
     }
 
     if (!_.isEqual(containerIdToDrawerInfo, args.containerIdToDrawerInfo) && props.onChangeContainerIdToDrawerInfo) {
@@ -1587,9 +1586,7 @@ function removeItemInContainer(item: InventoryItem.Fragment,
 
 
 export async function equipItemRequest(item: InventoryItem.Fragment,
-                            gearSlotDefs: Partial<GearSlotDefRef>[],
-                            equippedItem: EquippedItem.Fragment,
-                            equipToSlotNumber: number) {
+                            gearSlotDefs: Partial<GearSlotDefRef>[]) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const inventoryItemPosition = getItemInventoryPosition(item);
   const request = {

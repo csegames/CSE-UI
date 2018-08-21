@@ -53,10 +53,12 @@ const eventNames = {
   updateCharacterStats: `${eventPrefix}updateCharacterStats`, // Update character stats
 };
 
+export type DataTransferLocation = 'trade' | 'inContainer' | 'inventory' | 'equipped' | 'inVox' | 'ground' | 'building';
+
 export interface InventoryDataTransfer {
   item: InventoryItem.Fragment;
   position: number;
-  location: string;
+  location: DataTransferLocation;
   drawerID?: string;
   containerID?: string[];
   gearSlots?: GearSlotDefRef.Fragment[];
@@ -80,7 +82,7 @@ export interface UpdateInventoryItemsPayload {
 }
 
 export interface EquipItemPayload {
-  inventoryItem: InventoryDataTransfer;
+  newItem: InventoryDataTransfer | EquippedItemDataTransfer;
   willEquipTo: GearSlotDefRef.Fragment[];
   prevEquippedItem?: EquippedItem.Fragment;
 }

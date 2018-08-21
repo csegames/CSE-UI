@@ -117,12 +117,12 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     const itemDataTransfer = getInventoryDataTransfer({
       item,
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
-      location: item.location.inContainer ? 'Container' : 'Inventory',
+      location: item.location.inContainer ? 'inContainer' : 'inventory',
       containerID: this.props.containerID,
       drawerID: this.props.drawerID,
     });
     const payload: EquipItemPayload = {
-      inventoryItem: itemDataTransfer,
+      newItem: itemDataTransfer,
       willEquipTo: gearSlots,
     };
     events.fire(eventNames.onEquipItem, payload);

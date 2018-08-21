@@ -8,6 +8,7 @@
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
+import { DataTransferLocation } from './eventNames';
 
 export enum SlotType {
   Empty,
@@ -27,7 +28,7 @@ export enum SlotType {
 }
 
 export interface SlotIndexInterface {
-  location: string;
+  location: DataTransferLocation;
   position: number;
   containerID?: string[];
   drawerID?: string;

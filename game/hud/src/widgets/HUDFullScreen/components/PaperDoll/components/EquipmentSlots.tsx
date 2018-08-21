@@ -13,7 +13,12 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { gearSlots } from '../../../lib/constants';
-import { getEquippedDataTransfer, FullScreenContext, getMyPaperDollBaseIcon, getMyPaperDollIcon } from '../../../lib/utils';
+import {
+  getEquippedDataTransfer,
+  FullScreenContext,
+  getMyPaperDollBaseIcon,
+  getMyPaperDollIcon,
+} from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
@@ -25,6 +30,7 @@ import {
   SecureTradeState,
 } from 'gql/interfaces';
 import { hideTooltip } from 'actions/tooltips';
+import { equipItemRequest } from '../../ItemShared/InventoryBase';
 
 const ARMOR_ORNAMENT_OPACITY = 0.3;
 const WEAPON_ORNAMENT_OPACITY = 0.8;
@@ -451,15 +457,47 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   }
 
   private onEquipItem = (payload: EquipItemPayload) => {
-    const { inventoryItem, willEquipTo } = payload;
+    const { newItem, prevEquippedItem, willEquipTo } = payload;
     const equippedItems = [...this.props.equippedItems];
-    const filteredItems = _.filter(equippedItems, ((equippedItem) => {
+
+    let filteredItems = _.filter(equippedItems, ((equippedItem) => {
+      if (newItem.location === 'equipped') {
+        // New Item was previously equipped somewhere else, filter replaced items and previously equipped.
+        return !_.find(equippedItem.gearSlots, (gearSlot): any => {
+          return _.find(newItem.gearSlots, slot => gearSlot.id === slot.id) ||
+            _.find(willEquipTo, slot => gearSlot.id === slot.id);
+        });
+      }
+
+      // New item coming from inventory, contianer, etc. Only filter replaced items.
       return !_.find(equippedItem.gearSlots, (gearSlot): any => {
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
-    const newItem: InventoryItem.Fragment = {
-      ...inventoryItem.item,
+
+    equipItemRequest(newItem.item, willEquipTo);
+
+    if (newItem.location === 'equipped') {
+      if (prevEquippedItem) {
+        // We are swapping items that are currently equipped
+        const swappedItem: InventoryItem.Fragment = {
+          ...prevEquippedItem.item,
+          location: {
+            inventory: null,
+            inContainer: null,
+            equipped: {
+              gearSlots: newItem.gearSlots,
+            },
+          },
+        };
+        const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
+        equipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
+        filteredItems = filteredItems.concat(swappedEquippedItem);
+      }
+    }
+
+    const nextItem: InventoryItem.Fragment = {
+      ...newItem.item,
       location: {
         inventory: null,
         inContainer: null,
@@ -468,10 +506,10 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         },
       },
     };
-    const newEquippedItem = { item: newItem, gearSlots: willEquipTo };
+    const newEquippedItem = { item: nextItem, gearSlots: willEquipTo };
     this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem));
 
-    const prevEquippedItem = _.filter(equippedItems, equippedItem =>
+    const itemToBeReplaced = _.filter(equippedItems, equippedItem =>
       _.findIndex(equippedItem.gearSlots, gearSlot =>
         _.find(willEquipTo, slot => slot.id === gearSlot.id),
       ) > -1)
@@ -479,19 +517,21 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         return getEquippedDataTransfer({
           item: equippedItem.item,
           position: 0,
-          location: 'Equipped',
+          location: 'equipped',
           gearSlots: equippedItem.gearSlots,
         });
       });
 
-    const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
-      type: 'Equip',
-      inventoryItem,
-      willEquipTo,
-      equippedItem: prevEquippedItem.length > 0 ? prevEquippedItem : null,
-    };
+    if (newItem.location === 'inventory') {
+      const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
+        type: 'Equip',
+        inventoryItem: newItem,
+        willEquipTo,
+        equippedItem: itemToBeReplaced.length > 0 ? itemToBeReplaced : null,
+      };
 
-    events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+      events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+    }
   }
 
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {

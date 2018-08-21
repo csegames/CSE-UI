@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as events from '@csegames/camelot-unchained/lib/events';
 import styled, { css } from 'react-emotion';
 
-import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
+import eventNames, { EquipItemPayload, InventoryDataTransfer, EquippedItemDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
@@ -113,7 +113,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     if (this.canEquip(item) && item.location.inventory) {
       item.location.inventory = null;
       this.equipItem(e.dataTransfer, this.props.equippedItem);
-    } else if (!item.location.inventory) {
+    } else if (this.canEquip(item) && !item.location.inventory) {
       this.equipItem(e.dataTransfer, this.props.equippedItem);
     } else if (!this.canEquip(item)) {
       if (item.equiprequirement && item.equiprequirement.requirementDescription) {
@@ -193,8 +193,18 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   private canEquip = (dragItem: InventoryItem.Fragment) => {
     // Check permissions and gearSlots
     if (dragItem && hasEquipmentPermissions(dragItem) && dragItem.staticDefinition && !dragItem.location.inContainer) {
+      const { equippedItem } = this.props;
       const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
       let canEquip = false;
+      let canSwap = true;
+
+      if (equippedItem && equippedItem.item && dragItem.location && dragItem.location.equipped) {
+        // Trying to swap. Make sure that we can actually swap items
+        if (!_.isEqual(gearSlotSets, equippedItem.item.staticDefinition.gearSlotSets)) {
+          canSwap = false;
+        }
+      }
+
       gearSlotSets.forEach((set) => {
         if (canEquip) return;
         if (_.find(set.gearSlots, slot => slot.id === this.props.slotName)) {
@@ -203,14 +213,14 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
         }
       });
 
-      return canEquip;
+      return canEquip && canSwap;
     }
 
     return false;
   }
 
-  private equipItem = (inventoryItem: InventoryDataTransfer, equippedItem: EquippedItem.Fragment) => {
-    const gearSlotSet = _.find(inventoryItem.item.staticDefinition.gearSlotSets, (set) => {
+  private equipItem = (newItem: InventoryDataTransfer | EquippedItemDataTransfer, equippedItem: EquippedItem.Fragment) => {
+    const gearSlotSet = _.find(newItem.item.staticDefinition.gearSlotSets, (set) => {
       return _.findIndex(set.gearSlots, (slot) => {
         return _.lowerCase(slot.id) === _.lowerCase(this.props.slotName);
       }) !== -1;
@@ -218,7 +228,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
     const willEquipTo = gearSlotSet && gearSlotSet.gearSlots;
     const payload: EquipItemPayload = {
-      inventoryItem,
+      newItem,
       prevEquippedItem: equippedItem,
       willEquipTo,
     };

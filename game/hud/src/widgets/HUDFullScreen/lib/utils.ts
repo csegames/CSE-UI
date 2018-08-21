@@ -23,7 +23,7 @@ import {
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { ContainerIdToDrawerInfo, SlotNumberToItem, ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
-import { InventoryDataTransfer, EquippedItemDataTransfer } from './eventNames';
+import { InventoryDataTransfer, EquippedItemDataTransfer, DataTransferLocation } from './eventNames';
 import { ActiveFilters } from '../components/Inventory';
 import { SlotType } from '../lib/itemInterfaces';
 import {
@@ -227,7 +227,7 @@ export function createMoveItemRequestToContainerPosition(oldPosition: InventoryD
 export function getInventoryDataTransfer(payload: {
   item: InventoryItem.Fragment,
   position: number,
-  location: string,
+  location: DataTransferLocation,
   containerID?: string[],
   drawerID?: string;
   gearSlots?: GearSlotDefRef.Fragment[],
@@ -255,7 +255,7 @@ export function getInventoryDataTransfer(payload: {
 export function getEquippedDataTransfer(payload: {
   item: InventoryItem.Fragment,
   position: number,
-  location: string,
+  location: DataTransferLocation,
   gearSlots: GearSlotDefRef.Fragment[],
   containerID?: string[],
   drawerID?: string,

@@ -136,7 +136,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const equippedItemDataTransfer = getEquippedDataTransfer({
       item: equippedItem.item,
       position: 0,
-      location: 'Equipped',
+      location: 'equipped',
       gearSlots: equippedItem.gearSlots,
     });
     const payload: UnequipItemPayload = {

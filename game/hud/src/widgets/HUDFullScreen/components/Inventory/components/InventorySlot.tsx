@@ -216,7 +216,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const inventoryItemDataTransfer = getInventoryDataTransfer({
       item,
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
-      location: item.location.inContainer ? 'Container' : 'Inventory',
+      location: item.location.inContainer ? 'inContainer' : 'inventory',
       containerID: this.props.item.slotIndex.containerID,
       drawerID: this.props.item.slotIndex.drawerID,
     });
@@ -244,7 +244,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         // Is a right or left item. If there is already an item equipped in one, then try to equip to the other.
         this.props.onRightOrLeftItemAction(item, (gearSlots) => {
           const payload: EquipItemPayload = {
-            inventoryItem: inventoryItemDataTransfer,
+            newItem: inventoryItemDataTransfer,
             willEquipTo: gearSlots,
           };
           events.fire(eventNames.onEquipItem, payload);
@@ -255,7 +255,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
       // No special handling for this item
       const payload: EquipItemPayload = {
-        inventoryItem: inventoryItemDataTransfer,
+        newItem: inventoryItemDataTransfer,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,
       };
       events.fire(eventNames.onEquipItem, payload);

@@ -81,10 +81,10 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
     const inventoryItemDataTransfer = getInventoryDataTransfer({
       item,
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
-      location: item.location.inContainer ? 'Container' : 'Inventory',
+      location: item.location.inContainer ? 'inContainer' : 'inventory',
     });
     const payload: EquipItemPayload = {
-      inventoryItem: inventoryItemDataTransfer,
+      newItem: inventoryItemDataTransfer,
       willEquipTo: this.props.gearSlots,
     };
     client.EquipItem(item.id);

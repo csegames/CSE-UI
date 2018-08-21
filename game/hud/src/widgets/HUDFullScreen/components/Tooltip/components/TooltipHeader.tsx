@@ -125,7 +125,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
       <Container>
         <HeaderOverlay factionColor={getTooltipColor(client.playerState.faction)} />
         <InfoContainer>
-          <ItemName>{itemInfo.name}</ItemName>
+          <ItemName>{item.givenName ? `${item.givenName} (${itemInfo.name})` : itemInfo.name}</ItemName>
           {this.state.showAdminInfo && <ItemSubtitle>{item.id}</ItemSubtitle>}
           {itemInfo.description && <ItemSubtitle>({itemInfo.description})</ItemSubtitle>}
           <ItemSubtitle>{itemInfo.itemType}</ItemSubtitle>
