@@ -101,6 +101,7 @@ export interface ClientSkillState {
   type: SkillStateTypeEnum;
   track: SkillStateTrackEnum;
   keybind: number;
+  boundKeyName: string;
   status: SkillStateStatusEnum;
   reason?: SkillStateReasonEnum;
   timing?: SkillStateProgression;

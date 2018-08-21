@@ -112,7 +112,7 @@ function skillStateConnector<PropsTypes extends any>() {
             id: clientSkillState.id.toString(),
             info: {
               type: clientSkillState.type,
-              keybind: dxKeyCodes[clientSkillState.keybind],
+              keybind: clientSkillState.boundKeyName || dxKeyCodes[clientSkillState.keybind],
               icon: this.props.skillInfo.icon,
             },
             track: SkillStateTrackEnum.PrimaryWeapon,
