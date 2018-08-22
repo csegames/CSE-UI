@@ -152,6 +152,7 @@ const KeybindInfo = styled('div')`
   font-weight: 600;
   text-shadow: -2px -2px 2px #000, 2px -2px 2px #000, -2px 2px 2px #000, 2px 2px 2px #000;
   font-size: 0.6em;
+  z-index: 99;
 `;
 
 const TimingOverlay = styled('div')`

@@ -10,7 +10,6 @@ import * as _ from 'lodash';
 import {
   client,
   events,
-  dxKeyCodes,
   ClientSkillState,
   SkillStateStatusEnum,
   SkillStateTypeEnum,
@@ -47,7 +46,7 @@ function skillStateConnector<PropsTypes extends any>() {
           id: this.props.skillInfo.id,
           info: {
             type: SkillStateTypeEnum.Standard,
-            keybind: this.props.skillInfo.boundKeyName || dxKeyCodes[this.props.skillInfo.keybind],
+            keybind: this.props.skillInfo.boundKeyName,
             icon: this.props.skillInfo.icon,
           },
           track: SkillStateTrackEnum.PrimaryWeapon,
@@ -97,7 +96,7 @@ function skillStateConnector<PropsTypes extends any>() {
             ...skillState,
             info: {
               type: skillState.info ? skillState.info.type : SkillStateTypeEnum.Standard,
-              keybind: dxKeyCodes[this.props.skillInfo.keybind],
+              keybind: skillState.info ? skillState.info.keybind : this.props.skillInfo.boundKeyName,
               icon: this.props.skillInfo.icon,
             },
           };
@@ -112,7 +111,7 @@ function skillStateConnector<PropsTypes extends any>() {
             id: clientSkillState.id.toString(),
             info: {
               type: clientSkillState.type,
-              keybind: clientSkillState.boundKeyName || dxKeyCodes[clientSkillState.keybind],
+              keybind: clientSkillState.boundKeyName,
               icon: this.props.skillInfo.icon,
             },
             track: SkillStateTrackEnum.PrimaryWeapon,
