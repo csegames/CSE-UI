@@ -12,10 +12,7 @@ import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import {
-  InventoryItem,
-  GearSlotDefRef,
-} from 'gql/interfaces';
+import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
 import { SlotItemDefType, InventoryFilterButton } from '../../lib/itemInterfaces';
 
 const Container = styled.div`
@@ -41,9 +38,6 @@ export interface InventoryProps {
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
-  onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
 
@@ -81,9 +75,6 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
           onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
           showTooltip={this.props.showItemTooltip}
           hideTooltip={this.props.hideItemTooltip}
-          onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
-          onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
-          onChangeInventoryItems={this.props.onChangeInventoryItems}
           onChangeInvBodyDimensions={this.props.onChangeInvBodyDimensions}
           searchValue={this.state.filterText}
           activeFilters={this.state.activeFilters}

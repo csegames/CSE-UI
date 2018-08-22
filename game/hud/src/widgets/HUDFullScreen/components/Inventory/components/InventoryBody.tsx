@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
@@ -13,29 +12,17 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 
 import * as base from '../../ItemShared/InventoryBase';
 import InventoryFooter from './InventoryFooter';
-import { slotDimensions } from './InventorySlot';
 import { InventorySlotItemDef } from '../../../lib/itemInterfaces';
-import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
-import { calcRowAndSlots, FullScreenContext } from '../../../lib/utils';
-import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
+import eventNames, { InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
+import { InventoryContext, MoveInventoryItemPayload } from '../../ItemShared/InventoryContext';
+import { slotDimensions } from './InventorySlot';
 import {
-  InventoryItem,
-  SecureTradeState,
-  InventoryBodyGQL,
-} from 'gql/interfaces';
-
-const inventoryBodyQuery = gql`
-  query InventoryBodyGQL {
-    myInventory {
-      items {
-        ...InventoryItem
-      }
-      itemCount
-      totalMass
-    }
-  }
-  ${InventoryItemFragment}
-`;
+  FullScreenContext,
+  calcRowAndSlots,
+  hasActiveFilterButtons,
+  hasFilterText,
+} from '../../../lib/utils';
+import { InventoryItem, CUQuery, SecureTradeState } from 'gql/interfaces';
 
 export interface InventoryBodyStyles {
   inventoryBody: React.CSSProperties;
@@ -59,9 +46,6 @@ const InnerContainer = styled.div`
   overflow: auto;
   position: relative;
   -webkit-backface-visibility: hidden;
-  &::-webkit-scrollbar {
-    width: 15px;
-  }
 `;
 
 const Content = styled.div`
@@ -107,17 +91,26 @@ const RefreshButton = styled.div`
 `;
 
 export interface InjectedInventoryBodyProps {
+  graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
   myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   stackGroupIdToItemIDs: {[id: string]: string[]};
   inventoryItems: InventoryItem.Fragment[];
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
+  slotNumberToItem: base.SlotNumberToItem;
+  itemIdToInfo: base.ItemIDToInfo;
+  itemIDToStackGroupID: {[id: string]: string};
   visibleComponentRight: string;
   visibleComponentLeft: string;
   invBodyDimensions: {
     width: number;
     height: number;
   };
+  initializeInventory: () => void;
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: base.ContainerIdToDrawerInfo) => void;
+  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
+  onMoveInventoryItem: (payload: MoveInventoryItemPayload) => void;
 }
 
 export interface InventoryBodyProps {
@@ -134,7 +127,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   private static minSlots = 200;
   private eventHandles: EventHandle[] = [];
   private bodyRef: HTMLDivElement;
-  private graphql: GraphQLResult<InventoryBodyGQL.Query>;
 
   // a counter that is incremented each time a new
   // stack group id is generated that is used in
@@ -147,61 +139,78 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     };
   }
   public render() {
+    let slotNumberToItem = this.props.slotNumberToItem;
+    let itemIdToInfo = this.props.itemIdToInfo;
+
+    if (hasActiveFilterButtons(this.props.activeFilters) || hasFilterText(this.props.searchValue)) {
+      // Is being filtered
+      const filteredData = base.distributeFilteredItems({
+        itemData: { items: this.props.inventoryItems },
+        stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
+        itemIdToInfo: this.props.itemIdToInfo,
+        slotNumberToItem: this.props.slotNumberToItem,
+        itemIDToStackGroupID: this.props.itemIDToStackGroupID,
+        activeFilters: this.props.activeFilters,
+        searchValue: this.props.searchValue,
+        slotCount: this.state.slotCount,
+      });
+      slotNumberToItem = filteredData.slotNumberToItem;
+      itemIdToInfo = filteredData.itemIdToInfo;
+    }
+
     const { rows, rowData } = base.createRowElements({
       state: this.state,
       props: this.props,
       itemData: { items: this.props.inventoryItems },
       onDropOnZone: this.onDropOnZone,
-      onMoveStack: this.onMoveStack,
-      syncWithServer: this.refetch,
+      syncWithServer: this.props.graphql.refetch,
       bodyWidth: this.props.invBodyDimensions.width,
       myTradeItems: this.props.myTradeItems,
       myTradeState: this.props.myTradeState,
       stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
+      slotNumberToItem,
+      itemIdToInfo,
     });
+
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.props.invBodyDimensions.height));
+
+    const { graphql } = this.props;
+    const showLoading = graphql.loading;
+    const showError = graphql.lastError && graphql.lastError !== 'OK';
     return (
-      <GraphQL query={{ query: inventoryBodyQuery }} onQueryResult={this.handleQueryResult}>
-        {(graphql: GraphQLResult<InventoryBodyGQL.Query>) => {
-          this.graphql = graphql;
-          const showLoading = graphql.loading;
-          const showError = graphql.lastError && graphql.lastError !== 'OK';
-          return (
-            <Container>
-              {showLoading &&
-                <RefreshContainer>
-                  <RefreshTitle>Loading...</RefreshTitle>
-                </RefreshContainer>
-              }
-              {showError &&
-                <RefreshContainer>
-                  <RefreshTitle>Could not retrieve items. Click to try again.</RefreshTitle>
-                  <RefreshButton onClick={this.refetch}><i className='fa fa-refresh' /></RefreshButton>
-                </RefreshContainer>
-              }
-              <InnerContainer ref={(r: HTMLDivElement) => this.bodyRef = r} id='inventory-scroll-container'>
-                <Content>{rows}</Content>
-              </InnerContainer>
-              <InventoryFooter
-                onAddRowClick={this.addRowOfSlots}
-                onRemoveRowClick={() => this.removeRowOfSlots(rowData)}
-                onPruneRowsClick={() => this.pruneRowsOfSlots(rowData)}
-                addRowButtonDisabled={buttonDisabled}
-                removeRowButtonDisabled={removeAndPruneDisabled}
-                pruneRowsButtonDisabled={removeAndPruneDisabled}
-                itemCount={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.itemCount : 0}
-                totalMass={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.totalMass : 0}
-              />
-            </Container>
-          );
-        }}
-      </GraphQL>
+      <Container>
+        {showLoading &&
+          <RefreshContainer>
+            <RefreshTitle>Loading...</RefreshTitle>
+          </RefreshContainer>
+        }
+        {showError &&
+          <RefreshContainer>
+            <RefreshTitle>Could not retrieve items. Click to try again.</RefreshTitle>
+            <RefreshButton onClick={this.props.graphql.refetch}><i className='fa fa-refresh' /></RefreshButton>
+          </RefreshContainer>
+        }
+        <InnerContainer ref={(r: HTMLDivElement) => this.bodyRef = r} className='cse-ui-scroller-thumbonly-brown'>
+          <Content>{rows}</Content>
+        </InnerContainer>
+        <InventoryFooter
+          onAddRowClick={this.addRowOfSlots}
+          onRemoveRowClick={() => this.removeRowOfSlots(rowData)}
+          onPruneRowsClick={() => this.pruneRowsOfSlots(rowData)}
+          addRowButtonDisabled={buttonDisabled}
+          removeRowButtonDisabled={removeAndPruneDisabled}
+          pruneRowsButtonDisabled={removeAndPruneDisabled}
+          itemCount={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.itemCount : 0}
+          totalMass={graphql.data && graphql.data.myInventory ? graphql.data.myInventory.totalMass : 0}
+        />
+      </Container>
     );
   }
 
   public componentDidMount() {
+    this.initializeSlotsData();
     setTimeout(() => this.initializeBodyDimensions(), 1);
     window.addEventListener('resize', this.onWindowResize);
     this.eventHandles.push(game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip));
@@ -210,27 +219,9 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     game.itemPlacementMode.requestCancel();
   }
 
-  public componentDidUpdate(prevProps: InventoryBodyComponentProps, prevState: InventoryBodyState) {
-    const onInventoryItemsChange = !_.isEqual(prevProps.inventoryItems, this.props.inventoryItems);
-    const onSearchValueChange = prevProps.searchValue !== this.props.searchValue;
-    const onActiveFiltersChange = !_.isEqual(prevProps.activeFilters, this.props.activeFilters);
-
-    if (onInventoryItemsChange || onActiveFiltersChange || onSearchValueChange) {
-      this.setState(() => this.internalInit(this.state, this.props));
-      return;
-    }
-
-    const inventoryWasOpened = (this.props.visibleComponentLeft === 'inventory-left' &&
-      prevProps.visibleComponentLeft === '') || (this.props.visibleComponentRight === 'inventory-right' &&
-        prevProps.visibleComponentRight === '');
-    if (inventoryWasOpened) {
-      this.refetch();
-      return;
-    }
-
+  public componentDidUpdate(prevProps: InventoryBodyComponentProps) {
     if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions)) {
-      this.initializeInventory();
-      return;
+      this.initializeSlotsData();
     }
   }
 
@@ -260,11 +251,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     this.initializeInventory();
   }
 
-  // set up rows from scratch / works as a re-initialize as well
-  private initializeInventory = () => {
-    this.setState((state, props) => this.internalInit(state, props));
-  }
-
   private initializeBodyDimensions = (override?: boolean) => {
     if (!this.bodyRef) return;
     if (!this.props.invBodyDimensions.width || !this.props.invBodyDimensions.height || override) {
@@ -273,9 +259,14 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     }
   }
 
-  // should not be called outside of initializeInventory
-  private internalInit = (state: InventoryBodyState, props: InventoryBodyComponentProps) => {
-    if (!this.bodyRef || !this.graphql || !this.props.invBodyDimensions.height || !this.props.invBodyDimensions.width) {
+  // set up rows from scratch / works as a re-initialize as well
+  private initializeSlotsData = () => {
+    this.setState(this.internalInit);
+  }
+
+  // should not be called outside of initializeSlotsData
+  private internalInit = (state: InventoryBodyState) => {
+    if (!this.bodyRef || !this.props.invBodyDimensions.height || !this.props.invBodyDimensions.width) {
       return;
     }
     const itemCount = this.props.inventoryItems && this.props.inventoryItems.length;
@@ -284,26 +275,18 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       slotDimensions,
       Math.max(InventoryBody.minSlots, itemCount),
     );
-    const inventory = this.graphql.data && this.graphql.data.myInventory && {
-      ...this.graphql.data.myInventory,
-      items: this.graphql.data.myInventory.items as any,
-    };
 
-    return base.distributeItems({
-      slotsData: rowsAndSlots,
-      itemData: inventory,
-      state,
-      props,
-      inventoryItems: props.inventoryItems,
-      stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
-    });
+    return {
+      ...state,
+      ...rowsAndSlots,
+    };
   }
 
   private onDropOnZone = (dragItemData: InventoryDataTransfer,
                           dropZoneData: InventoryDataTransfer) => {
     // this function only gets called for inventory items, containers take care of their own state.
     this.setState((state, props) => {
-      return base.onMoveInventoryItem({
+      return props.onMoveInventoryItem({
         dragItemData,
         dropZoneData,
         state,
@@ -326,32 +309,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   private pruneRowsOfSlots = (rowData: InventorySlotItemDef[][]) => {
     this.setState(state => base.pruneRowsOfSlots(state, rowData, this.props.invBodyDimensions.height));
   }
-
-  private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {
-    this.setState((state, props) => (
-      base.onUpdateInventoryItemsHandler({
-        state,
-        props,
-        payload,
-        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
-        inventoryItems: props.inventoryItems,
-        containerIdToDrawerInfo: props.containerIdToDrawerInfo,
-      })
-    ));
-  }
-
-  private onMoveStack = (item: InventoryItem.Fragment, amount: number) => {
-    this.setState((state, props) => (
-      base.onMoveStack({
-        state,
-        props,
-        item,
-        amount,
-        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
-        inventoryItems: props.inventoryItems,
-      })
-    ));
-  }
 }
 
 class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProps & base.InventoryBaseProps> {
@@ -361,25 +318,50 @@ class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProp
         {({
             myTradeItems,
             myTradeState,
-            stackGroupIdToItemIDs,
-            inventoryItems,
-            containerIdToDrawerInfo,
             visibleComponentLeft,
             visibleComponentRight,
             invBodyDimensions,
           }) => {
           return (
-            <InventoryBody
-              {...this.props}
-              inventoryItems={inventoryItems}
-              myTradeItems={myTradeItems}
-              myTradeState={myTradeState}
-              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-              containerIdToDrawerInfo={containerIdToDrawerInfo}
-              visibleComponentLeft={visibleComponentLeft}
-              visibleComponentRight={visibleComponentRight}
-              invBodyDimensions={invBodyDimensions}
-            />
+            <InventoryContext.Consumer>
+              {({
+                graphql,
+                inventoryItems,
+                containerIdToDrawerInfo,
+                stackGroupIdToItemIDs,
+                slotNumberToItem,
+                itemIdToInfo,
+                itemIDToStackGroupID,
+                initializeInventory,
+                onChangeContainerIdToDrawerInfo,
+                onChangeStackGroupIdToItemIDs,
+                onChangeInventoryItems,
+                onMoveInventoryItem,
+              }) => {
+                return (
+                  <InventoryBody
+                    {...this.props}
+                    graphql={graphql}
+                    inventoryItems={inventoryItems}
+                    myTradeItems={myTradeItems}
+                    myTradeState={myTradeState}
+                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+                    containerIdToDrawerInfo={containerIdToDrawerInfo}
+                    slotNumberToItem={slotNumberToItem}
+                    itemIdToInfo={itemIdToInfo}
+                    itemIDToStackGroupID={itemIDToStackGroupID}
+                    visibleComponentLeft={visibleComponentLeft}
+                    visibleComponentRight={visibleComponentRight}
+                    invBodyDimensions={invBodyDimensions}
+                    initializeInventory={initializeInventory}
+                    onChangeInventoryItems={onChangeInventoryItems}
+                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
+                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
+                    onMoveInventoryItem={onMoveInventoryItem}
+                  />
+                );
+              }}
+            </InventoryContext.Consumer>
           );
         }}
       </FullScreenContext.Consumer>

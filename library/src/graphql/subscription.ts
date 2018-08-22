@@ -15,7 +15,7 @@ const { print } = require('graphql/language/printer.js');
 
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
-  initPayload: any;
+  initPayload: () => any;
   debug: boolean;
   onDataReceived: (data: DataType) => void;
   onError: (error: Error) => void;
@@ -190,7 +190,7 @@ export class SubscriptionManager {
     }
     this.socket.send(JSON.stringify({
       type: GQL_CONNECTION_INIT,
-      payload: this.initPayload,
+      payload: this.initPayload(),
     }));
     if (this.messageQueue.length > 0) {
       this.messageQueue.forEach((m) => {

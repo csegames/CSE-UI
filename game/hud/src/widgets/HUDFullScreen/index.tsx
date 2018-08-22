@@ -12,7 +12,6 @@ import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { hideContextMenu } from 'actions/contextMenu';
 
 import HudFullScreenView from './HUDFullScreenView';
-import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import {
   InventoryItem,
   GearSlotDefRef,
@@ -50,7 +49,7 @@ const BackgroundImage = styled.div`
   height: 100%;
   z-index: 99;
   box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
-  background: url(../images/inventory/bag-bg.png) repeat-x, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: url(../images/inventory/bag-bg.png) repeat-x, black;
   &.left {
     top: 0;
     left: 0;
@@ -77,28 +76,29 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     const { visibleComponentLeft, visibleComponentRight } = this.state;
     return (
       <FullScreenContext.Provider value={this.state}>
-        <div
-          data-input-group='block'
-          style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
-          <BackgroundImage className={'left'} />
-          <BackgroundImage className={'right'} />
-          <HudFullScreenView
-            getLeftRef={r => this.tabPanelLeftRef = r}
-            getRightRef={r => this.tabPanelRightRef = r}
-            onActiveTabChanged={(i, name) => this.handleTabChange(name)}
-            onRightOrLeftItemAction={this.onRightOrLeftItemAction}
-            showItemTooltip={this.showItemTooltip}
-            hideItemTooltip={this.hideItemTooltip}
-            onCloseFullScreen={this.onCloseFullScreen}
-            onChangeInventoryItems={this.onChangeInventoryItems}
-            onChangeEquippedItems={this.onChangeEquippedItems}
-            onChangeMyTradeItems={this.onChangeMyTradeItems}
-            onChangeContainerIdToDrawerInfo={this.onChangeContainerIdToDrawerInfo}
-            onChangeStackGroupIdToItemIDs={this.onChangeStackGroupIdToItemIDs}
-            onChangeMyTradeState={this.onChangeMyTradeState}
-            onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
-          />
-        </div>
+        <InventoryContextProvider
+          visibleComponentLeft={visibleComponentLeft}
+          visibleComponentRight={visibleComponentRight}>
+          <div
+            data-input-group='block'
+            style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
+            <BackgroundImage className={'left'} />
+            <BackgroundImage className={'right'} />
+            <HudFullScreenView
+              getLeftRef={r => this.tabPanelLeftRef = r}
+              getRightRef={r => this.tabPanelRightRef = r}
+              onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+              onRightOrLeftItemAction={this.onRightOrLeftItemAction}
+              showItemTooltip={this.showItemTooltip}
+              hideItemTooltip={this.hideItemTooltip}
+              onCloseFullScreen={this.onCloseFullScreen}
+              onChangeEquippedItems={this.onChangeEquippedItems}
+              onChangeMyTradeItems={this.onChangeMyTradeItems}
+              onChangeMyTradeState={this.onChangeMyTradeState}
+              onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
+            />
+          </div>
+        </InventoryContextProvider>
       </FullScreenContext.Provider>
     );
   }
@@ -375,34 +375,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return tabIndex === -1 ? 0 : tabIndex;
   }
 
-  private isVisible = () => {
-    return this.state.visibleComponentLeft !== '' || this.state.visibleComponentRight !== '';
-  }
-
   private hideItemTooltip = () => {
     hideTooltip();
   }
 
   private onChangeEquippedItems = (equippedItems: EquippedItem.Fragment[]) => {
     this.setState({ equippedItems });
-  }
-
-  private onChangeInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {
-    if (this.isVisible()) {
-      this.setState({ inventoryItems });
-    }
-  }
-
-  private onChangeContainerIdToDrawerInfo = (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => {
-    if (this.isVisible()) {
-      this.setState({ containerIdToDrawerInfo });
-    }
-  }
-
-  private onChangeStackGroupIdToItemIDs = (stackGroupIdToItemIDs: {[id: string]: string[]}) => {
-    if (this.isVisible()) {
-      this.setState({ stackGroupIdToItemIDs });
-    }
   }
 
   private onChangeMyTradeItems = (myTradeItems: InventoryItem.Fragment[]) => {

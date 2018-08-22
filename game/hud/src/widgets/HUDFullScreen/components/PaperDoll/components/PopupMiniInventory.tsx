@@ -10,31 +10,47 @@ import * as _ from 'lodash';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
-import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
+import { utils, PageController, PageInfo } from '@csegames/camelot-unchained';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
-import { displaySlotNames, colors } from '../../../lib/constants';
+import TabSubHeader from '../../TabSubHeader';
+import FilterInput from '../../Inventory/components/FilterInput';
+import { displaySlotNames, GearSlots } from '../../../lib/constants';
 import { getItemDefinitionName } from '../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
 const containerDimensions = {
-  width: 320,
-  height: 225,
+  width: 310,
+  height: 215,
 };
 
 const MiniInventoryBox = styled.div`
   position: fixed;
-  background: linear-gradient(rgba(74, 77, 84, 0.8), rgba(74, 77, 84, 0.4), rgba(74, 77, 84, 0.2));
+  background: linear-gradient(to bottom, rgba(55, 33, 19, 1), rgba(24, 17, 11, 0.9));
+  border-image: linear-gradient(to bottom, #623F26, transparent);
+  border-style: solid;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 0px;
   width: ${containerDimensions.width}px;
   height: ${containerDimensions.height}px;
   overflow: hidden;
   z-index: 10;
 `;
 
-const HeaderContainer = styled.div`
+const SubHeaderClass = css`
+  height: 35px;
+`;
+
+const SubHeaderContentClass = css`
+  padding: 0 5px 0 10px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  text-transform: none;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 5px;
 `;
 
 const ControllerContainer = styled.div`
@@ -43,7 +59,7 @@ const ControllerContainer = styled.div`
   justify-content: space-between;
   padding: 2px 5px;
   height: 15px;
-  background-color: rgba(74, 77, 84, 0.5);
+  background-color: rgba(20, 14, 7, 0.7);
 `;
 
 const ItemsContainer = styled.div`
@@ -57,8 +73,8 @@ const ItemSpacing = styled.div`
 `;
 
 const SlotNameText = styled.p`
-  font-size: 18px;
-  color: #BCC1CB;
+  font-size: 14px;
+  color: #D8BFA8;
   margin: 0 !important;
   padding: 0;
 `;
@@ -67,37 +83,32 @@ const PageNumberText = styled.p`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 15px;
   margin: 0 5px 0 0 !important;
+  color: #D8BFA8;
+  font-size: 12px;
+  letter-spacing: 2px;
 `;
 
 const ControllerButton = styled.div`
   display: inline-block;
-  font-size: 15px;
-  color: ${colors.goldIcon};
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #D8BFA8;
+  cursor: pointer;
   &:active {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.9);
   }
 `;
 
 const DisabledControllerButton = css`
-  color: white;
+  opacity: 0.5;
 `;
 
-
-export const defaultPopupMiniInventoryStyle = {
-  searchInput: {
-    flex: '0 0 auto',
-    height: '20px',
-    backgroundColor: 'rgba(179, 183, 192, 0.3)',
-    border: '1px solid #B7B8BC',
-    color: '#B7B8BC',
-    padding: '0 5px',
-    '::-webkit-input-placeholder': {
-      color: '#B7B8BC',
-    },
-  },
-};
+const InputClass = css`
+  margin-left: 10px;
+  padding: 5px;
+  height: 25px;
+`;
 
 export enum Alignment {
   Armor = 1 << 0,
@@ -121,10 +132,11 @@ export enum Alignment {
 
 export interface PopupMiniInventoryProps {
   align: Alignment;
-  slotName: string;
+  slotName: GearSlots;
   inventoryItems: InventoryItem.Fragment[];
-  visible: boolean;
-  onVisibilityChange: (slotName: string) => void;
+  offsets: ClientRect;
+  onMouseOver: () => void;
+  onMouseLeave: () => void;
 }
 
 export interface PopupMiniInventoryState {
@@ -135,8 +147,6 @@ export interface PopupMiniInventoryState {
 }
 
 export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps, PopupMiniInventoryState> {
-  private mouseOver: boolean;
-
   constructor(props: PopupMiniInventoryProps) {
     super(props);
     this.state = {
@@ -149,7 +159,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
 
   public render() {
     const miniInventoryItems = _.filter(this.state.miniInventoryItems, (item) => {
-      return _.includes(getItemDefinitionName(item), this.state.searchValue);
+      return utils.doesSearchInclude(this.state.searchValue, getItemDefinitionName(item));
     });
     const amountOfPages = Math.ceil(miniInventoryItems.length / 8) + (miniInventoryItems.length % 8 > 0 ? 1 : 0) || 1;
     const arrayOfPages: InventoryItem.Fragment[][] = [];
@@ -172,7 +182,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     const pages: PageInfo<{active: boolean}>[] = arrayOfPages.map((items, index) => {
       return {
         render: () => (
-          <ItemsContainer>
+          <ItemsContainer key={index}>
             {items.map((item) => {
               const gearSlots = item && _.find(item.staticDefinition.gearSlotSets, (gearSlotSet): any =>
                 _.find(gearSlotSet.gearSlots, gearSlot => gearSlot.id === this.props.slotName)).gearSlots;
@@ -188,76 +198,52 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     });
 
     return (
-      <div>
-        <div
-          id={this.props.slotName}
-          onClick={this.toggleVisibility}
-          onMouseOver={() => this.mouseOver = true}
-          onMouseLeave={() => this.mouseOver = false}>
-          {this.props.children}
-        </div>
-        {this.props.visible &&
-        <MiniInventoryBox
-          style={{ top: this.state.top, left: this.state.left }}
-          onMouseOver={() => this.mouseOver = true}
-          onMouseLeave={() => this.mouseOver = false}>
-          <HeaderContainer>
-            <SlotNameText>{displaySlotNames[this.props.slotName]}</SlotNameText>
-            <Input
-              placeholder={'Filter'}
-              styles={{
-                input: defaultPopupMiniInventoryStyle.searchInput,
-              }}
-              onChange={this.onSearchChange}
-              value={this.state.searchValue}
-            />
-          </HeaderContainer>
-          <PageController
-            pages={pages}
-            renderPageController={(state, props, onNextPageClick, onPrevPageClick) => {
-              const moreNext = state.activePageIndex < pages.length - 1;
-              const morePrev = state.activePageIndex > 0;
-              return (
-                <ControllerContainer>
-                  <ControllerButton className={!morePrev ? DisabledControllerButton : ''} onClick={onPrevPageClick}>
-                    {'< Prev'}
-                  </ControllerButton>
-                  <PageNumberText>{state.activePageIndex + 1} / {pages.length}</PageNumberText>
-                  <ControllerButton className={!moreNext ? DisabledControllerButton : ''} onClick={onNextPageClick}>
-                    {'Next >'}
-                  </ControllerButton>
-                </ControllerContainer>
-              );
-            }}
+      <MiniInventoryBox
+        style={{ top: this.state.top, left: this.state.left }}
+        onMouseOver={this.props.onMouseOver}
+        onMouseLeave={this.props.onMouseLeave}>
+        <TabSubHeader className={SubHeaderClass} contentClassName={SubHeaderContentClass}>
+          <SlotNameText>{displaySlotNames[this.props.slotName]}</SlotNameText>
+          <FilterInput
+            className={InputClass}
+            onFilterChanged={this.onSearchChange}
+            filterText={this.state.searchValue}
           />
-        </MiniInventoryBox>
-        }
-      </div>
+        </TabSubHeader>
+        <PageController
+          pages={pages}
+          renderPageController={(state, props, onNextPageClick, onPrevPageClick) => {
+            const moreNext = state.activePageIndex < pages.length - 1;
+            const morePrev = state.activePageIndex > 0;
+            return (
+              <ControllerContainer>
+                <ControllerButton className={!morePrev ? DisabledControllerButton : ''} onClick={onPrevPageClick}>
+                  {'< Prev'}
+                </ControllerButton>
+                <PageNumberText>{state.activePageIndex + 1} / {pages.length}</PageNumberText>
+                <ControllerButton className={!moreNext ? DisabledControllerButton : ''} onClick={onNextPageClick}>
+                  {'Next >'}
+                </ControllerButton>
+              </ControllerContainer>
+            );
+          }}
+        />
+      </MiniInventoryBox>
     );
   }
 
   public componentDidMount() {
-    this.initializeMiniInventoryItems(this.props.inventoryItems);
-    window.addEventListener('resize', this.setWindowPosition);
-    window.addEventListener('mousedown', this.onMouseDown);
-  }
-
-  public shouldComponentUpdate(nextProps: PopupMiniInventoryProps, nextState: PopupMiniInventoryState) {
-    return !_.isEqual(nextProps, this.props) ||
-      !_.isEqual(nextState, this.state);
-  }
-
-  public componentWillUnmount() {
-    window.removeEventListener('resize', this.setWindowPosition);
-    window.removeEventListener('mousedown', this.onMouseDown);
+    this.setWindowPosition(this.props);
+    this.initializeMiniInventoryItems(this.props);
   }
 
   public componentWillReceiveProps(nextProps: PopupMiniInventoryProps) {
-    this.initializeMiniInventoryItems(nextProps.inventoryItems);
+    this.setWindowPosition(nextProps);
+    this.initializeMiniInventoryItems(nextProps);
   }
 
-  private initializeMiniInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {
-    const { slotName } = this.props;
+  private initializeMiniInventoryItems = (props: PopupMiniInventoryProps) => {
+    const { slotName, inventoryItems } = props;
     const miniInventoryItems: InventoryItem.Fragment[] = [];
     if (inventoryItems) {
       inventoryItems.forEach((inventoryItem) => {
@@ -276,9 +262,8 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     }
   }
 
-  private setWindowPosition = () => {
-    const { slotName, align } = this.props;
-    const offsets = document.getElementById(slotName).getBoundingClientRect();
+  private setWindowPosition = (props: PopupMiniInventoryProps) => {
+    const { align, offsets } = props;
     const { top, left, height, width } = offsets;
     const margin = 5;
     this.setState((state, props) => {
@@ -323,20 +308,10 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     });
   }
 
-  private toggleVisibility = () => {
-    this.props.onVisibilityChange(this.props.slotName);
-    this.setWindowPosition();
-  }
-
-  private onSearchChange = (e: any) => {
-    this.setState({ searchValue: e.target.value });
-  }
-
-  private onMouseDown = () => {
-    if (!this.mouseOver && this.props.visible) {
-      this.props.onVisibilityChange(this.props.slotName);
-    }
+  private onSearchChange = (searchValue: string) => {
+    this.setState({ searchValue });
   }
 }
 
 export default PopupMiniInventory;
+

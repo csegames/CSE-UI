@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 
 export interface ItemProps {
-  styles: any;
+  containerClass?: string;
   useFontIcon?: boolean;
   id: string;
   icon: string;
@@ -33,7 +33,7 @@ export class Item extends React.Component<ItemProps, ItemState> {
 
   public render() {
     return (
-      <Container style={this.props.styles}>
+      <Container className={this.props.containerClass}>
         <ItemIcon useFontIcon={this.props.useFontIcon} url={this.props.icon} />
       </Container>
     );

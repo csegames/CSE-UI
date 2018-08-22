@@ -187,3 +187,24 @@ body {
     background: none;
   }
 }
+
+.cse-ui-scroller-thumbonly-brown {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: none;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb:vertical {
+    border: 35px solid #404040;
+    border-width: 35px 4px 35px 4px;
+    border-image: url(../images/inventory/scrollbar-thumb-ends-brown.png);
+    border-image-slice: 35 4 35 4;
+    min-height: 100px;
+    box-shadow: none;
+    background: none;
+  }
+}

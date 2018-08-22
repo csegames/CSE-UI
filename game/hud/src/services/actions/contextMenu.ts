@@ -62,7 +62,6 @@ export function offShowContextMenuContent(handle: number) {
   game.off(handle);
 }
 
-
 export function hideContextMenu() {
   game.trigger(HIDE_CONTEXT_MENU);
 }

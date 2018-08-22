@@ -9,7 +9,6 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
-import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
@@ -60,7 +59,6 @@ export interface InventorySlotProps {
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
@@ -113,6 +111,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               containerIsOpen={this.props.containerIsOpen}
               drawerMaxStats={this.props.drawerMaxStats}
               drawerCurrentStats={this.props.drawerCurrentStats}
+              syncWithServer={this.props.syncWithServer}
+              onContextMenuShow={this.onContextMenuContentShow}
+              onContextMenuHide={this.onContextMenuContentHide}
             />
         </ItemWrapper>
       </Container>
@@ -229,9 +230,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     // Left or Right item
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
       // Check if has permissions
-      if (!hasEquipmentPermissions(item)) {
+      if      (!hasEquipmentPermissions(item)) {
         // Item does not have equip permissions
-        if (item.equiprequirement && item.equiprequirement.requirementDescription) {
+        if      (item.equiprequirement && item.equiprequirement.requirementDescription) {
           toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
         } else {
           toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });
@@ -257,7 +258,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
       // No special handling for this item
       const payload: EquipItemPayload = {
-        newItem: inventoryItemDataTransfer,
+        newItem:      inventoryItemDataTransfer,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,
       };
       game.trigger(eventNames.onEquipItem, payload);
@@ -267,3 +268,4 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 }
 
 export default InventorySlot;
+

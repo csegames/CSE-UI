@@ -9,7 +9,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
-import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
+import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/components/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import { EquippedItem, PaperDollContainerGQL } from 'gql/interfaces';

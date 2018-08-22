@@ -12,7 +12,7 @@ import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
-import { hideTooltip } from 'actions/tooltips';
+import { hideContextMenu } from 'actions/contextMenu';
 
 declare const toastr: any;
 
@@ -55,11 +55,12 @@ const CooldownText = styled.div`
 export interface Props {
   itemId: string;
   name: string;
-  onActionClick: (action?: InventoryItem.Actions) => void;
+  onActionClick: (e: React.MouseEvent<HTMLDivElement>, action?: InventoryItem.Actions) => void;
   syncWithServer: () => void;
   action?: InventoryItem.Actions;
   onMouseOver?: () => void;
   onMouseLeave?: () => void;
+  disableQuery?: boolean;
 }
 
 export interface State {
@@ -73,7 +74,7 @@ class ContextMenuAction extends React.Component<Props, State> {
     super(props);
     this.state = {
       cooldownLeft: '',
-      shouldQuery: true,
+      shouldQuery: props.disableQuery ? false : true,
     };
   }
 
@@ -119,9 +120,9 @@ class ContextMenuAction extends React.Component<Props, State> {
     }
   }
 
-  private onActionClick = () => {
+  private onActionClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const { action } = this.props;
-    hideTooltip();
+    hideContextMenu();
     if (action) {
       if (!action.enabled || this.state.cooldownLeft !== '') {
         // Handle disabled action button
@@ -130,10 +131,10 @@ class ContextMenuAction extends React.Component<Props, State> {
         if (action.cooldownSeconds) {
           this.startCooldown(new Date().toISOString());
         }
-        this.props.onActionClick(action);
+        this.props.onActionClick(e, action);
       }
     } else {
-      this.props.onActionClick();
+      this.props.onActionClick(e);
     }
   }
 

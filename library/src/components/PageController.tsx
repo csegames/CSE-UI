@@ -75,9 +75,12 @@ export class PageController extends React.Component<PageControllerProps, PageCon
   }
 
   public componentWillReceiveProps(nextProps: PageControllerProps) {
-    if (nextProps.pages.length < this.state.activePageIndex) {
+    if (nextProps.pages.length < (this.state.activePageIndex + 1)) {
+      console.log('SET THIS BITCH TO 0');
       this.setState({ activePageIndex: 0 });
-      this.props.onPageChange(0);
+      if (this.props.onPageChange) {
+        this.props.onPageChange(0);
+      }
     }
   }
 

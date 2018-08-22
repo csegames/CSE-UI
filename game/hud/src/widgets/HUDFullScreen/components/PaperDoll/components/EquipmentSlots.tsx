@@ -10,24 +10,20 @@ import { styled } from '@csegames/linaria/react';
 import { css, cx } from '@csegames/linaria';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 
-
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
-import PaperdollIcon from './PaperdollIcon';
-import { gearSlots } from '../../../lib/constants';
+import { GearSlots } from '../../../lib/constants';
 import { getEquippedDataTransfer, FullScreenContext } from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
   UpdateInventoryItemsPayload,
 } from '../../../lib/eventNames';
-import {
-  InventoryItem,
-  EquippedItem,
-  SecureTradeState,
-} from 'gql/interfaces';
+import { InventoryItem, EquippedItem, SecureTradeState } from 'gql/interfaces';
+import { InventoryContext } from '../../ItemShared/InventoryContext';
 import { hideTooltip } from 'actions/tooltips';
 import { equipItemRequest } from '../../ItemShared/InventoryBase';
+import PaperdollIcon from './PaperdollIcon';
 
 const ARMOR_ORNAMENT_OPACITY = 0.3;
 const WEAPON_ORNAMENT_OPACITY = 0.8;
@@ -270,53 +266,55 @@ const WeaponSpacing = css`
 `;
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.Face, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.Neck, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderLeft, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderRight, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Chest, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Back, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Waist, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.Cloak, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmLeft, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmRight, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandLeft, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandRight, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Thighs, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Shins, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.Feet, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.Skull, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.Face, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.Neck, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.ShoulderLeft, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.ShoulderRight, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Chest, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Back, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Waist, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Cloak, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.ForearmLeft, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.ForearmRight, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.HandLeft, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.HandRight, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.Thighs, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.Shins, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.Feet, openingSide: Alignment.ABottomLeft },
 ];
 
 const innerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.SkullUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.FaceUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.NeckUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight },
-  { slotName: gearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.ChestUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.BackUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.WaistUnder, openingSide: Alignment.ABottomRight },
-  { slotName: gearSlots.CloakUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: gearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: gearSlots.FeetUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.SkullUnder, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.FaceUnder, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.NeckUnder, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.ChestUnder, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.BackUnder, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.WaistUnder, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.CloakUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.FeetUnder, openingSide: Alignment.ABottomLeft },
 ];
 
 const weaponSlots: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.OneHandedWeaponLeft, openingSide: Alignment.WTopRight },
-  { slotName: gearSlots.OneHandedWeaponRight, openingSide: Alignment.WTopLeft },
-  { slotName: gearSlots.TwoHandedWeapon, openingSide: Alignment.WTopLeft },
+  { slotName: GearSlots.OneHandedWeaponLeft, openingSide: Alignment.WTopRight },
+  { slotName: GearSlots.OneHandedWeaponRight, openingSide: Alignment.WTopLeft },
+  { slotName: GearSlots.TwoHandedWeapon, openingSide: Alignment.WTopLeft },
 ];
 
 export interface EquipmentSlotsInjectedProps {
   equippedItems: EquippedItem.Fragment[];
   inventoryItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
+  visibleComponentRight: string;
+  visibleComponentLeft: string;
 }
 
 export interface EquipmentSlotsProps {
@@ -326,12 +324,16 @@ export interface EquipmentSlotsProps {
 export type EquipmentSlotsComponentProps = EquipmentSlotsInjectedProps & EquipmentSlotsProps;
 
 export interface EquipmentSlotsAndInfo {
-  slotName: string;
+  slotName: GearSlots;
   openingSide: Alignment;
 }
 
 export interface EquipmentSlotsState {
-  slotNameItemMenuVisible: string;
+  selectedItemMenu: {
+    openingSide: Alignment;
+    slotName: GearSlots;
+    offsets: ClientRect;
+  };
 }
 
 interface EquipmentSlotsTabData {
@@ -346,11 +348,12 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   constructor(props: EquipmentSlotsComponentProps) {
     super(props);
     this.state = {
-      slotNameItemMenuVisible: '',
+      selectedItemMenu: null,
     };
   }
 
   public render() {
+    const { selectedItemMenu } = this.state;
     const tabs: TabItem<EquipmentSlotsTabData>[] = [
       {
         name: 'OUTER',
@@ -391,6 +394,17 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
             {this.renderEquipmentSlotSection(weaponSlots)}
           </WeaponSlotOrnaments>
         </EquippedWeaponSlots>
+
+        {selectedItemMenu &&
+          <PopupMiniInventory
+            align={selectedItemMenu.openingSide}
+            slotName={selectedItemMenu.slotName}
+            offsets={selectedItemMenu.offsets}
+            inventoryItems={this.props.inventoryItems}
+            onMouseOver={() => this.mouseOverItemMenu = true}
+            onMouseLeave={() => this.mouseOverItemMenu = false}
+          />
+        }
       </Container>
     );
   }
@@ -398,10 +412,14 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   public componentDidMount() {
     this.eventHandles.push(game.on(eventNames.onEquipItem, this.onEquipItem));
     this.eventHandles.push(game.on(eventNames.onUnequipItem, this.onUnequipItem));
+    window.addEventListener('resize', this.closeItemMenu);
+    window.addEventListener('mousedown', this.closeItemMenu);
   }
 
   public componentWillUnmount() {
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    window.removeEventListener('resize', this.closeItemMenu);
+    window.removeEventListener('mousedown', this.closeItemMenu);
   }
 
   private onUnequipItem = (payload: UnequipItemPayload) => {
@@ -445,23 +463,21 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
 
     equipItemRequest(newItem.item, willEquipTo);
 
-    if (newItem.location === 'equipped') {
-      if (prevEquippedItem) {
-        // We are swapping items that are currently equipped
-        const swappedItem: InventoryItem.Fragment = {
-          ...prevEquippedItem.item,
-          location: {
-            inventory: null,
-            inContainer: null,
-            equipped: {
-              gearSlots: newItem.gearSlots,
-            },
+    if (newItem.location === 'equipped' && prevEquippedItem) {
+      // We are swapping items that are currently equipped
+      const swappedItem: InventoryItem.Fragment = {
+        ...prevEquippedItem.item,
+        location: {
+          inventory: null,
+          inContainer: null,
+          equipped: {
+            gearSlots: newItem.gearSlots,
           },
-        };
-        const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
-        equipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
-        filteredItems = filteredItems.concat(swappedEquippedItem);
-      }
+        },
+      };
+      const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
+      equipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
+      filteredItems = filteredItems.concat(swappedEquippedItem);
     }
 
     const nextItem: InventoryItem.Fragment = {
@@ -510,29 +526,23 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
           return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
-        const slotVisible = slot.slotName === this.state.slotNameItemMenuVisible;
         return (
-          <PopupMiniInventory
-            key={slot.slotName}
-            align={slot.openingSide}
-            inventoryItems={this.props.inventoryItems}
-            slotName={slot.slotName}
-            visible={slotVisible}
-            onVisibilityChange={this.onToggleItemMenuVisibility}>
             <div
               key={slot.slotName}
               className={cx(
                 !isWeapon ? ItemSlotSpacing : '',
                 isWeapon ? WeaponSpacing : '',
-              )}>
+              )}
+              onMouseOver={() => this.mouseOverItemMenu = true}
+              onMouseLeave={() => this.mouseOverItemMenu = false}>
               <EquippedItemSlot
-                itemMenuVisible={slotVisible}
                 slot={slot}
+                selectedSlot={this.state.selectedItemMenu}
                 providedEquippedItem={equippedItem}
                 disableDrag={this.props.myTradeState !== 'None'}
+                setSlotInfo={this.setSlotInfo}
               />
             </div>
-          </PopupMiniInventory>
         );
       })
     );
@@ -568,12 +578,28 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
     );
   }
 
-  private onToggleItemMenuVisibility = (slotName: string) => {
-    if (slotName === this.state.slotNameItemMenuVisible) {
-      this.setState({ slotNameItemMenuVisible: '' });
+  private setSlotInfo = (ref: HTMLDivElement, slot: { slotName: GearSlots, openingSide: Alignment }) => {
+    if (!ref) return;
+
+    const { selectedItemMenu } = this.state;
+    if (selectedItemMenu && slot.slotName === selectedItemMenu.slotName) {
+      // Hide
+      this.setState({ selectedItemMenu: null });
     } else {
+      // Show
       hideTooltip();
-      this.setState({ slotNameItemMenuVisible: slotName });
+      const selectedItemMenu = {
+        openingSide: slot.openingSide,
+        slotName: slot.slotName,
+        offsets: ref.getBoundingClientRect(),
+      };
+      this.setState({ selectedItemMenu });
+    }
+  }
+
+  private closeItemMenu = () => {
+    if (this.state.selectedItemMenu && !this.mouseOverItemMenu) {
+      this.setState({ selectedItemMenu: null });
     }
   }
 }
@@ -582,14 +608,22 @@ class EquipmentSlotsWithInjectedContext extends React.Component<EquipmentSlotsPr
   public render() {
     return (
       <FullScreenContext.Consumer>
-        {({ equippedItems, inventoryItems, myTradeState }) => {
+        {({ equippedItems, visibleComponentLeft, visibleComponentRight, myTradeState }) => {
           return (
-            <EquipmentSlots
-              {...this.props}
-              equippedItems={equippedItems}
-              inventoryItems={inventoryItems}
-              myTradeState={myTradeState}
-            />
+            <InventoryContext.Consumer>
+              {({ inventoryItems }) => {
+                return (
+                  <EquipmentSlots
+                    {...this.props}
+                    equippedItems={equippedItems}
+                    inventoryItems={inventoryItems}
+                    myTradeState={myTradeState}
+                    visibleComponentLeft={visibleComponentLeft}
+                    visibleComponentRight={visibleComponentRight}
+                  />
+                );
+              }}
+            </InventoryContext.Consumer>
           );
         }}
       </FullScreenContext.Consumer>

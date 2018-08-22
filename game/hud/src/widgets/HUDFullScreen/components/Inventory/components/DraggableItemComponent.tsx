@@ -9,16 +9,28 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
-import ItemStack from '../../ItemShared/ItemStack';
+import ContextMenuContent from './ContextMenu/ContextMenuContent';
+import { showContextMenuContent } from 'actions/contextMenu';
+import ItemStack from '../../ItemShared/components/ItemStack';
 import CraftingItem from './CraftingItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import enableDragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
-import eventNames, { InventoryDataTransfer } from '../../../lib/eventNames';
+import eventNames, { InventoryDataTransfer, MoveStackPayload, CombineStackPayload } from '../../../lib/eventNames';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../lib/itemInterfaces';
-import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo } from '../../../lib/utils';
 import { ContainerDefStat_Single, GearSlotDefRef } from 'gql/interfaces';
+import { InventoryContext } from '../../ItemShared/InventoryContext';
+import SplitStackMenu from './ContextMenu/SplitStackMenu';
+import {
+  // isStackedItem,
+  getInventoryDataTransfer,
+  isContainerSlotVerified,
+  getContainerColor,
+  getContainerInfo,
+  isCombiningStack,
+  isMovingStack,
+} from '../../../lib/utils';
 
 const Container = styled.div`
   display: flex;
@@ -74,6 +86,15 @@ const FirstContainerItem = styled.div`
   z-index: 9;
 `;
 
+function getDragItemID(item: InventorySlotItemDef & CraftingSlotItemDef) {
+  return item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
+}
+
+export interface InjectedItemComponentProps {
+  onMoveStack: (payload: MoveStackPayload) => void;
+  onCombineStack: (payload: CombineStackPayload) => void;
+}
+
 export interface ItemComponentProps extends DragAndDropInjectedProps {
   item: InventorySlotItemDef & CraftingSlotItemDef;
   filtering: boolean;
@@ -81,6 +102,9 @@ export interface ItemComponentProps extends DragAndDropInjectedProps {
   onDragEnd: () => void;
   onDrop: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   containerPermissions: ContainerPermissionDef | ContainerPermissionDef[];
+  syncWithServer: () => void;
+  onContextMenuShow: () => void;
+  onContextMenuHide: () => void;
   containerID?: string[];
   drawerID?: string;
   containerIsOpen?: boolean;
@@ -88,14 +112,18 @@ export interface ItemComponentProps extends DragAndDropInjectedProps {
   drawerCurrentStats?: DrawerCurrentStats;
 }
 
+export type Props = InjectedItemComponentProps & ItemComponentProps;
+
 export interface ItemComponentState {
   opacity: number;
   backgroundColor: string;
 }
 
-class ItemComponent extends React.Component<ItemComponentProps, ItemComponentState> {
+class ItemComponent extends React.Component<Props, ItemComponentState> {
   private myDataTransfer: InventoryDataTransfer;
-  constructor(props: ItemComponentProps) {
+  private isDragging: boolean = false;
+  private dragBoundaries: { top: number, left: number, right: number, bottom: number };
+  constructor(props: Props) {
     super(props);
     this.state = {
       opacity: 1,
@@ -107,7 +135,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     return this.myDataTransfer;
   }
 
-  public onDragStart(e: DragEvent<InventoryDataTransfer, ItemComponentProps>) {
+  public onDragStart(e: DragEvent<InventoryDataTransfer, Props>) {
     const item = e.dataTransfer.item;
     const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets) {
@@ -119,9 +147,10 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     }
     this.setState({ opacity: 0.3 });
     this.props.onDragStart();
+    this.isDragging = true;
   }
 
-  public onDragEnter(e: DragEvent<InventoryDataTransfer, ItemComponentProps>) {
+  public onDragEnter(e: DragEvent<InventoryDataTransfer, Props>) {
     const { item, containerID, containerPermissions, drawerMaxStats, drawerCurrentStats } = this.props;
     this.setState(() => {
       const notAllowedColor = 'rgba(186, 50, 50, 0.4)';
@@ -172,10 +201,12 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     this.setState({ opacity: 1 });
     game.trigger(eventNames.onDehighlightSlots);
     this.props.onDragEnd();
+    this.resetDraggingInfo();
   }
 
-  public onDrop(e: DragEvent<InventoryDataTransfer, ItemComponentProps>) {
+  public onDrop(e: DragEvent<InventoryDataTransfer, Props>) {
     // FOR NOW, don't allow drop if drag item is an equipped item.
+    this.setState({ backgroundColor: 'transparent' });
     const { item, containerID, drawerID } = this.props;
     const containerSlotVerified = (containerID &&
       isContainerSlotVerified(
@@ -199,7 +230,26 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         drawerID,
         containerID,
       });
-      this.props.onDrop(e.dataTransfer, dropZoneData);
+
+      if (isMovingStack(e.dataTransfer)) {
+        const moveStackPayload: MoveStackPayload = {
+          item: e.dataTransfer.item,
+          amount: e.dataTransfer.unitCount,
+          newLocation: 'inventory',
+          newPosition: this.props.item.slotIndex.position,
+        };
+        this.props.onMoveStack(moveStackPayload);
+      } else if (isCombiningStack(e.dataTransfer, this.myDataTransfer)) {
+        const combineStackPayload: CombineStackPayload = {
+          item: e.dataTransfer.item,
+          amount: e.dataTransfer.item.stats.item.unitCount,
+          stackItem: this.props.item.item,
+          newPosition: this.props.item.slotIndex.position,
+        };
+        this.props.onCombineStack(combineStackPayload);
+      } else {
+        this.props.onDrop(e.dataTransfer, dropZoneData);
+      }
     }
   }
 
@@ -260,7 +310,11 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
         },
       )[0];
     return (
-      <Container style={{ opacity: this.state.opacity }}>
+      <Container
+        style={{ opacity: this.state.opacity }}
+        onMouseDown={this.onMouseDown}
+        onClick={this.onClick}
+        onContextMenu={this.onContextMenu}>
         {itemComponent}
         {item.slotType === SlotType.Container &&
           <FirstContainerItem
@@ -284,13 +338,17 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     this.setDragDataTransfer(this.props);
   }
 
-  public componentWillReceiveProps(nextProps: ItemComponentProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (!_.isEqual(this.props, nextProps)) {
       this.setDragDataTransfer(nextProps);
     }
   }
 
-  private setDragDataTransfer = (props: ItemComponentProps) => {
+  public componentWillUnmount() {
+    window.removeEventListener('mousedown', this.startDraggingHalfStack);
+  }
+
+  private setDragDataTransfer = (props: Props) => {
     const item = props.item.item || props.item.stackedItems[0];
     const pos = item.location.inContainer ? item.location.inContainer.position :
       item.location.inventory ? item.location.inventory.position : -1;
@@ -304,30 +362,151 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
       fullStack: props.item.slotType === SlotType.CraftingContainer,
     });
   }
+
+  private onContextMenu = (e: MouseEvent) => {
+    const { item } = this.props;
+    showContextMenuContent(
+      <ContextMenuContent
+        item={item.item || (item.stackedItems && item.stackedItems[0])}
+        syncWithServer={this.props.syncWithServer}
+        containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
+        drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
+        onContextMenuShow={this.props.onContextMenuShow}
+        onContextMenuHide={this.props.onContextMenuHide}
+      />
+    , e);
+  }
+
+  private onMouseDown = (e: MouseEvent) => {
+    if (e.shiftKey && e.button === 0) {
+      e.stopPropagation();
+
+      // If they shift + start to drag their mouse, then move half the stack
+      window.addEventListener('mousemove', this.startDraggingHalfStack);
+
+      // Player has 500 milliseconds to start dragging
+      setTimeout(() => {
+        window.removeEventListener('mousemove', this.startDraggingHalfStack);
+        this.resetDraggingInfo();
+      }, 500);
+    }
+
+    if (e.ctrlKey && e.button === 0) {
+      e.stopPropagation();
+
+      this.startDraggingStack(e, 1);
+    }
+  }
+
+  private onClick = (e: MouseEvent) => {
+    if (e.shiftKey && e.type === 'click' && !this.isDragging) {
+      e.stopPropagation();
+      window.removeEventListener('mousemove', this.startDraggingHalfStack);
+      this.resetDraggingInfo();
+
+      // If they just shift + click, show the stack menu so they can choose the amount to move
+      this.showStackMenu(e);
+    }
+  }
+
+  private showStackMenu = (e: MouseEvent) => {
+    showContextMenuContent(
+      <SplitStackMenu
+        min={1}
+        max={this.props.item.item.stats.item.unitCount}
+        onSplit={this.startDraggingStack}
+      />
+    , e);
+  }
+
+  private startDraggingHalfStack = (e: MouseEvent) => {
+    if (!this.dragBoundaries) {
+      this.dragBoundaries = {
+        top: e.clientY + 5,
+        bottom: e.clientY - 5,
+        right: e.clientX + 5,
+        left: e.clientX - 5,
+      };
+    }
+    const { item } = this.props;
+    const count = Math.floor(item.item.stats.item.unitCount / 2);
+    this.startDraggingStack(e, count);
+  }
+
+  private startDraggingStack = (e: MouseEvent, amount: number) => {
+    const { item } = this.props;
+    window.removeEventListener('mousemove', this.startDraggingHalfStack);
+    const dragRender = <ItemStack count={amount} icon={item.icon} />;
+
+    if (amount === this.myDataTransfer.item.stats.item.unitCount) {
+      // User is trying to move whole stack, just move the whole item
+      this.startDrag(e, this.myDataTransfer, dragRender);
+      return;
+    }
+
+    const dataTransfer = getInventoryDataTransfer({
+      ...this.myDataTransfer,
+      fullStack: false,
+      unitCount: amount,
+    });
+    this.startDrag(e, dataTransfer, dragRender);
+  }
+
+  private startDrag = (e: MouseEvent, dataTransfer?: InventoryDataTransfer, dragRender?: JSX.Element) => {
+    if (!this.isDragging) {
+      const startDragOptions: StartDragOptions = {
+        e: e as any,
+        draggableData: dataTransfer,
+        dragRender,
+      };
+      events.fire('start-drag', getDragItemID(this.props.item), startDragOptions);
+      this.isDragging = true;
+    }
+  }
+
+  private resetDraggingInfo = () => {
+    this.isDragging = false;
+    this.dragBoundaries = null;
+  }
 }
 
 const DraggableItemComponent = enableDragAndDrop<ItemComponentProps>(
   (props: ItemComponentProps) => {
     const item = props.item;
-    const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;
+    const id = getDragItemID(item);
+    const disableDrag = props.item.disabled || props.item.disableDrag || props.filtering ||
+    (props.containerPermissions && (_.isArray(props.containerPermissions) ?
+      // if container permissions is an array, search parent containers and this container
+      // if they have RemoveContents permission
+      _.findIndex(props.containerPermissions, (permission: ContainerPermissionDef) =>
+        (permission.isParent || (!permission.isChild && !permission.isParent)) &&
+        permission.userPermission & ItemPermissions.RemoveContents) === -1 :
+
+      // if does not have parent containers, just return this container to see if it has RemoveContents permissions
+      (props.containerPermissions && props.containerPermissions.userPermission & ItemPermissions.RemoveContents) === 0));
     return {
       id,
       dataKey: 'inventory-items',
       scrollBodyId: 'inventory-scroll-container',
       dropTarget: !props.item.disabled && !props.item.disableDrop &&
         item.slotType !== SlotType.CraftingItem && !props.filtering,
-      disableDrag: props.item.disabled || props.item.disableDrag || props.filtering ||
-        (props.containerPermissions && (_.isArray(props.containerPermissions) ?
-          // if container permissions is an array, search parent containers and this container
-          // if they have RemoveContents permission
-          _.findIndex(props.containerPermissions, (permission: ContainerPermissionDef) =>
-            (permission.isParent || (!permission.isChild && !permission.isParent)) &&
-            permission.userPermission & ItemPermissions.RemoveContents) === -1 :
-
-          // if does not have parent containers, just return this container to see if it has RemoveContents permissions
-          (props.containerPermissions && props.containerPermissions.userPermission & ItemPermissions.RemoveContents) === 0)),
+      disableDrag,
     };
   },
 )(ItemComponent);
 
-export default DraggableItemComponent;
+class DraggableItemComponentWithInjectedContext extends React.Component<ItemComponentProps> {
+  public render() {
+    return (
+      <InventoryContext.Consumer>
+        {({ onMoveStack, onCombineStack }) => {
+          return (
+            <DraggableItemComponent {...this.props} onMoveStack={onMoveStack} onCombineStack={onCombineStack} />
+          );
+        }}
+      </InventoryContext.Consumer>
+    );
+  }
+}
+
+export default DraggableItemComponentWithInjectedContext;

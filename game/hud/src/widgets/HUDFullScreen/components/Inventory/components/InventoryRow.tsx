@@ -12,7 +12,6 @@ import { InventorySlot } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import CraftingContainer from './Containers/CraftingContainer';
 import ItemContainer from './Containers/ItemContainer';
-import { ContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
 import { hasViewContentPermissions } from '../../../lib/utils';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
@@ -43,11 +42,7 @@ export interface ContainerInfo {
 
 export interface InventoryRowProps {
   items: InventorySlotItemDef[];
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
-  onContainerIdToDrawerInfoChange: (newObj: ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
@@ -94,7 +89,6 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 filtering={this.props.filtering}
                 onToggleContainer={() => this.toggleContainer(index)}
                 onDropOnZone={this.props.onDropOnZone}
-                onMoveStack={this.props.onMoveStack}
                 onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
                 showTooltip={this.props.showTooltip}
                 hideTooltip={this.props.hideTooltip}
@@ -119,10 +113,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   searchValue={''}
                   activeFilters={null}
                   slotsPerRow={this.props.items.length}
-                  onChangeInventoryItems={this.props.onChangeInventoryItems}
                   onDropOnZone={this.props.onDropOnZone}
-                  onChangeContainerIdToDrawerInfo={this.props.onContainerIdToDrawerInfoChange}
-                  onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
                   drawerCurrentStats={this.props.drawerCurrentStats}
                   drawerMaxStats={this.props.drawerMaxStats}
                   bodyWidth={this.props.bodyWidth}
@@ -148,10 +139,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   slotsPerRow={this.props.items.length}
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
                   onDropOnZone={this.props.onDropOnZone}
-                  onChangeInventoryItems={this.props.onChangeInventoryItems}
                   containerID={(this.props.containerID && [...this.props.containerID, itemDef.itemID]) || [itemDef.itemID]}
-                  onChangeContainerIdToDrawerInfo={this.props.onContainerIdToDrawerInfoChange}
-                  onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
                   syncWithServer={this.props.syncWithServer}
                   bodyWidth={this.props.bodyWidth}
                   onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}

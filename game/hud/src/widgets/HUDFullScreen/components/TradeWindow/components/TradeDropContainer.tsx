@@ -23,8 +23,8 @@ import {
   isCraftingItem,
   isStackedItem,
   getContainerInfo,
-  FullScreenContext,
 } from '../../../lib/utils';
+import { InventoryContext } from '../../ItemShared/InventoryContext';
 
 declare const toastr: any;
 
@@ -177,11 +177,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             showTooltip={this.props.showTooltip}
             hideTooltip={this.props.hideTooltip}
             onRightClickItem={this.onRightClick}
-            onContainerIdToDrawerInfoChange={() => {}}
-            onChangeStackGroupIdToItemIDs={() => {}}
-            onChangeInventoryItems={() => {}}
             onDropOnZone={() => {}}
-            onMoveStack={() => {}}
             syncWithServer={() => {}}
             onRightOrLeftItemAction={() => {}}
           />
@@ -253,10 +249,24 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
     try {
       const tradeItems: InventoryItem.Fragment[] = [];
       const stackId = getItemMapID(e.dataTransfer.item);
-      this.props.stackGroupIdToItemIDs[stackId].forEach((_stackId) => {
-        const stackItem = _.find(this.props.inventoryItems, _item => _item.id === _stackId);
-        tradeItems.push(stackItem);
-      });
+
+      if (e.dataTransfer.fullStack) {
+        this.props.stackGroupIdToItemIDs[stackId].forEach((_stackId) => {
+          const stackItem = _.find(this.props.inventoryItems, _item => _item.id === _stackId);
+          tradeItems.push(stackItem);
+        });
+      } else {
+        tradeItems.push({
+          ...e.dataTransfer.item,
+          stats: {
+            ...e.dataTransfer.item.stats,
+            item: {
+              ...e.dataTransfer.item.stats.item,
+              unitCount: e.dataTransfer.unitCount,
+            },
+          },
+        });
+      }
 
       await tradeItems.forEach((_tradeItem) => {
         const tradeItem = { ItemID: _tradeItem.id, UnitCount: _tradeItem.stats.item.unitCount };
@@ -402,8 +412,8 @@ const TradeDropContainer = withDragAndDrop<TradeDropContainerComponentProps>(
 class TradeDropContainerWithInjectedContext extends React.Component<TradeDropContainerProps> {
   public render() {
     return (
-      <FullScreenContext.Consumer>
-        {({ stackGroupIdToItemIDs, inventoryItems }) => {
+      <InventoryContext.Consumer>
+        {({ inventoryItems, stackGroupIdToItemIDs }) => {
           return (
             <TradeDropContainer
               {...this.props}
@@ -412,7 +422,7 @@ class TradeDropContainerWithInjectedContext extends React.Component<TradeDropCon
             />
           );
         }}
-      </FullScreenContext.Consumer>
+      </InventoryContext.Consumer>
     );
   }
 }

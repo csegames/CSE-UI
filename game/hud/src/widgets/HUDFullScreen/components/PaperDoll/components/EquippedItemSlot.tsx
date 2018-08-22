@@ -6,9 +6,9 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { isEqual, includes } from 'lodash';
+import { includes } from 'lodash';
 
-import { SLOT_DIMENSIONS } from '../../../lib/constants';
+import { SLOT_DIMENSIONS, GearSlots } from '../../../lib/constants';
 import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
@@ -82,10 +82,12 @@ const Container = styled.div`
 `;
 
 export interface EquippedItemSlotProps {
-  itemMenuVisible: boolean;
   providedEquippedItem: EquippedItem.Fragment;
-  slot: { slotName: string, openingSide: Alignment };
+  slot: { slotName: GearSlots, openingSide: Alignment };
+  selectedSlot: { slotName: GearSlots, openingSide: Alignment };
   disableDrag: boolean;
+  setSlotInfo: (ref: HTMLDivElement, slot: { slotName: GearSlots, openingSide: Alignment }) => void;
+
 }
 
 export interface EquippedItemSlotState {
@@ -95,6 +97,7 @@ export interface EquippedItemSlotState {
 }
 
 export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
+  private ref: HTMLDivElement;
   constructor(props: EquippedItemSlotProps) {
     super(props);
     this.state = {
@@ -108,7 +111,9 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const isWeapon = includes(this.props.slot.slotName.toLowerCase(), 'weapon');
     return (
       <Container
+        ref={(r: HTMLDivElement) => this.ref = r}
         className={isWeapon ? 'weapon-slot' : ''}
+        onClick={this.onClick}
         onMouseOver={this.onMouseOverItemSlot}
         onMouseLeave={this.onMouseLeave}
         onMouseDown={this.unequipItem}>
@@ -116,14 +121,16 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
             disableDrag={this.props.disableDrag}
             slotName={this.props.slot.slotName}
             equippedItem={this.props.providedEquippedItem}
-            itemMenuVisible={this.props.itemMenuVisible}
+            itemMenuVisible={this.isItemMenuVisible()}
           />
       </Container>
     );
   }
 
-  public shouldComponentUpdate(nextProps: EquippedItemSlotProps, nextState: EquippedItemSlotState) {
-    return !isEqual(this.state, nextState) || !isEqual(this.props, nextProps);
+  private onClick = (e: React.MouseEvent) => {
+    if (e.type === 'click') {
+      this.props.setSlotInfo(this.ref, this.props.slot);
+    }
   }
 
   private unequipItem = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -148,7 +155,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
   private onMouseOverItemSlot = (event: React.MouseEvent<HTMLDivElement>) => {
     const equippedItem = this.props.providedEquippedItem;
     const itemId = equippedItem && equippedItem.item.id;
-    const shouldShowTooltip = !this.props.itemMenuVisible && itemId;
+    const shouldShowTooltip = !this.isItemMenuVisible() && itemId;
     if (shouldShowTooltip) {
       const content = <ItemTooltipContent
         item={this.props.providedEquippedItem.item}
@@ -162,6 +169,15 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     this.setState({ isMouseOver: false, showTooltip: false });
     hideTooltip();
   }
+
+  private isItemMenuVisible = () => {
+    if (this.props.selectedSlot && this.props.selectedSlot.slotName === this.props.slot.slotName) {
+      return true;
+    }
+
+    return false;
+  }
+
 }
 
 export default EquippedItemSlot;

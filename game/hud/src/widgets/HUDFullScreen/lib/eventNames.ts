@@ -64,6 +64,7 @@ export interface InventoryDataTransfer {
   gearSlots?: GearSlotDefRef.Fragment[];
   slotType?: SlotType;
   fullStack?: boolean;
+  unitCount?: number;
 }
 
 export interface EquippedItemDataTransfer extends InventoryDataTransfer {
@@ -72,6 +73,20 @@ export interface EquippedItemDataTransfer extends InventoryDataTransfer {
 
 export interface OnHighlightSlots {
   gearSlots: GearSlotDefRef.Fragment[];
+}
+
+export interface MoveStackPayload {
+  item: InventoryItem.Fragment;
+  amount: number;
+  newLocation: DataTransferLocation;
+  newPosition: number;
+}
+
+export interface CombineStackPayload {
+  item: InventoryItem.Fragment;
+  stackItem: InventoryItem.Fragment;
+  amount: number;
+  newPosition: number;
 }
 
 export interface UpdateInventoryItemsPayload {

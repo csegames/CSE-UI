@@ -12,13 +12,14 @@ import { styled } from '@csegames/linaria/react';
 import * as base from '../../../ItemShared/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';
 import { DrawerCurrentStats } from '../Containers/Drawer';
-import { slotDimensions } from '../InventorySlot';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } from '../../../../lib/utils';
+import { InventoryContext } from '../../../ItemShared/InventoryContext';
 import { rowActionIcons } from '../../../../lib/constants';
 import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
+import { slotDimensions } from '../InventorySlot';
 
 const HeaderContent = styled.div`
   display: flex;
@@ -36,6 +37,9 @@ export interface InjectedCraftingContainerProps {
   myTradeItems: InventoryItem.Fragment[];
   inventoryItems: InventoryItem.Fragment[];
   stackGroupIdToItemIDs: {[id: string]: string[]};
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: base.ContainerIdToDrawerInfo) => void;
+  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
 }
 
 export interface CraftingContainerProps {
@@ -85,7 +89,6 @@ export class CraftingContainer extends React.Component<CraftingContainerComponen
       drawerCurrentStats: this.props.drawerCurrentStats,
       drawerMaxStats: this.props.drawerMaxStats,
       syncWithServer: () => {},
-      onMoveStack: () => {},
       myTradeItems: this.props.myTradeItems,
     });
 
@@ -152,18 +155,11 @@ export class CraftingContainer extends React.Component<CraftingContainerComponen
     if (!this.contentRef) return;
     const rowsAndSlots = calcRows(20, slotDimensions,
       Math.max(CraftingContainer.minSlots, props.item.stackedItems.length), props.slotsPerRow);
-    const rowData = {
-      slotsPerRow: props.slotsPerRow,
+    return {
+      ...state,
       ...rowsAndSlots,
+      slotsPerRow: rowsAndSlots.slotCount / rowsAndSlots.rowCount,
     };
-    return base.distributeItems({
-      slotsData: rowData,
-      itemData: { items: [] },
-      state,
-      props,
-      inventoryItems: props.inventoryItems,
-      stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
-    });
   }
 
   private addRowOfSlots = () => {
@@ -185,14 +181,29 @@ class CraftingContainerWithInjectedContext extends React.Component<CraftingConta
   public render() {
     return (
       <FullScreenContext.Consumer>
-        {({ myTradeItems, inventoryItems, stackGroupIdToItemIDs }) => {
+        {({ myTradeItems }) => {
           return (
-            <CraftingContainer
-              {...this.props}
-              myTradeItems={myTradeItems}
-              inventoryItems={inventoryItems}
-              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-            />
+            <InventoryContext.Consumer>
+              {({
+                inventoryItems,
+                stackGroupIdToItemIDs,
+                onChangeContainerIdToDrawerInfo,
+                onChangeStackGroupIdToItemIDs,
+                onChangeInventoryItems,
+              }) => {
+                return (
+                  <CraftingContainer
+                    {...this.props}
+                    myTradeItems={myTradeItems}
+                    inventoryItems={inventoryItems}
+                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
+                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
+                    onChangeInventoryItems={onChangeInventoryItems}
+                  />
+                );
+              }}
+            </InventoryContext.Consumer>
           );
         }}
       </FullScreenContext.Consumer>

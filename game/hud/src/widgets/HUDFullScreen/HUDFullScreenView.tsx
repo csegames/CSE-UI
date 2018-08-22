@@ -25,7 +25,6 @@ import {
   EquippedItem,
   SecureTradeState,
 } from 'gql/interfaces';
-import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { SlotItemDefType } from './lib/itemInterfaces';
 
 export interface HUDFullScreenStyle {
@@ -181,11 +180,8 @@ export interface Props {
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
   onChangeEquippedItems: (equippedItems: EquippedItem.Fragment[]) => void;
   onChangeMyTradeItems: (myTradeItems: InventoryItem.Fragment[]) => void;
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
-  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void;
   onChangeMyTradeState: (myTradeState: SecureTradeState) => void;
   onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
@@ -273,9 +269,6 @@ class HUDFullScreenView extends React.Component<Props, State> {
         onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
         showItemTooltip={this.props.showItemTooltip}
         hideItemTooltip={this.props.hideItemTooltip}
-        onChangeInventoryItems={this.props.onChangeInventoryItems}
-        onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
-        onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
         onChangeInvBodyDimensions={this.props.onChangeInvBodyDimensions}
       />
     );

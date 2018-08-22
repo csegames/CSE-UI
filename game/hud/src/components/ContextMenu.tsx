@@ -232,6 +232,18 @@ export class ContextMenuView extends React.Component<Props, State> {
         bottom: '-1000px',
       },
       items: [],
+      content: null,
+    });
+  }
+
+  private onShowContextMenuContent = (content: JSX.Element, event: MouseEvent) => {
+    if (!content) return;
+
+    this.setState({
+      show: true,
+      styledPosition: this.getStyledPosition(event),
+      items: [],
+      content,
     });
   }
 
@@ -264,7 +276,6 @@ export class ContextMenuView extends React.Component<Props, State> {
     });
   }
 }
-
 
 
 interface ContentMenuItemsProps {

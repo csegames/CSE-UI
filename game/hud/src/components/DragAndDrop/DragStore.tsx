@@ -49,10 +49,6 @@ export const defaultDragStoreState: DragStoreState = {
 
 let dragStore: DragStoreState = defaultDragStoreState;
 
-export function setDragStoreInfo(partialDragStore: Partial<DragStoreState>) {
-  game.trigger('set-drag-store', partialDragStore);
-}
-
 export function getDragStore(): DragStoreState {
   return dragStore;
 }
@@ -63,8 +59,20 @@ class DragStore extends React.Component<DragStoreProps, DragStoreState> {
     this.state = defaultDragStoreState;
   }
 
+  public static setDragStoreInfo(partialDragStore: Partial<DragStoreState>) {
+    return new Promise((resolve) => {
+      dragStore = { ...dragStore, ...partialDragStore };
+      game.trigger('set-drag-store', partialDragStore);
+      resolve();
+    });
+  }
+
+  public static getDragStore(): DragStoreState {
+    return dragStore;
+  }
+
   public render() {
-    return this.state.isDragging ? (
+    return this.state.isDragging && this.state.draggingPosition ? (
       <div style={{
         position: 'fixed',
         top: `${this.state.draggingPosition.top}px`,

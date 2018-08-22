@@ -24,6 +24,7 @@ import {
   isContainerItem,
   FullScreenContext,
 } from '../../../../lib/utils';
+import { InventoryContext } from '../../../ItemShared/InventoryContext';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import {
   SecureTradeState,
@@ -106,6 +107,9 @@ export interface InjectedDrawerProps {
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
+  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
 }
 
 export interface DrawerProps {
@@ -116,9 +120,6 @@ export interface DrawerProps {
   containerItem: InventoryItem.Fragment;
   permissions: PermissibleHolder.Fragment;
   syncWithServer: () => void;
-
-  // Will be sent to InventoryBody component who will act as the state machine for all container -> drawer -> slot
-  onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
   bodyWidth: number;
   marginTop?: number | string;
   footerWidth?: number | string;
@@ -167,7 +168,6 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
       drawerMaxStats: stats,
       drawerCurrentStats: { totalUnitCount, weight },
       syncWithServer,
-      onMoveStack: () => {},
       bodyWidth: this.props.bodyWidth,
       containerIdToDrawerInfo: this.props.containerIdToDrawerInfo,
       stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
@@ -680,16 +680,32 @@ class DrawerWithInjectedContext extends React.Component<DrawerProps & base.Inven
   public render() {
     return (
       <FullScreenContext.Consumer>
-        {({ inventoryItems, stackGroupIdToItemIDs, containerIdToDrawerInfo, myTradeItems, myTradeState }) => {
+        {({ myTradeItems, myTradeState }) => {
           return (
-            <Drawer
-              {...this.props}
-              inventoryItems={inventoryItems}
-              stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-              containerIdToDrawerInfo={containerIdToDrawerInfo}
-              myTradeItems={myTradeItems}
-              myTradeState={myTradeState}
-            />
+            <InventoryContext.Consumer>
+              {({
+                inventoryItems,
+                stackGroupIdToItemIDs,
+                containerIdToDrawerInfo,
+                onChangeInventoryItems,
+                onChangeStackGroupIdToItemIDs,
+                onChangeContainerIdToDrawerInfo,
+              }) => {
+                return (
+                  <Drawer
+                    {...this.props}
+                    inventoryItems={inventoryItems}
+                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+                    containerIdToDrawerInfo={containerIdToDrawerInfo}
+                    myTradeItems={myTradeItems}
+                    myTradeState={myTradeState}
+                    onChangeInventoryItems={onChangeInventoryItems}
+                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
+                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
+                  />
+                );
+              }}
+            </InventoryContext.Consumer>
           );
         }}
       </FullScreenContext.Consumer>

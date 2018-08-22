@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import { setDragStoreInfo, getDragStore, defaultDragStoreState } from './DragStore';
+import DragStore, { getDragStore, defaultDragStoreState } from './DragStore';
 
 export interface PositionInformation {
   top: number;
@@ -15,6 +15,12 @@ export interface PositionInformation {
 
   width: number;
   height: number;
+}
+
+export interface StartDragOptions {
+  e?: React.MouseEvent<any>;
+  dragRender?: JSX.Element;
+  draggableData?: any;
 }
 
 enum MouseButtons {
@@ -138,8 +144,8 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       private ref: HTMLDivElement;
       private draggableRef: any;
 
-      private mouseDownTimeout: any;
-      private initTimeout: any;
+      private mouseDownTimeout: number;
+      private startDragListener: number;
       private initialPosition: PositionInformation;
       private dimensions: { height: number; width: number; top: number; left: number; };
       private onScroll = _.throttle(() => {
@@ -184,6 +190,8 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
         // onResize re init position of items
         window.addEventListener('resize', this.initPosition);
+
+        this.startDragListener = events.on('start-drag', this.startDrag);
 
         // If scrollBodyId provided then addEventListener scroll
         if (this.options && this.options.scrollBodyId) {
@@ -230,10 +238,10 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       public componentWillUnmount() {
         // Clear initPosition timeout
         this.mounted = false;
-        setDragStoreInfo(defaultDragStoreState);
+        DragStore.setDragStoreInfo(defaultDragStoreState);
 
-        clearTimeout(this.initTimeout);
-        clearTimeout(this.mouseDownTimeout);
+        window.clearTimeout(this.mouseDownTimeout);
+        events.off(this.startDragListener);
 
         // Remove listener for onResize re init
         window.removeEventListener('resize', this.initPosition);
@@ -249,46 +257,46 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private initPosition = () => {
         // Only initialize position if the item actually does anything with dragging/dropping
-        if (!this.options.disableDrag || this.options.dropTarget) {
-          this.initTimeout = setTimeout(() => {
-            if (this.mounted) {
-              if (!this.dimensions) {
-                this.dimensions = this.ref && {
-                  top: this.ref.clientTop,
-                  left: this.ref.clientLeft,
-                  height: this.ref.clientHeight,
-                  width: this.ref.clientWidth,
-                };
-              }
-              if (this.dimensions) {
-                const { top, left, width, height } = this.dimensions;
-                const windowWidth = window.innerWidth;
-                const windowHeight = window.innerHeight;
-                if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
-                  this.initialPosition = { top, left, width, height };
-                  if (!this.state.draggingPosition ||
-                      this.state.draggingPosition.width !== width ||
-                      this.state.draggingPosition.height !== height) {
-                    this.setState({ draggingPosition: this.initialPosition });
-                  }
-                }
+        if (this.mounted && (!this.options.disableDrag || this.options.dropTarget)) {
+          if (!this.dimensions && this.ref) {
+            const { clientTop, clientLeft, clientHeight, clientWidth } = this.ref;
+            this.dimensions = {
+              top: clientTop,
+              left: clientLeft,
+              height: clientHeight,
+              width: clientWidth,
+            };
+            this.initialPosition = {
+              top: clientTop,
+              left: clientLeft,
+              width: clientWidth,
+              height: clientHeight,
+            };
+          }
+
+          if (this.dimensions) {
+            const { top, left, width, height } = this.dimensions;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            if (top < windowHeight && left < windowWidth || top >= 0 || left >= 0) {
+              if (!this.state.draggingPosition ||
+                  this.state.draggingPosition.width !== width ||
+                  this.state.draggingPosition.height !== height) {
+                this.setState({ draggingPosition: this.initialPosition });
               }
             }
-          }, 1);
+          }
         }
       }
 
       private onMouseEnter = (e: any) => {
-        if (!this.dimensions) {
-          this.initPosition();
-        }
         if (this.mounted && this.options.dropTarget && !this.state.dragItemIsOver) {
           const dragStore = getDragStore();
           if (dragStore.isDragging && !_.isEqual(dragStore.draggableRef, this.draggableRef) &&
               dragStore.dataKey === this.options.dataKey) {
 
             this.setState({ dragItemIsOver: true });
-            setDragStoreInfo({ dropTargetRef: this.draggableRef });
+            DragStore.setDragStoreInfo({ dropTargetRef: this.draggableRef });
 
             const dragEvent = this.createDragEvent(e);
             if (this.draggableRef && this.draggableRef.onDragOver) {
@@ -306,7 +314,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         if (this.mounted && this.options.dropTarget && this.state.dragItemIsOver) {
           this.setState({ dragItemIsOver: false });
 
-          setDragStoreInfo({ dropTargetRef: null });
+          DragStore.setDragStoreInfo({ dropTargetRef: null });
 
           const dragEvent = this.createDragEvent(e);
           if (this.draggableRef && this.draggableRef.onDragLeave) {
@@ -317,23 +325,43 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
       private onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.button === 2) return;
+        if (!this.dimensions) {
+          this.initPosition();
+          setTimeout(() => this.onMouseDown(e));
+        }
         if (this.mounted && !this.options.disableDrag && this.initialPosition) {
-          this.mouseDownTimeout = setTimeout(() => {
-            // Call onDragStart if it is defined
-            setDragStoreInfo({
-              draggableRef: this.draggableRef,
-              draggableData: this.draggableRef.data(),
-              draggableInitPosition: this.initialPosition,
-              dataKey: this.options.dataKey,
-              draggingPosition: this.initialPosition,
-              dragRender: this.options.dragRender ||
-                <WrappedComponent
-                  {...this.props}
-                  dragItemIsOver={this.state.dragItemIsOver}
-                />,
-              dropTargetRef: null,
-            });
-          }, 150);
+          this.mouseDownTimeout = window.setTimeout(() => this.startDrag(this.options.id, { e }), 150);
+        }
+      }
+
+      private startDrag = async (id: string, payload: Partial<StartDragOptions>) => {
+        // Call onDragStart if it is defined
+        if (this.options.id === id) {
+          if (!this.initialPosition) {
+            await this.initPosition();
+          }
+          this.initDragStoreInfo(payload);
+        }
+      }
+
+      private initDragStoreInfo = async (payload: Partial<StartDragOptions>) => {
+        await DragStore.setDragStoreInfo({
+          draggableRef: this.draggableRef,
+          draggableData: payload.draggableData || this.draggableRef.data(),
+          draggableInitPosition: this.initialPosition,
+          dataKey: this.options.dataKey,
+          draggingPosition: this.initialPosition,
+          dragRender: payload.dragRender || this.options.dragRender ||
+            <WrappedComponent
+              {...this.props}
+              dragItemIsOver={this.state.dragItemIsOver}
+            />,
+          dropTargetRef: null,
+        });
+
+        if (payload.e && this.draggableRef && this.draggableRef.onDragStart) {
+          const dragEvent = this.createDragEvent(payload.e);
+          this.draggableRef.onDragStart(dragEvent);
         }
       }
 

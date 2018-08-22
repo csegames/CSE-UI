@@ -46,6 +46,10 @@ const FilterButtons = styled.div`
   flex-wrap: wrap;
 `;
 
+const InputClass = css`
+  margin-right: 10px;
+`;
+
 export interface InventoryHeaderProps {
   // Text that is currently shown in the filter / search input box
   filterText: string;
@@ -74,7 +78,11 @@ export class InventoryHeader extends React.Component<InventoryHeaderProps, Inven
     return (
       <Container>
         <InputAndFilterMenuContainer>
-          <FilterInput filterText={this.props.filterText} onFilterChanged={this.props.onFilterChanged} />
+          <FilterInput
+            className={InputClass}
+            filterText={this.props.filterText}
+            onFilterChanged={this.props.onFilterChanged}
+          />
           <FilterSelectMenu
             selectedFilterButtons={this.state.filterButtons}
             onFilterButtonAdded={this.onFilterButtonAdded}

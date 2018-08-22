@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
@@ -26,16 +27,43 @@ const Slot = styled.div`
   pointer-events: all;
   width: ${itemDimensions.width}px;
   height: ${itemDimensions.height}px;
-  border: 1px solid white;
 `;
 
-const SlotStyle = {
-  Item: {
-    width: itemDimensions.width,
-    height: itemDimensions.height,
-    border: '1px solid white',
-  },
-};
+const SlotIcon = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  object-fit: cover;
+`;
+
+const SlotStyle = css`
+  position: absolute;
+  width: ${itemDimensions.width - 10}px;
+  height: ${itemDimensions.height - 10}px;
+  top: 4px;
+  right: 4px;
+  left: 4px;
+  bottom: 4px;
+`;
+
+const SlotOverlay = styled.div`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  left: 4px;
+  bottom: 4px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  &:active {
+    box-shadow: none;
+  }
+`;
 
 export interface PopupMiniInventorySlotProps {
   item: InventoryItem.Fragment;
@@ -60,13 +88,12 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
         onClick={this.onEquipItem}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}>
-        <ItemComponent
-          id={item.id}
-          icon={item.staticDefinition.iconUrl}
-          styles={SlotStyle}
-        />
+        <SlotIcon src={'images/inventory/item-slot.png'} />
+        <ItemComponent id={item.id} icon={item.staticDefinition.iconUrl} containerClass={SlotStyle} />
+        <SlotOverlay />
       </Slot>
     ) : <Slot>
+          <SlotIcon src={'images/inventory/item-slot.png'} />
           <EmptyItem />
         </Slot>;
   }
@@ -89,6 +116,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
     };
     game.trigger(eventNames.onDehighlightSlots);
     game.trigger(eventNames.onEquipItem, payload);
+    hideTooltip();
   }
 
   private onMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {

@@ -86,9 +86,7 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
-
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
   syncWithServer: () => void;
   bodyWidth: number;
 }
@@ -131,11 +129,8 @@ class ItemContainer extends React.Component<ItemContainerProps> {
               marginTop={-29}
               footerWidth={isLastItem ? '100%' : 'calc(100% - 153px)'}
               drawer={_drawer}
-              onChangeInventoryItems={this.props.onChangeInventoryItems}
               containerItem={item}
               containerID={this.props.containerID ? this.props.containerID : [item.id]}
-              onChangeContainerIdToDrawerInfo={this.props.onChangeContainerIdToDrawerInfo}
-              onChangeStackGroupIdToItemIDs={this.props.onChangeStackGroupIdToItemIDs}
               onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
               showTooltip={this.props.showTooltip}
               hideTooltip={this.props.hideTooltip}

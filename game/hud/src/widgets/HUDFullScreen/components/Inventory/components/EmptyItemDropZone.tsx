@@ -8,11 +8,11 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import EmptyItem, { EmptyItemProps } from '../../ItemShared/EmptyItem';
+import EmptyItem, { EmptyItemProps } from '../../ItemShared/components/EmptyItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
-import enableDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
-import { InventoryDataTransfer } from '../../../lib/eventNames';
+import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
+import { InventoryDataTransfer, MoveStackPayload } from '../../../lib/eventNames';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import {
   getInventoryDataTransfer,
@@ -21,6 +21,7 @@ import {
   isCraftingItem,
 } from '../../../lib/utils';
 import { SlotType, SlotIndexInterface } from '../../../lib/itemInterfaces';
+import { InventoryContext } from '../../ItemShared/InventoryContext';
 
 const Container = styled.div`
   position: relative;
@@ -36,6 +37,10 @@ const SlotOverlay = styled.div`
   background-color: ${(props: any) => props.backgroundColor};
 `;
 
+export interface InjectedEmptyItemDropZoneProps {
+  onMoveStack: (payload: MoveStackPayload) => void;
+}
+
 export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
   slotType: SlotType;
   slotIndex: SlotIndexInterface;
@@ -49,13 +54,15 @@ export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
   item?: InventoryItem.Fragment;
 }
 
+export type Props = InjectedEmptyItemDropZoneProps & EmptyItemDropZoneProps;
+
 export interface EmptyItemDropZoneState {
   backgroundColor: string;
 }
 
-class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItemDropZoneState> {
+class EmptyItemWrapper extends React.Component<Props, EmptyItemDropZoneState> {
   private myDataTransfer: InventoryDataTransfer;
-  constructor(props: EmptyItemDropZoneProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       backgroundColor: 'transparent',
@@ -66,7 +73,7 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
     return this.myDataTransfer;
   }
 
-  public onDrop(e: DragEvent<InventoryDataTransfer, EmptyItemProps & EmptyItemDropZoneProps>) {
+  public onDrop(e: DragEvent<InventoryDataTransfer, EmptyItemProps & Props>) {
     const { item, containerPermissions, drawerMaxStats, drawerCurrentStats, slotType } = this.props;
     // If containerPermissions is falsy or user has permission to add contents to container then proceed to drop
     if (this.props.slotIndex.containerID) {
@@ -93,12 +100,22 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
         this.props.onDrop(e.dataTransfer, this.myDataTransfer);
       }
     } else {
-      // is in regular inventory
-      this.props.onDrop(e.dataTransfer, this.myDataTransfer);
+      if (e.dataTransfer.unitCount) {
+        const moveStackPayload: MoveStackPayload = {
+          item: e.dataTransfer.item,
+          amount: e.dataTransfer.unitCount,
+          newLocation: 'inventory',
+          newPosition: this.props.slotIndex.position,
+        };
+        this.props.onMoveStack(moveStackPayload);
+      } else {
+        // is in regular inventory
+        this.props.onDrop(e.dataTransfer, this.myDataTransfer);
+      }
     }
   }
 
-  public onDragOver(e: DragEvent<InventoryDataTransfer, EmptyItemProps & EmptyItemDropZoneProps>) {
+  public onDragOver(e: DragEvent<InventoryDataTransfer, EmptyItemProps & Props>) {
     const { containerPermissions, drawerMaxStats, drawerCurrentStats, item, slotType } = this.props;
     const notAllowedColor = 'rgba(186, 50, 50, 0.4)';
     const allowedColor = 'rgba(46, 213, 80, 0.4)';
@@ -165,11 +182,11 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
     this.setDropDataTransfer(this.props);
   }
 
-  public componentWillReceiveProps(nextProps: EmptyItemDropZoneProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     this.setDropDataTransfer(nextProps);
   }
 
-  private setDropDataTransfer = (props: EmptyItemDropZoneProps) => {
+  private setDropDataTransfer = (props: Props) => {
     const dropZoneData = getInventoryDataTransfer({
       slotType: SlotType.Empty,
       item: props.item || null,
@@ -183,8 +200,8 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
   }
 }
 
-const EmptyItemDropZone = enableDragAndDrop<EmptyItemProps & EmptyItemDropZoneProps>(
-  (props: EmptyItemProps & EmptyItemDropZoneProps) => {
+const EmptyItemDropZone = dragAndDrop<EmptyItemProps & Props>(
+  (props: EmptyItemProps & Props) => {
     return {
       id: 'emptyDropZone',
       dataKey: 'inventory-items',
@@ -195,4 +212,16 @@ const EmptyItemDropZone = enableDragAndDrop<EmptyItemProps & EmptyItemDropZonePr
   },
 )(EmptyItemWrapper);
 
-export default EmptyItemDropZone;
+class EmptyItemDropZoneWithInjectedContext extends React.Component<EmptyItemProps & EmptyItemDropZoneProps> {
+  public render() {
+    return (
+      <InventoryContext.Consumer>
+        {({ onMoveStack }) => {
+          return <EmptyItemDropZone {...this.props} onMoveStack={onMoveStack} />;
+        }}
+      </InventoryContext.Consumer>
+    );
+  }
+}
+
+export default EmptyItemDropZoneWithInjectedContext;
