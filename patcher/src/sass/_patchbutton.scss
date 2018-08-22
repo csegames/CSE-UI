@@ -141,7 +141,7 @@
   position: relative;
   min-width: 75%;
   margin: 75px auto;
-  iframe {
+  .euala-body {
     position: absolute;
     left: 0;
     right: 0;
@@ -150,6 +150,8 @@
     bottom: 100px;
     min-height: 100%;
     min-width: 100%;
+    background-color: white;
+    overflow: auto;
   }
   .accept {
     position: absolute;
