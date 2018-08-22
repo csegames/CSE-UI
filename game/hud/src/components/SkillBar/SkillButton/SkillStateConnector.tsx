@@ -47,7 +47,7 @@ function skillStateConnector<PropsTypes extends any>() {
           id: this.props.skillInfo.id,
           info: {
             type: SkillStateTypeEnum.Standard,
-            keybind: dxKeyCodes[this.props.skillInfo.keybind],
+            keybind: this.props.skillInfo.boundKeyName || dxKeyCodes[this.props.skillInfo.keybind],
             icon: this.props.skillInfo.icon,
           },
           track: SkillStateTrackEnum.PrimaryWeapon,

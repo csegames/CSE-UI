@@ -111,6 +111,7 @@ export interface ClientSkillState {
 export interface ClientSkillBarItem {
   id: number;
   keybind: number;
+  boundKeyName: string;
 }
 
 export interface SiegeState extends EntityState {
