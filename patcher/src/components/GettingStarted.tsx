@@ -9,7 +9,7 @@ import * as React from 'react';
 import styled from 'react-emotion';
 
 const Container = styled('div')`
-  top: 200px;
+  top: 150px;
   left: 50px;
   position: absolute;
   z-index: 99;
@@ -41,11 +41,15 @@ const Link = styled('a')`
   text-decoration: none;
   text-align: center;
   padding-top: 12px;
+  margin-top: -10px;
   width: 205px;
   height: 48px;
   display: block;
   cursor: pointer;
   background: url(images/getting-started/grey-button.png) no-repeat;
+  &.no-margin {
+    margin-top: 0px;
+  }
   &:hover {
     background: url(images/getting-started/hovered-button.png) no-repeat;
   }
@@ -70,10 +74,21 @@ class GettingStarted extends React.Component<Props, State> {
           <Image src='images/getting-started/anvil-beta-is-here.png' />
         </Anvil>
         <LinksContainer>
-          <Link 
+          <Link
+            className='no-margin'
             target='_blank'
             href='https://s3.amazonaws.com/camelot-unchained/docs/Beta-1-Players-Guide.pdf'>
-            Beta 1 Guide
+            English Beta 1 Guide
+          </Link>
+          <Link
+            target='_blank'
+            href='https://s3.amazonaws.com/camelot-unchained/docs/French-Beta-1-Players-Guide.pdf'>
+            French Beta 1 Guide
+          </Link>
+          <Link
+            target='_blank'
+            href='https://s3.amazonaws.com/camelot-unchained/docs/German-Beta-1-Players-Guide.pdf'>
+            German Beta 1 Guide
           </Link>
         </LinksContainer>
       </Container>

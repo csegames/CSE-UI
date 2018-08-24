@@ -14,6 +14,7 @@ export const TopVeil = styled('div')`
   width: 100%;
   height: 173px;
   z-index: 9;
+  pointer-events: none;
 `;
 
 export const TopLeftVeil = styled('div')`
@@ -24,6 +25,7 @@ export const TopLeftVeil = styled('div')`
   width: 400px;
   height: 300px;
   z-index: 10;
+  pointer-events: none;
 `;
 
 export const BottomVeil = styled('div')`
@@ -33,6 +35,7 @@ export const BottomVeil = styled('div')`
   width: 100%;
   height: 80px;
   z-index: 10;
+  pointer-events: none;
 `;
 
 export const BottomLeftVeil = styled('div')`
@@ -44,6 +47,7 @@ export const BottomLeftVeil = styled('div')`
   width: 600px;
   height: 300px;
   z-index: 10;
+  pointer-events: none;
 `;
 
 export const BottomRightVeil = styled('div')`
@@ -54,4 +58,5 @@ export const BottomRightVeil = styled('div')`
   width: 500px;
   height: 260px;
   z-index: 10;
+  pointer-events: none;
 `;
