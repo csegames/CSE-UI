@@ -6,12 +6,11 @@
  */
 
 import * as React from 'react';
-import { includes } from 'lodash';
 import styled, { css, keyframes, cx } from 'react-emotion';
-import { webAPI, Race, Archetype, Gender, Faction } from '@csegames/camelot-unchained';
+import { webAPI, Race, Archetype, Faction } from '@csegames/camelot-unchained';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
-import CharacterImages from '../../../../../lib/characterImages';
+import { getCharImage } from '../../../../../lib/characterImages';
 
 const charTransitionAnim = keyframes`
   from {
@@ -152,12 +151,10 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
     const visualFXChar = this.state.visualFXChar || this.state.firstChar;
     const { selectedCharacter } = this.props;
     if (visualFXChar && selectedCharacter) {
-      const { faction, race, gender, archetype } = selectedCharacter;
-      const raceString = includes(Race[race].toLowerCase(), 'human') ? webAPI.raceString(race) : Race[race];
+      const { faction } = selectedCharacter;
       const charImgClass = [`bgelement char`];
       const charBaseClass = [Faction[faction].toLowerCase()];
       const charNameClass = [];
-      const charInfo = `${raceString}${Gender[gender]}${Archetype[archetype]}`;
 
       if (this.state.shouldTransition) {
         charNameClass.push(CharNameTransitionAnim);
@@ -180,7 +177,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
           />
           <CharImg
             className={cx(charImgClass)}
-            src={CharacterImages[charInfo]}
+            src={getCharImage(selectedCharacter)}
             height={selectedCharacter.race === Race.Luchorpan ||
               selectedCharacter.archetype === Archetype.WintersShadow ? 65 : 80}
             opacity={this.state.visualFXChar === null ? 1 : 0}

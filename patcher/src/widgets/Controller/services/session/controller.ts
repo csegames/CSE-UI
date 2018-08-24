@@ -11,6 +11,8 @@ import { patcher, Channel, ChannelStatus, PatcherError } from '../../../../servi
 
 declare const toastr: any;
 
+const PATCHER_HUB_WINDOW_ID = 'patcherHubs';
+
 export interface ControllerState {
   isInitializing: boolean;
   signalRInitialized: boolean;
@@ -99,10 +101,11 @@ function registerPatcherHubEvents(dispatch: (action: ControllerAction) => any) {
 function registerOtherPatcherHubEvents(dispatch: (action: ControllerAction) => any,
                                         apiHost: string,
                                         controllerState?: ControllerState) {
-  if (!window['patcherHubs'] || !window['patcherHubs'].hubs || !window['patcherHubs'].eventListeners) return;
+  if (!window[PATCHER_HUB_WINDOW_ID] || !window[PATCHER_HUB_WINDOW_ID].hubs ||
+      !window[PATCHER_HUB_WINDOW_ID].eventListeners) return;
 
   const characterUpdatedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERUPDATED);
-  window['patcherHubs'].hubs.eventListeners[characterUpdatedEvent] =
+  window[PATCHER_HUB_WINDOW_ID].eventListeners[characterUpdatedEvent] =
     events.on(characterUpdatedEvent, (characterJSON: string) => {
       const character = utils.tryParseJSON<webAPI.SimpleCharacter>(characterJSON, client.debug);
       if (character !== null) {
@@ -117,22 +120,22 @@ function registerOtherPatcherHubEvents(dispatch: (action: ControllerAction) => a
     });
 
   const characterRemovedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED);
-  window['patcherHubs'].hubs.eventListeners[characterRemovedEvent] = 
+  window[PATCHER_HUB_WINDOW_ID].eventListeners[characterRemovedEvent] = 
     events.on(signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED), (id: string) => {
-      dispatch(characterRemoved(id))
+      dispatch(characterRemoved(id));
     });
 }
 
 function unregisterOtherPatcherHubEvents(apiHost: string) {
-  if (!window['patcherHubs'] || !window['patcherHubs'].hubs || !window['patcherHubs'].eventListeners) return;
+  if (!window[PATCHER_HUB_WINDOW_ID] || !window[PATCHER_HUB_WINDOW_ID].hubs || !window[PATCHER_HUB_WINDOW_ID].eventListeners) return;
 
   const characterUpdatedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERUPDATED);
-  events.off(window['patcherHubs'].hubs.eventListeners[characterUpdatedEvent]);
-  window['patcherHubs'].hubs.eventListeners[characterUpdatedEvent] = null;
+  events.off(window[PATCHER_HUB_WINDOW_ID].eventListeners[characterUpdatedEvent]);
+  window[PATCHER_HUB_WINDOW_ID].hubs.eventListeners[characterUpdatedEvent] = null;
 
   const characterRemovedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED);
-  events.off(window['patcherHubs'].hubs.eventListeners[characterRemovedEvent]);
-  window['patcherHubs'].hubs.eventListeners[characterRemovedEvent]= null;
+  events.off(window[PATCHER_HUB_WINDOW_ID].eventListeners[characterRemovedEvent]);
+  window[PATCHER_HUB_WINDOW_ID].hubs.eventListeners[characterRemovedEvent]= null;
 } 
 
 function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
@@ -256,24 +259,41 @@ export function onStopOtherSignalR(apiHost: string) {
 async function startOtherSignalR(dispatch: (action: ControllerAction) => any) {
   const servers = await fetchServers();
   servers.forEach((server) => {
-    let hub = signalr.createPatcherHub({ hostName: server.apiHost + '/signalr' });
-    hub.start(false).then((res) => {
-      if (res !== null) {
-        onStartOtherSignalR(dispatch, server.apiHost + '/signalr');
-      }
-    });
+    establishSignalrConnection(dispatch, server.apiHost + '/signalr');
 
-    if (window['patcherHubs']) {
-      window['patcherHubs']['hubs'][server.apiHost] = hub;
-    } else {
-      window['patcherHubs'] = {
-        hubs: {
-          [server.apiHost]: hub,
-        },
-        eventListeners: {},
-      };
-    }
   });
+}
+
+function establishSignalrConnection(dispatch: (action: ControllerAction) => any, hostName: string) {
+  const hub = signalr.createPatcherHub({ hostName });
+  hub.start(false)
+    .then((res) => {
+      if (res === null) {
+        setTimeout(() => establishSignalrConnection(dispatch, hostName), 15000);
+      } else {
+        onStartOtherSignalR(dispatch, hostName);
+        hub.onDisconnected = () => {
+          setTimeout(() => establishSignalrConnection(dispatch, hostName), 15000);
+        };
+      }
+    })
+    .catch((err) => {
+      console.error('---- There was an error trying to establish signalr connection to an api server ----', err);
+    });
+  updatePatcherHubCache(hostName, hub);
+}
+
+function updatePatcherHubCache(apiHost: string, hub: signalr.SignalRHub) {
+  if (window[PATCHER_HUB_WINDOW_ID] && window[PATCHER_HUB_WINDOW_ID]['hubs']) {
+    window[PATCHER_HUB_WINDOW_ID]['hubs'][apiHost] = hub;
+  } else {
+    window[PATCHER_HUB_WINDOW_ID] = {
+      hubs: {
+        [apiHost]: hub,
+      },
+      eventListeners: {},
+    };
+  }
 }
 
 // Initialize patcher signalr connections

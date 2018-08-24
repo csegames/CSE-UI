@@ -9,10 +9,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { keyframes } from 'react-emotion';
 import { events, webAPI, Gender, Archetype, Race, Spinner } from '@csegames/camelot-unchained';
-
-import CharacterImages, { shouldFlipCharImage } from '../../../../../lib/characterImages';
+import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../services/session/controller';
-
 import PlayerCounts from './PlayerCounts';
 
 declare const toastr: any;
@@ -283,10 +281,6 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         flipImage = true;
       }
 
-      const race = _.includes(Race[character.race].toLowerCase(), 'human') ?
-        webAPI.raceString(character.race) : Race[character.race];
-      const charInfo = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
-
       return (
         <Container
           className='character-button-char-container'
@@ -297,7 +291,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           <CharPic
             flipImage={flipImage}
             className='character-button-char-pic'
-            backgroundImg={CharacterImages[charInfo]}
+            backgroundImg={getCharImage(character)}
             backgroundPosition={
               character.race === Race.Luchorpan ||
                 (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
@@ -309,7 +303,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           <CharMask
             className='character-button-char-mask'
             flipImage={flipImage}
-            image={CharacterImages[charInfo]}
+            image={getCharImage(character)}
             backgroundPosition={
               character.race === Race.Luchorpan ||
                 (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :

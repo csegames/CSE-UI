@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { webAPI, events, client } from '@csegames/camelot-unchained';
+import { webAPI, events } from '@csegames/camelot-unchained';
 import CharacterDeleteModalView from './components/CharacterDeleteModalView';
 import { PatcherServer } from '../../services/session/controller';
+import { patcher } from '../../../../services/patcher';
 
 export interface CharacterDeleteModalProps {
   servers: {[id: string]: PatcherServer};
@@ -64,7 +65,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     try {
       const res = await webAPI.CharactersAPI.DeleteCharacterV1(
         { url: _.values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/' },
-        client.loginToken,
+        patcher.getLoginToken(),
         character.shardID,
         character.id,
       );

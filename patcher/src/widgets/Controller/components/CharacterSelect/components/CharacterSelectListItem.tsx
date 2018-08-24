@@ -9,7 +9,7 @@ import * as React from 'react';
 import { includes } from 'lodash';
 import { webAPI, Race, Gender, Archetype, events } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
-import CharacterImages from '../../../../../lib/characterImages';
+import { getCharImage } from '../../../../../lib/characterImages';
 
 const goldenColor = 'rgba(192, 173, 124, 0.4)';
 
@@ -196,7 +196,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
       Race[character.race];
 
     const charIdentifier = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
-    const classImg = CharacterImages[`${race}${Gender[character.gender]}${Archetype[character.archetype]}`];
+    const classImg = getCharImage(character);
     return (
         <Container
           onClick={this.onClick}

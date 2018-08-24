@@ -21,8 +21,6 @@ import {
   characterRemoved,
   listenForErrors,
   clearError,
-  onStartOtherSignalR,
-  onStopOtherSignalR,
 } from '../../services/session/controller';
 
 export interface APIServerStatus {
@@ -112,34 +110,8 @@ class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, Cont
           } else {
             apiServerStatus[servers[_key].apiHost] = 'Offline';
           }
-          this.updateApiSignalRConnections(this.state.apiServerStatus, apiServerStatus);
           this.setState({ apiServerStatus });
         });
-    });
-  }
-
-  private updateApiSignalRConnections = (prevServerStatus: APIServerStatus, nextServerStatus: APIServerStatus) => {
-    Object.keys(nextServerStatus).forEach((apiHost) => {
-      const nextStatus = nextServerStatus[apiHost];
-      const prevStatus = prevServerStatus[apiHost];
-      const hub = window['patcherHubs'][apiHost];
-      const signalRHost = apiHost + '/signalr';
-
-      if (hub) {
-        if (prevStatus === 'Offline' && nextStatus === 'Online') {
-          // Api server came online
-          if (this.props.dispatch) {
-            hub.start(false).then(() => {
-              onStartOtherSignalR(this.props.dispatch, signalRHost, this.props.ControllerState);
-            });
-          }
-        }
-        if (prevStatus === 'Online' && nextStatus === 'Offline') {
-          // Api server went offline
-          hub.stop();
-          onStopOtherSignalR(signalRHost);
-        }
-      }
     });
   }
 
