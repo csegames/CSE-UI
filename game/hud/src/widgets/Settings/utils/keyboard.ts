@@ -67,7 +67,7 @@ export function updateKeybind(name: string, keybind: Binding) {
   const boundKeys = bind.boundKeys;
   boundKeys[alias] = { name: boundKeyName, value: boundKeyValue };
   while (boundKeys.length < 3) {
-    boundKeys.push(UNBOUND_KEY);       // add unbound keys
+    boundKeys.push(UNBOUND_KEY); // add unbound keys
   }
 }
 

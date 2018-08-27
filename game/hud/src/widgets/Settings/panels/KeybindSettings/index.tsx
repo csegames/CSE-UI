@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { SettingsPanel } from '../components/SettingsPanel';
+import { SettingsPanel } from '../../components/SettingsPanel';
 import {
   getKeyBinds,
   cancel,
@@ -14,8 +14,8 @@ import {
   recordKeybind,
   stopRecordingKeybind,
   restoreDefaultKeybinds,
-} from '../utils/configVars';
-import { KeyBind, spacify } from '../components/KeyBind';
+} from '../../utils/configVars';
+import { KeyBind } from '../../components/KeyBind';
 import { sendSystemMessage } from 'services/actions/system';
 import {
   Keybinds,
@@ -25,20 +25,20 @@ import {
   getCharacterKeybindsName,
   removeKeybinds,
   Bind,
-  UNBOUND_KEY,
   getButtonNameFromId,
   updateKeybind,
   getKeybinds,
-} from '../utils/keyboard';
+} from '../../utils/keyboard';
 import { client, events, Binding } from '@csegames/camelot-unchained';
 import { Box } from 'UI/Box';
 import { Field } from 'UI/Field';
 import { CloseButton } from 'UI/CloseButton';
-import { Key } from '../components/Key';
-import { SaveAs } from '../components/SaveAs';
-import { Load } from '../components/Load';
+import { SaveAs } from '../../components/SaveAs';
+import { Load } from '../../components/Load';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from 'components/UI/config';
+import ClashModal from './ClashModal';
+import ListeningModal from './ListeningModal';
 
 const Bind = styled('span')`
   background-color: rgba(128,128,128,0.1);
@@ -84,39 +84,10 @@ const CloseButtonPosition = css`
   top: 3px;
 `;
 
-const Clashed = styled('div')`
-  padding: 20px;
-  text-align: center;
-`;
-
-const ClashContent = styled('div')`
-  min-height: 26px;
-  margin-right: 5px;
-  line-height: 26px;
-`;
-
 const ConfigName = styled('h4')`
   margin-bottom: 0!important;
   padding: 4px 15px;
   color: ${CONFIG.NORMAL_TEXT_COLOR};
-`;
-
-const ListeningPopup = styled('div')`
-  padding: 20px;
-  div.rebind {
-    font-size: 120%;
-  }
-  div.instructions {
-    margin-bottom: 5px;
-  }
-  div.options > ul > li {
-    margin-top: 5px;
-    pointer-events: all;
-    cursor: pointer;
-  }
-  div.options > ul > li > i {
-    margin-right: 5px;
-  }
 `;
 
 interface ClashKey extends Binding {
@@ -147,7 +118,7 @@ interface KeybindSettingsState {
   name: string;
 }
 
-function sameBinds(keybinds: Keybinds, name: string, keybind: Binding): Clash {
+function sameBinds(keybinds: Keybinds, name: string, keybind: Binding): Clash | null {
   const sameAs: ClashKey[] = [];
   Object.keys(keybinds).forEach((key) => {
     const binds = keybinds[key].boundKeys;
@@ -163,11 +134,16 @@ function sameBinds(keybinds: Keybinds, name: string, keybind: Binding): Clash {
       }
     }
   });
-  if (sameAs.length) return { ...keybind, sameAs, name };
+  if (sameAs.length) {
+    return { ...keybind, sameAs, name };
+  }
+
+  // There is no clash, just return default state which is null
+  return null;
 }
 
 export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, KeybindSettingsState> {
-  private evh: number;
+  private eventHandle: number;
   constructor(props: KeybindSettingsProps) {
     super(props);
     this.state = {
@@ -182,13 +158,13 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--action', this.onAction);
+    this.eventHandle = events.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
   public componentWillUnmount() {
     cancel(ConfigIndex.KEYBIND);
-    if (this.evh) events.off(this.evh);
+    if (this.eventHandle) events.off(this.eventHandle);
     if (this.state.listening) {
       this.dontListen();
     }
@@ -201,8 +177,14 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
       <SettingsPanel style={{ padding: 0 }}>
         { keys && keys.length > 10 ? this.renderSearchBar() : null }
         { keys ? this.renderKeyBinds(keybinds) : null }
-        { listening ? this.renderListening(listening) : null }
-        { clash ? this.renderClash(clash) : null }
+        { listening ?
+          <ListeningModal
+            listening={listening}
+            clearBind={this.clearBind}
+            toggleRebind={this.toggleRebind}
+          /> : null
+        }
+        { clash ? <ClashModal clash={clash} onResolveClash={this.onResolveClash} /> : null }
         { mode === 'save' && <SaveAs label='Save keybinds as' saveAs={this.saveAs} onClose={this.clearMode}/>}
         { mode === 'load' && <Load load={this.load} remove={this.remove} onClose={this.clearMode}/>}
       </SettingsPanel>
@@ -256,50 +238,6 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
           );
         })}
       </KeyBindsContainer>
-    );
-  }
-
-  private renderListening(listening: Listening) {
-    const { keybind, alias } = listening;
-    return (
-      <ListeningPopup>
-        <h1 className='rebind'>
-          Rebinding { spacify(getButtonNameFromId(listening.keybind.button)) }
-        </h1>
-        <div className='instructions'>
-          Press the key to bind, or click outside of this window to bind a mouse button.
-        </div>
-        <div className='options'>
-          <ul>
-            <li onClick={() => this.clearBind(keybind.button, alias)}>
-              <i className='fa fa-trash'/> Remove current key bind
-            </li>
-            <li onClick={() => this.toggleRebind(keybind, alias)}>
-              <i className='fa fa-undo'/> Cancel
-            </li>
-          </ul>
-        </div>
-      </ListeningPopup>
-    );
-  }
-
-  private renderClash(clash: Clash) {
-    const { sameAs, boundKeyName } = clash;
-    return (
-      <Clashed>
-        <ClashContent>
-          <Key>{boundKeyName}</Key> is already bound to
-          {sameAs.map((item: ClashKey, index: number) => (
-            <Bind key={index}>{spacify(item.name)}</Bind>
-          ))}.
-        </ClashContent>
-        <ClashContent>
-          Rebind anyway?
-          <Key onClick={() => this.onResolveClash(clash, true)}>Yes</Key>
-          /
-          <Key onClick={() => this.onResolveClash(clash, false)}>No</Key>
-        </ClashContent>
-      </Clashed>
     );
   }
 
@@ -385,31 +323,14 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
 
   private onResolveClash = (clash: Clash, resolved: boolean) => {
     if (resolved) {
-      // Need to clear other keybinds
-      if (true) {    // Unbinding conflicts currently disabled.
-        updateKeybind(clash.name, {
-          id: clash.id,
-          alias: clash.alias,
-          boundKeyName: clash.boundKeyName,
-          boundKeyValue: clash.boundKeyValue,
-        });
-        clash.sameAs.forEach((clashed: ClashKey) => {
-          client.SetKeybind(clashed.id, clashed.alias, 0);
-          updateKeybind(clashed.name, {
-            id: clashed.id,
-            alias: clashed.alias,
-            boundKeyName: UNBOUND_KEY.name,
-            boundKeyValue: UNBOUND_KEY.value,
-          });
-        });
-        updateKeybind(clash.name, {
-          id: clash.id,
-          alias: clash.alias,
-          boundKeyName: clash.boundKeyName,
-          boundKeyValue: clash.boundKeyValue,
-        });
-        this.setState({ version: this.state.version + 1, keybinds: getKeybinds() });
-      }
+      // We don't actually unbind clashes, just let the player know that there are other actions bound with the same key.
+      updateKeybind(clash.name, {
+        id: clash.id,
+        alias: clash.alias,
+        boundKeyName: clash.boundKeyName,
+        boundKeyValue: clash.boundKeyValue,
+      });
+      this.setState({ version: this.state.version + 1, keybinds: getKeybinds() });
     } else {
       // Not resolved, need to restore this keybind, state still has the previous
       // value as we didn't change state for the new key yet.
