@@ -13,9 +13,9 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
-import { getMyPaperDollBG } from '../../lib/utils';
 import { EquippedItem, PaperDollContainerGQL } from 'gql/interfaces';
 import { EquippedItemFragment } from 'gql/fragments/EquippedItemFragment';
+import { getMyPaperDollBG } from 'widgets/HUDFullScreen/lib/utils';
 
 const paperDollContainerQuery = gql`
   query PaperDollContainerGQL {

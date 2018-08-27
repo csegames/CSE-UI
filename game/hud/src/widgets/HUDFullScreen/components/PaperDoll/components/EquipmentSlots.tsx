@@ -12,13 +12,9 @@ import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
+import PaperdollIcon from './PaperdollIcon';
 import { gearSlots } from '../../../lib/constants';
-import {
-  getEquippedDataTransfer,
-  FullScreenContext,
-  getMyPaperDollBaseIcon,
-  getMyPaperDollIcon,
-} from '../../../lib/utils';
+import { getEquippedDataTransfer, FullScreenContext } from '../../../lib/utils';
 import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
@@ -272,28 +268,6 @@ const WeaponSpacing = css`
   pointer-events: all;
 `;
 
-const PaperdollIcon = styled('img')`
-  position: absolute;
-  right: 0;
-  left: 0;
-  bottom: 115px;
-  margin: auto;
-  max-width: 100%;
-  width: auto;
-  height: 80%;
-`;
-
-const PaperdollBase = styled('img')`
-  position: absolute;
-  right: 0px;
-  left: 0px;
-  bottom: 115px;
-  margin: auto;
-  width: auto;
-  height: 20%;
-  object-fit: contain;
-`;
-
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
   { slotName: gearSlots.Skull, openingSide: Alignment.ATopRight },
   { slotName: gearSlots.Face, openingSide: Alignment.ATopRight },
@@ -367,17 +341,12 @@ interface EquipmentSlotsTabData {
 class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
   private equipItemListener: number;
   private onUnequipItemListener: number;
-  private paperdollIcon: string;
-  private paperdollBaseIcon: string;
 
   constructor(props: EquipmentSlotsComponentProps) {
     super(props);
     this.state = {
       slotNameItemMenuVisible: '',
     };
-
-    this.paperdollIcon = getMyPaperDollIcon();
-    this.paperdollBaseIcon = getMyPaperDollBaseIcon();
   }
 
   public render() {
@@ -400,8 +369,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
     ];
     return (
       <Container>
-        <PaperdollBase src={this.paperdollBaseIcon} />
-        <PaperdollIcon src={this.paperdollIcon} />
+        <PaperdollIcon />
         <TabPanel
           defaultTabIndex={0}
           tabs={tabs}

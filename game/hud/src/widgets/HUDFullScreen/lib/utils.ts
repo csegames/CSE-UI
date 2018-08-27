@@ -7,6 +7,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import {
+  Faction as GraphQLFaction,
+  Gender as GraphQLGender,
+  Race as GraphQLRace,
+  Archetype as GraphQLArchetype,
+} from '@csegames/camelot-unchained/lib/graphql/schema';
+import {
   client,
   utils,
   events,
@@ -14,10 +20,10 @@ import {
   Faction,
   Vec3F,
   Euler3f,
-  Race,
-  Gender,
-  Archetype,
   ItemPermissions,
+  Gender,
+  Race,
+  Archetype,
 } from '@csegames/camelot-unchained';
 
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
@@ -958,37 +964,29 @@ export function getPaperDollBG(faction: Faction) {
   return `images/paperdoll/bg/${paperdollBG}.png`;
 }
 
-export function getMyPaperDollBG() {
-  return getPaperDollBG(client.playerState.faction);
-}
-
-export function getPaperDollIcon(gender: Gender, race: Race, playerClass: Archetype) {
-  const formatGender = gender === Gender.Male ? 'm' : 'f';
-  let formatRace = Race[race] ? Race[race].toLowerCase() : '';
+export function getPaperDollIcon(gender: GraphQLGender, race: GraphQLRace, playerClass: GraphQLArchetype) {
+  const formatGender = gender === 'Male' ? 'm' : 'f';
+  let formatRace = race ? race.toLowerCase() : '';
 
   if (_.includes(formatRace, 'human')) {
     formatRace = 'human';
   }
-  const formatPlayerClass = Archetype[playerClass] ? Archetype[playerClass].toLowerCase() : '';
+  const formatPlayerClass = playerClass ? playerClass.toLowerCase() : '';
   return `images/paperdoll/standing/${formatRace}-${formatGender}-${formatPlayerClass}.png`;
 }
 
-export function getMyPaperDollIcon() {
-  return getPaperDollIcon(client.playerState.gender, client.playerState.race, client.playerState.class);
-}
-
-export function getPaperDollBaseIcon(faction: Faction) {
+export function getPaperDollBaseIcon(faction: GraphQLFaction) {
   let formatFaction = '';
   switch (faction) {
-    case Faction.Arthurian: {
+    case 'Arthurian': {
       formatFaction = 'art';
       break;
     }
-    case Faction.TDD: {
+    case 'TDD': {
       formatFaction = 'tdd';
       break;
     }
-    case Faction.Viking: {
+    case 'Viking': {
       formatFaction = 'vik';
       break;
     }
@@ -1000,6 +998,18 @@ export function getPaperDollBaseIcon(faction: Faction) {
   return `images/paperdoll/base/${formatFaction}-base.png`;
 }
 
+export function getMyPaperDollIcon() {
+  return getPaperDollIcon(
+    Gender[client.playerState.gender] as GraphQLGender,
+    Race[client.playerState.race] as GraphQLRace,
+    Archetype[client.playerState.class] as GraphQLArchetype,
+  );
+}
+
+export function getMyPaperDollBG() {
+  return getPaperDollBG(client.playerState.faction);
+}
+
 export function getMyPaperDollBaseIcon() {
-  return getPaperDollBaseIcon(client.playerState.faction);
+  return getPaperDollBaseIcon(Faction[client.playerState.faction] as GraphQLFaction);
 }
