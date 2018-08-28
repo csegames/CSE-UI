@@ -6,7 +6,7 @@
 
 import { events, buildUIMode, BuildingBlueprint } from '@csegames/camelot-unchained';
 import requester from './requester';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const UPDATE_BLUEPRINTS = 'buildpanel/panes/UPDATE_BLUEPRINTS';
 const SELECT_BLUEPRINT = 'buildpanel/panes/SELECT_BLUEPRINT';

@@ -8,14 +8,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI, client } from '@csegames/camelot-unchained';
 
 import LockedOverlay from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import InventoryRow from '../../Inventory/components/InventoryRow';
 import { SlotType, InventorySlotItemDef, SlotItemDefType } from '../../../lib/itemInterfaces';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem, SecureTradeState } from 'gql/interfaces';
 import {
   calcTradingSlots,
   getItemMapID,
@@ -115,16 +115,16 @@ const FooterIcon = styled('span')`
 
 export interface InjectedTradeDropContainerProps {
   stackGroupIdToItemIDs: {[id: string]: string[]};
-  inventoryItems: InventoryItemFragment[];
+  inventoryItems: InventoryItem.Fragment[];
 }
 
 export interface TradeDropContainerProps extends DragAndDropInjectedProps {
   id: 'myItems' | 'theirItems';
-  tradeState: ql.schema.SecureTradeState;
-  items: InventoryItemFragment[];
+  tradeState: SecureTradeState;
+  items: InventoryItem.Fragment[];
   bodyHeight: number;
   bodyWidth: number;
-  onTradeItemsChange?: (items: InventoryItemFragment[]) => void;
+  onTradeItemsChange?: (items: InventoryItem.Fragment[]) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
   useGrayBG?: boolean;
@@ -213,7 +213,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
     this.setState({ slotsPerRow });
   }
 
-  private onRightClick = async (item: InventoryItemFragment) => {
+  private onRightClick = async (item: InventoryItem.Fragment) => {
     if (this.props.id === 'myItems' && this.props.tradeState === 'ModifyingItems') {
       try {
         const tradeItem = { ItemID: item.id, UnitCount: item.stats.item.unitCount };
@@ -251,7 +251,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
 
   private moveStackItems = async (e: DragEvent<InventoryDataTransfer, TradeDropContainerComponentProps>) => {
     try {
-      const tradeItems: InventoryItemFragment[] = [];
+      const tradeItems: InventoryItem.Fragment[] = [];
       const stackId = getItemMapID(e.dataTransfer.item);
       this.props.stackGroupIdToItemIDs[stackId].forEach((_stackId) => {
         const stackItem = _.find(this.props.inventoryItems, _item => _item.id === _stackId);

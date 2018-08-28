@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
 
 import { InventorySlot } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';
@@ -17,7 +16,12 @@ import { ContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
 import { hasViewContentPermissions } from '../../../lib/utils';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+  EquippedItem,
+  ContainerDefStat_Single,
+} from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -39,12 +43,12 @@ export interface ContainerInfo {
 
 export interface InventoryRowProps {
   items: InventorySlotItemDef[];
-  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
   onContainerIdToDrawerInfoChange: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
   syncWithServer: () => void;
@@ -52,11 +56,11 @@ export interface InventoryRowProps {
 
   containerID?: string[];
   drawerID?: string;
-  equippedItems?: EquippedItemFragment[];
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  equippedItems?: EquippedItem.Fragment[];
+  drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
   filtering?: boolean;
-  onRightClickItem?: (item: InventoryItemFragment) => void;
+  onRightClickItem?: (item: InventoryItem.Fragment) => void;
 
   // Display gray slots png instead of gold
   showGraySlots?: boolean;

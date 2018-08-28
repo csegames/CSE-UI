@@ -4,11 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import { client } from '@csegames/camelot-unchained';
-import { CUSubscription } from '@csegames/camelot-unchained/lib/graphql';
 import { GraphQLSubscriptionOptions } from '@csegames/camelot-unchained/lib/graphql/react';
+import { InteractiveAlertSubscriptionGQL } from 'gql/interfaces';
 
-const url =  `${client.apiHost}/graphql`.replace('http', 'ws');
+const url =  (client.apiHost + '/graphql').replace('http', 'ws');
 const initPayload = {
   shardID: client.shardID,
   loginToken: client.loginToken,
@@ -16,11 +17,11 @@ const initPayload = {
 };
 
 
-export type SubscriptionData = Pick<CUSubscription, 'interactiveAlerts'>;
+export type SubscriptionData = InteractiveAlertSubscriptionGQL.Subscription;
 
 export const subscription: GraphQLSubscriptionOptions<SubscriptionData> = {
-  query: `
-    subscription {
+  query: gql`
+    subscription InteractiveAlertSubscriptionGQL {
       interactiveAlerts {
         category
         targetID
@@ -46,4 +47,3 @@ export const subscription: GraphQLSubscriptionOptions<SubscriptionData> = {
   initPayload,
   debug: false,
 };
-

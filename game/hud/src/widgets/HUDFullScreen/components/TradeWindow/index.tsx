@@ -8,47 +8,42 @@
 import * as React from 'react';
 import { includes } from 'lodash';
 import { client, events } from '@csegames/camelot-unchained';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
-import {
-  SecureTradeStatus,
-  ISecureTradeUpdate,
-  SecureTradeCompletedUpdate,
-  SecureTradeItemUpdate,
-  SecureTradeStateUpdate,
-  SecureTradeState,
-  SecureTradeDoneReason,
-} from '@csegames/camelot-unchained/lib/graphql/schema';
+import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
 import TradeWindowView from './components/TradeWindowView';
 import { FullScreenContext } from '../../lib/utils';
 import { SlotItemDefType } from '../../lib/itemInterfaces';
-import { InventoryItemFragment as ItemQueryFragment } from '../../graphql/fragments/strings/InventoryItemFragment';
-import { InventoryItemFragment } from '../../../../gqlInterfaces';
+import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
+import {
+  InventoryItem,
+  TradeWindowQuery,
+  TradeWindowSubscription,
+  SecureTradeState,
+  SecureTradeDoneReason,
+  SecureTradeUpdateCategory,
+} from 'gql/interfaces';
 
-type QueryType = {
-  secureTrade: SecureTradeStatus;
-};
-
-const tradeQuery = `
-  {
+const tradeQuery = gql`
+  query TradeWindowQuery {
     secureTrade {
       myState
       myItems {
-        ${ItemQueryFragment}
+        ...InventoryItem
       }
       theirEntityID
       theirState
       theirItems {
-        ${ItemQueryFragment}
+        ...InventoryItem
       }
     }
   }
+  ${InventoryItemFragment}
 `;
 
-const subscriptionQuery = `
-  subscription {
+const subscriptionQuery = gql`
+  subscription TradeWindowSubscription {
     secureTradeUpdates {
       category
       targetID
@@ -64,11 +59,12 @@ const subscriptionQuery = `
 
       ... on SecureTradeItemUpdate {
         otherEntityItems {
-          ${ItemQueryFragment}
+          ...InventoryItem
         }
       }
     }
   }
+  ${InventoryItemFragment}
 `;
 const subscriptionUrl =  `${client.apiHost}/graphql`.replace('http', 'ws');
 const subscriptionInitPayload = {
@@ -77,20 +73,16 @@ const subscriptionInitPayload = {
   characterID: client.characterID,
 };
 
-type SubscriptionType = {
-  secureTradeUpdates: ISecureTradeUpdate & SecureTradeCompletedUpdate & SecureTradeStateUpdate & SecureTradeItemUpdate;
-};
-
 export interface InjectedTradeWindowProps {
   isVisible: boolean;
-  myTradeItems: InventoryItemFragment[];
+  myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
 }
 
 export interface TradeWindowProps {
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
-  onMyTradeItemsChange: (myTradeItems: InventoryItemFragment[]) => void;
+  onMyTradeItemsChange: (myTradeItems: InventoryItem.Fragment[]) => void;
   onMyTradeStateChange: (tradeState: SecureTradeState) => void;
   onCloseFullScreen: () => void;
 }
@@ -99,14 +91,14 @@ export type TradeWindowComponentProps = InjectedTradeWindowProps & TradeWindowPr
 
 export interface TradeWindowState {
   theirTradeState: SecureTradeState;
-  theirTradeItems: InventoryItemFragment[];
+  theirTradeItems: InventoryItem.Fragment[];
 }
 
 class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindowState> {
   constructor(props: TradeWindowComponentProps) {
     super(props);
     this.state = {
-      theirTradeState: 'None',
+      theirTradeState: SecureTradeState.None,
       theirTradeItems: [],
     };
   }
@@ -122,7 +114,7 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
           initPayload: subscriptionInitPayload,
         }}
         subscriptionHandler={this.handleSubscription}>
-        {(graphql: GraphQLResult<QueryType>) => {
+        {(graphql: GraphQLResult<TradeWindowQuery.Query>) => {
           return (
             <TradeWindowView
               myTradeState={this.props.myTradeState}
@@ -142,19 +134,26 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
   }
 
   public componentDidUpdate(prevProps: TradeWindowComponentProps, prevState: TradeWindowState) {
-    if (this.props.myTradeState === 'Confirmed' && this.state.theirTradeState === 'ModifyingItems' &&
-        prevState.theirTradeState === 'Locked') {
-      this.props.onMyTradeStateChange('Locked');
+    if (
+      this.props.myTradeState === SecureTradeState.Confirmed &&
+      this.state.theirTradeState === SecureTradeState.ModifyingItems &&
+      prevState.theirTradeState === SecureTradeState.Locked
+    ) {
+      this.props.onMyTradeStateChange(SecureTradeState.Locked);
     }
-    if (this.props.myTradeState === 'Confirmed' && prevProps.myTradeState === 'Locked' &&
-        this.state.theirTradeState === 'Confirmed' && prevState.theirTradeState === 'Confirmed') {
+    if (
+      this.props.myTradeState === SecureTradeState.Confirmed &&
+      prevProps.myTradeState === SecureTradeState.Locked &&
+      this.state.theirTradeState === SecureTradeState.Confirmed &&
+      prevState.theirTradeState === SecureTradeState.Confirmed
+    ) {
       // Trade is complete
-      this.onTradeComplete('Completed');
+      this.onTradeComplete((SecureTradeDoneReason.Completed));
     }
   }
 
-  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'secureTrade'>>) => {
-    const resultData: Pick<CUQuery, 'secureTrade'> = typeof result.data === 'string' ?
+  private handleQueryResult = (result: GraphQLResult<TradeWindowQuery.Query>) => {
+    const resultData: TradeWindowQuery.Query = typeof result.data === 'string' ?
       JSON.parse(result.data) : result.data;
 
     if (resultData && resultData.secureTrade) {
@@ -165,29 +164,40 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     }
   }
 
-  private handleSubscription = (result: SubscriptionResult<SubscriptionType>, data: QueryType) => {
+  private handleSubscription = (
+    result: SubscriptionResult<TradeWindowSubscription.Subscription>,
+    data: TradeWindowQuery.Query,
+  ) => {
     if (!result.ok || !result.data) return data;
     const resultData = result.data;
 
     switch (resultData.secureTradeUpdates.category) {
-      case 'StateUpdate': {
-        this.onTheirTradeStateChange(resultData.secureTradeUpdates.otherEntityState);
+      case SecureTradeUpdateCategory.StateUpdate: {
+        this.onTheirTradeStateChange(
+          (resultData.secureTradeUpdates as TradeWindowSubscription.SecureTradeStateUpdateInlineFragment).otherEntityState,
+        );
         break;
       }
-      case 'ItemUpdate': {
-        this.onTheirTradeItemsChange(resultData.secureTradeUpdates.otherEntityItems as any[]);
+      case SecureTradeUpdateCategory.ItemUpdate: {
+        this.onTheirTradeItemsChange(
+          (
+            resultData.secureTradeUpdates as TradeWindowSubscription.SecureTradeItemUpdateInlineFragment
+          ).otherEntityItems as any[],
+        );
         break;
       }
-      case 'Complete': {
-        this.onTradeComplete(resultData.secureTradeUpdates.reason);
+      case SecureTradeUpdateCategory.Complete: {
+        this.onTradeComplete(
+          (resultData.secureTradeUpdates as TradeWindowSubscription.SecureTradeCompletedUpdateInlineFragment).reason,
+        );
         break;
       }
     }
   }
 
   private onTradeComplete = (reason: SecureTradeDoneReason) => {
-    this.props.onMyTradeStateChange('None');
-    this.onTheirTradeStateChange('None');
+    this.props.onMyTradeStateChange(SecureTradeState.None);
+    this.onTheirTradeStateChange(SecureTradeState.None);
 
     // Clear out trade items
     this.props.onMyTradeItemsChange([]);
@@ -199,11 +209,11 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
 
   private sendCompleteMessage = (reason: SecureTradeDoneReason) => {
     switch (reason) {
-      case 'Completed': {
+      case SecureTradeDoneReason.Completed: {
         events.fire('passivealert--newmessage', 'Trade Complete');
         break;
       }
-      case 'Canceled': {
+      case SecureTradeDoneReason.Canceled: {
         events.fire('passivealert--newmessage', 'Trade Canceled');
         break;
       }
@@ -214,7 +224,7 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     this.setState({ theirTradeState: newTradeState });
   }
 
-  private onTheirTradeItemsChange = (newTradeItems: InventoryItemFragment[]) => {
+  private onTheirTradeItemsChange = (newTradeItems: InventoryItem.Fragment[]) => {
     this.setState({ theirTradeItems: newTradeItems || [] });
   }
 }

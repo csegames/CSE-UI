@@ -18,7 +18,10 @@ import {
   TOOLTIP_PADDING,
 } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  EquippedItem,
+} from 'gql/interfaces';
 
 const Container = styled('div')`
   padding: ${TOOLTIP_PADDING};
@@ -59,7 +62,7 @@ const UnitText = styled('div')`
   font-size: 0.85em;
   height: 18px;
   margin-left: 4px;
-  color: ${utils.darkenColor('#C3C3C3', 40)}
+  color: ${utils.darkenColor('#C3C3C3', 40)};
 `;
 
 export interface TooltipWeaponInfoState {
@@ -70,8 +73,8 @@ export interface TooltipWeaponInfoState {
 }
 
 export interface TooltipWeaponInfoProps {
-  item: InventoryItemFragment;
-  equippedItems: EquippedItemFragment[];
+  item: InventoryItem.Fragment;
+  equippedItems: EquippedItem.Fragment[];
 }
 
 class TooltipWeaponInfo extends React.Component<TooltipWeaponInfoProps, TooltipWeaponInfoState> {
@@ -137,7 +140,7 @@ class TooltipWeaponInfo extends React.Component<TooltipWeaponInfoProps, TooltipW
 
   private getComparedWeaponStats = () => {
     const { item, equippedItems } = this.props;
-    let itemsWithComparedStats: InventoryItemFragment[] = [];
+    let itemsWithComparedStats: InventoryItem.Fragment[] = [];
 
     if (equippedItems && item.staticDefinition.gearSlotSets[0]) {
       // Find which items actually contain comparable stats

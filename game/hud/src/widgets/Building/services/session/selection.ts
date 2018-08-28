@@ -6,7 +6,7 @@
 
 import * as events  from '@csegames/camelot-unchained/lib/events';
 import { BuildingItem } from '../../lib/BuildingItem';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const CHANGE_SELECTION = 'building/selection/CHANGE_SELECTION';
 const ITEM_SELECTED_EVENT = 'building/selection/ITEM_SELECTED_EVENT';

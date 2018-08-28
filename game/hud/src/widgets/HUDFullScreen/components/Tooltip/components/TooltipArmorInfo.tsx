@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 
 import { TOOLTIP_PADDING } from '../../../lib/constants';
 import TooltipInfoSection, { TooltipSection } from './TooltipInfoSection';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem, EquippedItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   padding: 0 ${TOOLTIP_PADDING};
@@ -25,8 +25,8 @@ export interface TooltipArmorInfoState {
 }
 
 export interface TooltipArmorInfoProps {
-  item: InventoryItemFragment;
-  equippedItems: EquippedItemFragment[];
+  item: InventoryItem.Fragment;
+  equippedItems: EquippedItem.Fragment[];
 }
 
 class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArmorInfoState> {
@@ -132,7 +132,7 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
     const comparedResistances: {[section: string]: { [statName: string]: number }} = {};
     if (equippedItems) {
       // Only compare against the equipped items the inventory item will replace
-      let replacedEquippedItems: EquippedItemFragment[] = [...equippedItems];
+      let replacedEquippedItems: EquippedItem.Fragment[] = [...equippedItems];
       if (item.staticDefinition.gearSlotSets[0]) {
         const itemGearSlotIDs = item.staticDefinition.gearSlotSets[0].gearSlots.map(_gearSlot => _gearSlot.id);
         replacedEquippedItems = _.filter(equippedItems, (_equippedItem) => {

@@ -7,12 +7,12 @@
 
 import * as React from 'react';
 import { client } from '@csegames/camelot-unchained';
-import { Skill, StatusDef, CUQuery } from '@csegames/camelot-unchained/lib/graphql';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
+import { StatusDef, Skill, CUQuery } from 'gql/interfaces';
 
 export const HUDGraphQLQueryConfig = {
-  url: `${client.apiHost}/graphql`,
+  url: client.apiHost + '/graphql',
   requestOptions: {
     headers: {
       loginToken: client.loginToken,

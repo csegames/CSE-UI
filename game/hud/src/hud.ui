@@ -1,6 +1,6 @@
 {
   "name": "hud",
-  "mainFile": "hud.html",
+  "mainFile": "index.html",
   "layer": 2,
   "handlesCharacter": true,
   "handlesChat": true,

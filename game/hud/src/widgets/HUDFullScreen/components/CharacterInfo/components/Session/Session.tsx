@@ -5,9 +5,9 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
-import * as moment from 'moment';
-import { ql } from '@csegames/camelot-unchained';
+import moment from 'moment';
 import * as events from '@csegames/camelot-unchained/lib/events';
 import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -16,8 +16,9 @@ import StatsListContainer from '../StatListContainer';
 import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
+import { SessionGQL } from 'gql/interfaces';
 
-export interface SessionProps extends GraphQLInjectedProps<{ myCharacter: ql.schema.CUCharacter }> {
+export interface SessionProps extends GraphQLInjectedProps<SessionGQL.Query> {
 
 }
 
@@ -104,8 +105,8 @@ class Session extends React.Component<SessionProps, SessionState> {
 }
 
 const SessionWithQL = withGraphQL({
-  query: `
-    query SessionInfo {
+  query: gql`
+    query SessionGQL {
       myCharacter {
         session {
           sessionStartDate

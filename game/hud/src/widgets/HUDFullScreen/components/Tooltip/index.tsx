@@ -25,7 +25,10 @@ import {
   isAlloyItem,
 } from '../../lib/utils';
 import { SlotType } from '../../lib/itemInterfaces';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  EquippedItem,
+} from 'gql/interfaces';
 import TooltipAlloyInfo from './components/TooltipAlloyInfo';
 
 export const defaultTooltipStyle: { tooltip: string } = {
@@ -76,10 +79,10 @@ const Container = styled('div')`
 `;
 
 export interface TooltipContentProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
   instructions: string;
-  equippedItems?: EquippedItemFragment[];
-  stackedItems?: InventoryItemFragment[];
+  equippedItems?: EquippedItem.Fragment[];
+  stackedItems?: InventoryItem.Fragment[];
   slotType?: SlotType;
 }
 

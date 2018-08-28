@@ -8,7 +8,7 @@ import { events, BuildingMaterial } from '@csegames/camelot-unchained';
 
 import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 import MaterialsByType from '../../lib/MaterialsByType';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const SET_MATERIALS_BY_TYPE = 'buildpanel/panes/SET_MATERIALS_BY_TYPE';
 const UPDATE_MATERIAL_SELECTOR = 'buildpanel/panes/UPDATE_MATERIAL_SELECTOR';

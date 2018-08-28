@@ -8,8 +8,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { events, client, webAPI } from '@csegames/camelot-unchained';
-import { IInteractiveAlert, TradeAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
+import { IInteractiveAlert, TradeAlert } from 'gql/interfaces';
 
 // Utility Functions
 export function removeTradeInvite(alertsList: IInteractiveAlert[], toRemove: TradeAlert) {

@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
+import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
@@ -18,9 +18,25 @@ import { slotDimensions } from './InventorySlot';
 import { InventorySlotItemDef } from '../../../lib/itemInterfaces';
 import eventNames, { UpdateInventoryItemsPayload, InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
 import { calcRowAndSlots, FullScreenContext } from '../../../lib/utils';
-import queries from '../../../../../gqlDocuments';
-import { InventoryItemFragment, SecureTradeState } from '../../../../../gqlInterfaces';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
+import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
+import {
+  InventoryItem,
+  SecureTradeState,
+  InventoryBodyGQL,
+} from 'gql/interfaces';
+
+const inventoryBodyQuery = gql`
+  query InventoryBodyGQL {
+    myInventory {
+      items {
+        ...InventoryItem
+      }
+      itemCount
+      totalMass
+    }
+  }
+  ${InventoryItemFragment}
+`;
 
 declare const toastr: any;
 
@@ -94,10 +110,10 @@ const RefreshButton = styled('div')`
 `;
 
 export interface InjectedInventoryBodyProps {
-  myTradeItems: InventoryItemFragment[];
+  myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   stackGroupIdToItemIDs: {[id: string]: string[]};
-  inventoryItems: InventoryItemFragment[];
+  inventoryItems: InventoryItem.Fragment[];
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   visibleComponentRight: string;
   visibleComponentLeft: string;
@@ -122,7 +138,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   private updateInventoryItemsHandler: number;
   private dropItemHandler: number;
   private bodyRef: HTMLDivElement;
-  private graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
+  private graphql: GraphQLResult<InventoryBodyGQL.Query>;
 
   // a counter that is incremented each time a new
   // stack group id is generated that is used in
@@ -151,8 +167,8 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.props.invBodyDimensions.height));
     return (
-      <GraphQL query={{ query: queries.InventoryBase }} onQueryResult={this.handleQueryResult}>
-        {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
+      <GraphQL query={{ query: inventoryBodyQuery }} onQueryResult={this.handleQueryResult}>
+        {(graphql: GraphQLResult<InventoryBodyGQL.Query>) => {
           this.graphql = graphql;
           const showLoading = graphql.loading;
           const showError = graphql.lastError && graphql.lastError !== 'OK';
@@ -229,7 +245,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
   }
 
-  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
+  private handleQueryResult = (result: GraphQLResult<InventoryBodyGQL.Query>) => {
     if (!result || result.loading || result.lastError !== 'OK') return result;
     if (!_.isEqual(result.data.myInventory.items, this.props.inventoryItems)) {
       this.props.onChangeInventoryItems(result.data.myInventory.items);
@@ -363,7 +379,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     ));
   }
 
-  private onMoveStack = (item: InventoryItemFragment, amount: number) => {
+  private onMoveStack = (item: InventoryItem.Fragment, amount: number) => {
     this.setState((state, props) => (
       base.onMoveStack({
         state,

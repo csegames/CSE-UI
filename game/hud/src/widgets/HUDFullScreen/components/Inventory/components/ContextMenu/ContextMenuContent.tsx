@@ -6,12 +6,14 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { ql, client, events, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
-import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { client, events, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
 
 import ContextMenuAction from './ContextMenuAction';
 import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/eventNames';
-import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../../gqlInterfaces';
+import {
+  GearSlotDefRef,
+  InventoryItem,
+} from 'gql/interfaces';
 import {
   prettifyText,
   hasGroundPermissions,
@@ -28,12 +30,12 @@ export interface InjectedContextedMenuContentProps {
 }
 
 export interface ContextMenuProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
   contextMenuProps: ContextMenuContentProps;
   syncWithServer: () => void;
   containerID: string[];
   drawerID: string;
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
 }
 
 export type ContextMenuComponentProps = InjectedContextedMenuContentProps & ContextMenuProps;
@@ -76,7 +78,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
               key={action.id}
               itemId={item.id}
               name={action.name}
-              action={action as ItemActionDefGQL}
+              action={action}
               onActionClick={this.onActionClick}
               syncWithServer={this.props.syncWithServer}
             />
@@ -110,7 +112,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     }
   }
 
-  private onEquipItem = (gearSlots: GearSlotDefRefFragment[]) => {
+  private onEquipItem = (gearSlots: GearSlotDefRef.Fragment[]) => {
     const { item, contextMenuProps } = this.props;
     const itemDataTransfer = getInventoryDataTransfer({
       item,
@@ -148,7 +150,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     contextMenuProps.close();
   }
 
-  private onDeployItem = (action?: ItemActionDefGQL) => {
+  private onDeployItem = (action?: InventoryItem.Actions) => {
     const { id, staticDefinition } = this.props.item;
     this.closeInventory();
     const deploySettings = {};
@@ -161,7 +163,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     client.StartPlacingItemByID(staticDefinition.numericItemDefID, id, action ? action.id : null);
   }
 
-  private onActionClick = (action: ItemActionDefGQL) => {
+  private onActionClick = (action: InventoryItem.Actions) => {
     if (action.uIReaction === 'PlacementMode') {
       this.onDeployItem(action);
       this.closeInventory();
@@ -170,7 +172,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     }
   }
 
-  private makeItemActionRequest = async (action: ItemActionDefGQL) => {
+  private makeItemActionRequest = async (action: InventoryItem.Actions) => {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
@@ -198,7 +200,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     }
   }
 
-  private handleUIReaction = (action: ItemActionDefGQL) => {
+  private handleUIReaction = (action: InventoryItem.Actions) => {
     switch (action.uIReaction) {
       case 'CloseInventory': {
         this.closeInventory();
@@ -223,7 +225,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     events.fire('hudnav--navigate', 'map');
   }
 
-  private onHighlightSlots = (gearSlots: Partial<ql.schema.GearSlotDefRef>[]) => {
+  private onHighlightSlots = (gearSlots: Partial<GearSlotDefRef>[]) => {
     events.fire(eventNames.onHighlightSlots, gearSlots);
   }
 

@@ -1,7 +1,0 @@
-query PaperDollContainer {
-  myEquippedItems {
-    items {
-      ...EquippedItem
-    }
-  }
-}

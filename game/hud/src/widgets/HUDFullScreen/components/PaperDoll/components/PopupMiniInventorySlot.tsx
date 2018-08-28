@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, client, events } from '@csegames/camelot-unchained';
+import { client, events } from '@csegames/camelot-unchained';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -14,7 +14,7 @@ import ItemComponent from '../../ItemShared/Item';
 import EmptyItem from '../../ItemShared/EmptyItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -38,8 +38,8 @@ const SlotStyle = {
 };
 
 export interface PopupMiniInventorySlotProps {
-  item: InventoryItemFragment;
-  gearSlots: ql.schema.GearSlotDefRef[];
+  item: InventoryItem.Fragment;
+  gearSlots: GearSlotDefRef[];
 }
 
 export interface PopupMiniInventorySlotState {

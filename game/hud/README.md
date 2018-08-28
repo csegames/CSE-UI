@@ -1,47 +1,139 @@
 # HUD Module
 
-The primary HUD elements for Camelot Unchained's in-game UI.
+> The primary HUD elements for Camelot Unchained's in-game UI.
 
-## Requires
 
-* NodeJS 7.4.x
+## Requirements
 
-## Building
+* NodeJS 9.x.x
+* Yarn 1.9.x
 
-1. Navigate to the HUD module directory
-    ```sh
-    cd game/hud
-    ```
+## Installation
 
-1. Install npm packages.
-    ```sh
-    npm i
-    ```
+To get started run:
 
-1. Now you can build the module, which has several options. You can view available options by running `npm start` to get help text.
+```sh
+yarn
+```
 
-    1. **Dev** - Will run the module in development mode, this will start a live reload server, open your browser to a localhost development address, and watch the source code directories for changes. In dev mode, a build will be triggered whenever you make a change to a source file and it will automatically reload the web page preview.
-        ```sh
-        npm start dev
-        ```
+You will then be ready to develop the HUD Module.
 
-    1. **Build** - Builds the project. Outputs to `dist/`, not very useful on it's own
-        ```sh
-        npm start build 
-        ```
+If you are also making changes to the `library` you will need to link it as follows.
 
-    1. **Build:Hatchery** - Builds and then copies the build output to the UI module override directory for any game client running on channel 4 (named Hatchery). This is the server / client channel that is used for Internal Testing. The override directory can be found at `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\` Using this command you can then run the game client from the patcher on the correct channel / server and see the result live in the game client.
-        ```sh
-        npm start build.hatchery
-        ```
+```sh
+cd ../../library
+yarn
+yarn start build
+yarn link
+cd ../game/hud
+yarn link @csegames/camelot-unchained
+```
 
-    1. **Build:Wyrmling** - Like `build:hatchery` except will output to channel 10 (named Wyrmling).  This is the server / client typically used for alpha / beta tests.
-        ```sh
-        npm start build.wyrmling
-        ```
+## Developing In Browser
 
-    1. **Build:Cube** - Like `build:hatchery` except will output to channel 27 (named CUBE).  This is the CUBE client channel which has a slightly modified client specifically for CUBE.
-        ```sh
-        npm start build.cube
-        ```
+It is possible to develop parts of the HUD Module within a local browser,
+however some client specific functionality will not work.
 
+Run the following:
+
+```sh
+yarn start dev
+```
+
+## Developing In CU Client
+
+To develop directly within the client run **one** of the following:
+
+```sh
+yarn start dev.hatchery
+yarn start dev.fledgling
+yarn start dev.hatchery
+yarn start dev.wyrmling
+yarn start dev.wyrmlingPrep
+yarn start dev.nuada
+yarn start dev.nuadaPrep
+yarn start dev.wolfhere
+yarn start dev.cube
+```
+
+These command swill start building & watching source files for changes.
+
+The build output will go to `%localappdata%\CSE\CamelotUnchained\?\INTERFACE\hud` where `?` depends on
+your chosen target e.g. `hatchery` is `4`
+
+When you make a change wait for it to finish compiling and then run `/reloadui hud` in the client.
+
+## Single Run Production Builds
+
+It is possible to run a production build, without any watching/reloading.
+
+Here is a full list of available single run production builds:
+
+```sh
+yarn start build
+yarn start build.browser
+yarn start build.hatchery
+yarn start build.fledgling
+yarn start build.hatchery
+yarn start build.wyrmling
+yarn start build.wyrmlingPrep
+yarn start build.nuada
+yarn start build.nuadaPrep
+yarn start build.wolfhere
+yarn start build.cube
+```
+
+## Single Run Development Builds
+
+It is possible to run a development build, without any watching/reloading.
+
+Here is a full list of available single run development builds:
+
+```sh
+yarn start build.dev
+yarn start build.browser.dev
+yarn start build.hatchery.dev
+yarn start build.fledgling.dev
+yarn start build.hatchery.dev
+yarn start build.wyrmling.dev
+yarn start build.wyrmlingPrep.dev
+yarn start build.nuada.dev
+yarn start build.nuadaPrep.dev
+yarn start build.wolfhere.dev
+yarn start build.cube.dev
+```
+
+## Environment Variables
+
+Environment variables are defined in dotenv files `.env`. These variables will be injected
+into the build, and can be used to toggle different features.
+
+Dotenv files ending in `.local` are ignored by git, and can be used to override things locally.
+
+For `development` the build system will look for `.env` files in the following order:
+
+```sh
+.env.development.local
+.env.development
+.env.local
+.env
+```
+
+For `production` the build system will look for `.env` files in the following order:
+
+```sh
+.env.production.local
+.env.production
+.env.local
+.env
+```
+
+To override environment variables locally, you can make any of the following files:
+
+```
+.env.local
+.env.development.local
+.env.production.local
+```
+
+*NOTE: if you make changes to `.env` files you will need to restart any running `dev` commands*

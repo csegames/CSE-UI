@@ -9,7 +9,7 @@ import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 
 import { colors } from '../../../../lib/constants';
-import { ContainerColorFragment } from '../../../../../../gqlInterfaces';
+import { ContainerColor } from 'gql/interfaces';
 
 const Container = styled('div')`
   width: 100%;
@@ -56,7 +56,7 @@ export const CloseButton = styled('div')`
 `;
 
 export interface ContainerViewProps {
-  containerColor?: ContainerColorFragment;
+  containerColor?: ContainerColor.Fragment;
   headerContent: () => JSX.Element;
   mainContent: () => JSX.Element | JSX.Element[];
   footerContent: () => JSX.Element;

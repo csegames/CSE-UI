@@ -5,117 +5,114 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import { isEqual } from 'lodash';
 import { events, client, webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { CharacterProgressionData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import ProgressionView from './ProgressionView';
+import { ProgressionGQL } from 'gql/interfaces';
 
 declare const toastr: any;
 
-const query = `
-fragment craftingJobSummary on JobSummaryDBModel {
-  started
-  canceled
-  collected
-}
-
-fragment damagePerTarget on CountPerTargetTypeDBModel {
-  self
-  playerCharacter
-  nonPlayerCharacter
-  building
-  item
-  resourceNode
-}
-
-fragment SkillPartDefinition on SkillPartDef {
-  icon
-  id
-  name
-}
-
-{
-  myprogression {
-    unCollectedDayLogs {
-      id
-      dayStart
-      dayEnd
-      secondsActive
-      distanceMoved
-      skillPartsUsed {
-        skillPartID
-        usedInCombatCount
-        usedNonCombatCount
-        skillPartDef {
-          ...SkillPartDefinition
+const query = gql`
+  query ProgressionGQL {
+    myprogression {
+      unCollectedDayLogs {
+        id
+        dayStart
+        dayEnd
+        secondsActive
+        distanceMoved
+        skillPartsUsed {
+          skillPartID
+          usedInCombatCount
+          usedNonCombatCount
+          skillPartDef {
+            ...SkillPartDefinition
+          }
         }
-      }
-      damage {
-        healingApplied {
-          ...damagePerTarget
+        damage {
+          healingApplied {
+            ...damagePerTarget
+          }
+          healingReceived {
+            ...damagePerTarget
+          }
+          damageApplied {
+            ...damagePerTarget
+          }
+          killCount {
+            ...damagePerTarget
+          }
+          deathCount {
+            ...damagePerTarget
+          }
+          killAssistCount {
+            ...damagePerTarget
+          }
+          createCount {
+            ...damagePerTarget
+          }
         }
-        healingReceived {
-          ...damagePerTarget
+        plots {
+          factionPlotsCaptured
+          scenarioPlotsCaptured
         }
-        damageApplied {
-          ...damagePerTarget
+        crafting {
+          blockSummary {
+            ...craftingJobSummary
+          }
+          grindSummary {
+            ...craftingJobSummary
+          }
+          makeSummary {
+            ...craftingJobSummary
+          }
+          purifySummary {
+            ...craftingJobSummary
+          }
+          repairSummary {
+            ...craftingJobSummary
+          }
+          salvageSummary {
+            ...craftingJobSummary
+          }
+          shapeSummary {
+            ...craftingJobSummary
+          }
         }
-        killCount {
-          ...damagePerTarget
+        state
+        scenarios {
+          outcome
+          activeAtEnd
+          score
         }
-        deathCount {
-          ...damagePerTarget
-        }
-        killAssistCount {
-          ...damagePerTarget
-        }
-        createCount {
-          ...damagePerTarget
-        }
-      }
-      plots {
-        factionPlotsCaptured
-        scenarioPlotsCaptured
-      }
-      crafting {
-        blockSummary {
-          ...craftingJobSummary
-        }
-        grindSummary {
-          ...craftingJobSummary
-        }
-        makeSummary {
-          ...craftingJobSummary
-        }
-        purifySummary {
-          ...craftingJobSummary
-        }
-        repairSummary {
-          ...craftingJobSummary
-        }
-        salvageSummary {
-          ...craftingJobSummary
-        }
-        shapeSummary {
-          ...craftingJobSummary
-        }
-      }
-      state
-      scenarios {
-        outcome
-        activeAtEnd
-        score
       }
     }
   }
-}
-`;
 
-type QueryType = {
-  myprogression: CharacterProgressionData;
-};
+  fragment craftingJobSummary on JobSummaryDBModel {
+    started
+    canceled
+    collected
+  }
+
+  fragment damagePerTarget on CountPerTargetTypeDBModel {
+    self
+    playerCharacter
+    nonPlayerCharacter
+    building
+    item
+    resourceNode
+  }
+
+  fragment SkillPartDefinition on SkillPartDef {
+    icon
+    id
+    name
+  }
+`;
 
 export interface Props {
 
@@ -146,7 +143,7 @@ class Progression extends React.Component<Props, State> {
 
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
-        {(graphql: GraphQLResult<QueryType>) => {
+        {(graphql: GraphQLResult<ProgressionGQL.Query>) => {
           return (
             <ProgressionView
               graphql={graphql}
@@ -173,7 +170,7 @@ class Progression extends React.Component<Props, State> {
     }
   }
 
-  private handleQueryResult = (result: GraphQLResult<QueryType>) => {
+  private handleQueryResult = (result: GraphQLResult<ProgressionGQL.Query>) => {
     if (!result.data || !result.data.myprogression) {
       return result;
     }

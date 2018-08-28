@@ -14,7 +14,11 @@ import Drawer from './Drawer';
 import ContainerHeader from './ContainerHeader';
 import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { InventorySlotItemDef, SlotItemDefType } from '../../../../lib/itemInterfaces';
-import { ContainerDrawersFragment, InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  ContainerDrawers,
+  GearSlotDefRef,
+} from 'gql/interfaces';
 import {
   getContainerColor,
   hasViewContentPermissions,
@@ -81,7 +85,7 @@ export interface ItemContainerProps extends base.InventoryBaseProps {
   containerID: string[];
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
 
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
@@ -116,7 +120,7 @@ class ItemContainer extends React.Component<ItemContainerProps> {
             opacity={hasRemoveContentPermissions(item) ? 1 : 0.3}
           />
         </ContainerSubHeader>
-        {item.containerDrawers.map((_drawer: ContainerDrawersFragment, i: number) => {
+        {item.containerDrawers.map((_drawer: ContainerDrawers.Fragment, i: number) => {
           const isLastItem = i === item.containerDrawers.length - 1;
           return (
             <Drawer

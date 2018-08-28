@@ -4,11 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
 
 import styled from 'react-emotion';
-import { ql, utils } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import * as events from '@csegames/camelot-unchained/lib/events';
@@ -20,6 +21,8 @@ import DataUnavailable from '../DataUnavailable';
 import { colors } from '../../../../lib/constants';
 import { prettifyText } from '../../../../lib/utils';
 import eventNames from '../../../../lib/eventNames';
+import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
+import { OffenseListGQL } from 'gql/interfaces';
 
 const Container = styled('div')`
   flex: 1;
@@ -63,7 +66,7 @@ const defaultStats = {
   range: 0,
 };
 
-export interface OffenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
+export interface OffenseListProps extends GraphQLInjectedProps<OffenseListGQL.Query> {
 }
 
 export interface OffenseListState {
@@ -204,8 +207,8 @@ class OffenseList extends React.Component<OffenseListProps, OffenseListState> {
 }
 
 const OffenseListWithQL = withGraphQL({
-  query: `
-    query OffenseListQuery {
+  query: gql`
+    query OffenseListGQL {
       myEquippedItems {
         items {
           gearSlots {
@@ -222,30 +225,7 @@ const OffenseListWithQL = withGraphQL({
         }
       }
     }
-
-    fragment WeaponStats on WeaponStat_Single {
-      piercingDamage
-      piercingBleed
-      piercingArmorPenetration
-      slashingDamage
-      slashingBleed
-      slashingArmorPenetration
-      crushingDamage
-      fallbackCrushingDamage
-      disruption
-      deflectionAmount
-      physicalProjectileSpeed
-      knockbackAmount
-      stability
-      falloffMinDistance
-      falloffMaxDistance
-      falloffReduction
-      deflectionRecovery
-      staminaCost
-      physicalPreparationTime
-      physicalRecoveryTime
-      range
-    }
+    ${WeaponStatsFragment}
   `,
 })(OffenseList);
 

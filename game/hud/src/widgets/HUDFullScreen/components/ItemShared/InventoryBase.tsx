@@ -7,8 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { ql, events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../lib/constants';
@@ -21,10 +20,12 @@ import eventNames, {
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
 import {
-  InventoryItemFragment,
-  EquippedItemFragment,
-  GearSlotDefRefFragment,
-} from '../../../../gqlInterfaces';
+  InventoryItem,
+  GearSlotDefRef,
+  EquippedItem,
+  ContainerDefStat_Single,
+  SecureTradeState,
+} from 'gql/interfaces';
 import {
   createMoveItemRequestToInventoryPosition,
   createMoveItemRequestToWorldPosition,
@@ -67,7 +68,7 @@ export interface SlotNumberToItem {
     isStack: boolean;
     isCrafting: boolean;
     isContainer: boolean;
-    item?: InventoryItemFragment;
+    item?: InventoryItem.Fragment;
   };
 }
 
@@ -76,10 +77,10 @@ export interface InventoryBaseProps {
   activeFilters: {[id: string]: InventoryFilterButton};
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
-  onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems?: (inventoryItems: InventoryItem.Fragment[]) => void;
 }
 
 export interface InventoryBaseWithQLProps {
@@ -87,10 +88,10 @@ export interface InventoryBaseWithQLProps {
   activeFilters: {[id: string]: InventoryFilterButton};
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
-  onChangeInventoryItems?: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems?: (inventoryItems: InventoryItem.Fragment[]) => void;
 }
 
 export interface ItemIDToInfo {
@@ -105,7 +106,7 @@ export interface DrawerSlot {
   slot: number;
   drawerId: string;
   containerId: string;
-  item?: InventoryItemFragment;
+  item?: InventoryItem.Fragment;
 }
 
 export interface DrawerSlotNumberToItem {
@@ -169,18 +170,18 @@ export function defaultInventoryBaseState(): InventoryBaseState {
 export function createRowElementsForCraftingItems(payload: {
   state: InventoryBaseState,
   props: InventoryBaseProps,
-  myTradeItems: InventoryItemFragment[],
-  containerItem: InventoryItemFragment,
+  myTradeItems: InventoryItem.Fragment[],
+  containerItem: InventoryItem.Fragment,
   containerID: string[],
   drawerID: string,
   drawerCurrentStats: DrawerCurrentStats,
-  drawerMaxStats: ql.schema.ContainerDefStat_Single,
-  itemData: {items: InventoryItemFragment[]},
+  drawerMaxStats: ContainerDefStat_Single,
+  itemData: {items: InventoryItem.Fragment[]},
   bodyWidth: number,
   syncWithServer: () => void,
   onDropOnZone: (dragItemData: InventoryDataTransfer,
     dropZoneData: InventoryDataTransfer) => void,
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void,
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void,
 }) {
   const { state, props, containerItem, containerID, drawerID, itemData,
     syncWithServer, bodyWidth, onDropOnZone, onMoveStack, drawerCurrentStats, drawerMaxStats } = payload;
@@ -259,14 +260,14 @@ export function createRowElementsForContainerItems(payload: {
   containerIdToDrawerInfo: ContainerIdToDrawerInfo,
   stackGroupIdToItemIDs: {[id: string]: string[]},
   myTradeState: SecureTradeState,
-  myTradeItems: InventoryItemFragment[],
+  myTradeItems: InventoryItem.Fragment[],
   itemData: {items: any[]},
   containerID: string[],
   drawerID: string,
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void,
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
   containerPermissions: ContainerPermissionDef | ContainerPermissionDef[],
-  drawerMaxStats: ql.schema.ContainerDefStat_Single,
+  drawerMaxStats: ContainerDefStat_Single,
   drawerCurrentStats: DrawerCurrentStats,
   syncWithServer: () => void,
   bodyWidth: number,
@@ -412,12 +413,12 @@ export function createRowElementsForContainerItems(payload: {
 export function createRowElements(payload: {
   state: InventoryBaseState,
   props: Partial<InventoryBaseWithQLProps>,
-  itemData: {items: InventoryItemFragment[]},
-  myTradeItems: InventoryItemFragment[],
+  itemData: {items: InventoryItem.Fragment[]},
+  myTradeItems: InventoryItem.Fragment[],
   myTradeState: SecureTradeState,
   stackGroupIdToItemIDs: {[id: string]: string[]};
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void,
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void,
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void,
   syncWithServer: () => void,
   bodyWidth: number,
 }) {
@@ -529,9 +530,9 @@ export function distributeItems(args: {
     slotCount: number,
   },
   itemData: {
-    items: InventoryItemFragment[],
+    items: InventoryItem.Fragment[],
   },
-  inventoryItems: InventoryItemFragment[],
+  inventoryItems: InventoryItem.Fragment[],
   stackGroupIdToItemIDs: {[id: string]: string[]},
   state: InventoryBaseState,
   props: Partial<InventoryBaseWithQLProps>,
@@ -580,7 +581,7 @@ export function distributeItemsNoFilter(args: {
     slotCount: number,
   },
   itemData: {
-    items: InventoryItemFragment[],
+    items: InventoryItem.Fragment[],
   },
   props: Partial<InventoryBaseWithQLProps>,
 }): InventoryBaseState {
@@ -867,7 +868,7 @@ export function distributeItemsNoFilter(args: {
   };
 }
 
-export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment[],
+export function getContainerIdToDrawerInfo(containerItems: InventoryItem.Fragment[],
                                             containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                             moveRequests?: MoveItemRequest[]) {
   const newContainerIdToDrawerInfo = { ...containerIdToDrawerInfo };
@@ -875,9 +876,9 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
 
   containerItems.forEach((_containerItem) => {
     const drawers: DrawerIdToSlotNumberToItem = {};
-    _containerItem.containerDrawers.forEach((_drawer) => {
+    _containerItem.containerDrawers.forEach((_drawer: InventoryItem.ContainerDrawers) => {
       const drawerSlotNumberToItem = {};
-      const noPositionSlots: InventoryItemFragment[] = [];
+      const noPositionSlots: InventoryItem.Fragment[] = [];
 
       _drawer.containedItems.forEach((_item) => {
         if (_item.location.inContainer && _item.location.inContainer.position && _item.location.inContainer.position > -1) {
@@ -890,13 +891,13 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItemFragment
           };
         } else {
           // Save non positioned item to reassign later
-          noPositionSlots.push(_item as InventoryItemFragment);
+          noPositionSlots.push(_item as InventoryItem.Fragment);
         }
       });
 
       // Give non positioned items some position!
       let openSlotNum = 0;
-      const assignOpenSlotNum = (_item: InventoryItemFragment) => {
+      const assignOpenSlotNum = (_item: InventoryItem.Fragment) => {
         if (drawerSlotNumberToItem[openSlotNum]) {
           // Recursively find the next open slot
           openSlotNum++;
@@ -964,7 +965,7 @@ export function distributeFilteredItems(args: {
     slotCount: number,
   },
   itemData: {
-    items: InventoryItemFragment[],
+    items: InventoryItem.Fragment[],
   },
   stackGroupIdToItemIDs: {[id: string]: string[]},
   state: InventoryBaseState,
@@ -1046,17 +1047,17 @@ export function distributeFilteredItems(args: {
   };
 }
 
-export function partitionItems(items: InventoryItemFragment[]) {
+export function partitionItems(items: InventoryItem.Fragment[]) {
   const itemIdToIcon: {[id: string]: string} = {};
-  const craftingItems: {[name: string]: InventoryItemFragment[]} = {};
-  const stackedItemsWithPosition: {[stackGroupID: string]: InventoryItemFragment[]} = {};
-  const noPositionStackedItems: {[stackGroupID: string]: InventoryItemFragment[]} = {};
-  const positionedItems: InventoryItemFragment[] = [];
-  const noPositionItems: InventoryItemFragment[] = [];
+  const craftingItems: {[name: string]: InventoryItem.Fragment[]} = {};
+  const stackedItemsWithPosition: {[stackGroupID: string]: InventoryItem.Fragment[]} = {};
+  const noPositionStackedItems: {[stackGroupID: string]: InventoryItem.Fragment[]} = {};
+  const positionedItems: InventoryItem.Fragment[] = [];
+  const noPositionItems: InventoryItem.Fragment[] = [];
   const idToGroupIDMap: {[stackHash: string]: {position: number, stackGroupID: string}[]} = {};
-  const containerItems: InventoryItemFragment[] = [];
+  const containerItems: InventoryItem.Fragment[] = [];
 
-  const temporaryNoPositionStackedItems: InventoryItemFragment[] = [];
+  const temporaryNoPositionStackedItems: InventoryItem.Fragment[] = [];
 
   const moveRequests: webAPI.MoveItemRequest[] = [];
   const invItems = [...items];
@@ -1067,8 +1068,8 @@ export function partitionItems(items: InventoryItemFragment[]) {
       // Find nested containers
       item.containerDrawers.forEach((drawers) => {
         drawers.containedItems.forEach((_item) => {
-          if (isContainerItem(_item as InventoryItemFragment)) {
-            containerItems.push(_item as InventoryItemFragment);
+          if (isContainerItem(_item as InventoryItem.Fragment)) {
+            containerItems.push(_item as InventoryItem.Fragment);
           }
         });
       });
@@ -1306,7 +1307,7 @@ export function onUpdateInventoryItemsHandler(args: {
   state: InventoryBaseState,
   props: InventoryBaseProps,
   stackGroupIdToItemIDs: {[id: string]: string[]},
-  inventoryItems: InventoryItemFragment[],
+  inventoryItems: InventoryItem.Fragment[],
   containerIdToDrawerInfo: ContainerIdToDrawerInfo,
   payload: UpdateInventoryItemsPayload,
 }) {
@@ -1416,7 +1417,7 @@ export function onUpdateInventoryItemsHandler(args: {
   } else if (payload.equippedItem && !_.isArray(payload.equippedItem) && !itemIdToInfo[payload.equippedItem.item.id]) {
     // If only equipped item provided by event. UNEQUIP
     const slotNumber = firstAvailableSlot(0, slotNumberToItem);
-    const newInvItem: InventoryItemFragment = {
+    const newInvItem: InventoryItem.Fragment = {
       ...payload.equippedItem.item,
       location: {
         inventory: {
@@ -1480,14 +1481,14 @@ export function onUpdateInventoryItemsHandler(args: {
   };
 }
 
-function removeItemInContainer(item: InventoryItemFragment,
+function removeItemInContainer(item: InventoryItem.Fragment,
                               containerID: string[],
                               drawerID: string,
-                              inventoryItems: InventoryItemFragment[],
+                              inventoryItems: InventoryItem.Fragment[],
                               slotNumberToItem: SlotNumberToItem,
                               containerIDToDrawerInfo: ContainerIdToDrawerInfo): {
                                 // returns
-                                inventoryItems: InventoryItemFragment[],
+                                inventoryItems: InventoryItem.Fragment[],
                                 slotNumberToItem: SlotNumberToItem,
                                 containerIDToDrawerInfo: ContainerIdToDrawerInfo;
                               } {
@@ -1547,7 +1548,7 @@ function removeItemInContainer(item: InventoryItemFragment,
           // Update parent container drawer info
           // tslint:disable
           containerToDrawer[parentContainer.id].drawers[_drawer.id][nextContainer.location.inContainer.position].item
-            = nextContainer as InventoryItemFragment;
+            = nextContainer as InventoryItem.Fragment;
 
           // Delete nested container
           delete containerToDrawer[containerID[1]]
@@ -1585,9 +1586,9 @@ function removeItemInContainer(item: InventoryItemFragment,
 }
 
 
-export async function equipItemRequest(item: InventoryItemFragment,
-                            gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
-                            equippedItem: EquippedItemFragment,
+export async function equipItemRequest(item: InventoryItem.Fragment,
+                            gearSlotDefs: Partial<GearSlotDefRef>[],
+                            equippedItem: EquippedItem.Fragment,
                             equipToSlotNumber: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const inventoryItemPosition = getItemInventoryPosition(item);
@@ -1630,8 +1631,8 @@ export async function equipItemRequest(item: InventoryItemFragment,
   }
 }
 
-export async function unequipItemRequest(item: InventoryItemFragment,
-                                gearSlotDefs: Partial<ql.schema.GearSlotDefRef>[],
+export async function unequipItemRequest(item: InventoryItem.Fragment,
+                                gearSlotDefs: Partial<GearSlotDefRef>[],
                                 toSlot: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const request = {
@@ -1671,7 +1672,7 @@ export async function unequipItemRequest(item: InventoryItemFragment,
   }
 }
 
-export async function dropItemRequest(item: InventoryItemFragment) {
+export async function dropItemRequest(item: InventoryItem.Fragment) {
   const request = JSON.stringify({
     moveItemID: item.id,
     stackHash: item.stackHash,
@@ -1707,7 +1708,7 @@ export async function dropItemRequest(item: InventoryItemFragment) {
   }
 }
 
-export function onCommitPlacedItem(item: InventoryItemFragment, position: Vec3F, rotation: Euler3f) {
+export function onCommitPlacedItem(item: InventoryItem.Fragment, position: Vec3F, rotation: Euler3f) {
   const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
   webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveItemReq as any);
 }
@@ -1719,7 +1720,7 @@ export function onMoveInventoryItem(args: {
                                       props: InventoryBaseProps,
                                       containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                       stackGroupIdToItemIDs: {[id: string]: string[]},
-                                      inventoryItems: InventoryItemFragment[],
+                                      inventoryItems: InventoryItem.Fragment[],
                                   }) {
   const { dragItemData, dropZoneData, state, props, containerIdToDrawerInfo, stackGroupIdToItemIDs, inventoryItems } = args;
   if (dropZoneData.slotType === SlotType.Empty) {
@@ -1751,14 +1752,14 @@ function moveInventoryItemToEmptySlot(args: {
                                         props: InventoryBaseProps,
                                         containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                         stackGroupIdToItemIDs: {[id: string]: string[]},
-                                        inventoryItems: InventoryItemFragment[],
+                                        inventoryItems: InventoryItem.Fragment[],
                                       }) {
   const { dragItemData, dropZoneData, state, props } = args;
   const containerIdToDrawerInfo = {...args.containerIdToDrawerInfo};
   const slotNumberToItem = {...state.slotNumberToItem};
   const itemIdToInfo = {...state.itemIdToInfo};
   let stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};
-  let dragItem: InventoryItemFragment = {...dragItemData.item};
+  let dragItem: InventoryItem.Fragment = {...dragItemData.item};
 
   // If equipped item moving to empty slot in inventory, then unequip it
   if (dragItemData.gearSlots) {
@@ -1970,7 +1971,7 @@ function swapInventoryItems(args: {
                               dropZone: InventoryDataTransfer,
                               state: InventoryBaseState,
                               props: InventoryBaseProps,
-                              inventoryItems: InventoryItemFragment[],
+                              inventoryItems: InventoryItem.Fragment[],
                               stackGroupIdToItemIDs: {[id: string]: string[]};
                             }) {
   const  { dragItem, dropZone, state, props } = args;
@@ -2104,10 +2105,10 @@ function swapInventoryItems(args: {
 export function onMoveStack(args: {
                               state: InventoryBaseState,
                               props: InventoryBaseProps,
-                              item: InventoryItemFragment,
+                              item: InventoryItem.Fragment,
                               amount: number,
                               stackGroupIdToItemIDs: {[id: string]: string[]},
-                              inventoryItems: InventoryItemFragment[],
+                              inventoryItems: InventoryItem.Fragment[],
                             }) {
   const { state, props, item, amount } = args;
   const slotNumberToItem = {...state.slotNumberToItem};
@@ -2121,7 +2122,7 @@ export function onMoveStack(args: {
   const moveReq = createMoveItemRequestToInventoryPosition(item, newPos, amount);
   webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.loginToken, client.shardID, client.characterID, moveReq);
 
-  const originalItem: InventoryItemFragment = {
+  const originalItem: InventoryItem.Fragment = {
     ...item,
     stats: {
       ...item.stats,
@@ -2133,7 +2134,7 @@ export function onMoveStack(args: {
   }
 
   // Represent the move in the UI
-  const movingItem: InventoryItemFragment = {
+  const movingItem: InventoryItem.Fragment = {
     ...item,
     stats: {
       ...item.stats,
@@ -2189,11 +2190,11 @@ export function onMoveStack(args: {
 }
 
 function createStackMoveItemRequests(args: {
-                                      item: InventoryItemFragment,
+                                      item: InventoryItem.Fragment,
                                       amount: number,
                                       newPosition: number,
                                       stackGroupIdToItemIDs: {[id: string]: string[]},
-                                      inventoryItems: InventoryItemFragment[];
+                                      inventoryItems: InventoryItem.Fragment[];
                                     }) {
   const { item, amount, newPosition } = args;
   if (item.stackHash !== emptyStackHash) {

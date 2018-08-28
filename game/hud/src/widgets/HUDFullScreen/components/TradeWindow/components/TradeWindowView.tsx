@@ -8,9 +8,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI, client } from '@csegames/camelot-unchained';
 import { fire, on, off } from '@csegames/camelot-unchained/lib/events';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import TabHeader from '../../TabHeader';
 import TradeWindowSubHeader from './TradeWindowSubHeader';
@@ -19,7 +18,7 @@ import TradeDropContainer from './TradeDropContainer';
 import { SlotItemDefType } from '../../../lib/itemInterfaces';
 import { isStackedItem, isCraftingItem, isContainerItem, getItemMapID } from '../../../lib/utils';
 import { ContainerIdToDrawerInfo, getContainerIdToDrawerInfo } from '../../ItemShared/InventoryBase';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem, SecureTradeState } from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -80,13 +79,13 @@ const TradeSection = styled('div')`
 `;
 
 export interface TradeWindowViewProps {
-  myTradeState: ql.schema.SecureTradeState;
-  theirTradeState: ql.schema.SecureTradeState;
+  myTradeState: SecureTradeState;
+  theirTradeState: SecureTradeState;
   onMyTradeStateChange: (newTradeState: SecureTradeState) => void;
   onTheirTradeStateChange: (newTradeState: SecureTradeState) => void;
-  myTradeItems: InventoryItemFragment[];
-  theirTradeItems: InventoryItemFragment[];
-  onMyTradeItemsChange: (items: InventoryItemFragment[]) => void;
+  myTradeItems: InventoryItem.Fragment[];
+  theirTradeItems: InventoryItem.Fragment[];
+  onMyTradeItemsChange: (items: InventoryItem.Fragment[]) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
 }
@@ -201,9 +200,9 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
         // Handle aborting trade
         fire('passivealert--newmessage', 'Trade Canceled');
         this.closeTradeWindow();
-        this.props.onMyTradeStateChange('None');
+        this.props.onMyTradeStateChange(SecureTradeState.None);
         this.props.onMyTradeItemsChange([]);
-        this.props.onTheirTradeStateChange('None');
+        this.props.onTheirTradeStateChange(SecureTradeState.None);
       } else {
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
@@ -215,7 +214,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
 
   private updateTheirContainerAndStackData = () => {
     const items = this.props.theirTradeItems;
-    const containerItems: InventoryItemFragment[] = [];
+    const containerItems: InventoryItem.Fragment[] = [];
     const theirStackGroupIdToItemIDs: {[id: string]: string[]} = {};
 
     items.forEach((item) => {
@@ -225,8 +224,8 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
         // Find nested containers
         item.containerDrawers.forEach((drawers) => {
           drawers.containedItems.forEach((_item) => {
-            if (isContainerItem(_item as InventoryItemFragment)) {
-              containerItems.push(_item as InventoryItemFragment);
+            if (isContainerItem(_item as InventoryItem.Fragment)) {
+              containerItems.push(_item as InventoryItem.Fragment);
             }
           });
         });

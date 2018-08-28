@@ -34,7 +34,7 @@ export interface GraphQLOptions extends QueryOptions {
   // if set to a number greater than 0, in ms, the component will poll the server on an interval
   // skipping the cache (default: 0)
   pollInterval: number;
-  
+
   // No cache support yet
   // Should we use the GraphQL cache? (default: true)
   // useCache: boolean;
@@ -106,6 +106,7 @@ function getSubscriptionOptions() {
 export interface GraphQLData<T> {
   data: T;
   loading: boolean;
+  ok: boolean;
   lastError: string;
 }
 
@@ -138,7 +139,7 @@ export interface GraphQLState<T> extends GraphQLData<T> {
 
 }
 
-export class GraphQL<QueryDataType, SubscriptionDataType> 
+export class GraphQL<QueryDataType, SubscriptionDataType>
   extends React.Component<GraphQLProps<QueryDataType, SubscriptionDataType>, GraphQLState<QueryDataType>> {
   private client: GraphQLClient;
   private query: GraphQLQuery | undefined;
@@ -154,11 +155,21 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     this.state = {
       data: props.initialData || null,
       loading: false,
+      ok: false,
       lastError: null,
     };
 
     if (props.query) {
-      const q = typeof props.query === 'string' ? { query: props.query } : props.query;
+      let q;
+      if (
+        typeof props.query === 'string' ||
+        props.query.hasOwnProperty('loc') ||
+        props.query.hasOwnProperty('definitions')
+      ) {
+        q = { query: props.query };
+      } else {
+        q = props.query;
+      }
       this.query = withDefaults(q, defaultQuery);
       const qp = typeof props.query === 'string' ? {} : props.query;
       this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
@@ -171,7 +182,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     }
 
     if (props.subscription) {
-      const s = typeof props.subscription === 'string' ? { query: props.subscription } : props.subscription;
+      let s;
+      if (typeof props.subscription === 'string' || props.subscription.hasOwnProperty('loc')) {
+        s = { query: props.subscription };
+      } else {
+        s = props.subscription;
+      }
       this.subscription = withDefaults(s, defaultSubscription);
       this.subscriptionOptions = withDefaults<Options<any>>(s, getSubscriptionOptions());
     }
@@ -215,7 +231,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     if (!_.isEqual(this.props.query, nextProps.query)) {
-      const q = typeof nextProps.query === 'string' ? { query: nextProps.query } : nextProps.query;
+      let q;
+      if (typeof nextProps.query === 'string' || nextProps.query.hasOwnProperty('loc')) {
+        q = { query: nextProps.query };
+      } else {
+        q = nextProps.query;
+      }
       this.query = withDefaults(q, defaultQuery);
     }
   }
@@ -258,6 +279,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     const state = {
       data: result.data as QueryDataType,
       loading: false,
+      ok: result.ok,
       lastError: result.statusText,
     };
     this.setState(state);
@@ -290,9 +312,9 @@ export function withGraphQL<
         const q = typeof query === 'function' ? query(props) : query;
         const opts = typeof options === 'function' ? options(props) : options;
 
-        if (typeof q === 'string') {
+        if (typeof q === 'string' || q.hasOwnProperty('loc')) {
           this.queryProp = {
-            query: q,
+            query: q as any,
             ...opts,
           };
         } else {

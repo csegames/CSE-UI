@@ -10,10 +10,8 @@
     "react-motion": "registry:dt/react-motion#0.0.0+20160705193226",
     "react-draggable": "github:cumodsquad/Typings/react-draggable/react-draggable.d.ts",
     "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts",
-    "react-image-magnify": "github:cumodsquad/Typings/react-image-magnify/react-image-magnify.d.ts",
     "react-resizable": "github:cumodsquad/Typings/react-resizable/react-resizable.d.ts",
-    "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts",
-    "enzyme-to-json": "github:saddieeiddas/enzyme-to-json-ts-definition/enzyme-to-json.d.ts"    
+    "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts"
   },
   "dependencies": {
     "index": "github:gaearon/redux-thunk/index.d.ts"

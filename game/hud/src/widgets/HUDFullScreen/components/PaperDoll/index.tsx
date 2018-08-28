@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
 import { bodyParts, client, events } from '@csegames/camelot-unchained';
@@ -13,9 +14,19 @@ import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth
 import CharacterAndOrderName from './components/CharacterAndOrderName';
 import EquipmentSlots from './components/EquipmentSlots';
 import { getPaperDollBG } from '../../lib/utils';
-import queries from '../../../../gqlDocuments';
-import { EquippedItemFragment } from '../../../../gqlInterfaces';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
+import { EquippedItem, PaperDollContainerGQL } from 'gql/interfaces';
+import { EquippedItemFragment } from 'gql/fragments/EquippedItemFragment';
+
+const paperDollContainerQuery = gql`
+  query PaperDollContainerGQL {
+    myEquippedItems {
+      items {
+        ...EquippedItem
+      }
+    }
+  }
+  ${EquippedItemFragment}
+`;
 
 const Container = styled('div')`
   position: relative;
@@ -69,7 +80,7 @@ export interface EquippedItemsMap {
 }
 
 export interface PaperDollProps {
-  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
+  onEquippedItemsChange: (equippedItems: EquippedItem.Fragment[]) => void;
 }
 
 export interface PaperDollState {
@@ -79,7 +90,7 @@ export interface PaperDollState {
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   private refetchListener: number;
   private paperdollBG: string;
-  private graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>;
+  private graphql: GraphQLResult<PaperDollContainerGQL.Query>;
   constructor(props: PaperDollProps) {
     super(props);
     this.state = {
@@ -90,8 +101,8 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
   public render() {
     return (
-      <GraphQL query={{ query: queries.PaperDollContainer }} onQueryResult={this.handleQueryResult}>
-        {(graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>) => {
+      <GraphQL query={{ query: paperDollContainerQuery }} onQueryResult={this.handleQueryResult}>
+        {(graphql: GraphQLResult<PaperDollContainerGQL.Query>) => {
           this.graphql = graphql;
           return (
             <Container backgroundImg={this.paperdollBG}>
@@ -119,7 +130,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     events.off(this.refetchListener);
   }
 
-  private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myEquippedItems'>>) => {
+  private handleQueryResult = (graphql: GraphQLResult<PaperDollContainerGQL.Query>) => {
     if (graphql.loading || !graphql.data || !graphql.data.myEquippedItems) return graphql;
 
     this.props.onEquippedItemsChange(graphql.data.myEquippedItems.items);

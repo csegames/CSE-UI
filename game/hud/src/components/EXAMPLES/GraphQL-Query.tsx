@@ -7,26 +7,22 @@
 
 // THIS IS ONLY AN EXAMPLE COMPONENT -- DO NOT USE ELSEWHERE!
 
+import gql from 'graphql-tag';
 import * as React from 'react';
-import { PlayerCount } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQLExampleQueryGQL } from 'gql/interfaces';
 
-function query(server: string) {
-  return `
-  {
-    metrics(server: "${server}") {
+const query = gql`
+  query GraphQLExampleQueryGQL($server: String!) {
+    metrics(server: $server) {
       currentPlayerCount {
         arthurian
         tuatha
         viking
       }
     }
-  }`;
-}
-
-type QueryType = {
-  metrics: Pick<PlayerCount, 'arthurian' | 'tuatha' | 'viking'>;
-};
+  }
+`;
 
 export interface Props {
   server: string;
@@ -37,10 +33,13 @@ export interface State {
 
 class QueryExample extends React.Component<Props, State> {
   public render() {
+    const variables: GraphQLExampleQueryGQL.Variables = {
+      server: this.props.server,
+    };
     return (
-      <GraphQL query={query(this.props.server)}>
+      <GraphQL query={{ query, variables }}>
         {
-          (graphql: GraphQLResult<QueryType>) => {
+          (graphql: GraphQLResult<GraphQLExampleQueryGQL.Query>) => {
 
             // We have no data yet, so display something like a loading spinner or message
             if (!graphql.data) {
@@ -50,9 +49,9 @@ class QueryExample extends React.Component<Props, State> {
             // Display player counts in a super awesome unordered list!
             return (
               <ul>
-                <li>Arthurians: {graphql.data.metrics.arthurian || 0}</li>
-                <li>Tuatha: {graphql.data.metrics.tuatha || 0}</li>
-                <li>Vikings: {graphql.data.metrics.viking || 0}</li>
+                <li>Arthurians: {graphql.data.metrics.currentPlayerCount.arthurian || 0}</li>
+                <li>Tuatha: {graphql.data.metrics.currentPlayerCount.tuatha || 0}</li>
+                <li>Vikings: {graphql.data.metrics.currentPlayerCount.viking || 0}</li>
               </ul>
             );
           }

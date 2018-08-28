@@ -1,16 +1,16 @@
 language: node_js
 node_js:
- - "8"
+ - "10"
 cache:
   yarn: true
 install:
  - "yarn"
- - "cd $TRAVIS_BUILD_DIR/game/hud && yarn"
- - "cd $TRAVIS_BUILD_DIR/library && yarn"
- - "cd $TRAVIS_BUILD_DIR/patcher && yarn"
+ - "cd $TRAVIS_BUILD_DIR/library && yarn && yarn link"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && yarn && yarn link @csegames/camelot-unchained"
+ - "cd $TRAVIS_BUILD_DIR/patcher && yarn && yarn link @csegames/camelot-unchained"
 script:
- - "cd $TRAVIS_BUILD_DIR/game/hud && yarn start build && yarn start test"
- - "cd $TRAVIS_BUILD_DIR/library && yarn start build && yarn start test"
+ - "cd $TRAVIS_BUILD_DIR/library && yarn start build"
+ - "cd $TRAVIS_BUILD_DIR/game/hud && yarn start build"
  - "cd $TRAVIS_BUILD_DIR/patcher && yarn start build"
 notifications:
   email:

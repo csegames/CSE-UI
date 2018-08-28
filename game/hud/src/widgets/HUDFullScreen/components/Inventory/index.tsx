@@ -12,7 +12,10 @@ import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
 import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
-import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+} from 'gql/interfaces';
 import { SlotItemDefType } from '../../lib/itemInterfaces';
 
 const Container = styled('div')`
@@ -35,10 +38,10 @@ const SideImage = styled('img')`
 `;
 
 export interface InventoryProps {
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
   onChangeContainerIdToDrawerInfo: (newObj: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (newObj: {[id: string]: string[]}) => void;
   onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;

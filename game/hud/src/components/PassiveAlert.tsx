@@ -7,9 +7,9 @@
 import * as React from 'react';
 import { events } from '@csegames/camelot-unchained';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
-import { PassiveAlert as IPassiveAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import styled, { keyframes } from 'react-emotion';
+import { PassiveAlert as IPassiveAlert } from 'gql/interfaces';
 
 const fadeTime = 3000;
 const maxNumAlerts = 5;

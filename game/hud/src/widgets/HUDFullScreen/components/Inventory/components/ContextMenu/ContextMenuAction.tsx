@@ -5,19 +5,19 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { utils, client } from '@csegames/camelot-unchained';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { ItemActionDefGQL } from '@csegames/camelot-unchained/lib/graphql/schema';
+import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
 
 declare const toastr: any;
 
-const query = (itemId: string) => `
-  {
-    item (id: "${itemId}", shard: ${client.shardID}) {
+const query = gql`
+  query ContextMenuActionGQL($id: String!, $shardID: Int!) {
+    item(id: $id, shard: $shardID) {
       id
       actions {
         id
@@ -56,9 +56,9 @@ const CooldownText = styled('div')`
 export interface Props {
   itemId: string;
   name: string;
-  onActionClick: (action?: ItemActionDefGQL) => void;
+  onActionClick: (action?: InventoryItem.Actions) => void;
   syncWithServer: () => void;
-  action?: ItemActionDefGQL;
+  action?: InventoryItem.Actions;
   onMouseOver?: () => void;
   onMouseLeave?: () => void;
 }
@@ -81,11 +81,14 @@ class ContextMenuAction extends React.Component<Props, State> {
   public render() {
     const { cooldownLeft, shouldQuery } = this.state;
     const { name, action } = this.props;
-    const q = query(this.props.itemId);
+    const variables: ContextMenuActionGQL.Variables = {
+      id: this.props.itemId,
+      shardID: client.shardID,
+    };
     return (action && !action.enabled && !action.showWhenDisabled) ? null : (
       <Button disabled={shouldQuery || cooldownLeft !== '' || (action && !action.enabled)} onClick={this.onActionClick}>
         <div>{name}</div>
-        {shouldQuery && <GraphQL query={q} onQueryResult={this.handleQueryResult} />}
+        {shouldQuery && <GraphQL query={{ query, variables }} onQueryResult={this.handleQueryResult} />}
         <CooldownText>{cooldownLeft !== '' ? `${cooldownLeft}` : null}</CooldownText>
       </Button>
     );
@@ -95,11 +98,11 @@ class ContextMenuAction extends React.Component<Props, State> {
     this.clearCooldownTimeout();
   }
 
-  private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'item'>>) => {
-    const resultData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+  private handleQueryResult = (result: GraphQLResult<ContextMenuActionGQL.Query>) => {
+    const resultData: ContextMenuActionGQL.Query = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
     this.setState({ shouldQuery: false });
     if (resultData && resultData.item) {
-      const myAction = _.find(resultData.item.actions, (a: ItemActionDefGQL) => a.id === this.props.action.id);
+      const myAction = _.find(resultData.item.actions, a => a.id === this.props.action.id);
       this.initTimer(myAction && myAction.lastTimePerformed);
     }
 

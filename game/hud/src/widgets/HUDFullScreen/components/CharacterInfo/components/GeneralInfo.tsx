@@ -4,24 +4,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, utils, webAPI, Race } from '@csegames/camelot-unchained';
+import { utils, webAPI, Race } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import { characterAvatarIcon, colors } from '../../../lib/constants';
+import { GeneralInfoGQL } from 'gql/interfaces';
 
-const query = `
-{
-  myCharacter {
-    id
-    name
-    faction
-    race
-    gender
-    archetype
+const query = gql`
+  query GeneralInfoGQL {
+    myCharacter {
+      id
+      name
+      faction
+      race
+      gender
+      archetype
+    }
   }
-}
 `;
 
 const Container = styled('div')`
@@ -94,9 +96,9 @@ class GeneralInfo extends React.Component<GeneralInfoProps, GeneralInfoState> {
   public render() {
     return (
       <GraphQL query={query}>
-        {(graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
+        {(graphql: GraphQLResult<GeneralInfoGQL.Query>) => {
           if (graphql.loading || !graphql.data) return null;
-          const myCharacter: ql.schema.CUCharacter =
+          const myCharacter: GeneralInfoGQL.MyCharacter =
             typeof graphql.data === 'string' ? JSON.parse(graphql.data).myCharacter : graphql.data.myCharacter;
 
           return (

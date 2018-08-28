@@ -8,10 +8,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
-import { StatusDef } from '@csegames/camelot-unchained/lib/graphql';
 import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 import StatusIcon from './StatusIcon';
+import { StatusDef } from 'gql/interfaces';
 
 const StatusContainer = styled('div')`
   display: inline-block;
@@ -66,7 +65,7 @@ class Status extends React.Component<StatusProps> {
   private getStatusInfo = (id: number) => {
     const status = _.find(
       this.props.statusEffects.data,
-      (statusEffect: ql.schema.StatusDef) => statusEffect.numericID === id);
+      (statusEffect: StatusDef) => statusEffect.numericID === id);
     if (status) {
       return {
         id: status.id,

@@ -6,7 +6,7 @@
 
 import { events, buildUIMode } from '@csegames/camelot-unchained';
 import requester from './requester';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const CHANGE_MODE = 'building/mode/CHANGE_MODE';
 

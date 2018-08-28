@@ -1,5 +1,0 @@
-query TradeWindow {
-  secureTrade {
-    ...SecureTrade
-  }
-}

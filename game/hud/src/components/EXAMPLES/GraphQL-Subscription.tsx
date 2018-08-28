@@ -7,45 +7,49 @@
 
 // THIS IS ONLY AN EXAMPLE COMPONENT -- DO NOT USE ELSEWHERE!
 
+import gql from 'graphql-tag';
 import * as React from 'react';
-import { IInteractiveAlert, TradeAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
+import {
+  GraphQLExampleSubGQLSubscription,
+  GraphQLExampleSubGQLQuery,
+  AlertCategory,
+  TradeAlert,
+} from 'gql/interfaces';
 
-const query = `
-{
-  myInteractiveAlerts {
-    category
+const query = gql`
+  query GraphQLExampleSubGQLQuery {
+    myInteractiveAlerts {
+      category
 
-    ... on TradeAlert {
-      kind
-      otherName
-      otherEntityID
+      ... on TradeAlert {
+        kind
+        otherName
+        otherEntityID
+      }
     }
   }
-}`;
+`;
 
-type QueryType = {
-  myInteractiveAlerts: Pick<IInteractiveAlert, 'category'>[];
-};
+type QueryType = GraphQLExampleSubGQLQuery.Query;
 
 
-const subscription = `
-subscription {
-  interactiveAlerts {
-    category
+const subscription = gql`
+  subscription GraphQLExampleSubGQLSubscription {
+    interactiveAlerts {
+      category
 
-    ... on TradeAlert {
-      kind
-      otherName
-      otherEntityID
+      ... on TradeAlert {
+        kind
+        otherName
+        otherEntityID
+      }
     }
   }
-}`;
+`;
 
-type SubscriptionType = {
-  interactiveAlerts: Pick<IInteractiveAlert, 'category'>;
-};
+type SubscriptionType = GraphQLExampleSubGQLSubscription.Subscription;
 
 export interface Props {
 }
@@ -103,9 +107,9 @@ class SubscriptionExample extends React.Component<Props, State> {
     };
   }
 
-  private renderAlert = (alert: IInteractiveAlert | null) => {
+  private renderAlert = (alert: GraphQLExampleSubGQLQuery.MyInteractiveAlerts | null) => {
     switch (alert.category) {
-      case 'Trade':
+      case AlertCategory.Trade:
         {
           const tradeAlert = alert as TradeAlert;
           return (

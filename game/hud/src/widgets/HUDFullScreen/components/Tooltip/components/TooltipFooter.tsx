@@ -13,7 +13,7 @@ import TooltipDurabilityInfo from './TooltipDurabilityInfo';
 import TooltipRequirementInfo from './TooltipRequirementInfo';
 import { hasDurabilityStats, hasItemRequirements } from '../../../lib/utils';
 import { defaultSlotIcons, TOOLTIP_PADDING } from '../../../lib/constants';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -118,7 +118,7 @@ const InstructionText = styled('div')`
 `;
 
 export interface TooltipFooterProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
   instructions: string;
 }
 

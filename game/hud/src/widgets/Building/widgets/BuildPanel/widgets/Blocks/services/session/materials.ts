@@ -7,7 +7,7 @@
 import { events, BuildingBlock, BuildingMaterial, buildUIMode } from '@csegames/camelot-unchained';
 
 import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const SELECT_MATERIAL = 'buildpanel/panes/SELECT_MATERIAL';
 const SELECT_BLOCK = 'buildpanel/panes/SELECT_BLOCK';

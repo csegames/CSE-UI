@@ -7,14 +7,13 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
 
 import EmptyItem, { EmptyItemProps } from '../../ItemShared/EmptyItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import {
   getInventoryDataTransfer,
   isContainerSlotVerified,
@@ -43,11 +42,11 @@ export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
   disableDrop: boolean;
   onDrop: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
   containerPermissions: ContainerPermissionDef | ContainerPermissionDef[];
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
 
   // Only used by item stacks that are represented as containers. This item is the first item in the stack.
-  item?: InventoryItemFragment;
+  item?: InventoryItem.Fragment;
 }
 
 export interface EmptyItemDropZoneState {

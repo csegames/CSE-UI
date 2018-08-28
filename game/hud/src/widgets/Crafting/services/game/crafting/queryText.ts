@@ -76,7 +76,7 @@ const GetQueryPart = (name: string, def: any, parent: string, indent: string) =>
 
 const GetQueryText = (name: string, def: any, indent: string = '') => {
   const query: string[] = [];
-  query.push('query ' + name + ' {');
+  query.push('query' + ' ' + name + ' {');
   for (const key in def) {
     query.push(GetQueryPart(key, def[key], null, indent + '  '));
   }

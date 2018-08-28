@@ -9,6 +9,9 @@ import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
 import client from '../core/client';
+// issues with graphql .mjs file usage
+// tslint:disable-next-line
+const { print } = require('graphql/language/printer.js');
 
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
@@ -128,13 +131,26 @@ export class SubscriptionManager {
     subscription: Subscription,
     onData: OnData<T>,
     onError?: OnError) => {
-    
+
     const id = this.idCounter++ + '';
 
+    let payload;
+    if (typeof subscription === 'string' || subscription.hasOwnProperty('loc')) {
+      payload = { query: subscription };
+    } else {
+      payload = subscription;
+    }
+    if (
+      typeof payload.query === 'object' &&
+      (payload.query.hasOwnProperty('loc') || payload.query.hasOwnProperty('definitions'))
+    ) {
+      payload.query =  print(payload.query);
+    }
+
     const start = {
+      payload,
       id,
       type: GQL_START,
-      payload: subscription,
     };
 
     if (this.debug) {
@@ -208,6 +224,7 @@ export class SubscriptionManager {
           try {
             data = JSON.parse(op.payload.data).data;
           } catch (e) {
+            console.error('GraphQL Subscription Parse Error', e);
           }
           const result = {
             data,
@@ -231,7 +248,7 @@ export class SubscriptionManager {
       case GQL_CONNECTION_ERROR: {
         this.errorHandler(new ErrorEvent('GQL_CONNECTION_ERROR', {
           error: new Error('GQL_CONNECTION_ERROR'),
-          message: JSON.stringify(op.payload), 
+          message: JSON.stringify(op.payload),
         }));
         break;
       }
@@ -245,7 +262,7 @@ export class SubscriptionManager {
               error: new Error(message),
             }));
           }
-          delete this.subscriptions[op.id]; 
+          delete this.subscriptions[op.id];
         }
         break;
       }

@@ -10,5 +10,7 @@
 			"path": "game\\hud"
 		}
 	],
-	"settings": {}
+  "settings": {
+    "typescript.tsdk": "hud/node_modules/typescript/lib"
+  }
 }

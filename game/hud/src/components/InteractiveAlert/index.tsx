@@ -10,18 +10,13 @@ import styled from 'react-emotion';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { remove } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
-import {
-  IInteractiveAlert,
-  TradeAlert,
-  GroupAlert,
-  ProgressionAlert,
-} from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import { query, QueryData } from './graphql/query';
 import { subscription, SubscriptionData } from './graphql/subscription';
 import { TradeAlertView, handleNewTradeAlert, removeTradeInvite } from './TradeAlert';
 import { GroupAlertView, handleNewGroupAlert } from './GroupAlert';
 import { ProgressionAlertView } from './ProgressionAlert';
+import { IInteractiveAlert, TradeAlert, GroupAlert, ProgressionAlert } from 'gql/interfaces';
 
 const Container = styled('div')`
   border-image-slice: 1;
@@ -103,21 +98,21 @@ export class InteractiveAlertView extends React.Component<Props, State> {
               switch (a.category) {
                 case 'Trade': {
                   return (
-                    <Container>
+                    <Container key='Trade'>
                       <TradeAlertView key={i} alert={a as TradeAlert} remove={this.removeAlert} />
                     </Container>
                   );
                 }
                 case 'Group': {
                   return (
-                    <Container>
+                    <Container key='Group'>
                       <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />
                     </Container>
                   );
                 }
                 case 'Progression': {
                   return (
-                    <Container>
+                    <Container key='Progression'>
                       <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />
                     </Container>
                   );

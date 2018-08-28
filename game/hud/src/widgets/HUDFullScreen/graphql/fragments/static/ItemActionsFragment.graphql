@@ -1,9 +1,0 @@
-fragment ItemActions on ItemActionDefGQL {
-  id
-  name
-  cooldownSeconds
-  enabled
-  lastTimePerformed
-  uIReaction
-  showWhenDisabled
-}

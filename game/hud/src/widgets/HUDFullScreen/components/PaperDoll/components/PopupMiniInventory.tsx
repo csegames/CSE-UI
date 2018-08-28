@@ -14,7 +14,9 @@ import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames, colors } from '../../../lib/constants';
 import { getItemDefinitionName, requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+} from 'gql/interfaces';
 
 const containerDimensions = {
   width: 320,
@@ -121,13 +123,13 @@ export enum Alignment {
 export interface PopupMiniInventoryProps {
   align: Alignment;
   slotName: string;
-  inventoryItems: InventoryItemFragment[];
+  inventoryItems: InventoryItem.Fragment[];
   visible: boolean;
   onVisibilityChange: (slotName: string) => void;
 }
 
 export interface PopupMiniInventoryState {
-  miniInventoryItems: InventoryItemFragment[];
+  miniInventoryItems: InventoryItem.Fragment[];
   searchValue: string;
   top: number;
   left: number;
@@ -151,7 +153,7 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
       return _.includes(getItemDefinitionName(item), this.state.searchValue);
     });
     const amountOfPages = Math.ceil(miniInventoryItems.length / 8) + (miniInventoryItems.length % 8 > 0 ? 1 : 0) || 1;
-    const arrayOfPages: InventoryItemFragment[][] = [];
+    const arrayOfPages: InventoryItem.Fragment[][] = [];
     let nextIndex = 0;
 
     if (amountOfPages > 1) {
@@ -257,9 +259,9 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     this.initializeMiniInventoryItems(nextProps.inventoryItems);
   }
 
-  private initializeMiniInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
+  private initializeMiniInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {
     const { slotName } = this.props;
-    const miniInventoryItems: InventoryItemFragment[] = [];
+    const miniInventoryItems: InventoryItem.Fragment[] = [];
     if (inventoryItems) {
       inventoryItems.forEach((inventoryItem) => {
         const itemInfo = inventoryItem && inventoryItem.staticDefinition;

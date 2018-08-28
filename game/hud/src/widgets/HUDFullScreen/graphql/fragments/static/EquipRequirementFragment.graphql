@@ -1,5 +1,0 @@
-fragment EquipRequirement on ItemEquipRequirement {
-  status
-  requirementDescription
-  errorDescription
-}

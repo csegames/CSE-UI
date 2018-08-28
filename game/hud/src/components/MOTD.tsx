@@ -6,10 +6,10 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { ql, client } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { CUQuery, MessageOfTheDay } from '@csegames/camelot-unchained/lib/graphql';
 import { CloseButton } from 'UI/CloseButton';
+import { MessageOfTheDay, CUQuery } from 'gql/interfaces';
 
 const STORAGE_PREFIX = 'cse-MOTD-hide-start';
 
@@ -133,7 +133,7 @@ const MOTDFooterBorder = styled('div')`
   z-index: 3;
 `;
 
-const MOTDFooterOuter = styled('div')` {
+const MOTDFooterOuter = styled('div')`
   position: absolute;
   z-index: 4;
   display: flex;
@@ -141,16 +141,16 @@ const MOTDFooterOuter = styled('div')` {
   width: 100%;
 `;
 
-const MOTDFooterLeft = styled('div')` {
+const MOTDFooterLeft = styled('div')`
   background: url(images/motd/motd-botnav-left-ornament.png) no-repeat;
   height: 55px;
-  width: 75px
+  width: 75px;
 `;
 
-const MOTDFooterRight = styled('div')` {
+const MOTDFooterRight = styled('div')`
   background: url(images/motd/motd-botnav-right-ornament.png) no-repeat;
   height: 55px;
-  width: 75px
+  width: 75px;
 `;
 
 const CloseButtonPosition = css`
@@ -189,7 +189,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   public render() {
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
-        {(graphql: GraphQLResult<{ motd: ql.schema.MessageOfTheDay }>) => {
+        {(graphql: GraphQLResult<{ motd: MessageOfTheDay }>) => {
           const gqlData = typeof graphql.data === 'string' ? JSON.parse(graphql.data) : graphql.data;
           if (graphql.loading || !gqlData || !this.state.visible) return null;
           const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
@@ -230,9 +230,13 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   }
 
   private handleQueryResult = (result: GraphQLResult<Pick<CUQuery, 'motd'>>) => {
-    const gqlData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
-    const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
-    this.initMotd(latestMotd);
+    if (result.ok) {
+      const gqlData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+      const latestMotd = gqlData.motd && gqlData.motd[gqlData.motd.length - 1];
+      this.initMotd(latestMotd);
+    } else {
+      console.error('GQL Failure <MOTD />', result);
+    }
   }
 
   private initMotd = (motd: MessageOfTheDay) => {

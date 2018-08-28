@@ -5,8 +5,7 @@
  *
  */
 
-import { ql } from '@csegames/camelot-unchained';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 
@@ -40,8 +39,8 @@ export interface InventorySlotItemDef {
   icon: string;
   groupStackHashID?: string;
   itemID?: string;
-  item?: InventoryItemFragment;
-  stackedItems?: InventoryItemFragment[];
+  item?: InventoryItem.Fragment;
+  stackedItems?: InventoryItem.Fragment[];
   disableDrop?: boolean;
   disableDrag?: boolean;
   disableContextMenu?: boolean;
@@ -58,9 +57,9 @@ export interface CraftingSlotItemDef {
   containerID?: string[];
   drawerID?: string;
   drawerCurrentStats?: DrawerCurrentStats;
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerMaxStats?: ContainerDefStat_Single;
   itemID?: string;
-  item?: InventoryItemFragment;
+  item?: InventoryItem.Fragment;
   quality?: number;
   itemCount?: number;
   disableDrop?: boolean;
@@ -76,12 +75,12 @@ export interface ContainerSlotItemDef {
   groupStackHashID?: string;
   icon: string;
   slotIndex: SlotIndexInterface;
-  stackedItems?: InventoryItemFragment[];
+  stackedItems?: InventoryItem.Fragment[];
   itemID?: string;
   containerPermissions?: ContainerPermissionDef | ContainerPermissionDef[];
   quality?: number;
   itemCount?: number;
-  item?: InventoryItemFragment;
+  item?: InventoryItem.Fragment;
   disableDrop?: boolean;
   disableDrag?: boolean;
   disableContextMenu?: boolean;

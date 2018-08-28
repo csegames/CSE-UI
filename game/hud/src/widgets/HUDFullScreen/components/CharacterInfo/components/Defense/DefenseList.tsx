@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import * as events from '@csegames/camelot-unchained/lib/events';
-import { ql } from '@csegames/camelot-unchained';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import styled from 'react-emotion';
 
@@ -14,6 +14,8 @@ import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
 import eventNames from '../../../../lib/eventNames';
+import { DamageTypeValuesFragment } from 'gql/fragments/DamageTypeValuesFragment';
+import { DefenseListGQL } from 'gql/interfaces';
 
 const Container = styled('div')`
   flex: 1;
@@ -24,7 +26,7 @@ const Container = styled('div')`
 // This is the highest order data structure. We use an array of StatInfoSection's
 // to break up the ArmorStats (resistances, mitigations) into sections.
 
-export interface DefenseListProps extends GraphQLInjectedProps<{ myEquippedItems: ql.schema.MyEquippedItems }> {
+export interface DefenseListProps extends GraphQLInjectedProps<DefenseListGQL.Query> {
 }
 
 export interface DefenseListState {
@@ -91,8 +93,8 @@ class DefenseList extends React.Component<DefenseListProps, DefenseListState> {
 }
 
 const DefenseListWithQL = withGraphQL({
-  query: `
-    query DefenseListQuery {
+  query: gql`
+    query DefenseListGQL {
       myEquippedItems {
         armorStats {
           subpartID
@@ -106,34 +108,7 @@ const DefenseListWithQL = withGraphQL({
         }
       }
     }
-
-    fragment DamageTypeValues on DamageType_Single {
-      slashing
-      piercing
-      crushing
-      physical
-      acid
-      poison
-      disease
-      earth
-      water
-      fire
-      air
-      lightning
-      frost
-      elemental
-      life
-      mind
-      spirit
-      radiant
-      light
-      death
-      shadow
-      chaos
-      void
-      dark
-      arcane
-    }
+    ${DamageTypeValuesFragment}
   `,
 })(DefenseList);
 

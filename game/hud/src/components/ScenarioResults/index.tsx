@@ -6,10 +6,11 @@
  */
 
 import * as React from 'react';
-import { ql, client } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
 import ScenarioResultsContainer from './components/ScenarioResultsContainer';
+import { ScenarioSummaryDBModel } from 'gql/interfaces';
 
 const query = (scenarioID: string): Partial<GraphQLQuery> => ({
   namedQuery: 'scenarioSummary',
@@ -40,7 +41,7 @@ class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResu
     return (
       <GraphQL query={scenarioQuery}>
         {
-          (graphql: GraphQLResult<{ scenariosummary: ql.schema.ScenarioSummaryDBModel }>) => {
+          (graphql: GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }>) => {
             return <ScenarioResultsContainer scenarioID={this.state.scenarioID} graphql={graphql} />;
           }
         }

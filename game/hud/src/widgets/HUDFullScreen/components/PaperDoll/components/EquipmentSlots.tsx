@@ -8,7 +8,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css, cx } from 'react-emotion';
 import { client, ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import * as events from '@csegames/camelot-unchained/lib/events';
 
 import EquippedItemSlot from './EquippedItemSlot';
@@ -20,7 +19,11 @@ import eventNames, {
   UnequipItemPayload,
   UpdateInventoryItemsPayload,
 } from '../../../lib/eventNames';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  EquippedItem,
+  SecureTradeState,
+} from 'gql/interfaces';
 import { hideTooltip } from 'actions/tooltips';
 
 const ARMOR_ORNAMENT_OPACITY = 0.3;
@@ -327,13 +330,13 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
 ];
 
 export interface EquipmentSlotsInjectedProps {
-  equippedItems: EquippedItemFragment[];
-  inventoryItems: InventoryItemFragment[];
+  equippedItems: EquippedItem.Fragment[];
+  inventoryItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
 }
 
 export interface EquipmentSlotsProps {
-  onEquippedItemsChange: (equippedItems: EquippedItemFragment[]) => void;
+  onEquippedItemsChange: (equippedItems: EquippedItem.Fragment[]) => void;
 }
 
 export type EquipmentSlotsComponentProps = EquipmentSlotsInjectedProps & EquipmentSlotsProps;
@@ -453,7 +456,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         return _.find(willEquipTo, slot => gearSlot.id === slot.id);
       });
     }));
-    const newItem: InventoryItemFragment = {
+    const newItem: InventoryItem.Fragment = {
       ...inventoryItem.item,
       location: {
         inventory: null,

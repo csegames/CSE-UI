@@ -5,7 +5,7 @@
  */
 
 import { Module } from 'redux-typed-modules';
-import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 export const types = {
   SET_ITEM_SLOTS: 'charactersheets-inventory-SET_ITEM_SLOTS',
@@ -13,8 +13,8 @@ export const types = {
 
 export interface ItemSlot {
   index: number;
-  item?: InventoryItemFragment;
-  stack?: InventoryItemFragment[];
+  item?: InventoryItem.Fragment;
+  stack?: InventoryItem.Fragment[];
 }
 
 export interface InventoryState {

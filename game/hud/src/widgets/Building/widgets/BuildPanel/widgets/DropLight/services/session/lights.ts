@@ -5,7 +5,7 @@
  */
 import { Light } from '../../lib/Light';
 import { Color } from '../../lib/Color';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 
 const LIGHT_STORAGE_KEY = 'cu/game/building/droplights';

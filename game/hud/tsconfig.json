@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "esnext",
     "noImplicitAny": true,
     "removeComments": false,
     "outDir": "./tmp",
-    "sourceMap": false,
-    "jsx": "react",
-    "module": "commonjs",
+    "sourceMap": true,
+    "jsx": "preserve",
+    "module": "esnext",
     "noImplicitUseStrict": true,
     "noUnusedLocals": true,
     "alwaysStrict": false,
@@ -14,31 +14,30 @@
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "gql/*": [ "gql/*" ],
+      "components/*": [ "components/*" ],
+      "UI/*": [ "components/UI/*" ],
+      "actions/*": [ "services/actions/*" ],
+      "lib/*": [ "lib/*" ],
+      "services/*": [ "services/*" ],
+      "widgets/*": [ "widgets/*" ],
+      "HUDContext": [ "components/HUD/context.ts" ],
+      "*": [
+        "node_modules/*",
+        "types/*",
+        "../typings/globals/*"
+      ]
+    },
     "plugins": [
       { "name": "tslint-language-service"}
     ],
-    "baseUrl": "src",
-    "paths": {
-      "UI/*": [ "components/UI/*" ],
-      "HUDContext": [ "components/HUD/context.ts" ],
-      "actions/*": [ "services/actions/*" ]
-    }
+    "moduleResolution": "node",
   },
-  "compileOnSave": false,
-  "buildOnSave": false,
   "resolution": "typings",
-  "moduleResolution": "node",
-  "exclude": [
-    "node_modules",
-    "typings/browser.d.ts",
-    "typings/browser",
-    "typings/main.d.ts",
-    "typings/main",
-    "tmp",
-    "dist",
-    "publish"
-  ],
-  "atom": {
-    "rewriteTsconfig": false
-  }
+  "include": [
+    "src/**/*",
+  ]
 }

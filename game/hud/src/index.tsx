@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import './index.scss';
 import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
@@ -17,22 +18,12 @@ import HUD from './components/HUD';
 import { apollo, store } from './services/session/reducer';
 import { ApolloProvider } from 'react-apollo';
 
-// Uncomment if you want super easy perf gainzzz https://github.com/garbles/why-did-you-update
-
-// if (client.debug) {
-//   // tslint:disable
-//   {
-//     // @ts-ignore
-//     let createClass = React.createClass;
-//     Object.defineProperty(React, 'createClass', {
-//       set: (nextCreateClass) => {
-//         createClass = nextCreateClass;
-//       }
-//     });
-//   }
-//   const {whyDidYouUpdate} = require('why-did-you-update');
-//   whyDidYouUpdate(React);
-// }
+if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
+  // tslint:disable
+  const { whyDidYouUpdate } = require('why-did-you-update');
+  whyDidYouUpdate(React);
+  // tslint:enable
+}
 
 const root = document.getElementById('hud');
 

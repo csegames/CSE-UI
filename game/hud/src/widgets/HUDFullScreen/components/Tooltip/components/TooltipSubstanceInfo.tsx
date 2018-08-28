@@ -11,7 +11,7 @@ import styled from 'react-emotion';
 
 import TooltipInfoSection, { TooltipSection } from './TooltipInfoSection';
 import { TOOLTIP_PADDING } from '../../../lib/constants';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   padding: ${TOOLTIP_PADDING};
@@ -19,7 +19,7 @@ const Container = styled('div')`
 `;
 
 export interface TooltipSubstanceInfoProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
 }
 
 class TooltipSubstanceInfo extends React.PureComponent<TooltipSubstanceInfoProps> {

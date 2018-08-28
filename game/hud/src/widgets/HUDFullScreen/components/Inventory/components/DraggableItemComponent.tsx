@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, ItemPermissions } from '@csegames/camelot-unchained';
+import { events, ItemPermissions } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import ItemStack from '../../ItemShared/ItemStack';
@@ -19,6 +19,7 @@ import { placeholderIcon } from '../../../lib/constants';
 import eventNames, { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../lib/itemInterfaces';
 import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo } from '../../../lib/utils';
+import { ContainerDefStat_Single, GearSlotDefRef } from 'gql/interfaces';
 
 const Container = styled('div')`
   display: flex;
@@ -60,7 +61,7 @@ const ContainerOverlay = styled('div')`
   left: 2px;
   bottom: 2px;
   right: 2px;
-  background: linear-gradient(to top, ${(props: any) => props.backgroundColor}, transparent 65%)
+  background: linear-gradient(to top, ${(props: any) => props.backgroundColor}, transparent 65%);
 `;
 
 const FirstContainerItem = styled('div')`
@@ -84,7 +85,7 @@ export interface ItemComponentProps extends DragAndDropInjectedProps {
   containerID?: string[];
   drawerID?: string;
   containerIsOpen?: boolean;
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
 }
 
@@ -111,7 +112,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
     const item = e.dataTransfer.item;
     const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets) {
-      let allGearSlots: ql.schema.GearSlotDefRef[] = [];
+      let allGearSlots: GearSlotDefRef[] = [];
       gearSlotSets.forEach((gearSlotSet) => {
         allGearSlots = [...allGearSlots, ...gearSlotSet.gearSlots as any];
       });

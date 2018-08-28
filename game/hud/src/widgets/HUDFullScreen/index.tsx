@@ -8,12 +8,16 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 import HudFullScreenView from './HUDFullScreenView';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+  EquippedItem,
+  SecureTradeState,
+} from 'gql/interfaces';
 import { SlotItemDefType, SlotType } from './lib/itemInterfaces';
 import TooltipContent, { defaultTooltipStyle } from './components/Tooltip';
 import {
@@ -348,7 +352,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return _.includes(visibleComponentLeft, name) || _.includes(visibleComponentRight, name);
   }
 
-  private onRightOrLeftItemAction = (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => {
+  private onRightOrLeftItemAction = (
+    item: InventoryItem.Fragment,
+    action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => {
     const { gearSlotSets } = item.staticDefinition;
     if (gearSlotSets) {
       // Dealing with a right or left weapon/piece of armor
@@ -398,11 +404,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     hideTooltip();
   }
 
-  private onChangeEquippedItems = (equippedItems: EquippedItemFragment[]) => {
+  private onChangeEquippedItems = (equippedItems: EquippedItem.Fragment[]) => {
     this.setState({ equippedItems });
   }
 
-  private onChangeInventoryItems = (inventoryItems: InventoryItemFragment[]) => {
+  private onChangeInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {
     if (this.isVisible()) {
       this.setState({ inventoryItems });
     }
@@ -420,7 +426,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     }
   }
 
-  private onChangeMyTradeItems = (myTradeItems: InventoryItemFragment[]) => {
+  private onChangeMyTradeItems = (myTradeItems: InventoryItem.Fragment[]) => {
     this.setState({ myTradeItems });
   }
 

@@ -8,7 +8,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { HeaderBorderFoundation } from '../../TabHeader';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql';
+import { SecureTradeState } from 'gql/interfaces';
 
 const SubHeaderContainer = styled('div')`
   position: relative;

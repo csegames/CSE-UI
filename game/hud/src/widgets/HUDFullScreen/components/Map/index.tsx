@@ -4,15 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
 import OL from 'ol';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
 import * as events from '@csegames/camelot-unchained/lib/events';
 import client from '@csegames/camelot-unchained/lib/core/client';
 import { FullScreenContext } from '../../lib/utils';
+import { MapGQL } from 'gql/interfaces';
 
 declare const ol: typeof OL;
 
@@ -61,44 +62,44 @@ const RetryButton = styled('button')`
   }
 `;
 
-const query = `
-{
-  world {
-    map {
-      static {
-        position
-        anchor
-        tooltip
-        src
-        offset
-        size
-        color
-        actions {
-          onClick {
-            type
-            command
+const query = gql`
+  query MapGQL {
+    world {
+      map {
+        static {
+          position
+          anchor
+          tooltip
+          src
+          offset
+          size
+          color
+          actions {
+            onClick {
+              type
+              command
+            }
           }
         }
-      }
 
-      dynamic {
-        position
-        anchor
-        tooltip
-        src
-        offset
-        size
-        color
-        actions {
-          onClick {
-            type
-            command
+        dynamic {
+          position
+          anchor
+          tooltip
+          src
+          offset
+          size
+          color
+          actions {
+            onClick {
+              type
+              command
+            }
           }
         }
       }
     }
   }
-}
 `;
 
 interface MapMetadata {
@@ -225,7 +226,7 @@ export class GameMap extends React.Component<Props, State> {
       });
   }
 
-  private onQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'world'>>) => {
+  private onQueryResult = (graphql: GraphQLResult<MapGQL.Query>) => {
     if (!this.map || graphql.loading || !graphql.data) {
       if (!this.state.loading) {
         this.setState({ loading: true });

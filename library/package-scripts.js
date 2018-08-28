@@ -15,10 +15,10 @@ module.exports = {
     browserify: 'browserify -g [ envify --NODE_ENV production ] lib/index.js > lib/camelot-unchained.js',
     sass: 'node-sass src/ -o lib/ --importer src/third-party/sass-importer/sass-npm-importer.js',
     copy: {
-      thirdParty: 'copyup src/third-party/**/* lib/',
-      misc: 'copyup src/**/*.html src/**/*.css src/**/*.scss lib/',
-      tmp: 'copyup tmp/**/* lib/',
-      definitions: 'copyup tmp/**/*.d.ts lib/',
+      thirdParty: 'copyup "src/third-party/**/*" "lib/"',
+      misc: 'copyup "src/**/*.html" "src/**/*.css" "src/**/*.scss" "lib/"',
+      tmp: 'copyup "tmp/**/*" "lib/"',
+      definitions: 'copyup "tmp/**/*.d.ts" lib/',
     },
     updateApi: {
       buildDefinitions: '"../../../CamelotUnchained/MMO/CUWebAPIServer/tsfixup/tsfixup.exe" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/models" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/extras" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/enums" -o "src/webAPI/definitions.ts"',
@@ -54,7 +54,7 @@ module.exports = {
     },
     gql: {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/graphql/schema.json',
-      typings: 'gql-gen --file src/graphql/schema.json --template typescript --out ./src/graphql/schema.ts',
+      typings: 'gql-gen --schema src/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/graphql/schema.ts',
       default: 'nps gql.schema && nps gql.typings',
       localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
       local: 'nps gql.localschema && nps gql.typings',

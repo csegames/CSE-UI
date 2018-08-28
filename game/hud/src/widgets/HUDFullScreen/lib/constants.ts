@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { InventoryItemFragment } from '../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.
@@ -295,12 +295,12 @@ export interface InventoryFilterButton {
   style?: React.CSSProperties;
   // Filter method returns true if the given item should
   // be displayed when this filter is active
-  filter: (item: InventoryItemFragment) => boolean;
+  filter: (item: InventoryItem.Fragment) => boolean;
   // Used to distinguish difference between Heavy, Medium, and Light armor
   armorType?: ArmorType;
 }
 
-function filterForGearSlot(item: InventoryItemFragment, filter: { icon: string, name: string, armorType?: ArmorType }) {
+function filterForGearSlot(item: InventoryItem.Fragment, filter: { icon: string, name: string, armorType?: ArmorType }) {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
       _.find(set.gearSlots, slot => _.includes(filter.name.toLowerCase(), slot.id.toLowerCase()))) > -1 &&
@@ -308,17 +308,17 @@ function filterForGearSlot(item: InventoryItemFragment, filter: { icon: string, 
         _.includes(item.staticDefinition.description.toLowerCase(), filter.armorType.toString().toLowerCase()) : true);
 }
 
-function filterForDescription(item: InventoryItemFragment, filter: { icon: string, name: string }) {
+function filterForDescription(item: InventoryItem.Fragment, filter: { icon: string, name: string }) {
   return item &&
     _.includes(item.staticDefinition.description.toLowerCase(), filter.name.toLowerCase());
 }
 
-function filterForItemType(item: InventoryItemFragment, filter: { icon: string, name: string }) {
+function filterForItemType(item: InventoryItem.Fragment, filter: { icon: string, name: string }) {
   return item &&
     _.includes(item.staticDefinition.itemType.toLowerCase(), filter.name.toLowerCase());
 }
 
-function filterForLayer(item: InventoryItemFragment, layer: 'outer' | 'under') {
+function filterForLayer(item: InventoryItem.Fragment, layer: 'outer' | 'under') {
   return item &&
     _.findIndex(item.staticDefinition.gearSlotSets, set =>
       _.find(set.gearSlots, slot => _.includes(slot.id.toLowerCase(), layer))) > -1;
@@ -868,52 +868,52 @@ export const inventoryFilterButtons: {
   // Armor
   Armor: {
     ...inventoryFilterButtonInfo.Armor,
-    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Armor),
+    filter: (item: InventoryItem.Fragment) => filterForItemType(item, inventoryFilterButtonInfo.Armor),
   },
   UnderLayer: {
     ...inventoryFilterButtonInfo.UnderLayer,
-    filter: (item: InventoryItemFragment) => filterForLayer(item, 'under'),
+    filter: (item: InventoryItem.Fragment) => filterForLayer(item, 'under'),
   },
   OuterLayer: {
     ...inventoryFilterButtonInfo.OuterLayer,
-    filter: (item: InventoryItemFragment) => filterForLayer(item, 'outer'),
+    filter: (item: InventoryItem.Fragment) => filterForLayer(item, 'outer'),
   },
   // Light armor
   SkullLight: {
     ...inventoryFilterButtonInfo.SkullLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullLight),
   },
   FaceLight: {
     ...inventoryFilterButtonInfo.FaceLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceLight),
   },
   NeckLight: {
     ...inventoryFilterButtonInfo.NeckLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckLight),
   },
   ChestLight: {
     ...inventoryFilterButtonInfo.ChestLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestLight),
   },
   CloakLight: {
     ...inventoryFilterButtonInfo.CloakLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakLight),
   },
   BackLight: {
     ...inventoryFilterButtonInfo.BackLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackLight),
   },
   WaistLight: {
     ...inventoryFilterButtonInfo.WaistLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistLight),
   },
   ForearmLeftLight: {
     ...inventoryFilterButtonInfo.ForearmLeftLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftLight),
   },
   ForearmRightLight: {
     ...inventoryFilterButtonInfo.ForearmRightLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightLight),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -921,11 +921,11 @@ export const inventoryFilterButtons: {
   },
   ShoulderLeftLight: {
     ...inventoryFilterButtonInfo.ShoulderLeftLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftLight),
   },
   ShoulderRightLight: {
     ...inventoryFilterButtonInfo.ShoulderRightLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightLight),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -933,11 +933,11 @@ export const inventoryFilterButtons: {
   },
   HandLeftLight: {
     ...inventoryFilterButtonInfo.HandLeftLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftLight),
   },
   HandRightLight: {
     ...inventoryFilterButtonInfo.HandRightLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightLight),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -945,52 +945,52 @@ export const inventoryFilterButtons: {
   },
   ShinsLight: {
     ...inventoryFilterButtonInfo.ShinsLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsLight),
   },
   ThighsLight: {
     ...inventoryFilterButtonInfo.ThighsLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsLight),
   },
   FeetLight: {
     ...inventoryFilterButtonInfo.FeetLight,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetLight),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetLight),
   },
   // Medium armor
   SkullMedium: {
     ...inventoryFilterButtonInfo.SkullMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullMedium),
   },
   FaceMedium: {
     ...inventoryFilterButtonInfo.FaceMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceMedium),
   },
   NeckMedium: {
     ...inventoryFilterButtonInfo.NeckMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckMedium),
   },
   ChestMedium: {
     ...inventoryFilterButtonInfo.ChestMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestMedium),
   },
   CloakMedium: {
     ...inventoryFilterButtonInfo.CloakMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakMedium),
   },
   BackMedium: {
     ...inventoryFilterButtonInfo.BackMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackMedium),
   },
   WaistMedium: {
     ...inventoryFilterButtonInfo.WaistMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistMedium),
   },
   ForearmLeftMedium: {
     ...inventoryFilterButtonInfo.ForearmLeftMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftMedium),
   },
   ForearmRightMedium: {
     ...inventoryFilterButtonInfo.ForearmRightMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightMedium),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -998,11 +998,11 @@ export const inventoryFilterButtons: {
   },
   ShoulderLeftMedium: {
     ...inventoryFilterButtonInfo.ShoulderLeftMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftMedium),
   },
   ShoulderRightMedium: {
     ...inventoryFilterButtonInfo.ShoulderRightMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightMedium),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -1010,11 +1010,11 @@ export const inventoryFilterButtons: {
   },
   HandLeftMedium: {
     ...inventoryFilterButtonInfo.HandLeftMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftMedium),
   },
   HandRightMedium: {
     ...inventoryFilterButtonInfo.HandRightMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightMedium),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -1022,52 +1022,52 @@ export const inventoryFilterButtons: {
   },
   ShinsMedium: {
     ...inventoryFilterButtonInfo.ShinsMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsMedium),
   },
   ThighsMedium: {
     ...inventoryFilterButtonInfo.ThighsMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsMedium),
   },
   FeetMedium: {
     ...inventoryFilterButtonInfo.FeetMedium,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetMedium),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetMedium),
   },
   // Heavy armor
   SkullHeavy: {
     ...inventoryFilterButtonInfo.SkullHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.SkullHeavy),
   },
   FaceHeavy: {
     ...inventoryFilterButtonInfo.FaceHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FaceHeavy),
   },
   NeckHeavy: {
     ...inventoryFilterButtonInfo.NeckHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.NeckHeavy),
   },
   ChestHeavy: {
     ...inventoryFilterButtonInfo.ChestHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ChestHeavy),
   },
   CloakHeavy: {
     ...inventoryFilterButtonInfo.CloakHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.CloakHeavy),
   },
   BackHeavy: {
     ...inventoryFilterButtonInfo.BackHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.BackHeavy),
   },
   WaistHeavy: {
     ...inventoryFilterButtonInfo.WaistHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.WaistHeavy),
   },
   ForearmLeftHeavy: {
     ...inventoryFilterButtonInfo.ForearmLeftHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmLeftHeavy),
   },
   ForearmRightHeavy: {
     ...inventoryFilterButtonInfo.ForearmRightHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ForearmRightHeavy),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -1075,11 +1075,11 @@ export const inventoryFilterButtons: {
   },
   ShoulderLeftHeavy: {
     ...inventoryFilterButtonInfo.ShoulderLeftHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderLeftHeavy),
   },
   ShoulderRightHeavy: {
     ...inventoryFilterButtonInfo.ShoulderRightHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShoulderRightHeavy),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -1087,11 +1087,11 @@ export const inventoryFilterButtons: {
   },
   HandLeftHeavy: {
     ...inventoryFilterButtonInfo.HandLeftHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandLeftHeavy),
   },
   HandRightHeavy: {
     ...inventoryFilterButtonInfo.HandRightHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.HandRightHeavy),
     style: {
       transform: 'scaleX(-1)',
       WebkitTransform: 'scaleX(-1)',
@@ -1099,283 +1099,283 @@ export const inventoryFilterButtons: {
   },
   ShinsHeavy: {
     ...inventoryFilterButtonInfo.ShinsHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ShinsHeavy),
   },
   ThighsHeavy: {
     ...inventoryFilterButtonInfo.ThighsHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.ThighsHeavy),
   },
   FeetHeavy: {
     ...inventoryFilterButtonInfo.FeetHeavy,
-    filter: (item: InventoryItemFragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetHeavy),
+    filter: (item: InventoryItem.Fragment) => filterForGearSlot(item, inventoryFilterButtonInfo.FeetHeavy),
   },
   Weapon: {
     ...inventoryFilterButtonInfo.Weapon,
-    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Weapon),
+    filter: (item: InventoryItem.Fragment) => filterForItemType(item, inventoryFilterButtonInfo.Weapon),
   },
   Axe: {
     ...inventoryFilterButtonInfo.Axe,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Axe),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Axe),
   },
   Bow: {
     ...inventoryFilterButtonInfo.Bow,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bow),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Bow),
   },
   Dagger: {
     ...inventoryFilterButtonInfo.Dagger,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Dagger),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Dagger),
   },
   GreatAxe: {
     ...inventoryFilterButtonInfo.GreatAxe,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatAxe),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatAxe),
   },
   GreatHammer: {
     ...inventoryFilterButtonInfo.GreatHammer,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatHammer),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatHammer),
   },
   GreatMace: {
     ...inventoryFilterButtonInfo.GreatMace,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatMace),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatMace),
   },
   GreatSword: {
     ...inventoryFilterButtonInfo.GreatSword,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatSword),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GreatSword),
   },
   Hammer: {
     ...inventoryFilterButtonInfo.Hammer,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Hammer),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Hammer),
   },
   LongSword: {
     ...inventoryFilterButtonInfo.LongSword,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LongSword),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.LongSword),
   },
   Mace: {
     ...inventoryFilterButtonInfo.Mace,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Mace),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Mace),
   },
   Polearm: {
     ...inventoryFilterButtonInfo.Polearm,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Polearm),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Polearm),
   },
   Shield: {
     ...inventoryFilterButtonInfo.Shield,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Shield),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Shield),
   },
   Spear: {
     ...inventoryFilterButtonInfo.Spear,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Spear),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Spear),
   },
   Staff: {
     ...inventoryFilterButtonInfo.Staff,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Staff),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Staff),
   },
   Sword: {
     ...inventoryFilterButtonInfo.Sword,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Sword),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Sword),
   },
   Torch: {
     ...inventoryFilterButtonInfo.Torch,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Torch),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Torch),
   },
   Alloys: {
     ...inventoryFilterButtonInfo.Alloys,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Alloys),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Alloys),
   },
   Substances: {
     ...inventoryFilterButtonInfo.Substances,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Substances),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Substances),
   },
   BlackLog: {
     ...inventoryFilterButtonInfo.BlackLog,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackLog),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackLog),
   },
   CherryBoard: {
     ...inventoryFilterButtonInfo.CherryBoard,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryBoard),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryBoard),
   },
   CherryLog: {
     ...inventoryFilterButtonInfo.CherryLog,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryLog),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.CherryLog),
   },
   Cloths: {
     ...inventoryFilterButtonInfo.Cloths,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Cloths),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Cloths),
   },
   RawCloths: {
     ...inventoryFilterButtonInfo.RawCloths,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawCloths),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.RawCloths),
   },
   DarkLog: {
     ...inventoryFilterButtonInfo.DarkLog,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkLog),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkLog),
   },
   IgneousOre: {
     ...inventoryFilterButtonInfo.IgneousOre,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.IgneousOre),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.IgneousOre),
   },
   Leathers: {
     ...inventoryFilterButtonInfo.Leathers,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Leathers),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Leathers),
   },
   RawLeathers: {
     ...inventoryFilterButtonInfo.RawLeathers,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawLeathers),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.RawLeathers),
   },
   LightLog: {
     ...inventoryFilterButtonInfo.LightLog,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LightLog),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.LightLog),
   },
   MetalBar: {
     ...inventoryFilterButtonInfo.MetalBar,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MetalBar),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.MetalBar),
   },
   Metals: {
     ...inventoryFilterButtonInfo.Metals,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Metals),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Metals),
   },
   RawMetals: {
     ...inventoryFilterButtonInfo.RawMetals,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawMetals),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.RawMetals),
   },
   MetamorphicOre: {
     ...inventoryFilterButtonInfo.MetamorphicOre,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MetamorphicOre),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.MetamorphicOre),
   },
   SedimentaryOre: {
     ...inventoryFilterButtonInfo.SedimentaryOre,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SedimentaryOre),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.SedimentaryOre),
   },
   SoftMetalBar: {
     ...inventoryFilterButtonInfo.SoftMetalBar,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SoftMetalBar),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.SoftMetalBar),
   },
   Stones: {
     ...inventoryFilterButtonInfo.Stones,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Stones),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Stones),
   },
   RawStones: {
     ...inventoryFilterButtonInfo.RawStones,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawStones),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.RawStones),
   },
   Woods: {
     ...inventoryFilterButtonInfo.Woods,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Woods),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Woods),
   },
   RawWoods: {
     ...inventoryFilterButtonInfo.RawWoods,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.RawWoods),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.RawWoods),
   },
   Ammo: {
     ...inventoryFilterButtonInfo.Ammo,
-    filter: (item: InventoryItemFragment) => filterForItemType(item, inventoryFilterButtonInfo.Ammo),
+    filter: (item: InventoryItem.Fragment) => filterForItemType(item, inventoryFilterButtonInfo.Ammo),
   },
   Bandages: {
     ...inventoryFilterButtonInfo.Bandages,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bandages),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Bandages),
   },
   Arrow: {
     ...inventoryFilterButtonInfo.Arrow,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Arrow),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Arrow),
   },
   BasaltSlab: {
     ...inventoryFilterButtonInfo.BasaltSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BasaltSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.BasaltSlab),
   },
   BlackBoard: {
     ...inventoryFilterButtonInfo.BlackBoard,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackBoard),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.BlackBoard),
   },
   Blocks: {
     ...inventoryFilterButtonInfo.Blocks,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Blocks),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Blocks),
   },
   Bolt: {
     ...inventoryFilterButtonInfo.Bolt,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Bolt),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Bolt),
   },
   Building: {
     ...inventoryFilterButtonInfo.Building,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Building),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Building),
   },
   Consumables: {
     ...inventoryFilterButtonInfo.Consumables,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Consumables),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Consumables),
   },
   DarkBoard: {
     ...inventoryFilterButtonInfo.DarkBoard,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkBoard),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.DarkBoard),
   },
   Decor: {
     ...inventoryFilterButtonInfo.Decor,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Decor),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Decor),
   },
   Deployables: {
     ...inventoryFilterButtonInfo.Deployables,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Deployables),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Deployables),
   },
   Focus: {
     ...inventoryFilterButtonInfo.Focus,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Focus),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Focus),
   },
   GneissSlab: {
     ...inventoryFilterButtonInfo.GneissSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GneissSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GneissSlab),
   },
   GraniteSlab: {
     ...inventoryFilterButtonInfo.GraniteSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.GraniteSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.GraniteSlab),
   },
   HardMetalBar: {
     ...inventoryFilterButtonInfo.HardMetalBar,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.HardMetalBar),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.HardMetalBar),
   },
   Interactive: {
     ...inventoryFilterButtonInfo.Interactive,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Interactive),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Interactive),
   },
   LightBoard: {
     ...inventoryFilterButtonInfo.LightBoard,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.LightBoard),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.LightBoard),
   },
   MarbleSlab: {
     ...inventoryFilterButtonInfo.MarbleSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.MarbleSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.MarbleSlab),
   },
   Potion: {
     ...inventoryFilterButtonInfo.Potion,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Potion),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Potion),
   },
   QuartziteSlab: {
     ...inventoryFilterButtonInfo.QuartziteSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.QuartziteSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.QuartziteSlab),
   },
   Reagents: {
     ...inventoryFilterButtonInfo.Reagents,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Reagents),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Reagents),
   },
   SandstoneSlab: {
     ...inventoryFilterButtonInfo.SandstoneSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SandstoneSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.SandstoneSlab),
   },
   Siege: {
     ...inventoryFilterButtonInfo.Siege,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Siege),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Siege),
   },
   SlateSlab: {
     ...inventoryFilterButtonInfo.SlateSlab,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.SlateSlab),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.SlateSlab),
   },
   Thrown: {
     ...inventoryFilterButtonInfo.Thrown,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Thrown),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Thrown),
   },
   Trap: {
     ...inventoryFilterButtonInfo.Trap,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Trap),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Trap),
   },
   Vial: {
     ...inventoryFilterButtonInfo.Vial,
-    filter: (item: InventoryItemFragment) => filterForDescription(item, inventoryFilterButtonInfo.Vial),
+    filter: (item: InventoryItem.Fragment) => filterForDescription(item, inventoryFilterButtonInfo.Vial),
   },
 };
 

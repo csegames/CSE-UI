@@ -1,9 +1,0 @@
-fragment ContainerColor on ColorRGBA {
-  r
-  g
-  b
-  a
-  rgba
-  hex
-  hexa
-}

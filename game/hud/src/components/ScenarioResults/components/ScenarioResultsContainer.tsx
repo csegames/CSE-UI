@@ -7,21 +7,22 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { ql, events, client, soundEvents } from '@csegames/camelot-unchained';
+import { events, client, soundEvents } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
+import { CharacterOutcomeDBModel, ScenarioSummaryDBModel, ScenarioOutcome } from 'gql/interfaces';
 
 export interface TeamInterface {
   teamID: string;
-  outcome: ql.schema.ScenarioOutcome;
+  outcome: ScenarioOutcome;
 }
 
-export interface TeamPlayer extends ql.schema.CharacterOutcomeDBModel {
+export interface TeamPlayer extends CharacterOutcomeDBModel {
   teamID: string;
 }
 
 export interface ScenarioResultsContainerProps {
-  graphql: GraphQLResult<{ scenariosummary: ql.schema.ScenarioSummaryDBModel }>;
+  graphql: GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }>;
   scenarioID: string;
 }
 
@@ -113,7 +114,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
     this.setState({ visible: !this.state.visible });
   }
 
-  private getParticipantsAndTeams = (scenarioSummary: ql.schema.ScenarioSummaryDBModel) => {
+  private getParticipantsAndTeams = (scenarioSummary: ScenarioSummaryDBModel) => {
     if (scenarioSummary) {
       let participants: TeamPlayer[] = [];
       let teams: TeamInterface[] = [];

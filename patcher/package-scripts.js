@@ -33,14 +33,16 @@ module.exports = {
     gql: {
       mkdir: 'mkdirp gql',
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
-      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
-      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      codegen: 'gql-gen --schema gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out src/gqlInterfaces.ts "src/**/*.graphql"',
+      // collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      collectAndConcat: '',
       default: 'nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
     },
     gqlLocal: {
       schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
-      codegen: 'apollo-codegen generate src/**/*.graphql --schema gql/schema.json --target typescript --output src/gqlInterfaces.ts',
-      collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      codegen: 'gql-gen --schema gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out src/gqlInterfaces.ts "src/**/*.graphql"',
+      // collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
+      collectAndConcat: '',
       default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
     },
   }

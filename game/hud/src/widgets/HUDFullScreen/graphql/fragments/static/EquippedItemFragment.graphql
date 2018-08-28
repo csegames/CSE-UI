@@ -1,8 +1,0 @@
-fragment EquippedItem on EquippedItem {
-  gearSlots {
-    ...GearSlotDefRef
-  }
-  item {
-    ...InventoryItem
-  }
-}

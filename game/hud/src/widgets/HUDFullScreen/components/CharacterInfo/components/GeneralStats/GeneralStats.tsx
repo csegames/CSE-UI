@@ -5,8 +5,8 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
-import { ql } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -14,8 +14,9 @@ import DescriptionItem from '../DescriptionItem';
 import StatListContainer from '../StatListContainer';
 import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
+import { GeneralStatsGQL } from 'gql/interfaces';
 
-export interface GeneralProps extends GraphQLInjectedProps<{ myCharacter: ql.schema.CUCharacter }> {
+export interface GeneralProps extends GraphQLInjectedProps<GeneralStatsGQL.Query> {
 
 }
 
@@ -77,8 +78,8 @@ class General extends React.Component<GeneralProps, GeneralState> {
 }
 
 const GeneralWithQL = withGraphQL({
-  query: `
-    {
+  query: gql`
+    query GeneralStatsGQL {
       myCharacter {
         maxHealth
         maxBlood

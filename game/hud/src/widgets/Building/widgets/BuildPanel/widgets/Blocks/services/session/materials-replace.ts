@@ -5,7 +5,7 @@
  */
 
 import { BuildingMaterial } from '@csegames/camelot-unchained';
-import * as assign from 'object-assign';
+import assign from 'object-assign';
 
 const BLOCKS_SELECTED = 'buildpanel/panes/BLOCKS_SELECTED';
 const SELECT_FROM_MATERIAL = 'buildpanel/panes/SELECT_FROM_MATERIAL';

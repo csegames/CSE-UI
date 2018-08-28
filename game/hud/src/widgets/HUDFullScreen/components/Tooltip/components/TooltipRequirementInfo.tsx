@@ -11,7 +11,7 @@ import styled from 'react-emotion';
 
 import { shortenedWeaponStatWords } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const StatItem = styled('div')`
   display: flex;
@@ -31,7 +31,7 @@ const StatValue = styled('div')`
 `;
 
 export interface TooltipRequirementInfoProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
 }
 
 class TooltipRequirementInfo extends React.PureComponent<TooltipRequirementInfoProps> {

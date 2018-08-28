@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import {  client, webAPI } from '@csegames/camelot-unchained';
-import { IInteractiveAlert, GroupAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { InteractiveAlertView } from './index';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
+import { GroupAlert, IInteractiveAlert } from 'gql/interfaces';
 
 // Utility Functions
 export function groupInviteID(alert: GroupAlert) {

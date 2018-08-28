@@ -1,9 +1,0 @@
-fragment DurabilityStats on DurabilityStat_Single {
-  maxRepairPoints
-  maxHealth
-  fractureThreshold
-  fractureChance
-  currentRepairPoints
-  currentHealth
-  healthLossPerUse
-}

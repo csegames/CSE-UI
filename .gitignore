@@ -53,3 +53,5 @@ game/hud/src/gqlInterfaces\.ts
 **/*.code-workspace
 .cache-loader
 !webpack.config.js
+yarn-error.log
+.gql

@@ -5,9 +5,9 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
 import { Spinner } from '@csegames/camelot-unchained';
-import { CharacterProgressionData, CharacterAdjustmentDBModel } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import {
   LoadingContainer,
@@ -18,9 +18,10 @@ import {
   ProgressionLoading,
   ProgressionFooter,
 } from './style';
+import { RewardsViewGQL, CharacterAdjustmentReasonGQLField } from 'gql/interfaces';
 
-const progressionAdjustmentFragments = `
-  fragment ItemDefinition on ItemDefRef {
+const progressionAdjustmentFragments = gql`
+  fragment RewardsViewItemDefinition on ItemDefRef {
     id
     numericItemDefID
     defaultResourceID
@@ -31,45 +32,45 @@ const progressionAdjustmentFragments = `
     itemType
   }
 
-  fragment SkillPartDefinition on SkillPartDef {
+  fragment RewardsViewSkillPartDefinition on SkillPartDef {
     icon
     id
     name
   }
 
-  fragment SkillPartLevelReason on CharacterAdjustmentReasonSkillPartLevel {
+  fragment RewardsViewSkillPartLevelReason on CharacterAdjustmentReasonSkillPartLevel {
     skillPartID
     skillPartLevel
     skillPartDef {
-      ...SkillPartDefinition
+      ...RewardsViewSkillPartDefinition
     }
   }
 
-  fragment UseSkillPartReason on CharacterAdjustmentReasonUseSkillPart {
+  fragment RewardsViewUseSkillPartReason on CharacterAdjustmentReasonUseSkillPart {
     skillID
     inCombatCount
     nonCombatCount
     skillPartDef {
-      ...SkillPartDefinition
+      ...RewardsViewSkillPartDefinition
     }
   }
 
-  fragment UseSkillsReason on CharacterAdjustmentReasonUseSkills {
+  fragment RewardsViewUseSkillsReason on CharacterAdjustmentReasonUseSkills {
     inCombatCount
     nonCombatCount
   }
 
-  fragment AddItemAdjustment on CharacterAdjustmentAddItem {
+  fragment RewardsViewAddItemAdjustment on CharacterAdjustmentAddItem {
     itemInstanceIDS
     staticDefinitionID
     unitCount
     quality
     itemDef {
-      ...ItemDefinition
+      ...RewardsViewItemDefinition
     }
   }
 
-  fragment PlayerStatAdjustment on CharacterAdjustmentPlayerStat {
+  fragment RewardsViewPlayerStatAdjustment on CharacterAdjustmentPlayerStat {
     playerStat
     previousBonus
     newBonus
@@ -77,64 +78,60 @@ const progressionAdjustmentFragments = `
     newProgressionPoints
   }
 
-  fragment SkillPartAdjustment on CharacterAdjustmentSkillPartProgress {
+  fragment RewardsViewSkillPartAdjustment on CharacterAdjustmentSkillPartProgress {
     skillPartID
     previousLevel
     previousProgressionPoints
     newLevel
     newProgressPoints
     skillPartDef {
-      ...SkillPartDefinition
+      ...RewardsViewSkillPartDefinition
     }
   }
 
-  fragment SkillNodeAdjustment on CharacterAdjustmentApplySkillNode {
+  fragment RewardsViewSkillNodeAdjustment on CharacterAdjustmentApplySkillNode {
     skillNodePath
   }
 
-  fragment AdjustmentModel on CharacterAdjustmentDBModel {
+  fragment RewardsViewAdjustmentModel on CharacterAdjustmentDBModel {
     reason {
       skillPartLevel {
-        ...SkillPartLevelReason
+        ...RewardsViewSkillPartLevelReason
       }
       useSkillPart {
-        ...UseSkillPartReason
+        ...RewardsViewUseSkillPartReason
       }
       useSkills {
-        ...UseSkillsReason
+        ...RewardsViewUseSkillsReason
       }
     }
     adjustment {
       addItem {
-        ...AddItemAdjustment
+        ...RewardsViewAddItemAdjustment
       }
       playerStat {
-        ...PlayerStatAdjustment
+        ...RewardsViewPlayerStatAdjustment
       }
       skillPart {
-        ...SkillPartAdjustment
+        ...RewardsViewSkillPartAdjustment
       }
       skillNode {
-        ...SkillNodeAdjustment
+        ...RewardsViewSkillNodeAdjustment
       }
     }
   }
 `;
 
-const adjustmentsByDayLogIDQuery = (logID: string) => `
-${progressionAdjustmentFragments}
-{
-  myprogression {
-    adjustmentsByDayLogID(logID: "${logID}") {
-      ...AdjustmentModel
+const adjustmentsByDayLogIDQuery = gql`
+  query RewardsViewGQL($logID: String!) {
+    myprogression {
+      adjustmentsByDayLogID(logID: $logID) {
+        ...RewardsViewAdjustmentModel
+      }
     }
   }
-}
+  ${progressionAdjustmentFragments}
 `;
-
-type QueryType = {
-  myprogression: CharacterProgressionData;
-};
 
 export interface Props {
   logID: string;
@@ -146,10 +143,13 @@ export interface State {
 
 class RewardsView extends React.Component<Props, State> {
   public render() {
-    const query = adjustmentsByDayLogIDQuery(this.props.logID);
+    const query = adjustmentsByDayLogIDQuery;
+    const variables = {
+      logID: this.props.logID,
+    };
     return (
-      <GraphQL query={query}>
-        {(graphql: GraphQLResult<QueryType>) => {
+      <GraphQL query={{ query, variables }}>
+        {(graphql: GraphQLResult<RewardsViewGQL.Query>) => {
           if (graphql.lastError && graphql.lastError !== 'OK') {
             return (
             <LoadingContainer>
@@ -189,16 +189,21 @@ class RewardsView extends React.Component<Props, State> {
     );
   }
 
-  private showRewards(progressionData: CharacterProgressionData) {
+  private showRewards(progressionData: RewardsViewGQL.Myprogression) {
     if (!progressionData.adjustmentsByDayLogID || progressionData.adjustmentsByDayLogID.length === 0) {
       return null;
     } else {
       const rewardsList: JSX.Element[] = [];
       const progressionList: JSX.Element[] = [];
 
-      progressionData.adjustmentsByDayLogID.forEach((adjustment: CharacterAdjustmentDBModel, adjustmentID: number) => {
+      progressionData.adjustmentsByDayLogID.forEach((adjustment, adjustmentID) => {
         const { addItem, playerStat, skillNode, skillPart } = adjustment.adjustment;
-        const { skillPartLevel, useSkillPart, useSkills, adminGrant } = adjustment.reason;
+        const {
+          skillPartLevel,
+          useSkillPart,
+          useSkills,
+          adminGrant,
+        } = adjustment.reason as CharacterAdjustmentReasonGQLField;
 
         let reasonDescription: JSX.Element = null;
         if (skillPartLevel) {

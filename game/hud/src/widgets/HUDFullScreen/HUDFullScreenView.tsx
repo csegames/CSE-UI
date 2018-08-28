@@ -8,7 +8,6 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { TabPanel, ContentItem } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import Tab from './components/Tab';
 import Map from './components/Map';
@@ -18,7 +17,12 @@ import CharacterInfo from './components/CharacterInfo';
 import TradeWindow from './components/TradeWindow';
 import { ITemporaryTab } from './index';
 import { HUDFullScreenTabData, FullScreenContext } from './lib/utils';
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+  EquippedItem,
+  SecureTradeState,
+} from 'gql/interfaces';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
 import { SlotItemDefType } from './lib/itemInterfaces';
 
@@ -185,12 +189,12 @@ export interface Props {
   onActiveTabChanged: (tabIndex: number, name: string) => void;
   onCloseFullScreen: () => void;
 
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItemFragment[]) => void;
-  onChangeEquippedItems: (equippedItems: EquippedItemFragment[]) => void;
-  onChangeMyTradeItems: (myTradeItems: InventoryItemFragment[]) => void;
+  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeEquippedItems: (equippedItems: EquippedItem.Fragment[]) => void;
+  onChangeMyTradeItems: (myTradeItems: InventoryItem.Fragment[]) => void;
   onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
   onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void;
   onChangeMyTradeState: (myTradeState: SecureTradeState) => void;

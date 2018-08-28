@@ -7,14 +7,18 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql, ContextMenu, events } from '@csegames/camelot-unchained';
+import { ContextMenu, events } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
 import DraggableItemComponent from './DraggableItemComponent';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
-import { InventoryItemFragment, GearSlotDefRefFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+  ContainerDefStat_Single,
+} from 'gql/interfaces';
 import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } from '../../../lib/utils';
 import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
 import { SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
@@ -56,14 +60,14 @@ export interface InventorySlotProps {
   itemIndex: number;
   onToggleContainer: (index: number, itemId: string) => void;
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void;
-  onMoveStack: (item: InventoryItemFragment, amount: number) => void;
+  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
-  onRightOrLeftItemAction: (item: InventoryItemFragment, action: (gearSlots: GearSlotDefRefFragment[]) => void) => void;
-  onRightClick?: (item: InventoryItemFragment) => void;
+  onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
+  onRightClick?: (item: InventoryItem.Fragment) => void;
   showGraySlots?: boolean;
   containerIsOpen?: boolean;
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
   syncWithServer: () => void;
 }

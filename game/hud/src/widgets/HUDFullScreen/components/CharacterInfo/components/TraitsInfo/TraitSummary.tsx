@@ -7,13 +7,13 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
 import { colors } from '../../../../lib/constants';
+import { Trait } from 'gql/interfaces';
 
 const TraitName = styled('header')`
   font-size: 1.3em;
   margin: 0px 0px -4px 0px;
-  color: ${(props: any) => props.color}
+  color: ${(props: any) => props.color};
 `;
 
 const AdditionalInfoContainer = styled('div')`
@@ -22,7 +22,7 @@ const AdditionalInfoContainer = styled('div')`
 `;
 
 export interface TraitSummaryProps {
-  trait: ql.schema.Trait;
+  trait: Trait;
 }
 
 export interface TraitSummaryState {

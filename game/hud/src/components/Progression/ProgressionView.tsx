@@ -8,9 +8,8 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { isEmpty } from 'lodash';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Spinner } from '@csegames/camelot-unchained';
-import { CharacterProgressionData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { toSentenceCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 import RewardsView from './RewardsView';
@@ -24,6 +23,7 @@ import {
   ProgressionFooter,
 } from './style';
 import { CloseButton } from 'UI/CloseButton';
+import { ProgressionGQL } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -73,7 +73,7 @@ const ProgressionFooterBorder = styled('div')`
   z-index: 3;
 `;
 
-const ProgressionFooterOuter = styled('div')` {
+const ProgressionFooterOuter = styled('div')`
   position: absolute;
   z-index: 4;
   display: flex;
@@ -81,16 +81,16 @@ const ProgressionFooterOuter = styled('div')` {
   width: 100%;
 `;
 
-const ProgressionFooterLeft = styled('div')` {
+const ProgressionFooterLeft = styled('div')`
   background: url(images/progression/progress-botnav-left-ornament.png) no-repeat;
   height: 55px;
-  width: 75px
+  width: 75px;
 `;
 
-const ProgressionFooterRight = styled('div')` {
+const ProgressionFooterRight = styled('div')`
   background: url(images/progression/progress-botnav-right-ornament.png) no-repeat;
   height: 55px;
-  width: 75px
+  width: 75px;
 `;
 
 const CloseButtonPosition = css`
@@ -101,7 +101,7 @@ const CloseButtonPosition = css`
 `;
 
 export interface Props {
-  graphql: GraphQLResult<{ myprogression: CharacterProgressionData }>;
+  graphql: GraphQLResult<ProgressionGQL.Query>;
   logIDs: string[];
   onCloseClick: () => void;
   onCollectClick: () => void;

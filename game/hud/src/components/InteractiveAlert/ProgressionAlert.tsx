@@ -8,8 +8,8 @@
 import * as React from 'react';
 import { filter } from 'lodash';
 import { events } from '@csegames/camelot-unchained';
-import { ProgressionAlert, IInteractiveAlert } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
+import { IInteractiveAlert, ProgressionAlert } from 'gql/interfaces';
 
 // Utility Functions
 export function removeProgressionAlert(alertsList: IInteractiveAlert[], toRemove: ProgressionAlert) {

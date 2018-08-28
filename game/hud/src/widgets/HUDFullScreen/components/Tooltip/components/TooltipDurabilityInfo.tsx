@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const DurabilityContainer = styled('div')`
   column-count: 2;
@@ -37,7 +37,7 @@ const StatValue = styled('div')`
 `;
 
 export interface TooltipDurabilityInfoProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
 }
 
 class TooltipDurabilityInfo extends React.PureComponent<TooltipDurabilityInfoProps> {

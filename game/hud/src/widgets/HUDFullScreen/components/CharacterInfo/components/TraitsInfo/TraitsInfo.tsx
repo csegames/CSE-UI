@@ -5,8 +5,8 @@
  *
  */
 
+import gql from 'graphql-tag';
 import * as React from 'react';
-import { ql } from '@csegames/camelot-unchained';
 import { GridStats, Tooltip } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -16,19 +16,20 @@ import TraitSummary from './TraitSummary';
 import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
 import DataUnavailable from '../DataUnavailable';
+import { TraitsInfoGQL } from 'gql/interfaces';
 
-const query = `
-query TraitsInfo {
-  myCharacter {
-    traits {
-      id
-      name
-      icon
-      description
-      points
+const query = gql`
+  query TraitsInfoGQL {
+    myCharacter {
+      traits {
+        id
+        name
+        icon
+        description
+        points
+      }
     }
   }
-}
 `;
 
 export interface TraitsProps {
@@ -47,11 +48,10 @@ class Traits extends React.Component<TraitsProps, TraitsState> {
   }
 
   public render() {
-
     return (
       <GraphQL query={query}>
         {
-          (graphql: GraphQLResult<{ myCharacter: ql.schema.CUCharacter }>) => {
+          (graphql: GraphQLResult<TraitsInfoGQL.Query>) => {
             const myCharacter = graphql.data && graphql.data.myCharacter;
             if (myCharacter && myCharacter.traits) {
               return (

@@ -116,18 +116,24 @@ function registerOtherPatcherHubEvents(dispatch: (action: ControllerAction) => a
 
         // Update character
         dispatch(characterUpdate(character));
-      };
+      }
     });
 
   const characterRemovedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED);
-  window[PATCHER_HUB_WINDOW_ID].eventListeners[characterRemovedEvent] = 
+  window[PATCHER_HUB_WINDOW_ID].eventListeners[characterRemovedEvent] =
     events.on(signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED), (id: string) => {
       dispatch(characterRemoved(id));
     });
 }
 
 function unregisterOtherPatcherHubEvents(apiHost: string) {
-  if (!window[PATCHER_HUB_WINDOW_ID] || !window[PATCHER_HUB_WINDOW_ID].hubs || !window[PATCHER_HUB_WINDOW_ID].eventListeners) return;
+  if (
+    !window[PATCHER_HUB_WINDOW_ID] ||
+    !window[PATCHER_HUB_WINDOW_ID].hubs ||
+    !window[PATCHER_HUB_WINDOW_ID].eventListeners
+  ) {
+    return;
+  }
 
   const characterUpdatedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERUPDATED);
   events.off(window[PATCHER_HUB_WINDOW_ID].eventListeners[characterUpdatedEvent]);
@@ -135,8 +141,8 @@ function unregisterOtherPatcherHubEvents(apiHost: string) {
 
   const characterRemovedEvent = signalr.getPatcherEventName(apiHost, signalr.PATCHER_EVENTS_CHARACTERREMOVED);
   events.off(window[PATCHER_HUB_WINDOW_ID].eventListeners[characterRemovedEvent]);
-  window[PATCHER_HUB_WINDOW_ID].hubs.eventListeners[characterRemovedEvent]= null;
-} 
+  window[PATCHER_HUB_WINDOW_ID].hubs.eventListeners[characterRemovedEvent] = null;
+}
 
 function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
 

@@ -7,12 +7,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
-import { ql, utils, Tooltip } from '@csegames/camelot-unchained';
+import { utils, Tooltip } from '@csegames/camelot-unchained';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';
 import { colors, characterBodyPartIcons } from '../../../../lib/constants';
 import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
+import { DamageType_Single } from 'gql/interfaces';
 
 const Container = styled('div')`
   border-top: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
@@ -78,9 +79,9 @@ export interface DefenseStatInterface {
 // So Head will have (slashing, arcane, poison, etc.) resistances and Torso will have it's own (slashing, arcane, etc.)
 // resistances. Same with mitigation.
 export interface BodyPartStatInterface {
-  subpartID: string;
-  resistances: Partial<ql.schema.DamageType_Single>;
-  mitigations: Partial<ql.schema.DamageType_Single>;
+  subpartID?: string;
+  resistances?: Partial<DamageType_Single>;
+  mitigations?: Partial<DamageType_Single>;
 }
 
 export interface BodyPartSectionProps {

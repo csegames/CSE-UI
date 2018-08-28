@@ -5,7 +5,11 @@
  */
 
 import { SlotType } from '../lib/itemInterfaces';
-import { InventoryItemFragment, EquippedItemFragment, GearSlotDefRefFragment } from '../../../gqlInterfaces';
+import {
+  InventoryItem,
+  GearSlotDefRef,
+  EquippedItem,
+} from 'gql/interfaces';
 
 /*
   These are the events used throughout the Character widget. We use these to have a more responsive UI because
@@ -50,35 +54,35 @@ const eventNames = {
 };
 
 export interface InventoryDataTransfer {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
   position: number;
   location: string;
   drawerID?: string;
   containerID?: string[];
-  gearSlots?: GearSlotDefRefFragment[];
+  gearSlots?: GearSlotDefRef.Fragment[];
   slotType?: SlotType;
   fullStack?: boolean;
 }
 
 export interface EquippedItemDataTransfer extends InventoryDataTransfer {
-  gearSlots: GearSlotDefRefFragment[];
+  gearSlots: GearSlotDefRef.Fragment[];
 }
 
 export interface OnHighlightSlots {
-  gearSlots: GearSlotDefRefFragment[];
+  gearSlots: GearSlotDefRef.Fragment[];
 }
 
 export interface UpdateInventoryItemsPayload {
   equippedItem?: EquippedItemDataTransfer | EquippedItemDataTransfer[];
   inventoryItem?: InventoryDataTransfer;
-  willEquipTo?: GearSlotDefRefFragment[];
+  willEquipTo?: GearSlotDefRef.Fragment[];
   type: 'Equip' | 'Unequip' | 'Drop';
 }
 
 export interface EquipItemPayload {
   inventoryItem: InventoryDataTransfer;
-  willEquipTo: GearSlotDefRefFragment[];
-  prevEquippedItem?: EquippedItemFragment;
+  willEquipTo: GearSlotDefRef.Fragment[];
+  prevEquippedItem?: EquippedItem.Fragment;
 }
 
 export interface UnequipItemPayload {

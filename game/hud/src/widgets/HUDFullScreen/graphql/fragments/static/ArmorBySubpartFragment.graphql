@@ -1,6 +1,0 @@
-fragment ArmorBySubpart on ArmorStatBySubpart {
-  subPartId
-  resistances {
-    ...DamageTypeValues
-  }
-}

@@ -13,7 +13,7 @@ import { CloseButton } from 'UI/CloseButton';
 
 import { nullVal } from '../../../../lib/constants';
 import { getContainerColor, requestUIKeydown, releaseUIKeydown } from '../../../../lib/utils';
-import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -78,7 +78,7 @@ const InvisiDiv = styled('div')`
 
 export interface ContainerHeaderProps {
   onCloseClick: () => void;
-  containerItem: InventoryItemFragment;
+  containerItem: InventoryItem.Fragment;
 }
 
 export interface ContainerHeaderState {

@@ -16,7 +16,9 @@ import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
-import { EquippedItemFragment } from '../../../../../gqlInterfaces';
+import {
+  EquippedItem,
+} from 'gql/interfaces';
 
 export interface EquippedItemSlotStyle {
   equippedItemSlot: React.CSSProperties;
@@ -82,7 +84,7 @@ const Container = styled('div')`
 
 export interface EquippedItemSlotProps {
   itemMenuVisible: boolean;
-  providedEquippedItem: EquippedItemFragment;
+  providedEquippedItem: EquippedItem.Fragment;
   slot: { slotName: string, openingSide: Alignment };
   disableDrag: boolean;
 }

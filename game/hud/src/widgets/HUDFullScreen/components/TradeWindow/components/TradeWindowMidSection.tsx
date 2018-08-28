@@ -8,9 +8,9 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { client, webAPI } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import TradeActionButton from './TradeActionButton';
 import { tradeActionButtonIcons } from '../../../lib/constants';
+import { SecureTradeState } from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -157,7 +157,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
       );
       if (res.ok) {
         // Handle successful Lock
-        this.props.onMyTradeStateChanged('Locked');
+        this.props.onMyTradeStateChanged(SecureTradeState.Locked);
       } else {
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
@@ -177,9 +177,9 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
       );
       if (res.ok) {
         // Handle successful Unlock
-        this.props.onMyTradeStateChanged('ModifyingItems');
+        this.props.onMyTradeStateChanged(SecureTradeState.ModifyingItems);
         if (this.props.theirTradeState === 'Confirmed') {
-          this.props.onTheirTradeStateChanged('Locked');
+          this.props.onTheirTradeStateChanged(SecureTradeState.Locked);
         }
       } else {
         const parsedResData = webAPI.parseResponseData(res).data;
@@ -200,7 +200,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
       );
       if (res.ok) {
         // Handle successful Confirm
-        this.props.onMyTradeStateChanged('Confirmed');
+        this.props.onMyTradeStateChanged(SecureTradeState.Confirmed);
       } else {
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });
@@ -220,7 +220,7 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
       );
       if (res.ok) {
         // Handle successful Cancel Confirmation
-        this.props.onMyTradeStateChanged('Locked');
+        this.props.onMyTradeStateChanged(SecureTradeState.Locked);
       } else {
         const parsedResData = webAPI.parseResponseData(res).data;
         toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });

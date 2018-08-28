@@ -1,14 +1,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as events from '@csegames/camelot-unchained/lib/events';
-import { ql } from '@csegames/camelot-unchained';
 import styled, { css } from 'react-emotion';
 
 import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
-import { InventoryItemFragment, EquippedItemFragment } from '../../../../../gqlInterfaces';
+import {
+  InventoryItem,
+  EquippedItem,
+  GearSlotDefRef,
+} from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -64,7 +67,7 @@ export interface DraggableEquippedItemProps extends DragAndDropInjectedProps {
   slotName: string;
   disableDrag: boolean;
   itemMenuVisible: boolean;
-  equippedItem: EquippedItemFragment;
+  equippedItem: EquippedItem.Fragment;
 }
 
 export interface DraggableEquippedItemState {
@@ -177,8 +180,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     events.off(this.onDehighlightListener);
   }
 
-  private onHighlightSlots = (gearSlots: ql.schema.GearSlotDefRef[]) => {
-    if (_.find(gearSlots, (gearSlot: ql.schema.GearSlotDefRef) => this.props.slotName === gearSlot.id)) {
+  private onHighlightSlots = (gearSlots: GearSlotDefRef[]) => {
+    if (_.find(gearSlots, (gearSlot: GearSlotDefRef) => this.props.slotName === gearSlot.id)) {
       this.setState({ highlightSlot: true });
     }
   }
@@ -187,7 +190,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     if (this.state.highlightSlot) this.setState({ highlightSlot: false });
   }
 
-  private canEquip = (dragItem: InventoryItemFragment) => {
+  private canEquip = (dragItem: InventoryItem.Fragment) => {
     // Check permissions and gearSlots
     if (dragItem && hasEquipmentPermissions(dragItem) && dragItem.staticDefinition && !dragItem.location.inContainer) {
       const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
@@ -206,7 +209,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     return false;
   }
 
-  private equipItem = (inventoryItem: InventoryDataTransfer, equippedItem: EquippedItemFragment) => {
+  private equipItem = (inventoryItem: InventoryDataTransfer, equippedItem: EquippedItem.Fragment) => {
     const gearSlotSet = _.find(inventoryItem.item.staticDefinition.gearSlotSets, (set) => {
       return _.findIndex(set.gearSlots, (slot) => {
         return _.lowerCase(slot.id) === _.lowerCase(this.props.slotName);

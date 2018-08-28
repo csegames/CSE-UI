@@ -12,7 +12,7 @@ import { client } from '@csegames/camelot-unchained';
 import { SlotType } from '../../../lib/itemInterfaces';
 import { TOOLTIP_PADDING } from '../../../lib/constants';
 import { getTooltipColor, getContainerInfo } from '../../../lib/utils';
-import { InventoryItemFragment } from '../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -96,9 +96,9 @@ const Icon = styled('div')`
 `;
 
 export interface TooltipHeaderProps {
-  item: InventoryItemFragment;
+  item: InventoryItem.Fragment;
   slotType?: SlotType;
-  stackedItems?: InventoryItemFragment[];
+  stackedItems?: InventoryItem.Fragment[];
 }
 
 export interface TooltipHeaderState {

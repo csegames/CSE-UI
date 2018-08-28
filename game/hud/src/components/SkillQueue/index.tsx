@@ -8,12 +8,12 @@
 import * as React from 'react';
 import { findIndex, isEmpty } from 'lodash';
 import { events, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
-import { Skill } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 
 import { ApiSkillInfo } from '../SkillBar';
 import { SkillStateInfo } from '../SkillBar/SkillButton/lib';
 import SkillQueueList, { QueuedSkills } from './components/SkillQueueList';
+import { Skill } from 'gql/interfaces';
 
 export interface SkillQueueProps {
   skills: HUDGraphQLQueryResult<Skill[]>;

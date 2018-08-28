@@ -8,7 +8,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';
@@ -19,7 +18,7 @@ import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } 
 import { rowActionIcons } from '../../../../lib/constants';
 import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
-import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 
 const HeaderContent = styled('div')`
   display: flex;
@@ -34,8 +33,8 @@ const FooterContent = styled('div')`
 `;
 
 export interface InjectedCraftingContainerProps {
-  myTradeItems: InventoryItemFragment[];
-  inventoryItems: InventoryItemFragment[];
+  myTradeItems: InventoryItem.Fragment[];
+  inventoryItems: InventoryItem.Fragment[];
   stackGroupIdToItemIDs: {[id: string]: string[]};
 }
 
@@ -49,7 +48,7 @@ export interface CraftingContainerProps {
   drawerID?: string;
   containerPermissions?: base.ContainerPermissionDef;
   drawerCurrentStats?: DrawerCurrentStats;
-  drawerMaxStats?: ql.schema.ContainerDefStat_Single;
+  drawerMaxStats?: ContainerDefStat_Single;
 }
 
 export type CraftingContainerComponentProps = CraftingContainerProps &

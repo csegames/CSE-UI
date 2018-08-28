@@ -8,7 +8,7 @@
 import { find, filter } from 'lodash';
 import { Faction, client } from '@csegames/camelot-unchained';
 import { TeamInterface } from '../components/ScenarioResultsContainer';
-import { ScenarioOutcome } from '@csegames/camelot-unchained/lib/graphql';
+import { ScenarioOutcome } from 'gql/interfaces';
 
 export function hasMiscellaneousOutcome(teams: TeamInterface[]) {
   return find(teams, team => isMiscellaneousOutcome(team.outcome));

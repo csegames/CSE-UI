@@ -9,7 +9,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { client, webAPI, Tooltip, ItemPermissions } from '@csegames/camelot-unchained';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import { slotDimensions } from '../InventorySlot';
@@ -26,7 +25,12 @@ import {
   FullScreenContext,
 } from '../../../../lib/utils';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
-import { ContainerDrawersFragment, PermissibleHolderFragment, InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import {
+  SecureTradeState,
+  InventoryItem,
+  PermissibleHolder,
+  ContainerDrawers,
+} from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -97,10 +101,10 @@ export interface DrawerCurrentStats {
 }
 
 export interface InjectedDrawerProps {
-  inventoryItems: InventoryItemFragment[];
+  inventoryItems: InventoryItem.Fragment[];
   stackGroupIdToItemIDs: {[id: string]: string[]};
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
-  myTradeItems: InventoryItemFragment[];
+  myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
 }
 
@@ -108,9 +112,9 @@ export interface DrawerProps {
   index: number;
   slotsPerRow: number;
   containerID: string[];
-  drawer: ContainerDrawersFragment;
-  containerItem: InventoryItemFragment;
-  permissions: PermissibleHolderFragment;
+  drawer: ContainerDrawers.Fragment;
+  containerItem: InventoryItem.Fragment;
+  permissions: PermissibleHolder.Fragment;
   syncWithServer: () => void;
 
   // Will be sent to InventoryBody component who will act as the state machine for all container -> drawer -> slot
@@ -141,7 +145,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
 
     const container = this.props.containerIdToDrawerInfo[containerID[containerID.length - 1]];
     const drawerInfo = container ? container.drawers[drawer.id] : {};
-    const drawerItems: InventoryItemFragment[] = [];
+    const drawerItems: InventoryItem.Fragment[] = [];
     Object.keys(drawerInfo).forEach((_key) => {
       drawerItems.push(drawerInfo[_key].item);
     });
@@ -283,7 +287,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     const { drawer, containerID, containerIdToDrawerInfo } = props;
     const container = containerIdToDrawerInfo[containerID[containerID.length - 1]];
     const drawerInfo = container ? container.drawers[drawer.id] : {};
-    const drawerItems: InventoryItemFragment[] = [];
+    const drawerItems: InventoryItem.Fragment[] = [];
     Object.keys(drawerInfo).forEach((_key) => {
       drawerItems.push(drawerInfo[_key].item);
     });
@@ -314,7 +318,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
       containerPermissionsArray.push(parentPermissions);
     }
 
-    function getChildContainerPermissions(containerItem: InventoryItemFragment) {
+    function getChildContainerPermissions(containerItem: InventoryItem.Fragment) {
       if (isContainerItem(containerItem)) {
         return;
       }
@@ -349,7 +353,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     const dragContainerID = dragItemData.containerID && dragItemData.containerID[dragItemData.containerID.length - 1];
     const dropContainerID = dropZoneData.containerID && dropZoneData.containerID[dropZoneData.containerID.length - 1];
 
-    const newDragItem: InventoryItemFragment = {
+    const newDragItem: InventoryItem.Fragment = {
       ...dragItemData.item,
       location: {
         inContainer: {
@@ -360,7 +364,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
       },
     };
 
-    const newDropItem: InventoryItemFragment = dropZoneData.item && {
+    const newDropItem: InventoryItem.Fragment = dropZoneData.item && {
       ...dropZoneData.item,
       location: {
         inContainer: {
@@ -472,9 +476,9 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
   }
 
   private getUpdatedDropContainer = (dropZoneData: InventoryDataTransfer,
-                                      newDragItem: InventoryItemFragment,
-                                      newDropItem: InventoryItemFragment,
-                                      inventoryItems: InventoryItemFragment[],
+                                      newDragItem: InventoryItem.Fragment,
+                                      newDropItem: InventoryItem.Fragment,
+                                      inventoryItems: InventoryItem.Fragment[],
                                       indexOfDropZoneContainer: number) => {
     let newDropContainerDrawers;
     if (dropZoneData.containerID.length > 1) {
@@ -537,10 +541,10 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     return newDropContainerDrawers;
   }
   private getUpdatedDragContainer = (dragItemData: InventoryDataTransfer,
-                                      newDragItem: InventoryItemFragment,
-                                      newDropItem: InventoryItemFragment,
+                                      newDragItem: InventoryItem.Fragment,
+                                      newDropItem: InventoryItem.Fragment,
                                       dropZoneData: InventoryDataTransfer,
-                                      inventoryItems: InventoryItemFragment[],
+                                      inventoryItems: InventoryItem.Fragment[],
                                       indexOfTopDragItemContainer: number) => {
     let newDragContainerDrawers;
     const dragContainerID = dragItemData.containerID[dragItemData.containerID.length - 1];

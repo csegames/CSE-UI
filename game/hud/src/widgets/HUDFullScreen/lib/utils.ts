@@ -6,9 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { SecureTradeState } from '@csegames/camelot-unchained/lib/graphql/schema';
 import {
-  ql,
   client,
   utils,
   events,
@@ -29,11 +27,13 @@ import { InventoryDataTransfer, EquippedItemDataTransfer } from './eventNames';
 import { ActiveFilters } from '../components/Inventory';
 import { SlotType } from '../lib/itemInterfaces';
 import {
-  EquippedItemFragment,
-  InventoryItemFragment,
-  ContainerDrawersFragment,
-  GearSlotDefRefFragment,
-} from '../../../gqlInterfaces';
+  InventoryItem,
+  ContainerDrawers,
+  GearSlotDefRef,
+  EquippedItem,
+  ContainerDefStat_Single,
+  SecureTradeState,
+} from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -58,7 +58,7 @@ export const prettifyText = (slotName: string, shortenedWords?: {[word: string]:
 
 export function calcRowsForContainer(width: number,
                                       slotDimensions: number,
-                                      containerSlots: InventoryItemFragment[],
+                                      containerSlots: InventoryItem.Fragment[],
                                       gutterSize: number = 65) {
   const lastItem = _.sortBy(containerSlots, a => a.location.inContainer.position)[containerSlots.length - 1];
   const lastItemSlotPos = lastItem ? lastItem.location.inContainer.position : 0;
@@ -135,7 +135,7 @@ export function getDimensionsOfElement(div: HTMLElement) {
   }
 }
 
-export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment,
+export function createMoveItemRequestToWorldPosition(item: InventoryItem.Fragment,
     worldPosition: Vec3F,
     rotation: Euler3f): any {
   return {
@@ -161,7 +161,7 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItemFragment
   };
 }
 
-export function createMoveItemRequestToInventoryPosition(item: InventoryItemFragment,
+export function createMoveItemRequestToInventoryPosition(item: InventoryItem.Fragment,
                                                           position: number,
                                                           amount?: number): any {
   return {
@@ -225,12 +225,12 @@ export function createMoveItemRequestToContainerPosition(oldPosition: InventoryD
 }
 
 export function getInventoryDataTransfer(payload: {
-  item: InventoryItemFragment,
+  item: InventoryItem.Fragment,
   position: number,
   location: string,
   containerID?: string[],
   drawerID?: string;
-  gearSlots?: GearSlotDefRefFragment[],
+  gearSlots?: GearSlotDefRef.Fragment[],
   slotType?: SlotType;
   fullStack?: boolean;
 }): InventoryDataTransfer {
@@ -253,10 +253,10 @@ export function getInventoryDataTransfer(payload: {
 }
 
 export function getEquippedDataTransfer(payload: {
-  item: InventoryItemFragment,
+  item: InventoryItem.Fragment,
   position: number,
   location: string,
-  gearSlots: GearSlotDefRefFragment[],
+  gearSlots: GearSlotDefRef.Fragment[],
   containerID?: string[],
   drawerID?: string,
   slotType?: SlotType,
@@ -280,7 +280,7 @@ export function getEquippedDataTransfer(payload: {
   };
 }
 
-export function isCraftingItem(item: InventoryItemFragment) {
+export function isCraftingItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     switch (item.staticDefinition.itemType) {
       case 'Substance': return true;
@@ -294,7 +294,7 @@ export function isCraftingItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isAlloyItem(item: InventoryItemFragment) {
+export function isAlloyItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     if (item.staticDefinition.itemType === 'Alloy') {
       return true;
@@ -308,7 +308,7 @@ export function isAlloyItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isSubstanceItem(item: InventoryItemFragment) {
+export function isSubstanceItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     if (item.staticDefinition.itemType === 'Substance') {
       return true;
@@ -322,7 +322,7 @@ export function isSubstanceItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isWeaponItem(item: InventoryItemFragment) {
+export function isWeaponItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     const { itemType } = item.staticDefinition;
     if (itemType === 'Weapon' || itemType === 'Ammo') {
@@ -337,7 +337,7 @@ export function isWeaponItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isArmorItem(item: InventoryItemFragment) {
+export function isArmorItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     if (item.staticDefinition.itemType === 'Armor') {
       return true;
@@ -351,7 +351,7 @@ export function isArmorItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isBuildingBlockItem(item: InventoryItemFragment) {
+export function isBuildingBlockItem(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition) {
     if (item.staticDefinition.itemType === 'Block') {
       return true;
@@ -365,7 +365,7 @@ export function isBuildingBlockItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isStackedItem(item: InventoryItemFragment) {
+export function isStackedItem(item: InventoryItem.Fragment) {
   if (item && item.stats) {
     return item.stats.item.unitCount > 1 || item.stackHash !== emptyStackHash;
   }
@@ -375,21 +375,21 @@ export function isStackedItem(item: InventoryItemFragment) {
   return false;
 }
 
-export function isContainerItem(item: InventoryItemFragment) {
+export function isContainerItem(item: InventoryItem.Fragment) {
   if (!item || !item.containerDrawers) {
     return false;
   }
   return _.isArray(item.containerDrawers);
 }
 
-export function isVoxItem(item: InventoryItemFragment) {
+export function isVoxItem(item: InventoryItem.Fragment) {
   if (!item) {
     return false;
   }
   return item.staticDefinition.isVox;
 }
 
-export function getIcon(item: InventoryItemFragment) {
+export function getIcon(item: InventoryItem.Fragment) {
   if (item.staticDefinition) {
     return item.staticDefinition.iconUrl;
   }
@@ -397,32 +397,32 @@ export function getIcon(item: InventoryItemFragment) {
   console.log(item);
 }
 
-export function itemHasPosition(item: InventoryItemFragment) {
+export function itemHasPosition(item: InventoryItem.Fragment) {
   return getItemInventoryPosition(item) > -1;
 }
 
-export function getItemUnitCount(item: InventoryItemFragment) {
+export function getItemUnitCount(item: InventoryItem.Fragment) {
   if (item && item.stats && item.stats.item && typeof item.stats.item.unitCount === 'number') {
     return item.stats.item.unitCount;
   }
   return -1;
 }
 
-export function getItemMass(item: InventoryItemFragment) {
+export function getItemMass(item: InventoryItem.Fragment) {
   if (item && item.stats && item.stats.item && typeof item.stats.item.totalMass === 'number') {
     return item.stats.item.totalMass;
   }
   return -1;
 }
 
-export function getItemQuality(item: InventoryItemFragment) {
+export function getItemQuality(item: InventoryItem.Fragment) {
   if (item && item.stats && item.stats.item && typeof item.stats.item.quality === 'number') {
     return Number((item.stats.item.quality * 100));
   }
   return -1;
 }
 
-export function getItemInventoryPosition(item: InventoryItemFragment) {
+export function getItemInventoryPosition(item: InventoryItem.Fragment) {
   if (item && item.location && item.location.inventory) {
     return item.location.inventory.position;
   } else {
@@ -430,7 +430,7 @@ export function getItemInventoryPosition(item: InventoryItemFragment) {
   }
 }
 
-export function getItemDefinitionId(item: InventoryItemFragment) {
+export function getItemDefinitionId(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition && item.staticDefinition.id) {
     return item.staticDefinition.id;
   }
@@ -438,7 +438,7 @@ export function getItemDefinitionId(item: InventoryItemFragment) {
   console.log(item);
 }
 
-export function getItemDefinitionName(item: InventoryItemFragment) {
+export function getItemDefinitionName(item: InventoryItem.Fragment) {
   if (item && item.staticDefinition && item.staticDefinition.name) {
     return item.staticDefinition.name;
   }
@@ -450,11 +450,11 @@ export function generateStackGroupID(stackHash: string, stackGroupCounter: numbe
   return `${stackHash}:${stackGroupCounter++}`;
 }
 
-export function getItemInstanceID(item: InventoryItemFragment) {
+export function getItemInstanceID(item: InventoryItem.Fragment) {
   return item.id;
 }
 
-export function getItemMapID(item: InventoryItemFragment, wantPos?: number, noPos?: boolean) {
+export function getItemMapID(item: InventoryItem.Fragment, wantPos?: number, noPos?: boolean) {
   if (item && item.staticDefinition) {
     const pos = getItemInventoryPosition(item);
     if (isCraftingItem(item)) {
@@ -474,7 +474,7 @@ export function getItemMapID(item: InventoryItemFragment, wantPos?: number, noPo
   console.error('You provided an item to getItemMapID() function that has staticDefinition of null');
 }
 
-export function getContainerID(item: InventoryItemFragment) {
+export function getContainerID(item: InventoryItem.Fragment) {
   if (_.isArray(item.containerDrawers)) {
     // Is an actual container
     return item.id;
@@ -483,7 +483,7 @@ export function getContainerID(item: InventoryItemFragment) {
   }
 }
 
-export function hasTradePermissions(item: InventoryItemFragment) {
+export function hasTradePermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -491,7 +491,7 @@ export function hasTradePermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Trade;
 }
 
-export function hasTrashPermissions(item: InventoryItemFragment) {
+export function hasTrashPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -499,7 +499,7 @@ export function hasTrashPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Trash;
 }
 
-export function hasCraftWithVoxPermissions(item: InventoryItemFragment) {
+export function hasCraftWithVoxPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -507,7 +507,7 @@ export function hasCraftWithVoxPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.CraftWithVox;
 }
 
-export function hasControlPermissions(item: InventoryItemFragment) {
+export function hasControlPermissions(item: InventoryItem.Fragment) {
   // Can jump on and fire seige engines
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
@@ -516,7 +516,7 @@ export function hasControlPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Control;
 }
 
-export function hasAddContentPermissions(item: InventoryItemFragment) {
+export function hasAddContentPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -524,7 +524,7 @@ export function hasAddContentPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.AddContents;
 }
 
-export function hasRemoveContentPermissions(item: InventoryItemFragment) {
+export function hasRemoveContentPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -532,7 +532,7 @@ export function hasRemoveContentPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.RemoveContents;
 }
 
-export function hasViewContentPermissions(item: InventoryItemFragment) {
+export function hasViewContentPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -540,7 +540,7 @@ export function hasViewContentPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.ViewContents;
 }
 
-export function hasModifyDisplayPermissions(item: InventoryItemFragment) {
+export function hasModifyDisplayPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -548,7 +548,7 @@ export function hasModifyDisplayPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.ModifyDisplay;
 }
 
-export function hasGroundPermissions(item: InventoryItemFragment) {
+export function hasGroundPermissions(item: InventoryItem.Fragment) {
   // Can be placed on ground ex) Deployed, Drop
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
@@ -557,7 +557,7 @@ export function hasGroundPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Ground;
 }
 
-export function hasInventoryPermissions(item: InventoryItemFragment) {
+export function hasInventoryPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -565,7 +565,7 @@ export function hasInventoryPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Inventory;
 }
 
-export function hasEquipmentPermissions(item: InventoryItemFragment) {
+export function hasEquipmentPermissions(item: InventoryItem.Fragment) {
   const itemMeetsRequirements = !item.equiprequirement || (item.equiprequirement &&
     (item.equiprequirement.status === 'RequirementMet' || item.equiprequirement.status === 'NoRequirement'));
   if ((!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) && itemMeetsRequirements) {
@@ -576,7 +576,7 @@ export function hasEquipmentPermissions(item: InventoryItemFragment) {
       (item && item.permissibleHolder && item.permissibleHolder.userPermissions & ItemPermissions.Equipment));
 }
 
-export function hasContainerPermissions(item: InventoryItemFragment) {
+export function hasContainerPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -584,7 +584,7 @@ export function hasContainerPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Container;
 }
 
-export function hasVoxPermissions(item: InventoryItemFragment) {
+export function hasVoxPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -592,7 +592,7 @@ export function hasVoxPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.Vox;
 }
 
-export function hasAllPermissions(item: InventoryItemFragment) {
+export function hasAllPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;
   }
@@ -600,7 +600,7 @@ export function hasAllPermissions(item: InventoryItemFragment) {
   return item.permissibleHolder.userPermissions & ItemPermissions.All;
 }
 
-export function hasDurabilityStats(item: InventoryItemFragment) {
+export function hasDurabilityStats(item: InventoryItem.Fragment) {
   let hasStats = false;
   if (item && item.stats && item.stats.durability) {
     Object.keys(item.stats.durability).forEach((statName) => {
@@ -614,7 +614,7 @@ export function hasDurabilityStats(item: InventoryItemFragment) {
   return hasStats;
 }
 
-export function hasItemRequirements(item: InventoryItemFragment) {
+export function hasItemRequirements(item: InventoryItem.Fragment) {
   let hasReqs = false;
   if (item && item.stats && item.stats.item) {
     Object.keys(item.stats.item).forEach((itemStatName) => {
@@ -644,7 +644,7 @@ export function hasFilterText(searchValue: string) {
   return searchValue && searchValue.trim() !== '';
 }
 
-export function shouldShowItem(item: InventoryItemFragment, activeFilters: ActiveFilters, searchValue: string) {
+export function shouldShowItem(item: InventoryItem.Fragment, activeFilters: ActiveFilters, searchValue: string) {
   const hasFilter = hasActiveFilterButtons(activeFilters);
   const hasSearch = hasFilterText(searchValue);
   const itemName = getItemDefinitionName(item);
@@ -675,7 +675,7 @@ export function shouldShowItem(item: InventoryItemFragment, activeFilters: Activ
   }
 }
 
-export function getContainerInfo(items: InventoryItemFragment[]) {
+export function getContainerInfo(items: InventoryItem.Fragment[]) {
   // This gives you information about the containers current unit count, average quality, and weight.
   // This is used for crafting containers and regular containers.
   let totalUnitCount = 0;
@@ -695,7 +695,7 @@ export function getContainerInfo(items: InventoryItemFragment[]) {
   };
 }
 
-export function getContainerColor(item: InventoryItemFragment, alpha?: number) {
+export function getContainerColor(item: InventoryItem.Fragment, alpha?: number) {
   if (item && item.containerColor) {
     const { containerColor } = item;
     if (containerColor) {
@@ -731,11 +731,11 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
                                         dropDataTransfer: InventoryDataTransfer,
                                         dropContainerID: string[],
                                         containerPermissions: ContainerPermissionDef | ContainerPermissionDef[],
-                                        drawerMaxStats: ql.schema.ContainerDefStat_Single,
+                                        drawerMaxStats: ContainerDefStat_Single,
                                         drawerCurrentStats: DrawerCurrentStats,
                                         showToasts: boolean) {
   // Dropping inside a container
-  const dragContainerDrawers: ContainerDrawersFragment[] = dragDataTransfer.item.containerDrawers;
+  const dragContainerDrawers: ContainerDrawers.Fragment[] = dragDataTransfer.item.containerDrawers;
 
   // Go through container drawers to see if double nesting a container
   const doubleNestingContainer = dragContainerDrawers && dropContainerID.length > 1;
@@ -863,9 +863,9 @@ export interface FullScreenNavState {
   initial: boolean;
   visibleComponentLeft: string;
   visibleComponentRight: string;
-  inventoryItems: InventoryItemFragment[];
-  equippedItems: EquippedItemFragment[];
-  myTradeItems: InventoryItemFragment[];
+  inventoryItems: InventoryItem.Fragment[];
+  equippedItems: EquippedItem.Fragment[];
+  myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
   stackGroupIdToItemIDs: {[id: string]: string[]};
@@ -909,7 +909,7 @@ export const defaultFullScreenState: FullScreenNavState = {
   containerIdToDrawerInfo: {},
   stackGroupIdToItemIDs: {},
   myTradeItems: null,
-  myTradeState: 'None',
+  myTradeState: SecureTradeState.None,
   tabsLeft: defaultTabsLeft,
   tabsRight: defaultTabsRight,
   invBodyDimensions: { width: 0, height: 0 },
@@ -927,7 +927,7 @@ export function releaseUIKeydown() {
   events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
 
-export function isRightOrLeftItem(gearSlots: GearSlotDefRefFragment[]) {
+export function isRightOrLeftItem(gearSlots: GearSlotDefRef.Fragment[]) {
   if (gearSlots.length === 1) {
     const firstGearSlotId = gearSlots[0].id;
     return _.includes(firstGearSlotId.toLowerCase(), 'right') ||

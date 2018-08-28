@@ -1,4 +1,0 @@
-fragment Requirements on RequirementDef {
-  description
-  icon
-}

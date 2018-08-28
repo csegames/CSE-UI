@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import CollapsibleList from './CollapsibleList';
 import ObjectProperties from './ObjectProperties';

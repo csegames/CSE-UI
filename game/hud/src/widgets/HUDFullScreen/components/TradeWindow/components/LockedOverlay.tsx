@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql } from '@csegames/camelot-unchained';
+import { SecureTradeState } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -153,7 +153,7 @@ const AcceptedText = styled('div')`
 `;
 
 export interface LockedOverlayProps {
-  state: ql.schema.SecureTradeState;
+  state: SecureTradeState;
 }
 
 class LockedOverlay extends React.Component<LockedOverlayProps> {

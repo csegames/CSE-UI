@@ -11,7 +11,7 @@ import { utils } from '@csegames/camelot-unchained';
 
 import { getContainerColor } from '../../../../lib/utils';
 import { colors } from '../../../../lib/constants';
-import { InventoryItemFragment } from '../../../../../../gqlInterfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled('div')`
   width: 100%;
@@ -61,7 +61,7 @@ const Divider = styled('div')`
 `;
 
 export interface DrawerViewProps {
-  containerItem: InventoryItemFragment;
+  containerItem: InventoryItem.Fragment;
   headerContent: () => JSX.Element;
   mainContent: () => JSX.Element;
   footerContent: () => JSX.Element;
