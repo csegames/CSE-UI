@@ -230,6 +230,9 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       if (!hasEquipmentPermissions(item)) {
         // Item does not have equip permissions
         if (item.equiprequirement && item.equiprequirement.requirementDescription) {
+          console.log('HELLOOOO');
+          console.log(item.equiprequirement.errorDescription);
+          console.log(item.equiprequirement.requirementDescription);
           toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
         } else {
           toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });

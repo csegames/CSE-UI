@@ -110,14 +110,15 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
   public onDrop(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
     const item = { ...e.dataTransfer.item };
-    if (this.canEquip(item) && item.location.inventory) {
+    const { ok, reason } = this.canEquip(item);
+    if (ok && item.location.inventory) {
       item.location.inventory = null;
       this.equipItem(e.dataTransfer, this.props.equippedItem);
-    } else if (this.canEquip(item) && !item.location.inventory) {
+    } else if (ok && !item.location.inventory) {
       this.equipItem(e.dataTransfer, this.props.equippedItem);
-    } else if (!this.canEquip(item)) {
-      if (item.equiprequirement && item.equiprequirement.requirementDescription) {
-        toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
+    } else if (!ok) {
+      if (reason) {
+        toastr.error(reason, 'Oh No!', { timeout: 3000 });
       } else {
         toastr.error('You cannot equip this item', 'Oh No!', { timeout: 3000 });
       }
@@ -126,7 +127,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
 
   public onDragOver(e: DragEvent<InventoryDataTransfer, DraggableEquippedItemProps>) {
     if (this.state.backgroundColor === 'transparent') {
-      if (this.canEquip(e.dataTransfer.item as any)) {
+      const { ok } = this.canEquip(e.dataTransfer.item as any);
+      if (ok) {
         this.setState({ backgroundColor: colors.canEquip });
       } else {
         this.setState({ backgroundColor: colors.cannotEquip });
@@ -195,28 +197,53 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     if (dragItem && hasEquipmentPermissions(dragItem) && dragItem.staticDefinition && !dragItem.location.inContainer) {
       const { equippedItem } = this.props;
       const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
-      let canEquip = false;
-      let canSwap = true;
 
       if (equippedItem && equippedItem.item && dragItem.location && dragItem.location.equipped) {
         // Trying to swap. Make sure that we can actually swap items
         if (!_.isEqual(gearSlotSets, equippedItem.item.staticDefinition.gearSlotSets)) {
-          canSwap = false;
+          return {
+            reason: 'Cannot swap these items',
+            ok: false,
+          };
         }
       }
 
-      gearSlotSets.forEach((set) => {
-        if (canEquip) return;
-        if (_.find(set.gearSlots, slot => slot.id === this.props.slotName)) {
-          canEquip = true;
-          return;
-        }
-      });
+      if (!dragItem) {
+        return {
+          reason: 'This item cannot be equipped here.',
+          ok: false,
+        };
+      }
 
-      return canEquip && canSwap;
+      if (!hasEquipmentPermissions(dragItem)) {
+        return {
+          reason: (dragItem.equiprequirement && dragItem.equiprequirement.requirementDescription) ||
+            'Does not meet equip requirements.',
+          ok: false,
+        };
+      }
+
+      if (dragItem.staticDefinition && !dragItem.location.inContainer) {
+        const gearSlotSets = dragItem.staticDefinition.gearSlotSets;
+        let canEquip = {
+          reason: 'This item cannot be equipped here.',
+          ok: false,
+        };
+
+        gearSlotSets.forEach((set) => {
+          if (canEquip.ok) return;
+          if (_.find(set.gearSlots, slot => slot.id === this.props.slotName)) {
+            canEquip = {
+              reason: '',
+              ok: true,
+            };
+            return;
+          }
+        });
+
+        return canEquip;
+      }
     }
-
-    return false;
   }
 
   private equipItem = (newItem: InventoryDataTransfer | EquippedItemDataTransfer, equippedItem: EquippedItem.Fragment) => {
