@@ -142,9 +142,10 @@ export default () => {
   let batchedCombatLogs: string[] = [];
   client.OnCombatLogEvent((logs: CombatLog[]) => {
     const combatLogs = logs.map(combatLogToString);
+    batchedCombatLogs.concat(combatLogs);
+
     if (combatLogTimeout) {
-      clearTimeout(combatLogTimeout);
-      batchedCombatLogs = batchedCombatLogs.concat(combatLogs);
+      window.clearTimeout(combatLogTimeout);
       combatLogTimeout = window.setTimeout(() => {
         events.fire('combatlog_message', batchedCombatLogs);
         batchedCombatLogs = [];
@@ -152,8 +153,10 @@ export default () => {
       }, 500);
       return;
     }
+
     combatLogTimeout = window.setTimeout(() => {
       events.fire('combatlog_message', combatLogs);
+      batchedCombatLogs = [];
       combatLogTimeout = null;
     }, 500);
   });
@@ -163,9 +166,10 @@ export default () => {
   let consoleLogTimeout: number = null;
   let batchedConsoleLogs: string[] = [];
   client.OnConsoleText((text: string) => {
+    batchedConsoleLogs = batchedConsoleLogs.concat(text);
+
     if (consoleLogTimeout) {
-      clearTimeout(consoleLogTimeout);
-      batchedConsoleLogs = batchedConsoleLogs.concat(text);
+      window.clearTimeout(consoleLogTimeout);
       consoleLogTimeout = window.setTimeout(() => {
         events.fire('system_message', batchedConsoleLogs);
         batchedConsoleLogs = [];
@@ -177,6 +181,7 @@ export default () => {
     consoleLogTimeout = window.setTimeout(() => {
       events.fire('system_message', text);
       consoleLogTimeout = null;
+      batchedCombatLogs = [];
     }, 500);
   });
 };

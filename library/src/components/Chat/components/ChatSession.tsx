@@ -111,7 +111,7 @@ class ChatSession {
       case messageType.SYSTEM:
         if (isArray(args.message)) {
           const arrayOfMessages = args.message.map(msg =>
-            new ChatMessage(chatType.SYSTEM, 'system', 'system', args.message, false, new Date()));
+            new ChatMessage(chatType.SYSTEM, 'system', 'system', msg, false, new Date()));
           this.recv(arrayOfMessages);
           return;
         }
