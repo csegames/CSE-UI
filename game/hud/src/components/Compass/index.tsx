@@ -5,28 +5,15 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { CompassContextProvider } from './CompassContext';
+import styled from 'react-emotion';
 import CardinalDirections from './POI/CardinalDirections';
-import WarbandMembers from './POI/WarbandMembers';
+import CompassPOIManager, { CompassContext } from 'components/Compass/CompassPOIManager';
+import WarbandMembers from 'components/Compass/POI/WarbandMembers';
+import FriendlyTarget from 'components/Compass/POI/FriendlyTarget';
 
 export interface CompassProps {}
 
 export interface CompassState {}
-
-function compassContainerLineStyle(r: number, g: number, b: number) {
-  return css`
-    display: block;
-    width: 100%;
-    height: 2px;
-    line-height: 1px;
-    position: absolute;
-    content: linear-gradient(to right,
-      rgba(${r}, ${g}, ${b}, 0) 0%,
-      rgba(${r}, ${g}, ${b},.5) 50%,
-      rgba(${r}, ${g}, ${b}, 0) 100%);
-  `;
-}
 
 const CompassContainer = styled('div')`
   font-family: TitilliumBold;
@@ -34,27 +21,41 @@ const CompassContainer = styled('div')`
   height: 100%;
   width: 100%;
   overflow: hidden;
-  &:before {
-    top: 2px;
-    ${compassContainerLineStyle(0, 0, 0)}
-  }
-  &:after {
-    bottom: 0px;
-    ${compassContainerLineStyle(200, 200, 200)}
-  }
+  pointer-events: none;
+  user-select: none;
 `;
 
 const CompassTrack = styled('div')`
   position: relative;
+  top: 0px;
   height: 38px;
-  line-height: 30px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 2px;
+  /* background: rgba(0,0,0,0.1); */
+  box-sizing: border-box !important;
+  pointer-events: none;
+  user-select: none;
+  &:before, &:after {
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+  }
   &:before {
-    top: 0px;
-    ${compassContainerLineStyle(200, 200, 200)}
+    border-color: rgba(194, 225, 245, 0);
+    border-top-color: rgba(255,255,255,0.3);
+    border-width: 2px;
+	  margin-left: -2px;
   }
   &:after {
-    bottom: 2px;
-    ${compassContainerLineStyle(0, 0, 0)}
+    border-color: rgba(136, 183, 213, 0);
+    border-top-color: rgba(255,255,255,0.3);
+    border-width: 3px;
+	  margin-left: -3px;
   }
 `;
 
@@ -63,14 +64,28 @@ class Compass extends React.PureComponent<CompassProps, CompassState> {
 
   public render() {
     return (
-      <CompassContextProvider degreesToShow={90}>
-        <CompassContainer>
-          <CompassTrack>
-            <CardinalDirections />
-            <WarbandMembers />
-          </CompassTrack>
-        </CompassContainer>
-      </CompassContextProvider>
+      <CompassPOIManager degreesToShow={135}>
+        {(compass: CompassContext) => {
+          return (
+            <CompassContainer>
+              <CompassTrack>
+                <CardinalDirections
+                  compass={compass}
+                  pois={compass.convertToArray('cardinal', compass.poiList)}
+                />
+                <WarbandMembers
+                  compass={compass}
+                  pois={compass.convertToArray('warband', compass.poiList)}
+                />
+                <FriendlyTarget
+                  compass={compass}
+                  pois={compass.convertToArray('friendly', compass.poiList)}
+                />
+              </CompassTrack>
+            </CompassContainer>
+          );
+        }}
+      </CompassPOIManager>
     );
   }
 }

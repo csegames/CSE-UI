@@ -33,6 +33,32 @@ export function getCompassData() {
   };
 }
 
+export function getCompassFacingData() {
+  let facing: number = client.facing % 360;
+  if (facing < 0) {
+    facing = 360 - Math.abs(facing);
+  }
+  facing = Math.round(facing);
+  const facingNorth = Math.round((360 - (facing - 90)) % 360);
+  return {
+    facing,
+    facingNorth,
+  };
+}
+
+export function getCompassPositionData() {
+  const x = Math.round(client.locationX);
+  const y = Math.round(client.locationY);
+  const z = Math.round(client.locationZ);
+  return {
+    position: {
+      x,
+      y,
+      z,
+    },
+  };
+}
+
 export function isVec3f(value: any): value is Vec3f {
   if (
     typeof value === 'object' &&

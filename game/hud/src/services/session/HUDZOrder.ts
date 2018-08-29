@@ -17,6 +17,7 @@ enum HUDZOrder {
   Warband,
   Chat,
   Compass,
+  CompassTooltip,
   Crafting,
   Announcement,
   PlotControl,

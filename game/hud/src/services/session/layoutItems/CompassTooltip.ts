@@ -4,33 +4,33 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { LayoutMode, Edge } from 'components/HUDDrag';
-import Compass from 'components/Compass';
 import HUDZOrder from '../HUDZOrder';
+import CompassTooltip from 'components/CompassTooltip';
 
 export default {
   position: {
     x: {
       anchor: 5,
-      offset: -300,
+      offset: -200,
     },
     y: {
       anchor: Edge.TOP,
-      offset: 50,
+      offset: 90,
     },
     size: {
-      width: 600,
-      height: 38,
+      width: 400,
+      height: 80,
     },
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.Compass,
+    zOrder: HUDZOrder.CompassTooltip,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: false,
   },
-  component: Compass,
+  component: CompassTooltip,
   props: {},
 };

@@ -18,6 +18,7 @@ import MOTD from './layoutItems/MOTD';
 import Warband from './layoutItems/Warband';
 // import Respawn from './layoutItems/Respawn';
 import Compass from './layoutItems/Compass';
+import CompassTooltip from './layoutItems/CompassTooltip';
 import Crafting from './layoutItems/Crafting';
 import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
@@ -38,7 +39,7 @@ import GameInfo from './layoutItems/GameInfo';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.8'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.7.9'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -125,6 +126,9 @@ function initialState(): LayoutState {
     ],
     [
       'compass', cloneDeep(Compass),
+    ],
+    [
+      'compassTooltip', cloneDeep(CompassTooltip),
     ],
     // [
     //   'respawn', cloneDeep(Respawn),

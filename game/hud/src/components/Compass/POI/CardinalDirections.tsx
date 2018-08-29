@@ -6,19 +6,25 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { CompassContextConsumer, CompassContext } from '../CompassContext';
+import {
+  CompassPOIProviderProps,
+  CompassPOIPartial,
+  withCompassPOIPartialDefaults,
+} from 'components/Compass/CompassPOIManager';
 
 const cardinalStyle = css`
   position: absolute;
   margin: 0;
   padding: 0;
-  margin-top: 6px;
-  color: rgba(255,255,255, .6);
+  color: rgba(255,255,255, .8);
   text-shadow: 2px 2px 4px black;
   font-size: 2em;
   width: 40px;
   text-align: center;
   font-weight: bold;
+  transition: left linear .1s;
+  pointer-events: none;
+  user-select: none;
 `;
 
 const Cardinal = styled('div')`
@@ -30,24 +36,56 @@ const CardinalDot = styled('div')`
   top: -0.25em;
 `;
 
+interface CardinalPOIData {
+  title: string;
+  isDot: boolean;
+}
 
-export default class CardinalDirections extends React.PureComponent<{}, {}> {
+export default class CardinalDirections extends React.Component<CompassPOIProviderProps<CardinalPOIData>, {}> {
   public render() {
     return (
-      <CompassContextConsumer>
-        {(compass: CompassContext) => (
-          <>
-            <Cardinal style={compass.getPoiPlacementStyle(0, 20)}>N</Cardinal>
-            <CardinalDot style={compass.getPoiPlacementStyle(45, 20)}>.</CardinalDot>
-            <Cardinal style={compass.getPoiPlacementStyle(90, 20)}>E</Cardinal>
-            <CardinalDot style={compass.getPoiPlacementStyle(135, 20)}>.</CardinalDot>
-            <Cardinal style={compass.getPoiPlacementStyle(180, 20)}>S</Cardinal>
-            <CardinalDot style={compass.getPoiPlacementStyle(225, 20)}>.</CardinalDot>
-            <Cardinal style={compass.getPoiPlacementStyle(270, 20)}>W</Cardinal>
-            <CardinalDot style={compass.getPoiPlacementStyle(315, 20)}>.</CardinalDot>
-          </>
-        )}
-      </CompassContextConsumer>
+      <>
+        {this.props.pois.map((poi) => {
+          if (poi.data.isDot) {
+            return <CardinalDot key={poi.id} style={poi.placementStyle}>{poi.data.title}</CardinalDot>;
+          } else {
+            return <Cardinal key={poi.id} style={poi.placementStyle}>{poi.data.title}</Cardinal>;
+          }
+        })}
+      </>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: CompassPOIProviderProps<CardinalPOIData>, nextState: {}) {
+    if (nextProps.compass.renderTimestamp !== this.props.compass.renderTimestamp) {
+      return true;
+    }
+    return false;
+  }
+
+  public componentDidMount() {
+    this.props.compass.addPOI('cardinal', [
+      this.createCardinalPOI(0, 'N', false),
+      this.createCardinalPOI(45, '.', true),
+      this.createCardinalPOI(90, 'E', false),
+      this.createCardinalPOI(135, '.', true),
+      this.createCardinalPOI(180, 'S', false),
+      this.createCardinalPOI(225, '.', true),
+      this.createCardinalPOI(270, 'W', false),
+      this.createCardinalPOI(315, '.', true),
+    ]);
+  }
+
+  private createCardinalPOI(degrees: number, title: string, isDot: boolean): CompassPOIPartial<CardinalPOIData> {
+    return withCompassPOIPartialDefaults({
+      id: `cardinal-${degrees}`,
+      type: 'cardinal',
+      data: {
+        title,
+        isDot,
+      },
+      offset: 20,
+      degrees,
+    });
   }
 }
