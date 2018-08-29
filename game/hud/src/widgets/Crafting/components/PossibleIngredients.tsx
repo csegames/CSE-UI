@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import Select from './Select';
 import { Ingredient, InventoryItem } from '../services/types';
-import { StyleSheet, css, merge, possibleIngredients, PossibleIngredientsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, possibleIngredients, PossibleIngredientsStyles } from '../styles';
 import Icon from './Icon';
 import { qualityToPercent, roundedMass } from '../services/util';
 
@@ -43,15 +43,17 @@ export class PossibleIngredients extends React.Component<PossibleIngredientsProp
     const ss = StyleSheet.create(merge({}, possibleIngredients, this.props.style));
     const isRepair = this.props.jobType === 'repair';
     const render = (item: InventoryItem) => item && (
-      <div className={css(ss.possibleIngredients)}>
-        <Icon className={css(ss.span, ss.icon)} src={item.static.icon}/>
-        <span className={css(ss.span, ss.name)}>{item.name}</span>
-        { isRepair || <span className={css(ss.span, ss.quantity)}>x{item.stats.unitCount}</span> }
-        { isRepair || <span className={css(ss.span, ss.quality)}>@ {qualityToPercent(item.stats.quality) | 0}%</span> }
-        { isRepair || <span className={css(ss.span, ss.weight)}>
+      <div className={cssAphrodite(ss.possibleIngredients)}>
+        <Icon className={cssAphrodite(ss.span, ss.icon)} src={item.static.icon}/>
+        <span className={cssAphrodite(ss.span, ss.name)}>{item.name}</span>
+        { isRepair || <span className={cssAphrodite(ss.span, ss.quantity)}>x{item.stats.unitCount}</span> }
+        { isRepair || <span className={cssAphrodite(ss.span, ss.quality)}>
+          @ {qualityToPercent(item.stats.quality) | 0}%
+        </span> }
+        { isRepair || <span className={cssAphrodite(ss.span, ss.weight)}>
           {Number(roundedMass(item.stats.weight).toFixed(3))}kg</span> }
-        { isRepair && <span className={css(ss.span, ss.durability)}>{item.stats.durability.current} dur</span> }
-        { isRepair && <span className={css(ss.span, ss.points)}>{item.stats.durability.currentPoints} pts</span> }
+        { isRepair && <span className={cssAphrodite(ss.span, ss.durability)}>{item.stats.durability.current} dur</span> }
+        { isRepair && <span className={cssAphrodite(ss.span, ss.points)}>{item.stats.durability.currentPoints} pts</span> }
       </div>
     );
     return (

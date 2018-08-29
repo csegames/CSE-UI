@@ -52,7 +52,7 @@ import Close from './Close';
 import Button from './Button';
 
 // Styles
-import { StyleSheet, css, merge, app, AppStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, app, AppStyles } from '../styles';
 
 const select = (state: GlobalState) => {
   return {
@@ -128,8 +128,8 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     return (
-      <div ref='crafting' className={'cu-window ' + css(ss.app)}>
-        <div className={css(ss.minimizedIcons)}>
+      <div ref='crafting' className={'cu-window ' + cssAphrodite(ss.app)}>
+        <div className={cssAphrodite(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
           {/* <Minimize onMinimize={this.minimize} minimized={false}/> */}
         </div>
@@ -152,7 +152,7 @@ class App extends React.Component<AppProps, AppState> {
       case 'crafting':
         if (props.job.loading) {
           return (
-            <div className={css(ss.loading)}>
+            <div className={cssAphrodite(ss.loading)}>
               {/* Loading... */}
             </div>
           );
@@ -181,9 +181,9 @@ class App extends React.Component<AppProps, AppState> {
     // const type = props.job && props.job.type;
     const { status, outputItems } = props.job;
     return (
-      <div ref='crafting' className={'cu-window ' + css(ss.app, ss.minimized)}>
+      <div ref='crafting' className={'cu-window ' + cssAphrodite(ss.app, ss.minimized)}>
         {/* <VoxMessage/> */}
-        <div className={css(ss.minimizedIcons)}>
+        <div className={cssAphrodite(ss.minimizedIcons)}>
           <Close onClose={this.close}/>
           {/* <Minimize onMinimize={this.minimize} minimized={true}/> */}
         </div>

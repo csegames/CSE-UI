@@ -6,7 +6,7 @@
 
 
 import * as React from 'react';
-import { StyleSheet, css, merge, minimize, MinimizeStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, minimize, MinimizeStyles } from '../styles';
 
 interface MinimizeProps {
   onMinimize: () => void;
@@ -18,7 +18,7 @@ const Minimize = (props: MinimizeProps) => {
   const ss = StyleSheet.create(merge({}, minimize, props.style));
   return (
     <span
-      className={css(ss.minimize, props.minimized ? ss.maximized : ss.minimized)}
+      className={cssAphrodite(ss.minimize, props.minimized ? ss.maximized : ss.minimized)}
       onClick={props.onMinimize}/>
   );
 };

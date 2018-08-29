@@ -9,7 +9,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState, JobState } from '../services/session/reducer';
 
-import { StyleSheet, css, merge, voxInfo, VoxInfoStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, voxInfo, VoxInfoStyles } from '../styles';
 
 export interface VoxInfoReduxProps {
   dispatch?: (action: any) => void;
@@ -28,15 +28,15 @@ const select = (state: GlobalState, props: VoxInfoProps): VoxInfoReduxProps => {
 const VoxInfo = (props: VoxInfoProps) => {
   const ss = StyleSheet.create(merge({}, voxInfo, props.style));
   return (
-    <div className={css(ss.voxInfo)}>
-      <span className={css(ss.span)}>{props.job.status}</span>
-      <span className={css(ss.span)}>{props.job.type}</span>
-      <span className={css(ss.span)}>{props.job.started}</span>
-      <span className={css(ss.span)}>{props.job.totalCraftingTime}</span>
-      <span className={css(ss.span)}>{props.job.recipe && props.job.recipe.id}</span>
-      <span className={css(ss.span)}>{props.job.name}</span>
-      <span className={css(ss.span)}>{props.job.quality}</span>
-      <span className={css(ss.span)}>{props.job.itemCount}</span>
+    <div className={cssAphrodite(ss.voxInfo)}>
+      <span className={cssAphrodite(ss.span)}>{props.job.status}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.type}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.started}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.totalCraftingTime}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.recipe && props.job.recipe.id}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.name}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.quality}</span>
+      <span className={cssAphrodite(ss.span)}>{props.job.itemCount}</span>
     </div>
   );
 };

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, css, merge, voxMessage, VoxMessageStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, voxMessage, VoxMessageStyles } from '../styles';
 import { GlobalState } from '../services/session/reducer';
 import { Message } from '../services/types';
 import ProgressBar from './ProgressBar';
@@ -35,7 +35,7 @@ const VoxMessage = (props: VoxMessageProps) => {
   const ss = StyleSheet.create(merge({}, voxMessage, props.style));
   const { message, total, remaining, status } = props;
   return (
-    <div className={(message ? css(ss.voxMessage, ss[message.type]) : css(ss.voxMessage))}>
+    <div className={(message ? cssAphrodite(ss.voxMessage, ss[message.type]) : cssAphrodite(ss.voxMessage))}>
       <div>{message && message.message}</div>
       { status === 'Running'
         ? <ProgressBar

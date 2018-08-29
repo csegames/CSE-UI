@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { Ingredient } from '../services/types';
-import { StyleSheet, css, merge, ingredientItem, IngredientItemStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, ingredientItem, IngredientItemStyles } from '../styles';
 import Icon from './Icon';
 import { qualityToPercent, roundedMass } from '../services/util';
 
@@ -23,14 +23,14 @@ export const IngredientItem = (props: IngredientItemProps) => {
   // const pcnt = props.total && (props.qty / props.total * 100).toFixed(0);
   const slot = props.ingredient.slot && props.ingredient.slot.replace('Ingredient', '').replace('NonRecipe', '');
   return (
-    <div className={css(ss.ingredientItem)}>
-      <Icon className={css(ss.icon)} src={props.ingredient.static.icon}/>
-      <span className={css(ss.name)}>{name}</span>
-      <span className={css(ss.slot)}>{slot}</span>
-      <span className={css(ss.qty)}>{props.qty}</span>
-      {/* <span className={css(ss.pcnt)}></span> */}
-      <span className={css(ss.times)}>({Number(roundedMass(stats.weight).toFixed(3))}kg)</span>
-      <span className={css(ss.name)}>@ {stats ? qualityToPercent(stats.quality) | 0 : NaN}%</span>
+    <div className={cssAphrodite(ss.ingredientItem)}>
+      <Icon className={cssAphrodite(ss.icon)} src={props.ingredient.static.icon}/>
+      <span className={cssAphrodite(ss.name)}>{name}</span>
+      <span className={cssAphrodite(ss.slot)}>{slot}</span>
+      <span className={cssAphrodite(ss.qty)}>{props.qty}</span>
+      {/* <span className={cssAphrodite(ss.pcnt)}></span> */}
+      <span className={cssAphrodite(ss.times)}>({Number(roundedMass(stats.weight).toFixed(3))}kg)</span>
+      <span className={cssAphrodite(ss.name)}>@ {stats ? qualityToPercent(stats.quality) | 0 : NaN}%</span>
     </div>
   );
 };

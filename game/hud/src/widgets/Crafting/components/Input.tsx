@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { client, jsKeyCodes } from '@csegames/camelot-unchained';
-import { StyleSheet, css, merge, input, InputStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, input, InputStyles } from '../styles';
 
 interface InputProps {
   name?: string;      // temp for debugging
@@ -48,17 +48,17 @@ class Input extends React.Component<InputProps, InputState> {
     let adjuster;
     if (this.props.numeric) {
       adjuster = (
-        <div className={css(ss.adjuster)}>
-          <div className={css(ss.button)} onClick={this.increment}>+</div>
-          <div className={css(ss.button)} onClick={this.decrement}>-</div>
+        <div className={cssAphrodite(ss.adjuster)}>
+          <div className={cssAphrodite(ss.button)} onClick={this.increment}>+</div>
+          <div className={cssAphrodite(ss.button)} onClick={this.decrement}>-</div>
         </div>
       );
     }
     return (
-      <div className={css(ss.input)}>
+      <div className={cssAphrodite(ss.input)}>
         <input type='text'
           ref='input'
-          className={css(ss.field)}
+          className={cssAphrodite(ss.field)}
           size={this.props.size}
           disabled={this.props.disabled}
           onChange={this.onChange}

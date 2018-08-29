@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export { StyleSheet, css } from 'aphrodite';
+export { StyleSheet, css as cssAphrodite } from 'aphrodite';
 export { merge } from 'lodash';
 import opts from './opts';
 

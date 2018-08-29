@@ -13,7 +13,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import Select from './Select';
-import { StyleSheet, css, merge, possibleSlots, PossibleSlotsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, possibleSlots, PossibleSlotsStyles } from '../styles';
 
 interface PossibleSlotsReduxProps {
   possibleItemSlots?: string[];
@@ -41,7 +41,7 @@ export class PossibleSlots extends React.Component<PossibleSlotsProps, PossibleS
   public render() {
     const ss = StyleSheet.create(merge({}, possibleSlots, this.props.style));
     const render = (slot: string) => slot && (
-      <div className={css(ss.possibleSlots)}>
+      <div className={cssAphrodite(ss.possibleSlots)}>
         {slot && slot.replace('NonRecipe', 'Any')}
       </div>
     );

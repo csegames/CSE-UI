@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from '../services/session/reducer';
 import { Ingredient, Recipe, InventoryItem } from '../services/types';
-import { StyleSheet, css, merge, jobDetails, JobDetailsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, jobDetails, JobDetailsStyles } from '../styles';
 import Ingredients from './Ingredients';
 
 import Button from './Button';
@@ -68,20 +68,20 @@ export const JobDetails = (props: JobDetailsProps) => {
   // If no vox type set yet...
   if (!type || type === 'invalid') {
     return (
-      <div className={css(ss.jobDetails)}>
-        <div className={css(ss.ingredients) + ' job-details-ingredients'}>Select a job above</div>
+      <div className={cssAphrodite(ss.jobDetails)}>
+        <div className={cssAphrodite(ss.ingredients) + ' job-details-ingredients'}>Select a job above</div>
         <VoxMessage/>
       </div>
     );
   }
 
   return (
-    <div className={css(ss.jobDetails) + ' job-details'}>
-      <div className={css(ss.properties) + ' job-details-properties'}>
+    <div className={cssAphrodite(ss.jobDetails) + ' job-details'}>
+      <div className={cssAphrodite(ss.properties) + ' job-details-properties'}>
         {type === 'make' && <NameInput onChange={props.setName}/>}
         <RecipeSelect dispatch={props.dispatch} onSelect={props.setRecipe}/>
       </div>
-      <div className={css(ss.buttons) + ' job-details-footer'}>
+      <div className={cssAphrodite(ss.buttons) + ' job-details-footer'}>
         <QualityInput disabled={!canQuality} onChange={props.setQuality}/>
         <QuantityInput disabled={!canQuantity} onChange={props.setCount}/>
         <div>
@@ -90,7 +90,7 @@ export const JobDetails = (props: JobDetailsProps) => {
           <Button style={buttonStyle} disabled={!canCancel} onClick={props.cancel}>Cancel</Button>
         </div>
       </div>
-      <div className={css(ss.ingredients) + ' job-details-ingredients'}>
+      <div className={cssAphrodite(ss.ingredients) + ' job-details-ingredients'}>
         <Ingredients
           add={props.addIngredient}
           remove={props.removeIngredient}

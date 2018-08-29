@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import Label from './Label';
 import Input from './Input';
 import { GlobalState } from '../services/session/reducer';
-import { StyleSheet, css, merge, qualityInput, QualityInputStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, qualityInput, QualityInputStyles } from '../styles';
 
 export interface QualityInputReduxProps {
   dispatch?: (action: any) => void;
@@ -31,7 +31,7 @@ const select = (state: GlobalState, props: QualityInputProps): QualityInputRedux
 const QualityInput = (props: QualityInputProps) => {
   const ss = StyleSheet.create(merge({}, qualityInput, props.style));
   return (
-    <div className={css(ss.qualityInput)} style={ props.disabled ? { opacity: 0.3 } : {} }>
+    <div className={cssAphrodite(ss.qualityInput)} style={ props.disabled ? { opacity: 0.3 } : {} }>
       <Label style={{ label: qualityInput.label }}>Quality</Label>
       <Input
         name='quality'

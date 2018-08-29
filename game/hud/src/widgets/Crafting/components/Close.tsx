@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, close, CloseStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, close, CloseStyles } from '../styles';
 
 interface CloseProps {
   onClose: () => void;
@@ -15,7 +15,7 @@ interface CloseProps {
 const Close = (props: CloseProps) => {
   const ss = StyleSheet.create(merge({}, close, props.style));
   return (
-    <span className={'cu-window-close ' + css(ss.close)} onClick={props.onClose}></span>
+    <span className={'cu-window-close ' + cssAphrodite(ss.close)} onClick={props.onClose}></span>
   );
 };
 

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect, DispatchProp } from 'react-redux';
-import { StyleSheet, css, merge, tools, ToolsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, tools, ToolsStyles } from '../styles';
 
 // Helpers
 import { slash } from '../services/game/slash';
@@ -80,9 +80,9 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
     };
 
     return (
-      <div className={css(ss.tools)}>
-        <div className={css(ss.section)}>
-          <h1 className={css(ss.sectionHeading)}>Resources</h1>
+      <div className={cssAphrodite(ss.tools)}>
+        <div className={cssAphrodite(ss.section)}>
+          <h1 className={cssAphrodite(ss.sectionHeading)}>Resources</h1>
 
           <div>
             { makeButton({
@@ -97,8 +97,8 @@ class Tools extends React.Component<ToolsProps, ToolsState> {
           </div>
         </div>
 
-        <div className={css(ss.section)}>
-          <h1 className={css(ss.sectionHeading)}>Admin Commands</h1>
+        <div className={cssAphrodite(ss.section)}>
+          <h1 className={cssAphrodite(ss.sectionHeading)}>Admin Commands</h1>
 
           <div>
             { makeButton({

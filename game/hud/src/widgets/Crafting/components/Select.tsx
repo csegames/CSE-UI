@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { client, soundEvents } from '@csegames/camelot-unchained';
-import { StyleSheet, css, merge, select, SelectStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, select, SelectStyles } from '../styles';
 
 export interface SelectProps {
   items: any[];
@@ -40,12 +40,12 @@ class Select extends React.Component<SelectProps, SelectState> {
     if (this.props.items.length === 0) {
       // No items to display
       return (
-        <div className={css(ss.select)}>
-          <div className={css(ss.impl)}>
-            <div className={css(ss.active)}>
+        <div className={cssAphrodite(ss.select)}>
+          <div className={cssAphrodite(ss.impl)}>
+            <div className={cssAphrodite(ss.active)}>
               {this.props.renderActiveItem(null)}
             </div>
-            <div className={css(ss.arrow)} style={{ opacity: 0.5 }}>
+            <div className={cssAphrodite(ss.arrow)} style={{ opacity: 0.5 }}>
               <i className='fa fa-chevron-down' aria-hidden='true'></i>
             </div>
           </div>
@@ -55,18 +55,18 @@ class Select extends React.Component<SelectProps, SelectState> {
     // if selectedItem is undefined or null, we get -1 which is exactly what we want
     const selectedIndex = this.props.items.indexOf(this.props.selectedItem);
     return(
-      <div className={css(ss.select)}>
-        <div className={css(ss.impl)} style={this.state.showList ? { zIndex: 1000 } : {}}>
+      <div className={cssAphrodite(ss.select)}>
+        <div className={cssAphrodite(ss.impl)} style={this.state.showList ? { zIndex: 1000 } : {}}>
           <div
-            className={this.state.showList ? css(ss.outside) : css(ss.outside, ss.outsideHidden)}
+            className={this.state.showList ? cssAphrodite(ss.outside) : cssAphrodite(ss.outside, ss.outsideHidden)}
             onClick={(e) => { this.onClick(e, false); }} />
-          <div className={css(ss.active)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
+          <div className={cssAphrodite(ss.active)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
             {this.props.renderActiveItem(this.props.items[selectedIndex])}
           </div>
-          <div className={css(ss.arrow)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
+          <div className={cssAphrodite(ss.arrow)} onClick={(e) => { this.onClick(e, !this.state.showList); }}>
             <i className={`fa ${this.state.showList ? 'fa-chevron-up' : 'fa-chevron-down'}`} aria-hidden='true'></i>
           </div>
-          <div className={this.state.showList ? css(ss.list) : css(ss.list, ss.listHidden)}>
+          <div className={this.state.showList ? cssAphrodite(ss.list) : cssAphrodite(ss.list, ss.listHidden)}>
             {this.props.items.map(this.buildListItem)}
           </div>
         </div>
@@ -103,7 +103,7 @@ class Select extends React.Component<SelectProps, SelectState> {
       <div
         key={itemIndex}
         onClick={this.onItemSelect.bind(this, item, itemIndex)}
-        className={isSelectedItem ? css(ss.listItem, ss.listItemSelected) : css(ss.listItem)}>
+        className={isSelectedItem ? cssAphrodite(ss.listItem, ss.listItemSelected) : cssAphrodite(ss.listItem)}>
         {this.props.renderListItem(item)}
       </div>
     );

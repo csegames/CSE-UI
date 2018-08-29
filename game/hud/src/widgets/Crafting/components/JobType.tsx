@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, css, merge, jobType, JobTypeStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, jobType, JobTypeStyles } from '../styles';
 import { GlobalState } from '../services/session/reducer';
 
 import Button from './Button';
@@ -61,7 +61,7 @@ export const JobType = (props: JobTypeProps) => {
   switch (props.mode) {
     case 'crafting':
       craftingButtons = (
-        <div className={css(ss.jobButtons)}>
+        <div className={cssAphrodite(ss.jobButtons)}>
           {button('purify')}
           {button('grind')}
           {button('shape')}
@@ -77,7 +77,7 @@ export const JobType = (props: JobTypeProps) => {
       );
   }
   return (
-    <div className={css(ss.jobType)}>
+    <div className={cssAphrodite(ss.jobType)}>
       {craftingButtons}
       { props.mode === 'crafting'
         ? <Button style={{ button: jobType.tools }} onClick={props.toggle}>Tools &gt;</Button>

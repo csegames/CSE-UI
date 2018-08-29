@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, progressBar, ProgressBarStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, progressBar, ProgressBarStyles } from '../styles';
 
 interface ProgressBarProps {
   total: number;
@@ -17,7 +17,7 @@ interface ProgressBarProps {
 
 const ProgressBar = (props: ProgressBarProps) => {
   const ss = StyleSheet.create(merge({}, progressBar, props.style));
-  return <div className={css(ss.progressBar)} style={{
+  return <div className={cssAphrodite(ss.progressBar)} style={{
     width: (100 - (props.current / props.total * 100)).toFixed(2) + '%',
     backgroundColor: props.color,
   }}/>;

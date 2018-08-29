@@ -11,7 +11,7 @@ import { InventoryItem } from '../services/types';
 import { craftingTimeToString, qualityToPercent, roundedMass } from '../services/util';
 import Icon from './Icon';
 
-import { StyleSheet, css, merge, outputItems, OutputItemsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, outputItems, OutputItemsStyles } from '../styles';
 
 export interface OutputItemsReduxProps {
   dispatch?: (action: any) => void;
@@ -33,24 +33,24 @@ const OutputItems = (props: OutputItemsProps) => {
   if (!props.outputItems || !props.outputItems.length) return null;
   const ss = StyleSheet.create(merge({}, outputItems, props.style));
   return (
-    <div className={css(ss.outputItems)}>
-      <div className={css(ss.title)}>
+    <div className={cssAphrodite(ss.outputItems)}>
+      <div className={cssAphrodite(ss.title)}>
         <span>Output Info:</span>
-        <span className={css(ss.craftingTime)}>
+        <span className={cssAphrodite(ss.craftingTime)}>
           Crafting Time: {craftingTimeToString(props.totalCraftingTime, true)}
         </span>
       </div>
       {
         props.outputItems.map((item: InventoryItem) => {
           return (
-            <div key={item.id} className={css(ss.item)}>
-              <Icon className={css(ss.icon)} src={item.static.icon}/>
-              <span className={css(ss.name)}>{item.name}</span>
-              <span className={css(ss.qty)}>{item.stats.unitCount}</span>
-              <span className={css(ss.times)}>
+            <div key={item.id} className={cssAphrodite(ss.item)}>
+              <Icon className={cssAphrodite(ss.icon)} src={item.static.icon}/>
+              <span className={cssAphrodite(ss.name)}>{item.name}</span>
+              <span className={cssAphrodite(ss.qty)}>{item.stats.unitCount}</span>
+              <span className={cssAphrodite(ss.times)}>
                 ({Number(roundedMass(item.stats.weight).toFixed(3))}kg)
               </span>
-              <span className={css(ss.name)}>
+              <span className={cssAphrodite(ss.name)}>
                 @ {qualityToPercent(item.stats.quality) | 0}%
               </span>
             </div>

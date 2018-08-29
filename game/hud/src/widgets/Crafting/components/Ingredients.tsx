@@ -16,7 +16,7 @@ import PossibleIngredients from './PossibleIngredients';
 import PossibleSlots from './PossibleSlots';
 import Input from './Input';
 import Button from './Button';
-import { StyleSheet, css, merge, ingredients as ingredientsStyles, IngredientsStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, ingredients as ingredientsStyles, IngredientsStyles } from '../styles';
 
 export interface IngredientsPropsRedux {
   dispatch?: (action: any) => void;
@@ -99,7 +99,7 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       if (props.recipe) {
         // waiting for slots to load
         addIngredients = (
-          <div className={css(ss.addIngredient)}>
+          <div className={cssAphrodite(ss.addIngredient)}>
             {/* loading possible ingredients... */}
           </div>
         );
@@ -110,13 +110,13 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         if (props.selectedSlot) {
           // no ingredients, but slot selected, ingredients are being loaded
           possible = (
-            <div className={css(ss.message) + ' ingredients-searching'}>
+            <div className={cssAphrodite(ss.message) + ' ingredients-searching'}>
               {/* Searching bags for possible ingredients ... */}
             </div>
           );
         } else {
           possible = (
-            <div className={css(ss.message) + ' ingredients-pick-a-slot'}>
+            <div className={cssAphrodite(ss.message) + ' ingredients-pick-a-slot'}>
               { '<< pick a slot' }
             </div>
           );
@@ -124,14 +124,14 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
       } else {
         if (props.possibleIngredients.length) {
           possible = (
-            <div className={css(ss.ingredient) + ' ingredients-select-ingredient'}>
+            <div className={cssAphrodite(ss.ingredient) + ' ingredients-select-ingredient'}>
               <PossibleIngredients
                 dispatch={this.props.dispatch}
                 disabled={!configuring}
                 selectedItem={selectedIngredient}
                 onSelect={this.select}
               />
-              <span className={css(ss.times)}>x</span>
+              <span className={cssAphrodite(ss.times)}>x</span>
               <span style={ !qtyok ? { opacity: 0.3 } : {} }>
                 <Input
                   name='add-qty'
@@ -151,9 +151,9 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
         }
       }
       addIngredients = (
-        <div className={css(ss.addIngredientWrapper)}>
+        <div className={cssAphrodite(ss.addIngredientWrapper)}>
           <div>Select ingredients to load into Vox</div>
-          <div className={css(ss.addIngredient) + ' ingredients-add'}>
+          <div className={cssAphrodite(ss.addIngredient) + ' ingredients-add'}>
             <PossibleSlots
               dispatch={this.props.dispatch}
               disabled={!configuring}
@@ -167,9 +167,9 @@ class Ingredients extends React.Component<IngredientsProps, IngredientsState> {
     }
 
     return (
-      <div className={css(ss.ingredients) + ' ingredients'}>
+      <div className={cssAphrodite(ss.ingredients) + ' ingredients'}>
         {addIngredients}
-        <div className={css(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
+        <div className={cssAphrodite(ss.loadedIngredients) + ' ingreadients-already-loaded'}>
           <div>Loaded Ingredients</div>
           <div>{loaded}</div>
           { last

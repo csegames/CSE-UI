@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { client, soundEvents } from '@csegames/camelot-unchained';
-import { StyleSheet, css, merge, button, ButtonStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, button, ButtonStyles } from '../styles';
 
 interface ButtonProps {
   disabled?: boolean;
@@ -22,7 +22,7 @@ export const Button = (props: ButtonProps) => {
   return (
     <button
       disabled={props.disabled}
-      className={css(ss.button, props.disabled && ss.disabled)}
+      className={cssAphrodite(ss.button, props.disabled && ss.disabled)}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         if (!props.disableSound) {
           client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { StyleSheet, css, merge, labelStyles, LabelStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, labelStyles, LabelStyles } from '../styles';
 
 interface LabelProps {
   children?: any;
@@ -15,7 +15,7 @@ interface LabelProps {
 const Label = (props: LabelProps) => {
   const ss = StyleSheet.create(merge({}, labelStyles, props.style));
   return (
-    <span className={css(ss.label)}>{props.children}:</span>
+    <span className={cssAphrodite(ss.label)}>{props.children}:</span>
   );
 };
 

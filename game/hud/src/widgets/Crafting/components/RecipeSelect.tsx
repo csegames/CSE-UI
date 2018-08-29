@@ -10,7 +10,7 @@ import Select from './Select';
 import Label from './Label';
 import { GlobalState } from '../services/session/reducer';
 import { Recipe } from '../services/types';
-import { StyleSheet, css, merge, recipeSelect, RecipeSelectStyles } from '../styles';
+import { StyleSheet, cssAphrodite, merge, recipeSelect, RecipeSelectStyles } from '../styles';
 
 export interface RecipeSelectReduxProps {
   type?: string;
@@ -49,7 +49,7 @@ class RecipeSelect extends React.Component<RecipeSelectProps, RecipeSelectState>
     const selectedItem = i > -1 ? this.props.items[i] : null;
     // const type = this.props.type;
     return (
-      <div className={css(ss.recipeSelect)}>
+      <div className={cssAphrodite(ss.recipeSelect)}>
         <Label style={{ label: recipeSelect.label }}>
           Select Desired Output
           {/* {type[0].toUpperCase() + type.substr(1)} Recipe */}
