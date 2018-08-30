@@ -656,15 +656,17 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@csegames/camelot-unchained@^0.1.61":
-  version "0.1.61"
-  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.61.tgz#4156e56240bd8907973810b170f6c6ec101f4b1a"
+"@csegames/camelot-unchained@^0.1.62":
+  version "0.1.62"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.62.tgz#c9fdd4aa0bad08435d2d704d595a3d6238de346e"
   dependencies:
+    "@types/graphql" "^0.13.4"
     aphrodite "^1.2.3"
     cwd-in-node-modules "^1.0.1"
     emotion "^9.2.3"
     es6-promise "^3.0.2"
     fuzzysearch "^1.0.3"
+    graphql "^0.13.2"
     graphql-tag "^1.2.4"
     isomorphic-fetch "^2.2.1"
     jquery "^3.0.0"
@@ -903,6 +905,10 @@
   version "0.4.31"
   resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-0.4.31.tgz#a31d74241a6b1edbb973cf36d97a2896834a51f9"
 
+"@types/cheerio@*":
+  version "0.22.9"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.9.tgz#b5990152604c2ada749b7f88cab3476f21f39d7b"
+
 "@types/classnames@0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-0.0.32.tgz#449abcd9a826807811ef101e58df9f83cfc61713"
@@ -964,6 +970,10 @@
 "@types/graphql@0.12.6":
   version "0.12.6"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.12.6.tgz#3d619198585fcabe5f4e1adfb5cf5f3388c66c13"
+
+"@types/graphql@^0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.13.4.tgz#55ae9c29f0fd6b85ee536f5c72b4769d5c5e06b1"
 
 "@types/graphql@^0.8.6":
   version "0.8.6"
@@ -4916,7 +4926,7 @@ graphql@^0.10.0, graphql@^0.10.3:
   dependencies:
     iterall "^1.1.0"
 
-graphql@^0.13.1:
+graphql@^0.13.1, graphql@^0.13.2:
   version "0.13.2"
   resolved "http://registry.camelotunchained.com/graphql/-/graphql-0.13.2.tgz#4c740ae3c222823e7004096f832e7b93b2108270"
   dependencies:
