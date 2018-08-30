@@ -176,16 +176,16 @@ class MemberPoiContainer extends React.Component<MemberPoiContainerProps, Member
   }
 }
 
-export interface WarbandMembersState {
+export interface WarbandMembersPoiProviderState {
   characterIdToIdMap: {
     [characterId: string]: string;
   };
   friendlyTarget: string;
 }
 
-export default class WarbandMembers extends React.Component<
+export default class WarbandMembersPoiProvider extends React.Component<
   CompassPOIProviderProps<WarbandMemberData>,
-  WarbandMembersState
+  WarbandMembersPoiProviderState
 > {
 
   public state = {
@@ -235,7 +235,10 @@ export default class WarbandMembers extends React.Component<
     events.off(this.eventRemovedHandle);
   }
 
-  public shouldComponentUpdate(nextProps: CompassPOIProviderProps<WarbandMemberData>, nextState: WarbandMembersState) {
+  public shouldComponentUpdate(
+    nextProps: CompassPOIProviderProps<WarbandMemberData>,
+    nextState: WarbandMembersPoiProviderState,
+  ) {
     if (nextProps.compass.renderTimestamp !== this.props.compass.renderTimestamp) {
       return true;
     }
@@ -252,7 +255,7 @@ export default class WarbandMembers extends React.Component<
   public onWarbandMemberJoined = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== client.characterID) {
-      this.setState((prevState: WarbandMembersState) => {
+      this.setState((prevState: WarbandMembersPoiProviderState) => {
         return {
           characterIdToIdMap: {
             ...prevState.characterIdToIdMap,

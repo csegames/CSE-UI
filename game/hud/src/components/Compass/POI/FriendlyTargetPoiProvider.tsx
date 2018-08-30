@@ -171,13 +171,13 @@ class FriendlyTargetPOIContainer extends React.Component<
   }
 }
 
-export interface FriendlyTargetState {
+export interface FriendlyTargetPoiProviderState {
   playerId: string;
 }
 
-export default class FriendlyTarget extends React.Component<
+export default class FriendlyTargetPoiProvider extends React.Component<
   CompassPOIProviderProps<FriendlyTargetData>,
-  FriendlyTargetState
+  FriendlyTargetPoiProviderState
 > {
 
   public state = {
@@ -217,7 +217,7 @@ export default class FriendlyTarget extends React.Component<
       }
     });
     client.OnPlayerStateChanged((state: PlayerState) => {
-      this.setState((prevState: FriendlyTargetState) => {
+      this.setState((prevState: FriendlyTargetPoiProviderState) => {
         if (prevState.playerId !== state.id) {
           return {
             playerId: state.id,
@@ -229,7 +229,10 @@ export default class FriendlyTarget extends React.Component<
     });
   }
 
-  public shouldComponentUpdate(nextProps: CompassPOIProviderProps<FriendlyTargetData>, nextState: FriendlyTargetState) {
+  public shouldComponentUpdate(
+    nextProps: CompassPOIProviderProps<FriendlyTargetData>,
+    nextState: FriendlyTargetPoiProviderState,
+  ) {
     if (nextProps.compass.renderTimestamp !== this.props.compass.renderTimestamp) {
       return true;
     }

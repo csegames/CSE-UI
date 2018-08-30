@@ -41,7 +41,7 @@ interface CardinalPOIData {
   isDot: boolean;
 }
 
-export default class CardinalDirections extends React.Component<CompassPOIProviderProps<CardinalPOIData>, {}> {
+export default class CardinalDirectionsPoiProvider extends React.Component<CompassPOIProviderProps<CardinalPOIData>, {}> {
   public render() {
     return (
       <>

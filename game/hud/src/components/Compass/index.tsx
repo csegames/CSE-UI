@@ -6,10 +6,11 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import CardinalDirections from './POI/CardinalDirections';
-import CompassPOIManager, { CompassContext } from 'components/Compass/CompassPOIManager';
-import WarbandMembers from 'components/Compass/POI/WarbandMembers';
-import FriendlyTarget from 'components/Compass/POI/FriendlyTarget';
+import CompassPOIManager, { CompassContext } from './CompassPOIManager';
+import CardinalDirectionsPoiProvider from './POI/CardinalDirectionsPoiProvider';
+import WarbandMembersPoiProvider from './POI/WarbandMembersPoiProvider';
+import FriendlyTargetPoiProvider from './POI/FriendlyTargetPoiProvider';
+import MapPoiProvider from './POI/MapPoiProvider';
 
 export interface CompassProps {}
 
@@ -69,15 +70,19 @@ class Compass extends React.PureComponent<CompassProps, CompassState> {
           return (
             <CompassContainer>
               <CompassTrack>
-                <CardinalDirections
+                <CardinalDirectionsPoiProvider
                   compass={compass}
                   pois={compass.convertToArray('cardinal', compass.poiList)}
                 />
-                <WarbandMembers
+                <MapPoiProvider
+                  compass={compass}
+                  pois={compass.convertToArray('map', compass.poiList)}
+                />
+                <WarbandMembersPoiProvider
                   compass={compass}
                   pois={compass.convertToArray('warband', compass.poiList)}
                 />
-                <FriendlyTarget
+                <FriendlyTargetPoiProvider
                   compass={compass}
                   pois={compass.convertToArray('friendly', compass.poiList)}
                 />

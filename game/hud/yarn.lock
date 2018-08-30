@@ -1040,6 +1040,10 @@
   version "4.0.30"
   resolved "https://registry.yarnpkg.com/@types/object-assign/-/object-assign-4.0.30.tgz#8949371d5a99f4381ee0f1df0a9b7a187e07e652"
 
+"@types/object-hash@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/object-hash/-/object-hash-1.2.0.tgz#d65904331bd0b05c7d5ece75f9ddfdbe82affd30"
+
 "@types/ol@^4.6.1":
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/@types/ol/-/ol-4.6.2.tgz#35c2b45268ff44bd6f8246a95d2fa4a8c9bc5ef7"
@@ -7348,7 +7352,7 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-hash@^1.1.4:
+object-hash@^1.1.4, object-hash@^1.3.0:
   version "1.3.0"
   resolved "http://registry.camelotunchained.com/object-hash/-/object-hash-1.3.0.tgz#76d9ba6ff113cf8efc0d996102851fe6723963e2"
 
