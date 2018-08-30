@@ -9,9 +9,10 @@ import * as CSS from 'lib/css-helper';
 
 export const Key = styled('span')`
   display: flex;
-  align-items: center;
+  ${CSS.HORIZONTALLY_CENTERED}
   width: fit-content;
   height: fit-content;
+  box-sizing: border-box!important;
   background-color: rgb(7,7,7);
   background: radial-gradient(ellipse at center, rgba(12,12,12,1) 0%,rgba(7,7,7,1) 100%);
   text-align: center;

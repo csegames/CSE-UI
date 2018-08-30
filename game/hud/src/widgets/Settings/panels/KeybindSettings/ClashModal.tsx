@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import * as CSS from 'lib/css-helper';
 import { Binding } from '@csegames/camelot-unchained';
 import { Modal } from 'UI/Modal';
 import { Key } from '../../components/Key';
@@ -35,13 +36,14 @@ const Clashed = styled('div')`
 `;
 
 const ClashContent = styled('div')`
-  display: flex;
-  flex-direction: column;
+  ${CSS.IS_COLUMN} ${CSS.DONT_GROW}
+  ${CSS.HORIZONTALLY_CENTERED}
   min-height: 26px;
   margin-right: 5px;
   line-height: 26px;
   .clash-key {
     align-self: center;
+    pointer-events: none;
   }
 `;
 
@@ -73,8 +75,8 @@ class ClashModal extends React.Component<Props> {
               <Key className='clash-key'>{clash.boundKeyName}</Key> is already bound to
               <div>
                 {clash.sameAs.map((item: ClashKey, index: number) => (
-                  <span>
-                    <Bind key={index}>{spacify(item.name)}</Bind>
+                  <span key={index}>
+                    <Bind>{spacify(item.name)}</Bind>
                     {index !== clash.sameAs.length - 1 ? ', ' : ''}
                   </span>
                 ))}
