@@ -66,7 +66,7 @@ const subscriptionQuery = gql`
   }
   ${InventoryItemFragment}
 `;
-const subscriptionUrl =  `${client.apiHost}/graphql`.replace('http', 'ws');
+const subscriptionUrl =  client.apiHost + '/graphql'.replace('http', 'ws');
 const subscriptionInitPayload = {
   shardID: client.shardID,
   Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,

@@ -15,7 +15,7 @@ import { client } from '@csegames/camelot-unchained';
 
 // define network address
 const networkInterface = createBatchingNetworkInterface({
-  uri: `${client.apiHost}/graphql`,
+  uri: client.apiHost + '/graphql',
   batchInterval: 100,
 });
 
