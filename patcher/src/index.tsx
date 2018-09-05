@@ -18,7 +18,7 @@ import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
 
-useConfig({
+useConfig(() => ({
   url: `https://hatcheryapi.camelotunchained.com/graphql`,
   requestOptions: {
     headers: {
@@ -27,7 +27,7 @@ useConfig({
       characterID: client.characterID,
     },
   },
-}, {});
+}), () => ({}));
 
 ReactDom.render(
   <Provider store={store}>

@@ -11,7 +11,7 @@ import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 import { StatusDef, Skill, CUQuery } from 'gql/interfaces';
 
-export const HUDGraphQLQueryConfig = {
+export const HUDGraphQLQueryConfig = () => ({
   url: client.apiHost + '/graphql',
   requestOptions: {
     headers: {
@@ -20,16 +20,16 @@ export const HUDGraphQLQueryConfig = {
       characterID: client.characterID,
     },
   },
-};
+});
 
-export const HUDGraphQLSubscriptionConfig = {
+export const HUDGraphQLSubscriptionConfig = () => ({
   url: client.apiHost.replace('http', 'ws') + '/graphql',
   initPayload: {
     shardID: client.shardID,
     Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
     characterID: client.characterID,
   },
-};
+});
 
 // Initialize config used accross all gql requests
 useConfig(HUDGraphQLQueryConfig, HUDGraphQLSubscriptionConfig);
@@ -85,7 +85,7 @@ export async function fetchSkills(): Promise<HUDGraphQLQueryResult<Skill[]>> {
     operationName: null,
     namedQuery: null,
     variables: {},
-  }, HUDGraphQLQueryConfig);
+  }, HUDGraphQLQueryConfig());
   return {
     ...res,
     data: res.data && res.data.myCharacter ? res.data.myCharacter.skills : [],
@@ -113,7 +113,7 @@ export async function fetchStatuses() {
     namedQuery: 'statusEffects',
     operationName: null,
     variables: null,
-  }, HUDGraphQLQueryConfig);
+  }, HUDGraphQLQueryConfig());
   return {
     ...res,
     data: res.data && res.data.status ? res.data.status.statuses : [],

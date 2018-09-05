@@ -88,6 +88,7 @@ export interface GraphQLConfig extends QueryOptions {
 }
 
 let queryConf = withDefaults(null, defaultQueryOpts);
+let getQueryConf = () => null;
 function getQueryOptions() {
   return {
     ...defaultGraphQLOptions,
@@ -100,6 +101,7 @@ function setQueryOptions(queryOptions: QueryOptions) {
 }
 
 let subsConf = withDefaults(null, defaultSubscriptionOpts);
+let getSubscriptionConf = () => null;
 function getSubscriptionOptions() {
   return {
     ...defaultSubscriptionOpts,
@@ -127,9 +129,11 @@ export interface GraphQLInjectedProps<T> {
   graphql: GraphQLResult<T>;
 }
 
-export function useConfig(queryConfig: Partial<GraphQLConfig>, subscriptionConfig: Partial<Options<any>>) {
-  queryConf = withDefaults(queryConfig, queryConf);
-  subsConf = withDefaults(subscriptionConfig, subsConf);
+export function useConfig(getQueryConfig: () => Partial<GraphQLConfig>, getSubscriptionConfig: () => Partial<Options<any>>) {
+  getQueryConf = getQueryConfig;
+  getSubscriptionConf = getSubscriptionConfig;
+  queryConf = withDefaults(getQueryConfig(), queryConf);
+  subsConf = withDefaults(getSubscriptionConfig(), subsConf);
 }
 
 
@@ -345,6 +349,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
           this.query = withDefaults(q, defaultQuery);
         }
+      } else {
+        useConfig(getQueryConf, getSubscriptionConf);
       }
 
       resolve(this.query);
