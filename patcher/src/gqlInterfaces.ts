@@ -276,6 +276,7 @@ export interface SkillPartsUsedField {
 /** World.SkillPartDef */
 export interface SkillPartDef {
   icon: string | null;
+  description: string | null;
   id: string | null;
   name: string | null;
 }
@@ -290,7 +291,10 @@ export interface Skill {
 /** CU.Databases.Models.Content.MessageOfTheDay */
 export interface MessageOfTheDay {
   title: string | null;
-  htmlContent: string | null /** HTML Content for the patch note. */;
+  htmlContent: string | null /** HTML Content for the message of the day. */;
+  jSONContent:
+    | string
+    | null /** JSON data about the HTML Content for the message of the day */;
   channels:
     | (number | null)[]
     | null /** Which channels will this patch note be presented on. */;
@@ -302,9 +306,12 @@ export interface MessageOfTheDay {
 /** CU.Databases.Models.Content.PatchNote */
 export interface PatchNote {
   channels:
-    | (ChannelID | null)[]
+    | (number | null)[]
     | null /** Which channels will this patch note be presented on. */;
   htmlContent: string | null /** HTML Content for the patch note. */;
+  jSONContent:
+    | string
+    | null /** JSON data of HTML Content for the patch note. */;
   title: string | null;
   patchNumber: string | null;
   id: string | null;
@@ -2033,10 +2040,6 @@ export enum SkillTracks {
   EitherWeaponPreferSecondary = "EitherWeaponPreferSecondary",
   ChoiceFlags = "ChoiceFlags"
 }
-/** CSEUtilsNET.ChannelID */
-export enum ChannelID {
-  None = "None"
-}
 /** CU.Databases.Models.Progression.Logs.ScenarioResolution */
 export enum ScenarioResolution {
   Started = "Started",
@@ -2240,6 +2243,10 @@ export enum SecureTradeUpdateCategory {
   Complete = "Complete",
   StateUpdate = "StateUpdate",
   ItemUpdate = "ItemUpdate"
+}
+/** CSEUtilsNET.ChannelID */
+export enum ChannelID {
+  None = "None"
 }
 /** World.WeaponType */
 export enum WeaponType {
