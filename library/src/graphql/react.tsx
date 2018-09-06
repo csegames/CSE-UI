@@ -351,6 +351,18 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         }
       } else {
         useConfig(getQueryConf, getSubscriptionConf);
+        this.queryOptions = getQueryConf();
+        this.subscriptionOptions = getSubscriptionConf();
+
+        // Update graphql client
+        this.client = new GraphQLClient({
+          url: this.queryOptions.url,
+          requestOptions: this.queryOptions.requestOptions,
+          stringifyVariables: this.queryOptions.stringifyVariables,
+        });
+
+        const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
+          this.query = withDefaults(q, defaultQuery);
       }
 
       resolve(this.query);
