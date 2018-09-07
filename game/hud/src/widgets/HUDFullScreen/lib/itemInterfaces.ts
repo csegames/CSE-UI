@@ -8,7 +8,7 @@
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
-import { DataTransferLocation } from './eventNames';
+import { DataTransferLocation } from './itemEvents';
 
 export enum ArmorType {
   Heavy,

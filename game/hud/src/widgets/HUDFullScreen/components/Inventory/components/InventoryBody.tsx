@@ -13,7 +13,7 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import * as base from '../../ItemShared/InventoryBase';
 import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef } from '../../../lib/itemInterfaces';
-import eventNames, { InventoryDataTransfer, DropItemPayload } from '../../../lib/eventNames';
+import eventNames, { InventoryDataTransfer, DropItemPayload } from '../../../lib/itemEvents';
 import { InventoryContext, MoveInventoryItemPayload } from '../../ItemShared/InventoryContext';
 import { slotDimensions } from './InventorySlot';
 import {
@@ -44,7 +44,6 @@ const Container = styled.div`
 const InnerContainer = styled.div`
   flex: 1;
   overflow: auto;
-  position: relative;
   -webkit-backface-visibility: hidden;
 `;
 

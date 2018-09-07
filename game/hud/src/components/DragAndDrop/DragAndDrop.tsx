@@ -174,7 +174,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
             onMouseMove={this.onMouseEnter}
             onMouseLeave={this.onMouseLeave}
             onMouseDown={this.onMouseDown}
-            onMouseUp={() => clearTimeout(this.mouseDownTimeout)}>
+            onMouseUp={this.onMouseUp}>
             <WrappedComponent
               ref={(ref: any) => this.draggableRef = ref}
               {...this.props}
@@ -328,10 +328,15 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         if (!this.dimensions) {
           this.initPosition();
           setTimeout(() => this.onMouseDown(e));
+          return;
         }
         if (this.mounted && !this.options.disableDrag && this.initialPosition) {
           this.mouseDownTimeout = window.setTimeout(() => this.startDrag(this.options.id, { e }), 150);
         }
+      }
+
+      private onMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+        window.clearTimeout(this.mouseDownTimeout);
       }
 
       private startDrag = async (id: string, payload: Partial<StartDragOptions>) => {

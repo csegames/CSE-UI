@@ -14,7 +14,7 @@ import LockedOverlay from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import InventoryRow from '../../Inventory/components/InventoryRow';
 import { SlotType, InventorySlotItemDef, SlotItemDefType } from '../../../lib/itemInterfaces';
-import { InventoryDataTransfer } from '../../../lib/eventNames';
+import { InventoryDataTransfer } from '../../../lib/itemEvents';
 import { InventoryItem, SecureTradeState } from 'gql/interfaces';
 import {
   calcTradingSlots,
@@ -23,6 +23,7 @@ import {
   isCraftingItem,
   isStackedItem,
   getContainerInfo,
+  getItemWithNewUnitCount,
 } from '../../../lib/utils';
 import { InventoryContext } from '../../ItemShared/InventoryContext';
 
@@ -109,6 +110,10 @@ const FooterItem = styled.div`
 const FooterIcon = styled.span`
   margin-right: 5px;
 `;
+
+interface TradeStackItem extends InventoryItem.Fragment {
+  tradeStackId: string;
+}
 
 export interface InjectedTradeDropContainerProps {
   stackGroupIdToItemIDs: {[id: string]: string[]};
@@ -210,10 +215,10 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
     this.setState({ slotsPerRow });
   }
 
-  private onRightClick = async (item: InventoryItem.Fragment) => {
+  private onRightClick = async (item: InventoryItem.Fragment | TradeStackItem) => {
     if (this.props.id === 'myItems' && this.props.tradeState === 'ModifyingItems') {
       try {
-        const tradeItem = { ItemID: item.id, UnitCount: item.stats.item.unitCount };
+        const tradeItem = { ItemID: (item as TradeStackItem).tradeStackId || item.id, UnitCount: item.stats.item.unitCount };
         const res = await webAPI.SecureTradeAPI.RemoveItem(
           webAPI.defaultConfig,
           game.shardID,
@@ -250,7 +255,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
       const tradeItems: InventoryItem.Fragment[] = [];
       const stackId = getItemMapID(e.dataTransfer.item);
 
-      if (e.dataTransfer.fullStack) {
+      if (e.dataTransfer.fullStack && !_.find(this.props.items, _item => _item.id === e.dataTransfer.item.id)) {
         this.props.stackGroupIdToItemIDs[stackId].forEach((_stackId) => {
           const stackItem = _.find(this.props.inventoryItems, _item => _item.id === _stackId);
           tradeItems.push(stackItem);
@@ -262,7 +267,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             ...e.dataTransfer.item.stats,
             item: {
               ...e.dataTransfer.item.stats.item,
-              unitCount: e.dataTransfer.unitCount,
+              unitCount: e.dataTransfer.unitCount || e.dataTransfer.item.stats.item.unitCount,
             },
           },
         });
@@ -279,8 +284,30 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         );
         res.then((res) => {
           if (res.ok) {
-            const items = this.props.items || [];
-            this.props.onTradeItemsChange([...items, _tradeItem]);
+            // Get new item id of partial stack
+            const newItemId = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.ModifySecureTradeResultCode } }>(res.data)
+              .FieldCodes[0].Result.MovedItemIDs[0];
+
+            const tradeItems = [...this.props.items] || [];
+            const potentialItemIndex = _.findIndex(tradeItems, item => getItemMapID(item, { noPos: true }) ===
+              getItemMapID(_tradeItem, { noPos: true }));
+            if (potentialItemIndex !== -1) {
+              // There is already an item up for trade that can be stacked with
+              const item: TradeStackItem = {
+                ...tradeItems[potentialItemIndex],
+                tradeStackId: newItemId,
+              };
+              tradeItems[potentialItemIndex] =
+                getItemWithNewUnitCount(item, item.stats.item.unitCount + _tradeItem.stats.item.unitCount);
+            } else {
+              // Item is it's own unique thing, just add item to tradeItems
+              const item: TradeStackItem = {
+                ..._tradeItem,
+                tradeStackId: newItemId,
+              };
+              tradeItems.push(item);
+            }
+            this.props.onTradeItemsChange(tradeItems);
           } else {
             const parsedResData = webAPI.parseResponseData(res).data;
             toastr.error(parsedResData.FieldCodes[0].Message, parsedResData.Message, { timeout: 2500 });

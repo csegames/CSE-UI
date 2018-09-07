@@ -17,7 +17,7 @@ import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import enableDragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
-import eventNames, { InventoryDataTransfer, MoveStackPayload, CombineStackPayload } from '../../../lib/eventNames';
+import eventNames, { InventoryDataTransfer, MoveStackPayload, CombineStackPayload } from '../../../lib/itemEvents';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../lib/itemInterfaces';
 import { ContainerDefStat_Single, GearSlotDefRef } from 'gql/interfaces';
 import { InventoryContext } from '../../ItemShared/InventoryContext';
@@ -30,6 +30,7 @@ import {
   getContainerInfo,
   isCombiningStack,
   isMovingStack,
+  isSwappingPartialStack,
 } from '../../../lib/utils';
 
 const Container = styled.div`
@@ -110,6 +111,7 @@ export interface ItemComponentProps extends DragAndDropInjectedProps {
   containerIsOpen?: boolean;
   drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
+  onCombineStackDrawer?: (payload: CombineStackPayload) => void;
 }
 
 export type Props = InjectedItemComponentProps & ItemComponentProps;
@@ -155,6 +157,8 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
     this.setState(() => {
       const notAllowedColor = 'rgba(186, 50, 50, 0.4)';
       const allowedColor = 'rgba(46, 213, 80, 0.4)';
+      const combiningColor = 'rgba(234, 211, 171, 0.4)';
+      const isCombining = isCombiningStack(e.dataTransfer, this.myDataTransfer);
       if (containerID) {
         const canDrop = isContainerSlotVerified(
           e.dataTransfer,
@@ -166,9 +170,15 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
           false,
         );
         if (canDrop) {
-          return {
-            backgroundColor: allowedColor,
-          };
+          if (isCombining) {
+            return {
+              backgroundColor: combiningColor,
+            };
+          } else {
+            return {
+              backgroundColor: allowedColor,
+            };
+          }
         } else {
           return {
             backgroundColor: notAllowedColor,
@@ -180,14 +190,21 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
           backgroundColor: notAllowedColor,
         };
       } else {
-        if (e.dataTransfer && e.dataTransfer['gearSlots']) {
+        const swappingPartialStack = isSwappingPartialStack(e.dataTransfer, this.myDataTransfer);
+        if ((e.dataTransfer && e.dataTransfer['gearSlots']) || swappingPartialStack) {
           return {
             backgroundColor: notAllowedColor,
           };
         } else {
-          return {
-            backgroundColor: allowedColor,
-          };
+          if (isCombining) {
+            return {
+              backgroundColor: combiningColor,
+            };
+          } else {
+            return {
+              backgroundColor: allowedColor,
+            };
+          }
         }
       }
     });
@@ -220,7 +237,8 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
       )) || true;
     if (item.slotType !== SlotType.CraftingItem &&
         !(e.dataTransfer.slotType === SlotType.CraftingItem && item.slotType === SlotType.CraftingContainer) &&
-        (containerSlotVerified && !e.dataTransfer || !e.dataTransfer['gearSlots'])) {
+        (containerSlotVerified && !e.dataTransfer || !e.dataTransfer['gearSlots']) &&
+        !isSwappingPartialStack(e.dataTransfer, this.myDataTransfer)) {
       const location = item.item.location;
       const dropZoneData = getInventoryDataTransfer({
         slotType: item.slotType,
@@ -231,22 +249,24 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
         containerID,
       });
 
-      if (isMovingStack(e.dataTransfer)) {
+      if (isCombiningStack(e.dataTransfer, this.myDataTransfer)) {
+        const combineStackPayload: CombineStackPayload = {
+          dragItem: e.dataTransfer,
+          dropZone: this.myDataTransfer,
+          amount: e.dataTransfer.unitCount || e.dataTransfer.item.stats.item.unitCount,
+          newPosition: this.props.item.slotIndex.position,
+        };
+        // Call onCombineStackDrawer if we have it (only items within container drawers should have this function)
+        this.props.onCombineStackDrawer ? this.props.onCombineStackDrawer(combineStackPayload) :
+          this.props.onCombineStack(combineStackPayload);
+      } else if (isMovingStack(e.dataTransfer)) {
         const moveStackPayload: MoveStackPayload = {
-          item: e.dataTransfer.item,
+          itemDataTransfer: e.dataTransfer,
           amount: e.dataTransfer.unitCount,
           newLocation: 'inventory',
           newPosition: this.props.item.slotIndex.position,
         };
         this.props.onMoveStack(moveStackPayload);
-      } else if (isCombiningStack(e.dataTransfer, this.myDataTransfer)) {
-        const combineStackPayload: CombineStackPayload = {
-          item: e.dataTransfer.item,
-          amount: e.dataTransfer.item.stats.item.unitCount,
-          stackItem: this.props.item.item,
-          newPosition: this.props.item.slotIndex.position,
-        };
-        this.props.onCombineStack(combineStackPayload);
       } else {
         this.props.onDrop(e.dataTransfer, dropZoneData);
       }
@@ -338,10 +358,8 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
     this.setDragDataTransfer(this.props);
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    if (!_.isEqual(this.props, nextProps)) {
-      this.setDragDataTransfer(nextProps);
-    }
+  public componentDidUpdate() {
+    this.setDragDataTransfer(this.props);
   }
 
   public componentWillUnmount() {
@@ -365,22 +383,24 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
 
   private onContextMenu = (e: MouseEvent) => {
     const { item } = this.props;
-    showContextMenuContent(
-      <ContextMenuContent
-        item={item.item || (item.stackedItems && item.stackedItems[0])}
-        syncWithServer={this.props.syncWithServer}
-        containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
-        drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
-        onContextMenuShow={this.props.onContextMenuShow}
-        onContextMenuHide={this.props.onContextMenuHide}
-      />
-    , e);
+    if (!item.disableContextMenu && !item.disabled) {
+      showContextMenuContent(
+        <ContextMenuContent
+          item={item.item || (item.stackedItems && item.stackedItems[0])}
+          syncWithServer={this.props.syncWithServer}
+          containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
+          drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
+          onContextMenuShow={this.props.onContextMenuShow}
+          onContextMenuHide={this.props.onContextMenuHide}
+        />
+      , e);
+    }
   }
 
   private onMouseDown = (e: MouseEvent) => {
-    if (e.shiftKey && e.button === 0) {
+    const { item } = this.props;
+    if (!item.disabled && !item.disableDrag && e.shiftKey && e.button === 0) {
       e.stopPropagation();
-
       // If they shift + start to drag their mouse, then move half the stack
       window.addEventListener('mousemove', this.startDraggingHalfStack);
 
@@ -391,15 +411,15 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
       }, 500);
     }
 
-    if (e.ctrlKey && e.button === 0) {
+    if (!item.disabled && !item.disableDrag && e.ctrlKey && e.button === 0) {
       e.stopPropagation();
-
       this.startDraggingStack(e, 1);
     }
   }
 
   private onClick = (e: MouseEvent) => {
-    if (e.shiftKey && e.type === 'click' && !this.isDragging) {
+    const { item } = this.props;
+    if (!item.disabled && !item.disableDrag && e.shiftKey && e.type === 'click' && !this.isDragging) {
       e.stopPropagation();
       window.removeEventListener('mousemove', this.startDraggingHalfStack);
       this.resetDraggingInfo();
@@ -429,7 +449,7 @@ class ItemComponent extends React.Component<Props, ItemComponentState> {
       };
     }
     const { item } = this.props;
-    const count = Math.floor(item.item.stats.item.unitCount / 2);
+    const count = Math.floor(item.item.stats.item.unitCount / 2) || 1;
     this.startDraggingStack(e, count);
   }
 
@@ -501,7 +521,7 @@ class DraggableItemComponentWithInjectedContext extends React.Component<ItemComp
       <InventoryContext.Consumer>
         {({ onMoveStack, onCombineStack }) => {
           return (
-            <DraggableItemComponent {...this.props} onMoveStack={onMoveStack} onCombineStack={onCombineStack} />
+            <DraggableItemComponent {...this.props} onCombineStack={onCombineStack} onMoveStack={onMoveStack} />
           );
         }}
       </InventoryContext.Consumer>

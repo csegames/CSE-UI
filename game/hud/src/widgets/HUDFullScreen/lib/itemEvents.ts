@@ -53,7 +53,8 @@ const eventNames = {
   updateCharacterStats: `${eventPrefix}updateCharacterStats`, // Update character stats
 };
 
-export type DataTransferLocation = 'trade' | 'inContainer' | 'inventory' | 'equipped' | 'inVox' | 'ground' | 'building';
+export type DataTransferLocation = 'none' | 'trade' | 'inContainer' | 'inventory' |
+  'equipped' | 'inVox' | 'ground' | 'building';
 
 export interface InventoryDataTransfer {
   item: InventoryItem.Fragment;
@@ -76,15 +77,15 @@ export interface OnHighlightSlots {
 }
 
 export interface MoveStackPayload {
-  item: InventoryItem.Fragment;
+  itemDataTransfer: InventoryDataTransfer;
   amount: number;
   newLocation: DataTransferLocation;
   newPosition: number;
 }
 
 export interface CombineStackPayload {
-  item: InventoryItem.Fragment;
-  stackItem: InventoryItem.Fragment;
+  dragItem: InventoryDataTransfer;
+  dropZone: InventoryDataTransfer;
   amount: number;
   newPosition: number;
 }

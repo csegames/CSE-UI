@@ -12,7 +12,7 @@ import { styled } from '@csegames/linaria/react';
 import * as base from '../../../ItemShared/InventoryBase';
 import Drawer from './Drawer';
 import ContainerHeader from './ContainerHeader';
-import { InventoryDataTransfer } from '../../../../lib/eventNames';
+import { InventoryDataTransfer } from '../../../../lib/itemEvents';
 import { InventorySlotItemDef, SlotItemDefType } from '../../../../lib/itemInterfaces';
 import {
   InventoryItem,

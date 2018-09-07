@@ -43,6 +43,7 @@ export const ContainedItemsFragment = gql`
       iconUrl
       itemType
       defaultResourceID
+      isStackableItem
       deploySettings {
         resourceID
         isDoor
@@ -95,6 +96,7 @@ export const ContainedItemsFragment = gql`
           iconUrl
           itemType
           defaultResourceID
+          isStackableItem
           deploySettings {
             resourceID
             isDoor

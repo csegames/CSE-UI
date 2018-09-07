@@ -16,7 +16,7 @@ import StatListItem from '../StatListItem';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
 import { prettifyText } from '../../../../lib/utils';
-import eventNames from '../../../../lib/eventNames';
+import eventNames from '../../../../lib/itemEvents';
 import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
 import { OffenseListGQL, ItemType } from 'gql/interfaces';
 import TabSubHeader from '../../../TabSubHeader';

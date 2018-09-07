@@ -231,7 +231,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
       }
 
       if (isStackedItem(item) || isCraftingItem(item)) {
-        const stackId = getItemMapID(item, 0, true);
+        const stackId = getItemMapID(item, { noPos: true });
         if (theirStackGroupIdToItemIDs[stackId]) {
           theirStackGroupIdToItemIDs[stackId].push(item.id);
         } else {

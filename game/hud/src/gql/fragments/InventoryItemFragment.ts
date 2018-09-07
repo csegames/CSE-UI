@@ -43,6 +43,7 @@ export const InventoryItemFragment = gql`
       itemType
       defaultResourceID
       numericItemDefID
+      isStackableItem
       deploySettings {
         resourceID
         isDoor

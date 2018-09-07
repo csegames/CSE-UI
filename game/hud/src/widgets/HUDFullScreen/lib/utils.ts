@@ -20,7 +20,7 @@ import {
 import { colors, nullVal, emptyStackHash, inventoryFilterButtonInfo } from './constants';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { SlotNumberToItem, ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
-import { InventoryDataTransfer, EquippedItemDataTransfer, DataTransferLocation } from './eventNames';
+import { InventoryDataTransfer, EquippedItemDataTransfer, DataTransferLocation } from './itemEvents';
 import { ActiveFilters } from '../components/Inventory';
 import { SlotType, ArmorType, InventoryFilterButton } from '../lib/itemInterfaces';
 import {
@@ -187,7 +187,8 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItem.Fra
 }
 
 export function createMoveItemRequestToContainerPosition(oldPosition: InventoryDataTransfer,
-                                                          newPosition: InventoryDataTransfer): any {
+                                                          newPosition: InventoryDataTransfer,
+                                                          unitCount?: number): any {
   const oldItem = oldPosition.item;
   const newPosContainerID = newPosition.containerID ?
     newPosition.containerID[newPosition.containerID.length - 1] : newPosition.containerID;
@@ -197,7 +198,7 @@ export function createMoveItemRequestToContainerPosition(oldPosition: InventoryD
   return {
     moveItemID: oldItem.id,
     stackHash: oldItem.stackHash,
-    unitCount: -1,
+    unitCount: unitCount || -1,
     to: {
       entityID: nullVal,
       characterID: game.selfPlayerState.characterID,
@@ -365,8 +366,8 @@ export function isBuildingBlockItem(item: InventoryItem.Fragment) {
 }
 
 export function isStackedItem(item: InventoryItem.Fragment) {
-  if (item && item.stats) {
-    return item.stats.item.unitCount > 1 || item.stackHash !== emptyStackHash;
+  if (item && item.staticDefinition) {
+    return item.staticDefinition.isStackableItem;
   }
 
   console.log('You provided an item to isStackedItem() function that has stats of null');
@@ -396,8 +397,12 @@ export function getIcon(item: InventoryItem.Fragment) {
   console.log(item);
 }
 
-export function itemHasPosition(item: InventoryItem.Fragment) {
+export function itemHasInventoryPosition(item: InventoryItem.Fragment) {
   return getItemInventoryPosition(item) > -1;
+}
+
+export function itemHasContainerPosition(item: InventoryItem.Fragment) {
+  return getItemContainerPosition(item) > - 1;
 }
 
 export function getItemUnitCount(item: InventoryItem.Fragment) {
@@ -421,9 +426,33 @@ export function getItemQuality(item: InventoryItem.Fragment) {
   return -1;
 }
 
+export function getItemLocation(item: InventoryItem.Fragment): DataTransferLocation {
+  if (item && item.location) {
+    if (item.location.equipped) {
+      return 'equipped';
+    } else if (item.location.inventory) {
+      return 'inventory';
+    } else if (item.location.inContainer) {
+      return 'inContainer';
+    } else {
+      return 'none';
+    }
+  }
+
+  return 'none';
+}
+
 export function getItemInventoryPosition(item: InventoryItem.Fragment) {
   if (item && item.location && item.location.inventory) {
     return item.location.inventory.position;
+  } else {
+    return -1;
+  }
+}
+
+export function getItemContainerPosition(item: InventoryItem.Fragment) {
+  if (item && item.location && item.location.inContainer) {
+    return item.location.inContainer.position;
   } else {
     return -1;
   }
@@ -453,17 +482,27 @@ export function getItemInstanceID(item: InventoryItem.Fragment) {
   return item.id;
 }
 
-export function getItemMapID(item: InventoryItem.Fragment, wantPos?: number, noPos?: boolean) {
+export function getItemMapID(item: InventoryItem.Fragment,
+                              args?: {
+                                wantPos?: number,
+                                noPos?: boolean,
+                                location?: DataTransferLocation,
+                              }) {
+  const wantPos = args && args.wantPos;
+  const noPos = args && args.noPos;
+  const location = args && args.location;
   if (item && item.staticDefinition) {
-    const pos = getItemInventoryPosition(item);
+    const pos = itemHasInventoryPosition(item) ? getItemInventoryPosition(item) :
+                itemHasContainerPosition(item) ? getItemContainerPosition(item) : -1;
+    const itemLocation = location || getItemLocation(item);
     if (isCraftingItem(item)) {
-      return `${item.staticDefinition.name + item.staticDefinition.id}${typeof wantPos === 'number' ?
+      return `${item.staticDefinition.name + item.staticDefinition.id}${itemLocation}${typeof wantPos === 'number' ?
         wantPos : pos !== -1 && !noPos ? pos : ''}`;
     } else if (isStackedItem(item)) {
       if (item.stackHash !== emptyStackHash) {
-        return `${item.stackHash}${pos !== -1 && !noPos ? pos : ''}`;
+        return `${item.stackHash}${itemLocation}${pos !== -1 && !noPos ? pos : ''}`;
       } else {
-        return `${item.staticDefinition.name + item.staticDefinition.id}${typeof wantPos === 'number' ?
+        return `${item.staticDefinition.name + item.staticDefinition.id}${itemLocation}${typeof wantPos === 'number' ?
           wantPos : pos !== -1 && !noPos ? pos : ''}`;
       }
     } else {
@@ -750,11 +789,12 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
           !permission.isParent && !permission.isChild && permission.userPermission & ItemPermissions.AddContents) !== -1);
 
   // Check if drop item would exceed max Drawer Stats (maxItemCount, maxMass)
+  const dragUnitCount = dragDataTransfer.unitCount || dragDataTransfer.item.stats.item.unitCount;
   const meetsUnitCountStat = !drawerMaxStats || drawerMaxStats.maxItemCount === -1 ||
     (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
     (dropDataTransfer.item ? (drawerCurrentStats.totalUnitCount - dropDataTransfer.item.stats.item.unitCount +
-      dragDataTransfer.item.stats.item.unitCount) <= drawerMaxStats.maxItemCount :
-      drawerCurrentStats.totalUnitCount + dragDataTransfer.item.stats.item.unitCount <= drawerMaxStats.maxItemCount) : true);
+      dragUnitCount) <= drawerMaxStats.maxItemCount :
+      drawerCurrentStats.totalUnitCount + dragUnitCount <= drawerMaxStats.maxItemCount) : true);
 
   const meetsMassStat = !drawerMaxStats || drawerMaxStats.maxItemMass === -1 ||
     (!_.isEqual(dragDataTransfer.containerID, dropContainerID) ?
@@ -762,12 +802,20 @@ export function isContainerSlotVerified(dragDataTransfer: InventoryDataTransfer,
       dragDataTransfer.item.stats.item.totalMass) <= drawerMaxStats.maxItemMass :
       drawerCurrentStats.weight + dragDataTransfer.item.stats.item.totalMass <= drawerMaxStats.maxItemMass) : true);
 
+  // Check if the user is trying to swap an item with a partial stack which can't be done
+  // because the other part of the stack is in the original position still.
+  const swappingPartialStack = isSwappingPartialStack(dragDataTransfer, dropDataTransfer);
+
   const canPutInContainer = !doubleNestingContainer && !puttingInSelf && !hasContainersAlready &&
-    !isAnEquippedItem && userMeetsPermissions && meetsUnitCountStat && meetsMassStat;
+    !isAnEquippedItem && userMeetsPermissions && meetsUnitCountStat && meetsMassStat && !swappingPartialStack;
 
   if (!canPutInContainer) {
     // Can NOT put in container
     if (showToasts) {
+      if (swappingPartialStack) {
+        toastr.error('You can\'t swap a partial stack with another item', 'Darn!', { timeout: 3000 });
+      }
+
       if (isAnEquippedItem) {
         toastr.error('Try moving the equipped item to the inventory first', 'Try this', { timeout: 3000 });
       }
@@ -983,12 +1031,49 @@ export function getMyPaperDollBaseIcon() {
   return getPaperDollBaseIcon(Faction[game.selfPlayerState.faction] as GraphQLFaction);
 }
 
+export function isSwappingPartialStack(dragDataTransfer: InventoryDataTransfer, dropDataTransfer: InventoryDataTransfer) {
+  return dragDataTransfer.unitCount && dropDataTransfer.item && !isCombiningStack(dragDataTransfer, dropDataTransfer);
+}
+
 export function isMovingStack(itemDataTransfer: InventoryDataTransfer) {
   return typeof itemDataTransfer.unitCount === 'number';
 }
 
 export function isCombiningStack(itemDataTransfer: InventoryDataTransfer, stack: InventoryDataTransfer) {
-  return getItemMapID(itemDataTransfer.item, stack.position) === getItemMapID(stack.item);
+  if (itemDataTransfer.location !== stack.location) {
+    const itemStackId = getItemMapID(itemDataTransfer.item, { location: stack.location, noPos: true });
+    const stackItemStackId = getItemMapID(stack.item, { noPos: true });
+    return itemStackId === stackItemStackId;
+  }
+  return getItemMapID(itemDataTransfer.item, { wantPos: stack.position }) === getItemMapID(stack.item);
+}
+
+export function getItemWithNewInventoryPosition(item: InventoryItem.Fragment, newPosition: number): InventoryItem.Fragment {
+  return {
+    ...item,
+    location: {
+      ...item.location,
+      inContainer: null,
+      equipped: null,
+      inventory: {
+        ...item.location.inventory,
+        position: newPosition,
+      },
+    },
+  };
+}
+
+export function getItemWithNewUnitCount(item: InventoryItem.Fragment, newUnitCount: number): InventoryItem.Fragment {
+  return {
+    ...item,
+    stats: {
+      ...item.stats,
+      item: {
+        ...item.stats.item,
+        unitCount: newUnitCount,
+      },
+    },
+  };
 }
 
 export function filterForGearSlot(item: InventoryItem.Fragment,

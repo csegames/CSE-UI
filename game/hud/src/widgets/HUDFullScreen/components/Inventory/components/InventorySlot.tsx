@@ -18,7 +18,7 @@ import {
   ContainerDefStat_Single,
 } from 'gql/interfaces';
 import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } from '../../../lib/utils';
-import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
+import eventNames, { EquipItemPayload, InventoryDataTransfer, CombineStackPayload } from '../../../lib/itemEvents';
 import { SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
 import { showContextMenuContent } from 'actions/contextMenu';
 
@@ -62,12 +62,18 @@ export interface InventorySlotProps {
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideTooltip: () => void;
   onRightOrLeftItemAction: (item: InventoryItem.Fragment, action: (gearSlots: GearSlotDefRef.Fragment[]) => void) => void;
+  syncWithServer: () => void;
+
+  // Optional
   onRightClick?: (item: InventoryItem.Fragment) => void;
   showGraySlots?: boolean;
   containerIsOpen?: boolean;
   drawerMaxStats?: ContainerDefStat_Single;
   drawerCurrentStats?: DrawerCurrentStats;
-  syncWithServer: () => void;
+
+  // This is will only be passed down to items within containers,
+  // because their combineStack function is a little different than the inventorys generic onCombineStack function
+  onCombineStackDrawer?: (payload: CombineStackPayload) => void;
 }
 
 export interface InventorySlotState {
@@ -114,6 +120,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               syncWithServer={this.props.syncWithServer}
               onContextMenuShow={this.onContextMenuContentShow}
               onContextMenuHide={this.onContextMenuContentHide}
+              onCombineStackDrawer={this.props.onCombineStackDrawer}
             />
         </ItemWrapper>
       </Container>

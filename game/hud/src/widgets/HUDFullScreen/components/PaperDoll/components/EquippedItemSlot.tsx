@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { includes } from 'lodash';
 
 import { SLOT_DIMENSIONS, GearSlots } from '../../../lib/constants';
-import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
+import eventNames, { UnequipItemPayload } from '../../../lib/itemEvents';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';

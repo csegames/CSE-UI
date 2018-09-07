@@ -8,7 +8,7 @@ import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
-import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
+import eventNames, { EquipItemPayload } from '../../../lib/itemEvents';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import ItemComponent from '../../ItemShared/Item';
 import EmptyItem from '../../ItemShared/EmptyItem';

@@ -16,7 +16,7 @@ import InventoryRowActionButton from '../InventoryRowActionButton';
 import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } from '../../../../lib/utils';
 import { InventoryContext } from '../../../ItemShared/InventoryContext';
 import { rowActionIcons } from '../../../../lib/constants';
-import { InventoryDataTransfer } from '../../../../lib/eventNames';
+import { InventoryDataTransfer } from '../../../../lib/itemEvents';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { slotDimensions } from '../InventorySlot';

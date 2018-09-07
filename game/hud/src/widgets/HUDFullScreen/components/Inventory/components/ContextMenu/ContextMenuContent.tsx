@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/camelot-unchained';
 import { hideContextMenu } from 'actions/contextMenu';
 import ContextMenuAction from './ContextMenuAction';
 import { InventoryContext } from '../../../ItemShared/InventoryContext';
-import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload, MoveStackPayload } from '../../../../lib/eventNames';
+import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload, MoveStackPayload } from '../../../../lib/itemEvents';
 import { GearSlotDefRef, InventoryItem } from 'gql/interfaces';
 import {
   prettifyText,

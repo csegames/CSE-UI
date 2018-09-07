@@ -22,7 +22,7 @@ import eventNames, {
 import { InventoryItem, EquippedItem, SecureTradeState } from 'gql/interfaces';
 import { InventoryContext } from '../../ItemShared/InventoryContext';
 import { hideTooltip } from 'actions/tooltips';
-import { equipItemRequest } from '../../ItemShared/InventoryBase';
+import { makeEquipItemRequest } from '../../ItemShared/InventoryBase';
 import PaperdollIcon from './PaperdollIcon';
 
 const ARMOR_ORNAMENT_OPACITY = 0.3;
@@ -461,7 +461,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
       });
     }));
 
-    equipItemRequest(newItem.item, willEquipTo);
+    makeEquipItemRequest(newItem.item, willEquipTo);
 
     if (newItem.location === 'equipped' && prevEquippedItem) {
       // We are swapping items that are currently equipped
@@ -476,7 +476,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         },
       };
       const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
-      equipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
+      makeEquipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
       filteredItems = filteredItems.concat(swappedEquippedItem);
     }
 

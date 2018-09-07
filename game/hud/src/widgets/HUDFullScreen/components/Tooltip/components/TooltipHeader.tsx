@@ -144,6 +144,28 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
       </Container>
     );
   }
+
+  public componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeyUp);
+  }
+
+  private handleKeyDown = (e: MouseEvent) => {
+    if (e.altKey) {
+      this.setState({ showAdminInfo: true });
+    }
+  }
+
+  private handleKeyUp = (e: MouseEvent) => {
+    if (this.state.showAdminInfo) {
+      this.setState({ showAdminInfo: false });
+    }
+  }
 }
 
 export default TooltipHeader;

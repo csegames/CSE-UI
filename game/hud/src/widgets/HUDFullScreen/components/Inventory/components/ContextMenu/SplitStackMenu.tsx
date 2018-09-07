@@ -6,7 +6,11 @@
  */
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
+import { jsKeyCodes } from '@csegames/camelot-unchained';
+
 import { hideContextMenu } from 'actions/contextMenu';
+import Slider from 'UI/Slider';
+import { requestUIKeydown, releaseUIKeydown } from '../../../../lib/utils';
 
 const buttonGlow = keyframes`
   from {
@@ -18,10 +22,20 @@ const buttonGlow = keyframes`
 `;
 
 const Container = styled('div')`
-  display: flex;
-  flex-direction: column;
-  background-color: background-color: rgba(0, 0, 0, 0.3);
-  padding: 5px;
+  font-family: Titillium Web;
+  color: #aaa;
+  text-transform: initial;
+  font-size: 14px;
+  letter-spacing: .5px;
+  display: inline-block;
+  padding: 10px 10px;
+  width: 150px;
+  border: 1px solid transparent;
+  border-image: url(images/inventory/border-texture.png);
+  border-image-slice: 1;
+  border-image-repeat: round;
+  background: url(images/inventory/filter-input-texture.png), rgba(40, 40, 40, 1);
+  text-decoration: none;
 `;
 
 const InfoContainer = styled('div')`
@@ -45,12 +59,16 @@ const Button = styled('div')`
   }
 `;
 
-const BoundNumber = styled('div')`
-  color: white;
+const Overlay = styled('div')`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 `;
 
-const Slider = styled('input')`
-
+const BoundNumber = styled('div')`
+  color: white;
 `;
 
 export interface SplitStackMenuProps {
@@ -64,6 +82,7 @@ export interface SplitStackMenuState {
 }
 
 class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenuState> {
+  private mouseOver: boolean = false;
   constructor(props: SplitStackMenuProps) {
     super(props);
     this.state = {
@@ -74,25 +93,53 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
   public render() {
     const { min, max } = this.props;
     return (
-      <Container>
-        <InfoContainer>
-          <BoundNumber>{min}</BoundNumber>
-          <Button onClick={this.onSplit}>{this.state.value}</Button>
-          <BoundNumber>{max}</BoundNumber>
-        </InfoContainer>
-        <Slider type='range' value={this.state.value} min={min} max={max} step={1} onChange={this.onSliderChange} />
-      </Container>
+      <div>
+        <Overlay onClick={this.onSplit} />
+        <Container onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+          <InfoContainer>
+            <BoundNumber>{min}</BoundNumber>
+            <Button >{this.state.value}</Button>
+            <BoundNumber>{max}</BoundNumber>
+          </InfoContainer>
+          <Slider current={this.state.value} min={min} max={max} onChange={this.onSliderChange} />
+        </Container>
+      </div>
     );
   }
 
-  private onSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
+  public componentDidMount() {
+    requestUIKeydown();
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  public componentWillUnmount() {
+    releaseUIKeydown();
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  private handleKeyDown = (e: KeyboardEvent) => {
+    if (e.keyCode === jsKeyCodes.ESC) {
+      hideContextMenu();
+    }
+  }
+
+  private onMouseOver = () => {
+    this.mouseOver = true;
+  }
+
+  private onMouseLeave = () => {
+    this.mouseOver = false;
+  }
+
+  private onSliderChange = (value: number) => {
     this.setState({ value });
   }
 
   private onSplit = (e: MouseEvent) => {
-    hideContextMenu();
-    this.props.onSplit(e, this.state.value);
+    if (!this.mouseOver) {
+      hideContextMenu();
+      this.props.onSplit(e, this.state.value);
+    }
   }
 }
 

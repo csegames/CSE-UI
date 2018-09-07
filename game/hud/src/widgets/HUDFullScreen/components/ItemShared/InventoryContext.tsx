@@ -9,7 +9,7 @@ import * as React from 'react';
 import { events } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
-import queries from '../../../../gqlDocuments';
+import { query } from '../Inventory/graphql/query';
 import { InventoryItem, CUQuery } from 'gql/interfaces';
 import { SlotType } from '../../lib/itemInterfaces';
 import eventNames, {
@@ -17,7 +17,7 @@ import eventNames, {
   UpdateInventoryItemsPayload,
   MoveStackPayload,
   CombineStackPayload,
-} from '../../lib/eventNames';
+} from '../../lib/itemEvents';
 import {
   InventoryBaseState,
   InventoryBaseProps,
@@ -51,6 +51,7 @@ export interface InventoryContextState {
 
   initializeInventory: () => void;
   onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeSlotNumberToItem: (slotNumberToItem: SlotNumberToItem) => void;
   onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
   onMoveInventoryItem: (payload: MoveInventoryItemPayload) => void;
@@ -69,6 +70,7 @@ export const defaultInventoryContextValue: InventoryContextState = {
 
   initializeInventory: () => {},
   onChangeInventoryItems: () => {},
+  onChangeSlotNumberToItem: () => {},
   onChangeContainerIdToDrawerInfo: () => {},
   onChangeStackGroupIdToItemIDs: () => {},
   onMoveInventoryItem: () => {},
@@ -96,6 +98,7 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
     this.state = {
       ...defaultInventoryContextValue,
       onChangeInventoryItems: this.onChangeInventoryItems,
+      onChangeSlotNumberToItem: this.onChangeSlotNumberToItem,
       onChangeContainerIdToDrawerInfo: this.onChangeContainerIdToDrawerInfo,
       onChangeStackGroupIdToItemIDs: this.onChangeStackGroupIdToItemIDs,
       onMoveInventoryItem: this.onMoveInventoryItem,
@@ -106,7 +109,7 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
 
   public render() {
     return (
-      <GraphQL query={{ query: queries.InventoryBase }} onQueryResult={this.handleQueryResult}>
+      <GraphQL query={{ query }} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           const contextValue: InventoryContextState = {
             ...this.state,
@@ -221,16 +224,17 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
   }
 
   private onMoveStack = (payload: MoveStackPayload) => {
-    const { item, amount, newPosition } = payload;
-    const { stackGroupIdToItemIDs, inventoryItems, slotNumberToItem, itemIdToInfo } = this.state;
+    const { itemDataTransfer, amount, newPosition } = payload;
+    const { containerIdToDrawerInfo, stackGroupIdToItemIDs, inventoryItems, slotNumberToItem, itemIdToInfo } = this.state;
     const args = {
-      item,
+      itemDataTransfer,
       amount,
       newPosition,
       stackGroupIdToItemIDs,
       inventoryItems,
       slotNumberToItem,
       itemIdToInfo,
+      containerIdToDrawerInfo,
     };
     const newState = onMoveStackClient(args);
     this.setState({ ...newState });
@@ -241,14 +245,16 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
   }
 
   private onCombineStack = (payload: CombineStackPayload) => {
-    const { item, amount, stackItem } = payload;
-    const { inventoryItems, slotNumberToItem } = this.state;
+    const { dragItem, dropZone, amount } = payload;
+    const { inventoryItems, slotNumberToItem, stackGroupIdToItemIDs, containerIdToDrawerInfo } = this.state;
     const args = {
-      item,
+      itemDataTransfer: dragItem,
       amount,
-      stackItem,
+      stackItem: dropZone.item,
       inventoryItems,
       slotNumberToItem,
+      stackGroupIdToItemIDs,
+      containerIdToDrawerInfo,
     };
     const newState = onCombineStackClient(args);
     this.setState({ ...newState });
@@ -256,6 +262,10 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
     onCombineStackServer(args).then((newState: Partial<InventoryContextState>) => {
       this.setState({ ...this.state, ...newState });
     });
+  }
+
+  private onChangeSlotNumberToItem = (slotNumberToItem: SlotNumberToItem) => {
+    this.setState({ slotNumberToItem });
   }
 
   private onChangeInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {

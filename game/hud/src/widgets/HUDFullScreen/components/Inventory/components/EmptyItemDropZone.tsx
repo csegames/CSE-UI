@@ -12,7 +12,7 @@ import EmptyItem, { EmptyItemProps } from '../../ItemShared/components/EmptyItem
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
-import { InventoryDataTransfer, MoveStackPayload } from '../../../lib/eventNames';
+import { InventoryDataTransfer, MoveStackPayload } from '../../../lib/itemEvents';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import {
   getInventoryDataTransfer,
@@ -102,7 +102,7 @@ class EmptyItemWrapper extends React.Component<Props, EmptyItemDropZoneState> {
     } else {
       if (e.dataTransfer.unitCount) {
         const moveStackPayload: MoveStackPayload = {
-          item: e.dataTransfer.item,
+          itemDataTransfer: e.dataTransfer,
           amount: e.dataTransfer.unitCount,
           newLocation: 'inventory',
           newPosition: this.props.slotIndex.position,

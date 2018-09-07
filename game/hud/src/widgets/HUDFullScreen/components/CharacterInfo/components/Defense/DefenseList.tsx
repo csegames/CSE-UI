@@ -13,7 +13,7 @@ import { styled } from '@csegames/linaria/react';
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
-import eventNames from '../../../../lib/eventNames';
+import eventNames from '../../../../lib/itemEvents';
 import { DamageTypeValuesFragment } from 'gql/fragments/DamageTypeValuesFragment';
 import { DefenseListGQL } from 'gql/interfaces';
 

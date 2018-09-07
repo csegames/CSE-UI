@@ -11,19 +11,12 @@ import { styled } from '@csegames/linaria/react';
 import { webAPI, Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
-import { slotDimensions } from '../InventorySlot';
+import * as containerBase from '../../../ItemShared/ContainerBase';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { rowActionIcons } from '../../../../lib/constants';
-import { InventoryDataTransfer } from '../../../../lib/eventNames';
-import {
-  calcRowsForContainer,
-  getContainerColor,
-  getContainerInfo,
-  createMoveItemRequestToContainerPosition,
-  isContainerItem,
-  FullScreenContext,
-} from '../../../../lib/utils';
+import { InventoryDataTransfer, CombineStackPayload } from '../../../../lib/itemEvents';
+import { getContainerColor, getContainerInfo, FullScreenContext } from '../../../../lib/utils';
 import { InventoryContext } from '../../../ItemShared/InventoryContext';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import {
@@ -103,11 +96,13 @@ export interface DrawerCurrentStats {
 
 export interface InjectedDrawerProps {
   inventoryItems: InventoryItem.Fragment[];
+  slotNumberToItem: base.SlotNumberToItem;
   stackGroupIdToItemIDs: {[id: string]: string[]};
   containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
   myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
+  onChangeSlotNumberToItem: (slotNumberToItem: base.SlotNumberToItem) => void;
   onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
   onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
 }
@@ -143,7 +138,6 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     const { stats, requirements } = drawer;
 
     // Grab items from containerIdToDrawerInfo (Managed by CharacterMain)
-
     const container = this.props.containerIdToDrawerInfo[containerID[containerID.length - 1]];
     const drawerInfo = container ? container.drawers[drawer.id] : {};
     const drawerItems: InventoryItem.Fragment[] = [];
@@ -154,7 +148,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     // Get header info
     const { totalUnitCount, weight } = getContainerInfo(drawerItems);
 
-    const containerPermissions = this.getContainerPermissions();
+    const containerPermissions = containerBase.getContainerPermissions(this.props);
 
     // Create rows
     const { rows, rowData } = base.createRowElementsForContainerItems({
@@ -173,6 +167,7 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
       stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
       myTradeState: this.props.myTradeState,
       myTradeItems: this.props.myTradeItems,
+      onCombineStackDrawer: this.onCombineStack,
     });
 
     const requirementIconColor = getContainerColor(containerItem, 0.3);
@@ -279,386 +274,18 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
   private internalInit = (state: DrawerState, props: DrawerComponentProps) => {
     // Initialize slot data, that's the only state drawers need to maintain.
     if (!props.bodyWidth) return;
-    const rowData = this.getRowsAndSlots(props);
+    const rowData = containerBase.getRowsAndSlots(props);
     return base.initializeSlotsData(rowData);
   }
 
-  private getRowsAndSlots = (props: DrawerComponentProps) => {
-    const { drawer, containerID, containerIdToDrawerInfo } = props;
-    const container = containerIdToDrawerInfo[containerID[containerID.length - 1]];
-    const drawerInfo = container ? container.drawers[drawer.id] : {};
-    const drawerItems: InventoryItem.Fragment[] = [];
-    Object.keys(drawerInfo).forEach((_key) => {
-      drawerItems.push(drawerInfo[_key].item);
-    });
-    const rowData = calcRowsForContainer(props.bodyWidth, slotDimensions, drawerItems);
-
-    return rowData;
+  private onCombineStack = (payload: CombineStackPayload) => {
+    containerBase.onCombineStackClient(this.props, payload);
+    containerBase.onCombineStackServer(this.props, payload);
   }
 
-  private getContainerPermissions = (): base.ContainerPermissionDef | base.ContainerPermissionDef[] => {
-    const { containerID, inventoryItems, containerItem } = this.props;
-    const itemPermissions: base.ContainerPermissionDef = {
-      userPermission: containerItem.permissibleHolder ?
-        containerItem.permissibleHolder.userPermissions : ItemPermissions.All,
-      isChild: false,
-      isParent: false,
-    };
-
-    const containerPermissionsArray: base.ContainerPermissionDef[] = [itemPermissions];
-
-    if (containerID.length > 1) {
-      const parentContainer = _.find(inventoryItems, item => item.id === containerID[0]);
-      const parentPermissions: base.ContainerPermissionDef = {
-        userPermission: parentContainer.permissibleHolder ?
-          parentContainer.permissibleHolder.userPermissions : ItemPermissions.All,
-        isChild: false,
-        isParent: true,
-      };
-      containerPermissionsArray.push(parentPermissions);
-    }
-
-    function getChildContainerPermissions(containerItem: InventoryItem.Fragment) {
-      if (isContainerItem(containerItem)) {
-        return;
-      }
-      containerItem.containerDrawers.forEach((drawer) => {
-        drawer.containedItems.forEach((_containedItem) => {
-          if (_containedItem.permissibleHolder &&
-              _containedItem.permissibleHolder.userPermissions ! & ItemPermissions.Ground) {
-            const childPermissions: base.ContainerPermissionDef = {
-              userPermission: _containedItem.permissibleHolder ?
-                _containedItem.permissibleHolder.userPermissions : ItemPermissions.All,
-              isChild: true,
-              isParent: false,
-            };
-            containerPermissionsArray.push(childPermissions);
-          }
-
-          getChildContainerPermissions(containerItem);
-        });
-      });
-    }
-
-    getChildContainerPermissions(containerItem);
-
-    return containerPermissionsArray.length > 1 ? containerPermissionsArray : itemPermissions;
-  }
-
-  private onDropOnZone = (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => {
-    // These will be modified throughout the function
-    const containerIdToDrawerInfo = { ...this.props.containerIdToDrawerInfo };
-    const inventoryItems = [...this.props.inventoryItems];
-
-    const dragContainerID = dragItemData.containerID && dragItemData.containerID[dragItemData.containerID.length - 1];
-    const dropContainerID = dropZoneData.containerID && dropZoneData.containerID[dropZoneData.containerID.length - 1];
-
-    const newDragItem: InventoryItem.Fragment = {
-      ...dragItemData.item,
-      location: {
-        inContainer: {
-          position: dropZoneData.position,
-        },
-        inventory: null,
-        equipped: null,
-      },
-    };
-
-    const newDropItem: InventoryItem.Fragment = dropZoneData.item && {
-      ...dropZoneData.item,
-      location: {
-        inContainer: {
-          position: dragItemData.position,
-        },
-        inventory: null,
-        equipped: null,
-      },
-    };
-
-    if (newDropItem) {
-      if (dragContainerID) {
-        containerIdToDrawerInfo[dragContainerID].drawers[dragItemData.drawerID][dragItemData.position] = {
-          slot: dragItemData.position,
-          drawerId: dragItemData.drawerID,
-          containerId: dragContainerID,
-          item: newDropItem,
-        };
-      }
-    }
-
-    // Move item to container
-    containerIdToDrawerInfo[dropContainerID].drawers[dropZoneData.drawerID][dropZoneData.position] = {
-      slot: dropZoneData.position,
-      drawerId: dropZoneData.drawerID,
-      containerId: dropContainerID,
-      item: newDragItem,
-    };
-
-    const indexOfDropZoneContainer = _.findIndex(inventoryItems, _item => _item.id === this.props.containerID[0]);
-    const newDropContainerDrawers =
-      this.getUpdatedDropContainer(
-        dropZoneData,
-        newDragItem,
-        newDropItem,
-        inventoryItems,
-        indexOfDropZoneContainer,
-      );
-
-    inventoryItems[indexOfDropZoneContainer] = {
-      ...inventoryItems[indexOfDropZoneContainer],
-      containerDrawers: newDropContainerDrawers,
-    };
-
-    // Drag item was in container
-    if (dragContainerID) {
-      // Delete drag slot if moving to empty slot
-      if (!newDropItem) {
-        delete containerIdToDrawerInfo[dragContainerID].drawers[dragItemData.drawerID][dragItemData.position];
-      }
-
-      const indexOfTopDragItemContainer = _.findIndex(inventoryItems, _item => _item.id === dragItemData.containerID[0]);
-      const newDragContainerDrawers =
-        this.getUpdatedDragContainer(
-          dragItemData,
-          newDragItem,
-          newDropItem,
-          dropZoneData,
-          inventoryItems,
-          indexOfTopDragItemContainer,
-        );
-
-      inventoryItems[indexOfTopDragItemContainer] = {
-        ...inventoryItems[indexOfTopDragItemContainer],
-        containerDrawers: newDragContainerDrawers as any,
-      };
-
-    } else {
-      // Drag item is in regular inventory
-      const indexOfDragItem = _.findIndex(inventoryItems, _item => _item.id === dragItemData.item.id);
-      if (newDropItem) {
-        inventoryItems[indexOfDragItem] = newDropItem;
-      } else {
-        inventoryItems[indexOfDragItem] = null;
-      }
-    }
-
-    this.props.onChangeInventoryItems(_.compact(inventoryItems));
-    this.props.onChangeContainerIdToDrawerInfo(containerIdToDrawerInfo);
-
-    // Make a move request to api server
-    const moveRequests = [createMoveItemRequestToContainerPosition(dragItemData, dropZoneData)];
-
-    if (newDropItem) {
-      moveRequests.push(createMoveItemRequestToContainerPosition(dropZoneData, dragItemData));
-    }
-
-    webAPI.ItemAPI.BatchMoveItems(
-      webAPI.defaultConfig,
-      game.shardID,
-      game.selfPlayerState.characterID,
-      moveRequests,
-    ).then((res) => {
-      // If request fails for any reason
-      if (!res.ok) {
-        const data = JSON.parse(res.data);
-        if (data.FieldCodes && data.FieldCodes.length > 0) {
-          toastr.error(data.FieldCodes[0].Message, 'Oh No!', { timeout: 3000 });
-        } else {
-          // This means api server failed move item request but did not have a message about what happened
-          toastr.error('An error occured', 'Oh No!', { timeout: 3000 });
-        }
-
-        // Sync with server, which should just revert the state
-        this.props.syncWithServer();
-      }
-    });
-  }
-
-  private getUpdatedDropContainer = (dropZoneData: InventoryDataTransfer,
-                                      newDragItem: InventoryItem.Fragment,
-                                      newDropItem: InventoryItem.Fragment,
-                                      inventoryItems: InventoryItem.Fragment[],
-                                      indexOfDropZoneContainer: number) => {
-    let newDropContainerDrawers;
-    if (dropZoneData.containerID.length > 1) {
-      // Dropped in a nested container
-      newDropContainerDrawers = _.map(inventoryItems[indexOfDropZoneContainer].containerDrawers, (_drawer) => {
-        const dropZoneContainer = _.find(_drawer.containedItems, _containedItem =>
-          _containedItem.id === dropZoneData.containerID[dropZoneData.containerID.length - 1]);
-        if (dropZoneContainer) {
-          // Look for item in container drawer
-          const newDropZoneDrawer = dropZoneContainer.containerDrawers.map((_dropZoneDrawer) => {
-            const filteredDrawer = _.filter(_dropZoneDrawer.containedItems, _containedItem =>
-              _containedItem.id !== newDragItem.id && (newDropItem ? _containedItem.id !== newDropItem.id : true));
-            return {
-              ..._dropZoneDrawer,
-              containedItems: _.compact([
-                ...filteredDrawer,
-                newDragItem,
-                newDropItem,
-              ]),
-            };
-          });
-
-          const newContainedItem = {
-            ...dropZoneContainer,
-            containerDrawers: newDropZoneDrawer,
-          };
-
-          return {
-            ..._drawer,
-            containedItems: [
-              ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dropZoneContainer.id),
-              newContainedItem,
-            ],
-          };
-        }
-        return _drawer;
-      });
-
-    } else {
-      // Dropped in a top level container inside the inventory
-      newDropContainerDrawers = _.map(inventoryItems[indexOfDropZoneContainer].containerDrawers, (_drawer) => {
-        // Add item to drop zone drawer
-        if (_drawer.id === dropZoneData.drawerID) {
-          const filteredDrawer = _.filter(_drawer.containedItems, _containedItem =>
-            _containedItem.id !== newDragItem.id && (newDropItem ? _containedItem.id !== newDropItem.id : true));
-          return {
-            ..._drawer,
-            containedItems: _.compact([
-              ...filteredDrawer,
-              newDragItem,
-              newDropItem,
-            ]),
-          };
-        }
-
-        return _drawer;
-      });
-    }
-
-    return newDropContainerDrawers;
-  }
-  private getUpdatedDragContainer = (dragItemData: InventoryDataTransfer,
-                                      newDragItem: InventoryItem.Fragment,
-                                      newDropItem: InventoryItem.Fragment,
-                                      dropZoneData: InventoryDataTransfer,
-                                      inventoryItems: InventoryItem.Fragment[],
-                                      indexOfTopDragItemContainer: number) => {
-    let newDragContainerDrawers;
-    const dragContainerID = dragItemData.containerID[dragItemData.containerID.length - 1];
-    if (dragItemData.containerID.length > 1) {
-      // Drag item came from a NESTED container
-      newDragContainerDrawers = _.map(inventoryItems[indexOfTopDragItemContainer].containerDrawers, (_drawer) => {
-        const dragItemContainer = _.find(_drawer.containedItems, _containedItem => _containedItem.id === dragContainerID);
-        if (dragItemContainer) {
-          // Look for item in container drawer
-          const newDragItemDrawer = dragItemContainer.containerDrawers.map((_dragItemDrawer) => {
-
-            let newContainedItems;
-            if (!newDropItem) {
-              // drop zone was an EMPTY slot
-              if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
-                dragItemData.drawerID !== dropZoneData.drawerID) {
-                // Coming from a different container or drawer
-                newContainedItems =
-                  _.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id);
-              } else {
-                // Moving in same container and drawer
-                newContainedItems = [
-                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                  newDragItem,
-                ];
-              }
-            } else {
-              // SWAPPING with item in drop zone
-              if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
-                dragItemData.drawerID !== dropZoneData.drawerID) {
-                // Coming from a different container and drawer
-                newContainedItems = [
-                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                  newDropItem,
-                ];
-              } else {
-                // Moving in same container and drawer
-                newContainedItems = [
-                  ..._.filter(_dragItemDrawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id &&
-                    _containedItem.id !== dropZoneData.item.id),
-                  newDragItem,
-                  newDropItem,
-                ];
-              }
-            }
-
-            return {
-              ..._dragItemDrawer,
-              containedItems: newContainedItems,
-            };
-          });
-
-          const newContainedItem = {
-            ...dragItemContainer,
-            containerDrawers: newDragItemDrawer,
-          };
-          return {
-            ..._drawer,
-            containedItems: [
-              ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemContainer.id),
-              newContainedItem,
-            ],
-          };
-        }
-        return _drawer;
-      });
-    } else {
-      newDragContainerDrawers = _.map(inventoryItems[indexOfTopDragItemContainer].containerDrawers, (_drawer) => {
-        if (_drawer.id === dragItemData.drawerID) {
-          // IF drag item going to a different drawer then just delete drag item from previous drawer
-          // ELSE drag item is moved to a position in the same drawer, just update the drag item
-          let newDrawer;
-          if (!newDropItem) {
-            // EMPTY
-            if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
-              dragItemData.drawerID !== dropZoneData.drawerID) {
-              // Coming from a different container or drawer
-              newDrawer = _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id);
-            } else {
-              // Moving in same container and drawer
-              newDrawer = [
-                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                newDragItem,
-              ];
-            }
-          } else {
-            // SWAPPING
-            if (!_.isEqual(dragItemData.containerID, dropZoneData.containerID) ||
-              dragItemData.drawerID !== dropZoneData.drawerID) {
-              // Coming from a different container or drawer
-              newDrawer = [
-                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
-                newDropItem,
-              ];
-            } else {
-              // Moving in same container and drawer
-              newDrawer = [
-                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id &&
-                  _containedItem.id !== dropZoneData.item.id),
-                newDragItem,
-                newDropItem,
-              ];
-            }
-          }
-          return {
-            ..._drawer,
-            containedItems: newDrawer,
-          };
-        }
-
-        return _drawer;
-      });
-    }
-
-    return newDragContainerDrawers;
+  private onDropOnZone = (dragItem: InventoryDataTransfer, dropZone: InventoryDataTransfer) => {
+    containerBase.onDropOnZoneClient(this.props, dragItem, dropZone);
+    containerBase.onDropOnZoneServer(this.props, dragItem, dropZone);
   }
 
   private addRowOfSlots = () => {
@@ -667,12 +294,12 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
 
   private removeRowOfSlots = (rowData: InventorySlotItemDef[][]) => {
     const heightOfBody = this.contentRef.getBoundingClientRect().height;
-    this.setState((state, props) => base.removeRowOfSlots(state, rowData, heightOfBody, true));
+    this.setState(state => base.removeRowOfSlots(state, rowData, heightOfBody, true));
   }
 
   private pruneRowsOfSlots = (rowData: InventorySlotItemDef[][]) => {
     const heightOfBody = this.contentRef.getBoundingClientRect().height;
-    this.setState((state, props) => base.pruneRowsOfSlots(state, rowData, heightOfBody, true));
+    this.setState(state => base.pruneRowsOfSlots(state, rowData, heightOfBody, true));
   }
 }
 
@@ -685,9 +312,11 @@ class DrawerWithInjectedContext extends React.Component<DrawerProps & base.Inven
             <InventoryContext.Consumer>
               {({
                 inventoryItems,
+                slotNumberToItem,
                 stackGroupIdToItemIDs,
                 containerIdToDrawerInfo,
                 onChangeInventoryItems,
+                onChangeSlotNumberToItem,
                 onChangeStackGroupIdToItemIDs,
                 onChangeContainerIdToDrawerInfo,
               }) => {
@@ -695,11 +324,13 @@ class DrawerWithInjectedContext extends React.Component<DrawerProps & base.Inven
                   <Drawer
                     {...this.props}
                     inventoryItems={inventoryItems}
+                    slotNumberToItem={slotNumberToItem}
                     stackGroupIdToItemIDs={stackGroupIdToItemIDs}
                     containerIdToDrawerInfo={containerIdToDrawerInfo}
                     myTradeItems={myTradeItems}
                     myTradeState={myTradeState}
                     onChangeInventoryItems={onChangeInventoryItems}
+                    onChangeSlotNumberToItem={onChangeSlotNumberToItem}
                     onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
                     onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
                   />

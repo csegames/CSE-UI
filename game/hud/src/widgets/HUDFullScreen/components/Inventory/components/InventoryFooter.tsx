@@ -11,7 +11,7 @@ import { Tooltip } from '@csegames/camelot-unchained';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
 import { emptyStackHash, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
-import eventNames, { DropItemPayload } from '../../../lib/eventNames';
+import eventNames, { DropItemPayload } from '../../../lib/itemEvents';
 
 const Container = styled.div`
   display: flex;

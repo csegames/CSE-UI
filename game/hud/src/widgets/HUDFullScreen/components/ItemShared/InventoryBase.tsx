@@ -16,7 +16,8 @@ import eventNames, {
   EquippedItemDataTransfer,
   UpdateInventoryItemsPayload,
   UnequipItemPayload,
-} from '../../lib/eventNames';
+  CombineStackPayload,
+} from '../../lib/itemEvents';
 import { DrawerCurrentStats } from '../Inventory/components/Containers/Drawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
 import {
@@ -43,9 +44,12 @@ import {
   isContainerItem,
   isCraftingItem,
   isStackedItem,
-  itemHasPosition,
+  itemHasInventoryPosition,
+  itemHasContainerPosition,
   createMoveItemRequestToContainerPosition,
   shouldShowItem,
+  getItemWithNewInventoryPosition,
+  getItemWithNewUnitCount,
 } from '../../lib/utils';
 import {
   InventorySlotItemDef,
@@ -239,6 +243,7 @@ export function createRowElementsForContainerItems(payload: {
   containerID: string[],
   drawerID: string,
   onDropOnZone: (dragItemData: InventoryDataTransfer, dropZoneData: InventoryDataTransfer) => void,
+  onCombineStackDrawer: (payload: CombineStackPayload) => void,
   containerPermissions: ContainerPermissionDef | ContainerPermissionDef[],
   drawerMaxStats: ContainerDefStat_Single,
   drawerCurrentStats: DrawerCurrentStats,
@@ -247,7 +252,7 @@ export function createRowElementsForContainerItems(payload: {
 }) {
   // Difference between these elements and regular row elements is that these are not located in slotNumberToItem because
   // they have a position that is inContainer and not inventory.
-  const { state, props, containerID, drawerID, onDropOnZone, containerPermissions,
+  const { state, props, containerID, drawerID, onDropOnZone, onCombineStackDrawer, containerPermissions,
     drawerMaxStats, drawerCurrentStats, syncWithServer, bodyWidth, itemData } = payload;
   const rows: JSX.Element[] = [];
   const rowData: ContainerSlotItemDef[][] = [];
@@ -259,7 +264,7 @@ export function createRowElementsForContainerItems(payload: {
       const myContainerID = containerID[containerID.length - 1];
       const container = payload.containerIdToDrawerInfo[myContainerID];
       const slot = container ? container.drawers[drawerID][slotIndex] : 0;
-      const item = slot && slot.item;
+      let item = slot && slot.item;
       if (!item || !item.staticDefinition) {
         rowItems.push({
           slotType: SlotType.Empty,
@@ -272,7 +277,8 @@ export function createRowElementsForContainerItems(payload: {
         continue;
       }
 
-      const disabled = _.findIndex(payload.myTradeItems, tradeItem => tradeItem.id === item.id) !== -1;
+      const tradeItem = _.find(payload.myTradeItems, tradeItem => tradeItem.id === item.id);
+      const disabled = typeof tradeItem !== 'undefined';
       const inTrade = payload.myTradeState !== 'None';
       if (isContainerItem(item)) {
         rowItems.push({
@@ -294,6 +300,12 @@ export function createRowElementsForContainerItems(payload: {
       }
 
       if (isCraftingItem(item)) {
+        let count = item.stats.item.unitCount;
+        if (tradeItem) {
+          // Show some stacks are in the trade window
+          count = item.stats.item.unitCount - tradeItem.stats.item.unitCount;
+          item = getItemWithNewUnitCount(item, count);
+        }
         const stackId = getItemMapID(item);
         rowItems.push({
           slotType: SlotType.CraftingContainer,
@@ -305,7 +317,7 @@ export function createRowElementsForContainerItems(payload: {
             payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [item],
           slotIndex: { position: slotIndex, location: 'inContainer', containerID, drawerID },
           containerPermissions,
-          disabled,
+          disabled: count === 0,
           disableEquip: inTrade,
           disableContextMenu: inTrade,
           disableDrag: disabled,
@@ -317,6 +329,12 @@ export function createRowElementsForContainerItems(payload: {
       }
 
       if (isStackedItem(item)) {
+        let count = item.stats.item.unitCount;
+        if (tradeItem) {
+          // Show some stacks are in the trade window
+          count = item.stats.item.unitCount - tradeItem.stats.item.unitCount;
+          item = getItemWithNewUnitCount(item, count);
+        }
         const stackId = getItemMapID(item);
         rowItems.push({
           slotType: SlotType.Stack,
@@ -327,7 +345,7 @@ export function createRowElementsForContainerItems(payload: {
           stackedItems: payload.stackGroupIdToItemIDs[stackId] ?
             payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [item],
           containerPermissions,
-          disabled,
+          disabled: count === 0,
           disableEquip: inTrade,
           disableContextMenu: inTrade,
           disableDrag: disabled,
@@ -369,6 +387,7 @@ export function createRowElementsForContainerItems(payload: {
         bodyWidth={bodyWidth}
         drawerCurrentStats={drawerCurrentStats}
         drawerMaxStats={drawerMaxStats}
+        onCombineStackDrawer={onCombineStackDrawer}
       />
     ));
     rowData.push(rowItems);
@@ -410,14 +429,17 @@ export function createRowElements(payload: {
         continue;
       }
 
-      const disabled = _.findIndex(payload.myTradeItems, tradeItem => tradeItem.id === itemDef.item.id) !== -1;
+      let item = itemDef.item;
+      const tradeItem = _.find(payload.myTradeItems, tradeItem => tradeItem.id === item.id);
+
+      const disabled = typeof tradeItem !== 'undefined';
       const disableEquip = payload.myTradeState !== 'None';
       if (itemDef.isContainer) {
         rowItems.push({
           slotType: SlotType.Container,
           icon: itemIdToInfo[itemDef.id].icon,
           itemID: itemDef.id,
-          item: itemDef.item,
+          item,
           slotIndex: { position: slotIndex - 1, location: 'inventory' },
           disabled,
           disableEquip,
@@ -426,32 +448,44 @@ export function createRowElements(payload: {
       }
 
       if (itemDef.isCrafting) {
-        const stackId = getItemMapID(itemDef.item);
+        let count = item.stats.item.unitCount;
+        if (tradeItem) {
+          // Show some stacks are in the trade window
+          count = item.stats.item.unitCount - tradeItem.stats.item.unitCount;
+          item = getItemWithNewUnitCount(item, count);
+        }
+        const stackId = getItemMapID(item);
         rowItems.push({
           slotType: SlotType.CraftingContainer,
-          icon: getIcon(itemDef.item),
+          icon: getIcon(item),
           groupStackHashID: itemDef.id,
           stackedItems: payload.stackGroupIdToItemIDs[stackId] ?
-            payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [itemDef.item],
-          item: itemDef.item,
+            payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [item],
+          item,
           slotIndex: { position: slotIndex - 1, location: 'inventory' },
-          disabled,
+          disabled: count === 0,
           disableEquip,
         });
         continue;
       }
 
       if (itemDef.isStack) {
-        const stackId = getItemMapID(itemDef.item);
+        let count = item.stats.item.unitCount;
+        if (tradeItem) {
+          // Show some stacks are in the trade window
+          count = item.stats.item.unitCount - tradeItem.stats.item.unitCount;
+          item = getItemWithNewUnitCount(item, count);
+        }
+        const stackId = getItemMapID(item);
         rowItems.push({
           slotType: SlotType.Stack,
-          icon: getIcon(itemDef.item),
+          icon: getIcon(item),
           itemID: itemDef.id,
-          item: itemDef.item,
+          item,
           slotIndex: { position: slotIndex - 1, location: 'inventory' },
           stackedItems: payload.stackGroupIdToItemIDs[stackId] ?
-            payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [itemDef.item],
-          disabled,
+            payload.stackGroupIdToItemIDs[stackId].map(id => itemMap[id]) : [item],
+          disabled: count === 0,
           disableEquip,
         });
         continue;
@@ -461,7 +495,7 @@ export function createRowElements(payload: {
         slotType: SlotType.Standard,
         icon: itemIdToInfo[itemDef.id].icon,
         itemID: itemDef.id,
-        item: itemDef.item,
+        item,
         slotIndex: { position: slotIndex - 1, location: 'inventory' },
         disabled,
         disableEquip,
@@ -719,7 +753,7 @@ export function distributeItemsNoFilter(args: {
     } else {
       // Find first available slot for item and place it there
       const position = firstAvailableSlot(firstEmptyIndex, slotNumberToItem);
-      const stackId = getItemMapID(item, position);
+      const stackId = getItemMapID(item, { wantPos: position });
       moveRequests.push(createMoveItemRequestToInventoryPosition(item, position));
       slotNumberToItem[position] = {
         id: stackId,
@@ -995,7 +1029,7 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
 
     if (isStackedItem(item) || isCraftingItem(item)) {
       const id = getItemMapID(item);
-      if (itemHasPosition(item)) {
+      if (itemHasInventoryPosition(item)) {
         const wantPosition = getItemInventoryPosition(item);
 
         let stackGroupID = '';
@@ -1047,7 +1081,7 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
         return;
       }
     } else {
-      if (itemHasPosition(item)) {
+      if (itemHasInventoryPosition(item)) {
         positionedItems.push(item);
         return;
       }
@@ -1060,7 +1094,7 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
     // Check stack hash if its not empty, otherwise find the first itemMapID that includes this one
     const foundOtherStack = _.find(items, invItem => _.includes(getItemMapID(invItem), getItemMapID(item)));
 
-    if (foundOtherStack && itemHasPosition(foundOtherStack)) {
+    if (foundOtherStack && itemHasInventoryPosition(foundOtherStack)) {
       // Found other stack and that stack has a position. Just add this item onto that stack!
       const wantPosition = getItemInventoryPosition(foundOtherStack);
       const id = getItemMapID(foundOtherStack);
@@ -1091,7 +1125,7 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
       return;
     }
 
-    if (foundOtherStack && !itemHasPosition(foundOtherStack)) {
+    if (foundOtherStack && !itemHasInventoryPosition(foundOtherStack)) {
       // Found a stack but that stack doesn't have a position yet.
       const id = getItemMapID(item);
       let stackGroupId = '';
@@ -1273,7 +1307,7 @@ export function onUpdateInventoryItemsHandler(args: {
       };
       delete itemIdToInfo[payload.inventoryItem.item.id];
       if (payload.type === 'Equip') {
-        equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
+        makeEquipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
       }
     });
   } else if (payload.inventoryItem && !payload.inventoryItem.containerID) {
@@ -1321,7 +1355,7 @@ export function onUpdateInventoryItemsHandler(args: {
     }
 
     if (payload.type === 'Equip') {
-      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
+      makeEquipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
     }
 
   } else if (payload.equippedItem && !_.isArray(payload.equippedItem) && !itemIdToInfo[payload.equippedItem.item.id]) {
@@ -1350,7 +1384,7 @@ export function onUpdateInventoryItemsHandler(args: {
       icon: payload.equippedItem.item.staticDefinition.iconUrl,
     };
     if (payload.type === 'Unequip') {
-      unequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumber);
+      makeUnequipItemRequest(payload.equippedItem.item, payload.equippedItem.gearSlots, slotNumber);
     }
   }
 
@@ -1368,7 +1402,7 @@ export function onUpdateInventoryItemsHandler(args: {
     containerIdToDrawerInfo = { ...removeResults.containerIDToDrawerInfo };
 
     if (payload.type === 'Equip') {
-      equipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
+      makeEquipItemRequest(payload.inventoryItem.item, payload.willEquipTo);
     }
   }
 
@@ -1487,7 +1521,7 @@ function removeItemInContainer(item: InventoryItem.Fragment,
 }
 
 
-export async function equipItemRequest(item: InventoryItem.Fragment,
+export async function makeEquipItemRequest(item: InventoryItem.Fragment,
                             gearSlotDefs: Partial<GearSlotDefRef>[]) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
   const inventoryItemPosition = getItemInventoryPosition(item);
@@ -1526,7 +1560,7 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
   setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 }
 
-export async function unequipItemRequest(item: InventoryItem.Fragment,
+export async function makeUnequipItemRequest(item: InventoryItem.Fragment,
                                 gearSlotDefs: Partial<GearSlotDefRef>[],
                                 toSlot: number) {
   const gearSlotIDs = gearSlotDefs.map(gearSlot => gearSlot.id);
@@ -1565,7 +1599,7 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
   setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 }
 
-export async function dropItemRequest(item: InventoryItem.Fragment) {
+export async function makeDropItemRequest(item: InventoryItem.Fragment) {
   const request = JSON.stringify({
     moveItemID: item.id,
     stackHash: item.stackHash,
@@ -1837,32 +1871,48 @@ export function swapInventoryItems(args: {
   const dropZoneData = dropZone.item;
   const dragItemId = getItemMapID(dragItemData);
   const dropZoneId = getItemMapID(dropZoneData);
+  const stackGroupIdToItemIDs = { ...args.stackGroupIdToItemIDs };
   const invItems = [...args.inventoryItems];
   let moveItemRequests: any[] = [];
+
+  let newDragItemData = dragItemData;
+  let newDropZoneData = dropZoneData;
   if (isStackedItem(dragItemData) && args.stackGroupIdToItemIDs[dragItemId]) {
     // If dragged item is stacked item, add moveItem requests for each item in the stack.
-    const requests = createStackMoveItemRequests({
+    const stackMoveRequests = createStackMoveItemRequests({
       item: dragItemData,
       amount: dragItemData.stats.item.unitCount,
-      newPosition: dragItemData.location.inventory.position,
+      newPosition: dropZoneData.location.inventory.position,
       inventoryItems: args.inventoryItems,
       stackGroupIdToItemIDs: args.stackGroupIdToItemIDs,
     });
-    moveItemRequests = requests;
 
-    args.stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
+    moveItemRequests = stackMoveRequests;
+
+    newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
+
+    if (!isStackedItem(dropZoneData)) {
+      const dropZoneMoveRequest = createMoveItemRequestToInventoryPosition(
+        dropZoneData,
+        dragItemData.location.inventory.position,
+      );
+      moveItemRequests = [...moveItemRequests, dropZoneMoveRequest];
+      newDropZoneData = getItemWithNewInventoryPosition(dropZoneData, dragItemData.location.inventory.position);
+
+      const invIndex = _.findIndex(invItems, item => item.id === dropZoneData.id);
+      invItems[invIndex] = newDropZoneData;
+    }
+
+    // Update all the items in the stack position
+    stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
       const i = _.findIndex(invItems, item => item.id === itemId);
-      invItems[i] = {
-        ...invItems[i],
-        location: {
-          ...invItems[i].location,
-          inventory: {
-            ...invItems[i].location.inventory,
-            position: dropZoneData.location.inventory.position,
-          },
-        },
-      };
+      invItems[i] = getItemWithNewInventoryPosition(invItems[i], dropZoneData.location.inventory.position);
     });
+
+    // Update stackgroupIdToItemIDs with new stackID which includes new position
+    const newStackId = getItemMapID(newDragItemData);
+    stackGroupIdToItemIDs[newStackId] = stackGroupIdToItemIDs[dragItemId];
+    delete stackGroupIdToItemIDs[dragItemId];
   }
 
   if (isStackedItem(dropZoneData) && args.stackGroupIdToItemIDs[dropZoneId]) {
@@ -1876,82 +1926,101 @@ export function swapInventoryItems(args: {
     });
     moveItemRequests = [...moveItemRequests, ...requests];
 
+    if (!isStackedItem(newDragItemData)) {
+      const dragItemMoveRequest = createMoveItemRequestToInventoryPosition(
+        dragItemData,
+        dropZoneData.location.inventory.position,
+      );
+      moveItemRequests = [...moveItemRequests, dragItemMoveRequest];
+      newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
+
+      const invIndex = _.findIndex(invItems, item => item.id === dragItemData.id);
+      invItems[invIndex] = newDragItemData;
+    }
+    newDropZoneData = getItemWithNewInventoryPosition(dropZoneData, dragItemData.location.inventory.position);
+
+    // Update all the items in the stack position
     args.stackGroupIdToItemIDs[dropZoneId].forEach((itemId) => {
       const i = _.findIndex(invItems, item => item.id === itemId);
-      invItems[i] = {
-        ...invItems[i],
-        location: {
-          ...invItems[i].location,
-          inventory: {
-            ...invItems[i].location.inventory,
-            position: dragItemData.location.inventory.position,
-          },
-        },
-      };
+      invItems[i] = getItemWithNewInventoryPosition(invItems[i], dragItemData.location.inventory.position);
     });
+
+    // Update stackgroupIdToItemIDs with new stackID which includes new position
+    const newStackId = getItemMapID(newDropZoneData);
+    stackGroupIdToItemIDs[newStackId] = stackGroupIdToItemIDs[dropZoneId];
+    delete stackGroupIdToItemIDs[dropZoneId];
   }
 
   if (!isStackedItem(dragItemData) && !isStackedItem(dropZoneData)) {
     // Both drag item and drop zone item are not stacked items. Just make two moveItem requests.
     if (dragItemData.location.inventory) {
+      // Moving from inside the inventory
       moveItemRequests = [
         createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
         createMoveItemRequestToInventoryPosition(dropZoneData, dragItemData.location.inventory.position),
       ];
+      const dragItemInvIndex = _.findIndex(invItems, item => item.id === dragItemData.id);
+      newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
+      invItems[dragItemInvIndex] = newDragItemData;
+
+      const dropZoneInvIndex = _.findIndex(invItems, item => item.id === dropZoneData.id);
+      newDropZoneData = getItemWithNewInventoryPosition(dropZoneData, dragItemData.location.inventory.position);
+      invItems[dropZoneInvIndex] = newDropZoneData;
     } else {
+      // Moving from outside of the inventory
       moveItemRequests = [
         createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
       ];
+      newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
     }
   }
 
   // Make move item requests to save the swapped positions to database
-  webAPI.ItemAPI.BatchMoveItems(
-    webAPI.defaultConfig,
-    game.shardID,
-    game.selfPlayerState.characterID,
-    moveItemRequests,
-  );
+  if (!_.isEmpty(moveItemRequests)) {
+    webAPI.ItemAPI.BatchMoveItems(
+      webAPI.defaultConfig,
+      client.shardID,
+      client.characterID,
+      moveItemRequests,
+    );
+  } else {
+    toastr.error('There was an error', 'Oh No!!', { timeout: 5000 });
+    return;
+  }
 
   // Now represent the swap in the UI...
   // Swap positions of items only in the INVENTORY
   if (dragItemData.location.inventory) {
-    const oldDragItemPosition = dragItemData.location.inventory.position;
-    const oldDropZonePosition = dropZoneData.location.inventory.position;
-    dragItemData.location.inventory.position = oldDropZonePosition;
-    dropZoneData.location.inventory.position = oldDragItemPosition;
-
     // Represent the swap in the UI by updating slotNumberToItem
     return {
       inventoryItems: invItems,
+      stackGroupIdToItemIDs,
       slotNumberToItem: {
         ...args.slotNumberToItem,
-        [dragItemData.location.inventory.position]: {
+        [newDragItemData.location.inventory.position]: {
           id: dragItemId,
-          isStack: isStackedItem(dragItemData),
-          isCrafting: isCraftingItem(dragItemData),
-          isContainer: isContainerItem(dragItemData),
-
-          item: dragItemData,
+          isStack: isStackedItem(newDragItemData),
+          isCrafting: isCraftingItem(newDragItemData),
+          isContainer: isContainerItem(newDragItemData),
+          item: newDragItemData,
         },
-        [dropZoneData.location.inventory.position]: {
+        [newDropZoneData.location.inventory.position]: {
           id: dropZoneId,
-          isStack: isStackedItem(dropZoneData),
-          isCrafting: isCraftingItem(dropZoneData),
-          isContainer: isContainerItem(dropZoneData),
-
-          item: dropZoneData,
+          isStack: isStackedItem(newDropZoneData),
+          isCrafting: isCraftingItem(newDropZoneData),
+          isContainer: isContainerItem(newDropZoneData),
+          item: newDropZoneData,
         },
       },
       itemIdToInfo: {
         ...args.itemIdToInfo,
         [dragItemId]: {
-          slot: dragItemData.location.inventory.position,
-          icon: dragItemData.staticDefinition.iconUrl,
+          slot: newDragItemData.location.inventory.position,
+          icon: newDragItemData.staticDefinition.iconUrl,
         },
         [dropZoneId]: {
-          slot: dropZoneData.location.inventory.position,
-          icon: dropZoneData.staticDefinition.iconUrl,
+          slot: newDropZoneData.location.inventory.position,
+          icon: newDropZoneData.staticDefinition.iconUrl,
         },
       },
     };
@@ -1961,17 +2030,20 @@ export function swapInventoryItems(args: {
 export async function onMoveStackServer(args: {
   slotNumberToItem: SlotNumberToItem,
   itemIdToInfo: ItemIDToInfo,
-  item: InventoryItem.Fragment,
+  itemDataTransfer: InventoryDataTransfer,
   amount: number,
   newPosition: number,
   stackGroupIdToItemIDs: {[id: string]: string[]},
   inventoryItems: InventoryItem.Fragment[],
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo,
 }) {
-  const { item, newPosition, amount } = args;
+  const { itemDataTransfer, newPosition, amount } = args;
   const slotNumberToItem = {...args.slotNumberToItem};
   const itemIdToInfo = {...args.itemIdToInfo};
   const stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};
   let inventoryItems = [...args.inventoryItems];
+  const item = itemDataTransfer.item;
+
   // Make request to api server
   const moveReq = createMoveItemRequestToInventoryPosition(item, newPosition, amount);
   const res = await webAPI.ItemAPI.MoveItems(
@@ -1994,127 +2066,77 @@ export async function onMoveStackServer(args: {
   if (moveItemResult && moveItemResult.FieldCodes && moveItemResult.FieldCodes[0] && moveItemResult.FieldCodes[0].Result) {
     const data: webAPI.MoveItemResult = moveItemResult.FieldCodes[0].Result;
 
-    const originalItem: InventoryItem.Fragment = {
-      ...item,
-      stats: {
-        ...item.stats,
-        item: {
-          ...item.stats.item,
-          unitCount: item.stats.item.unitCount - amount,
-        },
-      },
-    }
-
-    // We need to update the id of the new item
+    // We need to update the id, unitCount, and position of the new item
     const movingItem: InventoryItem.Fragment = {
-      ...item,
+      ...itemDataTransfer.item,
       id: data.MovedItemIDs[0],
-      stats: {
-        ...item.stats,
-        item: {
-          ...item.stats.item,
-          unitCount: amount,
-        },
-      },
-      location: {
-        ...item.location,
-        inventory: {
-          position: newPosition,
-        },
-      },
     };
 
-    // Update old position item with updated unitCount
-    slotNumberToItem[originalItem.location.inventory.position] = {
-      ...slotNumberToItem[originalItem.location.inventory.position],
-      item: originalItem,
-    };
-
-    const oldStackId = getItemMapID(originalItem);
-    stackGroupIdToItemIDs[oldStackId] = [originalItem.id];
-
-    // Update new item with updated unitCount
-    const newStackId = getItemMapID(movingItem);
-    slotNumberToItem[newPosition] = {
-      id: newStackId,
-      isStack: isStackedItem(movingItem),
-      isCrafting: isCraftingItem(movingItem),
-      isContainer: isContainerItem(movingItem),
-      item: movingItem,
-    };
-
-    itemIdToInfo[newStackId] = {
-      icon: getIcon(movingItem),
-      slot: newPosition,
-    };
-  
-    stackGroupIdToItemIDs[newStackId] = [movingItem.id];
-
-    inventoryItems = [
-      ..._.filter(inventoryItems, invItem => invItem.id !== item.id),
-      originalItem,
-      movingItem,
-    ];
+    const {
+      inventoryItems,
+      stackGroupIdToItemIDs,
+      slotNumberToItem,
+      itemIdToInfo,
+      containerIdToDrawerInfo,
+    } = onMoveStackClient({
+      ...args,
+      newItemDataTransfer: {
+        ...itemDataTransfer,
+        item: movingItem,
+      }
+    });
 
     return {
       inventoryItems,
       stackGroupIdToItemIDs,
       slotNumberToItem,
       itemIdToInfo,
+      containerIdToDrawerInfo,
     };
   }
-
-  return {};
 };
 
 export function onMoveStackClient(args: {
                               slotNumberToItem: SlotNumberToItem,
                               itemIdToInfo: ItemIDToInfo,
-                              item: InventoryItem.Fragment,
+                              itemDataTransfer: InventoryDataTransfer,
                               amount: number,
                               newPosition: number,
                               stackGroupIdToItemIDs: {[id: string]: string[]},
                               inventoryItems: InventoryItem.Fragment[],
+                              containerIdToDrawerInfo: ContainerIdToDrawerInfo,
+                              newItemDataTransfer?: InventoryDataTransfer,
                             }) {
-  const { item, amount, newPosition } = args;
+  const { itemDataTransfer, newItemDataTransfer, amount, newPosition } = args;
   const slotNumberToItem = {...args.slotNumberToItem};
   const itemIdToInfo = {...args.itemIdToInfo};
   const stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};
+  const containerIdToDrawerInfo = {...args.containerIdToDrawerInfo};
   let inventoryItems = [...args.inventoryItems];
+  const item = itemDataTransfer.item;
 
-  const originalItem: InventoryItem.Fragment = {
-    ...item,
-    stats: {
-      ...item.stats,
-      item: {
-        ...item.stats.item,
-        unitCount: item.stats.item.unitCount - amount,
-      },
-    },
+  const originalItem: InventoryItem.Fragment = getItemWithNewUnitCount(item, item.stats.item.unitCount - amount);
+
+  // Represent the move in the UI - Update both the unit count and the inventory position
+  const movingItemNewUnitCount = getItemWithNewUnitCount(newItemDataTransfer ? newItemDataTransfer.item : item, amount);
+  const movingItem: InventoryItem.Fragment = getItemWithNewInventoryPosition(movingItemNewUnitCount, newPosition);
+
+  if (itemHasContainerPosition(originalItem)) {
+    const dragContainerID = itemDataTransfer.containerID &&
+      itemDataTransfer.containerID[itemDataTransfer.containerID.length - 1];
+    if (dragContainerID) {
+      // Update item in container
+      containerIdToDrawerInfo[dragContainerID].drawers[itemDataTransfer.drawerID][itemDataTransfer.position] = {
+        ...containerIdToDrawerInfo[dragContainerID].drawers[itemDataTransfer.drawerID][itemDataTransfer.position],
+        item: originalItem,
+      };
+    }
+  } else if (itemHasInventoryPosition(originalItem)) {
+    slotNumberToItem[originalItem.location.inventory.position] = {
+      ...slotNumberToItem[originalItem.location.inventory.position],
+      item: originalItem,
+    };
   }
-
-  // Represent the move in the UI
-  const movingItem: InventoryItem.Fragment = {
-    ...item,
-    stats: {
-      ...item.stats,
-      item: {
-        ...item.stats.item,
-        unitCount: amount,
-      },
-    },
-    location: {
-      ...item.location,
-      inventory: {
-        position: newPosition,
-      },
-    },
-  };
-
-  slotNumberToItem[originalItem.location.inventory.position] = {
-    ...slotNumberToItem[originalItem.location.inventory.position],
-    item: originalItem,
-  };
 
   const newStackId = getItemMapID(movingItem);
 
@@ -2133,30 +2155,42 @@ export function onMoveStackClient(args: {
 
   stackGroupIdToItemIDs[newStackId] = [movingItem.id];
 
-  inventoryItems = [
-    ..._.filter(inventoryItems, invItem => invItem.id !== item.id),
-    originalItem,
-    movingItem,
-  ];
+  if (itemHasInventoryPosition(originalItem)) {
+    inventoryItems = [
+      ..._.filter(inventoryItems, invItem => invItem.id !== item.id),
+      originalItem,
+      movingItem,
+    ];
+  } else if (itemHasContainerPosition(originalItem)) {
+    inventoryItems = [
+      ..._.filter(inventoryItems, invItem => invItem.id !== item.id),
+      movingItem,
+    ];
+  }
 
   return {
     inventoryItems,
     stackGroupIdToItemIDs,
     slotNumberToItem,
     itemIdToInfo,
+    containerIdToDrawerInfo,
   };
 }
 
 export async function onCombineStackServer(args: {
-                                      item: InventoryItem.Fragment,
+                                      itemDataTransfer: InventoryDataTransfer,
                                       stackItem: InventoryItem.Fragment,
                                       amount: number,
                                       slotNumberToItem: SlotNumberToItem,
                                       inventoryItems: InventoryItem.Fragment[],
+                                      stackGroupIdToItemIDs: {[id: string]: string[]},
+                                      containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                     }) {
-  const { item, stackItem, amount } = args;
-  const slotNumberToItem = {...args.slotNumberToItem};
+  const { itemDataTransfer, stackItem, amount } = args;
+  const slotNumberToItem = { ...args.slotNumberToItem };
+  const stackGroupIdToItemIDs = { ...args.stackGroupIdToItemIDs };
   let inventoryItems = [...args.inventoryItems];
+  const item = itemDataTransfer.item;
 
   const moveReq = createMoveItemRequestToInventoryPosition(item, stackItem.location.inventory.position, amount);
   const res = await webAPI.ItemAPI.MoveItems(
@@ -2179,19 +2213,23 @@ export async function onCombineStackServer(args: {
 
     // Represent the combine in the UI
     const combinedItem: InventoryItem.Fragment = {
-      ...stackItem,
+      ...getItemWithNewUnitCount(stackItem, stackItem.stats.item.unitCount + amount),
       id: data.MovedItemIDs[0],
-      stats: {
-        ...stackItem.stats,
-        item: {
-          ...stackItem.stats.item,
-          unitCount: stackItem.stats.item.unitCount + amount,
-        },
-      },
     };
 
-    // Delete old position of item
-    delete slotNumberToItem[item.location.inventory.position];
+    let updatedItem = null;
+    if (amount === item.stats.item.unitCount) {
+      // User is trying to combine whole stack, delete old position of item
+      delete slotNumberToItem[item.location.inventory.position];
+      delete stackGroupIdToItemIDs[getItemMapID(item)];
+    } else if (amount < item.stats.item.unitCount) {
+      // User is trying to combine part of stack, update old position of item
+      updatedItem = getItemWithNewUnitCount(item, item.stats.item.unitCount - amount);
+      slotNumberToItem[item.location.inventory.position] = {
+        ...slotNumberToItem[item.location.inventory.position],
+        item: updatedItem,
+      };
+    }
 
     // Update combined stack position wiht new item
     slotNumberToItem[combinedItem.location.inventory.position] = {
@@ -2199,43 +2237,85 @@ export async function onCombineStackServer(args: {
       item: combinedItem,
     };
 
-    inventoryItems = [
-      ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
-      combinedItem,
-    ];
+    // Delete old stack id, and add new stack id to stackGroupIdToItemIDs
+    const oldStackId = getItemMapID(stackItem);
+    delete stackGroupIdToItemIDs[oldStackId];
+
+    const newStackId = getItemMapID(updatedItem);
+    stackGroupIdToItemIDs[newStackId] = [updatedItem.id];
+
+    if (updatedItem) {
+      inventoryItems = [
+        ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
+        combinedItem,
+        updatedItem,
+      ];
+    } else {
+      inventoryItems = [
+        ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
+        combinedItem,
+      ];
+    }
 
     return {
       slotNumberToItem,
       inventoryItems,
+      stackGroupIdToItemIDs,
     };
   }
 }
 
 export function onCombineStackClient(args: {
-                                      item: InventoryItem.Fragment,
+                                      itemDataTransfer: InventoryDataTransfer,
                                       stackItem: InventoryItem.Fragment,
                                       amount: number,
                                       slotNumberToItem: SlotNumberToItem,
                                       inventoryItems: InventoryItem.Fragment[],
+                                      stackGroupIdToItemIDs: {[id: string]: string[]},
+                                      containerIdToDrawerInfo: ContainerIdToDrawerInfo,
                                     }) {
-  const { item, stackItem, amount } = args;
-  const slotNumberToItem = {...args.slotNumberToItem};
+  const { itemDataTransfer, stackItem, amount } = args;
+  const slotNumberToItem = { ...args.slotNumberToItem };
+  const stackGroupIdToItemIDs = { ...args.stackGroupIdToItemIDs };
+  const containerIdToDrawerInfo = { ...args.containerIdToDrawerInfo };
   let inventoryItems = [...args.inventoryItems];
+  const item = itemDataTransfer.item;
 
   // Represent the combine in the UI
-  const combinedItem: InventoryItem.Fragment = {
-    ...stackItem,
-    stats: {
-      ...stackItem.stats,
-      item: {
-        ...stackItem.stats.item,
-        unitCount: stackItem.stats.item.unitCount + amount,
-      },
-    },
-  };
+  const combinedItem: InventoryItem.Fragment = getItemWithNewUnitCount(stackItem, stackItem.stats.item.unitCount + amount);
 
-  // Delete old position of item
-  delete slotNumberToItem[item.location.inventory.position];
+  let updatedItem = null;
+  if (amount === item.stats.item.unitCount) {
+    // User is trying to combine whole stack, delete old position of item
+
+    if (itemHasInventoryPosition(item)) {
+      // Item was in regular inventory, delete it
+      delete slotNumberToItem[item.location.inventory.position];
+      delete stackGroupIdToItemIDs[getItemMapID(item)];
+    } else if (itemHasContainerPosition(item)) {
+      // Item was in container, delete it
+      const dragContainerID = itemDataTransfer.containerID[itemDataTransfer.containerID.length - 1];
+      delete containerIdToDrawerInfo[dragContainerID].drawers[itemDataTransfer.drawerID][itemDataTransfer.position];
+    }
+  } else if (amount < item.stats.item.unitCount) {
+    // User is trying to combine part of stack, update old position of item
+    updatedItem = getItemWithNewUnitCount(item, item.stats.item.unitCount - amount);
+
+    if (itemHasInventoryPosition(updatedItem)) {
+      // Drag item was from regular inventory
+      slotNumberToItem[item.location.inventory.position] = {
+        ...slotNumberToItem[item.location.inventory.position],
+        item: updatedItem,
+      };
+    } else if (itemHasContainerPosition(updatedItem)) {
+      // Drag item was from a container, so update the container data structure
+      const dragContainerID = itemDataTransfer.containerID[itemDataTransfer.containerID.length - 1];
+      containerIdToDrawerInfo[dragContainerID].drawers[itemDataTransfer.drawerID][itemDataTransfer.position] = {
+        ...containerIdToDrawerInfo[dragContainerID].drawers[itemDataTransfer.drawerID][itemDataTransfer.position],
+        item: updatedItem,
+      };
+    }
+  }
 
   // Update combined stack position wiht new item
   slotNumberToItem[combinedItem.location.inventory.position] = {
@@ -2243,14 +2323,23 @@ export function onCombineStackClient(args: {
     item: combinedItem,
   };
 
-  inventoryItems = [
-    ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
-    combinedItem,
-  ];
+  if (updatedItem && itemHasInventoryPosition(updatedItem)) {
+    inventoryItems = [
+      ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
+      combinedItem,
+      updatedItem,
+    ];
+  } else {
+    inventoryItems = [
+      ..._.filter(inventoryItems, invItem => invItem.id !== stackItem.id),
+      combinedItem,
+    ];
+  }
 
   return {
     slotNumberToItem,
     inventoryItems,
+    stackGroupIdToItemIDs,
   };
 }
 
@@ -2262,7 +2351,7 @@ function createStackMoveItemRequests(args: {
                                       inventoryItems: InventoryItem.Fragment[];
                                     }) {
   const { item, amount, newPosition } = args;
-  if (item.stackHash !== emptyStackHash) {
+  if (isStackedItem(item)) {
     const itemId = getItemMapID(item);
     const moveItemRequests: any = [];
     _.values(args.stackGroupIdToItemIDs[itemId]).forEach((id, i) => {

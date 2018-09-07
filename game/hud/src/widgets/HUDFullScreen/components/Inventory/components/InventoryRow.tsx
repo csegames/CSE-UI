@@ -13,7 +13,7 @@ import { DrawerCurrentStats } from './Containers/Drawer';
 import CraftingContainer from './Containers/CraftingContainer';
 import ItemContainer from './Containers/ItemContainer';
 import { hasViewContentPermissions } from '../../../lib/utils';
-import { InventoryDataTransfer } from '../../../lib/eventNames';
+import { InventoryDataTransfer, CombineStackPayload } from '../../../lib/itemEvents';
 import { InventorySlotItemDef, SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
 import {
   InventoryItem,
@@ -56,6 +56,7 @@ export interface InventoryRowProps {
   drawerCurrentStats?: DrawerCurrentStats;
   filtering?: boolean;
   onRightClickItem?: (item: InventoryItem.Fragment) => void;
+  onCombineStackDrawer?: (payload: CombineStackPayload) => void;
 
   // Display gray slots png instead of gold
   showGraySlots?: boolean;
@@ -98,6 +99,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                 drawerCurrentStats={this.props.drawerCurrentStats}
                 syncWithServer={this.props.syncWithServer}
                 onRightClick={this.props.onRightClickItem}
+                onCombineStackDrawer={this.props.onCombineStackDrawer}
               />
             );
           })}
