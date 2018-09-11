@@ -11,6 +11,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "buildall": "npm run build-all",
+    "build-all": "npm run build-all-library && npm run build-all-hud",
+    "build-all-hud": "cd game/hud && yarn && yarn link @csegames/camelot-unchained && yarn start build",
+    "build-all-library": "cd library && yarn && yarn start build && yarn link",
     "lint": "cd game/hud && npm start lint && cd ../../library && npm start lint && cd ../patcher && npm start lint"
   },
   "repository": {
