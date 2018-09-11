@@ -18,7 +18,7 @@ export interface ConfirmDialogProps {
 }
 
 class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogState> {
-  constructor(props : ConfirmDialogProps) {
+  constructor(props: ConfirmDialogProps) {
     super(props);
   }
 

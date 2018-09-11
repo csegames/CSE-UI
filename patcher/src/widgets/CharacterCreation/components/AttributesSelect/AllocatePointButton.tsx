@@ -24,7 +24,7 @@ export class AllocatePointButton extends React.Component<AllocatePointButtonProp
   }
 
   public render() {
-    const { direction } = this.props;    
+    const { direction } = this.props;
     return (
       <button
         className={`${direction === 'right' ? ' rightarrow right' : ' leftarrow right'}`}

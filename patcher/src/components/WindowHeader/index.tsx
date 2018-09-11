@@ -35,7 +35,7 @@ class WindowHeader extends React.Component<WindowHeaderProps, WindowHeaderState>
     const muteSoundsTooltip = this.props.soundsState.playSound ? 'mute sound effects' : 'un-mute sound effects';
     const muteMusicTooltip = this.props.soundsState.playMusic ? 'mute music' : 'un-mute music';
     let settings: any = null;
-    if (this.state.settingsOpen) settings = <h1 style={{color:'#fff'}} onClick={this.closeSettings}>Settings!</h1>;
+    if (this.state.settingsOpen) settings = <h1 style={{ color: '#fff' }} onClick={this.closeSettings}>Settings!</h1>;
     return (
       <div className='WindowHeader'>
         <a href='#' onClick={this.muteSounds} className='hint--left hint--slide' data-hint={muteSoundsTooltip}>

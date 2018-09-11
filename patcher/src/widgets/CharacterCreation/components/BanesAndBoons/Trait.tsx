@@ -232,7 +232,7 @@ class Trait extends React.Component<TraitProps, {}> {
             {preReqs &&
               <DependenciesContainer>
                 Dependencies: {preReqs.map((preReq: string, i: number) =>
-                  <DependencyText key={i} style={{ color: addedTraits[preReq] ? colors.success : 'red'}}>
+                  <DependencyText key={i} style={{ color: addedTraits[preReq] ? colors.success : 'red' }}>
                     {traits[preReq].name}{preReq !== preReqs[preReqs.length - 1] && ', '}
                   </DependencyText>)}
               </DependenciesContainer>
@@ -243,7 +243,7 @@ class Trait extends React.Component<TraitProps, {}> {
                   Exclusive group: {exclusivityGroup.map((exclusive: string, i: number) =>
                   <DependencyText
                     key={i}
-                    style={{ color: addedTraits[exclusive] ? colors.success : 'red'}}>
+                    style={{ color: addedTraits[exclusive] ? colors.success : 'red' }}>
                       {traits[exclusive].name}{exclusive !== exclusivityGroup[exclusivityGroup.length - 1] && ', '}
                   </DependencyText>,
                 )}
@@ -321,7 +321,7 @@ class Trait extends React.Component<TraitProps, {}> {
       onSelectRankTrait,
       onCancelRankTrait,
     } = this.props;
-    
+
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
     if (e.shiftKey) {

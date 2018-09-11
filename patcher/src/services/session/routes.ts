@@ -42,7 +42,7 @@ export default function reducer(state: RoutesState = getInitialState(), action: 
   switch (action.type) {
     default: return state;
     case CHANGE_ROUTE: {
-      return merge(state, {current: action.current});
+      return merge(state, { current: action.current });
     }
   }
 }

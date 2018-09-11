@@ -77,16 +77,16 @@ class LoginPrivacyModal extends React.Component<LoginPrivacyModalProps> {
                   https://api.citystateentertainment.com/Account.
                 </LoginLink>
               </Section>
-              
+
               <Section>
                 Please, go to the account webpage and accept the changes before attempting to log in again.
               </Section>
-              
+
               <Section>
                 If you would like to edit your privacy settings, go to the account page.
                 Under the Privacy Policy section, there is a 'Privacy Settings' link. Click on it and follow the directions.
               </Section>
-              
+
               <Section>
                 You can also edit your privacy settings by clicking 'Edit Account Details'. Then click 'Privacy Settings'.
               </Section>

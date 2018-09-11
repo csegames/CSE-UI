@@ -26,7 +26,7 @@ module.exports = function (e, argv = {}) {
   const IS_DEVELOPMENT = NODE_ENV === 'development';
   const IS_PRODUCTION = NODE_ENV === 'production';
   const IS_CI = process.env.CI;
-  const ENABLE_SENTRY = process.env.CUUI_HUD_ENABLE_SENTRY === '1';
+  const ENABLE_SENTRY = ['1', 'true', 'yes', 'y'].indexOf(process.env.CUUI_HUD_ENABLE_SENTRY) >= 0;
   const GIT_REVISION = getGitRevision();
 
   const EXPOSE_ENV = {
@@ -48,7 +48,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      hud: ['./src/index.tsx'],
+      hud: ['@babel/polyfill', './src/sentry.tsx', './src/index.tsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -103,6 +103,23 @@ module.exports = function (e, argv = {}) {
                 limit: 10000,
                 name: 'static/media/[name].[ext]',
               },
+            },
+            {
+              test: /\.js?$/,
+              exclude: function(modulePath) {
+                return /node_modules/.test(modulePath);
+                // return /node_modules/.test(modulePath) &&
+                //   !/node_modules\/\@sentry\/browser/.test(modulePath)
+                // ;
+              },
+              use: [
+                {
+                  loader: require.resolve('babel-loader'),
+                  options: {
+                    cacheDirectory: true
+                  },
+                },
+              ]
             },
             {
               test: /\.mjs?$/,
@@ -288,6 +305,7 @@ module.exports = function (e, argv = {}) {
       //     statsFilename: 'asset-stats.json',
       //   }),
       // ] : []),
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|de|fr|es/),
     ],
     node: {
       dgram: 'empty',

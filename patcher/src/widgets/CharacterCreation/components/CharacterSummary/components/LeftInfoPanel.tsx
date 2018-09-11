@@ -71,7 +71,7 @@ export class LeftInfoPanel extends React.Component<LeftInfoPanelProps, LeftInfoP
         attributeInfo: a,
         value: this.calculateDerivedValue(a, offset),
       }));
-    
+
     return (
       <Container id='summary-panel'>
         <AttributeView title='Primary' statArray={primaries} howManyGrids={2} />

@@ -34,6 +34,7 @@
     "postinstall": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
     "@csegames/camelot-unchained": "^0.1.64",
     "aphrodite": "^1.1.0",
@@ -53,6 +54,7 @@
     "node-xmpp-client": "^2.1.0",
     "object-assign-shim": "^1.0.0",
     "ol": "^4.6.4",
+    "raven-js": "^3.27.0",
     "react": "^16.4.1",
     "react-apollo": "^1.4.16",
     "react-dom": "^16.4.1",

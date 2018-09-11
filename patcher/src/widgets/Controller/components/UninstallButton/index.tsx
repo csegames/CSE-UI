@@ -18,7 +18,7 @@ export interface UninstallButtonProps {
 }
 
 class UninstallButton extends React.Component<UninstallButtonProps, UninstallButtonState> {
-  constructor(props : UninstallButtonProps) {
+  constructor(props: UninstallButtonProps) {
     super(props);
     this.state = { showConfirmDialog: false };
   }

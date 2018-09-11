@@ -138,7 +138,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
   public render() {
     const nextDisabled = this.props.currentPage === this.props.pages.length - 1;
     const backDisabled = this.props.currentPage === 0;
-    
+
     return (
       <Container>
         <div className={Section} />
@@ -162,7 +162,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                   <Tooltip
                     styles={{
                       tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                       },
                     }}
                   content={pageName}>

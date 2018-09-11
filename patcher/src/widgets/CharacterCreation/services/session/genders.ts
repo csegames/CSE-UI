@@ -30,5 +30,5 @@ export default function reducer(state: Gender = initialState, action: any = {}) 
     case SELECT_GENDER:
       return action.selected;
     default: return state;
-}
+  }
 }

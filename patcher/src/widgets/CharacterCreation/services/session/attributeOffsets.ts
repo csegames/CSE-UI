@@ -79,7 +79,7 @@ export interface AttributeOffsetsState {
 
 const initialState: AttributeOffsetsState = {
   isFetching: false,
-  lastUpdated: <Date>null,
+  lastUpdated: <Date> null,
   offsets: [],
   error: null,
 };

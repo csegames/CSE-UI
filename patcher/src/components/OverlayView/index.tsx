@@ -95,7 +95,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
       } else {
         events.fire('pause-videos');
       }
-      
+
       this.setState({
         previousView: this.state.currentView,
         previousProps: this.state.currentProps,

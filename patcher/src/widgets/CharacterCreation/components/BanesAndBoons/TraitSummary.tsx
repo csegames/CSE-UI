@@ -130,7 +130,7 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
       </AddedSummaryContainer>
     );
   }
-  
+
   private onCancelClick = () => {
     const { trait, onCancelClick, onCancelRankTrait } = this.props;
     events.fire('play-sound', 'select');

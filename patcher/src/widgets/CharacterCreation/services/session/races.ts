@@ -86,7 +86,7 @@ export interface RacesState {
 
 const initialState: RacesState  = {
   isFetching: false,
-  lastUpdated: <Date>null,
+  lastUpdated: <Date> null,
   races: [],
   selected: null,
   error: null,

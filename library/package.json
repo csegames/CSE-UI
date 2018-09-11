@@ -69,6 +69,7 @@
     "moment": "^2.17.1",
     "node-xmpp-client": "2.1.0",
     "randomstring": "^1.1.5",
+    "raven-js": "^3.27.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-emotion": "^9.2.3",

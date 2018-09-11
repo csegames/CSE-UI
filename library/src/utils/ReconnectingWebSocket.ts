@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { withDefaults } from '../utils/withDefaults';
+import { getBooleanEnv } from './env';
+import * as Raven from 'raven-js';
 
 export interface WebSocketOptions {
   // WebSocket url, default '/graphql'
@@ -29,7 +31,7 @@ export const defaultWebSocketOptions: WebSocketOptions = {
   protocols: '',
   reconnectInterval: 5000,
   connectTimeout: 2000,
-  debug: false,
+  debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
 };
 
 export class ReconnectingWebSocket {
@@ -142,6 +144,7 @@ export class ReconnectingWebSocket {
   }
 
   private error = (e: any) => {
+    Raven.captureException(e);
     if (this.debug) {
       this.log(`error => ${JSON.stringify(e)}`);
     }

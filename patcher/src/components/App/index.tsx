@@ -108,8 +108,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
       }
       case Routes.NEWS: {
         events.fire('view-content', view.NEWS, {
-          news:this.props.newsState,
-          fetchPage:this.fetchNewsPage,
+          news: this.props.newsState,
+          fetchPage: this.fetchNewsPage,
         });
         events.fire('pause-videos');
         break;

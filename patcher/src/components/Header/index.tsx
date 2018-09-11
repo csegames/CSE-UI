@@ -54,7 +54,7 @@ class Header extends React.Component<HeaderProps, {}> {
     window.open(url, '_blank');
     events.fire('play-sound', 'select');
   }
-  
+
   private internalLink = (route: Routes) => {
     this.props.changeRoute(route);
   }

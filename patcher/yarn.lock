@@ -67,6 +67,23 @@
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.6.3.tgz#65682e68a82701c70eefb38d7f941a2c0bfa90de"
 
+"@fimbul/bifrost@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@fimbul/bifrost/-/bifrost-0.11.0.tgz#83cacc21464198b12e3cc1c2204ae6c6d7afd158"
+  dependencies:
+    "@fimbul/ymir" "^0.11.0"
+    get-caller-file "^1.0.2"
+    tslib "^1.8.1"
+    tsutils "^2.24.0"
+
+"@fimbul/ymir@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@fimbul/ymir/-/ymir-0.11.0.tgz#892a01997f1f80c7e4e437cf5ca51c95994c136f"
+  dependencies:
+    inversify "^4.10.0"
+    reflect-metadata "^0.1.12"
+    tslib "^1.8.1"
+
 "@types/aphrodite@^0.5.5":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@types/aphrodite/-/aphrodite-0.5.6.tgz#996c7f679bd47b13ea76be9459b0620340d6e753"
@@ -217,27 +234,23 @@ ansi-align@^1.1.0:
   dependencies:
     string-width "^1.0.1"
 
-ansi-align@^2.0.0:
-  version "2.0.0"
-  resolved "http://registry.camelotunchained.com/ansi-align/-/ansi-align-2.0.0.tgz#c36aeccba563b89ceb556f3690f0b1d9e3547f7f"
-  dependencies:
-    string-width "^2.0.0"
-
 ansi-escapes@^1.0.0:
   version "1.4.0"
   resolved "http://registry.camelotunchained.com/ansi-escapes/-/ansi-escapes-1.4.0.tgz#d3a8a83b319aa67793662b13e761c7911422306e"
 
 ansi-regex@^2.0.0:
   version "2.1.1"
-  resolved "http://registry.camelotunchained.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
-
-ansi-regex@^3.0.0:
-  version "3.0.0"
-  resolved "http://registry.camelotunchained.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
-  resolved "http://registry.camelotunchained.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
+  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
+
+ansi-styles@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
+  dependencies:
+    color-convert "^1.9.0"
 
 any-promise@^1.0.0, any-promise@^1.1.0, any-promise@^1.3.0:
   version "1.3.0"
@@ -462,13 +475,13 @@ babel-cli@^6.5.1:
   optionalDependencies:
     chokidar "^1.6.1"
 
-babel-code-frame@^6.20.0, babel-code-frame@^6.22.0:
-  version "6.22.0"
-  resolved "http://registry.camelotunchained.com/babel-code-frame/-/babel-code-frame-6.22.0.tgz#027620bee567a88c32561574e7fd0801d33118e4"
+babel-code-frame@^6.22.0:
+  version "6.26.0"
+  resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.26.0.tgz#63fd43f7dc1e3bb7ce35947db8fe369a3f58c74b"
   dependencies:
-    chalk "^1.1.0"
+    chalk "^1.1.3"
     esutils "^2.0.2"
-    js-tokens "^3.0.0"
+    js-tokens "^3.0.2"
 
 babel-core@^6.24.1, babel-core@^6.5.2:
   version "6.25.0"
@@ -957,7 +970,7 @@ backoff@~2.3.0:
 
 balanced-match@^1.0.0:
   version "1.0.0"
-  resolved "http://registry.camelotunchained.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
+  resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
 base64-js@^1.0.2:
   version "1.2.1"
@@ -1011,21 +1024,9 @@ boxen@^0.6.0:
     string-width "^1.0.1"
     widest-line "^1.0.0"
 
-boxen@^1.0.0:
-  version "1.1.0"
-  resolved "http://registry.camelotunchained.com/boxen/-/boxen-1.1.0.tgz#b1b69dd522305e807a99deee777dbd6e5167b102"
-  dependencies:
-    ansi-align "^2.0.0"
-    camelcase "^4.0.0"
-    chalk "^1.1.1"
-    cli-boxes "^1.0.0"
-    string-width "^2.0.0"
-    term-size "^0.1.0"
-    widest-line "^1.0.0"
-
 brace-expansion@^1.1.7:
-  version "1.1.8"
-  resolved "http://registry.camelotunchained.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
@@ -1183,7 +1184,7 @@ buffer@^4.1.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-builtin-modules@^1.0.0:
+builtin-modules@^1.0.0, builtin-modules@^1.1.1:
   version "1.1.1"
   resolved "http://registry.camelotunchained.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
 
@@ -1221,10 +1222,6 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
-camelcase@^4.0.0:
-  version "4.1.0"
-  resolved "http://registry.camelotunchained.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
-
 capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
@@ -1248,7 +1245,7 @@ chain-function@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
 
-chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
+chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
   resolved "http://registry.camelotunchained.com/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
   dependencies:
@@ -1257,6 +1254,14 @@ chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
     has-ansi "^2.0.0"
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
+
+chalk@^2.1.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
+  dependencies:
+    ansi-styles "^3.2.1"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.3.0"
 
 change-case@3.0.2:
   version "3.0.2"
@@ -1374,6 +1379,12 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "http://registry.camelotunchained.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+color-convert@^1.9.0:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
+  dependencies:
+    color-name "1.1.3"
+
 color-convert@^1.9.1:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.2.tgz#49881b8fba67df12a96bdf3f56c0aab9e7913147"
@@ -1383,6 +1394,10 @@ color-convert@^1.9.1:
 color-name@1.1.1, color-name@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.1.tgz#4b1415304cf50028ea81643643bd82ea05803689"
+
+color-name@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
 color-string@^1.5.2:
   version "1.5.3"
@@ -1407,8 +1422,8 @@ colors@1.0.3:
   resolved "http://registry.camelotunchained.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
 colors@^1.1.2:
-  version "1.1.2"
-  resolved "http://registry.camelotunchained.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.3.2.tgz#2df8ff573dfbf255af562f8ce7181d6b971a359b"
 
 colors@^1.2.1:
   version "1.3.1"
@@ -1479,7 +1494,7 @@ concat-cli@^4.0.0:
 
 concat-map@0.0.1:
   version "0.0.1"
-  resolved "http://registry.camelotunchained.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
+  resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
 concat-stream@^1.4.7, concat-stream@~1.5.0, concat-stream@~1.5.1:
   version "1.5.2"
@@ -1508,17 +1523,6 @@ configstore@^2.0.0:
     uuid "^2.0.1"
     write-file-atomic "^1.1.2"
     xdg-basedir "^2.0.0"
-
-configstore@^3.0.0:
-  version "3.1.0"
-  resolved "http://registry.camelotunchained.com/configstore/-/configstore-3.1.0.tgz#45df907073e26dfa1cf4b2d52f5b60545eaa11d1"
-  dependencies:
-    dot-prop "^4.1.0"
-    graceful-fs "^4.1.2"
-    make-dir "^1.0.0"
-    unique-string "^1.0.0"
-    write-file-atomic "^2.0.0"
-    xdg-basedir "^3.0.0"
 
 console-browserify@^1.1.0:
   version "1.1.0"
@@ -1610,7 +1614,7 @@ create-emotion@^9.2.1:
     stylis "^3.5.0"
     stylis-rule-sheet "^0.0.10"
 
-create-error-class@^3.0.0, create-error-class@^3.0.1:
+create-error-class@^3.0.1:
   version "3.0.2"
   resolved "http://registry.camelotunchained.com/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
   dependencies:
@@ -1635,13 +1639,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     ripemd160 "^2.0.0"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
-
-cross-spawn-async@^2.1.1:
-  version "2.2.5"
-  resolved "http://registry.camelotunchained.com/cross-spawn-async/-/cross-spawn-async-2.2.5.tgz#845ff0c0834a3ded9d160daca6d390906bb288cc"
-  dependencies:
-    lru-cache "^4.0.0"
-    which "^1.2.8"
 
 cross-spawn@^3.0.0:
   version "3.0.1"
@@ -1670,10 +1667,6 @@ crypto-browserify@^3.0.0:
     pbkdf2 "^3.0.3"
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
-
-crypto-random-string@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
 
 css-in-js-utils@^1.0.3:
   version "1.0.3"
@@ -1788,9 +1781,9 @@ diagnostics@^1.0.1:
     enabled "1.0.x"
     kuler "1.0.x"
 
-diff@^3.0.1, diff@^3.2.0:
-  version "3.2.0"
-  resolved "http://registry.camelotunchained.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
+diff@^3.2.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
 
 diffie-hellman@^5.0.0:
   version "5.0.2"
@@ -1827,21 +1820,11 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
-dot-prop@^4.1.0:
-  version "4.1.1"
-  resolved "http://registry.camelotunchained.com/dot-prop/-/dot-prop-4.1.1.tgz#a8493f0b7b5eeec82525b5c7587fa7de7ca859c1"
-  dependencies:
-    is-obj "^1.0.0"
-
 duplexer2@^0.1.2, duplexer2@^0.1.4, duplexer2@~0.1.0, duplexer2@~0.1.2:
   version "0.1.4"
   resolved "http://registry.camelotunchained.com/duplexer2/-/duplexer2-0.1.4.tgz#8b12dab878c0d69e3e7891051662a32fc6bddcc1"
   dependencies:
     readable-stream "^2.0.2"
-
-duplexer3@^0.1.4:
-  version "0.1.4"
-  resolved "http://registry.camelotunchained.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
 
 duplexer@~0.1.1:
   version "0.1.1"
@@ -1922,9 +1905,9 @@ es6-promise@^3.0.2:
   version "3.3.1"
   resolved "http://registry.camelotunchained.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
 
-escape-string-regexp@^1.0.2:
+escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
-  resolved "http://registry.camelotunchained.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
 escodegen@1.8.x:
   version "1.8.1"
@@ -1959,7 +1942,7 @@ esutils@^1.1.6:
 
 esutils@^2.0.2:
   version "2.0.2"
-  resolved "http://registry.camelotunchained.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
+  resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
 event-stream@~3.3.0:
   version "3.3.4"
@@ -1986,17 +1969,6 @@ evp_bytestokey@^1.0.0:
   resolved "http://registry.camelotunchained.com/evp_bytestokey/-/evp_bytestokey-1.0.0.tgz#497b66ad9fef65cd7c08a6180824ba1476b66e53"
   dependencies:
     create-hash "^1.1.1"
-
-execa@^0.4.0:
-  version "0.4.0"
-  resolved "http://registry.camelotunchained.com/execa/-/execa-0.4.0.tgz#4eb6467a36a095fabb2970ff9d5e3fb7bce6ebc3"
-  dependencies:
-    cross-spawn-async "^2.1.1"
-    is-stream "^1.1.0"
-    npm-run-path "^1.0.0"
-    object-assign "^4.0.1"
-    path-key "^1.0.0"
-    strip-eof "^1.0.0"
 
 exit-hook@^1.0.0:
   version "1.1.1"
@@ -2107,12 +2079,6 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-findup-sync@~0.3.0:
-  version "0.3.0"
-  resolved "http://registry.camelotunchained.com/findup-sync/-/findup-sync-0.3.0.tgz#37930aa5d816b777c03445e1966cc6790a4c0b16"
-  dependencies:
-    glob "~5.0.0"
-
 follow-redirects@0.0.7:
   version "0.0.7"
   resolved "http://registry.camelotunchained.com/follow-redirects/-/follow-redirects-0.0.7.tgz#34b90bab2a911aa347571da90f22bd36ecd8a919"
@@ -2160,7 +2126,7 @@ fs-readdir-recursive@^1.0.0:
 
 fs.realpath@^1.0.0:
   version "1.0.0"
-  resolved "http://registry.camelotunchained.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
+  resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
 fsevents@^1.0.0:
   version "1.1.2"
@@ -2227,13 +2193,13 @@ get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "http://registry.camelotunchained.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
 
+get-caller-file@^1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
+
 get-stdin@^4.0.1:
   version "4.0.1"
   resolved "http://registry.camelotunchained.com/get-stdin/-/get-stdin-4.0.1.tgz#b968c6b0a04384324902e8bf1a5df32579a450fe"
-
-get-stream@^3.0.0:
-  version "3.0.0"
-  resolved "http://registry.camelotunchained.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
 
 getpass@^0.1.1:
   version "0.1.7"
@@ -2254,7 +2220,7 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
-glob@7.1.2, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.0, glob@^7.1.1, glob@~7.1.1:
+glob@7.1.2, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.0, glob@~7.1.1:
   version "7.1.2"
   resolved "http://registry.camelotunchained.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -2265,7 +2231,7 @@ glob@7.1.2, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.0, glob@^7.1.1, glo
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^5.0.15, glob@~5.0.0:
+glob@^5.0.15:
   version "5.0.15"
   resolved "http://registry.camelotunchained.com/glob/-/glob-5.0.15.tgz#1bc936b9e02f4a603fcc222ecf7633d30b8b93b1"
   dependencies:
@@ -2282,6 +2248,17 @@ glob@^6.0.4:
     inflight "^1.0.4"
     inherits "2"
     minimatch "2 || 3"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
+glob@^7.1.1:
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.3.tgz#3960832d3f1574108342dafd3a67b332c0969df1"
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.4"
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
@@ -2315,22 +2292,6 @@ got@^5.0.0:
     readable-stream "^2.0.5"
     timed-out "^3.0.0"
     unzip-response "^1.0.2"
-    url-parse-lax "^1.0.0"
-
-got@^6.7.1:
-  version "6.7.1"
-  resolved "http://registry.camelotunchained.com/got/-/got-6.7.1.tgz#240cd05785a9a18e561dc1b44b41c763ef1e8db0"
-  dependencies:
-    create-error-class "^3.0.0"
-    duplexer3 "^0.1.4"
-    get-stream "^3.0.0"
-    is-redirect "^1.0.0"
-    is-retry-allowed "^1.0.0"
-    is-stream "^1.0.0"
-    lowercase-keys "^1.0.0"
-    safe-buffer "^5.0.1"
-    timed-out "^4.0.0"
-    unzip-response "^2.0.1"
     url-parse-lax "^1.0.0"
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4:
@@ -2482,13 +2443,17 @@ har-validator@~5.0.3:
 
 has-ansi@^2.0.0:
   version "2.0.0"
-  resolved "http://registry.camelotunchained.com/has-ansi/-/has-ansi-2.0.0.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
+  resolved "https://registry.yarnpkg.com/has-ansi/-/has-ansi-2.0.0.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
   dependencies:
     ansi-regex "^2.0.0"
 
 has-flag@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/has-flag/-/has-flag-1.0.0.tgz#9d9e793165ce017a00f00418c43f942a7b1d11fa"
+
+has-flag@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
 
 has-unicode@^2.0.0, has-unicode@^2.0.1:
   version "2.0.1"
@@ -2632,10 +2597,6 @@ ieee754@^1.1.4:
   version "1.1.8"
   resolved "http://registry.camelotunchained.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
 
-import-lazy@^2.1.0:
-  version "2.1.0"
-  resolved "http://registry.camelotunchained.com/import-lazy/-/import-lazy-2.1.0.tgz#05698e3d45c88e8d7e9d92cb0584e77f096f3e43"
-
 imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "http://registry.camelotunchained.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
@@ -2660,7 +2621,7 @@ inflected@^1.1.7:
 
 inflight@^1.0.4:
   version "1.0.6"
-  resolved "http://registry.camelotunchained.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
+  resolved "https://registry.yarnpkg.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
   dependencies:
     once "^1.3.0"
     wrappy "1"
@@ -2708,6 +2669,10 @@ invariant@^2.0.0, invariant@^2.2.0:
   resolved "http://registry.camelotunchained.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:
     loose-envify "^1.0.0"
+
+inversify@^4.10.0:
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/inversify/-/inversify-4.13.0.tgz#0ab40570bfa4474b04d5b919bbab3a4f682a72f5"
 
 invert-kv@^1.0.0:
   version "1.0.0"
@@ -2781,10 +2746,6 @@ is-fullwidth-code-point@^1.0.0:
   resolved "http://registry.camelotunchained.com/is-fullwidth-code-point/-/is-fullwidth-code-point-1.0.0.tgz#ef9e31386f031a7f0d643af82fde50c457ef00cb"
   dependencies:
     number-is-nan "^1.0.0"
-
-is-fullwidth-code-point@^2.0.0:
-  version "2.0.0"
-  resolved "http://registry.camelotunchained.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz#a3b30a5c4f199183167aaab93beefae3ddfb654f"
 
 is-glob@4.0.0:
   version "4.0.0"
@@ -2976,9 +2937,9 @@ js-base64@^2.1.8:
   version "2.1.9"
   resolved "http://registry.camelotunchained.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
 
-js-tokens@^3.0.0:
+js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
-  resolved "http://registry.camelotunchained.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
+  resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
 js-yaml@3.x, js-yaml@^3.7.0:
   version "3.8.4"
@@ -3104,12 +3065,6 @@ latest-version@^2.0.0:
   resolved "http://registry.camelotunchained.com/latest-version/-/latest-version-2.0.0.tgz#56f8d6139620847b8017f8f1f4d78e211324168b"
   dependencies:
     package-json "^2.0.0"
-
-latest-version@^3.0.0:
-  version "3.1.0"
-  resolved "http://registry.camelotunchained.com/latest-version/-/latest-version-3.1.0.tgz#a205383fea322b33b5ae3b18abee0dc2f356ee15"
-  dependencies:
-    package-json "^4.0.0"
 
 lazy-cache@^1.0.3:
   version "1.0.4"
@@ -3294,7 +3249,7 @@ lowercase-keys@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
 
-lru-cache@^4.0.0, lru-cache@^4.0.1:
+lru-cache@^4.0.1:
   version "4.1.1"
   resolved "http://registry.camelotunchained.com/lru-cache/-/lru-cache-4.1.1.tgz#622e32e82488b49279114a4f9ecf45e7cd6bba55"
   dependencies:
@@ -3310,12 +3265,6 @@ ltx@^2.0.1:
   resolved "http://registry.camelotunchained.com/ltx/-/ltx-2.7.1.tgz#0e5cbdcb5bf178cfa7831ea41dc323d97422315a"
   dependencies:
     inherits "^2.0.1"
-
-make-dir@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/make-dir/-/make-dir-1.0.0.tgz#97a011751e91dd87cfadef58832ebb04936de978"
-  dependencies:
-    pify "^2.3.0"
 
 make-error-cause@^1.2.1:
   version "1.2.2"
@@ -3623,12 +3572,6 @@ normalizr@^2.0.0:
   dependencies:
     lodash "^4.17.2"
 
-npm-run-path@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/npm-run-path/-/npm-run-path-1.0.0.tgz#f5c32bf595fe81ae927daec52e82f8b000ac3c8f"
-  dependencies:
-    path-key "^1.0.0"
-
 "npmlog@0 || 1 || 2 || 3 || 4", npmlog@^4.0.0, npmlog@^4.0.2:
   version "4.1.2"
   resolved "http://registry.camelotunchained.com/npmlog/-/npmlog-4.1.2.tgz#08a7f2a8bf734604779a9efa4ad5cc717abb954b"
@@ -3698,7 +3641,7 @@ opener@~1.4.0:
   version "1.4.3"
   resolved "http://registry.camelotunchained.com/opener/-/opener-1.4.3.tgz#5c6da2c5d7e5831e8ffa3964950f8d6674ac90b8"
 
-optimist@0.6.x, optimist@^0.6.1, optimist@~0.6.0:
+optimist@0.6.x, optimist@^0.6.1:
   version "0.6.1"
   resolved "http://registry.camelotunchained.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"
   dependencies:
@@ -3764,15 +3707,6 @@ package-json@^2.0.0:
   resolved "http://registry.camelotunchained.com/package-json/-/package-json-2.4.0.tgz#0d15bd67d1cbbddbb2ca222ff2edb86bcb31a8bb"
   dependencies:
     got "^5.0.0"
-    registry-auth-token "^3.0.1"
-    registry-url "^3.0.3"
-    semver "^5.1.0"
-
-package-json@^4.0.0:
-  version "4.0.1"
-  resolved "http://registry.camelotunchained.com/package-json/-/package-json-4.0.1.tgz#8869a0401253661c4c4ca3da6c2121ed555f5eed"
-  dependencies:
-    got "^6.7.1"
     registry-auth-token "^3.0.1"
     registry-url "^3.0.3"
     semver "^5.1.0"
@@ -3854,15 +3788,11 @@ path-exists@^3.0.0:
 
 path-is-absolute@^1.0.0:
   version "1.0.1"
-  resolved "http://registry.camelotunchained.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
-
-path-key@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/path-key/-/path-key-1.0.0.tgz#5d53d578019646c0d68800db4e146e6bdc2ac7af"
+  resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
 
 path-parse@^1.0.5:
-  version "1.0.5"
-  resolved "http://registry.camelotunchained.com/path-parse/-/path-parse-1.0.5.tgz#3c1adf871ea9cd6c9431b6ea2bd74a0ff055c4c1"
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
 
 path-platform@~0.11.15:
   version "0.11.15"
@@ -3904,7 +3834,7 @@ pify@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
 
-pify@^2.0.0, pify@^2.3.0:
+pify@^2.0.0:
   version "2.3.0"
   resolved "http://registry.camelotunchained.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
 
@@ -4280,6 +4210,10 @@ redux@^3.6.0, redux@^3.7.2:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.3"
 
+reflect-metadata@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.12.tgz#311bf0c6b63cd782f228a81abe146a2bfa9c56f2"
+
 reflux-core@^0.3.0:
   version "0.3.0"
   resolved "http://registry.camelotunchained.com/reflux-core/-/reflux-core-0.3.0.tgz#c9aa78984555296237069613f9d6b11e2dbbc74c"
@@ -4466,9 +4400,15 @@ resolve@1.1.7, resolve@1.1.x:
   version "1.1.7"
   resolved "http://registry.camelotunchained.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
-resolve@^1.1.3, resolve@^1.1.4, resolve@^1.1.7, resolve@^1.3.2:
+resolve@^1.1.3, resolve@^1.1.4:
   version "1.3.3"
   resolved "http://registry.camelotunchained.com/resolve/-/resolve-1.3.3.tgz#655907c3469a8680dc2de3a275a8fdd69691f0e5"
+  dependencies:
+    path-parse "^1.0.5"
+
+resolve@^1.3.2:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
   dependencies:
     path-parse "^1.0.5"
 
@@ -4528,9 +4468,13 @@ semver-diff@^2.0.0:
   dependencies:
     semver "^5.0.3"
 
-"semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@^5.3.0, semver@~5.3.0:
+"semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@~5.3.0:
   version "5.3.0"
   resolved "http://registry.camelotunchained.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+semver@^5.3.0:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
 
 semver@~5.0.1:
   version "5.0.3"
@@ -4763,13 +4707,6 @@ string-width@^1.0.1, string-width@^1.0.2:
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
 
-string-width@^2.0.0:
-  version "2.1.0"
-  resolved "http://registry.camelotunchained.com/string-width/-/string-width-2.1.0.tgz#030664561fc146c9423ec7d978fe2457437fe6d0"
-  dependencies:
-    is-fullwidth-code-point "^2.0.0"
-    strip-ansi "^4.0.0"
-
 string_decoder@~0.10.0, string_decoder@~0.10.x:
   version "0.10.31"
   resolved "http://registry.camelotunchained.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
@@ -4796,12 +4733,6 @@ strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   dependencies:
     ansi-regex "^2.0.0"
 
-strip-ansi@^4.0.0:
-  version "4.0.0"
-  resolved "http://registry.camelotunchained.com/strip-ansi/-/strip-ansi-4.0.0.tgz#a8479022eb1ac368a871389b635262c505ee368f"
-  dependencies:
-    ansi-regex "^3.0.0"
-
 strip-bom@^2.0.0:
   version "2.0.0"
   resolved "http://registry.camelotunchained.com/strip-bom/-/strip-bom-2.0.0.tgz#6219a85616520491f35788bdbf1447a99c7e6b0e"
@@ -4811,10 +4742,6 @@ strip-bom@^2.0.0:
 strip-bom@^3.0.0:
   version "3.0.0"
   resolved "http://registry.camelotunchained.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
-
-strip-eof@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/strip-eof/-/strip-eof-1.0.0.tgz#bb43ff5598a6eb05d89b59fcd129c983313606bf"
 
 strip-indent@^1.0.1:
   version "1.0.1"
@@ -4842,13 +4769,19 @@ subarg@^1.0.0:
 
 supports-color@^2.0.0:
   version "2.0.0"
-  resolved "http://registry.camelotunchained.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
 supports-color@^3.1.0:
   version "3.2.3"
   resolved "http://registry.camelotunchained.com/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   dependencies:
     has-flag "^1.0.0"
+
+supports-color@^5.3.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
+  dependencies:
+    has-flag "^3.0.0"
 
 swap-case@^1.1.0:
   version "1.1.2"
@@ -4888,12 +4821,6 @@ tar@^2.0.0, tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-term-size@^0.1.0:
-  version "0.1.1"
-  resolved "http://registry.camelotunchained.com/term-size/-/term-size-0.1.1.tgz#87360b96396cab5760963714cda0d0cbeecad9ca"
-  dependencies:
-    execa "^0.4.0"
-
 text-hex@1.0.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/text-hex/-/text-hex-1.0.0.tgz#69dc9c1b17446ee79a92bf5b884bb4b9127506f5"
@@ -4928,10 +4855,6 @@ throwback@^1.1.0:
 timed-out@^3.0.0:
   version "3.1.3"
   resolved "http://registry.camelotunchained.com/timed-out/-/timed-out-3.1.3.tgz#95860bfcc5c76c277f8f8326fd0f5b2e20eba217"
-
-timed-out@^4.0.0:
-  version "4.0.1"
-  resolved "http://registry.camelotunchained.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
 
 timers-browserify@^1.0.1:
   version "1.4.2"
@@ -4998,53 +4921,48 @@ triple-beam@^1.2.0, triple-beam@^1.3.0:
   dependencies:
     glob "^6.0.4"
 
-tslib@^1.0.0, tslib@^1.7.1:
+tslib@^1.0.0:
   version "1.7.1"
   resolved "http://registry.camelotunchained.com/tslib/-/tslib-1.7.1.tgz#bc8004164691923a79fe8378bbeb3da2017538ec"
 
-tslint-config-airbnb@^1.1.1:
-  version "1.1.1"
-  resolved "http://registry.camelotunchained.com/tslint-config-airbnb/-/tslint-config-airbnb-1.1.1.tgz#89ddb4de8cdf369477afc033566e155ba09c9999"
-  dependencies:
-    tslint-eslint-rules "^3.4.0"
-    tslint-microsoft-contrib "^4.0.0"
-    vrsource-tslint-rules "^4.0.1"
+tslib@^1.7.1, tslib@^1.8.1:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
-tslint-eslint-rules@^3.4.0:
-  version "3.5.1"
-  resolved "http://registry.camelotunchained.com/tslint-eslint-rules/-/tslint-eslint-rules-3.5.1.tgz#e43efdcdd760d6285600031720f972c92f4a058a"
+tslint-config-airbnb@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/tslint-config-airbnb/-/tslint-config-airbnb-5.3.0.tgz#78c3e6fcc452eb2a460266004f85a201a0a5b7a3"
   dependencies:
-    doctrine "^0.7.2"
+    tslint-consistent-codestyle "^1.4.0"
+    tslint-eslint-rules "^4.1.1"
+    tslint-microsoft-contrib "^5.0.0"
+    vrsource-tslint-rules "^5.1.0"
 
-tslint-eslint-rules@^4.0.0:
+tslint-consistent-codestyle@^1.4.0:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/tslint-consistent-codestyle/-/tslint-consistent-codestyle-1.13.3.tgz#763e8575accc19f17b7d0369ead382bdbf78fd5b"
+  dependencies:
+    "@fimbul/bifrost" "^0.11.0"
+    tslib "^1.7.1"
+    tsutils "^2.27.0"
+
+tslint-eslint-rules@4.1.1, tslint-eslint-rules@^4.1.1:
   version "4.1.1"
-  resolved "http://registry.camelotunchained.com/tslint-eslint-rules/-/tslint-eslint-rules-4.1.1.tgz#7c30e7882f26bc276bff91d2384975c69daf88ba"
+  resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-4.1.1.tgz#7c30e7882f26bc276bff91d2384975c69daf88ba"
   dependencies:
     doctrine "^0.7.2"
     tslib "^1.0.0"
     tsutils "^1.4.0"
 
-tslint-microsoft-contrib@^4.0.0:
-  version "4.0.1"
-  resolved "http://registry.camelotunchained.com/tslint-microsoft-contrib/-/tslint-microsoft-contrib-4.0.1.tgz#9e201a1639f5859658ffcf2b4dcbb19992f8e6c0"
-
-tslint@^4.1.1:
-  version "4.5.1"
-  resolved "http://registry.camelotunchained.com/tslint/-/tslint-4.5.1.tgz#05356871bef23a434906734006fc188336ba824b"
+tslint-microsoft-contrib@^5.0.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/tslint-microsoft-contrib/-/tslint-microsoft-contrib-5.2.1.tgz#a6286839f800e2591d041ea2800c77487844ad81"
   dependencies:
-    babel-code-frame "^6.20.0"
-    colors "^1.1.2"
-    diff "^3.0.1"
-    findup-sync "~0.3.0"
-    glob "^7.1.1"
-    optimist "~0.6.0"
-    resolve "^1.1.7"
-    tsutils "^1.1.0"
-    update-notifier "^2.0.0"
+    tsutils "^2.27.2 <2.29.0"
 
-tslint@^5.0.0:
-  version "5.4.3"
-  resolved "http://registry.camelotunchained.com/tslint/-/tslint-5.4.3.tgz#761c8402b80e347b7733a04390a757b253580467"
+tslint@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.7.0.tgz#c25e0d0c92fa1201c2bc30e844e08e682b4f3552"
   dependencies:
     babel-code-frame "^6.22.0"
     colors "^1.1.2"
@@ -5055,15 +4973,39 @@ tslint@^5.0.0:
     resolve "^1.3.2"
     semver "^5.3.0"
     tslib "^1.7.1"
-    tsutils "^2.3.0"
+    tsutils "^2.8.1"
 
-tsutils@^1.1.0, tsutils@^1.4.0:
+tslint@~5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.8.0.tgz#1f49ad5b2e77c76c3af4ddcae552ae4e3612eb13"
+  dependencies:
+    babel-code-frame "^6.22.0"
+    builtin-modules "^1.1.1"
+    chalk "^2.1.0"
+    commander "^2.9.0"
+    diff "^3.2.0"
+    glob "^7.1.1"
+    minimatch "^3.0.4"
+    resolve "^1.3.2"
+    semver "^5.3.0"
+    tslib "^1.7.1"
+    tsutils "^2.12.1"
+
+tsutils@^1.4.0:
   version "1.9.1"
   resolved "http://registry.camelotunchained.com/tsutils/-/tsutils-1.9.1.tgz#b9f9ab44e55af9681831d5f28d0aeeaf5c750cb0"
 
-tsutils@^2.3.0:
-  version "2.4.0"
-  resolved "http://registry.camelotunchained.com/tsutils/-/tsutils-2.4.0.tgz#ad4ce6dba0e5a3edbddf8626b7ca040782189fea"
+tsutils@^2.12.1, tsutils@^2.24.0, tsutils@^2.27.0, tsutils@^2.8.1:
+  version "2.29.0"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.29.0.tgz#32b488501467acbedd4b85498673a0812aca0b99"
+  dependencies:
+    tslib "^1.8.1"
+
+"tsutils@^2.27.2 <2.29.0":
+  version "2.28.0"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.28.0.tgz#6bd71e160828f9d019b6f4e844742228f85169a1"
+  dependencies:
+    tslib "^1.8.1"
 
 tty-browserify@~0.0.0:
   version "0.0.0"
@@ -5199,19 +5141,9 @@ union@~0.4.3:
   dependencies:
     qs "~2.3.3"
 
-unique-string@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.camelotunchained.com/unique-string/-/unique-string-1.0.0.tgz#9e1057cca851abb93398f8b33ae187b99caec11a"
-  dependencies:
-    crypto-random-string "^1.0.0"
-
 unzip-response@^1.0.2:
   version "1.0.2"
   resolved "http://registry.camelotunchained.com/unzip-response/-/unzip-response-1.0.2.tgz#b984f0877fc0a89c2c773cc1ef7b5b232b5b06fe"
-
-unzip-response@^2.0.1:
-  version "2.0.1"
-  resolved "http://registry.camelotunchained.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
 
 update-notifier@^1.0.0:
   version "1.0.3"
@@ -5225,19 +5157,6 @@ update-notifier@^1.0.0:
     lazy-req "^1.1.0"
     semver-diff "^2.0.0"
     xdg-basedir "^2.0.0"
-
-update-notifier@^2.0.0:
-  version "2.2.0"
-  resolved "http://registry.camelotunchained.com/update-notifier/-/update-notifier-2.2.0.tgz#1b5837cf90c0736d88627732b661c138f86de72f"
-  dependencies:
-    boxen "^1.0.0"
-    chalk "^1.0.0"
-    configstore "^3.0.0"
-    import-lazy "^2.1.0"
-    is-npm "^1.0.0"
-    latest-version "^3.0.0"
-    semver-diff "^2.0.0"
-    xdg-basedir "^3.0.0"
 
 upper-case-first@^1.1.0, upper-case-first@^1.1.2:
   version "1.1.2"
@@ -5317,11 +5236,11 @@ vm-browserify@~0.0.1:
   dependencies:
     indexof "0.0.1"
 
-vrsource-tslint-rules@^4.0.1:
-  version "4.0.1"
-  resolved "http://registry.camelotunchained.com/vrsource-tslint-rules/-/vrsource-tslint-rules-4.0.1.tgz#f3cf8026e1d3a9b63d263dd591248dc96dc3ec1c"
+vrsource-tslint-rules@^5.1.0:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/vrsource-tslint-rules/-/vrsource-tslint-rules-5.8.2.tgz#f08a8b0a254f86a9d3f39f5d2493de7c4fac1a58"
   dependencies:
-    tslint "^4.1.1"
+    tslint "~5.8.0"
 
 warning@^3.0.0:
   version "3.0.0"
@@ -5353,7 +5272,7 @@ which-module@^1.0.0:
   version "1.0.0"
   resolved "http://registry.camelotunchained.com/which-module/-/which-module-1.0.0.tgz#bba63ca861948994ff307736089e3b96026c2a4f"
 
-which@1, which@^1.1.1, which@^1.2.8, which@^1.2.9:
+which@1, which@^1.1.1, which@^1.2.9:
   version "1.2.14"
   resolved "http://registry.camelotunchained.com/which/-/which-1.2.14.tgz#9a87c4378f03e827cecaf1acdf56c736c01c14e5"
   dependencies:
@@ -5421,19 +5340,11 @@ wrap-ansi@^2.0.0:
 
 wrappy@1:
   version "1.0.2"
-  resolved "http://registry.camelotunchained.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
+  resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
 
 write-file-atomic@^1.1.2:
   version "1.3.4"
   resolved "http://registry.camelotunchained.com/write-file-atomic/-/write-file-atomic-1.3.4.tgz#f807a4f0b1d9e913ae7a48112e6cc3af1991b45f"
-  dependencies:
-    graceful-fs "^4.1.11"
-    imurmurhash "^0.1.4"
-    slide "^1.1.5"
-
-write-file-atomic@^2.0.0:
-  version "2.1.0"
-  resolved "http://registry.camelotunchained.com/write-file-atomic/-/write-file-atomic-2.1.0.tgz#1769f4b551eedce419f0505deae2e26763542d37"
   dependencies:
     graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
@@ -5444,10 +5355,6 @@ xdg-basedir@^2.0.0:
   resolved "http://registry.camelotunchained.com/xdg-basedir/-/xdg-basedir-2.0.0.tgz#edbc903cc385fc04523d966a335504b5504d1bd2"
   dependencies:
     os-homedir "^1.0.0"
-
-xdg-basedir@^3.0.0:
-  version "3.0.0"
-  resolved "http://registry.camelotunchained.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.1"

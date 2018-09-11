@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+import * as Raven from 'raven-js';
 
 export function checkStatus(response: any) {
   if (response.status >= 200 && response.status < 300) {
@@ -10,6 +11,7 @@ export function checkStatus(response: any) {
   }
   const error = new Error(response.statusText);
   (<any>error).response = response;
+  Raven.captureException(error);
   throw error;
 }
 

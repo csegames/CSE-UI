@@ -231,7 +231,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           pageNumber === CharacterCreationPage.Race) !== -1,
         pageVisited: this.pagesVisited.findIndex(pageNumber =>
           pageNumber === CharacterCreationPage.Race) !== -1,
-          onClick: () => this.goToPage(CharacterCreationPage.Race),
+        onClick: () => this.goToPage(CharacterCreationPage.Race),
       },
       {
         pageNumber: CharacterCreationPage.Class,
@@ -324,11 +324,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     if (!_.isEqual(nextProps.factionsState.selected, this.props.factionsState.selected) ||
       !_.isEqual(nextProps.racesState.selected, this.props.racesState.selected) ||
       !_.isEqual(nextProps.playerClassesState.selected, this.props.playerClassesState.selected)) {
-        this.filterVisitedAndCompletedPages(nextState.page);
-        this.props.dispatch(resetAttributeOffsets());
-        this.props.dispatch(resetAttributes());
-        this.props.dispatch(fetchAttributes(this.props.shard, this.props.apiHost));
-        this.props.dispatch(fetchAttributeOffsets(this.props.shard, this.props.apiHost));
+      this.filterVisitedAndCompletedPages(nextState.page);
+      this.props.dispatch(resetAttributeOffsets());
+      this.props.dispatch(resetAttributes());
+      this.props.dispatch(fetchAttributes(this.props.shard, this.props.apiHost));
+      this.props.dispatch(fetchAttributeOffsets(this.props.shard, this.props.apiHost));
     }
   }
 
@@ -367,16 +367,20 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     const modelName = (this.characterNameInputRef as any).value.trim();
     const normalName = modelName.replace(/[^a-zA-Z]/g, '').toLowerCase();
     const errors: any = [];
-    if (normalName.length < 2 || modelName.length > 20)
+    if (normalName.length < 2 || modelName.length > 20) {
       errors.push('A character name must be between 2 and 20 characters in length.');
-    if (modelName.search(/^[a-zA-Z]/) === -1)
+    }
+    if (modelName.search(/^[a-zA-Z]/) === -1) {
       errors.push('A character name must begin with a letter.');
-    if (modelName.search(/[\-'][\-']/) > -1)
+    }
+    if (modelName.search(/[\-'][\-']/) > -1) {
       errors.push('A character name must not contain two or more consecutive hyphens (-) or apostrophes (\').');
-    if (modelName.search(/^[a-zA-Z\-']+$/) === -1)
+    }
+    if (modelName.search(/^[a-zA-Z\-']+$/) === -1) {
       errors.push('A character name must only contain the letters A-Z, hyphens (-), and apostrophes (\').');
+    }
     if (errors.length > 0) {
-      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', {timeOut: 5000}));
+      errors.forEach((e: string) => toastr.error(e, 'Oh No!!', { timeOut: 5000 }));
     } else {
       const traitIDs = [
         ...Object.keys(banesAndBoonsState.addedBanes),
@@ -497,7 +501,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     }
     if (sumOfTraitValues < banesAndBoonsState.minPoints) {
       banesAndBoonsErrors.push(
-        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required. 
+        `The total points of chosen Banes and Boons, ${sumOfTraitValues}, does not meet the minimum points required.
       Minimum points required: ${banesAndBoonsState.minPoints}`);
     }
     if (banesAndBoonsState.minPoints !== 0 &&
@@ -581,7 +585,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       url: this.props.apiHost,
       headers: {
         Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
-      }
+      },
     });
     const res = await webAPI.ServersAPI.GetServersV1(config);
     this.setState({ checkingApiServer: false });
@@ -605,7 +609,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     this.props.dispatch(fetchPlayerClasses(apiHost, this.props.shard, this.props.apiVersion));
     this.props.dispatch(fetchAttributes(this.props.shard, apiHost));
     this.props.dispatch(fetchAttributeOffsets(this.props.shard, apiHost));
-    this.setState({page: CharacterCreationPage.Faction});
+    this.setState({ page: CharacterCreationPage.Faction });
     this.pagesCompleted = [];
     this.pagesVisited = [];
   }

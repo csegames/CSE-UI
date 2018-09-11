@@ -64,16 +64,16 @@ export interface PatcherError {
   fatal: boolean;
 }
 
-const API : string = 'patcherAPI';
+const API: string = 'patcherAPI';
 
 // Define patcher class
 
 export class PatcherAPI {
-  private _hasReadFAQ : boolean = false;
-  private _api : any;
+  private _hasReadFAQ: boolean = false;
+  private _api: any;
   constructor() {
     if (API in window) {
-      this._api = (<any>window)[API];
+      this._api = (<any> window)[API];
     } else {
       // Install a dummy API (for testing)
       this._api = {
@@ -106,110 +106,110 @@ export class PatcherAPI {
   public apiHost(): string {
     return this._api.apiHost || 'https://api.camelotunchained.com';
   }
-  public hasApi() :boolean {
+  public hasApi(): boolean {
     return this._api !== undefined;
   }
   public hasRealApi(): boolean {
     return API in window;
   }
-  public getUserEmail() :string {
+  public getUserEmail(): string {
     return this._api.userEmail;
   }
-  public hasUserEmail() :boolean {
+  public hasUserEmail(): boolean {
     const email = this.getUserEmail();
     return email && email.length > 0;
   }
-  public getAccessToken() :string {
+  public getAccessToken(): string {
     return this._api.accessToken;
   }
-  public hasAccessToken() :boolean {
+  public hasAccessToken(): boolean {
     const token = this.getAccessToken();
     return token && token.length > 0;
   }
-  public getScreenName() :string {
+  public getScreenName(): string {
     return this._api.screenName;
   }
-  public hasScreenName() :boolean {
+  public hasScreenName(): boolean {
     const screenName = this.getScreenName();
     return screenName && screenName.length > 0;
   }
-  public getPermissions() :PatchPermissions {
+  public getPermissions(): PatchPermissions {
     return this._api.permissions;
   }
-  public hasPermissions() :boolean {
+  public hasPermissions(): boolean {
     const permissions = this.getPermissions();
     return permissions >= 0;
   }
-  public hasLoginError() :boolean {
+  public hasLoginError(): boolean {
     const error = this.getLoginError();
     return error && error.length > 0;
   }
-  public getLoginError() :string {
+  public getLoginError(): string {
     return this._api.loginError;
   }
-  public hasUserPass() :boolean {
+  public hasUserPass(): boolean {
     const error = this.getUserPass();
     return error && error.length > 0;
   }
-  public getUserPass() :string {
+  public getUserPass(): string {
     return this._api.userPass;
   }
-  public getAllChannels() : Channel[] {
+  public getAllChannels(): Channel[] {
     if (this._api.channelData) {
-      return Array.prototype.slice.call(this._api.channelData).sort((a:Channel, b:Channel) => {
+      return Array.prototype.slice.call(this._api.channelData).sort((a: Channel, b: Channel) => {
         return this.getChannelValue(a) - this.getChannelValue(b);
       });
     }
     return [];
   }
-  public getPatcherState() :number {
+  public getPatcherState(): number {
     return this._api.patcherState;
   }
-  public isPatcherReconnecting() :boolean {
+  public isPatcherReconnecting(): boolean {
     return this._api.patcherState === 10;
   }
-  public getDownloadSecondsRemaining() :number {
+  public getDownloadSecondsRemaining(): number {
     return this._api.downloadRemaining / this._api.downloadRate;
   }
-  public getDownloadRemaining() :number {
+  public getDownloadRemaining(): number {
     return this._api.downloadRemaining;
   }
-  public getDownloadEstimate() :number {
+  public getDownloadEstimate(): number {
     return this._api.downloadEstimate;
   }
-  public getDownloadRate() :number {
+  public getDownloadRate(): number {
     return this._api.downloadRate;
   }
-  public getDownloadProgressRatio() :number {
+  public getDownloadProgressRatio(): number {
     const estimate = this.getDownloadEstimate();
     return estimate !== 0 ? (estimate - this.getDownloadRemaining()) / estimate : 1;
   }
-  public getDownloadProgressPercent() :number {
+  public getDownloadProgressPercent(): number {
     return Math.round(this.getDownloadProgressRatio() * 100);
   }
-  public getTotalFiles() :number {
+  public getTotalFiles(): number {
     return this._api.numberOfFiles;
   }
-  public getCompletedFiles() :number {
+  public getCompletedFiles(): number {
     return this._api.completedFiles;
   }
-  public login(user :User) :void {
+  public login(user: User): void {
     this._api.loginError = '';
     this._api.ValidateClient(user.email, user.password, user.rememberMe === true);
   }
-  public logout() :void {
+  public logout(): void {
     this._api.InvalidateClient();
   }
-  public installChannel(channelID: number) :void {
+  public installChannel(channelID: number): void {
     this._api.UpdateClient(channelID);
   }
-  public launchChannelfunction(channelID: number, params:string) {
+  public launchChannelfunction(channelID: number, params: string) {
     this._api.LaunchChannel(channelID, params);
   }
   public uninstallChannel(channelID: number) {
     this._api.UninstallChannel(channelID);
   }
-  public hasReadFAQ() :boolean {
+  public hasReadFAQ(): boolean {
     return this._hasReadFAQ || this._api.hasReadFAQ;
   }
   public markFAQAsRead() {
@@ -242,7 +242,7 @@ export class PatcherAPI {
     if (this._api.OnPatcherError) this._api.OnPatcherError(handler);
   }
 
-  private getChannelValue(channel:Channel) : number {
+  private getChannelValue(channel: Channel): number {
     // force sort order to Hatchery, Wyrmling, Other Channels, and Editor last
     if (channel.channelID === 4) return 0; // Hatchery
     if (channel.channelID === 10) return 1; // Wyrmling

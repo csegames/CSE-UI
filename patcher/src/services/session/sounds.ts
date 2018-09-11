@@ -21,7 +21,7 @@ export interface SoundsState {
 }
 
 export function muteSounds(state: SoundsState): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playSound: false})));
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, { playSound: false })));
   return {
     type: MUTE_SOUNDS,
     when: new Date(),
@@ -29,7 +29,7 @@ export function muteSounds(state: SoundsState): SoundsAction {
 }
 
 export function unMuteSounds(state: SoundsState): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playSound: true})));
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, { playSound: true })));
   return {
     type: UNMUTE_SOUNDS,
     when: new Date(),
@@ -37,7 +37,7 @@ export function unMuteSounds(state: SoundsState): SoundsAction {
 }
 
 export function muteMusic(state: SoundsState): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playMusic: false})));
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, { playMusic: false })));
   return {
     type: MUTE_MUSIC,
     when: new Date(),
@@ -45,7 +45,7 @@ export function muteMusic(state: SoundsState): SoundsAction {
 }
 
 export function unMuteMusic(state: SoundsState): SoundsAction {
-  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, {playMusic: true})));
+  localStorage.setItem(localStorageKey, JSON.stringify(merge(state, { playMusic: true })));
   return {
     type: UNMUTE_MUSIC,
     when: new Date(),
@@ -71,12 +71,12 @@ export default function reducer(state: SoundsState = getInitialState(), action: 
   switch (action.type) {
     default: return state;
     case MUTE_SOUNDS:
-      return merge(state, {playSound: false});
+      return merge(state, { playSound: false });
     case UNMUTE_SOUNDS:
-      return merge(state, {playSound: true});
+      return merge(state, { playSound: true });
     case MUTE_MUSIC:
-      return merge(state, {playMusic: false});
+      return merge(state, { playMusic: false });
     case UNMUTE_MUSIC:
-      return merge(state, {playMusic: true});
+      return merge(state, { playMusic: true });
   }
 }

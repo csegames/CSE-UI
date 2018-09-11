@@ -4,21 +4,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import routesReducer, {RoutesState} from './routes';
+import routesReducer, { RoutesState } from './routes';
 const routes = routesReducer;
 
-import heroContentReducer, {HeroContentState} from './heroContent';
+import heroContentReducer, { HeroContentState } from './heroContent';
 const heroContent = heroContentReducer;
 
-import newsReducer, {NewsState} from './news';
+import newsReducer, { NewsState } from './news';
 const news = newsReducer;
 
-import soundsReducer, {SoundsState} from './sounds';
+import soundsReducer, { SoundsState } from './sounds';
 const sounds = soundsReducer;
 
-import chatReducer, {ChatState} from './chat';
+import chatReducer, { ChatState } from './chat';
 const chat = chatReducer;
 
 export default combineReducers({

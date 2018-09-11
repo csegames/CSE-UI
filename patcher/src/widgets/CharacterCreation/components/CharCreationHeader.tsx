@@ -77,7 +77,7 @@ class CharCreationHeader extends React.Component<CharCreationHeaderProps> {
   public render() {
     return (
       <Header>
-        <span>[ {this.props.selectedServerName} ] Character Creation - 
+        <span>[ {this.props.selectedServerName} ] Character Creation -
           {toTitleCase(CharacterCreationPage[this.props.page])}
         </span>
         <ActionContainer>

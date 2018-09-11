@@ -139,7 +139,7 @@ class CharacterDeleteModalView extends React.Component<CharacterDeleteModalViewP
                 <ModalSuccess>
                   <Tooltip
                     content={() => <span>{`Character was deleted.`}</span>}
-                    styles={{ tooltip: { maxWidth: '400px' }}}>
+                    styles={{ tooltip: { maxWidth: '400px' } }}>
                       <i className='fa fa-info-circle'></i> Success!
                   </Tooltip>
                 </ModalSuccess> :

@@ -306,7 +306,7 @@ function updatePatcherHubCache(apiHost: string, hub: signalr.SignalRHub) {
 export const initialize = module.createAction({
   type: 'controller/initialize',
   action: () => {
-    Object.defineProperty(client, 'accessToken', { get: function() { return patcher.getAccessToken() } });
+    Object.defineProperty(client, 'accessToken', { get() { return patcher.getAccessToken(); } });
     return (dispatch: (action: ControllerAction) => any) => {
       dispatch(reset() as ControllerAction);
       dispatch(initSignalR() as ControllerAction);

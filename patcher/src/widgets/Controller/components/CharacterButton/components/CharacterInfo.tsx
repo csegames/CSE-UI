@@ -408,7 +408,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
   }
 
   private noAccessError = () => {
-    toastr.error('You do not have access to any servers', 'Oh No!!', {timeOut: 5000});
+    toastr.error('You do not have access to any servers', 'Oh No!!', { timeOut: 5000 });
   }
 
   private updateAnimation = () => {

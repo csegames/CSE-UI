@@ -31,7 +31,7 @@ export interface LoginState {
 }
 
 class Login extends React.Component<LoginProps, LoginState> {
-  
+
   public name: string = 'cse-patcher-login';
   public intervalHandle: any;
   public intervalCounter: any;
@@ -80,7 +80,7 @@ class Login extends React.Component<LoginProps, LoginState> {
     );
   }
 
-  public componentDidMount() : void {
+  public componentDidMount(): void {
     if (this.emailRef.value.length === 0) {
       this.emailRef.focus();
     } else {
@@ -108,20 +108,20 @@ class Login extends React.Component<LoginProps, LoginState> {
 
   private onRememberMe = (evt: any) => {
     const newRememberMe = !this.state.rememberMe;
-    this.setState({rememberMe: newRememberMe} as any);
+    this.setState({ rememberMe: newRememberMe } as any);
 
     if (newRememberMe === false) {
       // clear email addr from client's storage too
-      patcher.login({email: null, password: null, rememberMe: false});
+      patcher.login({ email: null, password: null, rememberMe: false });
       // Resets form fields when remember me is unchecked
-      this.setState({email: null, password: null});
+      this.setState({ email: null, password: null });
     }
     events.fire('play-sound', 'select');
   }
 
   private login = () => {
     events.fire('play-sound', 'server-select');
-    this.setState({status: LoginStatus.WORKING});
+    this.setState({ status: LoginStatus.WORKING });
     patcher.login({
       email: this.emailRef.value,
       password: this.passwordRef.value,

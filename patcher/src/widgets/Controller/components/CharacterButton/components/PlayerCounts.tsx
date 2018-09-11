@@ -77,13 +77,13 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
     if (graphql.data) {
       const currentPlayerCount = graphql.data.metrics.currentPlayerCount;
       if (currentPlayerCount.arthurian !== this.state.playerCountA) {
-        this.setState({playerCountA: currentPlayerCount.arthurian});
+        this.setState({ playerCountA: currentPlayerCount.arthurian });
       }
       if (currentPlayerCount.tuatha !== this.state.playerCountT) {
-        this.setState({playerCountT: currentPlayerCount.tuatha});
+        this.setState({ playerCountT: currentPlayerCount.tuatha });
       }
       if (currentPlayerCount.viking !== this.state.playerCountV) {
-        this.setState({playerCountV: currentPlayerCount.viking});
+        this.setState({ playerCountV: currentPlayerCount.viking });
       }
     }
   }

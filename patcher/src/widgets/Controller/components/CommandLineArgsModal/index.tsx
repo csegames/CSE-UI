@@ -29,7 +29,7 @@ class CommandLineArgsModal extends React.Component<CommandLineArgsModalProps, Co
       </div>
     );
   }
-  
+
   private onOk = () => {
     const input = this.refs['args-input'] as HTMLInputElement;
     this.props.ok(input.value);

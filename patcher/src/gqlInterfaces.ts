@@ -445,6 +445,7 @@ export interface ItemDefRef {
   isVoxToken: boolean | null;
   isPlotDeed: boolean | null;
   deploySettings: DeploySettingsDefRef | null;
+  isStackableItem: boolean | null;
   gearSlotSets:
     | (GearSlotSet | null)[]
     | null /** the sets of gear slots this item can be equipped to */;

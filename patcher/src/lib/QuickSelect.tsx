@@ -74,7 +74,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
   }
 
   private onItemSelect = (item: any, itemIndex: number) => {
-    this.setState({selectedIndex: itemIndex});
+    this.setState({ selectedIndex: itemIndex });
     this.props.onSelectedItemChanged(item);
   }
 

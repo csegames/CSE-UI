@@ -6,6 +6,7 @@
 import * as events  from '../events';
 import client from '../core/client';
 import { eventMapper, EventMap } from '../utils/eventMapper';
+import * as Raven from 'raven-js';
 
 declare const $: any;
 
@@ -107,7 +108,7 @@ export class SignalRHub {
     this.addEventHandler('disconnected', callback);
   }
 
-  
+
 
   constructor(
     hubName: string,
@@ -128,7 +129,7 @@ export class SignalRHub {
 
 
   public addEventHandler(
-    event: 'statechanged', 
+    event: 'statechanged',
     callback: (hub: SignalRHub, state: { oldState: ConnectionState, newState: ConnectionState }) => void);
   public addEventHandler(
       event: 'received',
@@ -146,7 +147,7 @@ export class SignalRHub {
               ((hub: SignalRHub, data: any) => void) |
               ((hub: SignalRHub, error: string) => void) |
               ((hub: SignalRHub) => void)) {
-    
+
     if (this.debug) console.log(`SignalRHub [${this.hubName}] | addEventHandler(event: '${event}')`);
 
     const handler = {
@@ -194,7 +195,7 @@ export class SignalRHub {
       this.conn.url = this.signalRHost;
       this.hub = this.conn.createHubProxy(this.hubName);
 
-      // hook up lifetime events 
+      // hook up lifetime events
       this.conn.starting(this.internalOnStarting);
       this.conn.received(this.internalOnReceived);
       this.conn.connectionSlow(this.internalOnConnectionSlow);
@@ -290,6 +291,7 @@ export class SignalRHub {
   ////////////////////////////////////
 
   private internalOnError = (error: string) => {
+    Raven.captureMessage(`Signalr Error: ${error}`);
     this.fireEvent('error', error);
   }
 

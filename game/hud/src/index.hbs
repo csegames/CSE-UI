@@ -17,7 +17,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 </head>
 <body>
   <div id="hud"></div>
-  {{#if process.env.ENABLE_SENTRY }}
+  {{!-- {{#if process.env.ENABLE_SENTRY }}
   <script src="third-party/raven.min.js"></script>
   <script>
     Raven.config('https://f7710348f19c4a0f8f8cd83ea0aa343f@sentry.io/1259561', {
@@ -34,7 +34,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
       });
     }, 1000);
   </script>
-  {{/if}}
+  {{/if}} --}}
 
   {{#if process.env.IS_BROWSER}}
   <script src="dev.config.js"></script>

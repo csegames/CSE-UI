@@ -5971,6 +5971,10 @@ randomstring@^1.1.5:
   dependencies:
     array-uniq "1.0.2"
 
+raven-js@^3.27.0:
+  version "3.27.0"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.27.0.tgz#9f47c03e17933ce756e189f3669d49c441c1ba6e"
+
 rc@^1.0.1, rc@^1.1.5, rc@^1.1.6, rc@^1.1.7:
   version "1.2.1"
   resolved "http://registry.camelotunchained.com/rc/-/rc-1.2.1.tgz#2e03e8e42ee450b8cb3dce65be1bf8974e1dfd95"

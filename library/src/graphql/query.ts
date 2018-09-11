@@ -8,6 +8,7 @@ import { request as httpRequest, RequestOptions } from '../utils/request';
 import { withDefaults } from '../utils/withDefaults';
 import { ObjectMap } from '../utils/ObjectMap';
 import { DocumentNode } from 'graphql';
+import * as Raven from 'raven-js';
 
 // issues with graphql .mjs file usage
 // tslint:disable-next-line
@@ -148,6 +149,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
     return errorResult(response.statusText);
 
   } catch (err) {
+    Raven.captureException(err);
     return errorResult(err);
   }
 }

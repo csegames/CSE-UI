@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {BaseAction, defaultAction, merge} from '../../lib/reduxUtils';
+import { BaseAction, defaultAction, merge } from '../../lib/reduxUtils';
 
 const SHOW_CHAT = 'cse-patcher/chat/SHOW_CHAT';
 const HIDE_CHAT = 'cse-patcher/chat/HIDE_CHAT';
@@ -38,7 +38,7 @@ function getInitialState(): ChatState {
 export default function reducer(state: ChatState = getInitialState(), action: ChatAction = defaultAction): ChatState {
   switch (action.type) {
     default: return state;
-    case SHOW_CHAT: return merge(state, {showChat: true});
-    case HIDE_CHAT: return merge(state, {showChat: false});
+    case SHOW_CHAT: return merge(state, { showChat: true });
+    case HIDE_CHAT: return merge(state, { showChat: false });
   }
 }

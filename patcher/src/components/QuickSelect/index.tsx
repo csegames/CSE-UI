@@ -67,7 +67,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
           e.stopPropagation();
         }} ><i className={`fa ${this.state.showList ? 'fa-chevron-down' : 'fa-chevron-up'}`} aria-hidden='true'></i></div>
         <div className={`QuickSelect__listView ${this.state.showList ? '' : 'QuickSelect__listView--hidden'}`}
-            style={this.props.items.length > ((420 / (this.props.itemHeight + 1)) | 0) ? {} : {overflow: 'hidden'}} >
+            style={this.props.items.length > ((420 / (this.props.itemHeight + 1)) | 0) ? {} : { overflow: 'hidden' }} >
           {this.props.items.map(this.buildListItem)}
         </div>
       </div>
@@ -76,7 +76,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
 
   private showList = (visible: boolean) => {
     if (visible) events.fire('play-sound', 'select-change');
-    this.setState({showList: visible});
+    this.setState({ showList: visible });
   }
 
   private onItemSelect = (item: any, itemIndex: number) => {

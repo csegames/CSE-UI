@@ -53,7 +53,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     );
   }
 
-  private onChange = (e: React.ChangeEvent<HTMLInputElement>) : void => {
+  private onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ deleteEnabled: e.target.value === this.props.character.name });
   }
 
@@ -81,7 +81,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
         }, 200);
         return;
       }
-      // failed 
+      // failed
       this.setState({
         deleting: false,
         success: false,

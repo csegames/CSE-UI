@@ -17,7 +17,7 @@ const Boon = (props: {
   addedBoons: TraitIdMap;
   maxPoints: number;
   boonPoints: number;
-  
+
   shouldBeDefault?: boolean;
   onBoonClick?: Function;
   onCancelBoon?: Function;

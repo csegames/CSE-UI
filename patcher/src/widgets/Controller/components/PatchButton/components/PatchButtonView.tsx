@@ -73,7 +73,7 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           //   return (
           //     <DisabledButton text='Server Offline' />
           //   );
-          // } else 
+          // } else
           if (!selectedServer.available) {
             return (
               <DisabledButton text='Play Offline' onClick={this.props.onPlayOfflineClick} />
@@ -127,4 +127,4 @@ export default Button;
           //   return (
           //     <DisabledButton text='No Access' onClick={this.props.onNoAccessClick} />
           //   );
-          // } 
+          // }

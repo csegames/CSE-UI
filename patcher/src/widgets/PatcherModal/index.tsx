@@ -42,7 +42,7 @@ export default ({ accentColor, highlightColorStrong, highlightColorWeak, classNa
         border-style: solid;
         border-image: linear-gradient(to bottom, ${accentColor}, transparent) 1 50%;
       }
-    
+
       input {
         width: calc(100% - 40px);
         margin: 5px;

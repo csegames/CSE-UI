@@ -30,7 +30,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
     const { selectedRace, selectedGender, hideCharImg } = this.props;
     const arthurianLayerInfo = [
       { id: 'bg', extraClass: 'arthurian', resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian',resistance: 90},
+      { id: 'layer1', extraClass: 'arthurian',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian',resistance: 40 },
       { id: 'ray2', extraClass: 'arthurian',resistance: -15 },
@@ -45,7 +45,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
 
     const arthurianPictLayerInfo = [
       { id: 'bg', extraClass: 'arthurian-pict',resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90},
+      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian pict',resistance: 40 },
       { id: 'ray2', extraClass: 'arthurian pict',resistance: -15 },
@@ -57,7 +57,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
         resistance: 150, hidden: hideCharImg },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
-    
+
     const vikingLayerInfo = [
       { id: 'bg', extraClass: 'viking', resistance: 120 },
       { id: 'layer2', extraClass: 'viking', resistance: 70 },
@@ -70,7 +70,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
       { id: 'veil2', extraClass: 'viking' },
       { id: 'base', extraClass: 'viking', resistance: 140 },
       { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
-        resistance:150, hidden: hideCharImg },
+        resistance: 150, hidden: hideCharImg },
       { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
@@ -86,7 +86,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
       { id: 'veil2', extraClass: 'viking', resistance: 200 },
       { id: 'base', extraClass: 'viking', resistance: 140 },
       { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
-        resistance:150, hidden: hideCharImg },
+        resistance: 150, hidden: hideCharImg },
       { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
@@ -141,17 +141,17 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
         layerInfo = vikingValkyrieLayerInfo;
         miscInfo = () => <div className='clouds viking'></div>;
         break;
-      } 
+      }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       default: {
         layerInfo = arthurianLayerInfo;
         break;

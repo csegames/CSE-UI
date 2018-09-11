@@ -1,4 +1,4 @@
-import { Post, PostItem } from "..";
+import { Post, PostItem } from '..';
 import { PostFilter } from '../components/FilterTabs';
 
 export function getNewsTitle(post: Post) {
@@ -37,7 +37,7 @@ export function getNewsImageInfo(post: Post) {
   return {
     imgSrc,
     imgClass,
-  }
+  };
 }
 
 export function isPatchNote(post: PostItem) {

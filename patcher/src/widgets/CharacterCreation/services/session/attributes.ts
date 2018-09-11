@@ -87,7 +87,7 @@ async function getAttributeInfo(dispatch: (action: any) => any, shard: number, a
       headers: {
         Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
       },
-    })
+    });
     const res = await webAPI.GameDataAPI.GetAttributeInfoV1(config, shard);
     const data = JSON.parse(res.data);
     if (res.ok) {
@@ -116,7 +116,7 @@ export interface AttributesState {
 
 const initialState: AttributesState  = {
   isFetching: false,
-  lastUpdated: <Date>null,
+  lastUpdated: <Date> null,
   attributes: [],
   error: null,
   allocations: [],

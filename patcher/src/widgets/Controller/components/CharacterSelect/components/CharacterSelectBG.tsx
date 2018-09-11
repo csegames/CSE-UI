@@ -115,7 +115,7 @@ const CharBase = styled('div')`
   }
   &.tdd {
     background-image: url(images/visualfx/tdd/tdd-base_edit02.png);
-  } 
+  }
 `;
 
 export interface CharacterSelectBGProps {

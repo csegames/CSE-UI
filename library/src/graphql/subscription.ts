@@ -9,6 +9,7 @@ import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { ObjectMap } from '../utils/ObjectMap';
 import client from '../core/client';
+import { getBooleanEnv } from '../utils/env';
 // issues with graphql .mjs file usage
 // tslint:disable-next-line
 const { print } = require('graphql/language/printer.js');
@@ -35,7 +36,7 @@ export const defaultSubscriptionOpts: Options<any> = {
   reconnectInterval: 1000,
   connectTimeout: 2000,
   initPayload: subscriptionInitPayload,
-  debug: false,
+  debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
   onDataReceived: data => console.log(data),
   onError: e => console.error(e),
   onClosed: () => null,
@@ -297,8 +298,8 @@ export class SubscriptionManager {
     }
   }
 
-  private log = (message: string) => {
-    console.log(`SubscriptionManager | ${message}`);
+  private log = (...data: any[]) => {
+    console.log(`SubscriptionManager`, ...data);
   }
 }
 

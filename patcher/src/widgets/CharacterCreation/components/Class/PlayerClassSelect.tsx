@@ -97,7 +97,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         <div className='selection-box'>
           <h6>Choose your class</h6>
           <div className='class-selection-container'>
-            {this.props.classes.filter((c:any) => c.faction === this.props.selectedFaction.id ||
+            {this.props.classes.filter((c: any) => c.faction === this.props.selectedFaction.id ||
               c.faction === Faction.Factionless).map(this.generateClassContent)}
           </div>
           {text}

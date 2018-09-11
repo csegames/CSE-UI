@@ -94,7 +94,7 @@ export interface PlayerClassesState {
 
 const initialState: PlayerClassesState  = {
   isFetching: false,
-  lastUpdated: <Date>null,
+  lastUpdated: <Date> null,
   playerClasses: [],
   selected: null,
   error: null,

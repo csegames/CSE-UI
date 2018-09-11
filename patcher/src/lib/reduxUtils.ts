@@ -87,18 +87,18 @@ export function addOrUpdate<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean
 
 export function remove<T>(arr: T[], obj: T, equals: (a: T, b: T) => boolean = defaultCompare): T[] {
   if (!(arr && arr.length)) return arr;
-  
+
   const copy = arr.slice();
   let index = -1;
   let i = copy.length;
-  
+
   while (--i > -1) {
     if (equals(obj, copy[i])) {
       index = i;
       break;
     }
   }
-  
+
   if (index > -1) {
     copy.splice(index, 1);
   }
@@ -111,7 +111,7 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
   const result: T[] = [];
   const removed: T[] = [];
 
-  if (!(arr && arr.length)) return {result, removed};
+  if (!(arr && arr.length)) return { result, removed };
   let i = arr.length;
   while (--i > -1) {
     const o = Array.isArray(arr[i]) ? cloneArray(arr[i] as any) as any : clone(arr[i]);
@@ -127,7 +127,7 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): {result:
 
 // works with arrays of basic types, number, string, boolean
 export function simpleMergeUnique<T>(...arrays: T[]) {
-  return [...new Set( [].concat(...arrays))];
+  return [...new Set([].concat(...arrays))];
 }
 
 export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
@@ -152,7 +152,7 @@ export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
 // REDUX MIDDLEWARE
 
 export function loggingMiddleware(store: any) {
-  return (next: any) => (action:any) => {
+  return (next: any) => (action: any) => {
     console.group(`ACTION | ${action.type}`);
     console.log('dispatching', action);
     const result = next(action);

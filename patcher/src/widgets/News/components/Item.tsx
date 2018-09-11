@@ -136,7 +136,7 @@ class Item extends React.Component<ItemProps> {
     events.fire('play-sound', 'select');
     this.props.onClick();
   }
-  
+
   private onMouseEnter = () => {
     events.fire('play-sound', 'select-change');
   }

@@ -28,7 +28,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
     const { selectedRace, hidden } = this.props;
     const arthurianLayerInfo = [
       { id: 'bg', extraClass: 'arthurian', resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian',resistance: 90},
+      { id: 'layer1', extraClass: 'arthurian',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian',resistance: 40 },
       { id: 'ray2', extraClass: 'arthurian',resistance: -15 },
@@ -40,7 +40,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
 
     const arthurianPictLayerInfo = [
       { id: 'bg', extraClass: 'arthurian-pict',resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90},
+      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
       { id: 'ray1', extraClass: 'arthurian pict',resistance: 40 },
       { id: 'ray2', extraClass: 'arthurian pict',resistance: -15 },
@@ -49,7 +49,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
       { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
       { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
-    
+
     const vikingLayerInfo = [
       { id: 'bg', extraClass: 'viking', resistance: 120 },
       { id: 'layer2', extraClass: 'viking', resistance: 70 },
@@ -121,17 +121,17 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
         layerInfo = vikingValkyrieLayerInfo;
         miscInfo = () => <div className='clouds viking'></div>;
         break;
-      } 
+      }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       default: {
         layerInfo = arthurianLayerInfo;
         break;

@@ -155,7 +155,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
       toastr.error(
         'You will not be able to create a character while the API server is offline',
         'API Server is offline',
-        {timeOut: 3000},
+        { timeOut: 3000 },
       );
     }
 
@@ -163,7 +163,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
       toastr.error(
         'Checking if API server is online',
         'Checking',
-        {timeOut: 3000},
+        { timeOut: 3000 },
       );
     }
   }

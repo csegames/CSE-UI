@@ -61,11 +61,11 @@ function off(listener: any): void {
  * @param data {any}      Data to be passed to registered handlers
  */
 
-function fire(topic: string, data: any) : void {
+function fire(topic: string, data: any): void {
   emitter.emit(topic, data);
 }
 
-function diagnostics() : void {
+function diagnostics(): void {
   emitter.diagnostics();
 }
 

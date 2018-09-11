@@ -47,7 +47,7 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
   public render() {
     const { attributeInfo, offset } = this.props;
     const isImportant = _.includes(importantAttributes[this.props.selectedClass], attributeInfo.name);
-    
+
     const offsetValue = offset === null ? 0 : typeof offset.attributeOffsets[attributeInfo.name] === 'undefined' ? 0 :
       offset.attributeOffsets[attributeInfo.name];
     const disabled = this.props.remainingPoints === 0 ||
@@ -83,7 +83,7 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
 
   private increaseAttribute = () => {
     this.props.allocatePoint(this.props.attributeInfo.name, 1);
-    
+
     this.mouseDownTimeout = setTimeout(() => {
       this.mouseDownInterval = setInterval(() => {
         this.props.allocatePoint(this.props.attributeInfo.name, 1);

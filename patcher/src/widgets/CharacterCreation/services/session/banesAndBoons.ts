@@ -102,7 +102,7 @@ export const fetchTraits = (payload: FetchTraitInterface) => {
         'Oh No!!',
         { timeOut: 5000 },
       );
-    }  
+    }
   };
 };
 
@@ -118,18 +118,22 @@ export const resetBaneOrBoon = (payload: FetchTraitInterface) => {
       .then((result) => {
         const data = JSON.parse(result.data);
         if (result.ok) {
-          if (payload.initType === 'boons') dispatch(onResetBoons({
-            playerClass: payload.playerClass,
-            race: payload.race,
-            faction: payload.faction,
-            banesAndBoons: data,
-          }));
-          if (payload.initType === 'banes') dispatch(onResetBanes({
-            playerClass: payload.playerClass,
-            race: payload.race,
-            faction: payload.faction,
-            banesAndBoons: data,
-          }));
+          if (payload.initType === 'boons') {
+            dispatch(onResetBoons({
+              playerClass: payload.playerClass,
+              race: payload.race,
+              faction: payload.faction,
+              banesAndBoons: data,
+            }));
+          }
+          if (payload.initType === 'banes') {
+            dispatch(onResetBanes({
+              playerClass: payload.playerClass,
+              race: payload.race,
+              faction: payload.faction,
+              banesAndBoons: data,
+            }));
+          }
           if (payload.initType === 'both') {
             dispatch(onResetBoons({
               playerClass: payload.playerClass,
@@ -254,8 +258,9 @@ export const onSelectRankBoon = module.createAction({
       action.boon.ranks[action.boon.rank];
     const previousRankBoon = action.boon.ranks[action.boon.rank - 1] ? action.boon.ranks[action.boon.rank - 1] :
       action.boon.ranks[action.boon.rank];
-    if (addedBoons[previousRankBoon] && state.traits[previousRankBoon].rank !== action.boon.ranks.length - 1)
+    if (addedBoons[previousRankBoon] && state.traits[previousRankBoon].rank !== action.boon.ranks.length - 1) {
       totalPoints = totalPoints + (action.boon.points - state.traits[previousRankBoon].points);
+    }
     if (action.boon.rank !== 0) {
       addedBoons[previousRankBoon] = action.boon.id;
       addedBoons[action.boon.id] = addedBoons[previousRankBoon];
@@ -319,8 +324,9 @@ export const onCancelRankBoon = module.createAction({
       addedBoons[previousRankBoon] = addedBoons[action.boon.id];
       delete addedBoons[action.boon.id];
     }
-    if (action.boon.rank !== 0)
+    if (action.boon.rank !== 0) {
       totalPoints = totalPoints - (action.boon.points - state.traits[previousRankBoon].points);
+    }
     switch (action.boon.category) {
       case 'General':
         generalBoons[action.boon.ranks[action.boon.rank + 1]] = action.boon.id;
@@ -368,8 +374,9 @@ export const onSelectRankBane = module.createAction({
       action.bane.id;
     const previousRankBane = action.bane.ranks[action.bane.rank - 1] ? action.bane.ranks[action.bane.rank - 1] :
       action.bane.id;
-    if (addedBanes[previousRankBane] && state.traits[previousRankBane].rank !== action.bane.ranks.length - 1)
+    if (addedBanes[previousRankBane] && state.traits[previousRankBane].rank !== action.bane.ranks.length - 1) {
       totalPoints = totalPoints + (action.bane.points - state.traits[previousRankBane].points);
+    }
     if (action.bane.rank !== 0) {
       addedBanes[previousRankBane] = action.bane.id;
       addedBanes[action.bane.id] = addedBanes[previousRankBane];
@@ -433,8 +440,9 @@ export const onCancelRankBane = module.createAction({
       addedBanes[previousRankBane] = addedBanes[action.bane.id];
       delete addedBanes[action.bane.id];
     }
-    if (action.bane.rank !== 0)
+    if (action.bane.rank !== 0) {
       totalPoints = totalPoints - (action.bane.points - state.traits[previousRankBane].points);
+    }
     switch (action.bane.category) {
       case 'General':
         generalBanes[action.bane.ranks[action.bane.rank + 1]] = action.bane.id;
@@ -592,7 +600,7 @@ export const onInitializeTraits = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
     ].map((id) => {
-      traits[id] = {...traits[id], required: true};
+      traits[id] = { ...traits[id], required: true };
       return Object.assign({}, traits[id], { required: true });
     });
 
@@ -604,7 +612,7 @@ export const onInitializeTraits = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points <= -1) : [],
     ].map((id) => {
-      traits[id] = {...traits[id], required: true};
+      traits[id] = { ...traits[id], required: true };
       return Object.assign({}, traits[id], { required: true });
     });
 
@@ -615,7 +623,7 @@ export const onInitializeTraits = module.createAction({
     const mappedFactionTraits = _.reduce(allFactionTraits.map(faction => [...faction.optional, ...faction.required]),
       (a: string[], b: string[]) => a.concat(b)) || [];
     const undesirableTraits: { [id: string]: string } = {};
-    const allMappedTraits = [ ...mappedClassTraits, ...mappedRaceTraits, ...mappedFactionTraits];
+    const allMappedTraits = [...mappedClassTraits, ...mappedRaceTraits, ...mappedFactionTraits];
     Object.keys(traits).forEach((key) => {
       if (!allMappedTraits.find(traitId => traitId === key)) {
         undesirableTraits[key] = key;
@@ -860,7 +868,7 @@ export const onResetBoons = module.createAction({
           playerClasses[playerClass].required : [],
       };
     });
-    const allRaceTraits = Object.keys(races).map((race) => {      
+    const allRaceTraits = Object.keys(races).map((race) => {
       return {
         optional: races[race] && races[race].optional ? races[race].optional : [],
         required: races[race] && races[race].required ? races[race].required : [],
@@ -887,7 +895,7 @@ export const onResetBoons = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
     ].map((id) => {
-      traits[id] = {...traits[id], selected: true, required: true};
+      traits[id] = { ...traits[id], selected: true, required: true };
       return Object.assign({}, traits[id], { required: true });
     });
 
@@ -897,7 +905,7 @@ export const onResetBoons = module.createAction({
     Object.keys(state.addedBanes).map(id => traits[id].points).reduce((a, b) => a + b)) +
     (Object.keys(addedBoons).length > 0 &&
     Object.keys(addedBoons).map(id => traits[id].points).reduce((a, b) => a + b));
-    
+
     const allBoonIds = [
       ...Object.keys(generalBoons),
       ...Object.keys(playerClassBoons),
@@ -949,7 +957,7 @@ export const onResetBanes = module.createAction({
           playerClasses[playerClass].required : [],
       };
     });
-    const allRaceTraits = Object.keys(races).map((race) => {      
+    const allRaceTraits = Object.keys(races).map((race) => {
       return {
         optional: races[race] && races[race].optional ? races[race].optional : [],
         required: races[race] && races[race].required ? races[race].required : [],
@@ -976,7 +984,7 @@ export const onResetBanes = module.createAction({
       ...raceTraits && raceTraits.required ?
         raceTraits.required.filter((id: string) => traits[id].points <= -1) : [],
     ].map((id) => {
-      traits[id] = {...traits[id], selected: true, required: true};
+      traits[id] = { ...traits[id], selected: true, required: true };
       return Object.assign({}, traits[id], { required: true });
     });
 
@@ -986,7 +994,7 @@ export const onResetBanes = module.createAction({
     Object.keys(addedBanes).map(id => traits[id].points).reduce((a, b) => a + b)) +
     (Object.keys(state.addedBoons).length > 0 &&
     Object.keys(state.addedBoons).map(id => traits[id].points).reduce((a, b) => a + b));
-    
+
     const allBaneIds = [
       ...Object.keys(generalBanes),
       ...Object.keys(playerClassBanes),

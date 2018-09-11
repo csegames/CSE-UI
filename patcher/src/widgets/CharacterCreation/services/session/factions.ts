@@ -64,7 +64,7 @@ async function getFactions(dispatch: (action: any) => any, apiHost: string) {
       headers: {
         Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
       },
-    })
+    });
     const res = await webAPI.GameDataAPI.GetFactionInfoV1(config);
     const data = JSON.parse(res.data);
     dispatch(res.ok ? fetchFactionsSuccess(data) : fetchFactionsFailed(data));
@@ -94,7 +94,7 @@ export interface FactionsState {
 
 const initialState: FactionsState = {
   isFetching: false,
-  lastUpdated: <Date>null,
+  lastUpdated: <Date> null,
   factions: [],
   selected: null,
   error: null,

@@ -18,7 +18,7 @@ const Container = styled('div')`
 `;
 
 export interface AlertsProps {
-  alerts: webAPI.PatcherAlert[];  
+  alerts: webAPI.PatcherAlert[];
 }
 
 export class Alerts extends React.Component<AlertsProps, {}> {

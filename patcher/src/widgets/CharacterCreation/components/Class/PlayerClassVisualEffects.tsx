@@ -57,7 +57,7 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
         hidden: hideCharImg,
       },
     ];
-    
+
     const vikingLayerInfo = [
       { id: 'ray1', extraClass: 'viking', resistance: 40 },
       { id: 'ray2', extraClass: 'viking', resistance: -15 },
@@ -69,7 +69,7 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
         id: `char`,
         extraClass: 'viking standing__'
           + `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
-        resistance:150,
+        resistance: 150,
         hidden: hideCharImg,
       },
     ];
@@ -85,7 +85,7 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
         id: `char`,
         extraClass: 'viking standing__' +
           `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
-        resistance:150,
+        resistance: 150,
         hidden: hideCharImg,
       },
     ];
@@ -143,17 +143,17 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
         layerInfo = vikingValkyrieLayerInfo;
         miscInfo = () => <div className='clouds viking'></div>;
         break;
-      } 
+      }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
         miscInfo = () => <div className='clouds tdd'></div>;
         break;
-      } 
+      }
       default: {
         layerInfo = arthurianLayerInfo;
         break;

@@ -22,7 +22,7 @@ export interface HeroState {
 }
 
 class Hero extends React.Component<HeroProps, HeroState> {
-  public name:string = 'cse-patcher-hero';
+  public name: string = 'cse-patcher-hero';
   private timeout: any = null;
 
   constructor(props: HeroProps) {
@@ -68,7 +68,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   }
 
   private renderHeroItem = (item: HeroContentItem) => {
-    return <div key={item.id} dangerouslySetInnerHTML={{__html: `${item.content}`}}></div>;
+    return <div key={item.id} dangerouslySetInnerHTML={{ __html: `${item.content}` }}></div>;
   }
 
   private onIndexClick = (index: number) => {
@@ -93,7 +93,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
 
   private pause = () => {
     if (this.state.paused) return;
-    this.setState({paused: true} as any);
+    this.setState({ paused: true } as any);
     const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
     for (let vid: any = 0; vid < videoElements.length; vid++) {
       const v = videoElements[vid];
@@ -105,7 +105,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
 
   private resume = () => {
     if (!this.state.paused) return;
-    this.setState({paused: false} as any);
+    this.setState({ paused: false } as any);
     const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
     for (let vid: any = 0; vid < videoElements.length; vid++) {
       const v = videoElements[vid];

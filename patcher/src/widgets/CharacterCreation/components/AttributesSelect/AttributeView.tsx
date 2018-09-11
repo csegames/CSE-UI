@@ -123,7 +123,7 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
                     Tooltip: {
                       width: '100%',
                     },
-                    
+
                     tooltip: defaultAttributeViewStyle.tooltip,
                   }}
                   content={() => a.attributeInfo &&

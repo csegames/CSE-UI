@@ -104,7 +104,7 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
     return (
       <div
         key={info.id}
-        className={`race-btn thumb__${Race[info.id]}--${Gender[this.props.selectedGender]} 
+        className={`race-btn thumb__${Race[info.id]}--${Gender[this.props.selectedGender]}
           ${this.props.selectedRace !== null ? this.props.selectedRace.id === info.id ? 'active' : '' : ''}`}
         onClick={this.selectRace.bind(this, info)}></div>
     );

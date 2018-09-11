@@ -2,7 +2,12 @@
   "env": {
     "development": {
       "presets": [
-        "@babel/env"
+        ["@babel/env", {
+          "useBuiltIns": "entry",
+          "targets": {
+            "chrome": 35.0
+          }
+        }]
       ],
       "plugins": [
         "react-hot-loader/babel",
@@ -18,7 +23,12 @@
     },
     "production": {
       "presets": [
-        "@babel/env"
+        ["@babel/env", {
+          "useBuiltIns": "entry",
+          "targets": {
+            "chrome": 35.0
+          }
+        }]
       ],
       "plugins": [
         "react-hot-loader/babel",

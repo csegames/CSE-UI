@@ -5,7 +5,7 @@ import { webAPI, events, jsKeyCodes } from '@csegames/camelot-unchained';
 
 import { PatcherServer, ServerType } from '../../services/session/controller';
 import CharacterSelectList from './components/CharacterSelectList';
-import CharacterSelectBG from './components/CharacterSelectBG'; 
+import CharacterSelectBG from './components/CharacterSelectBG';
 import CharacterDeleteModal from '../CharacterDeleteModal';
 import { APIServerStatus } from '../ControllerDisplay/index';
 
