@@ -45,6 +45,7 @@
     "d3-ease": "^1.0.5",
     "emotion": "^9.2.3",
     "es6-promise": "^3.2.1",
+    "font-awesome": "^4.7.0",
     "immutable": "^3.8.1",
     "jquery": "^3.0.0",
     "lodash": "^4.17.4",

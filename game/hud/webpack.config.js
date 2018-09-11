@@ -167,6 +167,29 @@ module.exports = function (e, argv = {}) {
               loader: require.resolve('handlebars-loader'),
             },
             {
+              test: /\.css$/,
+              use: [
+                (IS_DEVELOPMENT && IS_BROWSER) ? {
+                  loader: require.resolve('style-loader'),
+                  options: {
+                    sourceMap: true,
+                  }
+                } : {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                    publicPath: '../',
+                  }
+                },
+                {
+                  loader: require.resolve('css-loader'),
+                  options: {
+                    sourceMap: true,
+                    url: true,
+                  }
+                },
+              ]
+            },
+            {
               test: /\.scss$/,
               exclude: /node_modules/,
               use: [
@@ -203,7 +226,7 @@ module.exports = function (e, argv = {}) {
               exclude: [/\.js$/, /\.html$/, /\.json$/, /\.tsx?$/],
               loader: require.resolve('file-loader'),
               options: {
-                name: 'static/media/[name].[ext]',
+                name: 'static/[name].[ext]',
               },
             },
           ],

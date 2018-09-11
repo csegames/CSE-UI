@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import 'font-awesome/css/font-awesome.css';
+import './third-party/animate.css';
+import 'ol/ol.css';
+import './third-party/toastr.min.css';
 import './index.scss';
 import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
