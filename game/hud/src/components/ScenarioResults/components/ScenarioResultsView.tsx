@@ -82,9 +82,9 @@ const CloseOrnament = styled('div')`
 
 const CloseButtonPosition = css`
   position: absolute;
-  text-align:center;
+  text-align: center;
   top: 1px;
-  right: -9px;
+  right: 7px;
 `;
 
 export interface ScenarioResultsViewProps {
