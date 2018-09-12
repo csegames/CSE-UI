@@ -19,5 +19,10 @@ export const ItemLocationFragment = gql`
         id
       }
     }
+    inVox {
+      voxInstanceID
+      voxJobInstanceID
+      itemSlot
+    }
   }
 `;

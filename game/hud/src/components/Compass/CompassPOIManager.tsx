@@ -125,7 +125,7 @@ class CompassPOIManagerInner extends React.Component<CompassPOIManagerInnerProps
 
   private renderIntervalTime: number = 100;
   private renderInterval: NodeJS.Timer;
-  private updateFacingIntervalTime: number = 25;
+  private updateFacingIntervalTime: number = 100;
   private updateFacingInterval: NodeJS.Timer;
 
   public state = {
@@ -407,7 +407,7 @@ export interface CompassPOIManagerState {
 
 class CompassPOIManager extends React.Component<CompassPOIManagerProps, CompassPOIManagerState> {
 
-  private updatePositionIntervalTime: number = 200;
+  private updatePositionIntervalTime: number = 100;
   private updatePositionInterval: NodeJS.Timer;
 
   public state = {

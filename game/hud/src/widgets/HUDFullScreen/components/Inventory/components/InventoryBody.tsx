@@ -6,8 +6,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 
 import * as base from '../../ItemShared/InventoryBase';
@@ -35,9 +34,11 @@ export interface InventoryBodyStyles {
 }
 
 const Container = styled.div`
+  position: relative;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  padding-right: 5px;
   padding-top: 15px;
 `;
 
@@ -61,7 +62,7 @@ const RefreshContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
+  position: absolute;
   pointer-events: all;
   width: 100%;
   height: 100%;
@@ -70,7 +71,7 @@ const RefreshContainer = styled.div`
   bottom: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 10;
+  z-index: 999;
 `;
 
 const RefreshTitle = styled.div`
@@ -106,9 +107,6 @@ export interface InjectedInventoryBodyProps {
     height: number;
   };
   initializeInventory: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
-  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: base.ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
   onMoveInventoryItem: (payload: MoveInventoryItemPayload) => void;
 }
 
@@ -124,7 +122,8 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 
 class InventoryBody extends React.Component<InventoryBodyComponentProps, InventoryBodyState> {
   private static minSlots = 200;
-  private eventHandles: EventHandle[] = [];
+  private initBodyDimensionsTimeout: number;
+  private dropItemHandler: EventHandle;
   private bodyRef: HTMLDivElement;
 
   // a counter that is incremented each time a new
@@ -136,7 +135,9 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     this.state = {
       ...base.defaultInventoryBaseState(),
     };
+    this.initializeSlotsData = _.debounce(this.initializeSlotsData, 50);
   }
+
   public render() {
     let slotNumberToItem = this.props.slotNumberToItem;
     let itemIdToInfo = this.props.itemIdToInfo;
@@ -157,6 +158,10 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       itemIdToInfo = filteredData.itemIdToInfo;
     }
 
+    const { graphql } = this.props;
+    const showLoading = graphql.loading;
+    const showError = graphql.lastError && graphql.lastError !== 'OK';
+
     const { rows, rowData } = base.createRowElements({
       state: this.state,
       props: this.props,
@@ -174,10 +179,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     const buttonDisabled = base.allInventoryFooterButtonsDisabled(this.props);
     const removeAndPruneDisabled = buttonDisabled || (base.allInventoryFooterButtonsDisabled(this.props) ||
       base.inventoryFooterRemoveAndPruneButtonDisabled(rowData, this.props.invBodyDimensions.height));
-
-    const { graphql } = this.props;
-    const showLoading = graphql.loading;
-    const showError = graphql.lastError && graphql.lastError !== 'OK';
     return (
       <Container>
         {showLoading &&
@@ -188,7 +189,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
         {showError &&
           <RefreshContainer>
             <RefreshTitle>Could not retrieve items. Click to try again.</RefreshTitle>
-            <RefreshButton onClick={this.props.graphql.refetch}><i className='fa fa-refresh' /></RefreshButton>
+            <RefreshButton onClick={this.refetch}><i className='fa fa-refresh' /></RefreshButton>
           </RefreshContainer>
         }
         <InnerContainer ref={(r: HTMLDivElement) => this.bodyRef = r} className='cse-ui-scroller-thumbonly-brown'>
@@ -210,44 +211,29 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
 
   public componentDidMount() {
     this.initializeSlotsData();
-    setTimeout(() => this.initializeBodyDimensions(), 1);
-    window.addEventListener('resize', this.onWindowResize);
-    this.eventHandles.push(game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip));
-    this.eventHandles.push(game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
-      base.dropItemRequest(payload.inventoryItem.item)));
+    this.initBodyDimensionsTimeout = window.setTimeout(() => this.initializeBodyDimensions(true), 1);
+    window.addEventListener('resize', () => {
+      this.initializeBodyDimensions(true);
+    });
+    this.dropItemHandler = game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
+      base.makeDropItemRequest(payload.inventoryItem.item));
     game.itemPlacementMode.requestCancel();
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps) {
-    if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions)) {
+    if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions) && !this.props.graphql.loading) {
       this.initializeSlotsData();
     }
   }
 
   public componentWillUnmount() {
-    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    this.dropItemHandler.clear();
+    window.clearTimeout(this.initBodyDimensionsTimeout);
     window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
   }
 
-  private handleQueryResult = (result: GraphQLResult<InventoryBodyGQL.Query>) => {
-    if (!result || result.loading || result.lastError !== 'OK') return result;
-    if (!_.isEqual(result.data.myInventory.items, this.props.inventoryItems)) {
-      this.props.onChangeInventoryItems(result.data.myInventory.items);
-    } else {
-      this.setState(() => this.internalInit(this.state, this.props));
-    }
-    return result;
-  }
-
-  private refetch = async () => {
-    if (!this.graphql) return;
-    this.graphql.refetch();
-    game.trigger('refetch-character-info');
-  }
-
-  private onWindowResize = () => {
-    this.initializeBodyDimensions(true);
-    this.initializeInventory();
+  private refetch = () => {
+    this.props.graphql.refetch();
   }
 
   private initializeBodyDimensions = (override?: boolean) => {
@@ -288,11 +274,6 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
       return props.onMoveInventoryItem({
         dragItemData,
         dropZoneData,
-        state,
-        props,
-        containerIdToDrawerInfo: props.containerIdToDrawerInfo,
-        stackGroupIdToItemIDs: props.stackGroupIdToItemIDs,
-        inventoryItems: props.inventoryItems,
       });
     });
   }
@@ -332,9 +313,6 @@ class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProp
                 itemIdToInfo,
                 itemIDToStackGroupID,
                 initializeInventory,
-                onChangeContainerIdToDrawerInfo,
-                onChangeStackGroupIdToItemIDs,
-                onChangeInventoryItems,
                 onMoveInventoryItem,
               }) => {
                 return (
@@ -353,9 +331,6 @@ class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProp
                     visibleComponentRight={visibleComponentRight}
                     invBodyDimensions={invBodyDimensions}
                     initializeInventory={initializeInventory}
-                    onChangeInventoryItems={onChangeInventoryItems}
-                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
-                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
                     onMoveInventoryItem={onMoveInventoryItem}
                   />
                 );

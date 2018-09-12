@@ -53,7 +53,7 @@ export class ParallaxBG extends React.Component<ParallaxBGProps, {}> {
                   key={i}
                   data-depth={layer.resistance / 1000}
                   className={_.isArray(layer.extraClass) ? classnames([`bgelement ${layer.id}`, ...layer.extraClass]) :
-                     `bgelement ${layer.id} ${extraClass}`}
+                    `bgelement ${layer.id} ${extraClass}`}
                   style={{ opacity: layer.hidden ? 0 : 1 }}
                 />
               );

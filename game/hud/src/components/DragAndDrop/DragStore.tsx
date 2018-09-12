@@ -60,11 +60,8 @@ class DragStore extends React.Component<DragStoreProps, DragStoreState> {
   }
 
   public static setDragStoreInfo(partialDragStore: Partial<DragStoreState>) {
-    return new Promise((resolve) => {
-      dragStore = { ...dragStore, ...partialDragStore };
-      game.trigger('set-drag-store', partialDragStore);
-      resolve();
-    });
+    dragStore = { ...dragStore, ...partialDragStore };
+    game.trigger('set-drag-store', partialDragStore);
   }
 
   public static getDragStore(): DragStoreState {
@@ -90,7 +87,6 @@ class DragStore extends React.Component<DragStoreProps, DragStoreState> {
   public componentDidMount() {
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mouseup', this.onMouseUp);
-
     game.on('set-drag-store', this.onSetDragStoreInfo);
   }
 

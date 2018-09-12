@@ -169,19 +169,18 @@ body {
 /* CSE_Koo scroll bars */
 .cse-ui-scroller-thumbonly {
   &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   &::-webkit-scrollbar-track {
     box-shadow: none;
     background: none;
-    background: transparent;
   }
-  &::-webkit-scrollbar-thumb:vertical {
-    border: 35px solid rgb(64,64,64);
-    border-width: 35px 4px 35px 4px;
+  &::-webkit-scrollbar-thumb {
+    border: 60px solid rgb(64,64,64);
+    border-width: 60px 7px 60px 7px;
     border-image: url(../images/settings/scrollbar-thumb-ends.png);
-    border-image-slice: 35 4 35 4;
+    border-image-slice: 30 4 30 4;
     min-height: 100px;
     box-shadow: none;
     background: none;
@@ -190,19 +189,19 @@ body {
 
 .cse-ui-scroller-thumbonly-brown {
   &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   &::-webkit-scrollbar-track {
     box-shadow: none;
     background: none;
-    background: transparent;
   }
-  &::-webkit-scrollbar-thumb:vertical {
-    border: 35px solid #404040;
-    border-width: 35px 4px 35px 4px;
+  &::-webkit-scrollbar-thumb {
+    position: relative;
+    border: 60px solid #404040;
+    border-width: 60px 7px 60px 7px;
     border-image: url(../images/inventory/scrollbar-thumb-ends-brown.png);
-    border-image-slice: 35 4 35 4;
+    border-image-slice: 30 4 30 4;
     min-height: 100px;
     box-shadow: none;
     background: none;

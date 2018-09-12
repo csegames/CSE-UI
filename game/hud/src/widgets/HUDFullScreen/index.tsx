@@ -7,11 +7,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { TabPanel, TabItem } from '@csegames/camelot-unchained';
+import { TabItem } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { hideContextMenu } from 'actions/contextMenu';
 
 import HudFullScreenView from './HUDFullScreenView';
+import InventoryContextProvider from './components/ItemShared/InventoryContext';
 import {
   InventoryItem,
   GearSlotDefRef,
@@ -23,7 +24,6 @@ import ItemTooltipContent, { defaultTooltipStyle } from './components/Tooltip';
 import {
   FullScreenNavState,
   FullScreenContext,
-  HUDFullScreenTabData,
   defaultFullScreenState,
   isRightOrLeftItem,
 } from './lib/utils';
@@ -43,13 +43,31 @@ export interface ITemporaryTab {
 export interface FullScreenNavProps {
 }
 
+const TRADE_TAB = {
+  name: 'trade-left',
+  tab: {
+    title: 'Trade',
+    temporary: true,
+  },
+  rendersContent: 'Trade',
+};
+
+const CRAFTING_TAB = {
+  name: 'crafting-left',
+  tab: {
+    title: 'Crafting',
+    temporary: true,
+  },
+  rendersContent: 'Crafting',
+};
+
 const BackgroundImage = styled.div`
   position: absolute;
   width: 50%;
   height: 100%;
   z-index: 99;
-  box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
   background: url(../images/inventory/bag-bg.png) repeat-x, black;
+  background-size: cover;
   &.left {
     top: 0;
     left: 0;
@@ -59,13 +77,12 @@ const BackgroundImage = styled.div`
     top: 0;
     left: 50%;
     bottom: 0;
+    box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
   }
 `;
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: EventHandle;
-  private tabPanelLeftRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
-  private tabPanelRightRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
 
   constructor(props: any) {
     super(props);
@@ -74,30 +91,32 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public render() {
     const { visibleComponentLeft, visibleComponentRight } = this.state;
+    const leftActiveTabIndex = this.getTabIndex(visibleComponentLeft);
+    const rightActiveTabIndex = this.getTabIndex(visibleComponentRight);
     return (
       <FullScreenContext.Provider value={this.state}>
         <InventoryContextProvider
           visibleComponentLeft={visibleComponentLeft}
           visibleComponentRight={visibleComponentRight}>
-          <div
-            data-input-group='block'
-            style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
-            <BackgroundImage className={'left'} />
-            <BackgroundImage className={'right'} />
-            <HudFullScreenView
-              getLeftRef={r => this.tabPanelLeftRef = r}
-              getRightRef={r => this.tabPanelRightRef = r}
-              onActiveTabChanged={(i, name) => this.handleTabChange(name)}
-              onRightOrLeftItemAction={this.onRightOrLeftItemAction}
-              showItemTooltip={this.showItemTooltip}
-              hideItemTooltip={this.hideItemTooltip}
-              onCloseFullScreen={this.onCloseFullScreen}
-              onChangeEquippedItems={this.onChangeEquippedItems}
-              onChangeMyTradeItems={this.onChangeMyTradeItems}
-              onChangeMyTradeState={this.onChangeMyTradeState}
-              onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
-            />
-          </div>
+            <div
+              data-input-group='block'
+              style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
+              <BackgroundImage className={'left'} />
+              <BackgroundImage className={'right'} />
+              <HudFullScreenView
+                leftActiveTabIndex={leftActiveTabIndex}
+                rightActiveTabIndex={rightActiveTabIndex}
+                onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+                onRightOrLeftItemAction={this.onRightOrLeftItemAction}
+                showItemTooltip={this.showItemTooltip}
+                hideItemTooltip={this.hideItemTooltip}
+                onCloseFullScreen={this.onCloseFullScreen}
+                onChangeEquippedItems={this.onChangeEquippedItems}
+                onChangeMyTradeItems={this.onChangeMyTradeItems}
+                onChangeMyTradeState={this.onChangeMyTradeState}
+                onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
+              />
+            </div>
         </InventoryContextProvider>
       </FullScreenContext.Provider>
     );
@@ -117,8 +136,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTab('equippedgear-left');
-          this.setActiveTab('inventory-right');
+          this.setActiveTabs('equippedgear-left', 'inventory-right');
         }
         break;
       }
@@ -128,8 +146,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTab('equippedgear-left');
-          this.setActiveTab('character-stats-right');
+          this.setActiveTabs('equippedgear-left', 'character-stats-right');
         }
         break;
       }
@@ -138,37 +155,60 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTab('map-left');
-          this.setActiveTab('inventory-right');
+          this.setActiveTabs('map-left', 'inventory-right');
         }
         break;
       }
 
       case 'trade': {
         if (typeof shouldOpen === 'boolean') {
-          const tradeTab = {
-            name: 'trade-left',
-            tab: {
-              title: 'Trade',
-              temporary: true,
-            },
-            rendersContent: 'Trade',
-          };
           if (shouldOpen) {
-            this.setActiveTab('inventory-right');
             this.handleTemporaryTab({
-              ...tradeTab,
               tab: {
-                ...tradeTab.tab,
-                onTemporaryTabClose: () => this.onCloseFullScreen(),
+                ...TRADE_TAB,
+                tab: {
+                  ...TRADE_TAB.tab,
+                  onTemporaryTabClose: () => this.onCloseFullScreen(),
+                },
               },
-            }, 'left', shouldOpen);
+              side: 'left',
+              shouldOpen,
+              otherTabName: 'inventory-right',
+            });
           } else {
-            this.handleTemporaryTab(tradeTab as any, 'left', false);
+            this.handleTemporaryTab({
+              tab: TRADE_TAB as any,
+              side: 'left',
+              shouldOpen: false,
+            });
             this.onCloseFullScreen();
           }
           break;
         }
+      }
+
+      case 'crafting': {
+        if (_.findIndex(this.state.tabsLeft, tab => tab.name === 'crafting-left') === -1) {
+          this.handleTemporaryTab({
+            tab: {
+              ...CRAFTING_TAB,
+              tab: {
+                ...CRAFTING_TAB.tab,
+                onTemporaryTabClose: () => this.onCloseFullScreen(),
+              },
+            },
+            side: 'left',
+            shouldOpen: true,
+            otherTabName: 'inventory-right',
+          });
+        } else {
+          this.handleTemporaryTab({
+            tab: CRAFTING_TAB as any,
+            side: 'left',
+            shouldOpen: false,
+          });
+        }
+        break;
       }
 
       default: {
@@ -180,19 +220,16 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private handleTabChange = (name: string) => {
     // We do this to validate that no two windows are open at the same time
-    const { tabsRight, tabsLeft } = this.state;
+    const { tabsRight, tabsLeft, visibleComponentLeft, visibleComponentRight } = this.state;
     const side = _.includes(name, 'right') ? 'right' : 'left';
-    if ((side === 'right' && !this.tabPanelRightRef) || (side === 'left' && !this.tabPanelLeftRef)) {
-      return;
-    }
 
+    const leftTabIndex = this.getTabIndex(visibleComponentLeft);
+    const rightTabIndex = this.getTabIndex(visibleComponentRight);
     const tabs = side === 'right' ? tabsRight : tabsLeft;
     const otherTabs = side === 'right' ? tabsLeft : tabsRight;
     const nextTabIndex = _.findIndex(tabs, tab => tab.name === name);
-    const prevTabIndex = side === 'right' ? this.tabPanelRightRef.activeTabIndex :
-      this.tabPanelLeftRef.activeTabIndex;
-    const otherActiveIndex = side === 'right' ? this.tabPanelLeftRef.activeTabIndex :
-      this.tabPanelRightRef.activeTabIndex;
+    const prevTabIndex = side === 'right' ? rightTabIndex : leftTabIndex;
+    const otherActiveIndex = side === 'right' ? leftTabIndex : rightTabIndex;
 
     if (nextTabIndex !== -1) {
       if (nextTabIndex === otherActiveIndex) {
@@ -201,63 +238,77 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           return this.normalizeName(tab.name) === this.normalizeName(tabs[prevTabIndex].name);
         });
         if (otherPrevWindowIndex !== -1) {
-          this.setActiveTab(name);
-          this.setActiveTab(otherTabs[otherPrevWindowIndex].name);
+          this.setActiveTabs(name, otherTabs[otherPrevWindowIndex].name);
         }
+      } else {
+        this.setActiveTabs(name);
       }
-      this.setActiveTab(name);
     }
+  }
+
+  private setActiveTabs = (firstTab: string, secondTab?: string) => {
+    let tabsState = {
+      ...this.setActiveTab(firstTab),
+    };
+
+    if (secondTab) {
+      tabsState = {
+        ...tabsState,
+        ...this.setActiveTab(secondTab),
+      };
+    }
+
+    this.setState(tabsState as any);
   }
 
   private setActiveTab = (name: string) => {
     const side = _.includes(name, 'right') ? 'right' : 'left';
     const visibleComponent = side === 'right' ? this.state.visibleComponentRight : this.state.visibleComponentLeft;
-    const tabIndex = this.getTabIndex(name);
 
     if (name !== '' && !_.includes(visibleComponent, name)) {
-      this.setState((state, props) => {
-        if (side === 'right') {
-          this.tabPanelRightRef.activeTabIndex = tabIndex;
-          return {
-            ...state,
-            visibleComponentRight: name,
-
-          };
-        } else {
-          this.tabPanelLeftRef.activeTabIndex = tabIndex;
-          return {
-            ...state,
-            visibleComponentLeft: name,
-          };
-        }
-      });
+      if (side === 'right') {
+        return {
+          visibleComponentRight: name,
+        };
+      } else {
+        return {
+          visibleComponentLeft: name,
+        };
+      }
     } else {
       if (name === '') {
-        this.setState((state, props) => {
-          return {
-            ...state,
-            visibleComponentRight: '',
-            visibleComponentLeft: '',
-          };
-        });
+        return {
+          visibleComponentRight: '',
+          visibleComponentLeft: '',
+        };
       }
     }
   }
 
-  private handleTemporaryTab = (tab: ITemporaryTab, side: 'left' | 'right', shouldOpen: boolean) => {
+  private handleTemporaryTab = (args: {
+    tab: ITemporaryTab,
+    side: 'left' | 'right',
+    shouldOpen: boolean,
+    otherTabName?: string,
+    fullClose?: boolean,
+  }) => {
+    const { tab, side, shouldOpen, otherTabName, fullClose } = args;
     if (side === 'left') {
       let tabsLeft = [...this.state.tabsLeft];
       if (shouldOpen) {
         // Only add temporary tab if there is no temporary tab existing
         if (_.findIndex(tabsLeft, tabInfo => tabInfo.name === tab.name) === -1) {
           tabsLeft.push(tab);
-          this.setTabsLeft(tabsLeft).then(() => this.setActiveTab(tab.name));
+          this.setTabsLeft(tabsLeft).then(() =>
+            this.setActiveTabs(tab.name, otherTabName));
           return;
         }
       } else {
         tabsLeft = _.filter(tabsLeft, tabInfo => tabInfo.name !== tab.name);
-        this.setActiveTab('equipped-left');
         setTimeout(() => this.setTabsLeft(tabsLeft), 50);
+        if (!fullClose) {
+          this.setActiveTabs('equipped-left', otherTabName);
+        }
       }
 
       return;
@@ -269,12 +320,14 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         // Only add temporary tab if there is no temporary tab existing
         if (_.findIndex(tabsRight, tabInfo => tabInfo.name === tab.name) === -1) {
           tabsRight.push(tab);
-          this.setTabsRight(tabsRight).then(() => this.setActiveTab(tab.name));
+          this.setTabsRight(tabsRight).then(() => this.setActiveTabs(tab.name));
         }
       } else {
         tabsRight = _.filter(tabsRight, tabInfo => tabInfo.name !== tab.name);
-        this.setActiveTab('equipped-right');
         setTimeout(() => this.setTabsRight(tabsRight), 50);
+        if (!fullClose) {
+          this.setActiveTabs('equipped-right');
+        }
       }
       return;
     }
@@ -303,13 +356,27 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private onCloseFullScreen = () => {
     game.trigger('navigate', '');
-    this.setActiveTab('');
+    this.setActiveTabs('');
     hideTooltip();
     hideContextMenu();
 
     if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {
       game.trigger('cancel-trade');
     }
+
+    if (this.temporaryTabsInclude('crafting')) {
+      this.handleTemporaryTab({
+        tab: CRAFTING_TAB as any,
+        side: 'left',
+        shouldOpen: false,
+        fullClose: true,
+      });
+    }
+  }
+
+  private temporaryTabsInclude = (name: string) => {
+    const { tabsLeft, tabsRight } = this.state;
+    return _.find(tabsLeft, tab => _.includes(tab.name, name)) || _.find(tabsRight, tab => _.includes(tab.name, name));
   }
 
   private isAlreadyOpen = (name: string) => {

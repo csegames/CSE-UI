@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { utils } from '@csegames/camelot-unchained';
 
 import { colors } from '../../../../lib/constants';
 import { ContainerColor } from 'gql/interfaces';
@@ -22,7 +21,6 @@ const Header = styled.div`
   justify-content: space-between;
   padding: 2px 5px;
   color: #B6AEAC;
-  background-color: ${(props: any) => props.color};
 `;
 
 const Content = styled.div`
@@ -33,7 +31,6 @@ const Content = styled.div`
   align-items: center;
   padding: 5px 0px;
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.7);
-  background-color: ${(props: any) => props.color};
   &::-webkit-scrollbar {
     width: 15px;
   }
@@ -44,7 +41,6 @@ const Footer = styled.div`
   align-items: center;
   padding: 2px 5px;
   color: #B6AEAC
-  background-color: ${(props: any) => props.color};
 `;
 
 export const CloseButton = styled.div`
@@ -69,13 +65,15 @@ class ContainerView extends React.PureComponent<ContainerViewProps> {
     const contentColor = this.getPrimaryColor(0.3).toString();
     return (
       <Container>
-        <Header color={headerFooterColor}>
+        <Header style={{ backgroundColor: headerFooterColor }}>
           {this.props.headerContent()}
         </Header>
-        <Content color={contentColor} ref={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
+        <Content
+          style={{ backgroundColor: contentColor }}
+          ref={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
           {this.props.mainContent()}
         </Content>
-        <Footer color={headerFooterColor}>
+        <Footer style={{ backgroundColor: headerFooterColor }}>
           {this.props.footerContent()}
         </Footer>
       </Container>
@@ -87,7 +85,7 @@ class ContainerView extends React.PureComponent<ContainerViewProps> {
     if (containerColor) {
       return `rgba(${containerColor.r}, ${containerColor.g}, ${containerColor.b}, ${alpha})`;
     } else {
-      return utils.lightenColor(colors.filterBackgroundColor, 5);
+      return colors.filterBackgroundColor;
     }
   }
 }

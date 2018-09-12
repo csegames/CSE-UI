@@ -11,7 +11,7 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 import eventNames, { EquipItemPayload, InventoryDataTransfer, EquippedItemDataTransfer } from '../../../lib/itemEvents';
-import { defaultSlotIcons, placeholderIcon } from '../../../lib/constants';
+import { defaultSlotIcons, placeholderIcon, GearSlots } from '../../../lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import {
@@ -154,7 +154,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     const { equippedItem, slotName, itemMenuVisible } = this.props;
     const iconUrl = (equippedItem && equippedItem.item.staticDefinition && equippedItem.item.staticDefinition.iconUrl) ||
       `${defaultSlotIcons[slotName]} \ ${defaultIconStyle}`;
-    const isRightSlot = _.includes(slotName.toLowerCase(), 'right') || slotName === gearSlots.OneHandedWeaponRight;
+    const isRightSlot = _.includes(slotName.toLowerCase(), 'right') || slotName === GearSlots.OneHandedWeaponRight;
     const flipIcon = isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
     const flipSlotPlaceholderIcon = !isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
     return (
@@ -276,7 +276,6 @@ const DraggableEquippedItem = withDragAndDrop<DraggableEquippedItemProps>(
   (props: DraggableEquippedItemProps) => ({
     id: props.equippedItem && props.equippedItem.item.id,
     dataKey: 'inventory-items',
-    scrollBodyId: 'inventory-scroll-container',
     dropTarget: true,
     disableDrag: !props.equippedItem || props.disableDrag,
   }),

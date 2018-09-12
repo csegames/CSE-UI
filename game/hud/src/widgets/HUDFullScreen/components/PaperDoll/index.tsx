@@ -74,6 +74,28 @@ const CharacterInfoContainer = styled.div`
   margin-top: 20px;
 `;
 
+const LoadingOverlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  pointer-events: all;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
+
+const RefreshTitle = styled.div`
+  font-size: 35px;
+  color: white;
+`;
+
 export interface EquippedItemsMap {
   [slotName: string]: any;
 }
@@ -105,6 +127,11 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
           this.graphql = graphql;
           return (
             <Container style={{ backgroundImage: `url(${this.paperdollBG})` }}>
+              {graphql.loading &&
+                <LoadingOverlay>
+                  <RefreshTitle>Loading...</RefreshTitle>
+                </LoadingOverlay>
+              }
               <NameBackground />
               <PaperdollContainer>
                 <CharacterInfoContainer>

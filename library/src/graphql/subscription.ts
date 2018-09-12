@@ -190,7 +190,7 @@ export class SubscriptionManager {
     }
     this.socket.send(JSON.stringify({
       type: GQL_CONNECTION_INIT,
-      payload: this.initPayload(),
+      payload: this.initPayload,
     }));
     if (this.messageQueue.length > 0) {
       this.messageQueue.forEach((m) => {

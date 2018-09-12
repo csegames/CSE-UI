@@ -37,9 +37,6 @@ export interface InjectedCraftingContainerProps {
   myTradeItems: InventoryItem.Fragment[];
   inventoryItems: InventoryItem.Fragment[];
   stackGroupIdToItemIDs: {[id: string]: string[]};
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
-  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: base.ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
 }
 
 export interface CraftingContainerProps {
@@ -187,9 +184,7 @@ class CraftingContainerWithInjectedContext extends React.Component<CraftingConta
               {({
                 inventoryItems,
                 stackGroupIdToItemIDs,
-                onChangeContainerIdToDrawerInfo,
-                onChangeStackGroupIdToItemIDs,
-                onChangeInventoryItems,
+                onUpdateState,
               }) => {
                 return (
                   <CraftingContainer
@@ -197,9 +192,6 @@ class CraftingContainerWithInjectedContext extends React.Component<CraftingConta
                     myTradeItems={myTradeItems}
                     inventoryItems={inventoryItems}
                     stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
-                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
-                    onChangeInventoryItems={onChangeInventoryItems}
                   />
                 );
               }}

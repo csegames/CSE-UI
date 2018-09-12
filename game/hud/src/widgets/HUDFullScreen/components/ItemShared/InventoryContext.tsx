@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { events } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import { query } from '../Inventory/graphql/query';
@@ -19,8 +18,6 @@ import eventNames, {
   CombineStackPayload,
 } from '../../lib/itemEvents';
 import {
-  InventoryBaseState,
-  InventoryBaseProps,
   ContainerIdToDrawerInfo,
   SlotNumberToItem,
   ItemIDToInfo,
@@ -33,6 +30,8 @@ import {
   distributeItemsNoFilter,
   onCombineStackClient,
   onCombineStackServer,
+  moveInventoryItemOutOfInventory,
+  DrawerSlotNumberToItem,
 } from './InventoryBase';
 
 export interface InventoryContextProps {
@@ -50,13 +49,13 @@ export interface InventoryContextState {
   graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
 
   initializeInventory: () => void;
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
-  onChangeSlotNumberToItem: (slotNumberToItem: SlotNumberToItem) => void;
-  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
+  onUpdateState: (newState: Partial<InventoryContextState>) => void;
   onMoveInventoryItem: (payload: MoveInventoryItemPayload) => void;
   onMoveStack: (payload: MoveStackPayload) => void;
   onCombineStack: (payload: CombineStackPayload) => void;
+  onMoveInventoryItemOutOfInventory: (dragItemData: InventoryDataTransfer) => void;
+  onAddContainer: (containerID: string, drawerID: string, drawerSlotNumberToItem: DrawerSlotNumberToItem) => void;
+  onRemoveContainer: (containerID: string) => void;
 }
 
 export const defaultInventoryContextValue: InventoryContextState = {
@@ -69,13 +68,13 @@ export const defaultInventoryContextValue: InventoryContextState = {
   graphql: null,
 
   initializeInventory: () => {},
-  onChangeInventoryItems: () => {},
-  onChangeSlotNumberToItem: () => {},
-  onChangeContainerIdToDrawerInfo: () => {},
-  onChangeStackGroupIdToItemIDs: () => {},
+  onUpdateState: () => {},
   onMoveInventoryItem: () => {},
   onMoveStack: () => {},
   onCombineStack: () => {},
+  onMoveInventoryItemOutOfInventory: () => {},
+  onAddContainer: () => {},
+  onRemoveContainer: () => {},
 };
 
 export const InventoryContext = React.createContext(defaultInventoryContextValue);
@@ -83,33 +82,28 @@ export const InventoryContext = React.createContext(defaultInventoryContextValue
 export interface MoveInventoryItemPayload {
   dragItemData: InventoryDataTransfer;
   dropZoneData: InventoryDataTransfer;
-  state: InventoryBaseState;
-  props: InventoryBaseProps;
-  containerIdToDrawerInfo: ContainerIdToDrawerInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
-  inventoryItems: InventoryItem.Fragment[];
 }
 
 class InventoryContextProvider extends React.Component<InventoryContextProps, InventoryContextState> {
   private graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
-  private updateInventoryItemsHandler: number;
+  private updateInventoryItemsHandler: EventHandle;
   constructor(props: InventoryContextProps) {
     super(props);
     this.state = {
       ...defaultInventoryContextValue,
-      onChangeInventoryItems: this.onChangeInventoryItems,
-      onChangeSlotNumberToItem: this.onChangeSlotNumberToItem,
-      onChangeContainerIdToDrawerInfo: this.onChangeContainerIdToDrawerInfo,
-      onChangeStackGroupIdToItemIDs: this.onChangeStackGroupIdToItemIDs,
+      onUpdateState: this.onUpdateState,
       onMoveInventoryItem: this.onMoveInventoryItem,
       onMoveStack: this.onMoveStack,
       onCombineStack: this.onCombineStack,
+      onMoveInventoryItemOutOfInventory: this.onMoveInventoryItemOutOfInventory,
+      onAddContainer: this.onAddContainer,
+      onRemoveContainer: this.onRemoveContainer,
     };
   }
 
   public render() {
     return (
-      <GraphQL query={{ query }} onQueryResult={this.handleQueryResult}>
+      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           const contextValue: InventoryContextState = {
             ...this.state,
@@ -126,13 +120,15 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
   }
 
   public componentDidMount() {
-    this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
+    this.updateInventoryItemsHandler = game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
   }
 
-  public componentDidUpdate(prevProps: InventoryContextProps, prevState: InventoryContextState) {
-    const inventoryWasOpened = (this.props.visibleComponentLeft === 'inventory-left' &&
-      prevProps.visibleComponentLeft !== 'inventory-left') || (this.props.visibleComponentRight === 'inventory-right' &&
-        prevProps.visibleComponentRight !== 'inventory-right');
+  public componentDidUpdate(prevProps: InventoryContextProps) {
+    const leftInventoryOpened = this.props.visibleComponentLeft === 'inventory-left' &&
+      prevProps.visibleComponentLeft === '';
+    const rightInventoryOpened = this.props.visibleComponentRight === 'inventory-right' &&
+      prevProps.visibleComponentRight === '';
+    const inventoryWasOpened = leftInventoryOpened || rightInventoryOpened;
     if (inventoryWasOpened) {
       this.refetch();
       return;
@@ -140,20 +136,20 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
   }
 
   public componentWillUnmount() {
-    events.off(this.updateInventoryItemsHandler);
+    this.updateInventoryItemsHandler.clear();
   }
 
   private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
     this.graphql = graphql;
     if (!graphql || graphql.loading || graphql.lastError !== 'OK') return graphql;
+
     this.initializeInventory(graphql.data.myInventory.items);
     return graphql;
   }
 
-  private refetch = async () => {
+  private refetch = async (disableLoading?: boolean) => {
     if (!this.graphql) return;
-    this.graphql.refetch();
-    events.fire('refetch-character-info');
+    this.graphql.refetch(disableLoading);
   }
 
   private initializeInventory(inventoryItems: InventoryItem.Fragment[]) {
@@ -174,12 +170,11 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
       items: inventoryItems,
     };
 
-    return distributeItemsNoFilter({
-      itemData,
-      onChangeContainerIdToDrawerInfo: this.onChangeContainerIdToDrawerInfo,
-      onChangeStackGroupIdToItemIDs: this.onChangeStackGroupIdToItemIDs,
-      onChangeInventoryItems: this.onChangeInventoryItems,
-    });
+    return distributeItemsNoFilter({ itemData, containerIdToDrawerInfo: this.state.containerIdToDrawerInfo });
+  }
+
+  private onUpdateState = (newState: Partial<InventoryContextState>) => {
+    this.setState(state => ({ ...state, ...newState }));
   }
 
   private onUpdateInventoryOnEquip = (payload: UpdateInventoryItemsPayload) => {
@@ -196,11 +191,25 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
     ));
   }
 
+  private onMoveInventoryItemOutOfInventory = (dragItemData: InventoryDataTransfer) => {
+    const { containerIdToDrawerInfo, stackGroupIdToItemIDs, itemIdToInfo, slotNumberToItem, inventoryItems } = this.state;
+    this.setState(() => {
+      return moveInventoryItemOutOfInventory({
+        dragItemData,
+        containerIdToDrawerInfo,
+        stackGroupIdToItemIDs,
+        itemIdToInfo,
+        slotNumberToItem,
+        inventoryItems,
+      });
+    });
+  }
+
   private onMoveInventoryItem = (payload: MoveInventoryItemPayload) => {
     this.setState(() => {
-      const { dragItemData, dropZoneData, inventoryItems } = payload;
-      const { containerIdToDrawerInfo, stackGroupIdToItemIDs, slotNumberToItem, itemIdToInfo } = this.state;
-      if (dropZoneData.slotType === SlotType.Empty) {
+      const { dragItemData, dropZoneData } = payload;
+      const { containerIdToDrawerInfo, stackGroupIdToItemIDs, inventoryItems, slotNumberToItem, itemIdToInfo } = this.state;
+      if (!dropZoneData || dropZoneData.slotType === SlotType.Empty) {
         return moveInventoryItemToEmptySlot({
           dragItemData,
           dropZoneData,
@@ -264,20 +273,24 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
     });
   }
 
-  private onChangeSlotNumberToItem = (slotNumberToItem: SlotNumberToItem) => {
-    this.setState({ slotNumberToItem });
-  }
+  private onAddContainer = (containerID: string, drawerID: string, drawerSlotNumberToItem: DrawerSlotNumberToItem) => {
+    const containerIdToDrawerInfo = { ...this.state.containerIdToDrawerInfo };
+    if (containerIdToDrawerInfo[containerID]) return;
+    containerIdToDrawerInfo[containerID] = {
+      drawers: {
+        [drawerID]: drawerSlotNumberToItem,
+      },
+    };
 
-  private onChangeInventoryItems = (inventoryItems: InventoryItem.Fragment[]) => {
-    this.setState({ inventoryItems });
-  }
-
-  private onChangeContainerIdToDrawerInfo = (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => {
     this.setState({ containerIdToDrawerInfo });
   }
 
-  private onChangeStackGroupIdToItemIDs = (stackGroupIdToItemIDs: {[id: string]: string[]}) => {
-    this.setState({ stackGroupIdToItemIDs });
+  private onRemoveContainer = (containerID: string) => {
+    const containerIdToDrawerInfo = { ...this.state.containerIdToDrawerInfo };
+    if (!containerIdToDrawerInfo[containerID]) return;
+
+    delete containerIdToDrawerInfo[containerID];
+    this.setState({ containerIdToDrawerInfo });
   }
 }
 

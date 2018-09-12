@@ -11,10 +11,10 @@ import { ItemLocationFragment } from './ItemLocationFragment';
 import { ItemActionsFragment } from './ItemActionsFragment';
 import { ItemStatsFragment } from './ItemStatsFragment';
 import { EquipRequirementFragment } from './EquipRequirementFragment';
-import { GearSlotDefRefFragment } from './GearSlotDefRefFragment';
 import { PermissibleHolderFragment } from './PermissibleHolderFragment';
 import { RequirementsFragment } from './RequirementsFragment';
 import { ContainerStatsFragment } from './ContainerStatsFragment';
+import { ItemDefRefFragment } from './ItemDefRefFragment';
 
 export const ContainedItemsFragment = gql`
   fragment ContainedItems on Item {
@@ -37,27 +37,7 @@ export const ContainedItemsFragment = gql`
       ...EquipRequirement
     }
     staticDefinition {
-      id
-      description
-      name
-      iconUrl
-      itemType
-      defaultResourceID
-      isStackableItem
-      deploySettings {
-        resourceID
-        isDoor
-        snapToGround
-        rotateYaw
-        rotatePitch
-        rotateRoll
-      }
-      gearSlotSets {
-        gearSlots {
-          ...GearSlotDefRef
-        }
-      }
-      isVox
+      ...ItemDefRef
     }
     permissibleHolder {
       ...PermissibleHolder
@@ -90,27 +70,7 @@ export const ContainedItemsFragment = gql`
           ...EquipRequirement
         }
         staticDefinition {
-          id
-          description
-          name
-          iconUrl
-          itemType
-          defaultResourceID
-          isStackableItem
-          deploySettings {
-            resourceID
-            isDoor
-            snapToGround
-            rotateYaw
-            rotatePitch
-            rotateRoll
-          }
-          gearSlotSets {
-            gearSlots {
-              ...GearSlotDefRef
-            }
-          }
-          isVox
+          ...ItemDefRef
         }
         permissibleHolder {
           ...PermissibleHolder
@@ -123,7 +83,7 @@ export const ContainedItemsFragment = gql`
   ${ItemActionsFragment}
   ${ItemStatsFragment}
   ${EquipRequirementFragment}
-  ${GearSlotDefRefFragment}
+  ${ItemDefRefFragment}
   ${PermissibleHolderFragment}
   ${RequirementsFragment}
   ${ContainerStatsFragment}

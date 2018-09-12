@@ -112,7 +112,7 @@ export interface GraphQLData<T> {
 
 export interface GraphQLResult<T> extends GraphQLData<T> {
   client: GraphQLClient;
-  refetch: () => void;
+  refetch: (disableLoading?: boolean) => Promise<GraphQLResult<T>>;
 }
 
 export interface GraphQLInjectedProps<T> {
@@ -256,12 +256,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     );
   }
 
-  public shouldComponentUpdate(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>,
-      nextState: GraphQLState<QueryDataType>) {
-    if (!_.isEqual(this.state, nextState)) return true;
-    if (!_.isEqual(this.props, nextProps)) return true;
-    return false;
-  }
+  // public shouldComponentUpdate(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>,
+  //     nextState: GraphQLState<QueryDataType>) {
+  //   // if (!_.isEqual(this.state, nextState)) return true;
+  //   // if (!_.isEqual(this.props, nextProps)) return true;
+  //   // return false;
+  // }
 
   public componentDidMount() {
     if (this.queryOptions && this.queryOptions.pollInterval && this.queryOptions.pollInterval > 0) {
@@ -290,6 +290,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         q = nextProps.query;
       }
       this.query = withDefaults(q, defaultQuery);
+      this.refetch();
     }
   }
 
@@ -323,14 +324,14 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     console.error(e);
   }
 
-  private refetch = async () => {
+  private refetch = async (disableLoading?: boolean) => {
     if (!this.query) return;
     const query = this.updateConfig();
-    await this.refetchQuery(query);
+    return await this.refetchQuery(query, disableLoading);
   }
 
-  private refetchQuery = async (query?: GraphQLQuery | undefined) => {
-    if (this.state.loading === false) {
+  private refetchQuery = async (query?: GraphQLQuery | undefined, disableLoading?: boolean) => {
+    if (!disableLoading && this.state.loading === false) {
       this.setState({ loading: true });
     }
     let result: GraphQLQueryResult<QueryDataType>;
@@ -346,11 +347,16 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       lastError: result.statusText,
     };
     this.setState(state);
-    this.props.onQueryResult && this.props.onQueryResult({
-      ...state,
-      client: this.client,
-      refetch: this.refetch,
-    });
+    if (this.props.onQueryResult) {
+      const queryResult = {
+        ...state,
+        client: this.client,
+        refetch: this.refetch,
+      };
+      this.props.onQueryResult(queryResult);
+
+      return queryResult;
+    }
   }
 
   private pollingRefetch = async () => {
@@ -377,7 +383,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         });
 
         const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
-        this.query = withDefaults(q, defaultQuery);
+        this.query = withDefaults(q, this.query);
       }
     } else {
       const defaultOpts = game.graphQL.defaultOptions();

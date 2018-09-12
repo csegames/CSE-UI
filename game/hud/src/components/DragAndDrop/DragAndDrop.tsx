@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import DragStore, { getDragStore, defaultDragStoreState } from './DragStore';
+import DragStore, { getDragStore } from './DragStore';
 
 export interface PositionInformation {
   top: number;
@@ -145,7 +145,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       private draggableRef: any;
 
       private mouseDownTimeout: number;
-      private startDragListener: number;
+      private startDragListener: EventHandle;
       private initialPosition: PositionInformation;
       private dimensions: { height: number; width: number; top: number; left: number; };
       private onScroll = _.throttle(() => {
@@ -188,10 +188,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         // Init position of items
         this.mounted = true;
 
-        // onResize re init position of items
-        window.addEventListener('resize', this.initPosition);
-
-        this.startDragListener = events.on('start-drag', this.startDrag);
+        this.startDragListener = game.on('start-drag', this.startDrag);
 
         // If scrollBodyId provided then addEventListener scroll
         if (this.options && this.options.scrollBodyId) {
@@ -238,13 +235,9 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       public componentWillUnmount() {
         // Clear initPosition timeout
         this.mounted = false;
-        DragStore.setDragStoreInfo(defaultDragStoreState);
 
         window.clearTimeout(this.mouseDownTimeout);
-        events.off(this.startDragListener);
-
-        // Remove listener for onResize re init
-        window.removeEventListener('resize', this.initPosition);
+        this.startDragListener.clear();
 
         // If scrollBodyId provided then removeEventListener scroll
         if (this.options && this.options.scrollBodyId) {
@@ -298,6 +291,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
             this.setState({ dragItemIsOver: true });
             DragStore.setDragStoreInfo({ dropTargetRef: this.draggableRef });
 
+            e.persist();
             const dragEvent = this.createDragEvent(e);
             if (this.draggableRef && this.draggableRef.onDragOver) {
               this.draggableRef.onDragOver(dragEvent);
@@ -316,6 +310,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
 
           DragStore.setDragStoreInfo({ dropTargetRef: null });
 
+          e.persist();
           const dragEvent = this.createDragEvent(e);
           if (this.draggableRef && this.draggableRef.onDragLeave) {
             this.draggableRef.onDragLeave(dragEvent);
@@ -327,11 +322,13 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         if (e.button === 2) return;
         if (!this.dimensions) {
           this.initPosition();
+          e.persist();
           setTimeout(() => this.onMouseDown(e));
           return;
         }
         if (this.mounted && !this.options.disableDrag && this.initialPosition) {
-          this.mouseDownTimeout = window.setTimeout(() => this.startDrag(this.options.id, { e }), 150);
+          e.persist();
+          this.mouseDownTimeout = window.setTimeout(() => this.startDrag(this.options.id, { e }), 200);
         }
       }
 
@@ -339,18 +336,17 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
         window.clearTimeout(this.mouseDownTimeout);
       }
 
-      private startDrag = async (id: string, payload: Partial<StartDragOptions>) => {
-        // Call onDragStart if it is defined
+      private startDrag = (id: string, payload: Partial<StartDragOptions>) => {
         if (this.options.id === id) {
           if (!this.initialPosition) {
-            await this.initPosition();
+            this.initPosition();
           }
           this.initDragStoreInfo(payload);
         }
       }
 
-      private initDragStoreInfo = async (payload: Partial<StartDragOptions>) => {
-        await DragStore.setDragStoreInfo({
+      private initDragStoreInfo = (payload: Partial<StartDragOptions>) => {
+        DragStore.setDragStoreInfo({
           draggableRef: this.draggableRef,
           draggableData: payload.draggableData || this.draggableRef.data(),
           draggableInitPosition: this.initialPosition,

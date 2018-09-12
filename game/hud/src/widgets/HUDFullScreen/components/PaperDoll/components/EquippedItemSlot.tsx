@@ -96,7 +96,7 @@ export interface EquippedItemSlotState {
   itemIsOverBGColor: string;
 }
 
-export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, EquippedItemSlotState> {
+export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps, EquippedItemSlotState> {
   private ref: HTMLDivElement;
   constructor(props: EquippedItemSlotProps) {
     super(props);

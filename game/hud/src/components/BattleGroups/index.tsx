@@ -132,6 +132,11 @@ class BattleGroupsList extends React.Component<Props, State> {
       return true;
     }
 
+    if (this.receivedMemberUpdate) {
+      this.receivedMemberUpdate = false;
+      return true;
+    }
+
     if (!isEqual(this.state.groups, nextState.groups)) {
       return true;
     }

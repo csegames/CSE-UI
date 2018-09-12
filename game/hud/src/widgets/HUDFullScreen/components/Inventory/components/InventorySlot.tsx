@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
-import DraggableItemComponent from './DraggableItemComponent';
+import DraggableInventoryItem from './DraggableInventoryItem';
 import EmptyItemDropZone from './EmptyItemDropZone';
 import { getDragStore } from '../../../../../components/DragAndDrop/DragStore';
 import {
@@ -21,6 +21,7 @@ import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } 
 import eventNames, { EquipItemPayload, InventoryDataTransfer, CombineStackPayload } from '../../../lib/itemEvents';
 import { SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
 import { showContextMenuContent } from 'actions/contextMenu';
+import ContextMenuContent from './ContextMenu/ContextMenuContent';
 
 declare const toastr: any;
 
@@ -105,7 +106,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             <ItemImage
               src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
             />
-            <DraggableItemComponent
+            <DraggableInventoryItem
               item={item}
               filtering={this.props.filtering}
               onDrop={this.props.onDropOnZone}
@@ -130,6 +131,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
         />
         <EmptyItemDropZone
+          filtering={this.props.filtering}
           slotType={this.props.item.slotType}
           disableDrop={this.props.item.disableDrop}
           slotIndex={this.props.item.slotIndex}
@@ -166,7 +168,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
               syncWithServer={this.props.syncWithServer}
               containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
               drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
-              onMoveStack={() => {}}
               onContextMenuShow={this.onContextMenuContentShow}
               onContextMenuHide={this.onContextMenuContentHide}
             />

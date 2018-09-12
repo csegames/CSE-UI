@@ -118,6 +118,7 @@ export type State = {
   content: JSX.Element;
   items: MenuItem[];
   clientPosition: Vec2f;
+  hasCustomOverlay: boolean;
 };
 
 export class ContextMenuView extends React.Component<Props, State> {
@@ -138,6 +139,7 @@ export class ContextMenuView extends React.Component<Props, State> {
         x: -1000,
         y: -1000,
       },
+      hasCustomOverlay: false,
     };
     this.eventHandles.push(actions.onShowContextMenu(this.onShowContextMenu));
     this.eventHandles.push(actions.onShowContextMenuContent(this.onShowContextMenuContent));
@@ -155,44 +157,50 @@ export class ContextMenuView extends React.Component<Props, State> {
       <UIContext.Consumer>
         {
           (ui) => {
-            const color = ui.currentTheme().toolTips.color[game.selfPlayerState.faction];
-            return (
+            return this.state.hasCustomOverlay ? this.renderContextMenu(ui) : (
               <Container
                 id='context-menu'
                 data-input-group='block'
                 onMouseDown={this.hide}
               >
-                <Overlay
-                  onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
-                  color={color}
-                  ref={this.refCallback}
-                  style={{
-                    position: 'fixed',
-                    ...this.state.styledPosition,
-                  }}>
-                  <HeaderOverlay color={color} />
-                  {this.state.content && this.state.content}
-                  {
-                    this.state.items &&
-                      this.state.items.map(item => (
-                        <Item
-                          key={item.title}
-                          color={'yellow'}
-                          onMouseDown={(event: React.MouseEvent) => {
-                            event.stopPropagation();
-                            this.hide();
-                            item.onSelected();
-                          }}>
-                          {item.title}
-                        </Item>
-                      ))
-                  }
-                </Overlay>
+                {this.renderContextMenu(ui)}
               </Container>
             );
           }
         }
       </UIContext.Consumer>
+    );
+  }
+
+  private renderContextMenu = (uiContext: UIContext) => {
+    const color = uiContext.currentTheme().toolTips.color[game.selfPlayerState.faction];
+    return (
+      <Overlay
+        onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+        color={color}
+        ref={this.refCallback}
+        style={{
+          position: 'fixed',
+          ...this.state.styledPosition,
+        }}>
+        <HeaderOverlay color={color} />
+        {this.state.content && this.state.content}
+        {
+          this.state.items &&
+            this.state.items.map(item => (
+              <Item
+                key={item.title}
+                color={'yellow'}
+                onMouseDown={(event: React.MouseEvent) => {
+                  event.stopPropagation();
+                  this.hide();
+                  item.onSelected();
+                }}>
+                {item.title}
+              </Item>
+            ))
+        }
+      </Overlay>
     );
   }
 
@@ -224,7 +232,6 @@ export class ContextMenuView extends React.Component<Props, State> {
 
   private hide = () => {
     if (this.state.show === false) return;
-
     this.setState({
       show: false,
       styledPosition: {
@@ -236,18 +243,7 @@ export class ContextMenuView extends React.Component<Props, State> {
     });
   }
 
-  private onShowContextMenuContent = (content: JSX.Element, event: MouseEvent) => {
-    if (!content) return;
-
-    this.setState({
-      show: true,
-      styledPosition: this.getStyledPosition(event),
-      items: [],
-      content,
-    });
-  }
-
-  private onShowContextMenuContent = (content: JSX.Element, event: React.MouseEvent) => {
+  private onShowContextMenuContent = (content: JSX.Element, event: React.MouseEvent, hasCustomOverlay?: boolean) => {
     if (!content) return;
 
     this.setState({
@@ -258,10 +254,11 @@ export class ContextMenuView extends React.Component<Props, State> {
         x: event.clientX,
         y: event.clientY,
       },
+      hasCustomOverlay: hasCustomOverlay || false,
     });
   }
 
-  private onShowContextMenu = (items: MenuItem[], event: React.MouseEvent) => {
+  private onShowContextMenu = (items: MenuItem[], event: React.MouseEvent, hasCustomOverlay?: boolean) => {
     // If there are no items, dont show context menu
     if (isEmpty(items)) return;
 
@@ -273,6 +270,7 @@ export class ContextMenuView extends React.Component<Props, State> {
         x: event.clientX,
         y: event.clientY,
       },
+      hasCustomOverlay: hasCustomOverlay || false,
     });
   }
 }

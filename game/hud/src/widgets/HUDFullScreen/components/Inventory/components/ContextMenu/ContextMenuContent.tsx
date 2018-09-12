@@ -8,11 +8,13 @@ import * as React from 'react';
 import { includes } from 'lodash';
 import { webAPI } from '@csegames/camelot-unchained';
 
-import { hideContextMenu } from 'actions/contextMenu';
 import ContextMenuAction from './ContextMenuAction';
-import { InventoryContext } from '../../../ItemShared/InventoryContext';
-import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload, MoveStackPayload } from '../../../../lib/itemEvents';
-import { GearSlotDefRef, InventoryItem } from 'gql/interfaces';
+import { hideContextMenu } from 'actions/contextMenu';
+import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/itemEvents';
+import {
+  GearSlotDefRef,
+  InventoryItem,
+} from 'gql/interfaces';
 import {
   prettifyText,
   hasGroundPermissions,
@@ -26,7 +28,6 @@ declare const toastr: any;
 export interface InjectedContextedMenuContentProps {
   visibleComponentRight: string;
   visibleComponentLeft: string;
-  onMoveStack: (payload: MoveStackPayload) => void;
 }
 
 export interface ContextMenuProps {
@@ -34,7 +35,6 @@ export interface ContextMenuProps {
   syncWithServer: () => void;
   containerID: string[];
   drawerID: string;
-  onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
   onContextMenuShow: () => void;
   onContextMenuHide: () => void;
 }
@@ -64,6 +64,14 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
             />
           );
         }) : null}
+        {/* TODO
+        {isStackedItem(item) &&
+          <ContextMenuAction
+            name={'Move half'}
+            onActionClick={() => this.props.onMoveStack(item, Math.floor(item.stats.item.unitCount / 2))}
+            syncWithServer={this.props.syncWithServer}
+          />
+        } */}
         {item.actions && item.actions.map((action) => {
           if (!action.enabled && !action.showWhenDisabled) {
             return null;
@@ -163,22 +171,16 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     hideContextMenu();
   }
 
-  private onDeployItem = (e: React.MouseEvent<HTMLDivElement>, action?: InventoryItem.Actions) => {
+  private onDeployItem = (action?: InventoryItem.Actions) => {
     const { id, staticDefinition } = this.props.item;
     this.closeInventory();
-    const deploySettings = {};
-    Object.keys(staticDefinition.deploySettings).forEach((key) => {
-      if (key !== 'resourceID') {
-        deploySettings[key] = staticDefinition.deploySettings[key];
-      }
-    });
 
     game.itemPlacementMode.requestStart(staticDefinition.numericItemDefID, id, (action && action.id) || '');
   }
 
-  private onActionClick = (e: React.MouseEvent<HTMLDivElement>, action: InventoryItem.Actions) => {
+  private onActionClick = (action: InventoryItem.Actions) => {
     if (action.uIReaction === 'PlacementMode') {
-      this.onDeployItem(e, action);
+      this.onDeployItem(action);
       this.closeInventory();
     } else {
       this.makeItemActionRequest(action);
@@ -252,18 +254,11 @@ class ContextMenuContentWithInjectedProps extends React.Component<ContextMenuPro
       <FullScreenContext.Consumer>
         {({ visibleComponentLeft, visibleComponentRight }) => {
           return (
-            <InventoryContext.Consumer>
-              {({ onMoveStack }) => {
-                return (
-                  <ContextMenuContent
-                    {...this.props}
-                    onMoveStack={onMoveStack}
-                    visibleComponentLeft={visibleComponentLeft}
-                    visibleComponentRight={visibleComponentRight}
-                  />
-                );
-              }}
-            </InventoryContext.Consumer>
+            <ContextMenuContent
+              {...this.props}
+              visibleComponentLeft={visibleComponentLeft}
+              visibleComponentRight={visibleComponentRight}
+            />
           );
         }}
       </FullScreenContext.Consumer>

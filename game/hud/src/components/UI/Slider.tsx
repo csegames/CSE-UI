@@ -6,20 +6,20 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from '@csegames/linaria/react';
 import * as CSS from '../../lib/css-helper';
 
 const HANDLE_BG_COLOR = 'rgb(15,16,18)';
 const HANDLE_FG_COLOR = 'rgb(252,211,179)';
 
-const SlidingSpace = styled('div')`
+const SlidingSpace = styled.div`
   position: relative;
   width: 100%;
   height: 33px;
   ${CSS.ALLOW_MOUSE}
 `;
 
-const SliderRule = styled('div')`
+const SliderRule = styled.div`
   position: absolute;
   top: 15px;
   height: 3px;
@@ -29,7 +29,7 @@ const SliderRule = styled('div')`
   pointer-events: none;
 `;
 
-const SliderHandle = styled('div')`
+const SliderHandle = styled.div`
   position: absolute;
   top: 9px;
   left: 0;
@@ -158,7 +158,7 @@ export class Slider extends React.Component<Props, State> {
         this.props.onChange(value);
         this.changeTimeout = null;
       },
-      this.props.updateInterval || 100,
+      typeof this.props.updateInterval === 'number' ? this.props.updateInterval : 100,
     );
   }
 }

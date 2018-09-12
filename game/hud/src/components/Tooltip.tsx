@@ -1,4 +1,4 @@
-  /*
+ /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -163,13 +163,11 @@ export class TooltipView extends React.Component<{}, TooltipState> {
       </UIContext.Consumer>
     ) : null;
   }
-
   public componentDidMount() {
     window.addEventListener('mousemove', this.onMouseMove);
     this.eventHandles.push(onShowTooltip(this.handleShowTooltip));
     this.eventHandles.push(onHideTooltip(this.handleHideTooltip));
   }
-
   public componentWillUnmount() {
     window.removeEventListener('mousemove', this.onMouseMove);
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
@@ -209,7 +207,6 @@ export class TooltipView extends React.Component<{}, TooltipState> {
     this.tooltipRef.style.left = left + 'px';
     this.tooltipRef.style.top = top + 'px';
   }
-
   private handleShowTooltip = (payload: ShowTooltipPayload) => {
     const { content, event, shouldAnimate, styles } = payload;
     // this.updatePosition();
@@ -221,7 +218,6 @@ export class TooltipView extends React.Component<{}, TooltipState> {
       shouldAnimate,
     });
   }
-
   private handleHideTooltip = () => {
     this.setState({ show: false, content: null, styles: {} });
   }
@@ -245,7 +241,6 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
     if (!this.props.children) {
       return null;
     }
-
     if (typeof this.props.children === 'string') {
       return <span onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseLeave}>{this.props.children}</span>;
     }
@@ -312,7 +307,6 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
       });
     }
   }
-
   private handleMouseLeave = () => {
     if (!this.isMouseOver) return;
     this.isMouseOver = false;

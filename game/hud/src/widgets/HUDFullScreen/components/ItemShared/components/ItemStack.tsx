@@ -7,20 +7,21 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { placeholderIcon } from '../../lib/constants';
-import { StandardSlot } from '../Inventory/components/DraggableItemComponent';
+import { placeholderIcon } from '../../../lib/constants';
+import { StandardSlot } from '../../Inventory/components/DraggableInventoryItem';
 
 const Container = styled.div`
-  width: 100%;
-  height: 100%;
+  width: ${(props: any) => `${props.width}px` || '100%'};
+  height: ${(props: any) => `${props.height}px` || '100%'};
   position: relative;
   cursor: pointer;
 `;
 
 const TextContainer = styled.header`
   position: absolute;
+  right: 0;
   left: 0;
-  width: 100%;
+  bottom: 0;
   background: inherit;
   overflow: hidden;
   cursor: inherit;
@@ -72,6 +73,10 @@ const Text = styled.div`
 export interface ItemStackProps {
   count: number;
   icon: string;
+  width?: number;
+  height?: number;
+  onMouseOver?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export interface ItemStackState {
@@ -81,7 +86,11 @@ export class ItemStack extends React.Component<ItemStackProps, ItemStackState> {
   public render() {
     const slotIcon = this.props.icon || placeholderIcon;
     return (
-      <Container>
+      <Container
+        width={this.props.width}
+        height={this.props.height}
+        onMouseOver={this.props.onMouseOver}
+        onMouseLeave={this.props.onMouseLeave}>
         <StandardSlot src={slotIcon} />
         <TextContainer className={Footer}>
           <Text>{this.props.count}</Text>

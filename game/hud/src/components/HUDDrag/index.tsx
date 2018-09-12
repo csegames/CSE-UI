@@ -208,12 +208,11 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   public componentDidMount() {
     window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousemove', this.onMouseMove);
   }
 
-  public componentDidUnMount() {
+  public componentWillUnmount() {
     window.removeEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('mousemove', this.onMouseMove);
   }
 
   public componentWillReceiveProps(nextProps: HUDDragProps) {
@@ -298,9 +297,17 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
   }
 
   private setMode = (m: EditMode) => {
-    this.setState({
-      mode: m,
-    } as any);
+    if (m !== EditMode.NONE && this.state.mode === EditMode.NONE) {
+      // Add mousemove listener
+      window.addEventListener('mousemove', this.onMouseMove);
+    }
+
+    if (m === EditMode.NONE && this.state.mode !== m) {
+      // Remove mousemove listener
+      window.removeEventListener('mousemove', this.onMouseMove);
+    }
+
+    this.setState({ mode: m });
   }
 
   private mouseMovement = (e: MouseEvent) => {

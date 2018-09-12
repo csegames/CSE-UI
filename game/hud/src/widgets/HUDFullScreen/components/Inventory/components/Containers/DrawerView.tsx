@@ -12,6 +12,7 @@ import { getContainerColor } from '../../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
 const Container = styled.div`
+  height: 100%;
   width: 100%;
   margin-top: ${(props: any) => props.marginTop}px;
   display: flex;
@@ -29,6 +30,7 @@ const Header = styled.div`
 const Content = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   overflow: auto;
   display: block;
   padding-top: 5px;

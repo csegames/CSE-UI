@@ -11,15 +11,16 @@ import { ItemLocationFragment } from './ItemLocationFragment';
 import { ItemActionsFragment } from './ItemActionsFragment';
 import { ItemStatsFragment } from './ItemStatsFragment';
 import { EquipRequirementFragment } from './EquipRequirementFragment';
-import { GearSlotDefRefFragment } from './GearSlotDefRefFragment';
 import { ContainerDrawersFragment } from './ContainerDrawersFragment';
 import { PermissibleHolderFragment } from './PermissibleHolderFragment';
+import { ItemDefRefFragment } from './ItemDefRefFragment';
 
 export const InventoryItemFragment = gql`
   fragment InventoryItem on Item {
     id
     givenName
     stackHash
+    hasSubItems
     containerColor {
       ...ContainerColor
     }
@@ -36,28 +37,7 @@ export const InventoryItemFragment = gql`
       ...EquipRequirement
     }
     staticDefinition {
-      id
-      description
-      name
-      iconUrl
-      itemType
-      defaultResourceID
-      numericItemDefID
-      isStackableItem
-      deploySettings {
-        resourceID
-        isDoor
-        snapToGround
-        rotateYaw
-        rotatePitch
-        rotateRoll
-      }
-      gearSlotSets {
-        gearSlots {
-          ...GearSlotDefRef
-        }
-      }
-      isVox
+      ...ItemDefRef
     }
     containerDrawers {
       ...ContainerDrawers
@@ -71,7 +51,7 @@ export const InventoryItemFragment = gql`
   ${ItemActionsFragment}
   ${ItemStatsFragment}
   ${EquipRequirementFragment}
-  ${GearSlotDefRefFragment}
+  ${ItemDefRefFragment}
   ${ContainerDrawersFragment}
   ${PermissibleHolderFragment}
 `;

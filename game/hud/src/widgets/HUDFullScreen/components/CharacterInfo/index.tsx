@@ -84,6 +84,12 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
     position: relative;
     flex: 1;
     color: #D6C4A2;
+    font-size: 18px;
+    padding: 10px;
+    text-transform: uppercase;
+    font-family: Caudex;
+    letter-spacing: 1px;
+    text-align: center;
     &:after {
       content: '';
       position: absolute;

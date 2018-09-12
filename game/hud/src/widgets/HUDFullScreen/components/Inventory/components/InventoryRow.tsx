@@ -138,7 +138,6 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
                   item={itemDef}
                   searchValue={''}
                   activeFilters={null}
-                  slotsPerRow={this.props.items.length}
                   onCloseClick={() => this.hideContainer(container.itemIndex)}
                   onDropOnZone={this.props.onDropOnZone}
                   containerID={(this.props.containerID && [...this.props.containerID, itemDef.itemID]) || [itemDef.itemID]}
@@ -168,7 +167,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
 
   public componentWillReceiveProps(nextProps: InventoryRowProps) {
     // If item is moved away and container is open, then close the container.
-    if (!_.isEqual(nextProps.items, this.props.items) && !_.isEmpty(this.state.containersOpen)) {
+    if (!_.isEmpty(this.state.containersOpen) && !_.isEqual(nextProps.items, this.props.items)) {
       const containersOpen = [...this.state.containersOpen];
       this.state.containersOpen.forEach((container, i) => {
         const nextItemSlot = nextProps.items[container.itemIndex];

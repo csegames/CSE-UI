@@ -37,11 +37,11 @@ export type MenuItem = {
   onSelected: () => void;
 };
 
-export function showContextMenu(items: MenuItem[], event: React.MouseEvent) {
-  if (items.length) game.trigger(ACTIVATE_CONTEXT_MENU, items, event);
+export function showContextMenu(items: MenuItem[], event: React.MouseEvent, hasCustomOverlay?: boolean) {
+  if (items.length) game.trigger(ACTIVATE_CONTEXT_MENU, items, event, hasCustomOverlay);
 }
 
-export function onShowContextMenu(callback: (items: MenuItem[], event: React.MouseEvent) => void) {
+export function onShowContextMenu(callback: (items: MenuItem[], e: React.MouseEvent, hasCustomOverlay?: boolean) => void) {
   return game.on(ACTIVATE_CONTEXT_MENU, callback);
 }
 
@@ -50,11 +50,13 @@ export function offShowContextMenu(handle: number) {
 }
 
 // Show context menu content
-export function showContextMenuContent(content: JSX.Element, event: React.MouseEvent) {
-  if (content) game.trigger(ACTIVATE_CONTEXT_MENU_CONTENT, content, event);
+export function showContextMenuContent(content: JSX.Element, event: React.MouseEvent, hasCustomOverlay?: boolean) {
+  if (content) game.trigger(ACTIVATE_CONTEXT_MENU_CONTENT, content, event, hasCustomOverlay);
 }
 
-export function onShowContextMenuContent(callback: (content: JSX.Element, event: React.MouseEvent) => void) {
+export function onShowContextMenuContent(callback: (content: JSX.Element,
+                                                    e: React.MouseEvent,
+                                                    hasCustomOverlay: boolean) => void) {
   return game.on(ACTIVATE_CONTEXT_MENU_CONTENT, callback);
 }
 

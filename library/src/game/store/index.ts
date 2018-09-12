@@ -56,6 +56,37 @@ const queryString = `
         amount
       }
     }
+
+    items {
+      id
+      description
+      name
+      iconUrl
+      itemType
+      defaultResourceID
+      numericItemDefID
+      isStackableItem
+      deploySettings {
+        resourceID
+        isDoor
+        snapToGround
+        rotateYaw
+        rotatePitch
+        rotateRoll
+      }
+      gearSlotSets {
+        gearSlots {
+          id
+          subpartIDs
+        }
+      }
+      substanceDefinition {
+        id
+        minQuality
+        maxQuality
+      }
+      isVox
+    }
   }
 }
 `;

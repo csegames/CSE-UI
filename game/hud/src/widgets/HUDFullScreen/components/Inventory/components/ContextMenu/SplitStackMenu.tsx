@@ -5,23 +5,14 @@
  *
  */
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
-import { jsKeyCodes } from '@csegames/camelot-unchained';
-
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
+import { KeyCodes } from '@csegames/camelot-unchained';
 import { hideContextMenu } from 'actions/contextMenu';
 import Slider from 'UI/Slider';
-import { requestUIKeydown, releaseUIKeydown } from '../../../../lib/utils';
+import { TextInput } from 'UI/TextInput';
 
-const buttonGlow = keyframes`
-  from {
-    box-shadow: 0 0 4px rgba(255, 230, 186, 0.1);
-  }
-  to {
-    box-shadow: 0 0 4px rgba(255, 230, 186, 1);
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   font-family: Titillium Web;
   color: #aaa;
   text-transform: initial;
@@ -31,43 +22,57 @@ const Container = styled('div')`
   padding: 10px 10px;
   width: 150px;
   border: 1px solid transparent;
-  border-image: url(images/inventory/border-texture.png);
+  border-image: url(../images/inventory/border-texture.png);
   border-image-slice: 1;
   border-image-repeat: round;
-  background: url(images/inventory/filter-input-texture.png), rgba(40, 40, 40, 1);
+  background: url(../images/inventory/filter-input-texture.png), rgba(40, 40, 40, 1);
   text-decoration: none;
+  pointer-events: all;
+  z-index: 99;
 `;
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 5px;
 `;
 
-const Button = styled('div')`
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: all;
+`;
+
+const Input = css`
+  height: 20px;
   width: 50px;
   text-align: center;
   color: rgba(255, 230, 186, 1);
   background-color: rgba(0, 0, 0, 0.7);
-  -webkit-animation: ${buttonGlow} 1s infinite alternate;
-  animation: ${buttonGlow} 1s infinite alternate;
+  -webkit-animation: buttonGlow 1s infinite alternate;
+  animation: buttonGlow 1s infinite alternate;
   cursor: pointer;
   pointer-events: all;
 
   &:hover {
     filter: brightness(150%);
   }
+
+  @keyframes buttonGlow {
+    from {
+      box-shadow: 0 0 4px rgba(255, 230, 186, 0.1);
+    }
+    to {
+      box-shadow: 0 0 4px rgba(255, 230, 186, 1);
+    }
+  }
 `;
 
-const Overlay = styled('div')`
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-`;
-
-const BoundNumber = styled('div')`
+const BoundNumber = styled.div`
   color: white;
 `;
 
@@ -98,27 +103,29 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
         <Container onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
           <InfoContainer>
             <BoundNumber>{min}</BoundNumber>
-            <Button >{this.state.value}</Button>
+            <TextInput
+              inputClassName={Input}
+              value={this.state.value}
+              onChange={this.onInputChange}
+            />
             <BoundNumber>{max}</BoundNumber>
           </InfoContainer>
-          <Slider current={this.state.value} min={min} max={max} onChange={this.onSliderChange} />
+          <Slider updateInterval={0} current={this.state.value} min={min} max={max} onChange={this.onSliderChange} />
         </Container>
       </div>
     );
   }
 
   public componentDidMount() {
-    requestUIKeydown();
     window.addEventListener('keydown', this.handleKeyDown);
   }
 
   public componentWillUnmount() {
-    releaseUIKeydown();
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === jsKeyCodes.ESC) {
+    if (e.keyCode === KeyCodes.KEY_Escape) {
       hideContextMenu();
     }
   }
@@ -131,14 +138,21 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
     this.mouseOver = false;
   }
 
+  private onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (typeof value === 'number' && value <= this.props.max) {
+      this.setState({ value });
+    }
+  }
+
   private onSliderChange = (value: number) => {
     this.setState({ value });
   }
 
-  private onSplit = (e: MouseEvent) => {
+  private onSplit = (e: React.MouseEvent) => {
     if (!this.mouseOver) {
       hideContextMenu();
-      this.props.onSplit(e, this.state.value);
+      this.props.onSplit(e as any, this.state.value);
     }
   }
 }

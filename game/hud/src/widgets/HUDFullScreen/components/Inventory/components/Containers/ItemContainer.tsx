@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import * as base from '../../../ItemShared/InventoryBase';
-import Drawer from './Drawer';
+import InventoryDrawer from './InventoryDrawer';
 import ContainerHeader from './ContainerHeader';
 import { InventoryDataTransfer } from '../../../../lib/itemEvents';
 import { InventorySlotItemDef, SlotItemDefType } from '../../../../lib/itemInterfaces';
@@ -80,7 +80,6 @@ const PermissionIcon = styled.div`
 
 export interface ItemContainerProps extends base.InventoryBaseProps {
   item: InventorySlotItemDef;
-  slotsPerRow: number;
   onCloseClick: () => void;
   containerID: string[];
   showTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
@@ -121,7 +120,7 @@ class ItemContainer extends React.Component<ItemContainerProps> {
         {item.containerDrawers.map((_drawer: ContainerDrawers.Fragment, i: number) => {
           const isLastItem = i === item.containerDrawers.length - 1;
           return (
-            <Drawer
+            <InventoryDrawer
               key={i}
               index={i}
               searchValue={''}
@@ -134,7 +133,6 @@ class ItemContainer extends React.Component<ItemContainerProps> {
               onRightOrLeftItemAction={this.props.onRightOrLeftItemAction}
               showTooltip={this.props.showTooltip}
               hideTooltip={this.props.hideTooltip}
-              slotsPerRow={this.props.slotsPerRow}
               syncWithServer={this.props.syncWithServer}
               permissions={item.permissibleHolder}
               bodyWidth={this.props.bodyWidth}
@@ -151,7 +149,6 @@ class ItemContainer extends React.Component<ItemContainerProps> {
       !_.isEqual(this.props.item, nextProps.item) ||
       !_.isEqual(this.props.containerID, nextProps.containerID) ||
       this.props.bodyWidth !== nextProps.bodyWidth ||
-      this.props.slotsPerRow !== nextProps.slotsPerRow ||
       this.props.bodyWidth !== nextProps.bodyWidth;
   }
 }

@@ -11,7 +11,6 @@ import { debounce } from 'lodash';
 import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
-import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
 import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
 import { SlotItemDefType, InventoryFilterButton } from '../../lib/itemInterfaces';
 

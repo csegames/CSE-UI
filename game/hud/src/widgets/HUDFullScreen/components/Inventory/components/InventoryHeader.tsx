@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as FilterButtonAPI from './FilterButtonAPI';
-
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 import InventoryFilterButton from './InventoryFilterButton';

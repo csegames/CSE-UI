@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { css, cx } from '@csegames/linaria';
+import { css } from '@csegames/linaria';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 
 import EquippedItemSlot from './EquippedItemSlot';
@@ -18,7 +18,7 @@ import eventNames, {
   EquipItemPayload,
   UnequipItemPayload,
   UpdateInventoryItemsPayload,
-} from '../../../lib/eventNames';
+} from '../../../lib/itemEvents';
 import { InventoryItem, EquippedItem, SecureTradeState } from 'gql/interfaces';
 import { InventoryContext } from '../../ItemShared/InventoryContext';
 import { hideTooltip } from 'actions/tooltips';
@@ -342,7 +342,8 @@ interface EquipmentSlotsTabData {
   className: string;
 }
 
-class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
+class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, EquipmentSlotsState> {
+  private mouseOverItemMenu: boolean;
   private eventHandles: EventHandle[] = [];
 
   constructor(props: EquipmentSlotsComponentProps) {
@@ -470,6 +471,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         location: {
           inventory: null,
           inContainer: null,
+          inVox: null,
           equipped: {
             gearSlots: newItem.gearSlots,
           },
@@ -485,6 +487,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
       location: {
         inventory: null,
         inContainer: null,
+        inVox: null,
         equipped: {
           gearSlots: willEquipTo,
         },
@@ -529,10 +532,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         return (
             <div
               key={slot.slotName}
-              className={cx(
-                !isWeapon ? ItemSlotSpacing : '',
-                isWeapon ? WeaponSpacing : '',
-              )}
+              className={!isWeapon ? ItemSlotSpacing : WeaponSpacing}
               onMouseOver={() => this.mouseOverItemMenu = true}
               onMouseLeave={() => this.mouseOverItemMenu = false}>
               <EquippedItemSlot

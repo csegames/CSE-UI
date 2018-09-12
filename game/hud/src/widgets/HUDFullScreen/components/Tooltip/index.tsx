@@ -41,7 +41,14 @@ export const defaultTooltipStyle: { tooltip: string } = {
   `,
 };
 
-const Container = styled.div`
+export const Container = styled.div`
+  pointer-events: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: #ABABAB;
+  width: auto;
+  overflow: hidden;
 `;
 
 export interface TooltipContentProps {

@@ -17,7 +17,7 @@ import Inventory from './components/Inventory';
 import PaperDoll from './components/PaperDoll';
 import CharacterInfo from './components/CharacterInfo';
 import TradeWindow from './components/TradeWindow';
-import { ITemporaryTab } from './index';
+import Crafting from './components/Crafting';
 import { HUDFullScreenTabData, FullScreenContext } from './lib/utils';
 import {
   InventoryItem,
@@ -172,8 +172,8 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
 };
 
 export interface Props {
-  getLeftRef: (ref: TabPanel<HUDFullScreenTabData | ITemporaryTab>) => void;
-  getRightRef: (ref: TabPanel<HUDFullScreenTabData | ITemporaryTab>) => void;
+  rightActiveTabIndex: number;
+  leftActiveTabIndex: number;
   onActiveTabChanged: (tabIndex: number, name: string) => void;
   onCloseFullScreen: () => void;
 
@@ -199,6 +199,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
       { name: 'CharacterStats', content: { render: this.renderCharacterStats } },
       { name: 'Map', content: { render: this.renderMap } },
       { name: 'Trade', content: { render: this.renderTrade } },
+      { name: 'Crafting', content: { render: this.renderCrafting } },
     ];
   }
 
@@ -211,7 +212,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
           return (
             <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
               <TabPanel
-                ref={this.props.getLeftRef}
+                activeTabIndex={this.props.leftActiveTabIndex}
                 tabs={tabsLeft}
                 renderTab={this.renderTab}
                 content={this.content}
@@ -229,7 +230,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
                 <DividerMidSection />
               </Divider>
               <TabPanel
-                ref={this.props.getRightRef}
+                activeTabIndex={this.props.rightActiveTabIndex}
                 tabs={tabsRight}
                 renderTab={this.renderTab}
                 content={this.content}
@@ -299,6 +300,12 @@ class HUDFullScreenView extends React.Component<Props, State> {
         onCloseFullScreen={this.props.onCloseFullScreen}
         onMyTradeStateChange={this.props.onChangeMyTradeState}
       />
+    );
+  }
+
+  private renderCrafting = () => {
+    return (
+      <Crafting />
     );
   }
 }

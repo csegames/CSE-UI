@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import ItemIcon from '../../ItemShared/ItemIcon';
+import ItemIcon from '../../ItemShared/components/ItemIcon';
 
 const Container = styled.div`
   width: 60px;

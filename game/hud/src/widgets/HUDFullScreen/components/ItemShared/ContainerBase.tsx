@@ -6,11 +6,11 @@
  */
 
 import { find, findIndex, compact, map, filter, isEqual } from 'lodash';
-import { client, utils, webAPI, ItemPermissions } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import * as base from './InventoryBase';
 import { InventoryItem } from 'gql/interfaces';
-import { DrawerComponentProps } from '../Inventory/components/Containers/Drawer';
+import { DrawerComponentProps } from '../Inventory/components/Containers/InventoryDrawer';
 import { slotDimensions } from '../Inventory/components/InventorySlot';
 import { InventoryDataTransfer, CombineStackPayload } from '../../lib/itemEvents';
 import {
@@ -200,12 +200,12 @@ export function onDropOnZoneClient(props: DrawerComponentProps,
         inventoryItems[indexOfDragItem] = null;
       }
     }
-
-    props.onChangeSlotNumberToItem(slotNumberToItem);
   }
-
-  props.onChangeInventoryItems(compact(inventoryItems));
-  props.onChangeContainerIdToDrawerInfo(containerIdToDrawerInfo);
+  props.onUpdateState({
+    slotNumberToItem,
+    inventoryItems: compact(inventoryItems),
+    containerIdToDrawerInfo,
+  });
 }
 
 export async function onDropOnZoneServer(props: DrawerComponentProps,
@@ -220,8 +220,8 @@ export async function onDropOnZoneServer(props: DrawerComponentProps,
 
   const res = await webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveRequests,
   );
   if (!res.ok) {
@@ -235,18 +235,20 @@ export async function onDropOnZoneServer(props: DrawerComponentProps,
     }
 
     // Restore previous state before client updated, since the move item was a failure on the server.
-    props.onChangeSlotNumberToItem(props.slotNumberToItem);
-    props.onChangeInventoryItems(props.inventoryItems);
-    props.onChangeContainerIdToDrawerInfo(props.containerIdToDrawerInfo);
+    props.onUpdateState({
+      slotNumberToItem: props.slotNumberToItem,
+      inventoryItems: props.inventoryItems,
+      containerIdToDrawerInfo: props.containerIdToDrawerInfo,
+    });
   } else {
     if (isMovingStack(dragItem)) {
       // We need to update moved stack item id
-      const moveItemResult = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.MoveItemResult }[] }>(res.data);
+      const moveItemResult = tryParseJSON<{ FieldCodes: { Result: MoveItemResult }[] }>(res.data, true);
       if (moveItemResult &&
           moveItemResult.FieldCodes &&
           moveItemResult.FieldCodes[0] &&
           moveItemResult.FieldCodes[0].Result) {
-        const data: webAPI.MoveItemResult = moveItemResult.FieldCodes[0].Result;
+        const data: MoveItemResult = moveItemResult.FieldCodes[0].Result;
         const newDragItem = {
           ...dragItem,
           item: {
@@ -551,12 +553,12 @@ export function onCombineStackClient(props: DrawerComponentProps,
         inventoryItems[indexOfDragItem] = null;
       }
     }
-
-    props.onChangeSlotNumberToItem(slotNumberToItem);
   }
-
-  props.onChangeInventoryItems(compact(inventoryItems));
-  props.onChangeContainerIdToDrawerInfo(containerIdToDrawerInfo);
+  props.onUpdateState({
+    slotNumberToItem,
+    inventoryItems: compact(inventoryItems),
+    containerIdToDrawerInfo,
+  });
 }
 
 export async function onCombineStackServer(props: DrawerComponentProps, payload: CombineStackPayload) {
@@ -566,8 +568,8 @@ export async function onCombineStackServer(props: DrawerComponentProps, payload:
 
   const res = await webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveRequests,
   );
   if (!res.ok) {
@@ -581,17 +583,19 @@ export async function onCombineStackServer(props: DrawerComponentProps, payload:
     }
 
     // Restore previous state before client updated, since the move item was a failure on the server.
-    props.onChangeSlotNumberToItem(props.slotNumberToItem);
-    props.onChangeInventoryItems(props.inventoryItems);
-    props.onChangeContainerIdToDrawerInfo(props.containerIdToDrawerInfo);
+    props.onUpdateState({
+      slotNumberToItem: props.slotNumberToItem,
+      inventoryItems: props.inventoryItems,
+      containerIdToDrawerInfo: props.containerIdToDrawerInfo,
+    });
   } else {
     // We need to update moved stack item id
-    const moveItemResult = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.MoveItemResult }[] }>(res.data);
+    const moveItemResult = tryParseJSON<{ FieldCodes: { Result: MoveItemResult }[] }>(res.data, true);
     if (moveItemResult &&
         moveItemResult.FieldCodes &&
         moveItemResult.FieldCodes[0] &&
         moveItemResult.FieldCodes[0].Result) {
-      const data: webAPI.MoveItemResult = moveItemResult.FieldCodes[0].Result;
+      const data: MoveItemResult = moveItemResult.FieldCodes[0].Result;
       const newCombinedItem = {
         ...dropZone,
         item: {
@@ -613,6 +617,7 @@ function getItemWithNewContainerPosition(item: InventoryItem.Fragment, newPositi
       },
       inventory: null,
       equipped: null,
+      inVox: null,
     },
   };
 }

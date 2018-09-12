@@ -285,7 +285,7 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         res.then((res) => {
           if (res.ok) {
             // Get new item id of partial stack
-            const newItemId = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.ModifySecureTradeResultCode } }>(res.data)
+            const newItemId = tryParseJSON<{ FieldCodes: { Result: ModifySecureTradeResultCode } }>(res.data, true)
               .FieldCodes[0].Result.MovedItemIDs[0];
 
             const tradeItems = [...this.props.items] || [];

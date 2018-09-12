@@ -264,7 +264,6 @@ class HUDEditor extends React.Component<Props, State> {
 
   public componentDidMount() {
     window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousemove', this.onMouseMove);
     this.props.setSelectedWidget(null);
   }
 
@@ -342,9 +341,17 @@ class HUDEditor extends React.Component<Props, State> {
   }
 
   private setMode = (m: EditMode) => {
-    this.setState({
-      mode: m,
-    });
+    if (m !== EditMode.NONE && this.state.mode === EditMode.NONE) {
+      // Add mousemove listener
+      window.addEventListener('mousemove', this.onMouseMove);
+    }
+
+    if (m === EditMode.NONE && this.state.mode !== m) {
+      // Remove mousemove listener
+      window.removeEventListener('mousemove', this.onMouseMove);
+    }
+
+    this.setState({ mode: m });
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {

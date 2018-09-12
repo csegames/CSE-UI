@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { cx, css } from 'react-emotion';
+import styled, { css } from 'react-emotion';
 
 export interface TabPanelStyle {
   tabPanel: string;
@@ -72,7 +72,7 @@ export interface ContentItem {
 }
 
 export interface RenderItem<T> {
-  render: (props: T) => JSX.Element;
+  render: JSX.Element | ((props: T) => JSX.Element);
   props?: any;
 }
 
@@ -88,6 +88,7 @@ export interface TabPanelProps<T> {
 
   // the default tab which will be selected on initial render. (default 0)
   defaultTabIndex?: number;
+  activeTabIndex?: number;
   onActiveTabChanged?: (tabIndex: number, name: string) => void;
 
   // Should this component render all tab content hidden. (default false)
@@ -108,7 +109,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
   private didMount: boolean;
 
   public get activeTabIndex(): number {
-    return this.state.activeIndex;
+    return typeof this.props.activeTabIndex === 'number' ? this.props.activeTabIndex : this.state.activeIndex;
   }
 
   public set activeTabIndex(idx: number) {
@@ -128,9 +129,9 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
     const customStyles = this.props.styles || {};
 
     return (
-      <Container className={cx(customStyles.tabPanel)}>
+      <Container className={customStyles.tabPanel}>
         {this.renderTabs(customStyles)}
-        <ContentContainer className={cx(customStyles.contentContainer)}>
+        <ContentContainer className={customStyles.contentContainer}>
           {this.props.alwaysRenderContent
             ? this.renderAllContent(customStyles)
             : this.renderActiveContent(customStyles)}
@@ -156,7 +157,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
             return [
               <Tab
                 key={index}
-                className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
+                className={selected ? customStyle.activeTab : customStyle.tab}
                 onClick={() => this.selectIndex(index, tabItem.name)}>
                   {this.props.renderTab(tabItem.tab, selected)}
               </Tab>,
@@ -170,7 +171,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
             return (
               <Tab
                 key={index}
-                className={selected ? cx(customStyle.tab, customStyle.activeTab) : customStyle.tab}
+                className={selected ? customStyle.activeTab : customStyle.tab}
                 onClick={() => this.selectIndex(index, tabItem.name)}>
                   {this.props.renderTab(tabItem.tab, selected)}
               </Tab>
@@ -186,11 +187,13 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
   private renderAllContent = (customStyles: Partial<TabPanelStyle>) => {
     return this.props.content.map((content, index) => {
       const active = this.props.tabs[this.activeTabIndex].rendersContent === content.name;
+      const ContentRender = typeof content.content.render === 'function' ? <content.content.render /> :
+        content.content.render;
       return (
         <Content
           key={index}
-          className={!active ? cx(customStyles.content, ContentHidden, customStyles.contentHidden) : customStyles.content}>
-            <content.content.render {...content.content.props} />
+          className={!active ? ContentHidden : customStyles.content}>
+            {ContentRender}
         </Content>
       );
     });
@@ -208,17 +211,21 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
         </Content>
       );
     }
+    const ContentRender = typeof activeItem.content.render === 'function' ?
+      <activeItem.content.render {...activeItem.content.props} /> : activeItem.content.render;
     return (
-      <Content className={customStyles.content}>
-        <activeItem.content.render {...activeItem.content.props} />
-      </Content>
+      <Content className={customStyles.content}>{ContentRender}</Content>
     );
   }
 
   private selectIndex = (index: number, name: string) => {
     if (this.activeTabIndex === index) return;
-    this.setState({ activeIndex: index });
-    if (this.props.onActiveTabChanged) this.props.onActiveTabChanged(index, name);
+    if (!this.props.activeTabIndex) {
+      this.setState({ activeIndex: index });
+    }
+    if (this.props.onActiveTabChanged) {
+      this.props.onActiveTabChanged(index, name);
+    }
   }
 }
 

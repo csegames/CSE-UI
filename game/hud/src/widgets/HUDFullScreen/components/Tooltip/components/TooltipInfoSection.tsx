@@ -32,7 +32,7 @@ const SectionTitle = styled.div`
     left: -10px;
     right: 0;
     background: url(../images/item-tooltips/section-title.png) no-repeat;
-    background-size: 100% 25px;
+    background-size: contain;
     z-index: -1;
     overflow: hidden;
   }

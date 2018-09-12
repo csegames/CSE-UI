@@ -19,6 +19,7 @@ import {
   isContainerSlotVerified,
   isCraftingSlotVerified,
   isCraftingItem,
+  isStackedItem,
 } from '../../../lib/utils';
 import { SlotType, SlotIndexInterface } from '../../../lib/itemInterfaces';
 import { InventoryContext } from '../../ItemShared/InventoryContext';
@@ -42,6 +43,7 @@ export interface InjectedEmptyItemDropZoneProps {
 }
 
 export interface EmptyItemDropZoneProps extends DragAndDropInjectedProps {
+  filtering: boolean;
   slotType: SlotType;
   slotIndex: SlotIndexInterface;
   disableDrop: boolean;
@@ -100,7 +102,7 @@ class EmptyItemWrapper extends React.Component<Props, EmptyItemDropZoneState> {
         this.props.onDrop(e.dataTransfer, this.myDataTransfer);
       }
     } else {
-      if (e.dataTransfer.unitCount) {
+      if (isStackedItem(e.dataTransfer.item) && e.dataTransfer.unitCount) {
         const moveStackPayload: MoveStackPayload = {
           itemDataTransfer: e.dataTransfer,
           amount: e.dataTransfer.unitCount,
@@ -205,8 +207,7 @@ const EmptyItemDropZone = dragAndDrop<EmptyItemProps & Props>(
     return {
       id: 'emptyDropZone',
       dataKey: 'inventory-items',
-      scrollBodyId: 'inventory-scroll-container',
-      dropTarget: !props.disableDrop,
+      dropTarget: !props.disableDrop && !props.filtering,
       disableDrag: true,
     };
   },

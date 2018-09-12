@@ -18,7 +18,6 @@ import Build from './layoutItems/Build';
 import Warband from './layoutItems/Warband';
 import Compass from './layoutItems/Compass';
 import CompassTooltip from './layoutItems/CompassTooltip';
-import Crafting from './layoutItems/Crafting';
 import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
@@ -142,9 +141,6 @@ function initialState(): LayoutState {
   const widgets = Map<string, Widget<any>>([
     [
       'chat', cloneDeep(Chat),
-    ],
-    [
-      'crafting', cloneDeep(Crafting),
     ],
     // [
     //   'hudNav', HUDNav

@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils, IconButton } from '@csegames/camelot-unchained';
-import { colors } from '../../../lib/constants';
+import { IconButton } from '@csegames/camelot-unchained';
 
 export interface InventoryRowActionButtonStyle {
   InventoryRowActionButton: React.CSSProperties;
@@ -28,8 +27,8 @@ export interface InventoryRowActionButtonProps {
 }
 
 export const InventoryRowActionButton = (props: InventoryRowActionButtonProps) => {
-  const defaultColor = utils.lightenColor(colors.filterBackgroundColor, 100);
-  const disabledColor = utils.lightenColor(colors.filterBackgroundColor, 30);
+  const defaultColor = '#998675';
+  const disabledColor = 'rgba(153, 134, 117, 0.7)';
   return (
     <IconButton
       tooltipContent={props.tooltipContent}

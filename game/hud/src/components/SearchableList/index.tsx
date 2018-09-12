@@ -47,6 +47,7 @@ export interface Props {
   extraItemsRendered?: number;
   containerClass?: string;
   listItemsContainerClass?: string;
+  wrapperClass?: string;
   getRef?: (r: HTMLDivElement) => void;
 }
 
@@ -54,12 +55,13 @@ export interface State {
   listItemsData: any[];
   scrollTop: number;
   isScrolling: boolean;
+  listHeight: number;
 }
 
 class SearchableList extends React.Component<Props, State> {
   private scrollRef: HTMLDivElement;
   private listItemsContainerRef: HTMLDivElement;
-  private scrollTimeout: any;
+  private scrollTimeout: number;
 
   constructor(props: Props) {
     super(props);
@@ -67,13 +69,14 @@ class SearchableList extends React.Component<Props, State> {
       listItemsData: props.listItemsData,
       scrollTop: 0,
       isScrolling: false,
+      listHeight: 0,
     };
   }
 
   public render() {
     const visibleItems = this.getVisibleItems();
     return (
-      <Container>
+      <Container className={this.props.wrapperClass}>
         <ListContainer ref={this.onRef} className={this.props.containerClass}>
           <ListBody height={this.props.listItemsData.length * this.props.listItemHeight} width={'100%'} />
         </ListContainer>
@@ -93,6 +96,7 @@ class SearchableList extends React.Component<Props, State> {
   public componentDidMount() {
     this.scrollRef.addEventListener('scroll', this.setScrollTop);
     this.listItemsContainerRef.addEventListener('wheel', this.onScrollStart);
+    window.setTimeout(() => this.setState({ listHeight: this.scrollRef ? this.scrollRef.clientHeight : 0 }), 20);
   }
 
   public componentDidUpdate(prevProps: Props) {
@@ -131,7 +135,7 @@ class SearchableList extends React.Component<Props, State> {
   }
 
   private setScrollTop = (e?: any) => {
-    const scrollTop = e ? e.target.scrollTop : this.scrollRef.scrollTop;
+    const scrollTop = this.scrollRef.scrollTop;
 
     if (this.scrollTimeout) {
       clearTimeout(this.scrollTimeout);
@@ -139,7 +143,7 @@ class SearchableList extends React.Component<Props, State> {
 
     this.setState({ scrollTop });
 
-    this.scrollTimeout = setTimeout(() => {
+    this.scrollTimeout = window.setTimeout(() => {
       this.onScrollEnd();
     }, 5);
   }
@@ -166,9 +170,8 @@ class SearchableList extends React.Component<Props, State> {
 
   private getVisibleItems = () => {
     const { extraItemsRendered, listItemHeight, listHeight } = this.props;
-    const howManyItemsFit =
-      Math.ceil((listHeight || this.scrollRef ? this.scrollRef.clientHeight : 2160) / listItemHeight) +
-      (extraItemsRendered || 0);
+    const heightOfList = listHeight ? listHeight : this.state.listHeight;
+    const howManyItemsFit = Math.ceil(heightOfList / listItemHeight) + (extraItemsRendered || 0);
     const startingIndex = Math.floor(this.state.scrollTop / listItemHeight);
 
     const visibleItems = [];

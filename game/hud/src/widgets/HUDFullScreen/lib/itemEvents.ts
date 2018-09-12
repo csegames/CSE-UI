@@ -66,6 +66,7 @@ export interface InventoryDataTransfer {
   slotType?: SlotType;
   fullStack?: boolean;
   unitCount?: number;
+  voxEntityID?: string;
 }
 
 export interface EquippedItemDataTransfer extends InventoryDataTransfer {

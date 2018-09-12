@@ -10,7 +10,7 @@ import Fuse, { FuseOptions } from 'fuse.js';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
-import { nullVal, emptyStackHash } from '../../lib/constants';
+import { nullVal } from '../../lib/constants';
 import eventNames, {
   InventoryDataTransfer,
   EquippedItemDataTransfer,
@@ -493,7 +493,7 @@ export function createRowElements(payload: {
 
       rowItems.push({
         slotType: SlotType.Standard,
-        icon: itemIdToInfo[itemDef.id].icon,
+        icon: itemIdToInfo[itemDef.id] && itemIdToInfo[itemDef.id].icon,
         itemID: itemDef.id,
         item,
         slotIndex: { position: slotIndex - 1, location: 'inventory' },
@@ -534,9 +534,7 @@ export function distributeItemsNoFilter(args: {
   itemData: {
     items: InventoryItem.Fragment[],
   },
-  onChangeContainerIdToDrawerInfo: (containerIdToDrawerInfo: ContainerIdToDrawerInfo) => void,
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void,
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void,
+  containerIdToDrawerInfo: ContainerIdToDrawerInfo,
 }) {
   const { itemData } = args;
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
@@ -545,7 +543,7 @@ export function distributeItemsNoFilter(args: {
   const itemIDToStackGroupID = {};
   const craftingNameToItemIDs = {};
   const firstEmptyIndex = 0;
-  let containerIdToDrawerInfo: ContainerIdToDrawerInfo = {};
+  let containerIdToDrawerInfo: ContainerIdToDrawerInfo = { ...args.containerIdToDrawerInfo };
   let moveRequests: MoveItemRequest[] = [];
 
   // first we'll split up items into different categories for how the inventory handles things differently
@@ -648,7 +646,7 @@ export function distributeItemsNoFilter(args: {
         stackGroupIdToItemIDs[id] = [item.id];
       } else {
         stackGroupIdToItemIDs[id].push(item.id);
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, wantPosition));
+        moveRequests.push(createMoveItemRequestToInventoryPosition({ item, position: wantPosition }));
       }
     });
   });
@@ -703,7 +701,7 @@ export function distributeItemsNoFilter(args: {
       const stackGroupPosition = itemIdToInfo[id];
 
       if (stackGroupPosition) {
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, stackGroupPosition.slot));
+        moveRequests.push(createMoveItemRequestToInventoryPosition({ item, position: stackGroupPosition.slot }));
 
         if (!_.find(stackGroupIdToItemIDs[stackGroupID], itemId => itemInstanceId === itemId)) {
           stackGroupIdToItemIDs[stackGroupID] = !stackGroupIdToItemIDs[stackGroupID] ? [itemInstanceId] :
@@ -725,7 +723,7 @@ export function distributeItemsNoFilter(args: {
         return;
       } else {
         const firstAvailSlot = firstAvailableSlot(firstEmptyIndex, slotNumberToItem);
-        moveRequests.push(createMoveItemRequestToInventoryPosition(item, firstAvailSlot));
+        moveRequests.push(createMoveItemRequestToInventoryPosition({ item, position: firstAvailSlot }));
 
         stackGroupIdToItemIDs[stackGroupID] = !stackGroupIdToItemIDs[stackGroupID] ? [itemInstanceId] :
           stackGroupIdToItemIDs[stackGroupID].concat(itemInstanceId);
@@ -749,12 +747,12 @@ export function distributeItemsNoFilter(args: {
     if (isCraftingItem(item) && otherStack) {
       // Already stack that we can move this crafting item to
       stackGroupIdToItemIDs[otherStack.id] = stackGroupIdToItemIDs[otherStack.id].concat(itemInstanceId);
-      moveRequests.push(createMoveItemRequestToInventoryPosition(item, itemIdToInfo[otherStack.id].slot));
+      moveRequests.push(createMoveItemRequestToInventoryPosition({ item, position: itemIdToInfo[otherStack.id].slot }));
     } else {
       // Find first available slot for item and place it there
       const position = firstAvailableSlot(firstEmptyIndex, slotNumberToItem);
       const stackId = getItemMapID(item, { wantPos: position });
-      moveRequests.push(createMoveItemRequestToInventoryPosition(item, position));
+      moveRequests.push(createMoveItemRequestToInventoryPosition({ item, position }));
       slotNumberToItem[position] = {
         id: stackId,
         isCrafting: isCraftingItem(item),
@@ -781,15 +779,10 @@ export function distributeItemsNoFilter(args: {
   moveRequests = newMoveRequests;
   containerIdToDrawerInfo = newContainerIdToDrawerInfo;
 
-  if (!_.isEmpty(containerIdToDrawerInfo)) {
-    args.onChangeContainerIdToDrawerInfo(containerIdToDrawerInfo);
-  }
-
   if (!_.isEmpty(stackGroupIdToItemIDs)) {
     Object.keys(stackGroupIdToItemIDs).forEach((stackGroupId) => {
       stackGroupIdToItemIDs[stackGroupId] = _.uniqBy(stackGroupIdToItemIDs[stackGroupId], itemId => itemId);
     });
-    args.onChangeStackGroupIdToItemIDs(stackGroupIdToItemIDs);
   }
 
   const inventoryItems = [...itemData.items];
@@ -803,9 +796,6 @@ export function distributeItemsNoFilter(args: {
     }
   });
 
-  if (args.onChangeInventoryItems) {
-    args.onChangeInventoryItems(inventoryItems);
-  }
   // batch move all items with no position
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(
@@ -817,6 +807,9 @@ export function distributeItemsNoFilter(args: {
   }
 
   return {
+    inventoryItems,
+    stackGroupIdToItemIDs,
+    containerIdToDrawerInfo,
     itemIdToInfo,
     slotNumberToItem,
     itemIDToStackGroupID,
@@ -1068,8 +1061,10 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
 
           // this item didn't have a position, so we need to queue it up to request
           // a move to this position on the server.
-          moveRequests.push(createMoveItemRequestToInventoryPosition(item,
-            mapEntries[stackGroupIndex].position));
+          moveRequests.push(createMoveItemRequestToInventoryPosition({
+            item,
+            position: mapEntries[stackGroupIndex].position,
+          }));
 
         } else {
           // this item has no position, is a stack, but no other stack found... YET!
@@ -1369,6 +1364,7 @@ export function onUpdateInventoryItemsHandler(args: {
         },
         inContainer: null,
         equipped: null,
+        inVox: null,
       },
     };
     inventoryItems = [...inventoryItems, newInvItem];
@@ -1645,6 +1641,110 @@ export function onCommitPlacedItem(item: InventoryItem.Fragment, position: Vec3F
   );
 }
 
+export function moveInventoryItemOutOfInventory(args: {
+                                                  dragItemData: InventoryDataTransfer | EquippedItemDataTransfer,
+                                                  containerIdToDrawerInfo: ContainerIdToDrawerInfo,
+                                                  stackGroupIdToItemIDs: {[id: string]: string[]},
+                                                  slotNumberToItem: SlotNumberToItem,
+                                                  itemIdToInfo: ItemIDToInfo,
+                                                  inventoryItems: InventoryItem.Fragment[],
+                                                }) {
+  const { dragItemData } = args;
+  const slotNumberToItem = {...args.slotNumberToItem};
+  const itemIdToInfo = {...args.itemIdToInfo};
+  const containerIdToDrawerInfo = {...args.containerIdToDrawerInfo};
+  let inventoryItems = [...args.inventoryItems];
+  let stackGroupIdToItemIDs = {...args.stackGroupIdToItemIDs};
+
+  if (!dragItemData.unitCount) {
+    // We are not moving a partial stack, we are moving a whole item.
+    delete slotNumberToItem[dragItemData.position];
+    delete itemIdToInfo[dragItemData.item.id];
+
+    inventoryItems[_.findIndex(inventoryItems, item => item.id === dragItemData.item.id)] = null;
+    inventoryItems = _.compact(inventoryItems);
+
+    if (isStackedItem(dragItemData.item)) {
+      const stackId = getItemMapID(dragItemData.item);
+      delete stackGroupIdToItemIDs[stackId];
+    }
+
+    if (dragItemData.location === 'inContainer') {
+      // get rid of container item in
+      const drawerInfo = containerIdToDrawerInfo[dragItemData.containerID[dragItemData.containerID.length - 1]];
+      delete drawerInfo.drawers[dragItemData.drawerID][dragItemData.position];
+
+      containerIdToDrawerInfo[dragItemData.containerID[dragItemData.containerID.length - 1]] = drawerInfo;
+
+      const indexOfParentContainer = _.findIndex(inventoryItems, _item => _item.id === dragItemData.containerID[0]);
+      const newDragContainerDrawers = _.map(inventoryItems[indexOfParentContainer].containerDrawers, (_drawer) => {
+        if (_drawer.id === dragItemData.drawerID) {
+          return {
+            ..._drawer,
+            containedItems: _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+          };
+        }
+
+        return _drawer;
+      });
+
+      inventoryItems[indexOfParentContainer] = {
+        ...inventoryItems[indexOfParentContainer],
+        containerDrawers: newDragContainerDrawers,
+      };
+    }
+  } else {
+    // We are moving a partial stack
+    const newInventoryItem = getItemWithNewUnitCount(
+      dragItemData.item,
+      dragItemData.item.stats.item.unitCount - dragItemData.unitCount,
+    );
+    slotNumberToItem[dragItemData.position] = {
+      ...slotNumberToItem[dragItemData.position],
+      item: newInventoryItem,
+    };
+
+    const invItemIndex = _.findIndex(inventoryItems, item => item.id === dragItemData.item.id);
+    inventoryItems[invItemIndex] = newInventoryItem;
+
+    if (dragItemData.location === 'inContainer') {
+      // update item in container
+      const drawerInfo = containerIdToDrawerInfo[dragItemData.containerID[dragItemData.containerID.length - 1]];
+      drawerInfo.drawers[dragItemData.drawerID][dragItemData.position] = {
+        ...drawerInfo.drawers[dragItemData.drawerID][dragItemData.position],
+        item: newInventoryItem,
+      };
+
+      containerIdToDrawerInfo[dragItemData.containerID[dragItemData.containerID.length - 1]] = drawerInfo;
+
+      const indexOfParentContainer = _.findIndex(inventoryItems, _item => _item.id === dragItemData.containerID[0]);
+      const newDragContainerDrawers = _.map(inventoryItems[indexOfParentContainer].containerDrawers, (_drawer) => {
+        if (_drawer.id === dragItemData.drawerID) {
+          return {
+            ..._drawer,
+            containedItems: _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemData.item.id),
+          };
+        }
+
+        return _drawer;
+      });
+
+      inventoryItems[indexOfParentContainer] = {
+        ...inventoryItems[indexOfParentContainer],
+        containerDrawers: newDragContainerDrawers,
+      };
+    }
+  }
+
+  return {
+    slotNumberToItem,
+    itemIdToInfo,
+    inventoryItems,
+    stackGroupIdToItemIDs,
+    containerIdToDrawerInfo,
+  }
+}
+
 export function moveInventoryItemToEmptySlot(args: {
                                         dragItemData: InventoryDataTransfer | EquippedItemDataTransfer,
                                         dropZoneData: InventoryDataTransfer,
@@ -1654,6 +1754,7 @@ export function moveInventoryItemToEmptySlot(args: {
                                         itemIdToInfo: ItemIDToInfo,
                                         inventoryItems: InventoryItem.Fragment[],
                                       }) {
+  console.log('MOVE INVENTORY ITEM TO EMPTY SLOT');
   const { dragItemData, dropZoneData } = args;
   const containerIdToDrawerInfo = {...args.containerIdToDrawerInfo};
   const slotNumberToItem = {...args.slotNumberToItem};
@@ -1670,19 +1771,25 @@ export function moveInventoryItemToEmptySlot(args: {
     game.trigger(eventNames.onUnequipItem, payload);
   }
 
+  const dropPosition = dropZoneData ? dropZoneData.position : firstAvailableSlot(0, slotNumberToItem);
+
   const dragItemId = getItemMapID(dragItem);
-  const moveItemReq = createMoveItemRequestToInventoryPosition(dragItem, dropZoneData.position);
+  const moveItemReq = createMoveItemRequestToInventoryPosition({
+    item: dragItem,
+    position: dropPosition,
+    voxEntityID: dragItemData.voxEntityID,
+  });
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
     game.shardID,
     game.selfPlayerState.characterID,
     moveItemReq as any,
-  );
+  ).then(() => dragItemData.voxEntityID && game.trigger('refetch-vox-job'));
 
   // Now represent the swap in the UI...
   const oldDragItemPosition = dragItem.location.inventory ? dragItem.location.inventory.position : -1;
   if (dragItem.location.inventory) {
-    dragItem.location.inventory.position = dropZoneData.position;
+    dragItem.location.inventory.position = dropPosition;
     if (dragItem.location.inContainer) {
       dragItem.location.inContainer = null;
     }
@@ -1693,7 +1800,7 @@ export function moveInventoryItemToEmptySlot(args: {
         ...dragItem.location,
         inventory: {
           ...dragItem.location.inventory,
-          position: dropZoneData.position,
+          position: dropPosition,
         },
         inContainer: null,
       },
@@ -1707,7 +1814,7 @@ export function moveInventoryItemToEmptySlot(args: {
       if (dragItemData.fullStack || stackGroupIdToItemIDs[dragItemId].length === 1) {
         // If moving full stack then move all stacked items
         const moveRequests: MoveItemRequest[] = [];
-        const dropStackId = getItemMapID(dropZoneData.item);
+        const dropStackId = dropZoneData && getItemMapID(dropZoneData.item);
         stackGroupIdToItemIDs[dragItemId].forEach((itemId) => {
           const i = _.findIndex(invItems, item => itemId === item.id);
           invItems[i] = {
@@ -1716,18 +1823,18 @@ export function moveInventoryItemToEmptySlot(args: {
               ...invItems[i].location,
               inventory: {
                 ...invItems[i].location.inventory,
-                position: dropZoneData.position,
+                position: dropPosition,
               },
             },
           };
-          moveRequests.push(createMoveItemRequestToInventoryPosition(invItems[i], dropZoneData.position));
-          if (dropZoneData.slotType === SlotType.Empty && dropZoneData.item) {
+          moveRequests.push(createMoveItemRequestToInventoryPosition({ item: invItems[i], position: dropPosition }));
+          if (dropZoneData && dropZoneData.slotType === SlotType.Empty && dropZoneData.item) {
             // Moving to another crafting container
             stackGroupIdToItemIDs[dropStackId] = stackGroupIdToItemIDs[dropStackId].concat(itemId);
           }
         });
 
-        if (dropZoneData.slotType === SlotType.Empty && !dropZoneData.item) {
+        if (!dropZoneData || (dropZoneData.slotType === SlotType.Empty && !dropZoneData.item)) {
           // Moving to another inventory slot
           stackGroupIdToItemIDs[getItemMapID(dragItem)] = stackGroupIdToItemIDs[dragItemId];
         }
@@ -1739,7 +1846,7 @@ export function moveInventoryItemToEmptySlot(args: {
           game.shardID,
           game.selfPlayerState.characterID,
           moveRequests,
-        );
+        ).then(() => dragItemData.voxEntityID && game.trigger('refetch-vox-job'));
       } else {
         // Moving a single item inside a stack
         const newStackId = getItemMapID(dragItem);
@@ -1761,55 +1868,57 @@ export function moveInventoryItemToEmptySlot(args: {
       const dragContainerID = dragItemData.containerID[dragItemData.containerID.length - 1];
       delete containerIdToDrawerInfo[dragContainerID].drawers[dragItemData.drawerID][dragItemData.position];
 
-      const indexOfParentContainer = _.findIndex(invItems, _item => _item.id === dragItemData.containerID[0]);
-      let newDragContainerDrawers;
-      if (dragItemData.containerID.length > 1) {
-        // coming from NESTED container
-        newDragContainerDrawers = _.map(invItems[indexOfParentContainer].containerDrawers, (_drawer) => {
-          const dragItemContainer = _.find(_drawer.containedItems, _containedItem => _containedItem.id === dragContainerID);
-          if (dragItemContainer) {
-            const newDragItemDrawer = dragItemContainer.containerDrawers.map((_dragItemDrawer) => {
-              return {
-                ..._dragItemDrawer,
-                containedItems: _.filter(_dragItemDrawer.containedItems,
-                  _containedItem => dragItemData.item.id !== _containedItem.id),
+      if (!dragItemData.voxEntityID) {
+        const indexOfParentContainer = _.findIndex(invItems, _item => _item.id === dragItemData.containerID[0]);
+        let newDragContainerDrawers;
+        if (dragItemData.containerID.length > 1) {
+          // coming from NESTED container
+          newDragContainerDrawers = _.map(invItems[indexOfParentContainer].containerDrawers, (_drawer) => {
+            const dragItemContainer = _.find(_drawer.containedItems, _containedItem => _containedItem.id === dragContainerID);
+            if (dragItemContainer) {
+              const newDragItemDrawer = dragItemContainer.containerDrawers.map((_dragItemDrawer) => {
+                return {
+                  ..._dragItemDrawer,
+                  containedItems: _.filter(_dragItemDrawer.containedItems,
+                    _containedItem => dragItemData.item.id !== _containedItem.id),
+                };
+              });
+
+              const newContainedItem = {
+                ...dragItemContainer,
+                containerDrawers: newDragItemDrawer,
               };
-            });
+              return {
+                ..._drawer,
+                containedItems: [
+                  ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemContainer.id),
+                  newContainedItem,
+                ],
+              };
+            }
 
-            const newContainedItem = {
-              ...dragItemContainer,
-              containerDrawers: newDragItemDrawer,
-            };
-            return {
-              ..._drawer,
-              containedItems: [
-                ..._.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItemContainer.id),
-                newContainedItem,
-              ],
-            };
-          }
+            return _drawer;
+          });
+        } else {
+          // coming from a top-level container
+          // Update drag item parent container
+          newDragContainerDrawers = _.map(invItems[indexOfParentContainer].containerDrawers, (_drawer) => {
+            if (_drawer.id === dragItemData.drawerID) {
+              return {
+                ..._drawer,
+                containedItems: _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItem.id),
+              };
+            }
 
-          return _drawer;
-        });
-      } else {
-        // coming from a top-level container
-        // Update drag item parent container
-        newDragContainerDrawers = _.map(invItems[indexOfParentContainer].containerDrawers, (_drawer) => {
-          if (_drawer.id === dragItemData.drawerID) {
-            return {
-              ..._drawer,
-              containedItems: _.filter(_drawer.containedItems, _containedItem => _containedItem.id !== dragItem.id),
-            };
-          }
+            return _drawer;
+          });
+        }
 
-          return _drawer;
-        });
+        invItems[indexOfParentContainer] = {
+          ...invItems[indexOfParentContainer],
+          containerDrawers: newDragContainerDrawers,
+        };
       }
-
-      invItems[indexOfParentContainer] = {
-        ...invItems[indexOfParentContainer],
-        containerDrawers: newDragContainerDrawers,
-      };
     }
   }
 
@@ -1836,7 +1945,7 @@ export function moveInventoryItemToEmptySlot(args: {
   }
 
   // Move dragItem to new drop zone position
-  slotNumberToItem[dropZoneData.position] = {
+  slotNumberToItem[dropPosition] = {
     id: getItemMapID(dragItem),
     isStack: isStackedItem(dragItem),
     isCrafting: isCraftingItem(dragItem),
@@ -1845,10 +1954,11 @@ export function moveInventoryItemToEmptySlot(args: {
   };
 
   itemIdToInfo[getItemMapID(dragItem)] = {
-    slot: dropZoneData.position,
+    slot: dropPosition,
     icon: getIcon(dragItem),
   };
 
+  console.log(slotNumberToItem);
   return {
     inventoryItems: invItems,
     stackGroupIdToItemIDs,
@@ -1892,10 +2002,10 @@ export function swapInventoryItems(args: {
     newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
 
     if (!isStackedItem(dropZoneData)) {
-      const dropZoneMoveRequest = createMoveItemRequestToInventoryPosition(
-        dropZoneData,
-        dragItemData.location.inventory.position,
-      );
+      const dropZoneMoveRequest = createMoveItemRequestToInventoryPosition({
+        item: dropZoneData,
+        position: dragItemData.location.inventory.position,
+      });
       moveItemRequests = [...moveItemRequests, dropZoneMoveRequest];
       newDropZoneData = getItemWithNewInventoryPosition(dropZoneData, dragItemData.location.inventory.position);
 
@@ -1927,10 +2037,10 @@ export function swapInventoryItems(args: {
     moveItemRequests = [...moveItemRequests, ...requests];
 
     if (!isStackedItem(newDragItemData)) {
-      const dragItemMoveRequest = createMoveItemRequestToInventoryPosition(
-        dragItemData,
-        dropZoneData.location.inventory.position,
-      );
+      const dragItemMoveRequest = createMoveItemRequestToInventoryPosition({
+        item: dragItemData,
+        position: dropZoneData.location.inventory.position,
+      });
       moveItemRequests = [...moveItemRequests, dragItemMoveRequest];
       newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
 
@@ -1956,8 +2066,8 @@ export function swapInventoryItems(args: {
     if (dragItemData.location.inventory) {
       // Moving from inside the inventory
       moveItemRequests = [
-        createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
-        createMoveItemRequestToInventoryPosition(dropZoneData, dragItemData.location.inventory.position),
+        createMoveItemRequestToInventoryPosition({ item: dragItemData, position: dropZoneData.location.inventory.position }),
+        createMoveItemRequestToInventoryPosition({ item: dropZoneData, position: dragItemData.location.inventory.position}),
       ];
       const dragItemInvIndex = _.findIndex(invItems, item => item.id === dragItemData.id);
       newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
@@ -1969,7 +2079,7 @@ export function swapInventoryItems(args: {
     } else {
       // Moving from outside of the inventory
       moveItemRequests = [
-        createMoveItemRequestToInventoryPosition(dragItemData, dropZoneData.location.inventory.position),
+        createMoveItemRequestToInventoryPosition({ item: dragItemData, position: dropZoneData.location.inventory.position }),
       ];
       newDragItemData = getItemWithNewInventoryPosition(dragItemData, dropZoneData.location.inventory.position);
     }
@@ -1979,8 +2089,8 @@ export function swapInventoryItems(args: {
   if (!_.isEmpty(moveItemRequests)) {
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       moveItemRequests,
     );
   } else {
@@ -2045,11 +2155,16 @@ export async function onMoveStackServer(args: {
   const item = itemDataTransfer.item;
 
   // Make request to api server
-  const moveReq = createMoveItemRequestToInventoryPosition(item, newPosition, amount);
+  const moveReq = createMoveItemRequestToInventoryPosition({
+    item,
+    position: newPosition,
+    amount,
+    voxEntityID: itemDataTransfer.voxEntityID,
+  });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveReq,
   );
   if (!res.ok) {
@@ -2062,9 +2177,13 @@ export async function onMoveStackServer(args: {
     };
   }
 
-  const moveItemResult = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.MoveItemResult }[] }>(res.data);
+  if (itemDataTransfer.voxEntityID) {
+    game.trigger('refetch-vox-job');
+  }
+
+  const moveItemResult = tryParseJSON<{ FieldCodes: { Result: MoveItemResult }[] }>(res.data, true);
   if (moveItemResult && moveItemResult.FieldCodes && moveItemResult.FieldCodes[0] && moveItemResult.FieldCodes[0].Result) {
-    const data: webAPI.MoveItemResult = moveItemResult.FieldCodes[0].Result;
+    const data: MoveItemResult = moveItemResult.FieldCodes[0].Result;
 
     // We need to update the id, unitCount, and position of the new item
     const movingItem: InventoryItem.Fragment = {
@@ -2192,11 +2311,16 @@ export async function onCombineStackServer(args: {
   let inventoryItems = [...args.inventoryItems];
   const item = itemDataTransfer.item;
 
-  const moveReq = createMoveItemRequestToInventoryPosition(item, stackItem.location.inventory.position, amount);
+  const moveReq = createMoveItemRequestToInventoryPosition({
+    item,
+    position: stackItem.location.inventory.position,
+    amount,
+    voxEntityID: itemDataTransfer.voxEntityID,
+  });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveReq,
   );
   if (!res.ok) {
@@ -2207,9 +2331,14 @@ export async function onCombineStackServer(args: {
     };
   }
 
-  const moveItemResult = utils.tryParseJSON<{ FieldCodes: { Result: webAPI.MoveItemResult }[] }>(res.data);
+  if (itemDataTransfer.voxEntityID) {
+    // Came from vox
+    game.trigger('refetch-vox-job');
+  }
+
+  const moveItemResult = tryParseJSON<{ FieldCodes: { Result: MoveItemResult }[] }>(res.data, true);
   if (moveItemResult && moveItemResult.FieldCodes && moveItemResult.FieldCodes[0] && moveItemResult.FieldCodes[0].Result) {
-    const data: webAPI.MoveItemResult = moveItemResult.FieldCodes[0].Result;
+    const data: MoveItemResult = moveItemResult.FieldCodes[0].Result;
 
     // Represent the combine in the UI
     const combinedItem: InventoryItem.Fragment = {
@@ -2224,11 +2353,13 @@ export async function onCombineStackServer(args: {
       delete stackGroupIdToItemIDs[getItemMapID(item)];
     } else if (amount < item.stats.item.unitCount) {
       // User is trying to combine part of stack, update old position of item
-      updatedItem = getItemWithNewUnitCount(item, item.stats.item.unitCount - amount);
-      slotNumberToItem[item.location.inventory.position] = {
-        ...slotNumberToItem[item.location.inventory.position],
-        item: updatedItem,
-      };
+      if (itemHasInventoryPosition(item)) {
+        updatedItem = getItemWithNewUnitCount(item, item.stats.item.unitCount - amount);
+        slotNumberToItem[item.location.inventory.position] = {
+          ...slotNumberToItem[item.location.inventory.position],
+          item: updatedItem,
+        };
+      }
     }
 
     // Update combined stack position wiht new item
@@ -2237,12 +2368,14 @@ export async function onCombineStackServer(args: {
       item: combinedItem,
     };
 
-    // Delete old stack id, and add new stack id to stackGroupIdToItemIDs
-    const oldStackId = getItemMapID(stackItem);
-    delete stackGroupIdToItemIDs[oldStackId];
+    if (updatedItem) {
+      // Delete old stack id, and add new stack id to stackGroupIdToItemIDs
+      const oldStackId = getItemMapID(stackItem);
+      delete stackGroupIdToItemIDs[oldStackId];
 
-    const newStackId = getItemMapID(updatedItem);
-    stackGroupIdToItemIDs[newStackId] = [updatedItem.id];
+      const newStackId = getItemMapID(updatedItem);
+      stackGroupIdToItemIDs[newStackId] = [updatedItem.id];
+    }
 
     if (updatedItem) {
       inventoryItems = [
@@ -2359,10 +2492,10 @@ function createStackMoveItemRequests(args: {
         return;
       }
       const item = _.find(args.inventoryItems, inventoryItem => inventoryItem.id === id);
-      moveItemRequests.push(createMoveItemRequestToInventoryPosition(
+      moveItemRequests.push(createMoveItemRequestToInventoryPosition({
         item,
-        newPosition,
-      ));
+        position: newPosition,
+      }));
     });
     return moveItemRequests;
   }

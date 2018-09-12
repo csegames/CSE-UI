@@ -6,27 +6,16 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { webAPI, Tooltip } from '@csegames/camelot-unchained';
+import { Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
-import * as containerBase from '../../../ItemShared/ContainerBase';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { rowActionIcons } from '../../../../lib/constants';
-import { InventoryDataTransfer, CombineStackPayload } from '../../../../lib/itemEvents';
-import { getContainerColor, getContainerInfo, FullScreenContext } from '../../../../lib/utils';
-import { InventoryContext } from '../../../ItemShared/InventoryContext';
-import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
-import {
-  SecureTradeState,
-  InventoryItem,
-  PermissibleHolder,
-  ContainerDrawers,
-} from 'gql/interfaces';
-
-declare const toastr: any;
+import { getContainerColor, getContainerInfo } from '../../../../lib/utils';
+import { InventorySlotItemDef, ContainerSlotItemDef } from '../../../../lib/itemInterfaces';
+import { InventoryItem, ContainerDrawers } from 'gql/interfaces';
 
 const Container = styled.div`
   position: relative;
@@ -53,7 +42,11 @@ const HeaderContent = styled.div`
 `;
 
 const MainContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 0 10px;
+  flex: 1;
 `;
 
 const FooterContainer = styled.div`
@@ -94,89 +87,37 @@ export interface DrawerCurrentStats {
   weight: number;
 }
 
-export interface InjectedDrawerProps {
-  inventoryItems: InventoryItem.Fragment[];
-  slotNumberToItem: base.SlotNumberToItem;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
-  containerIdToDrawerInfo: base.ContainerIdToDrawerInfo;
-  myTradeItems: InventoryItem.Fragment[];
-  myTradeState: SecureTradeState;
-  onChangeInventoryItems: (inventoryItems: InventoryItem.Fragment[]) => void;
-  onChangeSlotNumberToItem: (slotNumberToItem: base.SlotNumberToItem) => void;
-  onChangeContainerIdToDrawerInfo: (newObj: base.ContainerIdToDrawerInfo) => void;
-  onChangeStackGroupIdToItemIDs: (stackGroupIdToItemIDs: {[id: string]: string[]}) => void;
-}
-
 export interface DrawerProps {
-  index: number;
-  slotsPerRow: number;
-  containerID: string[];
-  drawer: ContainerDrawers.Fragment;
   containerItem: InventoryItem.Fragment;
-  permissions: PermissibleHolder.Fragment;
-  syncWithServer: () => void;
-  bodyWidth: number;
-  marginTop?: number | string;
-  footerWidth?: number | string;
+  index: number;
+  drawer: ContainerDrawers.Fragment;
+  rows: JSX.Element[];
+  rowData: ContainerSlotItemDef[][];
+  marginTop?: number;
+  footerWidth?: number;
+  disableHeader?: boolean;
 }
-
-export type DrawerComponentProps = DrawerProps & InjectedDrawerProps & base.InventoryBaseProps;
 
 export interface DrawerState extends base.InventoryBaseState {
 }
 
-class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
+class Drawer extends React.Component<DrawerProps, DrawerState> {
   private contentRef: any;
-  constructor(props: DrawerComponentProps) {
+  constructor(props: DrawerProps) {
     super(props);
     this.state = {
       ...base.defaultInventoryBaseState(),
     };
   }
   public render() {
-    const { drawer, containerItem, containerID, syncWithServer } = this.props;
-    const { stats, requirements } = drawer;
+    const { requirements, requirementIconColor, stats, totalUnitCount, weight } = this.getDrawerData();
 
-    // Grab items from containerIdToDrawerInfo (Managed by CharacterMain)
-    const container = this.props.containerIdToDrawerInfo[containerID[containerID.length - 1]];
-    const drawerInfo = container ? container.drawers[drawer.id] : {};
-    const drawerItems: InventoryItem.Fragment[] = [];
-    Object.keys(drawerInfo).forEach((_key) => {
-      drawerItems.push(drawerInfo[_key].item);
-    });
-
-    // Get header info
-    const { totalUnitCount, weight } = getContainerInfo(drawerItems);
-
-    const containerPermissions = containerBase.getContainerPermissions(this.props);
-
-    // Create rows
-    const { rows, rowData } = base.createRowElementsForContainerItems({
-      state: this.state,
-      props: this.props,
-      itemData: { items: drawerItems },
-      containerID,
-      drawerID: drawer.id,
-      onDropOnZone: this.onDropOnZone,
-      containerPermissions,
-      drawerMaxStats: stats,
-      drawerCurrentStats: { totalUnitCount, weight },
-      syncWithServer,
-      bodyWidth: this.props.bodyWidth,
-      containerIdToDrawerInfo: this.props.containerIdToDrawerInfo,
-      stackGroupIdToItemIDs: this.props.stackGroupIdToItemIDs,
-      myTradeState: this.props.myTradeState,
-      myTradeItems: this.props.myTradeItems,
-      onCombineStackDrawer: this.onCombineStack,
-    });
-
-    const requirementIconColor = getContainerColor(containerItem, 0.3);
     return (
       <DrawerView
         marginTop={this.props.marginTop}
         footerWidth={this.props.footerWidth}
         containerItem={this.props.containerItem}
-        headerContent={() => (
+        headerContent={() => !this.props.disableHeader ? (
           <HeaderContent showImg={this.props.index !== 0}>
             <RequirementsContainer>
               {requirements &&
@@ -191,11 +132,11 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
               }
             </RequirementsContainer>
           </HeaderContent>
-        )}
+        ) : null}
         mainContent={() => (
           <Container>
             <MainContent>
-              {rows}
+              {this.props.rows}
             </MainContent>
           </Container>
         )}
@@ -209,22 +150,22 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
             <InventoryRowActionButton
               tooltipContent={'Remove Empty Row'}
               iconClass={rowActionIcons.removeRow}
-              onClick={() => this.removeRowOfSlots(rowData)}
-              disabled={base.inventoryContainerRemoveButtonDisabled(rowData)}
+              onClick={() => this.removeRowOfSlots(this.props.rowData)}
+              disabled={base.inventoryContainerRemoveButtonDisabled(this.props.rowData)}
             />
             <InventoryRowActionButton
               tooltipContent={'Prune Empty Rows'}
               iconClass={rowActionIcons.pruneRows}
-              onClick={() => this.pruneRowsOfSlots(rowData)}
-              disabled={base.inventoryContainerRemoveButtonDisabled(rowData)}
+              onClick={() => this.pruneRowsOfSlots(this.props.rowData)}
+              disabled={base.inventoryContainerRemoveButtonDisabled(this.props.rowData)}
             />
-            {stats.maxItemMass !== -1 &&
+            {stats && stats.maxItemMass !== -1 &&
               <PermissionContainer>
                 <PermissionIcon className='icon-ui-weight' />
                 {weight} / {stats.maxItemMass}
               </PermissionContainer>
             }
-            {stats.maxItemCount !== -1 &&
+            {stats && stats.maxItemCount !== -1 &&
               <PermissionContainer>
                 <PermissionIcon className='icon-ui-bag' />
                 {totalUnitCount} / {stats.maxItemCount}
@@ -237,59 +178,34 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
     );
   }
 
-  public componentDidMount() {
-    this.initialize(this.props);
-    window.addEventListener('resize', () => this.initialize(this.props));
-  }
+  private getDrawerData = () => {
+    let requirements = null;
+    let stats = null;
+    let totalUnitCount = null;
+    let weight = null;
+    let requirementIconColor = null;
 
-  public shouldComponentUpdate(nextProps: DrawerComponentProps, nextState: DrawerState) {
-    return !_.isEqual(this.props.containerItem, nextProps.containerItem) ||
-      !_.isEqual(this.props.drawer.containedItems, nextProps.drawer.containedItems) ||
-      !_.isEqual(this.props.inventoryItems, nextProps.inventoryItems) ||
-      !_.isEqual(this.props.containerIdToDrawerInfo, nextProps.containerIdToDrawerInfo) ||
-      !_.isEqual(this.props.myTradeItems, nextProps.myTradeItems) ||
-      !_.isEqual(this.props.stackGroupIdToItemIDs, nextProps.stackGroupIdToItemIDs) ||
-      !_.isEqual(this.props.containerID, nextProps.containerID) ||
-      this.props.index !== nextProps.index ||
-      this.props.bodyWidth !== nextProps.bodyWidth ||
-      this.props.searchValue !== nextProps.searchValue ||
-      !_.isEqual(this.props.activeFilters, nextProps.activeFilters) ||
-      this.props.slotsPerRow !== nextProps.slotsPerRow ||
-      this.props.myTradeState !== nextProps.myTradeState ||
+    if (this.props.drawer && this.props.containerItem) {
+      requirements = this.props.drawer.requirements;
+      stats = this.props.drawer.stats;
 
-      this.state.slotsPerRow !== nextState.slotsPerRow ||
-      this.state.slotCount !== nextState.slotCount ||
-      this.state.rowCount !== nextState.rowCount;
-  }
+      const containerInfo = getContainerInfo(this.props.drawer.containedItems as InventoryItem.Fragment[]);
+      totalUnitCount = containerInfo.totalUnitCount;
+      weight = containerInfo.weight;
 
-  public componentWillUnmount() {
-    window.removeEventListener('resize', () => this.initialize(this.props));
-  }
+      requirementIconColor = getContainerColor(this.props.containerItem, 0.3);
+    }
 
-  // set up rows from scratch / works as a re-initialize as well
-  private initialize = (props: DrawerComponentProps) => {
-    this.setState(() => this.internalInit(this.state, props));
-  }
-
-  private internalInit = (state: DrawerState, props: DrawerComponentProps) => {
-    // Initialize slot data, that's the only state drawers need to maintain.
-    if (!props.bodyWidth) return;
-    const rowData = containerBase.getRowsAndSlots(props);
-    return base.initializeSlotsData(rowData);
-  }
-
-  private onCombineStack = (payload: CombineStackPayload) => {
-    containerBase.onCombineStackClient(this.props, payload);
-    containerBase.onCombineStackServer(this.props, payload);
-  }
-
-  private onDropOnZone = (dragItem: InventoryDataTransfer, dropZone: InventoryDataTransfer) => {
-    containerBase.onDropOnZoneClient(this.props, dragItem, dropZone);
-    containerBase.onDropOnZoneServer(this.props, dragItem, dropZone);
+    return {
+      requirements,
+      stats,
+      totalUnitCount,
+      weight,
+      requirementIconColor,
+    };
   }
 
   private addRowOfSlots = () => {
-    this.setState(base.addRowOfSlots);
   }
 
   private removeRowOfSlots = (rowData: InventorySlotItemDef[][]) => {
@@ -303,45 +219,4 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
   }
 }
 
-class DrawerWithInjectedContext extends React.Component<DrawerProps & base.InventoryBaseProps> {
-  public render() {
-    return (
-      <FullScreenContext.Consumer>
-        {({ myTradeItems, myTradeState }) => {
-          return (
-            <InventoryContext.Consumer>
-              {({
-                inventoryItems,
-                slotNumberToItem,
-                stackGroupIdToItemIDs,
-                containerIdToDrawerInfo,
-                onChangeInventoryItems,
-                onChangeSlotNumberToItem,
-                onChangeStackGroupIdToItemIDs,
-                onChangeContainerIdToDrawerInfo,
-              }) => {
-                return (
-                  <Drawer
-                    {...this.props}
-                    inventoryItems={inventoryItems}
-                    slotNumberToItem={slotNumberToItem}
-                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-                    containerIdToDrawerInfo={containerIdToDrawerInfo}
-                    myTradeItems={myTradeItems}
-                    myTradeState={myTradeState}
-                    onChangeInventoryItems={onChangeInventoryItems}
-                    onChangeSlotNumberToItem={onChangeSlotNumberToItem}
-                    onChangeStackGroupIdToItemIDs={onChangeStackGroupIdToItemIDs}
-                    onChangeContainerIdToDrawerInfo={onChangeContainerIdToDrawerInfo}
-                  />
-                );
-              }}
-            </InventoryContext.Consumer>
-          );
-        }}
-      </FullScreenContext.Consumer>
-    );
-  }
-}
-
-export default DrawerWithInjectedContext;
+export default Drawer;

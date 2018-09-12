@@ -10,8 +10,8 @@ import { styled } from '@csegames/linaria/react';
 
 import eventNames, { EquipItemPayload } from '../../../lib/itemEvents';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
-import ItemComponent from '../../ItemShared/Item';
-import EmptyItem from '../../ItemShared/EmptyItem';
+import ItemComponent from '../../ItemShared/components/Item';
+import EmptyItem from '../../ItemShared/components/EmptyItem';
 import ItemTooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
@@ -24,6 +24,7 @@ export const itemDimensions = {
 };
 
 const Slot = styled.div`
+  position: relative;
   pointer-events: all;
   width: ${itemDimensions.width}px;
   height: ${itemDimensions.height}px;
@@ -88,12 +89,12 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
         onClick={this.onEquipItem}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}>
-        <SlotIcon src={'images/inventory/item-slot.png'} />
+        <SlotIcon src={'../images/inventory/item-slot.png'} />
         <ItemComponent id={item.id} icon={item.staticDefinition.iconUrl} containerClass={SlotStyle} />
         <SlotOverlay />
       </Slot>
     ) : <Slot>
-          <SlotIcon src={'images/inventory/item-slot.png'} />
+          <SlotIcon src={'../images/inventory/item-slot.png'} />
           <EmptyItem />
         </Slot>;
   }

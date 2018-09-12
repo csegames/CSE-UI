@@ -29,7 +29,7 @@ class TooltipAlloyInfo extends React.Component<Props, State> {
     const alloyStats = this.getStats();
     return (
       <Container>
-        <TooltipInfoSection name='Alloy' stats={alloyStats} columnCount={7} />
+        <TooltipInfoSection name='Alloy' stats={alloyStats} columnCount={4} />
       </Container>
     );
   }
@@ -38,7 +38,7 @@ class TooltipAlloyInfo extends React.Component<Props, State> {
     const alloyStats = this.props.item.stats.alloy;
     const stats: TooltipSection[] = [];
     Object.keys(alloyStats).forEach((statName) => {
-      if (alloyStats[statName]) {
+      if (alloyStats[statName] !== 0) {
         stats.push({
           name: statName,
           value: alloyStats[statName],

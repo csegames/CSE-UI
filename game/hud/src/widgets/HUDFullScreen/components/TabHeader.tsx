@@ -84,7 +84,7 @@ const HeaderOrnament = styled.div`
 
 const HeaderTitle = styled.div`
   color: #ffe7bb;
-  font-size: 18px;
+  font-size: 20px;
   font-family: Caudex;
   letter-spacing: 5px;
 `;

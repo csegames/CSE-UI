@@ -13,6 +13,7 @@ import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
 import { hideContextMenu } from 'actions/contextMenu';
+import ContextMenuActionView from './ContextMenuActionView';
 
 declare const toastr: any;
 
@@ -28,26 +29,6 @@ const query = gql`
   }
 `;
 
-const Button = styled.div`
-  display: flex;
-  justify-content: space-between;
-  color: ${(props: any) => props.disabled ? '#666' : 'white' };
-  pointer-events: all;
-  max-width: 300px;
-  padding: 5px;
-  pointer-events: all;
-  cursor: ${(props: any) => props.disabled ? 'not-allowed' : 'pointer'};
-  opacity: ${(props: any) => props.disabled ? 0.5 : 1};
-
-  &:hover {
-    color: ${(props: any) => props.disabled ? '#666' : 'yellow' };
-  }
-
-  &:active {
-    box-shadow: ${(props: any) => props.disabled ? '' : 'inset 0 0 3px rgba(0,0,0,0.5)'};
-  }
-`;
-
 const CooldownText = styled.div`
   margin-left: 10px;
 `;
@@ -55,7 +36,7 @@ const CooldownText = styled.div`
 export interface Props {
   itemId: string;
   name: string;
-  onActionClick: (e: React.MouseEvent<HTMLDivElement>, action?: InventoryItem.Actions) => void;
+  onActionClick: (action?: InventoryItem.Actions) => void;
   syncWithServer: () => void;
   action?: InventoryItem.Actions;
   onMouseOver?: () => void;
@@ -87,11 +68,13 @@ class ContextMenuAction extends React.Component<Props, State> {
     };
     const isDisabled = shouldQuery || cooldownLeft !== '' || (action && !action.enabled);
     return (action && !action.enabled && !action.showWhenDisabled) ? null : (
-      <Button data-input-group='block' disabled={isDisabled} onClick={this.onActionClick}>
+      <ContextMenuActionView
+        disabled={isDisabled}
+        onClick={this.onActionClick}>
         <div>{name}</div>
         {shouldQuery && <GraphQL query={{ query, variables }} onQueryResult={this.handleQueryResult} />}
         <CooldownText>{cooldownLeft !== '' ? `${cooldownLeft}` : null}</CooldownText>
-      </Button>
+      </ContextMenuActionView>
     );
   }
 
@@ -120,7 +103,7 @@ class ContextMenuAction extends React.Component<Props, State> {
     }
   }
 
-  private onActionClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  private onActionClick = () => {
     const { action } = this.props;
     hideContextMenu();
     if (action) {
@@ -131,10 +114,10 @@ class ContextMenuAction extends React.Component<Props, State> {
         if (action.cooldownSeconds) {
           this.startCooldown(new Date().toISOString());
         }
-        this.props.onActionClick(e, action);
+        this.props.onActionClick(action);
       }
     } else {
-      this.props.onActionClick(e);
+      this.props.onActionClick();
     }
   }
 
