@@ -8,7 +8,6 @@ import { Promise } from 'es6-promise';
 import * as RestClient from './../RestClient';
 import * as RestUtil from './../RestUtil';
 import channelId from '../../core/constants/channelId';
-import { Race, Faction, Gender, Archetype } from '../..';
 
 // Get Characters
 export function getCharacters(): Promise<SimpleCharacter[]> {

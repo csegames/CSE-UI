@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
-import { events } from '@csegames/camelot-unchained';
 
 import {
   setPosition,
@@ -92,7 +91,7 @@ class HUDEditor extends React.Component<Props, State> {
         <HUDEditorTitle>
           <div className='editorDragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVEEDITOR)}>
             <b>UI Widgets</b>
-            <a href='#' onClick={ () => events.fire('hudnav--navigate', 'reset') }>
+            <a href='#' onClick={ () => game.trigger('hudnav--navigate', 'reset') }>
               <div className='resetHUDButton'><b>Reset All</b></div>
             </a>
           </div>

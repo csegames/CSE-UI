@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from '../../../';
-
 import * as React from 'react';
 import { Room } from '../lib/CSEChat';
 import JoinRoomList from './JoinRoomList';
@@ -68,7 +66,7 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
   }
 
   private getRooms = (): void => {
-    events.once('chat-room-list', this.gotRooms);
+    game.once('chat-room-list', this.gotRooms);
     this.props.getRooms();
   }
 

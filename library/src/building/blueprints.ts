@@ -5,8 +5,8 @@
  */
 import BuildingBlueprint from './classes/BuildingBlueprint';
 import client from '../core/client';
-import * as events  from '../events';
 import * as restApi from '../restapi';
+import BuildingEventTopics from './events/BuildingEventTopics';
 
 let blueprintsLoaded: boolean = false;
 let blueprintsRequested: boolean = false;
@@ -29,7 +29,7 @@ function loadBlueprints() {
     blueprintsList.push(blueprint);
 
     if (blueprintsLoaded) {
-      events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
+      game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
     }
 
   });
@@ -46,7 +46,7 @@ function requestBlueprintPaste() {
 }
 
 function fireHandleBlueprints() {
-  events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
+  game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
 }
 
 function requestBlueprintDelete(blueprint: BuildingBlueprint) {
@@ -71,7 +71,7 @@ function requestBlueprintSave(name: string) {
 
 function requestBlueprintSelect(blueprint: BuildingBlueprint) {
   client.SelectBlueprint(blueprint.index);
-  events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint });
+  game.trigger(BuildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 
 function requestBlueprintIcon(blueprint: BuildingBlueprint) {

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
+import { PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from 'lib/playerStateEqual';
 import { BodyParts } from 'lib/PlayerStatus';

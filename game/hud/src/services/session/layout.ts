@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import { client, events, RUNTIME_ASSERT } from '@csegames/camelot-unchained';
+import { client, RUNTIME_ASSERT } from '@csegames/camelot-unchained';
 
 import { cloneDeep } from 'lodash';
 import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
@@ -306,7 +306,7 @@ export function initialize() {
     };
 
     // hook up to event triggers
-    events.on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       switch (name) {
         case 'chat':
           return dispatch(toggleVisibility(name));

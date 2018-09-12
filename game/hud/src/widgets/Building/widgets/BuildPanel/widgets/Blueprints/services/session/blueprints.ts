@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, buildUIMode, BuildingBlueprint } from '@csegames/camelot-unchained';
+import { buildUIMode, BuildingBlueprint, building } from '@csegames/camelot-unchained';
 import requester from './requester';
 import assign from 'object-assign';
 
@@ -14,19 +14,19 @@ const MODE_CHANGED = 'buildpanel/panes/MODE_CHANGED';
 
 export function loadBlueprints(dispatch: (action: any) => void) {
 
-  events.addListener(events.buildingEventTopics.handlesBlueprints, (info: { blueprints: BuildingBlueprint[] }) => {
+  game.on(building.BuildingEventTopics.handlesBlueprints, (info: { blueprints: BuildingBlueprint[] }) => {
     dispatch(updateBlueprints(info.blueprints));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBlueprintSelect, (info: { blueprint: BuildingBlueprint }) => {
+  game.on(building.BuildingEventTopics.handlesBlueprintSelect, (info: { blueprint: BuildingBlueprint }) => {
     dispatch(selectBlueprint(info.blueprint));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
+  game.on(building.BuildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
     dispatch(copyModeChanged(info.mode === buildUIMode.BLOCKSELECTED));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBlueprintCopy, () => {
+  game.on(building.BuildingEventTopics.handlesBlueprintCopy, () => {
     dispatch(pasteModeChanged(true));
   });
 

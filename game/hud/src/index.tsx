@@ -9,12 +9,18 @@ import './third-party/animate.css';
 import 'ol/ol.css';
 import './third-party/toastr.min.css';
 import './index.scss';
+
+// TODO: AUDIT IF WE NEED THESE
+import 'core-js/es6/map';
+import 'core-js/es6/weak-map';
+import 'core-js/es6/set';
+// --------------------------
+import '@csegames/camelot-unchained';
+
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { client } from '@csegames/camelot-unchained';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
-import initialize from './services/initialization';
 import HUD from './components/HUD';
 import { apollo, store } from './services/session/reducer';
 import { ApolloProvider } from 'react-apollo';
@@ -28,32 +34,12 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
 
 const root = document.getElementById('hud');
 
-interface WindowInterface extends Window {
-  cuAPI: any;
-  opener: WindowInterface;
-}
-
-// declare window implements WindowInterface
-declare const window: WindowInterface;
-
-if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
-  client.OnInitialized(() => {
-    initialize();
-    ReactDom.render(
-      <ErrorBoundary outputErrorToConsole>
-        <ApolloProvider store={store} client={apollo}>
-          <HUD />
-        </ApolloProvider>
-      </ErrorBoundary>,
-      root);
-  });
-} else {
-  initialize();
+game.on('ready', () => {
   ReactDom.render(
     <ErrorBoundary outputErrorToConsole>
-      <ApolloProvider store={store} client={apollo}>
+        <ApolloProvider store={store} client={apollo}>
         <HUD />
       </ApolloProvider>
     </ErrorBoundary>,
     root);
-}
+});

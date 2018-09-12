@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, Faction, hasClientAPI, PlayerState } from '@csegames/camelot-unchained';
+import { client, hasClientAPI, PlayerState } from '@csegames/camelot-unchained';
 import RespawnLocation from './RespawnLocation';
 
 export interface RespawnProps {

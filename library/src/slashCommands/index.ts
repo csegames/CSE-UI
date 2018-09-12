@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as events  from '../events';
-
 export interface SlashCommand {
   command: string;
   helpText: string;
@@ -32,7 +30,7 @@ export function registerSlashCommand(command: string, helpText: string, callback
     }
   }
   if (!found) window['cu'].slashCommandRegistry.push({ helpText, command: cmd });
-  events.on(prefix(cmd), callback);
+  game.on(prefix(cmd), callback);
 }
 
 /**
@@ -66,7 +64,7 @@ export function parseMessageForSlashCommand(command: string): boolean {
   let found = false;
   for (let i = 0; i < window['cu'].slashCommandRegistry.length; ++i) {
     if (window['cu'].slashCommandRegistry[i].command === cmd.toLowerCase()) {
-      events.fire(prefix(cmd), split[1]);
+      game.trigger(prefix(cmd), split[1]);
       found = true;
       break;
     }

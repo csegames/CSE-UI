@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events, plotPermissions, webAPI } from '@csegames/camelot-unchained';
+import { client, plotPermissions } from '@csegames/camelot-unchained';
 
 interface PlotControlUIState {
   plotOwned: boolean;
@@ -14,7 +14,7 @@ interface PlotControlUIState {
   entityID: string;
 
   viewingQueue: boolean;
-  queue: webAPI.QueuedBlueprintMessage[];
+  queue: QueuedBlueprintMessage[];
   queueState: string;
   numContributors: number;
   visible: boolean;
@@ -71,7 +71,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       if (name === 'plotcontrol') {
         if (!this.state.visible) {
           this.setState((state, props) => ({ visible: true }));
@@ -83,7 +83,7 @@ class PlotControlUI extends React.Component<PlotControlUIProps, PlotControlUISta
   }
 
   private closeWindow = () => {
-    events.fire('hudnav--navigate', 'plotcontrol');
+    game.trigger('hudnav--navigate', 'plotcontrol');
   }
 
   private onPlotStatus = (plotOwned: boolean, currentPermissions: number, charID: string, entityID: string) => {

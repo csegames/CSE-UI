@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import styled, { css } from 'react-emotion';
 import { CloseButton } from 'UI/CloseButton';
 
@@ -157,12 +157,12 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   public componentDidMount() {
     client.OnOpenUI(this.fireVisibilityEvent);
     client.OnCloseUI(this.fireVisibilityEvent);
-    events.on('hudnav--navigate', this.handleVisibilityEvent);
+    game.on('hudnav--navigate', this.handleVisibilityEvent);
   }
 
   private onOptionsClick = () => {
-    events.fire('hudnav--navigate', 'settings');
-    events.fire('hudnav--navigate', 'gamemenu');
+    game.trigger('hudnav--navigate', 'settings');
+    game.trigger('hudnav--navigate', 'gamemenu');
   }
 
   private onQuitGameClick = () => {
@@ -187,7 +187,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private fireVisibilityEvent = () => {
-    events.fire('hudnav--navigate', 'gamemenu');
+    game.trigger('hudnav--navigate', 'gamemenu');
   }
 }
 

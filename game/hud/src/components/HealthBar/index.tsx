@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { PlayerState, damageTypes, GroupMemberState } from '@csegames/camelot-unchained';
+import { PlayerState, damageTypes } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../../lib/playerStateEqual';
@@ -144,7 +144,7 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
   //     if (stateEvents.length > 0 && (Date.now() - stateEvents[stateEvents.length - 1].when) > 200 && this.mounted
   //       ) {
   //       this.setState({
-  //         events,
+  //
   //       });
   //     } else if (this.mounted) {
   //       this.setState({

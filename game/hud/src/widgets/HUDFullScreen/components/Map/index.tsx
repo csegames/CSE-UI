@@ -10,7 +10,7 @@ import styled from 'react-emotion';
 import OL from 'ol';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 import client from '@csegames/camelot-unchained/lib/core/client';
 import { FullScreenContext } from '../../lib/utils';
 import { MapGQL } from 'gql/interfaces';
@@ -197,7 +197,7 @@ export class GameMap extends React.Component<Props, State> {
       this.staticVectorSource.clear();
     }
     this.initialized = false;
-    events.off(this.navigationEventHandle);
+    game.off(this.navigationEventHandle);
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {

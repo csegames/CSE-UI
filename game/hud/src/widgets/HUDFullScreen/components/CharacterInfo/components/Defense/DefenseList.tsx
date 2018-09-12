@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import styled from 'react-emotion';
 
@@ -35,7 +35,7 @@ export interface DefenseListState {
 }
 
 class DefenseList extends React.PureComponent<DefenseListProps> {
-  private updateCharacterStatsListener: number;
+  private updateCharacterStatsListener: EventHandle;
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
@@ -69,13 +69,13 @@ class DefenseList extends React.PureComponent<DefenseListProps> {
   }
 
   public componentDidMount() {
-    this.updateCharacterStatsListener = events.on(eventNames.updateCharacterStats, () => {
+    this.updateCharacterStatsListener = game.on(eventNames.updateCharacterStats, () => {
       this.props.graphql.refetch();
     });
   }
 
   public componentWillUnmount() {
-    events.off(this.updateCharacterStatsListener);
+    game.off(this.updateCharacterStatsListener);
   }
 }
 

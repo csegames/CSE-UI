@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { findIndex, isEmpty } from 'lodash';
-import { events, SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
+import { SkillStateStatusEnum, SkillStateTrackEnum } from '@csegames/camelot-unchained';
 import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 
 import { ApiSkillInfo } from '../SkillBar';
@@ -40,7 +40,7 @@ class SkillQueue extends React.Component<SkillQueueProps, SkillQueueState> {
   public componentDidUpdate(prevProps: SkillQueueProps) {
     if (isEmpty(prevProps.skills.data) && !isEmpty(this.props.skills.data)) {
       this.props.skills.data.forEach((skill: ApiSkillInfo) => {
-        events.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent);
+        game.on('skillsbutton-' + skill.id, this.handleSkillQueueEvent);
       });
     }
   }

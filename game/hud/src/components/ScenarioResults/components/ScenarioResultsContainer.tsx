@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, client, soundEvents } from '@csegames/camelot-unchained';
+import { client, soundEvents } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
 import { CharacterOutcomeDBModel, ScenarioSummaryDBModel, ScenarioOutcome } from 'gql/interfaces';
@@ -57,7 +57,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       if (name === 'scenario-results') {
         this.toggleVisibility();
       }

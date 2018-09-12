@@ -4,12 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { fire } from '@csegames/camelot-unchained/lib/events';
 import { BuildingItem } from '../lib/BuildingItem';
 
 const ITEM_SELECTED_EVENT = 'building/selection/ITEM_SELECTED_EVENT';
 
 export function fireBuildingItemSelected(item: BuildingItem) {
-  fire(ITEM_SELECTED_EVENT, { item });
+  game.trigger(ITEM_SELECTED_EVENT, { item });
 }
 

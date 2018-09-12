@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import * as events  from '../events';
 
 export interface EventMap {
   receive: string;
@@ -11,7 +10,7 @@ export interface EventMap {
 }
 
 export function eventToEvent(receive: string, send: string) {
-  events.on(receive, (...params: any[]) => events.fire(send, ...params));
+  game.on(receive, (...params: any[]) => game.trigger(send, ...params));
 }
 
 export function eventMapper(evtMap: EventMap[], fn: (...params: any[]) => void, ...params: any[]) {

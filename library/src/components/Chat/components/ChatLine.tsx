@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from '../../../';
 import * as React from 'react';
 import { chatType, ChatMessage } from './ChatMessage';
 import ChatLineParser from './ChatLineParser';
@@ -115,7 +114,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
   }
 
   private PM = (): void => {
-    events.fire('cse-chat-private-message', this.props.message.nick);
+    game.trigger('cse-chat-private-message', this.props.message.nick);
   }
 }
 

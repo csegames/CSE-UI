@@ -9,7 +9,6 @@ import styled from 'react-emotion';
 import {
   FloatSpinner,
   Tooltip,
-  events,
 } from '..';
 import { generateID } from 'redux-typed-modules';
 import DropDownSelect, { DropDownSelectStyle, DropDownSelectProps } from './DropDownSelect';
@@ -156,11 +155,11 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
   }
 
   public componentDidMount() {
-    this.editModeListenerID = events.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
+    this.editModeListenerID = game.on(InlineDropDownSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
   public componentWillUnmount() {
-    events.off(this.editModeListenerID);
+    game.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }
 
@@ -225,7 +224,7 @@ export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
       editMode: true,
       showEditButton: false,
     });
-    events.fire(InlineDropDownSelectEdit.editModeActiveEvent, this.id);
+    game.trigger(InlineDropDownSelectEdit.editModeActiveEvent, this.id);
   }
 
   private deactivateEditMode = () => {

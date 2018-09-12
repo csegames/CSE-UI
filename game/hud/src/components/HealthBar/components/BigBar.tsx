@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
+import { utils, PlayerState } from '@csegames/camelot-unchained';
 import { BodyParts } from 'lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 

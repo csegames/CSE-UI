@@ -7,7 +7,7 @@
 
 
 import BuildingEventTopics from './BuildingEventTopics';
-import { EventEmitter } from '../../events/EventEmitter';
+import { EventEmitter } from '../../utils/EventEmitter';
 import client from '../../core/client';
 import buildUIMode from '../../core/constants/buildUIMode';
 

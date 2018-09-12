@@ -15,15 +15,7 @@ import {
 import {
   client,
   utils,
-  events,
   TabItem,
-  Faction,
-  Vec3F,
-  Euler3f,
-  ItemPermissions,
-  Gender,
-  Race,
-  Archetype,
 } from '@csegames/camelot-unchained';
 
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
@@ -925,12 +917,12 @@ export const FullScreenContext = React.createContext(defaultFullScreenState);
 
 export function requestUIKeydown() {
   const shouldFullscreenListen = false;
-  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
+  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
 
 export function releaseUIKeydown() {
   const shouldFullscreenListen = true;
-  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
+  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
 
 export function isRightOrLeftItem(gearSlots: GearSlotDefRef.Fragment[]) {

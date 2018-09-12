@@ -8,9 +8,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 
-import { client, webAPI, Vec3F, Euler3f } from '@csegames/camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 
 import * as base from '../../ItemShared/InventoryBase';
 import InventoryFooter from './InventoryFooter';
@@ -135,8 +135,8 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 
 class InventoryBody extends React.Component<InventoryBodyComponentProps, InventoryBodyState> {
   private static minSlots = 200;
-  private updateInventoryItemsHandler: number;
-  private dropItemHandler: number;
+  private updateInventoryItemsHandler: EventHandle;
+  private dropItemHandler: EventHandle;
   private bodyRef: HTMLDivElement;
   private graphql: GraphQLResult<InventoryBodyGQL.Query>;
 
@@ -208,8 +208,8 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   public componentDidMount() {
     setTimeout(() => this.initializeBodyDimensions(), 1);
     window.addEventListener('resize', () => this.initializeBodyDimensions(true));
-    this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
-    this.dropItemHandler = events.on(eventNames.onDropItem, (payload: DropItemPayload) =>
+    this.updateInventoryItemsHandler = game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
+    this.dropItemHandler = game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
       base.dropItemRequest(payload.inventoryItem.item));
     window.addEventListener('resize', this.initializeInventory);
     client.SendCommitItemRequest(this.handleCommitItemRequest);
@@ -240,8 +240,8 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   }
 
   public componentWillUnmount() {
-    events.off(this.updateInventoryItemsHandler);
-    events.off(this.dropItemHandler);
+    game.off(this.updateInventoryItemsHandler);
+    game.off(this.dropItemHandler);
     window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
   }
 
@@ -258,7 +258,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   private refetch = async () => {
     if (!this.graphql) return;
     this.graphql.refetch();
-    events.fire('refetch-character-info');
+    game.trigger('refetch-character-info');
   }
 
   private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {

@@ -10,8 +10,6 @@ import { utils } from '@csegames/camelot-unchained';
 import {
   onShowTooltip,
   onHideTooltip,
-  offShowTooltip,
-  offHideTooltip,
   ShowTooltipPayload,
   ToolTipStyle,
 } from 'actions/tooltips';
@@ -61,8 +59,8 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   private tooltipRef: HTMLDivElement;
   private windowDimensions: { innerHeight: number, innerWidth: number };
   private tooltipDimensions: { width: number, height: number };
-  private onShowTooltipListener: number;
-  private onHideTooltipListener: number;
+  private onShowTooltipListener: EventHandle;
+  private onHideTooltipListener: EventHandle;
 
   constructor(props: TooltipProps) {
     super(props);
@@ -103,8 +101,8 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
   public componentWillUnmount() {
     window.removeEventListener('resize', this.initWindowDimensions);
-    offShowTooltip(this.onShowTooltipListener);
-    offHideTooltip(this.onHideTooltipListener);
+    this.onShowTooltipListener.clear();
+    this.onHideTooltipListener.clear();
   }
 
   private initWindowDimensions = () => {

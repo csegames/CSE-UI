@@ -1,4 +1,4 @@
-import { events, buildUIMode, BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
+import { buildUIMode, BuildingBlock, BuildingMaterial } from '@csegames/camelot-unchained';
 
 class BuildingRequests {
 
@@ -7,7 +7,7 @@ class BuildingRequests {
   public changeMode(mode: buildUIMode) {
     setTimeout(() => {
       console.log('changeMode to ' + mode);
-      events.fire(events.buildingEventTopics.handlesBuildingMode, { mode });
+      game.trigger('building-mode', { mode });
     },         500);
   }
 
@@ -50,7 +50,7 @@ class BuildingRequests {
   public requestMaterials() {
     setTimeout(() => {
       this.materials = this.getFakeMaterials();
-      events.fire(events.buildingEventTopics.handlesBlocks, { materials: this.materials });
+      game.trigger('block-updated', { materials: this.materials });
     },         1000);
   }
 
@@ -67,7 +67,7 @@ class BuildingRequests {
     });
 
     const info: any = { material, block };
-    events.fire(events.buildingEventTopics.handlesBlockSelect, info);
+    game.trigger('block-select', info);
   }
 
   public getBlockId(matId: number, shapeId: number) {

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
+import { PlayerState } from '@csegames/camelot-unchained';
 
 import { getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
 import { isEqualPlayerState } from 'lib/playerStateEqual';

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, webAPI, Faction, Gender, Race, Archetype } from '@csegames/camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { getMyPaperDollBG, getMyPaperDollIcon } from '../../../lib/utils';
 
 interface ContainerProps {

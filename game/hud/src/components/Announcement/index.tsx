@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, core } from '@csegames/camelot-unchained';
+import { core } from '@csegames/camelot-unchained';
 import * as React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
 
@@ -40,7 +40,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
 
   public componentWillMount() {
-    events.on('handlesAnnouncements', this.onMessage);
+    game.on('handlesAnnouncements', this.onMessage);
     this.setState({ message: '' });
   }
 

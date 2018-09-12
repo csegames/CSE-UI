@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, BuildingBlock, BuildingMaterial, buildUIMode } from '@csegames/camelot-unchained';
+import { BuildingBlock, BuildingMaterial, buildUIMode, building } from '@csegames/camelot-unchained';
 
 import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
 import assign from 'object-assign';
@@ -23,20 +23,20 @@ export const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
 
 export function initialize(dispatch: (action: any) => void) {
 
-  events.addListener(events.buildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
+  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
     const mats: BuildingMaterial[] = info.materials;
     dispatch(setMaterials(mats));
     dispatch(selectFromMaterial(mats[0]));
     dispatch(selectToMaterial(mats[0]));
   });
 
-  events.addListener(
-    events.buildingEventTopics.handlesBlockSelect, (info: { material: BuildingMaterial, block: BuildingBlock }) => {
+  game.on(
+    building.BuildingEventTopics.handlesBlockSelect, (info: { material: BuildingMaterial, block: BuildingBlock }) => {
       dispatch(selectBlock(info.block));
       dispatch(selectFromMaterial(info.material));
     });
 
-  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
+  game.on(building.BuildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
     dispatch(setBlockMode(info.mode === buildUIMode.BLOCKSELECTED));
   });
 

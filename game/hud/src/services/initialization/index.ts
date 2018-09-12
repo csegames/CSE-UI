@@ -5,11 +5,9 @@
  */
 
 import {
-  events,
   client,
   signalr,
   CombatLog,
-  Faction,
   bodyParts,
   damageTypes,
   skillTracks,
@@ -24,7 +22,7 @@ export default () => {
   signalr.initializeSignalR();
 
   client.OnToggleHUDItem((name: string) => {
-    events.fire('hudnav--navigate', name);
+    game.trigger('hudnav--navigate', name);
   });
 
   client.OnCharacterZoneChanged((id: string) => {
@@ -147,7 +145,7 @@ export default () => {
     if (combatLogTimeout) {
       window.clearTimeout(combatLogTimeout);
       combatLogTimeout = window.setTimeout(() => {
-        events.fire('combatlog_message', batchedCombatLogs);
+        game.trigger('combatlog_message', batchedCombatLogs);
         batchedCombatLogs = [];
         combatLogTimeout = null;
       }, 500);
@@ -155,7 +153,7 @@ export default () => {
     }
 
     combatLogTimeout = window.setTimeout(() => {
-      events.fire('combatlog_message', combatLogs);
+      game.trigger('combatlog_message', combatLogs);
       batchedCombatLogs = [];
       combatLogTimeout = null;
     }, 500);
@@ -171,7 +169,7 @@ export default () => {
     if (consoleLogTimeout) {
       window.clearTimeout(consoleLogTimeout);
       consoleLogTimeout = window.setTimeout(() => {
-        events.fire('system_message', batchedConsoleLogs);
+        game.trigger('system_message', batchedConsoleLogs);
         batchedConsoleLogs = [];
         consoleLogTimeout = null;
       }, 500);
@@ -179,7 +177,7 @@ export default () => {
     }
 
     consoleLogTimeout = window.setTimeout(() => {
-      events.fire('system_message', text);
+      game.trigger('system_message', text);
       consoleLogTimeout = null;
       batchedCombatLogs = [];
     }, 500);

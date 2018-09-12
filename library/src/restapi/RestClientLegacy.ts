@@ -10,7 +10,6 @@ import { Promise } from 'es6-promise';
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
 import client, { hasClientAPI } from '../core/client';
-import { emitter }  from '../events/EventEmitter';
 import * as RestUtil from './RestUtil';
 
 // TODO remove this when the API's are updated
@@ -52,7 +51,7 @@ class Settings {
 // default to Hatchery
 let settings = new Settings(4);
 if (hasClientAPI()) {
-  emitter.on('init', () => {
+  game.on('init', () => {
     settings = new Settings(client.patchResourceChannel);
   });
 }

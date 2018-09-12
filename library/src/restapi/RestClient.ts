@@ -10,7 +10,6 @@ import { Promise } from 'es6-promise';
 import CoreSettings from '../core/CoreSettings';
 import channelId from '../core/constants/channelId';
 import client, { hasClientAPI } from '../core/client';
-import { emitter }  from '../events/EventEmitter';
 import * as RestUtil from './RestUtil';
 
 class Settings {
@@ -25,7 +24,7 @@ class Settings {
     this.core = new CoreSettings();
     this.timeout = 2000;
     if (hasClientAPI()) {
-      emitter.on('init', () => {
+      game.on('init', () => {
         this.apiToken = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
         this.channelId = client.patchResourceChannel;
         this.determineApiDetails();

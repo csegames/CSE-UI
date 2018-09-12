@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import * as React from 'react';
 
 interface ErrorMessageAppProps { }
@@ -25,7 +25,7 @@ class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessag
 
     this.init = this.init.bind(this);
     this.removeMessage = this.removeMessage.bind(this);
-    events.on('init', this.init);
+    game.on('init', this.init);
   }
 
   public render() {

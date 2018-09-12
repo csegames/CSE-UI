@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import Combatant from './Combatant';
-import { Race, Archetype } from '../..';
 
 class Player extends Combatant {
 

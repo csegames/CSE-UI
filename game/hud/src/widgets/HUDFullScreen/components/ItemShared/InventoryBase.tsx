@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { events, webAPI, client, Vec3F, Euler3f, MoveItemRequest } from '@csegames/camelot-unchained';
+import { webAPI, client } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../lib/constants';
@@ -592,7 +592,7 @@ export function distributeItemsNoFilter(args: {
   const craftingNameToItemIDs = {};
   const firstEmptyIndex = 0;
   let containerIdToDrawerInfo: ContainerIdToDrawerInfo = {};
-  let moveRequests: webAPI.MoveItemRequest[] = [];
+  let moveRequests: MoveItemRequest[] = [];
 
   // first we'll split up items into different categories for how the inventory handles things differently
   // such as stacks, crafting stuffs, and items with or without position
@@ -1063,7 +1063,7 @@ export function partitionItems(items: InventoryItem.Fragment[]) {
 
   const temporaryNoPositionStackedItems: InventoryItem.Fragment[] = [];
 
-  const moveRequests: webAPI.MoveItemRequest[] = [];
+  const moveRequests: MoveItemRequest[] = [];
   const invItems = [...items];
   invItems.forEach((item) => {
     if (isContainerItem(item)) {
@@ -1623,7 +1623,7 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
       client.characterID,
       request as any,
     );
-  setTimeout(() => events.fire(eventNames.updateCharacterStats), 100);
+  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 
   // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
@@ -1665,7 +1665,7 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
     client.characterID,
     request as any,
   );
-  setTimeout(() => events.fire(eventNames.updateCharacterStats), 100);
+  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
   // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
     client.UnequipItem(item.id);
@@ -1771,7 +1771,7 @@ function moveInventoryItemToEmptySlot(args: {
       item: dragItemData as EquippedItemDataTransfer,
       dontUpdateInventory: true,
     };
-    events.fire(eventNames.onUnequipItem, payload);
+    game.trigger(eventNames.onUnequipItem, payload);
   }
 
   const dragItemId = getItemMapID(dragItem);

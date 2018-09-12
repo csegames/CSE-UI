@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import {
-  events,
   client,
   SkillStateProgression,
   SkillStateStatusEnum,
@@ -160,7 +159,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
   public componentWillReceiveProps(nextProps: SkillButtonProps) {
     if (!this.listener) {
       const { id } = (nextProps.skillState);
-      this.listener = events.on('skillsbutton-' + id, (data: SkillStateInfo) => this.processEvent(data));
+      this.listener = game.on('skillsbutton-' + id, (data: SkillStateInfo) => this.processEvent(data));
     }
   }
 
@@ -176,7 +175,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
 
   public componentWillUnmount() {
     if (this.listener) {
-      events.off(this.listener);
+      game.off(this.listener);
       this.listener = null;
     }
   }
@@ -232,7 +231,7 @@ class SkillButton extends React.Component<SkillButtonProps, SkillButtonState> {
       [id === INNER ? 'inner' : 'outer']: { current },
     };
     if (id === INNER && this.props.skillState.status & SkillStateStatusEnum.Preparation) {
-      events.fire(`skill-button-timer-${this.props.skillState.id}`, current);
+      game.trigger(`skill-button-timer-${this.props.skillState.id}`, current);
     }
     this.setState((state, props) => newState as any);
   }

@@ -6,7 +6,7 @@
 import BuildingMaterial from './classes/BuildingMaterial';
 import BuildingBlock from './classes/BuildingBlock';
 import client from '../core/client';
-import * as events  from '../events';
+import BuildingEventTopics from './events/BuildingEventTopics';
 
 const materialsLoaded: boolean = false;
 let materialsRequested: boolean = false;
@@ -90,7 +90,7 @@ function recieveBlockTags(id: number, tags: any) {
 
   if (--numBlocksToLoad === 0) {
     // finished loading shapes and types
-    events.fire(events.buildingEventTopics.handlesBlocks, { materials: materialsList });
+    game.trigger(BuildingEventTopics.handlesBlueprints, { materials: materialsList });
   }
 }
 
@@ -134,7 +134,7 @@ function getMissingMaterial(blockid: number): { material: BuildingMaterial, bloc
   materialsMap[material.id] = material;
   materialsList.push(material);
 
-  events.fire(events.buildingEventTopics.handlesBlocks, { materials: materialsList });
+  game.trigger(BuildingEventTopics.handlesBlueprints, { materials: materialsList });
 
   return { material, block };
 }
@@ -152,4 +152,11 @@ function requestMaterials() {
 export * from './blueprints';
 export * from './building-actions';
 
-export { requestMaterials, getMissingMaterial, requestBlockSelect, getBlockForBlockId, getMaterialForBlockId };
+export {
+  requestMaterials,
+  getMissingMaterial,
+  requestBlockSelect,
+  getBlockForBlockId,
+  getMaterialForBlockId,
+  BuildingEventTopics,
+};

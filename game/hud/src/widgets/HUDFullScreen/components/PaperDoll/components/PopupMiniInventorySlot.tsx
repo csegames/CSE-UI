@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -88,19 +88,19 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       willEquipTo: this.props.gearSlots,
     };
     client.EquipItem(item.id);
-    events.fire(eventNames.onDehighlightSlots);
-    events.fire(eventNames.onEquipItem, payload);
+    game.trigger(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onEquipItem, payload);
   }
 
   private onMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
     const { item } = this.props;
-    events.fire(eventNames.onHighlightSlots, this.props.gearSlots);
+    game.trigger(eventNames.onHighlightSlots, this.props.gearSlots);
     const content = <TooltipContent item={item} instructions='Left click to equip' />;
     showTooltip({ content, event, styles: defaultTooltipStyle });
   }
 
   private onMouseLeave = () => {
-    events.fire(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onDehighlightSlots);
     hideTooltip();
   }
 }

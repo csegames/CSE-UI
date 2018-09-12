@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
+import { PlayerState } from '@csegames/camelot-unchained';
 
 import { getPlayerEntityID } from './player';
 
@@ -29,27 +29,27 @@ export type MenuItem = {
 };
 
 export function showContextMenu(items: MenuItem[], event: MouseEvent) {
-  if (items.length) events.fire(ACTIVATE_CONTEXT_MENU, items, event);
+  if (items.length) game.trigger(ACTIVATE_CONTEXT_MENU, items, event);
 }
 
 export function onShowContextMenu(callback: (items: MenuItem[], event: MouseEvent) => void) {
-  return events.on(ACTIVATE_CONTEXT_MENU, callback);
+  return game.on(ACTIVATE_CONTEXT_MENU, callback);
 }
 
 export function offShowContextMenu(handle: number) {
-  events.off(handle);
+  game.off(handle);
 }
 
 export function hideContextMenu() {
-  events.fire(HIDE_CONTEXT_MENU);
+  game.trigger(HIDE_CONTEXT_MENU);
 }
 
 export function onHideContextMenu(callback: () => void) {
-  return events.on(HIDE_CONTEXT_MENU, callback);
+  return game.on(HIDE_CONTEXT_MENU, callback);
 }
 
 export function offHideContextMenu(handle: number) {
-  events.off(handle);
+  game.off(handle);
 }
 
 // SPECIFIC CONTEXT MENUS

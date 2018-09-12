@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, Vec2f, Vec3f } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 export interface CompassData {
   facing: number;

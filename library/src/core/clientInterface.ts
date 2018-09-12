@@ -5,7 +5,6 @@
  */
 
 import configGroup from './config/configGroup';
-import { Race, Gender, Faction, Archetype } from '..';
 import Item from './classes/Item';
 
 export interface EntityState {

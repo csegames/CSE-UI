@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { utils, client, Vec3f, PlayerState } from '@csegames/camelot-unchained';
+import { utils, client, PlayerState } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   position: absolute;

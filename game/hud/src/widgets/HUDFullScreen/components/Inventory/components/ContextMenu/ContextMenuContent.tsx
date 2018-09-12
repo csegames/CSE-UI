@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { client, events, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
+import { client, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
 
 import ContextMenuAction from './ContextMenuAction';
 import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/eventNames';
@@ -125,8 +125,8 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       newItem: itemDataTransfer,
       willEquipTo: gearSlots,
     };
-    events.fire(eventNames.onEquipItem, payload);
-    events.fire(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onEquipItem, payload);
+    game.trigger(eventNames.onDehighlightSlots);
     contextMenuProps.close();
   }
 
@@ -145,8 +145,8 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       type: 'Drop',
       inventoryItem: dataTransfer,
     };
-    events.fire(eventNames.updateInventoryItems, payload);
-    events.fire(eventNames.onDropItem, payload);
+    game.trigger(eventNames.updateInventoryItems, payload);
+    game.trigger(eventNames.onDropItem, payload);
     contextMenuProps.close();
   }
 
@@ -217,19 +217,19 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
   }
 
   private closeInventory = () => {
-    events.fire('hudnav--navigate', 'inventory');
+    game.trigger('hudnav--navigate', 'inventory');
   }
 
   private openMiniMap = () => {
-    events.fire('hudnav--navigate', 'map');
+    game.trigger('hudnav--navigate', 'map');
   }
 
   private onHighlightSlots = (gearSlots: Partial<GearSlotDefRef>[]) => {
-    events.fire(eventNames.onHighlightSlots, gearSlots);
+    game.trigger(eventNames.onHighlightSlots, gearSlots);
   }
 
   private onDehighlightSlots = () => {
-    events.fire(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onDehighlightSlots);
   }
 }
 

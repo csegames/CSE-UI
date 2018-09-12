@@ -8,7 +8,6 @@
  * @Last Modified by: JB (jb@codecorsair.com)
  * @Last Modified time: 2017-02-20 17:03:16
  */
-import { Race, Gender, Archetype } from '../..';
 
 export interface PlayerStatus {
   name: string;

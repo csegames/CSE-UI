@@ -6,7 +6,7 @@
  */
 
 import { find, filter } from 'lodash';
-import { Faction, client } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { TeamInterface } from '../components/ScenarioResultsContainer';
 import { ScenarioOutcome } from 'gql/interfaces';
 

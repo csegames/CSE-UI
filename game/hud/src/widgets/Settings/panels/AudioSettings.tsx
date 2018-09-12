@@ -9,7 +9,7 @@ import { SettingsPanel } from '../components/SettingsPanel';
 import { cancel, getAudioConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SliderField } from 'UI/SliderField';
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
 
 const settings: Settings = {
@@ -27,7 +27,7 @@ interface AudioSettingsState {
 }
 
 export class AudioSettings extends React.PureComponent<AudioSettingsProps, AudioSettingsState> {
-  private evh: number;
+  private evh: EventHandle;
 
   constructor(props: AudioSettingsProps) {
     super(props);
@@ -35,13 +35,13 @@ export class AudioSettings extends React.PureComponent<AudioSettingsProps, Audio
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--action', this.onAction);
+    this.evh = game.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
   public componentWillUnmount() {
     cancel(ConfigIndex.AUDIO);
-    if (this.evh) events.off(this.evh);
+    if (this.evh) game.off(this.evh);
   }
 
   public render() {

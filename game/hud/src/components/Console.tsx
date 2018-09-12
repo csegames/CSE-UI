@@ -11,8 +11,6 @@ import {
   parseMessageForSlashCommand,
 } from '@csegames/camelot-unchained';
 
-import * as events from '@csegames/camelot-unchained/lib/events';
-
 import styled from 'react-emotion';
 
 import ObjectDisplay from './ObjectDisplay';
@@ -107,8 +105,8 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       show: false,
     };
 
-    events.on('system_message', this.onConsoleText);
-    events.on('hudnav--navigate', this.handleHUDNavNavigate);
+    game.on('system_message', this.onConsoleText);
+    game.on('hudnav--navigate', this.handleHUDNavNavigate);
   }
 
   public render() {

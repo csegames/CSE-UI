@@ -7,7 +7,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, Vec3f, Vec2f } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import hash from 'object-hash';
 import {
   CompassPOIProviderProps,

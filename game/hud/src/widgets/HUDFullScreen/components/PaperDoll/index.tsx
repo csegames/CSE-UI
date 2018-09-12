@@ -7,7 +7,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { bodyParts, client, events } from '@csegames/camelot-unchained';
+import { bodyParts, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
@@ -88,7 +88,7 @@ export interface PaperDollState {
 }
 
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
-  private refetchListener: number;
+  private refetchListener: EventHandle;
   private paperdollBG: string;
   private graphql: GraphQLResult<PaperDollContainerGQL.Query>;
   constructor(props: PaperDollProps) {
@@ -123,11 +123,11 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
   public componentDidMount() {
     this.initializeMaxHealthParts();
-    this.refetchListener = events.on('refetch-character-info', this.refetch);
+    this.refetchListener = game.on('refetch-character-info', this.refetch);
   }
 
   public componentWillUnmount() {
-    events.off(this.refetchListener);
+    game.off(this.refetchListener);
   }
 
   private handleQueryResult = (graphql: GraphQLResult<PaperDollContainerGQL.Query>) => {

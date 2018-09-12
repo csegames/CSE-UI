@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { events } from '@csegames/camelot-unchained';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import styled, { keyframes } from 'react-emotion';
@@ -93,11 +92,11 @@ class PassiveAlert extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.passiveAlertListener = events.on('passivealert--newmessage', this.addAlertMessage);
+    this.passiveAlertListener = game.on('passivealert--newmessage', this.addAlertMessage);
   }
 
   public componentWillUnmount() {
-    events.off(this.passiveAlertListener);
+    game.off(this.passiveAlertListener);
   }
 
   private handleSubscription = (result: SubscriptionResult<SubscriptionType>) => {

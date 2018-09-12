@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 import styled from 'react-emotion';
 import { client } from '@csegames/camelot-unchained';
 

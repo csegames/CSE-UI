@@ -9,7 +9,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import {
   client,
-  events,
   ClientSkillState,
   SkillStateStatusEnum,
   SkillStateTypeEnum,
@@ -85,7 +84,7 @@ function skillStateConnector<PropsTypes extends any>() {
 
       public componentWillUpdate(nextProps: SkillStateConnectorProps, nextState: SkillStateConnectorState) {
         if (nextState.skillState) {
-          events.fire('skillsbutton-' + nextProps.skillInfo.id, nextState.skillState);
+          game.trigger('skillsbutton-' + nextProps.skillInfo.id, nextState.skillState);
         }
       }
 

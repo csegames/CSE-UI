@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events, DisplayModeConfig } from '@csegames/camelot-unchained';
+import { DisplayModeConfig } from '@csegames/camelot-unchained';
 import { DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { KeybindSettings } from '../panels/KeybindSettings';
@@ -102,7 +102,7 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
         action = { id: 'load' };
         break;
     }
-    events.fire('settings--action', action);
+    game.trigger('settings--action', action);
   }
 
   private cancel = () => {

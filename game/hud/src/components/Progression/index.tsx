@@ -8,7 +8,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import { events, client, webAPI } from '@csegames/camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ProgressionView from './ProgressionView';
 import { ProgressionGQL } from 'gql/interfaces';
@@ -160,7 +160,7 @@ class Progression extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', this.handleNav);
+    game.on('hudnav--navigate', this.handleNav);
   }
 
   public componentWillUnmount() {

@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { events } from '@csegames/camelot-unchained';
 
 const CompassTooltipContainer: React.SFC = styled('div')`
   position: absolute;
@@ -84,9 +83,9 @@ interface CompassTooltipState {
 
 class CompassTooltip extends React.Component<CompassTooltipProps, CompassTooltipState> {
 
-  private showListener: number;
-  private updateListener: number;
-  private hideListener: number;
+  private showListener: EventHandle;
+  private updateListener: EventHandle;
+  private hideListener: EventHandle;
 
   public state = {
     data: null as any,
@@ -136,15 +135,15 @@ class CompassTooltip extends React.Component<CompassTooltipProps, CompassTooltip
   }
 
   public componentDidMount() {
-    this.showListener = events.on('compass-tooltip--show', this.showTooltip);
-    this.updateListener = events.on('compass-tooltip--update', this.updateTooltip);
-    this.hideListener = events.on('compass-tooltip--hide', this.hideTooltip);
+    this.showListener = game.on('compass-tooltip--show', this.showTooltip);
+    this.updateListener = game.on('compass-tooltip--update', this.updateTooltip);
+    this.hideListener = game.on('compass-tooltip--hide', this.hideTooltip);
   }
 
   public componentWillUnmount() {
-    events.off(this.showListener);
-    events.off(this.updateListener);
-    events.off(this.hideListener);
+    this.showListener.clear();
+    this.updateListener.clear();
+    this.hideListener.clear();
   }
 
   private showTooltip = (data: CompassTooltipData) => {

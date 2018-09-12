@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { events } from '../../../';
 import * as React from 'react';
 
 export class UserInfo {
@@ -39,7 +38,7 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   private PM = (): void => {
-    events.fire('cse-chat-private-message', this.props.info.name);
+    game.trigger('cse-chat-private-message', this.props.info.name);
   }
 }
 

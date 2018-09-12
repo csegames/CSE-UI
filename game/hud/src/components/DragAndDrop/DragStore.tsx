@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as events from '@csegames/camelot-unchained/lib/events';
 
 export interface PositionInformation {
   top: number;
@@ -51,7 +50,7 @@ export const defaultDragStoreState: DragStoreState = {
 let dragStore: DragStoreState = defaultDragStoreState;
 
 export function setDragStoreInfo(partialDragStore: Partial<DragStoreState>) {
-  events.fire('set-drag-store', partialDragStore);
+  game.trigger('set-drag-store', partialDragStore);
 }
 
 export function getDragStore(): DragStoreState {
@@ -84,7 +83,7 @@ class DragStore extends React.Component<DragStoreProps, DragStoreState> {
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mouseup', this.onMouseUp);
 
-    events.on('set-drag-store', this.onSetDragStoreInfo);
+    game.on('set-drag-store', this.onSetDragStoreInfo);
   }
 
   public componentWillUpdate(nextProps: DragStoreProps, nextState: DragStoreState) {

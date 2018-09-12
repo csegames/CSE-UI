@@ -5,7 +5,7 @@
  */
 'use strict';
 
-import { EventEmitter } from '../../events/EventEmitter';
+import { EventEmitter } from '../../utils/EventEmitter';
 import BuildingEventTopics from './BuildingEventTopics';
 import client from '../../core/client';
 

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, events, GroupMemberState, Vec3f, AnyEntityState } from '@csegames/camelot-unchained';
+import { client, AnyEntityState } from '@csegames/camelot-unchained';
 import { hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
 import {
   CompassPOIProviderProps,
@@ -193,9 +193,9 @@ export default class WarbandMembersPoiProvider extends React.Component<
     friendlyTarget: '',
   };
 
-  private eventUpdateHandle: number;
-  private eventJoinedHandle: number;
-  private eventRemovedHandle: number;
+  private eventUpdateHandle: EventHandle;
+  private eventJoinedHandle: EventHandle;
+  private eventRemovedHandle: EventHandle;
 
   public render() {
     return (
@@ -213,9 +213,9 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public componentDidMount() {
-    this.eventUpdateHandle = events.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated);
-    this.eventJoinedHandle = events.on(hubEvents.memberJoined, this.onWarbandMemberJoined);
-    this.eventRemovedHandle = events.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved);
+    this.eventUpdateHandle = game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated);
+    this.eventJoinedHandle = game.on(hubEvents.memberJoined, this.onWarbandMemberJoined);
+    this.eventRemovedHandle = game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved);
     client.OnFriendlyTargetStateChanged((state: AnyEntityState) => {
       if (state) {
         this.setState({
@@ -230,9 +230,9 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public componentWillUnmount() {
-    events.off(this.eventUpdateHandle);
-    events.off(this.eventJoinedHandle);
-    events.off(this.eventRemovedHandle);
+    this.eventUpdateHandle.clear();
+    this.eventJoinedHandle.clear();
+    this.eventRemovedHandle.clear();
   }
 
   public shouldComponentUpdate(

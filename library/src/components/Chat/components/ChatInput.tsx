@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client, events } from '../../../';
 
 import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
@@ -34,7 +33,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   constructor(props: ChatInputProps) {
     super(props);
     this.state = this.initialState();
-    this._privateMessageHandler = events.on('cse-chat-private-message', (name: string) => {
+    this._privateMessageHandler = game.on('cse-chat-private-message', (name: string) => {
       this.privateMessage(name);
     });
   }
@@ -48,17 +47,15 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   }
 
   public componentDidMount() {
-    if (client.OnBeginChat) {
-      client.OnBeginChat((cmdKind: number, text: string) => {
-        this.getInputNode().focus();
-        this.getInputNode().value = text;
-      });
-    }
+    game.onBeginChat((text: string) => {
+      this.getInputNode().focus();
+      this.getInputNode().value = text;
+    });
   }
 
   public componentWillUnmount() {
     if (this._privateMessageHandler) {
-      events.off(this._privateMessageHandler);
+      game.off(this._privateMessageHandler);
     }
   }
 
@@ -75,8 +72,6 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
                   id='chat-text'
                   ref='new-text'
                   placeholder='Say something!'
-                  onBlur={() => client.ReleaseInputOwnership()}
-                  onClick={() => client.RequestInputOwnership()}
                   onKeyDown={this.keyDown}
                   onKeyUp={this.keyUp}
                   onChange={this.parseInput}>

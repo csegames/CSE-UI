@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Input, IconButton, utils, events } from '@csegames/camelot-unchained';
+import { Input, IconButton, utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import FilterSelectListItem from './FilterSelectListItem';
@@ -180,11 +180,11 @@ export class FilterSelectMenu extends React.Component<FilterSelectMenuProps, Fil
   }
 
   private onInputFocus = () => {
-    events.fire('hudfullscreen--inputaction', 'focus');
+    game.trigger('hudfullscreen--inputaction', 'focus');
   }
 
   private onInputBlur = () => {
-    events.fire('hudfullscreen--inputaction', 'blur');
+    game.trigger('hudfullscreen--inputaction', 'blur');
   }
 }
 

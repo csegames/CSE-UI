@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, Vec3f, AnyEntityState, PlayerState } from '@csegames/camelot-unchained';
+import { client, AnyEntityState, PlayerState } from '@csegames/camelot-unchained';
 import {
   CompassPOIProviderProps,
   CompassPOI,

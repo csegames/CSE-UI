@@ -9,7 +9,7 @@ import { SettingsPanel } from '../components/SettingsPanel';
 import { cancel, getInputConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SubHeading } from 'UI/SubHeading';
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 import { Settings, settingsRenderer } from '../components/settingsRenderer';
 
 const settings: Settings = {
@@ -31,20 +31,20 @@ interface InputSettingsState {
 }
 
 export class InputSettings extends React.PureComponent<InputSettingsProps, InputSettingsState> {
-  private evh: number;
+  private evh: EventHandle;
   constructor(props: InputSettingsProps) {
     super(props);
     this.state = { inputs: null };
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--action', this.onAction);
+    this.evh = game.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
   public componentWillUnmount() {
     cancel(ConfigIndex.INPUT);
-    if (this.evh) events.off(this.evh);
+    if (this.evh) game.off(this.evh);
   }
 
   public render() {

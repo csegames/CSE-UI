@@ -7,7 +7,6 @@
 
 import { PlayerState } from '@csegames/camelot-unchained/lib/core/clientInterface';
 import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
-import { GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 import { BodyParts } from './PlayerStatus';
 
 export function isEqualPlayerState(a: PlayerState | GroupMemberState, b: PlayerState | GroupMemberState) {

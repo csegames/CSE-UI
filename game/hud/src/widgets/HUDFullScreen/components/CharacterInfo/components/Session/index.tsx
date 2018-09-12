@@ -9,7 +9,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import moment from 'moment';
 import styled, { css } from 'react-emotion';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -44,7 +44,7 @@ const HeaderTimesUsedText = styled('header')`
 `;
 
 class Session extends React.Component<SessionProps> {
-  private visibilityListener: number;
+  private visibilityListener: EventHandle;
   public render() {
     const myCharacter = this.props.graphql.data && this.props.graphql.data.myCharacter;
     if (myCharacter && myCharacter.session) {
@@ -81,7 +81,7 @@ class Session extends React.Component<SessionProps> {
   }
 
   public componentDidMount() {
-    this.visibilityListener = events.on('hudnav--navigate', (name: string) => {
+    this.visibilityListener = game.on('hudnav--navigate', (name: string) => {
       if (name === 'equippedgear' || name === 'character' || name === 'inventory') {
         this.props.graphql.refetch();
       }
@@ -89,7 +89,7 @@ class Session extends React.Component<SessionProps> {
   }
 
   public componentWillUnmount() {
-    events.off(this.visibilityListener);
+    game.off(this.visibilityListener);
   }
 }
 

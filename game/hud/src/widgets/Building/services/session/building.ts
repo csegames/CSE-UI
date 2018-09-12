@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, buildUIMode } from '@csegames/camelot-unchained';
+import { buildUIMode } from '@csegames/camelot-unchained';
 import requester from './requester';
 import assign from 'object-assign';
 
@@ -21,7 +21,7 @@ export function initializeBuilding(dispatch: any) {
 
   requester.loadMaterials();
 
-  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
+  game.on('building-mode', (info: { mode: buildUIMode }) => {
     dispatch(setMode(info.mode));
   });
 }

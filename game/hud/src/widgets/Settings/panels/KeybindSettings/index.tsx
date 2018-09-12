@@ -29,7 +29,7 @@ import {
   updateKeybind,
   getKeybinds,
 } from '../../utils/keyboard';
-import { client, events, Binding } from '@csegames/camelot-unchained';
+import { client, Binding } from '@csegames/camelot-unchained';
 import { Box } from 'UI/Box';
 import { Field } from 'UI/Field';
 import { CloseButton } from 'UI/CloseButton';
@@ -143,7 +143,7 @@ function sameBinds(keybinds: Keybinds, name: string, keybind: Binding): Clash | 
 }
 
 export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, KeybindSettingsState> {
-  private eventHandle: number;
+  private eventHandle: EventHandle;
   constructor(props: KeybindSettingsProps) {
     super(props);
     this.state = {
@@ -158,13 +158,13 @@ export class KeybindSettings extends React.PureComponent<KeybindSettingsProps, K
   }
 
   public componentDidMount() {
-    this.eventHandle = events.on('settings--action', this.onAction);
+    this.eventHandle = game.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
   public componentWillUnmount() {
     cancel(ConfigIndex.KEYBIND);
-    if (this.eventHandle) events.off(this.eventHandle);
+    if (this.eventHandle) game.off(this.eventHandle);
     if (this.state.listening) {
       this.dontListen();
     }

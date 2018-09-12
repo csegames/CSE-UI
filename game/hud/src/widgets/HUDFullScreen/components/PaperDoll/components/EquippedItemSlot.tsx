@@ -7,7 +7,6 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { isEqual, includes } from 'lodash';
-import { events } from '@csegames/camelot-unchained';
 
 import { SLOT_DIMENSIONS } from '../../../lib/constants';
 import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
@@ -143,7 +142,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
       item: equippedItemDataTransfer,
     };
     hideTooltip();
-    events.fire(eventNames.onUnequipItem, payload);
+    game.trigger(eventNames.onUnequipItem, payload);
   }
 
   private onMouseOverItemSlot = (event: MouseEvent) => {

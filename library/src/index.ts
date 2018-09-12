@@ -4,6 +4,30 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+// Import definitions first to init a whole bunch of globals
+import './webAPI/definitions';
+
+// Creates the global game and __devGame objects that are attached to the window object when the engine is ready
+import initializeGame from './game';
+initializeGame();
+
+export * from './game';
+
+// web api
+import * as webAPI from './webAPI';
+
+export {
+  webAPI,
+};
+
+
+// ------------------------------------------------------ //
+// ------------------------------------------------------ //
+// OLD STUFF - TODO: Audit and update / remove excess     //
+// ------------------------------------------------------ //
+// ------------------------------------------------------ //
+
+
 // core
 import CoreSettings from './core/CoreSettings';
 import clientInterface from './core/clientInterface';
@@ -28,7 +52,6 @@ import * as core from './core/core';
 
 export * from './core/core';
 
-import * as webAPI from './webAPI';
 
 import * as restAPI from './restapi';
 
@@ -37,8 +60,6 @@ export * from './webAPI/definitions';
 export * from './groups';
 
 export * from './building';
-
-import * as events from './events';
 
 import * as signalr from './signalR';
 
@@ -85,7 +106,6 @@ export default {
 
 export {
 
-  webAPI,
   restAPI,
 
   // cu
@@ -115,7 +135,6 @@ export {
 
   // misc
   signalr,
-  events,
 
   ql,
 };

@@ -86,8 +86,8 @@ export class ContextMenu extends React.Component<Props, State> {
     y: 0,
   };
 
-  private showEventHandle: number;
-  private hideEventHandle: number;
+  private showEventHandle: EventHandle;
+  private hideEventHandle: EventHandle;
 
   constructor(props: Props) {
     super(props);
@@ -104,8 +104,8 @@ export class ContextMenu extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    actions.offShowContextMenu(this.showEventHandle);
-    actions.offHideContextMenu(this.hideEventHandle);
+    this.showEventHandle.clear();
+    this.hideEventHandle.clear();
   }
 
   public render() {

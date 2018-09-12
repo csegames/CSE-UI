@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events } from '@csegames/camelot-unchained';
+import { client } from '@csegames/camelot-unchained';
 
 import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
@@ -56,10 +56,10 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
     this.state = { visible: false };
   }
   public componentDidMount() {
-    this.evh = events.on(HUDNAV_NAVIGATE, this.onnavigate);
+    this.evh = game.on(HUDNAV_NAVIGATE, this.onnavigate);
   }
   public componentWillUnmount() {
-    events.off(this.evh);
+    game.off(this.evh);
     this.evh = null;
   }
   public render() {
@@ -92,7 +92,7 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
   }
 
   private onClose = () => {
-    events.fire(HUDNAV_NAVIGATE, ME);
+    game.trigger(HUDNAV_NAVIGATE, ME);
   }
 }
 

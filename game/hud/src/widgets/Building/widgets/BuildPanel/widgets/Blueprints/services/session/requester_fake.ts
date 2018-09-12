@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { events, BuildingBlueprint } from '@csegames/camelot-unchained';
+import { BuildingBlueprint, building } from '@csegames/camelot-unchained';
 
 class BlueprintRequests {
 
@@ -16,26 +16,26 @@ class BlueprintRequests {
       bp.icon = undefined;
     });
     setTimeout(() => {
-      events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
+      game.trigger(building.BuildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
     },         2000);
   }
 
   public requestBlueprintIcon(blueprint: BuildingBlueprint) {
     setTimeout(() => {
       blueprint.icon = this.icons[blueprint.name];
-      events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
+      game.trigger(building.BuildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
     },         200);
   }
 
   public requestBlueprintSelect(blueprint: BuildingBlueprint) {
-    setTimeout(() => events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint }), 200);
+    setTimeout(() => game.trigger(building.BuildingEventTopics.handlesBlueprintSelect, { blueprint }), 200);
   }
 
   public requestBlueprintSave(name: string) {
     const bp = fakeBlueprintData[0];
     this.icons[name] = bp.icon;
     fakeBlueprintData.push(new BuildingBlueprint({ name, index: fakeBlueprintData.length, icon: undefined }));
-    setTimeout(() => events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData }), 200);
+    setTimeout(() => game.trigger(building.BuildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData }), 200);
     console.log('saveBlueprint request');
   }
 
@@ -45,14 +45,14 @@ class BlueprintRequests {
       if (bp.name === blueprint.name) {
         fakeBlueprintData.splice(i, 1);
         console.log('delete at index: ' + index + ' count=' + fakeBlueprintData.length);
-        events.fire(events.buildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
+        game.trigger(building.BuildingEventTopics.handlesBlueprints, { blueprints: fakeBlueprintData });
         return;
       }
     }
   }
 
   public requestBlueprintCopy() {
-    setTimeout(() => events.fire(events.buildingEventTopics.handlesBlueprintCopy, {}), 200);
+    setTimeout(() => game.trigger(building.BuildingEventTopics.handlesBlueprintCopy, {}), 200);
 
     console.log('copyBlueprint request');
   }

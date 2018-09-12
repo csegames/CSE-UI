@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
-import { client, events, PlayerState } from '@csegames/camelot-unchained';
+import { client, PlayerState } from '@csegames/camelot-unchained';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 import { hot } from 'react-hot-loader';
 
@@ -167,12 +167,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
         (props.data && props.data.myOrder && props.data.myOrder.name !==
         (this.props.data && this.props.data.myOrder && this.props.data.myOrder.name))) {
 
-      if (this.props.data && this.props.data.myOrder) events.fire('chat-leave-room', this.props.data.myOrder.name);
+      if (this.props.data && this.props.data.myOrder) game.trigger('chat-leave-room', this.props.data.myOrder.name);
 
       // we either are just loading up, or we've changed order.
       if (props.data.myOrder && props.data.myOrder.id) {
         // we left our order, leave chat room
-        events.fire('chat-show-room', props.data.myOrder.name);
+        game.trigger('chat-show-room', props.data.myOrder.name);
       }
     }
   }

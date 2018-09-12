@@ -9,7 +9,6 @@
  * @Last Modified time: 2017-04-07 14:43:08
  */
 
-import { Faction } from '../..';
 import { bodyParts } from '../constants/bodyParts';
 import { damageTypes } from '../constants/damageTypes';
 import { resourceTypes } from '../constants/resourceTypes';

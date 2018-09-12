@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events, DisplayModeConfig } from '@csegames/camelot-unchained';
+import { client, DisplayModeConfig } from '@csegames/camelot-unchained';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { CheckBoxField } from 'UI/CheckBoxField';
 import { SliderField } from 'UI/SliderField';
@@ -61,7 +61,7 @@ interface GraphicSettingsState {
 }
 
 export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, GraphicSettingsState> {
-  private evh: number;
+  private evh: EventHandle;
   constructor(props: GraphicSettingsProps) {
     super(props);
     this.state = {
@@ -72,14 +72,14 @@ export class GraphicSettings extends React.PureComponent<GraphicSettingsProps, G
   }
 
   public componentDidMount() {
-    this.evh = events.on('settings--action', this.onAction);
+    this.evh = game.on('settings--action', this.onAction);
     this.loadSettings();
   }
 
   public componentWillUnmount() {
     cancel(ConfigIndex.RENDERING);
     cancel(ConfigIndex.RESOLUTIONS);
-    if (this.evh) events.off(this.evh);
+    if (this.evh) game.off(this.evh);
   }
 
   public render() {

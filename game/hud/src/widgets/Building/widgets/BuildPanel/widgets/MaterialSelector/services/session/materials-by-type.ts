@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, BuildingMaterial } from '@csegames/camelot-unchained';
+import { BuildingMaterial, building } from '@csegames/camelot-unchained';
 
 import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 import MaterialsByType from '../../lib/MaterialsByType';
@@ -17,16 +17,16 @@ const SET_MATERIAL_HOVER = 'buildpanel/panes/SET_MATERIAL_HOVER';
 
 export function initialize(dispatch: any) {
 
-  events.addListener(events.buildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
+  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
     const matsByType: MaterialsByType = new MaterialsByType(info.materials);
     dispatch(setMaterialsByType(matsByType));
   });
 
-  events.addListener(DEACTIVATE_MATERIAL_SELECTOR, (info: {}) => {
+  game.on(DEACTIVATE_MATERIAL_SELECTOR, (info: {}) => {
     // dispatch(updateMaterialSelector(null, null));
   });
 
-  events.addListener(ACTIVATE_MATERIAL_SELECTOR,
+  game.on(ACTIVATE_MATERIAL_SELECTOR,
                      (info: { selection: BuildingMaterial, onSelect: (material: BuildingMaterial) => void }) => {
                        dispatch(updateMaterialSelector(info.selection, info.onSelect));
                      });

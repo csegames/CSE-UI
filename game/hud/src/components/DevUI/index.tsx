@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 
 // @ts-ignore
-import { client, webAPI, events } from '@csegames/camelot-unchained';
+import { client, webAPI } from '@csegames/camelot-unchained';
 import { TabPanel } from '@csegames/camelot-unchained/lib/components';
 import { ObjectMap } from '@csegames/camelot-unchained/lib/utils/ObjectMap';
 import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -22,7 +22,6 @@ type Content = string | ObjectMap<any>;
 
 // @ts-ignore:no-unused-locals
 window['webAPI'] = webAPI;
-window['events'] = events;
 
 export interface Button {
   title: string;
@@ -438,7 +437,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', this.onToggleUIVisibility);
+    game.on('hudnav--navigate', this.onToggleUIVisibility);
     client.OnUpdateDevUI(this.handleUpdateDevUI);
   }
 

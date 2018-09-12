@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { client, jsKeyCodes, soundEvents } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
 import { expandError } from '../services/game/crafting/errors';
-import * as events  from '@csegames/camelot-unchained/lib/events';
+
 
 // Types
 import { Recipe, Ingredient } from '../services/types';
@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
     window.addEventListener('keydown', this.onKeyDown);
 
     // Watch for navigation events (for open/close)
-    this.navigationHandler = events.on('hudnav--navigate', (name: string) => {
+    this.navigationHandler = game.on('hudnav--navigate', (name: string) => {
       const visible = !this.state.visible;
       if (name === 'crafting') {
         this.setState(() => ({ visible }));
@@ -108,7 +108,7 @@ class App extends React.Component<AppProps, AppState> {
   public componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
     if (this.navigationHandler) {
-      events.off(this.navigationHandler);
+      game.off(this.navigationHandler);
       this.navigationHandler = null;
     }
     // Captureing input on mouseover gives a terrible user experience,
@@ -220,7 +220,7 @@ class App extends React.Component<AppProps, AppState> {
 
   private close = () => {
     if (this.state.visible) {
-      events.fire('hudnav--navigate', 'crafting');
+      game.trigger('hudnav--navigate', 'crafting');
       this.release();
     }
   }
