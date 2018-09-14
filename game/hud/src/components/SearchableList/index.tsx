@@ -100,7 +100,7 @@ class SearchableList extends React.Component<Props, State> {
       this.setScrollTop();
     }
 
-    if (this.props.searchValue !== prevProps.searchValue || !_.isEqual(this.props.listItemsData, prevProps.listItemsData) {
+    if (this.props.searchValue !== prevProps.searchValue || !_.isEqual(this.props.listItemsData, prevProps.listItemsData)) {
       this.handleDataChange();
     }
   }
