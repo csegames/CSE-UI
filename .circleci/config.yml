@@ -27,7 +27,9 @@ jobs:
           key: webpack-cache-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/.cache
-
+notify:
+  webhooks:
+    - url: https://discordapp.com/api/webhooks/294906403863134208/wk3o7sbw2gmua07lqzXTfAftvRIOcPcJFPxpLwX-aD7A4GJHoiNDPp65X0-9xGfGeYVL
 workflows:
   version: 2
   build:

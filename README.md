@@ -1,10 +1,9 @@
 # Camelot-Unchained
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/CUModSquad/Camelot-Unchained.svg)](https://greenkeeper.io/)
-[![Build Status](https://travis-ci.org/CUModSquad/Camelot-Unchained.svg?branch=master)](https://travis-ci.org/CUModSquad/Camelot-Unchained)
-[![Build Status](https://travis-ci.org/csegames/Camelot-Unchained.svg?branch=master)](https://travis-ci.org/csegames/Camelot-Unchained)
+[![CircleCI](https://circleci.com/gh/CUModSquad/Camelot-Unchained/tree/master.svg?style=svg)](https://circleci.com/gh/CUModSquad/Camelot-Unchained/tree/master)
 
-UI repository for [Camelot Unchained](http://camelotunchained.com/v3/).
+UI repository for [Camelot Unchained](https://camelotunchained.com/v3/).
 
 ## Requires
 
