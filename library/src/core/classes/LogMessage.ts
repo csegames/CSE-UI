@@ -12,7 +12,7 @@ class LogMessage {
   public thread: number;
   public message: string;
 
-  constructor(logMessage = <LogMessage>{}) {
+  constructor(logMessage = <LogMessage> {}) {
     this.category = logMessage.category;
     this.level = logMessage.level;
     this.time = logMessage.time;

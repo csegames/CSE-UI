@@ -1,16 +1,22 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "library"
-		},
-		{
-			"path": "game\\hud"
-		}
-	],
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "library"
+    },
+    {
+      "path": "game\\hud"
+    },
+    {
+      "path": "game\\perfhud"
+    },
+    {
+      "path": "patcher"
+    },
+  ],
   "settings": {
-    "typescript.tsdk": "hud/node_modules/typescript/lib"
+    "typescript.tsdk": "camelot-unchained\\node_modules\\typescript\\lib"
   }
 }

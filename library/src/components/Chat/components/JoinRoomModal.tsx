@@ -48,9 +48,9 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
     );
   }
 
-  public componentDidMount() : void {
-    const input : HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
-    const join : HTMLInputElement = this.refs['join'] as HTMLInputElement;
+  public componentDidMount(): void {
+    const input: HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
+    const join: HTMLInputElement = this.refs['join'] as HTMLInputElement;
     // without this timeout, the label doesn't animate up above the input box
     setTimeout(() => {
       input.focus();
@@ -67,17 +67,17 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
     this.getRooms();
   }
 
-  private getRooms = () : void => {
+  private getRooms = (): void => {
     events.once('chat-room-list', this.gotRooms);
     this.props.getRooms();
   }
 
-  private gotRooms = (rooms: Room[]) : void => {
+  private gotRooms = (rooms: Room[]): void => {
     this.setState({ rooms });
   }
 
   private joinRoom = () => {
-    const input : HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
+    const input: HTMLInputElement = this.refs['roomInput'] as HTMLInputElement;
     this.props.joinRoom(input.value);
   }
 

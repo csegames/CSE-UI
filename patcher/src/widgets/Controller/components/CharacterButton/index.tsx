@@ -112,7 +112,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
   }
 
   private initializeSelectedServer = (props: CharacterButtonProps) => {
-    const values = [];
+    const values: any = [];
     const servers = props.servers;
     Object.keys(servers).forEach((key: string) => {
       if (servers[key].type === props.serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
@@ -127,7 +127,7 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     }
 
     if (props.serverType === ServerType.CHANNEL) {
-      this.props.selectServer(values.find(value => value.name === 'Editor') || values[0]);
+      this.props.selectServer(values.find((value: any) => value.name === 'Editor') || values[0]);
     } else {
       this.setState({ hasAccess: true });
       this.props.selectServer(values[0]);

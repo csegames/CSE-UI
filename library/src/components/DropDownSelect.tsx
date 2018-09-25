@@ -109,7 +109,7 @@ export interface DropDownSelectState<ItemType> {
   dropDownOpen: boolean;
 }
 
-export class DropDownSelect<ItemType, DataType extends {} = {}> 
+export class DropDownSelect<ItemType, DataType extends {} = {}>
   extends React.Component<DropDownSelectProps<ItemType, DataType>, DropDownSelectState<ItemType>> {
   constructor(props: DropDownSelectProps<ItemType, DataType>) {
     super(props);

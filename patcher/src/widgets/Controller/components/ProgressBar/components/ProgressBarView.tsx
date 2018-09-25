@@ -96,7 +96,7 @@ export interface ProgressBarViewProps {
 class ProgressBarView extends React.Component<ProgressBarViewProps> {
   public render() {
     return (
-      <BarContainer progress={this.props.progress}>
+      <BarContainer {...{ progress: this.props.progress }}>
         <ProgressText>{this.props.progress}%</ProgressText>
         <Bar style={{ left: `${-(100 - this.props.progress)}%` }} />
         {this.props.progress === 100 && <ButtonShine />}

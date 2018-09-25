@@ -40,7 +40,7 @@ export interface GraphQLOptions extends QueryOptions {
   // useCache: boolean;
 }
 
-const defaultGraphQLOptions : GraphQLOptions = {
+const defaultGraphQLOptions: GraphQLOptions = {
   ...defaultQueryOpts,
   pollInterval: 0,
   // useCache: true,
@@ -48,7 +48,7 @@ const defaultGraphQLOptions : GraphQLOptions = {
 
 export class GraphQLClient {
   private conf: QueryOptions;
-  public lastQuery:  {
+  public lastQuery: {
     query: string;
     variables: ObjectMap<any>;
     headers?: ObjectMap<string> | null;
@@ -92,7 +92,7 @@ let getQueryConf = () => null;
 function getQueryOptions() {
   return {
     ...defaultGraphQLOptions,
-    ...queryConf,
+    ...withDefaults(getQueryConf(), queryConf),
   };
 }
 
@@ -105,7 +105,7 @@ let getSubscriptionConf = () => null;
 function getSubscriptionOptions() {
   return {
     ...defaultSubscriptionOpts,
-    ...subsConf,
+    ...withDefaults(getSubscriptionConf(), subsConf),
   };
 }
 
@@ -236,7 +236,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   public componentDidMount() {
-    if (this.queryOptions && this.queryOptions.pollInterval > 0) {
+    if (this.queryOptions && this.queryOptions.pollInterval && this.queryOptions.pollInterval > 0) {
       this.pollingRefetch();
     } else if (this.state.data === null) {
       this.refetch();
@@ -291,8 +291,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   private refetch = async () => {
     if (!this.query) return;
-    const query = await this.updateConfig();
-    this.refetchQuery(query);
+    const query = this.updateConfig();
+    await this.refetchQuery(query);
   }
 
   private refetchQuery = async (query?: GraphQLQuery | undefined) => {
@@ -320,38 +320,23 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     this.pollingTimeout = window.setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
   }
 
-  private updateConfig = (): Promise<GraphQLQuery | undefined> => {
-    return new Promise((resolve) => {
-      if (typeof this.props.useConfig === 'function') {
-        const config = this.props.useConfig();
-        const queryConfChanged = !_.isEqual(config.queryConf, queryConf);
-        const subsConfChanged = !_.isEqual(config.subsConf, subsConf);
-        if (queryConfChanged || subsConfChanged) {
-          if (queryConfChanged) {
-            // Only set query options if there is a difference
-            setQueryOptions(config.queryConf);
-            this.queryOptions = getQueryOptions();
-          }
-
-          if (subsConfChanged) {
-            // Only set subscription options if there is a difference
-            setSubscriptionOptions(config.subsConf);
-            this.subscriptionOptions = getSubscriptionOptions();
-          }
-
-          // Update graphql client
-          this.client = new GraphQLClient({
-            url: this.queryOptions.url,
-            requestOptions: this.queryOptions.requestOptions,
-            stringifyVariables: this.queryOptions.stringifyVariables,
-          });
-
-          const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
-          this.query = withDefaults(q, defaultQuery);
+  private updateConfig = (): GraphQLQuery | undefined => {
+    if (typeof this.props.useConfig === 'function') {
+      const config = this.props.useConfig();
+      const queryConfChanged = !_.isEqual(config.queryConf, queryConf);
+      const subsConfChanged = !_.isEqual(config.subsConf, subsConf);
+      if (queryConfChanged || subsConfChanged) {
+        if (queryConfChanged) {
+          // Only set query options if there is a difference
+          setQueryOptions(config.queryConf);
+          this.queryOptions = getQueryOptions();
         }
-      } else {
-        useConfig(getQueryConf, getSubscriptionConf);
-        this.queryOptions = getQueryConf();
+
+        if (subsConfChanged) {
+          // Only set subscription options if there is a difference
+          setSubscriptionOptions(config.subsConf);
+          this.subscriptionOptions = getSubscriptionOptions();
+        }
 
         // Update graphql client
         this.client = new GraphQLClient({
@@ -359,10 +344,23 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           requestOptions: this.queryOptions.requestOptions,
           stringifyVariables: this.queryOptions.stringifyVariables,
         });
-      }
 
-      resolve(this.query);
-    });
+        const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
+        this.query = withDefaults(q, defaultQuery);
+      }
+    } else {
+      useConfig(getQueryConf, getSubscriptionConf);
+      this.queryOptions = withDefaults(getQueryConf(), this.queryOptions);
+
+      // Update graphql client
+      this.client = new GraphQLClient({
+        url: this.queryOptions.url,
+        requestOptions: this.queryOptions.requestOptions,
+        stringifyVariables: this.queryOptions.stringifyVariables,
+      });
+    }
+
+    return this.query;
   }
 }
 

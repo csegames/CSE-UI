@@ -1,7 +1,7 @@
 {
   "name": "perfhud",
-  "ambientDependencies": {
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#263705d313346e093d95cb62cef6fed848e46978"
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160621231320"
   },
   "dependencies": {
   }

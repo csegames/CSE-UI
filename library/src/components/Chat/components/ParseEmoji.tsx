@@ -81,9 +81,9 @@ enum emojis {
 
 const emojiNames = Object.keys(emojis).map(k => (emojis as any)[k]).filter(v => typeof v === 'string') as string[];
 
-function emojiNameFromText(text:string): string {
+function emojiNameFromText(text: string): string {
 
-  // parse symbol emoji -- like :D 
+  // parse symbol emoji -- like :D
   switch (text) {
     case ':D': case ':-D':
       return 'GRIN';
@@ -120,14 +120,14 @@ function emojiNameFromText(text:string): string {
   return utils.findIndexWhere(emojiNames, n => n === upper) ? upper : null;
 }
 
-function fromText(text: string, keygen: () => number) : JSX.Element[] {
-  const emoji : string = emojiNameFromText(text);
+function fromText(text: string, keygen: () => number): JSX.Element[] {
+  const emoji: string = emojiNameFromText(text);
   if (emoji) {
     return [<span key={keygen()} className={'emoji emoji--' + emoji}></span>];
   }
 }
 
-function createRegExp() : RegExp {
+function createRegExp(): RegExp {
   return /:[a-zA-Z0-9]+:|[3]*[;:8][-']*[()@oO#$*pPD/|><]|\([6aAhH]\)|-_-zzZ|\(-_-\)zzZ|[oO]\.[oO]/g;
 }
 

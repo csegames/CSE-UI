@@ -135,10 +135,10 @@ const CharPic = styled('div')`
     position: absolute;
     content: "";
     display:block;
-    background: url(${props => props.backgroundImg});
+    background: url(${(props: any) => props.backgroundImg});
     background-size: 280%;
-    background-position: ${props => props.backgroundPosition};
-    transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
+    background-position: ${(props: any) => props.backgroundPosition};
+    transform: ${(props: any) => props.flipImage ? 'scale(-1, 1)' : 'none'};
     width: 200px;
     height: 100px;
     bottom: 0;
@@ -158,11 +158,11 @@ const CharMask = styled('div')`
   &:before {
     content:"";
     position:absolute;
-    background: url(${props => props.image});
+    background: url(${(props: any) => props.image});
     display:block;
     background-size: 280%;
-    background-position: ${props => props.backgroundPosition};
-    transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
+    background-position: ${(props: any) => props.backgroundPosition};
+    transform: ${(props: any) => props.flipImage ? 'scale(-1, 1)' : 'none'};
     -webkit-mask: url(images/controller/character-profile-selected-mask.png) no-repeat;
     -webkit-mask-size: cover;
     -webkit-mask-position-x: 51px;
@@ -194,9 +194,9 @@ const InfoContainer = styled('div')`
 const CharacterName = styled('div')`
   position: relative;
   font-family: "Caudex";
-  font-size: ${props => props.longName ? '12px' : '16px'};
+  font-size: ${(props: any) => props.longName ? '12px' : '16px'};
   font-weight: normal;
-  padding: ${props => props.padding ? props.padding : '10px 0px 0px 120px'};
+  padding: ${(props: any) => props.padding ? props.padding : '10px 0px 0px 120px'};
   color: white;
   white-space: nowrap;
 `;
@@ -211,7 +211,7 @@ const CharacterMetaInfo = styled('div')`
 `;
 
 const ServerActiveIcon = styled('i')`
-  color: ${props => props.color};
+  color: ${(props: any) => props.color};
   margin-right: 5px;
 `;
 
@@ -221,7 +221,7 @@ const ServerInfoContainer = styled('div')`
   color: white;
   font-size: 14px;
   font-weight: normal;
-  padding: ${props => props.padding ? props.padding : '8px 0 0 140px'};
+  padding: ${(props: any) => props.padding ? props.padding : '8px 0 0 140px'};
   white-space: nowrap;
   pointer-events: none;
 `;

@@ -12,9 +12,9 @@ class ConfigVar {
   public description: string;
   public value: any;
 
-  constructor(config: ConfigVar = <ConfigVar>{}) {
+  constructor(config: ConfigVar = <ConfigVar> {}) {
     this.id = config.id || -1;
-    this.category = config.category || <configCategory>0;
+    this.category = config.category || <configCategory> 0;
     this.description = config.description || 'empty';
     this.value = config.value || null;
   }

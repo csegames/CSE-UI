@@ -78,7 +78,7 @@ export function parseQuery(query: string | LegacyGraphqlDocumentNode | DocumentN
 
 function errorResult(msg: string) {
   return {
-    data: <null>null,
+    data: <null> null,
     ok: false,
     statusText: msg,
   };

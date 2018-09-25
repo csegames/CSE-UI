@@ -33,8 +33,8 @@ if (window.opener && window.opener.cuAPI) {
   client = window.opener.cuAPI;
 } else if (window.cuAPI) {
   Object.keys(devClientInterface).forEach((key) => {
-    if ((<any>window.cuAPI)[key]) return;
-    (<any>window.cuAPI)[key] = (<any>devClientInterface)[key];
+    if ((<any> window.cuAPI)[key]) return;
+    (<any> window.cuAPI)[key] = (<any> devClientInterface)[key];
     return;
   });
   client = window.cuAPI;

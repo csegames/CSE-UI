@@ -23,13 +23,13 @@ class Combatant {
 
   public injuries: Injury[];
 
-  constructor(combatant = <Combatant>{}) {
+  constructor(combatant = <Combatant> {}) {
     this.name = combatant.name || '';
     this.health = combatant.health || 0;
     this.maxHealth = combatant.maxHealth || 0;
     this.stamina = combatant.stamina || 0;
     this.maxStamina = combatant.maxStamina || 0;
-    this.injuries = combatant.injuries || <Injury[]>[];
+    this.injuries = combatant.injuries || <Injury[]> [];
   }
 
   /**
@@ -41,7 +41,7 @@ class Combatant {
     this.maxHealth = 0;
     this.stamina = 0;
     this.maxStamina = 0;
-    this.injuries = <Injury[]>[];
+    this.injuries = <Injury[]> [];
   }
 
   public setRace(race: Race) {
@@ -64,7 +64,7 @@ class Combatant {
   }
 
   public setInjury(part: number, health: number, maxHealth: number, wounds: number) {
-    const injury = this.injuries[part] = this.injuries[part] || <Injury>{};
+    const injury = this.injuries[part] = this.injuries[part] || <Injury> {};
     injury.part = part;
     injury.health = health;
     injury.maxHealth = maxHealth;

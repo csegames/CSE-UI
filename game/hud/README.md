@@ -18,17 +18,6 @@ yarn
 
 You will then be ready to develop the HUD Module.
 
-If you are also making changes to the `library` you will need to link it as follows.
-
-```sh
-cd ../../library
-yarn
-yarn start build
-yarn link
-cd ../game/hud
-yarn link @csegames/camelot-unchained
-```
-
 ## Developing In Browser
 
 It is possible to develop parts of the HUD Module within a local browser,

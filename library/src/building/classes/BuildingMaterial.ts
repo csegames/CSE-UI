@@ -13,7 +13,7 @@ class BuildingMaterial {
   public tags: string[];
   public blocks: BuildingBlock[];
 
-  constructor(substance = <BuildingMaterial>{}) {
+  constructor(substance = <BuildingMaterial> {}) {
     this.id = substance.id;
     this.icon = substance.icon;
     this.tags = substance.tags || [];

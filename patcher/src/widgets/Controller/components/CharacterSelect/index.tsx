@@ -13,8 +13,8 @@ const Container = styled('div')`
   position: relative;
   width: 100%;
   height: 100%;
-  opacity: ${props => props.visible ? 1 : 0};
-  visibility: ${props => props.visible ? 'visible' : 'hidden'};
+  opacity: ${(props: any) => props.visible ? 1 : 0};
+  visibility: ${(props: any) => props.visible ? 'visible' : 'hidden'};
   -webkit-user-select: none;
 `;
 

@@ -11,7 +11,7 @@ class Player extends Combatant {
   public race: Race;
   public archetype: Archetype;
 
-  constructor(player = <Player>{}) {
+  constructor(player = <Player> {}) {
     super(player);
     this.race = player.race;
     this.archetype = player.archetype;

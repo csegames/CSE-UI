@@ -9,7 +9,7 @@ class BuildingBlueprint {
   public icon: string;
   public index: number;
 
-  constructor(block = <BuildingBlueprint>{}) {
+  constructor(block = <BuildingBlueprint> {}) {
     this.name = block.name;
     this.icon = block.icon;
     this.index = block.index;

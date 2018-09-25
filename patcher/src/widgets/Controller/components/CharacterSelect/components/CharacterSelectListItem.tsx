@@ -34,15 +34,15 @@ const activeItem = css`
 const Container = styled('div')`
   position: relative;
   display: block;
-  pointer-events: ${props => props.visible ? 'all' : 'none'};
+  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
   cursor: pointer;
   color: white;
   font-family: "Caudex";
   font-size: 13px;
   width: 255px;
   padding: 8px 0 12px 90px;
-  margin-top: ${props => props.marginTop};
-  margin-bottom: ${props => props.marginBottom};
+  margin-top: ${(props: any) => props.marginTop};
+  margin-bottom: ${(props: any) => props.marginBottom};
   margin-left: -10px;
   left: 35px;
   top: 0;
@@ -76,8 +76,8 @@ const CharacterMetaData = styled('div')`
 `;
 
 const CharacterName = styled('div')`
-  padding-top: ${props => props.fontSize === 12 ? '6px' : 0};
-  font-size: ${props => props.fontSize}px;
+  padding-top: ${(props: any) => props.fontSize === 12 ? '6px' : 0};
+  font-size: ${(props: any) => props.fontSize}px;
 `;
 
 const ClassMask = css`
@@ -86,7 +86,7 @@ const ClassMask = css`
 `;
 
 const Class = styled('div')`
-  transform: ${props => props.flipImage ? 'scale(-1, 1)' : 'none'};
+  transform: ${(props: any) => props.flipImage ? 'scale(-1, 1)' : 'none'};
   display: block;
   position: absolute;
   background-size: 340%;
@@ -94,7 +94,7 @@ const Class = styled('div')`
   width: 120px;
   height: 70px;
   bottom: 5px;
-  left: ${props => props.left ? props.left : -40}px;
+  left: ${(props: any) => props.left ? props.left : -40}px;
   ${ClassMask}
 `;
 
@@ -161,7 +161,7 @@ const DeleteButton = styled('div')`
   color: #ffe0c7;
   background: url(images/controller/delete.png) no-repeat;
   opacity: .5;
-  pointer-events: ${props => props.visible ? 'all' : 'none'};
+  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
   cursor: pointer;
   z-index: 10;
   &:hover {

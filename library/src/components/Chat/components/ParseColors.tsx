@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { chatConfig } from './ChatConfig';
 
-function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any) : JSX.Element[] {
+function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any): JSX.Element[] {
   const textColor: string = match[1];
   const bgColor: string = match[2];
   const matchText: string = match[3];

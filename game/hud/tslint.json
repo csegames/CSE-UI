@@ -113,7 +113,14 @@
     "no-floating-promises": false,
     "no-for-in-array": false,
     "no-void-expression": false,
-    "await-promise": false
+    "await-promise": false,
+
+
+    "prefer-template": false,
+    "no-parameter-reassignment": false,
+    "no-else-after-return": false,
+    "no-consecutive-blank-lines": false,
+    "ter-func-call-spacing": false
   },
   "jsRules": {
     "curly": true

@@ -98,8 +98,9 @@ function getBlockForBlockId(blockid: number): BuildingBlock {
   const matId = getMaterialIdFromBlockId(blockid);
   const shapeId = getShapeIdFromBlockId(blockid);
   const sub = materialsMap[matId];
-  if (sub == null)
+  if (sub == null) {
     return null;
+  }
 
   // select by shape instead of by block id, it is more reliable, the block id sent back
   // can have extra information stored in it

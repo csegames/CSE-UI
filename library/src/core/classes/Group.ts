@@ -10,9 +10,9 @@ class Group {
   public self: Character;
   public members: Player[];
 
-  constructor(group = <Group>{}) {
+  constructor(group = <Group> {}) {
     group.self = group.self || new Character();
-    group.members = group.members || <Player[]>[];
+    group.members = group.members || <Player[]> [];
   }
 
   public static create() {

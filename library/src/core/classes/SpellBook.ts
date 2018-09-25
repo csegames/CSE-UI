@@ -8,8 +8,8 @@ import Ability from './Ability';
 class SpellBook {
   public abilities: Ability[];
 
-  constructor(spellbook = <SpellBook>{}) {
-    spellbook.abilities = spellbook.abilities || <Ability[]>[];
+  constructor(spellbook = <SpellBook> {}) {
+    spellbook.abilities = spellbook.abilities || <Ability[]> [];
   }
 
   public static create() {

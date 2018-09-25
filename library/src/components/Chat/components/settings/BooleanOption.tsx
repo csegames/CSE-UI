@@ -16,7 +16,7 @@ export interface BooleanOptionProps {
 }
 
 export interface BooleanOptionState {
-  
+
 }
 
 class BooleanOption extends React.Component<BooleanOptionProps, BooleanOptionState> {
@@ -30,7 +30,7 @@ class BooleanOption extends React.Component<BooleanOptionProps, BooleanOptionSta
             <div className='switch'>
               <label>
                 No
-                <input type='checkbox' defaultChecked={this.props.isChecked} onClick={this.clicked}/> 
+                <input type='checkbox' defaultChecked={this.props.isChecked} onClick={this.clicked}/>
                 <span className='lever'></span>
                 Yes
               </label>

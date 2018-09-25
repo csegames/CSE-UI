@@ -7,7 +7,7 @@
 class ConsoleMessage {
   public text: string;
 
-  constructor(consoleMessage = <ConsoleMessage>{}) {
+  constructor(consoleMessage = <ConsoleMessage> {}) {
     this.text = consoleMessage.text;
   }
 

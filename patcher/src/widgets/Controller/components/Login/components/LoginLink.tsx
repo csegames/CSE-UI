@@ -10,11 +10,11 @@ import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 
 const Link = styled('a')`
-  margin: ${props => props.margin ? props.margin : 0};
-  text-decoration: ${props => props.underline ? 'underline' : 'none'};
+  margin: ${(props: any) => props.margin ? props.margin : 0};
+  text-decoration: ${(props: any) => props.underline ? 'underline' : 'none'};
   color: ${utils.darkenColor('#d7bb4d', 10)};
   transition: all 0.3s;
-  font-size: ${props => props.fontSize ? props.fontSize : '0.9em'};
+  font-size: ${(props: any) => props.fontSize ? props.fontSize : '0.9em'};
   display: block;
   &:hover {
     color: ${utils.lightenColor('#d7bb4d', 10)};

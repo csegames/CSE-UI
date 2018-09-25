@@ -36,7 +36,7 @@ class ChatLineParser {
 
   public parseAction(text: string): JSX.Element[] {
     const html: JSX.Element[] = [];
-    const content : JSX.Element[] = this.parse(text.substr(4).trim());
+    const content: JSX.Element[] = this.parse(text.substr(4).trim());
     html.push(<span key={this._key++} className='chat-line-action'>&lt;{content}&gt;</span>);
     return html;
   }
@@ -49,8 +49,8 @@ class ChatLineParser {
     if (!text) {
       return null;
     }
-    const keygen = () : number => { return this._key++; };
-    const tokens : ChatTextParserToken[] = [];
+    const keygen = (): number => { return this._key++; };
+    const tokens: ChatTextParserToken[] = [];
     // Parsers which need recursion should be first
     tokens.push({ token: ChatLineParser.COLOR, expr: parseColors.createRegExp() });
     tokens.push({ token: ChatLineParser.BLINK, expr: parseBlink.createRegExp() });
@@ -73,7 +73,7 @@ class ChatLineParser {
     }
 
     // Run through each parser
-    const parser : ChatTextParser = new ChatTextParser(tokens);
+    const parser: ChatTextParser = new ChatTextParser(tokens);
     return parser.parse(text, (token: number, text: string, match: RegExpExecArray) => {
       switch (token) {
         case ChatLineParser.COLOR: return parseColors.fromText(text, keygen, match, this);

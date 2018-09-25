@@ -10,7 +10,7 @@ export function checkStatus(response: any) {
     return response;
   }
   const error = new Error(response.statusText);
-  (<any>error).response = response;
+  (<any> error).response = response;
   Raven.captureException(error);
   throw error;
 }

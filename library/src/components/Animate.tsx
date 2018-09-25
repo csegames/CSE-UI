@@ -41,7 +41,7 @@ class Animate extends React.Component<AnimateProps, {}> {
     const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props;
 
     return (
-    
+
       <CSSTransitionGroup
         key={this.props.key}
         component={this.props.component ? this.props.component : 'div'}

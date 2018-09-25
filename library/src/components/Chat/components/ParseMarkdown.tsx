@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any) : JSX.Element[] {
+function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any): JSX.Element[] {
   if (match && (match[2] || match[4])) {
     const matchBeginChar: string = match[1] ? match[1] : '';
     const matchEndChar: string = match[6] ? match[6] : '';
@@ -19,7 +19,7 @@ function fromText(text: string, keygen: () => number, match: RegExpExecArray, pa
   }
 }
 
-function createRegExp() : RegExp {
+function createRegExp(): RegExp {
   return /(^|\s)(?:(\*\*|\*)([^\*]+)\2)|(?:(__|_)([^_]+)\4)($|\s)/g;
 }
 

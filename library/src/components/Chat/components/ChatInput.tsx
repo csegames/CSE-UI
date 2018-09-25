@@ -22,7 +22,7 @@ export interface ChatInputProps {
   label: string;
   send: (text: string) => void;
   slashCommand: (command: string) => void;
-  scroll: (extra?:number) => void;
+  scroll: (extra?: number) => void;
 }
 
 class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
@@ -268,12 +268,12 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
     input.focus();
   }
 
-  private privateMessage = (name: string) : void => {
+  private privateMessage = (name: string): void => {
     const input: HTMLInputElement = this.getInputNode();
     input.value = '/w ' + name + ' ';
     input.focus();
   }
-  
+
 }
 
 export default ChatInput;

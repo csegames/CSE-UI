@@ -61,6 +61,7 @@ const Error = styled('div')`
   font-size: 0.9em;
 `;
 
+// tslint:disable-next-line
 export interface comparisonFunction<T> {
   (a: T, b: T): boolean;
 }

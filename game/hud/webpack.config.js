@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const mkdirp = require('mkdirp');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -8,7 +9,29 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const WebpackServeWaitpage = require('webpack-serve-waitpage');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const NAME = 'hud';
+
+const CACHE_ROOT = path.resolve(__dirname, '..', '..', 'node_modules', '.cache', NAME);
+if (!fs.existsSync(CACHE_ROOT)) {
+  mkdirp.sync(CACHE_ROOT);
+}
+
+const ALIAS = {
+  'react': path.dirname(
+    require.resolve('react/package.json')
+  ),
+  gql: path.resolve(__dirname, 'src/gql'),
+  components: path.resolve(__dirname, 'src/components'),
+  'UI/TabbedDialog': path.resolve(__dirname, 'src/components/UI/TabbedDialog/index'),
+  UI: path.resolve(__dirname, 'src/components/UI'),
+  actions: path.resolve(__dirname, 'src/services/actions'),
+  lib: path.resolve(__dirname, 'src/lib'),
+  services: path.resolve(__dirname, 'src/services'),
+  widgets: path.resolve(__dirname, 'src/widgets'),
+  HUDContext: path.resolve(__dirname, 'src/components/HUD/context'),
+};
 
 module.exports = function (e, argv = {}) {
 
@@ -19,18 +42,19 @@ module.exports = function (e, argv = {}) {
 
   const DOTENV = loadDotenv(NODE_ENV);
 
-  const OUTPUT_PATH = process.env.CUUI_HUDBUILD_OUTPUT_PATH || path.resolve(__dirname, 'build');
+  const OUTPUT_PATH = process.env.CUUI_BUILD_OUTPUT_PATH || path.resolve(__dirname, 'build');
   const IS_WATCH = argv.watch ? true : false;
-  const IS_BROWSER = process.env.CUUI_HUDBUILD_IS_BROWSER === '1';
+  const IS_BROWSER = process.env.CUUI_BUILD_IS_BROWSER === '1';
   const IS_CLIENT = !IS_BROWSER;
   const IS_DEVELOPMENT = NODE_ENV === 'development';
   const IS_PRODUCTION = NODE_ENV === 'production';
   const IS_CI = process.env.CI;
-  const ENABLE_SENTRY = ['1', 'true', 'yes', 'y'].indexOf(process.env.CUUI_HUD_ENABLE_SENTRY) >= 0;
+  const ENABLE_SENTRY = ['1', 'true', 'yes', 'y'].indexOf(process.env.CUUI_ENABLE_SENTRY) >= 0;
   const GIT_REVISION = getGitRevision();
 
   const EXPOSE_ENV = {
     ...DOTENV,
+    NAME,
     NODE_ENV,
     ENABLE_SENTRY,
     IS_CLIENT,
@@ -48,7 +72,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      hud: ['@babel/polyfill', './src/sentry.tsx', './src/index.tsx'],
+      [NAME]: ['./src/polyfill.tsx', './src/sentry.tsx', './src/index.tsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -76,20 +100,7 @@ module.exports = function (e, argv = {}) {
       runtimeChunk: 'single',
     },
     resolve: {
-      alias: {
-        'react': path.dirname(
-          require.resolve('react/package.json')
-        ),
-        gql: path.resolve(__dirname, 'src/gql'),
-        components: path.resolve(__dirname, 'src/components'),
-        'UI/TabbedDialog': path.resolve(__dirname, 'src/components/UI/TabbedDialog/index'),
-        UI: path.resolve(__dirname, 'src/components/UI'),
-        actions: path.resolve(__dirname, 'src/services/actions'),
-        lib: path.resolve(__dirname, 'src/lib'),
-        services: path.resolve(__dirname, 'src/services'),
-        widgets: path.resolve(__dirname, 'src/widgets'),
-        HUDContext: path.resolve(__dirname, 'src/components/HUD/context'),
-      },
+      alias: ALIAS,
       extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
@@ -116,7 +127,7 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('babel-loader'),
                   options: {
-                    cacheDirectory: true
+                    cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
                   },
                 },
               ]
@@ -127,7 +138,7 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('babel-loader'),
                   options: {
-                    cacheDirectory: true
+                    cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
                   },
                 },
               ]
@@ -139,7 +150,7 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('cache-loader'),
                   options: {
-                    cacheDirectory: path.resolve(__dirname, 'node_modules', '.cache', 'cache-loader'),
+                    cacheDirectory: path.resolve(CACHE_ROOT, 'cache-loader'),
                   },
                 },
                 ...(!IS_CI ? [{
@@ -151,7 +162,7 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('babel-loader'),
                   options: {
-                    cacheDirectory: true
+                    cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
                   },
                 },
                 {
@@ -351,7 +362,7 @@ function loadDotenv(NODE_ENV) {
     return mergedEnv;
   }, {});
   return Object.keys(env).reduce((e, key) => {
-    if (!key.startsWith('CUUI_HUDBUILD_')) {
+    if (!key.startsWith('CUUI_BUILD_')) {
       let value = env[key];
       if (value === 'true') {
         value = true;

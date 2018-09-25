@@ -17,8 +17,9 @@ function loadBlueprints() {
     const current = new Date().getTime();
 
     // special case, this is not a real blueprint
-    if (name === 'Small Control Island')
+    if (name === 'Small Control Island') {
       return;
+    }
 
     const blueprint = new BuildingBlueprint({
       index,
@@ -73,7 +74,7 @@ function requestBlueprintSelect(blueprint: BuildingBlueprint) {
   events.fire(events.buildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 
-function requestBlueprintIcon(blueprint: BuildingBlueprint) {  
+function requestBlueprintIcon(blueprint: BuildingBlueprint) {
   restApi.blueprints.getBlueprintIcon(blueprint.index).then((icon: string): void => {
     blueprint.icon = icon;
     fireHandleBlueprints();
@@ -91,7 +92,7 @@ function requestBlueprints() {
   if (blueprintsLoaded) {
     fireHandleBlueprints();
   } else {
-    // we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded 
+    // we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded
     // we are only firing off the event periodically to avoid re-rendering the list possibly 100s of times on startup.
     // The blueprints are loaded using the client.OnNewBlueprint() event which fires for every blueprint
     waitForBlueprintsToLoad();

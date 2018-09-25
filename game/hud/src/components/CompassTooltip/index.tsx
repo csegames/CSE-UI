@@ -22,7 +22,7 @@ const CompassTooltipContainer: React.SFC = styled('div')`
   pointer-events: none;
   user-select: none;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const CompassTooltipInner: React.SFC = styled('div')`
@@ -37,9 +37,22 @@ const CompassTooltipInner: React.SFC = styled('div')`
   color: white;
 `;
 
-const CompassTooltipName = styled('div')`
+const CompassTooltipTitle = styled('div')`
   font-size: 14px;
-  padding: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  text-align: center;
+  font-family: 'Merriweather Sans',sans-serif;
+  text-shadow: 0 0 2px black;
+`;
+
+const CompassTooltipSubtitle = styled('div')`
+  font-size: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
   text-align: center;
   font-family: 'Merriweather Sans',sans-serif;
   text-shadow: 0 0 2px black;
@@ -84,7 +97,10 @@ class CompassTooltip extends React.Component<CompassTooltipProps, CompassTooltip
       <CompassTooltipContainer>
         {this.state.data ? (
           <CompassTooltipInner>
-            <CompassTooltipName>{this.state.data.title}</CompassTooltipName>
+            <CompassTooltipTitle dangerouslySetInnerHTML={{ __html: this.state.data.title }} />
+            {this.state.data.subtitle ? (
+              <CompassTooltipSubtitle dangerouslySetInnerHTML={{ __html: this.state.data.subtitle }} />
+            ) : null}
             <CompassTooltipDistance>{this.state.data.distance.toFixed(2)}m</CompassTooltipDistance>
           </CompassTooltipInner>
         ) : null }

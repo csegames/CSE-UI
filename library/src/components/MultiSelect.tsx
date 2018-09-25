@@ -165,8 +165,9 @@ export class MultiSelect extends React.Component<MultiSelectProps, MultiSelectSt
             <List style={customStyles.list}>
               {
                 this.state.filteredItems.map((item, index) => {
-                  if (utils.findIndexWhere(this.state.selectedItems, i => this.props.itemComparison(i, item)) > -1)
+                  if (utils.findIndexWhere(this.state.selectedItems, i => this.props.itemComparison(i, item)) > -1) {
                     return null;
+                  }
                   return (
                     <div
                       key={index}

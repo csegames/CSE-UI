@@ -16,7 +16,7 @@ export interface ChatTextProps {
   room: ChatRoomInfo;
 }
 
-const AUTOSCROLL_FUZZYNESS : number = 12;
+const AUTOSCROLL_FUZZYNESS: number = 12;
 
 class ChatText extends React.Component<ChatTextProps, ChatTextState> {
   public SCROLLBACK_PAGESIZE: number = 50;
@@ -31,7 +31,7 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
   }
 
   public autoScrollToBottom = (): void => {
-    const chatBox : HTMLHtmlElement = this.refs['chatbox'] as HTMLHtmlElement;
+    const chatBox: HTMLHtmlElement = this.refs['chatbox'] as HTMLHtmlElement;
     if (this.autoScroll && chatBox.lastElementChild) {
       chatBox.scrollTop = (chatBox.scrollHeight - chatBox.offsetHeight);
     }
@@ -57,9 +57,9 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
   }
 
   public render() {
-    const room : ChatRoomInfo = this.props.room;
-    let messages : ChatRoomInfoMessage[];
-    let lazy : JSX.Element = undefined;
+    const room: ChatRoomInfo = this.props.room;
+    let messages: ChatRoomInfoMessage[];
+    let lazy: JSX.Element = undefined;
     if (room) {
       if (!this.currentRoom || !room.roomId.same(this.currentRoom)) {
         this.newRoom();
@@ -75,7 +75,7 @@ class ChatText extends React.Component<ChatTextProps, ChatTextState> {
       <div ref='chatbox' className='chat-text allow-select-text'>
       {lazy}
       {messages && messages.map((msg, i) => {
-        return <ChatLine key={i} message={msg.message} />
+        return <ChatLine key={i} message={msg.message} />;
       })}
       </div>
     );

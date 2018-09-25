@@ -58,7 +58,7 @@ export interface CollapsingListProps {
   renderListHeader?: () => JSX.Element;
 
   animationClass?: (collapsed: boolean) => { anim: string};
-  
+
   title: string | ((collapsed: boolean) => JSX.Element);
   items: any[];
 }

@@ -6,14 +6,14 @@
 import * as React from 'react';
 import { chatConfig } from './ChatConfig';
 
-function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any) : JSX.Element[] {
+function fromText(text: string, keygen: () => number, match: RegExpExecArray, parser: any): JSX.Element[] {
   const textColor1: string = match[1];
   const textColor2: string = match[2];
   const bgColor1: string = match[3];
   const bgColor2: string = match[4];
   const matchText: string = match[5];
   const id = makeid();
-  
+
   if (chatConfig.SHOW_COLORS) {
     return [
       <span

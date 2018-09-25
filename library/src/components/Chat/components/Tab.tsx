@@ -18,7 +18,7 @@ export interface TabProps {
 
 class Tab extends React.Component<TabProps, TabState> {
   public render() {
-    const classes : string[] = ['chat-tab'];
+    const classes: string[] = ['chat-tab'];
     if (this.props.selected) classes.push('chat-tab-selected');
     classes.push('chat-' + this.props.id);
     return (

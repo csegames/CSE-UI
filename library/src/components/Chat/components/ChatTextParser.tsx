@@ -22,10 +22,10 @@ class ChatTextParser {
     if (!text) {
       return null;
     }
-    let html : JSX.Element[] = [];
-    let insert : JSX.Element[];
-    let section : string;
-    let re : RegExp;
+    let html: JSX.Element[] = [];
+    let insert: JSX.Element[];
+    let section: string;
+    let re: RegExp;
     let match: RegExpExecArray;
     let next: number;
 

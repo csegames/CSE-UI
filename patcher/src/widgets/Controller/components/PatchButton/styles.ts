@@ -95,7 +95,7 @@ export const ButtonText = styled('div')`
   height: 100%;
   margin-left: 30px;
   font-weight: bold;
-  font-size: ${props => props.fontSize || 1.3}em;
+  font-size: ${(props: any) => props.fontSize || 1.3}em;
   color: black;
   z-index: 1;
 `;

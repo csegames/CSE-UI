@@ -10,7 +10,7 @@ import * as React from 'react';
 import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
 
-function fromText(text: string, keygen: () => number) : JSX.Element[] {
+function fromText(text: string, keygen: () => number): JSX.Element[] {
   return [
     <span
       key={ keygen() }
@@ -21,7 +21,7 @@ function fromText(text: string, keygen: () => number) : JSX.Element[] {
   ];
 }
 
-function createRegExp() : RegExp {
+function createRegExp(): RegExp {
   let regex: string;
   const chat: ChatSession = chatState.get('chat');
   const allUsers = chat.getAllUsers();

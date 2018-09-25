@@ -552,7 +552,7 @@ export const onInitializeTraits = module.createAction({
         allExclusives[exclusive] = exclusive;
       }));
 
-    const allClassTraits = [];
+    const allClassTraits: any[] = [];
     Object.keys(playerClasses).forEach((playerClass) => {
       if (playerClass !== 'Any') {
         allClassTraits.push({
@@ -565,7 +565,7 @@ export const onInitializeTraits = module.createAction({
       }
     });
 
-    const allRaceTraits = [];
+    const allRaceTraits: any[] = [];
     Object.keys(races).forEach((race) => {
       if (race !== 'Any') {
         allRaceTraits.push({
@@ -576,7 +576,7 @@ export const onInitializeTraits = module.createAction({
       }
     });
 
-    const allFactionTraits = [];
+    const allFactionTraits: any[] = [];
     Object.keys(factions).forEach((faction) => {
       if (faction !== 'Any') {
         allFactionTraits.push({

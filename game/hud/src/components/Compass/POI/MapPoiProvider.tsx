@@ -124,9 +124,13 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
   }
 
   private getTooltipData = (): CompassTooltipData => {
+    const tooltipParts = this.props.poi.data.tooltip.replace(/<br \/>/g, '<br/>').split('<br/>');
+    const title = tooltipParts.shift();
+    const subtitle = tooltipParts.join('<br />');
     return {
       id: this.props.poi.id,
-      title: this.props.poi.data.tooltip,
+      title,
+      subtitle,
       distance: this.props.poi.distance,
       elevation: this.props.poi.elevation,
       bearing: this.props.poi.bearing,

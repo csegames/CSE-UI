@@ -49,8 +49,8 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
 
   public render() {
     if (this.state.hasError) {
-      return this.props.renderError ? 
-        this.props.renderError(this.state.error, this.state.info) : 
+      return this.props.renderError ?
+        this.props.renderError(this.state.error, this.state.info) :
         <h2>Unhandled UI Error! <button onClick={this.onReloadUI}>Reload UI</button></h2>;
     }
     return this.props.children as any;

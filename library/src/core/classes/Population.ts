@@ -10,7 +10,7 @@ class Population {
   public vikings: number;
   public max: number;
 
-  constructor(population = <Population>{}) {
+  constructor(population = <Population> {}) {
 
     // Population limit
     this.max = population.max || 0;

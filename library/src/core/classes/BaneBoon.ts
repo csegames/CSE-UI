@@ -23,7 +23,7 @@ class BaneBoon {
   public y: number;
 
 
-  constructor(boonbane = <BaneBoon>{}) {
+  constructor(boonbane = <BaneBoon> {}) {
     this.id = boonbane.id || '';
     this.channelId = boonbane.channelId || channelId.NONE;
     this.name = boonbane.name || '';

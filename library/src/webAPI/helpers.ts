@@ -23,7 +23,7 @@ export function parseResponseData(res: any) {
 }
 
 export function accessLevelToPatchPermission(access: def.AccessType) {
-  switch(access) {
+  switch (access) {
     case def.AccessType.Public:
       return def.PatchPermissions.Public;
     case def.AccessType.Beta3:

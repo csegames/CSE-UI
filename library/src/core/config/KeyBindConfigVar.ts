@@ -19,8 +19,8 @@ class KeyBindConfigVar extends ConfigVar {
     this._value = v;
   }
 
-  constructor(config: KeyBindConfigVar = <KeyBindConfigVar>{}) {
-    super(<ConfigVar>config);
+  constructor(config: KeyBindConfigVar = <KeyBindConfigVar> {}) {
+    super(<ConfigVar> config);
   }
 
   public create() {

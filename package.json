@@ -1,30 +1,36 @@
 {
-  "name": "camelotunchainedui",
-  "version": "0.1.0",
+  "private": true,
+  "name": "camelot-unchained-ui",
+  "version": "1.0.0",
   "description": "Camelot Unchained UI",
-  "main": "index.js",
-  "dependencies": {
-    "tslint": "^5.1.0"
-  },
-  "devDependencies": {
-    "tslint": "^5.1.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "buildall": "npm run build-all",
-    "build-all": "npm run build-all-library && npm run build-all-hud",
-    "build-all-hud": "cd game/hud && yarn && yarn link @csegames/camelot-unchained && yarn start build",
-    "build-all-library": "cd library && yarn && yarn start build && yarn link",
-    "lint": "cd game/hud && npm start lint && cd ../../library && npm start lint && cd ../patcher && npm start lint"
+  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
+  "license": "MPL-2.0",
+  "homepage": "https://github.com/csegames/cu-ui#readme",
+  "bugs": {
+    "url": "https://github.com/csegames/cu-ui/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/csegames/cu-ui.git"
   },
-  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
-  "license": "MPL-2.0",
-  "bugs": {
-    "url": "https://github.com/csegames/cu-ui/issues"
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "lerna run prepare --stream",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --concurrency 1 --stream start -- build",
+    "build:ci": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --stream start -- build",
+    "lint": "lerna run --stream start -- lint"
   },
-  "homepage": "https://github.com/csegames/cu-ui#readme"
+  "dependencies": {
+    "tslint": "^5.1.0"
+  },
+  "devDependencies": {
+    "lerna": "^3.3.2",
+    "tslint": "^5.1.0"
+  },
+  "workspaces": [
+    "library",
+    "game/*",
+    "patcher"
+  ]
 }

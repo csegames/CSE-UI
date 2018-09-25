@@ -250,7 +250,7 @@ class News extends React.Component<NewsProps, NewsState> {
             <LoadMoreLoading className='wave-text'>
               <i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i><i>|</i>
             </LoadMoreLoading> :
-            <LoadMoreText href='#' onClick={this.fetchNextPage}>Load More</LoadMoreText>
+            <LoadMoreText onClick={this.fetchNextPage}>Load More</LoadMoreText>
         )}
       </Container>
     );
@@ -373,7 +373,7 @@ class News extends React.Component<NewsProps, NewsState> {
       operationName: null,
       namedQuery: null,
     }, {
-      url: `${client.apiHost}/graphql`,
+      url: client.apiHost + '/graphql',
       requestOptions: {
         headers: {
           loginToken: client.loginToken,

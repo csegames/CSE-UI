@@ -117,7 +117,7 @@ export function getVirtualKeyCode(jsCode: number) {
 
 export function getJSKeyCode(vkCode: number) {
   switch (vkCode) {
-    case vk.VK_LBUTTON: return 0; // Left mouse button 
+    case vk.VK_LBUTTON: return 0; // Left mouse button
 
     case vk.VK_RBUTTON: return 0; // Right mouse button
 

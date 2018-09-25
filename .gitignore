@@ -41,7 +41,7 @@ widgets/cu-xmpp-chat/lib/
 widgets/cu-character-creation/lib/
 library/docs/
 .idea/
-*.config.js
+dev.config.js
 dev.config
 **__snapshots__
 **/schema.ts
@@ -55,3 +55,5 @@ game/hud/src/gqlInterfaces\.ts
 !webpack.config.js
 yarn-error.log
 .gql
+
+!game/*/webpack.config.js

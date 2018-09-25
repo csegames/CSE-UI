@@ -1,49 +1,220 @@
+const path = require('path');
+// helper function to generate scripts for each target
+function generateForTargets(callback) {
+  const targets = [
+    { name: 'patcher', folder: path.resolve(__dirname, 'PatchClient/cpui/ui'), },
+  ];
+  return generateFor(targets, callback);
+}
+
+// helper function to generate scripts
+function generateFor(list, callback) {
+  let scripts = {};
+  list.forEach((item) => {
+    Object.assign(scripts, callback(item));
+  });
+  return scripts;
+}
+
 module.exports = {
   scripts: {
+
+    debug: 'nps build.patcher.dev && nps patcher',
+    debugProduction: 'nps build.patcher && nps patcher',
+    patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
+
+    build: {
+      default: {
+        script: 'nps report.start && nps clean && nps gql.codegen && nps build.webpack.production && nps report.success',
+        description: 'Builds the UI in production mode',
+      },
+      dev: {
+        script: 'nps report.start && nps clean && nps gql.codegen && nps build.webpack.development && nps report.success',
+        description: 'Builds the UI in development mode',
+      },
+      browser: {
+        default: {
+          script: 'cross-env CUUI_BUILD_IS_BROWSER="1" nps build'
+        },
+        dev: {
+          script: 'cross-env CUUI_BUILD_IS_BROWSER="1" nps build.dev'
+        }
+      },
+      webpack: {
+        default: {
+          hiddenFromHelp: true,
+          script: 'nps build',
+        },
+        development: {
+          hiddenFromHelp: true,
+          script: 'webpack --mode development',
+        },
+        production: {
+          hiddenFromHelp: true,
+          script: 'webpack --mode production',
+        },
+      },
+      ...generateForTargets((target) => {
+        return {
+          [target.name]: {
+            default: {
+              script: `nps clean.${target.name} && cross-env CUUI_BUILD_OUTPUT_PATH="${target.folder}" nps build`,
+              description: `Builds the UI in production mode and copies to the ${target.name} (${target.id}) UI override directory.`,
+            },
+            dev: {
+              script: `nps clean.${target.name} && cross-env CUUI_BUILD_OUTPUT_PATH="${target.folder}" nps build.dev`,
+              description: `Builds the UI in development mode and copies to the ${target.name} (${target.id}) UI override directory.`,
+            }
+          },
+        };
+      }),
+    },
+
+    // Dev
+    dev: {
+      default: {
+        script: 'nps clean && nps gql.codegen && cross-env CUUI_BUILD_IS_BROWSER="1" nps dev.watch',
+        description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.',
+      },
+      watch: {
+        default: {
+          hiddenFromHelp: true,
+          script: 'nps -p dev.watch.webpackServe,dev.watch.graphql',
+        },
+        webpackServe: {
+          hiddenFromHelp: true,
+          script: 'webpack-serve --content ./build --open --log-level silent',
+        },
+        webpack: {
+          hiddenFromHelp: true,
+          script: 'webpack --mode development --watch',
+        },
+        graphql: {
+          hiddenFromHelp: true,
+          script: 'watch -p "src/**/*.graphql" -p "src/gql/fragments/**/*.ts" -p "src/**/*.tsx" -p "src/components/**/*.ts" -p "src/services/**/*.ts" -p "src/widgets/**/*.ts" -c "nps gql.codegen"',
+        },
+      },
+      webpack: {
+        default: {
+          hiddenFromHelp: true,
+          script: 'nps dev',
+        },
+        hatchery: {
+          hiddenFromHelp: true,
+          script: 'nps dev.hatchery',
+        },
+      },
+      ...generateForTargets((target) => {
+        return {
+          [target.name]: {
+            default: {
+              script: `nps clean && nps gql.codegen && nps clean.${target.name} && nps dev.${target.name}.watch`,
+            },
+            webpack: {
+              hiddenFromHelp: true,
+              script: `cross-env CUUI_BUILD_OUTPUT_PATH="${target.folder}" webpack-serve --content "${target.folder}" --log-level silent`,
+            },
+            watch: {
+              hiddenFromHelp: true,
+              script: `nps -p dev.${target.name}.webpack,dev.watch.graphql`,
+            }
+          },
+        };
+      }),
+    },
+
+    // Clean
+    clean: {
+      default: {
+        script: 'rimraf build && rimraf dist',
+        hiddenFromHelp: true,
+      },
+      ...generateForTargets((target) => {
+        return {
+          [target.name]: {
+            hiddenFromHelp: true,
+            script: `rimraf \"${target.folder}\"`,
+          },
+        };
+      }),
+    },
+
+    // Copy
+    copy: {
+      ...generateForTargets((target) => {
+        return {
+          [target.name]: {
+            hiddenFromHelp: true,
+            script: `copyup "build/**/*" \"${target.folder}\" && nps report.copy`,
+          },
+        };
+      }),
+    },
+
+
+    // GraphQL
+    ...generateFor(
+      [
+        { name: '', api: 'https://hatcheryapi.camelotunchained.com/graphql'},
+        { name: 'Local', api: 'http://localhost:1337/graphql'},
+        { name: 'LocalServer', api: 'http://localhost:8000/graphql'},
+      ],
+      (target) => {
+        const name = `gql${target.name}`;
+        return {
+          [name]: {
+            default: {
+              script: `(mkdirp src/gql && nps ${name}.schema && nps ${name}.codegen) || echo continuing...`,
+            },
+            schema: {
+              hiddenFromHelp: true,
+              script: `apollo-codegen introspect-schema ${target.api} --output src/gql/schema.json`,
+            },
+            codegen: {
+              hiddenFromHelp: true,
+              // script: 'gql-gen --schema src/gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/gql/interfaces.ts "src/**/*.graphql"',
+              script: 'gql-gen --schema src/gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/gql/interfaces.ts "src/**/*.graphql" "./src/**/*.tsx"',
+            },
+          }
+        }
+      }
+    ),
+
+    // Linting
     lint: {
-      script: 'tslint "src/**/*.ts{,x}"',
-      description: 'Run TS-Lint"',
+      default: {
+        script: 'tslint -t stylish src/**/*.ts{,x} && nps report.lint',
+        description: 'Run TS-Lint"',
+      },
       fix: {
-        script: 'tslint --fix "src/**/*.ts{,x}"',
-        description: 'Fix TS-Lint errors'
+        script: 'tslint --fix src/**/*.ts{,x}',
+        description: 'Fix TS-Lint errors',
+        hiddenFromHelp: true,
       }
     },
-    copy: {
-      misc: 'copyup src/assets/**/* src/third-party/**/* src/sounds/**/* src/images/**/* src/font/**/* src/**/*.html src/videos/**/* dist/ui src/dev.config.js dist/ui',
-      patcher: 'copyup dist/ui/**/* PatchClient/cpui'
-    },
-    babel: 'babel tmp -d tmpp',
-    browserify: {
-      default: 'mkdirp dist/ui/js && browserify -g [ envify --NODE_ENV development ] tmpp/index.js -o dist/ui/js/%npm_package_config_name%.js --fast --noparse=FILE -u @csegames/camelot-unchained -u es6-promise -u eventemitter3 -u isomorphic-fetch -u moment -u node-xmpp-client -u normalizr -u react -u react-dom  -u react-redux -u react-tap-event-plugin -u redux -u redux-thunk -u reflux',
-      lib: 'mkdirp dist/ui/js && browserify -g [ envify --NODE_ENV development ] -r @csegames/camelot-unchained -r es6-promise -r eventemitter3 -r isomorphic-fetch -r moment -r node-xmpp-client -r normalizr -r react -r react-dom  -r react-redux -r react-tap-event-plugin -r redux -r redux-thunk -r reflux > dist/ui/js/lib.js',
-      production: 'mkdirp dist/ui/js && browserify -g [ envify --NODE_ENV production ] tmpp/index.js -o dist/ui/js/%npm_package_config_name%.js --fast --noparse=FILE -u @csegames/camelot-unchained -u es6-promise -u eventemitter3 -u isomorphic-fetch -u moment -u node-xmpp-client -u normalizr -u react -u react-dom  -u react-redux -u react-tap-event-plugin -u redux -u redux-thunk -u reflux',
-      libProduction: 'mkdirp dist/ui/js && browserify -g [ envify --NODE_ENV production ] -r @csegames/camelot-unchained -r es6-promise -r eventemitter3 -r isomorphic-fetch -r moment -r node-xmpp-client -r normalizr -r react -r react-dom  -r react-redux -r react-tap-event-plugin -r redux -r redux-thunk -r reflux > dist/ui/js/lib.js',
-    },
-    build: {
-      sass: 'node-sass src -o dist/ui/css --importer node_modules/sass-importer-node/sass-importer-node.js',
-      noLint: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.lib && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify && rimraf tmp && rimraf tmpp',
-      productionNoLint: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.libProduction && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify.production && rimraf tmp && rimraf tmpp',
-      default: 'rimraf tmp && rimraf tmpp && rimraf dist/ui && nps browserify.libProduction && nps lint && nps build.sass && nps copy.misc -s && tsc && nps babel && nps browserify.production && rimraf tmp && rimraf tmpp'
-    },
-    publish: 'nps build',
-    serve: 'http-server -p 9000 dist/ui/',
-    debug: 'nps build.noLint && nps copy.patcher && nps patcher',
-    debugProduction: 'nps build.productionNoLint && nps copy.patcher && nps patcher',
-    patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
-    gql: {
-      mkdir: 'mkdirp gql',
-      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
-      codegen: 'gql-gen --schema gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out src/gqlInterfaces.ts "src/**/*.graphql"',
-      // collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      collectAndConcat: '',
-      default: 'nps gql.mkdir && nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
-    },
-    gqlLocal: {
-      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output gql/schema.json',
-      codegen: 'gql-gen --schema gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out src/gqlInterfaces.ts "src/**/*.graphql"',
-      // collectAndConcat: 'graphql-document-collector "src/**/*.graphql" > gql/gqlDocument.json && concat-cli -f src/gqlPrepend.txt -f gql/gqlDocument.json -o src/gqlDocuments.ts',
-      collectAndConcat: '',
-      default: 'nps gql.schema && nps gql.codegen && nps gql.collectAndConcat'
+
+    // Reporting
+    report: {
+      start: {
+        script: 'echo "Build started..."',
+        hiddenFromHelp: true,
+      },
+      copy: {
+        script: 'echo "Copy complete..."',
+        hiddenFromHelp: true,
+      },
+      success: {
+        script: 'echo "Build completed successfully!"',
+        hiddenFromHelp: true,
+      },
+      lint: {
+        script: 'echo "TSLint complete"',
+        hiddenFromHelp: true,
+      },
+      gql: {
+        script: 'echo "Generating GraphQL Documents and Typings...',
+        hiddenFromHelp: true,
+      }
     },
   }
 };

@@ -46,7 +46,7 @@ class PatchNotesFullArticle extends React.Component<Props> {
   public render() {
     const patchNote = this.props.post.item as PatchNote;
     return (
-      <FullContainer backgroundImage={'images/news/post-image.png'} onClick={e => e.stopPropagation()}>
+      <FullContainer backgroundImage={'images/news/post-image.png'} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         <CloseButton className='icon-close' onClick={this.props.onClose} />
         <TitleContainer>
           <Title>{patchNote.title}</Title>

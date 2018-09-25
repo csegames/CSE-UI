@@ -20,7 +20,7 @@ export interface JoinRoomButtonProps {
 }
 
 class JoinRoomButton extends React.Component<JoinRoomButtonProps, JoinRoomButtonState> {
-  constructor(props : JoinRoomButtonProps) {
+  constructor(props: JoinRoomButtonProps) {
     super(props);
     this.promptRoom = this.promptRoom.bind(this);
     this.state = { showJoinRoomModal: false };
@@ -36,7 +36,7 @@ class JoinRoomButton extends React.Component<JoinRoomButtonProps, JoinRoomButton
     );
   }
 
-  private promptRoom() : void {
+  private promptRoom(): void {
     const room = window.prompt('Room?');
     this.props.join(new RoomId(room, chatType.GROUP));
   }

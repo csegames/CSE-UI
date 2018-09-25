@@ -6,17 +6,17 @@
 
 /*
  * Usage:
- * 
+ *
  * Wrap any element with this component and you'll get a confirmation
  * dialog popup when the element inside is clicked.
- * 
+ *
  * <ConfirmDialog onConfirm={() => Do something }
  *   onCancel={() => Do something}
  *   content={(props: any) => <div>Are you sure?</div>}
  *   cancelOnClickOutside={true} >
  *   <button>Click Me!</button>
  * </ConfirmDialog>
- * 
+ *
  */
 
 import * as React from 'react';

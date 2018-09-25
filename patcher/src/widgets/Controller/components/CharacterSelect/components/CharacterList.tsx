@@ -67,8 +67,8 @@ const Icon = styled('i')`
   top: -1px;
   display: inline;
   margin-right: 6px;
-  color: ${props => props.color};
-  font-size: ${props => props.size}px;
+  color: ${(props: any) => props.color};
+  font-size: ${(props: any) => props.size}px;
 `;
 
 const ServerOptionsButton = styled('div')`
@@ -76,7 +76,7 @@ const ServerOptionsButton = styled('div')`
   margin-top: 9px;
   margin-right: 5px;
   cursor: pointer;
-  pointer-events: ${props => props.visible ? 'all' : 'none'};
+  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
   z-index: 1;
   &:hover {
     color: #fff;
@@ -151,7 +151,10 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                   </Icon>
                     {server.name} ({serverCharacters.length})
                 </div>
-                <ServerOptionsButton visible={this.props.charSelectVisible} onClick={e => this.onToggleMenu(e, server)}>
+                <ServerOptionsButton
+                  visible={this.props.charSelectVisible}
+                  onClick={(e: React.MouseEvent<HTMLDivElement>) => this.onToggleMenu(e, server)}
+                >
                   <i className='fa fa-cog' />
                 </ServerOptionsButton>
               </ServerTitle>

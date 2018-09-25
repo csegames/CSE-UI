@@ -31,7 +31,7 @@ class CombatLogParser {
       return null;
     }
     const html: JSX.Element[] = [];
-    const content : JSX.Element[] = this.parse(text.substr(4).trim());
+    const content: JSX.Element[] = this.parse(text.substr(4).trim());
     html.push(<span key={this._key++} className='chat-line-action'>&lt;{content}&gt;</span>);
     return html;
   }
@@ -45,8 +45,8 @@ class CombatLogParser {
 
   public parse(text: string): JSX.Element[] {
     if (text === null) return null;
-    const keygen = () : number => { return this._key++; };
-    const tokens : ChatTextParserToken[] = [];
+    const keygen = (): number => { return this._key++; };
+    const tokens: ChatTextParserToken[] = [];
     // Parsers which need recursion should be first
     tokens.push({ token: CombatLogParser.COLOR, expr: parseColors.createRegExp() });
     tokens.push({ token: CombatLogParser.BLINK, expr: parseBlink.createRegExp() });
@@ -61,7 +61,7 @@ class CombatLogParser {
     }
 
     // Run through each parser
-    const parser : ChatTextParser = new ChatTextParser(tokens);
+    const parser: ChatTextParser = new ChatTextParser(tokens);
     return parser.parse(text, (token: number, text: string, match: RegExpExecArray) => {
       switch (token) {
         case CombatLogParser.COLOR: return parseColors.fromText(text, keygen, match, this);

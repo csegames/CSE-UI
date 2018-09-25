@@ -19,7 +19,7 @@ class SlashCommand {
     this.argv = this.args.length ? this.args.split(' ') : [];
   }
 
-  public exec(session : ChatSession) : boolean {
+  public exec(session: ChatSession): boolean {
     switch (this.name) {
       case 'w': case 't': case 'tell': case 'pm': case 'msg':  // which?
         if (this.argv.length > 1) {

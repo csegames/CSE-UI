@@ -22,6 +22,6 @@
     "yo"
   ],
   "dependencies": {
-    "yeoman-generator": "^0.20.3"
+    "yeoman-generator": "^1.0.0"
   }
 }

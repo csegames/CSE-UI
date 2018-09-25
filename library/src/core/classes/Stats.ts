@@ -35,7 +35,7 @@ class Stats {
   public healthRegeneration: number;
   public staminaRegeneration: number;
 
-  constructor(stats = <Stats>{}) {
+  constructor(stats = <Stats> {}) {
 
     this.strength = stats.strength || 0;
     this.agility = stats.agility || 0;

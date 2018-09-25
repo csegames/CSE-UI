@@ -38,9 +38,9 @@ const GameImage = styled('div')`
   height: 80px;
   zoom: 100%;
   cursor: pointer;
-  background: url(${props => props.img}) no-repeat center;
+  background: url(${(props: any) => props.img}) no-repeat center;
   z-index: 10;
-  transition: ${props => props.instant ? '' : 'opacity .3s ease'};
+  transition: ${(props: any) => props.instant ? '' : 'opacity .3s ease'};
   bottom: 0;
 
   &:before {

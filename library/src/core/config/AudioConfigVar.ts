@@ -19,8 +19,8 @@ class AudioConfigVar extends ConfigVar {
     this._value = v;
   }
 
-  constructor(config: AudioConfigVar = <AudioConfigVar>{}) {
-    super(<ConfigVar>config);
+  constructor(config: AudioConfigVar = <AudioConfigVar> {}) {
+    super(<ConfigVar> config);
   }
 
   public create() {

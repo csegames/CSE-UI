@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import './index.scss';
+
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
@@ -19,7 +21,7 @@ const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
 
 useConfig(() => ({
-  url: `https://hatcheryapi.camelotunchained.com/graphql`,
+  url: 'https://hatcheryapi.camelotunchained.com/graphql',
   requestOptions: {
     headers: {
       Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,

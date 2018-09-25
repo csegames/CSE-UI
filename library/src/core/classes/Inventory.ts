@@ -21,8 +21,8 @@ class Inventory {
    * Inventory Constructor
    * @param  {Inventory = <Inventory>{}} inventory - provide an existing inventory to copy all items into new inventory
    */
-  constructor(inventory: Inventory = <Inventory>{}) {
-    this.items = inventory.items || <Item[]>[];
+  constructor(inventory: Inventory = <Inventory> {}) {
+    this.items = inventory.items || <Item[]> [];
   }
 
   /**

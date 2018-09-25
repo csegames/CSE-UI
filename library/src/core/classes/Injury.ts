@@ -11,11 +11,11 @@ class Injury {
   public wounds: number;
   public empty: boolean; // placeholder
 
-  constructor(injury = <Injury>{}) {
+  constructor(injury = <Injury> {}) {
     this.refresh(injury);
   }
 
-  public refresh(injury = <Injury>{}) {
+  public refresh(injury = <Injury> {}) {
     this.part = injury.part || 0;
     this.health = injury.health || 0;
     this.maxHealth = injury.maxHealth || 0;

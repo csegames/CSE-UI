@@ -24,16 +24,16 @@ const PointsBarContainer = styled('div')`
 const TotalPointsText = styled('div')`
   font-size: 1em;
   text-align: center;
-  margin-top: ${props => props.marginTop ? props.marginTop : 0};
-  margin-bottom: ${props => props.marginBottom ? props.marginBottom : -28}px;
-  color: ${props => props.color};
+  margin-top: ${(props: any) => props.marginTop ? props.marginTop : 0};
+  margin-bottom: ${(props: any) => props.marginBottom ? props.marginBottom : -28}px;
+  color: ${(props: any) => props.color};
 `;
 
 const TooManyTraitsText = styled('div')`
   font-size: 24px;
   text-align: center;
   margin: 0;
-  color: ${props => props.color};
+  color: ${(props: any) => props.color};
 `;
 
 const PointsMeter = styled('div')`
@@ -45,8 +45,8 @@ const PointsMeter = styled('div')`
 
 const BalanceBar = styled('div')`
   transition: flex 0.5s, background-color 0.5s;
-  flex: ${props => props.flex};
-  background-color: ${props => props.backgroundColor};
+  flex: ${(props: any) => props.flex};
+  background-color: ${(props: any) => props.backgroundColor};
 `;
 
 const ResetButtonsContainer = styled('div')`
@@ -61,10 +61,10 @@ const ResetButton = styled('div')`
   font-size: 1em;
   transition: color 0.3s;
   text-align: center;
-  color: ${props => props.color};
+  color: ${(props: any) => props.color};
   margin: 0;
   &:hover: {
-    color: ${props => props.hoverColor};
+    color: ${(props: any) => props.hoverColor};
   }
 `;
 

@@ -121,10 +121,10 @@ const PopupContainer = styled('div')`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: ${props => props.top}px;
-  opacity: ${props => props.opacity};
-  visibility: ${props => props.opacity === 0 ? 'hidden' : 'visible'};
-  transition: ${props => props.instant ? '' : 'all 0.5s ease'};
+  top: ${(props: any) => props.top}px;
+  opacity: ${(props: any) => props.opacity};
+  visibility: ${(props: any) => props.opacity === 0 ? 'hidden' : 'visible'};
+  transition: ${(props: any) => props.instant ? '' : 'all 0.5s ease'};
 `;
 
 const SelectedGame = styled('div')`
@@ -136,9 +136,9 @@ const SelectedGame = styled('div')`
   height: 95px;
   zoom: 100%;
   cursor: pointer;
-  background: url(${props => props.img}) no-repeat center;
+  background: url(${(props: any) => props.img}) no-repeat center;
   z-index: 10;
-  transition: ${props => props.instant ? '' : 'opacity .3s ease'};
+  transition: ${(props: any) => props.instant ? '' : 'opacity .3s ease'};
   bottom: 0;
 `;
 
@@ -149,7 +149,7 @@ const AccessLevelText = styled('div')`
   color: white;
   font-size: 14px;
   margin-right: 30px;
-  opacity: ${props => props.opacity};
+  opacity: ${(props: any) => props.opacity};
   -webkit-transition: 0.4s ease;
   transition: 0.4s ease;
 `;
@@ -192,10 +192,12 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
         }
         <GameMask
           className='character-button-game-mask'
-          width={175}
-          isCUGame={serverType === ServerType.CUGAME}
-          onMouseEnter={this.handleMouseOver}
-          onMouseLeave={this.close}
+          {...{
+            width: 175,
+            isCUGame: serverType === ServerType.CUGAME,
+            onMouseEnter: this.handleMouseOver,
+            onMouseLeave: this.close,
+          } as any}
         >
           { this.state.playAnimation && <IdleShine /> }
           <SelectedGame
@@ -205,7 +207,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
         </GameMask>
         <PopupContainer
           className='game-popup-container'
-          innerRef={r => this.popupRef = r}
+          innerRef={(r: any) => this.popupRef = r}
           top={this.popupRef ? -(this.popupRef.getBoundingClientRect().height + 5) : 0}
           opacity={this.state.isOpen ? 1 : 0}
           instant={this.state.instant}

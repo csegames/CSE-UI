@@ -21,7 +21,7 @@ class ControlGame {
   public tuathaDeDanannScore: number;
   public vikingScore: number;
 
-  constructor(controlGame = <ControlGame>{}) {
+  constructor(controlGame = <ControlGame> {}) {
 
     // Game State
     this.gameState = controlGame.gameState || 0;
@@ -35,7 +35,7 @@ class ControlGame {
     this.timeLeft = controlGame.timeLeft || 0;
 
     // Control Points (if included)
-    this.controlPoints = controlGame.controlPoints || <ControlPoint[]>[];
+    this.controlPoints = controlGame.controlPoints || <ControlPoint[]> [];
   }
 
   public static create() {

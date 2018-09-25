@@ -1,3 +1,5 @@
+const NAME = 'hud';
+
 // helper function to generate scripts for each target
 function generateForTargets(callback) {
   const targets = [
@@ -36,10 +38,10 @@ module.exports = {
       },
       browser: {
         default: {
-          script: 'cross-env CUUI_HUDBUILD_IS_BROWSER="1" nps build'
+          script: 'cross-env CUUI_BUILD_IS_BROWSER="1" nps build'
         },
         dev: {
-          script: 'cross-env CUUI_HUDBUILD_IS_BROWSER="1" nps build.dev'
+          script: 'cross-env CUUI_BUILD_IS_BROWSER="1" nps build.dev'
         }
       },
       webpack: {
@@ -57,15 +59,15 @@ module.exports = {
         },
       },
       ...generateForTargets((target) => {
-        const folderPath = `%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/hud`;
+        const folderPath = `%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/${NAME}`;
         return {
           [target.name]: {
             default: {
-              script: `nps clean.${target.name} && cross-env CUUI_HUDBUILD_OUTPUT_PATH="${folderPath}" nps build`,
+              script: `nps clean.${target.name} && cross-env CUUI_BUILD_OUTPUT_PATH="${folderPath}" nps build`,
               description: `Builds the UI in production mode and copies to the ${target.name} (${target.id}) UI override directory.`,
             },
             dev: {
-              script: `nps clean.${target.name} && cross-env CUUI_HUDBUILD_OUTPUT_PATH="${folderPath}" nps build.dev`,
+              script: `nps clean.${target.name} && cross-env CUUI_BUILD_OUTPUT_PATH="${folderPath}" nps build.dev`,
               description: `Builds the UI in development mode and copies to the ${target.name} (${target.id}) UI override directory.`,
             }
           },
@@ -76,7 +78,7 @@ module.exports = {
     // Dev
     dev: {
       default: {
-        script: 'nps clean && nps gql.codegen && cross-env CUUI_HUDBUILD_IS_BROWSER="1" nps dev.watch',
+        script: 'nps clean && nps gql.codegen && cross-env CUUI_BUILD_IS_BROWSER="1" nps dev.watch',
         description: 'Development mode will start an http server with live reload that will watch and build whenever a file change is detected.',
       },
       watch: {
@@ -108,7 +110,7 @@ module.exports = {
         },
       },
       ...generateForTargets((target) => {
-        const folderPath = `%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/hud`;
+        const folderPath = `%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/${NAME}`;
         return {
           [target.name]: {
             default: {
@@ -116,7 +118,7 @@ module.exports = {
             },
             webpack: {
               hiddenFromHelp: true,
-              script: `cross-env CUUI_HUDBUILD_OUTPUT_PATH="${folderPath}" webpack-serve --content "${folderPath}" --log-level silent`,
+              script: `cross-env CUUI_BUILD_OUTPUT_PATH="${folderPath}" webpack-serve --content "${folderPath}" --log-level silent`,
             },
             watch: {
               hiddenFromHelp: true,
@@ -129,7 +131,7 @@ module.exports = {
 
     // Deploy
     deploy: {
-      script: 'cross-env CUUI_HUD_ENABLE_SENTRY="1" nps build && rimraf ../../../CamelotUnchained/MMO/Client/Assets/interface/hud && copyup build/**/* ../../../CamelotUnchained/MMO/Client/Assets/interface/hud',
+      script: `cross-env CUUI_ENABLE_SENTRY="1" nps build && rimraf ../../../CamelotUnchained/MMO/Client/Assets/interface/${NAME} && copyup build/**/* ../../../CamelotUnchained/MMO/Client/Assets/interface/${NAME}`,
       description: 'Deploys a fresh build to the client assets directory, CamelotUnchained & CamelotUnchained-UI repositories should be side by side in the same root directory.'
     },
 
@@ -143,7 +145,7 @@ module.exports = {
         return {
           [target.name]: {
             hiddenFromHelp: true,
-            script: `rimraf \"%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/hud\"`,
+            script: `rimraf \"%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/${NAME}\"`,
           },
         };
       }),
@@ -155,7 +157,7 @@ module.exports = {
         return {
           [target.name]: {
             hiddenFromHelp: true,
-            script: `copyup "build/**/*" \"%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/hud\" && nps report.copy`,
+            script: `copyup "build/**/*" \"%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/${NAME}\" && nps report.copy`,
           },
         };
       }),
@@ -174,7 +176,7 @@ module.exports = {
         return {
           [name]: {
             default: {
-              script: `(nps ${name}.schema && nps ${name}.codegen) || echo continuing...`,
+              script: `(mkdirp src/gql && nps ${name}.schema && nps ${name}.codegen) || echo continuing...`,
             },
             schema: {
               hiddenFromHelp: true,

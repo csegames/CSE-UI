@@ -23,13 +23,13 @@ class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomListState>
   public render() {
     const rooms: any[] = this.props.rooms;
     const filter: string = this.props.filter.toLowerCase();
-    const names : JSX.Element[] = [];
+    const names: JSX.Element[] = [];
 
     if (this.hidden !== filter) {
       this.hidden = undefined;            // filter changed, cancel hidden
       if (rooms.length && filter.length) {
         rooms.forEach((room: Room, index: number) => {
-          const name : string = room.jid.split('@')[0];
+          const name: string = room.jid.split('@')[0];
           if (filter.length === 0 || name.toLowerCase().indexOf(filter) !== -1) {
             names.push(
               <JoinRoomListItem room={room} key={index} selectRoom={this.props.selectRoom}/>,
@@ -46,16 +46,16 @@ class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomListState>
     );
   }
 
-  public componentDidMount() : void {
+  public componentDidMount(): void {
     document.addEventListener('mousedown', this.onmousedown, true);
   }
 
-  public componentWillUnmount() : void {
+  public componentWillUnmount(): void {
     document.removeEventListener('mousedown', this.onmousedown, true);
   }
 
   private onmousedown = (e: MouseEvent) => {
-    const el : HTMLElement = e.target as HTMLElement;
+    const el: HTMLElement = e.target as HTMLElement;
     if (el.className !== 'room-name') {
       // clicked outside dropdown list, hide it
       // until the filter text changes

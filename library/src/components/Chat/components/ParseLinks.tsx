@@ -9,7 +9,7 @@ import Whitelist from './URLWhitelist';
 import URLRegExp from './URLRegExp';
 import { chatConfig } from './ChatConfig';
 
-function fixupLink(url: string) : string {
+function fixupLink(url: string): string {
   let newUrl = url;
   if (url.indexOf('www.') === 0) {
     newUrl = 'http://' + url;

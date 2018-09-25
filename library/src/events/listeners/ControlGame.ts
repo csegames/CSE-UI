@@ -20,7 +20,7 @@ function run(emitter: EventEmitter, topic: string) {
         emitter.emit(topic, instance);
       })
       .catch((error: Error) => {
-        emitter.emit(topic, { error: { status: (<any>error).response.status, reason: error.message } });
+        emitter.emit(topic, { error: { status: (<any> error).response.status, reason: error.message } });
       });
   }
 

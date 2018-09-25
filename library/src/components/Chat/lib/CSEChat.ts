@@ -11,7 +11,7 @@ import Message from './Message';
 import Sender from './Sender';
 import messageType from './messageType';
 
-const NS_DISCO_ITEMS : string = 'http://jabber.org/protocol/disco#items';
+const NS_DISCO_ITEMS: string = 'http://jabber.org/protocol/disco#items';
 
 interface Room {
   name: string;
@@ -63,7 +63,7 @@ class CSEChat  {
   private _recvQueue: Element[] = [];
   private messageHandlerTimeout: any = null;
 
-  constructor(config = <Config>{}) {
+  constructor(config = <Config> {}) {
     this.config = config;
   }
 
@@ -130,7 +130,7 @@ class CSEChat  {
 
   public getRooms() {
     if (!this.client) return;
-    const id : string = this.nextId('room');
+    const id: string = this.nextId('room');
     this.client.send(new Element('iq', {
       id,
       from: this.client.jid.toString(),
@@ -142,22 +142,22 @@ class CSEChat  {
   }
 
   // alias eventEmitter
-  public on(event:string, callback: (data: any) => void) : any {
+  public on(event: string, callback: (data: any) => void): any {
     return this.eventEmitter.on(event, callback);
   }
 
-  public once(event:string, callback: (data: any) => void) : any {
+  public once(event: string, callback: (data: any) => void): any {
     return this.eventEmitter.listenOnce(event, callback);
   }
 
-  public removeListener(event:any) : void {
+  public removeListener(event: any): void {
     this.eventEmitter.removeListener(event);
   }
 
   // PRIVATE METHODS (as private as they can be)
 
   // generate an id using an id generator
-  private nextId(prefix: string) : string {
+  private nextId(prefix: string): string {
     return prefix + (this._iqc++);
   }
 
@@ -255,7 +255,7 @@ class CSEChat  {
     // }
 
     // Create a new ping message
-    const id : string = this.nextId('ping');
+    const id: string = this.nextId('ping');
     this.client.send(new Element('iq', {
       id,
       from: this.client.jid.toString(),
@@ -272,7 +272,7 @@ class CSEChat  {
   // handle the ping response.  Lookup the ping in the ping map, if there
   // then decrement inflight count (this ping just landed) and call the pong
   // handler, finally remove the ping from the ping map.
-  private pong(stanza:Element) {
+  private pong(stanza: Element) {
     const id = stanza.attrs.id;
     const ping = this._pings[id];
     if (ping) {
@@ -288,7 +288,7 @@ class CSEChat  {
 
   // #########################################################################
 
-  private processStanza(stanza:Element) {
+  private processStanza(stanza: Element) {
     // if error?
     if (stanza.attrs.type === 'error') {
       return;
@@ -338,13 +338,13 @@ class CSEChat  {
 
   }
 
-  private gotRooms(id: string, stanza: Element) : void {
-    const items : Element[] = stanza.getChildren('item');
-    const info : any = this._msgs[id];
+  private gotRooms(id: string, stanza: Element): void {
+    const items: Element[] = stanza.getChildren('item');
+    const info: any = this._msgs[id];
     if (info) {
       this._inFlight --;
       delete this._msgs[id];
-      const rooms : Room[] = [];
+      const rooms: Room[] = [];
       items.forEach((item: Element) => {
         rooms.push({ name: item.attrs['name'], jid: item.attrs['jid'] });
       });
@@ -352,7 +352,7 @@ class CSEChat  {
     }
   }
 
-  private parseMessageGroup(stanza:Element) {
+  private parseMessageGroup(stanza: Element) {
     const body = stanza.getChild('body');
     const message = body ? body.getText() : '';
     const nick = stanza.getChild('nick');
@@ -366,9 +366,9 @@ class CSEChat  {
 
     const s = new Sender(0, sender, senderName, isCSE);
     return new Message(this._idCounter++, new Date(), message, roomName, messageType.MESSAGE_GROUP, s);
-  } 
+  }
 
-  private parseMessageChat(stanza:Element) {
+  private parseMessageChat(stanza: Element) {
     const body = stanza.getChild('body');
     const message = body ? body.getText() : '';
     const nick = stanza.getChild('nick');
@@ -381,7 +381,7 @@ class CSEChat  {
     return new Message(this._idCounter++, new Date(), message, sender, messageType.MESSAGE_CHAT, s);
   }
 
-  private parsePresence(stanza:Element) {
+  private parsePresence(stanza: Element) {
     const x = stanza.getChild('x');
     const status = x.getChild('status');
     const role = x.getChild('item').attrs.role;

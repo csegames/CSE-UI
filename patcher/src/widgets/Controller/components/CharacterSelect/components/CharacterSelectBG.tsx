@@ -68,13 +68,13 @@ const CharacterInfoOverlay = styled('div')`
   z-index: 11;
   color: white;
   left: 41%;
-  opacity: ${props => props.opacity};
+  opacity: ${(props: any) => props.opacity};
 `;
 
 const CharacterName = styled('div')`
   font-family: "Caudex";
   font-size: 28px;
-  font-size: ${props => props.fontSize}vw;
+  font-size: ${(props: any) => props.fontSize}vw;
 `;
 
 const CharacterMetaInfo = styled('div')`
@@ -90,8 +90,8 @@ const CharImg = styled('img')`
   position: absolute;
   width: auto;
   z-index: 2;
-  opacity: ${props => props.opacity};
-  height: ${props => props.height || 80}%;
+  opacity: ${(props: any) => props.opacity};
+  height: ${(props: any) => props.height || 80}%;
   bottom: 25px;
 `;
 
@@ -106,7 +106,7 @@ const CharBase = styled('div')`
   bottom: 0px !important;
   right: 0px;
   z-index: 1;
-  opacity: ${props => props.opacity};
+  opacity: ${(props: any) => props.opacity};
   &.arthurian {
     background-image: url(images/visualfx/art/art-base.png);
   }

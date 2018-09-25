@@ -18,7 +18,7 @@ import { APIServerStatus } from '../../ControllerDisplay/index';
 
 const MinimizeAll = styled('div')`
   cursor: pointer;
-  pointer-events: ${props => props.visible ? 'all' : 'none'}
+  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'}
   z-index: 10;
   opacity: 0.5;
   padding: 15px 25px 0 25px;
@@ -132,9 +132,9 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     });
     const localLastPlay = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
     const sortedServers = _.sortBy(serversForPermission, [
-      localLastPlay ? server => server.name === localLastPlay.serverName ? -1 : 0 : null,
-      server => server.available ? -1 : 0,
-      selectedServer ? server => server.shardID === selectedServer.shardID ? -1 : 0 : null
+      localLastPlay ? (server: any) => server.name === localLastPlay.serverName ? -1 : 0 : null,
+      (server: any) => server.available ? -1 : 0,
+      selectedServer ? (server: any) => server.shardID === selectedServer.shardID ? -1 : 0 : null
       ,]);
     return sortedServers;
   }

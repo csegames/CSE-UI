@@ -72,7 +72,7 @@ export interface InlineDropDownSelectEditState {
   errors: string;
 }
 
-export class InlineDropDownSelectEdit<ItemType, DataType extends {}> 
+export class InlineDropDownSelectEdit<ItemType, DataType extends {}>
   extends React.Component<InlineDropDownSelectEditProps<ItemType, DataType>, InlineDropDownSelectEditState> {
 
   private static editModeActiveEvent = 'input-edit-mode-active';

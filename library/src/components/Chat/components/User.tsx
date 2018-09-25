@@ -28,7 +28,7 @@ export interface UserProps {
 
 class User extends React.Component<UserProps, UserState> {
   public render() {
-    const classes : string[] = ['chat-info-user'];
+    const classes: string[] = ['chat-info-user'];
     if (this.props.selected) classes.push('chat-info-user-selected');
     if (this.props.info.isCSE) classes.push('chat-info-cseuser');
     return (

@@ -1,43 +1,37 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "noImplicitAny": true,
-        "removeComments": false,
-        "outDir": "./tmp",
-        "sourceMap": false,
-        "jsx": "react",
-        "module": "commonjs"
+  "compilerOptions": {
+    "target": "esnext",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": true,
+    "jsx": "preserve",
+    "module": "esnext",
+    "noImplicitUseStrict": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "gql/*": [ "gql/*" ],
+      "components/*": [ "components/*" ],
+      "*": [
+        "node_modules/*",
+        "types/*",
+        "../typings/globals/*"
+      ]
     },
-    "formatCodeOptions": {
-        "indentSize": 2,
-        "tabSize": 2,
-        "newLineCharacter": "\r\n",
-        "convertTabsToSpaces": true,
-        "insertSpaceAfterCommaDelimiter": true,
-        "insertSpaceAfterSemicolonInForStatements": true,
-        "insertSpaceBeforeAndAfterBinaryOperators": true,
-        "insertSpaceAfterKeywordsInControlFlowStatements": true,
-        "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-        "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-        "placeOpenBraceOnNewLineForFunctions": false,
-        "placeOpenBraceOnNewLineForControlBlocks": false
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "filesGlob": [
-        "./src/**/*.ts",
-        "./src/**/*.tsx",
-        "./typings/**/*.ts"
+    "plugins": [
+      { "name": "tslint-language-service"}
     ],
-    "exclude": [
-      "typings/browser.d.ts",
-      "typings/browser",
-      "tmp",
-      "dist",
-      "publish",
-      "node_modules"
-    ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+    "moduleResolution": "node",
+  },
+  "resolution": "typings",
+  "include": [
+    "src/**/*",
+  ]
 }

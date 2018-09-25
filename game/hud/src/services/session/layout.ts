@@ -39,7 +39,7 @@ import GameInfo from './layoutItems/GameInfo';
 import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.9'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.7.10'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;

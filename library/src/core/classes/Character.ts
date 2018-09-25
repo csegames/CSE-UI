@@ -23,13 +23,13 @@ class Character extends Player {
   public stats: Stats;
 
 
-  constructor(character = <Character>{}) {
+  constructor(character = <Character> {}) {
     super(character);
     this.inventory = character.inventory || new Inventory();
     this.equippedGear = character.equippedGear || new EquippedGear();
     this.spellBook = character.spellBook || new SpellBook();
-    this.banes = character.banes || <BaneBoon[]>[];
-    this.banes = character.boons || <BaneBoon[]>[];
+    this.banes = character.banes || <BaneBoon[]> [];
+    this.banes = character.boons || <BaneBoon[]> [];
     this.group = character.group || null;
     this.stats = character.stats || new Stats();
   }

@@ -17,8 +17,8 @@ class RoomId {
     this.displayName = typeof displayName === 'string' ? displayName.toLowerCase() : '';
   }
 
-  public same(roomId: RoomId) : boolean {
-    return roomId 
+  public same(roomId: RoomId): boolean {
+    return roomId
       && this.type === roomId.type
       && this.name === roomId.name;
   }

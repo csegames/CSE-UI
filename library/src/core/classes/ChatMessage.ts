@@ -11,7 +11,7 @@ class ChatMessage {
   public nick: string;
   public iscse: boolean;
 
-  constructor(chatMessage = <ChatMessage>{}) {
+  constructor(chatMessage = <ChatMessage> {}) {
     this.type = chatMessage.type;
     this.from = chatMessage.from;
     this.body = chatMessage.body;

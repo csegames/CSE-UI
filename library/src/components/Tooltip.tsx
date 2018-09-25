@@ -5,18 +5,18 @@
  */
 /*
  * Usage:
- * 
- * A text tooltip is easy, just wrap the element you would like to have a tooltip 
+ *
+ * A text tooltip is easy, just wrap the element you would like to have a tooltip
  * displayed for and set the content to a string message!
  * <Tooltip content='Hello World!'>
  *   <h1>Stuff and things</h1>
  * </Tooltip>
- * 
+ *
  * Tooltips can also be jsx elements!
  * <Tooltip content={<img src='https://i.ytimg.com/vi/tntOCGkgt98/maxresdefault.jpg' />}>
  *   <h1>Hover for a cat picture!</h1>
  * </Tooltip>
- * 
+ *
  */
 import * as React from 'react';
 import styled, { css } from 'react-emotion';

@@ -34,8 +34,8 @@ const Title = styled('div')`
   font-size: 1.7em;
   margin-top: 10px;
   margin-bottom: 10px;
-  text-align: ${props => props.textAlign};
-  color: ${props => props.color};
+  text-align: ${(props: any) => props.textAlign};
+  color: ${(props: any) => props.color};
 `;
 
 const RangePointsText = styled('div')`
@@ -47,7 +47,7 @@ const RangePointsText = styled('div')`
 const InnerWrapper = styled('div')`
   display: flex;
   flex-direction: column;
-  align-items: ${props => props.alignItems};
+  align-items: ${(props: any) => props.alignItems};
   flex: 1;
   height: 50vh;
   width: 24vw;
@@ -68,8 +68,8 @@ const TraitsContainer = styled('div')`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: ${props => props.alignItems};
-  justify-content: ${props => props.justifyContent};
+  align-items: ${(props: any) => props.alignItems};
+  justify-content: ${(props: any) => props.justifyContent};
 `;
 
 export interface TraitListContainerProps {

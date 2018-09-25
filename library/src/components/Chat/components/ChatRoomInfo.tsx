@@ -37,7 +37,7 @@ class ChatRoomInfo {
     this.scrollbackPageSize = scrollbackPageSize;
   }
 
-  public diagnostics = () : void => {
+  public diagnostics = (): void => {
     console.log('|  Room: ' + this.roomId.name
       + ' Players: ' + this.players
       + ' Unread: ' + this.unread
@@ -46,7 +46,7 @@ class ChatRoomInfo {
     );
   }
 
-  public addUser = (user: UserInfo) : void => {
+  public addUser = (user: UserInfo): void => {
     let sortIndex: number = this.users.length;
     for (let i = 0; i < this.users.length; i++) {
       if (user.isCSE) {
@@ -66,7 +66,7 @@ class ChatRoomInfo {
     this.players ++;
   }
 
-  public removeUser = (user: UserInfo) : void => {
+  public removeUser = (user: UserInfo): void => {
     const users: ChatRoomInfoUser[] = this.users;
     for (let i = 0; i < users.length; i++) {
       if (users[i].info.name === user.name) {
@@ -77,7 +77,7 @@ class ChatRoomInfo {
     }
   }
 
-  public add = (message: ChatMessage) : void => {
+  public add = (message: ChatMessage): void => {
     message.checkIsNewDay(this.messages.length > 1 ? this.messages[this.messages.length - 2].message.when : undefined);
     // manage scrollback buffer size
     if (this.messages.length > chatConfig.SCROLLBACK_BUFFER_SIZE) {
@@ -94,7 +94,7 @@ class ChatRoomInfo {
         return { key: i, message };
       });
     } else {
-      
+
       this.messages.push({
         key: this.messages.length - 1,
         message,
@@ -102,18 +102,18 @@ class ChatRoomInfo {
     }
   }
 
-  public push = (message: ChatMessage) : void => {
+  public push = (message: ChatMessage): void => {
     this.add(message);
     this.unread ++;
   }
 
-  public seen = () : void => {
+  public seen = (): void => {
     this.unread = 0;
   }
 
-  public countVisibleMessages = () : number => {
+  public countVisibleMessages = (): number => {
     let count: number = 0;
-    this.messages.forEach((message: ChatRoomInfoMessage) : void => {
+    this.messages.forEach((message: ChatRoomInfoMessage): void => {
       if (!chatConfig.JOIN_PARTS) {
         // not showing JOIN/PARTS so don't count these message types
         if (message.message.type === chatType.AVAILABLE) return;
@@ -124,8 +124,8 @@ class ChatRoomInfo {
     return count;
   }
 
-  public startScrollback = () : void => {
-    const count : number = this.countVisibleMessages();
+  public startScrollback = (): void => {
+    const count: number = this.countVisibleMessages();
     if (count > this.scrollbackThreshold) {
       this.scrollback = count - this.scrollbackThreshold;
     } else {
@@ -133,11 +133,11 @@ class ChatRoomInfo {
     }
   }
 
-  public cancelScrollback = () : void => {
+  public cancelScrollback = (): void => {
     this.scrollback = 0;
   }
 
-  public nextScrollbackPage = () : void => {
+  public nextScrollbackPage = (): void => {
     if (this.scrollbackPageSize > this.scrollback) {
       this.cancelScrollback();
     } else {

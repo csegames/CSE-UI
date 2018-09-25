@@ -61,7 +61,7 @@ const ButtonContainer = styled('div')`
   display: flex;
   text-align: center;
   pointer-events: all;
-  cursor: ${props => props.cursor};
+  cursor: ${(props: any) => props.cursor};
   color: white;
   font-family: "Caudex";
   font-size: 13px;
@@ -69,7 +69,7 @@ const ButtonContainer = styled('div')`
   width: 345px;
   margin: 15px 15px 25px 15px;
   padding-bottom: 5px;
-  background: url(${props => props.backgroundImg}) no-repeat;
+  background: url(${(props: any) => props.backgroundImg}) no-repeat;
   background-size: contain;
   transition: all ease .1s;
   &:hover {
@@ -88,7 +88,7 @@ const Text = styled('div')`
   right: 0;
   left: 0;
   bottom: 22px;
-  color: ${props => props.color};
+  color: ${(props: any) => props.color};
   font-size: 16px;
 `;
 
@@ -142,7 +142,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
       apiVersion: 1,
       shard: this.props.server.shardID,
       apiKey: patcher.getAccessToken(),
-      created: (c) => {
+      created: (c: any) => {
         events.fire('character-created', c.name);
         events.fire('view-content', view.NONE);
       },

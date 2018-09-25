@@ -21,7 +21,7 @@ const Container = styled('div')`
   font-size: 12px;
   width: 295px;
   height: 90px;
-  right: ${props => props.right}px;
+  right: ${(props: any) => props.right}px;
   transition: right 0.5s ease;
   font-weight: normal;
 `;

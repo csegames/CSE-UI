@@ -143,6 +143,7 @@ export interface Keybind extends Binding{
   name: string;
 }
 
+// tslint:disable-next-line
 interface clientInterface {
   // These are the only things that are guaranteed to exist from the time
   // the page is created. Everything else will be constructed over the course
@@ -543,8 +544,8 @@ interface clientInterface {
     arbitraryString?: string) => void): void;
 
   /* Target */
-  RequestFriendlyTargetEntityID(entityID:string): void;
-  RequestEnemyTargetEntityID(entityID:string): void;
+  RequestFriendlyTargetEntityID(entityID: string): void;
+  RequestEnemyTargetEntityID(entityID: string): void;
 
   /* Keybind API */
   // new call from client -> UI

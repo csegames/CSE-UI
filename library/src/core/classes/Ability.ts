@@ -23,7 +23,7 @@ class Ability {
   public buttons: any[] = [];
   public awaitingUpdate: { (a: Ability): any }[] = null;
 
-  constructor(ability = <Ability>{}) {
+  constructor(ability = <Ability> {}) {
     this.id = ability.id || '';
     this.icon = ability.icon || '';
     this.cooldowns = ability.cooldowns || [];
@@ -33,18 +33,18 @@ class Ability {
     this.tooltip = ability.tooltip || '';
     this.buttons = ability.buttons || [];
     this.awaitingUpdate = ability.awaitingUpdate || null;
-    this.abilityComponents = ability.abilityComponents || <AbilityComponent[]>[];
+    this.abilityComponents = ability.abilityComponents || <AbilityComponent[]> [];
   }
 
   public static getAllAbilities(accessToken: string, characterID: string, callback: (abilities: Ability[]) => void) {
     getCraftedAbilities(accessToken, characterID)
       .then((data: Object[]) => {
         if (callback) {
-          callback(data.map(o => new Ability(<Ability>o)));
+          callback(data.map(o => new Ability(<Ability> o)));
         }
       })
       .catch((error: Error) => {
-        console.log(`error: ${error.message} | response: ${(<any>error).response}`);
+        console.log(`error: ${error.message} | response: ${(<any> error).response}`);
       });
   }
 }

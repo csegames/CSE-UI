@@ -32,8 +32,8 @@ class ChatSession {
   public latency: number;
   public windowActive = true;
 
-  private SCROLLBACK_THRESHOLD : number = 50;
-  private SCROLLBACK_PAGESIZE : number = 100;
+  private SCROLLBACK_THRESHOLD: number = 50;
+  private SCROLLBACK_PAGESIZE: number = 100;
 
   constructor() {
     this.onconnect = this.onconnect.bind(this);
@@ -51,7 +51,7 @@ class ChatSession {
     };
   }
 
-  public diagnostics = () : void => {
+  public diagnostics = (): void => {
     // const memory : any = (window.performance as any).memory;
     // const now : Date = new Date();
     // console.log(now.toISOString());
@@ -67,38 +67,11 @@ class ChatSession {
     // });
   }
 
-  private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string) => this.onchat({type: messageType.SYSTEM, message: msg}));
-    events.on('combatlog_message', (msg: string) => this.onchat({type: messageType.COMBAT_LOG, message: msg}));
-
-    if (!this.client) {
-      this.client = new ChatClient();
-      this.client.on('connect', this.onconnect);
-      this.client.on('connectfailed', this.onconnectfailed);
-      this.client.on('ping', this.onping);
-      this.client.on('presence', this.onchat);
-      this.client.on('message', this.onchat);
-      this.client.on('groupmessage', this.onchat);
-      this.client.on('disconnect', this.ondisconnect);
-      this.client.on('rooms', this.onrooms);
-      
-      // if (!patcher.hasRealApi()) {
-      //   if (username === "") username = window.prompt('username?');
-      //   if (password === "###") password = window.prompt('password?');
-      // }
-      if (login.accessToken) {
-        this.client.connectWithToken(login.accessToken);
-      } else {
-        this.client.connect(login.username, login.password);
-      }
-    }
+  public connect(username: string, password: string) {
+    this.internalConnect({ username, password });
   }
 
-  connect(username: string, password: string) {
-    this.internalConnect({ username: username, password: password });
-  }
-
-  connectWithToken(accessToken: string) {
+  public connectWithToken(accessToken: string) {
     this.internalConnect({ accessToken });
   }
 
@@ -179,7 +152,7 @@ class ChatSession {
     this.reconnecting = true;
 
     // Build list of rooms to re-connect to
-    const rooms : RoomId[] = [];
+    const rooms: RoomId[] = [];
     for (let i = 0; i < this.rooms.length; i++) {
       if (this.rooms[i].roomId.type === chatType.GROUP) {
         rooms.push(this.rooms[i].roomId);
@@ -203,7 +176,7 @@ class ChatSession {
   }
 
   // Broadcast a message to all rooms
-  public broadcast(message: ChatMessage) : void {
+  public broadcast(message: ChatMessage): void {
     message.type = chatType.BROADCAST;
     // send message to current tab
     const rooms = this.rooms;
@@ -218,7 +191,7 @@ class ChatSession {
   }
 
   // Receive a message from a room or user.
-  public recv(message: ChatMessage | ChatMessage[]) : void {
+  public recv(message: ChatMessage | ChatMessage[]): void {
     if (isArray(message)) {
       message.forEach((m) => {
         // check for a broadcast message (private message sent by "")
@@ -226,7 +199,7 @@ class ChatSession {
           this.broadcast(m);
         } else {
           const roomId = new RoomId(m.roomName, m.type);
-          const room : ChatRoomInfo = this.getRoom(roomId);
+          const room: ChatRoomInfo = this.getRoom(roomId);
           room.push(m);  // increments unread
           if (!this.currentRoom) {
             this.currentRoom = roomId;
@@ -259,7 +232,7 @@ class ChatSession {
   }
 
   // Deal with presence messages
-  public presence(type: number, user: UserInfo) : void {
+  public presence(type: number, user: UserInfo): void {
     // find the room this user is in, don't create room unless this is an available presence
     const roomId = new RoomId(user.roomName, chatType.GROUP);
     const room: ChatRoomInfo = this.getRoom(roomId, type === messageType.AVAILIBLE);
@@ -276,12 +249,12 @@ class ChatSession {
     }
   }
 
-  public setCurrentRoom(roomId: RoomId) : void {
+  public setCurrentRoom(roomId: RoomId): void {
     this.currentRoom = roomId;
     events.fire('chat-session-update', this);
   }
 
-  public findRoom(roomId: RoomId) : ChatRoomInfo {
+  public findRoom(roomId: RoomId): ChatRoomInfo {
     for (let i = 0; i < this.rooms.length; i++) {
       if (this.rooms[i].roomId && this.rooms[i].roomId.same(roomId)) {
         return this.rooms[i];
@@ -289,8 +262,8 @@ class ChatSession {
     }
   }
 
-  public getRoom(roomId: RoomId, add: boolean = true) : ChatRoomInfo {
-    let room : ChatRoomInfo = this.findRoom(roomId);
+  public getRoom(roomId: RoomId, add: boolean = true): ChatRoomInfo {
+    let room: ChatRoomInfo = this.findRoom(roomId);
     if (!room && add) {
       room = new ChatRoomInfo(
         roomId,
@@ -302,7 +275,7 @@ class ChatSession {
     return room;
   }
 
-  public deleteRoom(roomId: RoomId) : ChatRoomInfo {
+  public deleteRoom(roomId: RoomId): ChatRoomInfo {
     for (let i = 0; i < this.rooms.length; i++) {
       if (this.rooms[i].roomId.same(roomId)) {
         const room = this.rooms[i];
@@ -312,11 +285,11 @@ class ChatSession {
     }
   }
 
-  public send(text: string, roomName: string) : void {
+  public send(text: string, roomName: string): void {
     this.client.sendMessageToRoom(text, roomName);
   }
 
-  public sendMessage(text: string, user: string) : void {
+  public sendMessage(text: string, user: string): void {
     this.client.sendMessageToUser(text, user);
     const roomId = new RoomId(user, chatType.PRIVATE);
     const message = new ChatMessage(chatType.PRIVATE, user, this.me, text);
@@ -325,7 +298,7 @@ class ChatSession {
     events.fire('chat-session-update', this);
   }
 
-  public joinRoom(roomId: RoomId) : void {
+  public joinRoom(roomId: RoomId): void {
     if (!this.findRoom(roomId)) {
       const room: ChatRoomInfo = this.getRoom(roomId, true);
       this.client.joinRoom(room.roomId);
@@ -340,7 +313,7 @@ class ChatSession {
     this.setCurrentRoom(room.roomId);
   }
 
-  public leaveRoom(roomId: RoomId) : void {
+  public leaveRoom(roomId: RoomId): void {
     const room = this.deleteRoom(roomId);
     if (room) {
       switch (roomId.type) {
@@ -365,7 +338,7 @@ class ChatSession {
   }
 
   // get list of all users from rooms the user has joined
-  public getAllUsers() : string[] {
+  public getAllUsers(): string[] {
     const allUsers: string[] = [];
     this.rooms.forEach((room) => {
       room.users.forEach((user) => {
@@ -373,6 +346,33 @@ class ChatSession {
       });
     });
     return allUsers;
+  }
+
+  private internalConnect(login: LoginInfo) {
+    events.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    events.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
+
+    if (!this.client) {
+      this.client = new ChatClient();
+      this.client.on('connect', this.onconnect);
+      this.client.on('connectfailed', this.onconnectfailed);
+      this.client.on('ping', this.onping);
+      this.client.on('presence', this.onchat);
+      this.client.on('message', this.onchat);
+      this.client.on('groupmessage', this.onchat);
+      this.client.on('disconnect', this.ondisconnect);
+      this.client.on('rooms', this.onrooms);
+
+      // if (!patcher.hasRealApi()) {
+      //   if (username === "") username = window.prompt('username?');
+      //   if (password === "###") password = window.prompt('password?');
+      // }
+      if (login.accessToken) {
+        this.client.connectWithToken(login.accessToken);
+      } else {
+        this.client.connect(login.username, login.password);
+      }
+    }
   }
 }
 

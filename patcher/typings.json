@@ -1,20 +1,8 @@
 {
-  "name": "cu-patcher-ui",
-  "dependencies": {
-    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7",
-    "react-redux": "github:andrew-w-ross/typings-react-redux#6be88a57427f8ec220cad13d68565fd5f5711146",
-    "redux": "github:andrew-w-ross/typings-redux#2e0b57e18c6240d17fde045573d74e649762437b"
-  },
+  "name": "perfhud",
   "globalDependencies": {
-    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
-    "isomorphic-fetch": "github:cumodsquad/Typings/isomorphic-fetch/isomorphic-fetch.d.ts",
-    "node": "registry:dt/node#6.0.0+20160621231320",
-    "node-xmpp-client": "github:cumodsquad/Typings/node-xmpp/node-xmpp-client.d.ts",
-    "normalizr": "github:cumodsquad/Typings/normalizr/normalizr.d.ts",
-    "reflux": "github:cumodsquad/Typings/reflux/reflux.d.ts",
-    "reflux-core": "github:cumodsquad/Typings/reflux/reflux-core.d.ts",
-    "react-animate.css": "github:cumodsquad/Typings/react-animate.css/react-animate.css.d.ts",
-    "emotion": "github:cumodsquad/Typings/emotion/emotion.d.ts",
-    "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts"
+    "node": "registry:dt/node#6.0.0+20160621231320"
+  },
+  "dependencies": {
   }
 }

@@ -1,47 +1,128 @@
-cu-boilerplate-module
-=====================
+# Boilerplate Module
 
-> Camelot Unchained UI - Boilerplate Module
+> The primary Boilerplate elements for Camelot Unchained's in-game UI.
 
-Install
--------
 
-Clone the Repository
+## Requirements
 
-```sh
-git clone https://github.com/CUModSquad/cu-boilerplate-module.git
-cd cu-boilerplate-module
-```
+* NodeJS 9.x.x
+* Yarn 1.9.x
 
-Install
+## Installation
+
+To get started run:
 
 ```sh
-npm install
+yarn
 ```
 
-Build
+You will then be ready to develop the Boilerplate Module.
+
+## Developing In Browser
+
+It is possible to develop parts of the Boilerplate Module within a local browser,
+however some client specific functionality will not work.
+
+Run the following:
 
 ```sh
-npm run build
+yarn start dev
 ```
 
-Structure
----------
+## Developing In CU Client
 
-The structure is as follows:
+To develop directly within the client run **one** of the following:
 
-**`src`**
+```sh
+yarn start dev.hatchery
+yarn start dev.fledgling
+yarn start dev.hatchery
+yarn start dev.wyrmling
+yarn start dev.wyrmlingPrep
+yarn start dev.nuada
+yarn start dev.nuadaPrep
+yarn start dev.wolfhere
+yarn start dev.cube
+```
 
-This is where all the code goes.
+These command swill start building & watching source files for changes.
 
-**`src/ts/main.tsx`**
+The build output will go to `%localappdata%\CSE\CamelotUnchained\?\INTERFACE\boilerplate-module` where `?` depends on
+your chosen target e.g. `hatchery` is `4`
 
-This is the entry point for the module.
+When you make a change wait for it to finish compiling and then run `/reloadui boilerplate-module` in the client.
 
-**`src/sass/module-name.scss`**
+## Single Run Production Builds
 
-This is the main stylesheet for the module.
+It is possible to run a production build, without any watching/reloading.
 
-**`dist`**
+Here is a full list of available single run production builds:
 
-This is the bundled code that to be included in the published client.
+```sh
+yarn start build
+yarn start build.browser
+yarn start build.hatchery
+yarn start build.fledgling
+yarn start build.hatchery
+yarn start build.wyrmling
+yarn start build.wyrmlingPrep
+yarn start build.nuada
+yarn start build.nuadaPrep
+yarn start build.wolfhere
+yarn start build.cube
+```
+
+## Single Run Development Builds
+
+It is possible to run a development build, without any watching/reloading.
+
+Here is a full list of available single run development builds:
+
+```sh
+yarn start build.dev
+yarn start build.browser.dev
+yarn start build.hatchery.dev
+yarn start build.fledgling.dev
+yarn start build.hatchery.dev
+yarn start build.wyrmling.dev
+yarn start build.wyrmlingPrep.dev
+yarn start build.nuada.dev
+yarn start build.nuadaPrep.dev
+yarn start build.wolfhere.dev
+yarn start build.cube.dev
+```
+
+## Environment Variables
+
+Environment variables are defined in dotenv files `.env`. These variables will be injected
+into the build, and can be used to toggle different features.
+
+Dotenv files ending in `.local` are ignored by git, and can be used to override things locally.
+
+For `development` the build system will look for `.env` files in the following order:
+
+```sh
+.env.development.local
+.env.development
+.env.local
+.env
+```
+
+For `production` the build system will look for `.env` files in the following order:
+
+```sh
+.env.production.local
+.env.production
+.env.local
+.env
+```
+
+To override environment variables locally, you can make any of the following files:
+
+```
+.env.local
+.env.development.local
+.env.production.local
+```
+
+*NOTE: if you make changes to `.env` files you will need to restart any running `dev` commands*

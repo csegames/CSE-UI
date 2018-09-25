@@ -34,7 +34,7 @@ export const FeaturedContainer = styled('div')`
       rgba(16, 16, 16, 0.5) 10%,
       rgba(16, 16, 16, 1) 60%
     ),
-    url(${props => props.backgroundImage}) left top/80% no-repeat,
+    url(${(props: any) => props.backgroundImage}) left top/80% no-repeat,
     #101010;
 `;
 
@@ -87,7 +87,7 @@ export const FullContainer = styled('div')`
       rgba(16, 16, 16, 0.5) 10%,
       rgba(16, 16, 16, 1) 60%
     ),
-    url(${props => props.backgroundImage}) left top/80% no-repeat;
+    url(${(props: any) => props.backgroundImage}) left top/80% no-repeat;
 `;
 
 export const TitleContainer = styled('div')`

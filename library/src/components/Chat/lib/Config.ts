@@ -40,11 +40,11 @@ class Config {
     }
   }
 
-  public getPassword() : string {
+  public getPassword(): string {
     if (typeof this.password === 'function') {
-      this.password = (<() => string>this.password)();
+      this.password = (<() => string> this.password)();
     }
-    return <string>this.password;
+    return <string> this.password;
   }
 }
 

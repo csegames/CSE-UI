@@ -36,7 +36,7 @@ function run(emitter: EventEmitter, topic: string) {
         done();
       })
       .catch((error: Error) => {
-        info.error = { status: (<any>error).response.status, reason: error.message };
+        info.error = { status: (<any> error).response.status, reason: error.message };
         done();
       });
 
@@ -47,7 +47,7 @@ function run(emitter: EventEmitter, topic: string) {
         done();
       })
       .catch((error: Error) => {
-        info.error = { status: (<any>error).response.status, reason: error.message };
+        info.error = { status: (<any> error).response.status, reason: error.message };
         done();
       });
   }

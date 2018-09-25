@@ -27,7 +27,7 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
   public render() {
     if (this.props.message.text === null) return null;
     let element: JSX.Element = null;
-    const timestamp : JSX.Element = chatConfig.TIMESTAMPS ?
+    const timestamp: JSX.Element = chatConfig.TIMESTAMPS ?
       <span className='chat-timestamp'>{ this.timestamp(this.props.message) }</span> : null;
     const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
     switch (this.props.message.type) {

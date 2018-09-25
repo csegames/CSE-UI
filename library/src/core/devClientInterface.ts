@@ -185,7 +185,7 @@ const devClientInterface: clientInterface = {
   },
   OnDisplayModesChanged: (c: (displayModes: DisplayModeConfig[]) => void): void => {
   },
-  SetDisplayMode: (wantFullScreen: boolean, width: number, height:  number): void => {
+  SetDisplayMode: (wantFullScreen: boolean, width: number, height: number): void => {
   },
 
   /* Building | CUBE */
@@ -463,8 +463,8 @@ const devClientInterface: clientInterface = {
   : void => {},
 
   /* Target */
-  RequestFriendlyTargetEntityID: (entityID:string): void => {},
-  RequestEnemyTargetEntityID: (entityID:string): void => {},
+  RequestFriendlyTargetEntityID: (entityID: string): void => {},
+  RequestEnemyTargetEntityID: (entityID: string): void => {},
 
   /* Keybind API */
   OnKeybindRecorded: (callback: (keybind: Keybind) => void) => {},

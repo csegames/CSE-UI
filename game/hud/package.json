@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "rimraf typings && typings install && nps gql"
+    "prepare": "rimraf typings && typings install && nps gql"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -92,7 +92,7 @@
     "@types/d3-ease": "^1.0.7",
     "@types/enzyme": "2.8.0",
     "@types/isomorphic-fetch": "0.0.33",
-    "@types/lodash": "^4.14.66",
+    "@types/lodash": "4.14.66",
     "@types/object-assign": "4.0.30",
     "@types/object-hash": "^1.2.0",
     "@types/ol": "^4.6.1",
@@ -128,7 +128,6 @@
     "get-graphql-schema": "^2.1.1",
     "graphql-code-generator": "^0.10.7",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
-    "graphql-document-collector": "0.0.0",
     "graphql-tag": "^2.9.2",
     "handlebars-loader": "^1.7.0",
     "html-webpack-plugin": "^4.0.0-alpha",

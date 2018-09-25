@@ -621,7 +621,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 }
 
-const ConnectedCharacterCreation = connect(select)(CharacterCreation);
+const ConnectedCharacterCreation: React.ComponentType<any> = connect(select)(CharacterCreation);
 
 export interface ContainerProps {
   apiKey: string;

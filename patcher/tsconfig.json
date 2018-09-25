@@ -1,50 +1,37 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "noImplicitAny": false,
-        "noUnusedLocals": true,
-        "removeComments": false,
-        "outDir": "./tmp",
-        "sourceMap": false,
-        "jsx": "react",
-        "module": "commonjs",
-        "noImplicitUseStrict": true,
-        "alwaysStrict": false,
-        "skipLibCheck": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "forceConsistentCasingInFileNames": true
+  "compilerOptions": {
+    "target": "esnext",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": true,
+    "jsx": "preserve",
+    "module": "esnext",
+    "noImplicitUseStrict": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "gql/*": [ "gql/*" ],
+      "components/*": [ "components/*" ],
+      "*": [
+        "node_modules/*",
+        "types/*",
+        "../typings/globals/*"
+      ]
     },
-    "formatCodeOptions": {
-        "indentSize": 2,
-        "tabSize": 2,
-        "newLineCharacter": "\r\n",
-        "convertTabsToSpaces": true,
-        "insertSpaceAfterCommaDelimiter": true,
-        "insertSpaceAfterSemicolonInForStatements": true,
-        "insertSpaceBeforeAndAfterBinaryOperators": true,
-        "insertSpaceAfterKeywordsInControlFlowStatements": true,
-        "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-        "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-        "placeOpenBraceOnNewLineForFunctions": false,
-        "placeOpenBraceOnNewLineForControlBlocks": false
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "resolution": "typings",
-    "moduleResolution": "node",
-    "exclude": [
-      "typings/browser.d.ts",
-      "typings/browser",
-      "typings/main.d.ts",
-      "typings/main",
-      "tmp",
-      "tmpp",
-      "dist",
-      "publish",
-      "PatchClient",
-      "node_modules"
+    "plugins": [
+      { "name": "tslint-language-service"}
     ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+    "moduleResolution": "node",
+  },
+  "resolution": "typings",
+  "include": [
+    "src/**/*",
+  ]
 }

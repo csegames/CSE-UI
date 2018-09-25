@@ -18,8 +18,8 @@ const ResetAlertOverlay = styled('div')`
   background-color: rgba(0, 0, 0, 0.7);
   transition: opacity 0.3s;
   z-index: 10;
-  opacity: ${props => props.opacity};
-  visibility: ${props => props.visibility};
+  opacity: ${(props: any) => props.opacity};
+  visibility: ${(props: any) => props.visibility};
 `;
 
 const ResetAlertDialog = styled('div')`
@@ -40,8 +40,8 @@ const ResetAlertDialog = styled('div')`
   z-index: 11;
   transition: opacity 0.3s;
   border-radius: 7px;
-  opacity: ${props => props.opacity};
-  visibility: ${props => props.visibility};
+  opacity: ${(props: any) => props.opacity};
+  visibility: ${(props: any) => props.visibility};
 `;
 
 const AlertPrimaryText = styled('div')`

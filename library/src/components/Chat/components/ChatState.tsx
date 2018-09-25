@@ -6,10 +6,10 @@
 
 export class ChatState {
   public state: any = {};
-  public set = (name: string, value: any) : void => {
+  public set = (name: string, value: any): void => {
     this.state[name] = value;
   }
-  public get = (name: string) : any => {
+  public get = (name: string): any => {
     return this.state[name];
   }
 }

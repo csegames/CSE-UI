@@ -23,16 +23,16 @@ export class ChatConfig {
     this.refresh();
   }
 
-  public setNick = (nick :string): void => {
+  public setNick = (nick: string): void => {
     this.NICK = nick;
   }
 
-  public getHighlights = () : string[] => {
+  public getHighlights = (): string[] => {
     return this.HIGHLIGHTS.concat(this.NICK);
   }
 
-  public refresh = () : void => {
-    const LOAD = (option: any) : any => {
+  public refresh = (): void => {
+    const LOAD = (option: any): any => {
       return JSON.parse(localStorage.getItem(`${prefixes.display}${option.key}`));
     };
     this.SHOW_COLORS    = LOAD(display.showColors);

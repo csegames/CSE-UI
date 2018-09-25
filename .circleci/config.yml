@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.9.0
+    working_directory: ~/cu
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+            - ~/.cache/yarn
+      - restore_cache:
+          name: Restore Webpack Cache
+          keys:
+            - webpack-cache-{{ checksum "yarn.lock" }}
+      - run: yarn build:ci
+      - save_cache:
+          name: Save Webpack Cache
+          key: webpack-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/.cache
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

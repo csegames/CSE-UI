@@ -14,7 +14,7 @@ class BuildingBlock {
   public materialId: number;
   public materialTags: string[];
 
-  constructor(block = <BuildingBlock>{}) {
+  constructor(block = <BuildingBlock> {}) {
     this.id = block.id;
     this.icon = block.icon;
     this.shapeId = block.shapeId;

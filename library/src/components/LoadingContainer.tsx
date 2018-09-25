@@ -37,7 +37,7 @@ export class LoadingContainer extends React.Component<LoadingContainerProps, Loa
       hidden: true,
     };
   }
-  
+
   public render() {
     return this.props.loading && !this.state.hidden && (
       <Container>

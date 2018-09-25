@@ -110,12 +110,12 @@ class EventEmitter {
 
   /**
    * diagnostics() - dump data to console.log
-   */  
-  public diagnostics = () : void => {
+   */
+  public diagnostics = (): void => {
     for (const key in this.events) {
       if (this.events.hasOwnProperty(key)) {
-        const listeners : Listener[] = this.events[key];
-        listeners.forEach((listener: Listener, index: number) : void => {
+        const listeners: Listener[] = this.events[key];
+        listeners.forEach((listener: Listener, index: number): void => {
           if (listener) {
             console.log(
               'Event:'
@@ -132,7 +132,7 @@ class EventEmitter {
           }
         });
       }
-    } 
+    }
   }
 }
 

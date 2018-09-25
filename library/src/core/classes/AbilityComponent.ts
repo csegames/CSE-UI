@@ -53,14 +53,14 @@ export class AbilityComponent {
   public isHalted: boolean;
 
 
-  constructor(abilityComponent = <AbilityComponent>{}) {
+  constructor(abilityComponent = <AbilityComponent> {}) {
     this.id = abilityComponent.id || '';
     this.icon = abilityComponent.icon || '';
     this.cooldown = abilityComponent.cooldown || 0;
     this.duration = abilityComponent.duration || 0;
     this.name = abilityComponent.name || '';
     this.tooltip = abilityComponent.tooltip || '';
-    this.abilityTags = abilityComponent.abilityTags || <abilityTags[]>[];
+    this.abilityTags = abilityComponent.abilityTags || <abilityTags[]> [];
     // ....
 
   }

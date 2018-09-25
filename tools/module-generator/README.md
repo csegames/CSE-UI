@@ -6,17 +6,14 @@ cu-module-generator
 Install
 -------
 
-Clone the Repository
-
 ```sh
-git clone https://github.com/CUModSquad/cu-module-generator.git
-cd cu-module-generator
+cd tools/cu-module-generator
 ```
 
 Install Dependencies
 
 ```sh
-npm install
+yarn
 npm link
 ```
 

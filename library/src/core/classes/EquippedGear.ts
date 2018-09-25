@@ -16,8 +16,8 @@ class EquippedGear {
    */
   public items: Item[];
 
-  constructor(equippedgear: EquippedGear = <EquippedGear>{}) {
-    this.items = equippedgear.items || <Item[]>[];
+  constructor(equippedgear: EquippedGear = <EquippedGear> {}) {
+    this.items = equippedgear.items || <Item[]> [];
   }
 
   /**

@@ -6,7 +6,7 @@
  */
 
 enum vkKeyCodes {
-  VK_LBUTTON = 0x01, // Left mouse button 
+  VK_LBUTTON = 0x01, // Left mouse button
 
   VK_RBUTTON = 0x02, // Right mouse button
 

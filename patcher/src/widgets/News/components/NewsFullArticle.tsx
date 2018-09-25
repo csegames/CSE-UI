@@ -50,7 +50,7 @@ class NewsFullArticle extends React.Component<Props> {
     const date = getNewsDate(postItem);
     const { imgSrc } = getNewsImageInfo(postItem);
     return (
-      <FullContainer backgroundImage={imgSrc} onClick={e => e.stopPropagation()}>
+      <FullContainer backgroundImage={imgSrc} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         <CloseButton className='icon-close' onClick={this.props.onClose} />
         <TitleContainer>
           <Title dangerouslySetInnerHTML={{ __html: title }} />

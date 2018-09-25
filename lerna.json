@@ -1,0 +1,11 @@
+{
+  "lerna": "3.3.2",
+  "packages": [
+    "library",
+    "game/*",
+    "patcher"
+  ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "independent"
+}

@@ -16,8 +16,8 @@ const MenuContainer = styled('div')`
   width: 180px;
   z-index: 5;
   line-height: 20px;
-  top: ${props => props.topPos}px;
-  left: ${props => props.leftPos}px;
+  top: ${(props: any) => props.topPos}px;
+  left: ${(props: any) => props.leftPos}px;
   background: url(images/controller/dropdown-bg.png);
   border: 1px solid #525252;
   -webkit-mask-image: url(images/controller/dropdown-mask.png);
@@ -28,7 +28,7 @@ const MenuContainer = styled('div')`
 `;
 
 const ListItem = styled('div')`
-  pointer-events: ${props => props.visible ? 'all' : 'none'};
+  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
   cursor: pointer;
   text-decoration: none;
   display: block;
@@ -68,7 +68,7 @@ class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
             {this.props.serverForOptions.channelStatus === ChannelStatus.NotInstalled ? 'Install' : 'Uninstall'}
           </ListItem>
         </MenuContainer>
-        <OptionsMenuOverlay onClick={this.props.toggleMenu} />
+        <OptionsMenuOverlay onClick={this.props.toggleMenu as React.MouseEventHandler} />
       </div>
     );
   }
