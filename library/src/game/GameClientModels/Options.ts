@@ -34,13 +34,6 @@ export interface OptionsModel {
   getOptions: () => GameOption[];
 
   /**
-   * Sets a single Option value on the client
-   * @param {GameOption} option The option to set
-   * @return {Boolean} Whether or not the option was saved correctly
-   */
-  setOption: (option: GameOption) => boolean;
-
-  /**
    * Batch set of all passed in options
    * @param {GameOption[]} options The options to set
    * @return {Boolean} Whether or not the options all saved correctly
@@ -48,7 +41,7 @@ export interface OptionsModel {
   setOptions: (options: GameOption[]) => boolean;
 
   /**
-   * Test an option without saving it, this allows preview of changes without saving them immediately
+   * Test a single option without saving it, this allows preview of changes without saving them immediately
    * When called, this method should change the setting on the client without saving it to file or the server
    * @param {GameOption} option The option to test
    * @return {Boolean} Whether or not the option was valid to test
@@ -84,7 +77,6 @@ function initDefault(): Options {
     clearKeybind: noOp,
 
     getOptions: noOp,
-    setOption: noOp,
     setOptions: noOp,
     testOption: noOp,
     cancelTests: noOp,
@@ -106,6 +98,11 @@ export default function() {
     () => game.options,
     (model: OptionsModel) => __devGame.options = model as Options);
 
+}
+
+interface Resolution {
+  height: number;
+  width: number;
 }
 
 /**
@@ -146,8 +143,13 @@ interface RangeOption extends NumberOption {
 /**
  * Select option defines a set of values that the user can select from, typically displayed using a list select
  */
-interface SelectOption extends BaseOption<string | number> {
-  selectValues: [string | number];
+interface SelectOption extends BaseOption<SelectValue> {
+  selectValues: SelectValue[];
+}
+
+interface SelectValue {
+  value: number;
+  description: string | number;
 }
 
 type GameOption = BooleanOption | NumberOption | RangeOption | SelectOption;
