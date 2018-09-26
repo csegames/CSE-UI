@@ -64,7 +64,7 @@ export function initUpdatable(context: Updatable) {
       clear: noOp,
     };
   };
-} 
+}
 
 export function executeUpdateCallbacks(context: Updatable) {
   game.trigger(context.name, context);

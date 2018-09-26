@@ -14,18 +14,27 @@ import initLoadingState, { LoadingState } from './GameClientModels/LoadingState'
 import initPlayerState from './GameClientModels/PlayerState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
-import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
+import initOptions from './GameClientModels/Options';
 
 export default function(isAttached: boolean) {
-  
+  // if (engine.isAttached && window.gameClient) {
+  //   for (const key in window.gameClient) {
+  //     console.log(`defining property ${key} on game`);
+  //     Object.defineProperty(game, key, {
+  //       get: () => {
+  //         return window.gameClient[key];
+  //       },
+  //       enumerable: true,
+  //       configurable: true,
+  //     });
+  //   }
+  // }
 
   let oldEmitter = null;
-  if (__devGame) {
+  if (window.__devGame) {
     // This is a re-initialization, so try and maintain the same event emitter
     oldEmitter = __devGame.__eventEmitter;
   }
-  window.__devGame = game as InternalGameInterfaceExt;
-
   __devGame.ready = false;
   __devGame.isClientAttached = isAttached;
   __devGame.onReady = onReady;
@@ -48,10 +57,11 @@ export default function(isAttached: boolean) {
   initPlayerState();
   initEnemytargetState();
   initFriendlytargetState();
+  initOptions();
 
   // READY!
   __devGame.ready = true;
-  __devGame.trigger('ready');
+  game.trigger('ready');
 }
 
 // Augment Array with remove method.
@@ -68,6 +78,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
   const model: GameModel = {
     patchResourceChannel: 4,
     shardID: 1,
+    pktHash: '',
     accessToken: 'developer',
     webAPIHost: 'https://hatcheryapi.camelotunchained.com',
     serverHost: 'hatcheryd.camelotunchained.com',
@@ -80,7 +91,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     removeLight: noOp,
     sendSlashCommand: noOp,
   };
-  
+
   return withOverrides({
     ...model,
     ready: false,
@@ -93,7 +104,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
 /**
  * Override default GameModel out of context values with those supplied via a dev.config.js file
  * during in-browser development.
- * @param model The default GameModel 
+ * @param model The default GameModel
  */
 function withOverrides(model: Partial<GameInterface>) {
   const m = model;

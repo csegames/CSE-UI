@@ -8,11 +8,12 @@
 import initGameInterface, { initOutOfContextGame } from './initGameInterface';
 
 import { runMocks } from './mock';
-import { GameInterface } from './GameInterface';
+import { GameInterface, GameModel } from './GameInterface';
 import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
 
 declare global {
   interface Window {
+    gameClient: GameModel;
     game: GameInterface;
     __devGame: InternalGameInterfaceExt;
   }
@@ -24,9 +25,12 @@ declare global {
  */
 function initUI() {
 
-  if (!game) {
-    console.warn('Initializing UI for out of context execution.');
+  if (!window.game) {
     (window as any).game = initOutOfContextGame();
+  }
+
+  if (!window.__devGame) {
+    window.__devGame = window.game as InternalGameInterfaceExt;
   }
 
   if (game.ready) return;
@@ -40,9 +44,11 @@ function initUI() {
 }
 
 export default function() {
-  if (engine.isAttached) {
-    engine.on('Ready', initUI);
-  } else {
-    initUI();
+  if (engine.isAttached && !window.game) {
+    engine.on('Ready', () => {
+      __devGame.ready = false;
+      initUI();
+    });
   }
+  initUI();
 }

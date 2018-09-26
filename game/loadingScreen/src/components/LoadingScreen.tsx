@@ -150,4 +150,3 @@ export class LoadingScreen extends React.PureComponent<{}> {
     this.forceUpdate();
   }
 }
-

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'isomorphic-fetch';
+
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { has, uniqBy } from 'lodash';

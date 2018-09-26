@@ -32,14 +32,10 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:enable
 }
 
-const root = document.getElementById('hud');
-
-game.on('ready', () => {
-  ReactDom.render(
-    <ErrorBoundary outputErrorToConsole>
-        <ApolloProvider store={store} client={apollo}>
-        <HUD />
-      </ApolloProvider>
-    </ErrorBoundary>,
-    root);
-});
+ReactDom.render(
+  <ErrorBoundary outputErrorToConsole>
+      <ApolloProvider store={store} client={apollo}>
+      <HUD />
+    </ApolloProvider>
+  </ErrorBoundary>,
+  document.getElementById('hud'));

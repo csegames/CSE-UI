@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'isomorphic-fetch';
-
 import ResponseError from './ResponseError';
 
 export function checkStatus(response: any) {

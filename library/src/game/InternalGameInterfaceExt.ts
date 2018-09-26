@@ -9,7 +9,7 @@ import { EventEmitter } from '../utils/EventEmitter';
 
 /**
  * This is an Extension of GameInterface for internal library use, mocking, and direct client communication
- * 
+ *
  * **DO NOT USE OUTSIDE OF LIBRARY DEVELOPMENT**
  */
 export interface InternalGameInterfaceExt extends GameInterface {

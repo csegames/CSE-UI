@@ -41,7 +41,7 @@ export class ChatConfig {
     this.EMBED_VIDEOS   = LOAD(display.embedVideos);
     this.JOIN_PARTS     = LOAD(display.joinParts);
     this.TIMESTAMPS     = LOAD(display.timestamps);
-    if (game) game.trigger('chat-options-update', this);
+    if (game && game.trigger) game.trigger('chat-options-update', this);
   }
 }
 

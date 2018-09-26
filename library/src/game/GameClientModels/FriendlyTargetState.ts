@@ -56,7 +56,7 @@ function initDefault(): FriendlyTargetState {
  * Initialize this model with the game engine.
  */
 export default function() {
-  
+
   engineInit(
     FriendlyTarget_Update,
     () => __devGame.friendlyTargetState = initDefault(),

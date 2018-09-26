@@ -10,6 +10,7 @@ import { LoadingState } from './GameClientModels/LoadingState';
 import { SelfPlayerState } from './GameClientModels/PlayerState';
 import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
+import { Options } from './GameClientModels/Options';
 
 /**
  * Export all models
@@ -26,10 +27,10 @@ export {
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
  * client.
- * 
+ *
  * If game is not defined, then the page has not yet been initialized by the game engine or we are not running in the
  * context of the game client.
- * 
+ *
  * In the case that game is not defined, replacement methods are in place to mock Coherent engine support for functions
  * provided through this global api object.
  */
@@ -61,6 +62,12 @@ export interface GameModel {
    * Identifying number for the server shard this client is currently logged in to.
    */
   shardID: number;
+
+  /**
+   * Unique Network Identifier (I think??)
+   * TODO: Should we remove this?
+   */
+  pktHash: string;
 
   /**
    * Forces the client to reload the entire UI.
@@ -111,7 +118,7 @@ export interface GameModel {
  * to maintain a single primary interface for all interactions with the game client itself.
  */
 export interface GameInterface extends GameModel {
-  
+
   /**
    * Indicates whether the game interface has been initialized.
    */
@@ -139,7 +146,7 @@ export interface GameInterface extends GameModel {
   apiVersion: number;
 
   /**
-   * Subscribes a function to be executed when the game client wishes to begin writing a chat message. 
+   * Subscribes a function to be executed when the game client wishes to begin writing a chat message.
    * (this usually means the user pressed 'Enter' when not focusing the chat interface itself)
    * @param {(message: string) => any} callback callback function to be executed when the game client wished to being chat.
    */
@@ -175,9 +182,14 @@ export interface GameInterface extends GameModel {
   friendlyTargetState: FriendlyTargetState;
 
   /**
-   * The loading state for the client, will only ever be defined on the loading screen view.
+   * The loading state for the client.
    */
   loadingState: LoadingState;
+
+  /**
+   * The state of Options settings for the client.
+   */
+  options: Options;
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

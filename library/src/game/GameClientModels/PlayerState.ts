@@ -55,26 +55,26 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
    * This method will only respawn the player if they are in a respawnable state, eg. dead
    * @param {String - optional} spawnLocationID The identifier for a spawn location.
    */
-  readonly respawn: (spawnLocationID?: string) => void;
+  respawn: (spawnLocationID?: string) => void;
 
   /**
    * Request to equip an item.
    * @param {String} itemID The id of the item to equip.
    */
-  readonly equipItem: (itemID: string) => void;
+  equipItem: (itemID: string) => void;
 
   /**
    * Request to unequip an item.
    * @param {String} itemID The id of the item to unequip.
    */
-  readonly unequipItem: (itemID: string) => void;
+  unequipItem: (itemID: string) => void;
 }
 
 export type SelfPlayerState = SelfPlayerStateModel & Updatable;
 
 export const SelfPlayer_Update = 'selfPlayerState.update';
 
-function noOp(...args: any[]) {}
+function noOp(...args: any[]): any {}
 
 function initDefault(): SelfPlayerState {
   return {

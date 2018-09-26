@@ -97,7 +97,7 @@ export interface Engine {
 
   /**
    * Updates the text on all elements with the data-l10n-id attribute by calling engine.translate
-   */ 
+   */
   reloadLocalization(): void;
 
   /**

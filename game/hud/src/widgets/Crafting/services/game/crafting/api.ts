@@ -5,7 +5,7 @@
  */
 
 import { client, webAPI } from '@csegames/camelot-unchained';
-import { Promise } from 'es6-promise';
+
 
 export interface VoxResponse {
   Result: number;

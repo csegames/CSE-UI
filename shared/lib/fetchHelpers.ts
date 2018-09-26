@@ -5,7 +5,7 @@
  */
 
 import {Promise} from 'es6-promise';
-import 'isomorphic-fetch';
+
 
 import ResponseError from './ResponseError';
 

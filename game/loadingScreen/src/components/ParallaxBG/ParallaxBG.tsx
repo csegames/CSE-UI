@@ -46,7 +46,8 @@ export class ParallaxBG extends React.Component<ParallaxBGProps, {}> {
                   style={layer.hidden ? { opacity: 0 } : { opacity: 1 }}
                 />
               );
-            } else if (layer.resistance) {
+            }
+            if (layer.resistance) {
               return (
                 <div
                   key={i}

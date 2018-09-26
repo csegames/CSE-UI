@@ -91,7 +91,6 @@
     "@types/color": "^2.0.0",
     "@types/d3-ease": "^1.0.7",
     "@types/enzyme": "2.8.0",
-    "@types/isomorphic-fetch": "0.0.33",
     "@types/lodash": "4.14.66",
     "@types/object-assign": "4.0.30",
     "@types/object-hash": "^1.2.0",

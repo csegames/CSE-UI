@@ -55,7 +55,7 @@ function initDefault(): EnemyTargetState {
  * Initialize this model with the game engine.
  */
 export default function() {
-  
+
   engineInit(
     EnemyTarget_Update,
     () => __devGame.enemyTargetState = initDefault(),

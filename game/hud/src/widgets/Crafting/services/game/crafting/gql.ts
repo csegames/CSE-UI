@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'isomorphic-fetch';
-import { Promise } from 'es6-promise';
+
 import { client } from '@csegames/camelot-unchained';
 
 export function gql({ query, variables }: { query: string, variables?: any }) {
