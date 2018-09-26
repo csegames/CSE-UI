@@ -8,59 +8,40 @@ import { Callback } from './GameClientModels/_Updatable';
 import { createEventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface } from './GameInterface';
 
-import * as engineEvents from './engineEvents';
+import initEventForwarding from './engineEvents';
 
 import initLoadingState, { LoadingState } from './GameClientModels/LoadingState';
 import initPlayerState from './GameClientModels/PlayerState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
-import initOptions from './GameClientModels/Options';
 
 export default function(isAttached: boolean) {
-  // if (engine.isAttached && window.gameClient) {
-  //   for (const key in window.gameClient) {
-  //     console.log(`defining property ${key} on game`);
-  //     Object.defineProperty(game, key, {
-  //       get: () => {
-  //         return window.gameClient[key];
-  //       },
-  //       enumerable: true,
-  //       configurable: true,
-  //     });
-  //   }
-  // }
-
   let oldEmitter = null;
-  if (window.__devGame) {
+  if (window._devGame) {
     // This is a re-initialization, so try and maintain the same event emitter
-    oldEmitter = __devGame.__eventEmitter;
+    oldEmitter = _devGame._eventEmitter;
   }
-  __devGame.ready = false;
-  __devGame.isClientAttached = isAttached;
-  __devGame.onReady = onReady;
-
-  __devGame.onBeginChat = onBeginChat;
-  __devGame.onSystemMessage = onSystemMessage;
+  _devGame.ready = false;
+  _devGame.isClientAttached = isAttached;
+  _devGame.onReady = onReady;
 
   // EVENTS
-  __devGame.__eventEmitter = oldEmitter || createEventEmitter();
-  __devGame.on = events_on;
-  __devGame.once = events_once;
-  __devGame.trigger = events_trigger;
-  __devGame.off = events_off;
+  _devGame._eventEmitter = oldEmitter || createEventEmitter();
+  _devGame.on = events_on;
+  _devGame.once = events_once;
+  _devGame.trigger = events_trigger;
+  _devGame.off = events_off;
 
-  // init engine event forwarding
-  forwardEngineEvents();
+  initEventForwarding();
 
   // INIT MODELS
   initLoadingState();
   initPlayerState();
   initEnemytargetState();
   initFriendlytargetState();
-  initOptions();
 
   // READY!
-  __devGame.ready = true;
+  _devGame.ready = true;
   game.trigger('ready');
 }
 
@@ -90,6 +71,15 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     resetLights: noOp,
     removeLight: noOp,
     sendSlashCommand: noOp,
+
+    bindKey: noOp,
+    getKeybinds: noOp,
+    cancelTests: noOp,
+    clearKeybind: noOp,
+    getOptions: noOp,
+    resetOptions: noOp,
+    setOptions: noOp,
+    testOption: noOp,
   };
 
   return withOverrides({
@@ -115,7 +105,7 @@ function withOverrides(model: Partial<GameInterface>) {
   return m;
 }
 
-function noOp(...args: any[]) {}
+function noOp(...args: any[]): any {}
 
 /**
  * Removes the first instance of an element from an array.
@@ -142,41 +132,26 @@ function onReady(callback: () => any) {
   return events_on('ready', callback);
 }
 
-function onBeginChat(callback: (message: string) => any) {
-  return events_on(engineEvents.EE_BeginChat, callback);
-}
-
-function onSystemMessage(callback: (message: string) => any) {
-  return events_on(engineEvents.EE_SystemMessage, callback);
-}
-
-
 /* -------------------------------------------------- */
 /* EVENTS                                             */
 /* -------------------------------------------------- */
 
-function forwardEngineEvents() {
-  for (const key in engineEvents) {
-    engine.on(key, (...args: any[]) => game.trigger(key, ...args));
-  }
-}
-
 function events_on(name: string, callback: Callback) {
-  return __devGame.__eventEmitter.addListener(name, false, callback);
+  return _devGame._eventEmitter.addListener(name, false, callback);
 }
 
 function events_once(name: string, callback: Callback) {
-  return __devGame.__eventEmitter.addListener(name, true, callback);
+  return _devGame._eventEmitter.addListener(name, true, callback);
 }
 
 function events_trigger(name: string, ...args: any[]) {
-  __devGame.__eventEmitter.emit(name, ...args);
+  _devGame._eventEmitter.emit(name, ...args);
 }
 
 function events_off(handle: number | EventHandle) {
   if (typeof handle === 'number') {
-    __devGame.__eventEmitter.removeListener(handle);
+    _devGame._eventEmitter.removeListener(handle);
   } else {
-    __devGame.__eventEmitter.removeListener(handle.id);
+    _devGame._eventEmitter.removeListener(handle.id);
   }
 }

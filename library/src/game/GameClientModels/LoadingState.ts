@@ -33,8 +33,8 @@ export default function() {
 
   engineInit(
     LoadingState_Update,
-    () => __devGame.loadingState = initDefault(),
+    () => _devGame.loadingState = initDefault(),
     () => game.loadingState,
-    (model: LoadingStateModel) => __devGame.loadingState = model as LoadingState);
+    (model: LoadingStateModel) => _devGame.loadingState = model as LoadingState);
 
 }

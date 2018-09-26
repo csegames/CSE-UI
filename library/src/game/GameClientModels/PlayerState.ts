@@ -9,6 +9,8 @@ import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Upda
 
 import engineInit from './_Init';
 
+export const SelfPlayer_Update = 'selfPlayerState.update';
+
 /**
  * State data extension of PlayerStateModel for the player
  */
@@ -68,11 +70,24 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
    * @param {String} itemID The id of the item to unequip.
    */
   unequipItem: (itemID: string) => void;
+
+  /**
+   * Request the client target an entityID as a friendly target
+   * @param {String} entityID Hex entityID of a friendly entity to target
+   * @return {Boolean} whether or not the target request was successful
+   */
+  requestFriendlyTarget: (entityID: string) => boolean;
+
+  /**
+   * Request the client target an entityID as an enemy target
+   * @param {String} entityID Hex entityID of a enemy entity to target
+   * @return {Boolean} whether or not the target request was successful
+   */
+  requestEnemyTarget: (entityID: string) => boolean;
 }
 
 export type SelfPlayerState = SelfPlayerStateModel & Updatable;
 
-export const SelfPlayer_Update = 'selfPlayerState.update';
 
 function noOp(...args: any[]): any {}
 
@@ -93,6 +108,10 @@ function initDefault(): SelfPlayerState {
     equipItem: noOp,
     unequipItem: noOp,
 
+    requestFriendlyTarget: noOp,
+    requestEnemyTarget: noOp,
+
+    // Updatable
     isReady: false,
     name: SelfPlayer_Update,
     onUpdated: createDefaultOnUpdated(SelfPlayer_Update),
@@ -107,8 +126,8 @@ export default function() {
 
   engineInit(
     SelfPlayer_Update,
-    () => __devGame.selfPlayerState = initDefault(),
+    () => _devGame.selfPlayerState = initDefault(),
     () => game.selfPlayerState,
-    (model: SelfPlayerStateModel) => __devGame.selfPlayerState = model as SelfPlayerState);
+    (model: SelfPlayerStateModel) => _devGame.selfPlayerState = model as SelfPlayerState);
 
 }

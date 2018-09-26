@@ -132,13 +132,13 @@ function loadingRun() {
 
   if (game.loadingState.percent >= 100) {
     console.log('Loading mock complete.');
-    __devGame.loadingState.message = 'Complete';
+    _devGame.loadingState.message = 'Complete';
     engine.trigger(LoadingState_Update, game.loadingState);
     return;
   }
 
-  __devGame.loadingState.percent += 1;
-  __devGame.loadingState.message = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+  _devGame.loadingState.percent += 1;
+  _devGame.loadingState.message = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
   console.log(`Loading run - ${game.loadingState.percent}% ${game.loadingState.message}`);
   engine.trigger(LoadingState_Update, game.loadingState);
 

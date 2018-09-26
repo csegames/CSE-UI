@@ -15,7 +15,7 @@ declare global {
   interface Window {
     gameClient: GameModel;
     game: GameInterface;
-    __devGame: InternalGameInterfaceExt;
+    _devGame: InternalGameInterfaceExt;
   }
 }
 
@@ -29,8 +29,8 @@ function initUI() {
     (window as any).game = initOutOfContextGame();
   }
 
-  if (!window.__devGame) {
-    window.__devGame = window.game as InternalGameInterfaceExt;
+  if (!window._devGame) {
+    window._devGame = window.game as InternalGameInterfaceExt;
   }
 
   if (game.ready) return;
@@ -46,7 +46,7 @@ function initUI() {
 export default function() {
   if (engine.isAttached && !window.game) {
     engine.on('Ready', () => {
-      __devGame.ready = false;
+      _devGame.ready = false;
       initUI();
     });
   }

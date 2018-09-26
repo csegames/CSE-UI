@@ -509,25 +509,26 @@ interface clientInterface {
 
   OnAbilityRegistered(callback: (abilityID: string, cooldowns: string, duration: number, triggerTime: number) => void): void;
 
-  /* Console */
-
+  /* Console */ //
   OnConsoleText(c: (text: string) => void): void;
 
+  // NOT USED
   ConsoleCommand(body: string): void;
 
+  //
   SendSlashCommand(command: string): void;
 
-  /* Logging */
+  /* Logging */ // NOT USED
   OnLogMessage(c: (category: string, level: number, time: string,
                    process: number, thread: number, message: string) => void): void;
 
-  /* Combat Logs */
+  /* Combat Logs */ //
   OnCombatLogEvent(c: (events: any) => void): void;
 
-  /* Dev UI */
+  /* Dev UI */ //
   OnUpdateDevUI(c: (pageID: string, rootPage: any) => void): void;
 
-  /* Scenarios */
+  /* Scenarios */ //
   ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 
   /* Deployable Items */
@@ -542,11 +543,11 @@ interface clientInterface {
   SendCommitItemRequest(callback: (itemInstanceIDString: string, position: any, rotation: any,
     arbitraryString?: string) => void): void;
 
-  /* Target */
+  /* Target */ //
   RequestFriendlyTargetEntityID(entityID: string): void;
   RequestEnemyTargetEntityID(entityID: string): void;
 
-  /* Keybind API */
+  /* Keybind API */ //
   // new call from client -> UI
   OnKeybindRecorded(c: (keybind: Keybind) => void): void;
   OnAllKeybindsRequested(c: (bindables: Bindable[], bindings: Binding[]) => void): void;

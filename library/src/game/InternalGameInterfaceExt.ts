@@ -17,6 +17,6 @@ export interface InternalGameInterfaceExt extends GameInterface {
   /**
    * EventEmitter for managing CU event subscriptions.
    */
-  __eventEmitter: EventEmitter;
+  _eventEmitter: EventEmitter;
 
 }

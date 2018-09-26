@@ -37,7 +37,7 @@ type DeepImmutableObject<T> = {
 // Let anyone including this library know that game and __devGame are globally available.
 declare global {
   const game: DeepImmutable<GameInterface>;
-  const __devGame: InternalGameInterfaceExt;
+  const _devGame: InternalGameInterfaceExt;
   const engine: Engine;
 }
 

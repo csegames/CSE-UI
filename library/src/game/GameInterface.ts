@@ -10,7 +10,6 @@ import { LoadingState } from './GameClientModels/LoadingState';
 import { SelfPlayerState } from './GameClientModels/PlayerState';
 import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
-import { Options } from './GameClientModels/Options';
 
 /**
  * Export all models
@@ -111,6 +110,66 @@ export interface GameModel {
    * @param {String} command the command to send, does not include a preceding slash
    */
   sendSlashCommand: (command: string) => void;
+
+  /* -------------------------------------------------- */
+  /* OPTIONS                                            */
+  /* -------------------------------------------------- */
+  /**
+   * Gets all Keybinds from the client
+   */
+  getKeybinds: () => Keybind[];
+
+  /**
+   * Request that the client listen for a key combination to bind a key value to.
+   * @param {Number} id Identifier of the Keybinding to be bound
+   * @param {Number} index Index of binds to set / replace with the new binding
+   * @returns {Binding} The newly bound key information
+   */
+  bindKey: (id: number, index: number) => Binding;
+
+  /**
+   * Request that the client clear a particular key bind
+   * @param {Number} id Identifier of the Keybinding to be cleared
+   * @param {Number} index Index of bind to clear
+   */
+  clearKeybind: (id: number, index: number) => void;
+
+  /**
+   * Get all options from the client
+   */
+  getOptions: () => GameOption[];
+
+  /**
+   * Batch set of all passed in options
+   * @param {GameOption[]} options The options to set
+   * @return {Boolean} Whether or not the options all saved correctly
+   */
+  setOptions: (options: GameOption[]) => boolean;
+
+  /**
+   * Test a single option without saving it, this allows preview of changes without saving them immediately
+   * When called, this method should change the setting on the client without saving it to file or the server
+   * @param {GameOption} option The option to test
+   * @return {Boolean} Whether or not the option was valid to test
+   */
+  testOption: (option: GameOption) => boolean;
+
+  /**
+   * Cancels all option tests and revert to the currently saved options
+   */
+  cancelTests: () => void;
+
+  /**
+   * Restores options to their default values based on category
+   * @param {OptionCategory} The category of options to reset
+   */
+  resetOptions: (category: OptionCategory) => void;
+
+  /* -------------------------------------------------- */
+  /* DEPLOYABLE ITEMS                                   */
+  /* -------------------------------------------------- */
+
+  tryStartItemPlacement: (itemDefID: number, itemInstanceID: string) => boolean;
 }
 
 /**
@@ -148,7 +207,8 @@ export interface GameInterface extends GameModel {
   /**
    * Subscribes a function to be executed when the game client wishes to begin writing a chat message.
    * (this usually means the user pressed 'Enter' when not focusing the chat interface itself)
-   * @param {(message: string) => any} callback callback function to be executed when the game client wished to being chat.
+   * @param {(message: string) => any} callback callback function to be executed when the game client wished to being
+   * chat.
    */
   onBeginChat: (callback: (message: string) => any) => EventHandle;
 
@@ -159,6 +219,32 @@ export interface GameInterface extends GameModel {
    */
   onSystemMessage: (callback: (message: string) => any) => EventHandle;
 
+  /**
+   * Subscribes a function to be executed when a scenario round ends.
+   * @param {((scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean) => any} callback
+   * function to be executed when the scenario round ends
+   */
+  onScenarioRoundEnded: (callback: (scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean) => any)
+   => EventHandle;
+
+
+  /**
+   * Subscribe to client combat event messages
+   * @param {((events: CombatEvent[]) => any)} callback function to be executed when a combat event is received
+   */
+  onCombatEvent: (callback: (events: CombatEvent[]) => any) => EventHandle;
+
+  /**
+   * Subscribe to console text messages
+   * @param {(text: string) => any} callback function to be executed when a console text message is received
+   */
+  onConsoleText: (callback: (text: string) => any) => EventHandle;
+
+  /**
+   * Subscribe to DevUI updates
+   * @param {(id: string, rootPage: string) => any} callback function to be executed with a DevUI update
+   */
+  onUpdateDevUI: (callback: (id: string, rootPage: string) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
@@ -185,11 +271,6 @@ export interface GameInterface extends GameModel {
    * The loading state for the client.
    */
   loadingState: LoadingState;
-
-  /**
-   * The state of Options settings for the client.
-   */
-  options: Options;
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

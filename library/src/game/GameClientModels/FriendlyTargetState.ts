@@ -59,8 +59,8 @@ export default function() {
 
   engineInit(
     FriendlyTarget_Update,
-    () => __devGame.friendlyTargetState = initDefault(),
+    () => _devGame.friendlyTargetState = initDefault(),
     () => game.friendlyTargetState,
-    (model: FriendlyTargetPlayerStateModel) => __devGame.friendlyTargetState = model as FriendlyTargetState);
+    (model: FriendlyTargetPlayerStateModel) => _devGame.friendlyTargetState = model as FriendlyTargetState);
 
 }
