@@ -72,7 +72,7 @@ declare global {
     InternalKeyBind = 5, // deprecated
     Input = 6,
     ProxyClient = 7, // Not used by UI
-    Audio = 7,
+    Audio = 8,
     PhysicsServer = 9, // Not used by UI
   }
 
@@ -99,7 +99,7 @@ enum OptionCategory {
   InternalKeyBind = 5, // deprecated
   Input = 6,
   ProxyClient = 7, // Not used by UI
-  Audio = 7,
+  Audio = 8,
   PhysicsServer = 9, // Not used by UI
 }
 window.OptionCategory = OptionCategory;

@@ -81,7 +81,12 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     cancelTests: noOp,
     resetOptions: noOp,
 
-    tryStartItemPlacement: noOp,
+    startItemPlacement: noOp,
+    commitItemPlacement: noOp,
+    cancelItemPlacement: noOp,
+    resetItemPlacement: noOp,
+
+    dropItem: noOp,
   };
 
   return withOverrides({

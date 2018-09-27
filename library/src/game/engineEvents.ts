@@ -85,6 +85,16 @@ regMap[EE_OnUpdateDevUI] = 'onUpdateDevUI';
 export const EE_OnAnnouncement = 'announcement';
 regMap[EE_OnAnnouncement] = 'onAnnouncement';
 
+/**
+ * Client requests UI navigation for a specific target.
+ *
+ * Expected behavior: UI toggles element requested by the navigation trigger.
+ * eg. navigation request is to 'inventory.open', the UI will open the inventory if it is not open.
+ *
+ * @param {String} target Navigation target
+ */
+export const EE_OnNavigate = 'navigate';
+regMap[EE_OnNavigate] = 'onNavigate';
 
 /**
  * Initialize engine event forwarding

@@ -102,10 +102,11 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
   requestEnemyTarget: (entityID: string) => boolean;
 
   /**
-   * Play an emote by ID
-   * @param {Number} emote ID number of the emote to play
+   * Uses a skill
+   * @param {String} skillID ID of the skill to use
+   * @return {Success | Failure} whether the skill could be used
    */
-  playEmote: (emote: number) => void;
+  useSkill: (skillID: string) => Success | Failure;
 }
 
 export type SelfPlayerState = SelfPlayerStateModel & Updatable;
@@ -136,7 +137,7 @@ function initDefault(): SelfPlayerState {
     requestFriendlyTarget: noOp,
     requestEnemyTarget: noOp,
 
-    playEmote: noOp,
+    useSkill: noOp,
 
     // Updatable
     isReady: false,

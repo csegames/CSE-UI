@@ -277,64 +277,40 @@ interface clientInterface {
 
   OnSkillBarChanged(callback: (newSkillBar: ClientSkillBarItem[]) => void): void;
 
-  /* Abilities */
+  /* Abilities */ //
   Attack(abilityID: string): void;
-
   OnAbilityError(c: (message: string) => void): void;
 
-  /* HUD */
+  /* HUD */ //
   OnToggleHUDItem(c: (name: string) => void): void;
 
-  /* Equipped Gear */
-
+  /* Equipped Gear */ //
   SubscribeGear(subscribe: boolean): void;
-
   OnGearAdded(callback: (item: Item) => void): void;
-
   OnGearRemoved(callback: (itemID: string) => void): void;
-
   UnequipItem(itemID: string): void;
 
-  /* Inventory */
-
+  /* Inventory */ //
   SubscribeInventory(subscribe: boolean): void;
-
   OnInventoryAdded(callback: (item: Item) => void): void;
-
   OnInventoryRemoved(callback: (itemID: string) => void): void;
-
   EquipItem(itemID: string): void;
-
   DropItem(itemID: string): void;
 
-  /* Config */
-
+  /* Config */ //
   OnReceiveConfigVars(c: (configs: string) => void): void;
-
   OnReceiveConfigVar(c: (config: any) => void): void;
-
   OnConfigVarChanged(c: (isChangeSuccessful: boolean) => void): void;
-
   SaveConfigChanges(): void;
-
   OnSavedConfigChanges(c: () => void): void;
-
   RestoreConfigDefaults(tag: configGroup): void;
-
   ChangeConfigVar(variable: string, value: string): void;
-
   CancelChangeConfig(variable: string): void;
-
   CancelAllConfigChanges(tag: configGroup): void;
-
   GetConfigVars(tag: configGroup): void;
-
   GetConfigVar(variable: string): void;
-
   RequestDisplayModes(): void;
-
   OnDisplayModesChanged(c: (displayModes: DisplayModeConfig[]) => void): void;
-
   SetDisplayMode(wantFullScreen: boolean, width: number, height: number): void;
 
   /* Building | CUBE */
@@ -497,18 +473,12 @@ interface clientInterface {
   //
   ChangeZone(zoneID: number): void;
 
-  /* Ability Crafting */
-
+  /* Ability Crafting */ // NOT USED
   AbilityCreated(abilityID: string, primaryBaseComponentID: string, secondaryBaseComponentID: string, ability: string): void;
-
   OnAbilityCreated(callback: (abilityID: string, ability: string) => void): void;
-
   AbilityDeleted(abilityID: string): void;
-
   OnAbilityDeleted(callback: (abilityID: string) => void): void;
-
   RegisterAbility(abilityID: string, primaryBaseComponentID: string, secondaryBaseComponentID: string): void;
-
   OnAbilityRegistered(callback: (abilityID: string, cooldowns: string, duration: number, triggerTime: number) => void): void;
 
   /* Console */ //

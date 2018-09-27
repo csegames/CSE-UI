@@ -143,7 +143,7 @@ export interface GameModel {
    * @param {GameOption[]} options The options to set
    * @return {Boolean} Whether or not the options all saved correctly
    */
-  setOptions: (options: GameOption[]) => boolean;
+  setOptions: (options: GameOption[]) => Success | Failure & { failures: [GameOption & { reason: string }] };
 
   /**
    * Test a single option without saving it, this allows preview of changes without saving them immediately
@@ -151,7 +151,7 @@ export interface GameModel {
    * @param {GameOption} option The option to test
    * @return {Boolean} Whether or not the option was valid to test
    */
-  testOption: (option: GameOption) => boolean;
+  testOption: (option: GameOption) => Success | Failure;
 
   /**
    * Cancels all option tests and revert to the currently saved options
@@ -183,12 +183,12 @@ export interface GameModel {
    * @return
    * {
    *   success: true | false - whether or not the commit was successful
-   *   position: {Vec3f} - where the item was placed
-   *   rotation: {Euler3f} - orientation of the placed item
-   *   actionID: {String} - ID used in creating a move request
+   *   position?: {Vec3f} - where the item was placed
+   *   rotation?: {Euler3f} - orientation of the placed item
+   *   actionID?: {String} - ID used in creating a move request
    * }
    */
-  commitItemPlacement: () => { success: false } | { success: true, position: Vec3f; rotation: Euler3f, actionID: string };
+  commitItemPlacement: () => Failure | (Success & { position: Vec3f; rotation: Euler3f, actionID: string });
 
   /**
    * Reset active placed item's position and orientation
@@ -201,6 +201,14 @@ export interface GameModel {
    */
   cancelItemPlacement: () => boolean;
 
+  /**
+   * Drop an item on the ground.
+   * **NOTE** this notification is client-side only, UI must also send a move item request to the API server
+   * TODO: Make client do the move item request in response automatically
+   * @param {String} itemInstanceID Instance ID of the item to drop
+   * @return {Boolean} whether the client allowed the player to drop the item
+   */
+  dropItem: (itemInstanceID: string) => boolean;
 }
 
 /**
@@ -282,6 +290,16 @@ export interface GameInterface extends GameModel {
    * @param {(message: string) => any} callback function to be executed when an announcement is received
    */
   onAnnouncement: (callback: (message: string) => any) => EventHandle;
+
+  /**
+   * Client requests UI navigation for a specific target.
+   *
+   * Expected behavior: UI toggles element requested by the navigation trigger.
+   * eg. navigation request is to 'inventory.open', the UI will open the inventory if it is not open.
+   *
+   * @param {String} target Navigation target
+   */
+  onNavigate: (callback: (target: string) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
