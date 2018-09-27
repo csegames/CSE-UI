@@ -143,7 +143,7 @@ export interface GameModel {
    * @param {GameOption[]} options The options to set
    * @return {Boolean} Whether or not the options all saved correctly
    */
-  setOptions: (options: GameOption[]) => Success | Failure & { failures: [GameOption & { reason: string }] };
+  setOptions: (options: GameOption[]) => Success | Failure & { failures: [{ option: GameOption, reason: string }] };
 
   /**
    * Test a single option without saving it, this allows preview of changes without saving them immediately
