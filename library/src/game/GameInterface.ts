@@ -22,7 +22,6 @@ export {
   EnemyTargetState,
 };
 
-
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
  * client.
@@ -166,10 +165,42 @@ export interface GameModel {
   resetOptions: (category: OptionCategory) => void;
 
   /* -------------------------------------------------- */
-  /* DEPLOYABLE ITEMS                                   */
+  /* ITEM PLACEMENT API                                 */
   /* -------------------------------------------------- */
 
-  tryStartItemPlacement: (itemDefID: number, itemInstanceID: string) => boolean;
+  /**
+   * Action used to begin deployment of a deployable item
+   * @param {Number} itemDefID Item Definition ID of the deployable
+   * @param {String} itemInstanceID Instance ID of the deployable item
+   * @return {Boolean} whether or not placement actually started in the client.
+   */
+  startItemPlacement: (itemDefID: number, itemInstanceID: string) => boolean;
+
+  /**
+   * Commit active placed item with its current position & orientation
+   * *IMPORTANT* This item placement is client-side only! The UI must make a move item request with the returned
+   * positional data from this call to actually move the item to position on th e game server.
+   * @return
+   * {
+   *   success: true | false - whether or not the commit was successful
+   *   position: {Vec3f} - where the item was placed
+   *   rotation: {Euler3f} - orientation of the placed item
+   *   actionID: {String} - ID used in creating a move request
+   * }
+   */
+  commitItemPlacement: () => { success: false } | { success: true, position: Vec3f; rotation: Euler3f, actionID: string };
+
+  /**
+   * Reset active placed item's position and orientation
+   */
+  resetItemPlacement: () => void;
+
+  /**
+   * Cancel active placed item's placement
+   * @return {Boolean} whether or not the placement was cancelled
+   */
+  cancelItemPlacement: () => boolean;
+
 }
 
 /**
@@ -245,6 +276,12 @@ export interface GameInterface extends GameModel {
    * @param {(id: string, rootPage: string) => any} callback function to be executed with a DevUI update
    */
   onUpdateDevUI: (callback: (id: string, rootPage: string) => any) => EventHandle;
+
+  /**
+   * Subscribe to Announcements
+   * @param {(message: string) => any} callback function to be executed when an announcement is received
+   */
+  onAnnouncement: (callback: (message: string) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */

@@ -456,7 +456,7 @@ interface clientInterface {
 
 
   /* Announcement */
-
+  //
   OnAnnouncement(c: (message: string, type: number) => void): void;
 
   /* Plot */
@@ -464,35 +464,37 @@ interface clientInterface {
   OnPlotStatus(c: (plotOwned: boolean, permissions: number, charID: string, entityID: string) => void): void;
 
   /* EMOTE */
-
+  //
   Emote(emote: number): void;
 
 
   /* Character State Changes */
+  //
   OnPlayerStateChanged(c: (state: PlayerState) => void): void;
-
+  //
   OnEnemyTargetStateChanged(c: (state: AnyEntityState) => void): void;
-
+  //
   OnFriendlyTargetStateChanged(c: (state: AnyEntityState) => void): void;
 
 
   /* Character */
-
+  //
   OnCharacterZoneChanged(c: (zoneID: string) => void): void;
-
+  //
   OnCharacterCanReleaseControlChanged(c: (canRelease: boolean) => void): void;
 
   /* Chat */
-
+  //
   OnBeginChat(c: (commandMode: number, text: string) => void): void;
-
+  // NOT USED
   OnChat(c: (type: number, from: string, body: string, nick: string, iscse: boolean) => void): void;
-
+  // NOT USED
   SendChat(type: number, to: string, body: string): void;
 
-  // SendSlashCommand(command: string, parameters: string): void;
+  //
   Stuck(): void;
 
+  //
   ChangeZone(zoneID: number): void;
 
   /* Ability Crafting */
@@ -531,15 +533,11 @@ interface clientInterface {
   /* Scenarios */ //
   ScenarioRoundEnded(c: (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => void): void;
 
-  /* Deployable Items */
+  /* Deployable Items */ //
   StartPlacingItemByID(numbericItemDefID: number, itemInstanceID: string, extraParameters?: string): void;
-
   ResetItemPlacement(): void;
-
   CommitItemPlacement(): void;
-
   CancelItemPlacement(): void;
-
   SendCommitItemRequest(callback: (itemInstanceIDString: string, position: any, rotation: any,
     arbitraryString?: string) => void): void;
 

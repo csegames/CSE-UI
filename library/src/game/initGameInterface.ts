@@ -72,14 +72,16 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     removeLight: noOp,
     sendSlashCommand: noOp,
 
-    bindKey: noOp,
     getKeybinds: noOp,
-    cancelTests: noOp,
+    bindKey: noOp,
     clearKeybind: noOp,
     getOptions: noOp,
-    resetOptions: noOp,
     setOptions: noOp,
     testOption: noOp,
+    cancelTests: noOp,
+    resetOptions: noOp,
+
+    tryStartItemPlacement: noOp,
   };
 
   return withOverrides({

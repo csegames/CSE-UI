@@ -53,11 +53,27 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
   terrainCollisionAngle: number;
 
   /**
+   * Identifer of the zone the player is in
+   */
+  zoneID: string;
+
+  /**
    * Request to respawn at a specific location if a spawnLocationID is provided.
    * This method will only respawn the player if they are in a respawnable state, eg. dead
    * @param {String - optional} spawnLocationID The identifier for a spawn location.
    */
   respawn: (spawnLocationID?: string) => void;
+
+  /**
+   * Attempts to unstuck the player character by resetting the entity position to the default spawn point
+   */
+  stuck: () => void;
+
+  /**
+   * Request the player switch to a  new zone
+   * @param {Number} zoneID Identifer of the zone to change to
+   */
+  changeZone: (zoneID: number) => void;
 
   /**
    * Request to equip an item.
@@ -84,6 +100,12 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
    * @return {Boolean} whether or not the target request was successful
    */
   requestEnemyTarget: (entityID: string) => boolean;
+
+  /**
+   * Play an emote by ID
+   * @param {Number} emote ID number of the emote to play
+   */
+  playEmote: (emote: number) => void;
 }
 
 export type SelfPlayerState = SelfPlayerStateModel & Updatable;
@@ -103,13 +125,18 @@ function initDefault(): SelfPlayerState {
     horizontalSpeed: 0,
     downCollisionAngle: 0,
     terrainCollisionAngle: 0,
+    zoneID: 'unknown',
 
     respawn: noOp,
+    stuck: noOp,
+    changeZone: noOp,
     equipItem: noOp,
     unequipItem: noOp,
 
     requestFriendlyTarget: noOp,
     requestEnemyTarget: noOp,
+
+    playEmote: noOp,
 
     // Updatable
     isReady: false,

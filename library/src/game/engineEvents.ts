@@ -75,6 +75,16 @@ regMap[EE_ConsoleText] = 'onConsoleText';
 export const EE_OnUpdateDevUI = 'updateDevUI';
 regMap[EE_OnUpdateDevUI] = 'onUpdateDevUI';
 
+/**
+ * Announcement message sent from the game client
+ *
+ * Expected behavior: Displays announcement text on screen
+ *
+ * @param {String} message Text contents of the announcement to display
+ */
+export const EE_OnAnnouncement = 'announcement';
+regMap[EE_OnAnnouncement] = 'onAnnouncement';
+
 
 /**
  * Initialize engine event forwarding
