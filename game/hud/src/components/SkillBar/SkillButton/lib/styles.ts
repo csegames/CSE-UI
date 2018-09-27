@@ -5,7 +5,7 @@
  *
  */
 
-import { css, keyframes } from 'react-emotion';
+import { keyframes } from 'react-emotion';
 import { SkillStateStatusEnum, SkillStateReasonEnum, SkillStateTypeEnum } from '@csegames/camelot-unchained';
 import { SkillStateInfo } from './index';
 
@@ -107,7 +107,7 @@ const prepBgPulse = keyframes`
   }
 `;
 
-export const overlayPseudo = css`
+export const overlayPseudo = `
   content: "";
   border-radius: 100%;
   position: absolute;
@@ -122,14 +122,14 @@ export const overlayPseudo = css`
     1px 5px 30px -4px rgba(0, 0, 0, 1);
 `;
 
-const pulsingBackground = css`
+const pulsingBackground = `
   ${overlayPseudo};
   background: $runningColor;
   animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
   -webkit-animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
 `;
 
-export const ReadyState = css`
+export const ReadyState = `
   &:hover {
     filter: brightness(130%);
   }
@@ -151,7 +151,7 @@ export const ReadyState = css`
   }
 `;
 
-export const HeldState = css`
+export const HeldState = `
   &:before {
     ${pulsingBackground}
   }
@@ -164,7 +164,7 @@ export const HeldState = css`
   }
 `;
 
-export const QueuedState = css`
+export const QueuedState = `
   .inner,
   .outer,
   .inner-blur,
@@ -175,7 +175,7 @@ export const QueuedState = css`
   }
 `;
 
-export const RunningState = css`
+export const RunningState = `
   filter: brightness(125%);
   &:before {
     ${pulsingBackground}
@@ -195,7 +195,7 @@ export const RunningState = css`
   }
 `;
 
-export const CooldownState = css`
+export const CooldownState = `
   .inner,
   .inner-blur {
     stroke: ${skillStateColors.cooldownColor};
@@ -209,7 +209,7 @@ export const CooldownState = css`
   }
 `;
 
-export const ErrorState = css`
+export const ErrorState = `
   &:before {
     ${overlayPseudo}
     background: $errorColor;
@@ -228,7 +228,7 @@ export const ErrorState = css`
   }
 `;
 
-export const ChannelState = css`
+export const ChannelState = `
   filter: brightness(125%);
   .skill-timing-overlay {
     color: ${skillStateColors.channelColor};
@@ -251,7 +251,7 @@ export const ChannelState = css`
   }
 `;
 
-export const RecoveryState = css`
+export const RecoveryState = `
   .skill-timing-overlay {
     animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
     -webkit-animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
@@ -267,7 +267,7 @@ export const RecoveryState = css`
   }
 `;
 
-export const PreparationState = css`
+export const PreparationState = `
   filter: brightness(125%);
   .skill-timing-overlay {
     animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
@@ -289,7 +289,7 @@ export const PreparationState = css`
   }
 `;
 
-export const StartCastState = css`
+export const StartCastState = `
   filter: brightness(125%);
   &:active {
     filter: brightness(90%);
@@ -302,7 +302,7 @@ export const StartCastState = css`
   }
 `;
 
-export const HitState = css`
+export const HitState = `
   filter: brightness(125%);
   &:active {
     filter: brightness(90%);
@@ -319,14 +319,14 @@ export const HitState = css`
   }
 `;
 
-export const InterruptedState = css`
+export const InterruptedState = `
   &:before {
     ${overlayPseudo}
     background-color: rgba(255, 0, 0, 0.2);
   }
 `;
 
-export const ModalState = css`
+export const ModalState = `
   &:before {
     content: "";
     position: absolute;
@@ -354,7 +354,7 @@ export const ModalState = css`
   }
 `;
 
-export const UnavailableState = css`
+export const UnavailableState = `
   filter: brightness(70%);
   &:hover {
     filter: brightness(90%);
@@ -384,7 +384,7 @@ export const UnavailableState = css`
   }
 `;
 
-export const NoAmmoState = css`
+export const NoAmmoState = `
   &:before {
     background-image: url(images/skills/no-arrow.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
@@ -396,7 +396,7 @@ export const NoAmmoState = css`
   }
 `;
 
-export const NoWeaponState = css`
+export const NoWeaponState = `
   &:before {
     background-image: url(images/skills/no-weapon.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));

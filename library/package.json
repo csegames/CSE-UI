@@ -58,7 +58,7 @@
     "@types/graphql": "^0.13.4",
     "aphrodite": "^1.2.3",
     "cwd-in-node-modules": "^1.0.1",
-    "emotion": "^9.2.3",
+    "emotion": "^9.2.10",
     "es6-promise": "^3.0.2",
     "fuzzysearch": "^1.0.3",
     "graphql": "^0.13.2",
@@ -72,7 +72,7 @@
     "raven-js": "^3.27.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-emotion": "^9.2.3",
+    "react-emotion": "^9.2.10",
     "react-transition-group": "1.x",
     "redux-typed-modules": "^2.2.1"
   },

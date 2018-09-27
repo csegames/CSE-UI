@@ -5,14 +5,14 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import {
   CompassPOIProviderProps,
   CompassPOIPartial,
   withCompassPOIPartialDefaults,
 } from 'components/Compass/CompassPOIManager';
 
-const cardinalStyle = css`
+const cardinalStyle = `
   position: absolute;
   margin: 0;
   padding: 0;
