@@ -7,6 +7,10 @@
 import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 import engineInit from './_Init';
 
+/**
+ * These key actions are numbers that reference actions that can be used with game.triggerKeyAction as well as relate
+ * to the ID of a KeyBind
+ */
 export interface KeyActionsModel {
   // Cube
   CubeScreenShot: number;
