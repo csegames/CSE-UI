@@ -10,6 +10,7 @@ import { LoadingState } from './GameClientModels/LoadingState';
 import { SelfPlayerState } from './GameClientModels/PlayerState';
 import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
+import { Plot } from './GameClientModels/Plot';
 
 /**
  * Export all models
@@ -78,31 +79,11 @@ export interface GameModel {
   quit: () => void;
 
   /**
-   * Forcibly crashes the game client!
+   * Triggers a client Key action using the id of that KeyBind. Essentially, acts as if the client keybind was pressed.
+   * @param {Number} id Matches id in KeyBind for any action
+   * @return {Success | Failure}
    */
-  crashTheGame: () => void;
-
-  /**
-   * Drops a client-side only point light at the characters current origin position. (At the characters feet)
-   * This light exists only as long as the current client session and while they have the zone in which the light
-   * was dropped loaded.
-   * @param {Number (-10000 - 10000)} brightness How bright the light will be
-   * @param {Number (1 - 10000)} radius Radius, in meters, for the spherical dimensions of the point light
-   * @param {Number (0 - 255)} red The red byte value of the light's color.
-   * @param {Number (0 - 255)} green The green byte value of the light's color.
-   * @param {Number (0 - 255)} blue The blue byte value of the light's color.
-   */
-  dropLight: (brightness: number, radius: number, red: number, green: number, blue: number) => void;
-
-  /**
-   * Removes **all** drop lights from the game world.
-   */
-  resetLights: () => void;
-
-  /**
-   * Removes the last drop light added to the game world.
-   */
-  removeLight: () => void;
+  triggerKeyAction: (id: Number) => Success | Failure;
 
   /**
    * Sends a slash command to the game client.
@@ -110,9 +91,22 @@ export interface GameModel {
    */
   sendSlashCommand: (command: string) => void;
 
+  /**
+   * Take a screenshot
+   * @return {Screenshot} Image & Path to screenshot
+   */
+  takeScreenshot: () => Screenshot[];
+
+  /**
+   * Player a sound through the game audio engine
+   * @param {Number} soundID ID of the sound to play
+   */
+  playGameSound: (soundID: number) => void;
+
   /* -------------------------------------------------- */
   /* OPTIONS                                            */
   /* -------------------------------------------------- */
+
   /**
    * Gets all Keybinds from the client
    */
@@ -141,7 +135,7 @@ export interface GameModel {
   /**
    * Batch set of all passed in options
    * @param {GameOption[]} options The options to set
-   * @return {Boolean} Whether or not the options all saved correctly
+   * @return Whether or not the options all saved correctly
    */
   setOptions: (options: GameOption[]) => Success | Failure & { failures: [{ option: GameOption, reason: string }] };
 
@@ -149,7 +143,7 @@ export interface GameModel {
    * Test a single option without saving it, this allows preview of changes without saving them immediately
    * When called, this method should change the setting on the client without saving it to file or the server
    * @param {GameOption} option The option to test
-   * @return {Boolean} Whether or not the option was valid to test
+   * @return Whether or not the option was valid to test
    */
   testOption: (option: GameOption) => Success | Failure;
 
@@ -188,7 +182,7 @@ export interface GameModel {
    *   actionID?: {String} - ID used in creating a move request
    * }
    */
-  commitItemPlacement: () => Failure | (Success & { position: Vec3f; rotation: Euler3f, actionID: string });
+  commitItemPlacement: () => Failure | Success & { position: Vec3f; rotation: Euler3f, actionID: string };
 
   /**
    * Reset active placed item's position and orientation
@@ -201,14 +195,21 @@ export interface GameModel {
    */
   cancelItemPlacement: () => boolean;
 
+  /* -------------------------------------------------- */
+  /* DEV COMMANDS - HATCHERY ONLY                       */
+  /* -------------------------------------------------- */
+
   /**
-   * Drop an item on the ground.
-   * **NOTE** this notification is client-side only, UI must also send a move item request to the API server
-   * TODO: Make client do the move item request in response automatically
-   * @param {String} itemInstanceID Instance ID of the item to drop
-   * @return {Boolean} whether the client allowed the player to drop the item
+   * Start looping key trigger at a set interval
+   * @param {Number} id The key ID to trigger
+   * @param {Number} intervalMS The interval at which to trigger the key in milliseconds
    */
-  dropItem: (itemInstanceID: string) => boolean;
+  _cse_dev_beginTriggerKeyActionLoop: (id: number, intervalMS: number) => void;
+
+  /**
+   * Stops the currently active key trigger loop
+   */
+  _cse_dev_endTriggerKeyActionLoop: () => void;
 }
 
 /**
@@ -326,6 +327,11 @@ export interface GameInterface extends GameModel {
    * The loading state for the client.
    */
   loadingState: LoadingState;
+
+  /**
+   * The state of the plot your character is currently on
+   */
+  plot: Plot;
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

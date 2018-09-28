@@ -100,13 +100,6 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
    * @return {Boolean} whether or not the target request was successful
    */
   requestEnemyTarget: (entityID: string) => boolean;
-
-  /**
-   * Uses a skill
-   * @param {String} skillID ID of the skill to use
-   * @return {Success | Failure} whether the skill could be used
-   */
-  useSkill: (skillID: string) => Success | Failure;
 }
 
 export type SelfPlayerState = SelfPlayerStateModel & Updatable;
@@ -136,8 +129,6 @@ function initDefault(): SelfPlayerState {
 
     requestFriendlyTarget: noOp,
     requestEnemyTarget: noOp,
-
-    useSkill: noOp,
 
     // Updatable
     isReady: false,

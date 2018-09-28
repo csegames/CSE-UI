@@ -46,19 +46,9 @@ export interface PlayerStateModel extends EntityStateModel {
   // health per body part, ordered according to the bodyParts enum found
   // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
   // through webAPI definitions.ts file
-  health: {
-    current: number;
-    max: number;
-    wounds: number;
-  }[];
-  stamina: {
-    current: number;
-    max: number;
-  };
-  blood: {
-    current: number;
-    max: number;
-  };
+  health: Health[];
+  stamina: CurrentMax;
+  blood: CurrentMax;
   // An EntityState object for the entity this Character is in control of, ie
   // a siege engine, a vehicle, a creature, ect..
   controllingEntityState?: AnyEntityStateModel;

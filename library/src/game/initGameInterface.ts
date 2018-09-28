@@ -14,6 +14,7 @@ import initLoadingState, { LoadingState } from './GameClientModels/LoadingState'
 import initPlayerState from './GameClientModels/PlayerState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
+import initPlotState from './GameClientModels/Plot';
 
 export default function(isAttached: boolean) {
   let oldEmitter = null;
@@ -39,6 +40,7 @@ export default function(isAttached: boolean) {
   initPlayerState();
   initEnemytargetState();
   initFriendlytargetState();
+  initPlotState();
 
   // READY!
   _devGame.ready = true;
@@ -66,11 +68,10 @@ export function initOutOfContextGame(): Partial<GameInterface> {
 
     reloadUI: noOp,
     quit: noOp,
-    crashTheGame: noOp,
-    dropLight: noOp,
-    resetLights: noOp,
-    removeLight: noOp,
     sendSlashCommand: noOp,
+    triggerKeyAction: noOp,
+    playGameSound: noOp,
+    takeScreenshot: noOp,
 
     getKeybinds: noOp,
     bindKey: noOp,
@@ -86,7 +87,8 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     cancelItemPlacement: noOp,
     resetItemPlacement: noOp,
 
-    dropItem: noOp,
+    _cse_dev_beginTriggerKeyActionLoop: noOp,
+    _cse_dev_endTriggerKeyActionLoop: noOp,
   };
 
   return withOverrides({

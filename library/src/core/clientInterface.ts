@@ -224,52 +224,53 @@ interface clientInterface {
 
   // Everything else only exists after this.initialized is set and the
   // OnInitialized callbacks are invoked.
-
+  // USE SETTINGS
   FOV(degrees: number): void;
 
+  //
   DropLight(intensity: number, radius: number, red: number, green: number, blue: number): void;
-
   ResetLights(): void;
-
   RemoveLight(): void;
 
+  // NOT USED
   OnServerConnected(c: (isConnected: boolean) => void): number;
 
+  //
   PlaySoundEvent(id: number): void;
 
+  //
   ToggleCamera(): void;
 
+  //
   ReloadUI(name: string): void;
-
   ReloadAllUI(): void;
 
+  // NOT IN NEW UI
   OpenUI(name: string): void;
-
   CloseUI(name: string): void;
-
   HideUI(name: string): void;
-
   ShowUI(name: string): void;
 
+  //
   ToggleUIVisibility(name: string): void;
 
+  // NOT IN NEW UI
   RequestInputOwnership(): void;
-
   ReleaseInputOwnership(): void;
 
+  //
   Quit(): void;
 
+  //
   CrashTheGame(): void;
 
+  // NOT IN NEW UI
   OnOpenUI(callback: (name: string) => void): void;
-
   OnCloseUI(callback: (name: string) => void): void;
-
   OnShowUI(callback: (name: string) => void): void;
-
   OnHideUI(callback: (name: string) => void): void;
 
-  /* Respawn */
+  /* Respawn */ //
   Respawn(id: string): void;
 
   /* Skills */
@@ -313,130 +314,105 @@ interface clientInterface {
   OnDisplayModesChanged(c: (displayModes: DisplayModeConfig[]) => void): void;
   SetDisplayMode(wantFullScreen: boolean, width: number, height: number): void;
 
-  /* Building | CUBE */
+  /* Building | CUBE */ //
   OnBuildingModeChanged(c: (buildingMode: number) => void): void;
+  SetBuildingMode(newMode: number): void;
+  ToggleBuildingMode(): void;
 
+  //
   // responds with all blocks -- triggered by a call to 'RequestBlocks'
   OnReceiveBlocks(c: (buildingDict: any) => void): void;
+  BlockTypes(): void;
 
+  //
   // responds with all substance ids -- triggered by a call to 'RequestSubstances'
   OnReceiveSubstances(c: (substances: any) => void): void;
 
   // responds with block ids for a specific substance last passed into 'BlockIDsforSubstanceID'
+  //
   OnReceiveBlockIDs(c: (blockIds: [number]) => void): void;
-
+  //
   OnReceiveBlockTags(c: (blockID: number, tagDict: any) => void): void;
-
+  //
   OnReceiveScreenShot(c: (screenShotString: any) => void): void;
-
+  //
   OnCopyBlueprint(c: () => void): void;
-
   OnNewBlueprint(c: (index: number, name: string) => void): void;
-
   OnDownloadBlueprints(c: (charId: string) => void): void;
-
   OnUploadBlueprint(c: (charId: string, name: string, data: any) => void): void;
-
   OnBlueprintSelected(c: () => void): void;
-
-  OnBlockSelected(c: (blockID: number) => void): void;
-
-
-  ToggleBuildingMode(): void;
-
-  SetBuildingMode(newMode: number): void;
-
-  UndoCube(): void;
-
-  RedoCube(): void;
-
-  CommitBlock(): void;
-
-  CancelBlockPlacement(): void;
-
-  BlockRotateX(): void;
-
-  BlockRotateY(): void;
-
-  BlockRotateZ(): void;
-
-  BlockFlipX(): void;
-
-  BlockFlipY(): void;
-
-  BlockFlipZ(): void;
-
   CopyBlueprint(): void;
-
   PasteBlueprint(): void;
-
-  RemoveIslands(): void;
-
-  ApplyStability(): void;
-
-  TestStability(): void;
-
+  SelectBlueprint(index: number): void;
+  RequestBlueprints(): void;
+  SaveBlueprint(name: string): void;
+  DownloadBlueprints(): void;
+  ReceiveBlueprintFromServer(name: string, cellData: any, id: string): void;
+  DeleteLocalBlueprint(name: string): void;
   SaveBuilding(): void;
 
-  ToggleStabilityLoop(): void;
-
-  RequestBlocks(): void;
-
-  RequestSubstances(): void;
-
-  BlockIDsforSubstanceID(substanceID: number): void;
-
-  RequestBlockTags(blockID: number): void;
-
+  //
+  OnBlockSelected(c: (blockID: number) => void): void;
   ChangeBlockType(newType: number): void;
 
-  OpenScreenshotShare(): void;
+  //
+  UndoCube(): void;
+  RedoCube(): void;
+  //
+  CommitBlock(): void;
+  CancelBlockPlacement(): void;
+  //
+  BlockRotateX(): void;
+  BlockRotateY(): void;
+  BlockRotateZ(): void;
+  //
+  BlockFlipX(): void;
+  BlockFlipY(): void;
+  BlockFlipZ(): void;
 
+  //
+  RemoveIslands(): void;
+  ApplyStability(): void;
+  TestStability(): void;
+  ToggleStabilityLoop(): void;
+
+  //
+  RequestBlocks(): void;
+  RequestSubstances(): void;
+  BlockIDsforSubstanceID(substanceID: number): void;
+  RequestBlockTags(blockID: number): void;
+
+  // NOT USED
+  OpenScreenshotShare(): void;
+  //
   TakeScreenshot(): void;
 
+  //
   CountBlocks(): void;
 
+  //
   ReplaceSubstance(block1: number, block2: number): void;
-
   ReplaceSelectedSubstance(block1: number, block2: number): void;
-
   ReplaceShapes(shape1: number, shape2: number): void;
-
   ReplaceSelectedShapes(shape1: number, shape2: number): void;
 
+  //
   RotateX(): void;
-
   RotateY(): void;
-
   RotateZ(): void;
 
+  // NOT USED
   SnapMode(): void;
 
-  BlockTypes(): void;
-
+  //
   LoopAbility(hotbarIndex: number, interval: number): void;
-
   EndLoopAbility(): void;
-
-  SelectBlueprint(index: number): void;
-
-  RequestBlueprints(): void;
-
-  SaveBlueprint(name: string): void;
-
-  DownloadBlueprints(): void;
-
-  ReceiveBlueprintFromServer(name: string, cellData: any, id: string): void;
-
-  DeleteLocalBlueprint(name: string): void;
-
 
   /* Announcement */
   //
   OnAnnouncement(c: (message: string, type: number) => void): void;
 
-  /* Plot */
-
+  /* Plot */ //
   OnPlotStatus(c: (plotOwned: boolean, permissions: number, charID: string, entityID: string) => void): void;
 
   /* EMOTE */
