@@ -183,7 +183,15 @@ export interface GameModel {
    *   actionID?: {String} - ID used in creating a move request
    * }
    */
-  commitItemPlacement: () => Failure | Success & { position: Vec3f; rotation: Euler3f, actionID: string };
+  commitItemPlacement: () => Failure | Success & {
+    placement: {
+      itemDefID: number;
+      itemInstanceID: string;
+      position: Vec3f;
+      rotation: Euler3f,
+      actionID: string
+    },
+  };
 
   /**
    * Reset active placed item's position and orientation
