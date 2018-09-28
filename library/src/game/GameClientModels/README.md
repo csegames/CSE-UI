@@ -40,7 +40,7 @@ The file structure for defining a Game Client Model in this library is as follow
 3. An interface definition which describes the model as received from the game client that is a Pascal case named & appended with 'Model'.
 
 ```typescript
-export interface \<ModelName\>Model {
+export interface <ModelName>Model {
   valueOne: string;
   methodProperty: () => string;
 }
@@ -49,19 +49,19 @@ export interface \<ModelName\>Model {
 4. A type definition / interface to describe the structure of this Model as represented to the UI. This contains the Model from the client plus any additional properties as required by the game client. *Note: All Singleton models will extend the Updatable interface*
 
 ```typescript
-type \<ModelName\> = \<ModelName\>Model & Updatable;
+type <ModelName> = <ModelName>Model & Updatable;
 ```
 
 5. The update event name string;
 
 ```typescript
-export const \<ModelName\>_Update = '\<modelName\>.update';
+export const <ModelName>_Update = '\<modelName\>.update';
 ```
 
 6. Default initialization method. This method will be used to initialize a default version of this model when one has not yet been provided by the client.
 
 ```typescript
-function initDefault(): \<ModelName\> {
+function initDefault(): <ModelName> {
   return {
     valueOne: '',
     methodProperty: (...args: any[]) => '',
@@ -74,9 +74,9 @@ function initDefault(): \<ModelName\> {
 ```typescript
 export default function() {
   engineInit(
-    \<ModelName\>_Update,
-    () => _devGame.\<modelName\> = initDefault(),
-    () => game.\<modelName\>,
-    (model: \<ModelName\>Model) => _devGame.\<modelName\> = model as \<ModelName\>);
+    <ModelName>_Update,
+    () => _devGame.<modelName> = initDefault(),
+    () => game.<modelName>,
+    (model: <ModelName>Model) => _devGame.<modelName> = model as <ModelName>);
 }
 ```
