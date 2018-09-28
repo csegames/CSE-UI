@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import client from '../core/client';
 import { eventMapper, EventMap } from '../utils/eventMapper';
 import * as Raven from 'raven-js';
 
@@ -113,7 +112,7 @@ export class SignalRHub {
     hubName: string,
     eventMaps: EventMap[],
     options?: SignalRHubOptions,
-    signalRHost: string = client.signalRHost,
+    signalRHost: string = game.signalRHost(),
   ) {
     this.hubName = hubName;
     this.eventMaps = eventMaps;
@@ -206,7 +205,7 @@ export class SignalRHub {
       // hoook up error handler
       this.conn.error(this.internalOnError);
 
-      if (client.debug) {
+      if (game.debug) {
         this.conn.logging = true;
       }
 
@@ -247,7 +246,7 @@ export class SignalRHub {
     this.fireEvent('received', data);
   }
 
-  // Raised when the client detecs a slow or frequently dropping connection
+  // Raised when the game detecs a slow or frequently dropping connection
   private internalOnConnectionSlow = () => {
     this.fireEvent('connectionslow');
   }

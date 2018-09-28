@@ -25,10 +25,13 @@ export default function(isAttached: boolean) {
   }
   _devGame.ready = false;
   _devGame.isClientAttached = isAttached;
-  _devGame.onReady = onReady;
+
+  _devGame.signalRHost = signalRHost;
+
 
   // EVENTS
   _devGame._eventEmitter = oldEmitter || createEventEmitter();
+  _devGame.onReady = onReady;
   _devGame.on = events_on;
   _devGame.once = events_once;
   _devGame.trigger = events_trigger;
@@ -47,13 +50,6 @@ export default function(isAttached: boolean) {
   // READY!
   _devGame.ready = true;
   game.trigger('ready');
-}
-
-// Augment Array with remove method.
-declare global {
-  interface Array<T> {
-    remove(element: T): T[];
-  }
 }
 
 /**
@@ -118,6 +114,13 @@ function withOverrides(model: Partial<GameInterface>) {
 
 function noOp(...args: any[]): any {}
 
+// Augment Array with remove method.
+declare global {
+  interface Array<T> {
+    remove(element: T): T[];
+  }
+}
+
 /**
  * Removes the first instance of an element from an array.
  * @param {T} element The element to remove from the Array
@@ -141,6 +144,10 @@ function onReady(callback: () => any) {
   }
 
   return events_on('ready', callback);
+}
+
+function signalRHost() {
+  return game.webAPIHost + '/signalr';
 }
 
 /* -------------------------------------------------- */

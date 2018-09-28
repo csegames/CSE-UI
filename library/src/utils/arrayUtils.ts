@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { clone } from './objectUtils';
-
 export function cloneArray<T>(array: T[]): T[] {
   return array.slice();
 }

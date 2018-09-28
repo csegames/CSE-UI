@@ -246,6 +246,12 @@ export interface GameInterface extends GameModel {
   apiVersion: number;
 
   /**
+   * Get the signalR host
+   * essentially, just game.webAPIHost + '/signalr'
+   */
+  signalRHost: () => string;
+
+  /**
    * Subscribes a function to be executed when the game client wishes to begin writing a chat message.
    * (this usually means the user pressed 'Enter' when not focusing the chat interface itself)
    * @param {(message: string) => any} callback callback function to be executed when the game client wished to being

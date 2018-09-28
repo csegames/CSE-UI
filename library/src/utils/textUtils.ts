@@ -5,12 +5,21 @@
  *
  */
 
+export {};
+
+declare global {
+  interface String {
+    toTitleCase(): string;
+    toSentenceCase(): string;
+  }
+}
+
 // This function will capitalize the beginning of each word and put a space between them.
 // Ex.) forearmLeft -> Forearm Left
-export const toTitleCase = (text: string) => {
-  if (text) return text.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+String.prototype.toTitleCase = function() {
+  return this.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
 };
 
-export const toSentenceCase = (text: string) => {
-  if (text) return text.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, (str) => { return str.toUpperCase(); });
+String.prototype.toSentenceCase = function() {
+  return this.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, (str) => { return str.toUpperCase(); });
 };
