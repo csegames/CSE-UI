@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import client from '../core/client';
 
 export interface ErrorBoundaryProps {
   renderError?: (error: Error, info: { componentStack: string }) => (JSX.Element | React.ReactNode);
@@ -37,8 +36,8 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
     if (this.props.onError) {
       this.props.onError(error, info);
     }
-    if (this.props.reloadUIOnError && !client.debug) {
-      client.ReloadAllUI();
+    if (this.props.reloadUIOnError && !game.debug) {
+      game.reloadUI();
     }
     this.setState({
       error,
@@ -57,6 +56,6 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
   }
 
   private onReloadUI = () => {
-    client.ReloadAllUI();
+    game.reloadUI();
   }
 }

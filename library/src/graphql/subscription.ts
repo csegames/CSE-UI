@@ -5,10 +5,7 @@
  */
 
 import * as _ from 'lodash';
-import { withDefaults } from '../utils/withDefaults';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
-import { ObjectMap } from '../utils/ObjectMap';
-import client from '../core/client';
 import { getBooleanEnv } from '../utils/env';
 // issues with graphql .mjs file usage
 // tslint:disable-next-line
@@ -23,11 +20,11 @@ export interface Options<DataType> extends WebSocketOptions {
   onClosed: () => void;
 }
 
-const subscriptionUrl =  `${client.apiHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
+const subscriptionUrl =  `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
 const subscriptionInitPayload = {
-  shardID: client.shardID,
-  token: client.accessToken,
-  characterID: client.characterID,
+  shardID: game.shardID,
+  token: game.accessToken,
+  characterID: game.selfPlayerState.characterID,
 };
 
 export const defaultSubscriptionOpts: Options<any> = {
@@ -45,13 +42,13 @@ export const defaultSubscriptionOpts: Options<any> = {
 
 // Follows Apollo GraphQL Protocol -- https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
 
-// Client -> Server
+// Game -> Server
 const GQL_CONNECTION_INIT = 'connection_init';
 const GQL_START = 'start';
 const GQL_STOP = 'stop';
 const GQL_CONNECTION_TERMINATE = 'connection_terminate';
 
-// Server -> Client
+// Server -> Game
 const GQL_CONNECTION_ACK = 'connection_ack';
 const GQL_CONNECTION_ERROR = 'connection_error';
 // NOTE: The keep alive message type does not follow the standard due to connection optimizations
@@ -87,7 +84,7 @@ export interface SubscriptionHandle {
 
 export interface Subscription {
   query: string;
-  variables?: ObjectMap<any>;
+  variables?: Dictionary<any>;
   operationName?: string;
 }
 
@@ -109,8 +106,8 @@ function getFrameIdentifier(frame: OperationMessage | string) {
 export class SubscriptionManager {
   private socket: ReconnectingWebSocket;
   private idCounter = 0;
-  private initPayload: ObjectMap<any>;
-  private subscriptions: ObjectMap<SubscriptionHandle> = {};
+  private initPayload: Dictionary<any>;
+  private subscriptions: Dictionary<SubscriptionHandle> = {};
   private keepAliveTimeoutHandler: number;
   private debug: boolean = false;
   private messageQueue: string[] = [];

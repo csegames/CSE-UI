@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { clone, merge, Dictionary } from './objectUtils';
-
 export interface AsyncAction<T> {
   (dispatch: (action: T | AsyncAction<T>) => any, getState?: () => any): void;
 }
