@@ -11,6 +11,7 @@ import { SelfPlayerState } from './GameClientModels/PlayerState';
 import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
 import { Plot } from './GameClientModels/Plot';
+import { KeyActions } from './GameClientModels/KeyActions';
 
 /**
  * Export all models
@@ -332,6 +333,11 @@ export interface GameInterface extends GameModel {
    * The state of the plot your character is currently on
    */
   plot: Plot;
+
+  /**
+   * KeyActions are a mapping of key actions to key action id numbers
+   */
+  keyActions: KeyActions;
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

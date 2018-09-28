@@ -15,6 +15,7 @@ import initPlayerState from './GameClientModels/PlayerState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
 import initPlotState from './GameClientModels/Plot';
+import initKeyActions from './GameClientModels/KeyActions';
 
 export default function(isAttached: boolean) {
   let oldEmitter = null;
@@ -41,6 +42,7 @@ export default function(isAttached: boolean) {
   initEnemytargetState();
   initFriendlytargetState();
   initPlotState();
+  initKeyActions();
 
   // READY!
   _devGame.ready = true;
