@@ -84,6 +84,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     commitItemPlacement: noOp,
     cancelItemPlacement: noOp,
     resetItemPlacement: noOp,
+    changeItemPlacementMode: noOp,
 
     _cse_dev_beginTriggerKeyActionLoop: noOp,
     _cse_dev_endTriggerKeyActionLoop: noOp,

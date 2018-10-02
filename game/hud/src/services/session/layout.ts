@@ -34,6 +34,7 @@ import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
 import GameMenu from './layoutItems/GameMenu';
 // import Settings from './layoutItems/Settings';
 import GameInfo from './layoutItems/GameInfo';
+import ItemPlacementModeManager from './layoutItems/ItemPlacementModeManager';
 // import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
@@ -179,6 +180,9 @@ function initialState(): LayoutState {
     // [
     //   'skillqueue', cloneDeep(SkillQueue),
     // ],
+    [
+      'itemPlacementModeManager', cloneDeep(ItemPlacementModeManager),
+    ],
     [
       'gameInfo', cloneDeep(GameInfo),
     ],
@@ -407,7 +411,6 @@ export const resize = module.createAction({
     return {};
   },
   reducer: (s, a) => {
-    ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
     let onScreenWidgets = Map<string, Widget<any>>();
     s.widgets.forEach((value, key) => {
       onScreenWidgets = onScreenWidgets.set(key, {

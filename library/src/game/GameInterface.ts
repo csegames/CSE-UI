@@ -208,6 +208,12 @@ export interface GameModel {
    */
   cancelItemPlacement: () => boolean;
 
+  /**
+   * Change item placement mode to inputted mode
+   * @param {Number} itemPlacementTransformMode The id of placement mode
+   */
+  changeItemPlacementMode: (itemPlacementTransformMode: ItemPlacementTransformMode) => void;
+
   /* -------------------------------------------------- */
   /* DEV COMMANDS - HATCHERY ONLY                       */
   /* -------------------------------------------------- */
