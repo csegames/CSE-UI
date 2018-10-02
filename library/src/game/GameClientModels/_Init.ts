@@ -27,7 +27,7 @@ export default function<TModel, TType extends Updatable>(
       initAsDefault();
     } else if (!propertyAccessor().isReady) {
       propertySetter(model);
-      propertyAccessor()._name = name;
+      propertyAccessor().updateEventName = name;
       initUpdatable(propertyAccessor());
     }
     executeUpdateCallbacks(propertyAccessor());

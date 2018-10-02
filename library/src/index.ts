@@ -12,48 +12,30 @@ import initializeGame from './game';
 initializeGame();
 
 export * from './game';
+export * from './components';
+export * from './slashCommands';
 
-// web api
+
+// The below exports are available on the global game object. They are exported here so they may be used standalone for
+// non game applications as well.
+
 import * as webAPI from './webAPI';
-
 export {
   webAPI,
 };
 
-// ------------------------------------------------------ //
-// ------------------------------------------------------ //
-// OLD STUFF - TODO: Audit and update / remove excess     //
-// ------------------------------------------------------ //
-// ------------------------------------------------------ //
-
 import * as signalr from './signalR';
+export {
+  signalr,
+};
 
-export * from './slashCommands';
-import * as slashCommandsExports from './slashCommands';
+import * as ql from './graphql';
+export {
+  ql,
+};
 
 // utils
 import * as utils from './utils';
-
-// graphql
-import * as ql from './graphql';
-
-
-// components
-import * as components from './components';
-
-export * from './components';
-
-export default {
-  components,
-  ...slashCommandsExports,
-};
-
 export {
-  // cu
   utils,
-
-  // misc
-  signalr,
-
-  ql,
 };

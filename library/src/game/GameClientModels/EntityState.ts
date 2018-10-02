@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { initUpdatable, Updatable, executeUpdateCallbacks } from './_Updatable';
+
 export interface EntityStateModel {
   faction: Faction;
   entityID: string;
@@ -24,6 +26,12 @@ export interface EntityStateModel {
     id: number;
     duration: number;
   }[];
+
+  // health per body part, ordered according to the bodyParts enum found
+  // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
+  // through webAPI definitions.ts file
+  // Nonplayers are an aray of size 1 for a single health bar
+  health: Health[];
 }
 
 function defaultEntityStateModel(): EntityStateModel {
@@ -32,6 +40,7 @@ function defaultEntityStateModel(): EntityStateModel {
     entityID: '',
     name: 'unknown',
     isAlive: false,
+    health: [defaultHealth()],
   };
 }
 
@@ -41,14 +50,12 @@ export interface PlayerStateModel extends EntityStateModel {
   race: Race;
   gender: Gender;
   class: Archetype;
-  // health per body part, ordered according to the bodyParts enum found
-  // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
-  // through webAPI definitions.ts file
-  health: Health[];
   stamina: CurrentMax;
   blood: CurrentMax;
-  // An EntityID for the entity this Character is in control of, ie
-  // a siege engine, a vehicle, a creature, ect..
+   /**
+   * EntityID of an entity this Player is controlling, if any.
+   * ie. a siege engine, vehicle, creature ect...
+   */
   controlledEntityID?: string;
 }
 
@@ -82,18 +89,34 @@ export function defaultPlayerStateModel(): PlayerStateModel {
 
 export interface SiegeStateModel extends EntityStateModel {
   type: 'siege';
-  health: {
-    current: number;
-    max: number;
-  };
+  /**
+   * EntityID of the entity controlling this Siege Engine
+   */
+  controllingEntityID?: string;
 }
 
-export type AnyEntityStateModel = Readonly<PlayerStateModel> | Readonly<SiegeStateModel>;
+export type AnyEntityState = (Readonly<PlayerStateModel> | Readonly<SiegeStateModel>) & Updatable;
 
 export function defaultSiegeStateModel(): SiegeStateModel {
   return {
     ...defaultEntityStateModel(),
     type: 'siege',
-    health: defaultHealth(),
   };
+}
+
+export const EntityState_Update = 'entityState.update';
+
+function onReceiveEntityStateUpdate(state: AnyEntityState) {
+
+  if (!_devGame.entities[state.entityID]) {
+    _devGame.entities[state.entityID] = state;
+    _devGame.entities[state.entityID]._name = name;
+    // init Updatable.
+    initUpdatable(state);
+  }
+  executeUpdateCallbacks(_devGame.entities[state.entityID]);
+}
+
+export default function() {
+  engine.on(EntityState_Update, onReceiveEntityStateUpdate);
 }

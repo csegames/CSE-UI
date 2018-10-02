@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { PlayerStateModel, defaultPlayerStateModel } from './_EntityState';
+import { PlayerStateModel, defaultPlayerStateModel } from './EntityState';
 import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 
 import engineInit from './_Init';
@@ -132,7 +132,7 @@ function initDefault(): SelfPlayerState {
 
     // Updatable
     isReady: false,
-    _name: SelfPlayer_Update,
+    updateEventName: SelfPlayer_Update,
     onUpdated: createDefaultOnUpdated(SelfPlayer_Update),
     onReady: createDefaultOnReady(SelfPlayer_Update),
   };

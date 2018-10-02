@@ -12,7 +12,11 @@ import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
 import { Plot } from './GameClientModels/Plot';
 import { KeyActions } from './GameClientModels/KeyActions';
-import { PlayerStateModel, AnyEntityStateModel, SiegeStateModel } from './GameClientModels/_EntityState';
+import { PlayerStateModel, AnyEntityStateModel, SiegeStateModel } from './GameClientModels/EntityState';
+
+import * as webAPI from '../webAPI';
+import * as graphQL from '../graphql';
+import * as signalR from '../signalR';
 
 /**
  * Export all models
@@ -257,6 +261,10 @@ export interface GameInterface extends GameModel {
    */
   apiVersion: number;
 
+  webAPI: typeof webAPI;
+  graphQL: typeof graphQL;
+  signalR: typeof signalR;
+
   /**
    * Get the signalR host
    * essentially, just game.webAPIHost + '/signalr'
@@ -356,6 +364,11 @@ export interface GameInterface extends GameModel {
    * KeyActions are a mapping of key actions to key action id numbers
    */
   keyActions: KeyActions;
+
+  /**
+   * Map of entities that the UI knows about by EntityID
+   */
+  entities: { [entityID: string]: AnyEntityStateModel };
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import * as webAPI from '../webAPI';
+import * as graphQL from '../graphql';
+import * as signalR from '../signalR';
+
 import { Callback } from './GameClientModels/_Updatable';
 import { createEventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface } from './GameInterface';
@@ -25,6 +29,10 @@ export default function(isAttached: boolean) {
   }
   _devGame.ready = false;
   _devGame.isClientAttached = isAttached;
+
+  _devGame.webAPI = webAPI;
+  _devGame.graphQL = graphQL;
+  _devGame.signalR = signalR;
 
   _devGame.signalRHost = signalRHost;
 
