@@ -248,6 +248,23 @@ export default class WarbandMembersPoiProvider extends React.Component<
   public onWarbandMemberUpdated = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== client.characterID) {
+      if (
+        this.state.characterIdToIdMap[newMemberState.characterID] &&
+        newMemberState.id !== this.state.characterIdToIdMap[newMemberState.characterID]
+      ) {
+        this.props.compass.removePOI(
+          'warband',
+          `warband-${this.state.characterIdToIdMap[newMemberState.characterID]}`,
+        );
+      }
+      this.setState((prevState: WarbandMembersPoiProviderState) => {
+        return {
+          characterIdToIdMap: {
+            ...prevState.characterIdToIdMap,
+            [newMemberState.characterID]: newMemberState.id,
+          },
+        };
+      });
       this.props.compass.updatePOI('warband', this.getWarbandMemberPOI(newMemberState));
     }
   }
@@ -255,6 +272,15 @@ export default class WarbandMembersPoiProvider extends React.Component<
   public onWarbandMemberJoined = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== client.characterID) {
+      if (
+        this.state.characterIdToIdMap[newMemberState.characterID] &&
+        newMemberState.id !== this.state.characterIdToIdMap[newMemberState.characterID]
+      ) {
+        this.props.compass.removePOI(
+          'warband',
+          `warband-${this.state.characterIdToIdMap[newMemberState.characterID]}`,
+        );
+      }
       this.setState((prevState: WarbandMembersPoiProviderState) => {
         return {
           characterIdToIdMap: {
