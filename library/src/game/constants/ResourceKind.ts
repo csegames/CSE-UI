@@ -8,7 +8,7 @@ export {};
 
 // TODO: Get these from the server, add to defintions.ts
 declare global {
-  export enum ResourceKind {
+  enum ResourceKind {
     Blood = 0,
     Stamina = 1,
     Elixir_1 = 2,
@@ -35,7 +35,7 @@ declare global {
     ResourceKind: typeof ResourceKind;
   }
 }
-export enum ResourceKind {
+enum ResourceKind {
   Blood = 0,
   Stamina = 1,
   Elixir_1 = 2,

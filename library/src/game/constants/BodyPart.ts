@@ -7,7 +7,7 @@
 export {};
 
 declare global {
-  export enum BodyPart {
+  enum BodyPart {
     Torso = 0,
     Head = 1,
     LeftArm = 2,

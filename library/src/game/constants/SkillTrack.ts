@@ -4,8 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+export {};
+
 declare global {
-  export enum SkillTrack {
+  enum SkillTrack {
     None = 0,
     PrimaryWeapon = 1 << 0,
     SecondaryWeapon = 1 << 1,
@@ -26,7 +28,7 @@ declare global {
     SkillTrack: typeof SkillTrack;
   }
 }
-export enum SkillTrack {
+enum SkillTrack {
   None = 0,
   PrimaryWeapon = 1 << 0,
   SecondaryWeapon = 1 << 1,

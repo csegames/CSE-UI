@@ -7,7 +7,7 @@
 export {};
 
 declare global {
-  export enum DamageType {
+  enum DamageType {
     None = 0,
     Slashing = 1 << 0,
     Piercing = 1 << 1,
@@ -43,7 +43,7 @@ declare global {
     DamageType: typeof DamageType;
   }
 }
-export enum DamageType {
+enum DamageType {
   None = 0,
   Slashing = 1 << 0,
   Piercing = 1 << 1,

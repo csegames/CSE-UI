@@ -47,9 +47,9 @@ export interface PlayerStateModel extends EntityStateModel {
   health: Health[];
   stamina: CurrentMax;
   blood: CurrentMax;
-  // An EntityState object for the entity this Character is in control of, ie
+  // An EntityID for the entity this Character is in control of, ie
   // a siege engine, a vehicle, a creature, ect..
-  controllingEntityState?: AnyEntityStateModel;
+  controlledEntityID?: string;
 }
 
 export function defaultHealth() {

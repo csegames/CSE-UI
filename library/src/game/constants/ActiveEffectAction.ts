@@ -4,8 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+export {};
+
 declare global {
-  export enum ActiveEffectAction {
+  enum ActiveEffectAction {
     Applied = 0,
     Removed = 1,
     Timed_Out = 2,
@@ -14,7 +16,7 @@ declare global {
     ActiveEffectAction: typeof ActiveEffectAction;
   }
 }
-export enum ActiveEffectAction {
+enum ActiveEffectAction {
   Applied = 0,
   Removed = 1,
   Timed_Out = 2,
