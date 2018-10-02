@@ -114,7 +114,9 @@ export interface PlotModel {
   createBlueprintFromSelection: (name: string) => Success & { blueprint: Blueprint } | Failure;
 }
 
-export type Plot = PlotModel & Updatable;
+declare global {
+  type Plot = PlotModel & Updatable;
+}
 
 export const PlotState_Update = 'plotState.update';
 

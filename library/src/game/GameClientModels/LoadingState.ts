@@ -13,7 +13,9 @@ export interface LoadingStateModel {
   visible: boolean;
 }
 
-export type LoadingState = LoadingStateModel & Updatable;
+declare global {
+  type LoadingState = LoadingStateModel & Updatable;
+}
 
 export const LoadingState_Update = 'loadingState.update';
 

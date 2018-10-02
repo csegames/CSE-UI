@@ -6,32 +6,58 @@
 
 import { initUpdatable, Updatable, executeUpdateCallbacks } from './_Updatable';
 
-export interface EntityStateModel {
-  faction: Faction;
-  entityID: string;
-  name: string;
-  isAlive: boolean;
+declare global {
+  interface EntityStateModel {
+    faction: Faction;
+    entityID: string;
+    name: string;
+    isAlive: boolean;
 
-  /**
-   * Players coordinates in world space.
-   */
-  position?: {
-    x: number;
-    y: number;
-    z: number;
-  };
+    /**
+     * Players coordinates in world space.
+     */
+    position?: {
+      x: number;
+      y: number;
+      z: number;
+    };
 
-  // status -- null / undefined if no status on entity
-  statuses?: {
-    id: number;
-    duration: number;
-  }[];
+    // status -- null / undefined if no status on entity
+    statuses?: {
+      id: number;
+      duration: number;
+    }[];
 
-  // health per body part, ordered according to the bodyParts enum found
-  // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
-  // through webAPI definitions.ts file
-  // Nonplayers are an aray of size 1 for a single health bar
-  health: Health[];
+    // health per body part, ordered according to the bodyParts enum found
+    // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
+    // through webAPI definitions.ts file
+    // Nonplayers are an aray of size 1 for a single health bar
+    health: Health[];
+  }
+
+  interface SiegeStateModel extends EntityStateModel {
+    type: 'siege';
+    /**
+     * EntityID of the entity controlling this Siege Engine
+     */
+    controllingEntityID?: string;
+  }
+
+  interface PlayerStateModel extends EntityStateModel {
+    type: 'player';
+    race: Race;
+    gender: Gender;
+    class: Archetype;
+    stamina: CurrentMax;
+    blood: CurrentMax;
+     /**
+     * EntityID of an entity this Player is controlling, if any.
+     * ie. a siege engine, vehicle, creature ect...
+     */
+    controlledEntityID?: string;
+  }
+
+  type AnyEntityState = (Readonly<PlayerStateModel> | Readonly<SiegeStateModel>) & Updatable;
 }
 
 function defaultEntityStateModel(): EntityStateModel {
@@ -42,21 +68,6 @@ function defaultEntityStateModel(): EntityStateModel {
     isAlive: false,
     health: [defaultHealth()],
   };
-}
-
-
-export interface PlayerStateModel extends EntityStateModel {
-  type: 'player';
-  race: Race;
-  gender: Gender;
-  class: Archetype;
-  stamina: CurrentMax;
-  blood: CurrentMax;
-   /**
-   * EntityID of an entity this Player is controlling, if any.
-   * ie. a siege engine, vehicle, creature ect...
-   */
-  controlledEntityID?: string;
 }
 
 export function defaultHealth() {
@@ -87,16 +98,6 @@ export function defaultPlayerStateModel(): PlayerStateModel {
   };
 }
 
-export interface SiegeStateModel extends EntityStateModel {
-  type: 'siege';
-  /**
-   * EntityID of the entity controlling this Siege Engine
-   */
-  controllingEntityID?: string;
-}
-
-export type AnyEntityState = (Readonly<PlayerStateModel> | Readonly<SiegeStateModel>) & Updatable;
-
 export function defaultSiegeStateModel(): SiegeStateModel {
   return {
     ...defaultEntityStateModel(),
@@ -110,7 +111,7 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
 
   if (!_devGame.entities[state.entityID]) {
     _devGame.entities[state.entityID] = state;
-    _devGame.entities[state.entityID]._name = name;
+    _devGame.entities[state.entityID].updateEventName = name;
     // init Updatable.
     initUpdatable(state);
   }

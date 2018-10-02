@@ -4,33 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Callback } from './GameClientModels/_Updatable';
-
-import { LoadingState } from './GameClientModels/LoadingState';
-import { SelfPlayerState } from './GameClientModels/PlayerState';
-import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
-import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
-import { Plot } from './GameClientModels/Plot';
-import { KeyActions } from './GameClientModels/KeyActions';
-import { PlayerStateModel, AnyEntityStateModel, SiegeStateModel } from './GameClientModels/EntityState';
-
 import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
 import * as signalR from '../signalR';
-
-/**
- * Export all models
- */
-export {
-  Callback,
-  LoadingState,
-  PlayerStateModel,
-  AnyEntityStateModel,
-  SiegeStateModel,
-  SelfPlayerState,
-  FriendlyTargetState,
-  EnemyTargetState,
-};
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -374,7 +350,7 @@ export interface GameInterface extends GameModel {
   /**
    * Map of entities that the UI knows about by EntityID
    */
-  entities: { [entityID: string]: AnyEntityStateModel };
+  entities: { [entityID: string]: AnyEntityState };
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

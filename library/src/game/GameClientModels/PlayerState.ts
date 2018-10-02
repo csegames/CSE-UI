@@ -102,7 +102,10 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
   requestEnemyTarget: (entityID: string) => boolean;
 }
 
-export type SelfPlayerState = SelfPlayerStateModel & Updatable;
+declare global {
+  type SelfPlayerState = SelfPlayerStateModel & Updatable;
+}
+
 
 
 function noOp(...args: any[]): any {}

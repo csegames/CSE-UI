@@ -144,14 +144,18 @@ export interface KeyActionsModel {
   GizmoDrag: number;
 }
 
-export type KeyActions = KeyActionsModel & Updatable;
+declare global {
+  type KeyActions = KeyActionsModel & Updatable;
+}
+
 
 export const KeyActions_Update = 'keyActions.update';
 
 function initDefault(): KeyActions {
+
   return new Proxy({
     isReady: false,
-    _name: KeyActions_Update,
+    updateEventName: KeyActions_Update,
     onUpdated: createDefaultOnUpdated(KeyActions_Update),
     onReady: createDefaultOnReady(KeyActions_Update),
   }, {

@@ -4,7 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export type Callback = (...args: any[]) => any;
+declare global {
+  type Callback = (...args: any[]) => any;
+}
 
 export interface Updatable {
   /**

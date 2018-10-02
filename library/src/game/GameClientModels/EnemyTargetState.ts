@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { PlayerStateModel, defaultPlayerStateModel, SiegeStateModel } from './_EntityState';
+import { defaultPlayerStateModel } from './EntityState';
 import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 
 import engineInit from './_Init';
@@ -32,7 +32,9 @@ export interface EnemyTargetPlayerStateModel extends PlayerStateModel {
   position: Vec3;
 }
 
-export type EnemyTargetState = (EnemyTargetPlayerStateModel | SiegeStateModel) & Updatable;
+declare global {
+  type EnemyTargetState = (EnemyTargetPlayerStateModel | SiegeStateModel) & Updatable;
+}
 
 export const EnemyTarget_Update = 'enemyTargetPlayerState.update';
 
@@ -45,7 +47,7 @@ function initDefault(): EnemyTargetState {
     position: { x: 0, y: 0, z: 0 },
 
     isReady: false,
-    _name: EnemyTarget_Update,
+    updateEventName: EnemyTarget_Update,
     onUpdated: createDefaultOnUpdated(EnemyTarget_Update),
     onReady: createDefaultOnReady(EnemyTarget_Update),
   };

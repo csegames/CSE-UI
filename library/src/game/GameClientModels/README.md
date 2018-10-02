@@ -46,10 +46,12 @@ export interface <ModelName>Model {
 }
 ```
 
-4. A type definition / interface to describe the structure of this Model as represented to the UI. This contains the Model from the client plus any additional properties as required by the game client. *Note: All Singleton models will extend the Updatable interface*
+4. A globally defined type definition / interface to describe the structure of this Model as represented to the UI. This contains the Model from the client plus any additional properties as required by the game client. *Note: All Singleton models will extend the Updatable interface*
 
 ```typescript
-type <ModelName> = <ModelName>Model & Updatable;
+declare global {
+  type <ModelName> = <ModelName>Model & Updatable;
+}
 ```
 
 5. The update event name string;
